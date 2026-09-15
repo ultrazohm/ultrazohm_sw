@@ -92,7 +92,7 @@ void ISR_Control(void *data)
     update_adapter_d3();
     update_adapter_d4();
     update_adapter_d5();
-    update_temperatures_round_robin();
+     update_temperatures_round_robin();
     //Global_Data.control_mode=control_mode_dpt;
     // Current mapping
     Global_Data.m1_phase_voltage.a = VOLTAGE_TO_VOLTS * Global_Data.av.adc_ltc2311_a1_ch3;
@@ -243,11 +243,7 @@ void ISR_Control(void *data)
             {
             case dpt_mode_off:
                 uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
-                if (dpt_counter_before_start <= dpt_time_before_start)
-                {
-                    dpt_counter_before_start++;
-                }
-                else
+                if (++dpt_counter_before_start >= dpt_time_before_start)
                 {
                     dpt_counter_before_start = 0;
                     Global_Data.dpt_mode = dpt_mode_first_on;
@@ -256,11 +252,7 @@ void ISR_Control(void *data)
             case dpt_mode_first_on:
                 uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, false);
                 Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.0f;
-                if (dpt_counter_first_on <= dpt_time_first_on)
-                {
-                    dpt_counter_first_on++;
-                }
-                else
+                if (++dpt_counter_first_on >= dpt_time_first_on)
                 {
                     dpt_counter_first_on = 0;
                     Global_Data.dpt_mode = dpt_mode_during_off;
@@ -268,11 +260,7 @@ void ISR_Control(void *data)
                 break;
             case dpt_mode_during_off:
                 uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
-                if (dpt_counter_during_off <= dpt_time_during_off)
-                {
-                    dpt_counter_during_off++;
-                }
-                else
+                if (++dpt_counter_during_off >= dpt_time_during_off)
                 {
                     dpt_counter_during_off = 0;
                     Global_Data.dpt_mode = dpt_mode_second_on;
@@ -281,11 +269,7 @@ void ISR_Control(void *data)
             case dpt_mode_second_on:
                 uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, false);
                 Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.0f;
-                if (dpt_counter_second_on <= dpt_time_second_on)
-                {
-                    dpt_counter_second_on++;
-                }
-                else
+                if (++dpt_counter_second_on >= dpt_time_second_on)
                 {
                     dpt_counter_second_on = 0;
                     Global_Data.dpt_mode = dpt_mode_off;

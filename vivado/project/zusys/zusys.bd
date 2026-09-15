@@ -149,7 +149,8 @@
           "PWM_and_SS_control_V_2": "",
           "uz_interlockDeadtime_2": "",
           "PWM_and_SS_control_V_3": "",
-          "uz_interlockDeadtime_3": ""
+          "uz_interlockDeadtime_3": "",
+          "ila_0": ""
         },
         "pwm_3L": {
           "axi_smartconnect": "",
@@ -6976,6 +6977,10 @@
                         "value": "resetN",
                         "value_src": "constant"
                       },
+                      "FREQ_HZ": {
+                        "value": "100000000",
+                        "value_src": "user_prop"
+                      },
                       "CLK_DOMAIN": {
                         "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
                         "value_src": "default_prop"
@@ -13175,6 +13180,26 @@
                 "xci_name": "zusys_uz_interlockDeadtime_3_0",
                 "xci_path": "ip/zusys_uz_interlockDeadtime_3_0/zusys_uz_interlockDeadtime_3_0.xci",
                 "inst_hier_path": "uz_pwm/pwm_2L/uz_interlockDeadtime_3"
+              },
+              "ila_0": {
+                "vlnv": "xilinx.com:ip:ila:6.2",
+                "xci_name": "zusys_ila_0_0",
+                "xci_path": "ip/zusys_ila_0_0/zusys_ila_0_0.xci",
+                "inst_hier_path": "uz_pwm/pwm_2L/ila_0",
+                "parameters": {
+                  "C_DATA_DEPTH": {
+                    "value": "131072"
+                  },
+                  "C_INPUT_PIPE_STAGES": {
+                    "value": "2"
+                  },
+                  "C_MONITOR_TYPE": {
+                    "value": "Native"
+                  },
+                  "C_NUM_OF_PROBES": {
+                    "value": "24"
+                  }
+                }
               }
             },
             "interface_nets": {
@@ -13427,7 +13452,8 @@
                   "PWM_and_SS_control_V_3/AXI4_Lite_ACLK",
                   "PWM_and_SS_control_V_3/IPCORE_CLK",
                   "uz_interlockDeadtime_3/AXI4_ACLK",
-                  "uz_interlockDeadtime_3/IPCORE_CLK"
+                  "uz_interlockDeadtime_3/IPCORE_CLK",
+                  "ila_0/clk"
                 ]
               },
               "resetn_1": {
@@ -13455,145 +13481,169 @@
               "uz_interlockDeadtime_0_s0_out": {
                 "ports": [
                   "uz_interlockDeadtime_0/s0_out",
-                  "Dig_00_Ch1"
+                  "Dig_00_Ch1",
+                  "ila_0/probe0"
                 ]
               },
               "uz_interlockDeadtime_0_s1_out": {
                 "ports": [
                   "uz_interlockDeadtime_0/s1_out",
-                  "Dig_04_Ch1"
+                  "Dig_04_Ch1",
+                  "ila_0/probe1"
                 ]
               },
               "uz_interlockDeadtime_0_s2_out": {
                 "ports": [
                   "uz_interlockDeadtime_0/s2_out",
-                  "Dig_01_Ch1"
+                  "Dig_01_Ch1",
+                  "ila_0/probe2"
                 ]
               },
               "uz_interlockDeadtime_0_s3_out": {
                 "ports": [
                   "uz_interlockDeadtime_0/s3_out",
-                  "Dig_05_Ch1"
+                  "Dig_05_Ch1",
+                  "ila_0/probe3"
                 ]
               },
               "uz_interlockDeadtime_0_s4_out": {
                 "ports": [
                   "uz_interlockDeadtime_0/s4_out",
-                  "Dig_02_Ch1"
+                  "Dig_02_Ch1",
+                  "ila_0/probe4"
                 ]
               },
               "uz_interlockDeadtime_0_s5_out": {
                 "ports": [
                   "uz_interlockDeadtime_0/s5_out",
-                  "Dig_06_Ch1"
+                  "Dig_06_Ch1",
+                  "ila_0/probe5"
                 ]
               },
               "uz_interlockDeadtime_1_s0_out": {
                 "ports": [
                   "uz_interlockDeadtime_1/s0_out",
-                  "Dig_07_Ch1"
+                  "Dig_07_Ch1",
+                  "ila_0/probe6"
                 ]
               },
               "uz_interlockDeadtime_1_s1_out": {
                 "ports": [
                   "uz_interlockDeadtime_1/s1_out",
-                  "Dig_11_Ch1"
+                  "Dig_11_Ch1",
+                  "ila_0/probe7"
                 ]
               },
               "uz_interlockDeadtime_1_s2_out": {
                 "ports": [
                   "uz_interlockDeadtime_1/s2_out",
-                  "Dig_08_Ch1"
+                  "Dig_08_Ch1",
+                  "ila_0/probe8"
                 ]
               },
               "uz_interlockDeadtime_1_s3_out": {
                 "ports": [
                   "uz_interlockDeadtime_1/s3_out",
-                  "Dig_12_Ch1"
+                  "Dig_12_Ch1",
+                  "ila_0/probe9"
                 ]
               },
               "uz_interlockDeadtime_1_s4_out": {
                 "ports": [
                   "uz_interlockDeadtime_1/s4_out",
-                  "Dig_09_Ch1"
+                  "Dig_09_Ch1",
+                  "ila_0/probe10"
                 ]
               },
               "uz_interlockDeadtime_1_s5_out": {
                 "ports": [
                   "uz_interlockDeadtime_1/s5_out",
-                  "Dig_13_Ch1"
+                  "Dig_13_Ch1",
+                  "ila_0/probe11"
                 ]
               },
               "uz_interlockDeadtime_2_s0_out": {
                 "ports": [
                   "uz_interlockDeadtime_2/s0_out",
-                  "Dig_14_Ch1"
+                  "Dig_14_Ch1",
+                  "ila_0/probe12"
                 ]
               },
               "uz_interlockDeadtime_2_s1_out": {
                 "ports": [
                   "uz_interlockDeadtime_2/s1_out",
-                  "Dig_18_Ch1"
+                  "Dig_18_Ch1",
+                  "ila_0/probe13"
                 ]
               },
               "uz_interlockDeadtime_2_s2_out": {
                 "ports": [
                   "uz_interlockDeadtime_2/s2_out",
-                  "Dig_15_Ch1"
+                  "Dig_15_Ch1",
+                  "ila_0/probe14"
                 ]
               },
               "uz_interlockDeadtime_2_s3_out": {
                 "ports": [
                   "uz_interlockDeadtime_2/s3_out",
-                  "Dig_19_Ch1"
+                  "Dig_19_Ch1",
+                  "ila_0/probe15"
                 ]
               },
               "uz_interlockDeadtime_2_s4_out": {
                 "ports": [
                   "uz_interlockDeadtime_2/s4_out",
-                  "Dig_16_Ch1"
+                  "Dig_16_Ch1",
+                  "ila_0/probe16"
                 ]
               },
               "uz_interlockDeadtime_2_s5_out": {
                 "ports": [
                   "uz_interlockDeadtime_2/s5_out",
-                  "Dig_20_Ch1"
+                  "Dig_20_Ch1",
+                  "ila_0/probe17"
                 ]
               },
               "uz_interlockDeadtime_3_s0_out": {
                 "ports": [
                   "uz_interlockDeadtime_3/s0_out",
-                  "Dig_21_Ch2"
+                  "Dig_21_Ch2",
+                  "ila_0/probe18"
                 ]
               },
               "uz_interlockDeadtime_3_s1_out": {
                 "ports": [
                   "uz_interlockDeadtime_3/s1_out",
-                  "Dig_25_Ch2"
+                  "Dig_25_Ch2",
+                  "ila_0/probe19"
                 ]
               },
               "uz_interlockDeadtime_3_s2_out": {
                 "ports": [
                   "uz_interlockDeadtime_3/s2_out",
-                  "Dig_22_Ch2"
+                  "Dig_22_Ch2",
+                  "ila_0/probe20"
                 ]
               },
               "uz_interlockDeadtime_3_s3_out": {
                 "ports": [
                   "uz_interlockDeadtime_3/s3_out",
-                  "Dig_26_Ch2"
+                  "Dig_26_Ch2",
+                  "ila_0/probe21"
                 ]
               },
               "uz_interlockDeadtime_3_s4_out": {
                 "ports": [
                   "uz_interlockDeadtime_3/s4_out",
-                  "Dig_23_Ch2"
+                  "Dig_23_Ch2",
+                  "ila_0/probe22"
                 ]
               },
               "uz_interlockDeadtime_3_s5_out": {
                 "ports": [
                   "uz_interlockDeadtime_3/s5_out",
-                  "Dig_27_Ch2"
+                  "Dig_27_Ch2",
+                  "ila_0/probe23"
                 ]
               },
               "vio_Gates_2L_probe_out0": {
@@ -13973,6 +14023,10 @@
                     "type": "clk",
                     "direction": "I",
                     "parameters": {
+                      "FREQ_HZ": {
+                        "value": "100000000",
+                        "value_src": "user_prop"
+                      },
                       "CLK_DOMAIN": {
                         "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
                         "value_src": "default_prop"

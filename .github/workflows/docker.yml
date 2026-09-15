@@ -1,0 +1,47 @@
+name: development container
+
+on:
+  push:
+    branches: ['**']
+    paths:
+      - '.devcontainer/Dockerfile'
+      - '.devcontainer/.dockerignore'
+      - '.github/workflows/docker.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set image tag
+        id: image
+        shell: bash
+        run: echo "tag=ultrazohm/ultrazohm_remote_container_new:${GITHUB_SHA:0:7}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: .devcontainer
+          file: .devcontainer/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.image.outputs.tag }}
+          cache-from: type=gha,scope=development-container
+          cache-to: type=gha,scope=development-container,mode=min

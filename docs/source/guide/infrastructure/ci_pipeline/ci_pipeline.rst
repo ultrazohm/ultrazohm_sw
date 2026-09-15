@@ -21,44 +21,6 @@ The UltraZohm project uses two different build pipelines to test the builds of t
   * Generates the Vitis workspace
   * Builds the software
 
-.. _CI bitbucketPipeline:
-
-Bitbucket pipeline (docs)
--------------------------
-
-* ``bitbucket-pipelines.yml`` configures the Bitbucket pipeline
-* Pipeline steps to build the Sphinx documentation on **every** *push* to the repository (for all branches)
-* Pipeline steps to deploy the documentation to the UltraZohm-Server (docs.ultrazohm.com) after every merged pull request on *main*
-* Pipeline reports success or failure to Bitbucket repository (green / red symbol next to branch in Bitbucket)
-
-
-.. mermaid::
-  :caption: Setup of the Bitbucket build pipeline.
-  :align: center
-
-  graph LR
-    subgraph Bitbucket
-    C -->|Successful?| B
-    B[ultrazohm_sw] -->|Pipeline| C{Build}
-    end
-    C -->|Deploy| D(UltraZohm-Server)
-    D -->|nginx| E[docs.ultrazohm.com]
-
-The build pipeline:
-
-* Pulls the docker image with python
-* Installs the requirements for the build of the sphinx documentation
-* Builds the docs and treats all warnings as errors but keeps building to investigate the logs if the build fails
-* If the pipeline is triggered from ``main``:
-
-  * The ``build`` folder after ``make html`` is copied to the web server
-  * Done with rsync deploy pipe
-  * Variables for username, password and server path are stored as secret repository variables
-  * Only accessible for admins: ``repository settings -> repository variables`` in Bitbucket (``ultrazohm_sw`` repository)
-
-.. literalinclude:: ../../../../../bitbucket-pipelines.yml
-    :linenos:
-
 Unit tests (Ceedling)
 *********************
 

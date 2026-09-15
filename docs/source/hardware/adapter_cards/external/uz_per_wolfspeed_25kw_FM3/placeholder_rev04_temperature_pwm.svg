@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="360" viewBox="0 0 960 360" role="img" aria-labelledby="title desc">
+  <title id="title">Rev04 temperature PWM placeholder</title>
+  <desc id="desc">Placeholder for a temperature or NTC voltage to PWM duty-cycle transfer plot.</desc>
+  <rect width="960" height="360" fill="#f5f5f5"/>
+  <line x1="140" y1="260" x2="800" y2="260" stroke="#333" stroke-width="3"/>
+  <line x1="140" y1="260" x2="140" y2="70" stroke="#333" stroke-width="3"/>
+  <path d="M160 240 C300 220 430 180 560 130 S730 85 780 80" stroke="#2d6f8f" stroke-width="5" fill="none"/>
+  <text x="470" y="315" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#333">NTC_ISO voltage or temperature</text>
+  <text x="80" y="175" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#333" transform="rotate(-90 80 175)">Temp_PWM duty cycle</text>
+  <text x="480" y="40" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#333">Placeholder: add measured or calculated transfer plot</text>
+</svg>

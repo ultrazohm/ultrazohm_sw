@@ -60,6 +60,17 @@ static void update_adapter_d3(void);
 static void update_adapter_d4(void);
 static void update_adapter_d5(void);
 
+uint32_t dpt_time_before_start=10;
+uint32_t dpt_time_first_on=3;
+uint32_t dpt_time_during_off=1;
+uint32_t dpt_time_second_on=1;
+
+uint32_t dpt_counter_before_start=0;
+uint32_t dpt_counter_first_on=0;
+uint32_t dpt_counter_second_on=0;
+uint32_t dpt_counter_during_off=0;
+
+
 void update_temperatures_round_robin(void);
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -153,6 +164,12 @@ void ISR_Control(void *data)
     if (current_state == idle_state)
     {
         /* Project Wizard BEGIN: idle_state isr_actions */
+        dpt_counter_before_start=0;
+        dpt_counter_first_on=0;
+        dpt_counter_second_on=0;
+        dpt_counter_during_off=0;
+
+
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f;
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = 0.0f;
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = 0.0f;
@@ -189,10 +206,17 @@ void ISR_Control(void *data)
     else if (current_state == running_state)
     {
         /* Project Wizard BEGIN: running_state isr_actions */
+            if (Global_Data.control_mode == control_mode_dpt){
+        // all other axis are tristate.
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, true, true, true);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_2, true, true, true);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_3, true, true, true);
+    }else{
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, false, false, false);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, false, false, false);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_2, false, false, false);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_3, false, false, false);
+    }
 
         /* Project Wizard END: running_state isr_actions */
     }
@@ -201,6 +225,78 @@ void ISR_Control(void *data)
         // Start: Control algorithm - only if ultrazohm is in control state
         switch (Global_Data.control_mode)
         {
+        case control_mode_dpt:
+            // do nothing with the duty cycles
+            Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f;
+            Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = 0.0f;
+            Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = 0.0f;
+            Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_1 = 0.0f;
+            Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_2 = 0.0f;
+            Global_Data.rasv.pwm_2L_2_halfBridgeDutyCycle_1 = 0.0f;
+            Global_Data.rasv.pwm_2L_2_halfBridgeDutyCycle_2 = 0.0f;
+            Global_Data.rasv.pwm_2L_2_halfBridgeDutyCycle_3 = 0.0f;
+            Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_1 = 0.0f;
+            Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_2 = 0.0f;
+            Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_3 = 0.0f;
+
+            switch (Global_Data.dpt_mode)
+            {
+            case dpt_mode_off:
+                uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
+                if (dpt_counter_before_start <= dpt_time_before_start)
+                {
+                    dpt_counter_before_start++;
+                }
+                else
+                {
+                    dpt_counter_before_start = 0;
+                    Global_Data.dpt_mode = dpt_mode_first_on;
+                }
+                break;
+            case dpt_mode_first_on:
+                uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, false);
+                Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.0f;
+                if (dpt_counter_first_on <= dpt_time_first_on)
+                {
+                    dpt_counter_first_on++;
+                }
+                else
+                {
+                    dpt_counter_first_on = 0;
+                    Global_Data.dpt_mode = dpt_mode_during_off;
+                }
+                break;
+            case dpt_mode_during_off:
+                uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
+                if (dpt_counter_during_off <= dpt_time_during_off)
+                {
+                    dpt_counter_during_off++;
+                }
+                else
+                {
+                    dpt_counter_during_off = 0;
+                    Global_Data.dpt_mode = dpt_mode_second_on;
+                }
+                break;
+            case dpt_mode_second_on:
+                uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, false);
+                Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.0f;
+                if (dpt_counter_second_on <= dpt_time_second_on)
+                {
+                    dpt_counter_second_on++;
+                }
+                else
+                {
+                    dpt_counter_second_on = 0;
+                    Global_Data.dpt_mode = dpt_mode_off;
+                }
+                break;
+            default:
+                break;
+            }
+
+            Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.0f;
+            break;
         case control_mode_manual:
             Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = Global_Data.m1_duty_from_javascope.a;
             Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = Global_Data.m1_duty_from_javascope.b;
@@ -294,24 +390,23 @@ void ISR_Control(void *data)
     struct uz_DutyCycle_t m3_duty_cycle = uz_pmsm_control_sample_duty(Global_Data.objects.m3_prime_mover_control, Global_Data.av.m3_measurements, Global_Data.m3_prime_mover_n_ref_rpm, Global_Data.m3_prime_mover_i_dq_ref_A, 0.0f);
     struct uz_DutyCycle_t m4_duty_cycle = uz_pmsm_control_sample_duty(Global_Data.objects.m4_dut_control, Global_Data.av.m4_measurements, 0.0f, Global_Data.m4_dut_i_dq_ref_A, 0.0f);
 
-    if (Global_Data.control_mode != control_mode_manual){
-
+    if (Global_Data.control_mode != (control_mode_manual) && Global_Data.control_mode != (control_mode_dpt)){
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = m1_duty_cycle.DutyCycle_A;
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = m1_duty_cycle.DutyCycle_B;
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = m1_duty_cycle.DutyCycle_C;
-        
+            
         Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_1 = m2_duty_cycle.DutyCycle_A;
-    Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_2 = m2_duty_cycle.DutyCycle_B;
-    Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = m2_duty_cycle.DutyCycle_C;
+        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_2 = m2_duty_cycle.DutyCycle_B;
+        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = m2_duty_cycle.DutyCycle_C;
 
-    Global_Data.rasv.pwm_2L_2_halfBridgeDutyCycle_1 = m3_duty_cycle.DutyCycle_A;
-    Global_Data.rasv.pwm_2L_2_halfBridgeDutyCycle_2 = m3_duty_cycle.DutyCycle_B;
-    Global_Data.rasv.pwm_2L_2_halfBridgeDutyCycle_3 = m3_duty_cycle.DutyCycle_C;
+        Global_Data.rasv.pwm_2L_2_halfBridgeDutyCycle_1 = m3_duty_cycle.DutyCycle_A;
+        Global_Data.rasv.pwm_2L_2_halfBridgeDutyCycle_2 = m3_duty_cycle.DutyCycle_B;
+        Global_Data.rasv.pwm_2L_2_halfBridgeDutyCycle_3 = m3_duty_cycle.DutyCycle_C;
 
-    Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_1 = m4_duty_cycle.DutyCycle_A;
-    Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_2 = m4_duty_cycle.DutyCycle_B;
-    Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_3 = m4_duty_cycle.DutyCycle_C;
-}
+        Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_1 = m4_duty_cycle.DutyCycle_A;
+        Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_2 = m4_duty_cycle.DutyCycle_B;
+        Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_3 = m4_duty_cycle.DutyCycle_C;
+    }
 
     Global_Data.av.m1_safe_operating_region_violation = uz_pmsm_control_get_safe_operating_area_violation(Global_Data.objects.m1_prime_mover_control);
     Global_Data.av.m2_safe_operating_region_violation = uz_pmsm_control_get_safe_operating_area_violation(Global_Data.objects.m2_dut_control);

@@ -200,7 +200,16 @@ enum control_mode_t
 	control_mode_m12_only_foc,
 	control_mode_m34_only_foc,
 	control_mode_m1234_foc,
-	control_mode_manual
+	control_mode_manual,
+	control_mode_dpt,
+};
+
+enum dpt_mode_t
+{
+	dpt_mode_off=0,
+	dpt_mode_first_on,
+	dpt_mode_during_off,
+	dpt_mode_second_on,
 };
 
 typedef struct _DS_Data_ {
@@ -234,6 +243,7 @@ typedef struct _DS_Data_ {
 	bool d3_inverter_enable;
 	bool d4_inverter_enable;
 	enum control_mode_t control_mode;
+	enum dpt_mode_t dpt_mode;
 	float sine_amp;
 	float sine_frq;
 	float m1_prime_mover_n_ref_rpm;

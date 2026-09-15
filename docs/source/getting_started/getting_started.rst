@@ -111,7 +111,7 @@ Additional information
 
 #. The UltraZohm project uses a `Xilinx Zynq UltraScale+ MPSoC <https://www.xilinx.com/products/silicon-devices/soc/zynq-ultrascale-mpsoc.html>`_.
 
-   * A good starting point for the development of the Xilinx Zynq UltraScale+ MPSoC is `Exploring Zynq® MPSoC <https://www.zynq-mpsoc-book.com>`_ 
+   * A good starting point for the development of the Xilinx Zynq UltraScale+ MPSoC is `Exploring Zynq® MPSoC <https://www.embeddedrelated.com/books/2071.php>`_ 
    * This book walks the reader through all the important aspects of the Xilinx software stack, the multi-processor processing system, and the powerful array of programmable hardware.
 
 #. Useful documents include:

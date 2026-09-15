@@ -93,7 +93,7 @@ void ISR_Control(void *data)
     update_adapter_d4();
     update_adapter_d5();
     update_temperatures_round_robin();
-
+    //Global_Data.control_mode=control_mode_dpt;
     // Current mapping
     Global_Data.m1_phase_voltage.a = VOLTAGE_TO_VOLTS * Global_Data.av.adc_ltc2311_a1_ch3;
     Global_Data.m1_phase_voltage.b = VOLTAGE_TO_VOLTS * Global_Data.av.adc_ltc2311_a1_ch2;

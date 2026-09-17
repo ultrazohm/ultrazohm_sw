@@ -75,7 +75,7 @@ Local Vivado builds
 
 Remote workstation builds
    The wizard exports TCL for use on another workstation.
-   This is useful when the GUI is run locally but Vivado builds happen elsewhere.
+   This is useful when the project wizard GUI is run locally but Vivado builds happen elsewhere.
 
 Both workflows use the same generated block-design TCL.
 The difference is only how the TCL is executed.

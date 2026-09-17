@@ -38,8 +38,9 @@ On Linux:
 Create Or Open A Configuration
 ------------------------------
 
-Use **File -> New** for a new wizard project.
-Use **File -> Open** to open an existing ``.pw.json`` file from ``project_wizard/user_configurations/``.
+| Use **File -> New** for a new wizard project.
+| Use **File -> Open** to open an existing ``.pw.json`` file from ``project_wizard/user_configurations/``. 
+| (Screenshots below will show the UltraZohm default configuration that is provided in the repository in ``project_wizard/user_configurations/project_wizard_config.pw.json``.)
 
 Save the configuration early with **File -> Save As**.
 The wizard configuration is user-owned project state and is not a generated output file.
@@ -111,6 +112,21 @@ enable **Generate bitstream** and optionally **Export .xsa after successful buil
    :align: center
 
    Hardware configuration -> TCL generation page of the Project Wizard
+
+- **Local Vivado builds:** When using your local machine be aware that this might take up to ``over 1 hour`` for a complete bitstream generation. 
+  When pressing ``Execute TCL workflow`` a save dialog appears within the folder ``/generated/vivado_bd_config/``. Here, the TCL file ``project_wizard_config.tcl`` 
+  will be saved that handles the block design modifications. After saving it the local Vivado build starts. 
+  The TCL console outputs are displayed in the ``TCL preview warnings and workflow output`` section. In the lower left corner of the window 
+  ``Running Vivado TCL workflow...`` will be shown during the execution. After successful execution a message box will appear ``Vivado finished successfully.``.
+  If ``Run Vivado in GUI mode`` is selected, the success message will only appear after you manually close Vivado.
+
+- **Remote workstation builds:** When using a workstation or any kind of remote computer, this workflow only exports the TCL file without 
+  calling your local Vivado instance. When pressing ``Export TCL`` a save dialog appears within the folder ``/generated/vivado_bd_config/``. 
+  Here, the TCL file ``project_wizard_config.tcl`` will be saved that handles the block design modifications. After saving you will have to 
+  copy that TCL file to your remote computer. There, open Vivado and the UltraZohm project ``ultrazohm_sw/vivado/project/ultrazohm.xpr``. 
+  Open the block design. Execute the TCL script ``project_wizard_config.tcl`` via ``Tools -> Run TCL script...``.
+
+  **After the TCL script finished you will need to manually validate the block design, start bitstream generation, and export the resulting .xsa file.**
 
 Generate CPLD Programmer Files
 ------------------------------

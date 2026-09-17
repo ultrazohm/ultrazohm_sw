@@ -40,7 +40,7 @@ Important subfolders:
    Local workflow logs.
 
 ``golden_scenarios/``
-   Developer regression baselines.
+   Developer regression baselines. Used for unit tests.
 
 Vivado Ownership
 ----------------

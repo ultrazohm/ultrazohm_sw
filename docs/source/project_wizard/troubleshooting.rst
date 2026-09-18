@@ -13,35 +13,6 @@ Fix:
 * configure the missing executable path;
 * rerun the action.
 
-Missing Software Source Folder
-------------------------------
-
-Software generation requires a folder containing ``globalData.h``.
-
-Fix:
-
-* open **Software configuration -> General**;
-* select ``vitis/software/Baremetal/src`` or the matching source folder for the project.
-
-No Visualization Signals Shown
-------------------------------
-
-Visualization signals are generated from the current hardware and software model.
-
-Possible causes:
-
-* the slot software mode is set to no software driver;
-* the selected card has no generated software signal;
-* a card channel is disabled;
-* the relevant card option is not AXI/software-backed;
-* the view has not been refreshed after a card change.
-
-Fix:
-
-* check slot software mode;
-* check card details;
-* refresh previews or reopen the configuration.
-
 Vivado Reports Stale IP Or Interface Errors
 -------------------------------------------
 
@@ -114,15 +85,13 @@ Fix:
 * open it manually in Lattice Diamond Programmer;
 * verify cable, port address, and selected device chain.
 
-TCL Preview Contains Template Markers
--------------------------------------
+How to use the 26tx_w_enable CPLD programs on the D-slots
+---------------------------------------------------------
 
-Generated TCL must not contain template markers such as ``{%`` or ``{{``.
-If these appear, the generator or template has a bug.
+.. warning:: In former block designs there was a hard coded wiring for using the output enable mechanism of the tx26_w_enable CPLD program. This has been removed from the block design. For creating the similar functionality via the project wizard, use the IO configuration shown below.
 
-Fix:
+.. figure:: img/page_references/26tx_w_enable_io.png
+   :width: 800
+   :align: center
 
-* do not execute the TCL;
-* report or fix the template/generator issue;
-* run the golden scenario checks after the fix.
-
+   26tx_w_enable IO configuration

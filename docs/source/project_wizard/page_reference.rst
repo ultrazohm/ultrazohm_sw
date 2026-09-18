@@ -205,6 +205,14 @@ The settings, especially the IO-card options, are explained in more detail below
 
 The described configuration details for the UZ_D Voltage 3V3/5V adapter card apply in a similar fashion to UZ_D Voltage RS422 and UZ_D Optical IO cards.
 
+.. warning:: In former block designs there was a hard coded wiring for using the output enable mechanism of the tx26_w_enable CPLD program. This has been removed from the block design. For creating the similar functionality via the project wizard, use the IO configuration shown below.
+
+.. figure:: img/page_references/26tx_w_enable_io.png
+   :width: 800
+   :align: center
+
+   26tx_w_enable IO configuration
+
 ADC Triggers
 ------------
 

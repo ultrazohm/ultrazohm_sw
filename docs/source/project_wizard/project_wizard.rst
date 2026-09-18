@@ -30,6 +30,5 @@ Use this documentation in three ways:
    user_guide
    generated_outputs_and_ownership
    page_reference
-   workflows
    troubleshooting
    developer_guide

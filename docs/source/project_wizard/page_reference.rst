@@ -220,70 +220,157 @@ TCL Generation
 
 The TCL generation page exports the generated block-design TCL and optionally executes a local Vivado workflow.
 
-Local Vivado builds
-   Runs Vivado on the local machine.
+.. figure:: img/page_references/tcl_generation.png
+   :width: 800
+   :align: center
+
+   TCL generation - Detailed view
+
+- ``1`` **Local Vivado builds:**
+   When checked, Vivado is executed on your local machine.
    Options include GUI mode, checkpoint workaround, validate BD, save BD, generate bitstream, and export XSA after a successful build.
 
-Remote workstation builds
-   Exports the TCL for use on another workstation.
+   - ``Run Vivado in GUI mode``: When checked, the project wizard will execute Vivado in GUI mode and the user can visually follow the 
+     execution in Vivado. When using the project wizard for the first times, seeing what is happening might give the user more trust in the workflow. 
+     When not checked, Vivado is executed in the background. During execution, the hint ``Running Vivado TCL workflow...`` is shown in the lower left 
+     corner of the wizard and TCL console output from Vivado is printed to the ``TCL preview warnings and workflow output`` section. 
+     After successful execution a message box will appear ``Vivado finished successfully..`` only after you manually close Vivado. Default is not checked.
 
-The preview warning section reports potential generation issues before the TCL is executed.
-If there are no warnings, the wizard reports that no TCL preview warnings were found.
+   - ``Disable BD/IP synthesis checkpoints``: Applies the Vivado checkpoint workaround for projects that fail while writing block-design checkpoints. 
+     It has been observed when the UZ_D 3-Phase Inverter adapter card is placed that during the writing the bitstream step in the Vivado workflow an error 
+     can occur regarding design checkpoints. In case this ever happens, check this option and try again. This should prevent the error from reoccurring. 
+     Default is not checked.
 
-Disable BD/IP synthesis checkpoints
-   Applies the Vivado checkpoint workaround for projects that fail while writing block-design checkpoints.
+   - ``Validate block design after applying TCL``: When checked, the validation of the block design in Vivado is executed. Normally this has to be done 
+     before bitstream generation workflow. Default is checked.
 
-These values affect TCL export and local Vivado execution.
+   - ``Save block design after applying TCL``: When checked, the block design is saved after the project wizard's block design modifications are done. 
+     Default is checked.
+
+   - ``Generate bitstream```: When checked, the bitstream generation workflow in Vivado is executed after the modifications and the validation of the 
+     block design. 
+
+   - ``Refresh TCL Preview``: Press this button to refresh the ``TCL preview warnings and workflow output`` section.
+
+   - ``Clear local Vivado artifacts``: When working on different git branches in your locally cloned repository some of the untracked Vivado cache files and 
+     artifacts can become inconsistent to the tracked Vivado project file and block design. This leads to error messages when opening the Vivado project or the block design. 
+     In order to prevent that, pressing this button deletes the cache files and artifacts. A confirmation dialog explicitly tells which folders and files will be deleted. 
+
+     **Recommendation: Clear local Vivado artifacts before working on the Vivado project or block design.**
+
+   - ``Execute TCL workflow``: Press this button to execute the local Vivado workflow with the selected options. A save dialog appears within the folder ``/generated/vivado_bd_config/``. 
+     Here, the TCL file ``project_wizard_config.tcl`` will be saved that handles the block design modifications. After saving it the local Vivado build starts.
+
+- ``2`` **Remote workstation builds:**
+   When checked, only the TCL file for execution in the Vivado block design is exported for use on another workstation or remote computer. 
+   
+   - ``Export TCL``: A save dialog appears within the folder ``/generated/vivado_bd_config/``. 
+     Here, the TCL file ``project_wizard_config.tcl`` will be saved that handles the block design modifications. You have to 
+     copy the TCL file to your remote computer. There, open Vivado and the UltraZohm project ``ultrazohm_sw/vivado/project/ultrazohm.xpr``. 
+     Open the block design. Execute the TCL script ``project_wizard_config.tcl`` via ``Tools -> Run TCL script....```.
+   
+     **After the TCL script finished you will need to manually validate the block design, start bitstream generation, and export the resulting .xsa file.**
+
+- ``3`` **TCL preview warnings and workflow output:** The preview warning section reports potential generation issues before the TCL is executed.
+  If there are no warnings, the wizard reports that no TCL preview warnings were found. During local Vivado execution the Vivado TCL console outputs are 
+  printed in this section.
 
 Slot CPLDs
 ----------
 
 The Slot CPLDs page generates Lattice Diamond Programmer ``.xcf`` files from the selected digital slot CPLD programs.
+A command-line (CLI) execution of the Diamond Programmer is available to directly program the D-slot CPLDs of UltraZohm revisions 5 and newer 
+from the project wizard. 
 
-The selected adapter card usually determines the default CPLD program.
-Users can inspect or override the selection before generating programmer files.
+.. figure:: img/page_references/slot_cplds.png
+   :width: 800
+   :align: center
 
-The command-line execution path requires a configured Programmer executable on the Toolchain page.
+   Slot CPLDs - Detailed view
+
+- ``1`` **Digital slot CPLD programs:** The selected adapter card usually determines the default CPLD program and in the background also the 
+  correct CPLD device (ispMACH LA4128, LV4256 or MACHXO2). Users can inspect or override the selection before generating programmer files. When 
+  ``No CPLD program`` is selected for a slot, this specific slot is set to ``Bypass`` in the Diamond Programmer.
+
+- ``2`` **Lattice cable settings:** Diamond Programmer needs the correct cable settings for executing programming via the CLI. 
+  Best practice is either to look them up by following the manual CPLD programming workflow and put them into the wizard text fields or to use 
+  the ``Cable setup recovery`` if you have a local Diamond Programmer .xcf project file that contains the correct settings for your setup. 
+  For the recovery workflow check the respective checkbox and press ``Import cable settings from XCF``. In the dialog navigate to the project file that 
+  contains working settings and select it. The settings are read from the project file and written into the wizard fields. 
+  Additionally, the ``CPLD programmer output`` section reports the settings that have been exported from the existing .xcf file.
+
+- ``Write Lattice Diamond Programmer project file``: A save dialog appears within the folder ``/generated/cpld_config/`` folder when 
+  pressing this button. Here, the XCF file ``project_wizard_slot_cpld.xcf`` will be saved that is a complete Diamond Programmer project containing 
+  the selected D-slot CPLD configuration. After saving the file, the ``Programm CPLDs via CLI`` button gets activated.
+
+- ``Programm CPLDs via CLI``: Pressing this button executes the programming of the D-slot CPLDs via the Diamond Programmer CLI. 
+  The UltraZohm has to be connected to your computer and has to be powered on (LED ring around the Power button is green). 
+  Other tools that might occupy the JTAG interface, e.g. Vivado/Vitis, have to be closed. Be aware that the CLI workflow is only 
+  tested with MACHXO2 CPLDs that are used from UltraZohm Rev05 and higher. While execution of the CLI workflow, The console outputs of the 
+  Diamond Programmer are printed to the ``CPLD programmer output`` section.
 
 Software General
 ----------------
 
 The software General page selects the Vitis bare-metal source folder.
-The folder must contain the files patched by the wizard, especially ``globalData.h``.
+This is selected automatically by the wizard and should point to ``/$yourClonedRepoFolder/vitis/software/Baremetal/src/``.
 
-Each slot can follow the hardware selection or generate no software driver.
-Selecting no software driver clears slot-owned generated integration for that slot.
-
-IP Core Drivers Setup
----------------------
+IP Core Driver Setup
+--------------------
 
 This page exposes software-driver instances derived from the current hardware and software configuration.
 
-Each driver instance can use:
+.. figure:: img/page_references/ip_core_driver_setup.png
+   :width: 800
+   :align: center
 
-Default
-   Preset-generated configuration values.
+   IP Core Driver Setup - Detailed view
 
-Custom
-   User-edited configuration fields for that instance.
+- ``1`` **Slot software integration:**
+  
+  - ``Mode``: For every adapter card slot it can be selected if a software driver that matches the selected adapter card is used ``Follow hardware selection`` 
+    or if no software integration should be used at all ``No software driver``. Default is ``Follow hardware selection``.
+  - ``Preset``: Most adapter cards provide one default driver preset. E.g. the UZ_D Temperature LTC2983 adapter card provides two presets, depending 
+    on the type of temperature sensors. For all other adapter cards use the default preset option.
 
-Use custom values only when the application requires them.
-Wrong custom values can produce compiling code with incorrect runtime behavior.
+- ``2`` **Software generation preview:** The preview reports the exact source files and the specific code that will be modified by the wizard. The modification is based on markers 
+  in those source files. The wizard only modifies content between those markers. For details see :ref:`project_wizard_generated_outputs` section of the project wizard docs. 
+
+- ``Generate software files``: When pressing this button, the selected PWM / Timing / Interrupt options, the IP core driver setup, the Advanced driver configuration, and 
+  the Data visualization options are written to the source code. This button is mirrored to the ``Advanced driver options`` section and ``Data visualization`` section for convenience. 
+  When software file generation is executed, the ``Software generation output`` section at the very bottom of the view will report the successful source code modifications.
+  
+  **Recommendation: Finish IP core driver setup, Advanced driver configuration and Data visualization sections first before pressing Generate software files in order to write a completely configured 
+  set of code changes to the source code.**
+
+Advanced driver options
+-----------------------
+
+Initially, all advanced driver options are set to ``Default``.
+The tabs for  ``PWM``  and the adapter card slots ``A1-A3``, and ``D1-D5`` mainly reflect the config structs of the software drivers 
+of the selected PWM instances and adapter card hardware. Go through the tabs and set the ``Config mode`` to ``Custom`` 
+whenever you need to change config values. See the respective IP core driver documentation for specific details of each driver.
+
+.. warning:: Wrong custom values can produce compiling errors or compiling code with incorrect runtime behavior.
+
+- ``Generate software files``: When pressing this button, the selected PWM / Timing / Interrupt options, the IP core driver setup, the Advanced driver configuration, and 
+  the Data visualization options are written to the source code. This button is mirrored to the ``Advanced driver options`` section and ``Data visualization`` section for convenience. 
+  When software file generation is executed, the ``Software generation output`` section at the very bottom of the view will report the successful source code modifications.
+  
+  **Recommendation: Finish IP core driver setup, Advanced driver configuration and Data visualization sections first before pressing Generate software files in order to write a completely configured 
+  set of code changes to the source code.**
 
 Data Visualization
 ------------------
 
 The Data visualization page selects which generated signals are registered for Javascope and slow data.
 
-Available signals depend on the generated software model.
-If a card or channel does not generate a software signal, it is not shown here.
+Available signals depend on the respective IP core drivers.
+If a card or channel does not provide software signals, it is indicated by ``No generated visualization signals for Dx.``.
 
-Adapter Card Database
----------------------
-
-The Adapter Card Database page is intentionally read-only for the first wizard release.
-The JSON catalog remains the source of truth.
-
-Do not rely on this page to add or edit cards.
-Adding new cards is a developer workflow described in :ref:`project_wizard_developer_guide`.
-
+- ``Generate software files``: When pressing this button, the selected PWM / Timing / Interrupt options, the IP core driver setup, the Advanced driver configuration, and 
+  the Data visualization options are written to the source code. This button is mirrored to the ``Advanced driver options`` section and ``Data visualization`` section for convenience. 
+  When software file generation is executed, the ``Software generation output`` section at the very bottom of the view will report the successful source code modifications.
+  
+  **Recommendation: Finish IP core driver setup, Advanced driver configuration and Data visualization sections first before pressing Generate software files in order to write a completely configured 
+  set of code changes to the source code.**

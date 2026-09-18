@@ -44,21 +44,29 @@ uz_dac_interface_t* initialize_dac8831_a2(void)
 void update_dac8831_a2_outputs(struct _DS_Data_* data)
 {
 
-    /* Channel 0 is not used. The initialized zero output value is kept. */
+    data->rasv.dac8831_a2_ch0 = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch0_sine, 1.0f, 10.0f, 0.0f);
+    dac8831_a2_outputs[0] = data->rasv.dac8831_a2_ch0;
 
-    /* Channel 1 is not used. The initialized zero output value is kept. */
+    data->rasv.dac8831_a2_ch1 = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch1_sine, 2.0f, 10.0f, 0.0f);
+    dac8831_a2_outputs[1] = data->rasv.dac8831_a2_ch1;
 
-    /* Channel 2 is not used. The initialized zero output value is kept. */
+    data->rasv.dac8831_a2_ch2 = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch2_sine, 3.0f, 10.0f, 0.0f);
+    dac8831_a2_outputs[2] = data->rasv.dac8831_a2_ch2;
 
-    /* Channel 3 is not used. The initialized zero output value is kept. */
+    data->rasv.dac8831_a2_ch3 = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch3_sine, 4.0f, 10.0f, 0.0f);
+    dac8831_a2_outputs[3] = data->rasv.dac8831_a2_ch3;
 
-    /* Channel 4 is not used. The initialized zero output value is kept. */
+    data->rasv.dac8831_a2_ch4 = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch4_sine, 1.0f, 10.0f, 0.0f);
+    dac8831_a2_outputs[4] = data->rasv.dac8831_a2_ch4;
 
-    /* Channel 5 is not used. The initialized zero output value is kept. */
+    data->rasv.dac8831_a2_ch5 = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch5_sine, 2.0f, 10.0f, 0.0f);
+    dac8831_a2_outputs[5] = data->rasv.dac8831_a2_ch5;
 
-    /* Channel 6 is not used. The initialized zero output value is kept. */
+    data->rasv.dac8831_a2_ch6 = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch6_sine, 3.0f, 10.0f, 0.0f);
+    dac8831_a2_outputs[6] = data->rasv.dac8831_a2_ch6;
 
-    /* Channel 7 is not used. The initialized zero output value is kept. */
+    data->rasv.dac8831_a2_ch7 = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch7_sine, 4.0f, 10.0f, 0.0f);
+    dac8831_a2_outputs[7] = data->rasv.dac8831_a2_ch7;
 
     uz_dac_interface_set_ouput_values(data->objects.dac8831_a2, &dac8831_a2_output_array);
 }

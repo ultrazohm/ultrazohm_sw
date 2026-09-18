@@ -35,6 +35,14 @@ DS_Data Global_Data = {
         .pwm_3L_0_halfBridgeDutyCycle_1 = 0.0f,
         .pwm_3L_0_halfBridgeDutyCycle_2 = 0.0f,
         .pwm_3L_0_halfBridgeDutyCycle_3 = 0.0f,
+        .dac8831_a2_ch0 = 0.0f,
+        .dac8831_a2_ch1 = 0.0f,
+        .dac8831_a2_ch2 = 0.0f,
+        .dac8831_a2_ch3 = 0.0f,
+        .dac8831_a2_ch4 = 0.0f,
+        .dac8831_a2_ch5 = 0.0f,
+        .dac8831_a2_ch6 = 0.0f,
+        .dac8831_a2_ch7 = 0.0f,
 /* Project Wizard END: rasv_initializer */
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
@@ -113,6 +121,14 @@ int main(void)
 			initialize_project_wizard_pwm_3l(&Global_Data);
 			Global_Data.objects.adc_ltc2311_a1 = initialize_adc_ltc2311_a1();
 			Global_Data.objects.dac8831_a2 = initialize_dac8831_a2();
+			Global_Data.objects.dac8831_a2_ch0_sine = uz_wavegen_sine_init();
+			Global_Data.objects.dac8831_a2_ch1_sine = uz_wavegen_sine_init();
+			Global_Data.objects.dac8831_a2_ch2_sine = uz_wavegen_sine_init();
+			Global_Data.objects.dac8831_a2_ch3_sine = uz_wavegen_sine_init();
+			Global_Data.objects.dac8831_a2_ch4_sine = uz_wavegen_sine_init();
+			Global_Data.objects.dac8831_a2_ch5_sine = uz_wavegen_sine_init();
+			Global_Data.objects.dac8831_a2_ch6_sine = uz_wavegen_sine_init();
+			Global_Data.objects.dac8831_a2_ch7_sine = uz_wavegen_sine_init();
 			Global_Data.objects.adc_max11331_a3 = initialize_adc_max11331_a3();
 			Global_Data.objects.axi_gpio_d1 = initialize_axi_gpio_d1();
 			Global_Data.objects.axi_gpio_d2 = initialize_axi_gpio_d2();

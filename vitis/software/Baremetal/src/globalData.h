@@ -98,6 +98,14 @@ typedef struct _referenceAndSetValues_ {
 	float pwm_3L_0_halfBridgeDutyCycle_1;
 	float pwm_3L_0_halfBridgeDutyCycle_2;
 	float pwm_3L_0_halfBridgeDutyCycle_3;
+	float dac8831_a2_ch0;
+	float dac8831_a2_ch1;
+	float dac8831_a2_ch2;
+	float dac8831_a2_ch3;
+	float dac8831_a2_ch4;
+	float dac8831_a2_ch5;
+	float dac8831_a2_ch6;
+	float dac8831_a2_ch7;
 /* Project Wizard END: referenceAndSetValues */
 } referenceAndSetValues;
 
@@ -114,6 +122,14 @@ typedef struct{
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_3;
 	uz_adcLtc2311_t* adc_ltc2311_a1;
 	uz_dac_interface_t* dac8831_a2;
+	uz_wavegen_sine_t* dac8831_a2_ch0_sine;
+	uz_wavegen_sine_t* dac8831_a2_ch1_sine;
+	uz_wavegen_sine_t* dac8831_a2_ch2_sine;
+	uz_wavegen_sine_t* dac8831_a2_ch3_sine;
+	uz_wavegen_sine_t* dac8831_a2_ch4_sine;
+	uz_wavegen_sine_t* dac8831_a2_ch5_sine;
+	uz_wavegen_sine_t* dac8831_a2_ch6_sine;
+	uz_wavegen_sine_t* dac8831_a2_ch7_sine;
 	uz_adcMax11331_t* adc_max11331_a3;
 	uz_axi_gpio_t* axi_gpio_d1;
 	uz_axi_gpio_t* axi_gpio_d2;

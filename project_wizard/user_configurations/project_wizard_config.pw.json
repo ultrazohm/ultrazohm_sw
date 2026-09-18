@@ -37,7 +37,7 @@
     "pwm_2l_idle_error_behavior": "tristate_with_duty_cycle",
     "pwm_3l_instances": "1",
     "interrupt_isr_source": "1U",
-    "interrupt_isr_trigger_on_adc_data_ready": "0U"
+    "interrupt_isr_trigger_on_adc_data_ready": "1U"
   },
   "slots": {
     "A1": {

@@ -70,7 +70,7 @@ These settings affect:
 * generated duty-cycle variables in ``Global_Data.rasv``;
 * ISR platform-state behavior for idle, running, control, and error states.
 
-.. figure:: img/page_references/pwm_timing_interrupts.png
+.. figure:: img/page_references/pr_pwm_timing_interrupts.png
    :width: 800
    :align: center
 
@@ -144,7 +144,7 @@ For each slot, the selected card determines:
 Some cards expose additional options in the card detail view.
 Examples include IO-card direction variants, resolver PL-interface checkboxes, absolute encoder channel types, and incremental encoder channel enable selections.
 
-.. figure:: img/page_references/adapter_cards.png
+.. figure:: img/page_references/pr_adapter_cards.png
    :width: 800
    :align: center
 
@@ -228,7 +228,7 @@ TCL Generation
 
 The TCL generation page exports the generated block-design TCL and optionally executes a local Vivado workflow.
 
-.. figure:: img/page_references/tcl_generation.png
+.. figure:: img/page_references/pr_tcl_generation.png
    :width: 800
    :align: center
 
@@ -290,7 +290,7 @@ The Slot CPLDs page generates Lattice Diamond Programmer ``.xcf`` files from the
 A command-line (CLI) execution of the Diamond Programmer is available to directly program the D-slot CPLDs of UltraZohm revisions 5 and newer 
 from the project wizard. 
 
-.. figure:: img/page_references/slot_cplds.png
+.. figure:: img/page_references/pr_slot_cplds.png
    :width: 800
    :align: center
 
@@ -328,7 +328,7 @@ IP Core Driver Setup
 
 This page exposes software-driver instances derived from the current hardware and software configuration.
 
-.. figure:: img/page_references/ip_core_driver_setup.png
+.. figure:: img/page_references/pr_ip_core_driver_setup.png
    :width: 800
    :align: center
 

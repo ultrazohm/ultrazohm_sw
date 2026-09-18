@@ -132,7 +132,11 @@ Generate CPLD Programmer Files
 ------------------------------
 
 8. Open **Slot CPLDs**. Check that the proposed CPLD programs match the selected digital adapter cards.
-Generate the programmer project file. Execute Diamond Programmer Command-Line Interface (CLI) from the wizard or open the project file in Lattice Diamond Programmer. 
+Generate the programmer project file by pressing ``Write Lattice Diamond Programmer project file`` and save it via the appearing dialog
+in ``/generated/cpld_config``. Execute Diamond Programmer Command-Line Interface (CLI) from the wizard by pressing ``Programm CPLDs via CLI`` 
+or open the project file in Lattice Diamond Programmer. 
+The UltraZohm has to be connected via USB to your machine and has to be powered on (LED ring around the Power button is green). 
+Other tools that might occupy the JTAG interface, e.g. Vivado/Vitis, have to be closed.
 Be aware that the CLI workflow is only tested with MACHXO2 CPLDs that are used from UltraZohm Rev05 and higher.
 
 .. figure:: img/quickstart/slot_cplds.png
@@ -152,7 +156,8 @@ Configure Software
 
    Software configuration -> General page of the Project Wizard
 
-10. Open **Software configuration -> IP core driver setup**. Choose whether each slot follows the hardware selection or should generate no software driver. Keep Mode options on **Follow hardware selection** and Presets on **Default** unless the application needs differently.
+10. Open **Software configuration -> IP core driver setup**. Choose whether each slot follows the hardware selection or should generate no software driver. 
+Keep Mode options on **Follow hardware selection** and Presets on **Default** unless the application needs differently.
 
 .. figure:: img/quickstart/ip_core_driver_setup.png
    :width: 800
@@ -160,7 +165,8 @@ Configure Software
 
    Software configuration -> IP core driver setup page of the Project Wizard
 
-11. Open **Software configuration -> Advanced driver configuration**. Check the config parameters for each adapter card driver. Select Config mode **Custom** if you need to set specific parameters.
+11. Open **Software configuration -> Advanced driver configuration**. Check the config parameters for each adapter card driver. 
+Select Config mode **Custom** if you need to set specific parameters.
 
 .. figure:: img/quickstart/advanced_driver_config.png
    :width: 800
@@ -168,7 +174,7 @@ Configure Software
 
    Software configuration -> Advanced driver configuration page of the Project Wizard
 
-12. Open **Software configuration -> Data visualization**. Select signals for Javascope, slow data, or both. 
+12. Open **Software configuration -> Data visualization**. Select signals for visualization in Javascope, slow data, or both. 
 
 .. figure:: img/quickstart/data_visualization.png
    :width: 800

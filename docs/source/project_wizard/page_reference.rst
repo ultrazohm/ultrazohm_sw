@@ -100,10 +100,10 @@ The settings are explained in more detail in the four sections below.
   ``INTERRUPT_ISR_SOURCE_USER_CHOICE``: Select the signal source that triggers ADC conversions and ISR. The dropdown menu provides 
   PWM events from 2L and 3L PWM and their respective triangle counters. Default is Interrupt_2L_min.
 
-  ``INTERRPUT_ISR_TRIGGER_ON_ADC_DATA_READY``: Select either immediate ISR triggering at the selected PWM 
+  ``INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY``: Select either immediate ISR triggering at the selected PWM 
   event or only after writing ADC results to the tightly coupled memory (TCM) has finished. Immediate ISR triggering might 
   lead to a race condition. When ISR reads ADC results from the TCM it is not guaranteed that the latest results are already written. 
-  To enforce this, select the ``axi2tcm_write_done`` option.
+  To enforce deterministic behavior, select the ``axi2tcm_write_done`` option.
 
   ``INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE``: Select if every PWM event from **INTERRUPT_ISR_SOURCE_USER_CHOICE** should trigger
   ADC conversion and ISR or if ISR should only be triggered every N-th PWM event. E.g., if you need 100 kHz PWM frequency or a fast 
@@ -143,6 +143,67 @@ For each slot, the selected card determines:
 
 Some cards expose additional options in the card detail view.
 Examples include IO-card direction variants, resolver PL-interface checkboxes, absolute encoder channel types, and incremental encoder channel enable selections.
+
+.. figure:: img/page_references/adapter_cards.png
+   :width: 800
+   :align: center
+
+   Adapter Cards - Detailed view
+
+The settings, especially the IO-card options, are explained in more detail below.
+
+- ``1`` **Adapter card slots:** For each of the eight adapter card slots (3x analog, 5x digital), a dropdown menu is provided 
+  for selecting the adapter that is placed in the respective slot. Only compatible adapter cards are selectable for each slot. E.g., 
+  UZ_D Voltage 3V3/5V cannot be selected for slot D5, but for D1 to D4. Make the selection according to your physical UltraZohm setup.
+
+- ``2`` **Selected card details:** Depending on the selected adapter card, additional information or configurable options are shown in this section. 
+  In the case of ADC cards it is mainly information, for the incremental encoder card the user can select board revision and up to three encoders. In the 
+  case of voltage or optical IO cards several options exist that will be described in further detail below at the example of the UZ_D Voltage 3V3/5V 
+  adapter card.
+
+- ``3`` **DIG IO xx-yy direction:** The 30 IO pins are organized in four IO groups per adapter card. Each group can be configured to ``TX output from FPGA`` 
+  or ``RX input to FPGA``. 
+  
+  .. warning:: This selection affects the Vivado block design and software implementation and not the hardware setup of the adapter card itself. On the adapter card the matching configuration of the respective dip switches has to be done manually.
+
+- ``4`` **IO source and sink:** In this section the mode and signal routing of each pin (Dig_00_Chx to Dig_29_Chx) is configured. The pins are listed top to bottom. 
+  The selected direction is highlighted via the blue ``TX`` or ``RX`` indicators.
+
+  ``Mode``: 
+  
+  For ``TX`` pins one out of four options can be selected:
+
+  - ``AXI GPIO``: The pin is controlled via an AXI-GPIO IP core. The respective software driver will be instantiated and the output is made available 
+    to the user in isr.c on the R5 processor. 
+  - ``PWM``: The pin is connected to one of the configured 2L or 3L PWM instances.
+  - ``Custom BD source``: The pin is connected to a specific signal from the block design. 
+    This can be any available signal, e.g. PWM counter events, conversion triggers, debug signals, inputs from another IO card, ... .
+    Assignment is done as a string in the ``Signal`` section.
+  - ``Constant``: The pin is set to a constant value. ``High`` or ``Low`` are assigned via the dropdown menu in the ``Constant value`` section.
+
+  For ``RX`` pins one out of two options can be selected:
+
+  - ``AXI GPIO``: The pin is routed to an AXI-GPIO IP core. The respective software driver will be instantiated and the input signal is made available 
+    to the user in isr.c on the R5 processor and in the ``Data visualization`` section.
+  - ``Top-level port``: The pin is made available in the Vivado block design as top-level port of the respective D-slot hierarchy. From there, one can use 
+    the signal for further processing within the block design.
+  
+  ``Signal``: 
+  
+  Depending on the selected mode (``PWM`` or ``Custom BD source``), the signal source is configured in this section.
+
+  - ``PWM``: Two dropdown menus appear when PWM mode is selected for the pin. In the first one, one of the PWM instances that have been configured in the 
+    ``PWM / Timing Interrupts`` section can be selected. In the second dropdown menu the specific output pin of the PWM instance is selected for the pin. 
+    Specifically, it is the output of the subsequent Interlock and Deadtime instance of the respective PWM instance. In case of the 2L PWM the signals are named 
+    **s0_out** to **s5_out**, where s0_out is the top-switch switching signal of the first half-bridge, s1_out is the bottom-switch switching signal of the first half-bridge,  
+    s2_out/s3_out form the pair of the second half-bridge, and so on.
+
+  - ``Custom BD source``: The custom block design signal that should be connected to the output pin is selected via a text string that describes the hierarchical path 
+    within the Vivado block design. E.g., if the trigger_conversions signal that is a top-level output of the uz_system hierarchy should be used, the string has to be 
+    ``uz_system/trigger_conversions``. The same scheme applies to any other block design signal, also within sub-hierarchies. Simply provide the correct path and signal name 
+    from the block design.
+
+The described configuration details for the UZ_D Voltage 3V3/5V adapter card apply in a similar fashion to UZ_D Voltage RS422 and UZ_D Optical IO cards.
 
 ADC Triggers
 ------------

@@ -210,6 +210,7 @@ enum dpt_mode_t
 	dpt_mode_first_on,
 	dpt_mode_during_off,
 	dpt_mode_second_on,
+	dpt_mode_idle
 };
 
 typedef struct _DS_Data_ {

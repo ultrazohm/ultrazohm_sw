@@ -92,8 +92,8 @@ void ISR_Control(void *data)
     update_adapter_d3();
     update_adapter_d4();
     update_adapter_d5();
-     update_temperatures_round_robin();
-    //Global_Data.control_mode=control_mode_dpt;
+    // update_temperatures_round_robin();
+   //  Global_Data.control_mode=control_mode_m2_only_foc;
     // Current mapping
     Global_Data.m1_phase_voltage.a = VOLTAGE_TO_VOLTS * Global_Data.av.adc_ltc2311_a1_ch3;
     Global_Data.m1_phase_voltage.b = VOLTAGE_TO_VOLTS * Global_Data.av.adc_ltc2311_a1_ch2;
@@ -168,6 +168,7 @@ void ISR_Control(void *data)
         dpt_counter_first_on=0;
         dpt_counter_second_on=0;
         dpt_counter_during_off=0;
+        Global_Data.dpt_mode=dpt_mode_off;
 
 
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f;
@@ -241,6 +242,9 @@ void ISR_Control(void *data)
 
             switch (Global_Data.dpt_mode)
             {
+            case dpt_mode_idle:
+                uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
+                break;
             case dpt_mode_off:
                 uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
                 if (++dpt_counter_before_start >= dpt_time_before_start)
@@ -272,7 +276,7 @@ void ISR_Control(void *data)
                 if (++dpt_counter_second_on >= dpt_time_second_on)
                 {
                     dpt_counter_second_on = 0;
-                    Global_Data.dpt_mode = dpt_mode_off;
+                    Global_Data.dpt_mode = dpt_mode_idle;
                 }
                 break;
             default:

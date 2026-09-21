@@ -116,8 +116,8 @@ void deskbench_update_measurements(DS_Data *data)
     data->av.m2_measurements.v_abc_in_V.c = data->m2_phase_voltage.c;
 
     data->av.m2_measurements.v_dc_in_V = data->m12_dc_voltage;
-    data->av.m2_measurements.theta_mech = data->av.resolver_pl_interface_d4_3_position_mech_2pi;
-    data->av.m2_measurements.omega_mech_rad_per_sec = data->av.resolver_pl_interface_d4_3_omega_mech_rad_s;
+    data->av.m2_measurements.theta_mech = data->av.resolver_pl_interface_d4_2_position_mech_2pi;
+    data->av.m2_measurements.omega_mech_rad_per_sec = data->av.resolver_pl_interface_d4_2_omega_mech_rad_s;
 
 ////////////// Second test bench
 
@@ -131,8 +131,8 @@ void deskbench_update_measurements(DS_Data *data)
     data->av.m3_measurements.v_abc_in_V.c = data->m3_phase_voltage.c;
 
     data->av.m3_measurements.v_dc_in_V = data->m34_dc_voltage;
-    data->av.m3_measurements.theta_mech = data->av.resolver_pl_interface_d5_1_position_mech_2pi;
-    data->av.m3_measurements.omega_mech_rad_per_sec = data->av.resolver_pl_interface_d5_1_omega_mech_rad_s;
+    data->av.m3_measurements.theta_mech = data->av.resolver_pl_interface_d4_3_position_mech_2pi;
+    data->av.m3_measurements.omega_mech_rad_per_sec = data->av.resolver_pl_interface_d4_3_omega_mech_rad_s;
 
     data->av.m4_measurements.i_abc_in_A.a = data->m4_phase_current.a;
     data->av.m4_measurements.i_abc_in_A.b = data->m4_phase_current.b;
@@ -144,6 +144,6 @@ void deskbench_update_measurements(DS_Data *data)
     data->av.m4_measurements.v_abc_in_V.c = data->m4_phase_voltage.c;
 
     data->av.m4_measurements.v_dc_in_V = data->m34_dc_voltage;
-    data->av.m4_measurements.theta_mech = data->av.resolver_pl_interface_d5_2_position_mech_2pi;
-    data->av.m4_measurements.omega_mech_rad_per_sec = data->av.resolver_pl_interface_d5_2_omega_mech_rad_s;
+    data->av.m4_measurements.theta_mech = data->av.resolver_pl_interface_d5_1_position_mech_2pi;
+    data->av.m4_measurements.omega_mech_rad_per_sec = data->av.resolver_pl_interface_d5_1_omega_mech_rad_s;
 }

@@ -16,8 +16,8 @@
  * export_struct_to_csv.c via the included header.
  */
 
-#define SLOW_PATH "build/test_export_csv_slow.csv"
-#define FAST_PATH "build/test_export_csv_fast.csv"
+#define SLOW_PATH "helper/export_csv/slow.csv"
+#define FAST_PATH "helper/export_csv/fast.csv"
 
 struct guard_row_t
 {
@@ -48,13 +48,16 @@ void tearDown(void) {}
 
 static void read_file(const char *path, char *out, size_t out_size)
 {
-    FILE *file = fopen(path, "rb");
+    char full_path[4096];
+    const int length = snprintf(full_path, sizeof(full_path), "%s/%s", test_csv_output_directory(), path);
+    TEST_ASSERT_TRUE(length > 0 && (size_t)length < sizeof(full_path));
+    FILE *file = fopen(full_path, "rb");
     TEST_ASSERT_NOT_NULL(file);
     const size_t read = fread(out, 1U, out_size - 1U, file);
     TEST_ASSERT_TRUE(read < out_size - 1U); /* whole file fit */
     out[read] = '\0';
     TEST_ASSERT_EQUAL_INT(0, fclose(file));
-    (void)remove(path);
+    TEST_ASSERT_EQUAL_INT(0, remove(full_path));
 }
 
 /* Values are chosen off the 0.5e-6 / 0.5e-10 rounding boundary so %f and the fast
@@ -102,6 +105,30 @@ void test_fast_exact_format_with_time(void)
     export_array_of_struct_to_csv_fast(FAST_PATH, &row, sizeof(row), guard_fields, GUARD_FIELD_COUNT, 1U, 0.5f);
     read_file(FAST_PATH, read_buffer, sizeof(read_buffer));
     TEST_ASSERT_EQUAL_STRING("time;f;d;u32;i32;i16;u8;i8\n0.0000000000;1.500000;2.250000;42;-3;1000;200;-5\n", read_buffer);
+}
+
+void test_input_output_export_creates_nested_directories(void)
+{
+    const float input = 1.5f;
+    const float output = 2.5f;
+    const struct csv_field_descriptor_t field = {"value", 0U, CSV_FIELD_FLOAT};
+    const char *path = "helper/input_output/nested/result.csv";
+    export_input_output_arrays_to_csv(path, &input, sizeof(input), &field, 1U,
+                                      &output, sizeof(output), &field, 1U, 1U, 0.0f);
+    read_file(path, read_buffer, sizeof(read_buffer));
+    TEST_ASSERT_EQUAL_STRING("input_value;output_value\n1.500000;2.500000\n", read_buffer);
+}
+
+void test_export_can_overwrite_an_existing_artifact(void)
+{
+    const float first = 1.5f;
+    const float second = 2.5f;
+    const struct csv_field_descriptor_t field = {"value", 0U, CSV_FIELD_FLOAT};
+    const char *path = "helper/overwrite/result.csv";
+    export_array_of_struct_to_csv(path, &first, sizeof(first), &field, 1U, 1U, 0.0f);
+    export_array_of_struct_to_csv(path, &second, sizeof(second), &field, 1U, 1U, 0.0f);
+    read_file(path, read_buffer, sizeof(read_buffer));
+    TEST_ASSERT_EQUAL_STRING("value\n2.500000\n", read_buffer);
 }
 
 #endif // TEST

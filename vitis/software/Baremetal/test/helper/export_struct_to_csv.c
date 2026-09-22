@@ -1,20 +1,76 @@
 #include "export_struct_to_csv.h"
 
+#include <errno.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+
+#ifdef _WIN32
+#include <direct.h>
+#endif
 
 #include "unity.h"
 #include "test_assert_with_exception.h"
 
-/* The output directories (e.g. docs/ceedling_test_output/...) are gitignored and are
-   created by `make ceedling_tests` in docs/ (target ceedling_test_output); the failure
-   message names the CSV path so a missing directory is obvious. */
+const char *test_csv_output_directory(void)
+{
+    const char *directory = getenv("UZ_TEST_DATA_DIR");
+    return (directory != NULL && directory[0] != '\0')
+               ? directory
+               : "build/artifacts/test-data";
+}
+
+/* mkdir is safe when another test process creates the same parent concurrently.
+ * Never remove artifacts here; cleanup is an explicit Ceedling operation. */
+static void create_csv_parent_directories(char *path)
+{
+    for (char *cursor = path + 1; *cursor != '\0'; ++cursor)
+    {
+        if (*cursor != '/')
+        {
+            continue;
+        }
+#ifdef _WIN32
+        if (cursor[-1] == ':')
+        {
+            continue;
+        }
+#endif
+        *cursor = '\0';
+#ifdef _WIN32
+        const int result = _mkdir(path);
+#else
+        const int result = mkdir(path, 0777);
+#endif
+        TEST_ASSERT_TRUE_MESSAGE(result == 0 || errno == EEXIST, path);
+        *cursor = '/';
+    }
+}
+
 static FILE *open_csv_file_for_write(const char *filename)
 {
-    FILE *file = fopen(filename, "w");
-    TEST_ASSERT_NOT_NULL_MESSAGE(file, filename);
+    TEST_ASSERT_NOT_NULL(filename);
+    TEST_ASSERT_TRUE_MESSAGE(filename[0] != '\0' && filename[0] != '/' &&
+                                 strchr(filename, '\\') == NULL && strchr(filename, ':') == NULL &&
+                                 strstr(filename, "..") == NULL,
+                             "CSV filename must be relative to the test-data directory");
+    char path[4096];
+    const int length = snprintf(path, sizeof(path), "%s/%s", test_csv_output_directory(), filename);
+    TEST_ASSERT_TRUE_MESSAGE(length > 0 && (size_t)length < sizeof(path), "CSV output path is too long");
+#ifdef _WIN32
+    for (char *cursor = path; *cursor != '\0'; ++cursor)
+    {
+        if (*cursor == '\\')
+        {
+            *cursor = '/';
+        }
+    }
+#endif
+    create_csv_parent_directories(path);
+    FILE *file = fopen(path, "w");
+    TEST_ASSERT_NOT_NULL_MESSAGE(file, path);
     return file;
 }
 

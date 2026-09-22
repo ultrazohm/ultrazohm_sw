@@ -1,6 +1,7 @@
 #ifdef TEST
 
 #include "unity.h"
+#include "uz_global_configuration.h"
 #include "test_assert_with_exception.h"
 
 #include <stdbool.h>
@@ -35,10 +36,10 @@ TEST_SOURCE_FILE("uz_integrator.c")
 #define CSV_NESTED_FIELD_DESCRIPTOR(struct_type, nested_struct, field_name, field_type) \
     {#field_name, offsetof(struct_type, nested_struct) + offsetof(struct uz_PMSM_t, field_name), field_type}
 
-#define UZ_PMSM_CONTROL_SWMODEL_RESULTS_CSV_PATH "../../../docs/ceedling_test_output/integration_tests/uz_pmsm_control_swmodel_profile.csv"
-#define UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH "../../../docs/ceedling_test_output/integration_tests/uz_pmsm_control_swmodel_profile_config.csv"
-#define UZ_PMSM_CONTROL_SWMODEL_RESULTS_DELAY_CSV_PATH "../../../docs/ceedling_test_output/integration_tests/uz_pmsm_control_swmodel_profile_measurement_delay.csv"
-#define UZ_PMSM_CONTROL_SWMODEL_CONFIG_DELAY_CSV_PATH "../../../docs/ceedling_test_output/integration_tests/uz_pmsm_control_swmodel_profile_measurement_delay_config.csv"
+#define UZ_PMSM_CONTROL_SWMODEL_RESULTS_CSV_PATH "integration_tests/uz_pmsm_control_swmodel_profile.csv"
+#define UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH "integration_tests/uz_pmsm_control_swmodel_profile_config.csv"
+#define UZ_PMSM_CONTROL_SWMODEL_RESULTS_DELAY_CSV_PATH "integration_tests/uz_pmsm_control_swmodel_profile_measurement_delay.csv"
+#define UZ_PMSM_CONTROL_SWMODEL_CONFIG_DELAY_CSV_PATH "integration_tests/uz_pmsm_control_swmodel_profile_measurement_delay_config.csv"
 #define UZ_PMSM_CONTROL_FREQUENCY_HZ 10000U
 #define UZ_PMSM_SWMODEL_OVERSAMPLING_FACTOR 200U
 #define UZ_PMSM_CONTROL_SWMODEL_SIMULATION_TIME_SECONDS 3U

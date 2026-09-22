@@ -55,7 +55,7 @@ To build and edit the documentation on your native system, you need to:
 Makefile reference
 ******************
 
-The following commands are available to call with ``make``.
+The following commands are available to call with ``make`` from ``docs/``.
 Generating the sphinx documentation requires that Doxygen was already generated.
 
 ========================================= =========================================================================
@@ -67,27 +67,66 @@ Command                                   Function
 ``make doxygen``                          builds Doxygen
 ``make docs``                             builds Doxygen and sphinx (what the CI docs steps run)
 ``make livehtml``                         builds sphinx with live preview
-``make ceedling_test_output``             wipes and recreates ``docs/ceedling_test_output/``
-``make ceedling_tests``                   recreates ``docs/ceedling_test_output/``, then runs all ceedling tests
-``make docs_with_ceedling_tests``         full pipeline: test output dirs, ceedling tests, Doxygen, sphinx
 ``make auto_generate_available_machines`` regenerates the PMSM machine catalog (header and inventory CSV)
 ``make check_available_machines``         verifies the committed machine catalog matches the CSV sources (CI check)
 ========================================= =========================================================================
 
+PMSM artifact tooling can also be run directly from the repository root, without building documentation:
+``make pyuzlib-check-generated`` checks the committed inventory and all three generated headers without writing files;
+``make pyuzlib-generate-machines`` regenerates them.
+The ``docs/`` targets ``check_all`` and ``auto_generate_all`` forward to these root targets.
+Checks report stale or missing artifacts and a regeneration command; they do not use shared temporary files.
+
 Docs and ceedling test output
 *****************************
 
-Some unit tests export their results as CSV files to ``docs/ceedling_test_output/`` so the documentation can plot them.
-This directory is gitignored and is created by the ``ceedling_test_output`` Makefile target, which ``make ceedling_tests`` and ``make docs_with_ceedling_tests`` run automatically.
-Running ``ceedling test:all`` directly from ``vitis/software/Baremetal`` requires ``docs/ceedling_test_output/`` to exist; otherwise the CSV-exporting tests fail with an error naming the missing CSV path — run ``make ceedling_test_output`` (or ``make ceedling_tests``) in ``docs/`` first.
-The relationship between the docs build and the tests is deliberately decoupled:
+When ``CEEDLING_GLOBAL_CSV_EXPORT`` is enabled, PMSM model, controller, and integration tests
+export CSV results under ``vitis/software/Baremetal/build/artifacts/test-data/``.
+The switch in ``vitis/software/Baremetal/src/uz/uz_global_configuration.h`` defaults to ``0``;
+ordinary test runs therefore do not generate these CSVs. Numerical assertions still run.
+The C test export helper creates parent directories on demand; no docs setup, Python installation,
+or preparation target is required to run these tests.
+From the repository root:
 
-* ``make docs`` builds Doxygen and sphinx only and never runs ceedling.
-  This is what the CI docs steps run and what is published online.
-* ``make docs_with_ceedling_tests`` is the full pipeline: it recreates ``docs/ceedling_test_output/``, runs all ceedling tests (which regenerate the CSV files), and then builds the docs.
+.. code-block:: bash
 
-Plot directives that read files from ``docs/ceedling_test_output/`` (e.g. in :ref:`uz_pmsm_swmodel`) are currently disabled, because ``make docs`` in CI would fail without the test output (sphinx runs with warnings-as-errors).
-Only re-enable such directives together with switching the CI docs steps to ``make docs_with_ceedling_tests``.
+   make ceedling-test             # C tests only
+   make -C docs docs             # Doxygen and Sphinx only
+   make ceedling-test && make -C docs docs   # explicitly run both
+
+Direct ``ceedling test:all`` and individual targets such as ``ceedling test:test_uz_pmsm_swmodel``
+also work from ``vitis/software/Baremetal``.
+The old docs targets ``ceedling_tests``, ``docs_with_ceedling_tests``, and ``ceedling_test_output``
+have been removed. ``make ceedling_clean`` in ``docs/`` still invokes ``ceedling clobber``;
+this explicitly cleans Ceedling build outputs, including default test artifacts.
+Test execution itself does not delete previous artifacts. Files from tests not run may therefore remain;
+use a fresh output directory when collecting results for publication.
+
+To generate plot data, temporarily set ``CEEDLING_GLOBAL_CSV_EXPORT`` to ``1`` in the header
+and run the tests. Restore it to ``0`` afterwards; do not commit the local export setting.
+To select an isolated output directory, set ``UZ_TEST_DATA_DIR`` to the same absolute path
+for C tests and Python plot readers (the directory override does not enable exports):
+
+.. code-block:: bash
+
+   export UZ_TEST_DATA_DIR="$(mktemp -d)/test-data"
+   make ceedling-test
+   python3 docs/source/software/control/uz_pmsm_swmodel/view_pmsm_model_test_results.py
+
+The plotting scripts require pyuzlib and their plotting dependencies to be installed.
+Their shared path resolver also accepts an explicit ``artifact_dir`` argument in Python.
+Relative overrides are interpreted against each process's working directory; prefer absolute paths.
+Custom directories are not removed by ``ceedling clobber``.
+Plot readers only consume files: they never invoke tests or create missing data, and report missing
+CSV files with the command needed to generate them.
+
+The PMSM test-result plot directives remain disabled in :ref:`uz_pmsm_swmodel`.
+Ordinary docs builds and their CI job do not require these artifacts.
+Before enabling the plots, explicitly order successful test execution before the docs build and
+pass artifacts from the same revision to the plotting step; do not rely on leftover files or parallel CI steps.
+
+This separation applies to the new PMSM exports. Older PRNG tests still write CSVs directly into
+``docs/source/software/library/uz_prng/``; migrating those legacy documentation examples is separate work.
 
 Video
 *****

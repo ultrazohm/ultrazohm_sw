@@ -50,15 +50,9 @@ steps:
    depends_on: [ Vivado_build_tcl ]
    commands:
    - hostname -I
-   - python -m pip install -e ./pyuzlib -r docs/requirements.txt
-   - cd docs
-   - make ceedling_test_output
-   - make check_all
-   - ls
-   - pwd
-   - cd ..
-   - cd vitis/software/Baremetal
-   - ceedling test:all
+   - python -m pip install -e ./pyuzlib
+   - make pyuzlib-check-generated
+   - make ceedling-test
 
  - name: Cppcheck
    image: ultrazohm/ultrazohm_remote_container_new:2f93599

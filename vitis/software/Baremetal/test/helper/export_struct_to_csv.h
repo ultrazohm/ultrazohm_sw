@@ -22,6 +22,11 @@ struct csv_field_descriptor_t
     enum csv_field_type_t type;
 };
 
+/* Host-test artifacts only. Relative to the Baremetal working directory unless
+ * UZ_TEST_DATA_DIR selects another root (use an absolute path across tools).
+ * Export filenames are relative to this root; parents are created on demand. */
+const char *test_csv_output_directory(void);
+
 void export_input_output_arrays_to_csv(const char *filename,
                                       const void *input_array,
                                       size_t input_element_size,

@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ._c_float import as_c_float
+from ._generated_artifacts import check_generated_artifacts
 from ._repo_paths import machine_catalog_default_paths
 from ._repo_paths import repo_root_from
 from .machine_catalog import format_c_float
@@ -264,6 +265,7 @@ def generate_flux_map_header(
             generator_script=generator_script,
         ),
         encoding="utf-8",
+        newline="",
     )
     return entries
 
@@ -332,6 +334,7 @@ def generate_differential_inductance_header(
             generator_script=generator_script,
         ),
         encoding="utf-8",
+        newline="",
     )
     return entries
 
@@ -342,6 +345,10 @@ def build_arg_parser(default_anchor: str | Path) -> argparse.ArgumentParser:
         description="Generate the PMSM flux-map C macro header from the docs datasets.",
     )
     parser.add_argument("--uz-pmsm-dir", type=Path, default=defaults["uz_pmsm_dir"])
+    parser.add_argument(
+        "--check", action="store_true",
+        help="Compare generated content with existing artifacts without writing files.",
+    )
     parser.add_argument(
         "--header-output",
         type=Path,
@@ -359,6 +366,28 @@ def main(argv: list[str] | None = None, *, default_anchor: str | Path | None = N
     anchor = default_anchor or __file__
     parser = build_arg_parser(anchor)
     args = parser.parse_args(argv)
+
+    if args.check:
+        flux_entries = discover_flux_map_catalog(args.uz_pmsm_dir)
+        diffind_entries = discover_differential_inductance_catalog(args.uz_pmsm_dir)
+        return check_generated_artifacts(
+            {
+                args.header_output: render_flux_map_header(
+                    flux_entries, source_root=args.uz_pmsm_dir,
+                    generator_script="pyuzlib.flux_map_catalog",
+                ),
+                args.diffind_header_output: render_differential_inductance_header(
+                    diffind_entries, source_root=args.uz_pmsm_dir,
+                    generator_script="pyuzlib.flux_map_catalog",
+                ),
+            },
+            regenerate_args=[
+                "python3", "-m", "pyuzlib.flux_map_catalog",
+                "--uz-pmsm-dir", str(args.uz_pmsm_dir.resolve()),
+                "--header-output", str(args.header_output.resolve()),
+                "--diffind-header-output", str(args.diffind_header_output.resolve()),
+            ],
+        )
 
     flux_entries = generate_flux_map_header(
         uz_pmsm_dir=args.uz_pmsm_dir,

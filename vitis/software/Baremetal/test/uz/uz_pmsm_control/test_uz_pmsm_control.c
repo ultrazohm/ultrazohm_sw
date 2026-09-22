@@ -1,6 +1,7 @@
 #ifdef TEST
 
 #include "unity.h"
+#include "uz_global_configuration.h"
 #include <stdbool.h>
 #include "uz_pmsm_control.h"
 #include "uz_HAL.h"
@@ -48,8 +49,8 @@ void tearDown(void)
 #define CSV_NESTED_FIELD_DESCRIPTOR(struct_type, nested_struct, field_name, field_type) \
     {#field_name, offsetof(struct_type, nested_struct) + offsetof(struct uz_PMSM_t, field_name), field_type}
 
-#define UZ_PMSM_CONTROL_SWMODEL_RESULTS_CSV_PATH "../../../docs/ceedling_test_output/uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step.csv"
-#define UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH "../../../docs/ceedling_test_output/uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_config.csv"
+#define UZ_PMSM_CONTROL_SWMODEL_RESULTS_CSV_PATH "uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step.csv"
+#define UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH "uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_config.csv"
 
 struct uz_pmsm_control_swmodel_log_t
 {
@@ -446,7 +447,7 @@ void test_uz_pmsm_control_swmodel_iq_step_after_1s_oversampled(void)
     struct uz_pmsm_control_swmodel_config_export_t export_config = {
         .sample_time = controller_config.sample_time,
         .machine = machine_config};
-    export_array_of_struct_to_csv("../../../docs/ceedling_test_output/uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_oversampled.csv",
+    export_array_of_struct_to_csv("uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_oversampled.csv",
                                   sim_inputs,
                                   sizeof(sim_inputs[0]),
                                   pmsm_control_swmodel_log,
@@ -668,7 +669,7 @@ void test_uz_pmsm_control_swmodel_iq_step_multi_speed(void)
     struct uz_pmsm_control_swmodel_config_export_t export_config = {
         .sample_time = controller_config.sample_time,
         .machine = machine_config};
-    export_array_of_struct_to_csv("../../../docs/ceedling_test_output/uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_multi_speed.csv",
+    export_array_of_struct_to_csv("uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_multi_speed.csv",
                                   sim_inputs,
                                   sizeof(sim_inputs[0]),
                                   pmsm_control_swmodel_log,
@@ -802,7 +803,7 @@ void test_uz_pmsm_control_swmodel_iq_step_multi_speed_random_setpoints(void)
     struct uz_pmsm_control_swmodel_config_export_t export_config = {
         .sample_time = controller_config.sample_time,
         .machine = machine_config};
-    export_array_of_struct_to_csv("../../../docs/ceedling_test_output/uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_multi_speed_random_setpoints.csv",
+    export_array_of_struct_to_csv("uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_multi_speed_random_setpoints.csv",
                                   sim_inputs,
                                   sizeof(sim_inputs[0]),
                                   pmsm_control_swmodel_log,

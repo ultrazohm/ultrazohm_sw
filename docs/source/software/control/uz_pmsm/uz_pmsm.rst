@@ -126,9 +126,10 @@ Run the catalog generator once to update both output artifacts:
    PYTHONPATH=pyuzlib/src python3 -m pyuzlib.machine_catalog
 
 If the dataset also contains ``flux_map.csv`` / ``differential_inductances.csv``, regenerate their
-headers too. ``make auto_generate_all`` runs both the scalar catalog and the flux-map /
+headers too. From the repository root, ``make pyuzlib-generate-machines`` runs both the scalar catalog and the flux-map /
 differential-inductance generators in one step (see :ref:`uz_pmsm_flux_map` and
 :ref:`uz_pmsm_differential_inductance`), so prefer it when unsure.
+The existing ``make auto_generate_all`` command in ``docs/`` forwards to this root target.
 
 The scalar catalog generator:
 
@@ -142,13 +143,26 @@ The scalar catalog generator:
 Both output files must be committed to the repository after running.
 All C exports reject non-finite values, values outside the IEEE-754 float32 range, and nonzero values that would underflow to zero. This also prevents positive scalar parameters from becoming zero in the generated machine configuration.
 
-To verify that committed files are still in sync with the CSV sources (``make check_all`` also checks
-the flux-map and differential-inductance headers, and is the target CI runs):
+To verify that committed files are still in sync with the CSV sources:
 
 .. code-block:: bash
 
-   make check_available_machines
-   make check_all                  # scalar catalog + flux-map + differential-inductance headers
+   # from the repository root: all four generated artifacts
+   make pyuzlib-check-generated
+
+   # equivalent existing docs/ entry point (CI uses the root target above)
+   make -C docs check_all
+
+   # individual read-only checks from the repository root
+   PYTHONPATH=pyuzlib/src python3 -m pyuzlib.machine_catalog --check
+   PYTHONPATH=pyuzlib/src python3 -m pyuzlib.flux_map_catalog --check
+
+Checks render the expected content in memory and compare it byte-for-byte with the existing files.
+They do not rewrite artifacts, create temporary output files, or change machine IDs.
+They exit with status 0 when everything matches, or status 1 with filenames, diffs for stale files,
+and a regeneration command when files are stale or missing.
+``--check`` cannot be combined with ``--renumber`` or ``add_machine`` (argument error, status 2).
+The individual ``docs/`` targets ``check_available_machines`` and ``check_flux_maps`` remain available.
 
 .. rubric:: Phase 4 — Use the macro in C code (manual)
 

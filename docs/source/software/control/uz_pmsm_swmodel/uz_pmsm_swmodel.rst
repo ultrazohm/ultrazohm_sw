@@ -15,13 +15,19 @@ Software model of a PMSM for execution on the processor.
 Example to plot test results
 ============================
 
-The following plots are different examples to show the results of a unit test in the documentation.
+The example scripts in this directory can visualize the results of the PMSM model tests.
+Temporarily enable ``CEEDLING_GLOBAL_CSV_EXPORT`` in ``uz_global_configuration.h``
+and run ``make ceedling-test`` from the repository root to generate CSVs under
+``vitis/software/Baremetal/build/artifacts/test-data/``; no docs preparation is needed.
+The scripts read that location by default, or the directory selected by ``UZ_TEST_DATA_DIR``.
+Restore the export switch to its default of ``0`` afterwards; ordinary test runs do not generate CSVs.
+Embedded plots are currently disabled so documentation builds remain independent of test execution.
 
 .. The plot directives below read CSV files that the ceedling tests write to
-   docs/ceedling_test_output/. They are disabled because the CI docs build runs
+   vitis/software/Baremetal/build/artifacts/test-data/. They are disabled because the CI docs build runs
    `make docs` without running ceedling first, and sphinx treats warnings as
-   errors (-W). Only re-enable them together with switching the CI docs steps
-   to `make docs_with_ceedling_tests`, see the howToDocs guide.
+   errors (-W). Only re-enable them with an explicit tests -> artifacts -> docs
+   dependency, using fresh artifacts from the same revision; see the howToDocs guide.
 
 .. .. plot:: software/control/uz_pmsm_swmodel/view_pmsm_model_test_results.py
 ..     :caption: Result of a test

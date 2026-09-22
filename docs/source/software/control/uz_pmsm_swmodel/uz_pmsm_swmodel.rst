@@ -16,11 +16,11 @@ Example to plot test results
 ============================
 
 The example scripts in this directory can visualize the results of the PMSM model tests.
-Temporarily enable ``CEEDLING_GLOBAL_CSV_EXPORT`` in ``uz_global_configuration.h``
-and run ``make ceedling-test`` from the repository root to generate CSVs under
+Run ``ceedling --mixin=config/csv_export.yml test:test_uz_pmsm_swmodel`` from ``vitis/software/Baremetal`` to generate CSVs under
 ``vitis/software/Baremetal/build/artifacts/test-data/``; no docs preparation is needed.
 The scripts read that location by default, or the directory selected by ``UZ_TEST_DATA_DIR``.
-Restore the export switch to its default of ``0`` afterwards; ordinary test runs do not generate CSVs.
+The mixin enables exports without editing the configuration header; ordinary test runs retain ``CEEDLING_GLOBAL_CSV_EXPORT=0`` and do not generate CSVs.
+For a disposable end-to-end check, run ``make pyuzlib-smoke-pmsm-plot`` from the repository root.
 Embedded plots are currently disabled so documentation builds remain independent of test execution.
 
 .. The plot directives below read CSV files that the ceedling tests write to

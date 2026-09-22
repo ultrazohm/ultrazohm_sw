@@ -48,7 +48,7 @@ def test_relative_override_is_relative_to_working_directory(tmp_path, monkeypatc
 
 def test_missing_results_are_actionable_and_do_not_create_directories(tmp_path):
     root = tmp_path / "missing"
-    with pytest.raises(FileNotFoundError, match="make ceedling-test") as error:
+    with pytest.raises(FileNotFoundError, match="--mixin=config/csv_export.yml") as error:
         pmsm_swmodel_result_paths(root)
     assert "uz_pmsm_swmodel_results.csv" in str(error.value)
     assert "uz_pmsm_swmodel_config.csv" in str(error.value)

@@ -91,8 +91,25 @@ From the repository root:
 .. code-block:: bash
 
    make ceedling-test             # C tests only
+   make ceedling-test-with-inport # all C tests with PMSM CSV export enabled
    make -C docs docs             # Doxygen and Sphinx only
    make ceedling-test && make -C docs docs   # explicitly run both
+
+Python validation is separate from the C and documentation builds:
+
+.. code-block:: bash
+
+   python -m pip install -e './pyuzlib[dev]' bokeh
+   make pyuzlib-test
+   make pyuzlib-smoke-pmsm-plot
+
+CI runs these commands in its ``pyuzlib tests`` job, alongside ``make pyuzlib-check-generated``.
+The Bokeh dependency enables the optional Bokeh reader test without installing the full docs stack.
+The smoke test builds only the PMSM model tests with CSV export enabled, checks real CSV columns,
+finite values, and timestamps, and renders the actual Matplotlib docs plot to a PNG without a GUI.
+It uses fresh temporary build and output directories and removes them afterwards; it cannot pass
+using stale artifacts and does not modify the configuration header or ordinary Ceedling build.
+It requires Ceedling and the host C compiler, but neither Sphinx nor Doxygen.
 
 Direct ``ceedling test:all`` and individual targets such as ``ceedling test:test_uz_pmsm_swmodel``
 also work from ``vitis/software/Baremetal``.
@@ -102,15 +119,19 @@ this explicitly cleans Ceedling build outputs, including default test artifacts.
 Test execution itself does not delete previous artifacts. Files from tests not run may therefore remain;
 use a fresh output directory when collecting results for publication.
 
-To generate plot data, temporarily set ``CEEDLING_GLOBAL_CSV_EXPORT`` to ``1`` in the header
-and run the tests. Restore it to ``0`` afterwards; do not commit the local export setting.
+To generate plot data for manual inspection, use the ``config/csv_export.yml`` Ceedling mixin.
+It overrides ``CEEDLING_GLOBAL_CSV_EXPORT`` for compilation and preprocessing and keeps its
+build outputs in ``build/artifacts/csv-export-build/``, separate from ordinary tests.
+No tracked header needs editing, and normal test builds retain the default of ``0``.
+The root target ``make ceedling-test-with-inport`` runs the full suite with this mixin;
+integration-test exports can produce large CSV files.
 To select an isolated output directory, set ``UZ_TEST_DATA_DIR`` to the same absolute path
 for C tests and Python plot readers (the directory override does not enable exports):
 
 .. code-block:: bash
 
    export UZ_TEST_DATA_DIR="$(mktemp -d)/test-data"
-   make ceedling-test
+   (cd vitis/software/Baremetal && ceedling --mixin=config/csv_export.yml test:test_uz_pmsm_swmodel)
    python3 docs/source/software/control/uz_pmsm_swmodel/view_pmsm_model_test_results.py
 
 The plotting scripts require pyuzlib and their plotting dependencies to be installed.

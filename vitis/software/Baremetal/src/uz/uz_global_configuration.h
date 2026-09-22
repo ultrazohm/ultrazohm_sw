@@ -108,7 +108,9 @@
 
 // Configuration defines for the number of used instances for testing with ceedling
 #ifdef TEST
+#ifndef CEEDLING_GLOBAL_CSV_EXPORT
 #define CEEDLING_GLOBAL_CSV_EXPORT 0
+#endif
 
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES 13U
 #define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES 10U

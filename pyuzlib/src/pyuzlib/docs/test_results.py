@@ -31,11 +31,9 @@ def pmsm_swmodel_result_paths(
     if missing:
         raise FileNotFoundError(
             "Missing PMSM test artifacts: " + ", ".join(missing)
-            + ". Enable CEEDLING_GLOBAL_CSV_EXPORT in "
-            "vitis/software/Baremetal/src/uz/uz_global_configuration.h, then run "
-            "'make ceedling-test' from the repository root, or "
-            "'ceedling test:test_uz_pmsm_swmodel' from vitis/software/Baremetal. "
-            "Restore the export switch to 0 afterwards. For a custom directory, "
+            + ". Run 'ceedling --mixin=config/csv_export.yml test:test_uz_pmsm_swmodel' "
+            "from vitis/software/Baremetal to enable CEEDLING_GLOBAL_CSV_EXPORT "
+            "without editing the configuration header. For a custom directory, "
             "use the same absolute UZ_TEST_DATA_DIR for tests and plots."
         )
     return paths

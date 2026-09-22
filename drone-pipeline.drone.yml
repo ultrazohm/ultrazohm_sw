@@ -50,9 +50,17 @@ steps:
    depends_on: [ Vivado_build_tcl ]
    commands:
    - hostname -I
-   - python -m pip install -e ./pyuzlib
-   - make pyuzlib-check-generated
    - make ceedling-test
+
+ - name: pyuzlib tests
+   image: ultrazohm/ultrazohm_remote_container_new:2f93599
+   depends_on: [ Vivado_build_tcl ]
+   commands:
+   # Bokeh exercises the optional docs plot reader without the full docs stack.
+   - python -m pip install -e './pyuzlib[dev]' bokeh
+   - make pyuzlib-check-generated
+   - make pyuzlib-test
+   - make pyuzlib-smoke-pmsm-plot
 
  - name: Cppcheck
    image: ultrazohm/ultrazohm_remote_container_new:2f93599

@@ -18,6 +18,13 @@ Inside the repository, install the package in editable mode:
 
 	python -m pip install -e ./pyuzlib
 
+For development and unit tests, install ``'./pyuzlib[dev]'`` instead; the extra adds pytest and Ruff.
+From the repository root, ``make pyuzlib-test`` runs the Python tests.
+Installing Bokeh additionally enables the optional Bokeh docs reader test.
+``make pyuzlib-smoke-pmsm-plot`` runs a separate end-to-end check using real C exports and a
+headless Matplotlib plot. This command also requires Ceedling and a host C compiler, and uses
+temporary build/output directories without modifying the tracked configuration header.
+
 Public API
 ==========
 

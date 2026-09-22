@@ -98,7 +98,8 @@ This additionally creates a ``preprocess_to_correct_data_format.py`` template in
 
 .. code-block:: bash
 
-   python generate_available_machines.py add_machine my_motor nominal_v1 --with-raw-data
+   # from the repository root
+   python docs/source/software/control/uz_pmsm/generate_available_machines.py add_machine my_motor nominal_v1 --with-raw-data
 
 .. rubric:: Phase 2 — Fill in machine_parameters.csv (manual)
 
@@ -226,8 +227,8 @@ Troubleshooting
 * **The catalog generator fails with** ``Duplicate numeric machine_id ...`` — two ``machine_parameters.csv`` files use the same ``machine_id``; the message suggests the next unused value.
   This typically happens when two motors are added on separate branches and merged.
 * **The catalog generator fails with** ``Invalid PMSM dataset maps ...`` — a canonical ``flux_map.csv`` is not finite, rectangular, or duplicate-free, or a sibling ``differential_inductances.csv`` does not match the same ``operating_point``, ``i_d_A``, and ``i_q_A`` order.
-* **The CI check** ``make check_available_machines`` **fails** — the committed generated files are out of sync with the CSV sources.
-  Run ``make auto_generate_available_machines`` in ``docs/`` and commit **both** ``uz_available_machines_auto_generated.h`` and ``available_machines.csv``.
+* **The CI check** ``make pyuzlib-check-generated`` **fails** — the committed generated files are out of sync with the CSV sources.
+  Run ``make pyuzlib-generate-machines`` from the repository root and commit ``available_machines.csv`` and all three generated headers.
   CI only checks; it never regenerates or commits these files itself.
 * **The catalog generator fails with** ``pyuzlib.PMSMParameters and uz_PMSM_t differ`` — the ``uz_PMSM_t`` struct in ``uz_PMSM_config.h`` was changed without updating the Python model.
   Mirror the change in the ``PMSMParameters`` dataclass (``pyuzlib/src/pyuzlib/pmsm/parameters.py``, same field order), extend ``PMSM_PARAMETER_CONSTRAINTS`` and ``uz_PMSM_config_assert`` consistently, then regenerate the catalog.

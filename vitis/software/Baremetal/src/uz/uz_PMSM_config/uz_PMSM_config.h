@@ -53,9 +53,10 @@ typedef struct uz_PMSM_flux_fitting_parameter_config_t{
  * @brief Asserts only the physical machine-model parameters (R_ph_Ohm, Ld_Henry, Lq_Henry,
  * Psi_PM_Vs, polePairs, J_kg_m_squared, I_max_Ampere).
  *
- * Use this in modules that only evaluate the machine model (e.g. current control, setpoint
- * generation, software model) and do not need the rating/limit envelope. The envelope fields
+ * Used by the PMSM controller and software model to accept the original seven-parameter
+ * configuration without the rating/limit envelope. The envelope fields
  * (I_rated, Torque_*, speed_*, V_dc_nominal_V, I_d/I_q limits) are neither read nor asserted here.
+ * Setpoint generation validates its own subset, which excludes inertia and requires positive PM flux.
  *
  * @param config uz_PMSM_t config struct
  */
@@ -64,6 +65,8 @@ void uz_PMSM_config_assert_model(uz_PMSM_t config);
 /**
  * @brief Asserts all input values, i.e. the physical model parameters (see
  * uz_PMSM_config_assert_model) plus the full rating/limit envelope and its relations.
+ * Use this to validate complete machine catalog entries or manually populated full configurations.
+ * machine_id is not checked; model-only consumers need not supply the rating/limit envelope.
  *
  * @param config uz_PMSM_t config struct
  */

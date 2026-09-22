@@ -41,7 +41,7 @@ static uz_pmsm_swmodel_t *uz_pmsm_swmodel_allocation(void)
 
 uz_pmsm_swmodel_t *uz_pmsm_swmodel_init(struct uz_pmsm_swmodel_config_t config)
 {
-    uz_PMSM_config_assert(config.pmsm_parameters);
+    uz_PMSM_config_assert_model(config.pmsm_parameters);
     uz_assert(config.sample_time > 0.0f);
     uz_assert(config.coulomb_friction_constant >= 0.0f);
     uz_assert(config.friction_coefficient >= 0.0f);

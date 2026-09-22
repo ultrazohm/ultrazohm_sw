@@ -46,9 +46,9 @@ void setUp(void)
     V_DC_Volts = 24.0f;
 }
 
-// Setpoint only needs the physical machine model, not the rating/limit envelope. A config with the
-// envelope fields left at zero must still initialize successfully.
-void test_uz_SetPoint_init_accepts_model_only_config(void){
+// Setpoint generation does not use inertia or the rating/limit envelope.
+void test_uz_SetPoint_init_and_setter_accept_config_without_inertia_or_ratings(void){
+    config.config_PMSM.J_kg_m_squared = 0.0f;
     config.config_PMSM.I_rated_Ampere = 0.0f;
     config.config_PMSM.Torque_rated_Nm = 0.0f;
     config.config_PMSM.Torque_max_Nm = 0.0f;
@@ -61,7 +61,9 @@ void test_uz_SetPoint_init_accepts_model_only_config(void){
     config.config_PMSM.I_d_min_A = 0.0f;
     config.config_PMSM.I_q_max_A = 0.0f;
     config.config_PMSM.I_q_min_A = 0.0f;
-    TEST_ASSERT_PASS_ASSERT(uz_SetPoint_init(config));
+    uz_SetPoint_t *self = uz_SetPoint_init(config);
+    TEST_ASSERT_NOT_NULL(self);
+    TEST_ASSERT_PASS_ASSERT(uz_SetPoint_set_PMSM_config(self, &config.config_PMSM));
 }
 
 void test_uz_SetPoint_init_assert_Rph_negative(void){

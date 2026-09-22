@@ -162,8 +162,10 @@ the flux-map and differential-inductance headers, and is the target CI runs):
 
 The macro expands to a C99 designated initializer with all 20 fields set.
 ``uz_PMSM_config_assert`` validates the physical parameters and the limit relations (e.g. rated below maximum, minimum below maximum) at runtime and fires ``uz_assert`` on violation; ``machine_id`` itself is not checked.
-Modules that only use the physical machine model can call ``uz_PMSM_config_assert_model`` to accept configs without the rating envelope.
-The setpoint module is stricter for ``Psi_PM_Vs`` because FOC setpoint generation divides by this value; ``uz_SetPoint_init`` and ``uz_SetPoint_set_PMSM_config`` require ``Psi_PM_Vs > 0.0f``.
+The PMSM controller and software model call ``uz_PMSM_config_assert_model`` and accept the original seven physical parameters without the rating envelope: ``R_ph_Ohm``, ``Ld_Henry``, ``Lq_Henry``, ``Psi_PM_Vs``, ``polePairs``, ``J_kg_m_squared``, and ``I_max_Ampere``.
+The controller validates its separately supplied setpoint limits and safe operating region independently of the machine catalog ratings.
+Setpoint generation validates only its own required parameters; inertia and the rating envelope are not required.
+It is stricter for ``Psi_PM_Vs`` because FOC setpoint generation divides by this value; ``uz_SetPoint_init`` and ``uz_SetPoint_set_PMSM_config`` require ``Psi_PM_Vs > 0.0f``.
 
 .. _uz_PMSM_config:
 
@@ -190,11 +192,14 @@ Example
   }
 
 A struct can also be filled manually for a machine that is not part of the database.
-In that case every field must be set and must satisfy the constraints listed in the struct documentation above, otherwise ``uz_PMSM_config_assert`` fires.
+When using the full validator ``uz_PMSM_config_assert``, all physical and rating/limit fields must satisfy the constraints listed above; ``machine_id`` is not checked.
+For the controller, software model, or setpoint module, only the parameters required by that consumer need to be supplied as described above; unused fields may remain zero-initialized.
 
-To avoid code duplication a function, which asserts every struct member, is available.
+The full catalog validator and the model-only validator are available separately:
 
 .. doxygenfunction:: uz_PMSM_config_assert
+
+.. doxygenfunction:: uz_PMSM_config_assert_model
 
 Troubleshooting
 ===============

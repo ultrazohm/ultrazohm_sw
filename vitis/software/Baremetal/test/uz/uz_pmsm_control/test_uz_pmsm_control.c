@@ -151,6 +151,23 @@ struct uz_PMSM_t machine_config = {
     .I_q_max_A = 10.0f,
     .I_q_min_A = -10.0f};
 
+void test_uz_pmsm_control_init_accepts_legacy_machine_config(void)
+{
+    struct uz_PMSM_t legacy_machine = {
+        .R_ph_Ohm = 0.51f,
+        .Ld_Henry = 0.002f,
+        .Lq_Henry = 0.002f,
+        .Psi_PM_Vs = 0.042f,
+        .polePairs = 4.0f,
+        .J_kg_m_squared = 0.000108f,
+        .I_max_Ampere = 12.0f};
+
+    TEST_ASSERT_NOT_NULL(uz_pmsm_control_init(pmsm_controller_config, legacy_machine));
+
+    legacy_machine.Ld_Henry = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_pmsm_control_init(pmsm_controller_config, legacy_machine));
+}
+
 void test_uz_pmsm_control_call_init(void)
 {
     uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);

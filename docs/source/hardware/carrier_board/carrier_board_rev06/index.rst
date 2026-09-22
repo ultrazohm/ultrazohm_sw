@@ -11,6 +11,7 @@ Carrier Board Rev06
 
 	overview
 	frontpanel_rev02
+	frontpanel_rev03
 	i2c
 	../carrier_board_rev05/dcplds
 	../carrier_board_rev05/arm_pins

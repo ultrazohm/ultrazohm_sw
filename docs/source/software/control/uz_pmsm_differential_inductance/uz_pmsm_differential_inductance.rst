@@ -74,7 +74,7 @@ They are non-``const`` to match ``uz_array_float_t``.
            .L_qq_H = {.length = UZ_ARRAY_SIZE(L_qq), .data = L_qq}});
 
    uz_3ph_dq_t i_dq_A = {.d = 0.0f, .q = 5.0f};
-   float L_qq = uz_pmsm_differential_inductance_get_L_qq_H(diff_ind, i_dq_A);
+   float L_qq_H = uz_pmsm_differential_inductance_get_L_qq_H(diff_ind, i_dq_A);
 
 Each matrix entry has its own getter because the full 2x2 matrix is rarely needed at once; call only the getters for the quantities you use.
 

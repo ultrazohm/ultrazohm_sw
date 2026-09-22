@@ -96,8 +96,8 @@ Example
         .control_type = FOC,
         .motor_type = SMPMSM,
         .is_field_weakening_enabled = false,
-        .id_ref_Ampere = 0.0f
-        .relative_torque_tolerance = 0.001f;
+        .id_ref_Ampere = 0.0f,
+        .relative_torque_tolerance = 0.001f
      };
   }
 
@@ -113,7 +113,7 @@ Example
 
 .. code-block:: c
   :linenos:
-  :caption: Example function call to init the SpeedController for the SpeedControl. ``config`` according to :ref:`configuration section<uz_SetPoint_config>`
+  :caption: Initialize a SetPoint instance using ``SP_config`` from the :ref:`configuration section <uz_SetPoint_config>`.
   
   int main(void) {
      uz_SetPoint_t* SP_instance = uz_SetPoint_init(SP_config);
@@ -124,7 +124,8 @@ Description
 
 Allocates the memory for the SetPoint instance. 
 Furthermore the input values of the configuration struct are asserted. 
-The setpoint module only requires the physical PMSM model fields, not the full rating envelope, but ``Psi_PM_Vs`` must be greater than zero because FOC setpoint generation divides by it.
+The setpoint module validates ``R_ph_Ohm``, ``Ld_Henry``, ``Lq_Henry``, ``polePairs``, ``I_max_Ampere``, and ``Psi_PM_Vs``; inertia and the rating envelope are not required.
+``Psi_PM_Vs`` must be greater than zero because FOC setpoint generation divides by it.
 
 Functions
 =========

@@ -21,12 +21,12 @@ Inside the repository, install the package in editable mode:
 For development and unit tests, install ``'./pyuzlib[dev]'`` instead; the extra adds pytest and Ruff.
 From the repository root, ``make pyuzlib-test`` runs the Python tests.
 Installing Bokeh additionally enables the optional Bokeh docs reader test.
-``make pyuzlib-smoke-pmsm-plot`` runs a separate end-to-end check using real C exports and a
-headless Matplotlib plot. This command also requires Ceedling and a host C compiler, and uses
-temporary build/output directories without modifying the tracked configuration header.
+``make pyuzlib-smoke-pmsm-plot`` runs a separate end-to-end check using real C exports and a headless Matplotlib plot.
+This command also requires Ceedling and a host C compiler, and uses temporary build/output directories without modifying the tracked configuration header.
 
 Flux-map and differential-inductance CSV readers first resolve relative paths against the current working directory.
-If the file is absent there and pyuzlib lives in a repository checkout, they also try the repository root, discovered by its directory markers rather than a fixed parent depth. Absolute paths are used directly.
+If the file is absent there and pyuzlib lives in a repository checkout, they also try the repository root, discovered by its directory markers rather than a fixed parent depth.
+Absolute paths are used directly.
 Outside a checkout, these readers support absolute and working-directory-relative files; they do not search arbitrary installation directories.
 This does not make the repository-dependent catalog generation commands standalone.
 
@@ -101,11 +101,15 @@ Besides the methods shown above it provides:
 
 * ``update_parameters(**values)`` — update C fields or additional parameters in place.
 * ``get_flux_map(name)`` — access a loaded flux map as a ``FluxMap`` object.
-* ``compare_linear_flux_model(fit_name)`` / ``plot_linear_flux_model_comparison(fit_name)`` — compare a linear fit against the nonlinear flux map.
+* ``compare_linear_flux_model(fit_name="Linear Fit")`` / ``plot_linear_flux_model_comparison(fit_name="Linear Fit")`` — calculate a new linear fit from the selected flux map and compare it against that map.
+  ``fit_name`` is a keyword-only label for the new fit, not the key of a stored result.
 * ``calculate_differential_inductances()`` / ``get_differential_inductances()`` / ``plot_differential_inductances()`` — derive :math:`L_{dd}`, :math:`L_{dq}`, :math:`L_{qd}`, :math:`L_{qq}` from the flux map as a ``DifferentialInductanceMap``.
 * ``export_parameters_csv(path)``, ``export_flux_map_csv(path)``, ``export_differential_inductances_csv(path)`` — write the canonical CSV files.
 
-``calculate_operation_area`` returns an ``OperationArea`` object holding the feasible current region, torque isolines, and the maximum-torque-over-speed data used by the plot helpers.
+``calculate_operation_area`` returns an ``OperationArea`` object containing the sampled dq current grid, torque and voltage values, and the supplied voltage and current limits.
+The grid includes points outside the feasible region; the plot helper draws the current and voltage boundaries and torque contours from these arrays.
+The optional maximum-torque-over-speed data is calculated only when ``speeds_rpm`` is supplied.
+The optimization constrains voltage magnitude and current magnitude; catalog torque limits, speed limits, and individual d/q current limits are not enforced.
 
 A complete runnable example is included in the repository:
 
@@ -125,7 +129,8 @@ The module ``pyuzlib.docs.pmsm`` still provides these helpers for documentation 
 * ``plot_differential_inductances(csv_path)`` for deriving and plotting the differential inductances from a ``flux_map.csv`` file.
 * ``plot_operation_area(machine_parameters_csv_path, ...)`` and ``plot_max_torque_curve(machine_parameters_csv_path, ...)`` for operation-area plots from a ``machine_parameters.csv`` file, as used by the motor dataset pages.
 
-The CSV file is expected to contain the columns ``i_d_A``, ``i_q_A``, ``psi_d_Vs``, and ``psi_q_Vs`` on a regular grid.
+The flux-map helpers expect the columns ``i_d_A``, ``i_q_A``, ``psi_d_Vs``, and ``psi_q_Vs`` on a complete rectangular grid.
+The operation-area helpers read scalar values from ``machine_parameters.csv``.
 
 Example
 =======

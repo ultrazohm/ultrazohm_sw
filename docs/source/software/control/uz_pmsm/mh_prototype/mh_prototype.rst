@@ -4,7 +4,7 @@ mh_prototype
 
 MH prototype machine, part of the :ref:`uz_pmsm` motor database; see there for the file formats and how to add a motor.
 ``flux_map_raw_from_fem.csv`` holds FEM results, which are re-arranged to map the ``flux_map.csv`` format.
-The measured dataset in ``fem_overaged_over_angle/flux_map.csv`` can be plotted directly with :ref:`pyuzlib`.
+The FEM dataset in ``fem_overaged_over_angle/flux_map.csv`` can be plotted directly with :ref:`pyuzlib`.
 
 .. warning::
 
@@ -51,7 +51,7 @@ Coefficients
 ============
 
 .. plot::
-  :caption: Linear flux model compared with measured flux-map data
+  :caption: Linear flux model compared with FEM flux-map data
 
    import pyuzlib
 

@@ -74,7 +74,10 @@ uz_pmsm_swmodel_t* uz_pmsm_swmodel_init(struct uz_pmsm_swmodel_config_t config);
 struct uz_pmsm_swmodel_outputs_t uz_pmsm_swmodel_step(uz_pmsm_swmodel_t *self, struct uz_pmsm_swmodel_inputs_t inputs);
 
 /**
- * @brief Resets the PMSM software model, i.e., sets all internal states to zero
+ * @brief Resets the PMSM software model to its configured initial state.
+ *
+ * Mechanical speed and electrical states reset to zero, except that the d-axis flux
+ * resets to Psi_PM_Vs when flux integration and preload_flux_state are enabled.
  * @param self Pointer to the PMSM software model instance
  */
 void uz_pmsm_swmodel_reset(uz_pmsm_swmodel_t *self);

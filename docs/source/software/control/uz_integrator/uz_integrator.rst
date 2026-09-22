@@ -21,7 +21,9 @@ Calculation is as follows with the output value :math:`y(k)` at time step :math:
 Heun's method
 =============
 
-Heun's method (the explicit trapezoidal rule, a 2nd-order Runge-Kutta method) is more accurate than Euler forward for the same sampling time, because it averages the derivative at the start and at the (predicted) end of the step instead of holding the start-of-step derivative across the whole step.
+Heun's method (the explicit trapezoidal rule, a 2nd-order Runge-Kutta method) has second-order accuracy for smooth dynamics.
+It averages the derivative at the start and at the predicted end of the step.
+The sampling time must still satisfy the method's stability requirements, and accuracy should be checked by reducing the step size.
 For a system :math:`\dot{y}=f(y)` it first forms an Euler predictor and then corrects with the trapezoidal average:
 
 .. math::
@@ -41,4 +43,3 @@ Reference
 .. doxygenfunction:: uz_integrator_eulerforward
 
 .. doxygenfunction:: uz_integrator_heun
-

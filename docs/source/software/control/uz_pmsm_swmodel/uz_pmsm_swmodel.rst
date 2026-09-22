@@ -16,18 +16,15 @@ Example to plot test results
 ============================
 
 The example scripts in this directory can visualize the results of the PMSM model tests.
-Run ``ceedling --mixin=config/csv_export.yml test:test_uz_pmsm_swmodel`` from ``vitis/software/Baremetal`` to generate CSVs under
-``vitis/software/Baremetal/build/artifacts/test-data/``; no docs preparation is needed.
+Run ``ceedling --mixin=config/csv_export.yml test:test_uz_pmsm_swmodel`` from ``vitis/software/Baremetal`` to generate CSVs under ``vitis/software/Baremetal/build/artifacts/test-data/``; no docs preparation is needed.
 The scripts read that location by default, or the directory selected by ``UZ_TEST_DATA_DIR``.
 The mixin enables exports without editing the configuration header; ordinary test runs retain ``CEEDLING_GLOBAL_CSV_EXPORT=0`` and do not generate CSVs.
 For a disposable end-to-end check, run ``make pyuzlib-smoke-pmsm-plot`` from the repository root.
 Embedded plots are currently disabled so documentation builds remain independent of test execution.
 
-.. The plot directives below read CSV files that the ceedling tests write to
-   vitis/software/Baremetal/build/artifacts/test-data/. They are disabled because the CI docs build runs
-   `make docs` without running ceedling first, and sphinx treats warnings as
-   errors (-W). Only re-enable them with an explicit tests -> artifacts -> docs
-   dependency, using fresh artifacts from the same revision; see the howToDocs guide.
+.. The plot directives below read CSV files that the ceedling tests write to vitis/software/Baremetal/build/artifacts/test-data/.
+   They are disabled because the CI docs build runs `make docs` without running ceedling first, and sphinx treats warnings as errors (-W).
+   Only re-enable them with an explicit tests -> artifacts -> docs dependency, using fresh artifacts from the same revision; see the howToDocs guide.
 
 .. .. plot:: software/control/uz_pmsm_swmodel/view_pmsm_model_test_results.py
 ..     :caption: Result of a test
@@ -63,8 +60,7 @@ with flux linkages
 
     \psi_d = L_d i_d + \psi_f, \qquad \psi_q = L_q i_q.
 
-These are the steady-state form of the standard PMSM dq voltage equations
-(:math:`\dot{i}_d=\dot{i}_q=0`).
+These are the steady-state form of the standard PMSM dq voltage equations (:math:`\dot{i}_d=\dot{i}_q=0`).
 For a short circuit at constant speed, set
 
 .. math::
@@ -109,20 +105,25 @@ The model integrates the dq electrical ODE with a selectable method, set via the
 * ``uz_pmsm_swmodel_euler_forward`` -- explicit Euler (1st order, default).
 * ``uz_pmsm_swmodel_heun`` -- Heun's method (explicit trapezoidal rule, 2nd order), see :ref:`uz_integrator <uz_integrator>` (``Heun's method``).
 
-Why oversampling produces smooth *and* accurate output
-------------------------------------------------------
+Choosing a sample time
+----------------------
 
-When the model is driven from a controller, the controller input (the applied voltage :math:`\boldsymbol{v}_{dq}` and the speed :math:`\omega`) is held constant between control updates (zero-order hold).
-"Smooth" output is then simply a matter of **output-point density**: the model is stepped many times (oversampled) per control period, so the plotted current trajectory is sampled finely while the input stays constant.
+Each call to ``uz_pmsm_swmodel_step`` advances the model by the configured ``sample_time``; the model does not perform internal oversampling or adjust the step size automatically.
+To oversample a controller, call the model multiple times per control period and hold the applied voltage constant between control updates (zero-order hold).
+When mechanical simulation is disabled, the supplied speed can also be held constant between control updates.
+When mechanical simulation is enabled, speed is an internal state and evolves at every model step.
+Recording each substep gives a denser output trajectory, but smooth plots alone do not establish numerical accuracy.
 
 A common question is whether forward Euler is even valid here, since within one control period the current changes, which changes the flux :math:`\psi_d = L_d i_d + \psi_{pm},\; \psi_q = L_q i_q`, which changes the derivative, and so on.
 Forward Euler does **not** ignore this coupling -- it resolves it *across* substeps: every oversampling substep recomputes :math:`\psi(i)` from the current state and forms a fresh derivative, so the next substep already sees the updated flux.
 What forward Euler approximates is only the variation *within* a single substep: it freezes the start-of-substep derivative and applies it across the whole substep.
-Its local truncation error is :math:`\mathcal{O}(T_s^2\,\ddot{y})`, so a small substep :math:`T_s` (i.e. a high oversampling factor relative to the electrical time constant :math:`L/R`) drives that residual to zero.
-That is why fine-step Euler is both accurate and smooth.
+For smooth dynamics, its local truncation error is :math:`\mathcal{O}(T_s^2)` and its global error is first order in :math:`T_s`.
+The required step size depends on the electrical time constants, speed-dependent dq coupling, and any simulated mechanical dynamics.
+Choose a step that satisfies the method's stability requirements and check convergence by reducing ``sample_time`` while keeping the simulated input timing unchanged.
 
 Heun's method attacks the within-step approximation directly: it evaluates the derivative at the start **and** at the Euler-predicted end of the step (re-evaluating :math:`\psi(i)` at the predicted current) and averages the two.
-It therefore captures the within-step current/flux change to 2nd order, achieving comparable accuracy at a much larger step -- i.e. with much less oversampling.
+For smooth dynamics, it has second-order global accuracy and may achieve the same accuracy with fewer substeps.
+It is still an explicit method with stability limits, so a larger step must be checked for the machine parameters and operating conditions in use.
 
 Integrator state: current or flux
 =================================
@@ -134,7 +135,8 @@ The ``integrator_state`` field of :c:struct:`uz_pmsm_swmodel_config_t` selects w
   This matches the FPGA reference :ref:`uz_pmsmModel`.
 
 Both share the voltage balance :math:`e_d = v_d - R_s i_d + \omega_e \psi_q`, :math:`e_q = v_q - R_s i_q - \omega_e \psi_d`; the current formulation integrates :math:`e/L`, the flux formulation integrates :math:`e`.
-For a linear machine (constant :math:`L_d, L_q`) the two are equivalent and produce the same trajectory up to floating-point rounding; the flux formulation is the basis for a future nonlinear flux-map machine where :math:`\psi(i)` is a lookup.
+For a linear machine (constant :math:`L_d, L_q`) and equivalent initial conditions, the two formulations produce the same trajectory up to floating-point rounding.
+Both formulations currently use the scalar inductances and permanent-magnet flux linkage; selecting flux integration does not enable nonlinear flux-map lookups.
 
 For the flux formulation the reset value of the d-axis flux state matters, because the derived current is :math:`i_d = (\psi_d - \psi_f)/L_d`.
 By default the integrator state resets to zero, which starts the machine at :math:`i_d = -\psi_f/L_d`.

@@ -5,7 +5,9 @@ uz_pmsm_flux_map
 ================
 
 ``uz_pmsm_flux_map`` loads a nonlinear PMSM flux map (:math:`\psi_d(i_d,i_q)` and :math:`\psi_q(i_d,i_q)`) into two :ref:`uz_LUT_2D` instances and samples both flux linkages at a dq current operating point.
-The flux-map data is generated **at compile time** from the :ref:`uz_pmsm` ``flux_map.csv`` datasets into a macro header, so only the maps you actually use end up in the ``.elf``.
+The Python generator converts the :ref:`uz_pmsm` ``flux_map.csv`` datasets into a macro header in an explicit generation step before compiling the firmware.
+The generated header is committed to the repository, and compilation uses this header without reading the CSV files.
+Only maps whose macros are expanded into arrays allocate storage in the firmware.
 
 Generated macro header
 ======================
@@ -24,8 +26,8 @@ Regenerate and verify the committed header the same way as the machine catalog:
 .. code-block:: bash
 
    # from docs/
-   make auto_generate_flux_maps    # regenerate and commit the header
-   make check_flux_maps            # CI check: committed header matches the CSV sources
+   make auto_generate_flux_maps    # regenerate both flux-map and differential-inductance headers
+   make check_flux_maps            # check both committed headers against the CSV sources
 
 Instance counts
 ===============

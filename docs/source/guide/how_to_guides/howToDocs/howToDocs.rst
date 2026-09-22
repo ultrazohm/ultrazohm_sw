@@ -82,6 +82,7 @@ Docs and ceedling test output
 
 When ``CEEDLING_GLOBAL_CSV_EXPORT`` is enabled, PMSM model, controller, and integration tests
 export CSV results under ``vitis/software/Baremetal/build/artifacts/test-data/``.
+Each controller test writes its own matching configuration CSV: a result named``<stem>.csv`` is paired with ``<stem>_config.csv`` in the same directory.
 The switch in ``vitis/software/Baremetal/src/uz/uz_global_configuration.h`` defaults to ``0``;
 ordinary test runs therefore do not generate these CSVs. Numerical assertions still run.
 The C test export helper creates parent directories on demand; no docs setup, Python installation,

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import csv
-import math
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -11,6 +10,7 @@ import numpy as np
 import pandas as pd
 
 from ._repo_paths import machine_catalog_default_paths
+from ._c_float import as_c_float
 from ._repo_paths import repo_root_from
 from .pmsm.differential_inductance import CANONICAL_DIFFERENTIAL_INDUCTANCE_COLUMNS
 from .pmsm.flux_map import FluxMap
@@ -81,9 +81,16 @@ def normalize_machine_identifier(value: str) -> str:
 
 
 def format_c_float(value: float) -> str:
-    if not math.isfinite(value):
-        raise ValueError(f"Cannot render non-finite value {value!r} as C float")
+    converted = as_c_float(value)
     text = format(value, ".15g")
+    # Preserve existing output where possible, but do not let decimal formatting
+    # change the validated binary32 value (notably near rounding boundaries).
+    try:
+        needs_more_digits = as_c_float(float(text)) != converted
+    except ValueError:
+        needs_more_digits = True
+    if needs_more_digits:
+        text = format(value, ".17g")
     if "e" not in text.lower() and "." not in text:
         text = f"{text}.0"
     return f"{text}f"

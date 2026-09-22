@@ -140,6 +140,7 @@ The scalar catalog generator:
 6. Writes ``uz_available_machines_auto_generated.h`` — C designated-initializer macros, one per motor dataset.
 
 Both output files must be committed to the repository after running.
+All C exports reject non-finite values, values outside the IEEE-754 float32 range, and nonzero values that would underflow to zero. This also prevents positive scalar parameters from becoming zero in the generated machine configuration.
 
 To verify that committed files are still in sync with the CSV sources (``make check_all`` also checks
 the flux-map and differential-inductance headers, and is the target CI runs):
@@ -302,6 +303,12 @@ Nonlinear flux map
 ``flux_map.csv`` is a long-form table with one row per support point.
 It represents a complete regular grid and is directly compatible with :ref:`uz_LUT_2D`.
 
+C export requires at least two breakpoints per axis, strictly increasing even after
+conversion to float32, and exactly one grid value per current pair for every exported
+quantity. The same requirements apply to differential-inductance maps.
+The Python analysis importers can still load grids or value ranges that are unsuitable
+for C export; the additional restrictions are checked by the header generators.
+
 The canonical synthetic example from ``dummy_motor/nominal_v1/flux_map.csv`` is:
 
 .. csv-table:: Example ``flux_map.csv``
@@ -355,6 +362,13 @@ The canonical synthetic example from ``dummy_motor/nominal_v1/differential_induc
 .. csv-table:: Example ``differential_inductances.csv``
    :file: dummy_motor/nominal_v1/differential_inductances.csv
    :header-rows: 1
+
+The Python tests compare each committed differential-inductance dataset with derivatives
+recalculated from its sibling ``flux_map.csv`` (second-order edge differences where the
+grid permits). Regenerate the derived CSV when changing the flux data.
+This numerical check complements ``make check_all``, which checks generated headers against
+the committed CSVs. Run ``python -m pytest pyuzlib/tests`` from the repository root;
+the tests also compile generated declarations using ``cc`` (or the command set in ``CC``).
 
 The four inductances are the entries of the differential flux linkage matrix:
 

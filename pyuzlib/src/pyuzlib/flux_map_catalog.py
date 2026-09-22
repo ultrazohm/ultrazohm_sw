@@ -4,6 +4,7 @@ import argparse
 from dataclasses import dataclass
 from pathlib import Path
 
+from ._c_float import as_c_float
 from ._repo_paths import machine_catalog_default_paths
 from ._repo_paths import repo_root_from
 from .machine_catalog import format_c_float
@@ -37,6 +38,40 @@ class DifferentialInductanceCatalogEntry:
     L_dq_H: tuple[float, ...]
     L_qd_H: tuple[float, ...]
     L_qq_H: tuple[float, ...]
+
+
+def _validate_c_grid(entry: FluxMapCatalogEntry | DifferentialInductanceCatalogEntry) -> None:
+    """Validate the shape and binary32 data consumed by uz_LUT_2D."""
+    if isinstance(entry, FluxMapCatalogEntry):
+        source = entry.flux_map_csv
+        grid_fields = ("psi_d_Vs", "psi_q_Vs")
+    else:
+        source = entry.differential_inductances_csv
+        grid_fields = ("L_dd_H", "L_dq_H", "L_qd_H", "L_qq_H")
+
+    for axis in ("i_d_breakpoints_A", "i_q_breakpoints_A"):
+        breakpoints = getattr(entry, axis)
+        if len(breakpoints) < 2:
+            raise ValueError(f"{source}: {axis} needs at least two breakpoints for C LUT export")
+        try:
+            converted = tuple(as_c_float(value) for value in breakpoints)
+        except ValueError as exc:
+            raise ValueError(f"{source}: {axis}: {exc}") from exc
+        if any(right <= left for left, right in zip(converted, converted[1:])):
+            raise ValueError(f"{source}: {axis} must be strictly increasing after C float conversion")
+
+    grid_length = len(entry.i_d_breakpoints_A) * len(entry.i_q_breakpoints_A)
+    if grid_length > 0xFFFFFFFF:
+        raise ValueError(f"{source}: grid length exceeds the C LUT uint32_t capacity")
+    for name in grid_fields:
+        values = getattr(entry, name)
+        if len(values) != grid_length:
+            raise ValueError(f"{source}: {name} has {len(values)} values; expected {grid_length}")
+        for index, value in enumerate(values):
+            try:
+                as_c_float(value)
+            except ValueError as exc:
+                raise ValueError(f"{source}: {name}[{index}]: {exc}") from exc
 
 
 def flux_map_catalog_default_paths(anchor: str | Path) -> dict[str, Path]:
@@ -98,6 +133,8 @@ def discover_flux_map_catalog(uz_pmsm_dir: str | Path) -> list[FluxMapCatalogEnt
 
     if not entries:
         raise ValueError(f"No flux_map.csv files found below {uz_pmsm_dir}")
+    for entry in entries:
+        _validate_c_grid(entry)
     return entries
 
 
@@ -147,6 +184,8 @@ def discover_differential_inductance_catalog(
 
     if not entries:
         raise ValueError(f"No differential_inductances.csv files found below {uz_pmsm_dir}")
+    for entry in entries:
+        _validate_c_grid(entry)
     return entries
 
 
@@ -188,6 +227,7 @@ def render_flux_map_header(
     ]
 
     for entry in entries:
+        _validate_c_grid(entry)
         n_id = len(entry.i_d_breakpoints_A)
         n_iq = len(entry.i_q_breakpoints_A)
         prefix = f"UZ_FLUXMAP_{entry.catalog_id}"
@@ -253,6 +293,7 @@ def render_differential_inductance_header(
     ]
 
     for entry in entries:
+        _validate_c_grid(entry)
         n_id = len(entry.i_d_breakpoints_A)
         n_iq = len(entry.i_q_breakpoints_A)
         prefix = f"UZ_DIFFIND_{entry.catalog_id}"

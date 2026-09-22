@@ -1,18 +1,16 @@
 from __future__ import annotations
 
 import csv
-import math
 from collections.abc import Callable
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, field, fields, replace
 from pathlib import Path
 from typing import ClassVar
 
 import pandas as pd
 
-ParameterValue = float | int | str
+from .._c_float import as_c_float
 
-# Largest value representable in the single-precision C struct fields.
-FLOAT32_MAX = 3.4028235e38
+ParameterValue = float | int | str
 
 
 @dataclass(frozen=True)
@@ -156,6 +154,24 @@ class PMSMParameters:
                 f"{invalid_type_values}"
             )
 
+        # The runtime asserts see binary32 values, not Python doubles. Relations
+        # such as a strict min/max bound must still hold after conversion.
+        converted = replace(self, **{
+            field_spec.name: as_c_float(float(getattr(self, field_spec.name)))
+            for field_spec in self.C_PARAMETER_FIELDS
+            if field_spec.ctype == "float"
+        })
+        invalid_converted = [
+            constraint.name
+            for constraint in PMSM_PARAMETER_CONSTRAINTS
+            if constraint.check is not None and not constraint.check(converted)
+        ]
+        if invalid_converted:
+            raise ValueError(
+                "Invalid PMSM parameters after C float conversion: "
+                f"{invalid_converted}"
+            )
+
     @staticmethod
     def _parse_additional_value(value: object) -> ParameterValue:
         try:
@@ -179,11 +195,15 @@ class PMSMParameters:
     def _is_valid_c_value(value: object, ctype: str) -> bool:
         try:
             parsed_value = PMSMParameters._parse_c_value(value, ctype)
-        except (TypeError, ValueError):
+        except (TypeError, ValueError, OverflowError):
             return False
         if ctype == "uint32_t":
             return 0 <= parsed_value <= 0xFFFFFFFF
-        return math.isfinite(parsed_value) and abs(parsed_value) <= FLOAT32_MAX
+        try:
+            as_c_float(parsed_value)
+        except ValueError:
+            return False
+        return True
 
     @staticmethod
     def _read_key_value_csv(csv_path: Path) -> dict[str, str]:

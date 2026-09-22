@@ -846,6 +846,36 @@ def test_machine_catalog_format_c_float_rejects_non_finite_values():
         machine_catalog.format_c_float(float("nan"))
 
 
+@pytest.mark.parametrize("value", [1e39, -1e39, 3.4028235e38, 1e-50, -1e-50])
+def test_machine_catalog_format_c_float_rejects_overflow_and_underflow(value):
+    with pytest.raises(ValueError, match="range|underflows"):
+        machine_catalog.format_c_float(value)
+
+
+@pytest.mark.parametrize("value", [
+    0.0, -0.0, float(np.finfo(np.float32).max),
+    -float(np.finfo(np.float32).max), float.fromhex("0x1p-149"),
+    np.nextafter(1.0 + 2.0**-24, np.inf),
+])
+def test_machine_catalog_float_literal_preserves_binary32_value(value):
+    literal = machine_catalog.format_c_float(value)
+    assert literal.endswith("f")
+    assert np.float32(float(literal[:-1])).tobytes() == np.float32(value).tobytes()
+
+
+@pytest.mark.parametrize("field", [
+    "R_ph_Ohm", "Ld_Henry", "Lq_Henry", "J_kg_m_squared",
+    "I_rated_Ampere", "Torque_rated_Nm", "speed_rated_rpm", "V_dc_nominal_V",
+])
+def test_positive_parameters_cannot_underflow_to_zero(tmp_path, field):
+    csv_path = tmp_path / "machine_parameters.csv"
+    csv_path.write_text(_VALID_MACHINE_CSV, encoding="utf-8")
+    parameters = PMSMParameters.from_csv(csv_path)
+    parameters.update(**{field: 1e-50})
+    with pytest.raises(ValueError, match=field):
+        parameters.to_c_dict()
+
+
 def test_parameter_constraints_cover_every_c_parameter_field():
     constraint_names = {entry.name for entry in pyuzlib.pmsm.PMSM_PARAMETER_CONSTRAINTS}
     assert set(PMSMParameters.C_PARAMETER_NAMES) <= constraint_names

@@ -45,6 +45,8 @@ uz_pmsm_swmodel_t *uz_pmsm_swmodel_init(struct uz_pmsm_swmodel_config_t config)
     uz_assert(config.sample_time > 0.0f);
     uz_assert(config.coulomb_friction_constant >= 0.0f);
     uz_assert(config.friction_coefficient >= 0.0f);
+    uz_assert(config.integrator_state == uz_pmsm_swmodel_integrator_state_current || config.integrator_state == uz_pmsm_swmodel_integrator_state_flux);
+    uz_assert(config.integration_method == uz_pmsm_swmodel_euler_forward || config.integration_method == uz_pmsm_swmodel_heun);
     uz_pmsm_swmodel_t *self = uz_pmsm_swmodel_allocation();
     self->pmsm_parameters = config.pmsm_parameters;
     self->sample_time = config.sample_time;

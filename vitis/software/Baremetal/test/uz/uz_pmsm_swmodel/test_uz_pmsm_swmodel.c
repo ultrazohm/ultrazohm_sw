@@ -7,6 +7,7 @@
 #include "uz_struct_helper.h"
 #include "uz_integrator.h"
 #include "uz_Transformation.h"
+#include <math.h>
 #include <stddef.h>
 #include <stdio.h>
 
@@ -414,6 +415,50 @@ static struct uz_pmsm_swmodel_config_t base_swmodel_config(void)
             .I_q_max_A = 10.0f,
             .I_q_min_A = -10.0f}};
     return config;
+}
+
+void test_uz_pmsm_swmodel_standstill_rl_transient_heun_more_accurate_than_euler(void)
+{
+    struct uz_pmsm_swmodel_config_t config = base_swmodel_config();
+    config.pmsm_parameters.R_ph_Ohm = 2.0f;
+    config.pmsm_parameters.Ld_Henry = 0.02f;
+    config.pmsm_parameters.Lq_Henry = 0.04f;
+    config.sample_time = 0.001f; // h/tau_d = 0.1, h/tau_q = 0.05: stable but measurable Euler error.
+    config.simulate_mechanical_system = false;
+    config.integrator_state = uz_pmsm_swmodel_integrator_state_current;
+    config.integration_method = uz_pmsm_swmodel_euler_forward;
+    uz_pmsm_swmodel_t *euler_model = uz_pmsm_swmodel_init(config);
+    config.integration_method = uz_pmsm_swmodel_heun;
+    uz_pmsm_swmodel_t *heun_model = uz_pmsm_swmodel_init(config);
+
+    const struct uz_pmsm_swmodel_inputs_t inputs = {
+        .v_dq_V = {.d = -4.0f, .q = 6.0f, .zero = 0.0f},
+        .omega_mech_1_s = 0.0f,
+        .load_torque = 0.0f};
+    const float resistance = config.pmsm_parameters.R_ph_Ohm;
+    const float final_i_d_A = inputs.v_dq_V.d / resistance;
+    const float final_i_q_A = inputs.v_dq_V.q / resistance;
+
+    // At standstill each axis is an independent RL circuit starting at zero current:
+    // i(t) = (V/R) * (1 - exp(-R*t/L)). Check the transient through 2*tau_d = tau_q,
+    // using post-step timestamps because the model returns the updated currents.
+    for (uint32_t step = 1U; step <= 20U; step++)
+    {
+        const float time_s = (float)step * config.sample_time;
+        const float expected_d_A = final_i_d_A * (1.0f - expf(-resistance * time_s / config.pmsm_parameters.Ld_Henry));
+        const float expected_q_A = final_i_q_A * (1.0f - expf(-resistance * time_s / config.pmsm_parameters.Lq_Henry));
+        const struct uz_pmsm_swmodel_outputs_t euler = uz_pmsm_swmodel_step(euler_model, inputs);
+        const struct uz_pmsm_swmodel_outputs_t heun = uz_pmsm_swmodel_step(heun_model, inputs);
+
+        // Absolute error budgets relative to the steady-state current: 2.5% for Euler,
+        // 0.1% for Heun. Both axes must also show at least a tenfold improvement.
+        TEST_ASSERT_FLOAT_WITHIN(0.025f * fabsf(final_i_d_A), expected_d_A, euler.i_dq_A.d);
+        TEST_ASSERT_FLOAT_WITHIN(0.025f * fabsf(final_i_q_A), expected_q_A, euler.i_dq_A.q);
+        TEST_ASSERT_FLOAT_WITHIN(0.001f * fabsf(final_i_d_A), expected_d_A, heun.i_dq_A.d);
+        TEST_ASSERT_FLOAT_WITHIN(0.001f * fabsf(final_i_q_A), expected_q_A, heun.i_dq_A.q);
+        TEST_ASSERT_TRUE(fabsf(heun.i_dq_A.d - expected_d_A) < 0.1f * fabsf(euler.i_dq_A.d - expected_d_A));
+        TEST_ASSERT_TRUE(fabsf(heun.i_dq_A.q - expected_q_A) < 0.1f * fabsf(euler.i_dq_A.q - expected_q_A));
+    }
 }
 
 void test_uz_pmsm_swmodel_init_asserts_negative_sample_time(void)

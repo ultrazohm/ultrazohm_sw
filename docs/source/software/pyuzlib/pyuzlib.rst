@@ -25,6 +25,11 @@ Installing Bokeh additionally enables the optional Bokeh docs reader test.
 headless Matplotlib plot. This command also requires Ceedling and a host C compiler, and uses
 temporary build/output directories without modifying the tracked configuration header.
 
+Flux-map and differential-inductance CSV readers first resolve relative paths against the current working directory.
+If the file is absent there and pyuzlib lives in a repository checkout, they also try the repository root, discovered by its directory markers rather than a fixed parent depth. Absolute paths are used directly.
+Outside a checkout, these readers support absolute and working-directory-relative files; they do not search arbitrary installation directories.
+This does not make the repository-dependent catalog generation commands standalone.
+
 Public API
 ==========
 

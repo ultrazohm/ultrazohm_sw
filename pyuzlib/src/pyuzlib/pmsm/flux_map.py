@@ -6,6 +6,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from .._repo_paths import repo_root_from
+
 
 CANONICAL_FLUX_MAP_COLUMNS = ("i_d_A", "i_q_A", "psi_d_Vs", "psi_q_Vs")
 DEFAULT_FLUX_MAP_COLUMNS = {
@@ -17,16 +19,25 @@ DEFAULT_FLUX_MAP_COLUMNS = {
 
 
 def resolve_csv_path(csv_path: str | Path) -> Path:
-    csv_path = Path(csv_path)
-    candidates = [
-        csv_path,
-        Path.cwd() / csv_path,
-        Path(__file__).resolve().parents[4] / csv_path,
-    ]
+    """Resolve a file from the caller's cwd, then from this checkout if available.
 
-    for candidate in candidates:
-        if candidate.exists():
-            return candidate.resolve()
+    Absolute paths are used as given. Installed packages outside a checkout still
+    support absolute and cwd-relative files, without guessing a repository root.
+    """
+    csv_path = Path(csv_path)
+    if csv_path.is_file():
+        return csv_path.resolve()
+
+    if not csv_path.is_absolute():
+        try:
+            repo_root = repo_root_from(__file__)
+        except ValueError:
+            # A normal package installation need not live in the source checkout.
+            pass
+        else:
+            candidate = repo_root / csv_path
+            if candidate.is_file():
+                return candidate.resolve()
 
     raise FileNotFoundError(f"Could not locate CSV file: {csv_path}")
 

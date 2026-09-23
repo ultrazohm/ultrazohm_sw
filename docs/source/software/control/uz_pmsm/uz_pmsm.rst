@@ -17,7 +17,11 @@ The data is split into:
 
 The Python companion library :ref:`pyuzlib` reads, validates, plots, and exports these files and generates the C machine catalog.
 The files used by code generation and plots should use the canonical names and ordering described in the :ref:`file format reference <uz_pmsm_file_formats>`.
-The repository also contains measured and FEM source CSV examples with older column names; these are useful as import examples, but they are not canonical dataset directories.
+The repository contains CSV examples with column names that do not match the data format but imported using the ``pyuzlib`` library to fit the standard.
+
+The intended workflow is to add raw flux-map data obtained by FEM or measurement, convert it to the canonical CSV format, and then generate the C macros for use in the controller and software model.
+How are differential inductances generated? Only using toolchain, or?
+
 
 Quick start: use an existing motor in C
 =======================================

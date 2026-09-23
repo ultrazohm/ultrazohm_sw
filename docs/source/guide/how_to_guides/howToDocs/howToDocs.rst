@@ -90,7 +90,7 @@ From the repository root:
 .. code-block:: bash
 
    make ceedling-test             # C tests only
-   make ceedling-test-with-inport # all C tests with PMSM CSV export enabled
+   make ceedling-test-with-export # all C tests with PMSM CSV export enabled
    make -C docs docs             # Doxygen and Sphinx only
    make ceedling-test && make -C docs docs   # explicitly run both
 
@@ -117,7 +117,7 @@ Files from tests not run may therefore remain; use a fresh output directory when
 To generate plot data for manual inspection, use the ``config/csv_export.yml`` Ceedling mixin.
 It overrides ``CEEDLING_GLOBAL_CSV_EXPORT`` for compilation and preprocessing and keeps its build outputs in ``build/artifacts/csv-export-build/``, separate from ordinary tests.
 No tracked header needs editing, and normal test builds retain the default of ``0``.
-The root target ``make ceedling-test-with-inport`` runs the full suite with this mixin; integration-test exports can produce large CSV files.
+The root target ``make ceedling-test-with-export`` runs the full suite with this mixin; integration-test exports can produce large CSV files.
 To select an isolated output directory, set ``UZ_TEST_DATA_DIR`` to the same absolute path for C tests and Python plot readers (the directory override does not enable exports):
 
 .. code-block:: bash

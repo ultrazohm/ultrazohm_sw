@@ -141,27 +141,27 @@
 #define UZ_DIFFIND_DUMMY_MOTOR_NOMINAL_V1_I_Q_BREAKPOINTS_A { -10.0f, 0.0f, 10.0f }
 #define UZ_DIFFIND_DUMMY_MOTOR_NOMINAL_V1_L_DD_H \
     { \
-        0.002f, 0.002f, 0.002f, \
-        0.002f, 0.002f, 0.002f, \
-        0.002f, 0.002f, 0.002f, \
+        0.002f, 0.002f, 0.0019999999999999f, \
+        0.002f, 0.002f, 0.0019999999999999f, \
+        0.002f, 0.002f, 0.0019999999999999f, \
     }
 #define UZ_DIFFIND_DUMMY_MOTOR_NOMINAL_V1_L_DQ_H \
     { \
+        6.50521303491303e-19f, 8.67361737988404e-19f, 1.73472347597681e-18f, \
         0.0f, 0.0f, 0.0f, \
-        0.0f, 0.0f, 0.0f, \
-        0.0f, 0.0f, 0.0f, \
+        -4.33680868994202e-19f, -8.67361737988404e-19f, -1.73472347597681e-18f, \
     }
 #define UZ_DIFFIND_DUMMY_MOTOR_NOMINAL_V1_L_QD_H \
     { \
+        -4.33680868994202e-19f, 0.0f, 8.67361737988404e-19f, \
         0.0f, 0.0f, 0.0f, \
-        0.0f, 0.0f, 0.0f, \
-        0.0f, 0.0f, 0.0f, \
+        4.33680868994202e-19f, 0.0f, -8.67361737988404e-19f, \
     }
 #define UZ_DIFFIND_DUMMY_MOTOR_NOMINAL_V1_L_QQ_H \
     { \
+        0.0029999999999999f, 0.0029999999999999f, 0.0029999999999999f, \
         0.003f, 0.003f, 0.003f, \
-        0.003f, 0.003f, 0.003f, \
-        0.003f, 0.003f, 0.003f, \
+        0.0029999999999999f, 0.0029999999999999f, 0.0029999999999999f, \
     }
 
 /* mh_prototype (fem_overaged_over_angle) from mh_prototype/fem_overaged_over_angle/differential_inductances.csv; grid 13 x 13 (i_d x i_q) */

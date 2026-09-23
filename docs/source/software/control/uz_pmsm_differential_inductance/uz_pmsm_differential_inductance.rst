@@ -17,7 +17,7 @@ It is the companion of :ref:`uz_pmsm_flux_map`: the flux map gives :math:`\psi_{
 Generated macro header
 ======================
 
-``pyuzlib.flux_map_catalog`` scans every ``differential_inductances.csv`` under the motor database (the same generator that emits the flux-map header) and writes ``vitis/software/Baremetal/src/uz/uz_pmsm_differential_inductance/uz_pmsm_differential_inductances_auto_generated.h``.
+The dataset generator derives ``differential_inductances.csv`` from each ``flux_map_source.csv`` and ``dataset.json``. ``pyuzlib.flux_map_catalog`` scans the derived CSVs and writes ``vitis/software/Baremetal/src/uz/uz_pmsm_differential_inductance/uz_pmsm_differential_inductances_auto_generated.h``.
 For each dataset it defines, using the same ``<MOTOR_DIR>_<DATASET_DIR>`` naming as the flux-map and scalar catalogs:
 
 * ``UZ_DIFFIND_<CATALOG_ID>_I_D_BREAKPOINTS_A`` / ``_I_Q_BREAKPOINTS_A`` — breakpoint initializer lists.
@@ -25,13 +25,12 @@ For each dataset it defines, using the same ``<MOTOR_DIR>_<DATASET_DIR>`` naming
 * ``UZ_DIFFIND_<CATALOG_ID>_I_D_LENGTH`` / ``_I_Q_LENGTH`` — the grid dimensions.
 
 As with the flux-map header, these are only preprocessor macros: **a macro that is never used contributes zero bytes to the binary.**
-Regenerate and verify the committed header:
+Generate and verify all committed PMSM artifacts from the repository root:
 
 .. code-block:: bash
 
-   # from docs/
-   make auto_generate_flux_maps    # regenerates BOTH the flux-map and differential-inductance headers
-   make check_flux_maps            # CI check: both committed headers match the CSV sources
+   make pyuzlib-generate-machines
+   make pyuzlib-check-generated
 
 Instance counts
 ===============

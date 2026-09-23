@@ -6,7 +6,7 @@ pyuzlib
 
 ``pyuzlib`` is a small Python helper library for documentation and data-processing tasks in the UltraZohm repository.
 
-At the moment, the package mainly provides PMSM data helpers for scalar machine parameters, flux-map CSV files, fitting routines, plotting, and CSV export.
+The package provides PMSM data helpers for scalar machine parameters, flux-map CSV files, fitting routines, plotting, and CSV export.
 The CSV files it operates on are the motor datasets of the :ref:`uz_pmsm` motor database; see that page for the canonical file formats and the workflow for adding a new motor.
 
 Installation
@@ -117,14 +117,14 @@ A complete runnable example is included in the repository:
    :language: python
    :caption: ``docs/source/software/pyuzlib/pyuzlib_showcase.py``
 
-Compatibility Helpers
+Documentation helpers
 =====================
 
-The module ``pyuzlib.docs.pmsm`` still provides these helpers for documentation snippets:
+The module ``pyuzlib.docs.pmsm`` provides these helpers for documentation snippets:
 
 * ``plot_flux_map(csv_path)`` for a Matplotlib-based static plot that integrates with the Sphinx ``plot`` directive.
 * ``plot_flux_map_plotly(csv_path)`` for a Plotly-based interactive figure that integrates with the Sphinx ``plotly`` directive.
-* ``L_dd_L_qq_from_flux_map_assuming_no_saturation(csv_path)`` for the existing linear-regression table.
+* ``L_dd_L_qq_from_flux_map_assuming_no_saturation(csv_path)`` for a linear-regression table.
 * ``plot_linear_flux_model_comparison(csv_path)`` for comparing a linear fit against the flux map from a ``flux_map.csv`` file.
 * ``plot_differential_inductances(csv_path)`` for deriving and plotting the differential inductances from a ``flux_map.csv`` file.
 * ``plot_operation_area(machine_parameters_csv_path, ...)`` and ``plot_max_torque_curve(machine_parameters_csv_path, ...)`` for operation-area plots from a ``machine_parameters.csv`` file, as used by the motor dataset pages.
@@ -149,42 +149,14 @@ Related Documentation
 
 For a concrete dataset example, see :doc:`../control/uz_pmsm/beckhoff_AM8141-0j00-000/beckhoff_AM8141-0j00-000`.
 
-Auto-generation for machine catalog
-===================================
+Machine catalog generation
+==========================
 
-The ``pyuzlib.machine_catalog`` module generates the machine inventory CSV and the C initializer header from the motor datasets:
+The root target prepares canonical maps and differential inductances from each ``dataset.json`` and ``flux_map_source.csv``, then generates the machine inventory CSV and C headers:
 
 .. code-block:: bash
 
-	# from docs/
-	make auto_generate_available_machines
+	# from the repository root
+	make pyuzlib-generate-machines
 
-The full workflow (scaffolding a new dataset, filling in values, regenerating, committing) is documented in :ref:`uz_pmsm`, section "Adding a new motor".
-
-
-Adding new members to uz_PMSM_t
-===============================
-
-The machine-catalog generation flow is designed so that changes to ``uz_PMSM_t`` mostly require schema updates, not generator updates.
-
-If a new scalar member is added to ``uz_PMSM_t``, update these places:
-
-* Add the new field to ``vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.h``.
-* Extend the checks in ``vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.c`` if the new field needs validation.
-* Add the same field to the ``PMSMParameters`` dataclass in ``pyuzlib/src/pyuzlib/pmsm/parameters.py`` (same field order as the struct).
-* Add a ``ParameterConstraint`` entry for the new field to ``PMSM_PARAMETER_CONSTRAINTS`` in the same file; it drives both ``validate_for_c()`` and the ``add_machine`` template hints.
-* Add the new parameter row to every ``machine_parameters.csv`` file under ``docs/source/software/control/uz_pmsm``.
-* Update the canonical CSV documentation in ``docs/source/software/control/uz_pmsm/uz_pmsm.rst``.
-* Regenerate the catalog using ``python -m pyuzlib.machine_catalog`` or ``uz-generate-pmsm-machine-catalog``.
-
-The following parts do not usually need manual changes:
-
-* ``pyuzlib.machine_catalog`` parses the field list directly from ``uz_PMSM_t`` in the C header.
-* ``uz_available_machines_auto_generated.h`` is regenerated automatically.
-* ``docs/source/software/control/uz_pmsm/generate_available_machines.py`` is only a thin wrapper.
-
-The important guardrail is that ``pyuzlib.machine_catalog`` compares the parsed ``uz_PMSM_t`` field list against ``PMSMParameters``.
-If the C struct changes but the Python data model is not updated, catalog generation fails with a clear mismatch instead of silently producing incorrect macros.
-
-This workflow assumes that the new member can still be represented as a scalar ``parameter,value`` entry in ``machine_parameters.csv`` and that the C declaration is a supported scalar field type.
-If a future member is an array, nested struct, or otherwise not representable in the current CSV scheme, both the CSV schema and the generator logic must be extended.
+The dataset layout, ``--with-flux-data`` flag, and generation command are documented in :ref:`uz_pmsm`, section "Adding a new motor".

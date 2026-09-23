@@ -119,30 +119,15 @@ def format_path_for_generated_comment(path: str | Path, repo_root: str | Path) -
     return resolved_path.as_posix()
 
 
-_PREPROCESS_SCRIPT_TEMPLATE = '''\
-#!/usr/bin/env python3
-"""Convert raw flux-map data to the canonical uz_pmsm format.
-
-Edit the column name strings below to match your source file, then run this script once.
-Commit flux_map.csv and differential_inductances.csv; the raw source file is optional.
-"""
-from pathlib import Path
-import pyuzlib
-
-SCRIPT_DIR = Path(__file__).resolve().parent
-
-motor = pyuzlib.pmsm.PMSM()
-motor.load_flux_map_csv(
-    SCRIPT_DIR / "flux_map_raw.csv",  # TODO: rename to match your raw file
-    i_d_col="i_d",     # TODO: column name for d-axis current in your source file
-    i_q_col="i_q",     # TODO: column name for q-axis current
-    psi_d_col="psi_d", # TODO: column name for d-axis flux linkage
-    psi_q_col="psi_q", # TODO: column name for q-axis flux linkage
-)
-motor.calculate_differential_inductances()
-motor.export_flux_map_csv(SCRIPT_DIR / "flux_map.csv")
-motor.export_differential_inductances_csv(SCRIPT_DIR / "differential_inductances.csv")
-print("Exported flux_map.csv and differential_inductances.csv.")
+_DATASET_RECIPE_TEMPLATE = '''{
+  "columns": {
+    "i_d": "i_d_A",
+    "i_q": "i_q_A",
+    "psi_d": "psi_d_Vs",
+    "psi_q": "psi_q_Vs"
+  },
+  "edge_order": 2
+}
 '''
 
 
@@ -161,17 +146,17 @@ def _print_parameter_hints(next_id: int) -> None:
         print(f"  {field.name:<{name_w}} ({field.ctype})  {constraint:<{constraint_w}}{desc_part}")
 
 
-def _write_preprocess_script_template(dataset_dir: Path) -> Path:
-    script_path = dataset_dir / "preprocess_to_correct_data_format.py"
-    script_path.write_text(_PREPROCESS_SCRIPT_TEMPLATE, encoding="utf-8")
-    return script_path
+def _write_dataset_recipe_template(dataset_dir: Path) -> Path:
+    recipe_path = dataset_dir / "dataset.json"
+    recipe_path.write_text(_DATASET_RECIPE_TEMPLATE, encoding="utf-8")
+    return recipe_path
 
 
 def create_machine_template(
     motor_name: str,
     dataset_name: str,
     uz_pmsm_dir: str | Path,
-    with_raw_data: bool = False,
+    with_flux_data: bool = False,
 ) -> tuple[Path, Path | None, int]:
     uz_pmsm_dir = Path(uz_pmsm_dir)
     dataset_dir = uz_pmsm_dir / motor_name / dataset_name
@@ -202,8 +187,8 @@ def create_machine_template(
         lines.append(f"{field.name},")
     csv_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
-    script_path = _write_preprocess_script_template(dataset_dir) if with_raw_data else None
-    return csv_path, script_path, next_id
+    recipe_path = _write_dataset_recipe_template(dataset_dir) if with_flux_data else None
+    return csv_path, recipe_path, next_id
 
 
 def _read_machine_id_from_csv(csv_path: Path) -> int | None:
@@ -652,10 +637,10 @@ def build_arg_parser(default_anchor: str | Path) -> argparse.ArgumentParser:
     add_machine.add_argument("motor_name", help="Motor directory name, e.g. my_motor")
     add_machine.add_argument("dataset_name", help="Dataset directory name, e.g. nominal_v1")
     add_machine.add_argument(
-        "--with-raw-data",
+        "--with-flux-data",
         action="store_true",
         default=False,
-        help="Also create a preprocess_to_correct_data_format.py template for raw FEM/measurement data.",
+        help="Also create a dataset.json template for flux_map_source.csv.",
     )
 
     return parser
@@ -691,19 +676,20 @@ def main(argv: list[str] | None = None, *, default_anchor: str | Path | None = N
         )
 
     if args.command == "add_machine":
-        csv_path, script_path, next_id = create_machine_template(
+        csv_path, recipe_path, next_id = create_machine_template(
             motor_name=args.motor_name,
             dataset_name=args.dataset_name,
             uz_pmsm_dir=args.uz_pmsm_dir,
-            with_raw_data=args.with_raw_data,
+            with_flux_data=args.with_flux_data,
         )
         macro_name = (
             f"UZ_PMSM_{normalize_machine_identifier(f'{args.motor_name}_{args.dataset_name}')}_INIT"
         )
         print(f"Created: {csv_path}")
-        if script_path is not None:
-            print(f"Created: {script_path}")
-        print(f"Fill in all empty values, then run the catalog generator.")
+        if recipe_path is not None:
+            print(f"Created: {recipe_path}")
+            print("Add flux_map_source.csv and set its column names in dataset.json.")
+        print("Fill in all empty values, then run make pyuzlib-generate-machines.")
         print(f"C macro will be: {macro_name}")
         _print_parameter_hints(next_id)
         return 0

@@ -1,3 +1,5 @@
+import json
+
 import pyuzlib
 import numpy as np
 import pytest
@@ -580,40 +582,40 @@ def test_add_machine_creates_template_and_prints_hints(tmp_path, capsys):
     assert "pre-filled: 1" in out
 
 
-def test_add_machine_with_raw_data_creates_preprocess_script(tmp_path):
-    csv_path, script_path, next_id = machine_catalog.create_machine_template(
+def test_add_machine_with_flux_data_creates_dataset_recipe(tmp_path):
+    csv_path, recipe_path, next_id = machine_catalog.create_machine_template(
         motor_name="test_motor",
         dataset_name="v1",
         uz_pmsm_dir=tmp_path,
-        with_raw_data=True,
+        with_flux_data=True,
     )
 
     assert csv_path.exists()
-    assert script_path is not None
-    assert script_path.exists()
-    script_text = script_path.read_text(encoding="utf-8")
-    assert "pyuzlib" in script_text
-    assert "flux_map_raw.csv" in script_text
-    assert "TODO" in script_text
-    assert "export_flux_map_csv" in script_text
+    assert recipe_path is not None
+    assert recipe_path.exists()
+    recipe = json.loads(recipe_path.read_text(encoding="utf-8"))
+    assert recipe == {
+        "columns": {"i_d": "i_d_A", "i_q": "i_q_A", "psi_d": "psi_d_Vs", "psi_q": "psi_q_Vs"},
+        "edge_order": 2,
+    }
 
 
-def test_add_machine_cli_without_raw_data(tmp_path):
+def test_add_machine_cli_without_flux_data(tmp_path):
     rc = machine_catalog.main(
         ["--uz-pmsm-dir", str(tmp_path), "add_machine", "my_motor", "nominal_v1"],
     )
     assert rc == 0
     assert (tmp_path / "my_motor" / "nominal_v1" / "machine_parameters.csv").exists()
-    assert not (tmp_path / "my_motor" / "nominal_v1" / "preprocess_to_correct_data_format.py").exists()
+    assert not (tmp_path / "my_motor" / "nominal_v1" / "dataset.json").exists()
 
 
-def test_add_machine_cli_with_raw_data(tmp_path):
+def test_add_machine_cli_with_flux_data(tmp_path):
     rc = machine_catalog.main(
-        ["--uz-pmsm-dir", str(tmp_path), "add_machine", "my_motor", "nominal_v1", "--with-raw-data"],
+        ["--uz-pmsm-dir", str(tmp_path), "add_machine", "my_motor", "nominal_v1", "--with-flux-data"],
     )
     assert rc == 0
     assert (tmp_path / "my_motor" / "nominal_v1" / "machine_parameters.csv").exists()
-    assert (tmp_path / "my_motor" / "nominal_v1" / "preprocess_to_correct_data_format.py").exists()
+    assert (tmp_path / "my_motor" / "nominal_v1" / "dataset.json").exists()
 
 
 _VALID_MACHINE_CSV = (

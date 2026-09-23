@@ -17,7 +17,7 @@ help:
 # Delete build folder before make
 .PHONY: clean
 
-# Backward-compatible aliases; catalog tooling is owned by the root Makefile.
+# PMSM catalog targets forward to the root Makefile.
 .PHONY: auto_generate_available_machines check_available_machines auto_generate_flux_maps check_flux_maps
 auto_generate_available_machines:
 	$(MAKE) -C .. pyuzlib-generate-machine-catalog
@@ -31,8 +31,8 @@ auto_generate_flux_maps:
 check_flux_maps:
 	$(MAKE) -C .. pyuzlib-check-flux-maps
 
-# Umbrella targets: regenerate/verify every committed PMSM artifact (scalar machine catalog + the
-# flux-map and differential-inductance headers) in one command. CI uses the equivalent
+# Umbrella targets: regenerate/verify every committed PMSM artifact (canonical CSVs, scalar
+# machine catalog, flux-map and differential-inductance headers) in one command. CI uses the equivalent
 # root pyuzlib-check-generated target. The explicit recipe and .PHONY entry keep the catch-all
 # "%: Makefile" (sphinx-build) rule below from matching these recipe-less names.
 .PHONY: auto_generate_all check_all

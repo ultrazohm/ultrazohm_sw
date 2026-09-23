@@ -95,3 +95,6 @@ How to use the 26tx_w_enable CPLD programs on the D-slots
    :align: center
 
    26tx_w_enable IO configuration
+
+The ``tx26_w_enable`` CPLD program is currently not selectable in the project wizard. If one needs to use it, it has to be manually 
+deployed to the UltraZohm via Diamond Programmer.

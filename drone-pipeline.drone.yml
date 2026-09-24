@@ -28,8 +28,8 @@ steps:
    depends_on: [ Vivado_build_tcl ]
    commands: # Modify the commands below to build your repository.
    - hostname -I
+   - python -m pip install -e ./pyuzlib -r docs/requirements.txt
    - cd docs
-   - pip install -r requirements.txt
    - pip list
    - make docs
    - cd build
@@ -50,13 +50,17 @@ steps:
    depends_on: [ Vivado_build_tcl ]
    commands:
    - hostname -I
-   - cd docs
-   - make ceedling_test_output
-   - ls
-   - pwd
-   - cd ..
-   - cd vitis/software/Baremetal
-   - ceedling test:all
+   - make ceedling-test
+
+ - name: pyuzlib tests
+   image: ultrazohm/ultrazohm_remote_container_new:2f93599
+   depends_on: [ Vivado_build_tcl ]
+   commands:
+   # Bokeh exercises the optional docs plot reader without the full docs stack.
+   - python -m pip install -e './pyuzlib[dev]' bokeh
+   - make pyuzlib-check-generated
+   - make pyuzlib-test
+   - make pyuzlib-smoke-pmsm-plot
 
  - name: Cppcheck
    image: ultrazohm/ultrazohm_remote_container_new:2f93599

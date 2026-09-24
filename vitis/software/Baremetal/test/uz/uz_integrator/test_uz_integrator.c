@@ -53,4 +53,37 @@ void test_uz_integrator_clamped(void)
     TEST_ASSERT_EQUAL_FLOAT(1.0f, result);
 }
 
+void test_uz_integrator_heun_zero_input_zero_output(void)
+{
+    float result = uz_integrator_heun(0.0f, 0.0f, 0.0f, 1.0f, false);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, result);
+}
+
+void test_uz_integrator_heun_constant_slope_equals_euler(void)
+{
+    // Equal start/end derivatives -> trapezoidal average reduces to old + Ts*derivative.
+    float result = uz_integrator_heun(1.0f, 1.0f, 0.0f, 1.0f, false);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f, result);
+}
+
+void test_uz_integrator_heun_averages_differing_slopes(void)
+{
+    // y(k) = old + Ts/2 * (d_old + d_pred) = 0 + 0.5*(0 + 2) = 1
+    float result = uz_integrator_heun(0.0f, 2.0f, 0.0f, 1.0f, false);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f, result);
+}
+
+void test_uz_integrator_heun_respects_old_value_and_sample_time(void)
+{
+    // y(k) = 5 + 0.5*0.1*(2 + 4) = 5 + 0.3 = 5.3
+    float result = uz_integrator_heun(2.0f, 4.0f, 5.0f, 0.1f, false);
+    TEST_ASSERT_EQUAL_FLOAT(5.3f, result);
+}
+
+void test_uz_integrator_heun_clamped_holds_old_value(void)
+{
+    float result = uz_integrator_heun(2.0f, 4.0f, 5.0f, 0.1f, true);
+    TEST_ASSERT_EQUAL_FLOAT(5.0f, result);
+}
+
 #endif // TEST

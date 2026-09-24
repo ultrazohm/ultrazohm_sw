@@ -62,7 +62,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "CException.h"
-#define uz_assert(condition) if (!(condition)) Throw(0)
+#define uz_assert(condition) if (!(condition)) Throw(__LINE__)
 #define uz_printf printf
 #define uz_sleep_seconds sleep
 #define uz_sleep_useconds usleep
@@ -139,4 +139,3 @@
 }
 #include "uz_AXI.h" // this include will be deleted but is required since some functions already use the AXI HAL - include has to be done after the assert definitions to prevent compiler warnings!
 #endif // Endif of guard
-

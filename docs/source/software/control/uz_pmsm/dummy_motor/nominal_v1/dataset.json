@@ -1,0 +1,9 @@
+{
+  "columns": {
+    "i_d": "i_d_A",
+    "i_q": "i_q_A",
+    "psi_d": "psi_d_Vs",
+    "psi_q": "psi_q_Vs"
+  },
+  "edge_order": 2
+}

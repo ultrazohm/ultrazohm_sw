@@ -10,7 +10,7 @@ ports:
 # List the start up tasks. You can start them in parallel in multiple terminals. See https://www.gitpod.io/docs/config-start-tasks/
 tasks:
   - name: Docs dependencies
-    init: pip install -r docs/requirements.txt
+    init: python -m pip install -e ./pyuzlib -r docs/requirements.txt
 vscode:
   extensions:
     - eamodio.gitlens

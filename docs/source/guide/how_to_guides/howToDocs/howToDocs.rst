@@ -17,19 +17,24 @@ The documentation is hosted on a web server, and the build and deployment are ha
 Installation
 ============
 
-.. tip:: Use the :ref:`vscode_remote_container` to handle all installations for you instead of installing all dependencies on your machine and keeping them up to date! Using the :ref:`vscode_remote_container` is strongly recommended!
+.. tip::
+
+   Use the :ref:`vscode_remote_container` to handle all installations for you instead of installing all dependencies on your machine and keeping them up to date!
+   Using the :ref:`vscode_remote_container` is strongly recommended!
 
 To build and edit the documentation on your native system, you need to:
 
 #. Install `Python <https://www.python.org/>`_ 
 #. Install pip (included in current Python versions)
-#. Install everything in the ``requirements.txt`` in ``/docs`` by invoking ``pip install -r requirements.txt`` in a command shell inside ``/docs``
-#. Install everything required for the extension ``sphinxcontrib.tikz``. `Follow their install guide <https://github.com/sphinx-contrib/tikz>`_!
+#. Install the local ``pyuzlib`` package and everything in ``docs/requirements.txt`` by invoking ``python -m pip install -e ./pyuzlib -r docs/requirements.txt`` in a command shell inside the workspace root
+#. Install everything required for the extension ``sphinxcontrib.tikz``.
+   `Follow their install guide <https://github.com/sphinx-contrib/tikz>`_!
   
    * As image processing ``suite`` you have to install `Ghostscript <https://www.ghostscript.com/>`_
    * Assuming a standard installation path, the include path for Ghostscript is: ``C:\Program Files\gs\gs9.54.0\bin`` (Windows)
 
-#. Install everything required for the extension ``Breathe`` (`connects Doxygen to Sphinx <https://www.doxygen.nl/index.html>`_). `Install guide <https://github.com/michaeljones/breathe>`_!
+#. Install everything required for the extension ``Breathe`` (`connects Doxygen to Sphinx <https://www.doxygen.nl/index.html>`_).
+   `Install guide <https://github.com/michaeljones/breathe>`_!
 #. Build Doxygen by invoking ``make doxygen`` in a shell inside ``/docs``
 #. Build the documentation by invoking ``make html``
 #. You can open the docs in ``/docs/build/html/index.html``
@@ -47,24 +52,92 @@ To build and edit the documentation on your native system, you need to:
   :alt: Alternative text
 
 
-.. note:: If ``make html`` or ``make livehtml`` do not work due to missing package errors, run ``pip install -r requirements.txt`` again. If this does not solve the problem please open an `issue <https://bitbucket.org/ultrazohm/ultrazohm_sw/issues>`_.
-
 Makefile reference
 ******************
 
-The following commands are available to call with ``make``.
+The following commands are available to call with ``make`` from ``docs/``.
 Generating the sphinx documentation requires that Doxygen was already generated.
 
-====================== ================================
-Command                Function
-====================== ================================
-``make clean``         deletes sphinx build folder
-``make doxygen_clean`` deletes the Doxygen build folder
-``make html``          builds sphinx documentation
-``make doxygen``       builds Doxygen
-``make docs``          builds Doxygen and sphinx
-``make livehtml``      builds sphinx with live preview
-====================== ================================
+========================================= =========================================================================
+Command                                   Function
+========================================= =========================================================================
+``make clean``                            deletes sphinx build folder
+``make doxygen_clean``                    deletes the Doxygen build folder
+``make html``                             builds sphinx documentation
+``make doxygen``                          builds Doxygen
+``make docs``                             builds Doxygen and sphinx (what the CI docs steps run)
+``make livehtml``                         builds sphinx with live preview
+``make auto_generate_available_machines`` regenerates the PMSM machine catalog (header and inventory CSV)
+``make check_available_machines``         verifies the committed machine catalog matches the CSV sources (CI check)
+========================================= =========================================================================
+
+PMSM artifact tooling can also be run directly from the repository root, without building documentation.
+``make pyuzlib-check-generated`` checks the committed inventory and all three generated headers without writing files.
+``make pyuzlib-generate-machines`` regenerates them.
+The ``docs/`` targets ``check_all`` and ``auto_generate_all`` forward to these root targets.
+Checks report stale or missing artifacts and a regeneration command; they do not use shared temporary files.
+
+Docs and ceedling test output
+*****************************
+
+When ``CEEDLING_GLOBAL_CSV_EXPORT`` is enabled, PMSM model, controller, and integration tests export CSV results under ``vitis/software/Baremetal/build/artifacts/test-data/``.
+Each controller test that exports results writes its own matching configuration CSV: a result named ``<stem>.csv`` is paired with ``<stem>_config.csv`` in the same directory.
+The switch in ``vitis/software/Baremetal/src/uz/uz_global_configuration.h`` defaults to ``0``; ordinary test runs therefore do not generate these CSVs.
+Numerical assertions still run.
+The C test export helper creates parent directories on demand; no docs setup, Python installation, or preparation target is required to run these tests.
+From the repository root:
+
+.. code-block:: bash
+
+   make ceedling-test             # C tests only
+   make ceedling-test-with-export # all C tests with PMSM CSV export enabled
+   make -C docs docs             # Doxygen and Sphinx only
+   make ceedling-test && make -C docs docs   # explicitly run both
+
+Python validation is separate from the C and documentation builds:
+
+.. code-block:: bash
+
+   python -m pip install -e './pyuzlib[dev]' bokeh
+   make pyuzlib-test
+   make pyuzlib-smoke-pmsm-plot
+
+Drone CI runs these commands in its ``pyuzlib tests`` job, alongside ``make pyuzlib-check-generated``.
+The Bokeh dependency enables the optional Bokeh reader test without installing the full docs stack.
+The smoke test builds only the PMSM model tests with CSV export enabled, checks real CSV columns, finite values, and timestamps, and renders the actual Matplotlib docs plot to a PNG without a GUI.
+It uses fresh temporary build and output directories and removes them afterwards; it cannot pass using stale artifacts and does not modify the configuration header or ordinary Ceedling build.
+It requires Ceedling and the host C compiler, but neither Sphinx nor Doxygen.
+
+Direct ``ceedling test:all`` and individual targets such as ``ceedling test:test_uz_pmsm_swmodel`` also work from ``vitis/software/Baremetal``.
+The old docs targets ``ceedling_tests``, ``docs_with_ceedling_tests``, and ``ceedling_test_output`` have been removed.
+``make ceedling_clean`` in ``docs/`` still invokes ``ceedling clobber``; this explicitly cleans Ceedling build outputs, including default test artifacts.
+Test execution itself does not delete previous artifacts.
+Files from tests not run may therefore remain; use a fresh output directory when collecting results for publication.
+
+To generate plot data for manual inspection, use the ``config/csv_export.yml`` Ceedling mixin.
+It overrides ``CEEDLING_GLOBAL_CSV_EXPORT`` for compilation and preprocessing and keeps its build outputs in ``build/artifacts/csv-export-build/``, separate from ordinary tests.
+No tracked header needs editing, and normal test builds retain the default of ``0``.
+The root target ``make ceedling-test-with-export`` runs the full suite with this mixin; integration-test exports can produce large CSV files.
+To select an isolated output directory, set ``UZ_TEST_DATA_DIR`` to the same absolute path for C tests and Python plot readers (the directory override does not enable exports):
+
+.. code-block:: bash
+
+   export UZ_TEST_DATA_DIR="$(mktemp -d)/test-data"
+   (cd vitis/software/Baremetal && ceedling --mixin=config/csv_export.yml test:test_uz_pmsm_swmodel)
+   python3 docs/source/software/control/uz_pmsm_swmodel/view_pmsm_model_test_results.py
+
+The plotting scripts require pyuzlib and their plotting dependencies to be installed.
+Their shared path resolver also accepts an explicit ``artifact_dir`` argument in Python.
+Relative overrides are interpreted against each process's working directory; prefer absolute paths.
+Custom directories are not removed by ``ceedling clobber``.
+Plot readers only consume files: they never invoke tests or create missing data, and report missing CSV files with the command needed to generate them.
+
+The PMSM test-result plot directives remain disabled in :ref:`uz_pmsm_swmodel`.
+Ordinary docs builds and their CI job do not require these artifacts.
+Before enabling the plots, explicitly order successful test execution before the docs build and pass artifacts from the same revision to the plotting step; do not rely on leftover files or parallel CI steps.
+
+This separation applies to the new PMSM exports.
+Older PRNG tests still write CSVs directly into ``docs/source/software/library/uz_prng/``; migrating those legacy documentation examples is separate work.
 
 Video
 *****
@@ -122,7 +195,10 @@ Structure
 The structure of ``.rst`` files is based on indentation with spaces.
 These indentations are a vital part of .rst and do **not** solely exist for visual alignment. 
 
-.. note:: Spaces are recommended for indentation, but tabs may also be used. For tabs, refer to :ref:`notepad`.
+.. note::
+
+   Spaces are recommended for indentation, but tabs may also be used.
+   For tabs, refer to :ref:`notepad`.
 
 **Example**
 
@@ -434,7 +510,10 @@ Known Issues
 Compatibility issue with Notepad++ and .rst files 
 *************************************************
 
-.. warning:: This is not recommended! Use the :ref:`vscode_remote_container` instead!
+.. warning::
+
+   This is not recommended!
+   Use the :ref:`vscode_remote_container` instead!
 
 * If u edit ``.rst`` files in the UltraZohm documentation, an issue whilst using the tabulator key in Notepad++ can occur.
 
@@ -446,7 +525,8 @@ Compatibility issue with Notepad++ and .rst files
 
   .. image:: ./img/Editor_tabulator.png
 
-  - This wrong alignment via Notepad++ leads to the following error whilst executing **make html**. You can see the misalignment highlighted in green.
+  - This wrong alignment via Notepad++ leads to the following error whilst executing **make html**.
+    You can see the misalignment highlighted in green.
 
   .. image:: ./img/CMD_tabulator.png
   

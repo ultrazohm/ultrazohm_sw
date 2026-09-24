@@ -4,8 +4,11 @@
 Set Point
 =========
 
-Toolbox for a standard set-point module. The input is a reference torque. This will then be converted, depending on the machine type selection, into d- and q-reference currents.
-It currently supports surface-mounted (SMPMSM) and interior (IPMSM) permanent magnet synchronous machines. IPMSM with a positive and negative saliency ratio are both supported.
+Toolbox for a standard set-point module.
+The input is a reference torque.
+This will then be converted, depending on the machine type selection, into d- and q-reference currents.
+It currently supports surface-mounted (SMPMSM) and interior (IPMSM) permanent magnet synchronous machines.
+IPMSM with a positive and negative saliency ratio are both supported.
 The output currents will, depending on the operating condition of the machine, either be calculated via MTPA or field-weakening.
 It can not control a machine on its own. 
 
@@ -93,8 +96,8 @@ Example
         .control_type = FOC,
         .motor_type = SMPMSM,
         .is_field_weakening_enabled = false,
-        .id_ref_Ampere = 0.0f
-        .relative_torque_tolerance = 0.001f;
+        .id_ref_Ampere = 0.0f,
+        .relative_torque_tolerance = 0.001f
      };
   }
 
@@ -110,7 +113,7 @@ Example
 
 .. code-block:: c
   :linenos:
-  :caption: Example function call to init the SpeedController for the SpeedControl. ``config`` according to :ref:`configuration section<uz_SetPoint_config>`
+  :caption: Initialize a SetPoint instance using ``SP_config`` from the :ref:`configuration section <uz_SetPoint_config>`.
   
   int main(void) {
      uz_SetPoint_t* SP_instance = uz_SetPoint_init(SP_config);
@@ -121,6 +124,8 @@ Description
 
 Allocates the memory for the SetPoint instance. 
 Furthermore the input values of the configuration struct are asserted. 
+The setpoint module validates ``R_ph_Ohm``, ``Ld_Henry``, ``Lq_Henry``, ``polePairs``, ``I_max_Ampere``, and ``Psi_PM_Vs``; inertia and the rating envelope are not required.
+``Psi_PM_Vs`` must be greater than zero because FOC setpoint generation divides by it.
 
 Functions
 =========

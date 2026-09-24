@@ -17,7 +17,12 @@ jobs:
           lfs: 'true'
       - name: Install dependencies
         run: |
-          python -m pip install -r docs/requirements.txt
+          python -m pip install -e ./pyuzlib -r docs/requirements.txt
+      - name: Check auto-generated machine catalog and flux/inductance headers are up-to-date
+        run: |
+          cd docs
+          make check_all
+          python -m pip install -r requirements.txt
       - name: sphinx build
         run: |
           cd docs

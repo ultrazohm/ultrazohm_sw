@@ -11,7 +11,7 @@ Example
 
 .. code-block:: c
   :linenos:
-  :caption: Example function call for linear decoupling. For ``uz_PMSM_t`` struct check :ref:`uz_PMSM_config`. 
+  :caption: Calculate linear decoupling using a :ref:`uz_PMSM_config` struct.
 
   #include "uz/uz_CurrentControl/uz_linear_decoupling.h"
   int main(void) {
@@ -22,7 +22,7 @@ Example
      }; //only these parameters are needed
      float omega_el_rad_per_sec = 100.0f;
      struct uz_3ph_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
-     struct uz_3ph_dq_t output = uz_CurrentControl_linear_decoupling(config_pmsm, i_actual_Ampere, omega_el_rad_per_sec);
+     struct uz_3ph_dq_t output = uz_CurrentControl_linear_decoupling(&config_pmsm, i_actual_Ampere, omega_el_rad_per_sec);
   }
 
 Description

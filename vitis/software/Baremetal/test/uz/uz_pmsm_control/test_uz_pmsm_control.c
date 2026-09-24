@@ -1,6 +1,7 @@
 #ifdef TEST
 
 #include "unity.h"
+#include "uz_global_configuration.h"
 #include <stdbool.h>
 #include "uz_pmsm_control.h"
 #include "uz_HAL.h"
@@ -41,7 +42,6 @@ void tearDown(void)
 {
 }
 
-#define CSV_EXPORT 0
 
 #define CSV_FIELD_DESCRIPTOR(struct_type, field_name, field_type) \
     {#field_name, offsetof(struct_type, field_name), field_type}
@@ -49,8 +49,8 @@ void tearDown(void)
 #define CSV_NESTED_FIELD_DESCRIPTOR(struct_type, nested_struct, field_name, field_type) \
     {#field_name, offsetof(struct_type, nested_struct) + offsetof(struct uz_PMSM_t, field_name), field_type}
 
-#define UZ_PMSM_CONTROL_SWMODEL_RESULTS_CSV_PATH "../../../docs/ceedling_test_output/uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step.csv"
-#define UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH "../../../docs/ceedling_test_output/uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_config.csv"
+#define UZ_PMSM_CONTROL_SWMODEL_RESULTS_CSV_PATH "uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step.csv"
+#define UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH "uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_config.csv"
 
 struct uz_pmsm_control_swmodel_log_t
 {
@@ -131,13 +131,43 @@ struct uz_pmsm_control_configuration_t pmsm_controller_config = {
 };
 
 struct uz_PMSM_t machine_config = {
+    .machine_id = 0U,
     .R_ph_Ohm = 0.51f,
     .Ld_Henry = 0.002f,
     .Lq_Henry = 0.002f,
     .Psi_PM_Vs = 0.042f,
     .polePairs = 4.0f,
     .J_kg_m_squared = 0.000108f,
-    .I_max_Ampere = 12.0f};
+    .I_max_Ampere = 12.0f,
+    .I_rated_Ampere = 8.0f,
+    .Torque_rated_Nm = 1.2f,
+    .Torque_max_Nm = 2.0f,
+    .Torque_min_Nm = -2.0f,
+    .speed_rated_rpm = 1000.0f,
+    .speed_max_rpm = 1500.0f,
+    .speed_min_rpm = -1500.0f,
+    .V_dc_nominal_V = 24.0f,
+    .I_d_max_A = 10.0f,
+    .I_d_min_A = -10.0f,
+    .I_q_max_A = 10.0f,
+    .I_q_min_A = -10.0f};
+
+void test_uz_pmsm_control_init_accepts_legacy_machine_config(void)
+{
+    struct uz_PMSM_t legacy_machine = {
+        .R_ph_Ohm = 0.51f,
+        .Ld_Henry = 0.002f,
+        .Lq_Henry = 0.002f,
+        .Psi_PM_Vs = 0.042f,
+        .polePairs = 4.0f,
+        .J_kg_m_squared = 0.000108f,
+        .I_max_Ampere = 12.0f};
+
+    TEST_ASSERT_NOT_NULL(uz_pmsm_control_init(pmsm_controller_config, legacy_machine));
+
+    legacy_machine.Ld_Henry = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_pmsm_control_init(pmsm_controller_config, legacy_machine));
+}
 
 void test_uz_pmsm_control_call_init(void)
 {
@@ -413,18 +443,18 @@ void test_uz_pmsm_control_swmodel_iq_step_after_1s_oversampled(void)
     TEST_ASSERT_FLOAT_WITHIN(0.05f, 0.0f, sim_inputs[PRE_STEP_MODEL_ITERATIONS - 1U].i_q_A);
     TEST_ASSERT_FLOAT_WITHIN(0.20f, 1.0f, sim_inputs[TOTAL_MODEL_ITERATIONS - 1U].i_q_A);
 
-#if CSV_EXPORT
+#if CEEDLING_GLOBAL_CSV_EXPORT
     struct uz_pmsm_control_swmodel_config_export_t export_config = {
         .sample_time = controller_config.sample_time,
         .machine = machine_config};
-    export_array_of_struct_to_csv("../../../docs/ceedling_test_output/uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_oversampled.csv",
+    export_array_of_struct_to_csv("uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_oversampled.csv",
                                   sim_inputs,
                                   sizeof(sim_inputs[0]),
                                   pmsm_control_swmodel_log,
                                   sizeof(pmsm_control_swmodel_log) / sizeof(pmsm_control_swmodel_log[0]),
                                   TOTAL_MODEL_ITERATIONS,
                                   swmodel_config.sample_time);
-    export_array_of_struct_to_csv(UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH,
+    export_array_of_struct_to_csv("uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_oversampled_config.csv",
                                   &export_config,
                                   sizeof(export_config),
                                   pmsm_control_swmodel_config_fields,
@@ -511,7 +541,7 @@ void test_uz_pmsm_control_swmodel_iq_step_after_1s(void)
     TEST_ASSERT_FLOAT_WITHIN(0.05f, 0.0f, sim_inputs[PRE_STEP_ITERATIONS - 1U].i_q_A);
     TEST_ASSERT_FLOAT_WITHIN(0.20f, 1.0f, sim_inputs[TOTAL_ITERATIONS - 1U].i_q_A);
 
-#if CSV_EXPORT
+#if CEEDLING_GLOBAL_CSV_EXPORT
     struct uz_pmsm_control_swmodel_config_export_t export_config = {
         .sample_time = controller_config.sample_time,
         .machine = machine_config};
@@ -635,18 +665,18 @@ void test_uz_pmsm_control_swmodel_iq_step_multi_speed(void)
        TEST_ASSERT_FLOAT_WITHIN(0.20f, 1.0f, sim_inputs[run_end_idx].i_q_A);
     }
 
-#if CSV_EXPORT
+#if CEEDLING_GLOBAL_CSV_EXPORT
     struct uz_pmsm_control_swmodel_config_export_t export_config = {
         .sample_time = controller_config.sample_time,
         .machine = machine_config};
-    export_array_of_struct_to_csv("../../../docs/ceedling_test_output/uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_multi_speed.csv",
+    export_array_of_struct_to_csv("uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_multi_speed.csv",
                                   sim_inputs,
                                   sizeof(sim_inputs[0]),
                                   pmsm_control_swmodel_log,
                                   sizeof(pmsm_control_swmodel_log) / sizeof(pmsm_control_swmodel_log[0]),
                                   TOTAL_ITERATIONS,
                                   controller_config.sample_time);
-    export_array_of_struct_to_csv(UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH,
+    export_array_of_struct_to_csv("uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_multi_speed_config.csv",
                                   &export_config,
                                   sizeof(export_config),
                                   pmsm_control_swmodel_config_fields,
@@ -769,18 +799,18 @@ void test_uz_pmsm_control_swmodel_iq_step_multi_speed_random_setpoints(void)
         }
     }
 
-#if CSV_EXPORT
+#if CEEDLING_GLOBAL_CSV_EXPORT
     struct uz_pmsm_control_swmodel_config_export_t export_config = {
         .sample_time = controller_config.sample_time,
         .machine = machine_config};
-    export_array_of_struct_to_csv("../../../docs/ceedling_test_output/uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_multi_speed_random_setpoints.csv",
+    export_array_of_struct_to_csv("uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_multi_speed_random_setpoints.csv",
                                   sim_inputs,
                                   sizeof(sim_inputs[0]),
                                   pmsm_control_swmodel_log,
                                   sizeof(pmsm_control_swmodel_log) / sizeof(pmsm_control_swmodel_log[0]),
                                   TOTAL_ITERATIONS,
                                   controller_config.sample_time);
-    export_array_of_struct_to_csv(UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH,
+    export_array_of_struct_to_csv("uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_multi_speed_random_setpoints_config.csv",
                                   &export_config,
                                   sizeof(export_config),
                                   pmsm_control_swmodel_config_fields,

@@ -1,4 +1,4 @@
-from pathlib import Path
+from pyuzlib.docs.test_results import pmsm_swmodel_result_paths
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -9,16 +9,7 @@ pio.templates.default = "plotly_white"
 
 FIGURE_HEIGHT_PX = 900
 
-try:
-    _SCRIPT_PATH = Path(__file__).resolve()
-except NameError:
-    # Sphinx executes plot directives via exec(), where __file__ may be missing.
-    _SCRIPT_PATH = Path.cwd()
-
-SCRIPT_DIR = _SCRIPT_PATH.parent if _SCRIPT_PATH.is_file() else _SCRIPT_PATH
-REPO_ROOT = next(path for path in (SCRIPT_DIR, *SCRIPT_DIR.parents) if (path / "README.MD").is_file())
-CSV_PATH = REPO_ROOT / "docs" / "ceedling_test_output" / "uz" / "uz_pmsm_swmodel" / "uz_pmsm_swmodel_results.csv"
-CONFIG_CSV_PATH = REPO_ROOT / "docs" / "ceedling_test_output" / "uz" / "uz_pmsm_swmodel" / "uz_pmsm_swmodel_config.csv"
+CSV_PATH, CONFIG_CSV_PATH = pmsm_swmodel_result_paths()
 
 config_df = pd.read_csv(CONFIG_CSV_PATH, sep=";")
 df = pd.read_csv(CSV_PATH, sep=";")
@@ -32,10 +23,10 @@ fig = make_subplots(
 	vertical_spacing=0.04,
 )
 
-fig.add_trace(go.Scattergl(x=t, y=df["output_i_d_A"], mode="lines", name="i_d (A)"), row=1, col=1)
-fig.add_trace(go.Scattergl(x=t, y=df["input_v_d_V"], mode="lines", name="v_d (V)"), row=1, col=1)
-fig.add_trace(go.Scattergl(x=t, y=df["output_i_q_A"], mode="lines", name="i_q (A)"), row=2, col=1)
-fig.add_trace(go.Scattergl(x=t, y=df["input_v_q_V"], mode="lines", name="v_q (V)"), row=2, col=1)
+fig.add_trace(go.Scattergl(x=t, y=df["output_d"], mode="lines", name="i_d (A)"), row=1, col=1)
+fig.add_trace(go.Scattergl(x=t, y=df["input_d"], mode="lines", name="v_d (V)"), row=1, col=1)
+fig.add_trace(go.Scattergl(x=t, y=df["output_q"], mode="lines", name="i_q (A)"), row=2, col=1)
+fig.add_trace(go.Scattergl(x=t, y=df["input_q"], mode="lines", name="v_q (V)"), row=2, col=1)
 fig.add_trace(go.Scattergl(x=t, y=df["output_torque_Nm"], mode="lines", name="torque (Nm)"), row=3, col=1)
 fig.add_trace(go.Scattergl(x=t, y=df["input_load_torque"], mode="lines", name="load torque (Nm)"), row=3, col=1)
 fig.add_trace(go.Scattergl(x=t, y=df["output_omega_mech_1_s"], mode="lines", name="output speed (1/s)"), row=4, col=1)

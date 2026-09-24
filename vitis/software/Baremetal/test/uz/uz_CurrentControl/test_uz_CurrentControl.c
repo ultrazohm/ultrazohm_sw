@@ -266,7 +266,7 @@ void test_uz_CurrentControl_set_PMSM_parameters(void) {
     config.config_PMSM.Ld_Henry = 0.0001f;
     config.config_PMSM.Lq_Henry = 0.0001f;
     config.config_PMSM.Psi_PM_Vs = 0.0f;
-    uz_CurrentControl_set_PMSM_parameters(instance, config.config_PMSM);
+    uz_CurrentControl_set_PMSM_parameters(instance, &config.config_PMSM);
     output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
     //Check, if the output is changed
     TEST_ASSERT_EQUAL_FLOAT(-0.2f, output.d);

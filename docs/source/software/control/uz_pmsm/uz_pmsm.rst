@@ -118,7 +118,7 @@ For a machine with flux data, add ``flux_map_source.csv`` beside ``dataset.json`
 .. _uz_pmsm_dataset_recipe:
 
 ``dataset.json`` reference
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+==========================
 
 Put this file beside ``machine_parameters.csv`` and ``flux_map_source.csv``. For example, the MH prototype recipe is:
 

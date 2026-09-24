@@ -42,10 +42,12 @@ For example, ``my--motor/nominal_v1`` becomes ``UZ_PMSM_MY_MOTOR_NOMINAL_V1_INIT
 All available macros are listed in the table below, and the struct fields are documented in :ref:`uz_PMSM_config`.
 To analyze or plot the underlying motor data in Python, use :ref:`pyuzlib`.
 
-Available motor datasets
-========================
+.. _uz_pmsm_motor_catalog:
 
-The generated machine inventory lists every dataset with its C macro name and all parameter values:
+PMSM motor catalog
+==================
+
+The generated machine inventory lists ("machine catalog") every dataset with its C macro name and all parameter values:
 
 .. csv-table:: Generated machine inventory ``available_machines.csv``
    :file: available_machines.csv
@@ -60,7 +62,7 @@ The generated machine inventory lists every dataset with its C macro name and al
     mh_prototype/mh_prototype
 
 Adding a new motor
-==================
+------------------
 
 The workflow has four phases: create the dataset directory, fill in the machine data and, when applicable, the flux source and recipe, generate the artifacts, and use the generated macro in C code.
 
@@ -118,7 +120,7 @@ For a machine with flux data, add ``flux_map_source.csv`` beside ``dataset.json`
 .. _uz_pmsm_dataset_recipe:
 
 ``dataset.json`` reference
-==========================
+--------------------------
 
 Put this file beside ``machine_parameters.csv`` and ``flux_map_source.csv``. For example, the MH prototype recipe is:
 
@@ -495,4 +497,63 @@ Set ``mesh/rows`` to the number of unique ``i_q_A`` breakpoints.
        \addplot3[surf, shader=interp, colormap/viridis, mesh/rows=3, mark=*]
            table[x=i_d_A, y=i_q_A, z expr=\thisrow{psi_q_Vs}*1000] \fluxmap;
        \end{groupplot}
+   \end{tikzpicture}
+
+.. tikz:: Flux-linkage surfaces for the dummy motor dataset.
+   :align: center
+   :stringsubst:
+
+   \begin{tikzpicture}
+       \pgfplotstableread[col sep=comma]{${wd}/source/software/control/uz_pmsm/dummy_motor/nominal_v1/flux_map.csv}\fluxmap
+       \pgfplotsset{every axis/.append style={
+           view={45}{45},
+           colormap/viridis,
+           grid=both,
+           width=0.45\columnwidth,
+           height=6cm
+       }}
+
+       \begin{axis}[
+           name=psid,
+           at={(0,0)},
+           anchor=south west,
+           xlabel={$i_d$ in A},
+           ylabel={$i_q$ in A},
+           zlabel={$\psi_d$ in mVs}
+       ]
+       \addplot3[
+           surf,
+           shader=interp,
+           mesh/rows=3,
+           mark=*,
+           z filter/.expression={z*1000}
+       ]
+       table[
+           x=i_d_A,
+           y=i_q_A,
+           z=psi_d_Vs
+       ] \fluxmap;
+       \end{axis}
+
+       \begin{axis}[
+           at={(psid.south east)},
+           anchor=south west,
+           xshift=2cm,
+           xlabel={$i_d$ in A},
+           ylabel={$i_q$ in A},
+           zlabel={$\psi_q$ in mVs}
+       ]
+       \addplot3[
+           surf,
+           shader=interp,
+           mesh/rows=3,
+           mark=*,
+           z filter/.expression={z*1000}
+       ]
+       table[
+           x=i_d_A,
+           y=i_q_A,
+           z=psi_q_Vs
+       ] \fluxmap;
+       \end{axis}
    \end{tikzpicture}

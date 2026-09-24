@@ -4,10 +4,12 @@
 pyuzlib
 =======
 
-``pyuzlib`` is a small Python helper library for documentation and data-processing tasks in the UltraZohm repository.
+``pyuzlib`` is a Python helper library for documentation and data-processing tasks in the UltraZohm repository.
 
-The package provides PMSM data helpers for scalar machine parameters, flux-map CSV files, fitting routines, plotting, and CSV export.
-The CSV files it operates on are the motor datasets of the :ref:`uz_pmsm` motor database; see that page for the canonical file formats and the workflow for adding a new motor.
+The package provides:
+
+- Data helpers for PMSM to add machines to the machine catalog :ref:`uz_pmsm_motor_catalog`
+- Helpers for flux map's of PMSM, e.g., fitting, plotting, and CSV export
 
 Installation
 ============

@@ -71,6 +71,113 @@ In U/f mode, the same function ramps the requested stator frequency and
 generates the rotating voltage vector internally. Observer diagnostics remain
 available in both modes.
 
+The control flow of ``uz_im_control_sample_duty`` is deliberately parallel to
+that of :ref:`uz_pmsm_control`: measurements and references are conditioned
+first, the selected operating mode generates a voltage reference, and SVM
+finally produces the duty cycles. The IM-specific sequence is:
+
+#. Store the measurements and replace ``v_abc_V`` with the reconstructed phase
+   voltage that was applied in the preceding control period.
+#. Filter the measured rotor speed when the optional actual-speed filter is
+   configured.
+#. Execute the selected rotor-flux observer from phase current, rotor speed and
+   the delayed applied-voltage vector. The observer provides flux magnitude,
+   flux angle, dq current, stator frequency and diagnostic values.
+#. Check the safe operating region. A disabled controller or a latched
+   violation suppresses voltage generation and returns the configured default
+   duty cycle.
+#. In U/f mode, limit and ramp the frequency reference, calculate voltage
+   magnitude and electrical angle, and pass the resulting dq voltage directly
+   to SVM. The observer continues running but does not close the U/f loop.
+#. In FOC mode, limit and optionally filter speed and dq-current references.
+   Current-control mode uses both external dq references. Speed-control mode
+   preserves the external d-current reference for magnetization and replaces
+   only the q-current reference with the speed-PI output.
+#. Force the q-current reference to zero until the rotor-flux estimate is valid,
+   then execute both current PIs. Add IM decoupling and optional resonant-control
+   voltages and limit the combined voltage vector with
+   ``uz_CurrentControl_SpaceVector_Limitation``.
+#. Run SVM with the U/f angle or estimated rotor-flux angle. Reconstruct
+   ``v_abc_V[k]`` from the resulting duty cycles and DC-link voltage and retain
+   it as observer input for period :math:`k+1`.
+
+When the controller is disabled or a safe-operating-region violation is
+active, ``uz_im_control_sample_dq`` returns a zero dq-voltage vector and
+``uz_im_control_sample_duty`` returns ``default_duty_cycle`` from the
+configuration.
+
+.. mermaid::
+   :caption: Control flow of uz_im_control_sample_duty
+
+   ---
+   config:
+     layout: elk
+   ---
+
+   flowchart TD
+
+       subgraph Inputs
+           direction TB
+           i_abc_A
+           v_dc_V
+           i_dc_A
+           rotor_speed_rpm
+           rotor_mechanical_angle_rad
+           reference_speed_rpm
+           i_dq_ref_A
+           u_f_frequency_ref_Hz
+       end
+
+       subgraph uz_im_control_sample_duty
+           direction LR
+
+           previous_voltage["v_abc[k-1]"] --> selected_observer["Selected rotor-flux observer"]
+           i_abc_A --> abc_to_alphabeta["abc to alpha/beta"] --> selected_observer
+           rotor_speed_filter["uz_signals_IIR_Filter_sample"] --> selected_observer
+           selected_observer --> observer_outputs["flux magnitude, flux angle, i_dq, frequencies"]
+           observer_outputs --> sor["Safe operating region"]
+           sor --> mode{"U/f or FOC"}
+
+           mode -->|U/f| uf_limit_ramp["Frequency saturation and ramp"]
+           u_f_frequency_ref_Hz --> uf_limit_ramp
+           uf_limit_ramp --> uf_voltage["U/f voltage magnitude and angle"]
+           uf_voltage --> svm["uz_Space_Vector_Modulation"]
+
+           mode -->|FOC| foc_path["uz_im_control_sample_dq"]
+           reference_speed_rpm --> speed_limit["uz_signals_saturation"] --> speed_ref_filter["uz_signals_IIR_Filter_sample"]
+           speed_ref_filter --> speed_or_current{"Speed or current control"}
+           rotor_speed_filter --> speed_pi["Speed PI"] --> speed_or_current
+           i_dq_ref_A --> current_limit_filter["Saturation and optional dq filter"] --> speed_or_current
+           foc_path --> speed_or_current
+           speed_or_current --> flux_valid{"rotor_flux_valid"}
+           flux_valid -->|invalid: i_q_ref = 0| current_ref_limit["dq-current saturation"]
+           flux_valid -->|valid| current_ref_limit
+           current_ref_limit --> current_pi["d/q current PIs"]
+           observer_outputs --> current_pi
+           observer_outputs --> decoupling["IM decoupling"]
+           current_ref_limit --> resonant["Optional resonant control"]
+           current_pi --> voltage_sum(["+"])
+           decoupling --> voltage_sum
+           resonant --> voltage_sum
+           voltage_sum --> voltage_limit["uz_CurrentControl_SpaceVector_Limitation"]
+           v_dc_V --> voltage_limit
+           voltage_limit --> svm
+
+           observer_outputs -->|FOC flux angle| svm
+           v_dc_V --> svm
+           svm --> duty_cycle
+           duty_cycle --> reconstruct["Reconstruct and store v_abc[k]"]
+           v_dc_V --> reconstruct
+           reconstruct --> previous_voltage
+       end
+
+       rotor_speed_rpm --> rotor_speed_filter
+       rotor_speed_filter --> sor
+       i_abc_A --> sor
+       i_dc_A --> sor
+       v_dc_V --> sor
+       rotor_mechanical_angle_rad --> observer_outputs
+
 .. tikz:: Signal flow of the integrated induction-machine controller
 
    \usetikzlibrary{arrows.meta,positioning,fit,calc,shapes.geometric}
@@ -109,6 +216,88 @@ available in both modes.
          ($(obs.south)+(0,-2mm)$);
       \node[group, fit=(obs)(park), label=below:{observer and reference frame}] {};
    \end{tikzpicture}
+
+Operating modes
+---------------
+
+The outer operating mode selects either scalar U/f voltage generation or
+rotor-flux-oriented control (FOC). Within FOC, the controller can use an
+external dq-current reference or generate the q-current reference with its
+speed controller. The modes can be selected at runtime without constructing a
+new controller instance.
+
+U/f mode
+~~~~~~~~
+
+U/f mode is active when ``uz_im_control_mode_u_f`` is selected with
+``uz_im_control_set_mode``. The ``u_f_frequency_reference_Hz`` argument of
+``uz_im_control_sample_duty`` is limited to ``u_f_max_frequency_Hz`` and
+ramped with ``u_f_frequency_ramp_Hz_per_s``. Positive and negative references
+select the direction of the rotating voltage vector. Its magnitude is formed
+from ``u_f_ratio_V_per_Hz`` and ``u_f_boost_voltage_V`` and is limited by
+``u_f_max_voltage_V`` before SVM generates the duty cycles.
+
+The boost voltage compensates the stator-resistance voltage drop at low
+frequency. With an ideal constant U/f ratio, the commanded voltage approaches
+zero together with frequency, while the resistive drop
+:math:`R_s i_s` remains significant. The voltage available to establish the
+air-gap and rotor flux would therefore become too small, causing weak flux,
+reduced starting torque or a stalled machine. ``u_f_boost_voltage_V`` adds a
+small frequency-independent voltage once the absolute command frequency
+exceeds the internal zero-frequency threshold. This maintains usable flux in
+the low-speed range. The value must be tuned conservatively: excessive boost
+causes over-fluxing, increased magnetizing current and additional machine
+heating, particularly close to standstill.
+
+The current and speed controllers do not close a feedback loop in U/f mode.
+Nevertheless, the selected observer and all diagnostic calculations continue
+to run. This permits observer validation and flux buildup before changing to
+FOC. U/f therefore does not require ``rotor_flux_valid`` to generate voltage.
+
+FOC current-control mode
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+FOC is active when ``uz_im_control_mode_foc`` is selected and is the mode used
+after initialization. Current-control mode within FOC is active when speed
+control is disabled. The ``current_reference_dq_A`` argument supplies both
+:math:`i_d^*` and :math:`i_q^*`. The references are limited, optionally
+filtered and limited again before entering the two PI current controllers.
+
+The d-current reference establishes magnetization. Until the observer reports
+a valid rotor flux, the controller retains :math:`i_d^*` but forces
+:math:`i_q^*=0` so that no torque-producing current is requested with an
+undefined flux angle. Once valid, the current-controller outputs are combined
+with IM decoupling and optional resonant-controller voltages. The resulting
+vector is limited before SVM.
+
+FOC speed-control mode
+~~~~~~~~~~~~~~~~~~~~~~
+
+Speed-control mode is enabled with ``uz_im_control_enable_speed_control`` or
+through ``enable_speed_control`` in the initial configuration. The
+``reference_speed_rpm`` argument is limited, optionally filtered and compared
+with the measured mechanical rotor speed. The speed PI directly generates the
+q-current reference. Unlike :ref:`uz_pmsm_control`, no intermediate torque
+setpoint or disturbance-torque input is used by the IM module.
+
+The external d-current reference remains active and continues to define the
+magnetizing current; only the external q-current reference is replaced by the
+speed-controller output. Enabling or disabling speed control resets the speed
+PI to prevent reuse of a previous integral state.
+
+Mode transitions and disabled behavior
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Changing between U/f and FOC with ``uz_im_control_set_mode`` resets the current
+PIs, speed PI, resonant controllers and reference filters. The selected
+observer state and observer PLL are intentionally preserved so FOC can take
+over an estimate established during U/f operation. Selecting another observer
+is different: it resets the observer diagnostics, covariance and both observer
+PLLs.
+
+Disabling the module with ``uz_im_control_enable(control, false)`` performs a
+complete controller reset. A latched safe-operating-region violation likewise
+suppresses the generated voltage until it is acknowledged and reset.
 
 The observer and the control law are deliberately separated. The selected
 observer supplies the rotor-flux magnitude and angle. The angle defines the
@@ -167,6 +356,78 @@ Changing the selection resets all observer states and both PLLs.
       \draw[->] (polar) -- node[right,signal] {$\hat\theta_\psi$} (pll);
       \draw[->] (pll) -| node[pos=0.25,above,signal] {$\hat\omega_s$} (valid.north);
    \end{tikzpicture}
+
+What the three observer choices mean
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The word *Kalman* refers to two substantially different implementations in
+this module. The following table summarizes what is estimated and which
+current enters the FOC feedback transformation:
+
+.. list-table:: Comparison of the observer paths
+   :header-rows: 1
+   :widths: 22 24 27 27
+
+   * - Selection
+     - Kalman states
+     - Rotor-flux source
+     - Current used for ``i_dq_A``
+   * - ``uz_im_control_observer_rotor_flux_model``
+     - None
+     - Tustin rotor-current model
+     - Directly measured alpha/beta current
+   * - ``uz_im_control_observer_filtered_rotor_flux_model``
+     - Two independent scalar current estimates
+     - Tustin model driven by the filtered currents
+     - Scalar-Kalman-filtered alpha/beta current
+   * - ``uz_im_control_observer_kalman_rotor_flux_model``
+     - Current alpha/beta and rotor-flux alpha/beta
+     - Flux states of the four-state motor model
+     - Estimated current states of the four-state filter
+
+All three paths finally calculate the flux angle, transform the selected
+alpha/beta current into the flux-oriented dq frame and derive stator frequency
+through a PLL. Consequently, changing the observer can alter both the FOC
+angle **and** its current feedback. A different FOC response after switching
+is therefore not necessarily caused by the angle alone.
+
+Kalman prediction and correction in one control period
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A Kalman filter repeats two conceptually separate operations:
+
+#. **Prediction:** propagate the previous estimate through a process model.
+   The result :math:`\hat x_k^-` is what the machine model expects before the
+   new current measurement is considered. Its uncertainty :math:`P_k^-`
+   increases by the configured process noise :math:`Q`.
+#. **Correction:** compare the measured current with the predicted current.
+   This difference is the innovation :math:`\nu_k`. The Kalman gain
+   :math:`K_k` determines how strongly the prediction is corrected.
+
+The correction is not a separate controller and does not directly manipulate
+the inverter voltage. It changes the estimated current and flux that are used
+as FOC feedback. In U/f mode the observer still runs, but the U/f voltage
+generation does not depend on its result. U/f operation is therefore the
+preferred place to validate convergence before enabling FOC.
+
+The relative size of model and measurement uncertainty determines the filter
+behavior:
+
+* Larger :math:`Q` means less trust in the model. The covariance and Kalman
+  gain grow, so the estimate follows measured-current changes more quickly.
+* Larger :math:`R` means less trust in the measured current. The Kalman gain
+  falls, so the estimate becomes smoother but depends more strongly on motor
+  parameters, rotor speed and reconstructed voltage.
+* Very small :math:`Q` together with large :math:`R` can make a wrong model
+  look smooth while its flux angle drifts away from the physical machine.
+* Very large :math:`Q` or very small :math:`R` passes more measurement noise
+  into the estimated currents and indirectly into the flux correction.
+
+Here, :math:`Q` and :math:`R` are variances, not standard deviations. Their
+units are therefore squared units. The configured current and flux process
+noise values are continuous-time densities and are multiplied by
+``sample_time_s`` once per observer step. The current measurement-noise value
+is already the per-sample variance and is not multiplied by the sample time.
 
 Deterministic rotor-current model
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -278,6 +539,39 @@ rotor-flux states are corrected indirectly through the cross-covariances in
 covariance :math:`S`; a singular or non-finite determinant is treated as an
 observer violation.
 
+The four states have the following concrete meaning:
+
+.. list-table:: Four-state Kalman vector
+   :header-rows: 1
+   :widths: 14 28 58
+
+   * - Index
+     - State
+     - Role
+   * - 0
+     - :math:`\hat i_\alpha`
+     - Predicted and current-corrected stator current used for dq feedback.
+   * - 1
+     - :math:`\hat i_\beta`
+     - Orthogonal stator-current component used for dq feedback.
+   * - 2
+     - :math:`\hat\psi_{r,\alpha}`
+     - Rotor-flux component corrected indirectly through covariance coupling.
+   * - 3
+     - :math:`\hat\psi_{r,\beta}`
+     - Together with state 2, provides flux magnitude and angle.
+
+The measurement matrix observes only states 0 and 1. There is no direct flux
+measurement. Flux correction is possible because the prediction creates
+non-zero current/flux cross-covariances in :math:`P`; these appear in rows 2
+and 3 of :math:`K`. If those gain entries remain close to zero, current
+innovations cannot meaningfully correct the flux estimate.
+
+The input voltage is the reconstructed voltage applied during the preceding
+PWM period, not the voltage command being calculated in the current call.
+Thus a wrong DC-link scaling, phase order, duty-cycle reconstruction or
+one-sample alignment directly appears as model error in the full filter.
+
 Simplified current Kalman filter with rotor-flux model
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -306,6 +600,21 @@ the subsequent deterministic flux model. It therefore behaves primarily as
 an adaptive current low-pass filter. It is cheaper and less sensitive to an
 incorrect reconstructed voltage, but it cannot use the coupled motor model to
 correct the flux states and does not provide a full state covariance.
+
+The simplified implementation assumes a random-walk current model,
+:math:`\hat i_k^-=\hat i_{k-1}`. It has no voltage-driven current prediction
+and no alpha/beta coupling. Its innovation therefore answers only: "How far
+is the latest current sample from the filtered current?" It cannot determine
+whether that deviation was caused by applied voltage, rotor motion or a model
+parameter error. This makes it useful as a robust comparison filter, but it
+must not be interpreted as a reduced version of the four-state motor-model
+observer.
+
+After reset, both scalar current estimates start at zero and both scalar
+covariances start at ``1 A2``. The complete filter likewise starts with zero
+state and an identity covariance matrix. The first samples can therefore show
+a deliberate initialization transient; ``rotor_flux_valid`` must be checked
+before the estimate is allowed to provide FOC feedback.
 
 The default and recommended Kalman implementation is
 ``uz_im_control_observer_kalman_rotor_flux_model``. The simplified variant is
@@ -466,21 +775,23 @@ input. It also restores the timing convention of the original commissioning
 observer, where the previously applied inverter voltage was paired with the
 new current sample.
 
-There is one intentional API-semantic change: caller-provided
-``measurements.v_abc_V`` is overwritten and is no longer used as the observer
-input. Code that previously supplied physically measured phase voltages through
-this member will no longer influence the observer. In this repository no such
-caller existed when the change was introduced. The member remains in the
-structure for source compatibility and exposes the internally selected voltage
-through ``uz_im_control_get_im_measurement_values``.
+``measurements.v_abc_V`` represents the phase-voltage measurement consumed by
+the observer. In the normal integration it is populated internally with the
+reconstructed voltage of the preceding PWM period and is exposed through
+``uz_im_control_get_im_measurement_values``. The same member can represent
+phase voltages measured by an external measurement box. Such an integration
+must explicitly select the external values instead of the internal
+reconstruction; the current ``uz_im_control_sample_duty`` path overwrites the
+caller-provided value and therefore uses the reconstructed voltage by default.
 
 The duty-cycle reconstruction represents an ideal average inverter. It does
 not compensate dead time, semiconductor voltage drops, PWM update delay or a
 DC-link change within one PWM period. These deviations can matter at low
 voltage or low speed. If real phase-voltage measurements or an inverter
-nonlinearity model become available, an explicit configuration or API
-selection should be added rather than silently writing
-``measurements.v_abc_V``.
+nonlinearity model are used, the application must provide an explicit
+configuration or API selection for the voltage source. This keeps the
+measurement origin visible and prevents an external sample from being silently
+replaced by the reconstruction.
 
 Observer outputs and derived quantities
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -548,6 +859,57 @@ into these fields does not.
 The state transition uses the configured IM parameters and rotor electrical
 speed. Separate current and flux process-noise densities and the current
 measurement variance configure the covariance update.
+
+Practical Kalman tuning order
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Tune the observer only after current offsets, phase order, rotor-speed sign,
+machine parameters, DC-link scaling and delayed-voltage timing have been
+verified. A recommended sequence is:
+
+#. Run the deterministic observer in U/f mode and verify that flux rotation,
+   rotor electrical frequency and stator frequency have consistent signs.
+#. Select the full Kalman observer at zero frequency, then repeat identical
+   positive and negative U/f plateaus. Do not tune during FOC because a wrong
+   estimate then changes the excitation being used to validate it.
+#. Start with the configured defaults and log measured currents, states 0/1,
+   states 2/3, both innovations, flux magnitude, flux angle and
+   ``rotor_flux_valid`` simultaneously as FastData.
+#. Correct a persistent innovation mean through sensor-offset, voltage or
+   machine-model corrections. Do not hide a non-zero mean by changing noise
+   parameters.
+#. Adjust the current process-noise density against measurement variance to
+   obtain the desired current tracking/noise compromise. Then adjust flux
+   process noise only if the current fit is plausible but the flux response is
+   too slow or cannot follow repeatable operating-point changes.
+#. Enable FOC only after the flux orbit is bounded, the innovations remain
+   bounded and approximately zero-mean, the frequency signs agree, and mode
+   changes repeatedly produce the same result.
+
+.. list-table:: Effect of Kalman configuration values
+   :header-rows: 1
+   :widths: 34 33 33
+
+   * - Configuration value
+     - Increasing it
+     - Typical symptom when excessive
+   * - ``kalman_process_noise_A2_per_s``
+     - Makes estimated currents react more strongly to measurements.
+     - Noisy current states and noisy dq feedback.
+   * - ``kalman_flux_process_noise_Vs2_per_s``
+     - Allows current innovations to correct flux states more rapidly.
+     - Noisy or rapidly moving flux angle and frequency.
+   * - ``kalman_measurement_noise_A2``
+     - Reduces the correction from measured currents and trusts the model more.
+     - Smooth estimate with bias, lag or divergence when the model is wrong.
+
+``uz_im_control_set_kalman_process_noise`` changes only the current-state
+process-noise density at runtime, while
+``uz_im_control_set_kalman_measurement_noise`` changes the current measurement
+variance. The flux process-noise density is currently supplied through the
+controller configuration. Changing these values does not reset the current
+state or covariance; explicitly switch/reset the observer when a clean A/B
+comparison is required.
 
 The deterministic and simplified observer paths share the Tustin rotor-current
 model and its PLL. The full four-state Kalman observer owns a separate PLL.
@@ -763,6 +1125,109 @@ frequency and allow it to initialize before applying the next ramp. Since the
 module executes only the selected observer, deterministic and Kalman results
 must be compared at repeated operating points rather than sample by sample in
 the same interval.
+
+Automated three-observer test profile
+-------------------------------------
+
+The ``feature/wizard_asm_testing`` application contains an automated 212 s U/f
+profile in ``im_observer_validation_profile.csv``. Button 8 starts or stops
+the profile. The same frequency sequence is executed three times:
+
+.. list-table:: Automated validation blocks
+   :header-rows: 1
+   :widths: 20 20 60
+
+   * - Profile time
+     - ``observer_mode``
+     - Observer
+   * - 0 ... 70 s
+     - 0
+     - Deterministic Tustin rotor-current model
+   * - 71 ... 141 s
+     - 2
+     - Simplified scalar current Kalman filters followed by the Tustin model
+   * - 142 ... 212 s
+     - 1
+     - Full four-state current/rotor-flux Kalman observer
+
+Every change of observer occurs at zero frequency and resets all observer
+states. ``IM_VALIDATION_OBSERVER_MODE`` is logged independently of
+``IM_VALIDATION_PROFILE_STAGE`` so the recorded CSV can be segmented without
+depending on hard-coded time limits. The stage values are 0 for inactive, 1
+for armed, 2 for zero-frequency initialization, 3 for the positive-frequency
+sequence, 4 for the negative-frequency sequence and 5 for the final zero hold.
+
+JavaScope's default 20-channel selection for this test contains profile time,
+observer mode, stage, frequency reference, speed, all phase currents, active
+flux magnitude and angle, stator/rotor/slip frequency, both innovations, dq
+currents, flux-valid status, flux-angle step and phase-current sum. The active
+alpha/beta flux orbit can be reconstructed from magnitude and angle for every
+observer path, which makes the three sequential blocks directly comparable.
+
+The accompanying standard-library Python tool evaluates an exported FastData
+CSV:
+
+.. code-block:: console
+
+   python vitis/software/Baremetal/src/sw/analyze_im_observer_validation.py \
+      Log_YYYY-MM-DD_HH-MM-SS.csv
+
+It writes ``plateau_metrics.csv`` and ``report.md`` to
+``im_observer_validation_results``. If Matplotlib is installed it additionally
+writes ``overview.png``. Its upper panel compares the estimated stator
+frequency, while three separate lower panels show the alpha/beta flux orbit of
+the deterministic, full-Kalman and simplified-Kalman modes without overlaying
+the orbits. All orbit panels use identical axis limits for direct comparison.
+The first second of each stationary plateau is discarded by default; use
+``--settle-s`` to change that interval.
+
+The metrics include stator-frequency bias and RMSE, frequency derived from the
+flux-angle increment, flux ripple, flux-orbit center and axis ratio, innovation
+mean/RMS, phase-current symmetry, current-sum RMS and flux-valid percentage.
+These metrics compare repeatability and model consistency. They do not prove
+absolute flux or torque accuracy because the testbench does not provide an
+independent flux or torque reference. Absolute validation requires an
+independent reference measurement or a trusted offline machine model.
+
+Reproducible documentation example
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A compact synthetic JavaScope log is supplied as
+:download:`im_observer_validation_example.csv <im_observer_validation_example.csv>`.
+It contains deterministic, full-Kalman and simplified-Kalman data at
+``-2 Hz``, ``+2 Hz`` and ``+6 Hz``. The values are intentionally synthetic:
+they demonstrate file parsing, plateau segmentation, metric calculation and
+plot generation, but they are not acceptance limits for a physical machine.
+
+Run the example from the repository root:
+
+.. code-block:: console
+
+   python vitis/software/Baremetal/src/sw/analyze_im_observer_validation.py \
+      docs/source/software/control/IM_Control/im_observer_validation_example.csv \
+      --output-dir im_observer_validation_example_results
+
+The command must detect nine plateau summaries: three frequencies for each of
+the three observer modes. It creates ``plateau_metrics.csv`` and ``report.md``;
+with Matplotlib installed it also creates ``overview.png`` with one separate
+flux-orbit panel per observer mode. All rows must show
+``flux_valid_percent = 100``. The generated example is constructed such that
+the full Kalman path has the lowest stator-frequency RMSE and the simplified
+path has the lowest flux ripple. This provides a quick regression check of the
+complete analysis path without requiring testbench hardware.
+
+The input fixture can be regenerated deterministically with:
+
+.. code-block:: console
+
+   python vitis/software/Baremetal/src/sw/generate_im_observer_validation_example.py \
+      docs/source/software/control/IM_Control/im_observer_validation_example.csv
+
+For a real measurement, copy the JavaScope CSV instead of the example file and
+retain the same channel names. Do not compare the numerical values of a real
+machine against the synthetic fixture. Compare the three observers at matching
+operating points and use an independent encoder, torque sensor or trusted
+machine simulation when absolute estimator accuracy is required.
 
 Recommended fast-data signals are:
 

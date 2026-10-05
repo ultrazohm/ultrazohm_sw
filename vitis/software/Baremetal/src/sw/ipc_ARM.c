@@ -261,12 +261,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_5):
 		data->av.snd_fld[5] = value;
-		struct_Ctrl_Config.KPn = value;
+		struct_Ctrl_Config.KPi = value;
 			break;
 
 		case (Set_Send_Field_6):
 		data->av.snd_fld[6] = value;
-		struct_Ctrl_Config.KIn = value;
+		struct_Ctrl_Config.KIi = value;
 			break;
 
 		case (Set_Send_Field_7):

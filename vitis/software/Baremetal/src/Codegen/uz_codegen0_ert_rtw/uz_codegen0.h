@@ -26,6 +26,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "complex_types.h"
+#include "../../include/uz_platform_state_machine.h"
+
 #endif                                 /* uz_codegen0_COMMON_INCLUDES_ */
 
 #include <string.h>
@@ -145,12 +147,7 @@ typedef enum {
 #ifndef DEFINED_TYPEDEF_FOR_platform_state_t_
 #define DEFINED_TYPEDEF_FOR_platform_state_t_
 
-typedef enum {
-  idle_state = 0,                      /* Default value */
-  running_state,
-  control_state,
-  error_state
-} platform_state_t;
+
 
 #endif
 

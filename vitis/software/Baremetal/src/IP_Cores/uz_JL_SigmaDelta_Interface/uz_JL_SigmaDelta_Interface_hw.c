@@ -75,8 +75,11 @@ int32_t uz_JL_SigmaDelta_Interface_hw_read_data_out_PH4(uint32_t base_address){
 void uz_JL_SigmaDelta_Interface_hw_trigger_output_strobe(uint32_t base_address)
 {
     uz_assert_not_zero_uint32(base_address);
-    uz_axi_write_bool(base_address+data_out_ps_Strobe_uz_JL_SigmaDelta_Interface,true);
-    uz_axi_write_bool(base_address+data_out_ps_Strobe_uz_JL_SigmaDelta_Interface,false);
+    // HDL (addr_decoder): das Latch aller data_out_ps-Elemente erfolgt auf dem registrierten
+    // Strobe-Bit; strobe_sw wird automatisch 0, sobald die Strobe-Adresse nicht mehr
+    // beschrieben wird -> ein einzelner Write mit Bit0=1 genuegt, der zweite (false-)Write
+    // ist redundant und spart eine AXI-Transaktion pro Aufruf (ISR-Pfad).
+    uz_axi_write_uint32(base_address + data_out_ps_Strobe_uz_JL_SigmaDelta_Interface, 1U);
 }
 
 void uz_JL_SigmaDelta_Interface_hw_write_start_time_us(uint32_t base_address, float start_time_us)
@@ -121,4 +124,10 @@ uint8_t uz_JL_SigmaDelta_Interface_hw_read_data_valid_cnt(uint32_t base_address)
 {
     uz_assert_not_zero(base_address);
     return (uint8_t)uz_axi_read_uint32(base_address + data_valid_cnt_Data_uz_JL_SigmaDelta_Interface);
+}
+
+void uz_JL_SigmaDelta_Interface_hw_write_sel_pwm_trigger(uint32_t base_address, bool sel_pwm_trigger)
+{
+    uz_assert_not_zero(base_address);
+    uz_axi_write_bool(base_address + sel_pwm_trigger_Data_uz_JL_SigmaDelta_Interface, sel_pwm_trigger);
 }

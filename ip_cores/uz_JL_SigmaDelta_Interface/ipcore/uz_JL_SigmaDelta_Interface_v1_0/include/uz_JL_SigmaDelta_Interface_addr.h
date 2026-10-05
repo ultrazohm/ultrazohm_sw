@@ -1,7 +1,7 @@
 /*
  * File Name:         C:\Users\jonat\Documents\ultrazohm_sw\ip_cores\uz_JL_SigmaDelta_Interface\ipcore\uz_JL_SigmaDelta_Interface_v1_0\include\uz_JL_SigmaDelta_Interface_addr.h
  * Description:       C Header File
- * Created:           2026-08-26 00:24:58
+ * Created:           2026-08-31 11:29:14
 */
 
 #ifndef UZ_JL_SIGMADELTA_INTERFACE_H_
@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_uz_JL_SigmaDelta_Interface               0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_uz_JL_SigmaDelta_Interface              0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_uz_JL_SigmaDelta_Interface           0x8  //contains unique IP timestamp (yymmddHHMM): 2608260024
+#define  IPCore_Timestamp_uz_JL_SigmaDelta_Interface           0x8  //contains unique IP timestamp (yymmddHHMM): 2608311128
 #define  clk_ratio_Data_uz_JL_SigmaDelta_Interface             0x100  //data register for Inport clk_ratio
 #define  switch_edge_Data_uz_JL_SigmaDelta_Interface           0x104  //data register for Inport switch_edge
 #define  Dezimation_Data_uz_JL_SigmaDelta_Interface            0x108  //data register for Inport Dezimation
@@ -25,5 +25,6 @@
 #define  use_clk_ext_Data_uz_JL_SigmaDelta_Interface           0x14C  //data register for Inport use_clk_ext
 #define  rst_data_valid_cnt_Data_uz_JL_SigmaDelta_Interface    0x150  //data register for Inport rst_data_valid_cnt
 #define  data_valid_cnt_Data_uz_JL_SigmaDelta_Interface        0x154  //data register for Outport data_valid_cnt
+#define  sel_pwm_trigger_Data_uz_JL_SigmaDelta_Interface       0x158  //data register for Inport sel_pwm_trigger
 
 #endif /* UZ_JL_SIGMADELTA_INTERFACE_H_ */

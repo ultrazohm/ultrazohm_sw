@@ -9,6 +9,7 @@ vcom  uz_JL_SigmaDelta_Interface_src_Subsystem1.vhd
 vcom  uz_JL_SigmaDelta_Interface_src_gen_slow_clk.vhd
 vcom  uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd
 vcom  uz_JL_SigmaDelta_Interface_src_sync_clk_pwm.vhd
+vcom  uz_JL_SigmaDelta_Interface_src_nfp_abs_single.vhd
 vcom  uz_JL_SigmaDelta_Interface_src_Integratoren.vhd
 vcom  uz_JL_SigmaDelta_Interface_src_Differentierer.vhd
 vcom  uz_JL_SigmaDelta_Interface_src_For_Each_Subsystem.vhd

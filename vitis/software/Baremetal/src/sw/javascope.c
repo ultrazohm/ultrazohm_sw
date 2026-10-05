@@ -95,39 +95,17 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-//	js_ch_observable[JSO_ideal_ia_filt]			= &i_a_filt;
-//	js_ch_observable[JSO_ideal_ib_filt]			= &i_b_filt;
-//	js_ch_observable[JSO_ideal_ic_filt]			= &i_c_filt;
-//	js_ch_observable[JSO_pmsm_ideal_omega]		= &pmsm_ideal_out.omega_mech_1_s;
-//	js_ch_observable[JSO_pmsm_ideal_phi]		= &pmsm_ideal_out.phi_mech_rad;
-//	js_ch_observable[JSO_pmsm_ideal_torque]		= &pmsm_ideal_out.torque_Nm;
-//	js_ch_observable[JSO_Soll_Drehzahl]			= &struct_ZM_In.Soll_Drehzahl;
-//	js_ch_observable[JSO_ctrl_Ualpha] 			= &voltages_alphabeta.alpha;
-//	js_ch_observable[JSO_ctrl_Ubeta] 			= &voltages_alphabeta.beta;
-//	js_ch_observable[JSO_ideal_ua] 				= &ideal_outputs.Ua;
-//	js_ch_observable[JSO_ideal_ub] 				= &ideal_outputs.Ub;
-//	js_ch_observable[JSO_ideal_uc] 				= &ideal_outputs.Uc;
-//	js_ch_observable[JSO_pmsm_ideal_ia]			= &pmsm_ideal_out.i_a_A;
-//	js_ch_observable[JSO_pmsm_ideal_ib]			= &pmsm_ideal_out.i_b_A;
-//	js_ch_observable[JSO_pmsm_ideal_ic]			= &pmsm_ideal_out.i_c_A;
-	js_ch_observable[JSO_SD_U]					= &sine;
 	js_ch_observable[JSO_SD_PH1]				= &Global_Data.av.Sinc3_Filter.data_PH1;
 	js_ch_observable[JSO_SD_PH2]				= &Global_Data.av.Sinc3_Filter.data_PH2;
 	js_ch_observable[JSO_SD_PH3]				= &Global_Data.av.Sinc3_Filter.data_PH3;
-//	js_ch_observable[JSO_SD_PH4]				= &Global_Data.av.Sinc3_Filter.data_PH4;
+	js_ch_observable[JSO_SD2_PH1]				= &Global_Data.av.Sinc3_Filter_2.data_PH1;
+	js_ch_observable[JSO_SD2_PH2]				= &Global_Data.av.Sinc3_Filter_2.data_PH2;
+	js_ch_observable[JSO_SD2_PH3]				= &Global_Data.av.Sinc3_Filter_2.data_PH3;
 	js_ch_observable[JSO_theta_el]				= &Global_Data.av.theta_el;
 	js_ch_observable[JSO_theta_mech]			= &Global_Data.av.mechanicalPosition;
 	js_ch_observable[JSO_n_rpm]					= &Global_Data.av.resolver_pl_outputs.n_mech_rpm;
 	js_ch_observable[JSO_omega_mech]			= &Global_Data.av.resolver_pl_outputs.omega_mech_rad_s;
-//	js_ch_observable[JSO_dpt_state]				= &dpt_state_f;
-//	js_ch_observable[JSO_dpt_current]			= &Global_Data.av.Sinc3_Filter.data_PH1;
-	js_ch_observable[JSO_conv_pwr_en]			= &conv_pwr_en_f;
-	js_ch_observable[JSO_conv_board_en]			= &conv_board_en_f;
-	js_ch_observable[JSO_conv_board_rst]		= &conv_board_rst_f;
-	js_ch_observable[JSO_conv_board_ready]		= &conv_board_ready_f;
-	js_ch_observable[JSO_conv_igbt_desat]		= &conv_igbt_desat_f;
-	js_ch_observable[JSO_duty_phase_one]		= &Global_Data.rasv.halfBridge10DutyCycle;
-	js_ch_observable[JSO_ctrl_Iqref]		= &regelung.output.IQRef;
+	js_ch_observable[JSO_ctrl_Iqref]			= &regelung.output.IQRef;
 	js_ch_observable[JSO_ctrl_Soll_Moment]		= &regelung.output.Soll_Moment;
 	js_ch_observable[JSO_ctrl_ist_omega]		= &regelung.output.ctrl_omega;
 	js_ch_observable[JSO_ctrl_soll_omega]		= &regelung.output.soll_omega;
@@ -136,7 +114,11 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ctrl_act_iq_I]			= &regelung.output.act_iq_I;
 	js_ch_observable[JSO_ctrl_act_id_P]			= &regelung.output.act_id_P;
 	js_ch_observable[JSO_ctrl_ref_Id]			= &regelung.output.ref_Id;
-	js_ch_observable[JSO_data_valid]		= &data_valid;
+	js_ch_observable[JSO_conv_pwr_en]			= &conv_pwr_en_f;
+	js_ch_observable[JSO_conv_board_en]			= &conv_board_en_f;
+	js_ch_observable[JSO_conv_board_rst]		= &conv_board_rst_f;
+	js_ch_observable[JSO_conv_board_ready]		= &conv_board_ready_f;
+	js_ch_observable[JSO_conv_igbt_desat]		= &conv_igbt_desat_f;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -148,13 +130,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH1]			= SigmaDeltaWandler_get_raw_average(SDW_FILTER_0, SDW_CH_PH1);
-	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH2]			= SigmaDeltaWandler_get_raw_average(SDW_FILTER_0, SDW_CH_PH2);
-	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH3]			= SigmaDeltaWandler_get_raw_average(SDW_FILTER_0, SDW_CH_PH3);
-	js_slowDataArray[JSSD_FLOAT_Soll_Drehzahl]				= &regelung.input.Bus_ZM_In_j.Soll_Drehzahl_Umin;
-
-
-
+	// js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH1]			= SigmaDeltaWandler_get_raw_average(SDW_FILTER_0, SDW_CH_PH1);
+	// js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH2]			= SigmaDeltaWandler_get_raw_average(SDW_FILTER_0, SDW_CH_PH2);
+	// js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH3]			= SigmaDeltaWandler_get_raw_average(SDW_FILTER_0, SDW_CH_PH3);
+	// js_slowDataArray[JSSD_FLOAT_Soll_Drehzahl]				= &regelung.input.Bus_ZM_In_j.Soll_Drehzahl_Umin;
 	return Status;
 }
 

@@ -413,7 +413,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>7dae0158</spirit:value>
+            <spirit:value>c0b427ad</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -429,7 +429,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>7dae0158</spirit:value>
+            <spirit:value>c0b427ad</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -557,7 +557,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>pwm_trigger</spirit:name>
+        <spirit:name>pwm_min_trigger</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -571,6 +571,19 @@
       </spirit:port>
       <spirit:port>
         <spirit:name>clk_ext</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>pwm_max_trigger</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -1417,6 +1430,10 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_nfp_abs_single.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_CLk1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -1447,7 +1464,7 @@
       <spirit:file>
         <spirit:name>hdl/uz_JL_SigmaDelta_Interface.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_f137b354</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_ea9b855a</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1534,6 +1551,11 @@
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_gen_slow_clk.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_nfp_abs_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1635,15 +1657,15 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_JL_SigmaDelta_Interface</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2114757504</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2026-08-25T22:26:02Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2114765368</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2026-08-31T09:29:52Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="5ee91a3c"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="be4c39c2"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="4c8edf77"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="4b71da70"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="f21bbd4c"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="65d44cd7"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="c550b243"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

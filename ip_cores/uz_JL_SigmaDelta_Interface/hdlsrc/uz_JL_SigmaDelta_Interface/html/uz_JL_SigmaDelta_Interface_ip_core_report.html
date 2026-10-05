@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">1.122
+<td class="summaryTableSndColOddRow">1.135
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">26-Aug-2026 00:24:37
+<td class="summaryTableSndColOddRow">31-Aug-2026 11:28:54
 </td>
 </tr>
 <tr>
@@ -294,7 +294,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_SigmaDelta_Interface:1191\')'})" >pwm_trigger</a>
+<td><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_SigmaDelta_Interface:1191\')'})" >pwm_min_trigger</a>
 </td>
 <td>Inport
 </td>
@@ -401,6 +401,34 @@ Target platform interface table:
 <td class="distinctCellColor">AXI4
 </td>
 <td class="distinctCellColor">x"150"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_SigmaDelta_Interface:1405\')'})" >pwm_max_trigger</a>
+</td>
+<td>Inport
+</td>
+<td>boolean
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_SigmaDelta_Interface:1407\')'})" >sel_pwm_trigger</a>
+</td>
+<td class="distinctCellColor">Inport
+</td>
+<td class="distinctCellColor">single
+</td>
+<td class="distinctCellColor">AXI4
+</td>
+<td class="distinctCellColor">x"158"
 </td>
 <td class="distinctCellColor">
 </td>
@@ -627,7 +655,7 @@ The following AXI4 bus accessible registers were generated for this IP core:
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2608260024
+<td>contains unique IP timestamp (yymmddHHMM): 2608311128
 </td>
 </tr>
 <tr>
@@ -750,6 +778,14 @@ The following AXI4 bus accessible registers were generated for this IP core:
 <td class="distinctCellColor">data register for Outport data_valid_cnt
 </td>
 </tr>
+<tr>
+<td>sel_pwm_trigger_Data
+</td>
+<td>0x158
+</td>
+<td>data register for Inport sel_pwm_trigger
+</td>
+</tr>
 </tbody>
 </table>
 <br/>
@@ -862,6 +898,8 @@ Following files are generated under this folder:
 <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SigmaDelta_Interface\\ipcore\\uz_JL_SigmaDelta_Interface_v1_0\\hdl\\uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd\')'})" >hdl\uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd</a>
 <br/>
 <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SigmaDelta_Interface\\ipcore\\uz_JL_SigmaDelta_Interface_v1_0\\hdl\\uz_JL_SigmaDelta_Interface_src_sync_clk_pwm.vhd\')'})" >hdl\uz_JL_SigmaDelta_Interface_src_sync_clk_pwm.vhd</a>
+<br/>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SigmaDelta_Interface\\ipcore\\uz_JL_SigmaDelta_Interface_v1_0\\hdl\\uz_JL_SigmaDelta_Interface_src_nfp_abs_single.vhd\')'})" >hdl\uz_JL_SigmaDelta_Interface_src_nfp_abs_single.vhd</a>
 <br/>
 <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SigmaDelta_Interface\\ipcore\\uz_JL_SigmaDelta_Interface_v1_0\\hdl\\uz_JL_SigmaDelta_Interface_src_Integratoren.vhd\')'})" >hdl\uz_JL_SigmaDelta_Interface_src_Integratoren.vhd</a>
 <br/>

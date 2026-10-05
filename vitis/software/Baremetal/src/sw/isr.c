@@ -21,6 +21,9 @@
 #define TEST_SINE_FREQUENCY_HZ 50.0f
 #define TEST_SQUARE_AMPLITUDE 1.0f
 
+#define SDW_DATA_VALID_MAX_POLLS 256U  // Obergrenze Busy-Wait auf Sinc3 Data_valid pro ISR-Zyklus
+#define SDW_DATA_VALID_MAX_FAILS 2U    // so viele ISR-Zyklen ohne gueltigen Wert -> Stop (idle_state)
+
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
 XIpiPsu IPI_instance;
@@ -41,6 +44,7 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 struct uz_JL_SigmaDelta_Interface_output_t Sinc3_Filter_out = {0};
 struct uz_JL_SigmaDelta_Interface_output_t Sinc3_Filter_2_out = {0};
 static bool Sinc3_Filter_2_data_ready = false;
+static uint32_t sinc3_data_valid_fail_cnt = 0U; // aufeinanderfolgende ISR-Zyklen ohne gueltigen Sinc3-Wert
 Bus_ZM_In struct_ZM_In;
 uz_3ph_alphabeta_t  voltages_alphabeta = {0};
 float sine = 0.0f;
@@ -59,22 +63,20 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     //ReadAllADC();            // Nur bei Benutzung von ADC Karten
 
-
     /* Read status signal READY of the converter*/
     conv_status_signals.board_ready = uz_axi_gpio_read_pin_zero_based(input_gpio, BOARD_READY_BIT);
     struct_ZM_In.Inv_Ready = conv_status_signals.board_ready;
 
     /* Read IGBT desaturation fault signal */
-    // conv_status_signals.igbt_desat = uz_axi_gpio_read_pin_zero_based(input_gpio, IGBT_Desat_BIT);
-    // struct_ZM_In.IGBT_desat = conv_status_signals.igbt_desat;
-//    for(int i=0;i==100;i++)
-//    {
-//    	 data_valid = data_valid || uz_JL_SigmaDelta_Interface_is_data_valid(Sinc3_Filter);
-//    }
+//    conv_status_signals.igbt_desat = uz_axi_gpio_read_pin_zero_based(input_gpio, IGBT_Desat_BIT);
+//    struct_ZM_In.IGBT_desat = conv_status_signals.igbt_desat;
+//
 	Global_Data.av.resolver_pl_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface);
 
 	theta_el_unwrapped = Global_Data.av.resolver_pl_outputs.position_el_2pi - Global_Data.av.theta_el_offset;
-	Global_Data.av.theta_el = uz_signals_wrap(theta_el_unwrapped, 2.0f*UZ_PIf);
+	Global_Data.av
+
+	.theta_el = uz_signals_wrap(theta_el_unwrapped, 2.0f*UZ_PIf);
 	Global_Data.av.mechanicalPosition = Global_Data.av.resolver_pl_outputs.position_mech_2pi;
 	Global_Data.av.omega_el = Global_Data.av.resolver_pl_outputs.omega_mech_rad_s*4.0f;
 
@@ -99,11 +101,6 @@ void ISR_Control(void *data)
                     uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, false);
                     uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
                     uz_CurrentControl_reset(Global_Data.objects.current_controller);
-                    if (uz_dpt_get_state() != dpt_idle)
-    			        {
-    				        uz_dpt_abort();
-    			        }
-
                 }
                 regelung.input.Bus_ZM_In_j = struct_ZM_In;
 				uz_codegen_step(&regelung);
@@ -124,47 +121,6 @@ void ISR_Control(void *data)
                 }
                 else
                 {
-                	 while (!(uz_JL_SigmaDelta_Interface_is_data_valid(Sinc3_Filter)))
-                		{
-                			// do nothing while output is not valid
-                		}
-                		Sinc3_Filter_out = uz_JL_SigmaDelta_Interface_get_outputs(Sinc3_Filter);
-                		SigmaDeltaWandler_process(SDW_FILTER_0, Sinc3_Filter_out, &Global_Data.av.Sinc3_Filter);
-#if SDW_SECOND_FILTER_HW_AVAILABLE
-                		if (uz_JL_SigmaDelta_Interface_get_data_valid_cnt(Sinc3_Filter_2) >= SDW_FILTER2_DATA_VALID_CNT_THRESHOLD)
-                		{
-                			Sinc3_Filter_2_out = uz_JL_SigmaDelta_Interface_get_outputs(Sinc3_Filter_2);
-                			SigmaDeltaWandler_process(SDW_FILTER_1, Sinc3_Filter_2_out, &Global_Data.av.Sinc3_Filter_2);
-                			uz_JL_SigmaDelta_Interface_reset_data_valid_cnt(Sinc3_Filter_2);
-                			Sinc3_Filter_2_data_ready = true;
-                		}
-                		else
-                		{
-                			Sinc3_Filter_2_data_ready = false;
-                		}
-#else
-                		Sinc3_Filter_2_data_ready = false;
-#endif
-                		if((fabs(Global_Data.av.Sinc3_Filter.data_PH1) >= 18.0f) || (fabs(Global_Data.av.Sinc3_Filter.data_PH2) >= 18.0f) || (fabs(Global_Data.av.Sinc3_Filter.data_PH3) >= 18.0f))
-                		{
-                					Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-                					Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-                					Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
-                					Global_Data.rasv.ctrl_state = ctrl_state_none;
-                		}
-                    regelung.input.Bus_ZM_In_j = struct_ZM_In;
-	                uz_codegen_step(&regelung);
-                }
-    			break;
-    		case control_state:
-				Global_Data.objects.platform_state_old = control_state;
-				 while (!(uz_JL_SigmaDelta_Interface_is_data_valid(Sinc3_Filter)))
-					{
-						// do nothing while output is not valid
-					}
-					Sinc3_Filter_out = uz_JL_SigmaDelta_Interface_get_outputs(Sinc3_Filter);
-					SigmaDeltaWandler_process(SDW_FILTER_0, Sinc3_Filter_out, &Global_Data.av.Sinc3_Filter);
-#if SDW_SECOND_FILTER_HW_AVAILABLE
 					if (uz_JL_SigmaDelta_Interface_get_data_valid_cnt(Sinc3_Filter_2) >= SDW_FILTER2_DATA_VALID_CNT_THRESHOLD)
 					{
 						Sinc3_Filter_2_out = uz_JL_SigmaDelta_Interface_get_outputs(Sinc3_Filter_2);
@@ -176,10 +132,87 @@ void ISR_Control(void *data)
 					{
 						Sinc3_Filter_2_data_ready = false;
 					}
-#else
-					Sinc3_Filter_2_data_ready = false;
-#endif
-					if((fabs(Global_Data.av.Sinc3_Filter.data_PH1) >= 18.0f) || (fabs(Global_Data.av.Sinc3_Filter.data_PH2) >= 18.0f) || (fabs(Global_Data.av.Sinc3_Filter.data_PH3) >= 18.0f))
+
+					bool sinc3_data_valid = false;
+					for (uint32_t data_valid_poll = 0U; data_valid_poll < SDW_DATA_VALID_MAX_POLLS; data_valid_poll++)
+					{
+						if (uz_JL_SigmaDelta_Interface_is_data_valid(Sinc3_Filter))
+						{
+							sinc3_data_valid = true;
+							break;
+						}
+					}
+
+					if (sinc3_data_valid)
+					{
+						sinc3_data_valid_fail_cnt = 0U;
+						SigmaDeltaWandler_read_and_process(Sinc3_Filter, SDW_FILTER_0, &Global_Data.av.Sinc3_Filter);
+					}
+					else
+					{
+						// Budget erschoepft: kein frischer Sinc3-Wert in diesem ISR-Zyklus,
+						// Global_Data.av.Sinc3_Filter behaelt den letzten Wert
+						sinc3_data_valid_fail_cnt++;
+						if (sinc3_data_valid_fail_cnt >= SDW_DATA_VALID_MAX_FAILS)
+						{
+							ultrazohm_state_machine_set_stop(true); // zurueck in idle_state
+						}
+					}
+
+					if((fabsf(Global_Data.av.Sinc3_Filter.data_PH1) >= 18.0f) || (fabsf(Global_Data.av.Sinc3_Filter.data_PH2) >= 18.0f) || (fabsf(Global_Data.av.Sinc3_Filter.data_PH3) >= 18.0f))
+					{
+								Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+								Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+								Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+								Global_Data.rasv.ctrl_state = ctrl_state_none;
+					}
+                    regelung.input.Bus_ZM_In_j = struct_ZM_In;
+	                uz_codegen_step(&regelung);
+                }
+    			break;
+    		case control_state:
+				Global_Data.objects.platform_state_old = control_state;
+
+					if (uz_JL_SigmaDelta_Interface_get_data_valid_cnt(Sinc3_Filter_2) >= SDW_FILTER2_DATA_VALID_CNT_THRESHOLD)
+					{
+						Sinc3_Filter_2_out = uz_JL_SigmaDelta_Interface_get_outputs(Sinc3_Filter_2);
+						SigmaDeltaWandler_process(SDW_FILTER_1, Sinc3_Filter_2_out, &Global_Data.av.Sinc3_Filter_2);
+						uz_JL_SigmaDelta_Interface_reset_data_valid_cnt(Sinc3_Filter_2);
+						Sinc3_Filter_2_data_ready = true;
+					}
+					else
+					{
+						Sinc3_Filter_2_data_ready = false;
+					}
+
+					bool sinc3_data_valid = false;
+					for (uint32_t data_valid_poll = 0U; data_valid_poll < SDW_DATA_VALID_MAX_POLLS; data_valid_poll++)
+					{
+						if (uz_JL_SigmaDelta_Interface_is_data_valid(Sinc3_Filter))
+						{
+							sinc3_data_valid = true;
+							break;
+						}
+					}
+
+					if (sinc3_data_valid)
+					{
+						sinc3_data_valid_fail_cnt = 0U;
+						SigmaDeltaWandler_read_and_process(Sinc3_Filter, SDW_FILTER_0, &Global_Data.av.Sinc3_Filter);
+					}
+					else
+					{
+						// Budget erschoepft: kein frischer Sinc3-Wert in diesem ISR-Zyklus,
+						// Global_Data.av.Sinc3_Filter behaelt den letzten Wert
+						sinc3_data_valid_fail_cnt++;
+						if (sinc3_data_valid_fail_cnt >= SDW_DATA_VALID_MAX_FAILS)
+						{
+							ultrazohm_state_machine_set_stop(true); // zurueck in idle_state
+						}
+					}
+
+
+					if((fabsf(Global_Data.av.Sinc3_Filter.data_PH1) >= 18.0f) || (fabsf(Global_Data.av.Sinc3_Filter.data_PH2) >= 18.0f) || (fabsf(Global_Data.av.Sinc3_Filter.data_PH3) >= 18.0f))
 					{
 								Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 								Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
@@ -187,11 +220,7 @@ void ISR_Control(void *data)
 								Global_Data.rasv.ctrl_state = ctrl_state_none;
 								ultrazohm_state_machine_set_stop(true);
 					}
-                    if (Global_Data.rasv.ctrl_state != DPT && uz_dpt_get_state() != dpt_idle)
-                    {
-                        // ctrl_state was left while a DPT run was still active (e.g. Stop button) -> abort safely
-                        uz_dpt_abort();
-                    }
+                    
                     switch (Global_Data.rasv.ctrl_state)
                     {
                     case uz_current_control:
@@ -325,24 +354,6 @@ void ISR_Control(void *data)
                             Global_Data.rasv.halfBridge3DutyCycle = Global_Data.rasv.Soll_HB3_DutyCycle;
                             break;
 
-                        case DPT:
-                            struct_ZM_In.Soll_iq_A = 0;
-                            struct_ZM_In.Soll_id_A = 0;
-                            struct_ZM_In.Soll_Drehzahl_Umin = 0;
-                            // Puls 1 (Ladephase) laeuft ueber den 10 kHz Control-ISR mit dem
-                            // Sinc3-Strommesswert des Pruefling-Kanals (PH1 <-> HB1, ggf. an
-                            // die tatsaechliche Beschaltung anpassen). Trennzeit und Puls 2
-                            // uebernimmt ab dem Erreichen des Zielstroms der TTC0-Timer in uz_dpt.c.
-                            // Wird der DPT stattdessen auf HB2/HB3 angewendet (siehe Kommentare in
-                            // uz_dpt.c/uz_dpt_set_outputs), muss hier auf den passenden Kanal
-                            // umgestellt werden: data_PH2 <-> HB2, data_PH3 <-> HB3.
-                            if (uz_dpt_get_state() == dpt_charging)
-                            {
-                                uz_dpt_update_charging(Global_Data.av.Sinc3_Filter.data_PH1);
-                            }
-                            Global_Data.av.dpt_state = uz_dpt_get_state();
-                            break;
-
                         default:
                             struct_ZM_In.Soll_iq_A = 0;
                             struct_ZM_In.Soll_id_A = 0;
@@ -368,6 +379,7 @@ void ISR_Control(void *data)
                     Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
                     Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
                     uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, false);
+                    uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
                     if (uz_dpt_get_state() != dpt_idle)
     			        {
     				        uz_dpt_abort();
@@ -375,12 +387,15 @@ void ISR_Control(void *data)
                     regelung.input.Bus_ZM_In_j = struct_ZM_In;
 	                uz_codegen_step(&regelung);
                 }
+                else
+                {
+                	regelung.input.Bus_ZM_In_j = struct_ZM_In;
+					uz_codegen_step(&regelung);
+                }
     			break;
     		default:
     			break;
     	}
-    
-    
     
     conv_status_signals.pwr_en = (bool)regelung.output.Bus_Ctrl_Out_f.pwr_en;
     conv_status_signals.board_en =  (bool)regelung.output.Bus_Ctrl_Out_f.board_en;

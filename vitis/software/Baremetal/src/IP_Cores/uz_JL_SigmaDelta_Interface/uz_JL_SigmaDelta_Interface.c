@@ -52,6 +52,7 @@ static void write_config_to_pl(uz_JL_SigmaDelta_Interface_t *self)
     uz_JL_SigmaDelta_Interface_hw_write_delay_data_valid(self->config.base_address, self->config.delay_data_valid);
     uz_JL_SigmaDelta_Interface_hw_write_sinc_sample_periods(self->config.base_address, self->config.sinc_sample_periods);
     uz_JL_SigmaDelta_Interface_hw_write_use_clk_ext(self->config.base_address, self->config.use_clk_ext);
+    uz_JL_SigmaDelta_Interface_hw_write_sel_pwm_trigger(self->config.base_address, self->config.sel_pwm_trigger);
 }
 
 void uz_JL_SigmaDelta_Interface_set_data_delay(uz_JL_SigmaDelta_Interface_t *self, uint8_t filt_input_delay)
@@ -103,6 +104,13 @@ void uz_JL_SigmaDelta_Interface_set_use_clk_ext(uz_JL_SigmaDelta_Interface_t *se
     uz_JL_SigmaDelta_Interface_hw_write_use_clk_ext(self->config.base_address, use_clk_ext);
 }
 
+void uz_JL_SigmaDelta_Interface_set_sel_pwm_trigger(uz_JL_SigmaDelta_Interface_t *self, bool sel_pwm_trigger)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_JL_SigmaDelta_Interface_hw_write_sel_pwm_trigger(self->config.base_address, sel_pwm_trigger);
+}
+
 bool uz_JL_SigmaDelta_Interface_is_data_valid(uz_JL_SigmaDelta_Interface_t *self)
 {
     uz_assert_not_NULL(self);
@@ -135,14 +143,13 @@ struct uz_JL_SigmaDelta_Interface_output_t uz_JL_SigmaDelta_Interface_get_output
         .data_PH3 = 0,
         .data_PH4 = 0
     };
-    
-
-    uz_JL_SigmaDelta_Interface_hw_trigger_output_strobe(self->config.base_address);
-    outputs.data_U = uz_JL_SigmaDelta_Interface_hw_read_data_out_U(self->config.base_address);
-    outputs.data_PH1 = uz_JL_SigmaDelta_Interface_hw_read_data_out_PH1(self->config.base_address);
-    outputs.data_PH2 = uz_JL_SigmaDelta_Interface_hw_read_data_out_PH2(self->config.base_address);
-    outputs.data_PH3 = uz_JL_SigmaDelta_Interface_hw_read_data_out_PH3(self->config.base_address);
-    outputs.data_PH4 = uz_JL_SigmaDelta_Interface_hw_read_data_out_PH4(self->config.base_address);
+    const uint32_t base = self->config.base_address;   
+    uz_JL_SigmaDelta_Interface_hw_trigger_output_strobe(base);
+//    outputs.data_U = uz_JL_SigmaDelta_Interface_hw_read_data_out_U(self->config.base_address);
+    outputs.data_PH1 = uz_JL_SigmaDelta_Interface_hw_read_data_out_PH1(base);
+    outputs.data_PH2 = uz_JL_SigmaDelta_Interface_hw_read_data_out_PH2(base);
+    outputs.data_PH3 = uz_JL_SigmaDelta_Interface_hw_read_data_out_PH3(base);
+//    outputs.data_PH4 = uz_JL_SigmaDelta_Interface_hw_read_data_out_PH4(self->config.base_address);
     return outputs;
 }
 #endif

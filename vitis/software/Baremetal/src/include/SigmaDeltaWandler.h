@@ -30,7 +30,7 @@ enum SigmaDeltaWandler_filter_instance {
 // TODO: auf 1 setzen, sobald eine zweite Hardware-Instanz des IP-Cores existiert
 // (XPAR_UZ_USER_UZ_JL_SIGMADELTA_INT_1_BASEADDR nach Erweiterung des Vivado Block Designs
 // und Re-Export der Hardware-Plattform). Bis dahin bleibt SDW_FILTER_1 uninitialisiert.
-#define SDW_SECOND_FILTER_HW_AVAILABLE 0
+#define SDW_SECOND_FILTER_HW_AVAILABLE 1
 
 // TODO: tatsaechlichen Wert festlegen, sobald das Verhaeltnis der Abtastraten von
 // Sinc3_Filter_2 zur ISR-Rate final feststeht (abhaengig von dessen Dezimation/sinc_sample_periods).
@@ -38,7 +38,7 @@ enum SigmaDeltaWandler_filter_instance {
 
 // Schaltet die Trennung von P-/I-Anteil in der Regelung (struct_Ctrl_Config.sel_act_I) ein/aus.
 // Nur sinnvoll aktivierbar, wenn SDW_SECOND_FILTER_HW_AVAILABLE == 1 (sonst bleibt der I-Zweig auf 0).
-#define SDW_ACT_I_SEPARATE_CALC_ENABLED 0U
+#define SDW_ACT_I_SEPARATE_CALC_ENABLED 1U
 
 /**
  * @brief Initialisiert den SD-Demod-IP-Core (filter_config[filter]).
@@ -64,6 +64,19 @@ uz_JL_SigmaDelta_Interface_t *SigmaDeltaWandler_init(enum SigmaDeltaWandler_filt
  * @param result Ausgabe: kalibrierte Werte (data_U in Volt, data_PH1..PH4 in Ampere).
  */
 void SigmaDeltaWandler_process(enum SigmaDeltaWandler_filter_instance filter, struct uz_JL_SigmaDelta_Interface_output_t raw, struct uz_JL_SigmaDelta_Interface_output_t_float *result);
+
+/**
+ * @brief ISR-optimierte Variante: liest die Sinc3-Ausgangsregister (Strobe + Registerreads)
+ * und schreibt die kalibrierten physikalischen Werte direkt nach *result. Ersetzt die
+ * Aufrufkette uz_JL_SigmaDelta_Interface_get_outputs() + SigmaDeltaWandler_process() im
+ * ISR-Pfad und vermeidet dabei die 20-Byte-Struct-Kopien und die pro-Kanal-Funktionsaufrufe.
+ * Die Datengueltigkeit (Data_valid) muss der Aufrufer weiterhin selbst sicherstellen.
+ *
+ * @param instance Filter-Instanz aus SigmaDeltaWandler_init (z.B. Sinc3_Filter).
+ * @param filter Filterinstanz, deren Kalibrierung/OSR fuer die Umrechnung verwendet wird.
+ * @param result Ausgabe: kalibrierte Werte (data_U in Volt, data_PH1..PH4 in Ampere).
+ */
+void SigmaDeltaWandler_read_and_process(uz_JL_SigmaDelta_Interface_t *instance, enum SigmaDeltaWandler_filter_instance filter, struct uz_JL_SigmaDelta_Interface_output_t_float *result);
 
 /**
  * @brief Liefert einen Pointer auf den gleitenden Fenster-Mittelwert (uz_movingAverageFilter,

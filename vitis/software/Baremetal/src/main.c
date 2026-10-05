@@ -109,8 +109,7 @@ int main(void)
 		regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_I_A[2] = 0;
 		regelung.input.Bus_PMSM_Out_f.pmsm_m_mot_Nm = 0;
 		regelung.input.Bus_PMSM_Out_f.pmsm_theta_mech_rad = 0;
-		regelung.input.trigger_actI_I_calc = false; // wird pro ISR-Zyklus in isr.c gesetzt (siehe Sinc3_Filter_2_data_ready, SDW_ACT_I_SEPARATE_CALC_ENABLED)
-		struct_Ctrl_Config.sel_act_I = (bool)SDW_ACT_I_SEPARATE_CALC_ENABLED; // Start-Konfiguration: (de)aktiviert die P-/I-Trennung in der Regelung
+		struct_Ctrl_Config.sel_act_I = true; // Start-Konfiguration: (de)aktiviert die P-/I-Trennung in der Regelung
 		regelung.output.Bus_Ctrl_Out_f.Dutycycle[0] = 0.0;
 		regelung.output.Bus_Ctrl_Out_f.Dutycycle[1] = 0.0;
 		regelung.output.Bus_Ctrl_Out_f.Dutycycle[2] = 0.0;

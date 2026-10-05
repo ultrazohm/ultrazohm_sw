@@ -5003,6 +5003,9 @@
           },
           "pwm_trigger": {
             "direction": "I"
+          },
+          "pwm_max_trigger": {
+            "direction": "I"
           }
         },
         "components": {
@@ -5550,12 +5553,19 @@
               "uz_JL_SigmaDelta_Int_1/AXI4_ARESETN"
             ]
           },
+          "pwm_max_trigger_1": {
+            "ports": [
+              "pwm_max_trigger",
+              "uz_JL_SigmaDelta_Int_1/pwm_max_trigger",
+              "uz_JL_SigmaDelta_Int_0/pwm_max_trigger"
+            ]
+          },
           "pwm_trigger_1": {
             "ports": [
               "pwm_trigger",
               "ila_1/probe2",
-              "uz_JL_SigmaDelta_Int_0/pwm_trigger",
-              "uz_JL_SigmaDelta_Int_1/pwm_trigger"
+              "uz_JL_SigmaDelta_Int_0/pwm_min_trigger",
+              "uz_JL_SigmaDelta_Int_1/pwm_min_trigger"
             ]
           },
           "util_vector_logic_1_Res": {
@@ -8939,7 +8949,8 @@
       "Gates_Carrier_triangular_max1": {
         "ports": [
           "uz_digital_adapter/Carrier_triangular_max",
-          "uz_system/Interrupt2"
+          "uz_system/Interrupt2",
+          "uz_user/pwm_max_trigger"
         ]
       },
       "Gates_Carrier_triangular_max_min": {

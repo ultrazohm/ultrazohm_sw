@@ -6,7 +6,7 @@
 <Project Version="7" Minor="61" Path="C:/Users/jonat/Documents/ultrazohm_sw/ip_cores/uz_JL_SigmaDelta_Interface/ipcore/uz_JL_SigmaDelta_Interface_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="611c7a7f63be47b4afd7a614a6435c61"/>
+    <Option Name="Id" Val="b7d72d9124964bbfbd874c8265d8613e"/>
     <Option Name="Part" Val="xczu9eg-ffvb1156-1-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -186,6 +186,12 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../hdl/uz_JL_SigmaDelta_Interface_src_gen_slow_clk.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/uz_JL_SigmaDelta_Interface_src_nfp_abs_single.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

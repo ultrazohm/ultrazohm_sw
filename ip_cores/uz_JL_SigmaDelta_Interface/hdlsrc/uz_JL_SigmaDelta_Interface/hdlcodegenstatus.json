@@ -11,6 +11,7 @@
     "uz_JL_SigmaDelta_Interface_src_gen_slow_clk.vhd",
     "uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd",
     "uz_JL_SigmaDelta_Interface_src_sync_clk_pwm.vhd",
+    "uz_JL_SigmaDelta_Interface_src_nfp_abs_single.vhd",
     "uz_JL_SigmaDelta_Interface_src_Integratoren.vhd",
     "uz_JL_SigmaDelta_Interface_src_Differentierer.vhd",
     "uz_JL_SigmaDelta_Interface_src_For_Each_Subsystem.vhd",
@@ -26,10 +27,10 @@
     },
     "ModelStructuralChecksum": {
       "Value": [
-        4240836359,
-        617570955,
-        1632900101,
-        2438416835
+        2554557725,
+        2144700665,
+        2556568580,
+        2960020233
       ],
       "MarkedUnique": false
     },
@@ -156,7 +157,7 @@
           "Latency": -1
         },
         {
-          "Name": "pwm_trigger",
+          "Name": "pwm_min_trigger",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 10,
@@ -230,6 +231,26 @@
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 17,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "pwm_max_trigger",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 18,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "sel_pwm_trigger",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 19,
           "IsComplex": false,
           "Testpoint": false,
           "TunableName": "",
@@ -388,11 +409,11 @@
   "ResourceSummary": {
     "multipliers": 1,
     "addersSubtractors": 37,
-    "registers": 713,
-    "oneBitRegisters": 3389,
+    "registers": 703,
+    "oneBitRegisters": 3069,
     "rams": 0,
-    "multiplexers": 717,
-    "IOBits": 289,
+    "multiplexers": 704,
+    "IOBits": 322,
     "staticShiftOperators": 0,
     "dynamicShiftOperators": 0
   }

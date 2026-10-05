@@ -24,6 +24,7 @@ void uz_JL_SigmaDelta_Interface_hw_write_sinc_sample_periods(uint32_t base_addre
 void uz_JL_SigmaDelta_Interface_hw_write_use_clk_ext(uint32_t base_address, bool use_clk_ext);
 void uz_JL_SigmaDelta_Interface_hw_reset_data_valid_cnt(uint32_t base_address);
 uint8_t uz_JL_SigmaDelta_Interface_hw_read_data_valid_cnt(uint32_t base_address);
+void uz_JL_SigmaDelta_Interface_hw_write_sel_pwm_trigger(uint32_t base_address, bool sel_pwm_trigger);
 
 
 #endif // UZ_JL_SigmaDelta_Interface_HW_H

@@ -11,6 +11,7 @@ add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_Subsystem1.vhd}
 add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_gen_slow_clk.vhd}
 add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd}
 add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_sync_clk_pwm.vhd}
+add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_nfp_abs_single.vhd}
 add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_Integratoren.vhd}
 add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_Differentierer.vhd}
 add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_For_Each_Subsystem.vhd}
@@ -46,7 +47,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2114757504 [ipx::current_core]
+set_property core_revision 2114765368 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_uz_JL_SigmaDelta_Inferface_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -85,6 +86,10 @@ ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_sync_clk_pwm.vhd} [ipx::get_fi
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_sync_clk_pwm.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_sync_clk_pwm.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_sync_clk_pwm.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_nfp_abs_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_nfp_abs_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_nfp_abs_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_nfp_abs_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_Integratoren.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_Integratoren.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_Integratoren.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

@@ -27,6 +27,7 @@ struct uz_JL_SigmaDelta_Interface_config_t{
     uint8_t delay_data_valid;
     uint8_t sinc_sample_periods;
     bool use_clk_ext;
+    bool sel_pwm_trigger;
 };
 
 /**
@@ -114,6 +115,14 @@ void uz_JL_SigmaDelta_Interface_set_sinc_sample_periods(uz_JL_SigmaDelta_Interfa
  * @param use_clk_ext Use external clock value
  */
 void uz_JL_SigmaDelta_Interface_set_use_clk_ext(uz_JL_SigmaDelta_Interface_t *self, bool use_clk_ext);
+
+/**
+ * @brief Select the PWM trigger source used to start a sampling cycle (e.g. pwm_min_trigger / pwm_max_trigger).
+ *
+ * @param self Pointer to driver instance
+ * @param sel_pwm_trigger Trigger selection value (false / true selects the PWM trigger source)
+ */
+void uz_JL_SigmaDelta_Interface_set_sel_pwm_trigger(uz_JL_SigmaDelta_Interface_t *self, bool sel_pwm_trigger);
 
 /**
  * @brief Get Outputs oft the ip Core: data_U, data_PH1, data_PH2, data_PH3, data_PH4

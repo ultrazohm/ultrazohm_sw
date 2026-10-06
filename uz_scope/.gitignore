@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/native/
+dist/
+.venv/
+venv/
+*.ini
+imgui.ini
+uz_scope_settings.json
+logs/
+*.spec.bak

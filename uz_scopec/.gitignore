@@ -1,0 +1,5 @@
+build/
+*.ini
+imgui.ini
+uz_scopec_settings.json
+logs/

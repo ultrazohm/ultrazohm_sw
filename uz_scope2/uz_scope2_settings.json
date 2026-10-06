@@ -1,0 +1,181 @@
+{
+  "version": 1,
+  "ip": "192.168.1.233",
+  "port": 1000,
+  "auto_connect": false,
+  "ack_pacing": true,
+  "channels": 20,
+  "samples_per_packet": 15,
+  "timestep_usec": 100.0,
+  "auto_detect_rate": true,
+  "header_path": "vitis/software/Baremetal/src/include/javascope.h",
+  "ring_seconds": 10.0,
+  "max_ring_bytes": 536870912,
+  "refresh_hz": 30.0,
+  "window_seconds": 0.5,
+  "channel_settings": [
+    {
+      "observable": 3,
+      "visible": true,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    },
+    {
+      "observable": 0,
+      "visible": false,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    },
+    {
+      "observable": 0,
+      "visible": false,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    },
+    {
+      "observable": 0,
+      "visible": false,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    },
+    {
+      "observable": 0,
+      "visible": false,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    },
+    {
+      "observable": 0,
+      "visible": false,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    },
+    {
+      "observable": 0,
+      "visible": false,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    },
+    {
+      "observable": 0,
+      "visible": false,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    },
+    {
+      "observable": 0,
+      "visible": false,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    },
+    {
+      "observable": 0,
+      "visible": false,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    },
+    {
+      "observable": 0,
+      "visible": false,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    },
+    {
+      "observable": 0,
+      "visible": false,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    },
+    {
+      "observable": 0,
+      "visible": false,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    },
+    {
+      "observable": 0,
+      "visible": false,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    },
+    {
+      "observable": 0,
+      "visible": false,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    },
+    {
+      "observable": 0,
+      "visible": false,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    },
+    {
+      "observable": 0,
+      "visible": false,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    },
+    {
+      "observable": 0,
+      "visible": false,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    },
+    {
+      "observable": 0,
+      "visible": false,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    },
+    {
+      "observable": 0,
+      "visible": false,
+      "scale": 1.0,
+      "offset": 0.0,
+      "color": null
+    }
+  ],
+  "trigger": {
+    "channel": 0,
+    "edge": "rising",
+    "level": 0.0,
+    "pretrigger": 0.5,
+    "mode": "auto",
+    "enabled": false
+  },
+  "logging": {
+    "directory": "logs",
+    "format": "parquet",
+    "every_n": 1,
+    "fast": true,
+    "slow": true,
+    "ext_trigger": false
+  },
+  "history": {
+    "mode": "ram",
+    "directory": "history",
+    "max_ram_bytes": 268435456,
+    "keep_files": false,
+    "base": 64
+  }
+}

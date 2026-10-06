@@ -6,6 +6,10 @@ JavaScope
 
 This page documents the UltraZohm GUI in ``ultrazohm_sw/javascope``.
 
+.. tip::
+   A modern replacement, the :ref:`UltraZohm Scope <uz_scope>` (``ultrazohm_sw/uz_scope``), speaks the same protocol against unmodified firmware and imports your ``properties.ini``.
+   The JavaScope remains fully supported; both use the single GUI connection slot, so run one at a time.
+
 .. note::
    The GUI layout changed, but the Vitis-side integration is unchanged.
    Customize ``javascope.h`` and ``javascope.c`` as described in :ref:`javascope_customizing`.

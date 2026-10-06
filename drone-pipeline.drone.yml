@@ -171,10 +171,8 @@ steps:
    depends_on: [ Vitis_generate_Workspace ]
    image: alpine/git
    environment:
-     pass:
-       from_secret: password
-     user:
-       from_secret: username
+     GITHUB_PUSH_TOKEN:
+       from_secret: drone-ci-push-to-uzsw
    commands:
    - apk add git-lfs
    - git status
@@ -187,8 +185,13 @@ steps:
    - git status
    - git commit -m "[skip ci] Commit Vivado binarys from DroneCI"
    - git status
-   - git push --tags --set-upstream https://$user:$pass@bitbucket.org/ultrazohm/ultrazohm_sw.git main 
+   - |
+     git -c credential.helper= \
+       -c 'credential.helper=!f() { if [ "$$1" = get ]; then printf "%s\n" "username=x-access-token" "password=$${GITHUB_PUSH_TOKEN}"; fi; }; f' \
+       push --tags https://github.com/ultrazohm/ultrazohm_sw.git HEAD:refs/heads/main
    when:
+     event:
+     - push
      branch:
      - main
 
@@ -202,6 +205,8 @@ steps:
    commands:
    - curl -sL https://git.io/autotag-install | sh -s -- -b /root/.m2/
    when:
+     event:
+     - push
      branch:
      - main
 
@@ -222,6 +227,8 @@ steps:
    - /root/.m2/autotag --scheme=conventional -b=main
    - git tag
    when:
+     event:
+     - push
      branch:
      - main
 
@@ -232,6 +239,8 @@ steps:
    - npm install -g auto-changelog
    - auto-changelog
    when:
+     event:
+     - push
      branch:
      - main
 
@@ -239,18 +248,21 @@ steps:
    image: alpine/git
    depends_on: [ Create_changelog ]
    environment:
-     pass:
-       from_secret: password
-     user:
-       from_secret: username
+     GITHUB_PUSH_TOKEN:
+       from_secret: drone-ci-push-to-uzsw
    commands:
    - apk add git-lfs
    - git status
    - git add CHANGELOG.md
    - git commit -m "[skip ci] Commit changelog and tag from DroneCI"
    - git status
-   - git push --tags --set-upstream https://$user:$pass@bitbucket.org/ultrazohm/ultrazohm_sw.git main 
+   - |
+     git -c credential.helper= \
+       -c 'credential.helper=!f() { if [ "$$1" = get ]; then printf "%s\n" "username=x-access-token" "password=$${GITHUB_PUSH_TOKEN}"; fi; }; f' \
+       push --tags https://github.com/ultrazohm/ultrazohm_sw.git HEAD:refs/heads/main
    when:
+     event:
+     - push
      branch:
      - main
 

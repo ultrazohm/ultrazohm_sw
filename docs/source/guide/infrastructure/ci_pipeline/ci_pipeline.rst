@@ -214,7 +214,14 @@ Furthermore, some configuration is specific to the UltraZohm-Server.
 Push back to repository
 ***********************
 
-The drone pipeline pushes back to the ``ultrazohm_sw`` repository if a commit is made to main (through a pull request).
+The drone pipeline pushes back to the ``ultrazohm/ultrazohm_sw`` repository on GitHub if a commit is made to main (through a pull request).
+Both the binary and changelog push steps use the Drone repository secret ``drone-ci-push-to-uzsw``.
+Set this secret to a fine-grained GitHub personal access token scoped to ``ultrazohm/ultrazohm_sw`` with ``Contents: read and write`` permission.
+Leave ``Allow Pull Requests`` disabled for the secret; the publishing steps run only for ``push`` events on ``main``.
+A command-scoped credential helper supplies the token to Git and Git LFS without putting it in the remote URL.
+No separate username secret is required.
+The account must be allowed to push the generated commits to ``main`` and create tags.
+
 The pipeline:
 
 - commits all binarys to the repo

@@ -94,8 +94,6 @@ Contributing
 - For IP cores, developing with a generic UltraScale development kit is advised
 - While we try to reduce the barrier for contributions, physical access to an UltraZohm is often required
 - Contributors can get in contact with the maintainers by mail or Slack to get write access to the repository and switch to a feature-branch workflow (see :ref:`contribution`)
-- `Open in Gitpod <https://gitpod.io/#https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/>`_ for contributing without tool setup
-
 
 Research
 ********

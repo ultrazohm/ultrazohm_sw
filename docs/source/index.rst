@@ -59,8 +59,8 @@ Comprehensive and ever-growing documentation for the UltraZohm on `docs.ultrazoh
 
 The UltraZohm repositories are split into software and hardware:
 
-- The `main repository ultrazohm_sw <https://bitbucket.org/ultrazohm/ultrazohm_sw>`_ contains the source code for the processors, FPGA, documentation, CI pipelines and more.
-- The `PCB Designs page <https://bitbucket.org/ultrazohm/workspace/projects/PCB>`_ lists all adapter card repositories, each containing its Altium PCB project. Additionally, each PCB’s documentation page links to its respective repository.
+- The `main repository ultrazohm_sw <https://github.com/ultrazohm/ultrazohm_sw>`_ contains the source code for the processors, FPGA, documentation, CI pipelines and more.
+- The `PCB Designs <https://github.com/orgs/ultrazohm/repositories>`_ lists all adapter card repositories, each containing its Altium PCB project. Additionally, each PCBs documentation page links to its respective repository.
 
 **Maintained & Funded**
 
@@ -89,7 +89,7 @@ Contributing
 ************
 
 - We are accepting and welcoming contributions
-- Forking & creating a pull request is possible for everybody (see `fork a repository documentation <https://support.atlassian.com/bitbucket-cloud/docs/fork-a-repository/>`_)
+- Forking & creating a pull request is possible for everybody
 - In principle, documentation, software, and even IP cores can be developed and contributed without physical access to an UltraZohm
 - For IP cores, developing with a generic UltraScale development kit is advised
 - While we try to reduce the barrier for contributions, physical access to an UltraZohm is often required
@@ -143,7 +143,7 @@ License
 *******
 
 The project is licensed under the Apache 2.0 license.
-See `LICENSE <https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/LICENSE>`_ for details.
+See `LICENSE <https://github.com/ultrazohm/ultrazohm_sw/src/main/LICENSE>`_ for details.
 
 The hardware is documented in :ref:`carrier_board` and :ref:`adapter_cards` including schematics and assembly files.
 The preferred license for hardware within the UltraZohm project is the `CERN Open Hardware License Version 2 - Permissive <https://ohwr.org/cern_ohl_p_v2.pdf>`_ (CERN-OHL-P).

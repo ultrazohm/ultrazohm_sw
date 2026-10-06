@@ -6,7 +6,7 @@ Continuous Integration
 
 The UltraZohm project uses two different build pipelines to test the builds of the UltraZohm software as well as the documentation (docs).
 
-* The Bitbucket pipeline tests and deploys the docs
+* The Github pipeline (actions) tests and deploys the docs
   
   * Tests the build of the Sphinx docs
   * Deploys the docs of the main branch to docs.ultrazohm.com
@@ -16,7 +16,7 @@ The UltraZohm project uses two different build pipelines to test the builds of t
 
   * Builds bitstream in Vivado (only main & develop branch)
   * Commits the Vivado binaries (.xsa) to the repository and pushes the change (only on main)
-  * Creates a new tag and a changelog, commits them to the repository and pushes the changes to Bitbucket (only on main)
+  * Creates a new tag and a changelog, commits them to the repository and pushes the changes to main
   * Exports the bitstream
   * Generates the Vitis workspace
   * Builds the software
@@ -24,17 +24,8 @@ The UltraZohm project uses two different build pipelines to test the builds of t
 Unit tests (Ceedling)
 *********************
 
-* All unit tests (see :ref:`unit_tests` are run in the Bitbucket pipeline.
+* All unit tests (see :ref:`unit_tests` are run in the Drone pipeline.
 * If one test fails, the pipeline fails.
-
-Bitbucket pipeline (GitHub-Mirror)
-**********************************
-
-* Adds GitHub repository as remote repo
-* Pushes current branch to https://github.com/ultrazohm/ultrazohm_sw
-* A special UltraZohm GitHub account (login information in Keepass) pushes to the GitHub repository
-* The account uses the Bitbucket pipeline SSH key (``ultrazohm_sw -> Repository settings --> SSH keys``, only visible to admins) to push to GitHub
-* GitHub.com is added to ``Known hosts`` in ``ultrazohm_sw -> Repository settings --> SSH keys``
 
 .. _ci_static_code_check:
 
@@ -105,12 +96,11 @@ Drone pipeline (Software)
 
 * Uses `Drone <www.drone.io>`_
 * Drone has a Server and a Runner
-* Drone Server is the bridge between Bitbucket, User and Runner (`ci.ultrazohm.com <www.ci.ultrazohm.com>`_)
+* Drone Server is the bridge between Github, User and Runner (`ci.ultrazohm.com <www.ci.ultrazohm.com>`_)
 * Runner (Docker runner, see `Drone docs <https://docs.drone.io/runner/docker/overview/>`_) polls the server and executes the build pipeline
 * Server and Runner are used as Docker container on the UltraZohm Server
-* Setup in Bitbucket **exactly** as in the `drone docs for Bitbucket <https://docs.drone.io/server/provider/bitbucket-cloud/>`_
-* Permissions in the OAuth settings of the Bitbucket repository must match the drone docs
-* ``drone/Docker-compose.yml`` in `uz_server_main <https://bitbucket.org/ultrazohm/uz_server_main/src/master/>`_ repository (only visible to admins) sets up Drone
+* Permissions in the OAuth settings of the Github repository must match the drone docs
+* ``drone/Docker-compose.yml`` in `uz_server_main <https://github.com/ultrazohm/uz_server_main/src/master/>`_ repository (only visible to admins) sets up Drone
 * Changes in the docker-compose file are automatically transferred to the UltraZohm by using a rsync pipeline
 * ``ssh`` to UltraZohm-Server, `cd` to ``/drone`` and use ``docker-compose up -d`` to restart the Drone Server and Runner after changes in the repository
 
@@ -159,57 +149,6 @@ See the docker-compose file for details (`drone/docker-compose.yml <https://bitb
 Following is an example docker-compose file without login information.
 Note that the indentation is relevant since this is a ``yml`` file.
 Furthermore, some configuration is specific to the UltraZohm-Server.
-
-::
-
-    version: '3.7'
-
-    services:
-      drone-server:
-        container_name: drone_server
-        image: drone/drone:1
-        volumes:
-          - /var/lib/drone:/data
-          - /var/run/docker.sock:/var/run/docker.sock
-        restart: always
-        userns_mode: "host"
-        environment:
-        - DRONE_BITBUCKET_CLIENT_ID=$bitbucket_key
-        - DRONE_BITBUCKET_CLIENT_SECRET=$bitbucket_secret
-        - DRONE_RPC_SECRET=$common_secret
-        - DRONE_SERVER_HOST=ci.ultrazohm.com
-        - DRONE_SERVER_PROTO=https
-        - DRONE_USER_CREATE=username:$username,admin:true
-        networks:
-          - frontend
-        
-      drone-runner:
-        container_name: drone_runner
-        image: drone/drone-runner-docker:1
-        ports:
-          - "3000:3000"
-        volumes:
-          - /var/run/docker.sock:/var/run/docker.sock
-        restart: always
-        userns_mode: "host"
-        environment:
-          - DRONE_RPC_PROTO=https
-          - DRONE_RPC_HOST=ci.ultrazohm.com
-          - DRONE_RPC_SECRET=$common_secret
-          - DRONE_RUNNER_CAPACITY=1
-          - DRONE_RUNNER_NAME=$runnerName
-          - DRONE_LOGS_TRACE=true
-          - DRONE_LOGS_PRETTY=true
-          - DRONE_LOGS_COLOR=true
-          - DRONE_RUNNER_NETWORKS=drone_default
-          - DRONE_CPU_SET=1,2,3,4
-          - DRONE_MEMORY_LIMIT=20000000000
-        
-
-    networks:
-      frontend:
-        external:
-          name: frontend
 
 Push back to repository
 ***********************

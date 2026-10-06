@@ -8,7 +8,7 @@ When ordering at JLCPCB the following files are necessary for your order:
 * Pick and Place files (CLP)
 * Bill Of Material (BOM) 
 
-These files are generated with help of an output job file. Since there is already the template `UZ_Outputjob.outjob <https://bitbucket.org/ultrazohm/altium_libraries/src/master/templates/output_jobs/>`_ 
+These files are generated with help of an output job file. Since there is already the template `UZ_Outputjob.outjob <https://github.com/ultrazohm/altium_libraries/src/master/templates/output_jobs/>`_ 
 available at the UltraZohm bitbucket it is recommended to use this file and refactor it to match your project. Just follow the guide below to generate all necessary files:
 
 .. note:: The UZ_Outputjob.outjob meets JLC's requirements of manufacturing for the **Gerber**, **NC Drill**, **BOM** and **Pick and Place (CLP)** files, that can be accessed with the links below. The links below should be understood as a 'FYI', there is no need to make any changes to UZ_Outputjob.outjob.
@@ -48,7 +48,7 @@ LCSC Part number LCSC Part #
 
 Since the output job file was refactored, the next step is to generate the manufacturing files (namely the Gerber files, NC Drill files, Pick and Place files (CLP) and  Bill Of Material (BOM) ). 
 But before you generate the files, first add the correct template for the BOM. To do so 
-double click on the ``BOM file`` -> click on ``...`` next to ``Template`` -> choose  `BOM_Template_THN_JLCPCB.xlsx <https://bitbucket.org/ultrazohm/altium_libraries/src/master/templates/BOM/>`_ -> ``Öffnen``. 
+double click on the ``BOM file`` -> click on ``...`` next to ``Template`` -> choose  `BOM_Template_THN_JLCPCB.xlsx <https://github.com/ultrazohm/altium_libraries/src/master/templates/BOM/>`_ -> ``Öffnen``. 
 Now everything is set up and the files can finally be generated. 
 Choose ``BOM_JLC Output Container`` -> ``Generate content->``. Repeat this for the ``Gerber_and_Drill_Files`` and ``Pick_and_Place`` **Output Containers**. 
 

@@ -12,7 +12,7 @@ Following, the step-by-step setup of the software implementation is shown, to su
 
 ::
 
-   git clone https://bitbucket.org/ultrazohm/ultrazohm_sw.git
+   git clone https://github.com/ultrazohm/ultrazohm_sw.git
    git checkout feature/ZC/Deskbench
 
 3. Open vitis and create the workspace, see :ref:`genvitis`.

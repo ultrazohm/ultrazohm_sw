@@ -11,7 +11,7 @@ Digital Voltage 3U 2v01
 Source
 """"""
 
-- `Digital Voltage repository <https://bitbucket.org/ultrazohm/uz_d_voltage>`_
+- `Digital Voltage repository <https://github.com/ultrazohm/uz_d_voltage>`_
 
 General description
 """""""""""""""""""
@@ -148,7 +148,7 @@ Slots D1 to D4 can be used without limitations
 See also
 """"""""
 
-* `CPLD software git <https://bitbucket.org/ultrazohm/cpld_lattice/>`_
+* `CPLD software git <https://github.com/ultrazohm/cpld_lattice/>`_
 * :ref:`label_cpld_programming`
 
 Appendix

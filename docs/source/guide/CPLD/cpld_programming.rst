@@ -9,18 +9,18 @@ CPLD Versions
 
 There are different versions available - for :math:`\leq` ``Rev04``:
 
-* `LA4128V <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/ispMACH/LA4128V/>`_ for old revisions and Rev04 with serial number UZ2021-002-001-200-0001 to UZ2021-001-001-004-0004
-* `LC4256V <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/ispMACH/LC4256V/>`_ for all other Rev04 with serial number UZ2022-001-001-401-0007 up to UZ2024-001-001-0401-0031
+* `LA4128V <https://github.com/ultrazohm/cpld_lattice/src/master/ispMACH/LA4128V/>`_ for old revisions and Rev04 with serial number UZ2021-002-001-200-0001 to UZ2021-001-001-004-0004
+* `LC4256V <https://github.com/ultrazohm/cpld_lattice/src/master/ispMACH/LC4256V/>`_ for all other Rev04 with serial number UZ2022-001-001-401-0007 up to UZ2024-001-001-0401-0031
 
 For UZ  :math:`\geq`  ``Rev05``:
 
-* `MachXO2 LCMXO2-2000HC <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/MachXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/>`_ 5x D-slot CPLD
-* `MachXO2 LCMXO2-4000HC <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/MachXO2/S3C_CPLD_LCMXO2-4000HC-4TG144C/>`_ 1x S3C
+* `MachXO2 LCMXO2-2000HC <https://github.com/ultrazohm/cpld_lattice/src/master/MachXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/>`_ 5x D-slot CPLD
+* `MachXO2 LCMXO2-4000HC <https://github.com/ultrazohm/cpld_lattice/src/master/MachXO2/S3C_CPLD_LCMXO2-4000HC-4TG144C/>`_ 1x S3C
 
 
 **CPLD programs** 
 
-Note that there are separate CPLD programs for each series and type in the `repository <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/>`_.
+Note that there are separate CPLD programs for each series and type in the `repository <https://github.com/ultrazohm/cpld_lattice/src/master/>`_.
 The folders are structured and named accordingly.
 Before programming, make sure the Diamond Programmer by Lattice is installed and clone the CPLD repository, see :ref:`install_lattice` for details. 
 
@@ -215,5 +215,5 @@ See also
 --------
 
 * `Lattice Diamond Programmer download <http://www.latticesemi.com/programmer>`_
-* `CPLD software git <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/>`_
+* `CPLD software git <https://github.com/ultrazohm/uz_cpld/>`_
 * `Trenz Programmer Wiki <https://wiki.trenz-electronic.de/display/PD/TE0790+TRM>`_

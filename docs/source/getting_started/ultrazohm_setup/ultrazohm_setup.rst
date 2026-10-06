@@ -12,7 +12,7 @@ Requirements
 - Installed Java 
 - Vivado license
 - Installed git
-- Bitbucket account
+- Github account
 - (Optional) Sourcetree
 
 Aim
@@ -36,7 +36,7 @@ Clone the UltraZohm repositories
 
 ::
 
-   git clone https://bitbucket.org/ultrazohm/ultrazohm_sw.git
+   git clone https://github.com/ultrazohm/ultrazohm_sw.git
 
 
 After executing the ``git clone`` command, the following directory structure exists.

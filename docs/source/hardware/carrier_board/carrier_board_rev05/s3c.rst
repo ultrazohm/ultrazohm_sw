@@ -260,7 +260,7 @@ I/Os
 
   - Special functions
 
-    - ``JTAGENB`` (see `this post in issue 127 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/127/#comment-66977261>`_ for required config. option)
+    - ``JTAGENB`` (see `this post in issue 127 <https://github.com/ultrazohm/uz_carrierboard/issues/127/#comment-66977261>`_ for required config. option)
     - Pins 126/125 (primary I²C)
     - Pins 105/106 (secondary I²C)
 

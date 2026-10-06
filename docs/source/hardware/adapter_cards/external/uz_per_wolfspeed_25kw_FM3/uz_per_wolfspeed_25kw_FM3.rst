@@ -6,7 +6,7 @@ Wolfspeed Inverter 2L 25kW Interface
 Source
 ******
 
-- `PCB repository uz_per_wolfspeed_25kw_FM3 <https://bitbucket.org/ultrazohm/uz_per_wolfspeed_25kw_fm3/src/main/>`_
+- `PCB repository uz_per_wolfspeed_25kw_FM3 <https://github.com/ultrazohm/uz_per_wolfspeed_25kw_fm3/src/main/>`_
 
 General Description
 *******************
@@ -147,8 +147,8 @@ A few considerations should be kept in mind for future iterations of the interfa
    Interface board with 3D-printed stand for mechanical stability
 
 - **Software Branch**
-  We used the ``feature/wolfspeed_inverter_adapterboard`` branch of the `ultrazohm_sw <https://bitbucket.org/ultrazohm/ultrazohm_sw/src/>`_ repository to test the inverter. 
-  View the branch diff directly `here <https://bitbucket.org/ultrazohm/ultrazohm_sw/branches/compare/feature%2Fwolfspeed_inverter_adapterboard%0Ddevelop#diff>`_.
+  We used the ``feature/wolfspeed_inverter_adapterboard`` branch of the `ultrazohm_sw <https://github.com/ultrazohm/ultrazohm_sw/src/>`_ repository to test the inverter. 
+  View the branch diff directly `here <https://github.com/ultrazohm/ultrazohm_sw/branches/compare/feature%2Fwolfspeed_inverter_adapterboard%0Ddevelop#diff>`_.
 
 Documents and Links
 *******************
@@ -157,6 +157,6 @@ Documents and Links
 - Final presentation :download:`download here <FinalPresentation.pdf>`
 - Schematic Rev03 :download:`download here <SCH_uz_per_wolfspeed_25kw_FM3_jlc_Rev03.pdf>`
 - Poster KI-Power Symposium :download:`download here <Poster_UZandWolfspeedInterface.pptx>`
-- Altium Files `git Repo uz_per_wolfspeed_25kw_FM3 <https://bitbucket.org/ultrazohm/uz_per_wolfspeed_25kw_fm3/src/main/>`_
+- Altium Files `git Repo uz_per_wolfspeed_25kw_FM3 <https://github.com/ultrazohm/uz_per_wolfspeed_25kw_fm3/src/main/>`_
 - Wolfspeed 25 kW Three-Phase Inverter `CRD25DA12N-FMC <https://www.wolfspeed.com/products/power/reference-designs/crd25da12n-fmc/>`_. 
 - TI E2E `Thread on HSEC8 pinout <https://e2e.ti.com/support/microcontrollers/arm-based-microcontrollers-group/arm-based-microcontrollers/f/arm-based-microcontrollers-forum/1486750/tmdshsecdock-edge-connector-hsec8-160-wrong-orientation-and-position-of-pin-1/>`_

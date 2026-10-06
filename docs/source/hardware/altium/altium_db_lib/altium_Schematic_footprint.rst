@@ -359,7 +359,7 @@ In order to adapt those components to the required layer mapping there are two w
 Loading Stackup Template File
 *****************************
 
-Clone the UltraZohm Altium Library Repository to your local drive (https://bitbucket.org/ultrazohm/altium_libraries/).
+Clone the UltraZohm Altium Library Repository to your local drive (https://github.com/ultrazohm/altium_libraries/).
 
 #. Create a new PCB Library in Altium altium-designer
 

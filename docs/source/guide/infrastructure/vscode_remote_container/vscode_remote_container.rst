@@ -70,7 +70,7 @@ The performance of using the remote container in VS Code on Windows is relativel
 
    .. code-block:: console
 
-      git clone https://bitbucket.org/ultrazohm/ultrazohm_sw.git
+      git clone https://github.com/ultrazohm/ultrazohm_sw.git
 
    .. note::
       The repositories inside the Ubuntu subsystem and on Windows are two different local repositories. They do not sync automatically. You can only sync them via the ``push, pull`` etc. commands.
@@ -79,7 +79,7 @@ The performance of using the remote container in VS Code on Windows is relativel
 
    .. image:: docker_setup_ubuntu.png
 
-#. Add your git credentials from your **Bitbucket Account** in the Ubuntu shell
+#. Add your git credentials from your **Github Account** in the Ubuntu shell
 
    .. code-block:: console
 

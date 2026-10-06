@@ -16,7 +16,7 @@ It is possible to connect differential pairs on the left (ADC1 to ADC 4).
 Source
 --------
 
-- `RJ45 Breakout repository <https://bitbucket.org/ultrazohm/uz_per_rj45_breakout/>`_
+- `RJ45 Breakout repository <https://github.com/ultrazohm/uz_per_rj45_breakout/>`_
 
 Known issues
 ------------

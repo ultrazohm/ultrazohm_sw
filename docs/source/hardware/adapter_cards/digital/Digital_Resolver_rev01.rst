@@ -10,7 +10,7 @@ Digital Resolver Rev01
 Source
 ------
 
-* `uz_d_resolver Repository with Altium project <https://bitbucket.org/ultrazohm/uz_d_resolver>`_
+* `uz_d_resolver Repository with Altium project <https://github.com/ultrazohm/uz_d_resolver>`_
 
 
 Interface and Functionality
@@ -70,7 +70,7 @@ Before first use
 ----------------
 
 * Determine correct placement options for correct function (Default is 16-bit resolution) and one common GND for all channels
-* Program CPLD with proper firmware, `uz_d_resolver CPLD program <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/uz_d_resolver/>`_. See :ref:`label_cpld_programming` for details.
+* Program CPLD with proper firmware, `uz_d_resolver CPLD program <https://github.com/ultrazohm/cpld_lattice/src/master/uz_d_resolver/>`_. See :ref:`label_cpld_programming` for details.
 
 .. warning:: There are two different CPLD programs in the ``cpld_lattice`` repository for ``uz_d_resolver``. One for usage of the adapter board in slots D1 to D4 (sub-folder: ``digital_D1_to_D4``). And a special one for usage in slot D5 (sub-folder: ``digital_D5``). Due to the limited number of pins at D5 there are only two resolver channels available (``Ch A/1`` and ``Ch B/2``).
 

@@ -168,4 +168,4 @@ Further reading
 Please refer to the following references for more details.
 
 * :download:`Schematic Rev03 <i2cssds2c/SCH_UZ_per_cb_upgrade_Default_03.pdf>`
-* `Repository of the I²C(/SSD(/S²C)) extension board <https://bitbucket.org/ultrazohm/uz_per_rtc_mac/>`_
+* `Repository of the I²C(/SSD(/S²C)) extension board <https://github.com/ultrazohm/uz_per_rtc_mac/>`_

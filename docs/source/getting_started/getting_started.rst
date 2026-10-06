@@ -25,22 +25,16 @@ Please install all of them in the newest version, except for the Xilinx toolchai
 Community & git
 ***************
 
-The UltraZohm project is a community-based open-source project and the `repository is hosted on Bitbucket <https://www.bitbucket.org/ultrazohm/ultrazohm_sw>`_.
+The UltraZohm project is a community-based open-source project and the `repository is hosted on Github <https://www.github.com/ultrazohm/ultrazohm_sw>`_.
 We use `Slack <https://slack.com/intl/de-de/>`_ as our primary communication channel.
 Follow these steps to join the community and understand how git works.
 
 #. Join the Slack channel by asking a community member for an invite or request access by mail (info@ultrazohm.com) 
-#. Create a Bitbucket account `on the Bitbucket homepage <https://www.bitbucket.com>`_
-#. Ask for your Bitbucket account to be added as a **User** in Bitbucket in the Slack channel
+#. Create a Github account `on the Github homepage <https://www.github.com>`_
+#. Ask for your Github account to be added as a **User** in Github in the Slack channel
 #. Read :ref:`ProjectStructure` to get familiar with the naming conventions and structure of the community
-#. Complete the Atlassian git tutorials to familiarize yourself with the Bitbucket workflow and git:
-   
-   *  `Tutorial Part 1 git basics <https://www.atlassian.com/git/tutorials/learn-git-with-bitbucket-cloud>`_
-   *  `Tutorial Part 2 code review <https://www.atlassian.com/git/tutorials/learn-about-code-review-in-bitbucket-cloud>`_
-   *  `Tutorial Part 3 branches <https://www.atlassian.com/git/tutorials/learn-branching-with-bitbucket-cloud>`_
-   *  `Tutorial Part 4 revert <https://www.atlassian.com/git/tutorials/learn-undoing-changes-with-bitbucket>`_
 
-.. warning:: Using and understanding how git and Bitbucket work are mandatory for working with the UltraZohm!
+.. warning:: Using and understanding how git and Github work are mandatory for working with the UltraZohm!
 
 UltraZohm setup & tutorials
 ***************************
@@ -73,9 +67,9 @@ Please complete the steps if you are planning to contribute to the project.
 You will make your first contribution by adding yourself to the list of :ref:`Contributors` in the following steps.
 
 #. Read :ref:`contribution` to understand the UltraZohm workflow (git flow)
-#. Read the UltraZohm-specific documentation for :ref:`Bitbucket`
+#. Read the UltraZohm-specific documentation for :ref:`Github`
 #. Request access to the contributor user group by asking in the Slack channel (see :ref:`ProjectStructure`)
-#. Create a new feature branch in Bitbucket with the name ``contributor_name``
+#. Create a new feature branch in Github with the name ``contributor_name``
 #. Open the repository with the :ref:`vscode_remote_container`
 #. Build the documentation by invoking ``make docs`` (see :ref:`howToDocs` for reference)
 #. Add your name to the ``contributors.rst`` file located at ``ultrazohm_sw/docs/source/general``

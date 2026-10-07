@@ -112,13 +112,20 @@ steps:
 #      ref:
 #      - refs/tags/vivado*
 
-# Generates the bitstream, only on main or develop branch since the step takes ~1.5h, exports the xsa
+# Generates the bitstream and exports the XSA on pushes to main/develop and develop -> main PRs (~1.5h).
  - name: Vivado_generate_bitstream
    image: vivado:2022.2
    # Requires the persistent helper with the MAC bound to the Vivado license.
    network_mode: container:vivado-license-net
    depends_on: [ Vivado_validate_board_design ]
    commands:
+   # Drone's branch condition checks the PR target; check the source here as well.
+   - |
+     if [ "$${DRONE_BUILD_EVENT}" = "pull_request" ] && \
+        { [ "$${DRONE_SOURCE_BRANCH}" != "develop" ] || [ "$${DRONE_TARGET_BRANCH}" != "main" ]; }; then
+       echo "Skipping bitstream generation: only develop -> main PRs build before merging."
+       exit 0
+     fi
    - ip link show
    - |
      if ! ip -o link show | grep -Fq 'link/ether 02:42:c0:a8:40:03 '; then
@@ -129,11 +136,14 @@ steps:
    - LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so.1 /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -source tcl_scripts/ci_vivado_generate_bitstream.tcl
    - /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -source tcl_scripts/ci_vivado_export_xsa.tcl
    when:
+     event:
+     - push
+     - pull_request
      branch:
      - main
      - develop
 
-# Open vitis and generate the workspace with the existing xsa or with the new generated xsa if it is main/develop
+# Open Vitis and generate the workspace using the new XSA when built, otherwise the existing XSA.
  - name: Vitis_generate_Workspace
    image: vivado:2022.2
    depends_on: [ Vivado_generate_bitstream ]

@@ -67,7 +67,6 @@ Please complete the steps if you are planning to contribute to the project.
 You will make your first contribution by adding yourself to the list of :ref:`Contributors` in the following steps.
 
 #. Read :ref:`contribution` to understand the UltraZohm workflow (git flow)
-#. Read the UltraZohm-specific documentation for :ref:`Github`
 #. Request access to the contributor user group by asking in the Slack channel (see :ref:`ProjectStructure`)
 #. Create a new feature branch in Github with the name ``contributor_name``
 #. Open the repository with the :ref:`vscode_remote_container`

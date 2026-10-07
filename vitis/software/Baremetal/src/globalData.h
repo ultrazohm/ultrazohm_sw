@@ -58,6 +58,13 @@ typedef struct _actualValues_ {
 	float inverter_temperature_pwm_frequency_Hz;
 	float inverter_temperature_degC;
 	float inverter_hardware_overcurrent;
+	/** Automated observer test stage: 0 off, 1 armed, 2 initialization at zero,
+	 * 3 positive-frequency sequence, 4 negative-frequency sequence,
+	 * 5 final zero-frequency hold. */
+	float im_validation_profile_stage;
+	/** Selected observer enum exported for log segmentation: 0 deterministic,
+	 * 1 full four-state Kalman, 2 simplified current Kalman plus Tustin. */
+	float im_validation_observer_mode;
 	/* Project Wizard BEGIN: actualValues */
 	float adc_ltc2311_a1_ch0;
 	float adc_ltc2311_a1_ch1;
@@ -98,7 +105,11 @@ typedef struct _referenceAndSetValues_ {
 	float im_i_q_reference_A;
 	bool im_enable_foc;
 	bool im_enable_kalman_filter;
+	bool im_use_simplified_kalman_filter;
 	bool im_enable_resonant_control;
+	bool im_validation_profile_active;
+	bool im_validation_profile_has_started;
+	float im_validation_profile_elapsed_s;
 /* Project Wizard BEGIN: referenceAndSetValues */
 	float pwm_2L_0_halfBridgeDutyCycle_1;
 	float pwm_2L_0_halfBridgeDutyCycle_2;

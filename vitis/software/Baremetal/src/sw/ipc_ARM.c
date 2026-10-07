@@ -303,7 +303,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6):
-
+			IM_testbench_toggle_kalman_mode(data);
 			break;
 
 		case (My_Button_7):
@@ -311,6 +311,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_8):
+			IM_testbench_toggle_validation_profile(data);
 
 			break;
 
@@ -404,14 +405,22 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		js_status_BareToRTOS &= ~(1 << 8);
 	}
 
-	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
+	/* Bit 9 - My_Button_6: simplified Kalman mode selected */
+	if (data->rasv.im_use_simplified_kalman_filter) {
+		js_status_BareToRTOS |= (1 << 9);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 9);
+	}
 
 	/* Bit 10 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 10);
 
-	/* Bit 11 - My_Button_8 */
-	// js_status_BareToRTOS &= ~(1 << 11);
+	/* Bit 11 - My_Button_8: automated IM observer-validation profile */
+	if (data->rasv.im_validation_profile_active) {
+		js_status_BareToRTOS |= (1 << 11);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 11);
+	}
 
 	/* Bit 12 - trigger ext. logging */
 	// if (your condition == true) {

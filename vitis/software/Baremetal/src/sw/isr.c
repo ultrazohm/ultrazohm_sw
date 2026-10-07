@@ -212,6 +212,8 @@ static void update_im_control(float encoder_mechanical_angle_rad)
 	};
 	uz_im_control_enable(Global_Data.objects.im_control,
 		im_current_offset_samples == MOTOR_CURRENT_OFFSET_SAMPLE_COUNT);
+	/* IM Control owns and samples uz_im_observer exactly once here, using
+	 * the reconstructed voltage from k-1. Do not call the observer separately. */
 	struct uz_DutyCycle_t const duty = uz_im_control_sample_duty(Global_Data.objects.im_control,
 		measurements, 0.0f,
 		(uz_3ph_dq_t){.d = Global_Data.rasv.im_i_d_reference_A, .q = Global_Data.rasv.im_i_q_reference_A},
@@ -253,6 +255,8 @@ void ISR_Control(void *data)
 	platform_state_t current_state = ultrazohm_state_machine_get_state();
 	update_im_current_offset_calibration(current_state);
 	current_state = update_protection(current_state);
+	IM_testbench_update_validation_profile(&Global_Data,
+		current_state == control_state);
     if (current_state == idle_state)
     {
 		if (!idle_reset_done) {

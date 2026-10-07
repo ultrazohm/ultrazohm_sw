@@ -11,7 +11,21 @@ void IM_testbench_init(struct _DS_Data_ *data);
 /** Testbench controls used by the JavaScope buttons. */
 void IM_testbench_toggle_control_mode(struct _DS_Data_ *data);
 void IM_testbench_toggle_kalman_filter(struct _DS_Data_ *data);
+/** Toggle between the full four-state and simplified current Kalman filters. */
+void IM_testbench_toggle_kalman_mode(struct _DS_Data_ *data);
 void IM_testbench_toggle_resonant_control(struct _DS_Data_ *data);
+
+/** @brief Start or stop the automated U/f observer-validation profile. */
+void IM_testbench_toggle_validation_profile(struct _DS_Data_ *data);
+
+/**
+ * @brief Advance the automated validation profile by one control period.
+ *
+ * The profile can be armed outside control state. Its time starts on the first
+ * active control cycle. Leaving control state after that aborts the profile and
+ * sets the IM frequency reference to zero.
+ */
+void IM_testbench_update_validation_profile(struct _DS_Data_ *data, bool control_active);
 /**
  * @brief Reset setpoints and controller dynamics when entering idle.
  *

@@ -1,6 +1,7 @@
 #ifndef UZ_IM_CONTROL_H
 #define UZ_IM_CONTROL_H
 
+#include "uz_im_observer.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include "../uz_Transformation/uz_Transformation.h"
@@ -13,12 +14,6 @@ typedef struct uz_im_control_t uz_im_control_t;
 enum uz_im_control_mode {
     uz_im_control_mode_foc = 0,
     uz_im_control_mode_u_f
-};
-
-/** @brief Rotor-flux observer implementation used for FOC feedback. */
-enum uz_im_control_observer {
-    uz_im_control_observer_rotor_flux_model = 0,
-    uz_im_control_observer_kalman_rotor_flux_model
 };
 
 /** @brief Latched safe-operating-region violations. */
@@ -105,7 +100,10 @@ struct uz_im_control_configuration_t {
 /** @brief Measurements consumed by one control step. */
 struct uz_im_measurement_values {
     uz_3ph_abc_t i_abc_A;             /**< Measured stator phase currents. */
-    uz_3ph_abc_t v_abc_V;             /**< Internally overwritten with the reconstructed phase voltages used by the observer. */
+    uz_3ph_abc_t v_abc_V;             /**< Observer-input phase voltages. Normally reconstructed internally from the
+                                       * previously applied duty cycles and DC-link voltage. They may instead originate
+                                       * from an external measurement box when the application explicitly selects an
+                                       * external phase-voltage integration path. */
     float v_dc_V;                     /**< Measured DC-link voltage. */
     float i_dc_A;                     /**< Measured DC-link current. */
     float rotor_speed_rpm;            /**< Mechanical rotor speed. */
@@ -155,19 +153,6 @@ struct uz_im_actual_data {
     float voltage_vector_magnitude_V;         /**< Magnitude before final vector saturation. */
     float voltage_vector_limit_V;             /**< Available linear-SVM voltage magnitude. */
     float voltage_vector_saturated;           /**< 1 if the final d/q vector was scaled. */
-};
-
-/** @brief Complete read-only diagnostics of both integrated rotor-flux observers. */
-struct uz_im_observer_diagnostics_t {
-    float state[4];                 /**< [i_alpha, i_beta, psi_r_alpha, psi_r_beta]. */
-    float covariance[4][4];         /**< State-estimation covariance P. */
-    float innovation[2];            /**< Alpha/beta current innovation. */
-    float innovation_covariance[2][2]; /**< Innovation covariance S. */
-    float kalman_gain[4][2];        /**< Kalman gain K. */
-    float deterministic_flux_alpha_Vs;
-    float deterministic_flux_beta_Vs;
-    float kalman_stator_frequency_Hz;
-    float deterministic_stator_frequency_Hz;
 };
 
 /** @brief Initialize one self-contained induction-machine controller. */

@@ -31,10 +31,10 @@ static const struct uz_pmsm_control_configuration_t va_control_config_template =
         .i_dc_in_A = {.upper_bound = FLT_MAX, .lower_bound = -FLT_MAX},
     },
     .theta_el_offset = 0.0f,
-    .sample_time = 1.0f,
+    .sample_time = 1.0f/UZ_PWM_FREQUENCY,
     .enable_speed_control = false,
-    .speed_controller_kp = 0.2f,
-    .speed_controller_ki = 2.0f,
+    .speed_controller_kp = 0.1f, //0.2f
+    .speed_controller_ki = 1.50f, //2.0f
     .current_controller_d_kp = 0.0f,
     .current_controller_d_ki = 0.0f,
     .current_controller_q_kp = 0.0f,

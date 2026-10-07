@@ -4,6 +4,21 @@
 #include "test_assert_with_exception.h"
 #include "uz_im_control.h"
 
+/* Integration tests link real submodules, including the extracted observer. */
+TEST_SOURCE_FILE("uz_im_observer.c")
+TEST_SOURCE_FILE("uz_IM_config.c")
+TEST_SOURCE_FILE("uz_piController.c")
+TEST_SOURCE_FILE("uz_resonant_controller.c")
+TEST_SOURCE_FILE("Resonant_Controller.c")
+TEST_SOURCE_FILE("uz_controller_setpoint_filter.c")
+TEST_SOURCE_FILE("uz_signals.c")
+TEST_SOURCE_FILE("uz_signals_iir_filter.c")
+TEST_SOURCE_FILE("uz_pos_to_speed_pll.c")
+TEST_SOURCE_FILE("uz_codegen_pos_to_speed_pll.c")
+TEST_SOURCE_FILE("uz_Transformation.c")
+TEST_SOURCE_FILE("uz_space_vector_modulation.c")
+TEST_SOURCE_FILE("uz_space_vector_limitation.c")
+
 static uz_IM_t machine_config = {
     .Rs_Ohm = 2.0f,
     .Rr_Ohm = 1.5f,
@@ -101,9 +116,11 @@ void test_uz_im_control_rejects_negative_filter_frequency(void) {
 void test_uz_im_control_limits_current_and_speed_references(void) {
     struct uz_im_control_configuration_t config = control_config;
     config.enable_speed_control = false;
+    config.minimum_observer_flux_Vs = 1.0e-7f;
     uz_im_control_t *self = uz_im_control_init(config, machine_config);
     uz_im_control_enable(self, true);
-    struct uz_im_measurement_values measurements = {.v_dc_V = 100.0f};
+    struct uz_im_measurement_values measurements = {
+        .v_dc_V = 100.0f, .i_abc_A = {.a = 1.0f, .b = -0.5f, .c = -0.5f}};
     uz_im_control_sample_dq(self, measurements, 4000.0f, (uz_3ph_dq_t){.d = 8.0f, .q = -8.0f});
     const struct uz_im_reference_values *references = uz_im_control_get_reference_values(self);
     TEST_ASSERT_EQUAL_FLOAT(2500.0f, references->speed_rpm);
@@ -114,12 +131,19 @@ void test_uz_im_control_limits_current_and_speed_references(void) {
 void test_uz_im_control_filters_setpoints_and_measured_speed(void) {
     struct uz_im_control_configuration_t config = control_config;
     config.enable_speed_control = false;
+    config.minimum_observer_flux_Vs = 1.0e-7f;
     config.setpoint_filter_i_dq_cutoff_frequency = 100.0f;
     config.setpoint_filter_speed_cutoff_frequency = 100.0f;
     config.speed_actual_value_filter_cutoff_frequency = 100.0f;
     uz_im_control_t *self = uz_im_control_init(config, machine_config);
     uz_im_control_enable(self, true);
-    struct uz_im_measurement_values measurements = {.v_dc_V = 100.0f, .rotor_speed_rpm = 1000.0f};
+    /* The IIR deliberately passes through its first sample after reset.
+     * Initialize it at zero before checking the response to a step. */
+    uz_im_control_sample_dq(self, (struct uz_im_measurement_values){.v_dc_V = 100.0f},
+        0.0f, (uz_3ph_dq_t){0});
+    struct uz_im_measurement_values measurements = {
+        .v_dc_V = 100.0f, .rotor_speed_rpm = 1000.0f,
+        .i_abc_A = {.a = 1.0f, .b = -0.5f, .c = -0.5f}};
     uz_im_control_sample_dq(self, measurements, 1000.0f, (uz_3ph_dq_t){.d = 4.0f, .q = 4.0f});
     const struct uz_im_reference_values *references = uz_im_control_get_reference_values(self);
     const struct uz_im_measurement_values *filtered_measurements = uz_im_control_get_im_measurement_values(self);
@@ -300,5 +324,84 @@ void test_uz_im_control_simplified_kalman_filters_current_and_resets_cleanly(voi
     TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_im_control_get_actual_data(self)->rotor_flux_magnitude_Vs);
     TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_im_control_get_actual_data(self)->kalman_innovation_alpha_A);
     TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_im_control_get_actual_data(self)->rotor_flux_valid);
+}
+
+void test_uz_im_control_observer_matches_standalone_for_all_modes_and_voltage_timing(void) {
+    for (unsigned mode = 0; mode < 3; ++mode) {
+        struct uz_im_control_configuration_t c = control_config;
+        c.observer = (enum uz_im_control_observer)mode;
+        uz_im_control_t *control = uz_im_control_init(c, machine_config);
+        uz_im_control_set_mode(control, uz_im_control_mode_u_f);
+        uz_im_control_enable(control, true);
+        struct uz_im_observer_config oc = {
+            .sample_time_s = control_config.sample_time_s,
+            .kalman_process_noise_A2_per_s = control_config.kalman_process_noise_A2_per_s,
+            .kalman_measurement_noise_A2 = control_config.kalman_measurement_noise_A2,
+            .kalman_flux_process_noise_Vs2_per_s = control_config.kalman_flux_process_noise_Vs2_per_s,
+            .minimum_observer_flux_Vs = control_config.minimum_observer_flux_Vs,
+            .maximum_flux_angle_step_rad = control_config.maximum_flux_angle_step_rad,
+            .maximum_phase_current_sum_A = control_config.maximum_phase_current_sum_A,
+            .maximum_slip_frequency_Hz = control_config.maximum_slip_frequency_Hz,
+            .observer_pll_kp = control_config.observer_pll_kp,
+            .observer_pll_ki = control_config.observer_pll_ki,
+            .observer = c.observer,
+        };
+        uz_im_observer_t *observer = uz_im_observer_init(oc, machine_config);
+        struct uz_im_measurement_values m = {
+            .v_dc_V = 100.0f,
+            .i_abc_A = {.a = 1.0f, .b = -0.5f, .c = -0.5f},
+            .rotor_speed_rpm = 300.0f,
+            .rotor_mechanical_angle_rad = 0.25f,
+        };
+        uz_3ph_abc_t previous_voltage = {0};
+        for (unsigned k = 0; k < 20; ++k) {
+            TEST_ASSERT_TRUE(uz_im_observer_sample(observer, (struct uz_im_observer_input){
+                .i_abc_A = m.i_abc_A, .v_abc_V = previous_voltage,
+                .rotor_speed_rpm = m.rotor_speed_rpm,
+                .rotor_mechanical_angle_rad = m.rotor_mechanical_angle_rad,
+            }));
+            struct uz_DutyCycle_t duty = uz_im_control_sample_duty(control, m, 0.0f, (uz_3ph_dq_t){0}, 5.0f);
+            const struct uz_im_observer_output *expected = uz_im_observer_get_output(observer);
+            const struct uz_im_actual_data *actual = uz_im_control_get_actual_data(control);
+            TEST_ASSERT_EQUAL_FLOAT(expected->rotor_flux_angle_rad, actual->rotor_flux_angle_rad);
+            TEST_ASSERT_EQUAL_FLOAT(expected->rotor_flux_magnitude_Vs, actual->rotor_flux_magnitude_Vs);
+            TEST_ASSERT_EQUAL_FLOAT(expected->i_dq_A.d, actual->i_dq_A.d);
+            TEST_ASSERT_EQUAL_FLOAT(expected->i_dq_A.q, actual->i_dq_A.q);
+            TEST_ASSERT_EQUAL_FLOAT(expected->i_dq_A.zero, actual->i_dq_A.zero);
+            TEST_ASSERT_EQUAL_FLOAT(expected->kalman_innovation_alpha_A, actual->kalman_innovation_alpha_A);
+            TEST_ASSERT_EQUAL_FLOAT(expected->kalman_innovation_beta_A, actual->kalman_innovation_beta_A);
+            TEST_ASSERT_EQUAL_FLOAT(expected->rotor_flux_valid, actual->rotor_flux_valid);
+            TEST_ASSERT_EQUAL_FLOAT(expected->estimated_electrical_torque_Nm, actual->estimated_electrical_torque_Nm);
+            TEST_ASSERT_EQUAL_FLOAT(expected->flux_angle_step_rad, actual->flux_angle_step_rad);
+            TEST_ASSERT_EQUAL_FLOAT(expected->flux_angle_step_violation, actual->flux_angle_step_violation);
+            TEST_ASSERT_EQUAL_FLOAT(expected->phase_current_sum_A, actual->phase_current_sum_A);
+            TEST_ASSERT_EQUAL_FLOAT(expected->phase_current_sum_violation, actual->phase_current_sum_violation);
+            TEST_ASSERT_EQUAL_FLOAT(expected->rotor_electrical_angle_rad, actual->rotor_electrical_angle_rad);
+            TEST_ASSERT_EQUAL_FLOAT(expected->flux_rotor_angle_difference_rad, actual->flux_rotor_angle_difference_rad);
+            TEST_ASSERT_EQUAL_FLOAT(expected->i_dq_raw_A.d, actual->i_dq_raw_A.d);
+            TEST_ASSERT_EQUAL_FLOAT(expected->i_dq_raw_A.q, actual->i_dq_raw_A.q);
+            TEST_ASSERT_EQUAL_FLOAT(expected->i_dq_raw_A.zero, actual->i_dq_raw_A.zero);
+            TEST_ASSERT_EQUAL_FLOAT(expected->slip_frequency_limited, actual->slip_frequency_limited);
+            TEST_ASSERT_EQUAL_FLOAT(expected->rotor_electrical_angular_speed_rad_per_s, actual->rotor_electrical_angular_speed_rad_per_s);
+            TEST_ASSERT_EQUAL_FLOAT(expected->slip_angular_frequency_rad_per_s, actual->slip_angular_frequency_rad_per_s);
+            TEST_ASSERT_EQUAL_FLOAT(expected->stator_angular_frequency_rad_per_s, actual->stator_angular_frequency_rad_per_s);
+            TEST_ASSERT_EQUAL_FLOAT(expected->rotor_electrical_frequency_Hz, actual->rotor_electrical_frequency_Hz);
+            TEST_ASSERT_EQUAL_FLOAT(expected->slip_frequency_Hz, actual->slip_frequency_Hz);
+            TEST_ASSERT_EQUAL_FLOAT(expected->stator_frequency_Hz, actual->stator_frequency_Hz);
+            TEST_ASSERT_EQUAL_FLOAT(expected->slip_percent, actual->slip_percent);
+            TEST_ASSERT_EQUAL_MEMORY(uz_im_observer_get_diagnostics(observer),
+                uz_im_control_get_observer_diagnostics(control), sizeof(struct uz_im_observer_diagnostics_t));
+            previous_voltage = (uz_3ph_abc_t){
+                .a = duty.DutyCycle_A * m.v_dc_V,
+                .b = duty.DutyCycle_B * m.v_dc_V,
+                .c = duty.DutyCycle_C * m.v_dc_V,
+            };
+        }
+        uz_im_control_reset(control);
+        TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_im_control_get_actual_data(control)->rotor_flux_valid);
+        TEST_ASSERT_EQUAL_FLOAT(1.0f, uz_im_control_get_observer_diagnostics(control)->covariance[0][0]);
+        uz_im_control_sample_duty(control, m, 0.0f, (uz_3ph_dq_t){0}, 5.0f);
+        TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_im_control_get_im_measurement_values(control)->v_abc_V.a);
+    }
 }
 #endif

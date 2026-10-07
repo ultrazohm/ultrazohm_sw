@@ -23,44 +23,60 @@ The module owns all persistent state required by:
 Structure
 =========
 
-The complete implementation is located in ``uz/uz_IM_Control`` and consists
-of one public header and one implementation file. Machine parameters are passed
-to ``uz_im_control_init`` using :ref:`uz_IM_config`; the control module contains
-no machine-specific presets.
+The implementation is located in ``uz/uz_IM_Control`` and is split into two
+modules, each with its own header and implementation:
 
-Configuration and data types
-============================
+* ``uz_im_control.c/.h`` owns the current and speed controllers, resonant
+  controllers, setpoint filters, U/f generation, SVM, voltage history and SOR.
+* ``uz_im_observer.c/.h`` owns the deterministic rotor-flux model, both Kalman
+  variants, their states and covariances, both angle PLLs, and the derived
+  flux, current, torque and frequency diagnostics.
 
-The machine-data type :c:type:`uz_IM_t` and its derived-parameter helpers are
-documented once on the :ref:`uz_IM_config` page. They are not repeated here to
-avoid duplicate C-domain declarations in Sphinx.
+Machine parameters are passed to ``uz_im_control_init`` using
+:ref:`uz_IM_config`; neither module contains machine-specific presets.
+IM Control allocates and owns one opaque observer instance. The existing
+control configuration, runtime selection functions and diagnostic getters
+remain the application interface; JavaScope mappings do not need to change.
 
-.. doxygenstruct:: uz_im_control_configuration_t
-   :members:
+.. mermaid::
+   :caption: Ownership and call boundary between control and observer
 
-.. doxygenstruct:: uz_im_control_limits_t
-   :members:
+   flowchart TD
+       ISR["ISR: measurements and references"] --> Control["uz_im_control_sample_duty"]
+       Control --> Observer["uz_im_observer_sample: once per control sample"]
+       History["IM Control: applied voltage from k-1"] --> Observer
+       Observer --> Results["Flux, dq currents, frequencies, torque and validity"]
+       Results --> ControlLoop["IM Control: SOR and U/f or FOC"]
+       ControlLoop --> SVM["SVM and duty cycles"]
+       SVM --> History
+       Observer --> Diagnostics["Read-only states and matrices via control getter"]
 
-.. doxygenstruct:: uz_im_setpoint_limits_t
-   :members:
+The ISR must call only the control sampling API, not additionally sample or
+reset its observer. ``uz_im_control_sample_duty`` already invokes the observer
+through ``uz_im_control_sample_dq``. A second observer call would advance its
+state and PLL twice while the configured sampling time remains unchanged.
+Read-only getters do not advance the observer.
 
-.. doxygenstruct:: uz_im_safe_operating_region_t
-   :members:
+The observer input explicitly expects the voltage from the preceding applied
+interval together with the current measurement at the current sample. The
+one-period delay remains in IM Control, not in the observer. Independent users
+of ``uz_im_observer_sample`` must supply this timing themselves; a synchronized
+external voltage measurement can be supplied through this observer interface.
+This extraction does not change how the control API reconstructs its voltage.
 
-.. doxygenstruct:: uz_im_measurement_values
-   :members:
+An observer reset clears estimates, covariances, PLLs and angle history, but
+does not reset the current/speed controllers or acknowledge a SOR fault.
+Changing observer implementation triggers this reset; selecting the same
+implementation retains state. A full control reset additionally clears the
+controllers and voltage history. Only the control error-acknowledgement API
+clears a latched SOR fault. Numerical observer failures are reported to IM
+Control, which retains responsibility for latching the fault and returning
+the configured default duty cycles.
 
-.. doxygenstruct:: uz_im_reference_values
-   :members:
-
-.. doxygenstruct:: uz_im_actual_data
-   :members:
-
-``uz_im_observer_diagnostics_t`` contains the complete four-state estimate,
-the covariance, innovation covariance, Kalman gain, innovations, deterministic
-flux components, simplified filtered currents and their scalar covariances.
-The individual members and their interpretation are described in the observer
-and validation sections below.
+Both files must be compiled into the application. Static observer allocation
+uses ``UZ_IM_CONTROL_MAX_INSTANCES`` and each observer consumes two
+``uz_pos_to_speed_pll`` instances, as before the extraction. No additional
+observer allocation or initialization is needed in the ISR.
 
 Operation
 =========
@@ -217,9 +233,6 @@ configuration.
       \node[group, fit=(obs)(park), label=below:{observer and reference frame}] {};
    \end{tikzpicture}
 
-Operating modes
----------------
-
 The outer operating mode selects either scalar U/f voltage generation or
 rotor-flux-oriented control (FOC). Within FOC, the controller can use an
 external dq-current reference or generate the q-current reference with its
@@ -299,6 +312,326 @@ Disabling the module with ``uz_im_control_enable(control, false)`` performs a
 complete controller reset. A latched safe-operating-region violation likewise
 suppresses the generated voltage until it is acknowledged and reset.
 
+Resonant current control
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The module always initializes one resonant controller per d/q axis. Set
+``enable_resonant_control`` to enable their voltage contribution initially or
+use ``uz_im_control_enable_resonant_control`` at runtime. A change of the enable
+state resets both controller states. ``resonant_gain_d``, ``resonant_gain_q``,
+``resonant_harmonic_order``, ``resonant_antiwindup_gain`` and
+``resonant_voltage_limit_V`` configure the controllers. Their combined output
+is exposed as ``actual_data.resonant_voltage_dq_V`` and is added to the PI and
+decoupling voltages.
+
+Each IM-control instance consumes two resonant-controller instances. Therefore
+``UZ_RESONANT_CONTROLLER_MAX_INSTANCES`` must be at least twice
+``UZ_IM_CONTROL_MAX_INSTANCES`` when IM Control is enabled.
+It also consumes two ``uz_pos_to_speed_pll`` instances, so
+``UZ_POS_TO_SPEED_PLL_MAX_INSTANCES`` must satisfy the same relationship.
+
+Limiting and protection
+=======================
+
+Limiting is applied in layers so that references, controller outputs and the
+final inverter command remain distinguishable:
+
+* Speed and dq-current references are restricted to ``setpoint_limits`` before
+  and after their optional filters.
+* The U/f frequency and voltage commands are limited by
+  ``u_f_max_frequency_Hz`` and ``u_f_max_voltage_V``.
+* In FOC, the complete sum of PI, IM-decoupling and resonant voltages is passed
+  through ``uz_CurrentControl_SpaceVector_Limitation``. This limits the vector
+  to the linear SVM range and returns a saturation state for PI anti-windup.
+* SVM retains its mathematical duty-cycle range from zero to one. IM Control
+  does not apply an additional minimum-pulse-width clamp.
+* Safe-operating-region checks supervise speed, phase and dq currents, DC-link
+  voltage and DC-link current. The first violation is latched and forces the
+  configured default duty cycle until it is explicitly acknowledged.
+* Slip-frequency limiting, flux-angle-step checking and phase-current-sum
+  checking provide additional observer plausibility diagnostics.
+
+The later diagnostic sections describe the exact limits, status fields and SOR
+codes. These protection mechanisms are independent of which observer is
+selected.
+
+Duty-cycle range
+~~~~~~~~~~~~~~~~
+
+IM Control does not add a minimum-pulse-width clamp in either U/f or FOC mode.
+Generated duty cycles retain the general SVM module's mathematical saturation
+to the interval zero to one, so both modes can return exactly zero or one. A
+configured default duty cycle returned while disabled or faulted is likewise
+passed through unchanged.
+
+If the PWM IP applies an additional hardware minimum-pulse-width clamp, that
+modification is not represented by the internally reconstructed observer
+voltage. An explicit applied-voltage or applied-duty feedback path should be
+added if this difference becomes relevant for observer accuracy.
+
+FOC voltage and observer plausibility limits
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``maximum_slip_frequency_Hz`` limits the absolute estimated slip frequency.
+``maximum_flux_angle_step_rad`` checks the wrapped observer-angle increment per
+control step, while ``maximum_phase_current_sum_A`` checks the residual
+``abs(i_a + i_b + i_c)``. These checks are exposed as diagnostics and do not
+create additional latched SOR codes.
+
+In every FOC control step, the complete voltage vector (PI, IM decoupling and
+resonant contributions) is unconditionally passed through
+``uz_CurrentControl_SpaceVector_Limitation``. This limits the vector to the
+linear SVM range ``V_dc / sqrt(3)`` and applies the Current Control module's
+95-percent reserve to the prioritized d or q axis when saturation is active.
+The priority depends on the signs of electrical speed and q-current reference,
+matching ``uz_CurrentControl``. The current-controller integrators receive the
+resulting saturation state as external clamping for anti-windup in the next
+control step. This path is used only in FOC; U/f does not use the Current
+Control voltage-vector limitation.
+
+There is deliberately no enable flag for this behavior: both d- and q-axis
+current control always use the limiter. Their individual PI outputs retain the
+additional static bounds ``+/-safe_operating_region.v_dc_in_V.upper_bound``.
+The normally tighter final vector saturation drives the shared external
+anti-windup signal. The complete ``uz_CurrentControl``
+object is not instantiated because it is parameterized with ``uz_PMSM_t`` and
+contains PMSM-specific decoupling. IM Control instead reuses its common
+space-vector-limitation component after adding the IM-specific decoupling and
+optional resonant voltage. This placement ensures that every contribution is
+included in the final limit.
+
+The corresponding fields in ``uz_im_actual_data`` are
+``rotor_flux_valid``, ``slip_frequency_limited``,
+``flux_angle_step_violation``, ``phase_current_sum_violation`` and
+``voltage_vector_saturated``. Their associated continuous diagnostic values
+are also available for detailed debugging.
+
+Safe-operating-region diagnosis
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``uz_im_actual_data.safe_operating_region_status`` exposes the latched SOR
+state as an unsigned integer and can be added directly as a JavaScope variable.
+The first detected violation remains visible until
+``uz_im_control_acknowledge_and_reset_error`` is called.
+
+.. tikz:: Latched safe-operating-region protection and explicit recovery
+
+   \usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+   \begin{tikzpicture}[
+      >=Latex,
+      node distance=13mm and 17mm,
+      block/.style={draw,rounded corners,fill=black!5,align=center,
+                    minimum height=10mm,minimum width=29mm},
+      decision/.style={draw,diamond,aspect=2.1,fill=blue!7,align=center,
+                       inner sep=1.5pt},
+      fault/.style={block,fill=red!9}]
+      \node[block] (sample) {new measurements};
+      \node[decision,right=of sample] (limits) {inside SOR?};
+      \node[block,right=of limits] (control) {observer and\\control step};
+      \node[block,right=of control] (pwm) {return calculated\\duty cycles};
+      \node[fault,below=of limits] (latch) {latch first\\violation code};
+      \node[fault,right=of latch] (safe) {return safe default\\duty cycle};
+      \node[block,below=of latch] (reset) {acknowledge and\\reset error};
+
+      \draw[->] (sample) -- (limits);
+      \draw[->] (limits) -- node[above] {yes} (control);
+      \draw[->] (control) -- (pwm);
+      \draw[->] (limits) -- node[left] {no} (latch);
+      \draw[->] (latch) -- (safe);
+      \draw[->] (safe.south) |- node[pos=0.25,right] {subsequent calls} (latch.east);
+      \draw[->] (latch) -- node[right] {explicit action} (reset);
+      \draw[->] (reset.west) -| node[pos=0.25,left] {fault cleared} (sample.south);
+   \end{tikzpicture}
+
+The SOR status is a latch, not a live comparator output. Once a violation is
+stored, subsequent calls keep returning the safe default duty cycle even if
+the measured value has returned inside its limits. Recovery therefore requires
+an explicit acknowledge/reset after the physical cause has been removed.
+
+.. list-table:: SOR status codes
+   :header-rows: 1
+   :widths: 15 45 40
+
+   * - Code
+     - Enum
+     - Meaning
+   * - 0
+     - ``uz_im_control_no_violation``
+     - No violation
+   * - 1
+     - ``uz_im_control_underspeed``
+     - Speed below lower limit
+   * - 2
+     - ``uz_im_control_overspeed``
+     - Speed above upper limit
+   * - 3
+     - ``uz_im_control_dc_overvoltage``
+     - DC-link voltage above upper limit
+   * - 4
+     - ``uz_im_control_dc_undervoltage``
+     - DC-link voltage below lower limit
+   * - 5 / 6
+     - ``uz_im_control_dc_overcurrent`` / ``uz_im_control_dc_undercurrent``
+     - DC-link current above / below its limits
+   * - 7 / 8
+     - ``uz_im_control_i_d_overcurrent`` / ``uz_im_control_i_d_undercurrent``
+     - d-current above / below its limits
+   * - 9 / 10
+     - ``uz_im_control_i_q_overcurrent`` / ``uz_im_control_i_q_undercurrent``
+     - q-current above / below its limits
+   * - 11 / 12
+     - ``uz_im_control_phase_overcurrent`` / ``uz_im_control_phase_undercurrent``
+     - At least one phase current above / below its limits
+   * - 13
+     - ``uz_im_control_observer_violation``
+     - Observer produced a non-finite flux value
+
+.. code-block:: c
+
+   uz_im_control_t *control = uz_im_control_init(configuration, machine);
+   uz_im_control_enable(control, true);
+
+   struct uz_DutyCycle_t duty = uz_im_control_sample_duty(
+       control,
+       measurements,
+       speed_reference_rpm,
+       current_reference_dq_A,
+       u_f_frequency_reference_Hz);
+
+The module returns the configured default duty cycle while disabled or after a
+safe-operating-region violation. A fault remains latched until explicitly
+acknowledged.
+
+Example
+========
+
+The following example configures the controller for FOC current-control mode
+and requests duty cycles in the control interrupt. The numerical values are
+example values and have to be adapted to the machine, inverter, observer, and
+sampling time.
+
+.. code-block:: c
+   :linenos:
+   :caption: Initialize IM FOC in current-control mode
+
+   #include "uz/uz_IM_Control/uz_im_control.h"
+
+   static uz_IM_t machine = {
+       .Rs_Ohm = 2.0f,
+       .Rr_Ohm = 1.5f,
+       .Lsigma_s_Henry = 0.01f,
+       .Lsigma_r_Henry = 0.01f,
+       .Lm_Henry = 0.2f,
+       .polePairs = 2.0f,
+       .J_kg_m_squared = 0.01f,
+       .I_max_Ampere = 10.0f,
+       .Psi_rated_Vs = 0.5f};
+
+   static struct uz_im_control_configuration_t config = {
+       .sample_time_s = 1.0f / 10000.0f,
+       .enable_speed_control = false,
+       .speed_controller_kp = 0.01f,
+       .speed_controller_ki = 0.05f,
+       .current_controller_d_kp = 5.0f,
+       .current_controller_d_ki = 1500.0f,
+       .current_controller_q_kp = 5.0f,
+       .current_controller_q_ki = 1500.0f,
+       .u_f_ratio_V_per_Hz = 4.0f,
+       .u_f_boost_voltage_V = 1.0f,
+       .u_f_max_frequency_Hz = 50.0f,
+       .u_f_max_voltage_V = 20.0f,
+       .u_f_frequency_ramp_Hz_per_s = 5.0f,
+       .kalman_process_noise_A2_per_s = 1.0f,
+       .kalman_flux_process_noise_Vs2_per_s = 0.01f,
+       .kalman_measurement_noise_A2 = 0.01f,
+       .observer_pll_kp = 100.0f,
+       .observer_pll_ki = 1000.0f,
+       .minimum_observer_flux_Vs = 0.001f,
+       .maximum_slip_frequency_Hz = 20.0f,
+       .maximum_flux_angle_step_rad = 0.5f,
+       .maximum_phase_current_sum_A = 1.0f,
+       .resonant_gain_d = 0.0f,
+       .resonant_gain_q = 0.0f,
+       .resonant_harmonic_order = 6.0f,
+       .resonant_antiwindup_gain = 0.0f,
+       .resonant_voltage_limit_V = 10.0f,
+       .setpoint_limits = {
+           .speed_controller_torque_in_Nm = {.upper_bound = 2.0f, .lower_bound = -2.0f},
+           .i_d_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f},
+           .i_q_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f},
+           .speed_in_rpm = {.upper_bound = 1100.0f, .lower_bound = -1100.0f}},
+       .safe_operating_region = {
+           .speed_in_rpm = {.upper_bound = 1500.0f, .lower_bound = -1500.0f},
+           .i_d_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
+           .i_q_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
+           .i_abc_in_A = {.upper_bound = 20.0f, .lower_bound = -20.0f},
+           .v_dc_in_V = {.upper_bound = 28.0f, .lower_bound = 12.0f},
+           .i_dc_in_A = {.upper_bound = 15.0f, .lower_bound = -1.0f}},
+       .setpoint_filter_i_dq_cutoff_frequency = 0.0f,
+       .setpoint_filter_speed_cutoff_frequency = 0.0f,
+       .speed_actual_value_filter_cutoff_frequency = 0.0f,
+       .enable_resonant_control = false,
+       .observer = uz_im_control_observer_rotor_flux_model,
+       .default_duty_cycle = {
+           .DutyCycle_A = 0.5f,
+           .DutyCycle_B = 0.5f,
+           .DutyCycle_C = 0.5f}};
+
+   static uz_im_control_t *im_control = NULL;
+
+   void init_control(void) {
+       im_control = uz_im_control_init(config, machine);
+       uz_im_control_set_mode(im_control, uz_im_control_mode_foc);
+       uz_im_control_enable(im_control, true);
+   }
+
+.. code-block:: c
+   :linenos:
+   :caption: Sample IM FOC in the control interrupt
+
+   void ISR_Control(void) {
+       struct uz_im_measurement_values measurements = {
+           .i_abc_A = {.a = 1.0f, .b = -0.5f, .c = -0.5f},
+           .v_abc_V = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
+           .v_dc_V = 24.0f,
+           .i_dc_A = 0.0f,
+           .rotor_speed_rpm = 100.0f,
+           .rotor_mechanical_angle_rad = 0.0f};
+
+       uz_3ph_dq_t i_reference_A = {.d = 1.0f, .q = 0.5f, .zero = 0.0f};
+       struct uz_DutyCycle_t duty_cycle = uz_im_control_sample_duty(
+           im_control,
+           measurements,
+           0.0f,
+           i_reference_A,
+           0.0f);
+   }
+
+To use speed-control mode, enable the speed loop and pass a speed reference in
+rpm. The q-current reference is then generated by the speed controller. The
+d-current reference remains active and must provide the required magnetizing
+current.
+
+.. code-block:: c
+   :linenos:
+   :caption: Runtime selection of IM speed-control mode
+
+   uz_im_control_enable_speed_control(im_control, true);
+
+   uz_3ph_dq_t magnetizing_current_reference_A = {
+       .d = 1.0f,
+       .q = 0.0f,
+       .zero = 0.0f};
+   struct uz_DutyCycle_t duty_cycle = uz_im_control_sample_duty(
+       im_control,
+       measurements,
+       500.0f,
+       magnetizing_current_reference_A,
+       0.0f);
+
+Observer and Kalman filters
+===========================
+
 The observer and the control law are deliberately separated. The selected
 observer supplies the rotor-flux magnitude and angle. The angle defines the
 rotor-flux-oriented d/q frame used by FOC and by the diagnostic current
@@ -306,8 +639,8 @@ transformation. U/f voltage generation does not require a valid observer, but
 the observer is still executed in U/f mode so that its convergence can be
 checked before changing to FOC.
 
-Observer structure
-------------------
+Observer selection and common processing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Three observer implementations are integrated. Only the selected observer is
 executed; they are not evaluated in parallel. Consequently, a comparison of
@@ -391,6 +724,49 @@ through a PLL. Consequently, changing the observer can alter both the FOC
 angle **and** its current feedback. A different FOC response after switching
 is therefore not necessarily caused by the angle alone.
 
+Deterministic rotor-flux observer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The deterministic observer uses the rotor-current model in stationary
+alpha/beta coordinates. With rotor time constant
+:math:`\tau_r=L_r/R_r`, electrical rotor speed :math:`\omega_r` and the
+rotation matrix
+
+.. math::
+
+   J=\begin{bmatrix}0&-1\\1&0\end{bmatrix},
+
+the continuous-time model represented by the implementation is
+
+.. math::
+
+   \frac{d\boldsymbol\psi_r}{dt}
+   = -\frac{1}{\tau_r}\boldsymbol\psi_r
+     +\omega_r J\boldsymbol\psi_r
+     +\frac{L_m}{\tau_r}\boldsymbol i_s.
+
+It is discretized with the trapezoidal, or Tustin, rule. Writing
+:math:`F=-\tau_r^{-1}I+\omega_rJ`, one control step is
+
+.. math::
+
+   \left(I-\frac{T_s}{2}F\right)\boldsymbol\psi_r[k]
+   =\left(I+\frac{T_s}{2}F\right)\boldsymbol\psi_r[k-1]
+    +T_s\frac{L_m}{\tau_r}\boldsymbol i_s[k].
+
+The two-by-two system is solved explicitly. A singular or non-finite result
+causes ``uz_im_control_observer_violation``. Tustin discretization is used
+instead of forward Euler because it provides better numerical damping for the
+rotating first-order system at a finite control sample time.
+
+Kalman-filter observers
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Two Kalman-based alternatives are available. The full observer estimates
+current and rotor flux jointly with the motor model, whereas the simplified
+variant filters only the measured alpha/beta currents before applying the
+deterministic rotor-current model.
+
 Kalman prediction and correction in one control period
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -428,41 +804,6 @@ units are therefore squared units. The configured current and flux process
 noise values are continuous-time densities and are multiplied by
 ``sample_time_s`` once per observer step. The current measurement-noise value
 is already the per-sample variance and is not multiplied by the sample time.
-
-Deterministic rotor-current model
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The deterministic observer uses the rotor-current model in stationary
-alpha/beta coordinates. With rotor time constant
-:math:`\tau_r=L_r/R_r`, electrical rotor speed :math:`\omega_r` and the
-rotation matrix
-
-.. math::
-
-   J=\begin{bmatrix}0&-1\\1&0\end{bmatrix},
-
-the continuous-time model represented by the implementation is
-
-.. math::
-
-   \frac{d\boldsymbol\psi_r}{dt}
-   = -\frac{1}{\tau_r}\boldsymbol\psi_r
-     +\omega_r J\boldsymbol\psi_r
-     +\frac{L_m}{\tau_r}\boldsymbol i_s.
-
-It is discretized with the trapezoidal, or Tustin, rule. Writing
-:math:`F=-\tau_r^{-1}I+\omega_rJ`, one control step is
-
-.. math::
-
-   \left(I-\frac{T_s}{2}F\right)\boldsymbol\psi_r[k]
-   =\left(I+\frac{T_s}{2}F\right)\boldsymbol\psi_r[k-1]
-    +T_s\frac{L_m}{\tau_r}\boldsymbol i_s[k].
-
-The two-by-two system is solved explicitly. A singular or non-finite result
-causes ``uz_im_control_observer_violation``. Tustin discretization is used
-instead of forward Euler because it provides better numerical damping for the
-rotating first-order system at a finite control sample time.
 
 Four-state Kalman observer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -815,25 +1156,34 @@ frequency. The electrical rotor speed and slip are
    \omega_{sl}=\hat\omega_s-\omega_{r,el},\qquad
    s[\%]=100\frac{\omega_{sl}}{\hat\omega_s}.
 
-The slip percentage is set to zero close to zero stator frequency to avoid a
-division by a small value. A negative slip is not inherently an error: its
-sign depends on the selected direction conventions and operating quadrant.
-Consistency of stator frequency, rotor frequency and slip is more meaningful
-than checking the slip sign in isolation.
+Here, :math:`\hat\omega_s` is the electrical angular velocity of the rotating
+stator field (the synchronous speed), not a mechanical speed of the stationary
+stator. The mechanical rotor speed is converted to the same electrical domain
+with the pole-pair number :math:`p` before both quantities are compared.
 
-Duty-cycle range
-~~~~~~~~~~~~~~~~
+In steady-state motoring operation, rotor and stator field rotate in the same
+direction and the magnitude of the rotor speed is slightly smaller than the
+synchronous speed. Therefore, the normalized slip :math:`s` is positive. This
+also applies at no load: the slip approaches zero, but normally remains small
+and positive because the machine must still produce torque to compensate
+friction, windage, and iron losses. At standstill and nonzero stator frequency,
+the normalized slip is approximately :math:`100\,\%`.
 
-IM Control does not add a minimum-pulse-width clamp in either U/f or FOC mode.
-Generated duty cycles retain the general SVM module's mathematical saturation
-to the interval zero to one, so both modes can return exactly zero or one. A
-configured default duty cycle returned while disabled or faulted is likewise
-passed through unchanged.
+The signed slip frequency :math:`\omega_{sl}` must be interpreted together
+with the direction of rotation. For example, in reverse motoring operation
+:math:`\hat\omega_s=-100\,\mathrm{rad/s}` and
+:math:`\omega_{r,el}=-98\,\mathrm{rad/s}` result in
+:math:`\omega_{sl}=-2\,\mathrm{rad/s}`, but in a positive normalized motoring
+slip of :math:`s=2\,\%`. Thus, a negative *slip frequency* is expected for
+reverse motoring and does not indicate generator operation. In generator
+operation, the rotor magnitude exceeds the synchronous-field magnitude; the
+normalized slip is then negative with this definition. Transients and braking
+operation must likewise be assessed using all three signed quantities rather
+than the sign of :math:`\omega_{sl}` alone.
 
-If the PWM IP applies an additional hardware minimum-pulse-width clamp, that
-modification is not represented by the internally reconstructed observer
-voltage. An explicit applied-voltage or applied-duty feedback path should be
-added if this difference becomes relevant for observer accuracy.
+Close to zero stator frequency, the implementation sets the slip percentage to
+zero to avoid division by a small value. Consequently, the percentage is not a
+meaningful diagnostic at or near zero synchronous speed.
 
 Kalman process-noise convention
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -958,159 +1308,8 @@ The safe-operating-region limits independently cover speed, d/q currents,
 all three phase currents, DC-link voltage and DC-link current. Violations are
 latched before a new inverter command is returned.
 
-Additional plausibility and limiting
-------------------------------------
-
-``maximum_slip_frequency_Hz`` limits the absolute estimated slip frequency.
-``maximum_flux_angle_step_rad`` checks the wrapped observer-angle increment per
-control step, while ``maximum_phase_current_sum_A`` checks the residual
-``abs(i_a + i_b + i_c)``. These checks are exposed as diagnostics and do not
-create additional latched SOR codes.
-
-In every FOC control step, the complete voltage vector (PI, IM decoupling and
-resonant contributions) is unconditionally passed through
-``uz_CurrentControl_SpaceVector_Limitation``. This limits the vector to the
-linear SVM range ``V_dc / sqrt(3)`` and applies the Current Control module's
-95-percent reserve to the prioritized d or q axis when saturation is active.
-The priority depends on the signs of electrical speed and q-current reference,
-matching ``uz_CurrentControl``. The current-controller integrators receive the
-resulting saturation state as external clamping for anti-windup in the next
-control step. This path is used only in FOC; U/f does not use the Current
-Control voltage-vector limitation.
-
-There is deliberately no enable flag for this behavior: both d- and q-axis
-current control always use the limiter. Their individual PI outputs retain the
-additional static bounds ``+/-safe_operating_region.v_dc_in_V.upper_bound``.
-The normally tighter final vector saturation drives the shared external
-anti-windup signal. The complete ``uz_CurrentControl``
-object is not instantiated because it is parameterized with ``uz_PMSM_t`` and
-contains PMSM-specific decoupling. IM Control instead reuses its common
-space-vector-limitation component after adding the IM-specific decoupling and
-optional resonant voltage. This placement ensures that every contribution is
-included in the final limit.
-
-The corresponding fields in ``uz_im_actual_data`` are
-``rotor_flux_valid``, ``slip_frequency_limited``,
-``flux_angle_step_violation``, ``phase_current_sum_violation`` and
-``voltage_vector_saturated``. Their associated continuous diagnostic values
-are also available for detailed debugging.
-
-Resonant current control
-------------------------
-
-The module always initializes one resonant controller per d/q axis. Set
-``enable_resonant_control`` to enable their voltage contribution initially or
-use ``uz_im_control_enable_resonant_control`` at runtime. A change of the enable
-state resets both controller states. ``resonant_gain_d``, ``resonant_gain_q``,
-``resonant_harmonic_order``, ``resonant_antiwindup_gain`` and
-``resonant_voltage_limit_V`` configure the controllers. Their combined output
-is exposed as ``actual_data.resonant_voltage_dq_V`` and is added to the PI and
-decoupling voltages.
-
-Each IM-control instance consumes two resonant-controller instances. Therefore
-``UZ_RESONANT_CONTROLLER_MAX_INSTANCES`` must be at least twice
-``UZ_IM_CONTROL_MAX_INSTANCES`` when IM Control is enabled.
-It also consumes two ``uz_pos_to_speed_pll`` instances, so
-``UZ_POS_TO_SPEED_PLL_MAX_INSTANCES`` must satisfy the same relationship.
-
-SOR diagnosis in JavaScope
---------------------------
-
-``uz_im_actual_data.safe_operating_region_status`` exposes the latched SOR
-state as an unsigned integer and can be added directly as a JavaScope variable.
-The first detected violation remains visible until
-``uz_im_control_acknowledge_and_reset_error`` is called.
-
-.. tikz:: Latched safe-operating-region protection and explicit recovery
-
-   \usetikzlibrary{arrows.meta,positioning,shapes.geometric}
-   \begin{tikzpicture}[
-      >=Latex,
-      node distance=13mm and 17mm,
-      block/.style={draw,rounded corners,fill=black!5,align=center,
-                    minimum height=10mm,minimum width=29mm},
-      decision/.style={draw,diamond,aspect=2.1,fill=blue!7,align=center,
-                       inner sep=1.5pt},
-      fault/.style={block,fill=red!9}]
-      \node[block] (sample) {new measurements};
-      \node[decision,right=of sample] (limits) {inside SOR?};
-      \node[block,right=of limits] (control) {observer and\\control step};
-      \node[block,right=of control] (pwm) {return calculated\\duty cycles};
-      \node[fault,below=of limits] (latch) {latch first\\violation code};
-      \node[fault,right=of latch] (safe) {return safe default\\duty cycle};
-      \node[block,below=of latch] (reset) {acknowledge and\\reset error};
-
-      \draw[->] (sample) -- (limits);
-      \draw[->] (limits) -- node[above] {yes} (control);
-      \draw[->] (control) -- (pwm);
-      \draw[->] (limits) -- node[left] {no} (latch);
-      \draw[->] (latch) -- (safe);
-      \draw[->] (safe.south) |- node[pos=0.25,right] {subsequent calls} (latch.east);
-      \draw[->] (latch) -- node[right] {explicit action} (reset);
-      \draw[->] (reset.west) -| node[pos=0.25,left] {fault cleared} (sample.south);
-   \end{tikzpicture}
-
-The SOR status is a latch, not a live comparator output. Once a violation is
-stored, subsequent calls keep returning the safe default duty cycle even if
-the measured value has returned inside its limits. Recovery therefore requires
-an explicit acknowledge/reset after the physical cause has been removed.
-
-.. list-table:: SOR status codes
-   :header-rows: 1
-   :widths: 15 45 40
-
-   * - Code
-     - Enum
-     - Meaning
-   * - 0
-     - ``uz_im_control_no_violation``
-     - No violation
-   * - 1
-     - ``uz_im_control_underspeed``
-     - Speed below lower limit
-   * - 2
-     - ``uz_im_control_overspeed``
-     - Speed above upper limit
-   * - 3
-     - ``uz_im_control_dc_overvoltage``
-     - DC-link voltage above upper limit
-   * - 4
-     - ``uz_im_control_dc_undervoltage``
-     - DC-link voltage below lower limit
-   * - 5 / 6
-     - ``uz_im_control_dc_overcurrent`` / ``uz_im_control_dc_undercurrent``
-     - DC-link current above / below its limits
-   * - 7 / 8
-     - ``uz_im_control_i_d_overcurrent`` / ``uz_im_control_i_d_undercurrent``
-     - d-current above / below its limits
-   * - 9 / 10
-     - ``uz_im_control_i_q_overcurrent`` / ``uz_im_control_i_q_undercurrent``
-     - q-current above / below its limits
-   * - 11 / 12
-     - ``uz_im_control_phase_overcurrent`` / ``uz_im_control_phase_undercurrent``
-     - At least one phase current above / below its limits
-   * - 13
-     - ``uz_im_control_observer_violation``
-     - Observer produced a non-finite flux value
-
-.. code-block:: c
-
-   uz_im_control_t *control = uz_im_control_init(configuration, machine);
-   uz_im_control_enable(control, true);
-
-   struct uz_DutyCycle_t duty = uz_im_control_sample_duty(
-       control,
-       measurements,
-       speed_reference_rpm,
-       current_reference_dq_A,
-       u_f_frequency_reference_Hz);
-
-The module returns the configured default duty cycle while disabled or after a
-safe-operating-region violation. A fault remains latched until explicitly
-acknowledged.
-
 Observer commissioning and validation
-=====================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Validate the observer in U/f mode before it is used as the angle source for
 FOC. U/f provides a defined rotating voltage command without requiring the
@@ -1118,20 +1317,26 @@ estimated flux angle for feedback. Start with low DC-link voltage and low
 frequency, but ensure that voltage boost, dead time and semiconductor voltage
 drops do not dominate the requested fundamental voltage.
 
-A useful test sequence contains zero-frequency holds, slow ramps and stationary
-plateaus in both directions, for example
-``0, +1, +2, +4, +6, +2, 0, -2, -4, 0 Hz``. Change the observer only at zero
-frequency and allow it to initialize before applying the next ramp. Since the
-module executes only the selected observer, deterministic and Kalman results
-must be compared at repeated operating points rather than sample by sample in
-the same interval.
+A useful test sequence contains zero-frequency holds and stationary operating
+points in both directions, for example
+``0, +2.5, +5, 0, -2.5, -5, 0 Hz``. Change the observer only at zero
+frequency and allow it to initialize before applying the next operating point.
+Since the module executes only the selected observer, deterministic and Kalman
+results must be compared at repeated operating points rather than sample by
+sample in the same interval.
 
 Automated three-observer test profile
--------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``feature/wizard_asm_testing`` application contains an automated 212 s U/f
+The ``feature/wizard_asm_testing`` application contains an automated 105 s U/f
 profile in ``im_observer_validation_profile.csv``. Button 8 starts or stops
-the profile. The same frequency sequence is executed three times:
+the profile. The same seven-point frequency sequence is executed three times.
+Each reference point is applied as a zero-order hold for exactly 5 s; the
+profile itself does not interpolate or generate ramps between points. The U/f
+controller's configured ``u_f_frequency_ramp_Hz_per_s`` nevertheless remains
+active and limits the physical command transition. Consequently, the beginning
+of each 5 s interval is an intentional settling region rather than a stationary
+measurement interval.
 
 .. list-table:: Automated validation blocks
    :header-rows: 1
@@ -1140,13 +1345,13 @@ the profile. The same frequency sequence is executed three times:
    * - Profile time
      - ``observer_mode``
      - Observer
-   * - 0 ... 70 s
+   * - 0 <= t < 35 s
      - 0
      - Deterministic Tustin rotor-current model
-   * - 71 ... 141 s
+   * - 35 <= t < 70 s
      - 2
      - Simplified scalar current Kalman filters followed by the Tustin model
-   * - 142 ... 212 s
+   * - 70 <= t < 105 s
      - 1
      - Full four-state current/rotor-flux Kalman observer
 
@@ -1156,6 +1361,10 @@ states. ``IM_VALIDATION_OBSERVER_MODE`` is logged independently of
 depending on hard-coded time limits. The stage values are 0 for inactive, 1
 for armed, 2 for zero-frequency initialization, 3 for the positive-frequency
 sequence, 4 for the negative-frequency sequence and 5 for the final zero hold.
+The analyzer discards the first second of every 5 s plateau by default, which
+removes the configured U/f transition and the dominant observer transient from
+the evaluated interval. Increase ``--settle-s`` if a commanded transition has
+not settled within one second.
 
 JavaScope's default 20-channel selection for this test contains profile time,
 observer mode, stage, frequency reference, speed, all phase currents, active
@@ -1281,8 +1490,10 @@ mixing ramps and holds naturally creates multiple concentric trajectories.
       \draw[blue,thick] (good.center) circle[radius=9mm];
       \draw[blue,thick] ($ (offset.center)+(5mm,3mm) $) circle[radius=8mm];
       \draw[blue,thick] (ellipse.center) ellipse[x radius=12mm,y radius=6mm];
-      \draw[blue,thick,domain=0:720,samples=120,smooth,variable=\t]
-         plot ({\t/720*1.2*cos(\t)},{\t/720*1.0*sin(\t)});
+      \begin{scope}[shift={(spiral.center)}]
+         \draw[blue,thick,domain=0:720,samples=120,smooth,variable=\t]
+            plot ({\t/720*1.2*cos(\t)},{\t/720*1.0*sin(\t)});
+      \end{scope}
       \node[caption,below=3mm of good] {centered orbit:\\stable balanced estimate};
       \node[caption,below=3mm of offset] {offset orbit:\\current or model bias};
       \node[caption,below=3mm of ellipse] {ellipse:\\axis scaling or asymmetry};
@@ -1318,8 +1529,55 @@ XY plots, FFTs or transient comparison. Only one SlowData entry is transferred
 per control interrupt, so individual entries are time-skewed. Use simultaneous
 FastData channels for alpha/beta pairs and innovations.
 
+Configuration and data types
+============================
+
+Public structures
+~~~~~~~~~~~~~~~~~
+
+After the functional behavior described above, this section provides the
+exact public data structures used to configure the controller, supply its
+measurements and references, and read back results.
+
+The machine-data type :c:type:`uz_IM_t` and its derived-parameter helpers are
+documented once on the :ref:`uz_IM_config` page. They are not repeated here to
+avoid duplicate C-domain declarations in Sphinx.
+
+.. doxygenstruct:: uz_im_control_configuration_t
+   :members:
+
+.. doxygenstruct:: uz_im_control_limits_t
+   :members:
+
+.. doxygenstruct:: uz_im_setpoint_limits_t
+   :members:
+
+.. doxygenstruct:: uz_im_safe_operating_region_t
+   :members:
+
+.. doxygenstruct:: uz_im_measurement_values
+   :members:
+
+.. doxygenstruct:: uz_im_reference_values
+   :members:
+
+.. doxygenstruct:: uz_im_actual_data
+   :members:
+
+``uz_im_observer_diagnostics_t`` contains the complete four-state estimate,
+the covariance, innovation covariance, Kalman gain, innovations, deterministic
+flux components, simplified filtered currents and their scalar covariances.
+The individual members and their interpretation are described in the observer
+and validation sections above.
+
 API reference
 =============
+
+.. doxygentypedef:: uz_im_control_t
+
+.. doxygenenum:: uz_im_control_mode
+
+.. doxygenenum:: uz_im_control_observer
 
 .. doxygenenum:: uz_im_control_safe_operating_region_violation
 
@@ -1343,16 +1601,49 @@ API reference
 .. doxygenfunction:: uz_im_control_speed_control_set_Kp_speed
 .. doxygenfunction:: uz_im_control_speed_control_set_Ki_speed
 
-The runtime observer and resonant-control functions
-``uz_im_control_enable_resonant_control``,
-``uz_im_control_get_observer_diagnostics``,
-``uz_im_control_set_kalman_process_noise``,
-``uz_im_control_set_kalman_measurement_noise``,
-``uz_im_control_set_resonant_parameters`` and
-``uz_im_control_set_minimum_observer_flux`` are declared in
-``uz_im_control.h``. They are listed here as plain C identifiers until the
-generated Doxygen XML used by the documentation build contains these newer API
-symbols.
+.. doxygenfunction:: uz_im_control_enable_resonant_control
+.. doxygenfunction:: uz_im_control_get_observer_diagnostics
+.. doxygenfunction:: uz_im_control_set_kalman_process_noise
+.. doxygenfunction:: uz_im_control_set_kalman_measurement_noise
+.. doxygenfunction:: uz_im_control_set_resonant_parameters
+.. doxygenfunction:: uz_im_control_set_minimum_observer_flux
+
+Observer module API
+~~~~~~~~~~~~~~~~~~~
+
+These lower-level functions permit independent observer tests or reuse without
+PI controllers or SVM. Applications using IM Control should continue using the
+control API above. Returned pointers remain owned by the observer; copy results
+if a snapshot must survive the next sampling or reset operation.
+
+.. c:struct:: uz_im_observer
+
+   Opaque implementation structure. Its members are private to
+   ``uz_im_observer.c``; use the public read-only getters.
+
+.. doxygentypedef:: uz_im_observer_t
+
+.. doxygenstruct:: uz_im_observer_config
+   :members:
+
+.. doxygenstruct:: uz_im_observer_input
+   :members:
+
+.. doxygenstruct:: uz_im_observer_output
+   :members:
+
+.. doxygenstruct:: uz_im_observer_diagnostics_t
+   :members:
+
+.. doxygenfunction:: uz_im_observer_init
+.. doxygenfunction:: uz_im_observer_sample
+.. doxygenfunction:: uz_im_observer_reset
+.. doxygenfunction:: uz_im_observer_set_mode
+.. doxygenfunction:: uz_im_observer_get_output
+.. doxygenfunction:: uz_im_observer_get_diagnostics
+.. doxygenfunction:: uz_im_observer_set_process_noise
+.. doxygenfunction:: uz_im_observer_set_measurement_noise
+.. doxygenfunction:: uz_im_observer_set_minimum_flux
 
 Tests
 =====
@@ -1367,3 +1658,15 @@ the Tustin rotor-flux model. They also verify the unmodified default-duty
 range, zero dq feedback and zero torque while
 the rotor-flux estimate is invalid, and finite torque diagnostics during
 Kalman operation.
+
+``test_uz_im_observer.c`` tests the extracted module independently: the first
+Tustin step against its analytic value, scalar process-noise scaling by sample
+time, immediate consumption of the supplied previous-interval voltage, mode
+selection, reset reproducibility, runtime settings and numerical-failure
+recovery. The integration suite compares all observer outputs and diagnostics
+against a standalone observer for each of the three modes over repeated
+control cycles, including the one-cycle voltage history and its reset.
+
+Run ``ceedling test:uz_im_control`` and ``ceedling test:uz_im_observer`` from
+``vitis/software/Baremetal``. These host tests do not replace a timing check and
+commissioning test on the target hardware.

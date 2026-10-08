@@ -7,7 +7,7 @@ PMSM Software Model (uz_pmsm_swmodel)
 Software model of a PMSM for execution on the processor.
 
 .. warning::
-    Aligned the documentation with other PMSM models after https://bitbucket.org/ultrazohm/ultrazohm_sw/pull-requests/546 is merged
+    Aligned the documentation with other PMSM models after https://github.com/ultrazohm/ultrazohm_sw/pull-requests/546 is merged
 
 .. warning::
     This docs page acts as a test for new concepts such as visualizing data from the unit tests, which we want to test in the online version of the docs.

@@ -164,7 +164,7 @@ References
 
 * :download:`Assembly drawing <Rev02/ASM_UZ_A_MAX11331_Differential_Input_Rev01.pdf>`
 * :download:`Schematic <Rev02/SCH_UZ_A_MAX11331_Differential_Input_Rev01-1.pdf>`
-* `UZ_A_MAX11331 Repository with Altium project <https://bitbucket.org/ultrazohm/uz_a_max11331/src>`_
+* `UZ_A_MAX11331 Repository with Altium project <https://github.com/ultrazohm/uz_a_max11331/src>`_
 * IP Core ADC :ref:`ipCore_adc_max11331`
 * `Product page MAX11331 <https://www.analog.com/en/products/max11331.html>`_
 * .. [MAX11331_datasheet] `Data sheet ADC MAX11331 <https://www.analog.com/media/en/technical-documentation/data-sheets/MAX11329-MAX11332.pdf>`_

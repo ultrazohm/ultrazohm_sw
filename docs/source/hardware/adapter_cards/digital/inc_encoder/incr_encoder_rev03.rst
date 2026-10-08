@@ -8,14 +8,6 @@ Digital IncrEncoder Rev03
 .. image:: incr_encoder_rev03/incr_encoder_rev03_pcb.jpg
    :height: 500
 
-Functionality
--------------
-
-* Connects three incremental encoder FPGA
-* Provides isolated 5V supply to encoder
-* Reads differential signals from encoder
-
-
 Pinout (exemplary for Encoder 1)
 """"""""""""""""""""""""""""""""
 

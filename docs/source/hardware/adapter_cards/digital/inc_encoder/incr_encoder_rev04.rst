@@ -4,32 +4,22 @@
 Digital IncrEncoder Rev04
 =========================
 
-The Digital IncrEncoder Rev04 adapter card connects up to three incremental encoders to the FPGA.
+.. image:: incr_encoder_rev04/incr_encoder_rev04_pcb.jpg
+   :height: 500
+
 It is based on :ref:`Digital IncrEncoder Rev03 <dig_incEncoderRev03>` and introduces the changes listed below.
-
-Functionality
--------------
-
-* Connects three incremental encoders to the FPGA
-* Provides an isolated 5 V supply to the encoders
-* Reads the differential encoder signals
 
 Changes from Rev03
 ------------------
 
 * The LED issue present in Rev03 has been fixed.
 * An EEPROM has been added.
-* The ``Power_Load_LEDs10mA.SchDoc`` circuit has been added to provide a minimum load on the ``VIN`` rail.
-  This load allows the carrier board's rail monitoring to operate as intended, making the active-low ``RailnFAULT_1V8_DSLOT`` signal usable by the D-slot CPLD.
-
-VIN minimum load and rail-fault signal
---------------------------------------
-
-The ``Power_Load_LEDs10mA.SchDoc`` schematic block provides a permanent minimum load on the ``VIN`` rail by means of the 10 mA LED load.
-The load enables reliable operation of the rail-monitoring circuit on the carrier board even when the encoder card itself otherwise draws only a small current from that rail.
-The additional load on the card allows the carrier board to generate a valid rail-fault indication, which is already routed to the D-slot CPLD as ``RailnFAULT_1V8_DSLOT``.
-The card-specific CPLD firmware can evaluate this signal, for example to inhibit signal forwarding or to include a detected supply fault in the slot status reported to the carrier board.
-Its exact effect depends on the CPLD implementation programmed for the selected D-slot.
+* The ``Power_Load_LEDs10mA.SchDoc`` circuit adds a permanent 10 mA minimum load
+  to the ``VIN`` rail. This makes ``RailnFAULT_1V8_DSLOT`` a valid supply-status
+  signal; without the load, the monitoring circuit behaves similarly to an
+  empty slot. See :ref:`VIN minimum load and rail-fault monitoring <dslot_vin_rail_fault>`
+  for the load requirement and :ref:`A-slot and D-slot VIN supervision <carrier_board_rev05_s3c_dslot_vin>`
+  for the interaction between the D-slot CPLD and S3C.
 
 Connector pinout
 ----------------

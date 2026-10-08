@@ -23,7 +23,7 @@ Functionality
 -------------
 
 * Connects 1-3 incremental encoder to the FPGA
-* Provides isolated 5V supply to encoder
+* Provides an isolated 5V supply for every channel
 * Reads differential signals from encoder
 
 Connector Male D-Sub 9

@@ -1,6 +1,6 @@
 #include "uz_fsd_mpc_private.h"
-#include "uz_HAL.h"
-#include "uz_global_configuration.h"
+#include "../uz_HAL.h"
+#include "../uz_global_configuration.h"
 #include <math.h>
 #include <stddef.h>
 #include <string.h>

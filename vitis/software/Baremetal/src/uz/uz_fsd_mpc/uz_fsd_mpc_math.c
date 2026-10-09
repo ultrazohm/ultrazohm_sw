@@ -1,5 +1,5 @@
 #include "uz_fsd_mpc_private.h"
-#include "uz_HAL.h"
+#include "../uz_HAL.h"
 #include <math.h>
 #include <stddef.h>
 

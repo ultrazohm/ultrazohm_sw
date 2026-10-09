@@ -1,4 +1,13 @@
 #pragma once
+#ifndef UZ_FSD_BENCHMARK_ENABLE
+#define UZ_FSD_BENCHMARK_ENABLE 1U
+#endif
+#ifndef UZ_FSD_BENCHMARK_VARIANT
+#define UZ_FSD_BENCHMARK_VARIANT 5U
+#endif
+#if UZ_FSD_BENCHMARK_VARIANT > 5U
+#error UZ_FSD_BENCHMARK_VARIANT must be in the range 0..5
+#endif
 #ifndef TEST
 
 // Hardware version of the UltraZohm

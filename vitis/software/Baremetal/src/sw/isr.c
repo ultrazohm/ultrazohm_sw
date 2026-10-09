@@ -30,6 +30,10 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_global_configuration.h"
+#if UZ_FSD_BENCHMARK_ENABLE
+#include "../include/fsd_mpc_benchmark.h"
+#endif
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -54,6 +58,12 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+#if UZ_FSD_BENCHMARK_ENABLE
+    if (current_state == idle_state)
+    {
+        fsd_mpc_benchmark_step(Global_Data.objects.fsd_benchmark);
+    }
+#endif
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state

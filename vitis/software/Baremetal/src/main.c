@@ -15,6 +15,10 @@
 
 // Includes from own files
 #include "main.h"
+#include "uz/uz_global_configuration.h"
+#if UZ_FSD_BENCHMARK_ENABLE
+#include "include/fsd_mpc_benchmark.h"
+#endif
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -88,6 +92,9 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
+#if UZ_FSD_BENCHMARK_ENABLE
+            Global_Data.objects.fsd_benchmark = fsd_mpc_benchmark_init();
+#endif
             JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;
@@ -126,6 +133,9 @@ int main(void)
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();
+#if UZ_FSD_BENCHMARK_ENABLE
+            fsd_mpc_benchmark_report_once();
+#endif
             break;
         default:
             break;

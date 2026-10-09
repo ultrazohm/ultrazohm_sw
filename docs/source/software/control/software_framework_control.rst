@@ -10,6 +10,7 @@ Control
     CurrentControl/CurrentControl
     encoder_offset_estimation/encoder_offset_estimation
     uz_fsd_mpc/uz_fsd_mpc
+    uz_fsd_mpc/target_timing
     flux_approximation/flux_approximation
     flux_approximation/uz_flux_approximation_script
     linear_decoupling/linear_decoupling

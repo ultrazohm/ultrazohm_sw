@@ -3,6 +3,10 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include "uz/uz_global_configuration.h"
+#if UZ_FSD_BENCHMARK_ENABLE
+#include "uz/uz_fsd_mpc/uz_fsd_mpc.h"
+#endif
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
@@ -114,6 +118,9 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
+#if UZ_FSD_BENCHMARK_ENABLE
+	uz_fsd_mpc_t* fsd_benchmark;
+#endif
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

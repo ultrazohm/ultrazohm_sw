@@ -204,6 +204,31 @@ The table above lists every signal, its direction, and its purpose.
 These links form the default interaction path implemented in both the S3C bitstream and the D-Slot Controller.
 The Request-``OE`` signals (green) -- which themselves might depend on the card-local ``PILOT_IN`` -- effectively are "looped through" the S3C and reach the actual D-Slot slots/cards as ``Output-Enable`` (black).
 
+.. _carrier_board_rev05_s3c_dslot_vin:
+
+**A-slot and D-slot VIN supervision**
+
+The S3C performs the system-level supervision of the ``VIN`` supplies for both
+the three A-slots and the five D-slots. The fault information reaches the S3C
+through different paths:
+
+* **D-slots:** The high-side switch of each D-slot provides the active-low
+  ``RailnFAULT_1V8_DSLOT`` signal to the corresponding D-slot CPLD. The CPLD
+  evaluates the signal and forwards the resulting slot status individually to
+  the S3C via its ``DIG_S3C.SlotD[1-5].SlotOK`` input.
+* **A-slots:** The rail-fault state is passed directly to the S3C through the
+  active-low ``ANL_RAILnFAULT`` signal. This signal is shared by all three
+  A-slots, so the S3C can detect an analog-slot rail fault but cannot identify
+  which individual A-slot caused it.
+
+
+The D-slot supervision requires a minimum current on ``VIN``. Adapter cards
+with a very low quiescent current must therefore provide an additional load.
+Without this load, the rail-monitoring result is similar to that of an empty
+slot and ``RailnFAULT_1V8_DSLOT`` does not provide a reliable card-supply
+status. See :ref:`dslot_vin_rail_fault` for the requirement and an
+implementation example.
+
 **Default logic in the S3C bitstream**
 
 The S3C side contains a conditional pass-through that propagates the SlotOE request only when no system-wide force-disable is active:

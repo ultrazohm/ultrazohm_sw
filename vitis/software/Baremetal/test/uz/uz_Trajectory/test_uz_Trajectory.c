@@ -1,57 +1,43 @@
 #ifdef TEST
 
 #include "unity.h"
+#include <stdlib.h>
+#include <time.h>
 
 #include "uz_Trajectory.h"
 #include "test_assert_with_exception.h"
 
 struct uz_Trajectory_config config = {0};
+float reference_Values_Amplitude[MAX_TRAJECTORY_SAMPLES];
+float reference_Values_Duration[MAX_TRAJECTORY_SAMPLES];
+
+
 void setUp(void){
+
+	// create Random Trajektorie
+	// Seed rand
+	srand((unsigned int)time(NULL));
+	rand();
+	for(uint32_t i = 0; i < MAX_TRAJECTORY_SAMPLES;i++){
+		//create random  number for Amplitude between -50 and 50
+		int32_t AmpValue 	= ((int32_t)rand() % 100) - 50;
+		reference_Values_Amplitude[i] =  (float)AmpValue;
+		// set length to 5 ISR-Ticks
+		reference_Values_Duration[i] =  5.0f;
+	}
+
     config.selection_interpolation = Linear;
     config.selection_XAxis = ISR_Ticks;
     config.StopStyle = HoldLast;
 	config.RepeatStyle = Repeat_Times;
     config.Number_Sample_Points = MAX_TRAJECTORY_SAMPLES;
-    config.Sample_Amplitude_Y[0]  = 0.0f;
-	config.Sample_Amplitude_Y[1]  = 4.0f;
-	config.Sample_Amplitude_Y[2]  = 6.0f;
-	config.Sample_Amplitude_Y[3]  = 7.0f;
-	config.Sample_Amplitude_Y[4]  = 7.5f;
-	config.Sample_Amplitude_Y[5]  = 9.0f;
-	config.Sample_Amplitude_Y[6]  = 20.0f;
-	config.Sample_Amplitude_Y[7]  = 20.0f;
-	config.Sample_Amplitude_Y[8]  = -20.0f;
-	config.Sample_Amplitude_Y[9]  = 20.0f;
-	config.Sample_Amplitude_Y[10] = 20.0f;
-	config.Sample_Amplitude_Y[11] = 0.0f;
-	config.Sample_Amplitude_Y[12] = 4.0f;
-	config.Sample_Amplitude_Y[13] = 6.0f;
-	config.Sample_Amplitude_Y[14] = 7.0f;
-	config.Sample_Amplitude_Y[15] = 7.5f;
-	config.Sample_Amplitude_Y[16] = 9.0f;
-	config.Sample_Amplitude_Y[17] = 20.0f;
-	config.Sample_Amplitude_Y[18] = 20.0f;
-	config.Sample_Amplitude_Y[19] = 0.0f;
-	config.Sample_Duration_X[0]  = 5.0f;
-	config.Sample_Duration_X[1]  = 5.0f;
-	config.Sample_Duration_X[2]  = 5.0f;
-	config.Sample_Duration_X[3]  = 5.0f;
-	config.Sample_Duration_X[4]  = 5.0f;
-	config.Sample_Duration_X[5]  = 5.0f;
-	config.Sample_Duration_X[6]  = 5.0f;
-	config.Sample_Duration_X[7]  = 5.0f;
-	config.Sample_Duration_X[8]  = 5.0f;
-	config.Sample_Duration_X[9]  = 5.0f;
-	config.Sample_Duration_X[10] = 5.0f;
-	config.Sample_Duration_X[11] = 5.0f;
-	config.Sample_Duration_X[12] = 5.0f;
-	config.Sample_Duration_X[13] = 5.0f;
-	config.Sample_Duration_X[14] = 5.0f;
-	config.Sample_Duration_X[15] = 5.0f;
-	config.Sample_Duration_X[16] = 5.0f;
-	config.Sample_Duration_X[17] = 5.0f;
-	config.Sample_Duration_X[18] = 5.0f;
-	config.Sample_Duration_X[19] = 5.0f;
+
+	// configure Trajectory
+	for(uint32_t i = 0; i < MAX_TRAJECTORY_SAMPLES;i++){
+		config.Sample_Amplitude_Y[i] = reference_Values_Amplitude[i];
+		config.Sample_Duration_X[i] = reference_Values_Duration[i];
+	}
+
 	config.Repeats = 2U;
     config.Stepwidth_ISR = (1.0f / 10000.0f)*(1.0f);
 }
@@ -143,7 +129,6 @@ void test_uz_Trajectory_Step_Calls_ZeroOrderHold(void){
 	// Create Instance
     uz_Trajectory_t* MUT = uz_Trajectory_init(config);
 
-	float reference_Values_Amplitude[MAX_TRAJECTORY_SAMPLES] = {0.0f,4.0f,6.0f,7.0f,7.5f,9.0f,20.0f,20.0f,-20.0f,20.0f,20.0f,0.0f,4.0f,6.0f,7.0f,7.5f,9.0f,20.0f,20.0f,0.0f};
 	uint32_t samplecounter = 0U;
 	float Traj_1_output	= 0.0f;
 
@@ -165,8 +150,6 @@ void test_uz_Trajectory_Step_Calls_LinearInterpolation(void){
 	// Create Instance
     uz_Trajectory_t* MUT = uz_Trajectory_init(config);
 
-	float reference_Values_Amplitude[MAX_TRAJECTORY_SAMPLES] = {0.0f,4.0f,6.0f,7.0f,7.5f,9.0f,20.0f,20.0f,-20.0f,20.0f,20.0f,0.0f,4.0f,6.0f,7.0f,7.5f,9.0f,20.0f,20.0f,0.0f};
-	float reference_Values_Duration[MAX_TRAJECTORY_SAMPLES] = {5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f};
 	uint32_t samplecounter = 0U;
 	uint32_t trajcounter = 0U;
 	float Traj_1_output	= 0.0f;
@@ -203,8 +186,7 @@ void test_uz_Trajectory_StartStopStart_with_Hold(void){
 	// Create Instance
     uz_Trajectory_t* MUT = uz_Trajectory_init(config);
 
-	float reference_Values_Amplitude[MAX_TRAJECTORY_SAMPLES] = {0.0f,4.0f,6.0f,7.0f,7.5f,9.0f,20.0f,20.0f,-20.0f,20.0f,20.0f,0.0f,4.0f,6.0f,7.0f,7.5f,9.0f,20.0f,20.0f,0.0f};
-	float reference_Values_Duration[MAX_TRAJECTORY_SAMPLES] = {5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f};
+
 	float Traj_1_output	= 0.0f;
 	float Ref_Traj	= 0.0f;
 
@@ -262,8 +244,6 @@ void test_uz_Trajectory_StartStopStart_with_ForceToZero(void){
 	config.StopStyle = ForceToZero;
     uz_Trajectory_t* MUT = uz_Trajectory_init(config);
 
-	float reference_Values_Amplitude[MAX_TRAJECTORY_SAMPLES] = {0.0f,4.0f,6.0f,7.0f,7.5f,9.0f,20.0f,20.0f,-20.0f,20.0f,20.0f,0.0f,4.0f,6.0f,7.0f,7.5f,9.0f,20.0f,20.0f,0.0f};
-	float reference_Values_Duration[MAX_TRAJECTORY_SAMPLES] = {5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f};
 	float Traj_1_output	= 0.0f;
 	float Ref_Traj	= 0.0f;
 
@@ -319,8 +299,6 @@ void test_uz_Trajectory_Reset_Trajectory(void){
 	// Create Instance
     uz_Trajectory_t* MUT = uz_Trajectory_init(config);
 
-	float reference_Values_Amplitude[MAX_TRAJECTORY_SAMPLES] = {0.0f,4.0f,6.0f,7.0f,7.5f,9.0f,20.0f,20.0f,-20.0f,20.0f,20.0f,0.0f,4.0f,6.0f,7.0f,7.5f,9.0f,20.0f,20.0f,0.0f};
-	float reference_Values_Duration[MAX_TRAJECTORY_SAMPLES] = {5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f,5.0f};
 	uint32_t samplecounter = 0U;
 	uint32_t trajcounter = 0U;
 	float Traj_1_output	= 0.0f;

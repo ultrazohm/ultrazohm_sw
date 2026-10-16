@@ -27,6 +27,7 @@ typedef struct uz_Trajectory_t {
 	bool is_ready;
 	struct uz_Trajectory_config config;
 	bool is_running;
+	bool is_running_latch;
 	bool is_finished;
 	uint32_t Trajectory_Counter;
 	uint32_t Step_Counter;
@@ -69,6 +70,7 @@ uz_Trajectory_t* uz_Trajectory_init(struct uz_Trajectory_config config){
 
 	self->config = config;
     self->is_running = false;
+	self->is_running_latch = false;
     self->Trajectory_Counter = 0U;
     self->Step_Counter = 0U;
     self->Repeats_Counter = 0U;
@@ -94,6 +96,7 @@ void uz_Trajectory_Start(uz_Trajectory_t* self){
     uz_assert(self->is_ready);
     if(self->is_finished == false){
     	self->is_running = true;
+		self->is_running_latch = true;
     }
 }
 
@@ -108,6 +111,7 @@ void uz_Trajectory_Reset(uz_Trajectory_t* self){
     uz_assert(self->is_ready);
     self->is_running = false;
     self->is_finished = false;
+	self->is_running_latch = false;
     self->Trajectory_Counter = 0U;
     self->Step_Counter = 0U;
     self->Repeats_Counter = 0U;
@@ -118,11 +122,50 @@ float uz_Trajectory_Step(uz_Trajectory_t* self){
     uz_assert(self->is_ready);
     float Temp_Trajectory_out = 0.0f;
 
-    // Check if Trajectory is Running
-	if(self->is_running == true && self->is_finished == false){
+	// Check is the start-function is called
+	if(self->is_running_latch == true){
+		// Check if Trajectory is Running
+		if(self->is_running == true && self->is_finished == false){
+			if(self->config.RepeatStyle == Repeat_Times){
+				if(self->Repeats_Counter < self->config.Repeats){
+					if(self->Step_Counter < self->config.Number_Sample_Points){
+						// Choose Interpolation-Style
+						switch(self->config.selection_interpolation){
+						case Zero_Order_Hold:
+							// Use Indicies
+							Temp_Trajectory_out = self->config.Sample_Amplitude_Y[self->Step_Counter];
+							break;
+						case Linear:
+							// Calculate linear equation
+							Temp_Trajectory_out = (self->Interpolation_Coefficients[1][self->Step_Counter] * (float)self->Trajectory_Counter + self->config.Sample_Amplitude_Y[self->Step_Counter]);
+							break;
+						default:
+							// Trigger an Assertion- this code should never be reached
+							uz_assert(true);
+							break;
+						}
+						// Increase Trajectory-Counter
+						self->Trajectory_Counter++;
+						// Calculate actual Step
+						if(self->Trajectory_Counter >= get_TimeBase(self, self->Step_Counter)){
+							// Increase-Step-Counter
+							self->Step_Counter++;
+							self->Trajectory_Counter = 0U;
+						}
+					}else{
+						self->Repeats_Counter++;
+						self->Step_Counter = 0U;
+					}
+				}else{
+					//finished running
+					self->is_running = false;
+					self->is_finished = true;
+					self->is_running_latch = false;
+				}
 
-		if(self->config.RepeatStyle == Repeat_Times){
-			if(self->Repeats_Counter < self->config.Repeats){
+
+			}else if(self->config.RepeatStyle == Repeat_Inf){
+
 				if(self->Step_Counter < self->config.Number_Sample_Points){
 					// Choose Interpolation-Style
 					switch(self->config.selection_interpolation){
@@ -148,76 +191,42 @@ float uz_Trajectory_Step(uz_Trajectory_t* self){
 						self->Trajectory_Counter = 0U;
 					}
 				}else{
-					self->Repeats_Counter++;
 					self->Step_Counter = 0U;
 				}
-			}else{
-				//finished running
-				self->is_running = false;
-				self->is_finished = true;
 			}
 
+		}else{ // Trajectory not running
 
-		}else if(self->config.RepeatStyle == Repeat_Inf){
-
-			if(self->Step_Counter < self->config.Number_Sample_Points){
-				// Choose Interpolation-Style
-				switch(self->config.selection_interpolation){
-				case Zero_Order_Hold:
-					// Use Indicies
-					Temp_Trajectory_out = self->config.Sample_Amplitude_Y[self->Step_Counter];
+			switch(self->config.StopStyle){
+				case ForceToZero:
+					Temp_Trajectory_out = 0.0f;
 					break;
-				case Linear:
-					// Calculate linear equation
-					Temp_Trajectory_out = (self->Interpolation_Coefficients[1][self->Step_Counter] * (float)self->Trajectory_Counter + self->config.Sample_Amplitude_Y[self->Step_Counter]);
+				case HoldLast:
+					switch(self->config.selection_interpolation){
+						case Zero_Order_Hold:
+							// Use Indicies
+							Temp_Trajectory_out = self->config.Sample_Amplitude_Y[self->Step_Counter];
+							break;
+						case Linear:
+							// Calculate linear equation
+							Temp_Trajectory_out = (self->Interpolation_Coefficients[1][self->Step_Counter] * (float)self->Trajectory_Counter + self->config.Sample_Amplitude_Y[self->Step_Counter]);
+							break;
+						default:
+							// Trigger an Assertion- this code should never be reached
+							uz_assert(true);
+							break;
+						}
 					break;
 				default:
 					// Trigger an Assertion- this code should never be reached
 					uz_assert(true);
+					Temp_Trajectory_out = 0.0f;
 					break;
-				}
-				// Increase Trajectory-Counter
-				self->Trajectory_Counter++;
-				// Calculate actual Step
-				if(self->Trajectory_Counter >= get_TimeBase(self, self->Step_Counter)){
-					// Increase-Step-Counter
-					self->Step_Counter++;
-					self->Trajectory_Counter = 0U;
-				}
-			}else{
-				self->Step_Counter = 0U;
 			}
+
 		}
-
-	}else{ // Trajectory not running
-
-		switch(self->config.StopStyle){
-			case ForceToZero:
-				Temp_Trajectory_out = 0.0f;
-				break;
-			case HoldLast:
-				switch(self->config.selection_interpolation){
-					case Zero_Order_Hold:
-						// Use Indicies
-						Temp_Trajectory_out = self->config.Sample_Amplitude_Y[self->Step_Counter];
-						break;
-					case Linear:
-						// Calculate linear equation
-						Temp_Trajectory_out = (self->Interpolation_Coefficients[1][self->Step_Counter] * (float)self->Trajectory_Counter + self->config.Sample_Amplitude_Y[self->Step_Counter]);
-						break;
-					default:
-						// Trigger an Assertion- this code should never be reached
-						uz_assert(true);
-						break;
-					}
-				break;
-			default:
-				// Trigger an Assertion- this code should never be reached
-				uz_assert(true);
-				Temp_Trajectory_out = 0.0f;
-				break;
-		}
-
+	}else{
+		Temp_Trajectory_out = 0.0f;
 	}
 	return Temp_Trajectory_out;
 }

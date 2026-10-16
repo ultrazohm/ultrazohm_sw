@@ -17,7 +17,7 @@ The following tutorial requires:
 - :ref:`Complete Xilinx Toolchain (Vivado, Vitis) installation <XilinxToolchain>`
 - :ref:`Git installation <Git>`
 - :ref:`Java installation <install_java>`
-- :ref:`Cloned UltraZohm repositories from Bitbucket <clone>`
+- :ref:`Cloned UltraZohm repositories from Github <clone>`
 - :ref:`Generated Vitis workspace <genvitis>`
 - UltraZohm connected to your PC by Ethernet and USB (JTAG)
 

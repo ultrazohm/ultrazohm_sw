@@ -39,7 +39,7 @@ Based on the LTC2983:
 Before first use
 ----------------
 * Determine correct placement options for correct function
-* Program CPLDs with the firmware needed for the temperature card `uz_d_temperature_ltc2983 <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/uz_d_temperature_ltc2983/>`_, see :ref:`label_cpld_programming` for details
+* Program CPLDs with the firmware needed for the temperature card `uz_d_temperature_ltc2983 <https://github.com/ultrazohm/cpld_lattice/src/master/uz_d_temperature_ltc2983/>`_, see :ref:`label_cpld_programming` for details
 
 Compatibility 
 -------------

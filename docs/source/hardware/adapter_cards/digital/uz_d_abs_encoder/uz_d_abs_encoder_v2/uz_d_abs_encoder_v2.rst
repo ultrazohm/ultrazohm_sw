@@ -308,7 +308,7 @@ Compatibility
 References
 ==========
 
-* `uz_d_absolute_encoder repository with Altium project <https://bitbucket.org/ultrazohm/uz_d_absolute_encoder>`_
+* `uz_d_absolute_encoder repository with Altium project <https://github.com/ultrazohm/uz_d_absolute_encoder>`_
 * :download:`Schematic Rev02 <SCH_uz_d_absolute_encoder_Default_Rev02.pdf>`
 * :ref:`label_cpld_programming`
 * :ref:`uz_endat_interface`

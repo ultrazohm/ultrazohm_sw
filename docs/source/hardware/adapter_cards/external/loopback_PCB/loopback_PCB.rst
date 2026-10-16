@@ -11,7 +11,7 @@ Loopback PCB
 Source
 ******
 
-- `Loopback PCB repository <https://bitbucket.org/ultrazohm/uz_per_loopback_tutorial/>`_
+- `Loopback PCB repository <https://github.com/ultrazohm/uz_per_loopback_tutorial/>`_
 
 Revisions
 *********

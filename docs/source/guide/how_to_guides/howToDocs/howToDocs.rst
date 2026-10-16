@@ -47,7 +47,7 @@ To build and edit the documentation on your native system, you need to:
   :alt: Alternative text
 
 
-.. note:: If ``make html`` or ``make livehtml`` do not work due to missing package errors, run ``pip install -r requirements.txt`` again. If this does not solve the problem please open an `issue <https://bitbucket.org/ultrazohm/ultrazohm_sw/issues>`_.
+.. note:: If ``make html`` or ``make livehtml`` do not work due to missing package errors, run ``pip install -r requirements.txt`` again. If this does not solve the problem please open an `issue <https://github.com/ultrazohm/ultrazohm_sw/issues>`_.
 
 Makefile reference
 ******************
@@ -76,6 +76,7 @@ Please note that the installation steps for ``breathe`` (i.e., Doxygen) are not 
 .. youtube:: dxAlD-VzE0c
 
 This video shows how to change something in the documentation, add a new page, commit the changes and create a pull request in Bitbucket.
+Note that the repository is now hosted by Github.
 
 .. youtube:: pcG1XMzVDc8
 

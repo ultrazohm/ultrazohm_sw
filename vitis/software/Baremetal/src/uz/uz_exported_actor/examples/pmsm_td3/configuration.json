@@ -1,0 +1,1224 @@
+{
+  "settings": {
+    "trainer": {
+      "backend": "custom",
+      "critic_precision": "highest"
+    },
+    "plant": {
+      "type": "pmsm"
+    },
+    "experiment": {
+      "name": "pmsm_ultrazohm_td3"
+    },
+    "observations": {
+      "name": "dq9_v1",
+      "parameters": {}
+    },
+    "reward": {
+      "name": "weighted_l1_post_v1",
+      "parameters": {
+        "weights": [
+          1.0,
+          1.0
+        ]
+      }
+    },
+    "action": {
+      "name": "dq_voltage_axis_priority_v1",
+      "parameters": {},
+      "discrete_values": []
+    },
+    "simulation": {
+      "control_frequency_hz": 10000,
+      "solver": "heun",
+      "delay_steps": 1,
+      "voltage_limiter_current_source": "reference",
+      "plant_oversampling": 4,
+      "unroll_plant": false,
+      "terminate_on_overcurrent": false
+    },
+    "training": {
+      "timesteps": 250000,
+      "chunk_steps": 5000,
+      "log_episode_returns": true,
+      "reset_mode": "uniform_base_speed",
+      "speed_range": [
+        0.0,
+        1000
+      ],
+      "id_range": [
+        -8,
+        8
+      ],
+      "iq_range": [
+        -8,
+        8
+      ],
+      "episode_seconds": 0.01,
+      "initial_currents": [
+        0.0,
+        0.0
+      ],
+      "profile_interval_seconds": 0.005,
+      "episodes": [],
+      "compact_constant_profiles": false,
+      "episode_steps": 100,
+      "profile_interval_steps": 50
+    },
+    "evaluation": {
+      "count": 2,
+      "seed": 0,
+      "episodes": [],
+      "report_episodes": [],
+      "episodes_file": "",
+      "report_episodes_file": "",
+      "retain_all_traces": false,
+      "inference_mode": "canonical",
+      "agent_chunk_size": 64,
+      "episode_chunk_size": 16,
+      "memory_budget_mib": 0,
+      "reset_mode": "uniform_base_speed",
+      "speed_range": [
+        0.0,
+        1000
+      ],
+      "id_range": [
+        -8,
+        8
+      ],
+      "iq_range": [
+        -8,
+        8
+      ],
+      "episode_seconds": 0.01,
+      "initial_currents": [
+        0.0,
+        0.0
+      ],
+      "profile_interval_seconds": 0.005,
+      "match_matlab": false,
+      "episode_steps": 100,
+      "profile_interval_steps": 50
+    },
+    "sweep": {
+      "mode": "grid",
+      "seeds": [
+        0
+      ],
+      "sampling_seed": 0,
+      "samples": 1,
+      "parameters": {},
+      "device": "cpu",
+      "cpu_workers": 1,
+      "population_chunk_size": 16,
+      "memory_budget_mib": 0,
+      "memory_headroom_mib": 2048
+    },
+    "output": {
+      "directory": "prototyping_pmsm/runs",
+      "compression": "lz4",
+      "save_models": false
+    },
+    "agent": {
+      "buffer_size": 100000,
+      "batch_size": 32,
+      "learning_starts": 100,
+      "train_frequency": 1,
+      "train_frequency_unit": "transition",
+      "gradient_steps": 1,
+      "gamma": 0.95,
+      "tau": 0.005,
+      "target_update_interval": 2,
+      "target_update_unit": "update",
+      "adam_epsilon": 1e-08,
+      "max_grad_norm": 0.0,
+      "actor_layers": [
+        32,
+        32
+      ],
+      "critic_layers": [
+        32,
+        32
+      ],
+      "actor_lr": 0.001,
+      "critic_lr": 0.001,
+      "noise_sigma": 0.3,
+      "target_noise_sigma": 0.2,
+      "target_noise_clip": 0.5,
+      "policy_delay": 2,
+      "algorithm": "td3"
+    },
+    "domain_randomization": {
+      "distribution": "uniform",
+      "deviation_percent": {}
+    },
+    "machine": {
+      "name": "beckhoff_am8141",
+      "overrides": {}
+    },
+    "foc": {
+      "tuning_preset": "matlab_1_5tau",
+      "kp": [
+        5.833333333333334,
+        5.833333333333334
+      ],
+      "ki": [
+        1500.0000000000002,
+        1500.0000000000002
+      ]
+    },
+    "_source": {
+      "toml": "pmsm_ultrazohm_td3.toml"
+    }
+  },
+  "metadata": {
+    "configuration_schema_version": 2,
+    "rng": {
+      "scheme": "td3_named_streams_v3",
+      "root": "sweep.seeds"
+    },
+    "algorithm_spec": {
+      "version": 1,
+      "algorithm": "td3",
+      "rng_scheme": "td3_named_streams_v3",
+      "settings": {
+        "buffer_size": 100000,
+        "batch_size": 32,
+        "learning_starts": 100,
+        "train_frequency": 1,
+        "train_frequency_unit": "transition",
+        "gradient_steps": 1,
+        "target_update_interval": 2,
+        "target_update_unit": "update",
+        "adam_epsilon": 1e-08,
+        "max_grad_norm": 0.0,
+        "actor_layers": [
+          32,
+          32
+        ],
+        "critic_layers": [
+          32,
+          32
+        ],
+        "target_noise_sigma": 0.2,
+        "target_noise_clip": 0.5,
+        "policy_delay": 2,
+        "algorithm": "td3"
+      }
+    },
+    "component_specs": {
+      "observation": {
+        "shape": [
+          9
+        ],
+        "dtype": "float32",
+        "features": [
+          "error_d",
+          "integral_d",
+          "error_q",
+          "integral_q",
+          "current_d",
+          "current_q",
+          "mechanical_speed",
+          "applied_voltage_d",
+          "applied_voltage_q"
+        ],
+        "units": [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        "bounds": [
+          [
+            null,
+            null
+          ],
+          [
+            null,
+            null
+          ],
+          [
+            null,
+            null
+          ],
+          [
+            null,
+            null
+          ],
+          [
+            null,
+            null
+          ],
+          [
+            null,
+            null
+          ],
+          [
+            null,
+            null
+          ],
+          [
+            null,
+            null
+          ],
+          [
+            null,
+            null
+          ]
+        ]
+      },
+      "policy_action": {
+        "shape": [
+          2
+        ],
+        "dtype": "float32",
+        "features": [
+          "voltage_d",
+          "voltage_q"
+        ],
+        "units": [
+          "1",
+          "1"
+        ],
+        "bounds": [
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            -1.0,
+            1.0
+          ]
+        ]
+      },
+      "physical_action": {
+        "shape": [
+          2
+        ],
+        "dtype": "float32",
+        "features": [
+          "voltage_d",
+          "voltage_q"
+        ],
+        "units": [
+          "V",
+          "V"
+        ],
+        "bounds": [
+          [
+            -27.71281292110204,
+            27.71281292110204
+          ],
+          [
+            -27.71281292110204,
+            27.71281292110204
+          ]
+        ]
+      }
+    },
+    "resolved_machine": {
+      "name": "beckhoff_am8141",
+      "resistance": 0.45,
+      "ld": 0.00175,
+      "lq": 0.00175,
+      "flux": 0.042,
+      "pole_pairs": 4,
+      "rated_current": 8,
+      "max_current": 12,
+      "rated_speed": 1000,
+      "dc_voltage": 48
+    },
+    "machine_provenance": {
+      "source": "pmsm_3ph_iemdc/pmsm_3ph_iemdc2/beckhoff_am8141.mat",
+      "sha256": "e6f3cb2f63f315a56562e2cb9b0e565089b0d2d84e3944652eba5ff2dab37bf2",
+      "registry_sha256": "73620bc933d1d19fc83fbeb3abaf4253b5bc9215253109cd5f7d6bca12edfe29",
+      "overrides": {},
+      "units": {
+        "resistance": "ohm",
+        "ld": "H",
+        "lq": "H",
+        "flux": "Wb",
+        "pole_pairs": "count",
+        "rated_current": "A (MATLAB I_nenn convention)",
+        "max_current": "A",
+        "rated_speed": "rpm",
+        "dc_voltage": "V"
+      }
+    },
+    "evaluation_spec": {
+      "version": 1,
+      "metrics": [
+        {
+          "name": "iae",
+          "label": "IAE",
+          "unit": "A s",
+          "timing": "pre_step_trapezoid",
+          "summary_name": "iae_mean",
+          "normalize_db": true,
+          "optional": true,
+          "visible": true,
+          "direction": "min"
+        },
+        {
+          "name": "itae",
+          "label": "ITAE",
+          "unit": "A s^2",
+          "timing": "pre_step_trapezoid",
+          "summary_name": "itae_mean",
+          "normalize_db": true,
+          "optional": true,
+          "visible": true,
+          "direction": "min"
+        },
+        {
+          "name": "iae_vector",
+          "label": "IAE VECTOR",
+          "unit": "A s",
+          "timing": "pre_step_trapezoid",
+          "summary_name": "iae_vector_mean",
+          "normalize_db": true,
+          "optional": true,
+          "visible": true,
+          "direction": "min"
+        },
+        {
+          "name": "itae_vector",
+          "label": "ITAE VECTOR",
+          "unit": "A s^2",
+          "timing": "pre_step_trapezoid",
+          "summary_name": "itae_vector_mean",
+          "normalize_db": true,
+          "optional": true,
+          "visible": true,
+          "direction": "min"
+        },
+        {
+          "name": "iae_total",
+          "label": "Total integral absolute error",
+          "unit": "A s",
+          "timing": "post_step_rectangle",
+          "summary_name": "mean_iae_total",
+          "normalize_db": false,
+          "optional": false,
+          "visible": true,
+          "direction": "min"
+        },
+        {
+          "name": "iae_d",
+          "label": "D-axis integral absolute error",
+          "unit": "A s",
+          "timing": "post_step_rectangle",
+          "summary_name": "mean_iae_d",
+          "normalize_db": false,
+          "optional": false,
+          "visible": false,
+          "direction": "min"
+        },
+        {
+          "name": "iae_q",
+          "label": "Q-axis integral absolute error",
+          "unit": "A s",
+          "timing": "post_step_rectangle",
+          "summary_name": "mean_iae_q",
+          "normalize_db": false,
+          "optional": false,
+          "visible": false,
+          "direction": "min"
+        }
+      ],
+      "selection": {
+        "metric": "iae_total",
+        "summary_name": "mean_iae_total",
+        "direction": "min"
+      },
+      "reference_controller": "FOC",
+      "reference_specification": {
+        "version": 1,
+        "controller": "foc_pi_v1",
+        "parameters": {
+          "tuning_preset": "matlab_1_5tau",
+          "kp": [
+            5.833333333333334,
+            5.833333333333334
+          ],
+          "ki": [
+            1500.0000000000002,
+            1500.0000000000002
+          ]
+        }
+      },
+      "signals": [
+        {
+          "name": "id_pre",
+          "label": "id_pre",
+          "unit": "A",
+          "group": "Currents",
+          "timing": "pre",
+          "role": "response",
+          "visible": false
+        },
+        {
+          "name": "iq_pre",
+          "label": "iq_pre",
+          "unit": "A",
+          "group": "Currents",
+          "timing": "pre",
+          "role": "response",
+          "visible": false
+        },
+        {
+          "name": "id_post",
+          "label": "id_post",
+          "unit": "A",
+          "group": "Currents",
+          "timing": "post",
+          "role": "response",
+          "visible": true
+        },
+        {
+          "name": "iq_post",
+          "label": "iq_post",
+          "unit": "A",
+          "group": "Currents",
+          "timing": "post",
+          "role": "response",
+          "visible": true
+        },
+        {
+          "name": "id_ref",
+          "label": "id_ref",
+          "unit": "A",
+          "group": "Currents",
+          "timing": "pre",
+          "role": "reference",
+          "visible": true
+        },
+        {
+          "name": "iq_ref",
+          "label": "iq_ref",
+          "unit": "A",
+          "group": "Currents",
+          "timing": "pre",
+          "role": "reference",
+          "visible": true
+        },
+        {
+          "name": "ud_requested",
+          "label": "ud_requested",
+          "unit": "V",
+          "group": "Voltages",
+          "timing": "pre",
+          "role": "response",
+          "visible": true
+        },
+        {
+          "name": "uq_requested",
+          "label": "uq_requested",
+          "unit": "V",
+          "group": "Voltages",
+          "timing": "pre",
+          "role": "response",
+          "visible": true
+        },
+        {
+          "name": "ud_limited",
+          "label": "ud_limited",
+          "unit": "V",
+          "group": "Voltages",
+          "timing": "pre",
+          "role": "response",
+          "visible": true
+        },
+        {
+          "name": "uq_limited",
+          "label": "uq_limited",
+          "unit": "V",
+          "group": "Voltages",
+          "timing": "pre",
+          "role": "response",
+          "visible": true
+        },
+        {
+          "name": "ud_applied",
+          "label": "ud_applied",
+          "unit": "V",
+          "group": "Voltages",
+          "timing": "pre",
+          "role": "response",
+          "visible": true
+        },
+        {
+          "name": "uq_applied",
+          "label": "uq_applied",
+          "unit": "V",
+          "group": "Voltages",
+          "timing": "pre",
+          "role": "response",
+          "visible": true
+        },
+        {
+          "name": "error_d",
+          "label": "error_d",
+          "unit": "A",
+          "group": "Errors",
+          "timing": "post",
+          "role": "response",
+          "visible": true
+        },
+        {
+          "name": "error_q",
+          "label": "error_q",
+          "unit": "A",
+          "group": "Errors",
+          "timing": "post",
+          "role": "response",
+          "visible": true
+        },
+        {
+          "name": "speed_rpm",
+          "label": "speed_rpm",
+          "unit": "rpm",
+          "group": "Speed",
+          "timing": "pre",
+          "role": "input",
+          "visible": true
+        },
+        {
+          "name": "reward",
+          "label": "reward",
+          "unit": "reward",
+          "group": "Diagnostics",
+          "timing": "post",
+          "role": "diagnostic",
+          "visible": true
+        },
+        {
+          "name": "saturated",
+          "label": "saturated",
+          "unit": "1",
+          "group": "Diagnostics",
+          "timing": "post",
+          "role": "diagnostic",
+          "visible": true
+        },
+        {
+          "name": "peak_current",
+          "label": "peak_current",
+          "unit": "A",
+          "group": "Diagnostics",
+          "timing": "post",
+          "role": "diagnostic",
+          "visible": true
+        },
+        {
+          "name": "terminated",
+          "label": "terminated",
+          "unit": "1",
+          "group": "Diagnostics",
+          "timing": "post",
+          "role": "diagnostic",
+          "visible": true
+        },
+        {
+          "name": "reason",
+          "label": "reason",
+          "unit": "1",
+          "group": "Diagnostics",
+          "timing": "post",
+          "role": "diagnostic",
+          "visible": false
+        },
+        {
+          "name": "active",
+          "label": "active",
+          "unit": "1",
+          "group": "Diagnostics",
+          "timing": "post",
+          "role": "diagnostic",
+          "visible": false
+        }
+      ],
+      "termination_codes": [
+        [
+          0,
+          "time_limit"
+        ],
+        [
+          1,
+          "overcurrent"
+        ],
+        [
+          2,
+          "numerical_failure"
+        ]
+      ],
+      "comparison": {
+        "metrics": [
+          "iae_mean",
+          "normalized_iae_mean",
+          "itae_mean",
+          "normalized_itae_mean",
+          "iae_vector_mean",
+          "normalized_iae_vector_mean",
+          "itae_vector_mean",
+          "normalized_itae_vector_mean"
+        ],
+        "rank_by": "itae_vector_mean"
+      },
+      "sampled_fields": [
+        {
+          "name": "references",
+          "shape": [
+            2
+          ],
+          "dtype": "float64"
+        },
+        {
+          "name": "speeds",
+          "shape": [],
+          "dtype": "float64"
+        }
+      ]
+    },
+    "policy_spec": {
+      "version": 2,
+      "backend": "custom",
+      "algorithm": "td3",
+      "inference": {
+        "algorithm_version": 1,
+        "architecture": "dense_relu_tanh_v1",
+        "actor_layers": [
+          32,
+          32
+        ],
+        "parameter_dtype": "float32"
+      },
+      "environment": "pmsm",
+      "physical_parameters": {
+        "name": "beckhoff_am8141",
+        "resistance": 0.45,
+        "ld": 0.00175,
+        "lq": 0.00175,
+        "flux": 0.042,
+        "pole_pairs": 4,
+        "rated_current": 8,
+        "max_current": 12,
+        "rated_speed": 1000,
+        "dc_voltage": 48
+      },
+      "simulation": {
+        "control_frequency_hz": 10000,
+        "solver": "heun",
+        "delay_steps": 1,
+        "voltage_limiter_current_source": "reference",
+        "plant_oversampling": 4,
+        "unroll_plant": false,
+        "terminate_on_overcurrent": false
+      },
+      "observations": {
+        "component": {
+          "name": "dq9_v1",
+          "parameters": {}
+        },
+        "spec": {
+          "shape": [
+            9
+          ],
+          "dtype": "float32",
+          "features": [
+            "error_d",
+            "integral_d",
+            "error_q",
+            "integral_q",
+            "current_d",
+            "current_q",
+            "mechanical_speed",
+            "applied_voltage_d",
+            "applied_voltage_q"
+          ],
+          "units": [
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1"
+          ],
+          "bounds": [
+            [
+              null,
+              null
+            ],
+            [
+              null,
+              null
+            ],
+            [
+              null,
+              null
+            ],
+            [
+              null,
+              null
+            ],
+            [
+              null,
+              null
+            ],
+            [
+              null,
+              null
+            ],
+            [
+              null,
+              null
+            ],
+            [
+              null,
+              null
+            ],
+            [
+              null,
+              null
+            ]
+          ]
+        }
+      },
+      "actions": {
+        "component": {
+          "name": "dq_voltage_axis_priority_v1",
+          "parameters": {}
+        },
+        "policy": {
+          "shape": [
+            2
+          ],
+          "dtype": "float32",
+          "features": [
+            "voltage_d",
+            "voltage_q"
+          ],
+          "units": [
+            "1",
+            "1"
+          ],
+          "bounds": [
+            [
+              -1.0,
+              1.0
+            ],
+            [
+              -1.0,
+              1.0
+            ]
+          ]
+        },
+        "physical": {
+          "shape": [
+            2
+          ],
+          "dtype": "float32",
+          "features": [
+            "voltage_d",
+            "voltage_q"
+          ],
+          "units": [
+            "V",
+            "V"
+          ],
+          "bounds": [
+            [
+              -27.71281292110204,
+              27.71281292110204
+            ],
+            [
+              -27.71281292110204,
+              27.71281292110204
+            ]
+          ]
+        }
+      }
+    },
+    "inference_agent": {
+      "version": 1,
+      "network": {
+        "version": 1,
+        "dtype": "float32",
+        "weight_layout": "input_output",
+        "input_size": 9,
+        "layers": [
+          {
+            "inputs": 9,
+            "outputs": 32,
+            "activation": "relu"
+          },
+          {
+            "inputs": 32,
+            "outputs": 32,
+            "activation": "relu"
+          },
+          {
+            "inputs": 32,
+            "outputs": 2,
+            "activation": "tanh"
+          }
+        ],
+        "head": {
+          "kind": "continuous"
+        }
+      },
+      "observation": {
+        "version": 1,
+        "name": "dq9_v1",
+        "signals": {
+          "current": {
+            "shape": [
+              2
+            ],
+            "unit": "A",
+            "timing": "pre",
+            "components": [
+              "d",
+              "q"
+            ],
+            "quantity": "stator_current_dq"
+          },
+          "reference": {
+            "shape": [
+              2
+            ],
+            "unit": "A",
+            "timing": "pre",
+            "components": [
+              "d",
+              "q"
+            ],
+            "quantity": "reference_current_dq"
+          },
+          "speed_rpm": {
+            "shape": [],
+            "unit": "rpm",
+            "timing": "pre",
+            "components": [],
+            "quantity": "mechanical_speed"
+          },
+          "applied_voltage": {
+            "shape": [
+              2
+            ],
+            "unit": "V",
+            "timing": "previous_interval",
+            "components": [
+              "d",
+              "q"
+            ],
+            "quantity": "stator_voltage_dq"
+          }
+        },
+        "features": [
+          {
+            "name": "error_d",
+            "unit": "1",
+            "expression": {
+              "op": "index",
+              "value": {
+                "op": "divide",
+                "args": [
+                  {
+                    "op": "subtract",
+                    "args": [
+                      {
+                        "op": "signal",
+                        "name": "reference"
+                      },
+                      {
+                        "op": "signal",
+                        "name": "current"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "constant",
+                    "value": 8
+                  }
+                ]
+              },
+              "index": 0
+            }
+          },
+          {
+            "name": "integral_d",
+            "unit": "1",
+            "expression": {
+              "op": "index",
+              "value": {
+                "op": "multiply",
+                "args": [
+                  {
+                    "op": "state",
+                    "name": "integral"
+                  },
+                  {
+                    "op": "constant",
+                    "value": 10000
+                  }
+                ]
+              },
+              "index": 0
+            }
+          },
+          {
+            "name": "error_q",
+            "unit": "1",
+            "expression": {
+              "op": "index",
+              "value": {
+                "op": "divide",
+                "args": [
+                  {
+                    "op": "subtract",
+                    "args": [
+                      {
+                        "op": "signal",
+                        "name": "reference"
+                      },
+                      {
+                        "op": "signal",
+                        "name": "current"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "constant",
+                    "value": 8
+                  }
+                ]
+              },
+              "index": 1
+            }
+          },
+          {
+            "name": "integral_q",
+            "unit": "1",
+            "expression": {
+              "op": "index",
+              "value": {
+                "op": "multiply",
+                "args": [
+                  {
+                    "op": "state",
+                    "name": "integral"
+                  },
+                  {
+                    "op": "constant",
+                    "value": 10000
+                  }
+                ]
+              },
+              "index": 1
+            }
+          },
+          {
+            "name": "current_d",
+            "unit": "1",
+            "expression": {
+              "op": "index",
+              "value": {
+                "op": "divide",
+                "args": [
+                  {
+                    "op": "signal",
+                    "name": "current"
+                  },
+                  {
+                    "op": "constant",
+                    "value": 8
+                  }
+                ]
+              },
+              "index": 0
+            }
+          },
+          {
+            "name": "current_q",
+            "unit": "1",
+            "expression": {
+              "op": "index",
+              "value": {
+                "op": "divide",
+                "args": [
+                  {
+                    "op": "signal",
+                    "name": "current"
+                  },
+                  {
+                    "op": "constant",
+                    "value": 8
+                  }
+                ]
+              },
+              "index": 1
+            }
+          },
+          {
+            "name": "mechanical_speed",
+            "unit": "1",
+            "expression": {
+              "op": "divide",
+              "args": [
+                {
+                  "op": "signal",
+                  "name": "speed_rpm"
+                },
+                {
+                  "op": "constant",
+                  "value": 1000
+                }
+              ]
+            }
+          },
+          {
+            "name": "applied_voltage_d",
+            "unit": "1",
+            "expression": {
+              "op": "index",
+              "value": {
+                "op": "divide",
+                "args": [
+                  {
+                    "op": "signal",
+                    "name": "applied_voltage"
+                  },
+                  {
+                    "op": "constant",
+                    "value": 27.71281292110204
+                  }
+                ]
+              },
+              "index": 0
+            }
+          },
+          {
+            "name": "applied_voltage_q",
+            "unit": "1",
+            "expression": {
+              "op": "index",
+              "value": {
+                "op": "divide",
+                "args": [
+                  {
+                    "op": "signal",
+                    "name": "applied_voltage"
+                  },
+                  {
+                    "op": "constant",
+                    "value": 27.71281292110204
+                  }
+                ]
+              },
+              "index": 1
+            }
+          }
+        ],
+        "state": {
+          "integral": {
+            "shape": [
+              2
+            ],
+            "initial": [
+              0.0,
+              0.0
+            ],
+            "unit": "s",
+            "hold_when": "command_saturated",
+            "increment": {
+              "op": "divide",
+              "args": [
+                {
+                  "op": "multiply",
+                  "args": [
+                    {
+                      "op": "constant",
+                      "value": 0.0001
+                    },
+                    {
+                      "op": "subtract",
+                      "args": [
+                        {
+                          "op": "signal",
+                          "name": "reference"
+                        },
+                        {
+                          "op": "signal",
+                          "name": "current"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "constant",
+                  "value": 8
+                }
+              ]
+            }
+          }
+        }
+      },
+      "action": {
+        "version": 1,
+        "name": "dq_voltage_axis_priority_v1",
+        "expression": {
+          "op": "multiply",
+          "args": [
+            {
+              "op": "signal",
+              "name": "action"
+            },
+            {
+              "op": "constant",
+              "value": 27.71281292110204
+            }
+          ]
+        },
+        "units": [
+          "V",
+          "V"
+        ],
+        "discrete_values": [],
+        "output": "requested_physical_command",
+        "limiter_owner": "actuator",
+        "delay_owner": "actuator",
+        "feedback": {
+          "command_saturated": "current_request_actually_limited",
+          "applied_voltage": "actual_previous_interval"
+        }
+      },
+      "execution": {
+        "control_frequency_hz": 10000,
+        "actuator_delay_steps": 1,
+        "order": [
+          "observe",
+          "act",
+          "limit",
+          "advance"
+        ],
+        "reset": "explicit_initial_conditions",
+        "voltage_limiter_current_source": "reference"
+      }
+    },
+    "inference_export": {
+      "status": "canonical",
+      "format": "policy_v2"
+    }
+  }
+}

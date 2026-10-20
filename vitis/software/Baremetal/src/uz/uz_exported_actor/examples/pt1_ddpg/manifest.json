@@ -1,0 +1,204 @@
+{
+  "actor_codec": "canonical_dense_v1",
+  "contract": {
+    "action": {
+      "delay_owner": "actuator",
+      "discrete_values": [],
+      "expression": {
+        "args": [
+          {
+            "op": "constant",
+            "value": -1.0
+          },
+          {
+            "args": [
+              {
+                "args": [
+                  {
+                    "args": [
+                      {
+                        "name": "action",
+                        "op": "signal"
+                      },
+                      {
+                        "op": "constant",
+                        "value": 1
+                      }
+                    ],
+                    "op": "add"
+                  },
+                  {
+                    "op": "constant",
+                    "value": 2.0
+                  }
+                ],
+                "op": "multiply"
+              },
+              {
+                "op": "constant",
+                "value": 2
+              }
+            ],
+            "op": "divide"
+          }
+        ],
+        "op": "add"
+      },
+      "feedback": {},
+      "limiter_owner": "actuator",
+      "name": "bounded_input_v1",
+      "output": "requested_physical_command",
+      "units": [
+        "action"
+      ],
+      "version": 1
+    },
+    "execution": {
+      "actuator_delay_steps": 0,
+      "control_frequency_hz": 10000.0,
+      "order": [
+        "observe",
+        "act",
+        "limit",
+        "advance"
+      ],
+      "reset": "explicit_initial_conditions"
+    },
+    "network": {
+      "dtype": "float32",
+      "head": {
+        "kind": "continuous"
+      },
+      "input_size": 2,
+      "layers": [
+        {
+          "activation": "relu",
+          "inputs": 2,
+          "outputs": 32
+        },
+        {
+          "activation": "relu",
+          "inputs": 32,
+          "outputs": 32
+        },
+        {
+          "activation": "tanh",
+          "inputs": 32,
+          "outputs": 1
+        }
+      ],
+      "version": 1,
+      "weight_layout": "input_output"
+    },
+    "observation": {
+      "features": [
+        {
+          "expression": {
+            "name": "output",
+            "op": "signal"
+          },
+          "name": "output",
+          "unit": "output"
+        },
+        {
+          "expression": {
+            "name": "reference",
+            "op": "signal"
+          },
+          "name": "reference",
+          "unit": "output"
+        }
+      ],
+      "name": "output_reference_v1",
+      "signals": {
+        "output": {
+          "components": [],
+          "quantity": "output",
+          "shape": [],
+          "timing": "pre",
+          "unit": "output"
+        },
+        "reference": {
+          "components": [],
+          "quantity": "reference",
+          "shape": [],
+          "timing": "pre",
+          "unit": "output"
+        }
+      },
+      "state": {},
+      "version": 1
+    },
+    "version": 1
+  },
+  "contract_sha256": "8d0ae7605daf5b3c09ea84054514e3cf2c9c6bead6dbcd1e9481e9c3a8fa99de",
+  "csv": {
+    "delimiter": ",",
+    "dtype": "float32",
+    "flatten_order": "C",
+    "float_format": "%.9g",
+    "rows_per_file": 1,
+    "weight_layout": "input_output"
+  },
+  "format": "pmsm_uz_nn_csv",
+  "layers": [
+    {
+      "bias": {
+        "file": "layer1_bias.csv",
+        "sha256": "f0fd95fabcfa8f244ea97b46f66ee31cf9077e056bfdea4b63e53f999137083f",
+        "shape": [
+          32
+        ]
+      },
+      "index": 1,
+      "weights": {
+        "file": "layer1_weights.csv",
+        "sha256": "51430ff2fd6550115ce26afe517fbc73eda9eaba823bb41405936ffa50d70809",
+        "shape": [
+          2,
+          32
+        ]
+      }
+    },
+    {
+      "bias": {
+        "file": "layer2_bias.csv",
+        "sha256": "c190be2e71b756b913cacb4a904704a9f91742473b9f2df2241561acad5c6012",
+        "shape": [
+          32
+        ]
+      },
+      "index": 2,
+      "weights": {
+        "file": "layer2_weights.csv",
+        "sha256": "d59852d7e5d679a3b0ef2ac14449fba23a3cfe394b805e00b3b2d99e3364c1d8",
+        "shape": [
+          32,
+          32
+        ]
+      }
+    },
+    {
+      "bias": {
+        "file": "layer3_bias.csv",
+        "sha256": "525ad357d372ff87411f289f5f709c934742698dc2a9ca3ea075bbcba189cd17",
+        "shape": [
+          1
+        ]
+      },
+      "index": 3,
+      "weights": {
+        "file": "layer3_weights.csv",
+        "sha256": "134f5ea0b43cb3aac62bef625eb9abf960035ec1bfbec87d2afcdcbbf0f4fc84",
+        "shape": [
+          32,
+          1
+        ]
+      }
+    }
+  ],
+  "source": {
+    "configuration_id": "236c372432151ec9"
+  },
+  "version": 1
+}

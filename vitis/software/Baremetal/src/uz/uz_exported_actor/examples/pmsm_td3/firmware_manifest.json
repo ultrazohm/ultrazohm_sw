@@ -1,0 +1,25 @@
+{
+  "adapter_abi": 1,
+  "contract_sha256": "b225b44621f04a1faac389d941023f63c76cfb9ab6afce275a55b920a5af6d6f",
+  "files": {
+    "layer1_bias.csv": "7059f2cb40f18f94588f75ba35aed3572a55c8530978ff7e8520f38ad8ac6725",
+    "layer1_weights.csv": "5d40f8c64f4f17df3e82ed0f94be2c7232af33edfa67a6453b579ec39a397ec0",
+    "layer2_bias.csv": "2d4037e9dbef96f2c174a8eb503b35847bef0748afd6eb2d3cda4993d08fab92",
+    "layer2_weights.csv": "3b1fd07b09eac8e9724e1acfc5d19afe345746bf1d54a1bbeee1b85de68658ec",
+    "layer3_bias.csv": "2cddabd03530e81204d503f7423bb66bfe24d1336b3ca27ca21376a179777d91",
+    "layer3_weights.csv": "8a8ead8960e328bb67aff2ef11b3cab177780ba24a824edcb9e9559ee5b2e905",
+    "manifest.json": "071ec6c6bab4dcc65c3797938da600de82ce72d41f97c4b010a21b26eeef8c07",
+    "pmsm_td3_config.c": "23c0181bed0c120252c7938d79a90188d628acb6785cd826a0bfad2d85935805",
+    "pmsm_td3_config.h": "814e7c0ab043a4109497863a776dc37596cd33d90075f79c3b8c8cceccb49144"
+  },
+  "format": "ultrazohm_actor_c",
+  "name": "pmsm_td3",
+  "requirements": {
+    "fast_math": false,
+    "float_bits": 32,
+    "nn_instances": 1,
+    "nn_layer_instances": 3,
+    "serialized_calls": true
+  },
+  "version": 1
+}

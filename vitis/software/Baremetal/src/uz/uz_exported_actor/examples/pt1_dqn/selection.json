@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "format": "uz-nn",
+  "metric": null,
+  "ordering": null,
+  "requested_ranks": null,
+  "ranked_population": null,
+  "excluded_from_ranking": null,
+  "selected": [
+    {
+      "id": "71c0e25f5b674d1cbfc8ab80d683b9ce/case_0000/agent_0000_seed_0",
+      "run_id": "71c0e25f5b674d1cbfc8ab80d683b9ce",
+      "experiment": "pt1_workshop_dqn",
+      "case_id": "case_0000",
+      "case_uid": "71c0e25f5b674d1cbfc8ab80d683b9ce/case_0000",
+      "variant": "",
+      "agent_id": "agent_0000_seed_0",
+      "seed": 0,
+      "plant": "pt1",
+      "algorithm": "dqn",
+      "backend": "custom",
+      "eligible": true,
+      "training_status": "complete",
+      "config_id": "7cf2bed5c566954b",
+      "scenario": "3de2ca4718040e43",
+      "path": "/tmp/pmsm-uz-integration/pt1_dqn_run",
+      "started_at": "2026-10-20T16:56:00.595331+00:00",
+      "inference_export": {
+        "status": "canonical",
+        "format": "policy_v2"
+      },
+      "evaluation_runtime": "canonical",
+      "agent_settings": {
+        "buffer_size": 1000000,
+        "batch_size": 32,
+        "learning_starts": 100,
+        "train_frequency": 1,
+        "train_frequency_unit": "transition",
+        "gradient_steps": 1,
+        "gamma": 0.99,
+        "tau": 1.0,
+        "target_update_interval": 10,
+        "target_update_unit": "transition",
+        "adam_epsilon": 1e-08,
+        "max_grad_norm": 10.0,
+        "q_layers": [
+          32,
+          32
+        ],
+        "q_lr": 0.0001,
+        "epsilon_initial": 1.0,
+        "epsilon_final": 0.05,
+        "epsilon_fraction": 0.1,
+        "loss": "huber",
+        "huber_delta": 1.0,
+        "reward_clip": 0.0,
+        "algorithm": "dqn"
+      },
+      "plant_parameters": {
+        "name": "pt1",
+        "gain": 1.0,
+        "time_constant": 0.002,
+        "action_low": -1.0,
+        "action_high": 1.0
+      },
+      "observations": {
+        "name": "output_reference_v1",
+        "parameters": {}
+      },
+      "action": {
+        "name": "bounded_input_v1",
+        "parameters": {},
+        "discrete_values": [
+          [
+            -1.0
+          ],
+          [
+            0.0
+          ],
+          [
+            1.0
+          ]
+        ]
+      },
+      "reward": {
+        "name": "squared_post_v1",
+        "parameters": {}
+      },
+      "source_toml": "pt1_workshop_dqn.toml",
+      "metrics": {
+        "iae": "iae_mean",
+        "itae": "itae_mean",
+        "iae_vector": "iae_vector_mean",
+        "itae_vector": "itae_vector_mean",
+        "iae_total": "mean_iae_total",
+        "normalized_iae": "normalized_iae_mean",
+        "normalized_itae": "normalized_itae_mean",
+        "normalized_iae_vector": "normalized_iae_vector_mean",
+        "normalized_itae_vector": "normalized_itae_vector_mean"
+      },
+      "scores": {
+        "iae": 0.001887121587060392,
+        "itae": 3.079508481581191e-05,
+        "iae_vector": 0.001887121587060392,
+        "itae_vector": 3.079508481581191e-05,
+        "iae_total": 0.0018673462715620797,
+        "normalized_iae": 7.934123391979725,
+        "normalized_itae": 9.678140549414897,
+        "normalized_iae_vector": 7.934123391979725,
+        "normalized_itae_vector": 9.678140549414897
+      },
+      "rank": null,
+      "score": null,
+      "metric_column": null,
+      "checkpoint_sha256": "d29ec93e4da0292a4e2597d9cb732cf138977a8b36b2056ecc42d29266b5f841",
+      "codec": "canonical_dense_v1",
+      "directory": "."
+    }
+  ]
+}

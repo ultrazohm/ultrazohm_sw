@@ -1,0 +1,25 @@
+{
+  "adapter_abi": 1,
+  "contract_sha256": "8d0ae7605daf5b3c09ea84054514e3cf2c9c6bead6dbcd1e9481e9c3a8fa99de",
+  "files": {
+    "layer1_bias.csv": "f0fd95fabcfa8f244ea97b46f66ee31cf9077e056bfdea4b63e53f999137083f",
+    "layer1_weights.csv": "51430ff2fd6550115ce26afe517fbc73eda9eaba823bb41405936ffa50d70809",
+    "layer2_bias.csv": "c190be2e71b756b913cacb4a904704a9f91742473b9f2df2241561acad5c6012",
+    "layer2_weights.csv": "d59852d7e5d679a3b0ef2ac14449fba23a3cfe394b805e00b3b2d99e3364c1d8",
+    "layer3_bias.csv": "525ad357d372ff87411f289f5f709c934742698dc2a9ca3ea075bbcba189cd17",
+    "layer3_weights.csv": "134f5ea0b43cb3aac62bef625eb9abf960035ec1bfbec87d2afcdcbbf0f4fc84",
+    "manifest.json": "9b3c7dbdc3931f02a0bec56a4336da3549989708ae8f383c927af1431e8c8146",
+    "pt1_ddpg_config.c": "70f56bd97185242e5d89e8c0f98d73e5e33ef83852a0b42ae001bd6dbdd5248b",
+    "pt1_ddpg_config.h": "b30ec0c4e7b5dae2fd48658ae0c518c99586adec229ca2a0a1c58f309c6abd61"
+  },
+  "format": "ultrazohm_actor_c",
+  "name": "pt1_ddpg",
+  "requirements": {
+    "fast_math": false,
+    "float_bits": 32,
+    "nn_instances": 1,
+    "nn_layer_instances": 3,
+    "serialized_calls": true
+  },
+  "version": 1
+}

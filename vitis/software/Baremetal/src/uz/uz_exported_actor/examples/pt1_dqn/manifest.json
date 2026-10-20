@@ -1,0 +1,215 @@
+{
+  "actor_codec": "canonical_dense_v1",
+  "contract": {
+    "action": {
+      "delay_owner": "actuator",
+      "discrete_values": [
+        [
+          -1.0
+        ],
+        [
+          0.0
+        ],
+        [
+          1.0
+        ]
+      ],
+      "expression": {
+        "args": [
+          {
+            "op": "constant",
+            "value": -1.0
+          },
+          {
+            "args": [
+              {
+                "args": [
+                  {
+                    "args": [
+                      {
+                        "name": "action",
+                        "op": "signal"
+                      },
+                      {
+                        "op": "constant",
+                        "value": 1
+                      }
+                    ],
+                    "op": "add"
+                  },
+                  {
+                    "op": "constant",
+                    "value": 2.0
+                  }
+                ],
+                "op": "multiply"
+              },
+              {
+                "op": "constant",
+                "value": 2
+              }
+            ],
+            "op": "divide"
+          }
+        ],
+        "op": "add"
+      },
+      "feedback": {},
+      "limiter_owner": "actuator",
+      "name": "bounded_input_v1",
+      "output": "requested_physical_command",
+      "units": [
+        "action"
+      ],
+      "version": 1
+    },
+    "execution": {
+      "actuator_delay_steps": 0,
+      "control_frequency_hz": 10000.0,
+      "order": [
+        "observe",
+        "act",
+        "limit",
+        "advance"
+      ],
+      "reset": "explicit_initial_conditions"
+    },
+    "network": {
+      "dtype": "float32",
+      "head": {
+        "kind": "greedy_discrete",
+        "tie_break": "first_index"
+      },
+      "input_size": 2,
+      "layers": [
+        {
+          "activation": "relu",
+          "inputs": 2,
+          "outputs": 32
+        },
+        {
+          "activation": "relu",
+          "inputs": 32,
+          "outputs": 32
+        },
+        {
+          "activation": "linear",
+          "inputs": 32,
+          "outputs": 3
+        }
+      ],
+      "version": 1,
+      "weight_layout": "input_output"
+    },
+    "observation": {
+      "features": [
+        {
+          "expression": {
+            "name": "output",
+            "op": "signal"
+          },
+          "name": "output",
+          "unit": "output"
+        },
+        {
+          "expression": {
+            "name": "reference",
+            "op": "signal"
+          },
+          "name": "reference",
+          "unit": "output"
+        }
+      ],
+      "name": "output_reference_v1",
+      "signals": {
+        "output": {
+          "components": [],
+          "quantity": "output",
+          "shape": [],
+          "timing": "pre",
+          "unit": "output"
+        },
+        "reference": {
+          "components": [],
+          "quantity": "reference",
+          "shape": [],
+          "timing": "pre",
+          "unit": "output"
+        }
+      },
+      "state": {},
+      "version": 1
+    },
+    "version": 1
+  },
+  "contract_sha256": "5651fc5876866f8ef2e6945bc9c7db477be626654cd1a39c59a451d1601997e4",
+  "csv": {
+    "delimiter": ",",
+    "dtype": "float32",
+    "flatten_order": "C",
+    "float_format": "%.9g",
+    "rows_per_file": 1,
+    "weight_layout": "input_output"
+  },
+  "format": "pmsm_uz_nn_csv",
+  "layers": [
+    {
+      "bias": {
+        "file": "layer1_bias.csv",
+        "sha256": "c25cbf4b4a647462d6c2c0ff7090aabd449d59b895b836636de7f12c171637e2",
+        "shape": [
+          32
+        ]
+      },
+      "index": 1,
+      "weights": {
+        "file": "layer1_weights.csv",
+        "sha256": "5c5b62c13d5b25d5a4262a6708530a29b0a65913c6aabcd16336669cb346176d",
+        "shape": [
+          2,
+          32
+        ]
+      }
+    },
+    {
+      "bias": {
+        "file": "layer2_bias.csv",
+        "sha256": "722b05566b53c419a6f37f69abe00c43b405e78f2bad2c3c03c05c98f031ac8a",
+        "shape": [
+          32
+        ]
+      },
+      "index": 2,
+      "weights": {
+        "file": "layer2_weights.csv",
+        "sha256": "98eb2880f751ae7265b7f34dfcd18d1b7a317dc10d857d47bb67666357f55faf",
+        "shape": [
+          32,
+          32
+        ]
+      }
+    },
+    {
+      "bias": {
+        "file": "layer3_bias.csv",
+        "sha256": "3a92b003ee7a6ef2147c7cebc39c70195d505c11dc5eb2420e646306c7eb34d3",
+        "shape": [
+          3
+        ]
+      },
+      "index": 3,
+      "weights": {
+        "file": "layer3_weights.csv",
+        "sha256": "734e4879e164fe488d5df81bd5a98070d94ffc6581f5cc381a326c4b579a4c89",
+        "shape": [
+          32,
+          3
+        ]
+      }
+    }
+  ],
+  "source": {
+    "configuration_id": "7cf2bed5c566954b"
+  },
+  "version": 1
+}

@@ -1,0 +1,127 @@
+{
+  "version": 1,
+  "format": "uz-nn",
+  "metric": null,
+  "ordering": null,
+  "requested_ranks": null,
+  "ranked_population": null,
+  "excluded_from_ranking": null,
+  "selected": [
+    {
+      "id": "18930f2ae2e8468bb9532fcd908cde28/case_0000/agent_0000_seed_0",
+      "run_id": "18930f2ae2e8468bb9532fcd908cde28",
+      "experiment": "pmsm_ultrazohm_td3",
+      "case_id": "case_0000",
+      "case_uid": "18930f2ae2e8468bb9532fcd908cde28/case_0000",
+      "variant": "",
+      "agent_id": "agent_0000_seed_0",
+      "seed": 0,
+      "plant": "pmsm",
+      "algorithm": "td3",
+      "backend": "custom",
+      "eligible": true,
+      "training_status": "complete",
+      "config_id": "e230e9f9c5f7b11a",
+      "scenario": "94cc1a43583e242e",
+      "path": "/tmp/pmsm-uz-pmsm-trained/pmsm_td3_run",
+      "started_at": "2026-10-20T16:59:56.009370+00:00",
+      "inference_export": {
+        "status": "canonical",
+        "format": "policy_v2"
+      },
+      "evaluation_runtime": "canonical",
+      "agent_settings": {
+        "buffer_size": 100000,
+        "batch_size": 32,
+        "learning_starts": 100,
+        "train_frequency": 1,
+        "train_frequency_unit": "transition",
+        "gradient_steps": 1,
+        "gamma": 0.95,
+        "tau": 0.005,
+        "target_update_interval": 2,
+        "target_update_unit": "update",
+        "adam_epsilon": 1e-08,
+        "max_grad_norm": 0.0,
+        "actor_layers": [
+          32,
+          32
+        ],
+        "critic_layers": [
+          32,
+          32
+        ],
+        "actor_lr": 0.001,
+        "critic_lr": 0.001,
+        "noise_sigma": 0.3,
+        "target_noise_sigma": 0.2,
+        "target_noise_clip": 0.5,
+        "policy_delay": 2,
+        "algorithm": "td3"
+      },
+      "plant_parameters": {
+        "name": "beckhoff_am8141",
+        "resistance": 0.45,
+        "ld": 0.00175,
+        "lq": 0.00175,
+        "flux": 0.042,
+        "pole_pairs": 4,
+        "rated_current": 8,
+        "max_current": 12,
+        "rated_speed": 1000,
+        "dc_voltage": 48
+      },
+      "observations": {
+        "name": "dq9_v1",
+        "parameters": {}
+      },
+      "action": {
+        "name": "dq_voltage_axis_priority_v1",
+        "parameters": {},
+        "discrete_values": []
+      },
+      "reward": {
+        "name": "weighted_l1_post_v1",
+        "parameters": {
+          "weights": [
+            1.0,
+            1.0
+          ]
+        }
+      },
+      "source_toml": "pmsm_ultrazohm_td3.toml",
+      "metrics": {
+        "iae": "iae_mean",
+        "itae": "itae_mean",
+        "iae_vector": "iae_vector_mean",
+        "itae_vector": "itae_vector_mean",
+        "iae_total": "mean_iae_total",
+        "iae_d": "mean_iae_d",
+        "iae_q": "mean_iae_q",
+        "normalized_iae": "normalized_iae_mean",
+        "normalized_itae": "normalized_itae_mean",
+        "normalized_iae_vector": "normalized_iae_vector_mean",
+        "normalized_itae_vector": "normalized_itae_vector_mean"
+      },
+      "scores": {
+        "iae": 0.014167758636176586,
+        "itae": 6.365013359754812e-05,
+        "iae_vector": 0.02201823564246297,
+        "itae_vector": 9.936963942891452e-05,
+        "iae_total": 0.02799046039581299,
+        "iae_d": 0.009993408340960741,
+        "iae_q": 0.017997052054852247,
+        "normalized_iae": -7.13252371325518,
+        "normalized_itae": -13.11053303054818,
+        "normalized_iae_vector": -7.089336822159717,
+        "normalized_itae_vector": -12.890339619534064
+      },
+      "rank": null,
+      "score": null,
+      "metric_column": null,
+      "checkpoint_sha256": "749d7f6cbdb66b3928e2040ef272c087ccdc5ecefce805561d5b3129295702a0",
+      "codec": "canonical_dense_v1",
+      "directory": "."
+    }
+  ]
+}

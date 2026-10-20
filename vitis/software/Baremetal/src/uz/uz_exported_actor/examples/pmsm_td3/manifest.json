@@ -1,0 +1,441 @@
+{
+  "actor_codec": "canonical_dense_v1",
+  "contract": {
+    "action": {
+      "delay_owner": "actuator",
+      "discrete_values": [],
+      "expression": {
+        "args": [
+          {
+            "name": "action",
+            "op": "signal"
+          },
+          {
+            "op": "constant",
+            "value": 27.71281292110204
+          }
+        ],
+        "op": "multiply"
+      },
+      "feedback": {
+        "applied_voltage": "actual_previous_interval",
+        "command_saturated": "current_request_actually_limited"
+      },
+      "limiter_owner": "actuator",
+      "name": "dq_voltage_axis_priority_v1",
+      "output": "requested_physical_command",
+      "units": [
+        "V",
+        "V"
+      ],
+      "version": 1
+    },
+    "execution": {
+      "actuator_delay_steps": 1,
+      "control_frequency_hz": 10000,
+      "order": [
+        "observe",
+        "act",
+        "limit",
+        "advance"
+      ],
+      "reset": "explicit_initial_conditions",
+      "voltage_limiter_current_source": "reference"
+    },
+    "network": {
+      "dtype": "float32",
+      "head": {
+        "kind": "continuous"
+      },
+      "input_size": 9,
+      "layers": [
+        {
+          "activation": "relu",
+          "inputs": 9,
+          "outputs": 32
+        },
+        {
+          "activation": "relu",
+          "inputs": 32,
+          "outputs": 32
+        },
+        {
+          "activation": "tanh",
+          "inputs": 32,
+          "outputs": 2
+        }
+      ],
+      "version": 1,
+      "weight_layout": "input_output"
+    },
+    "observation": {
+      "features": [
+        {
+          "expression": {
+            "index": 0,
+            "op": "index",
+            "value": {
+              "args": [
+                {
+                  "args": [
+                    {
+                      "name": "reference",
+                      "op": "signal"
+                    },
+                    {
+                      "name": "current",
+                      "op": "signal"
+                    }
+                  ],
+                  "op": "subtract"
+                },
+                {
+                  "op": "constant",
+                  "value": 8
+                }
+              ],
+              "op": "divide"
+            }
+          },
+          "name": "error_d",
+          "unit": "1"
+        },
+        {
+          "expression": {
+            "index": 0,
+            "op": "index",
+            "value": {
+              "args": [
+                {
+                  "name": "integral",
+                  "op": "state"
+                },
+                {
+                  "op": "constant",
+                  "value": 10000
+                }
+              ],
+              "op": "multiply"
+            }
+          },
+          "name": "integral_d",
+          "unit": "1"
+        },
+        {
+          "expression": {
+            "index": 1,
+            "op": "index",
+            "value": {
+              "args": [
+                {
+                  "args": [
+                    {
+                      "name": "reference",
+                      "op": "signal"
+                    },
+                    {
+                      "name": "current",
+                      "op": "signal"
+                    }
+                  ],
+                  "op": "subtract"
+                },
+                {
+                  "op": "constant",
+                  "value": 8
+                }
+              ],
+              "op": "divide"
+            }
+          },
+          "name": "error_q",
+          "unit": "1"
+        },
+        {
+          "expression": {
+            "index": 1,
+            "op": "index",
+            "value": {
+              "args": [
+                {
+                  "name": "integral",
+                  "op": "state"
+                },
+                {
+                  "op": "constant",
+                  "value": 10000
+                }
+              ],
+              "op": "multiply"
+            }
+          },
+          "name": "integral_q",
+          "unit": "1"
+        },
+        {
+          "expression": {
+            "index": 0,
+            "op": "index",
+            "value": {
+              "args": [
+                {
+                  "name": "current",
+                  "op": "signal"
+                },
+                {
+                  "op": "constant",
+                  "value": 8
+                }
+              ],
+              "op": "divide"
+            }
+          },
+          "name": "current_d",
+          "unit": "1"
+        },
+        {
+          "expression": {
+            "index": 1,
+            "op": "index",
+            "value": {
+              "args": [
+                {
+                  "name": "current",
+                  "op": "signal"
+                },
+                {
+                  "op": "constant",
+                  "value": 8
+                }
+              ],
+              "op": "divide"
+            }
+          },
+          "name": "current_q",
+          "unit": "1"
+        },
+        {
+          "expression": {
+            "args": [
+              {
+                "name": "speed_rpm",
+                "op": "signal"
+              },
+              {
+                "op": "constant",
+                "value": 1000
+              }
+            ],
+            "op": "divide"
+          },
+          "name": "mechanical_speed",
+          "unit": "1"
+        },
+        {
+          "expression": {
+            "index": 0,
+            "op": "index",
+            "value": {
+              "args": [
+                {
+                  "name": "applied_voltage",
+                  "op": "signal"
+                },
+                {
+                  "op": "constant",
+                  "value": 27.71281292110204
+                }
+              ],
+              "op": "divide"
+            }
+          },
+          "name": "applied_voltage_d",
+          "unit": "1"
+        },
+        {
+          "expression": {
+            "index": 1,
+            "op": "index",
+            "value": {
+              "args": [
+                {
+                  "name": "applied_voltage",
+                  "op": "signal"
+                },
+                {
+                  "op": "constant",
+                  "value": 27.71281292110204
+                }
+              ],
+              "op": "divide"
+            }
+          },
+          "name": "applied_voltage_q",
+          "unit": "1"
+        }
+      ],
+      "name": "dq9_v1",
+      "signals": {
+        "applied_voltage": {
+          "components": [
+            "d",
+            "q"
+          ],
+          "quantity": "stator_voltage_dq",
+          "shape": [
+            2
+          ],
+          "timing": "previous_interval",
+          "unit": "V"
+        },
+        "current": {
+          "components": [
+            "d",
+            "q"
+          ],
+          "quantity": "stator_current_dq",
+          "shape": [
+            2
+          ],
+          "timing": "pre",
+          "unit": "A"
+        },
+        "reference": {
+          "components": [
+            "d",
+            "q"
+          ],
+          "quantity": "reference_current_dq",
+          "shape": [
+            2
+          ],
+          "timing": "pre",
+          "unit": "A"
+        },
+        "speed_rpm": {
+          "components": [],
+          "quantity": "mechanical_speed",
+          "shape": [],
+          "timing": "pre",
+          "unit": "rpm"
+        }
+      },
+      "state": {
+        "integral": {
+          "hold_when": "command_saturated",
+          "increment": {
+            "args": [
+              {
+                "args": [
+                  {
+                    "op": "constant",
+                    "value": 0.0001
+                  },
+                  {
+                    "args": [
+                      {
+                        "name": "reference",
+                        "op": "signal"
+                      },
+                      {
+                        "name": "current",
+                        "op": "signal"
+                      }
+                    ],
+                    "op": "subtract"
+                  }
+                ],
+                "op": "multiply"
+              },
+              {
+                "op": "constant",
+                "value": 8
+              }
+            ],
+            "op": "divide"
+          },
+          "initial": [
+            0.0,
+            0.0
+          ],
+          "shape": [
+            2
+          ],
+          "unit": "s"
+        }
+      },
+      "version": 1
+    },
+    "version": 1
+  },
+  "contract_sha256": "b225b44621f04a1faac389d941023f63c76cfb9ab6afce275a55b920a5af6d6f",
+  "csv": {
+    "delimiter": ",",
+    "dtype": "float32",
+    "flatten_order": "C",
+    "float_format": "%.9g",
+    "rows_per_file": 1,
+    "weight_layout": "input_output"
+  },
+  "format": "pmsm_uz_nn_csv",
+  "layers": [
+    {
+      "bias": {
+        "file": "layer1_bias.csv",
+        "sha256": "7059f2cb40f18f94588f75ba35aed3572a55c8530978ff7e8520f38ad8ac6725",
+        "shape": [
+          32
+        ]
+      },
+      "index": 1,
+      "weights": {
+        "file": "layer1_weights.csv",
+        "sha256": "5d40f8c64f4f17df3e82ed0f94be2c7232af33edfa67a6453b579ec39a397ec0",
+        "shape": [
+          9,
+          32
+        ]
+      }
+    },
+    {
+      "bias": {
+        "file": "layer2_bias.csv",
+        "sha256": "2d4037e9dbef96f2c174a8eb503b35847bef0748afd6eb2d3cda4993d08fab92",
+        "shape": [
+          32
+        ]
+      },
+      "index": 2,
+      "weights": {
+        "file": "layer2_weights.csv",
+        "sha256": "3b1fd07b09eac8e9724e1acfc5d19afe345746bf1d54a1bbeee1b85de68658ec",
+        "shape": [
+          32,
+          32
+        ]
+      }
+    },
+    {
+      "bias": {
+        "file": "layer3_bias.csv",
+        "sha256": "2cddabd03530e81204d503f7423bb66bfe24d1336b3ca27ca21376a179777d91",
+        "shape": [
+          2
+        ]
+      },
+      "index": 3,
+      "weights": {
+        "file": "layer3_weights.csv",
+        "sha256": "8a8ead8960e328bb67aff2ef11b3cab177780ba24a824edcb9e9559ee5b2e905",
+        "shape": [
+          32,
+          2
+        ]
+      }
+    }
+  ],
+  "source": {
+    "configuration_id": "e230e9f9c5f7b11a"
+  },
+  "version": 1
+}

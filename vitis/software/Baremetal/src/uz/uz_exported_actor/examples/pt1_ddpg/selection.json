@@ -1,0 +1,110 @@
+{
+  "version": 1,
+  "format": "uz-nn",
+  "metric": null,
+  "ordering": null,
+  "requested_ranks": null,
+  "ranked_population": null,
+  "excluded_from_ranking": null,
+  "selected": [
+    {
+      "id": "052b66da41a140f19d492bcb94b1c3bc/case_0000/agent_0000_seed_0",
+      "run_id": "052b66da41a140f19d492bcb94b1c3bc",
+      "experiment": "pt1_workshop_ddpg",
+      "case_id": "case_0000",
+      "case_uid": "052b66da41a140f19d492bcb94b1c3bc/case_0000",
+      "variant": "",
+      "agent_id": "agent_0000_seed_0",
+      "seed": 0,
+      "plant": "pt1",
+      "algorithm": "ddpg",
+      "backend": "custom",
+      "eligible": true,
+      "training_status": "complete",
+      "config_id": "236c372432151ec9",
+      "scenario": "4ed799343148e60c",
+      "path": "/tmp/pmsm-uz-integration/pt1_ddpg_run",
+      "started_at": "2026-10-20T16:56:09.615235+00:00",
+      "inference_export": {
+        "status": "canonical",
+        "format": "policy_v2"
+      },
+      "evaluation_runtime": "canonical",
+      "agent_settings": {
+        "buffer_size": 1000000,
+        "batch_size": 32,
+        "learning_starts": 500,
+        "train_frequency": 1,
+        "train_frequency_unit": "episode",
+        "gradient_steps": "collected",
+        "gamma": 0.99,
+        "tau": 0.005,
+        "target_update_interval": 1,
+        "target_update_unit": "update",
+        "adam_epsilon": 1e-08,
+        "max_grad_norm": 0.0,
+        "actor_layers": [
+          32,
+          32
+        ],
+        "critic_layers": [
+          32,
+          32
+        ],
+        "actor_lr": 0.001,
+        "critic_lr": 0.001,
+        "noise_sigma": 0.1,
+        "algorithm": "ddpg"
+      },
+      "plant_parameters": {
+        "name": "pt1",
+        "gain": 1.0,
+        "time_constant": 0.002,
+        "action_low": -1.0,
+        "action_high": 1.0
+      },
+      "observations": {
+        "name": "output_reference_v1",
+        "parameters": {}
+      },
+      "action": {
+        "name": "bounded_input_v1",
+        "parameters": {},
+        "discrete_values": []
+      },
+      "reward": {
+        "name": "squared_post_v1",
+        "parameters": {}
+      },
+      "source_toml": "pt1_workshop_ddpg.toml",
+      "metrics": {
+        "iae": "iae_mean",
+        "itae": "itae_mean",
+        "iae_vector": "iae_vector_mean",
+        "itae_vector": "itae_vector_mean",
+        "iae_total": "mean_iae_total",
+        "normalized_iae": "normalized_iae_mean",
+        "normalized_itae": "normalized_itae_mean",
+        "normalized_iae_vector": "normalized_iae_vector_mean",
+        "normalized_itae_vector": "normalized_itae_vector_mean"
+      },
+      "scores": {
+        "iae": 0.0027249582150640586,
+        "itae": 5.261968893440402e-05,
+        "iae_vector": 0.0027249582150640586,
+        "itae_vector": 5.261968893440402e-05,
+        "iae_total": 0.002707817485012735,
+        "normalized_iae": 6.338523746914816,
+        "normalized_itae": 7.3514718311320815,
+        "normalized_iae_vector": 6.338523746914816,
+        "normalized_itae_vector": 7.3514718311320815
+      },
+      "rank": null,
+      "score": null,
+      "metric_column": null,
+      "checkpoint_sha256": "e3cc227cfcf8d52fdd344a4a8c00278ea72395b0ae92ce63ae526d096ab75cf2",
+      "codec": "canonical_dense_v1",
+      "directory": "."
+    }
+  ]
+}

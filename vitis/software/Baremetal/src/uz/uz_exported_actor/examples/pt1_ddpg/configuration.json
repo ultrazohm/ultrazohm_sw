@@ -1,0 +1,706 @@
+{
+  "settings": {
+    "trainer": {
+      "backend": "custom",
+      "critic_precision": "highest"
+    },
+    "plant": {
+      "type": "pt1"
+    },
+    "experiment": {
+      "name": "pt1_workshop_ddpg"
+    },
+    "observations": {
+      "name": "output_reference_v1",
+      "parameters": {}
+    },
+    "reward": {
+      "name": "squared_post_v1",
+      "parameters": {}
+    },
+    "action": {
+      "name": "bounded_input_v1",
+      "parameters": {},
+      "discrete_values": []
+    },
+    "simulation": {
+      "control_frequency_hz": 10000.0,
+      "delay_steps": 0
+    },
+    "training": {
+      "timesteps": 50000,
+      "chunk_steps": 500,
+      "log_episode_returns": true,
+      "reset_mode": "uniform",
+      "episode_seconds": 0.05,
+      "profile_interval_seconds": 0.005,
+      "episodes": [],
+      "compact_constant_profiles": false,
+      "episode_steps": 500,
+      "profile_interval_steps": 50
+    },
+    "evaluation": {
+      "count": 10,
+      "seed": 0,
+      "episodes": [
+        {
+          "reference": -1.0
+        },
+        {
+          "reference": 0.0
+        },
+        {
+          "reference": 0.5
+        },
+        {
+          "reference": 0.1
+        },
+        {
+          "reference": 0.2
+        },
+        {
+          "reference": 1.0
+        }
+      ],
+      "report_episodes": [],
+      "episodes_file": "",
+      "report_episodes_file": "",
+      "retain_all_traces": false,
+      "inference_mode": "canonical",
+      "agent_chunk_size": 64,
+      "episode_chunk_size": 16,
+      "memory_budget_mib": 0,
+      "reset_mode": "uniform",
+      "episode_seconds": 0.05,
+      "profile_interval_seconds": 0.005,
+      "episode_steps": 500,
+      "profile_interval_steps": 50
+    },
+    "sweep": {
+      "mode": "grid",
+      "seeds": [
+        0
+      ],
+      "sampling_seed": 0,
+      "samples": 1,
+      "parameters": {},
+      "device": "cpu",
+      "cpu_workers": 1,
+      "population_chunk_size": 16,
+      "memory_budget_mib": 0,
+      "memory_headroom_mib": 2048
+    },
+    "output": {
+      "directory": "prototyping_pmsm/runs",
+      "compression": "lz4",
+      "save_models": false
+    },
+    "agent": {
+      "buffer_size": 1000000,
+      "batch_size": 32,
+      "learning_starts": 500,
+      "train_frequency": 1,
+      "train_frequency_unit": "episode",
+      "gradient_steps": "collected",
+      "gamma": 0.99,
+      "tau": 0.005,
+      "target_update_interval": 1,
+      "target_update_unit": "update",
+      "adam_epsilon": 1e-08,
+      "max_grad_norm": 0.0,
+      "actor_layers": [
+        32,
+        32
+      ],
+      "critic_layers": [
+        32,
+        32
+      ],
+      "actor_lr": 0.001,
+      "critic_lr": 0.001,
+      "noise_sigma": 0.1,
+      "algorithm": "ddpg"
+    },
+    "domain_randomization": {
+      "distribution": "uniform",
+      "deviation_percent": {}
+    },
+    "pt1": {
+      "gain": 1.0,
+      "time_constant": 0.002,
+      "action_low": -1.0,
+      "action_high": 1.0,
+      "reference_range": [
+        -1.0,
+        1.0
+      ],
+      "initial_output": 0.0,
+      "reference_kp": 1.0,
+      "reference_ki": 1.0
+    },
+    "_source": {
+      "toml": "pt1_workshop_ddpg.toml"
+    }
+  },
+  "metadata": {
+    "configuration_schema_version": 2,
+    "rng": {
+      "scheme": "ddpg_named_streams_v3",
+      "root": "sweep.seeds"
+    },
+    "algorithm_spec": {
+      "version": 1,
+      "algorithm": "ddpg",
+      "rng_scheme": "ddpg_named_streams_v3",
+      "settings": {
+        "buffer_size": 1000000,
+        "batch_size": 32,
+        "learning_starts": 500,
+        "train_frequency": 1,
+        "train_frequency_unit": "episode",
+        "gradient_steps": "collected",
+        "target_update_interval": 1,
+        "target_update_unit": "update",
+        "adam_epsilon": 1e-08,
+        "max_grad_norm": 0.0,
+        "actor_layers": [
+          32,
+          32
+        ],
+        "critic_layers": [
+          32,
+          32
+        ],
+        "algorithm": "ddpg"
+      }
+    },
+    "component_specs": {
+      "observation": {
+        "shape": [
+          2
+        ],
+        "dtype": "float32",
+        "features": [
+          "output",
+          "reference"
+        ],
+        "units": [
+          "output",
+          "output"
+        ],
+        "bounds": [
+          [
+            null,
+            null
+          ],
+          [
+            null,
+            null
+          ]
+        ]
+      },
+      "policy_action": {
+        "shape": [
+          1
+        ],
+        "dtype": "float32",
+        "features": [
+          "input"
+        ],
+        "units": [
+          "1"
+        ],
+        "bounds": [
+          [
+            -1.0,
+            1.0
+          ]
+        ]
+      },
+      "physical_action": {
+        "shape": [
+          1
+        ],
+        "dtype": "float32",
+        "features": [
+          "input"
+        ],
+        "units": [
+          "action"
+        ],
+        "bounds": [
+          [
+            -1.0,
+            1.0
+          ]
+        ]
+      }
+    },
+    "resolved_machine": {
+      "name": "pt1",
+      "gain": 1.0,
+      "time_constant": 0.002,
+      "action_low": -1.0,
+      "action_high": 1.0
+    },
+    "machine_provenance": {
+      "source": "local PT1 exact ZOH model"
+    },
+    "evaluation_spec": {
+      "version": 1,
+      "metrics": [
+        {
+          "name": "iae",
+          "label": "IAE",
+          "unit": "output s",
+          "timing": "pre_step_trapezoid",
+          "summary_name": "iae_mean",
+          "normalize_db": true,
+          "optional": true,
+          "visible": true,
+          "direction": "min"
+        },
+        {
+          "name": "itae",
+          "label": "ITAE",
+          "unit": "output s^2",
+          "timing": "pre_step_trapezoid",
+          "summary_name": "itae_mean",
+          "normalize_db": true,
+          "optional": true,
+          "visible": true,
+          "direction": "min"
+        },
+        {
+          "name": "iae_vector",
+          "label": "IAE VECTOR",
+          "unit": "output s",
+          "timing": "pre_step_trapezoid",
+          "summary_name": "iae_vector_mean",
+          "normalize_db": true,
+          "optional": true,
+          "visible": true,
+          "direction": "min"
+        },
+        {
+          "name": "itae_vector",
+          "label": "ITAE VECTOR",
+          "unit": "output s^2",
+          "timing": "pre_step_trapezoid",
+          "summary_name": "itae_vector_mean",
+          "normalize_db": true,
+          "optional": true,
+          "visible": true,
+          "direction": "min"
+        },
+        {
+          "name": "iae_total",
+          "label": "Integral absolute error",
+          "unit": "output s",
+          "timing": "post_step_rectangle",
+          "summary_name": "mean_iae_total",
+          "normalize_db": false,
+          "optional": false,
+          "visible": true,
+          "direction": "min"
+        }
+      ],
+      "selection": {
+        "metric": "iae_total",
+        "summary_name": "mean_iae_total",
+        "direction": "min"
+      },
+      "reference_controller": "PI",
+      "reference_specification": {
+        "version": 2,
+        "controller": "pt1_pi_v2",
+        "parameters": {
+          "reference_kp": 1.0,
+          "reference_ki": 1.0
+        }
+      },
+      "signals": [
+        {
+          "name": "output_pre",
+          "label": "Output before step",
+          "unit": "output",
+          "group": "Output",
+          "timing": "pre",
+          "role": "response",
+          "visible": false
+        },
+        {
+          "name": "output_post",
+          "label": "Output",
+          "unit": "output",
+          "group": "Output",
+          "timing": "post",
+          "role": "response",
+          "visible": true
+        },
+        {
+          "name": "reference",
+          "label": "Reference",
+          "unit": "output",
+          "group": "Output",
+          "timing": "pre",
+          "role": "reference",
+          "visible": true
+        },
+        {
+          "name": "error",
+          "label": "Error",
+          "unit": "output",
+          "group": "Error",
+          "timing": "post",
+          "role": "response",
+          "visible": true
+        },
+        {
+          "name": "action_requested",
+          "label": "Requested action",
+          "unit": "action",
+          "group": "Action",
+          "timing": "pre",
+          "role": "response",
+          "visible": true
+        },
+        {
+          "name": "action_limited",
+          "label": "Limited action",
+          "unit": "action",
+          "group": "Action",
+          "timing": "pre",
+          "role": "response",
+          "visible": true
+        },
+        {
+          "name": "action_applied",
+          "label": "Applied action",
+          "unit": "action",
+          "group": "Action",
+          "timing": "pre",
+          "role": "response",
+          "visible": true
+        },
+        {
+          "name": "reward",
+          "label": "Reward",
+          "unit": "reward",
+          "group": "Diagnostics",
+          "timing": "post",
+          "role": "diagnostic",
+          "visible": true
+        },
+        {
+          "name": "saturated",
+          "label": "Saturated",
+          "unit": "1",
+          "group": "Diagnostics",
+          "timing": "post",
+          "role": "diagnostic",
+          "visible": true
+        },
+        {
+          "name": "peak_output",
+          "label": "Peak output",
+          "unit": "output",
+          "group": "Diagnostics",
+          "timing": "post",
+          "role": "diagnostic",
+          "visible": true
+        },
+        {
+          "name": "terminated",
+          "label": "Terminated",
+          "unit": "1",
+          "group": "Diagnostics",
+          "timing": "post",
+          "role": "diagnostic",
+          "visible": true
+        },
+        {
+          "name": "reason",
+          "label": "Reason",
+          "unit": "1",
+          "group": "Diagnostics",
+          "timing": "post",
+          "role": "diagnostic",
+          "visible": false
+        },
+        {
+          "name": "active",
+          "label": "Active",
+          "unit": "1",
+          "group": "Diagnostics",
+          "timing": "post",
+          "role": "diagnostic",
+          "visible": false
+        }
+      ],
+      "termination_codes": [
+        [
+          0,
+          "time_limit"
+        ],
+        [
+          2,
+          "numerical_failure"
+        ]
+      ],
+      "comparison": {
+        "metrics": [
+          "iae_mean",
+          "normalized_iae_mean",
+          "itae_mean",
+          "normalized_itae_mean",
+          "iae_vector_mean",
+          "normalized_iae_vector_mean",
+          "itae_vector_mean",
+          "normalized_itae_vector_mean"
+        ],
+        "rank_by": "itae_vector_mean"
+      },
+      "sampled_fields": [
+        {
+          "name": "references",
+          "shape": [],
+          "dtype": "float64"
+        }
+      ]
+    },
+    "policy_spec": {
+      "version": 2,
+      "backend": "custom",
+      "algorithm": "ddpg",
+      "inference": {
+        "algorithm_version": 1,
+        "architecture": "dense_relu_tanh_v1",
+        "actor_layers": [
+          32,
+          32
+        ],
+        "parameter_dtype": "float32"
+      },
+      "environment": "pt1",
+      "physical_parameters": {
+        "name": "pt1",
+        "gain": 1.0,
+        "time_constant": 0.002,
+        "action_low": -1.0,
+        "action_high": 1.0
+      },
+      "simulation": {
+        "control_frequency_hz": 10000.0,
+        "delay_steps": 0
+      },
+      "observations": {
+        "component": {
+          "name": "output_reference_v1",
+          "parameters": {}
+        },
+        "spec": {
+          "shape": [
+            2
+          ],
+          "dtype": "float32",
+          "features": [
+            "output",
+            "reference"
+          ],
+          "units": [
+            "output",
+            "output"
+          ],
+          "bounds": [
+            [
+              null,
+              null
+            ],
+            [
+              null,
+              null
+            ]
+          ]
+        }
+      },
+      "actions": {
+        "component": {
+          "name": "bounded_input_v1",
+          "parameters": {}
+        },
+        "policy": {
+          "shape": [
+            1
+          ],
+          "dtype": "float32",
+          "features": [
+            "input"
+          ],
+          "units": [
+            "1"
+          ],
+          "bounds": [
+            [
+              -1.0,
+              1.0
+            ]
+          ]
+        },
+        "physical": {
+          "shape": [
+            1
+          ],
+          "dtype": "float32",
+          "features": [
+            "input"
+          ],
+          "units": [
+            "action"
+          ],
+          "bounds": [
+            [
+              -1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    "inference_agent": {
+      "version": 1,
+      "network": {
+        "version": 1,
+        "dtype": "float32",
+        "weight_layout": "input_output",
+        "input_size": 2,
+        "layers": [
+          {
+            "inputs": 2,
+            "outputs": 32,
+            "activation": "relu"
+          },
+          {
+            "inputs": 32,
+            "outputs": 32,
+            "activation": "relu"
+          },
+          {
+            "inputs": 32,
+            "outputs": 1,
+            "activation": "tanh"
+          }
+        ],
+        "head": {
+          "kind": "continuous"
+        }
+      },
+      "observation": {
+        "version": 1,
+        "name": "output_reference_v1",
+        "signals": {
+          "output": {
+            "shape": [],
+            "unit": "output",
+            "timing": "pre",
+            "components": [],
+            "quantity": "output"
+          },
+          "reference": {
+            "shape": [],
+            "unit": "output",
+            "timing": "pre",
+            "components": [],
+            "quantity": "reference"
+          }
+        },
+        "state": {},
+        "features": [
+          {
+            "name": "output",
+            "unit": "output",
+            "expression": {
+              "op": "signal",
+              "name": "output"
+            }
+          },
+          {
+            "name": "reference",
+            "unit": "output",
+            "expression": {
+              "op": "signal",
+              "name": "reference"
+            }
+          }
+        ]
+      },
+      "action": {
+        "version": 1,
+        "name": "bounded_input_v1",
+        "expression": {
+          "op": "add",
+          "args": [
+            {
+              "op": "constant",
+              "value": -1.0
+            },
+            {
+              "op": "divide",
+              "args": [
+                {
+                  "op": "multiply",
+                  "args": [
+                    {
+                      "op": "add",
+                      "args": [
+                        {
+                          "op": "signal",
+                          "name": "action"
+                        },
+                        {
+                          "op": "constant",
+                          "value": 1
+                        }
+                      ]
+                    },
+                    {
+                      "op": "constant",
+                      "value": 2.0
+                    }
+                  ]
+                },
+                {
+                  "op": "constant",
+                  "value": 2
+                }
+              ]
+            }
+          ]
+        },
+        "units": [
+          "action"
+        ],
+        "discrete_values": [],
+        "output": "requested_physical_command",
+        "limiter_owner": "actuator",
+        "delay_owner": "actuator",
+        "feedback": {}
+      },
+      "execution": {
+        "control_frequency_hz": 10000.0,
+        "actuator_delay_steps": 0,
+        "order": [
+          "observe",
+          "act",
+          "limit",
+          "advance"
+        ],
+        "reset": "explicit_initial_conditions"
+      }
+    },
+    "inference_export": {
+      "status": "canonical",
+      "format": "policy_v2"
+    }
+  }
+}

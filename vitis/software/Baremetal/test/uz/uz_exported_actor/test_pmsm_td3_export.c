@@ -1,5 +1,6 @@
 #ifdef TEST
 #include "unity.h"
+#include "export_struct_to_csv.h"
 #include <math.h>
 #include "uz_actor_pmsm_example.h"
 #include "pmsm_td3_config.h"
@@ -15,13 +16,27 @@ TEST_SOURCE_FILE("uz_PMSM_config.c")
 TEST_SOURCE_FILE("uz_integrator.c")
 static uz_actor_pmsm_example_t example;
 void setUp(void) {}
-void tearDown(void) {}
+static FILE *eval_log;
+void tearDown(void) {
+    /* Keep a partial diagnostic trace when a Unity assertion aborts the test. */
+    if (eval_log != NULL) {
+        int status = fclose(eval_log);
+        eval_log = NULL;
+        TEST_ASSERT_EQUAL_INT(0, status);
+    }
+}
 /* Closed-loop trajectories need not remain bitwise identical across JAX and C:
  * rounding at saturation boundaries can change subsequent controller states.
  * Separate strict replay tests below verify each subsystem against Python. */
 void test_pmsm_td3_export_controls_swmodel_and_resets_repeatably(void) {
     static float first_run[PMSM_TD3_TRACE_ROWS][2];
     uz_actor_pmsm_example_init(&example, &pmsm_td3_config, pmsm_td3_plant, PMSM_TD3_OVERSAMPLING);
+    eval_log = open_csv_file_for_write("uz_exported_actor/pmsm_td3_eval.csv");
+    TEST_ASSERT_TRUE(fputs(
+        "time;episode;episode_k;i_d;i_q;reference_d;reference_q;error_d;error_q;speed_rpm;"
+        "voltage_requested_d;voltage_requested_q;voltage_limited_d;voltage_limited_q;"
+        "voltage_applied_d;voltage_applied_q;i_d_next;i_q_next;integral_d;integral_q;"
+        "saturated;squared_error;exploration_rate;terminated;truncated;done\n", eval_log) >= 0);
     for (uint32_t repeat = 0U; repeat < 2U; ++repeat) {
         uz_actor_pmsm_example_reset(&example);
         float previous_limited[2] = {0};
@@ -30,7 +45,29 @@ void test_pmsm_td3_export_controls_swmodel_and_resets_repeatably(void) {
             const float *row = pmsm_td3_trace[k];
             float previous_integral[2] = {example.actor.state.integral[0], example.actor.state.integral[1]};
             float previous_applied[2] = {example.actor.applied[0], example.actor.applied[1]};
+            float i_d = example.output.i_dq_A.d;
+            float i_q = example.output.i_dq_A.q;
             struct uz_pmsm_swmodel_outputs_t output = uz_actor_pmsm_example_step(&example, row[0], row[1], row[2]);
+            float error_d_next = row[0] - output.i_dq_A.d;
+            float error_q_next = row[1] - output.i_dq_A.q;
+            int truncated = k + 1U == PMSM_TD3_TRACE_ROWS;
+            /* Log actual C state before assertions, including the failing sample.
+             * squared_error is a diagnostic, not the configured training reward. */
+            TEST_ASSERT_TRUE(fprintf(eval_log,
+                "%lu;%lu;%lu;%.9g;%.9g;%.9g;%.9g;%.9g;%.9g;%.9g;"
+                "%.9g;%.9g;%.9g;%.9g;%.9g;%.9g;%.9g;%.9g;%.9g;%.9g;%d;%.9g;0;0;%d;%d\n",
+                (unsigned long)(repeat * PMSM_TD3_TRACE_ROWS + k),
+                (unsigned long)(repeat + 1U), (unsigned long)k,
+                (double)i_d, (double)i_q, (double)row[0], (double)row[1],
+                (double)(row[0] - i_d), (double)(row[1] - i_q), (double)row[2],
+                (double)example.actor.requested[0], (double)example.actor.requested[1],
+                (double)example.actor.limited[0], (double)example.actor.limited[1],
+                (double)example.actor.applied[0], (double)example.actor.applied[1],
+                (double)output.i_dq_A.d, (double)output.i_dq_A.q,
+                (double)example.actor.state.integral[0], (double)example.actor.state.integral[1],
+                (int)example.actor.saturated,
+                (double)(error_d_next * error_d_next + error_q_next * error_q_next),
+                truncated, truncated) >= 0);
             TEST_ASSERT_TRUE(isfinite(output.i_dq_A.d) && isfinite(output.i_dq_A.q));
             TEST_ASSERT_TRUE(fabsf(output.i_dq_A.d) < 16.0f && fabsf(output.i_dq_A.q) < 16.0f);
             float magnitude = sqrtf(example.actor.limited[0]*example.actor.limited[0]+example.actor.limited[1]*example.actor.limited[1]);

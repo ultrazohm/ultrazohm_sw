@@ -135,6 +135,23 @@ The semicolon-separated columns match the `workshop_vv_dqn` evaluation logs.
 all three Q values and the greedy action. Evaluation has zero exploration,
 `terminated=0`, and `truncated=done=1` only at each episode's final step.
 
+## PMSM evaluation CSV log
+
+`ceedling _1.1.9_ test:pmsm_td3_export` writes
+`build/artifacts/test-data/uz_exported_actor/pmsm_td3_eval.csv`. It uses the same
+semicolon delimiter, `UZ_TEST_DATA_DIR` override, overwrite behavior, and partial
+trace handling as PT1. The default artifact directory is ignored by Git.
+
+The closed-loop test logs both reset/repeatability runs as episodes 1 and 2,
+with 200 steps each (400 rows). `time` is a global step counter; `episode_k`
+restarts at zero. Currents (`i_d`, `i_q`) and tracking errors are pre-step values;
+`i_d_next`, `i_q_next`, and integrals are post-step values. References, mechanical
+speed in rpm, requested/limited/applied d/q voltages, and saturation are included.
+`squared_error` is the sum of the two squared post-step current errors in A²,
+not the TOML training reward. Exploration and termination are zero; each episode's
+last row has `truncated=done=1`. Only the actual C closed loop is logged; the
+separate actor and plant parity replay tests do not overwrite it.
+
 ## Reproduce the trained fixtures
 
 From `rliable_drives`:

@@ -88,6 +88,7 @@ unused. Never treat these simulation parameters as a hardware commissioning file
 
 ## Run the examples
 
+Use Ceedling **1.1.9**, as pinned in the dev-container Dockerfile.
 From `vitis/software/Baremetal`:
 
 ```sh
@@ -114,6 +115,26 @@ its later samples differ substantially; the full closed-loop test therefore
 checks behavior and repeatability, not long-horizon sample equality. The fixture
 is an integration example and not a claim of optimal tracking or hardware tuning.
 
+## PT1 evaluation CSV logs
+
+Running the PT1 Ceedling tests writes these files, relative to `vitis/software/Baremetal`:
+
+- `build/artifacts/test-data/uz_exported_actor/pt1_dqn_eval.csv`
+- `build/artifacts/test-data/uz_exported_actor/pt1_ddpg_eval.csv`
+
+Each file contains the actual C evaluation trajectory: six episodes of 500 steps.
+Files are overwritten on each test run; a failed parity check leaves a partial
+trace. Set `UZ_TEST_DATA_DIR` to change the output root (prefer an absolute path).
+For example, `UZ_TEST_DATA_DIR=/tmp/actor-logs ceedling _1.1.9_ test:pt1_dqn_export`
+writes `/tmp/actor-logs/uz_exported_actor/pt1_dqn_eval.csv`.
+
+The semicolon-separated columns match the `workshop_vv_dqn` evaluation logs.
+`time` is the global zero-based step counter, `episode` starts at one, and
+`episode_k` starts at zero. `y` and `error` describe the pre-step observation;
+`reward` is the negative squared post-step tracking error. DQN additionally logs
+all three Q values and the greedy action. Evaluation has zero exploration,
+`terminated=0`, and `truncated=done=1` only at each episode's final step.
+
 ## Reproduce the trained fixtures
 
 From `rliable_drives`:
@@ -133,3 +154,26 @@ corresponding `examples/<name>/` and
 example wrappers, and tests are not overwritten. Saved `configuration.json` and
 `selection.json` identify the training settings and chosen checkpoint; neural
 training is not guaranteed bitwise reproducible across JAX/compiler versions.
+
+## Diagnose preprocessing failures
+
+A missing `build/test/preprocess/.../directives_only/raw/test_*.c` is a missing
+**generated** file, not a source file to copy into the repository. The exception
+alone does not identify why preprocessing failed. The examples are validated
+with Ceedling 1.1.9; upgrading Ceedling is not required.
+
+Run this in the dev-container terminal from `vitis/software/Baremetal`, without
+another Ceedling build or cleanup running concurrently. Choose a fresh diagnostic
+build directory if the one below already exists:
+
+```sh
+ceedling _1.1.9_ --mixin '=project: {build_root: build_actor_diagnostic, compile_threads: 1, test_threads: 1}' \
+  --verbosity=debug test:uz_exported_actor > ceedling-actor-debug.log 2>&1
+```
+
+This leaves the normal `build/` directory intact. If it fails, collect
+`ceedling version`, `gcc --version`, and the log section containing
+`default_test_file_directives_only_preprocessor`, its full command, stdout,
+stderr, and exit status. If this succeeds but the editor's test runner fails,
+compare its project directory, Ceedling executable, and build settings with the
+terminal invocation before changing controller code.

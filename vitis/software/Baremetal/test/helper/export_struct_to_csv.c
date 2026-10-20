@@ -49,7 +49,7 @@ static void create_csv_parent_directories(char *path)
     }
 }
 
-static FILE *open_csv_file_for_write(const char *filename)
+FILE *open_csv_file_for_write(const char *filename)
 {
     TEST_ASSERT_NOT_NULL(filename);
     TEST_ASSERT_TRUE_MESSAGE(filename[0] != '\0' && filename[0] != '/' &&

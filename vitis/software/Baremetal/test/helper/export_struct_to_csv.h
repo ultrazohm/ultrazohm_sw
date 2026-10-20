@@ -27,6 +27,10 @@ struct csv_field_descriptor_t
  * Export filenames are relative to this root; parents are created on demand. */
 const char *test_csv_output_directory(void);
 
+/* Open a streaming artifact in write mode, creating parents and asserting on
+ * errors. The caller owns the stream and must check writes and fclose. */
+FILE *open_csv_file_for_write(const char *filename);
+
 void export_input_output_arrays_to_csv(const char *filename,
                                       const void *input_array,
                                       size_t input_element_size,

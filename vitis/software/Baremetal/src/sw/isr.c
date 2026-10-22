@@ -156,8 +156,6 @@ void ISR_Control(void *data)
 	i_abc_right.b = Global_Data.av.i_b_right;
 	i_abc_right.c = Global_Data.av.i_c_right;
 
-
-
 	// check for current limit
 	if (fabs(Global_Data.av.i_a_left) > MAX_CURRENT || fabs(Global_Data.av.i_b_left) > MAX_CURRENT || fabs(Global_Data.av.i_c_left) > MAX_CURRENT ||
 		fabs(Global_Data.av.i_a_right) > MAX_CURRENT || fabs(Global_Data.av.i_b_right) > MAX_CURRENT || fabs(Global_Data.av.i_c_right) > MAX_CURRENT) {
@@ -165,8 +163,8 @@ void ISR_Control(void *data)
 	}
 
 	// calculate mean temperature values over all measured temperatures of each inverter
-	Global_Data.av.mean_temp_inv_left  = (Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H1 + Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H2  + Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H3)  * 0.3333;
-	Global_Data.av.mean_temp_inv_right = (Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H1+ Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H2 + Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H3) * 0.3333;
+	//Global_Data.av.mean_temp_inv_left  = (Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H1 + Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H2  + Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H3)  * 0.3333;
+	//Global_Data.av.mean_temp_inv_right = (Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H1+ Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H2 + Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H3) * 0.3333;
 
 	// check platform state machine
 	platform_state_t current_state=ultrazohm_state_machine_get_state();
@@ -273,7 +271,7 @@ void ISR_Control(void *data)
 	    		filter_compensation_left();
 	        	Global_Data.rasv.rc_meas_output = uz_parameterID_rc_generate_idq_ref(Global_Data.objects.rc_meas_instance, Global_Data.av.mean_temp_inv_left);
 	        	Global_Data.rasv.i_dq_ref_left.d = Global_Data.rasv.rc_meas_output.id_ref_Amps;
-	        	Global_Data.rasv.i_dq_ref_left.q = 0.0f;//Global_Data.rasv.rc_meas_output.iq_ref_Amps;
+	        	Global_Data.rasv.i_dq_ref_left.q = Global_Data.rasv.rc_meas_output.iq_ref_Amps;
 	        	Global_Data.rasv.n_ref_right = -1.0f*Global_Data.rasv.rc_meas_output.n_ref_rpm;
 	        	Global_Data.rasv.operatingpoints_rc_meas = Global_Data.rasv.rc_meas_output.operating_points_all;
 	        	speed_control_right_motor();

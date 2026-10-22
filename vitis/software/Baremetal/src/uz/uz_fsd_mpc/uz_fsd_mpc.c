@@ -19,7 +19,8 @@ static bool config_valid(struct uz_fsd_mpc_config cfg) {
 	bool enums = (cfg.coordinates == UZ_FSD_MPC_SI ||
 		cfg.coordinates == UZ_FSD_MPC_PU) &&
 		(cfg.selector == UZ_FSD_MPC_EXHAUSTIVE ||
-		 cfg.selector == UZ_FSD_MPC_DEADBEAT) &&
+		 cfg.selector == UZ_FSD_MPC_DEADBEAT ||
+		 cfg.selector == UZ_FSD_MPC_YANG_EXPERIMENTAL) &&
 		(cfg.modulation >= UZ_FSD_MPC_SVM &&
 		 cfg.modulation <= UZ_FSD_MPC_IFT) &&
 		(cfg.solver == UZ_FSD_MPC_SIMPLEX_FACE ||
@@ -71,14 +72,34 @@ static bool finish_duties(struct uz_fsd_mpc_output *output,
 	return true;
 }
 
+bool uz_fsd_mpc_yang_suitable(const float h[4][4], const float f[4]) {
+	/* a=(1/4,0,0,1/4); alpha=1/(8 sqrt(2) A)^2=1/128 A^-2.
+	 * Project onto sum(x)=1/2 without bound clipping. Reject strictly negative
+	 * active coordinates; zero is suitable. All operations stay in float32. */
+	float z[4];
+	float total = 0.0f;
+	for (int32_t j = 0; j < 4; ++j) {
+		float anchor = (j == 0 || j == 3) ? 0.25f : 0.0f;
+		float gradient = h[j][0] * 0.25f + h[j][3] * 0.25f + f[j];
+		z[j] = anchor - 0.0078125f * gradient;
+		total += z[j];
+	}
+	float shift = (0.5f - total) * 0.25f;
+	return isfinite(shift) && z[1] + shift >= 0.0f &&
+		z[2] + shift >= 0.0f;
+}
+
 static uz_fsd_mpc_status_t solve_problem(uz_fsd_mpc_t *self,
 	const struct uz_fsd_mpc_problem *problem,
 	struct uz_fsd_mpc_command *chosen,
-	struct uz_fsd_mpc_diagnostics *diagnostics) {
+	struct uz_fsd_mpc_diagnostics *diagnostics,
+	struct uz_fsd_mpc_work *work) {
 	int32_t first_path = 0;
 	int32_t last_path = 5;
 	float best_cost = INFINITY;
 	bool found = false;
+	uint32_t suitable_mask = 0U;
+	memset(work, 0, sizeof(*work));
 	if (diagnostics != NULL) {
 		memset(diagnostics, 0, sizeof(*diagnostics));
 	}
@@ -88,6 +109,29 @@ static uz_fsd_mpc_status_t solve_problem(uz_fsd_mpc_t *self,
 			return UZ_FSD_MPC_OUTPUT_INVALID;
 		}
 		last_path = first_path;
+	}
+	if (self->config.selector == UZ_FSD_MPC_YANG_EXPERIMENTAL) {
+		for (int32_t path = 0; path < 6; ++path) {
+			struct uz_fsd_mpc_candidate *candidate = &self->candidates[path];
+			uz_fsd_mpc_gradients(&self->config, problem, path,
+				candidate->gradients);
+			uz_fsd_mpc_form_qp(&self->config, problem,
+				candidate->gradients, candidate->affine,
+				candidate->h, candidate->f);
+			if (uz_fsd_mpc_yang_suitable(
+				(const float (*)[4])candidate->h, candidate->f)) {
+				suitable_mask |= 1U << path;
+			}
+		}
+		if (diagnostics != NULL) {
+			diagnostics->formulation_count = 6U;
+			diagnostics->suitable_mask = suitable_mask;
+		}
+		work->formulation_count = 6U;
+		work->suitable_mask = suitable_mask;
+		if (suitable_mask == 0U) {
+			return UZ_FSD_MPC_SELECTOR_EMPTY;
+		}
 	}
 	for (int32_t path = first_path; path <= last_path; ++path) {
 		struct uz_fsd_mpc_candidate *candidate = &self->candidates[path];
@@ -99,11 +143,29 @@ static uz_fsd_mpc_status_t solve_problem(uz_fsd_mpc_t *self,
 			self->config.modulation == UZ_FSD_MPC_VFT ||
 			(self->config.modulation == UZ_FSD_MPC_IFT &&
 			 self->config.coordinates == UZ_FSD_MPC_PU);
-		uz_fsd_mpc_gradients(&self->config, problem, path,
-			candidate->gradients);
-		uz_fsd_mpc_form_qp(&self->config, problem,
-			candidate->gradients, candidate->affine,
-			candidate->h, candidate->f);
+		if (self->config.selector == UZ_FSD_MPC_YANG_EXPERIMENTAL &&
+			(suitable_mask & (1U << path)) == 0U) {
+			continue;
+		}
+		if (self->config.selector != UZ_FSD_MPC_YANG_EXPERIMENTAL) {
+			uz_fsd_mpc_gradients(&self->config, problem, path,
+				candidate->gradients);
+			uz_fsd_mpc_form_qp(&self->config, problem,
+				candidate->gradients, candidate->affine,
+				candidate->h, candidate->f);
+			if (diagnostics != NULL) {
+				diagnostics->formulation_count++;
+				diagnostics->suitable_mask |= 1U << path;
+			}
+			work->formulation_count++;
+			work->suitable_mask |= 1U << path;
+		}
+		if (need_free) {
+			work->qp_solve_count++;
+		}
+		if (diagnostics != NULL && need_free) {
+			diagnostics->qp_solve_count++;
+		}
 		if (need_free && !uz_fsd_mpc_solve_qp(&self->config,
 			candidate->h, candidate->f, -1, free_x, &solver_status)) {
 			return UZ_FSD_MPC_QP_FAILED;
@@ -115,6 +177,10 @@ static uz_fsd_mpc_status_t solve_problem(uz_fsd_mpc_t *self,
 		} else {
 			suppressed = uz_fsd_mpc_suppressed_zero(&self->config,
 				problem, path, free_x);
+			work->qp_solve_count++;
+			if (diagnostics != NULL) {
+				diagnostics->qp_solve_count++;
+			}
 			if (!uz_fsd_mpc_solve_qp(&self->config,
 				candidate->h, candidate->f, suppressed, x, &solver_status)) {
 				return UZ_FSD_MPC_QP_FAILED;
@@ -179,6 +245,7 @@ uz_fsd_mpc_status_t uz_fsd_mpc_reset(uz_fsd_mpc_t *self,
 	struct uz_fsd_mpc_output *preload) {
 	struct uz_fsd_mpc_problem problem = {0};
 	struct uz_fsd_mpc_command command = {0};
+	struct uz_fsd_mpc_work work;
 	float measured[2];
 	uz_fsd_mpc_status_t status;
 	uz_assert_not_NULL(self);
@@ -204,7 +271,7 @@ uz_fsd_mpc_status_t uz_fsd_mpc_reset(uz_fsd_mpc_t *self,
 		1.5f * initial->omega_e * self->config.period_s;
 	problem.omega = initial->omega_e;
 	problem.v_dc = initial->v_dc;
-	status = solve_problem(self, &problem, &command, NULL);
+	status = solve_problem(self, &problem, &command, NULL, &work);
 	if (status != UZ_FSD_MPC_OK) {
 		invalid_output(preload, status);
 		return status;
@@ -227,6 +294,7 @@ uz_fsd_mpc_status_t uz_fsd_mpc_reset(uz_fsd_mpc_t *self,
 		0.5f * initial->omega_e * self->config.period_s;
 	preload->theta_optimization_rad = problem.theta_mid;
 	preload->update_count = 0U;
+	preload->work = work;
 	return UZ_FSD_MPC_OK;
 }
 
@@ -291,7 +359,8 @@ uz_fsd_mpc_status_t uz_fsd_mpc_step(uz_fsd_mpc_t *self,
 		1.5f * input->omega_e * self->config.period_s;
 	next_problem.omega = input->omega_e;
 	next_problem.v_dc = input->v_dc;
-	status = solve_problem(self, &next_problem, &calculated, diagnostics);
+	status = solve_problem(self, &next_problem, &calculated, diagnostics,
+		&output->work);
 	if (status != UZ_FSD_MPC_OK) {
 		self->faulted = true;
 		invalid_output(output, status);

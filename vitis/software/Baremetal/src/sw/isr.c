@@ -58,7 +58,7 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
-#if UZ_FSD_BENCHMARK_ENABLE
+#if UZ_FSD_BENCHMARK_ENABLE && !UZ_FSD_A53_BENCHMARK_ENABLE
     if (current_state == idle_state)
     {
         fsd_mpc_benchmark_step(Global_Data.objects.fsd_benchmark);

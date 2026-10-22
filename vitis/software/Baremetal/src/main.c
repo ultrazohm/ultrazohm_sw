@@ -15,6 +15,7 @@
 
 // Includes from own files
 #include "main.h"
+#include "include/fsd_a53_benchmark.h"
 #include "uz/uz_global_configuration.h"
 #if UZ_FSD_BENCHMARK_ENABLE
 #include "include/fsd_mpc_benchmark.h"
@@ -92,7 +93,7 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
-#if UZ_FSD_BENCHMARK_ENABLE
+#if UZ_FSD_BENCHMARK_ENABLE && !UZ_FSD_A53_BENCHMARK_ENABLE
             Global_Data.objects.fsd_benchmark = fsd_mpc_benchmark_init();
 #endif
             JavaScope_initialize(&Global_Data);
@@ -133,7 +134,10 @@ int main(void)
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();
-#if UZ_FSD_BENCHMARK_ENABLE
+#if UZ_FSD_A53_BENCHMARK_ENABLE
+            fsd_a53_benchmark_report_once();
+#endif
+#if UZ_FSD_BENCHMARK_ENABLE && !UZ_FSD_A53_BENCHMARK_ENABLE
             fsd_mpc_benchmark_report_once();
 #endif
             break;

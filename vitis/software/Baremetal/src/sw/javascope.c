@@ -18,9 +18,17 @@
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
+#if UZ_FSD_A53_BENCHMARK_ENABLE
+#include "../include/fsd_a53_benchmark.h"
+#endif
 
 // maximum number of while loops in the polling function for the acknowledge flag
-#define POLL_FOR_ACK_TIMEOUT_COUNT	1000
+#if UZ_FSD_A53_BENCHMARK_ENABLE
+/* Benchmark only: permit complete A53 solves while the inverter is idle. */
+#define POLL_FOR_ACK_TIMEOUT_COUNT 1000000
+#else
+#define POLL_FOR_ACK_TIMEOUT_COUNT 1000
+#endif
 // define the size of the cache to flush
 #define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(*rpu_to_apu_user_data)
 #define CACHE_FLUSH_SIZE_APU_TO_RPU sizeof(*apu_to_rpu_user_data)
@@ -116,10 +124,17 @@ void JavaScope_update(DS_Data* data){
 	struct APU_to_RPU_user_data_t volatile * const apu_to_rpu_user_data = (struct APU_to_RPU_user_data_t*)MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU;
 	static int js_cnt_slowData=0;
 	int status = XST_SUCCESS;
+#if UZ_FSD_A53_BENCHMARK_ENABLE
+	bool fsd_request_active = false;
+	int fsd_exchange_status = XST_SUCCESS;
+#endif
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// write data to a53 in shared memory and flush cache
 	rpu_to_apu_user_data->slowDataCounter = js_cnt_slowData; //just an example
+	#if UZ_FSD_A53_BENCHMARK_ENABLE
+	fsd_request_active = fsd_a53_benchmark_prepare(rpu_to_apu_user_data);
+	#endif
 	// add further data...
 
 	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
@@ -147,14 +162,26 @@ void JavaScope_update(DS_Data* data){
 	status = XIpiPsu_TriggerIpi(&IPI_instance,XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
 	if(status != (u32)XST_SUCCESS) {
 		xil_printf("RPU: IPI Trigger failed\r\n");
+		#if UZ_FSD_A53_BENCHMARK_ENABLE
+		fsd_exchange_status = status;
+		#endif
 	}
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	//Poll Acknowledgment of IPI
+	#if UZ_FSD_A53_BENCHMARK_ENABLE
+	if (fsd_request_active) {
+	#endif
 	status = XIpiPsu_PollForAck(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, POLL_FOR_ACK_TIMEOUT_COUNT);
 	if(status != (u32)XST_SUCCESS) {
 		pollErrorCnt++;
+		#if UZ_FSD_A53_BENCHMARK_ENABLE
+		fsd_exchange_status = status;
+		#endif
 	}
+	#if UZ_FSD_A53_BENCHMARK_ENABLE
+	}
+	#endif
 #endif
 
 	u32 ControlData_length = sizeof(Received_Data_from_A53)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
@@ -165,6 +192,9 @@ void JavaScope_update(DS_Data* data){
 
 	if(status != (u32)XST_SUCCESS) {
 		xil_printf("RPU: IPI reading from A53 failed\r\n");
+		#if UZ_FSD_A53_BENCHMARK_ENABLE
+		fsd_exchange_status = status;
+		#endif
 	}
 
 	js_cnt_slowData++;
@@ -182,6 +212,12 @@ void JavaScope_update(DS_Data* data){
 	Xil_DCacheInvalidateRange(MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 	// get data from apu_to_rpu_user_data struct and use it
 	 data->av.slowDataCounter = apu_to_rpu_user_data->slowDataCounter; //just an example
+	#if UZ_FSD_A53_BENCHMARK_ENABLE
+	if (fsd_request_active) {
+		fsd_a53_benchmark_complete(apu_to_rpu_user_data,
+			fsd_exchange_status);
+	}
+	#endif
 #endif
 
 	ipc_Control_func(Received_Data_from_A53.id, Received_Data_from_A53.value, data);

@@ -44,6 +44,8 @@ extern const int32_t uz_fsd_mpc_half_paths[6][4];
 extern const int32_t uz_fsd_mpc_clamp_phases[6][2];
 
 bool uz_fsd_mpc_input_valid(const struct uz_fsd_mpc_input *input);
+/* Project-specific feasible-zero Yang screen for SI cost in A^2. */
+bool uz_fsd_mpc_yang_suitable(const float h[4][4], const float f[4]);
 void uz_fsd_mpc_gradients(const struct uz_fsd_mpc_config *cfg,
 	const struct uz_fsd_mpc_problem *problem, int32_t path,
 	float gradients[4][2]);

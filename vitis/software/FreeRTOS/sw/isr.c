@@ -24,6 +24,7 @@
 #include "../defines.h"
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
+#include "../include/fsd_a53_worker.h"
 
 // Cache ranges for optional A53/R5 accelerator user-data exchange.
 #define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(*rpu_to_apu_user_data)
@@ -115,6 +116,9 @@ void APU_IPI_ISR(void *data)
 
 	// write data to r5 in shared memory and flush cache
 	apu_to_rpu_user_data->slowDataCounter  = rpu_to_apu_user_data->slowDataCounter; //just an example
+	#if UZ_FSD_A53_BENCHMARK_ENABLE
+	fsd_a53_worker_process(rpu_to_apu_user_data, apu_to_rpu_user_data);
+	#endif
 
 	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 

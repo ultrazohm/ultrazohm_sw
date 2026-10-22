@@ -10,7 +10,8 @@ typedef enum {
 
 typedef enum {
 	UZ_FSD_MPC_EXHAUSTIVE = 0,
-	UZ_FSD_MPC_DEADBEAT = 1
+	UZ_FSD_MPC_DEADBEAT = 1,
+	UZ_FSD_MPC_YANG_EXPERIMENTAL = 2
 } uz_fsd_mpc_selector_t;
 
 typedef enum {
@@ -29,7 +30,8 @@ typedef enum {
 	UZ_FSD_MPC_INPUT_INVALID = 1,
 	UZ_FSD_MPC_QP_FAILED = 2,
 	UZ_FSD_MPC_OUTPUT_INVALID = 3,
-	UZ_FSD_MPC_FAULTED = 4
+	UZ_FSD_MPC_FAULTED = 4,
+	UZ_FSD_MPC_SELECTOR_EMPTY = 5
 } uz_fsd_mpc_status_t;
 
 struct uz_fsd_mpc_config {
@@ -66,6 +68,12 @@ struct uz_fsd_mpc_command {
 	int32_t clamp_rail;
 };
 
+struct uz_fsd_mpc_work {
+	uint32_t suitable_mask;
+	uint32_t formulation_count;
+	uint32_t qp_solve_count;
+};
+
 struct uz_fsd_mpc_output {
 	float duty_a;
 	float duty_b;
@@ -78,6 +86,7 @@ struct uz_fsd_mpc_output {
 	struct uz_fsd_mpc_command applied;
 	struct uz_fsd_mpc_command calculated;
 	uint32_t update_count;
+	struct uz_fsd_mpc_work work;
 };
 
 /* Optional caller-owned fixed diagnostic workspace; no heap allocation. */
@@ -91,6 +100,9 @@ struct uz_fsd_mpc_diagnostics {
 	int32_t suppressed_zero[6];
 	int32_t solver_status[6];
 	int32_t candidate_count;
+	uint32_t suitable_mask;
+	uint32_t formulation_count;
+	uint32_t qp_solve_count;
 };
 
 struct uz_fsd_mpc_schedule {

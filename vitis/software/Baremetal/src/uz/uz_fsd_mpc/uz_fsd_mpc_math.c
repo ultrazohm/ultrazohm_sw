@@ -302,7 +302,10 @@ uz_fsd_mpc_status_t uz_fsd_mpc_schedule(
 	for (int32_t j = 0; j < schedule->count; ++j) {
 		sum += schedule->dwell_s[j];
 	}
-	if (fabsf(sum - period_s) > 2.0e-7f * period_s) {
+	/* Two mirrored halves can each carry the accepted 2e-7 half-sum
+	 * representation residual. Close the remaining float32 time residual
+	 * in the last dwell without changing the QP command or state order. */
+	if (fabsf(sum - period_s) > 4.0e-7f * period_s) {
 		return UZ_FSD_MPC_OUTPUT_INVALID;
 	}
 	schedule->dwell_s[schedule->count - 1] += period_s - sum;

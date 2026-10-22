@@ -5,8 +5,14 @@
 #ifndef UZ_FSD_BENCHMARK_VARIANT
 #define UZ_FSD_BENCHMARK_VARIANT 5U
 #endif
-#if UZ_FSD_BENCHMARK_VARIANT > 5U
-#error UZ_FSD_BENCHMARK_VARIANT must be in the range 0..5
+#ifndef UZ_FSD_YANG_EXPERIMENT_ENABLE
+#define UZ_FSD_YANG_EXPERIMENT_ENABLE 0U
+#endif
+#if UZ_FSD_BENCHMARK_VARIANT > 8U
+#error UZ_FSD_BENCHMARK_VARIANT must be in the range 0..8
+#endif
+#if UZ_FSD_BENCHMARK_VARIANT >= 6U && !UZ_FSD_YANG_EXPERIMENT_ENABLE
+#error Experimental Yang benchmark requires UZ_FSD_YANG_EXPERIMENT_ENABLE=1
 #endif
 #ifndef TEST
 

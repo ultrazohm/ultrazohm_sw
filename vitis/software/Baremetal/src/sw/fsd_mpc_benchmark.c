@@ -30,6 +30,9 @@ static uint32_t next_input = 0U;
 static uint32_t completed_steps = 0U;
 static bool report_done = false;
 static volatile bool report_ready = false;
+static uint32_t yang_path_histogram[7];
+static uint32_t yang_qp_histogram[13];
+static uint64_t yang_qp_sum;
 
 static bool valid_input(const struct uz_fsd_mpc_input *input) {
 	return isfinite(input->ia) && isfinite(input->ib) &&
@@ -65,8 +68,11 @@ static struct uz_fsd_mpc_config selected_config(void) {
 		.modulation = UZ_FSD_MPC_SVM,
 		.solver = UZ_FSD_MPC_SIMPLEX_FACE
 	};
-#if UZ_FSD_BENCHMARK_VARIANT >= 3U
+#if UZ_FSD_BENCHMARK_VARIANT >= 3U && UZ_FSD_BENCHMARK_VARIANT < 6U
 	config.selector = UZ_FSD_MPC_DEADBEAT;
+#endif
+#if UZ_FSD_BENCHMARK_VARIANT >= 6U
+	config.selector = UZ_FSD_MPC_YANG_EXPERIMENTAL;
 #endif
 #if (UZ_FSD_BENCHMARK_VARIANT % 3U) == 1U
 	config.modulation = UZ_FSD_MPC_IFT;
@@ -78,6 +84,9 @@ static struct uz_fsd_mpc_config selected_config(void) {
 
 static uint32_t qp_solves_per_step(void) {
 	uint32_t paths = UZ_FSD_BENCHMARK_VARIANT < 3U ? 6U : 1U;
+	if (UZ_FSD_BENCHMARK_VARIANT >= 6U) {
+		return 0U; /* Per-step variable; collected from Yang diagnostics. */
+	}
 	return (UZ_FSD_BENCHMARK_VARIANT % 3U) == 2U ? 2U * paths : paths;
 }
 
@@ -93,6 +102,13 @@ uz_fsd_mpc_t *fsd_mpc_benchmark_init(void) {
 	uint64_t end_tick;
 	uint64_t overhead = UINT64_MAX;
 	fsd_mpc_benchmark_stats_init(&timing, UZ_AXI_TIMER_CLOCK_FREQ);
+	for (uint32_t i = 0U; i < 7U; ++i) {
+		yang_path_histogram[i] = 0U;
+	}
+	for (uint32_t i = 0U; i < 13U; ++i) {
+		yang_qp_histogram[i] = 0U;
+	}
+	yang_qp_sum = 0U;
 	timing.qp_solves_per_step = qp_solves_per_step();
 	if (timing.timer_frequency_hz == 0U) {
 		timing.failed = true;
@@ -164,6 +180,23 @@ void fsd_mpc_benchmark_step(uz_fsd_mpc_t *controller) {
 	}
 	if (completed_steps >= FSD_BENCHMARK_WARMUP_STEPS) {
 		fsd_mpc_benchmark_stats_add(&timing, start_tick, end_tick);
+		if (UZ_FSD_BENCHMARK_VARIANT >= 6U) {
+			uint32_t paths = 0U;
+			for (uint32_t path = 0U; path < 6U; ++path) {
+				paths += (output.work.suitable_mask >> path) & 1U;
+			}
+			if (output.work.formulation_count != 6U || paths == 0U ||
+				output.work.qp_solve_count > 12U) {
+				timing.failed = true;
+				timing.failure_status = -5;
+				timing.failed_sample_index = completed_steps;
+				report_ready = true;
+				return;
+			}
+			yang_path_histogram[paths]++;
+			yang_qp_histogram[output.work.qp_solve_count]++;
+			yang_qp_sum += output.work.qp_solve_count;
+		}
 	}
 	completed_steps++;
 	next_input = (next_input + 1U) % FSD_BENCHMARK_INPUT_COUNT;
@@ -201,6 +234,18 @@ void fsd_mpc_benchmark_report_once(void) {
 		uz_printf("histogram_p95_bin_us=%lu p99_bin_us=%lu (100=overflow)\r\n",
 			(unsigned long)fsd_mpc_benchmark_percentile_upper_us(&timing, 95U),
 			(unsigned long)fsd_mpc_benchmark_percentile_upper_us(&timing, 99U));
+	}
+	if (UZ_FSD_BENCHMARK_VARIANT >= 6U) {
+		uz_printf("Yang formulations=6 qp_sum=%lu paths_0_to_6:",
+			(unsigned long)narrow_ticks(yang_qp_sum));
+		for (uint32_t i = 0U; i < 7U; ++i) {
+			uz_printf(" %lu", (unsigned long)yang_path_histogram[i]);
+		}
+		uz_printf("\r\nYang qp_0_to_12:");
+		for (uint32_t i = 0U; i < 13U; ++i) {
+			uz_printf(" %lu", (unsigned long)yang_qp_histogram[i]);
+		}
+		uz_printf("\r\n");
 	}
 }
 #endif

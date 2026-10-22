@@ -1,5 +1,6 @@
 //APU_RPU_shared.h
 #pragma once
+#include <stdint.h>
 // OCM Bank Addresses
 // See UG1085 v2.4 table 18-1 OCM Mapping Summary (https://docs.amd.com/r/en-US/ug1085-zynq-ultrascale-trm)
 #define MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU 	0xFFFD0000 // bank 1 is for r5->a53 user data
@@ -9,7 +10,30 @@
 #define JAVASCOPE_DATA_SIZE sizeof(struct javascope_data_t)
 
 // Experimental feature - read docs before use
-#define USE_A53_AS_ACCELERATOR_FOR_R5_ISR		FALSE
+#ifndef UZ_FSD_A53_BENCHMARK_ENABLE
+#define UZ_FSD_A53_BENCHMARK_ENABLE 0U
+#endif
+#ifndef UZ_FSD_A53_BENCHMARK_VARIANT
+#define UZ_FSD_A53_BENCHMARK_VARIANT 0U
+#endif
+#ifndef UZ_FSD_YANG_EXPERIMENT_ENABLE
+#define UZ_FSD_YANG_EXPERIMENT_ENABLE 0U
+#endif
+#if UZ_FSD_A53_BENCHMARK_VARIANT > 8U
+#error UZ_FSD_A53_BENCHMARK_VARIANT must be 0..8
+#endif
+#if UZ_FSD_A53_BENCHMARK_VARIANT >= 6U && !UZ_FSD_YANG_EXPERIMENT_ENABLE
+#error Experimental Yang benchmark requires UZ_FSD_YANG_EXPERIMENT_ENABLE=1
+#endif
+#if UZ_FSD_A53_BENCHMARK_ENABLE
+#define USE_A53_AS_ACCELERATOR_FOR_R5_ISR TRUE
+#else
+#define USE_A53_AS_ACCELERATOR_FOR_R5_ISR FALSE
+#endif
+
+#define UZ_FSD_A53_REQUEST_NONE 0U
+#define UZ_FSD_A53_REQUEST_INIT 1U
+#define UZ_FSD_A53_REQUEST_STEP 2U
 
 struct javascope_data_t
 {
@@ -29,12 +53,30 @@ struct APU_to_RPU_user_data_t
 {
 	// create variables that you want to share from A53 to R5
 	uint32_t slowDataCounter;
+#if UZ_FSD_A53_BENCHMARK_ENABLE
+	uint32_t fsd_kind;
+	uint32_t fsd_sequence;
+	uint32_t fsd_status;
+	uint32_t fsd_update_count;
+	float fsd_duty[3];
+	uint64_t fsd_compute_ticks;
+	uint64_t fsd_timer_hz;
+	uint32_t fsd_suitable_mask;
+	uint32_t fsd_formulation_count;
+	uint32_t fsd_qp_solve_count;
+#endif
 };
 
 struct RPU_to_APU_user_data_t
 {
 	// create variables that you want to share from R5 to A53
 	uint32_t slowDataCounter;
+#if UZ_FSD_A53_BENCHMARK_ENABLE
+	uint32_t fsd_kind;
+	uint32_t fsd_sequence;
+	uint32_t fsd_variant;
+	float fsd_input[8];
+#endif
 };
 
 

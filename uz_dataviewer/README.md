@@ -41,7 +41,7 @@ is a replayable command.
 
 ## Quick start
 
-With `uv` installed, run the launcher from the repository root (Linux/macOS):
+Run the launcher from the repository root (Linux/macOS):
 
 ```bash
 ./uz_dataviewer/start.sh
@@ -49,12 +49,21 @@ With `uv` installed, run the launcher from the repository root (Linux/macOS):
 ./uz_dataviewer/start.sh session.uzscript   # replay a saved session
 ```
 
-The launcher uses `uv run` to create/reuse `uz_dataviewer/.venv`, install the
-project and all runtime dependencies from `pyproject.toml`, and start the viewer.
+On Windows, use PowerShell:
+
+```powershell
+.\uz_dataviewer\start.ps1
+.\uz_dataviewer\start.ps1 "path\to\log.csv"
+```
+
+If Windows blocks script execution, run `powershell -ExecutionPolicy Bypass -File .\uz_dataviewer\start.ps1`.
+Both launchers automatically install missing uv using the [official installer](https://docs.astral.sh/uv/reference/installer/), without modifying shell profiles.
+Linux/macOS requires `curl` or `wget` for this initial download.
+The launchers use `uv run` to create/reuse `uz_dataviewer/.venv`, install the project and all runtime dependencies from `pyproject.toml`, and start the viewer.
 It selects Python 3.12 (downloaded by uv if needed) and requires a prebuilt
 `imgui-bundle` wheel, avoiding an accidental native build with Python 3.10.
 An existing `.venv` using another Python version is recreated by uv.
-The first run needs internet access and creates `uz_dataviewer/uv.lock`.
+The first run needs internet access and uses the included `uz_dataviewer/uv.lock`.
 No manual virtual environment activation is needed. Input paths are relative to
 your current directory; the launcher itself can be called from any directory.
 
@@ -119,6 +128,34 @@ directory. There is currently no automatic disk-cache size limit. Read-only or
 full summary-cache storage falls back to RAM; lazy CSV conversion requires
 writable cache space. The browser build retains synchronous execution because
 its current runtime has no worker-thread support.
+
+### Reproducing performance measurements
+
+The CPU-side ImGui/ImPlot probe opens real files and covers stationary frames,
+viewport updates, spy insets, background imports, and a selected-window FFT:
+
+```bash
+uv run --project uz_dataviewer python uz_dataviewer/benchmarks/profile_viewer.py \
+  test_logs/Log_2026-06-16_10-03-55.parquet \
+  test_logs/Log_2026-06-16_10-46-24.parquet \
+  --mode lazy --signals 8 --subplots 4 --analysis \
+  --background-file test_logs/Log_2026-06-16_10-03-55.parquet \
+  --output /tmp/viewer-profile.json
+```
+
+Use a fresh `UZ_DATAVIEWER_CACHE` directory for a cold application-cache run;
+repeat with the same directory to measure reopen. Each process should use the
+same machine, inputs and thread settings. The checked-in
+[measurement records](benchmarks/results/) use `OPENBLAS_NUM_THREADS=2`.
+These are single-run CPU probes, **not GPU FPS or mouse-to-photon measurements**;
+the OS page cache was not flushed. First-plot completion and viewport completion
+include background work and are separate from GUI frame cost.
+
+`benchmarks/native_smoke.py` runs an automatically closing native window with
+six viewport changes and includes GPU completion. Run it from a temporary working
+directory to keep window-layout files separate. The measured tradeoffs and
+baseline revision are recorded in the repository's
+[developer reference](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_architecture.rst).
 
 ## Documentation
 

@@ -294,7 +294,7 @@ def _node_output(state, node: Node) -> tuple[np.ndarray, np.ndarray]:
             hi = float(tmax) if tmax != "" else float(time[-1])
             start, stop = visible_slice(time, lo, hi)
             time, y = time[start:stop], y[start:stop]
-        return time, y
+        return np.asarray(time), np.asarray(y)
     if node.out_time is None or node.out_y is None:
         raise ValueError(f"{node.name}: not evaluated yet")
     return node.out_time, node.out_y

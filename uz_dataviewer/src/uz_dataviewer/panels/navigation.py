@@ -79,6 +79,22 @@ class NavigationPanel:
             imgui.same_line()
             imgui.text_colored((0.95, 0.75, 0.25, 1.0), "loading...")
 
+        modes = ["memory", "lazy", "auto"]
+        imgui.set_next_item_width(130)
+        changed, mode = imgui.combo("Loading", modes.index(state.loading_mode), ["In memory", "Lazy", "Auto"])
+        if changed:
+            self._emit(state, "loading_mode", modes[mode])
+        if imgui.is_item_hovered():
+            imgui.set_tooltip("Applies to newly opened files. Existing runs keep their storage mode.")
+        if imgui.tree_node("Memory settings"):
+            changed, mb = imgui.input_int("Auto budget (MiB)", state.memory_budget_mb)
+            if changed:
+                self._emit(state, "memory_budget", max(1, mb))
+            changed, mb = imgui.input_int("Cache (MiB)", state.registry.cache.limit // 1024**2)
+            if changed:
+                self._emit(state, "cache_budget", max(1, mb))
+            imgui.text_disabled("FFT and plugins may allocate beyond these budgets.")
+            imgui.tree_pop()
         imgui.separator()
         imgui.text_disabled("Drag a signal into a plot cell")
         imgui.separator()

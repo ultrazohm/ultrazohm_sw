@@ -21,7 +21,6 @@ import numpy as np
 from imgui_bundle import imgui, implot
 
 from .. import webbridge
-from ..downsample import PYRAMID_MIN_POINTS, Pyramid, decimate_range, visible_slice
 from ..session import ensure_extension
 from ..state import GRID_PRESETS, AppState, PlotType, SignalRef, SubplotCell, XyStyle
 from .navigation import SIGNAL_DND_TYPE
@@ -74,9 +73,44 @@ class PlotsPanel:
         self._last_logged_cursor: dict[int, tuple[float, float]] = {}  # cursor echo
         self._last_logged_spy: dict[int, tuple] = {}  # spy-rect echo
         self._export_dialog: tuple | None = None  # (pfd dialog, plot_n)
-        # Per (cell, signal) decimation memo: skip re-decimating an unchanged view.
-        # key -> (sig_id, start, stop, n_out, xs_f64, ys_f64).
-        self._decim_cache: dict[tuple, tuple] = {}
+        self._used_slots = set()
+        self._pending_fit = set()
+        self._reported_errors = {}
+        self._validated_sources = {}
+
+    def _budget(self, state, traces):
+        width = max(1., implot.get_plot_size().x)
+        return max(2, min(state.max_points, int(width * 2), max(128, 32000 // max(1, traces))))
+
+    def _display(self, state, slot, run, channel, lo, hi, budget):
+        source = run.data_source()
+        identity_key = source.metadata.identity
+        if identity_key not in self._validated_sources:
+            try:
+                source.validate()
+                self._validated_sources[identity_key] = None
+            except (ValueError, OSError) as exc:
+                self._validated_sources[identity_key] = str(exc)
+        error = self._validated_sources[identity_key]
+        if error:
+            if self._reported_errors.get(slot) != error:
+                state.console.error(error)
+                self._reported_errors[slot] = error
+            return None
+        offset = run.time_offset
+        identity = (source.metadata.identity, run.time_version, run.signals[channel].version)
+        key = (identity, lo, hi, budget)
+        self._used_slots.add(slot)
+        def compute(cancel):
+            result = source.read_plot(channel, lo - offset, hi - offset, budget, cancel)
+            return result.time + offset if offset else result.time, result.values, result.raw_count
+        value = state.display.request(slot, key, identity, compute,
+                                      immediate=source.metadata.rows <= 4096 and source.metadata.identity.startswith("memory:"))
+        error = state.display.errors.get(slot)
+        if error and self._reported_errors.get(slot) != error:
+            state.console.error(error)
+            self._reported_errors[slot] = error
+        return value
 
     # -- helpers ------------------------------------------------------------
     def _emit(self, state: AppState, name: str, *args) -> None:
@@ -283,11 +317,6 @@ class PlotsPanel:
                 implot.setup_axis(implot.ImAxis_.y2, "", implot.AxisFlags_.aux_default)
 
             did_fit = self._apply_pending_limits(state, cell, data_min, data_max)
-            if did_fit and cell.y2_signals:
-                y2_lo, y2_hi = self._cell_y_extent(state, cell, cell.y2_signals)
-                if y2_lo is not None:
-                    implot.setup_axis_limits(implot.ImAxis_.y2, y2_lo, y2_hi, implot.Cond_.always)
-
             if state.link_x and state.shared_x is not None and index != self._driver:
                 implot.setup_axis_limits(
                     implot.ImAxis_.x1, state.shared_x[0], state.shared_x[1], implot.Cond_.always
@@ -329,10 +358,7 @@ class PlotsPanel:
     def _plot_signals(
         self, state: AppState, index: int, cell: SubplotCell, x_min: float, x_max: float
     ) -> tuple[int, int]:
-        # max_points is the budget: a window with <= max_points raw samples is drawn in
-        # full (decimate_range returns the raw slice), above it we emit a ~max_points
-        # min/max envelope. Same rule the FFT/Histogram path uses; no pixel-width cap.
-        n_out = max(2, state.max_points)
+        # Pixel width and total trace count also bound the finite-point budget.
         points_shown = 0
         raw_in_view = 0
 
@@ -343,34 +369,15 @@ class PlotsPanel:
                 continue
             implot.set_axis(implot.ImAxis_.y2 if ref in cell.y2_signals else implot.ImAxis_.y1)
             label = state.signal_label(ref)
-            # Build the per-signal min/max pyramid once (large signals only), then
-            # decimate the visible window in O(output) so multi-GB logs pan smoothly.
-            if signal.pyramid is None and signal.y.size > PYRAMID_MIN_POINTS:
-                signal.pyramid = Pyramid.build(signal.y)
-            start, stop = visible_slice(run.time, x_min, x_max)
-            # Reuse the last decimation when nothing that affects it changed (same
-            # window, budget and underlying array). With idle FPS off the plot
-            # redraws continuously, so this skips a full re-decimate on a static view.
-            ck = (index, ref)
-            # Version stamps (not id(signal.y)): a derived run refreshed in place frees
-            # the old array, whose address CPython can reuse for the new one -> id would
-            # collide and serve a stale envelope. The time version also catches run.time
-            # being reassigned (normalisation) while signal.y is unchanged.
-            ver = (signal.version, run.time_version)
-            cached = self._decim_cache.get(ck)
-            if cached is not None and cached[:4] == (ver, start, stop, n_out):
-                xs, ys = cached[4], cached[5]
-            else:
-                xs, ys = decimate_range(run.time, signal.y, signal.pyramid, n_out, start, stop)
-                # PlotLine is templated on one type T for both arrays: a dtype
-                # mismatch reinterprets a buffer as the wrong type. Keep them equal.
-                xs = np.ascontiguousarray(xs, dtype=np.float64)
-                ys = np.ascontiguousarray(ys, dtype=np.float64)
-                self._decim_cache[ck] = (ver, start, stop, n_out, xs, ys)
-            points_shown += xs.shape[0]
-            # Raw samples in the window (densest signal), not a sum across signals.
-            raw_in_view = max(raw_in_view, stop - start)
-            if xs.shape[0] < (stop - start):
+            result = self._display(state, ("plot", index, ref), run, ref[1], x_min, x_max,
+                                   self._budget(state, len(cell.signals)))
+            if result is None:
+                implot.plot_dummy(label)
+                continue
+            xs, ys, raw = result
+            points_shown += len(xs)
+            raw_in_view = max(raw_in_view, raw)
+            if len(xs) < raw:
                 state.downsampling_active = True
 
             # Scatter is markers-only, so it always needs one; line/stairs show markers
@@ -406,16 +413,34 @@ class PlotsPanel:
         if implot.begin_plot(f"##plot{index}", imgui.ImVec2(width, plot_h)):
             implot.setup_axes(x_label, "")
             if x_sig is not None:
-                stride = self._xy_stride(state, x_sig.y.shape[0])
-                xs = np.ascontiguousarray(x_sig.y[::stride], dtype=np.float64)
+                stride = max(1, -(-x_sig.y.shape[0] // self._budget(state, len(cell.signals))))
                 want_marker = cell.xy_style in (XyStyle.MARKERS, XyStyle.BOTH)
                 for i, ref in enumerate(list(cell.signals)):
                     sig = state.registry.get_signal(ref[0], ref[1])
                     run = state.registry.get(ref[0])
                     if sig is None or run is None or not run.active:
                         continue
-                    n = min(xs.shape[0], sig.y[::stride].shape[0])
-                    ys = np.ascontiguousarray(sig.y[::stride][:n], dtype=np.float64)
+                    left, right = x_run.data_source(), run.data_source()
+                    identity = (left.metadata.identity, right.metadata.identity, cell.xy_source[1], ref[1])
+                    slot = ("xy", index, ref)
+                    self._used_slots.add(slot)
+                    def compute(cancel, left=left, right=right, xn=cell.xy_source[1], yn=ref[1], stride=stride):
+                        def sample(src, name):
+                            pieces, off = [], 0
+                            for _, ys in src.iter_raw([name], cancel=cancel):
+                                y = ys[name]
+                                pieces.append(y[(-off) % stride::stride])
+                                off += len(y)
+                            return np.ascontiguousarray(np.concatenate(pieces), dtype=np.float64)
+                        x, y = sample(left, xn), sample(right, yn)
+                        n = min(len(x), len(y))
+                        return x[:n], y[:n]
+                    value = state.display.request(slot, (identity, stride), identity, compute,
+                                                  immediate=left.metadata.rows <= 4096 and right.metadata.rows <= 4096)
+                    if value is None:
+                        continue
+                    xs, ys = value
+                    n = len(xs)
                     label = state.signal_label(ref)
                     spec = _colored_spec(i, marker=want_marker)
                     if cell.xy_style is XyStyle.MARKERS:
@@ -484,8 +509,25 @@ class PlotsPanel:
 
         # The Δx / Δy readout only changes when a cursor moves, so cache it
         # instead of recomputing (and interpolating) every frame.
-        if moved or index not in self._cursor_text:
-            self._cursor_text[index] = self._cursor_readout(state, cell, x1, x2)
+        sources = [(ref[1], state.registry.get(ref[0])) for ref in cell.signals[:3]]
+        sources = [(name, run.data_source(), run.time_offset, run.time_version) for name, run in sources if run is not None]
+        identity = tuple((name, src.metadata.identity, off, version) for name, src, off, version in sources)
+        slot = ("cursor", index)
+        self._used_slots.add(slot)
+        def compute(cancel):
+            dx = abs(x2 - x1)
+            parts = [f"Δx={dx:.4g}s", f"f={1 / dx if dx else float('inf'):.4g}Hz"]
+            for name, src, off, _ in sources:
+                vals = []
+                for x in (x1, x2):
+                    a, b = src.bounds(x - off, x - off, cancel)
+                    t, ys = src.read_rows([name], a, b, cancel)
+                    vals.append(self._value_at(t, ys[name], x - off))
+                parts.append(f"{name}: Δy={vals[1] - vals[0]:.4g}")
+            return "   ".join(parts)
+        value = state.display.request(slot, (identity, x1, x2), identity, compute)
+        if value is not None:
+            self._cursor_text[index] = value
         self._maybe_echo_cursors(state, index, x1, x2)
 
     def _maybe_echo_cursors(self, state: AppState, index: int, x1: float, x2: float) -> None:
@@ -541,18 +583,16 @@ class PlotsPanel:
         x1, y1, x2, y2 = cell.spy_rect
         if implot.begin_plot(f"##spy{index}", imgui.ImVec2(width, max(height, 50.0)), implot.Flags_.canvas_only):
             implot.setup_axes_limits(x1, x2, y1, y2, imgui.Cond_.always)
-            n_out = max(state.max_points, 2)
             for i, ref in enumerate(list(cell.signals)):
                 signal = state.registry.get_signal(ref[0], ref[1])
                 run = state.registry.get(ref[0])
                 if signal is None or run is None or not run.active:
                     continue
-                if signal.pyramid is None and signal.y.size > PYRAMID_MIN_POINTS:
-                    signal.pyramid = Pyramid.build(signal.y)
-                start, stop = visible_slice(run.time, x1, x2)
-                xs, ys = decimate_range(run.time, signal.y, signal.pyramid, n_out, start, stop)
-                xs = np.ascontiguousarray(xs, dtype=np.float64)
-                ys = np.ascontiguousarray(ys, dtype=np.float64)
+                result = self._display(state, ("spy", index, ref), run, ref[1], x1, x2,
+                                       self._budget(state, len(cell.signals)))
+                if result is None:
+                    continue
+                xs, ys, _ = result
                 # Same colour index as the main plot so the inset matches.
                 implot.plot_line(state.signal_label(ref), xs, ys, _colored_spec(i, marker=False))
             implot.end_plot()
@@ -565,15 +605,26 @@ class PlotsPanel:
             lo, hi = cell.pending_x_lim
             implot.setup_axis_limits(implot.ImAxis_.x1, lo, hi, implot.Cond_.always)
             cell.pending_x_lim = None
-            did_fit = True
+            self._pending_fit.discard(id(cell))
         elif cell.fit_pending and data_min is not None:
             implot.setup_axis_limits(implot.ImAxis_.x1, data_min, data_max, implot.Cond_.always)
-            # Fit Y1 to the primary-axis signals only (the right axis is fit separately).
-            primary = [r for r in cell.signals if r not in cell.y2_signals]
-            y_lo, y_hi = self._cell_y_extent(state, cell, primary)
-            if y_lo is not None:
-                implot.setup_axis_limits(implot.ImAxis_.y1, y_lo, y_hi, implot.Cond_.always)
+            self._pending_fit.add(id(cell))
             did_fit = True
+        if cell.pending_y_lim is not None:
+            self._pending_fit.discard(id(cell))
+        if id(cell) in self._pending_fit:
+            if imgui.is_mouse_down(0) or imgui.get_io().mouse_wheel:
+                self._pending_fit.discard(id(cell))
+            else:
+                primary = [r for r in cell.signals if r not in cell.y2_signals]
+                y_lo, y_hi = self._cell_y_extent(state, cell, primary)
+                r_lo, r_hi = self._cell_y_extent(state, cell, cell.y2_signals)
+                if y_lo is not None:
+                    implot.setup_axis_limits(implot.ImAxis_.y1, y_lo, y_hi, implot.Cond_.always)
+                if r_lo is not None:
+                    implot.setup_axis_limits(implot.ImAxis_.y2, r_lo, r_hi, implot.Cond_.always)
+                if (not primary or y_lo is not None) and (not cell.y2_signals or r_lo is not None):
+                    self._pending_fit.discard(id(cell))
         if cell.pending_y_lim is not None:
             lo, hi = cell.pending_y_lim
             implot.setup_axis_limits(implot.ImAxis_.y1, lo, hi, implot.Cond_.always)
@@ -654,8 +705,14 @@ class PlotsPanel:
             signal = state.registry.get_signal(ref[0], ref[1])
             if run is None or signal is None or not run.active or signal.y.size == 0:
                 continue
-            y_lo = float(np.nanmin(signal.y))
-            y_hi = float(np.nanmax(signal.y))
+            result = self._display(state, ("fit", id(cell), ref), run, ref[1],
+                                   float(run.time[0]), float(run.time[-1]), 512)
+            if result is None:
+                return None, None
+            finite = result[1][np.isfinite(result[1])]
+            if not len(finite):
+                continue
+            y_lo, y_hi = float(finite.min()), float(finite.max())
             lo = y_lo if lo is None else min(lo, y_lo)
             hi = y_hi if hi is None else max(hi, y_hi)
         if lo is None or hi is None:
@@ -666,8 +723,13 @@ class PlotsPanel:
 
     # -- panel --------------------------------------------------------------
     def render(self, state: AppState) -> None:
+        self._used_slots.clear()
+        self._validated_sources.clear()
         self._poll_export(state)
         self._toolbar(state)
+        if state.display.pending:
+            imgui.same_line()
+            imgui.text_disabled("Updating plots...")
         imgui.separator()
         state.downsampling_active = False
 
@@ -686,6 +748,8 @@ class PlotsPanel:
                 imgui.end_group()
                 if c < state.cols - 1:
                     imgui.same_line(0.0, spacing)
+
+        state.display.retain(self._used_slots)
 
 
 def cell_index_of(state: AppState, cell: SubplotCell) -> int:

@@ -151,3 +151,44 @@ def compute_fft(
             mag[-1] *= 0.5
     info = f"{n:,} samples, fs = {1.0 / dt:,.1f} Hz, window [{x_min:.4f}, {x_max:.4f}] s"
     return FftResult(freqs.astype(np.float32), mag.astype(np.float32), info)
+
+
+def histogram_sources(series, lo, hi, bins, cancel=None):
+    """Two-pass histogram over raw batches with common edges for all sources.
+
+    series: (label, source, channel, display_time_offset). Display summaries are
+    never used here. Memory is proportional to one batch and the output bins.
+    """
+    from .sources import check
+    ranges, minimum, maximum, dropped = [], None, None, 0
+    for label, source, channel, offset in series:
+        check(cancel)
+        start, stop = source.bounds(lo - offset, hi - offset, cancel)
+        count = 0
+        for _, values in source.iter_raw([channel], start, stop, cancel):
+            y = values[channel]
+            finite = np.isfinite(y)
+            dropped += int(len(y) - finite.sum())
+            y = y[finite]
+            if len(y):
+                low, high = float(y.min()), float(y.max())
+                minimum = low if minimum is None else min(minimum, low)
+                maximum = high if maximum is None else max(maximum, high)
+                count += len(y)
+        if count:
+            ranges.append((label, source, channel, start, stop, count))
+    if minimum is None:
+        return [], 0, dropped
+    if maximum <= minimum:
+        maximum = minimum + 1.
+    edges = np.linspace(minimum, maximum, max(1, bins) + 1)
+    centers = (edges[:-1] + edges[1:]) / 2
+    results, total = [], 0
+    for label, source, channel, start, stop, count in ranges:
+        counts = np.zeros(len(centers), dtype=np.int64)
+        for _, values in source.iter_raw([channel], start, stop, cancel):
+            y = values[channel]
+            counts += np.histogram(y[np.isfinite(y)], bins=edges)[0]
+        results.append((label, centers, counts, float(edges[1] - edges[0])))
+        total += count
+    return results, total, dropped

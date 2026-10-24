@@ -377,6 +377,28 @@ def register_builtins(reg: CommandRegistry) -> None:
 
     reg.add("link_x", [Param("on", "bool")], link_x, "Link/unlink the X axes across subplots.")
 
+    def loading_mode(state, a):
+        if a[0] not in ("memory", "lazy", "auto"):
+            raise CommandError("Expected memory, lazy, or auto")
+        state.loading_mode = a[0]
+    reg.add("loading_mode", [Param("mode", "str")], loading_mode,
+            "Storage policy for subsequent opens: memory, lazy, auto.")
+
+    def memory_budget(state, a):
+        if a[0] < 1:
+            raise CommandError("Budget must be positive (MiB)")
+        state.memory_budget_mb = a[0]
+    reg.add("memory_budget", [Param("mib", "int")], memory_budget,
+            "Auto mode total resident-data budget in MiB; analyses can use more.")
+
+    def cache_budget(state, a):
+        if a[0] < 1:
+            raise CommandError("Budget must be positive (MiB)")
+        state.registry.cache.limit = a[0] * 1024**2
+        state.registry.cache.trim()
+    reg.add("cache_budget", [Param("mib", "int")], cache_budget,
+            "Shared timestamp/summary RAM cache budget in MiB.")
+
     def set_max_points(state, a):
         state.max_points = max(100, a[0])
 

@@ -64,7 +64,9 @@ class FftPanel(AnalysisPanel):
     def _compute(self, state: AppState, cfg, x_min: float, x_max: float) -> None:
         results = []
         info = ""
+        from ..sources import check
         for ref in cfg.sources:
+            check(getattr(cfg, "_cancel", None))
             run = state.registry.get(ref[0])
             signal = state.registry.get_signal(ref[0], ref[1])
             if run is None or signal is None:

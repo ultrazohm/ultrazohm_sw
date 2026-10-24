@@ -5,13 +5,15 @@ from __future__ import annotations
 import enum
 import math
 import os
+import threading
 from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass, field
 
 from . import webbridge
 from .commands import CommandRegistry
 from .console import Console
-from .loader import ParsedRun, load_file, parse_file
+from .loader import ParsedRun, load_file, parse_file, open_file
+from .requests import Requests
 from .model import DataRegistry, Run, Signal
 from .nodes import NodeGraph
 
@@ -146,6 +148,13 @@ class HistogramConfig(AnalysisConfig):
 class AppState:
     def __init__(self) -> None:
         self.registry = DataRegistry()
+        self.loading_mode = "memory"
+        self.memory_budget_mb = 512
+        self.cache_dir = None
+        self._load_lock = threading.RLock()
+        self._reserved_memory = 0
+        self.display = Requests(synchronous=webbridge.IS_WEB)
+        self.analysis_jobs = Requests(synchronous=webbridge.IS_WEB)
         self.console = Console()
         # The command registry routes every discrete GUI action and console
         # input through one place, so the console doubles as a replayable log.
@@ -178,7 +187,7 @@ class AppState:
         # by the plot panel on drop.
         self.dragged_ref: SignalRef | None = None
 
-        self._executor = ThreadPoolExecutor(max_workers=2)
+        self._executor = ThreadPoolExecutor(max_workers=1)
         # Worker parses into a ParsedRun (no registry touch); the main thread registers
         # it in poll_pending_loads, so DataRegistry stays single-threaded.
         self._pending: list[tuple[Future[ParsedRun], str]] = []
@@ -214,7 +223,7 @@ class AppState:
                 self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
             return
         # Parse on the worker; registration happens on the main thread (poll below).
-        future = self._executor.submit(parse_file, path)
+        future = self._executor.submit(self._open_background, path, self.loading_mode)
         self._pending.append((future, path))
 
     def load_sync(self, path: str) -> Run | None:
@@ -228,7 +237,7 @@ class AppState:
         path = os.path.abspath(path)
         self.console.info(f"Loading {os.path.basename(path)} ...")
         try:
-            run = load_file(path, self.registry)
+            run = open_file(path, self.loading_mode, self.registry.cache, self.cache_dir, self._available_memory_budget()).register(self.registry)
         except Exception as exc:  # noqa: BLE001 - surfaced to the console
             self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
             return None
@@ -319,7 +328,11 @@ class AppState:
                 still_pending.append((future, path))
                 continue
             try:
-                run = future.result().register(self.registry)
+                parsed = future.result()
+                with self._load_lock:
+                    run = parsed.register(self.registry)
+                    if isinstance(parsed, ParsedRun):
+                        self._reserved_memory -= parsed.time.nbytes + sum(y.nbytes for y in parsed.signals.values())
             except Exception as exc:  # noqa: BLE001 - surfaced to the console
                 self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
                 continue
@@ -362,5 +375,24 @@ class AppState:
             return ref[1]
         return f"{ref[1]} @ {run.label}"
 
+    def _open_background(self, path, mode):
+        # Serial loader plus reservation includes completed-but-unregistered runs.
+        with self._load_lock:
+            budget = self._available_memory_budget()
+        parsed = open_file(path, mode, self.registry.cache, self.cache_dir, budget)
+        if isinstance(parsed, ParsedRun):
+            with self._load_lock:
+                self._reserved_memory += parsed.time.nbytes + sum(y.nbytes for y in parsed.signals.values())
+        return parsed
+
+    def _available_memory_budget(self):
+        from .sources import SourceColumn
+        resident = sum(r.n_rows * (8 + 4 * len(r.signals)) for r in self.registry.runs
+                       if not isinstance(r.time, SourceColumn))
+        return max(0, self.memory_budget_mb * 1024**2 - resident - self._reserved_memory)
+
     def shutdown(self) -> None:
+        self.display.close()
+        self.analysis_jobs.close()
+        self.registry.cache.clear()
         self._executor.shutdown(wait=False, cancel_futures=True)

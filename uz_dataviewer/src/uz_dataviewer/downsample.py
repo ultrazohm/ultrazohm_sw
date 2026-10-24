@@ -34,6 +34,9 @@ def visible_slice(time: np.ndarray, x_min: float, x_max: float) -> tuple[int, in
     per-frame killer behind a sluggish spectrum (the same landmine as ``np.interp``
     for cursors). A matching-dtype scalar keeps it O(log n).
     """
+    from .sources import SourceColumn
+    if isinstance(time, SourceColumn):
+        return time.source.bounds(x_min - time.offset, x_max - time.offset)
     lo = time.dtype.type(x_min)
     hi = time.dtype.type(x_max)
     start = int(np.searchsorted(time, lo, side="left"))

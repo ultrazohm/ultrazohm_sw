@@ -81,8 +81,14 @@ Module map
      - ``Run``, ``Signal``, ``DataRegistry``
    * - ``loader.py``
      - CSV (Arrow) / Parquet loading, header cleaning, delimiter sniffing; lean large-log loading (float32-at-parse, CSV size guard, streaming Parquet, CSV→Parquet ``convert``) — see :ref:`uz_dataviewer_loader_large_logs`
-     - ``load_file``, ``parse_file``, ``ParsedRun``, ``parse_channel_name``,
+     - ``open_file``, ``load_file``, ``parse_file``, ``ParsedRun``, ``parse_channel_name``,
        ``convert_csv_to_parquet``
+   * - ``sources.py``
+     - Resident/lazy raw-sample access, timestamp indexes, persistent display summaries, shared byte-bounded cache
+     - ``Source``, ``ArraySource``, ``ParquetSource``, ``SourceColumn``, ``ByteCache``
+   * - ``requests.py``
+     - Coalescing worker requests; cancellation and result publication without GUI calls
+     - ``Requests``
    * - ``downsample.py``
      - Range-aware decimation: min/max pyramid + one-shot (pure NumPy)
      - ``Pyramid``, ``decimate_range``, ``visible_slice``
@@ -126,7 +132,9 @@ Module map
 Data model
 ==========
 
-- A **``Run``** is one loaded file: a shared ``time`` axis (``float64``) plus one **``Signal``** per channel (``y`` as ``float32``, contiguous, ready for ImPlot and the pyramid).
+- A **``Run``** is one loaded file: a shared ``time`` axis (``float64``) plus one **``Signal``** per channel (``y`` as ``float32``).
+  In-memory runs expose NumPy arrays; lazy runs expose ``SourceColumn`` views whose slices read original samples on demand.
+  Plotting uses ``Run.data_source()`` rather than materializing these views.
 - **``DataRegistry``** owns runs and hands out stable integer ids; ``SignalRef = (run_id, name)`` identifies a signal everywhere.
 - **Time normalization** is per-log: ``Run.set_time_origin(target)`` keeps the original ``time_raw`` and derives ``time = time_raw - time_raw[0] + target``. It is reversible (``target=None`` restores raw) and re-derives only on change, never per frame.
 
@@ -140,7 +148,7 @@ Loading & large logs (``loader.py``)
 ``load_file`` dispatches by extension through ``parse_file`` → ``parse_csv`` / ``parse_parquet``, each returning a ``ParsedRun`` (plain arrays, no registry touch) that is turned into a ``Run`` via ``ParsedRun.register`` (``DataRegistry.add_run``).
 On native, loads run on a ``ThreadPoolExecutor``: the worker only **parses** into a ``ParsedRun``, and the main thread **registers** it in ``state.poll_pending_loads``, so ``DataRegistry`` is only ever mutated from one thread (see :ref:`uz_dataviewer_arch_native_web`).
 
-The loader keeps the **load-time memory peak** near the resident dataset size, so ~100M-point logs open without OOM:
+The default in-memory loader reduces transient allocations; the complete recording and analysis scratch still need to fit in RAM:
 
 - **float32 at parse, no intermediate copy.** ``_csv_column_types`` feeds Arrow ``ConvertOptions(column_types=…)`` so channels parse straight to ``float32`` (time stays ``float64``), avoiding the float64→float32 re-cast that doubled channel memory. ``_named_signals`` shares one naming/dedup pass across every load path.
 - **Streaming CSV.** For files at/above ``CSV_STREAM_MIN_BYTES``, ``_parse_csv_streaming`` reads via Arrow's ``open_csv`` batch reader into **preallocated** numpy arrays (grown geometrically since a CSV's row count isn't known up front), ``include_columns`` projecting to just the named columns. Peak ≈ resident + one batch (~1.5×) instead of the bulk ``read_csv`` peak (~4× resident, measured). Small CSVs keep the fast multithreaded bulk path.
@@ -240,53 +248,55 @@ Nodes *produce* data; nothing else in the app needs to know they exist.
 Downsampling (``downsample.py``)
 =================================
 
-Pure NumPy — **identical on native and web** (the Rust ``tsdownsample`` dependency was removed in favour of the pyramid).
-Every path produces a **min/max envelope at the signals' true sample positions** (so it looks like the waveform, not a blocky bucket-centre grid) and a **consistent ~``max_points`` output at every zoom**.
-Two layers:
+The time-series renderer consumes compact results from ``Source.read_plot``.
+Raw reads (``read_rows`` and ``iter_raw``) are separate and always return original samples in file order, including equal timestamps.
+FFT, exports and nodes never consume display summaries.
 
-- **One-shot envelope (``_envelope_oneshot``)** — splits the visible slice into ~``max_points/2`` near-equal buckets, takes each bucket's argmin/argmax, and interleaves them in order. Vectorised, **O(visible points)** — used for windows up to ``PYRAMID_MIN_POINTS`` (1 M), a couple of ms at that size.
-- **Multi-resolution pyramid (``Pyramid``)** — for larger windows. Built **once per signal on first display** (lazily, cached on ``Signal.pyramid``): geometric levels storing the per-bucket argmin/argmax **sample indices** (``64, 512, 4096, …``), each aggregated from the previous, so the build is O(n). A query picks the coarsest level that still has ≥ the budget of buckets, then groups those down to the budget keeping each group's true extreme — **O(output)**.
+``ArraySource`` wraps existing resident arrays.
+``ParquetSource`` opens footer metadata, projects selected columns, and reads batches of at most 65,536 rows.
+On the first query it validates the complete timestamp order and persists a small timestamp index.
+If footer time statistics are absent, that scan is needed at open.
+Source identities include the resolved path, file size, nanosecond mtime/ctime, inode and cache format version.
+Changed files must be reopened.
 
-.. note::
+Display summaries retain original sample indices, times and extrema values in 1,024-sample buckets, then combine levels by a factor of eight.
+Each bucket can also retain a representative non-finite gap.
+Queries select a suitable level, refine partial boundaries through finer levels and raw samples, then reduce to the display budget.
+A level is used only when it provides at least one bucket per requested extrema pair.
+If even the finest level is too coarse, the selected raw window is read and reduced instead; this avoids sparse interiors with dense boundary samples at close zoom.
+Those temporary window arrays are separate from the retained-cache budget.
+A summary cannot represent every gap smaller than a pixel; raw analysis retains every original sample.
+Gap markers may add up to half the finite-point budget.
+Raw timestamps are stored in summaries; normalization is a view offset for lazy runs.
 
-   **Hitting the budget exactly.** Both layers group their candidate buckets down to *exactly* ``max_points/2`` via ``_reduce_to`` — it assigns the ``k`` candidates to ``max_points/2`` near-equal groups (``grp = arange(k)*target//k``) and keeps each group's true extreme with one ``lexsort``.
-   This replaced an integer **group factor** (``ceil(k/target)``), which could only halve/third/… the count and so realised as few as ~50 % of the budget at certain zooms (e.g. a 5 M-sample window landed on ~1 220 of 2 000 points).
-   The output is now a stable ~``max_points`` at every zoom and on every path.
-   ``_reduce_to`` only ever runs on an already-bucketed array (≲ ``target × factor``), so the query stays O(output); the pyramid *build* is untouched (still a fixed-stride O(n) pass).
+Desktop plot, fit, spy, XY and cursor requests run on one coalescing worker.
+Each consumer has at most one queued request; superseded requests are cancelled and results are published only for the current request.
+The renderer can retain the previous viewport while waiting, but never displays a result from a different source version.
+Small resident signals (up to 4,096 samples) may use a synchronous fast path.
+Completed view buffers are reused, including spy views.
+Removed consumers release their results and idle workers release source references.
 
-Storing *indices* (not values) lets the envelope use true X/Y read from the run's ``time``/``y`` arrays, so it is also normalization-agnostic.
-Measured (single float32 signal, ``max_points=10 000``, one core; reproduce with a short ``Pyramid.build`` / ``decimate_range`` timing loop):
+The shared timestamp/summary RAM cache is byte-bounded (128 MiB by default).
+Display buffers are bounded by trace/plot budgets.
+These are not total-process memory limits: decoded batches, summary-construction scratch, full FFTs and explicit array-based plugins/exports need additional memory.
+Persistent caches have no automatic disk-size limit and can be removed while the viewer is closed.
+The cache directory defaults to ``~/.cache/uz_dataviewer`` and is overridden by ``UZ_DATAVIEWER_CACHE``.
+Writes are atomic; invalid cache containers are rebuilt.
 
-.. list-table::
-   :header-rows: 1
-   :widths: 24 19 19 19 19
+``loading_mode(memory|lazy|auto)`` affects subsequent opens.
+Auto mode estimates uncompressed numeric size against the remaining resident-data budget, counting queued eager imports.
+Lazy CSV input is converted to a versioned Parquet cache.
+Sessions and scripts preserve per-file storage modes and the current settings.
 
-   * - Signal
-     - Build (once)
-     - Query/frame (full)
-     - Query/frame (zoomed)
-     - Pyramid memory
-   * - 10 M pts (40 MB)
-     - ~15 ms
-     - ~0.9 ms
-     - ~0.15 ms
-     - 1.4 MB (3.6 %)
-   * - 50 M pts (200 MB)
-     - ~75 ms
-     - ~0.7 ms
-     - ~0.2 ms
-     - 7.1 MB (3.6 %)
+GUI FFT and histogram computations use a separate worker with snapshots of their input configuration.
+Histograms make two bounded passes over raw batches with shared bin edges.
+FFT still materializes the selected window.
+Cancellation of a NumPy FFT takes effect after its native call returns.
+Explicit console/script commands and node/plugin evaluation remain synchronous.
+Browser execution uses the same interfaces synchronously because its current runtime lacks workers.
 
-Re-scanning the full 50 M extent every frame (the one-shot envelope, the work the pyramid avoids) costs **~23 ms/frame** — the pyramid is ~30× cheaper per frame at the price of a one-time build and ~3.6 % memory.
-The output stays ~``max_points`` whether viewing the whole record or a slice.
-*(Absolute times are hardware-dependent; the structural point is the O(output) vs O(visible) gap.)*
-
-The FFT/Histogram windows use the same decimation: a multi-million-point spectrum is range-decimated per frame (``AnalysisPanel._plot_decimated``) rather than drawn in full, and a histogram is binned once at compute (not re-binned every frame).
-
-Two accepted trade-offs:
-
-- The pyramid is built **lazily on first display**, on the render thread, so the first frame after dropping in a large signal stalls for the build (~75 ms at 50 M). It is a one-off per signal and dwarfed by the file load; building it on the loader thread alongside parsing is noted as future work.
-- The renderer **re-decimates every frame with no result cache**. Because a query is O(output) this is cheap even on a static view, and it keeps the code stateless (true to immediate mode). Caching decimated arrays keyed on ``(visible limits, max_points)`` would trim idle CPU at the cost of a cache to invalidate; simplicity was chosen.
+The existing ``downsample.Pyramid`` / ``decimate_range`` implementation remains available for array APIs and FFT display.
+FFT pyramids are constructed by the analysis worker, and unchanged spectrum views reuse their reduced arrays.
 
 Sessions (``session.py``)
 ==========================

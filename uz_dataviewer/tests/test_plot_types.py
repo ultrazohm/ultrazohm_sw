@@ -108,7 +108,13 @@ def _drive_window(panel, state, frames=4):
     io.delta_time = 1.0 / 60.0
     io.backend_flags |= imgui.BackendFlags_.renderer_has_textures
     try:
-        for _ in range(frames):
+        import time
+        deadline = time.monotonic() + 10
+        rendered = 0
+        while rendered < frames or getattr(panel, "_analysis_pending", None) is not None:
+            assert time.monotonic() < deadline, "Background analysis did not finish"
+            rendered += 1
+            time.sleep(.002)
             imgui.new_frame()
             imgui.begin("W")
             panel.render(state)

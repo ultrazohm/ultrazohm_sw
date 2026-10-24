@@ -407,3 +407,51 @@ def parse_file(path: str) -> ParsedRun:
 def load_file(path: str, registry: DataRegistry) -> Run:
     """Parse ``path`` and register it into ``registry`` (single-threaded callers)."""
     return parse_file(path).register(registry)
+
+
+@dataclass
+class OpenedSource:
+    path: str
+    source: object
+
+    def register(self, registry):
+        return registry.add_source(os.path.basename(self.path), self.path, self.source)
+
+
+def open_file(path, mode="memory", cache=None, cache_dir=None, memory_budget=512 * 1024**2):
+    """Open using a selected storage policy. Existing parse_file stays eager."""
+    if mode not in ("memory", "lazy", "auto"):
+        raise ValueError("loading mode must be memory, lazy, or auto")
+    if mode == "memory":
+        return parse_file(path)
+    from .sources import ParquetSource
+    original = path
+    if path.lower().endswith(".csv"):
+        columns = _read_header(path, _sniff_delimiter(path))
+        if mode == "auto" and _estimate_csv_rows_and_bytes(path, columns)[1] <= memory_budget:
+            return parse_file(path)
+        from pathlib import Path
+        import hashlib
+        import tempfile
+        st = os.stat(path)
+        identity = hashlib.sha256(f"{os.path.abspath(path)}:{st.st_size}:{st.st_mtime_ns}:{st.st_ctime_ns}".encode()).hexdigest()
+        root = Path(cache_dir or os.environ.get("UZ_DATAVIEWER_CACHE", Path.home() / ".cache" / "uz_dataviewer"))
+        root.mkdir(parents=True, exist_ok=True)
+        destination = root / (identity + ".parquet")
+        if not destination.exists():
+            fd, temp = tempfile.mkstemp(dir=root, suffix=".parquet")
+            os.close(fd)
+            try:
+                convert_csv_to_parquet(path, temp)
+                os.replace(temp, destination)
+            finally:
+                if os.path.exists(temp):
+                    os.unlink(temp)
+        path = str(destination)
+    elif not path.lower().endswith(".parquet"):
+        return parse_file(path)
+    with pq.ParquetFile(path) as pf:
+        estimate = pf.metadata.num_rows * (8 + 4 * (len(pf.schema_arrow.names) - 1))
+    if mode == "auto" and estimate <= memory_budget:
+        return parse_file(original)
+    return OpenedSource(original, ParquetSource(path, cache, cache_dir))

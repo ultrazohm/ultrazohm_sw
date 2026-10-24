@@ -1,9 +1,8 @@
 """Data model for the UltraZohm data viewer.
 
-A :class:`Run` corresponds to one loaded log file (CSV or Parquet). It owns a
-shared ``time`` axis plus one :class:`Signal` per logged channel. Signal samples
-are kept as contiguous NumPy arrays so they can be fed directly to ImPlot and to
-the downsampling pyramid without per-frame copies.
+A Run exposes either resident NumPy arrays or explicit on-demand column views.
+Rendering uses the sample source's compact display results; raw analysis never
+consumes display summaries.
 """
 
 from __future__ import annotations
@@ -12,6 +11,8 @@ import itertools
 from dataclasses import dataclass, field
 
 import numpy as np
+
+from .sources import ArraySource, SourceColumn, ByteCache
 
 # Monotonic data-version stamp. Every Signal and every (re)assigned run time axis
 # gets a globally-unique version, so consumers that cache by data identity (the plot
@@ -106,6 +107,27 @@ class Run:
     """Globally-unique stamp bumped whenever :attr:`time` is reassigned (normalisation,
     derived-run refresh), so decimation caches that read ``time`` invalidate correctly."""
 
+    source: object = field(default=None, repr=False, compare=False)
+    _source_version: object = field(default=None, repr=False, compare=False)
+
+    def data_source(self):
+        version = (self.time_version, id(self.time), tuple((n, s.version, id(s.y)) for n, s in self.signals.items()))
+        if self.source is None or (not isinstance(self.time, SourceColumn) and version != self._source_version):
+            self.source = ArraySource(self.time, {n: s.y for n, s in self.signals.items()}, getattr(self, '_cache', None))
+        self._source_version = version
+        return self.source
+
+    @property
+    def time_offset(self):
+        return self.time.offset if isinstance(self.time, SourceColumn) else 0.
+
+    def read_window(self, channels, lo, hi, cancel=None):
+        source = self.data_source()
+        offset = self.time_offset
+        a, b = source.bounds(lo - offset, hi - offset, cancel)
+        t, ys = source.read_rows(channels, a, b, cancel)
+        return t + offset if offset else t, ys
+
     def mark_time_changed(self) -> None:
         """Stamp a fresh :attr:`time_version` after replacing :attr:`time`."""
         self.time_version = _next_data_version()
@@ -114,7 +136,10 @@ class Run:
         """Normalise so the first sample sits at ``target`` (or restore raw)."""
         raw = self.time_raw if self.time_raw is not None else self.time
         self.time_origin = target
-        if target is None or raw.shape[0] == 0:
+        if isinstance(raw, SourceColumn):
+            offset = 0. if target is None else float(target) - raw.source.metadata.time_range[0]
+            self.time = SourceColumn(raw.source, offset=offset)
+        elif target is None or raw.shape[0] == 0:
             self.time = raw
         else:
             self.time = (raw - raw[0] + float(target)).astype(np.float64)
@@ -137,6 +162,7 @@ class DataRegistry:
     def __init__(self) -> None:
         self._runs: dict[int, Run] = {}
         self._ids = itertools.count(1)
+        self.cache = ByteCache()
 
     def add_run(
         self,
@@ -165,6 +191,18 @@ class DataRegistry:
                 y=np.ascontiguousarray(values, dtype=np.float32),
                 run_id=run_id,
             )
+        run._cache = self.cache
+        self._runs[run_id] = run
+        return run
+
+    def add_source(self, label, path, source):
+        run_id = next(self._ids)
+        time = SourceColumn(source)
+        run = Run(run_id, label, path, time, {},
+                  color=_RUN_COLORS[(run_id - 1) % len(_RUN_COLORS)], time_raw=time, source=source)
+        run.signals = {name: Signal(name, source.units[name], SourceColumn(source, name), run_id)
+                       for name in source.metadata.channels}
+        run._cache = self.cache
         self._runs[run_id] = run
         return run
 

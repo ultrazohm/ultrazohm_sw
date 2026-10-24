@@ -41,6 +41,25 @@ is a replayable command.
 
 ## Quick start
 
+With `uv` installed, run the launcher from the repository root (Linux/macOS):
+
+```bash
+./uz_dataviewer/start.sh
+./uz_dataviewer/start.sh path/to/log.csv    # preload one or more files
+./uz_dataviewer/start.sh session.uzscript   # replay a saved session
+```
+
+The launcher uses `uv run` to create/reuse `uz_dataviewer/.venv`, install the
+project and all runtime dependencies from `pyproject.toml`, and start the viewer.
+It selects Python 3.12 (downloaded by uv if needed) and requires a prebuilt
+`imgui-bundle` wheel, avoiding an accidental native build with Python 3.10.
+An existing `.venv` using another Python version is recreated by uv.
+The first run needs internet access and creates `uz_dataviewer/uv.lock`.
+No manual virtual environment activation is needed. Input paths are relative to
+your current directory; the launcher itself can be called from any directory.
+
+Alternatively, install and run manually from `uz_dataviewer/`:
+
 ```bash
 pip install -r requirements.txt      # or: pip install -e .
 python run.py                        # or: python -m uz_dataviewer
@@ -50,6 +69,57 @@ python run.py session.uzscript       # replay a saved session
 
 Then **Open file(s)…** in the Navigation panel, expand the run, and drag signals into the
 plots (or the FFT / Histogram windows).
+
+## Large recordings and responsiveness
+
+Choose **Loading → In memory / Lazy / Auto** in Navigation before opening files,
+or select the mode at startup:
+
+```bash
+./uz_dataviewer/start.sh --loading-mode lazy path/to/log.parquet
+./uz_dataviewer/start.sh --loading-mode auto path/to/log.csv
+```
+
+- **In memory** (default) retains the existing full NumPy arrays for fast analysis.
+- **Lazy** reads selected Parquet columns and sample ranges. CSV files are first
+  converted into reusable Parquet files in the application cache.
+- **Auto** uses estimated uncompressed numeric size and the remaining resident-data
+  budget (512 MiB by default), including queued imports, to choose a mode.
+
+The setting affects subsequent opens. Existing runs retain their storage mode;
+JSON sessions and exported scripts preserve mixed modes. The console equivalents
+are `loading_mode(lazy)`, `memory_budget(512)`, and `cache_budget(128)`.
+
+Plot preparation, first-use summaries, XY sampling, cursor reads, and GUI FFT /
+histogram computation run outside the desktop rendering thread. During an update,
+the last completed plot remains visible with an **Updating plots...** indicator.
+Superseded display requests are cancelled or discarded. Main and spy plots reuse
+completed results, and finite display-point budgets account for pixel width and
+trace count. Gap markers may add points beyond the finite-point budget.
+
+Parquet opens use footer statistics when available. The first sample query
+validates timestamp order and builds a persistent timestamp index; files without
+usable statistics need that scan during opening. First display of a channel
+builds its persistent min/max summaries. These operations stream through the
+file and can take seconds for large recordings. Reopening reuses valid indexes.
+Changed files must be reopened; cached results from their previous version are
+not reused.
+
+The shared timestamp/summary RAM cache defaults to 128 MiB and is configurable
+under **Memory settings**. Prepared plot arrays are bounded by display budgets.
+Cache limits are **not a hard process-RAM limit**: decoded batches, index-building
+scratch, FFTs, explicit NumPy conversions, exports and Python transformation
+plugins can allocate additional memory. A full-recording FFT still needs its raw
+input and output arrays. Histograms stream raw batches in two passes. Explicit
+console/script commands and node/plugin evaluation retain synchronous semantics.
+
+Persistent indexes, summaries and converted CSVs live in
+`~/.cache/uz_dataviewer`, or the directory selected by `UZ_DATAVIEWER_CACHE`.
+They are disposable and source-versioned; close the viewer before clearing that
+directory. There is currently no automatic disk-cache size limit. Read-only or
+full summary-cache storage falls back to RAM; lazy CSV conversion requires
+writable cache space. The browser build retains synchronous execution because
+its current runtime has no worker-thread support.
 
 ## Documentation
 

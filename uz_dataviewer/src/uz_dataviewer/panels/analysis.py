@@ -15,6 +15,7 @@ the transform-specific options, and the per-signal compute/draw.
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+import copy
 
 import numpy as np
 from imgui_bundle import imgui, implot
@@ -69,6 +70,9 @@ class AnalysisPanel:
         self._computed_key: tuple | None = None  # state at last compute (stale check)
         self._last_logged_x: tuple[float, float] | None = None  # zoom echo baseline
         self._fit_pending: bool = True  # one-shot auto-fit (first show / Reset / new result)
+        self._generation = 0
+        self._analysis_pending = None
+        self._display_cache = {}
         self._fitting: bool = False     # this frame is an auto-fit (decimate full range)
 
     # -- command-name helpers ----------------------------------------------
@@ -133,15 +137,22 @@ class AnalysisPanel:
         else:
             lim = implot.get_plot_limits()
             start, stop = visible_slice(x, float(lim.x.min), float(lim.x.max))
-        xs, ys = decimate_range(x, y, pyramid, max(state.max_points, 2), start, stop)
-        implot.plot_line(
-            label, np.ascontiguousarray(xs, np.float64), np.ascontiguousarray(ys, np.float64)
-        )
+        budget = max(2, min(state.max_points, int(implot.get_plot_size().x * 2)))
+        key = (id(x), id(y), start, stop, budget)
+        previous = self._display_cache.get(label)
+        if previous is None or previous[0] != key:
+            xs, ys = decimate_range(x, y, pyramid, budget, start, stop)
+            previous = (key, np.ascontiguousarray(xs, np.float64), np.ascontiguousarray(ys, np.float64))
+            self._display_cache[label] = previous
+        implot.plot_line(label, previous[1], previous[2])
 
     # -- stale tracking -----------------------------------------------------
     def _current_key(self, state: "AppState", cfg: "AnalysisConfig") -> tuple:
         window = state.resolve_x_window(cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources)
-        return (tuple(cfg.sources), round(window[0], 6), round(window[1], 6)) + self._options_key(cfg)
+        versions = tuple((ref, state.registry.get(ref[0]).time_version,
+                          state.registry.get_signal(*ref).version)
+                         for ref in cfg.sources if state.registry.get_signal(*ref) is not None)
+        return (versions, window[0], window[1]) + self._options_key(cfg)
 
     # -- shared render ------------------------------------------------------
     def _poll_export(self, state: "AppState") -> None:
@@ -197,9 +208,49 @@ class AnalysisPanel:
         if cfg.compute_requested:
             cfg.compute_requested = False
             x_min, x_max = state.resolve_x_window(cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources)
-            self._compute(state, cfg, x_min, x_max)
-            self._computed_key = self._current_key(state, cfg)
-            self._fit_pending = True  # fit the fresh result
+            self._generation += 1
+            key = (self._generation, self._current_key(state, cfg))
+            # Worker owns shallow snapshots of model/config, never live GUI state.
+            snapshot = copy.copy(state)
+            snapshot.registry = copy.copy(state.registry)
+            snapshot.registry._runs = {i: copy.copy(run) for i, run in state.registry._runs.items()}
+            for run in snapshot.registry.runs:
+                run.signals = dict(run.signals)
+            options = copy.deepcopy(cfg)
+            worker = type(self)()
+            def compute(cancel):
+                from ..sources import check
+                check(cancel)
+                options._cancel = cancel
+                worker._compute(snapshot, options, x_min, x_max)
+                check(cancel)
+                return worker._results, worker._info
+            self._analysis_pending = key
+            state.analysis_jobs.request(self.prefix, key, key, compute)
+        if self._analysis_pending is not None:
+            key = self._analysis_pending
+            if state.analysis_jobs.ready(self.prefix, key):
+                with state.analysis_jobs.condition:
+                    result = state.analysis_jobs.results[self.prefix][2]
+                if key[1] == self._current_key(state, cfg):
+                    self._results, self._info = result
+                    self._computed_key = key[1]
+                    self._display_cache.clear()
+                    self._fit_pending = True
+                self._analysis_pending = None
+            elif self.prefix in state.analysis_jobs.errors:
+                self._info = state.analysis_jobs.errors[self.prefix]
+                self._analysis_pending = None
+            else:
+                imgui.text_disabled("Computing...")
+        if self._analysis_pending is not None and self._analysis_pending[1] != self._current_key(state, cfg):
+            state.analysis_jobs.forget(self.prefix)
+            self._analysis_pending = None
+        if not cfg.sources:
+            state.analysis_jobs.forget(self.prefix)
+            self._analysis_pending = None
+            self._results = []
+            self._display_cache.clear()
 
         # -- info + stale indicator --
         if self._info:

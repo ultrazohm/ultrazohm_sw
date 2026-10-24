@@ -38,8 +38,9 @@ BOTTOM_DOCK = "BottomSpace"
 
 
 class DataViewerApp:
-    def __init__(self, initial_files: list[str] | None = None) -> None:
+    def __init__(self, initial_files: list[str] | None = None, loading_mode: str = "memory") -> None:
         self.state = AppState()
+        self.state.loading_mode = loading_mode
         self.navigation = NavigationPanel()
         self.plots = PlotsPanel()
         self.fft = FftPanel()
@@ -284,7 +285,13 @@ def main(argv: list[str] | None = None) -> int:
             out = convert_csv_to_parquet(src)
             print(f"converted {src} -> {out}")
         return 0
-    app = DataViewerApp(initial_files=argv)
+    import argparse
+    parser = argparse.ArgumentParser(description="UltraZohm Data Viewer")
+    parser.add_argument("--loading-mode", choices=("memory", "lazy", "auto"), default="memory",
+                        help="storage policy for opening recordings (default: memory)")
+    parser.add_argument("files", nargs="*", help="CSV, Parquet, or session script files")
+    args = parser.parse_args(argv)
+    app = DataViewerApp(initial_files=args.files, loading_mode=args.loading_mode)
     app.run()
     return 0
 

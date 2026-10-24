@@ -186,6 +186,7 @@ class AppState:
         # The signal currently being dragged from the navigation tree, picked up
         # by the plot panel on drop.
         self.dragged_ref: SignalRef | None = None
+        self.dragged_log_path: str | None = None
 
         self._executor = ThreadPoolExecutor(max_workers=1)
         # Worker parses into a ParsedRun (no registry touch); the main thread registers
@@ -209,7 +210,11 @@ class AppState:
         self.rows, self.cols, self.cells = rows, cols, new_cells
 
     # -- file loading (async on desktop, synchronous in the browser) -------
-    def request_load(self, path: str) -> None:
+    def request_load(self, path: str, loading_mode: str | None = None) -> None:
+        """Open a file, optionally overriding the mode for this request only."""
+        mode = self.loading_mode if loading_mode is None else loading_mode
+        if mode not in {"memory", "lazy", "auto"}:
+            raise ValueError(f"Unknown loading mode: {mode}")
         path = os.path.abspath(path)
         # Echo the equivalent command so GUI-triggered (async) loads appear in
         # the console transcript just like a typed/scripted `load(...)`.
@@ -223,7 +228,7 @@ class AppState:
                 self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
             return
         # Parse on the worker; registration happens on the main thread (poll below).
-        future = self._executor.submit(self._open_background, path, self.loading_mode)
+        future = self._executor.submit(self._open_background, path, mode)
         self._pending.append((future, path))
 
     def load_sync(self, path: str) -> Run | None:

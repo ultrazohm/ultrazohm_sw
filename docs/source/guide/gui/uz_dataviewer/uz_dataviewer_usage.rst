@@ -39,6 +39,20 @@ Loading data
 - **Per-log time normalization:** right-click a run ▸ tick **Normalize start time** and enter a start (default ``0``), then **Apply**. This shifts that log's time axis without touching the samples; untick to restore. (Also ``load("Log.csv", 0)``.)
 - **Large logs:** channels load compactly and large Parquet files stream in, so a multi-million-sample log opens at roughly its in-memory size. A **very large CSV is refused** (parsing it whole would risk running out of memory) with a message pointing you to convert it once: ``convert("Log.csv")`` in the console, or ``uz-dataviewer convert Log.csv`` from a shell — both write a ``.parquet`` beside the source that loads leanly. (Native; the browser build is bounded by its ~4 GB limit — see :doc:`uz_dataviewer_native_vs_web`.)
 
+Local log browser
+-----------------
+
+The desktop **Log Browser** window is docked below Navigation in the default layout.
+It starts at the checkout's ``javascope/`` directory when available, otherwise at ``javascope/`` beneath the working directory.
+Use **Open directory...** to choose another root directory and **Refresh** to rescan it.
+The flat list includes only ``.csv`` and ``.parquet`` files from that directory and its subdirectories, with relative paths to distinguish duplicate filenames.
+Right-click a row and choose **Open lazy** or **Open in-memory** to select the mode for that file without changing the default loading mode.
+Alternatively, drag a row anywhere inside the **Navigation** pane to open it.
+The selected loading mode applies just as it does when opening a file through the dialog.
+Scanning runs in the background and does not load measurement data.
+The directory selection lasts for the current application session.
+Existing saved window layouts are preserved; the Log Browser can be moved and docked like the Console.
+
 Window types
 ============
 

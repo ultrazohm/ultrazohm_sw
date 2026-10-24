@@ -1,14 +1,7 @@
 """Application entry point and docking layout.
 
-Builds the VSCode-style three-zone layout with hello_imgui docking:
-
-    +------------------------------------------------+
-    |  Navigation  |        Plots / FFT (tabs)        |
-    |   (left)     |            (center)              |
-    |              |                                  |
-    |--------------+----------------------------------|
-    |               Console (bottom)                  |
-    +------------------------------------------------+
+Default layout: Navigation above Log Browser on the left, plots and analysis
+in the center, and Console below the plots.
 """
 
 from __future__ import annotations
@@ -22,6 +15,7 @@ from . import webbridge
 from .panels.fft import FftPanel
 from .panels.histogram import HistogramPanel
 from .panels.navigation import NavigationPanel
+from .panels.log_browser import LogBrowserPanel
 from .panels.nodes import NodesPanel
 from .panels.plots import PlotsPanel
 from .session import ensure_extension
@@ -35,6 +29,7 @@ except Exception:  # pragma: no cover
 MAIN_DOCK = "MainDockSpace"
 LEFT_DOCK = "LeftSpace"
 BOTTOM_DOCK = "BottomSpace"
+LOG_DOCK = "LogBrowserSpace"
 
 
 class DataViewerApp:
@@ -42,6 +37,7 @@ class DataViewerApp:
         self.state = AppState()
         self.state.loading_mode = loading_mode
         self.navigation = NavigationPanel()
+        self.log_browser = LogBrowserPanel()
         self.plots = PlotsPanel()
         self.fft = FftPanel()
         self.histogram = HistogramPanel()
@@ -77,7 +73,13 @@ class DataViewerApp:
         bottom.direction = imgui.Dir_.down
         bottom.ratio = 0.25
 
-        return [left, bottom]
+        logs = hello_imgui.DockingSplit()
+        logs.initial_dock = LEFT_DOCK
+        logs.new_dock = LOG_DOCK
+        logs.direction = imgui.Dir_.down
+        logs.ratio = 0.4
+
+        return [left, bottom, logs]
 
     def _dockable_windows(self) -> list[hello_imgui.DockableWindow]:
         nav = hello_imgui.DockableWindow()
@@ -110,7 +112,12 @@ class DataViewerApp:
         console.dock_space_name = BOTTOM_DOCK
         console.gui_function = lambda: self.state.console.render(self.state)
 
-        return [nav, plots, fft, histogram, nodes, console]
+        logs = hello_imgui.DockableWindow()
+        logs.label = "Log Browser"
+        logs.dock_space_name = LOG_DOCK
+        logs.gui_function = lambda: self.log_browser.render(self.state)
+
+        return [nav, logs, plots, fft, histogram, nodes, console]
 
     # -- Session menu (save/restore + scripting) ----------------------------
     def _show_menus(self) -> None:
@@ -230,6 +237,10 @@ class DataViewerApp:
             hello_imgui.get_runner_params().docking_params.focus_dockable_window("Histogram")
             self.state.focus_histogram = False
 
+    def _shutdown(self) -> None:
+        self.log_browser.shutdown()
+        self.state.shutdown()
+
     # -- runner -------------------------------------------------------------
     def run(self) -> None:
         params = hello_imgui.RunnerParams()
@@ -255,7 +266,7 @@ class DataViewerApp:
 
         params.callbacks.pre_new_frame = self._pre_new_frame
         params.callbacks.show_menus = self._show_menus
-        params.callbacks.before_exit = self.state.shutdown
+        params.callbacks.before_exit = self._shutdown
         params.callbacks.post_init = self._install_file_drop
 
         addons = immapp.AddOnsParams()

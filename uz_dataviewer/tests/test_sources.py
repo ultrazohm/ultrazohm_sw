@@ -346,3 +346,23 @@ def test_summary_zoom_transition_keeps_interior_detail():
         middle = (result.time > t[start + count // 4]) & (result.time < t[start + 3 * count // 4])
         assert middle.sum() >= budget // 3
         assert np.diff(result.time).max() < (t[start + count] - t[start]) / 100
+
+
+def test_per_file_loading_mode_does_not_change_default(tmp_path):
+    path = tmp_path / 'mode.parquet'
+    pq.write_table(pa.table({'time': np.arange(10, dtype=np.float64),
+                            'a': np.ones(10, dtype=np.float32)}), path)
+    state = AppState()
+    state.cache_dir = tmp_path / 'cache'
+    state.loading_mode = 'auto'
+    try:
+        state.request_load(str(path), loading_mode='lazy')
+        state.request_load(str(path), loading_mode='memory')
+        for future, _ in state._pending:
+            future.result(timeout=10)
+        state.poll_pending_loads()
+        assert isinstance(state.registry.runs[0].time, SourceColumn)
+        assert isinstance(state.registry.runs[1].time, np.ndarray)
+        assert state.loading_mode == 'auto'
+    finally:
+        state.shutdown()

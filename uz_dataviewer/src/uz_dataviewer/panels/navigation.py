@@ -19,6 +19,7 @@ except Exception:  # pragma: no cover
     pfd = None
 
 SIGNAL_DND_TYPE = "UZ_SIGNAL"
+LOG_DND_TYPE = "UZ_LOG_FILE"
 
 
 class NavigationPanel:
@@ -61,7 +62,25 @@ class NavigationPanel:
             state.request_load(path)
         self._open_dialog = None
 
+    def _accept_log_drop(self, state: AppState) -> None:
+        position = imgui.get_window_pos()
+        size = imgui.get_window_size()
+        bounds = imgui.internal.ImRect(
+            position, imgui.ImVec2(position.x + size.x, position.y + size.y)
+        )
+        if imgui.internal.begin_drag_drop_target_custom(bounds, imgui.get_id("log_drop")):
+            if imgui.accept_drag_drop_payload_py_id(LOG_DND_TYPE) is not None:
+                if state.dragged_log_path is not None:
+                    state.request_load(state.dragged_log_path)
+                    state.dragged_log_path = None
+            imgui.end_drag_drop_target()
+
     def render(self, state: AppState) -> None:
+        self._render_contents(state)
+        # Cover the whole Navigation window, including empty space below runs.
+        self._accept_log_drop(state)
+
+    def _render_contents(self, state: AppState) -> None:
         self._poll_open_dialog(state)
 
         if imgui.button("Open file(s)..."):

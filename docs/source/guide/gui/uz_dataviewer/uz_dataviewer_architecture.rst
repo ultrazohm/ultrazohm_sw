@@ -276,15 +276,15 @@ Small resident signals (up to 4,096 samples) may use a synchronous fast path.
 Completed view buffers are reused, including spy views.
 Removed consumers release their results and idle workers release source references.
 
-The shared timestamp/summary RAM cache is byte-bounded (128 MiB by default).
+The shared timestamp/summary RAM cache is byte-bounded (1,024 MiB by default).
 Display buffers are bounded by trace/plot budgets.
 These are not total-process memory limits: decoded batches, summary-construction scratch, full FFTs and explicit array-based plugins/exports need additional memory.
 Persistent caches have no automatic disk-size limit and can be removed while the viewer is closed.
 The cache directory defaults to ``~/.cache/uz_dataviewer`` and is overridden by ``UZ_DATAVIEWER_CACHE``.
 Writes are atomic; invalid cache containers are rebuilt.
 
-``loading_mode(memory|lazy|auto)`` affects subsequent opens.
-Auto mode estimates uncompressed numeric size against the remaining resident-data budget, counting queued eager imports.
+``loading_mode(memory|lazy)`` affects subsequent opens.
+The user explicitly selects resident or lazy loading; legacy Auto sessions migrate to lazy loading.
 Lazy CSV input is converted to a versioned Parquet cache.
 Sessions and scripts preserve per-file storage modes and the current settings.
 

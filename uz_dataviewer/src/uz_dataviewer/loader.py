@@ -48,9 +48,12 @@ class ParsedRun:
     time: np.ndarray
     signals: dict[str, np.ndarray]
     units: dict[str, str]
+    backend: str = "pyarrow"
 
     def register(self, registry: DataRegistry) -> Run:
-        return registry.add_run(self.label, self.path, self.time, self.signals, self.units)
+        run = registry.add_run(self.label, self.path, self.time, self.signals, self.units)
+        run.backend = self.backend
+        return run
 
 _CHANNEL_PREFIX = re.compile(r"^CH\d+\s*=\s*\d+\s*\)\s*(.*)$")
 # Units commonly appended to JavaScope channel names.
@@ -330,7 +333,7 @@ def parse_parquet(path: str) -> ParsedRun:
     return _parse_parquet_streaming(pf, path, n_rows)
 
 
-def convert_csv_to_parquet(src: str, dst: str | None = None) -> str:
+def convert_csv_to_parquet(src: str, dst: str | None = None, *, backend="pyarrow") -> str:
     """Stream-convert a CSV log to Parquet with bounded memory.
 
     Reads ``src`` in row-group batches (never the whole file at once), casts
@@ -339,6 +342,10 @@ def convert_csv_to_parquet(src: str, dst: str | None = None) -> str:
     the resulting Parquet round-trips through the same name parsing on load.
     Returns the output path (``src`` with a ``.parquet`` extension by default).
     """
+    validate_backend(backend)
+    if backend == "polars":
+        from .polars_io import convert_csv_to_parquet as convert
+        return convert(src, dst)
     if not src.lower().endswith(".csv"):
         raise ValueError(f"convert expects a .csv file, got {src!r}")
     if dst is None:
@@ -388,11 +395,20 @@ def _release_arrow_pool() -> None:
     pa.default_memory_pool().release_unused()
 
 
-def parse_file(path: str) -> ParsedRun:
+def parse_file(path: str, *, backend="pyarrow") -> ParsedRun:
     """Parse ``path`` into a :class:`ParsedRun` without touching any registry.
 
     Safe to call off the main thread; the caller registers the result later.
     """
+    validate_backend(backend)
+    if backend == "polars":
+        from . import polars_io
+        ext = os.path.splitext(path)[1].lower()
+        if ext == ".csv":
+            return polars_io.parse_csv(path)
+        if ext == ".parquet":
+            return polars_io.parse_parquet(path)
+        raise ValueError(f'Unsupported file type "{ext}". Expected .csv or .parquet.')
     ext = os.path.splitext(path)[1].lower()
     if ext == ".csv":
         parsed = parse_csv(path)
@@ -413,45 +429,55 @@ def load_file(path: str, registry: DataRegistry) -> Run:
 class OpenedSource:
     path: str
     source: object
+    backend: str = "pyarrow"
 
     def register(self, registry):
-        return registry.add_source(os.path.basename(self.path), self.path, self.source)
+        run = registry.add_source(os.path.basename(self.path), self.path, self.source)
+        run.backend = self.backend
+        return run
 
 
-def open_file(path, mode="memory", cache=None, cache_dir=None, memory_budget=512 * 1024**2):
+def validate_backend(backend):
+    if backend not in ("pyarrow", "polars"):
+        raise ValueError("backend must be pyarrow or polars")
+    from . import webbridge
+    if webbridge.IS_WEB and backend == "polars":
+        raise ValueError("Polars is available only in the desktop viewer; use pyarrow in the browser")
+
+
+def open_file(path, mode="memory", cache=None, cache_dir=None, *, backend="pyarrow"):
     """Open using a selected storage policy. Existing parse_file stays eager."""
-    if mode not in ("memory", "lazy", "auto"):
-        raise ValueError("loading mode must be memory, lazy, or auto")
+    validate_backend(backend)
+    if mode not in ("memory", "lazy"):
+        raise ValueError("loading mode must be memory or lazy")
     if mode == "memory":
-        return parse_file(path)
-    from .sources import ParquetSource
+        return parse_file(path, backend=backend)
+    if backend == "polars":
+        from .polars_source import PolarsParquetSource as SourceClass
+    else:
+        from .sources import ParquetSource as SourceClass
     original = path
     if path.lower().endswith(".csv"):
-        columns = _read_header(path, _sniff_delimiter(path))
-        if mode == "auto" and _estimate_csv_rows_and_bytes(path, columns)[1] <= memory_budget:
-            return parse_file(path)
         from pathlib import Path
         import hashlib
         import tempfile
         st = os.stat(path)
         identity = hashlib.sha256(f"{os.path.abspath(path)}:{st.st_size}:{st.st_mtime_ns}:{st.st_ctime_ns}".encode()).hexdigest()
         root = Path(cache_dir or os.environ.get("UZ_DATAVIEWER_CACHE", Path.home() / ".cache" / "uz_dataviewer"))
+        if backend == "polars":
+            root = root / "polars"
         root.mkdir(parents=True, exist_ok=True)
         destination = root / (identity + ".parquet")
         if not destination.exists():
             fd, temp = tempfile.mkstemp(dir=root, suffix=".parquet")
             os.close(fd)
             try:
-                convert_csv_to_parquet(path, temp)
+                convert_csv_to_parquet(path, temp, backend=backend)
                 os.replace(temp, destination)
             finally:
                 if os.path.exists(temp):
                     os.unlink(temp)
         path = str(destination)
     elif not path.lower().endswith(".parquet"):
-        return parse_file(path)
-    with pq.ParquetFile(path) as pf:
-        estimate = pf.metadata.num_rows * (8 + 4 * (len(pf.schema_arrow.names) - 1))
-    if mode == "auto" and estimate <= memory_budget:
-        return parse_file(original)
-    return OpenedSource(original, ParquetSource(path, cache, cache_dir))
+        return parse_file(path, backend=backend)
+    return OpenedSource(original, SourceClass(path, cache, cache_dir), backend=backend)

@@ -19,7 +19,7 @@ from .panels.log_browser import LogBrowserPanel
 from .panels.nodes import NodesPanel
 from .panels.plots import PlotsPanel
 from .session import ensure_extension
-from .state import AppState
+from .state import AppState, default_data_settings
 
 try:  # portable_file_dialogs is unavailable in the browser build
     from imgui_bundle import portable_file_dialogs as pfd
@@ -33,9 +33,14 @@ LOG_DOCK = "LogBrowserSpace"
 
 
 class DataViewerApp:
-    def __init__(self, initial_files: list[str] | None = None, loading_mode: str = "memory") -> None:
+    def __init__(self, initial_files: list[str] | None = None, loading_mode: str | None = None, backend: str | None = None) -> None:
         self.state = AppState()
-        self.state.loading_mode = loading_mode
+        if loading_mode is not None:
+            self.state.loading_mode = loading_mode
+        from .loader import validate_backend
+        if backend is not None:
+            self.state.backend = backend
+        validate_backend(self.state.backend)
         self.navigation = NavigationPanel()
         self.log_browser = LogBrowserPanel()
         self.plots = PlotsPanel()
@@ -284,25 +289,30 @@ class DataViewerApp:
 
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
+    default_backend, default_mode = default_data_settings()
     if argv and argv[0] == "convert":
         # Headless CSV->Parquet conversion: `uz-dataviewer convert big.csv ...`.
         from .loader import convert_csv_to_parquet
 
-        files = argv[1:]
-        if not files:
-            print("usage: uz-dataviewer convert <file.csv> [more.csv ...]", file=sys.stderr)
-            return 2
+        import argparse
+        converter = argparse.ArgumentParser(prog="uz-dataviewer convert")
+        converter.add_argument("--backend", choices=("pyarrow", "polars"), default=default_backend)
+        converter.add_argument("files", nargs="+")
+        options = converter.parse_args(argv[1:])
+        files = options.files
         for src in files:
-            out = convert_csv_to_parquet(src)
+            out = convert_csv_to_parquet(src, backend=options.backend)
             print(f"converted {src} -> {out}")
         return 0
     import argparse
     parser = argparse.ArgumentParser(description="UltraZohm Data Viewer")
-    parser.add_argument("--loading-mode", choices=("memory", "lazy", "auto"), default="memory",
-                        help="storage policy for opening recordings (default: memory)")
+    parser.add_argument("--loading-mode", choices=("memory", "lazy"), default=default_mode,
+                        help=f"storage policy for opening recordings (default: {default_mode})")
+    parser.add_argument("--backend", choices=("pyarrow", "polars"), default=default_backend,
+                        help=f"IO backend for file loading (default: {default_backend})")
     parser.add_argument("files", nargs="*", help="CSV, Parquet, or session script files")
     args = parser.parse_args(argv)
-    app = DataViewerApp(initial_files=args.files, loading_mode=args.loading_mode)
+    app = DataViewerApp(initial_files=args.files, loading_mode=args.loading_mode, backend=args.backend)
     app.run()
     return 0
 

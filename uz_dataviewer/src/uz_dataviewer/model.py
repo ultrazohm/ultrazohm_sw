@@ -107,6 +107,9 @@ class Run:
     """Globally-unique stamp bumped whenever :attr:`time` is reassigned (normalisation,
     derived-run refresh), so decimation caches that read ``time`` invalidate correctly."""
 
+    backend: str = "pyarrow"
+    """IO backend selected when this recording was opened."""
+
     source: object = field(default=None, repr=False, compare=False)
     _source_version: object = field(default=None, repr=False, compare=False)
 

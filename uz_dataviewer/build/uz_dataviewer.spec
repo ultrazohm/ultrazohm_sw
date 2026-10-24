@@ -21,7 +21,7 @@ if SRC not in sys.path:
     sys.path.insert(0, SRC)
 
 datas, binaries, hiddenimports = [], [], []
-for pkg in ("imgui_bundle", "pyarrow"):
+for pkg in ("imgui_bundle", "pyarrow", "polars", "_polars_runtime_32"):
     d, b, h = collect_all(pkg)
     datas += d
     binaries += b

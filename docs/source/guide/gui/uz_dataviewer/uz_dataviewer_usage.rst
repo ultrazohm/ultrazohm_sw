@@ -39,6 +39,37 @@ Loading data
 - **Per-log time normalization:** right-click a run ▸ tick **Normalize start time** and enter a start (default ``0``), then **Apply**. This shifts that log's time axis without touching the samples; untick to restore. (Also ``load("Log.csv", 0)``.)
 - **Large logs:** channels load compactly and large Parquet files stream in, so a multi-million-sample log opens at roughly its in-memory size. A **very large CSV is refused** (parsing it whole would risk running out of memory) with a message pointing you to convert it once: ``convert("Log.csv")`` in the console, or ``uz-dataviewer convert Log.csv`` from a shell — both write a ``.parquet`` beside the source that loads leanly. (Native; the browser build is bounded by its ~4 GB limit — see :doc:`uz_dataviewer_native_vs_web`.)
 
+Backend and loading mode
+------------------------
+
+The **Backend** selector in Navigation chooses **PyArrow** or **Polars** for subsequently opened recordings.
+The independent **Loading** selector chooses **In memory** or **Lazy**.
+Changing either setting leaves already loaded recordings unchanged.
+The shared timestamp and summary cache defaults to **1,024 MiB** and remains configurable under **Memory settings**.
+This is a retained-cache budget, not a limit on total application RAM.
+Auto loading and its separate memory-budget setting have been removed.
+Legacy sessions and scripts using Auto are opened lazily; obsolete memory-budget settings are ignored.
+The desktop application defaults to **Polars + Lazy**.
+The online version defaults to **PyArrow + In memory** and supports PyArrow only.
+The Log Browser's **Open lazy** and **Open in-memory** actions use the selected backend.
+A loaded run's context menu shows its backend.
+CSV conversion and CSV exports use the currently selected backend.
+Sessions and exported session scripts retain the backend and storage mode for each file.
+Opening a Polars JSON session in the browser falls back to PyArrow with a console warning.
+
+.. code-block:: bash
+
+   ./uz_dataviewer/start.sh --backend polars --loading-mode lazy
+   ./uz_dataviewer/start.sh --backend pyarrow --loading-mode memory
+   ./uz_dataviewer/start.sh convert --backend polars path/to/log.csv
+
+The console equivalent is ``backend(polars)`` followed by ``loading_mode(lazy)`` and ``load("path/to/log.parquet")``.
+The headless library accepts ``uz.read(path, backend="polars")``; its dataframe conversion returns a Polars DataFrame when that backend is selected.
+The default library backend preserves the existing pandas DataFrame interface.
+Polars uses the native streaming reader and writer from the prototype; CSV conversion can use more RAM than PyArrow.
+The normal application cache remains under ``~/.cache/uz_dataviewer`` or ``UZ_DATAVIEWER_CACHE``.
+Polars stores its disk caches in a separate ``polars/`` subdirectory, and the engines have distinct in-memory cache identities.
+
 Local log browser
 -----------------
 

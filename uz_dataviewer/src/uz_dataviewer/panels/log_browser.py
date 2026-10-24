@@ -135,6 +135,7 @@ class LogBrowserPanel:
             imgui.open_popup("open_log")
         if imgui.begin_popup("open_log"):
             imgui.text_unformatted(Path(self._open_path).name)
+            imgui.text_disabled(f"Backend: {state.backend}")
             imgui.separator()
             if imgui.menu_item("Open lazy", "", False)[0]:
                 state.request_load(self._open_path, loading_mode="lazy")

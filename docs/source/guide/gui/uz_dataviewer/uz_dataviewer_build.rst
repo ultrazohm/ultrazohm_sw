@@ -12,7 +12,8 @@ Usage of the :ref:`vscode_remote_container` is assumed.
 Native single-file executables (PyInstaller)
 ============================================
 
-The build collects ``imgui_bundle`` and ``pyarrow`` (which carry native libraries) into one self-contained binary.
+The build collects ``imgui_bundle``, ``pyarrow``, and the Polars Rust runtime into one self-contained binary.
+The frozen smoke test exercises both backends in memory and lazy modes.
 Install ``uv`` before invoking either build script.
 Both scripts install Python 3.12 and the dependencies from ``uv.lock`` into ``.venv-build``, then invoke PyInstaller.
 An existing Python 3.12 installation is reused when available.

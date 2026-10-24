@@ -145,14 +145,17 @@ class HistogramConfig(AnalysisConfig):
     bins: int = 50
 
 
+def default_data_settings():
+    """The browser cannot use the native Polars runtime."""
+    return ("pyarrow", "memory") if webbridge.IS_WEB else ("polars", "lazy")
+
+
 class AppState:
     def __init__(self) -> None:
         self.registry = DataRegistry()
-        self.loading_mode = "memory"
-        self.memory_budget_mb = 512
+        self.backend, self.loading_mode = default_data_settings()
         self.cache_dir = None
         self._load_lock = threading.RLock()
-        self._reserved_memory = 0
         self.display = Requests(synchronous=webbridge.IS_WEB)
         self.analysis_jobs = Requests(synchronous=webbridge.IS_WEB)
         self.console = Console()
@@ -213,8 +216,11 @@ class AppState:
     def request_load(self, path: str, loading_mode: str | None = None) -> None:
         """Open a file, optionally overriding the mode for this request only."""
         mode = self.loading_mode if loading_mode is None else loading_mode
-        if mode not in {"memory", "lazy", "auto"}:
+        if mode not in {"memory", "lazy"}:
             raise ValueError(f"Unknown loading mode: {mode}")
+        backend = self.backend
+        from .loader import validate_backend
+        validate_backend(backend)
         path = os.path.abspath(path)
         # Echo the equivalent command so GUI-triggered (async) loads appear in
         # the console transcript just like a typed/scripted `load(...)`.
@@ -228,7 +234,7 @@ class AppState:
                 self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
             return
         # Parse on the worker; registration happens on the main thread (poll below).
-        future = self._executor.submit(self._open_background, path, mode)
+        future = self._executor.submit(self._open_background, path, mode, backend)
         self._pending.append((future, path))
 
     def load_sync(self, path: str) -> Run | None:
@@ -242,7 +248,7 @@ class AppState:
         path = os.path.abspath(path)
         self.console.info(f"Loading {os.path.basename(path)} ...")
         try:
-            run = open_file(path, self.loading_mode, self.registry.cache, self.cache_dir, self._available_memory_budget()).register(self.registry)
+            run = open_file(path, self.loading_mode, self.registry.cache, self.cache_dir, backend=self.backend).register(self.registry)
         except Exception as exc:  # noqa: BLE001 - surfaced to the console
             self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
             return None
@@ -336,8 +342,6 @@ class AppState:
                 parsed = future.result()
                 with self._load_lock:
                     run = parsed.register(self.registry)
-                    if isinstance(parsed, ParsedRun):
-                        self._reserved_memory -= parsed.time.nbytes + sum(y.nbytes for y in parsed.signals.values())
             except Exception as exc:  # noqa: BLE001 - surfaced to the console
                 self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
                 continue
@@ -380,21 +384,8 @@ class AppState:
             return ref[1]
         return f"{ref[1]} @ {run.label}"
 
-    def _open_background(self, path, mode):
-        # Serial loader plus reservation includes completed-but-unregistered runs.
-        with self._load_lock:
-            budget = self._available_memory_budget()
-        parsed = open_file(path, mode, self.registry.cache, self.cache_dir, budget)
-        if isinstance(parsed, ParsedRun):
-            with self._load_lock:
-                self._reserved_memory += parsed.time.nbytes + sum(y.nbytes for y in parsed.signals.values())
-        return parsed
-
-    def _available_memory_budget(self):
-        from .sources import SourceColumn
-        resident = sum(r.n_rows * (8 + 4 * len(r.signals)) for r in self.registry.runs
-                       if not isinstance(r.time, SourceColumn))
-        return max(0, self.memory_budget_mb * 1024**2 - resident - self._reserved_memory)
+    def _open_background(self, path, mode, backend):
+        return open_file(path, mode, self.registry.cache, self.cache_dir, backend=backend)
 
     def shutdown(self) -> None:
         self.display.close()

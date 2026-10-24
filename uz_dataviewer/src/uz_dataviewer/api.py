@@ -28,7 +28,7 @@ import numpy as np
 
 from . import nodes, transforms
 from .analysis import FftResult, compute_fft
-from .loader import parse_file
+from .loader import parse_file, validate_backend
 from .plugins import load_plugins
 
 __all__ = [
@@ -53,9 +53,10 @@ class Dataset:
     whole thing into a DataFrame with :meth:`to_dataframe`.
     """
 
-    __slots__ = ("label", "path", "time", "signals", "units")
+    __slots__ = ("label", "path", "time", "signals", "units", "backend")
 
     def __init__(self, parsed) -> None:
+        self.backend: str = parsed.backend
         self.label: str = parsed.label
         self.path: str = parsed.path
         self.time: np.ndarray = parsed.time
@@ -83,15 +84,18 @@ class Dataset:
         return f"Dataset(label={self.label!r}, n_rows={self.time.shape[0]}, signals={self.names})"
 
     def to_dataframe(self):
-        """Return a ``pandas.DataFrame`` of ``time`` + one column per signal."""
+        """Return a backend-native DataFrame of time plus one column per signal."""
+        if self.backend == "polars":
+            import polars as pl
+            return pl.DataFrame({"time": self.time, **self.signals})
         import pandas as pd
 
         return pd.DataFrame({"time": self.time, **self.signals})
 
 
-def read(path) -> Dataset:
+def read(path, *, backend="pyarrow") -> Dataset:
     """Load a ``.csv``/``.parquet`` log and return its data as a :class:`Dataset`."""
-    return Dataset(parse_file(str(path)))
+    return Dataset(parse_file(str(path), backend=backend))
 
 
 def fft(
@@ -116,17 +120,24 @@ def fft(
     return compute_fft(t, yy, lo, hi, remove_dc=remove_dc, window=window)
 
 
-def fft_frame(time, y, **kwargs):
-    """Like :func:`fft` but returns a ``pandas.DataFrame`` ``[frequency, amplitude]``.
+def fft_frame(time, y, *, backend="pyarrow", **kwargs):
+    """Like :func:`fft` but returns a backend-native frame [frequency, amplitude].
+
+    PyArrow (default) returns pandas; backend="polars" returns a Polars DataFrame.
 
     Raises ``ValueError`` (with the reason) if the transform could not be computed.
     """
-    import pandas as pd
+    validate_backend(backend)
 
     result = fft(time, y, **kwargs)
     if not result.ok:
         raise ValueError(result.info)
-    return pd.DataFrame({"frequency": result.freqs, "amplitude": result.mag})
+    columns = {"frequency": result.freqs, "amplitude": result.mag}
+    if backend == "polars":
+        import polars as pl
+        return pl.DataFrame(columns)
+    import pandas as pd
+    return pd.DataFrame(columns)
 
 
 def kinds() -> tuple[str, ...]:

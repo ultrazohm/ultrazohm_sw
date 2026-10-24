@@ -72,23 +72,22 @@ plots (or the FFT / Histogram windows).
 
 ## Large recordings and responsiveness
 
-Choose **Loading → In memory / Lazy / Auto** in Navigation before opening files,
+The desktop defaults to **Polars + Lazy**; the online version uses **PyArrow + In memory**.
+Choose **Loading → In memory / Lazy** in Navigation before opening files,
 or select the mode at startup:
 
 ```bash
 ./uz_dataviewer/start.sh --loading-mode lazy path/to/log.parquet
-./uz_dataviewer/start.sh --loading-mode auto path/to/log.csv
+./uz_dataviewer/start.sh --loading-mode lazy path/to/log.csv
 ```
 
-- **In memory** (default) retains the existing full NumPy arrays for fast analysis.
-- **Lazy** reads selected Parquet columns and sample ranges. CSV files are first
+- **In memory** retains the existing full NumPy arrays for fast analysis.
+- **Lazy** (desktop default) reads selected Parquet columns and sample ranges. CSV files are first
   converted into reusable Parquet files in the application cache.
-- **Auto** uses estimated uncompressed numeric size and the remaining resident-data
-  budget (512 MiB by default), including queued imports, to choose a mode.
 
 The setting affects subsequent opens. Existing runs retain their storage mode;
 JSON sessions and exported scripts preserve mixed modes. The console equivalents
-are `loading_mode(lazy)`, `memory_budget(512)`, and `cache_budget(128)`.
+are `loading_mode(lazy)` and `cache_budget(1024)`.
 
 Plot preparation, first-use summaries, XY sampling, cursor reads, and GUI FFT /
 histogram computation run outside the desktop rendering thread. During an update,
@@ -105,7 +104,7 @@ file and can take seconds for large recordings. Reopening reuses valid indexes.
 Changed files must be reopened; cached results from their previous version are
 not reused.
 
-The shared timestamp/summary RAM cache defaults to 128 MiB and is configurable
+The shared timestamp/summary RAM cache defaults to 1,024 MiB and is configurable
 under **Memory settings**. Prepared plot arrays are bounded by display budgets.
 Cache limits are **not a hard process-RAM limit**: decoded batches, index-building
 scratch, FFTs, explicit NumPy conversions, exports and Python transformation

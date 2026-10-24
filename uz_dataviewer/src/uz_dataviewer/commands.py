@@ -340,11 +340,11 @@ def register_builtins(reg: CommandRegistry) -> None:
         from .loader import convert_csv_to_parquet
 
         src, dst = a
-        out = convert_csv_to_parquet(src, dst)
+        out = convert_csv_to_parquet(src, dst, backend=state.backend)
         state.console.info(f"converted {src} -> {out}")
 
     reg.add("convert", [Param("src", "str"), Param("dst", "str", optional=True)], convert,
-            "Stream-convert a large CSV to Parquet (loads with a ~1.5x memory peak); "
+            "Stream-convert CSV to Parquet using the selected backend; "
             "dst defaults to src with a .parquet extension.")
 
     def normalize_time(state, a):
@@ -377,19 +377,22 @@ def register_builtins(reg: CommandRegistry) -> None:
 
     reg.add("link_x", [Param("on", "bool")], link_x, "Link/unlink the X axes across subplots.")
 
+    def backend(state, a):
+        from .loader import validate_backend
+        try:
+            validate_backend(a[0])
+        except ValueError as exc:
+            raise CommandError(str(exc)) from exc
+        state.backend = a[0]
+    reg.add("backend", [Param("name", "str")], backend,
+            "IO backend for subsequent opens, exports and CSV conversion: pyarrow or polars (desktop only).")
+
     def loading_mode(state, a):
-        if a[0] not in ("memory", "lazy", "auto"):
-            raise CommandError("Expected memory, lazy, or auto")
+        if a[0] not in ("memory", "lazy"):
+            raise CommandError("Expected memory or lazy")
         state.loading_mode = a[0]
     reg.add("loading_mode", [Param("mode", "str")], loading_mode,
-            "Storage policy for subsequent opens: memory, lazy, auto.")
-
-    def memory_budget(state, a):
-        if a[0] < 1:
-            raise CommandError("Budget must be positive (MiB)")
-        state.memory_budget_mb = a[0]
-    reg.add("memory_budget", [Param("mib", "int")], memory_budget,
-            "Auto mode total resident-data budget in MiB; analyses can use more.")
+            "Storage policy for subsequent opens: memory or lazy.")
 
     def cache_budget(state, a):
         if a[0] < 1:

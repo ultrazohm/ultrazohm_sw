@@ -31,7 +31,7 @@ def check(cancel=None):
 
 class ByteCache:
     """Thread-safe, shared LRU; oversized entries are returned but not retained."""
-    def __init__(self, limit=128 * 1024**2):
+    def __init__(self, limit=1024 * 1024**2):
         self.limit = limit
         self.bytes = 0
         self.entries = OrderedDict()

@@ -20,6 +20,25 @@ from uz_dataviewer.analysis import compute_fft
 from uz_dataviewer.session import to_dict, apply_dict, export_data, export_fft, export_histogram
 
 
+@pytest.fixture(params=["pyarrow", "polars"], autouse=True)
+def source_backend(request, monkeypatch):
+    """Exercise the same source contract and GUI regressions with both engines."""
+    if request.param == "polars":
+        from uz_dataviewer.polars_source import PolarsParquetSource
+        module = sys.modules[__name__]
+        monkeypatch.setattr(module, "ParquetSource", PolarsParquetSource)
+        original_open = open_file
+        monkeypatch.setattr(module, "open_file", lambda *args, **kwargs:
+                            original_open(*args, **kwargs, backend="polars"))
+    original_state = AppState
+    class BackendState(original_state):
+        def __init__(self):
+            super().__init__()
+            self.backend = request.param
+    monkeypatch.setattr(sys.modules[__name__], "AppState", BackendState)
+
+
+
 @pytest.fixture
 def recording(tmp_path):
     t = np.arange(180123, dtype=np.float64) * .001 + 3
@@ -134,16 +153,16 @@ def test_raw_fft_export_and_session_parity(tmp_path):
         state.shutdown()
 
 
-def test_auto_and_csv_cache(tmp_path):
+def test_memory_and_lazy_csv_cache(tmp_path):
     path = tmp_path / 'input.csv'
     path.write_text('time;a\n0;1\n1;2\n2;3\n')
     registry = DataRegistry()
     run = open_file(str(path), 'lazy', cache_dir=tmp_path / 'cache').register(registry)
     assert isinstance(run.time, SourceColumn)
     np.testing.assert_array_equal(run.signals['a'].y[:], [1, 2, 3])
-    run = open_file(str(path), 'auto', memory_budget=10000).register(registry)
+    run = open_file(str(path), 'memory').register(registry)
     assert isinstance(run.time, np.ndarray)
-    run = open_file(str(path), 'auto', cache_dir=tmp_path / 'cache', memory_budget=0).register(registry)
+    run = open_file(str(path), 'lazy', cache_dir=tmp_path / 'cache').register(registry)
     assert isinstance(run.time, SourceColumn)
 
 
@@ -251,22 +270,13 @@ def test_lazy_frame_does_not_read_raw_on_gui_thread(recording, tmp_path, monkeyp
         imgui.destroy_context()
 
 
-def test_auto_counts_queued_unregistered_imports(tmp_path):
-    path = tmp_path / 'medium.parquet'
-    pq.write_table(pa.table({'time': np.arange(60000, dtype=np.float64),
-                             'a': np.ones(60000, dtype=np.float32)}), path)
+def test_auto_loading_is_rejected(tmp_path):
+    with pytest.raises(ValueError, match="memory or lazy"):
+        open_file(str(tmp_path / 'unused.parquet'), 'auto')
     state = AppState()
-    state.cache_dir = tmp_path / 'cache'
-    state.loading_mode, state.memory_budget_mb = 'auto', 1
     try:
-        state.request_load(str(path))
-        state.request_load(str(path))
-        for future, _ in state._pending:
-            future.result(timeout=10)
-        state.poll_pending_loads()
-        assert isinstance(state.registry.runs[0].time, np.ndarray)
-        assert isinstance(state.registry.runs[1].time, SourceColumn)
-        assert state._reserved_memory == 0
+        with pytest.raises(ValueError, match="Unknown loading mode"):
+            state.request_load('unused.parquet', loading_mode='auto')
     finally:
         state.shutdown()
 
@@ -354,7 +364,7 @@ def test_per_file_loading_mode_does_not_change_default(tmp_path):
                             'a': np.ones(10, dtype=np.float32)}), path)
     state = AppState()
     state.cache_dir = tmp_path / 'cache'
-    state.loading_mode = 'auto'
+    state.loading_mode = 'memory'
     try:
         state.request_load(str(path), loading_mode='lazy')
         state.request_load(str(path), loading_mode='memory')
@@ -363,6 +373,6 @@ def test_per_file_loading_mode_does_not_change_default(tmp_path):
         state.poll_pending_loads()
         assert isinstance(state.registry.runs[0].time, SourceColumn)
         assert isinstance(state.registry.runs[1].time, np.ndarray)
-        assert state.loading_mode == 'auto'
+        assert state.loading_mode == 'memory'
     finally:
         state.shutdown()

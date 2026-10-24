@@ -13,7 +13,11 @@ Native single-file executables (PyInstaller)
 ============================================
 
 The build collects ``imgui_bundle`` and ``pyarrow`` (which carry native libraries) into one self-contained binary.
-Both native builds wrap ``pyinstaller build/uz_dataviewer.spec``.
+Install ``uv`` before invoking either build script.
+Both scripts install Python 3.12 and the dependencies from ``uv.lock`` into ``.venv-build``, then invoke PyInstaller.
+An existing Python 3.12 installation is reused when available.
+The initial build requires internet access to download missing dependencies.
+The distributed executable does not require Python or uv on the target machine.
 Cross-compiling is not supported by PyInstaller.
 Build each OS's binary on that OS.
 
@@ -35,6 +39,26 @@ Windows (PowerShell)
 
 
 
+GitHub binary releases
+======================
+
+``.github/workflows/uz_dataviewer.yml`` tests and builds Linux and Windows binaries when viewer files, the workflow, or the command reference change.
+Pull requests run validation without publishing releases.
+Pushes to ``main`` publish a release after both builds succeed.
+Temporarily, pushes to ``feature/uz_dataviewer_revision`` also publish, marked as prereleases for testing.
+Remove that branch exception from the release job after testing.
+Manual workflow runs follow the same branch restrictions.
+Each release uses a unique ``uz-dataviewer-build-<run-id>`` tag and includes two archives and SHA-256 checksums.
+Viewer releases do not replace the repository's latest release designation.
+Build artifacts are retained for 30 days; published release downloads remain available independently.
+The existing documentation Pages workflow is unchanged.
+
+Linux binaries are built on Debian 12 and require x86_64, glibc 2.36 or newer, and desktop graphics libraries on the target system.
+Windows binaries target x86_64 and must be extracted from the ZIP before launching.
+Each build runs a headless smoke test of the frozen executable, checking native imports, Parquet reading, and lazy downsampling.
+This check does not verify window creation or graphics drivers on the user's desktop.
+To repeat it locally after building, run ``python build/smoke_binary.py dist/uz_dataviewer`` (use ``dist/uz_dataviewer.exe`` on Windows).
+
 .. _uz_dataviewer_build_web:
 
 Web / WASM (Pyodide)
@@ -54,9 +78,12 @@ At load time the page:
 
 .. note::
 
-   ``uz_dataviewer`` can not be run by opening ``index.html`` directly from disk (``file://``) because the browser blocks Pyodide's package downloads from a ``file://`` origin. Use any static server, e.g., ``python -m http.server``. ``uz_dataviewer`` requires internet access at runtime.
+   ``uz_dataviewer`` can not be run by opening ``index.html`` directly from disk (``file://``) because the browser blocks Pyodide's package downloads from a ``file://`` origin.
+   Use any static server, e.g., ``python -m http.server``.
+   ``uz_dataviewer`` requires internet access at runtime.
 
 .. note::
 
-   ``uz_dataviewer`` is not fully identical in the web-version to the native version. See :doc:`uz_dataviewer_native_vs_web` for details.
+   ``uz_dataviewer`` is not fully identical in the web-version to the native version.
+   See :doc:`uz_dataviewer_native_vs_web` for details.
 

@@ -13,4 +13,8 @@ import sys
 from uz_dataviewer.app import main
 
 if __name__ == "__main__":
-    sys.exit(main())
+    if len(sys.argv) == 3 and sys.argv[1] == "--self-test":
+        from frozen_self_test import run
+        run(sys.argv[2])
+    else:
+        sys.exit(main())

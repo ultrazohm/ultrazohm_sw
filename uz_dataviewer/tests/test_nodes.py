@@ -176,8 +176,12 @@ def test_failed_parameter_revert_recovers_downstream(app_state):
     state = app_state
     state.add_run_from_arrays('input', 'input', np.arange(8.), {'a': np.ones(8)}, {})
     _run(state, 'node_source(run_1,a)', 'node_add(math)', 'node_link(node_1,node_2)',
-         'node_set(node_2,k,2)', 'node_eval()', 'node_set(node_2,k,bad)', 'node_eval()',
-         'node_set(node_2,k,2)', 'node_add(math)', 'node_link(node_2,node_3)')
+         'node_set(node_2,k,2)', 'node_eval()')
+    # Invalid session/plugin state may still reach evaluation, even though the
+    # command boundary now rejects it before mutation.
+    state.nodes.get(2).params['k'] = 'bad'
+    evaluate(state)
+    _run(state, 'node_set(node_2,k,2)', 'node_add(math)', 'node_link(node_2,node_3)')
     assert is_stale(state, state.nodes, state.nodes.get(2))
     assert evaluate(state) == 2
     assert not state.nodes.get(2).error and not state.nodes.get(3).error

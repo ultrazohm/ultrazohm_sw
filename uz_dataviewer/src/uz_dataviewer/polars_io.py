@@ -4,6 +4,7 @@ import os
 import numpy as np
 import polars as pl
 from .sources import check
+from .csv_policy import NULL_VALUES
 from .loader import (ParsedRun, _split_time_columns, _named_signals,
                      _sniff_delimiter, _read_header, _guard_csv_size, validate_time_axis)
 
@@ -25,7 +26,7 @@ def _scan_csv(path):
     delimiter = _sniff_delimiter(path)
     columns = _read_header(path, delimiter)
     return pl.scan_csv(path, separator=delimiter, schema_overrides=_csv_column_types(columns),
-                       glob=False).select(columns)
+                       glob=False, null_values=NULL_VALUES).select(columns)
 
 
 def _numeric_scan(scan):
@@ -36,10 +37,17 @@ def _numeric_scan(scan):
 
 def parse_csv(path: str, cancel=None) -> ParsedRun:
     _guard_csv_size(path, _read_header(path, _sniff_delimiter(path)))
-    # Streaming execution still materializes the final frame for in-memory mode.
-    table = _scan_csv(path).collect(engine="streaming")
-    check(cancel)
-    return _table_to_parsed(table, path)
+    from .loader import collect_csv_batches
+    scan = _scan_csv(path)
+    columns = scan.collect_schema().names()
+    time_col, data_columns = _split_time_columns(columns)
+    reader = scan.collect_batches(chunk_size=65536, maintain_order=True, engine="streaming")
+    try:
+        batches = ((batch[time_col].to_numpy(), {c: batch[c].to_numpy() for c in data_columns})
+                   for batch in reader)
+        return collect_csv_batches(path, columns, batches, cancel, backend="polars")
+    finally:
+        del reader
 
 
 def parse_parquet(path: str, cancel=None) -> ParsedRun:

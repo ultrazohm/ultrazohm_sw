@@ -26,9 +26,10 @@ class CsvSource(IndexedFileSource):
     def _batches(self, channels, cancel):
         import pyarrow.csv as csv
         from .loader import _csv_column_types
+        from .csv_policy import NULL_VALUES
         columns = [self.time_col] + [self.columns[c] for c in channels]
         with csv.open_csv(str(self.path), parse_options=csv.ParseOptions(delimiter=self.delimiter),
-                          convert_options=csv.ConvertOptions(include_columns=columns,
+                          convert_options=csv.ConvertOptions(include_columns=columns, null_values=NULL_VALUES,
                               column_types=_csv_column_types(columns))) as reader:
             for batch in reader:
                 check(cancel)

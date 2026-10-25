@@ -217,6 +217,17 @@ class DataRegistry:
         self._runs[run_id] = run
         return run
 
+    def snapshot(self):
+        """Copy model containers for a worker; sample arrays/sources are shared."""
+        import copy
+        snapshot = copy.copy(self)
+        snapshot._runs = {}
+        for run in self.runs:
+            clone = copy.copy(run)
+            clone.signals = dict(run.signals)
+            snapshot._runs[run.id] = clone
+        return snapshot
+
     def remove_run(self, run_id: int) -> None:
         self._runs.pop(run_id, None)
 

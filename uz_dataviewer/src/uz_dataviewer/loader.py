@@ -13,8 +13,8 @@ Large logs (see ``uz_dataviewer_architecture.rst``) are handled leanly on native
 
 * channels parse **directly to float32** (time stays float64), avoiding a
   float64 intermediate copy at load;
-* a **size guard** refuses a CSV that would not fit comfortably in RAM during the
-  bulk parse, and points the user at :func:`convert_csv_to_parquet`;
+* a **size guard** refuses a CSV that would not fit comfortably in RAM during
+  materialization, and points the user at :func:`convert_csv_to_parquet`;
 * large Parquet files are **stream-loaded** into preallocated arrays (peak ~= the
   resident dataset + one row-group), instead of materialising the whole table.
 """
@@ -34,6 +34,7 @@ import pyarrow.parquet as pq
 
 from .model import DataRegistry, Run
 from .sources import check
+from .csv_policy import NULL_VALUES
 
 
 @dataclass
@@ -62,23 +63,12 @@ _CHANNEL_PREFIX = re.compile(r"^CH\d+\s*=\s*\d+\s*\)\s*(.*)$")
 _KNOWN_UNITS = ("us", "ms", "rpm", "deg", "rad", "Hz", "V", "A", "W", "Nm", "C", "K")
 
 # -- large-log tuning (see uz_dataviewer_architecture.rst) ----------------------------
-# Large CSVs stream-parse (see CSV_STREAM_MIN_BYTES / _parse_csv_streaming) at a peak of
-# ~1.5x the resident numeric size, so the load peak is no longer the constraint -- but the
-# *full record still has to fit in RAM*. We refuse a CSV whose estimated resident footprint
-# exceeds this budget and route the user to Parquet (also ~1.5x, and faster to reload) or to
-# loading fewer channels. Resident bytes ~= rows * (8 + 4*n_channels).
-#
-# NOTE: this is a resident-RAM ceiling, not a fit guarantee for a specific machine -- it is a
-# deliberately high blanket limit that only blocks extreme files. A box with less RAM than the
-# resident size can still OOM below it. Lazy loading avoids retaining the full
-# recording; this guard applies only to the in-memory CSV path.
+# CSV materialization checks both the estimated footprint and actual numeric
+# buffer capacity. Parser batches and temporary growth copies are additional
+# memory; use lazy loading when the recording cannot comfortably fit in RAM.
 MAX_CSV_NUMERIC_BYTES = 10_000_000_000  # ~10 GB resident (~110M rows at 20 channels)
 # Parquet files below this many rows use the simple bulk reader; larger ones stream.
 PARQUET_STREAM_MIN_ROWS = 2_000_000
-# CSVs at/above this *file* size stream-parse (peak ~1.5x resident) instead of the bulk
-# Arrow read (peak ~4x). Small logs keep the fast multithreaded bulk path. Mirrors the
-# web build's 200 MB streaming threshold (build/gen_web.py FULL_LOAD_LIMIT).
-CSV_STREAM_MIN_BYTES = 256 * 1024 * 1024
 # Rough average characters per numeric text field, used *only* to turn a CSV file
 # size into a row estimate for the size guard (and its message). Not exact.
 _CSV_AVG_FIELD_CHARS = 8
@@ -241,9 +231,8 @@ def _guard_csv_size(path: str, columns: list[str]) -> None:
         gb = resident / (1024**3)
         raise ValueError(
             f"CSV too large (~{est_rows / 1e6:.0f}M rows, ~{gb:.1f} GB resident in RAM). "
-            "Large CSVs stream in (peak ~1.5x resident), but the full record still has to "
-            "fit in memory. Convert it to Parquet (streams + reloads faster) or load fewer "
-            "channels:\n"
+            "CSV materialization retains the full record, which must "
+            "fit in memory. Use lazy loading or convert to Parquet:\n"
             f'    convert("{path}")'
         )
 
@@ -255,73 +244,63 @@ def _grow(arr: np.ndarray, new_cap: int, used: int) -> np.ndarray:
     return out
 
 
-def _parse_csv_streaming(path: str, delimiter: str, columns: list[str], cancel=None) -> ParsedRun:
-    """Stream a large CSV into preallocated arrays (peak ~= resident + a batch).
+def collect_csv_batches(path, columns, batches, cancel=None, *, backend="pyarrow"):
+    """Materialize numeric batches with a checked, shared allocation policy.
 
-    Mirrors :func:`_parse_parquet_streaming`, but a CSV's row count is unknown up front,
-    so we seed the arrays from the size estimate and grow them geometrically -- the whole
-    multi-GB text never sits in memory at once, only the compact numeric result. The Arrow
-    streaming reader projects to the named columns (``include_columns``), which also drops
-    JavaScope's empty trailing column.
+    The limit bounds retained numeric capacity, not parser scratch or transient
+    copies during growth. Check actual rows before allocating each larger buffer.
     """
     time_col, data_columns = _split_time_columns(columns)
-    ordered = [time_col, *data_columns]
-    est_rows, _ = _estimate_csv_rows_and_bytes(path, columns)
-    cap = max(1024, int(est_rows * 1.1))
+    row_bytes = 8 + 4 * len(data_columns)
+    max_rows = MAX_CSV_NUMERIC_BYTES // row_bytes
+    if max_rows < 1:
+        raise ValueError("CSV too large for numeric memory budget; use lazy loading")
+    estimated, _ = _estimate_csv_rows_and_bytes(path, columns)
+    cap = min(max_rows, max(1024, int(estimated * 1.1)))
     time = np.empty(cap, dtype=np.float64)
     arrays = {raw: np.empty(cap, dtype=np.float32) for raw in data_columns}
-
-    reader = pa_csv.open_csv(
-        path,
-        parse_options=pa_csv.ParseOptions(delimiter=delimiter),
-        read_options=pa_csv.ReadOptions(use_threads=True),
-        convert_options=pa_csv.ConvertOptions(
-            strings_can_be_null=True,
-            column_types=_csv_column_types(columns),
-            include_columns=ordered,
-        ),
-    )
     off = 0
-    try:
-        for batch in reader:
-            check(cancel)
-            m = batch.num_rows
-            if off + m > cap:
-                cap = max(off + m, int(cap * 1.5))
-                time = _grow(time, cap, off)
-                arrays = {k: _grow(v, cap, off) for k, v in arrays.items()}
-            for j, name in enumerate(ordered):
-                values = batch.column(j).to_numpy(zero_copy_only=False)
-                target = time if name == time_col else arrays[name]
-                target[off : off + m] = values
-            off += m
-    finally:
-        reader.close()
-
+    for t, values in batches:
+        check(cancel)
+        needed = off + len(t)
+        if needed > max_rows:
+            raise ValueError("CSV too large for numeric memory budget; use lazy loading")
+        if needed > cap:
+            cap = min(max_rows, max(needed, int(cap * 1.5)))
+            time = _grow(time, cap, off)
+            arrays = {k: _grow(v, cap, off) for k, v in arrays.items()}
+        time[off:needed] = t
+        for name in data_columns:
+            arrays[name][off:needed] = values[name]
+        off = needed
     time = time[:off]
-    arrays = {k: v[:off] for k, v in arrays.items()}
     validate_time_axis(time, path)
-    signals, units = _named_signals(data_columns, lambda raw: arrays[raw])
-    return ParsedRun(os.path.basename(path), path, time, signals, units)
+    signals, units = _named_signals(data_columns, lambda raw: arrays[raw][:off])
+    return ParsedRun(os.path.basename(path), path, time, signals, units, backend=backend)
 
 
 def parse_csv(path: str, cancel=None) -> ParsedRun:
     delimiter = _sniff_delimiter(path)
     columns = _read_header(path, delimiter)
     _guard_csv_size(path, columns)
-    # Large CSVs stream (peak ~1.5x resident); small ones keep the fast bulk read.
-    if os.path.getsize(path) >= CSV_STREAM_MIN_BYTES:
-        return _parse_csv_streaming(path, delimiter, columns, cancel)
-    table = pa_csv.read_csv(
+    time_col, data_columns = _split_time_columns(columns)
+    ordered = [time_col, *data_columns]
+    with pa_csv.open_csv(
         path,
         parse_options=pa_csv.ParseOptions(delimiter=delimiter),
         read_options=pa_csv.ReadOptions(use_threads=True),
         convert_options=pa_csv.ConvertOptions(
-            strings_can_be_null=True,
-            column_types=_csv_column_types(columns),
+            strings_can_be_null=True, null_values=NULL_VALUES,
+            column_types=_csv_column_types(columns), include_columns=ordered,
         ),
-    )
-    return _table_to_parsed(table, path)
+    ) as reader:
+        def batches():
+            for batch in reader:
+                check(cancel)
+                yield batch.column(0).to_numpy(zero_copy_only=False), {
+                    c: batch.column(i + 1).to_numpy(zero_copy_only=False)
+                    for i, c in enumerate(data_columns)}
+        return collect_csv_batches(path, columns, batches(), cancel)
 
 
 def _parse_parquet_streaming(pf: pq.ParquetFile, path: str, n_rows: int, cancel=None) -> ParsedRun:
@@ -421,6 +400,7 @@ def _write_csv_to_parquet(src, dst, *, backend="pyarrow"):
         read_options=pa_csv.ReadOptions(use_threads=True),
         convert_options=pa_csv.ConvertOptions(
             strings_can_be_null=True,
+            null_values=NULL_VALUES,
             column_types=_csv_column_types(columns),
         ),
     )

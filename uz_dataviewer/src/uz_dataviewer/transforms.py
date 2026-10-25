@@ -62,7 +62,7 @@ def math_node(inputs: list[tuple[np.ndarray, np.ndarray]], params: dict
             return time, np.gradient(y, time), "derivative d/dt"
         if op == "reciprocal":
             with np.errstate(divide="ignore", invalid="ignore"):
-                out = np.where(y != 0.0, 1.0 / y, 0.0)
+                out = np.where(y != 0.0, 1.0 / y, np.nan)
             return time, out, "1 / A"
         # integral: cumulative trapezoid, starting at 0
         _require_increasing_time(time, "integral")
@@ -89,7 +89,7 @@ def math_node(inputs: list[tuple[np.ndarray, np.ndarray]], params: dict
     if op == "mul":
         return time, y1 * y2, "A * B"
     with np.errstate(divide="ignore", invalid="ignore"):
-        out = np.where(y2 != 0.0, y1 / y2, 0.0)
+        out = np.where(y2 != 0.0, y1 / y2, np.nan)
     return time, out, "A / B"
 
 

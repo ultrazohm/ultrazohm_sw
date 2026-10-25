@@ -171,6 +171,17 @@ The FFT window reports each failed channel even when other channels succeed.
 Plugin imports roll back their registrations on failure. Existing transform kinds
 cannot be replaced at runtime; restart the viewer after editing a loaded plugin.
 
+Division and reciprocal transforms preserve undefined samples as NaN gaps; FFTs
+reject those inputs rather than treating undefined values as zero. Numeric node
+parameters must be finite, and integer parameters must fit a 32-bit integer.
+Built-in and plugin parameter editors use the same declared types as validation.
+Removing a recording immediately invalidates its analysis results. Explicit
+FFT/histogram X limits survive recomputation; Reset view clears those limits.
+Native CSV materialization uses checked batch allocation for both backends,
+including actual row counts and retained buffer capacity. Parser scratch and
+transient growth copies remain outside the numeric-data budget. Native and
+browser CSV loaders share missing-value spellings (including NA, NULL and NaN).
+
 ## Documentation
 
 | Doc | For |

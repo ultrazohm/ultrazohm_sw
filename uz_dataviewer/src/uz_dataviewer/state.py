@@ -163,6 +163,8 @@ class AnalysisConfig:
     x_max: float = 0.0
     compute_requested: bool = False
     """Set by drag-drop / a command so the window recomputes next frame."""
+    x_lim: tuple[float, float] | None = None
+    """Explicit view limits retained across asynchronous recomputation."""
     pending_x_lim: tuple[float, float] | None = None
     """One-shot X-axis view limits to apply next render (from ``*_xlim``)."""
 
@@ -457,8 +459,12 @@ class AppState:
                     cell.remove(ref)
             if cell.xy_source is not None and cell.xy_source[0] == run_id:
                 cell.xy_source = None
-        self.fft.sources = [s for s in self.fft.sources if s[0] != run_id]
-        self.histogram.sources = [s for s in self.histogram.sources if s[0] != run_id]
+        for slot, cfg in (("fft", self.fft), ("hist", self.histogram)):
+            remaining = [ref for ref in cfg.sources if ref[0] != run_id]
+            if remaining != cfg.sources:
+                cfg.sources = remaining
+                self.analysis_jobs.forget(slot)
+                cfg.compute_requested = bool(remaining)
         self.registry.remove_run(run_id)
         self.console.info(f"Removed run {run.label}")
 

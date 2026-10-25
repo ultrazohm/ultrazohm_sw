@@ -36,33 +36,33 @@ fft_remove,FFT window,Remove a signal from the FFT window.,"run:run, signal:str"
 fft_follow,FFT window,Set the FFT time window source (custom / full / plot_N).,target:fwindow,commands.py:659
 fft_range,FFT window,Set the FFT custom time window.,"min:float, max:float",commands.py:671
 fft_xlim,FFT window,Set the FFT plot's X-axis view limits.,"min:float, max:float",commands.py:678
-fft,FFT window,Recompute and focus the FFT window.,,commands.py:687
-fft_remove_dc,FFT window,Toggle FFT DC removal.,on:bool,commands.py:693
-fft_hann,FFT window,Toggle the FFT Hann window.,on:bool,commands.py:699
-fft_logx,FFT window,Toggle the FFT log X axis.,on:bool,commands.py:705
-fft_logy,FFT window,Toggle the FFT log Y axis.,on:bool,commands.py:710
-fft_export,FFT window,Export the FFT spectra to CSV.,path:str,commands.py:715
+fft,FFT window,Recompute and focus the FFT window.,,commands.py:688
+fft_remove_dc,FFT window,Toggle FFT DC removal.,on:bool,commands.py:694
+fft_hann,FFT window,Toggle the FFT Hann window.,on:bool,commands.py:700
+fft_logx,FFT window,Toggle the FFT log X axis.,on:bool,commands.py:706
+fft_logy,FFT window,Toggle the FFT log Y axis.,on:bool,commands.py:711
+fft_export,FFT window,Export the FFT spectra to CSV.,path:str,commands.py:716
 hist_source,Histogram window,Add a signal to the Histogram window (it can show several at once).,"run:run, signal:str",commands.py:631
 hist_clear,Histogram window,Remove all signals from the Histogram window.,,commands.py:644
 hist_remove,Histogram window,Remove a signal from the Histogram window.,"run:run, signal:str",commands.py:649
 hist_follow,Histogram window,Set the Histogram time window source (custom / full / plot_N).,target:fwindow,commands.py:659
 hist_range,Histogram window,Set the Histogram custom time window.,"min:float, max:float",commands.py:671
 hist_xlim,Histogram window,Set the Histogram plot's X-axis view limits.,"min:float, max:float",commands.py:678
-histogram,Histogram window,Recompute and focus the Histogram window.,,commands.py:722
-hist_bins,Histogram window,Set the Histogram bin count.,n:int,commands.py:728
-hist_export,Histogram window,Export the histogram bins to CSV.,path:str,commands.py:734
-node_source,Nodes,Add a source node wrapping a loaded signal (the graph's input).,"run:run, signal:str",commands.py:793
-node_add,Nodes,"Add a transform node (fft, math, filter, shift, or an installed plugin kind).",kind:str,commands.py:805
-node_set,Nodes,"Set a transform node parameter (e.g. node_set(node_2, cutoff, 1000)).","node:node, key:str, value:str",commands.py:816
-node_link,Nodes,Connect to a zero-based input slot (default: first free slot).,"src:node, dst:node, [slot:int]",commands.py:823
-node_unlink,Nodes,Disconnect a node link at a zero-based slot (default: all matching slots).,"src:node, dst:node, [slot:int]",commands.py:829
-node_remove,Nodes,"Remove a node (and its derived run, if any).",node:node,commands.py:835
-node_rename,Nodes,Rename a node (its derived run takes the new name).,"node:node, name:str",commands.py:844
-node_pos,Nodes,Set a node's canvas position.,"node:node, x:float, y:float",commands.py:857
-node_eval,Nodes,"Evaluate the graph (or one node + its inputs), materializing derived signals.",[node:node],commands.py:863
-load_plugins,Nodes,Load external node plugins from a directory (or the configured defaults).,[dir:str],commands.py:870
-save_state,Session,Save the GUI state to a JSON file.,path:str,commands.py:745
-load_state,Session,Restore the GUI state from a JSON file.,path:str,commands.py:752
-run_script,Session,Replay commands from a .uzscript file.,path:str,commands.py:759
-clear_console,Console,Clear the console log.,,commands.py:767
-help,Console,"List commands, or show help for one.",[name:str],commands.py:772
+histogram,Histogram window,Recompute and focus the Histogram window.,,commands.py:723
+hist_bins,Histogram window,Set the Histogram bin count.,n:int,commands.py:729
+hist_export,Histogram window,Export the histogram bins to CSV.,path:str,commands.py:735
+node_source,Nodes,Add a source node wrapping a loaded signal (the graph's input).,"run:run, signal:str",commands.py:794
+node_add,Nodes,"Add a transform node (fft, math, filter, shift, or an installed plugin kind).",kind:str,commands.py:806
+node_set,Nodes,"Set a transform node parameter (e.g. node_set(node_2, cutoff, 1000)).","node:node, key:str, value:str",commands.py:817
+node_link,Nodes,Connect to a zero-based input slot (default: first free slot).,"src:node, dst:node, [slot:int]",commands.py:826
+node_unlink,Nodes,Disconnect a node link at a zero-based slot (default: all matching slots).,"src:node, dst:node, [slot:int]",commands.py:832
+node_remove,Nodes,"Remove a node (and its derived run, if any).",node:node,commands.py:838
+node_rename,Nodes,Rename a node (its derived run takes the new name).,"node:node, name:str",commands.py:847
+node_pos,Nodes,Set a node's canvas position.,"node:node, x:float, y:float",commands.py:860
+node_eval,Nodes,"Evaluate the graph (or one node + its inputs), materializing derived signals.",[node:node],commands.py:866
+load_plugins,Nodes,Load external node plugins from a directory (or the configured defaults).,[dir:str],commands.py:873
+save_state,Session,Save the GUI state to a JSON file.,path:str,commands.py:746
+load_state,Session,Restore the GUI state from a JSON file.,path:str,commands.py:753
+run_script,Session,Replay commands from a .uzscript file.,path:str,commands.py:760
+clear_console,Console,Clear the console log.,,commands.py:768
+help,Console,"List commands, or show help for one.",[name:str],commands.py:773

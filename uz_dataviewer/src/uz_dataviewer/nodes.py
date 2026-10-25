@@ -40,7 +40,7 @@ def _as_bool(v) -> bool:
 @dataclass
 class ParamSpec:
     """Declares one editable parameter so the canvas can render a generic widget
-    for plugin nodes (builtins keep bespoke widgets)."""
+    for built-in and plugin nodes."""
 
     key: str
     kind: str  # 'float' | 'int' | 'bool' | 'enum' | 'str'
@@ -130,12 +130,47 @@ def _shift_compute(inputs, params):
 
 
 register_transform(TransformSpec("fft", _fft_compute,
-                                 {"remove_dc": "true", "window": "true"}, (1, 1)))
+    {"remove_dc": "true", "window": "true"}, (1, 1),
+    (ParamSpec.bool("remove_dc", "remove DC"), ParamSpec.bool("window", "Hann"))))
 register_transform(TransformSpec("math", _math_compute,
-                                 {"op": "scale", "k": "1.0"}, (1, 2)))
+    {"op": "scale", "k": "1.0"}, (1, 2),
+    (ParamSpec.enum("op", transforms.MATH_OPS), ParamSpec.float("k"))))
 register_transform(TransformSpec("filter", _filter_compute,
-                                 {"type": "low", "cutoff": "0", "taps": "101"}, (1, 1)))
-register_transform(TransformSpec("shift", _shift_compute, {"by": "0"}, (1, 1)))
+    {"type": "low", "cutoff": "0", "cutoff2": "0", "taps": "101"}, (1, 1),
+    (ParamSpec.enum("type", transforms.FILTER_TYPES), ParamSpec.float("cutoff", "cutoff Hz"),
+     ParamSpec.float("cutoff2", "cutoff2 Hz"), ParamSpec.int("taps"))))
+register_transform(TransformSpec("shift", _shift_compute, {"by": "0"}, (1, 1),
+    (ParamSpec.float("by", "by (s)"),)))
+
+
+def validate_parameter(kind, key, value):
+    """Share declared parameter validation across commands, evaluation and UI.
+
+    Undeclared plugin parameters remain available to compute-only plugins.
+    Empty source crop bounds select the full recording.
+    """
+    if kind == "source" and key in ("tmin", "tmax"):
+        if value == "":
+            return
+        parameter = ParamSpec.float(key)
+    else:
+        spec = REGISTRY.get(kind)
+        parameter = next((p for p in spec.ui if p.key == key), None) if spec else None
+    if parameter is None:
+        return
+    try:
+        if parameter.kind in ("float", "int"):
+            number = float(value)
+            if not np.isfinite(number):
+                raise ValueError("must be finite")
+            if parameter.kind == "int" and (not number.is_integer() or not -(2**31) <= number < 2**31):
+                raise ValueError("must be a 32-bit integer")
+        elif parameter.kind == "bool" and str(value).lower() not in _TRUE | {"0", "false", "off", "no"}:
+            raise ValueError("must be a boolean")
+        elif parameter.kind == "enum" and str(value) not in parameter.options:
+            raise ValueError(f"must be one of {parameter.options}")
+    except (ValueError, TypeError, OverflowError) as exc:
+        raise ValueError(f"{kind}.{key}: invalid value {value!r} ({exc})") from exc
 
 
 @dataclass
@@ -377,6 +412,8 @@ def _compute(node: Node, inputs: list[tuple[np.ndarray, np.ndarray]]
     spec = REGISTRY.get(node.kind)
     if spec is None:
         raise ValueError(f"unknown node kind {node.kind!r} -- is its plugin installed?")
+    for key, value in node.params.items():
+        validate_parameter(node.kind, key, value)
     lo, hi = spec.inputs
     if not (lo <= len(inputs) <= hi):
         want = f"{lo}" if lo == hi else f"{lo}..{hi}"

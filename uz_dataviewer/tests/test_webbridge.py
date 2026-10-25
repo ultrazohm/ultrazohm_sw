@@ -278,5 +278,14 @@ const pyodide={pyimport:()=>({load_columns:(name,names,columns,time)=>{
 })().catch(error=>{console.error(error);process.exitCode=1;});
 """
     target = tmp_path / 'parser.cjs'
-    target.write_text(html[start:end] + harness)
+    import json
+    from uz_dataviewer.csv_policy import NULL_VALUES
+    harness = harness.replace(" for(const d of", """
+ for (const token of TOKENS) {
+  const file=new Blob(['time,a\\n0,'+JSON.stringify(token)+'\\n']);file.name='null.csv';
+  await loadStreamingCsv(file);
+  assert(Number.isNaN(loaded.columns[0][0]), token);
+ }
+ for(const d of""")
+    target.write_text('const TOKENS=' + json.dumps(NULL_VALUES) + ';\n' + html[start:end] + harness)
     subprocess.run([node, str(target)], check=True, capture_output=True, text=True, timeout=15)

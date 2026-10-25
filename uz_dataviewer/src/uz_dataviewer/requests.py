@@ -63,6 +63,19 @@ class Requests:
             result = self.results.get(slot)
             return result is not None and result[0] == key
 
+    def completed(self, slot, key):
+        """Consume an exact completed result without exposing worker internals."""
+        with self.condition:
+            result = self.results.get(slot)
+            if result is not None and result[0] == key:
+                self.results.pop(slot)
+                return result[2]
+            return None
+
+    def error(self, slot):
+        with self.condition:
+            return self.errors.get(slot)
+
     def retain(self, slots):
         with self.condition:
             for slot in list(self.wanted):

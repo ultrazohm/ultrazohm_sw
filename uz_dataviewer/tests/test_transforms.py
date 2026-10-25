@@ -92,7 +92,7 @@ def test_math_reciprocal_guards_zero():
     t = np.linspace(0.0, 1.0, 5)
     y = np.array([2.0, 0.0, 4.0, 0.5, 0.0], dtype=np.float32)
     _, r, _ = math_node([(t, y)], {"op": "reciprocal"})
-    np.testing.assert_allclose(r, [0.5, 0.0, 0.25, 2.0, 0.0], rtol=1e-6)
+    np.testing.assert_allclose(r, [0.5, np.nan, 0.25, 2.0, np.nan], rtol=1e-6)
 
 
 def test_filter_lowpass_removes_high_freq():

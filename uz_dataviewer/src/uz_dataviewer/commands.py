@@ -676,7 +676,8 @@ def register_builtins(reg: CommandRegistry) -> None:
                 f"Set the {noun} custom time window.")
 
         def xlim(state, a):
-            _cfg(state).pending_x_lim = axis_limits(*a)
+            cfg = _cfg(state)
+            cfg.x_lim = cfg.pending_x_lim = axis_limits(*a)
 
         reg.add(f"{prefix}_xlim", [Param("min", "float"), Param("max", "float")], xlim,
                 f"Set the {noun} plot's X-axis view limits.")
@@ -815,6 +816,8 @@ def _register_node_commands(reg: CommandRegistry) -> None:
 
     def node_set(state, a):
         node = state.nodes.get(a[0])
+        from .nodes import validate_parameter
+        validate_parameter(node.kind, str(a[1]), str(a[2]))
         node.params[str(a[1])] = str(a[2])
 
     reg.add("node_set", [Param("node", "node"), Param("key", "str"), Param("value", "str")],

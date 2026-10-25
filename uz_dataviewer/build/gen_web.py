@@ -26,6 +26,8 @@ from __future__ import annotations
 
 import os
 import sys
+import json
+import runpy
 
 # Versions are pinned for ABI compatibility: the imgui_bundle WASM wheel is built
 # against one specific Pyodide/emscripten release.
@@ -77,6 +79,7 @@ _app.run()
 
 def build_html() -> str:
     sources = _collect_sources()
+    null_values = runpy.run_path(os.path.join(PKG_DIR, "csv_policy.py"))["NULL_VALUES"]
 
     src_tags = "\n".join(
         f'<script type="text/python" class="uz-pysource" data-path="{rel}">\n{text}\n</script>'
@@ -254,7 +257,7 @@ def build_html() -> str:
 
     function numeric(field) {{
       const text = field.trim();
-      if (text === "" || /^(nan|null|na)$/i.test(text)) return NaN;
+      if ({json.dumps(null_values)}.includes(text)) return NaN;
       if (/^[+]?inf(inity)?$/i.test(text)) return Infinity;
       if (/^-inf(inity)?$/i.test(text)) return -Infinity;
       if (!/^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?$/.test(text))

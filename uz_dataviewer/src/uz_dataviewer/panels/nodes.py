@@ -17,7 +17,7 @@ from imgui_bundle import imgui_node_editor as ed
 
 from ..nodes import REGISTRY, is_stale, transform_kinds
 from ..state import AppState
-from ..transforms import FILTER_TYPES, MATH_BINARY, MATH_OPS
+from ..transforms import MATH_BINARY
 from .base import SessionPanel
 from .navigation import SIGNAL_DND_TYPE
 
@@ -193,35 +193,20 @@ class NodesPanel(SessionPanel):
         p = node.params
         if node.kind == "source":
             self._source_window(state, node)
-        elif node.kind == "fft":
-            ch, on = imgui.checkbox("remove DC", _b(p, "remove_dc", True))
-            if ch:
-                self._emit(state, "node_set", node.id, "remove_dc", "true" if on else "false")
-            ch, on = imgui.checkbox("Hann", _b(p, "window", True))
-            if ch:
-                self._emit(state, "node_set", node.id, "window", "true" if on else "false")
-        elif node.kind == "math":
-            self._combo(state, node, "op", "##op", list(MATH_OPS))
-            if str(p.get("op", "scale")) in ("scale", "offset"):
-                self._float(state, node, "k", "k")
-        elif node.kind == "filter":
-            self._combo(state, node, "type", "##ft", list(FILTER_TYPES))
-            self._float(state, node, "cutoff", "cutoff Hz")
-            if str(p.get("type", "low")) == "band":
-                self._float(state, node, "cutoff2", "cutoff2 Hz")
-            self._int(state, node, "taps", "taps")
-        elif node.kind == "shift":
-            self._float(state, node, "by", "by (s)")
         elif node.kind in REGISTRY:
-            self._plugin_params(state, node)  # plugin: render from its ParamSpec list
+            self._transform_params(state, node)
         else:
             imgui.text_colored((0.95, 0.4, 0.4, 1.0), "missing plugin")
         imgui.pop_item_width()
 
-    def _plugin_params(self, state: AppState, node) -> None:
-        """Generic renderer for a plugin node's declared ParamSpec list."""
+    def _transform_params(self, state: AppState, node) -> None:
+        """Generic renderer for built-in and plugin parameter declarations."""
         spec = REGISTRY.get(node.kind)
         for ps in (spec.ui if spec is not None else ()):
+            if node.kind == "math" and ps.key == "k" and node.params.get("op") not in ("scale", "offset"):
+                continue
+            if node.kind == "filter" and ps.key == "cutoff2" and node.params.get("type") != "band":
+                continue
             if ps.kind == "bool":
                 ch, on = imgui.checkbox(ps.label, _b(node.params, ps.key, False))
                 if ch:
@@ -264,8 +249,10 @@ class NodesPanel(SessionPanel):
 
     def _float(self, state, node, key, label) -> None:
         try:
+            from ..nodes import validate_parameter
+            validate_parameter(node.kind, key, node.params.get(key, 0.0))
             val = float(node.params.get(key, 0.0))
-        except ValueError:
+        except (ValueError, TypeError, OverflowError):
             val = 0.0
         changed, val = imgui.input_double(label, val, 0.0, 0.0, "%.17g")
         if changed:
@@ -273,8 +260,10 @@ class NodesPanel(SessionPanel):
 
     def _int(self, state, node, key, label) -> None:
         try:
+            from ..nodes import validate_parameter
+            validate_parameter(node.kind, key, node.params.get(key, 0))
             val = int(float(node.params.get(key, 0)))
-        except ValueError:
+        except (ValueError, TypeError, OverflowError):
             val = 0
         changed, val = imgui.input_int(label, val)
         if changed:

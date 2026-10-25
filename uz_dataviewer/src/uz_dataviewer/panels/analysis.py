@@ -196,6 +196,7 @@ class AnalysisPanel(SessionPanel):
         imgui.same_line()
         if imgui.button("Reset view"):
             self._fit_pending = True
+            cfg.x_lim = cfg.pending_x_lim = None
         imgui.same_line()
         if imgui.button("Clear") and cfg.sources:
             self._emit(state, self.clear_command)
@@ -210,6 +211,15 @@ class AnalysisPanel(SessionPanel):
                 webbridge.save_and_download(
                     state, name, lambda path: self._emit(state, self.export_command, path)
                 )
+
+        # Removed sources must disappear immediately, including while recomputing.
+        if any(ref not in cfg.sources for ref in self._result_refs()):
+            state.analysis_jobs.forget(self.prefix)
+            self._analysis_pending = None
+            self._results = []
+            self._display_cache.clear()
+            self._info = ""
+            cfg.compute_requested = bool(cfg.sources)
 
         # -- compute on demand (command-driven; never per frame) --
         source_error = self._source_error(state, cfg)
@@ -227,10 +237,7 @@ class AnalysisPanel(SessionPanel):
             key = (self._generation, self._current_key(state, cfg))
             # Worker owns shallow snapshots of model/config, never live GUI state.
             snapshot = copy.copy(state)
-            snapshot.registry = copy.copy(state.registry)
-            snapshot.registry._runs = {i: copy.copy(run) for i, run in state.registry._runs.items()}
-            for run in snapshot.registry.runs:
-                run.signals = dict(run.signals)
+            snapshot.registry = state.registry.snapshot()
             options = copy.deepcopy(cfg)
             worker = type(self)()
             def compute(cancel):
@@ -244,17 +251,16 @@ class AnalysisPanel(SessionPanel):
             state.analysis_jobs.request(self.prefix, key, key, compute)
         if self._analysis_pending is not None:
             key = self._analysis_pending
-            if state.analysis_jobs.ready(self.prefix, key):
-                with state.analysis_jobs.condition:
-                    result = state.analysis_jobs.results[self.prefix][2]
+            result = state.analysis_jobs.completed(self.prefix, key)
+            if result is not None:
                 if key[1] == self._current_key(state, cfg):
                     self._results, self._info = result
                     self._computed_key = key[1]
                     self._display_cache.clear()
                     self._fit_pending = True
                 self._analysis_pending = None
-            elif self.prefix in state.analysis_jobs.errors:
-                self._info = state.analysis_jobs.errors[self.prefix]
+            elif state.analysis_jobs.error(self.prefix) is not None:
+                self._info = state.analysis_jobs.error(self.prefix)
                 self._results = []
                 self._display_cache.clear()
                 self._analysis_pending = None
@@ -281,9 +287,12 @@ class AnalysisPanel(SessionPanel):
         did_set = False
         self._fitting = self._fit_pending
         if self._fit_pending:
-            implot.set_next_axes_to_fit()  # must precede begin_plot
+            if cfg.x_lim is None and cfg.pending_x_lim is None:
+                implot.set_next_axes_to_fit()
+            else:
+                implot.set_next_axis_to_fit(implot.ImAxis_.y1)
+                cfg.pending_x_lim = cfg.pending_x_lim or cfg.x_lim
             self._fit_pending = False
-            cfg.pending_x_lim = None        # a fit overrides a queued zoom
             did_set = True
         if implot.begin_plot("##analysis", imgui.ImVec2(-1, -1)):
             implot.setup_axes(self.x_label, self.y_label)
@@ -315,6 +324,8 @@ class AnalysisPanel(SessionPanel):
             # Echo a *_xlim command when a pan/zoom of this plot settles.
             if implot.is_plot_hovered():
                 lim = implot.get_plot_limits()
+                if cfg.x_lim is not None:
+                    cfg.x_lim = (float(lim.x.min), float(lim.x.max))
                 self._maybe_echo_zoom(state, float(lim.x.min), float(lim.x.max), suppress=did_set)
 
             implot.end_plot()

@@ -26,7 +26,7 @@ References
 .. _dig_si_inverter_references:
 
 * :download:`Schematic Rev02 <Digital_SI_Inverter_rev02/UZ_D_Inverter.pdf>`
-* `uz_d_inverter Repository with Altium project <https://bitbucket.org/ultrazohm/uz_d_inverter>`_
+* `uz_d_inverter Repository with Altium project <https://github.com/ultrazohm/uz_d_inverter>`_
 
 Known issues
 ============

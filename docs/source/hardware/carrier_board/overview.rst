@@ -31,4 +31,4 @@ Useful things to buy
 Source
 ------
 
-- `carrier board repository <https://bitbucket.org/ultrazohm/uz_carrierboard>`_
+- `carrier board repository <https://github.com/ultrazohm/uz_carrierboard>`_

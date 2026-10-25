@@ -157,7 +157,7 @@ CPLD
 
 Make sure that the correct CPLD is flashed in the corresponding digital adapter slot.
 For this adapter card the ``uz_d_3ph_inverter`` CPLD needs to be flashed.
-Download this CPLD from the `UltraZohm CPLD Repository <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/>`_.
+Download this CPLD from the `UltraZohm CPLD Repository <https://github.com/ultrazohm/cpld_lattice/src/master/>`_.
 Follow :ref:`this guide  <label_cpld_programming>` on how to flash the correct CPLD on the UltraZohm.
 
 Software implementation
@@ -251,7 +251,7 @@ References
 .. _dig_si_inverter_references:
 
 * :download:`Schematic Rev04 <Digital_SI_Inverter_rev04/UZ_D_inverterRev04.pdf>`
-* `uz_d_inverter Repository with Altium project <https://bitbucket.org/ultrazohm/uz_d_inverter>`_
+* `uz_d_inverter Repository with Altium project <https://github.com/ultrazohm/uz_d_inverter>`_
 
 Known issues
 ============

@@ -80,7 +80,7 @@ Compatibility
 References
 ----------
 
-* `UZ_A_MAX11331 Repository with Altium project <https://bitbucket.org/ultrazohm/uz_a_max11331/src>`_
+* `UZ_A_MAX11331 Repository with Altium project <https://github.com/ultrazohm/uz_a_max11331/src>`_
 * :download:`LTSpice simulation Rev02 <Rev03/ltspice_MAX11331_Rev02.zip>`
 * IP Core ADC :ref:`ipCore_adc_max11331`
 

@@ -68,20 +68,13 @@ def test_add_sets_fit_pending():
     assert cell.fit_pending is True
 
 
-def test_plot_line_receives_matched_dtype_arrays():
+def test_plot_line_receives_matched_dtype_arrays(gui_frame):
     """ImPlot's PlotLine is templated on one type for xs and ys; a dtype
     mismatch makes it reinterpret a buffer as the wrong type, producing the
     scattered/negative-time corruption. Drive a real frame and assert the
     arrays handed to plot_line share a dtype and span the true time range.
     """
     from imgui_bundle import imgui, implot
-
-    imgui.create_context()
-    implot.create_context()
-    io = imgui.get_io()
-    io.display_size = imgui.ImVec2(1200, 800)
-    io.delta_time = 1.0 / 60.0
-    io.backend_flags |= imgui.BackendFlags_.renderer_has_textures
 
     state, run = _registry_with_run(t_start=11.979)
     panel = PlotsPanel()
@@ -101,12 +94,9 @@ def test_plot_line_receives_matched_dtype_arrays():
     implot.plot_line = capture
     try:
         for _ in range(3):  # first frame's begin_plot returns False
-            imgui.new_frame()
-            imgui.begin("Plots")
-            panel.render(state)
-            imgui.end()
-            imgui.render()
+            gui_frame(panel, state, 'Plots')
     finally:
+        state.shutdown()
         implot.plot_line = original
 
     assert seen, "plot_line was never called"

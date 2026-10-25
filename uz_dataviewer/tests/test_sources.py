@@ -247,6 +247,7 @@ def test_lazy_frame_does_not_read_raw_on_gui_thread(recording, tmp_path, monkeyp
     imgui.create_context()
     implot.create_context()
     io = imgui.get_io()
+    io.set_ini_filename(None)
     io.display_size = imgui.ImVec2(1200, 800)
     io.delta_time = 1 / 60
     io.backend_flags |= imgui.BackendFlags_.renderer_has_textures

@@ -218,6 +218,8 @@ class PlotsPanel(SessionPanel):
                 self._emit(state, "show_samples", plot_n, samples)
             imgui.same_line()
             changed, spy = imgui.checkbox("spy", cell.spy)
+            if imgui.is_item_hovered():
+                imgui.set_tooltip("Zoom primary (left) Y-axis signals; right-axis signals are excluded.")
             if changed:
                 self._emit(state, "spy", plot_n, spy)
             imgui.same_line()
@@ -501,7 +503,6 @@ class PlotsPanel(SessionPanel):
         col = imgui.ImVec4(0.95, 0.85, 0.25, 1.0)
         x1 = implot.drag_line_x(1001, cell.cursor_x[0], col)[1]
         x2 = implot.drag_line_x(1002, cell.cursor_x[1], col)[1]
-        moved = (x1, x2) != cell.cursor_x
         cell.cursor_x = (x1, x2)
         implot.tag_x(x1, col, True)
         implot.tag_x(x2, col, True)
@@ -545,6 +546,9 @@ class PlotsPanel(SessionPanel):
 
     # -- spy / drag-rect ----------------------------------------------------
     def _spy_rect(self, state: AppState, index: int, cell: SubplotCell) -> None:
+        # Spy coordinates always belong to the primary Y axis, independently
+        # of the last trace drawn. The inset shows primary-axis traces only.
+        implot.set_axis(implot.ImAxis_.y1)
         if cell.spy_rect is None:
             # Centre the rect: 50% of the visible width and height (25%..75%).
             lim = implot.get_plot_limits()
@@ -585,6 +589,8 @@ class PlotsPanel(SessionPanel):
         if implot.begin_plot(f"##spy{index}", imgui.ImVec2(width, max(height, 50.0)), implot.Flags_.canvas_only):
             implot.setup_axes_limits(x1, x2, y1, y2, imgui.Cond_.always)
             for i, ref in enumerate(list(cell.signals)):
+                if ref in cell.y2_signals:
+                    continue
                 signal = state.registry.get_signal(ref[0], ref[1])
                 run = state.registry.get(ref[0])
                 if signal is None or run is None or not run.active:

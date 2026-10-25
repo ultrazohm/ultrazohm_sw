@@ -10,6 +10,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from .downsample import visible_slice
+from .sources import ByteCache, SampleSource
 
 def _hann(n: int) -> tuple[np.ndarray, float]:
     """Return a computation-owned Hann window and its coherent-gain sum.
@@ -88,6 +89,16 @@ def compute_fft(
         return FftResult(None, None, "No samples in this run to transform.")
     if x_max <= x_min:
         return FftResult(None, None, "Selected window is too short for an FFT.")
+
+    # Binary search requires an ordered axis, including samples outside the
+    # requested window. Validate before slicing so invalid input cannot hide.
+    from .loader import validate_time_axis
+    try:
+        validate_time_axis(time, "FFT")
+        if not np.isfinite([x_min, x_max]).all():
+            raise ValueError("FFT window limits must be finite.")
+    except ValueError as exc:
+        return FftResult(None, None, str(exc))
 
     start, stop = visible_slice(time, x_min, x_max, padding=False)
     # Keep float32 (JavaScope data is float32): numpy's pocketfft preserves it as a
@@ -202,7 +213,7 @@ class AnalysisInput:
 
     ref: tuple[int, str]
     label: str
-    source: object
+    source: SampleSource
     time_offset: float
 
     @classmethod
@@ -245,7 +256,7 @@ class FftRequest:
     window: tuple[float, float]
     remove_dc: bool
     hann: bool
-    cache: object
+    cache: ByteCache
 
     def compute(self, cancel=None) -> AnalysisResult:
         from .sources import ArraySource, check
@@ -260,7 +271,7 @@ class FftRequest:
                 continue
             source = ArraySource(result.freqs, {'value': result.mag}, self.cache)
             if result.mag.size > 4096:
-                source._summary('value', cancel)
+                source.prepare_summary('value', cancel)
             results.append((selected.ref, result.freqs, result.mag, source))
             info = result.info
         check(cancel)

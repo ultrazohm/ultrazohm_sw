@@ -159,23 +159,11 @@ def test_unknown_kind_restores_as_placeholder(tmp_path, clean_registry):
     assert node.inputs == [1]  # links preserved
 
 
-def test_plugin_node_renders_headless(tmp_path, clean_registry):
-    from imgui_bundle import imgui, implot
-    from imgui_bundle import imgui_node_editor as ed
-
+def test_plugin_node_renders_headless(tmp_path, clean_registry, gui_frame):
     from uz_dataviewer.panels.nodes import NodesPanel
 
     (tmp_path / "double.py").write_text(_PLUGIN)
     load_plugins([str(tmp_path)])
-
-    imgui.create_context()
-    implot.create_context()
-    io = imgui.get_io()
-    io.display_size = imgui.ImVec2(1200, 800)
-    io.delta_time = 1.0 / 60.0
-    io.backend_flags |= imgui.BackendFlags_.renderer_has_textures
-    editor = ed.create_editor()
-    ed.set_current_editor(editor)
 
     state = _state_with_run()
     _run(state, "node_source(run_1, a)", "node_add(double)",
@@ -183,14 +171,8 @@ def test_plugin_node_renders_headless(tmp_path, clean_registry):
     panel = NodesPanel()
     try:
         for _ in range(3):
-            imgui.new_frame()
-            imgui.begin("Nodes")
-            panel.render(state)  # exercises the generic ParamSpec widget path
-            imgui.end()
-            imgui.render()
+            gui_frame(panel, state, 'Nodes')
     finally:
-        ed.destroy_editor(editor)
-        implot.destroy_context()
-        imgui.destroy_context()
+        state.shutdown()
 
     assert any(r.derived and r.label == "node_2" for r in state.registry.runs)

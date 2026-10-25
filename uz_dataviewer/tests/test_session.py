@@ -705,3 +705,40 @@ def test_invalid_secondary_axis_limits_preserve_session(app_state, limits):
     with pytest.raises((ValueError, TypeError)):
         session.apply_dict(app_state, saved)
     assert app_state.session_token is token
+
+@pytest.mark.parametrize('failure', ['serialization', 'write', 'replace'])
+def test_failed_save_preserves_previous_snapshot(app_state, tmp_path, monkeypatch, failure):
+    import uz_dataviewer.session as session
+    path = tmp_path / 'session.json'
+    session.save_state(app_state, path)
+    original = path.read_bytes()
+
+    def fail_write(data, fh, **kwargs):
+        fh.write('{"version": ')
+        raise OSError('write failed')
+
+    def fail_replace(*args):
+        raise OSError('replace failed')
+
+    if failure == 'serialization':
+        node = app_state.nodes.add('math')
+        node.params['unserializable'] = object()
+    elif failure == 'write':
+        monkeypatch.setattr(session.json, 'dump', fail_write)
+    else:
+        monkeypatch.setattr(session.os, 'replace', fail_replace)
+    with pytest.raises((TypeError, OSError)):
+        session.save_state(app_state, path)
+    assert path.read_bytes() == original
+    assert sorted(p.name for p in tmp_path.iterdir()) == ['session.json']
+
+
+def test_successful_save_replaces_snapshot(app_state, tmp_path):
+    import json
+    from uz_dataviewer.session import save_state
+    path = tmp_path / 'session.json'
+    save_state(app_state, path)
+    app_state.set_grid(2, 2)
+    save_state(app_state, path)
+    assert json.loads(path.read_text())['grid'] == [2, 2]
+    assert sorted(p.name for p in tmp_path.iterdir()) == ['session.json']

@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from .. import runtime
 
-from concurrent.futures import ThreadPoolExecutor
 import os
 from pathlib import Path
 import sys
@@ -12,6 +11,7 @@ from threading import Event
 from imgui_bundle import imgui
 
 from .navigation import LOG_DND_TYPE, pfd
+from ..workers import CancellableExecutor
 
 
 def default_log_directory() -> Path:
@@ -27,12 +27,16 @@ def default_log_directory() -> Path:
 
 def scan_logs(directory: Path, cancel: Event) -> tuple[list[Path], list[str]]:
     files, errors = [], []
+    if cancel.is_set():
+        return [], []
     if not directory.is_dir():
         return [], [f"Directory not found: {directory}"]
     for root, _, names in os.walk(directory, onerror=lambda error: errors.append(str(error))):
         if cancel.is_set():
             return [], []
         for name in names:
+            if cancel.is_set():
+                return [], []
             if Path(name).suffix.lower() in {".csv", ".parquet"}:
                 path = Path(root) / name
                 if path.is_file():
@@ -61,14 +65,22 @@ class LogBrowserPanel:
             self.directory = directory.resolve()
         self.files, self.errors = [], []
         if self._executor is None:
-            self._executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="log-browser")
-        self._future = self._executor.submit(scan_logs, self.directory, self._cancel)
+            self._executor = CancellableExecutor(name="log-browser")
+        directory, request_cancel = self.directory, self._cancel
+
+        def scan(cancel):
+            # Refresh cancels this request independently of worker shutdown.
+            # shutdown() sets both tokens; the executor also checks its token
+            # before publishing a result.
+            return scan_logs(directory, request_cancel)
+
+        self._future = self._executor.submit(scan)
         self._started = True
 
     def shutdown(self):
         self._cancel.set()
         if self._executor is not None:
-            self._executor.shutdown(wait=False, cancel_futures=True)
+            self._executor.shutdown()
 
     def render(self, state):
         if runtime.IS_WEB:

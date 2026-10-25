@@ -35,7 +35,7 @@ import pyarrow.csv as pa_csv
 import pyarrow.parquet as pq
 
 from .model import DataRegistry, Run
-from .sources import check
+from .sources import IndexedFileSource, check
 from .csv_policy import NULL_VALUES
 
 
@@ -470,7 +470,7 @@ def parse_file(path: str, *, backend="pyarrow", cancel=None) -> ParsedRun:
 @dataclass
 class OpenedSource:
     path: str
-    source: object
+    source: IndexedFileSource
     backend: str = "pyarrow"
 
     def register(self, registry):

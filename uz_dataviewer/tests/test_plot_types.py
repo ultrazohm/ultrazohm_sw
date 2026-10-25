@@ -15,11 +15,11 @@ import numpy as np
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer.panels.plots import PlotsPanel  # noqa: E402
-from uz_dataviewer.state import AppState, PlotType  # noqa: E402
+from uz_dataviewer.state import PlotType  # noqa: E402
 
 
-def _state():
-    state = AppState()
+def _state(states):
+    state = states()
     time = np.linspace(2.0, 6.0, 2000)
     state.registry.add_run(
         "Log.csv", "Log.csv", time,
@@ -29,31 +29,14 @@ def _state():
     return state
 
 
-def _drive(state, frames=3):
-    from imgui_bundle import imgui, implot
-
-    imgui.create_context()
-    implot.create_context()
-    io = imgui.get_io()
-    io.display_size = imgui.ImVec2(1400, 900)
-    io.delta_time = 1.0 / 60.0
-    io.backend_flags |= imgui.BackendFlags_.renderer_has_textures
-
+def _drive(state, gui_frame, frames=3):
     panel = PlotsPanel()
-    try:
-        for _ in range(frames):
-            imgui.new_frame()
-            imgui.begin("Plots")
-            panel.render(state)
-            imgui.end()
-            imgui.render()
-    finally:
-        implot.destroy_context()
-        imgui.destroy_context()
+    for _ in range(frames):
+        gui_frame(panel, state, 'Plots')
 
 
-def test_render_every_plot_type():
-    state = _state()
+def test_render_every_plot_type(states, gui_frame):
+    state = _state(states)
     state.set_grid(2, 2)
     types = [PlotType.LINE, PlotType.SCATTER, PlotType.STAIRS, PlotType.XY]
     for i, t in enumerate(types):
@@ -62,95 +45,79 @@ def test_render_every_plot_type():
         if t is PlotType.XY:
             state.cells[i].xy_source = (1, "ib")
     state.cells[0].show_samples = True  # exercise the Spec marker path
-    _drive(state)  # must not raise
+    _drive(state, gui_frame)  # must not raise
 
 
-def test_render_xy_styles():
+def test_render_xy_styles(states, gui_frame):
     from uz_dataviewer.state import XyStyle
 
     for style in XyStyle:
-        state = _state()
+        state = _state(states)
         state.set_grid(1, 1)
         state.cells[0].plot_type = PlotType.XY
         state.cells[0].xy_source = (1, "ib")
         state.cells[0].add((1, "ia"))
         state.cells[0].xy_style = style
-        _drive(state)  # markers / line / both must all render without raising
+        _drive(state, gui_frame)  # markers / line / both must all render without raising
 
 
-def test_render_spy_inset():
-    state = _state()
+def test_render_spy_inset(states, gui_frame):
+    state = _state(states)
     state.set_grid(1, 1)
     state.cells[0].add((1, "ia"))
     state.cells[0].spy = True
-    _drive(state, frames=4)  # initialises spy_rect then renders the inset
+    _drive(state, gui_frame, frames=4)  # initialises spy_rect then renders the inset
     assert state.cells[0].spy_rect is not None
 
 
-def test_render_cursors_and_secondary_axis():
-    state = _state()
+def test_render_cursors_and_secondary_axis(states, gui_frame):
+    state = _state(states)
     state.set_grid(1, 1)
     state.cells[0].add((1, "ia"))
     state.cells[0].add((1, "ib"))
     state.cells[0].y2_signals = [(1, "ib")]  # ib on the right axis
     state.cells[0].cursors = True
-    _drive(state, frames=4)  # initialises cursor_x then renders cursors + y2
+    _drive(state, gui_frame, frames=4)  # initialises cursor_x then renders cursors + y2
     assert state.cells[0].cursor_x is not None
 
 
-def _drive_window(panel, state, frames=4):
-    from imgui_bundle import imgui, implot
-
-    imgui.create_context()
-    implot.create_context()
-    io = imgui.get_io()
-    io.display_size = imgui.ImVec2(1000, 700)
-    io.delta_time = 1.0 / 60.0
-    io.backend_flags |= imgui.BackendFlags_.renderer_has_textures
-    try:
-        import time
-        deadline = time.monotonic() + 10
-        rendered = 0
-        while rendered < frames or getattr(panel, "_analysis_pending", None) is not None:
-            assert time.monotonic() < deadline, "Background analysis did not finish"
-            rendered += 1
-            time.sleep(.002)
-            imgui.new_frame()
-            imgui.begin("W")
-            panel.render(state)
-            imgui.end()
-            imgui.render()
-    finally:
-        implot.destroy_context()
-        imgui.destroy_context()
+def _drive_window(panel, state, gui_frame, frames=4):
+    import time
+    deadline = time.monotonic() + 10
+    rendered = 0
+    while rendered < frames or getattr(panel, "_analysis_pending", None) is not None:
+        assert time.monotonic() < deadline, "Background analysis did not finish"
+        rendered += 1
+        time.sleep(.002)
+        gui_frame(panel, state)
 
 
-def test_fft_window_renders_multiple_signals():
+def test_fft_window_renders_multiple_signals(states, gui_frame):
     from uz_dataviewer.panels.fft import FftPanel
 
-    state = _state()
+    state = _state(states)
     state.commands.dispatch(state, "fft_source(Log.csv, ia)")
     state.commands.dispatch(state, "fft_source(Log.csv, ib)")
     panel = FftPanel()
-    _drive_window(panel, state)
+    _drive_window(panel, state, gui_frame)
     assert len(panel._results) == 2  # one spectrum per source
 
 
-def test_histogram_window_renders_multiple_signals():
+def test_histogram_window_renders_multiple_signals(states, gui_frame):
     from uz_dataviewer.panels.histogram import HistogramPanel
 
-    state = _state()
+    state = _state(states)
     state.commands.dispatch(state, "hist_source(Log.csv, ia)")
     state.commands.dispatch(state, "hist_source(Log.csv, ib)")
     panel = HistogramPanel()
-    _drive_window(panel, state)
+    _drive_window(panel, state, gui_frame)
     assert len(panel._results) == 2  # one distribution per source
 
 
-def test_histogram_skips_non_finite_samples(compute_panel):
+def test_histogram_skips_non_finite_samples(compute_panel, app_state):
     from uz_dataviewer.panels.histogram import HistogramPanel
 
-    state = AppState()
+    state = app_state
     t = np.linspace(0.0, 1.0, 6)
     y = np.array([0.0, 1.0, np.nan, 2.0, np.inf, 3.0], dtype=np.float32)
     state.registry.add_run("L.csv", "L.csv", t, {"s": y}, {"s": ""})
@@ -164,7 +131,7 @@ def test_histogram_skips_non_finite_samples(compute_panel):
     assert "non-finite skipped" in panel._info
 
 
-def test_analysis_window_computes_on_demand_not_every_frame(monkeypatch):
+def test_analysis_window_computes_on_demand_not_every_frame(monkeypatch, states, gui_frame):
     """The FFT window computes only when asked (drag/compute), never per frame."""
     import uz_dataviewer.analysis as fft_mod
     from uz_dataviewer.panels.fft import FftPanel
@@ -177,9 +144,9 @@ def test_analysis_window_computes_on_demand_not_every_frame(monkeypatch):
         return real(*a, **k)
 
     monkeypatch.setattr(fft_mod, "compute_fft", counting)
-    state = _state()
+    state = _state(states)
     state.commands.dispatch(state, "fft_source(Log.csv, ia)")  # sets compute_requested
-    _drive_window(FftPanel(), state, frames=6)
+    _drive_window(FftPanel(), state, gui_frame, frames=6)
     assert calls["n"] == 1  # computed once for the one source, not 6x
 
 
@@ -268,3 +235,38 @@ def test_xy_surfaces_read_errors_without_drawing_stale_data(app_state, gui_frame
         gui_frame(panel, state)
     assert not drawn
     assert any('test read failure' in entry.message for entry in state.console._entries)
+
+
+def test_spy_uses_primary_axis_independent_of_trace_order(states, gui_frame, monkeypatch):
+    from imgui_bundle import implot
+
+    drawn = []
+    original = PlotsPanel._render_spy_inset
+    original_line = implot.plot_line
+
+    def inset(panel, *args):
+        def capture(label, *values):
+            drawn.append(label)
+            return original_line(label, *values)
+        with monkeypatch.context() as patch:
+            patch.setattr(implot, 'plot_line', capture)
+            return original(panel, *args)
+
+    monkeypatch.setattr(PlotsPanel, '_render_spy_inset', inset)
+    for order in (('a', 'b'), ('b', 'a')):
+        state = states()
+        state.services.display.synchronous = True
+        state.registry.add_run('r', 'r', np.arange(10.),
+                               {'a': np.arange(10.), 'b': np.linspace(100, 200, 10)}, {})
+        cell = state.cells[0]
+        cell.signals = [(1, name) for name in order]
+        cell.y2_signals = [(1, 'b')]
+        cell.spy = True
+        cell.set_limits('x', 0, 9)
+        cell.set_limits('y', 0, 10)
+        cell.set_limits('y2', 100, 200)
+        panel = PlotsPanel()
+        drawn.clear()
+        gui_frame(panel, state, str(order))
+        np.testing.assert_allclose(cell.spy_rect, (2.25, 2.5, 6.75, 7.5))
+        assert drawn == [state.signal_label((1, 'a'))]

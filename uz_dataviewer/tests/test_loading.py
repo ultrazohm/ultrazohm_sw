@@ -5,13 +5,13 @@ import time
 
 import pytest
 
-from uz_dataviewer.loading import LoadExecutor
+from uz_dataviewer.workers import CancellableExecutor
 from uz_dataviewer.sources import Cancelled, check
 from uz_dataviewer.state import AppState
 
 
 def test_load_shutdown_cancels_active_and_queued_work():
-    worker = LoadExecutor()
+    worker = CancellableExecutor()
     started = threading.Event()
     stopped = threading.Event()
     def work(cancel):

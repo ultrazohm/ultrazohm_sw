@@ -295,7 +295,7 @@ Fix: tag derived runs with an x-axis kind/label; have ``PlotsPanel`` honour it a
 C. **Units are not propagated to derived signals.** Every derived signal is created with unit ``""``.
 For ``filter`` and ``offset`` the physical unit is unchanged and could be carried over; ``scale``/``derivative``/``integral`` change it.
 Severity low.
-Fix: pass the input unit through for unit-preserving ops in ``nodes._compute`` / ``upsert_derived_run``.
+Fix: pass the input unit through for unit-preserving ops in ``nodes.compute_node`` / ``upsert_derived_run``.
 
 D. **Name / label collisions.** Derived runs are labelled by node name (``node_<id>`` by default).
 If a loaded file is named like a node, or two nodes share a label, ``_label_to_run_id`` resolves to the first match; ``node_rename`` checks other node names but not loaded run labels.

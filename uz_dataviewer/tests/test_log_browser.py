@@ -84,3 +84,47 @@ def test_log_drop_uses_existing_loader(monkeypatch):
         assert state.dragged_log_path is None
     finally:
         state.shutdown()
+
+
+def test_scan_checks_cancellation_between_files(tmp_path, monkeypatch):
+    import uz_dataviewer.panels.log_browser as module
+    cancel = Event()
+    visited = []
+    monkeypatch.setattr(module.os, 'walk', lambda *a, **kw: [(str(tmp_path), [], ['a.csv', 'b.csv'])])
+
+    def is_file(path):
+        visited.append(path.name)
+        cancel.set()
+        return True
+
+    monkeypatch.setattr(Path, 'is_file', is_file)
+    assert scan_logs(tmp_path, cancel) == ([], [])
+    assert visited == ['a.csv']
+
+
+def test_blocked_scan_does_not_hold_process_exit(tmp_path):
+    import os
+    import subprocess
+    import sys
+    import textwrap
+
+    code = textwrap.dedent('''
+        from threading import Event
+        from uz_dataviewer.panels import log_browser
+        started = Event()
+        def blocked(directory, cancel):
+            started.set()
+            Event().wait(60)
+            return [], []
+        log_browser.scan_logs = blocked
+        panel = log_browser.LogBrowserPanel()
+        panel.refresh()
+        assert started.wait(5)
+        panel.shutdown()
+        print('closed', flush=True)
+    ''')
+    env = dict(os.environ, PYTHONPATH=os.pathsep.join(sys.path))
+    result = subprocess.run([sys.executable, '-c', code], cwd=tmp_path,
+                            env=env, capture_output=True, text=True, timeout=10)
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == 'closed'

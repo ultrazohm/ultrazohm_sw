@@ -8,7 +8,7 @@ import enum
 import math
 import os
 from concurrent.futures import Future
-from .loading import LoadExecutor
+from .workers import CancellableExecutor
 from dataclasses import dataclass, field, fields
 
 from .commands import CommandRegistry
@@ -232,7 +232,7 @@ class RuntimeServices:
     analysis_jobs: Requests = field(default_factory=lambda: Requests(synchronous=runtime.IS_WEB))
     analysis_displays: dict[str, Requests] = field(default_factory=lambda: {
         name: Requests(synchronous=runtime.IS_WEB) for name in ("fft", "hist")})
-    executor: LoadExecutor = field(default_factory=LoadExecutor)
+    executor: CancellableExecutor = field(default_factory=CancellableExecutor)
     pending: list[tuple[Future, str]] = field(default_factory=list)
     large_csv_requests: list[LoadRequest] = field(default_factory=list)
 

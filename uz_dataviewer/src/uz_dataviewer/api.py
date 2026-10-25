@@ -162,7 +162,7 @@ def node(kind: str, *signals, **params):
     inputs = [
         (np.asarray(t, dtype=np.float64), np.asarray(s, dtype=np.float64)) for t, s in signals
     ]
-    time, values, info, _ = nodes._compute(nodes.Node(0, kind, kind, params=merged), inputs)
+    time, values, info, _ = nodes.compute_node(nodes.Node(0, kind, kind, params=merged), inputs)
     return time, values, info
 
 

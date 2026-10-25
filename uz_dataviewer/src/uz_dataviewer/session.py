@@ -9,6 +9,8 @@ from __future__ import annotations
 from . import runtime
 
 import json
+import os
+import tempfile
 from typing import TYPE_CHECKING
 
 from .loader import unique_name
@@ -141,8 +143,17 @@ def to_dict(state: "AppState") -> dict:
 
 def save_state(state: "AppState", path: str) -> None:
     data = to_dict(state)
-    with open(path, "w", encoding="utf-8") as fh:
-        json.dump(data, fh, indent=2)
+    # Publish only a complete snapshot. A failed serialization/write/replace
+    # must leave the previous session intact; use the same filesystem.
+    fd, temporary = tempfile.mkstemp(prefix=".uz-session-", suffix=".tmp",
+                                     dir=os.path.dirname(os.path.abspath(path)))
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            json.dump(data, fh, indent=2)
+        os.replace(temporary, path)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
 
 
 def load_state(state: "AppState", path: str) -> None:

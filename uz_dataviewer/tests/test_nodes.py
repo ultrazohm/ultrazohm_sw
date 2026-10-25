@@ -293,11 +293,11 @@ def test_source_version_invalidates_downstream(states, recording_csv, execute_co
 
 
 def test_node_output_shape_validation():
-    from uz_dataviewer.nodes import TransformSpec, Node, REGISTRY, _compute
+    from uz_dataviewer.nodes import TransformSpec, Node, REGISTRY, compute_node
     spec = TransformSpec('bad_shape', lambda inputs, params: (np.arange(2.), np.arange(3.), 'bad'))
     REGISTRY['bad_shape'] = spec
     try:
         with pytest.raises(ValueError, match='equal-length'):
-            _compute(Node(1, 'bad_shape', 'bad'), [(np.arange(2.), np.arange(2.))])
+            compute_node(Node(1, 'bad_shape', 'bad'), [(np.arange(2.), np.arange(2.))])
     finally:
         REGISTRY.pop('bad_shape')

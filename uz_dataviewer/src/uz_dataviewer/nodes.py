@@ -408,7 +408,7 @@ def is_stale(registry, graph: NodeGraph, node: Node) -> bool:
 
 
 # -- computation --------------------------------------------------------------
-def _compute(node: Node, inputs: list[tuple[np.ndarray, np.ndarray]]
+def compute_node(node: Node, inputs: list[tuple[np.ndarray, np.ndarray]]
              ) -> tuple[np.ndarray, np.ndarray, str, str]:
     """Dispatch to the node's registered transform. Returns ``(out_time, out_y,
     info, unit)``; raises a clear error if the kind has no spec (missing plugin)."""
@@ -470,7 +470,7 @@ def evaluate(state, node_id: int | None = None) -> int:
             if any(i is None for i in node.inputs):
                 raise ValueError("Connect all input slots before evaluating")
             inputs = [_node_output(state, graph.nodes[i]) for i in node.inputs]
-            out_time, out_y, info, unit = _compute(node, inputs)
+            out_time, out_y, info, unit = compute_node(node, inputs)
         except Exception as exc:  # noqa: BLE001 - surfaced to the console
             node.error = str(exc)
             node.info = ""

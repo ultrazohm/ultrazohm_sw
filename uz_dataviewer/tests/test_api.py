@@ -150,3 +150,14 @@ assert 'uz_dataviewer.webbridge' not in sys.modules
     result = subprocess.run([sys.executable, '-c', code, str(recording_csv)],
                             capture_output=True, text=True)
     assert result.returncode == 0, result.stderr
+
+
+def test_fft_rejects_invalid_axis_before_selecting_window():
+    from uz_dataviewer.api import fft
+    for time in ([0, 1, 2, 3, 100, 4, 5, 6, 7],
+                 [0, 1, 2, 3, float('nan'), 4, 5, 6, 7],
+                 [0, 1, 2, 3, float('inf'), 4, 5, 6, 7]):
+        for limits in ({}, {'x_min': 0, 'x_max': 3}):
+            result = fft(time, list(range(len(time))), **limits)
+            assert not result.ok
+            assert 'time column' in result.info

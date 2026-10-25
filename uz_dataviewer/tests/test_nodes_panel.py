@@ -19,23 +19,8 @@ from uz_dataviewer.nodes import evaluate
 from uz_dataviewer.panels.nodes import NodesPanel
 
 
-def test_nodes_panel_renders_a_graph():
-    from imgui_bundle import imgui, implot
-    from imgui_bundle import imgui_node_editor as ed
-
-    from uz_dataviewer.panels.nodes import NodesPanel
-    from uz_dataviewer.state import AppState
-
-    imgui.create_context()
-    implot.create_context()
-    io = imgui.get_io()
-    io.display_size = imgui.ImVec2(1400, 900)
-    io.delta_time = 1.0 / 60.0
-    io.backend_flags |= imgui.BackendFlags_.renderer_has_textures
-    editor = ed.create_editor()
-    ed.set_current_editor(editor)
-
-    state = AppState()
+def test_nodes_panel_renders_a_graph(app_state, gui_frame):
+    state = app_state
     t = np.linspace(0.0, 1.0, 2000)
     state.registry.add_run(
         "Log.csv", "Log.csv", t, {"ia": np.sin(2 * np.pi * 50 * t).astype(np.float32)}, {"ia": ""}
@@ -47,17 +32,8 @@ def test_nodes_panel_renders_a_graph():
         state.commands.dispatch(state, line)
 
     panel = NodesPanel()
-    try:
-        for _ in range(3):  # first frame's begin returns False
-            imgui.new_frame()
-            imgui.begin("Nodes")
-            panel.render(state)
-            imgui.end()
-            imgui.render()
-    finally:
-        ed.destroy_editor(editor)
-        implot.destroy_context()
-        imgui.destroy_context()
+    for _ in range(3):
+        gui_frame(panel, state, 'Nodes')
 
     # The chain materialized both transform outputs as derived runs.
     derived = {r.label for r in state.registry.runs if r.derived}

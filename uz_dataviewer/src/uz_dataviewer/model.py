@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from .sources import ArraySource, SourceColumn, ByteCache
+from .sources import ArraySource, SourceColumn, ByteCache, DisplaySource
 
 # Monotonic data-version stamp. Every Signal and every (re)assigned run time axis
 # gets a globally-unique version, so consumers that cache by data identity (the plot
@@ -87,7 +87,7 @@ class Run:
 
     color: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0)
 
-    time_raw: np.ndarray | None = None
+    time_raw: np.ndarray | SourceColumn | None = None
     """The original timestamps as loaded; ``time`` is derived from these."""
 
     time_origin: float | None = None
@@ -109,11 +109,11 @@ class Run:
     backend: str = "pyarrow"
     """IO backend selected when this recording was opened."""
 
-    source: object = field(default=None, repr=False, compare=False)
+    source: DisplaySource | None = field(default=None, repr=False, compare=False)
     _source_version: object = field(default=None, repr=False, compare=False)
     output_validator: object = field(default=None, repr=False, compare=False)
 
-    def data_source(self):
+    def data_source(self) -> DisplaySource:
         version = (self.time_version, id(self.time), tuple((n, s.version, id(s.y)) for n, s in self.signals.items()))
         if self.source is None or (not isinstance(self.time, SourceColumn) and version != self._source_version):
             self.source = ArraySource(self.time, {n: s.y for n, s in self.signals.items()}, getattr(self, '_cache', None))

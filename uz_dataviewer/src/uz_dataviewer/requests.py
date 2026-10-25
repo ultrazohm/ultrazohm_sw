@@ -4,6 +4,7 @@ from collections import OrderedDict
 from dataclasses import dataclass
 import threading
 from .sources import Cancelled, check
+from .workers import join_worker
 
 
 @dataclass
@@ -15,6 +16,7 @@ class Job:
 
 
 class Requests:
+    """Coalescing scheduler using the shared cancellable daemon-worker lifecycle."""
     def __init__(self, synchronous=False):
         self.synchronous = synchronous
         self.condition = threading.Condition()
@@ -131,10 +133,13 @@ class Requests:
     def close(self):
         with self.condition:
             self.closed = True
+            for job in self.jobs.values():
+                job.cancel.set()
             self.jobs.clear()
             self.results.clear()
+            self.wanted.clear()
+            self.errors.clear()
             if self.active:
                 self.active[1].cancel.set()
             self.condition.notify_all()
-        if self.thread is not None:
-            self.thread.join(timeout=2)
+        join_worker(self.thread)

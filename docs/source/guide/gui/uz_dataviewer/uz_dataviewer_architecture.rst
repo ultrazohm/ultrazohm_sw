@@ -148,7 +148,7 @@ Loading & large logs (``loader.py``)
 ``open_file`` selects the storage policy for GUI uploads, native loads and commands.
 Memory loads dispatch through ``parse_file`` → ``parse_csv`` / ``parse_parquet`` and return a ``ParsedRun``; lazy loads return an ``OpenedSource``.
 Both register through their ``register`` method. The redundant eager-only ``load_file`` wrapper has been removed.
-On native, interactive GUI loads run on the cancellable daemon worker in ``loading.py``.
+On native, interactive GUI loads run on the cancellable daemon worker in ``workers.py``.
 Startup arguments and explicit commands load synchronously in order, so scripts can
 refer to preceding recordings without waiting for a GUI frame. A startup failure
 is logged and stops the remaining arguments.
@@ -492,3 +492,21 @@ Repository layout
    │   └── panels/               # navigation, plots, analysis base, fft, histogram, nodes
    ├── tests/                    # pytest (logic via commands + headless rendering)
    └── build/                    # native (PyInstaller) + web (Pyodide) build flow
+
+Worker and source contracts
+---------------------------
+
+``workers.CancellableExecutor`` owns sequential loading and directory-scan work.
+``requests.Requests`` retains its coalescing scheduler for display and analysis.
+Both use daemon threads, cooperative cancellation and a bounded shutdown join;
+a blocked native or filesystem call cannot hold the process open. Directory
+refresh also cancels the previous scan, including between files in one directory.
+
+``sources.SampleSource`` describes validated raw row reads and time-window bounds.
+``DisplaySource`` adds display sampling and ``prepare_summary``; analysis never
+uses display summaries as raw samples. ``nodes.compute_node`` is the shared
+validated computation entry point for the graph and headless API.
+
+Session saves write a temporary file beside the destination and replace the old
+snapshot only after serialization and writing succeed. Failed saves remove the
+temporary file and preserve the previous session.

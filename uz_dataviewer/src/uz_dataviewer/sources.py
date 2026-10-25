@@ -8,6 +8,7 @@ from __future__ import annotations
 from collections import OrderedDict
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Iterator, Protocol, Sequence
 import hashlib
 import json
 import os
@@ -130,6 +131,40 @@ class PlotData:
     raw_count: int
 
 
+class SampleSource(Protocol):
+    """Shared raw-data contract for recordings, derived outputs and analyses.
+
+    Times are finite and non-decreasing. Row intervals are half-open; bounds
+    include both time endpoints, with optional neighbouring display samples.
+    Implementations validate source identity and honour cancellation on reads.
+    """
+
+    metadata: Metadata
+
+    def validate(self) -> None: ...
+
+    def bounds(self, lo: float, hi: float, cancel: threading.Event | None = None,
+               *, padding: bool = True) -> tuple[int, int]: ...
+
+    def read_rows(self, channels: Sequence[str], start: int, stop: int,
+                  cancel: threading.Event | None = None
+                  ) -> tuple[np.ndarray, dict[str, np.ndarray]]: ...
+
+    def iter_raw(self, channels: Sequence[str], start: int = 0, stop: int | None = None,
+                 cancel: threading.Event | None = None
+                 ) -> Iterator[tuple[np.ndarray, dict[str, np.ndarray]]]: ...
+
+
+class DisplaySource(SampleSource, Protocol):
+    """Display summaries are distinct from the raw-data analysis contract."""
+
+    def read_plot(self, channel: str, lo: float, hi: float, budget: int,
+                  cancel: threading.Event | None = None, *, padding: bool = True
+                  ) -> PlotData: ...
+
+    def prepare_summary(self, channel: str, cancel: threading.Event | None = None) -> None: ...
+
+
 def envelope(t, y, indices, budget):
     """Ordered min/max plus a gap marker per bucket, using original samples.
 
@@ -242,6 +277,10 @@ def atomic_npz(path, **arrays):
 
 class SummarySource:
     """Mixin with bounded shared summary cache and optional durable summaries."""
+    def prepare_summary(self, channel, cancel=None):
+        """Warm the display cache without exposing its internal pyramid format."""
+        self._summary(channel, cancel)
+
     def _summary(self, channel, cancel):
         self.validate()
         check(cancel)
@@ -543,7 +582,7 @@ class SourceColumn:
     GUI code uses the source directly. np.asarray(view) explicitly materializes one
     complete column. Arithmetic must operate on explicitly materialized arrays.
     """
-    def __init__(self, source, channel=None, offset=0.):
+    def __init__(self, source: SampleSource, channel=None, offset=0.):
         self.source, self.channel, self.offset = source, channel, offset
         self.shape = (source.metadata.rows,)
         self.size = source.metadata.rows

@@ -48,12 +48,12 @@ File access
 On the desktop you open files via the OS dialog, or **drag** ``.csv`` / ``.parquet`` files onto the window.
 A browser tab has no OS dialog, so **Open file(s)…** opens an HTML file picker instead.
 Saving works the same way in reverse: native pops an OS save dialog, web triggers a **browser download**.
-The Session menu works on web too — **Save state* / *Export script** download a file, and **Load state* / *Run script** open a file picker to upload one back.
+The Session menu works on web too — **Save state** downloads JSON, and **Load state / Run script** opens a file picker for JSON sessions or command scripts.
 
 .. note::
 
    A restored JSON snapshot re-loads its data files by path, which won't exist in a fresh browser tab.
-   On web, re-open the logs alongside it, or use a ``.uzscript`` (it carries the ``load(...)`` lines).
+   On web, the referenced logs must exist in the tab filesystem at the saved paths. JSON sessions saved on desktop use PyArrow in the browser when Polars is unavailable.
 
 Loading speed
 =============

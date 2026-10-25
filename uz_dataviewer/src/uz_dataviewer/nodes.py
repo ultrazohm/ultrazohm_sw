@@ -388,6 +388,20 @@ def _compute(node: Node, inputs: list[tuple[np.ndarray, np.ndarray]]
     return out_time, out_y, info, spec.unit
 
 
+def publish_output(state, node: Node, unit: str = "") -> None:
+    """Create/refresh a stable output, including an unavailable empty placeholder."""
+    time = node.out_time if node.out_time is not None else np.empty(0, np.float64)
+    values = node.out_y if node.out_y is not None else np.empty(0, np.float32)
+    node.out_run_id = state.upsert_derived_run(node.name, time, values, unit, run_id=node.out_run_id)
+    graph = state.nodes
+
+    def validate_output():
+        if is_stale(state, graph, node):
+            raise ValueError(f"{node.name}: derived output is not current; evaluate the node ({node.error or 'inputs changed'})")
+
+    state.registry.get(node.out_run_id).output_validator = validate_output
+
+
 def evaluate(state, node_id: int | None = None) -> int:
     """Evaluate the graph (or just ``node_id`` and its upstream), materializing
     each transform's output as a derived run. Returns the number of nodes computed.
@@ -426,10 +440,6 @@ def evaluate(state, node_id: int | None = None) -> int:
         node.info = info
         node.error = ""
         node.eval_key = node_key(state, graph, node)
-        node.out_run_id = state.upsert_derived_run(node.name, node.out_time, node.out_y, unit, run_id=node.out_run_id)
-        def validate_output(node=node):
-            if is_stale(state, graph, node):
-                raise ValueError(f"{node.name}: derived output is not current; evaluate the node ({node.error or 'inputs changed'})")
-        state.registry.get(node.out_run_id).output_validator = validate_output
+        publish_output(state, node, unit)
         computed += 1
     return computed

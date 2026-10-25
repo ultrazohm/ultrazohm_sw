@@ -7,13 +7,16 @@ import os
 import sys
 
 import numpy as np
+import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from uz_dataviewer import session  # noqa: E402
-from uz_dataviewer.analysis import _next_fast_len, compute_fft  # noqa: E402
-from uz_dataviewer.commands import _parse_fwindow  # noqa: E402
-from uz_dataviewer.state import AppState  # noqa: E402
+from uz_dataviewer import session
+from uz_dataviewer.analysis import _next_fast_len, compute_fft, histogram_sources
+from uz_dataviewer.commands import _parse_fwindow
+from uz_dataviewer.session import export_fft, export_histogram
+from uz_dataviewer.sources import ArraySource
+from uz_dataviewer.state import AppState
 
 
 def test_next_fast_len_is_5_smooth_and_ge():
@@ -294,3 +297,52 @@ def test_grid_shrink_resets_removed_analysis_targets(app_state):
                 state.commands.execute(state, command, [target])
     state.set_grid(1, 2)
     assert 2 not in state.plot_x_ranges
+
+
+@pytest.mark.parametrize('exporter,config,axis', [
+    (export_fft, 'fft', 'frequency'), (export_histogram, 'histogram', 'bin_center'),
+])
+def test_exports_preserve_duplicate_recordings(states, tmp_path, exporter, config, axis):
+    import pandas as pd
+    state = states()
+    for i in range(3):
+        path = tmp_path / str(i) / 'same.csv'
+        path.parent.mkdir()
+        path.write_text('time;a\n' + ''.join((f'{j};{(i + 1) * (j + 1)}\n' for j in range(8))))
+        run = state.load_sync(str(path))
+        getattr(state, config).sources.append((run.id, 'a'))
+    getattr(state, config).follow_plot = -1
+    path = tmp_path / 'analysis.csv'
+    exporter(state, str(path))
+    frame = pd.read_csv(path)
+    assert frame.columns[0] == axis and len(frame.columns) == 4 and frame.columns.is_unique
+    assert len({state.signal_label(ref) for ref in getattr(state, config).sources}) == 3
+    if config == 'fft':
+        np.testing.assert_allclose(frame.iloc[:, 2], 2 * frame.iloc[:, 1], rtol=1e-6, atol=1e-6)
+        np.testing.assert_allclose(frame.iloc[:, 3], 3 * frame.iloc[:, 1], rtol=1e-6, atol=1e-6)
+    else:
+        np.testing.assert_array_equal(frame.iloc[:, 1:].sum(axis=0), [8, 8, 8])
+
+
+def test_analysis_remove_uses_reference_after_rename(states, recording_csv):
+    from uz_dataviewer.panels.fft import FftPanel
+    state = states()
+    for _ in range(3):
+        run = state.load_sync(str(recording_csv))
+        state.fft.sources.append((run.id, 'a'))
+    panel = FftPanel()
+    panel._compute(state, state.fft, 0, 7)
+    state.registry.get(2).label = 'renamed'
+    panel._remove(state, panel._result_refs()[1])
+    assert state.fft.sources == [(1, 'a'), (3, 'a')]
+
+
+def test_histogram_exact_window():
+    source = ArraySource(np.arange(3.), {'a':np.arange(3.,dtype=np.float32)})
+    assert histogram_sources([('a',source,'a',0)], .9, 1.1, 5)[1] == 1
+    assert histogram_sources([('a',source,'a',0)], 10, 11, 5)[1] == 0
+
+
+@pytest.mark.parametrize('timestamps', [[0,0,0,100], [0,1,2,4], [0,1,np.nan,3]])
+def test_fft_rejects_irregular_time(timestamps):
+    assert not compute_fft(np.array(timestamps,dtype=float), np.arange(4.), 0,100).ok

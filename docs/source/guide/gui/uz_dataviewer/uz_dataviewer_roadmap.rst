@@ -285,7 +285,7 @@ The review fixed three items first: transitive staleness (a downstream node read
 The items below are edges and polish, not core-path bugs.
 
 A. **Resolved: binary math input order.** Canvas links now retain the selected input slot.
-``node_link(src, dst, slot)`` addresses a zero-based slot; JSON v4 and exported scripts preserve slots and gaps.
+``node_link(src, dst, slot)`` addresses a zero-based slot; JSON v4 preserves slots and gaps.
 Connection order no longer swaps subtraction or division operands.
 
 B. **FFT-derived run's x-axis is frequency but plots label it "time".** An ``fft`` node's derived run uses ``time = freqs``, so dropping it into a time-series cell shows a spectrum under an x-axis labelled "time", and **Link X** would couple a frequency axis to time axes.

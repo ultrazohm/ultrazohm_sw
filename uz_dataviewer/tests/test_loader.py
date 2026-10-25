@@ -10,8 +10,9 @@ import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from uz_dataviewer.loader import open_file, parse_channel_name  # noqa: E402
-from uz_dataviewer.model import DataRegistry  # noqa: E402
+from uz_dataviewer.loader import open_file, parse_channel_name
+from uz_dataviewer.model import DataRegistry
+
 
 SAMPLE = (
     "time;CH1=1)ISR_ExecTime_us;CH8=8)ia;CH15=15)Speed_rpm;\n"
@@ -213,3 +214,33 @@ def test_parquet_streaming_matches_bulk(tmp_path, monkeypatch):
     np.testing.assert_allclose(streamed.time, bulk.time)
     for name in bulk.signals:
         np.testing.assert_array_equal(streamed.signals[name].y, bulk.signals[name].y)
+
+
+@pytest.mark.parametrize('backend', ['pyarrow', 'polars'])
+@pytest.mark.parametrize('mode', ['memory', 'lazy'])
+@pytest.mark.parametrize('extension', ['csv', 'parquet'])
+def test_colliding_channels_preserve_raw_columns(tmp_path, states, backend, mode, extension):
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+    path = tmp_path / f'collision.{extension}'
+    names = ['time', 'CH1=1)a', 'a', 'a [2]', 'CH2=2)time']
+    arrays = [np.array([i, i + 1.0]) for i in (0, 10, 20, 30, 40)]
+    if extension == 'csv':
+        path.write_text(';'.join(names) + '\n' + '\n'.join((';'.join(map(str, row)) for row in zip(*arrays))))
+    else:
+        pq.write_table(pa.table(dict(zip(names, arrays))), path)
+    run = open_file(str(path), mode, backend=backend).register(states().registry)
+    assert len(run.signals) == 4 and 'time' not in run.signals
+    _, values = run.read_window(list(run.signals), 0, 1)
+    for actual, expected in zip(values.values(), arrays[1:]):
+        np.testing.assert_array_equal(actual, expected)
+
+
+@pytest.mark.parametrize('backend', ['pyarrow', 'polars'])
+@pytest.mark.parametrize('mode', ['memory', 'lazy'])
+def test_native_quoted_csv_headers(tmp_path, states, backend, mode):
+    path = tmp_path / 'quoted.csv'
+    path.write_text('time;"a,b,c";\n0;10;\n1;20;\n')
+    run = open_file(str(path), mode, backend=backend).register(states().registry)
+    assert list(run.signals) == ['a,b,c']
+    np.testing.assert_array_equal(run.read_window(['a,b,c'], 0, 1)[1]['a,b,c'], [10, 20])

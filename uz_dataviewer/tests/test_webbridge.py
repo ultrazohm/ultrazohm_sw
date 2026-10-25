@@ -6,16 +6,21 @@ headers + float arrays, with no Arrow text parse. No browser needed.
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
+import importlib.util
+import os
+import shutil
+import subprocess
 import sys
 
 import numpy as np
+import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from uz_dataviewer import webbridge  # noqa: E402
-from uz_dataviewer.state import AppState  # noqa: E402
+from uz_dataviewer import webbridge
+from uz_dataviewer.session import save_state
+from uz_dataviewer.state import AppState
 
 
 def test_load_columns_builds_run_from_arrays():
@@ -226,3 +231,52 @@ const pyodide = {pyimport: () => ({
     script = tmp_path/'budget.cjs'
     script.write_text(code+harness)
     subprocess.run([node, str(script)], check=True, capture_output=True, text=True, timeout=15)
+
+
+def test_streamed_session_save_fails_without_truncating_file(states, tmp_path):
+    state = states()
+    webbridge.register_state(state)
+    try:
+        webbridge.load_columns('stream.csv', ['a'], [np.arange(8, dtype=np.float32)], np.arange(8.0))
+        path = tmp_path / 'state.json'
+        path.write_text('existing')
+        with pytest.raises(ValueError, match='backing file'):
+            save_state(state, str(path))
+        assert path.read_text() == 'existing'
+        assert len(state.registry) == 1
+    finally:
+        webbridge.register_state(None)
+
+
+def test_generated_browser_stream_parser(tmp_path):
+    node = shutil.which('node')
+    if node is None:
+        pytest.skip('Node.js required for generated browser parser')
+    path = Path(__file__).parents[1] / 'build/gen_web.py'
+    spec = importlib.util.spec_from_file_location('gen_web_review', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    html = module.build_html()
+    start = html.index('  async function loadStreamingCsv(file)')
+    end = html.index('  function wireFileInput()', start)
+    harness = r"""
+const assert=require('node:assert/strict');
+function pyRun(body){}
+let loaded;
+const pyodide={pyimport:()=>({load_columns:(name,names,columns,time)=>{
+ loaded={names,columns:columns.map(x=>Array.from(x)),time:Array.from(time)};
+},destroy:()=>{}})};
+(async()=>{
+ for(const d of [',',';']){
+  const file=new Blob([`time${d}"a"\r\n0${d}10\r\n1${d}20\r\n`]);file.name='test.csv';
+  await loadStreamingCsv(file);
+  assert.deepEqual(loaded,{names:['a'],columns:[[10,20]],time:[0,1]});
+ }
+ for(const text of ['time\n0\n','time,a\n0,10oops\n','time,a,a\n0,1,2\n','time,a\n0\n']){
+  const file=new Blob([text]);file.name='bad.csv';await assert.rejects(()=>loadStreamingCsv(file));
+ }
+})().catch(error=>{console.error(error);process.exitCode=1;});
+"""
+    target = tmp_path / 'parser.cjs'
+    target.write_text(html[start:end] + harness)
+    subprocess.run([node, str(target)], check=True, capture_output=True, text=True, timeout=15)

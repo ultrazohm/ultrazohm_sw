@@ -1,9 +1,10 @@
 """Lazy/eager contract, persisted caches, raw-analysis parity and cancellation."""
+
+from pathlib import Path
 import os
 import sys
 import threading
 import time
-from pathlib import Path
 
 import numpy as np
 import pyarrow as pa
@@ -11,13 +12,14 @@ import pyarrow.parquet as pq
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
-from uz_dataviewer.sources import ArraySource, ParquetSource, ByteCache, SourceColumn, Cancelled
-from uz_dataviewer.requests import Requests
+
+from uz_dataviewer.analysis import compute_fft
 from uz_dataviewer.loader import open_file
 from uz_dataviewer.model import DataRegistry
+from uz_dataviewer.requests import Requests
+from uz_dataviewer.session import apply_dict, export_data, export_fft, export_histogram, to_dict
+from uz_dataviewer.sources import ArraySource, ByteCache, Cancelled, ParquetSource, SourceColumn
 from uz_dataviewer.state import AppState
-from uz_dataviewer.analysis import compute_fft
-from uz_dataviewer.session import to_dict, apply_dict, export_data, export_fft, export_histogram
 
 
 @pytest.fixture(params=["pyarrow", "polars"], autouse=True)
@@ -36,7 +38,6 @@ def source_backend(request, monkeypatch):
             super().__init__()
             self.backend = request.param
     monkeypatch.setattr(sys.modules[__name__], "AppState", BackendState)
-
 
 
 @pytest.fixture
@@ -420,3 +421,18 @@ def test_disabled_disk_cache_ignores_existing_files(recording, tmp_path):
     assert source.summary_path('a') is None
     source.read_plot('a', t[0], t[-1], 200)
     assert {p: p.read_bytes() for p in root.rglob('*') if p.is_file()} == before
+
+
+def test_lazy_column_requires_explicit_materialization(states, recording_csv):
+    state = states()
+    run = state.load_sync(str(recording_csv))
+    column = run.signals['a'].y
+    with pytest.raises(TypeError):
+        column + 1
+    with pytest.raises(TypeError, match='materialize'):
+        column[[1, 3]]
+    with pytest.raises(TypeError, match='materialize'):
+        column[::-1]
+    np.testing.assert_array_equal(column.read_rows(1, 3), [2, 3])
+    np.testing.assert_array_equal(column.materialize(), np.arange(1, 9))
+    np.testing.assert_array_equal(np.asarray(column), np.arange(1, 9))

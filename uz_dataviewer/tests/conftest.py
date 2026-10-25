@@ -1,4 +1,5 @@
 """Keep persisted indexes and lazy CSV conversions out of the user's cache."""
+
 import pytest
 
 
@@ -43,3 +44,34 @@ def gui_frame():
     ed.destroy_editor(editor)
     implot.destroy_context()
     imgui.destroy_context()
+
+
+@pytest.fixture
+def states():
+    from uz_dataviewer.state import AppState
+    created = []
+
+    def make():
+        state = AppState()
+        created.append(state)
+        return state
+    yield make
+    for state in created:
+        state.shutdown()
+
+
+@pytest.fixture
+def recording_csv(tmp_path):
+    path = tmp_path / 'recording.csv'
+    path.write_text('time;a\n' + ''.join((f'{i};{i + 1}\n' for i in range(8))))
+    return path
+
+
+@pytest.fixture
+def execute_commands():
+    from uz_dataviewer.commands import parse_call
+
+    def execute(state, *lines):
+        for line in lines:
+            state.commands.execute(state, *parse_call(line))
+    return execute

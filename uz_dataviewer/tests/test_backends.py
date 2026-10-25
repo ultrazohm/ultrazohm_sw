@@ -1,6 +1,7 @@
 """Backend selection is independent of storage policy and survives session restore."""
-import json
+
 from pathlib import Path
+import json
 import subprocess
 import sys
 
@@ -11,9 +12,9 @@ import pytest
 
 from uz_dataviewer import api, webbridge
 from uz_dataviewer.commands import CommandError
-from uz_dataviewer.loader import open_file, convert_csv_to_parquet
+from uz_dataviewer.loader import convert_csv_to_parquet, open_file
 from uz_dataviewer.model import DataRegistry
-from uz_dataviewer.session import SCHEMA_VERSION, to_dict, apply_dict, to_script, run_script, export_data
+from uz_dataviewer.session import SCHEMA_VERSION, apply_dict, export_data, to_dict
 from uz_dataviewer.sources import ByteCache, SourceColumn
 from uz_dataviewer.state import AppState
 
@@ -71,10 +72,10 @@ def test_queued_load_captures_backend(logs, tmp_path):
         state.shutdown()
 
 
-def test_json_and_script_keep_backend_per_file(logs, tmp_path):
-    state, restored, replayed = AppState(), AppState(), AppState()
+def test_json_keeps_backend_per_file(logs, tmp_path):
+    state, restored = AppState(), AppState()
     try:
-        for s in [state, restored, replayed]:
+        for s in [state, restored]:
             s.cache_dir = tmp_path/'cache'
         state.backend, state.loading_mode = 'polars', 'lazy'
         state.load_sync(str(logs[0]))
@@ -82,16 +83,13 @@ def test_json_and_script_keep_backend_per_file(logs, tmp_path):
         state.load_sync(str(logs[1]))
         saved = json.loads(json.dumps(to_dict(state)))
         apply_dict(restored, saved)
-        script = tmp_path/'mixed.uzscript'
-        script.write_text('\n'.join(to_script(state)))
-        run_script(replayed, str(script))
-        for s in [restored, replayed]:
+        for s in [restored]:
             assert [r.backend for r in s.registry.runs] == ['polars', 'pyarrow']
             assert isinstance(s.registry.runs[0].time, SourceColumn)
             assert isinstance(s.registry.runs[1].time, np.ndarray)
             assert s.backend == 'pyarrow' and s.loading_mode == 'memory'
     finally:
-        for s in [state, restored, replayed]: s.shutdown()
+        for s in [state, restored]: s.shutdown()
 
 
 @pytest.mark.parametrize('backend', ['pyarrow', 'polars'])
@@ -141,7 +139,6 @@ def test_default_cache_and_removed_auto_controls():
             state.commands.execute(state, 'loading_mode', ['auto'])
         snapshot = to_dict(state)
         assert 'memory_budget_mb' not in snapshot
-        assert not any(line.startswith('memory_budget(') for line in to_script(state))
     finally:
         state.shutdown()
 
@@ -188,8 +185,8 @@ def test_cli_defaults_and_explicit_overrides(monkeypatch):
 
 
 def test_disk_cache_session_settings(logs, tmp_path):
-    states = [AppState(), AppState(), AppState()]
-    state, restored, replayed = states
+    states = [AppState(), AppState()]
+    state, restored = states
     try:
         assert state.disk_cache is False
         state.cache_dir = tmp_path / 'cache'
@@ -198,13 +195,35 @@ def test_disk_cache_session_settings(logs, tmp_path):
         assert run is not None and run.source.disk_cache
         state.disk_cache = False
         apply_dict(restored, to_dict(state))
-        from uz_dataviewer.session import run_script
-        script = tmp_path / 'cache.uzscript'
-        script.write_text('\n'.join(to_script(state)))
-        run_script(replayed, str(script))
-        for s in (restored, replayed):
+        for s in (restored,):
             assert not s.disk_cache
             assert s.registry.runs[0].source.disk_cache
     finally:
         for s in states:
             s.shutdown()
+
+
+@pytest.mark.parametrize('backend', ['pyarrow','polars'])
+@pytest.mark.parametrize('mode', ['lazy','memory'])
+def test_exact_windows_and_exports_across_backends(tmp_path, backend, mode):
+    from uz_dataviewer.session import export_data
+    from uz_dataviewer.api import read
+    state=AppState()
+    try:
+        path=tmp_path/'samples.csv'
+        path.write_text('time;a\n0;1\n1;2\n2;3\n')
+        state.backend, state.loading_mode = backend, mode
+        run=state.load_sync(str(path))
+        state.cells[0].signals=[(run.id,'a')]
+        t, values=run.read_window(['a'],.9,1.1)
+        np.testing.assert_array_equal(t,[1])
+        np.testing.assert_array_equal(values['a'],[2])
+        state.plot_x_ranges[1]=(.9,1.1)
+        target=tmp_path/'export.csv'
+        export_data(state,0,str(target))
+        np.testing.assert_array_equal(read(target,backend=backend)['a'],[2])
+        state.plot_x_ranges[1]=(10,11)
+        export_data(state,0,str(target),relative=True)
+        assert len(target.read_text().splitlines())==1  # Header, no samples outside window.
+    finally:
+        state.shutdown()

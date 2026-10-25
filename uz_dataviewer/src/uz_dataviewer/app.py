@@ -59,8 +59,10 @@ class DataViewerApp:
         for path in initial_files or []:
             if not os.path.exists(path):
                 self.state.console.warn(f"File not found: {path}")
+            elif path.lower().endswith(".json"):
+                self.state.commands.execute(self.state, "load_state", [path])
             elif path.lower().endswith(".uzscript"):
-                # Replay a saved session script (reproducible startup).
+                # Execute an automation script.
                 self.state.commands.execute(self.state, "run_script", [path])
             else:
                 self.state.request_load(path)
@@ -154,13 +156,6 @@ class DataViewerApp:
                 "",
             )
         imgui.separator()
-        if imgui.menu_item("Export script...", "", False, not disabled)[0]:
-            self._session_dialog = (
-                pfd.save_file("Export script", "session.uzscript", ["Script (*.uzscript)", "*.uzscript"]),
-                "export_script",
-                False,
-                ".uzscript",
-            )
         if imgui.menu_item("Run script...", "", False, not disabled)[0]:
             self._session_dialog = (
                 pfd.open_file("Run script", "", ["Script (*.uzscript *.txt)", "*.uzscript *.txt"]),
@@ -176,9 +171,6 @@ class DataViewerApp:
             self._web_download("save_state", "session.json")
         if imgui.menu_item("Load state / Run script...", "", False, True)[0]:
             webbridge.trigger_session_open()
-        imgui.separator()
-        if imgui.menu_item("Export script...", "", False, True)[0]:
-            self._web_download("export_script", "session.uzscript")
 
     def _web_download(self, command: str, name: str) -> None:
         webbridge.save_and_download(
@@ -373,7 +365,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--backend", choices=("pyarrow", "polars"), default=default_backend,
                         help=f"IO backend for file loading (default: {default_backend})")
     parser.add_argument("--disk-cache", action="store_true", help="Persist measurement caches on disk (default: RAM only)")
-    parser.add_argument("files", nargs="*", help="CSV, Parquet, or session script files")
+    parser.add_argument("files", nargs="*", help="CSV, Parquet, JSON sessions, or command scripts")
     args = parser.parse_args(argv)
     app = DataViewerApp(initial_files=args.files, loading_mode=args.loading_mode, backend=args.backend, disk_cache=args.disk_cache)
     app.run()

@@ -36,7 +36,7 @@ is a replayable command.
   filter / shift), and the result becomes a new draggable signal. Fully scriptable
   (`node_*`) and extensible with your own **Python plugin nodes** (see [Plugins](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_plugins.rst)).
 - **Scriptable command console** — every action echoes a command; the input runs them, with
-  completion, history and a selectable log. Sessions save to JSON or a replayable `.uzscript`.
+  completion, history and a selectable log. Sessions save to JSON; `.uzscript` files run command automation.
 - **MaterialFlat theme.** Runs natively (Windows/Linux/macOS) and in the browser (Pyodide/WASM).
 
 ## Quick start
@@ -46,7 +46,7 @@ Run the launcher from the repository root (Linux/macOS):
 ```bash
 ./uz_dataviewer/start.sh
 ./uz_dataviewer/start.sh path/to/log.csv    # preload one or more files
-./uz_dataviewer/start.sh session.uzscript   # replay a saved session
+./uz_dataviewer/start.sh session.json       # restore a saved session
 ```
 
 On Windows, use PowerShell:
@@ -73,7 +73,7 @@ Alternatively, install and run manually from `uz_dataviewer/`:
 pip install -r requirements.txt      # or: pip install -e .
 python run.py                        # or: python -m uz_dataviewer
 python run.py ../javascope/Log_2026-06-11_22-45-16.csv   # preload
-python run.py session.uzscript       # replay a saved session
+python run.py session.json           # restore a saved session
 ```
 
 On desktop, selecting a CSV larger than 1 GiB prompts **Large log, conversion to parquet recommended**.
@@ -102,7 +102,7 @@ or select the mode at startup:
   CSV requires repeated text scanning and is slower for interactive navigation.
 
 The setting affects subsequent opens. Existing runs retain their storage mode;
-JSON sessions and exported scripts preserve mixed modes. The console equivalents
+JSON sessions preserve mixed modes. The console equivalents
 are `loading_mode(lazy)` and `cache_budget(1024)`.
 
 Plot preparation, first-use summaries, XY sampling, cursor reads, and GUI FFT /
@@ -131,7 +131,7 @@ console/script commands and node/plugin evaluation retain synchronous semantics.
 Measurement caches stay in RAM by default; no automatic CSV conversion is written.
 Enable **Disk cache (new opens)** under **Cache settings**, pass `--disk-cache`, or use `disk_cache(true)` to persist indexes and summaries and convert lazy CSV inputs into reusable Parquet files.
 Reopen existing files to change their cache policy.
-Sessions and scripts preserve the setting for each file.
+JSON sessions preserve the setting for each file.
 When enabled, disk caches live in `~/.cache/uz_dataviewer` (Polars uses its `polars/` subdirectory), or the directory selected by `UZ_DATAVIEWER_CACHE`.
 They are disposable and source-versioned; close the viewer before clearing that directory.
 Disabling disk caching leaves existing cache files untouched and does not read them.
@@ -145,8 +145,8 @@ Browser file caches live in the tab's temporary filesystem and are cleared on pa
 
 Sessions now use schema version 4 with explicit run identities, including repeated opens and identical filenames in different directories.
 Node links preserve explicit input slots, including disconnected slots. Canvas connection order does not change subtraction or division.
-Restoring a saved session replaces the current session only after successful loading. Failed restoration leaves the current session intact. Old snapshots and older exported session scripts must be recreated.
-Plot windows, precise time ranges and inactive recordings survive JSON and script round trips. Restoring a session resets panel caches and canvas positions; Y fitting completes when lazy samples arrive. Applied primary Y limits survive both JSON and script saves.
+Restoring a saved session replaces the current session only after successful loading. Failed restoration leaves the current session intact. Old snapshots and generated session scripts must be recreated as JSON sessions.
+Plot windows, precise time ranges and inactive recordings survive JSON round trips. Restoring a session resets panel caches and canvas positions; Y fitting completes when lazy samples arrive. Applied primary Y limits survive JSON saves.
 Removing a followed subplot switches its analysis windows to Full and discards the removed plot's cached range.
 Recomputing a node preserves its derived recording's selected time origin.
 Small browser uploads use separate backing paths even when filenames match. Failed exports never download an earlier result.
@@ -155,8 +155,8 @@ Chain transforms with node links; using derived outputs as new source nodes is n
 Analysis and exports use exact time windows, while plotting retains edge padding.
 FFT and FIR filters reject duplicate or irregular timestamps (100 ppm tolerance plus roundoff).
 Binary math and XY plots require matching timestamps throughout both inputs; implicit index alignment and XY truncation have been removed. XY limits and zoom survive session round trips without changing linked time axes.
-Stale or failed derived outputs are blocked from plots, analysis and exports until successful reevaluation; existing assignments are preserved. Source validation covers original CSV files even when reading a cached conversion.
-JSON and script saves share one canonical snapshot. Completing an export dialog after its subplot was removed cancels the export.
+Stale or failed derived outputs are blocked from plots, analysis and exports until successful reevaluation; existing assignments are preserved, including across JSON restoration. Failed graphs restore with empty, unavailable output placeholders until repaired. Source validation covers original CSV files even when reading a cached conversion.
+JSON is the only saved-session format; generated session-script export has been removed. Ordinary `.uzscript` automation remains supported and can call `load_state("session.json")`; commands run sequentially and stop at the first error. Completing an export dialog after its subplot was removed cancels the export.
 FFT export validates every selected signal before writing: an invalid channel fails the export with its name and reason, preserving any existing destination file.
 
 ## Documentation

@@ -19,7 +19,7 @@ This model yields four properties:
 
 #. **Scriptability** — anything clickable can be typed or replayed (``.uzscript``).
 #. **Live transcript** — the console shows what happened, as commands.
-#. **Save/restore** — sessions serialise to JSON or to a replayable command script.
+#. **Save/restore** — sessions serialize to JSON through one restoration path.
 #. **Testability** — app logic is exercised by dispatching command strings; no window required.
 
 .. warning::
@@ -105,7 +105,7 @@ Module map
      - Load external transform-node plugins (``@transform``); robust to missing dirs/files
      - ``transform``, ``ParamSpec``, ``load_plugins``
    * - ``session.py``
-     - JSON save/restore, ``.uzscript`` export/replay, CSV exports
+     - JSON save/restore, command-script execution, CSV exports
      - ``to_dict``/``apply_dict``, ``export_*``
    * - ``webbridge.py``
      - Browser integration (file input, array load, downloads)
@@ -240,7 +240,7 @@ Nodes *produce* data; nothing else in the app needs to know they exist.
 
 - **Graph** (``NodeGraph``) of ``Node``s: a **source** wraps a ``(run, signal)`` ref; a **transform** (``fft`` / ``math`` / ``filter`` / ``shift``) pulls arrays from its inputs and computes. Links are validated against cycles; ids are persisted so derived-run labels (= node name) are stable across save/restore.
 - **On-demand evaluation** (``evaluate``): topological order; each transform reads its inputs (a source from the registry, an upstream transform from its cache), computes via ``transforms``/``analysis``, bumps a ``version``, and upserts its derived run **in place** (so plot references survive a re-eval). Per-node errors are logged and skipped, not fatal. A node is **stale** (``is_stale``) when its key — params + each input's version/identity — differs from the last evaluated key (the same idea as the analysis windows' ``_computed_key``).
-- **GUI-free + scriptable**: ``nodes.py``/``transforms.py`` import no GUI and raise plain ``ValueError``s, so the whole engine is driven and tested from command strings. The canvas (``panels/nodes.py``, ``imgui_node_editor``) is a thin layer that **only issues ``node_*`` commands** — drag-drop → ``node_source``, link → ``node_link``, a widget → ``node_set``, a drag → ``node_pos``, the button → ``node_eval``. So the graph round-trips through the console, ``.uzscript``, and the JSON session.
+- **GUI-free + scriptable**: ``nodes.py``/``transforms.py`` import no GUI and raise plain ``ValueError``s, so the whole engine is driven and tested from command strings. The canvas (``panels/nodes.py``, ``imgui_node_editor``) is a thin layer that **only issues ``node_*`` commands** — drag-drop → ``node_source``, link → ``node_link``, a widget → ``node_set``, a drag → ``node_pos``, the button → ``node_eval``. The graph is automated through commands and restored through the JSON session.
 - **Transforms are pure NumPy** (windowed-sinc FIR filter, not SciPy) so native and web share one code path. FFT reuses ``analysis.compute_fft``; its derived run's x-axis is frequency.
 - **Registry-driven.** Every transform (builtin *or* plugin) is a ``TransformSpec`` in ``REGISTRY``; the engine looks up available kinds, default params, input arity and the compute function there, so a plugin is indistinguishable from a builtin. External plugins (``plugins.py``, the ``@transform`` decorator) are loaded at startup from ``$UZ_DATAVIEWER_PLUGINS`` / ``~/.uz_dataviewer/nodes/`` — both optional; a missing dir, no files, or a broken plugin are all tolerated (the app runs with just the builtins). An unknown kind (plugin not installed) restores as a placeholder that keeps its params/links. See :doc:`uz_dataviewer_plugins`.
 
@@ -295,7 +295,7 @@ Lazy CSV input is scanned directly by the selected backend by default.
 CSV navigation requires repeated text scanning and can be slower than Parquet.
 Enabling ``disk_cache(true)`` for subsequent opens persists indexes and summaries and converts lazy CSV input to a versioned Parquet cache.
 Existing cache files are left untouched when disk caching is disabled.
-Sessions and scripts preserve per-file storage modes and the current settings.
+JSON sessions preserve per-file storage modes and the current settings.
 
 GUI FFT and histogram computations use a separate worker with snapshots of their input configuration.
 Histograms make two bounded passes over raw batches with shared bin edges.
@@ -323,19 +323,24 @@ and validates complete time axes for binary math. Derived-run refresh preserves 
 Sessions (``session.py``)
 ==========================
 
-Two complementary formats:
+**JSON snapshot** (``save_state``/``load_state``) is the only session format.
+Schema version 4 reloads explicit per-run records and remaps recording/node keys,
+preserving duplicate names and repeated opens of the same path. Restoration uses
+a replacement state; failures leave the current session intact.
 
-- **JSON snapshot** (``save_state``/``load_state``) — the exact view (grid, assignments, plot types, cursors/spy, secondary axes, FFT/Histogram config, time origins, file list).
-  Schema version 4 reloads explicit per-run records and remaps recording/node keys, preserving duplicate names and repeated opens of the same path.
-- **``.uzscript``** (``export_script``/``run_script``) — a human-readable, editable list of commands that reproduces the session when replayed.
-  Scripts restore into a replacement state and use recording ``run_N`` and explicit ``node_output_N`` references. A failed restore preserves the current session.
+``.uzscript`` files remain available through ``run_script`` for sequential command
+automation. They stop at the first error and retain changes from earlier commands.
+Use ``load_state("session.json")`` within a script to invoke transactional restoration.
+Generated session-script export and its separate restoration path have been removed.
+Old version 1/2/3 snapshots and all generated session scripts are rejected.
 
-Both exporters start from ``session.to_dict``; script generation translates that canonical snapshot into commands instead of rereading live state independently.
-
-Old version 1/2/3 snapshots and old exported session scripts are rejected; Auto and memory-budget migrations have been removed.
+Failed or incomplete transforms with saved output assignments receive empty derived
+run placeholders. The same validity check used for stale outputs blocks their data
+from plots, analysis and exports. Successful evaluation refreshes those runs in place,
+preserving assignments, visibility and time origin without saving stale sample arrays.
 
 Input lists are indexed slots (``null`` represents a disconnected slot). ``node_link(src, dst, slot)``
-and ``node_unlink(src, dst, slot)`` use zero-based slots; scripts serialize the slot explicitly.
+and ``node_unlink(src, dst, slot)`` use zero-based slots; JSON preserves the slot explicitly.
 The same upstream node can feed both binary inputs without collapsing the links.
 
 ``AppState.replace_session`` owns the transfer of prepared session state and shuts down the old workers.
@@ -349,9 +354,12 @@ Browser-streamed arrays have no backing file and cannot be saved in a reloadable
 Saving rejects them before opening the destination file. Export their data first.
 
 ``SubplotCell.y_lim`` records the last rendered primary Y range, separately from one-shot ``pending_y_lim`` commands.
-JSON and scripts persist pending limits when present, otherwise the live range.
+JSON persists pending limits when present, otherwise the live range.
 Grid reduction prunes removed ranges and switches affected FFT/Histogram followers to Full.
 Invalid analysis plot references are rejected by commands and session restore.
+``validation.axis_limits`` rejects non-finite or non-increasing limits before mutation.
+``SubplotCell`` owns clearing, secondary-axis membership and explicit limits; clearing
+a plot removes secondary-axis assignments as well as plotted signals.
 
 CSV exports (``export_data``, ``export_fft``, ``export_histogram``) also live here.
 FFT export validates all selected channels before writing; a missing or invalid channel aborts with its identity and reason.
@@ -426,7 +434,7 @@ Design decisions
    * - Single ``AppState``, panels as renderers
      - One source of truth; trivial to serialise and test; no scattered widget state.
    * - Command layer is the only mutation path
-     - Scriptability, console transcript, save/restore-by-replay, and headless testing all
+     - Scriptability, console transcript, command automation, and headless testing all
        derive from it.
    * - Gestures **echo**, discrete actions **execute**
      - Zoom/drag are continuous; echoing once on settle keeps the console readable while

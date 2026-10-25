@@ -352,6 +352,7 @@ class CommandRegistry:
 def register_builtins(reg: CommandRegistry) -> None:
     # Imported lazily inside handlers to avoid a GUI/state import cycle.
     from .state import PlotType, XyStyle
+    from .validation import axis_limits
 
     def _cell(state, plot_n):
         return state.cells[plot_n - 1]
@@ -486,7 +487,7 @@ def register_builtins(reg: CommandRegistry) -> None:
             remove_signal, "Remove a signal from a subplot.")
 
     def clear_plot(state, a):
-        _cell(state, a[0]).signals.clear()
+        _cell(state, a[0]).clear()
 
     reg.add("clear_plot", [Param("plot", "plot")], clear_plot, "Remove all signals from a subplot.")
 
@@ -517,8 +518,7 @@ def register_builtins(reg: CommandRegistry) -> None:
     def set_x_lim(state, a):
         plot_n, lo, hi = a
         cell = _cell(state, plot_n)
-        cell.pending_x_lim = (lo, hi)
-        cell.x_lim = (lo, hi)
+        cell.set_limits("x", lo, hi)
         if cell.plot_type is not PlotType.XY:
             state.plot_x_ranges[plot_n] = (lo, hi)
             if state.link_x:
@@ -529,7 +529,7 @@ def register_builtins(reg: CommandRegistry) -> None:
 
     def set_y_lim(state, a):
         plot_n, lo, hi = a
-        _cell(state, plot_n).pending_y_lim = (lo, hi)
+        _cell(state, plot_n).set_limits("y", lo, hi)
 
     reg.add("set_y_lim", [Param("plot", "plot"), Param("min", "float"), Param("max", "float")],
             set_y_lim, "Set a subplot's Y-axis limits.")
@@ -599,18 +599,13 @@ def register_builtins(reg: CommandRegistry) -> None:
         plot_n, run_id, name, side = a
         ref = (run_id, name)
         cell = _cell(state, plot_n)
-        if ref not in cell.signals:
-            raise CommandError(f"{name!r} is not in plot_{plot_n}")
         side = str(side).lower()
-        if side in ("right", "y2", "secondary"):
-            if ref not in cell.y2_signals:
-                cell.y2_signals.append(ref)
-        elif side in ("left", "y1", "primary"):
-            if ref in cell.y2_signals:
-                cell.y2_signals.remove(ref)
-        else:
+        if side not in ("right", "y2", "secondary", "left", "y1", "primary"):
             raise CommandError("side must be 'left' or 'right'")
-        cell.fit_pending = True
+        try:
+            cell.set_secondary(ref, side in ("right", "y2", "secondary"))
+        except ValueError as exc:
+            raise CommandError(str(exc)) from exc
 
     reg.add("set_axis", [Param("plot", "plot"), Param("run", "run"), Param("signal", "str"), Param("side", "str")],
             set_axis, "Assign a signal to the left or right Y axis of a subplot.")
@@ -686,7 +681,7 @@ def register_builtins(reg: CommandRegistry) -> None:
                 f"Set the {noun} custom time window.")
 
         def xlim(state, a):
-            _cfg(state).pending_x_lim = (a[0], a[1])
+            _cfg(state).pending_x_lim = axis_limits(*a)
 
         reg.add(f"{prefix}_xlim", [Param("min", "float"), Param("max", "float")], xlim,
                 f"Set the {noun} plot's X-axis view limits.")
@@ -765,14 +760,6 @@ def register_builtins(reg: CommandRegistry) -> None:
         return f"Restored state from {a[0]}"
 
     reg.add("load_state", [Param("path", "str")], load_state, "Restore the GUI state from a JSON file.")
-
-    def export_script(state, a):
-        from .session import export_script as _export
-        _export(state, a[0])
-        return f"Exported session script to {a[0]}"
-
-    reg.add("export_script", [Param("path", "str")], export_script,
-            "Write the session as a replayable .uzscript.")
 
     def run_script(state, a):
         from .session import run_script as _run

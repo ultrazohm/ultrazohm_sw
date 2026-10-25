@@ -10,7 +10,7 @@ import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from uz_dataviewer.transforms import filter_node, math_node  # noqa: E402
+from uz_dataviewer.transforms import filter_node, math_node
 
 
 def _sine(f, n=4000, dur=1.0):
@@ -152,3 +152,9 @@ def test_sampling_roundoff_and_block_boundary_validation():
         math_node([(t, y), (changed, y)], {'op': 'sub'})
     with pytest.raises(ValueError, match='uniformly spaced'):
         filter_node(changed, y, {'cutoff': 100, 'taps': 3})
+
+
+def test_short_filter_keeps_length():
+    t = np.arange(10.)
+    out_t, out_y, _ = filter_node(t, t, {'type':'low', 'cutoff':.1})
+    assert out_t.shape == out_y.shape == (10,)

@@ -64,7 +64,7 @@ def test_nodes_panel_renders_a_graph():
 def test_binary_pins_honor_destination_and_round_trip(app_state, tmp_path):
     from uz_dataviewer.panels.nodes import NodesPanel, _out_pin, _in_pin
     from uz_dataviewer.nodes import evaluate
-    from uz_dataviewer.session import to_dict, apply_dict, export_script, run_script
+    from uz_dataviewer.session import to_dict, apply_dict
     state = app_state
     path = tmp_path / 'input.csv'
     path.write_text('time;a;b\n' + ''.join(f'{i};10;2\n' for i in range(8)))
@@ -83,12 +83,9 @@ def test_binary_pins_honor_destination_and_round_trip(app_state, tmp_path):
     assert evaluate(state) == 1
     np.testing.assert_array_equal(state.nodes.get(node.id).out_y, np.full(8, 8))
     saved = to_dict(state)
-    script = tmp_path / 'slots.uzscript'
-    export_script(state, str(script))
-    for restore in (lambda: apply_dict(state, saved), lambda: run_script(state, str(script))):
-        restore()
-        np.testing.assert_array_equal(state.nodes.get(node.id).out_y, np.full(8, 8))
-        assert state.nodes.get(node.id).inputs == [a.id, b.id]
+    apply_dict(state, saved)
+    np.testing.assert_array_equal(state.nodes.get(node.id).out_y, np.full(8, 8))
+    assert state.nodes.get(node.id).inputs == [a.id, b.id]
 
 
 def test_source_crop_and_float_edits_preserve_precision(app_state, monkeypatch):

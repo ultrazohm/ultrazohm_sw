@@ -6,11 +6,13 @@ import os
 import sys
 
 import numpy as np
+import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from uz_dataviewer import session  # noqa: E402
-from uz_dataviewer.state import AppState  # noqa: E402
+from uz_dataviewer import session
+from uz_dataviewer.state import AppState
+
 
 SAMPLE = (
     "time;CH8=8)ia;\n"
@@ -66,15 +68,6 @@ def test_time_origin_survives_session_roundtrip(tmp_path):
     session.load_state(restored, str(snap))
     assert abs(restored.registry.get(1).time[0] - 5.0) < 1e-6
 
-    # And the script path emits the normalised load.
-    script = tmp_path / "s.uzscript"
-    session.export_script(state, str(script))
-    assert "load(" in script.read_text()
-    replayed = AppState()
-    session.run_script(replayed, str(script))
-    assert abs(replayed.registry.get(1).time[0] - 5.0) < 1e-6
-
-
 def test_time_version_bumps_on_normalize(tmp_path):
     # The plot decimation cache is keyed on run.time_version; normalising the axis
     # must bump it so a cached envelope (built from the old time) is not reused.
@@ -118,3 +111,17 @@ def test_fft_follow_plot_resolves_range(tmp_path):
     # Following a plot with no published range falls back to the full record.
     fb = state.resolve_x_window(2, (0.0, 0.0), [(1, "ia")])
     assert abs(fb[0] - 12.0) < 1e-6 and abs(fb[1] - 12.2) < 1e-6
+
+
+@pytest.mark.parametrize('mode', ['memory', 'lazy'])
+@pytest.mark.parametrize('target', [float('nan'), float('inf'), -float('inf')])
+def test_nonfinite_origin_is_rejected_before_mutation(app_state, tmp_path, mode, target):
+    path = tmp_path / 'origin.csv'
+    path.write_text(SAMPLE)
+    app_state.loading_mode = mode
+    run = app_state.load_sync(str(path))
+    version, original = run.time_version, np.asarray(run.time).copy()
+    with pytest.raises(ValueError, match='finite'):
+        app_state.commands.execute(app_state, 'normalize_time', [run.id, target])
+    assert run.time_version == version and run.time_origin is None
+    np.testing.assert_array_equal(np.asarray(run.time), original)

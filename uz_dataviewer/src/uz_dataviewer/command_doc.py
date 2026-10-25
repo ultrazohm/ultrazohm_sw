@@ -79,7 +79,6 @@ _EXPLICIT_GROUPS: dict[str, str] = {
     # Session
     "save_state": "Session",
     "load_state": "Session",
-    "export_script": "Session",
     "run_script": "Session",
     # Console
     "help": "Console",

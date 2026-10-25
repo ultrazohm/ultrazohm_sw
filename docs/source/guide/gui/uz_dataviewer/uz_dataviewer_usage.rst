@@ -57,13 +57,13 @@ The status bar shows retained RAM cache usage next to FPS.
 An amber **cache limit hit** indication appears for five seconds after an entry is evicted or a result exceeds the cache capacity.
 Hover over it to see eviction and oversized-result counts since the last cache clear.
 Auto loading and its separate memory-budget setting have been removed.
-Legacy sessions and scripts using Auto are opened lazily; obsolete memory-budget settings are ignored.
+Auto loading and the obsolete memory-budget controls have been removed; recreate old sessions with explicit loading settings.
 The desktop application defaults to **Polars + Lazy**.
 The online version defaults to **PyArrow + In memory** and supports PyArrow only.
 The Log Browser's **Open lazy** and **Open in-memory** actions use the selected backend.
 A loaded run's context menu shows its backend.
 CSV conversion and CSV exports use the currently selected backend.
-Sessions and exported session scripts retain the backend and storage mode for each file.
+JSON sessions retain the backend and storage mode for each file.
 Opening a Polars JSON session in the browser falls back to PyArrow with a console warning.
 
 .. code-block:: bash
@@ -200,7 +200,7 @@ Save / restore a session
 ------------------------
 
 - **Session ▸ Save state… / Load state…** — exact JSON snapshot (grid, assignments, plot types, cursors/spy, secondary axes, FFT/Histogram config, time normalization, file list); restore reloads the files and rebuilds the view.
-- **Session ▸ Export script… / Run script…** — an editable ``.uzscript`` of commands that reproduces the session when replayed.
+- **Session ▸ Run script…** — execute an editable ``.uzscript`` of automation commands against the current state. Scripts stop at the first error; earlier commands remain applied. Use ``load_state("session.json")`` to restore a session within automation.
 
 Command reference
 =================
@@ -224,11 +224,11 @@ Session compatibility and analysis windows
 Failed restoration preserves the current session. Streamed browser recordings must be exported as data before saving a reloadable session.
 Transforms must be chained through node links, not by creating source nodes from derived outputs.
 
-Exported scripts reference derived outputs as ``node_output_N``, independently of which other nodes have been evaluated.
+Automation commands can reference derived outputs as ``node_output_N``, independently of which other nodes have been evaluated.
 
 Saved sessions use schema version 4 and preserve separate instances of logs with identical filenames or paths.
 Restoring a session replaces the currently loaded session.
-Version 1/2/3 snapshots and older exported session scripts must be recreated.
+Version 1/2/3 snapshots and all generated session scripts must be recreated as JSON sessions. Generated script export has been removed.
 Histogram, FFT, export and node crop ranges include only samples inside the selected time window.
 FFT and FIR filters require strictly increasing, uniformly spaced timestamps (100 ppm tolerance plus floating-point roundoff).
 Binary math requires matching time axes throughout both inputs. Unsupported sampling is rejected without interpolation.
@@ -239,6 +239,6 @@ Shrinking the grid switches analysis windows following removed plots to Full.
 XY alignment and invalid results
 -------------------------------
 
-XY inputs must have equal lengths and matching displayed timestamps, including any per-run normalization. Mismatches are rejected instead of pairing unrelated samples. XY zoom and explicit X/Y limits survive JSON and script round trips; XY coordinates never drive linked time axes.
+XY inputs must have equal lengths and matching displayed timestamps, including any per-run normalization. Mismatches are rejected instead of pairing unrelated samples. XY zoom and explicit X/Y limits survive JSON round trips; XY coordinates never drive linked time axes.
 
-Changed source files must be reopened, including CSV files opened through a disk-cached Parquet conversion. Stale or failed node outputs keep their signal assignments but are unavailable to plots, analysis and exports until successful reevaluation.
+Changed source files must be reopened, including CSV files opened through a disk-cached Parquet conversion. Stale or failed node outputs keep their signal assignments, including across JSON restoration, but are unavailable to plots, analysis and exports until successful reevaluation. Fix the graph and evaluate it to repopulate the existing assignments.

@@ -1,16 +1,20 @@
-"""Round-trip tests for JSON state save/restore and script export/replay."""
+"""Round-trip tests for JSON session save/restore."""
 
 from __future__ import annotations
 
 import os
 import sys
 
+import numpy as np
 import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from uz_dataviewer import session  # noqa: E402
-from uz_dataviewer.state import AppState, PlotType  # noqa: E402
+from uz_dataviewer import session
+from uz_dataviewer.commands import CommandError
+from uz_dataviewer.session import apply_dict, to_dict
+from uz_dataviewer.state import AppState, PlotType
+
 
 SAMPLE = (
     "time;CH8=8)ia;CH9=9)ib;\n"
@@ -88,7 +92,7 @@ def test_json_roundtrip(tmp_path):
     assert [r[1] for r in restored.cells[1].signals] == ["ib"]
 
 
-def test_xy_style_roundtrip_and_script(tmp_path):
+def test_xy_style_roundtrip(tmp_path):
     from uz_dataviewer.state import XyStyle
 
     csv = tmp_path / "Log_test.csv"
@@ -106,35 +110,6 @@ def test_xy_style_roundtrip_and_script(tmp_path):
     session.load_state(restored, str(out))
     assert restored.cells[0].plot_type is PlotType.XY
     assert restored.cells[0].xy_style is XyStyle.BOTH
-
-    # .uzscript export emits the non-default style and replays it.
-    script = tmp_path / "session.uzscript"
-    session.export_script(state, str(script))
-    assert "set_xy_style(plot_1, Both)" in script.read_text()
-    replayed = AppState()
-    session.run_script(replayed, str(script))
-    assert replayed.cells[0].xy_style is XyStyle.BOTH
-
-
-def test_script_export_and_replay(tmp_path):
-    csv = tmp_path / "Log_test.csv"
-    csv.write_text(SAMPLE)
-    state = _populated_state(str(csv))
-
-    script = tmp_path / "session.uzscript"
-    session.export_script(state, str(script))
-    text = script.read_text()
-    assert "add_signal(plot_1," in text
-    assert "set_plot_type(plot_2, Scatter)" in text
-
-    replayed = AppState()
-    n = session.run_script(replayed, str(script))
-    assert n > 0
-    assert (replayed.rows, replayed.cols) == (2, 1)
-    assert [r[1] for r in replayed.cells[0].signals] == ["ia"]
-    assert replayed.cells[1].plot_type is PlotType.SCATTER
-    assert replayed.cells[0].show_samples is True
-
 
 def test_json_restore_flags_analysis_recompute(tmp_path):
     """Restoring a session with FFT/Histogram sources must request a recompute,
@@ -165,40 +140,6 @@ def test_json_restore_flags_analysis_recompute(tmp_path):
     assert restored_plain.fft.compute_requested is False
 
 
-def test_script_preserves_analysis_options(tmp_path):
-    """A .uzscript must reproduce the FFT/Histogram options, not silently reset
-    them to defaults (DC removal/Hann on, 50 bins, follow plot_1)."""
-    csv = tmp_path / "Log_test.csv"
-    csv.write_text(SAMPLE)
-    state = _populated_state(str(csv))
-    state.commands.dispatch(state, "fft_source(Log_test.csv, ia)")
-    state.commands.dispatch(state, "fft_remove_dc(false)")
-    state.commands.dispatch(state, "fft_hann(false)")
-    state.commands.dispatch(state, "fft_logy(true)")
-    state.commands.dispatch(state, "hist_source(Log_test.csv, ib)")
-    state.commands.dispatch(state, "hist_bins(128)")
-    state.commands.dispatch(state, "set_export_relative(plot_1, true)")
-
-    script = tmp_path / "session.uzscript"
-    session.export_script(state, str(script))
-    text = script.read_text()
-    assert "fft_remove_dc(false)" in text
-    assert "fft_hann(false)" in text
-    assert "fft_logy(true)" in text
-    assert "hist_bins(128)" in text
-    assert "set_export_relative(plot_1, true)" in text
-
-    replayed = AppState()
-    session.run_script(replayed, str(script))
-    assert replayed.fft.remove_dc is False
-    assert replayed.fft.window is False
-    assert replayed.fft.log_y is True
-    assert [r[1] for r in replayed.fft.sources] == ["ia"]
-    assert replayed.histogram.bins == 128
-    assert [r[1] for r in replayed.histogram.sources] == ["ib"]
-    assert replayed.cells[0].export_relative is True
-
-
 def test_clear_and_replace_share_lifecycle(app_state):
     from uz_dataviewer.session import clear_session, to_dict, apply_dict
     from uz_dataviewer.panels.plots import PlotsPanel
@@ -225,9 +166,8 @@ def test_clear_and_replace_share_lifecycle(app_state):
     assert state.commands is commands and state.console is console
 
 
-@pytest.mark.parametrize('script', [False, True])
 @pytest.mark.parametrize('gesture', [False, True])
-def test_rendered_y_limits_survive_round_trip(app_state, gui_frame, tmp_path, monkeypatch, script, gesture):
+def test_rendered_y_limits_survive_round_trip(app_state, gui_frame, tmp_path, monkeypatch, gesture):
     from imgui_bundle import implot
     from uz_dataviewer.panels.plots import PlotsPanel
     state = app_state
@@ -255,14 +195,9 @@ def test_rendered_y_limits_survive_round_trip(app_state, gui_frame, tmp_path, mo
             gui_frame(panel, state)
     assert state.cells[0].pending_y_lim is None
     assert state.cells[0].y_lim == (12., 14.)
-    if script:
-        destination = tmp_path / 'view.uzscript'
-        session.export_script(state, str(destination))
-        session.run_script(state, str(destination))
-    else:
-        saved = session.to_dict(state)
-        assert saved['cells'][0]['y_lim'] == (12., 14.)
-        session.apply_dict(state, saved)
+    saved = session.to_dict(state)
+    assert saved['cells'][0]['y_lim'] == (12., 14.)
+    session.apply_dict(state, saved)
     for _ in range(3):
         gui_frame(panel, state)
     assert state.cells[0].y_lim == (12., 14.)
@@ -282,8 +217,8 @@ def test_restore_rejects_nonexistent_analysis_plot_transactionally(app_state):
     assert state.session_token is token
 
 
-def test_script_and_json_share_hidden_view_and_analysis_settings(app_state, tmp_path):
-    """Inactive controls survive both serializers, including a former XY source."""
+def test_json_preserves_hidden_view_and_analysis_settings(app_state, tmp_path):
+    """Inactive controls survive restoration, including a former XY source."""
     import json
     state = app_state
     state.backend, state.loading_mode = 'pyarrow', 'memory'
@@ -304,9 +239,284 @@ def test_script_and_json_share_hidden_view_and_analysis_settings(app_state, tmp_
     state.fft.remove_dc, state.fft.window, state.fft.log_y = False, False, True
     state.histogram.bins = 17
     saved = session.to_dict(state)
-    script = tmp_path/'view.uzscript'
-    session.export_script(state, str(script))
-    session.run_script(state, str(script))
-    assert json.loads(json.dumps(session.to_dict(state))) == json.loads(json.dumps(saved))
     session.apply_dict(state, saved)
     assert json.loads(json.dumps(session.to_dict(state))) == json.loads(json.dumps(saved))
+
+
+@pytest.mark.parametrize('failure', ['disconnected', 'invalid_parameter', 'missing_plugin'])
+def test_failed_graph_restores_assignments_and_recovers(app_state, tmp_path, monkeypatch, gui_frame, failure):
+    import numpy as np
+    from uz_dataviewer import nodes
+    from uz_dataviewer.panels.plots import PlotsPanel
+    from uz_dataviewer.panels.fft import FftPanel
+    from uz_dataviewer.panels.histogram import HistogramPanel
+
+    state = app_state
+    state.backend, state.loading_mode = 'pyarrow', 'memory'
+    path = tmp_path / 'graph.csv'
+    path.write_text('time;a\n' + ''.join(f'{i};{i+1}\n' for i in range(8)))
+    state.load_sync(str(path))
+    source = state.nodes.add('source', ref=(1, 'a'))
+    transform = state.nodes.add('math')
+    downstream = state.nodes.add('math')
+    state.nodes.link(source.id, transform.id)
+    state.nodes.link(transform.id, downstream.id)
+    assert nodes.evaluate(state) == 2
+    output = state.registry.get(downstream.out_run_id)
+    output.set_time_origin(100.)
+    ref = (output.id, 'out')
+    state.cells[0].add(ref)
+    state.cells[0].set_secondary(ref, True)
+    state.cells[0].xy_source = ref
+    state.fft.sources = state.histogram.sources = [ref]
+    state.fft.follow_plot = state.histogram.follow_plot = -1
+    spec = nodes.REGISTRY['math']
+    if failure == 'disconnected':
+        state.nodes.unlink(source.id, transform.id)
+    elif failure == 'invalid_parameter':
+        transform.params['k'] = 'bad'
+    else:
+        monkeypatch.delitem(nodes.REGISTRY, 'math')
+
+    saved = tmp_path / 'graph.json'
+    session.save_state(state, str(saved))
+    session.load_state(state, str(saved))
+    # A second save/restore must preserve unavailable outputs too.
+    session.apply_dict(state, session.to_dict(state))
+    node = state.nodes.get(downstream.id)
+    output = state.registry.get(node.out_run_id)
+    ref = (output.id, 'out')
+    assert output.n_rows == 0 and output.time_origin == 100.
+    assert state.cells[0].signals == state.cells[0].y2_signals == [ref]
+    assert state.cells[0].xy_source == ref
+    assert state.fft.sources == state.histogram.sources == [ref]
+    with pytest.raises(ValueError, match='derived output is not current'):
+        output.read_window(['out'], 0, 200)
+    for exporter in (lambda path: session.export_data(state, 0, path),
+                     lambda path: session.export_fft(state, path),
+                     lambda path: session.export_histogram(state, path)):
+        destination = tmp_path / 'existing.csv'
+        destination.write_text('original')
+        with pytest.raises(ValueError, match='derived output is not current'):
+            exporter(str(destination))
+        assert destination.read_text() == 'original'
+    for panel in (PlotsPanel(), FftPanel(), HistogramPanel()):
+        gui_frame(panel, state)
+
+    if failure == 'disconnected':
+        state.nodes.link(source.id, transform.id)
+    elif failure == 'invalid_parameter':
+        state.nodes.get(transform.id).params['k'] = '2'
+    else:
+        monkeypatch.setitem(nodes.REGISTRY, 'math', spec)
+    assert nodes.evaluate(state) == 2
+    assert state.nodes.get(downstream.id).out_run_id == output.id
+    assert state.cells[0].signals == state.fft.sources == [ref]
+    t, ys = output.read_window(['out'], 100, 107)
+    np.testing.assert_array_equal(t, np.arange(100, 108))
+    np.testing.assert_array_equal(ys['out'], np.arange(1, 9) * (2 if failure == 'invalid_parameter' else 1))
+    output.data_source().validate()
+
+
+def test_linked_range_survives_json_and_render(app_state, tmp_path, gui_frame):
+    from uz_dataviewer.panels.plots import PlotsPanel
+    state = app_state
+    state.backend, state.loading_mode = 'pyarrow', 'memory'
+    path = tmp_path / 'linked.csv'
+    path.write_text('time;a\n' + ''.join(f'{i};{i}\n' for i in range(8)))
+    state.load_sync(str(path))
+    state.set_grid(1, 2)
+    for cell in state.cells:
+        cell.add((1, 'a'))
+    state.commands.execute(state, 'set_x_lim', [2, 0., 1.])
+    state.commands.execute(state, 'set_x_lim', [1, 2., 4.])
+    session.apply_dict(state, session.to_dict(state))
+    assert state.shared_x == (2., 4.)
+    panel = PlotsPanel()
+    for _ in range(3):
+        gui_frame(panel, state)
+    assert state.shared_x == (2., 4.)
+    assert all(cell.x_lim == (2., 4.) for cell in state.cells)
+
+
+@pytest.mark.parametrize('axis', ['x', 'y'])
+@pytest.mark.parametrize('limits', [(5, 2), (1, 1), (float('nan'), 2), (0, float('inf'))])
+def test_invalid_snapshot_limits_leave_current_state_intact(app_state, axis, limits):
+    token = app_state.session_token
+    data = session.to_dict(app_state)
+    data['cells'][0][f'{axis}_lim'] = limits
+    with pytest.raises(ValueError):
+        session.apply_dict(app_state, data)
+    assert app_state.session_token is token
+
+
+def test_invalid_secondary_assignment_rejected(app_state, tmp_path):
+    path = tmp_path / 'data.csv'
+    path.write_text(SAMPLE)
+    app_state.load_sync(str(path))
+    saved = session.to_dict(app_state)
+    saved['cells'][0]['y2'] = [['run:1', 'ia']]
+    token = app_state.session_token
+    with pytest.raises(ValueError, match='not assigned'):
+        session.apply_dict(app_state, saved)
+    assert app_state.session_token is token
+
+
+def test_session_partial_evaluation_uses_node_identity(states, recording_csv, tmp_path, execute_commands):
+    state = states()
+    state.load_sync(str(recording_csv))
+    execute_commands(state, 'node_source(run_1,a)', 'node_add(math)', 'node_link(node_1,node_2)',
+            'node_set(node_2,k,2)', 'node_add(math)', 'node_link(node_1,node_3)',
+            'node_set(node_3,k,3)', 'node_eval(node_3)', 'add_signal(plot_1,run_2,out)')
+    restored = states()
+    apply_dict(restored, to_dict(state))
+    ref = restored.cells[0].signals[0]
+    assert restored.registry.get(ref[0]).label == 'node_3'
+    assert restored.registry.get_signal(*ref).y[0] == 3
+
+
+def test_failed_restore_preserves_current_session(states, recording_csv, tmp_path):
+    state = states()
+    run = state.load_sync(str(recording_csv))
+    state.cells[0].add((run.id, 'a'))
+    data = to_dict(state)
+    data['runs'][0]['path'] = str(tmp_path / 'missing.csv')
+    restore = lambda: apply_dict(state, data)
+    with pytest.raises((ValueError, CommandError)):
+        restore()
+    assert state.registry.get(run.id) is run and state.cells[0].signals == [(run.id, 'a')]
+    np.testing.assert_array_equal(run.read_window(['a'], 0, 7)[1]['a'], np.arange(1, 9))
+
+
+def test_roundtrip_preserves_windows_precision_and_active(states, recording_csv, tmp_path):
+    state = states()
+    run = state.load_sync(str(recording_csv))
+    run.active = False
+    state.cells[0].add((run.id, 'a'))
+    state.plot_x_ranges[1] = (2.0, 4.0)
+    state.fft.sources = [(run.id, 'a')]
+    state.histogram.sources = [(run.id, 'a')]
+    state.histogram.follow_plot = 0
+    state.histogram.x_min, state.histogram.x_max = (100.0001, 100.0002)
+    restored = states()
+    apply_dict(restored, to_dict(state))
+    assert not restored.registry.get(1).active
+    assert restored.resolve_x_window(1, (0, 0), restored.fft.sources) == (2.0, 4.0)
+    assert (restored.histogram.x_min, restored.histogram.x_max) == (100.0001, 100.0002)
+    assert restored.cells[0].pending_x_lim == (2.0, 4.0)
+
+
+def test_session_preserves_node_names_with_id_gaps(states, recording_csv, tmp_path, execute_commands):
+    state = states()
+    state.load_sync(str(recording_csv))
+    execute_commands(state, 'node_add(math)', 'node_remove(node_1)', 'node_source(run_1,a)',
+            'node_add(math)', 'node_link(node_2,node_3)', 'node_eval()',
+            'add_signal(plot_1,node_output_3,out)')
+    restored = states()
+    apply_dict(restored, to_dict(state))
+    assert [node.name for node in restored.nodes.ordered()] == ['node_2', 'node_3']
+    assert restored.registry.get(restored.cells[0].signals[0][0]).label == 'node_3'
+
+
+def test_bad_session_structure_is_transactional(states, recording_csv):
+    state = states()
+    original = state.load_sync(str(recording_csv))
+    data = to_dict(state)
+    data['cells'][0]['signals'] = [['run:1', 'missing']]
+    with pytest.raises(ValueError, match='signal reference'):
+        apply_dict(state, data)
+    assert state.registry.get(original.id) is original
+    data['cells'][0]['signals'] = []
+    data['grid'] = [0, 1]
+    with pytest.raises(ValueError, match='grid dimensions'):
+        apply_dict(state, data)
+    assert state.registry.get(original.id) is original
+
+
+def test_roundtrip_preserves_derived_visibility_and_origin(states, recording_csv, tmp_path, execute_commands):
+    state = states()
+    state.load_sync(str(recording_csv))
+    execute_commands(state, 'node_source(run_1,a)', 'node_add(math)', 'node_link(node_1,node_2)',
+            'node_eval()', 'set_active(node_output_2,false)',
+            'normalize_time(node_output_2,100.000123456789)')
+    restored = states()
+    apply_dict(restored, to_dict(state))
+    run = restored.registry.get(restored.nodes.get(2).out_run_id)
+    assert not run.active
+    assert run.time_origin == 100.000123456789
+
+
+def test_restored_plot_window_survives_rendering(states, recording_csv, tmp_path):
+    from imgui_bundle import imgui, implot
+    from uz_dataviewer.panels.plots import PlotsPanel
+    state = states()
+    run = state.load_sync(str(recording_csv))
+    state.cells[0].add((run.id, 'a'))
+    state.plot_x_ranges[1] = (2., 4.)
+    restored = states()
+    apply_dict(restored, to_dict(state))
+    restored.display.synchronous = True
+    imgui.create_context()
+    implot.create_context()
+    try:
+        io = imgui.get_io()
+        io.set_ini_filename(None)
+        io.display_size = imgui.ImVec2(1000, 800)
+        io.delta_time = 1 / 60
+        io.backend_flags |= imgui.BackendFlags_.renderer_has_textures
+        panel = PlotsPanel()
+        for _ in range(3):
+            imgui.new_frame()
+            imgui.set_next_window_size(imgui.ImVec2(1000, 800))
+            imgui.begin('Restored plot')
+            panel.render(restored)
+            imgui.end()
+            imgui.render()
+        np.testing.assert_allclose(restored.plot_x_ranges[1], (2., 4.))
+        assert not restored.display.errors
+    finally:
+        implot.destroy_context()
+        imgui.destroy_context()
+
+
+def test_sessions_preserve_duplicate_names_and_instances(tmp_path):
+    states = [AppState(), AppState()]
+    source, restored = states
+    try:
+        for directory, value in [('one', 1), ('two', 10)]:
+            path = tmp_path / directory / 'log.csv'
+            path.parent.mkdir()
+            path.write_text(f'time;a\n0;{value}\n1;{value+1}\n')
+            source.load_sync(str(path))
+        source.loading_mode = 'memory'
+        source.load_sync(str(tmp_path/'one/log.csv'))
+        source.registry.runs[2].set_time_origin(5)
+        source.cells[0].signals = [(r.id, 'a') for r in source.registry.runs]
+        # A restore must replace, rather than reuse, an existing recording.
+        restored.load_sync(str(tmp_path/'two/log.csv'))
+        apply_dict(restored, to_dict(source))
+        runs = restored.registry.runs
+        assert len(runs) == 3
+        assert [float(r.signals['a'].y[0]) for r in runs] == [1, 10, 1]
+        assert [r.id for r in runs] == [ref[0] for ref in restored.cells[0].signals]
+        assert runs[2].time_origin == 5
+        assert isinstance(runs[2].time, np.ndarray)
+    finally:
+        for s in states:
+            s.shutdown()
+
+
+def test_json_session_can_be_opened_at_startup(app_state, tmp_path, monkeypatch):
+    from uz_dataviewer import plugins, webbridge
+    from uz_dataviewer.app import DataViewerApp
+    app_state.set_grid(2, 1)
+    path = tmp_path / 'startup.json'
+    session.save_state(app_state, str(path))
+    monkeypatch.setattr(plugins, 'load_plugins', lambda **kwargs: None)
+    app = DataViewerApp(initial_files=[str(path)])
+    try:
+        assert (app.state.rows, app.state.cols) == (2, 1)
+        assert not app.state.is_loading
+    finally:
+        app.state.shutdown()
+        webbridge.register_state(None)

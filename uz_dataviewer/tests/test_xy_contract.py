@@ -1,11 +1,17 @@
 """XY alignment, coordinate ranges and asynchronous export lifetime."""
+
+from types import SimpleNamespace
+import time
+import weakref
+
 import numpy as np
 import pytest
+
 from uz_dataviewer import session
 from uz_dataviewer.panels.plots import PlotsPanel
 from uz_dataviewer.sampling import sample_xy
-from uz_dataviewer.sources import ArraySource
-from uz_dataviewer.state import PlotType
+from uz_dataviewer.sources import ArraySource, Metadata, check
+from uz_dataviewer.state import AppState, PlotType
 
 
 @pytest.mark.parametrize('right_time', [np.arange(8.)+100, np.arange(8.)*2, np.arange(7.)])
@@ -34,9 +40,8 @@ def test_xy_validates_unsampled_timestamps_across_different_batches():
         sample_xy(left, right, 'value', 'value', 0, -100, 4)
 
 
-@pytest.mark.parametrize('script', [False, True])
 @pytest.mark.parametrize('gesture', [False, True])
-def test_xy_ranges_render_and_roundtrip_without_linking_time(app_state, gui_frame, tmp_path, monkeypatch, script, gesture):
+def test_xy_ranges_render_and_roundtrip_without_linking_time(app_state, gui_frame, tmp_path, monkeypatch, gesture):
     from imgui_bundle import implot
     s = app_state
     s.backend, s.loading_mode = 'pyarrow', 'memory'
@@ -67,12 +72,7 @@ def test_xy_ranges_render_and_roundtrip_without_linking_time(app_state, gui_fram
     assert cell.pending_x_lim is None and cell.pending_y_lim is None
     assert cell.x_lim == (2., 4.) and cell.y_lim == (5., 7.)
     assert s.shared_x == (100, 200) and 2 not in s.plot_x_ranges
-    if script:
-        path = tmp_path/'view.uzscript'
-        session.export_script(s, str(path))
-        session.run_script(s, str(path))
-    else:
-        session.apply_dict(s, session.to_dict(s))
+    session.apply_dict(s, session.to_dict(s))
     for _ in range(4): gui_frame(panel, s)
     assert s.cells[1].x_lim == (2., 4.) and s.cells[1].y_lim == (5., 7.)
     assert 2 not in s.plot_x_ranges
@@ -92,3 +92,53 @@ def test_export_dialog_cancels_when_original_cell_is_gone(app_state, tmp_path):
     assert panel._export_dialog is None
     assert not (tmp_path/'export.csv').exists()
     assert any('subplot was removed' in e.message for e in s.console._entries)
+
+
+def test_async_xy_fits_and_releases_input_batches():
+    from imgui_bundle import imgui, implot
+    from uz_dataviewer.panels.plots import PlotsPanel
+    state = AppState()
+    references, alive, limits = [], [], []
+    def batches(channels, start=0, stop=None, cancel=None):
+        for i in range(20):
+            check(cancel)
+            values = np.linspace(100,200,20000,dtype=np.float32)
+            if channels == ['b']:
+                values += 200
+                time.sleep(.002)
+            references.append(weakref.ref(values))
+            alive.append(sum(ref() is not None for ref in references))
+            yield np.arange(20000), {name:values for name in channels}
+    source = SimpleNamespace(metadata=Metadata('xy-review',400000,('a','b'),(0,400000)),
+                             units={'a':'','b':''}, iter_raw=batches, validate=lambda: None)
+    run=state.registry.add_source('test','test',source)
+    cell=state.cells[0]
+    cell.plot_type=PlotType.XY
+    cell.xy_source=(run.id,'a')
+    cell.add((run.id,'a'))
+    cell.add((run.id,'b'))
+    imgui.create_context(); implot.create_context()
+    io=imgui.get_io(); io.set_ini_filename(None)
+    io.display_size=imgui.ImVec2(1000,800); io.delta_time=1/60
+    io.backend_flags |= imgui.BackendFlags_.renderer_has_textures
+    panel=PlotsPanel()
+    original_end=implot.end_plot
+    def end():
+        view=implot.get_plot_limits()
+        limits.append((view.x.min,view.x.max,view.y.min,view.y.max))
+        original_end()
+    implot.end_plot=end
+    try:
+        for _ in range(40):
+            imgui.new_frame(); imgui.set_next_window_size(imgui.ImVec2(1000,800))
+            imgui.begin('XY regression'); panel.render(state); imgui.end(); imgui.render()
+            time.sleep(.01)
+        assert limits[-1][0] <= 100 and limits[-1][1] > 190
+        assert limits[-1][3] > 390
+        # Alignment keeps one batch per input, plus a transient replacement
+        # batch while an iterator advances. Retention must stay bounded.
+        assert max(alive) <= 3
+        assert not state.display.errors
+    finally:
+        implot.end_plot=original_end
+        state.shutdown(); implot.destroy_context(); imgui.destroy_context()

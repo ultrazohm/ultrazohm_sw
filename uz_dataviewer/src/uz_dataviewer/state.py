@@ -16,6 +16,7 @@ from .loader import ParsedRun, open_file
 from .requests import Requests
 from .model import DataRegistry, Run, Signal
 from .nodes import NodeGraph
+from .validation import axis_limits
 
 # Identifies a signal across runs: (run_id, signal_name).
 LARGE_CSV_BYTES = 1024**3
@@ -113,6 +114,27 @@ class SubplotCell:
             self.fit_pending = True
             return True
         return False
+
+    def clear(self) -> None:
+        self.signals.clear()
+        self.y2_signals.clear()
+        self.fit_pending = True
+
+    def set_secondary(self, ref: SignalRef, secondary: bool) -> None:
+        if ref not in self.signals:
+            raise ValueError(f"{ref[1]!r} is not assigned to this plot")
+        if secondary and ref not in self.y2_signals:
+            self.y2_signals.append(ref)
+        elif not secondary and ref in self.y2_signals:
+            self.y2_signals.remove(ref)
+        self.fit_pending = True
+
+    def set_limits(self, axis: str, lo: float, hi: float) -> None:
+        if axis not in ('x', 'y'):
+            raise ValueError(f"Unknown axis: {axis}")
+        limits = axis_limits(lo, hi)
+        setattr(self, f'pending_{axis}_lim', limits)
+        setattr(self, f'{axis}_lim', limits)
 
     def remove(self, ref: SignalRef) -> None:
         if ref in self.signals:
@@ -404,8 +426,9 @@ class AppState:
                 node.out_run_id = None
                 node.eval_key = None
         for cell in self.cells:
-            cell.signals = [s for s in cell.signals if s[0] != run_id]
-            cell.y2_signals = [s for s in cell.y2_signals if s[0] != run_id]
+            for ref in list(cell.signals):
+                if ref[0] == run_id:
+                    cell.remove(ref)
             if cell.xy_source is not None and cell.xy_source[0] == run_id:
                 cell.xy_source = None
         self.fft.sources = [s for s in self.fft.sources if s[0] != run_id]

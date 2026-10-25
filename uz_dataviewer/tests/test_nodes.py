@@ -10,9 +10,10 @@ import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from uz_dataviewer import nodes as nodemod  # noqa: E402
-from uz_dataviewer.session import apply_dict, to_dict, to_script  # noqa: E402
-from uz_dataviewer.state import AppState  # noqa: E402
+from uz_dataviewer import nodes, nodes as nodemod
+from uz_dataviewer.commands import CommandError
+from uz_dataviewer.session import apply_dict, to_dict
+from uz_dataviewer.state import AppState
 
 
 def _state_with_sine(freq=50.0, n=2000):
@@ -170,25 +171,6 @@ def test_json_round_trip_rebuilds_graph_and_derived_run(tmp_path):
     assert any(ref[1] == "out" for ref in state2.cells[0].signals)
 
 
-def test_script_round_trip(tmp_path):
-    state = _state_with_sine(50.0)
-    _run(state, "node_source(run_1, ia)", "node_add(fft)",
-         "node_link(node_1, node_2)", "node_eval()")
-    source = state.registry.runs[0]
-    source.path = str(tmp_path / 'Log.csv')
-    np.savetxt(source.path, np.column_stack([source.time, source.signals['ia'].y]), delimiter=';', header='time;ia', comments='')
-    lines = to_script(state)
-
-    state2 = _state_with_sine(50.0)
-    for line in lines:
-        if line.startswith("#"):
-            continue  # source run is already present in state2
-        state2.commands.dispatch(state2, line)
-
-    assert state2.nodes.get(2) is not None and state2.nodes.get(2).kind == "fft"
-    assert _derived(state2, "node_2") is not None
-
-
 def test_failed_parameter_revert_recovers_downstream(app_state):
     from uz_dataviewer.nodes import evaluate, is_stale
     state = app_state
@@ -250,3 +232,37 @@ def test_recomputed_output_preserves_normalization_and_consumers(app_state):
     np.testing.assert_array_equal(actual_time, np.arange(8.))
     np.testing.assert_array_equal(actual_values['out'], 2*values)
     assert state.cells[0].signals == state.fft.sources == [(run.id, 'out')]
+
+
+def test_deleted_output_recreated_and_indirect_source_rejected(states, recording_csv, execute_commands):
+    state = states()
+    state.load_sync(str(recording_csv))
+    execute_commands(state, 'node_source(run_1,a)', 'node_add(math)', 'node_link(node_1,node_2)', 'node_eval()')
+    node = state.nodes.get(2)
+    with pytest.raises(CommandError, match='node_link'):
+        execute_commands(state, f'node_source(run_{node.out_run_id},out)')
+    state.remove_run(node.out_run_id)
+    assert nodes.evaluate(state, 2) == 1 and state.registry.get(node.out_run_id) is not None
+
+
+def test_source_version_invalidates_downstream(states, recording_csv, execute_commands):
+    from uz_dataviewer.model import Signal
+    state = states()
+    state.loading_mode = 'memory'
+    run = state.load_sync(str(recording_csv))
+    execute_commands(state, 'node_source(run_1,a)', 'node_add(math)', 'node_link(node_1,node_2)', 'node_eval()')
+    run.signals['a'] = Signal('a', '', np.full(8, 42, dtype=np.float32), run.id)
+    assert nodes.is_stale(state, state.nodes, state.nodes.get(2))
+    nodes.evaluate(state)
+    np.testing.assert_array_equal(state.nodes.get(2).out_y, np.full(8, 42))
+
+
+def test_node_output_shape_validation():
+    from uz_dataviewer.nodes import TransformSpec, Node, REGISTRY, _compute
+    spec = TransformSpec('bad_shape', lambda inputs, params: (np.arange(2.), np.arange(3.), 'bad'))
+    REGISTRY['bad_shape'] = spec
+    try:
+        with pytest.raises(ValueError, match='equal-length'):
+            _compute(Node(1, 'bad_shape', 'bad'), [(np.arange(2.), np.arange(2.))])
+    finally:
+        REGISTRY.pop('bad_shape')

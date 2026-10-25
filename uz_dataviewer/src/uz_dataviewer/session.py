@@ -1,33 +1,22 @@
-"""Save / restore the GUI state, and export / replay it as a command script.
+"""Transactional JSON sessions and sequential command scripts for automation.
 
-Two complementary formats, both exposed as commands (see :mod:`commands`):
-
-* **JSON snapshot** (``save_state`` / ``load_state``) -- the exact view: grid,
-  per-cell signal assignments, plot types, link/downsample settings, FFT/Histogram config
-  and the set of loaded files. Restores to the same picture, including which
-  files to reload.
-* **Command script** (``export_script`` / ``run_script``) -- a human-readable,
-  editable ``.uzscript`` of canonical commands (``load(...)``, ``set_grid(...)``,
-  ``add_signal(...)`` ...) that reproduces the session when replayed.
-
-JSON references use explicit recording/node keys, remapped when restoring.
-Scripts restore transactionally and reference explicit recording/node identities.
+JSON is the only session format. Scripts execute ordinary commands against the
+current state; they do not provide a second session serialization protocol.
 """
 
 from __future__ import annotations
 
 import json
-import math
 from typing import TYPE_CHECKING
 
 from .loader import unique_name
 from .state import PlotType, XyStyle
+from .validation import axis_limits
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
-    from .state import AppState, SubplotCell
+    from .state import AppState
 
 SCHEMA_VERSION = 4
-SCRIPT_HEADER = "# UltraZohm Data Viewer session script v4"
 
 
 def ensure_extension(path: str, ext: str) -> str:
@@ -213,7 +202,7 @@ def _apply_dict(state: "AppState", data: dict) -> None:
         raise ValueError("Session grid dimensions must be positive")
     state.set_grid(int(rows), int(cols))
     state.link_x = bool(data.get("link_x", state.link_x))
-    state.shared_x = _limits(data.get("shared_x"))
+    state.shared_x = axis_limits(*data["shared_x"]) if data.get("shared_x") is not None else None
     state.max_points = int(data.get("max_points", state.max_points))
     if state.max_points < 2:
         raise ValueError("Session display budget must be at least two points")
@@ -255,11 +244,13 @@ def _apply_dict(state: "AppState", data: dict) -> None:
             cell.xy_style = XyStyle(spec.get("xy_style", XyStyle.LINE.value))
         except ValueError:
             cell.xy_style = XyStyle.LINE
-        cell.y2_signals = [r for r in (_resolve(s) for s in spec.get("y2", [])) if r is not None]
-        cell.pending_x_lim = _limits(spec.get("x_lim"))
-        cell.x_lim = cell.pending_x_lim
-        cell.pending_y_lim = _limits(spec.get("y_lim"))
-        cell.y_lim = cell.pending_y_lim
+        for ref in (_resolve(r) for r in spec.get("y2", [])):
+            if ref is not None:
+                cell.set_secondary(ref, True)
+        for axis in ('x', 'y'):
+            limits = spec.get(f'{axis}_lim')
+            if limits is not None:
+                cell.set_limits(axis, *limits)
         if cell.pending_x_lim and cell.plot_type is not PlotType.XY:
             state.plot_x_ranges[i + 1] = cell.pending_x_lim
         cell.fit_pending = True
@@ -289,18 +280,9 @@ def _apply_dict(state: "AppState", data: dict) -> None:
     state.histogram.compute_requested = bool(state.histogram.sources)
 
 
-def _limits(value):
-    if value is None:
-        return None
-    lo, hi = map(float, value)
-    if not math.isfinite(lo) or not math.isfinite(hi) or hi <= lo:
-        raise ValueError("Axis limits must be finite and increasing")
-    return lo, hi
-
-
 def _restore_nodes(state: "AppState", specs: list, resolve) -> None:
     """Rebuild the node graph from a snapshot (preserving ids) and evaluate it."""
-    from .nodes import NodeGraph, evaluate
+    from .nodes import NodeGraph, evaluate, publish_output
 
     state.nodes = NodeGraph()
     for spec in sorted(specs, key=lambda s: int(s["id"])):
@@ -326,17 +308,17 @@ def _restore_nodes(state: "AppState", specs: list, resolve) -> None:
         evaluate(state)
     for spec in specs:
         view = spec.get("output_view")
-        run = state.registry.get(state.nodes.get(int(spec["id"])).out_run_id)
+        node = state.nodes.get(int(spec["id"]))
+        run = state.registry.get(node.out_run_id)
+        if view is not None and run is None and node.is_transform:
+            # Keep the output identity/assignments while editing an incomplete or
+            # failed graph. The empty placeholder is blocked by the same validator
+            # as stale materialized outputs and is filled in on successful eval.
+            publish_output(state, node)
+            run = state.registry.get(node.out_run_id)
         if run is not None and view is not None:
             run.active = bool(view["active"])
             run.set_time_origin(view["time_origin"])
-
-
-# -- command script -----------------------------------------------------------
-def _arg(token: str) -> str:
-    from .commands import _fmt_str
-
-    return _fmt_str(token)
 
 
 def _check_reloadable(state):
@@ -345,150 +327,23 @@ def _check_reloadable(state):
             raise ValueError(f"Cannot save session: {run.label} has no backing file. Export its data first.")
 
 
-def to_script(state: "AppState") -> list[str]:
-    """Render commands from the same canonical snapshot used by JSON saves."""
-    data = to_dict(state)
-    lines = [SCRIPT_HEADER]
-
-    def emit(command, *values):
-        args = [_arg(str(v).lower() if isinstance(v, bool) else str(v)) for v in values]
-        lines.append(f"{command}({', '.join(args)})")
-
-    run_ids = {run['key']: f"run_{i}" for i, run in enumerate(data['runs'], 1)}
-    node_ids = {node['id']: i for i, node in enumerate(data['nodes'], 1)}
-
-    def ref(saved):
-        key, channel = saved
-        if key.startswith('node:'):
-            return f"node_output_{node_ids[int(key.split(':')[1])]}", channel
-        return run_ids[key], channel
-
-    def settings(spec):
-        for command, field in (('disk_cache', 'disk_cache'), ('backend', 'backend'),
-                               ('loading_mode', 'loading_mode')):
-            emit(command, spec[field])
-
-    emit('clear_session')
-    settings(data)
-    emit('cache_budget', data['cache_budget_mb'])
-    for run in data['runs']:
-        settings(dict(run, loading_mode=run['mode']))
-        args = [run['path']]
-        if run['time_origin'] is not None:
-            args.append(run['time_origin'])
-        emit('load', *args)
-        emit('set_active', run_ids[run['key']], run['active'])
-    settings(data)
-
-    nodes = data['nodes']
-    for node in nodes:
-        nid = f"node_{node_ids[node['id']]}"
-        if node['kind'] == 'source':
-            if node['ref'] is None:
-                raise ValueError(f"{node['name']}: source recording is missing")
-            if node['ref'][0].startswith('node:'):
-                raise ValueError('Derived signals must be connected with node_link, not source nodes')
-            emit('node_source', *ref(node['ref']))
-        else:
-            emit('node_add', node['kind'])
-        for key, value in node['params'].items():
-            emit('node_set', nid, key, value)
-        emit('node_pos', nid, *node['pos'])
-    # Free default names before restoring names with gaps or swaps.
-    prefix = '__restore_'
-    while any(node['name'].startswith(prefix) for node in nodes):
-        prefix += '_'
-    for node in nodes:
-        nid = node_ids[node['id']]
-        emit('node_rename', f'node_{nid}', f'{prefix}{nid}')
-    for node in nodes:
-        nid = f"node_{node_ids[node['id']]}"
-        emit('node_rename', nid, node['name'])
-        for slot, upstream in enumerate(node['inputs']):
-            if upstream is not None:
-                emit('node_link', f'node_{node_ids[upstream]}', nid, slot)
-    if nodes:
-        emit('node_eval')
-    for node in nodes:
-        view = node['output_view']
-        if view is not None:
-            output = f"node_output_{node_ids[node['id']]}"
-            emit('set_active', output, view['active'])
-            if view['time_origin'] is not None:
-                emit('normalize_time', output, view['time_origin'])
-
-    emit('set_grid', *data['grid'])
-    emit('set_max_points', data['max_points'])
-    emit('link_x', data['link_x'])
-    for i, cell in enumerate(data['cells'], 1):
-        plot = f'plot_{i}'
-        for saved in cell['signals']:
-            if saved is not None:
-                emit('add_signal', plot, *ref(saved))
-        if cell['xy_source'] is not None:
-            emit('set_xy', plot, *ref(cell['xy_source']))
-        emit('set_plot_type', plot, cell['type'])
-        emit('set_xy_style', plot, cell['xy_style'])
-        for saved in cell['y2']:
-            if saved is not None:
-                emit('set_axis', plot, *ref(saved), 'right')
-        emit('show_samples', plot, cell['show_samples'])
-        if cell['spy_rect'] is not None:
-            emit('set_spy_rect', plot, *cell['spy_rect'])
-        emit('spy', plot, cell['spy'])
-        if cell['cursor_x'] is not None:
-            emit('set_cursors', plot, *cell['cursor_x'])
-        emit('cursors', plot, cell['cursors'])
-        emit('set_export_relative', plot, cell['export_relative'])
-        for axis in ('x', 'y'):
-            if cell[f'{axis}_lim'] is not None:
-                emit(f'set_{axis}_lim', plot, *cell[f'{axis}_lim'])
-    for prefix, cfg in (('fft', data['fft']), ('hist', data['histogram'])):
-        for saved in cfg['sources']:
-            if saved is not None:
-                emit(f'{prefix}_source', *ref(saved))
-        # Set the custom range even when another window is selected, so it is
-        # preserved when the user switches back to Custom after restoration.
-        follow = cfg['follow_plot']
-        emit(f'{prefix}_follow', 'full' if follow == -1 else 'custom' if follow == 0 else f'plot_{follow}')
-        emit(f'{prefix}_range', cfg['x_min'], cfg['x_max'])
-    for command, field in (('fft_remove_dc', 'remove_dc'), ('fft_hann', 'window'),
-                           ('fft_logx', 'log_x'), ('fft_logy', 'log_y')):
-        emit(command, data['fft'][field])
-    emit('hist_bins', data['histogram']['bins'])
-    return lines
-
-
-def export_script(state: "AppState", path: str) -> None:
-    lines = to_script(state)
-    with open(path, "w", encoding="utf-8") as fh:
-        fh.write("\n".join(lines) + "\n")
-
-
+# -- command scripts ----------------------------------------------------------
 def run_script(state: "AppState", path: str) -> int:
-    """Replay a script file line by line; returns the number of commands run."""
+    """Run automation commands sequentially, stopping at the first error."""
+    from .commands import parse_call
+
     with open(path, encoding="utf-8") as fh:
         lines = fh.readlines()
-    exported = bool(lines and lines[0].strip().startswith("# UltraZohm Data Viewer session script"))
-    if exported and lines[0].strip() != SCRIPT_HEADER:
-        raise ValueError("Unsupported session script version; recreate old exported sessions.")
-    target = _replacement_state(state) if exported else state
+    if any(line.strip().startswith("# UltraZohm Data Viewer session script") for line in lines):
+        raise ValueError("Generated session scripts are no longer supported; save sessions as JSON.")
     count = 0
-    try:
-        for line in lines:
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-            from .commands import parse_call
-            name, args = parse_call(line)
-            target.commands.execute(target, name, args)
-            count += 1
-    except BaseException:
-        if exported:
-            target.shutdown()
-        raise
-    if exported:
-        state.replace_session(target)
+    for line in lines:
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        name, args = parse_call(line)
+        state.commands.execute(state, name, args)
+        count += 1
     return count
 
 
@@ -520,6 +375,7 @@ def export_data(state: "AppState", plot_index: int, path: str, relative: bool = 
     run0 = state.registry.get(cell.signals[0][0])
     if run0 is None:
         raise ValueError("source run is not loaded")
+    run0.data_source().validate()
     time = run0.time
 
     # Use *this* subplot's own visible X range (not the global linked range), so

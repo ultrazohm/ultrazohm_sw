@@ -9,8 +9,9 @@ import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from uz_dataviewer import session  # noqa: E402
-from uz_dataviewer.state import AppState  # noqa: E402
+from uz_dataviewer import session
+from uz_dataviewer.state import AppState
+
 
 SAMPLE = (
     "time;CH8=8)ia;CH9=9)ib;\n"
@@ -158,10 +159,3 @@ def test_session_roundtrip_preserves_parity(tmp_path):
     session.load_state(restored, str(snap))
     assert (1, "ib") in restored.cells[0].y2_signals
     assert restored.cells[0].cursors is True
-
-    # And via the script path.
-    script = tmp_path / "s.uzscript"
-    session.export_script(state, str(script))
-    text = script.read_text()
-    assert "set_axis(plot_1, run_1, ib, right)" in text
-    assert "cursors(plot_1, true)" in text

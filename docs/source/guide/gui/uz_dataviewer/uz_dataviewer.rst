@@ -22,7 +22,7 @@ Features
 - Range-aware downsampling — multi-GB logs pan smoothly and zooming reveals detail
 - FFT & Histogram, optional locked time window to time plot, optional logarithmic axes, ``.csv`` export of FFT and histogram data
 - Nodes for applying transforms (FFT / math / filter / shift) to signals where the result becomes a new signal. Nodes can be extended with custom Python code for user-specific nodes (:doc:`uz_dataviewer_plugins`)
-- Command console and script support: every action in the GUI is a command. Save sessions save to JSON or a ``.uzscript``.
+- Command console and script support: every action in the GUI is a command. Save sessions to JSON; run automation commands from ``.uzscript`` files.
 
 Starting uz_dataviewer
 ======================
@@ -59,7 +59,7 @@ See :ref:`uz_dataviewer_build` for instructions on how to build the binary.
            pip install -r requirements.txt      
            python run.py                        # or: python -m uz_dataviewer
            python run.py ../javascope/Log_2026-06-11_22-45-16.csv   # preload
-           python run.py session.uzscript       # replay a saved session
+           python run.py session.json           # restore a saved session
 
     .. tab-item:: Local Web version
 

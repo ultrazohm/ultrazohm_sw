@@ -143,6 +143,8 @@ class Run:
 
     def set_time_origin(self, target: float | None) -> None:
         """Normalise so the first sample sits at ``target`` (or restore raw)."""
+        from .validation import finite_float
+        target = finite_float(target) if target is not None else None
         raw = self.time_raw if self.time_raw is not None else self.time
         self.time_origin = target
         if isinstance(raw, SourceColumn):

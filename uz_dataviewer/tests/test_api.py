@@ -7,11 +7,12 @@ import subprocess
 import sys
 
 import numpy as np
+import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-import uz_dataviewer as uz  # noqa: E402
-from uz_dataviewer import api  # noqa: E402
+from uz_dataviewer import api, nodes
+import uz_dataviewer as uz
 
 
 def _write_csv(tmp_path, fs=2000.0, n=4000, freq=50.0):
@@ -112,3 +113,12 @@ def test_import_is_gui_free():
     )
     assert out.returncode == 0, out.stderr
     assert "ok" in out.stdout
+
+
+def test_public_node_api_shares_validation(monkeypatch):
+    spec = nodes.TransformSpec('bad', lambda inputs, params: (np.arange(2.0), np.arange(3.0), ''))
+    monkeypatch.setitem(nodes.REGISTRY, 'bad', spec)
+    with pytest.raises(ValueError, match='needs 1 input'):
+        api.node('bad')
+    with pytest.raises(ValueError, match='equal-length'):
+        api.node('bad', (np.arange(4.0), np.arange(4.0)))

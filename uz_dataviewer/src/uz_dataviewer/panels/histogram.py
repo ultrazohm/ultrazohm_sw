@@ -10,7 +10,6 @@ from __future__ import annotations
 import numpy as np
 from imgui_bundle import imgui, implot
 
-from ..downsample import visible_slice
 from ..state import AppState
 from .analysis import AnalysisPanel
 

@@ -99,9 +99,9 @@ def compute_fft(
     if time.shape[0] == 0:
         return FftResult(None, None, "No samples in this run to transform.")
     if x_max <= x_min:
-        x_min, x_max = float(time[0]), float(time[-1])
+        return FftResult(None, None, "Selected window is too short for an FFT.")
 
-    start, stop = visible_slice(time, x_min, x_max)
+    start, stop = visible_slice(time, x_min, x_max, padding=False)
     # Keep float32 (JavaScope data is float32): numpy's pocketfft preserves it as a
     # complex64 transform -- half the memory of the old float64 upcast (big on a
     # multi-million-sample full-window FFT, and on the WASM heap) and faster. A copy
@@ -117,12 +117,18 @@ def compute_fft(
     if not np.isfinite(ys).all():
         return FftResult(None, None, "Selected window has non-finite samples (NaN/Inf); cannot compute FFT.")
 
-    # Logs are uniformly sampled (the rate can differ between logs), so the step is
-    # exactly the span / interval count -- O(1), no full np.diff + median over the
-    # window (which is costly on a multi-million-sample full-window FFT).
+    # FFT requires a regular sample grid; never silently resample measurements.
     dt = (float(ts[-1]) - float(ts[0])) / (n - 1)
     if not np.isfinite(dt) or dt <= 0:
-        return FftResult(None, None, "Time axis is not increasing; cannot compute FFT.")
+        return FftResult(None, None, "FFT needs finite, strictly increasing timestamps.")
+    tolerance = max(abs(dt) * 1e-4, np.finfo(np.float64).eps * max(1., abs(float(ts[0])), abs(float(ts[-1]))) * 8)
+    for start in range(0, n - 1, 65536):
+        block = ts[start:min(n, start + 65537)]
+        intervals = np.diff(block)
+        if not np.isfinite(block).all() or np.any(intervals <= 0):
+            return FftResult(None, None, "FFT needs finite, strictly increasing timestamps.")
+        if np.any(np.abs(intervals - dt) > tolerance):
+            return FftResult(None, None, "FFT needs uniformly spaced timestamps; selected window is irregular.")
 
     if remove_dc:
         ys -= ys.mean(dtype=np.float64)  # accumulate the mean in float64, subtract in place
@@ -163,7 +169,7 @@ def histogram_sources(series, lo, hi, bins, cancel=None):
     ranges, minimum, maximum, dropped = [], None, None, 0
     for label, source, channel, offset in series:
         check(cancel)
-        start, stop = source.bounds(lo - offset, hi - offset, cancel)
+        start, stop = source.bounds(lo - offset, hi - offset, cancel, padding=False)
         count = 0
         for _, values in source.iter_raw([channel], start, stop, cancel):
             y = values[channel]

@@ -90,8 +90,8 @@ Module map
      - Coalescing worker requests; cancellation and result publication without GUI calls
      - ``Requests``
    * - ``downsample.py``
-     - Range-aware decimation: min/max pyramid + one-shot (pure NumPy)
-     - ``Pyramid``, ``decimate_range``, ``visible_slice``
+     - Range selection and an adapter to the shared source downsampler
+     - ``decimate_range``, ``visible_slice`` (shared source downsampling)
    * - ``analysis.py``
      - GUI-free transforms (FFT)
      - ``compute_fft``, ``FftResult``
@@ -146,7 +146,10 @@ Loading & large logs (``loader.py``)
 =====================================
 
 ``load_file`` dispatches by extension through ``parse_file`` → ``parse_csv`` / ``parse_parquet``, each returning a ``ParsedRun`` (plain arrays, no registry touch) that is turned into a ``Run`` via ``ParsedRun.register`` (``DataRegistry.add_run``).
-On native, loads run on a ``ThreadPoolExecutor``: the worker only **parses** into a ``ParsedRun``, and the main thread **registers** it in ``state.poll_pending_loads``, so ``DataRegistry`` is only ever mutated from one thread (see :ref:`uz_dataviewer_arch_native_web`).
+On native, loads run on the cancellable daemon worker in ``loading.py``.
+The worker prepares a resident run or lazy source; the main thread registers it in ``state.poll_pending_loads``, so ``DataRegistry`` is only mutated from one thread.
+Conversion runs in a spawned process so shutdown can interrupt native streaming IO and remove partial output.
+Readers check cancellation between batches; an in-flight native read may finish before cancellation is observed, but it cannot keep the application process alive.
 
 The default in-memory loader reduces transient allocations; the complete recording and analysis scratch still need to fit in RAM:
 
@@ -285,7 +288,7 @@ The cache directory defaults to ``~/.cache/uz_dataviewer`` and is overridden by 
 Writes are atomic; invalid cache containers are rebuilt.
 
 ``loading_mode(memory|lazy)`` affects subsequent opens.
-The user explicitly selects resident or lazy loading; legacy Auto sessions migrate to lazy loading.
+The user explicitly selects resident or lazy loading; obsolete Auto sessions are rejected.
 Lazy CSV input is scanned directly by the selected backend by default.
 CSV navigation requires repeated text scanning and can be slower than Parquet.
 Enabling ``disk_cache(true)`` for subsequent opens persists indexes and summaries and converts lazy CSV input to a versioned Parquet cache.
@@ -299,16 +302,24 @@ Cancellation of a NumPy FFT takes effect after its native call returns.
 Explicit console/script commands and node/plugin evaluation remain synchronous.
 Browser execution uses the same interfaces synchronously because its current runtime lacks workers.
 
-The existing ``downsample.Pyramid`` / ``decimate_range`` implementation remains available for array APIs and FFT display.
-FFT pyramids are constructed by the analysis worker, and unchanged spectrum views reuse their reduced arrays.
+FFT and ordinary plots now share the ``ArraySource`` / ``SummarySource`` sampling engine.
+FFT summaries are constructed by the analysis worker, and unchanged spectrum views reuse their reduced arrays.
+``IndexedFileSource`` owns file identity, timestamp indexing, bounds and cache persistence for both backends.
+Analysis, export and node cropping select exact time windows; padding is reserved for display.
+FFT rejects duplicate or irregular timestamps instead of returning a misleading frequency axis.
+The regularity tolerance is 100 ppm plus floating-point roundoff.
 
 Sessions (``session.py``)
 ==========================
 
 Two complementary formats:
 
-- **JSON snapshot** (``save_state``/``load_state``) — the exact view (grid, assignments, plot types, cursors/spy, secondary axes, FFT/Histogram config, time origins, file list). Restore reloads files then resolves assignments **by run label** (not id).
-- **``.uzscript``** (``export_script``/``run_script``) — a human-readable, editable list of commands that reproduces the session when replayed. Normalised loads round-trip as ``load(path, start)``.
+- **JSON snapshot** (``save_state``/``load_state``) — the exact view (grid, assignments, plot types, cursors/spy, secondary axes, FFT/Histogram config, time origins, file list).
+  Schema version 2 reloads explicit per-run records and remaps recording/node keys, preserving duplicate names and repeated opens of the same path.
+- **``.uzscript``** (``export_script``/``run_script``) — a human-readable, editable list of commands that reproduces the session when replayed.
+  Scripts reset the session and use deterministic ``run_N`` references.
+
+Old version 1 snapshots and old exported session scripts are rejected; Auto and memory-budget migrations have been removed.
 
 CSV exports (``export_data``, ``export_fft``, ``export_histogram``) also live here.
 

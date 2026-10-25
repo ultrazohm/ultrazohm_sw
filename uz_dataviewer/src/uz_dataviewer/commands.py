@@ -22,6 +22,7 @@ from headless tests.
 from __future__ import annotations
 
 import re
+import json
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Callable
 
@@ -65,24 +66,47 @@ _BARE_STR_RE = re.compile(r"^[\w./+\-:]+$")
 
 def _split_args(argstr: str) -> list[str]:
     """Split a comma-separated argument string, honouring quotes."""
-    args: list[str] = []
-    cur: list[str] = []
-    quote: str | None = None
+    args, cur = [], []
+    quote = None
+    escaped = False
     for ch in argstr:
         if quote is not None:
-            if ch == quote:
+            cur.append(ch)
+            if escaped:
+                escaped = False
+            elif ch == "\\":
+                escaped = True
+            elif ch == quote:
                 quote = None
-            else:
-                cur.append(ch)
         elif ch in ("'", '"'):
             quote = ch
+            cur.append(ch)
         elif ch == ",":
             args.append("".join(cur).strip())
             cur = []
         else:
             cur.append(ch)
+    if quote is not None:
+        raise CommandError("Unterminated quoted argument")
     args.append("".join(cur).strip())
-    return [a for a in args if a != ""]
+    decoded = []
+    for arg in args:
+        if not arg:
+            raise CommandError("Empty argument; use an explicit quoted string")
+        if arg.startswith('"'):
+            try:
+                decoded.append(json.loads(arg))
+            except (ValueError, TypeError) as exc:
+                raise CommandError(f"Invalid quoted argument: {arg}") from exc
+        elif arg.startswith("'"):
+            import ast
+            try:
+                decoded.append(ast.literal_eval(arg))
+            except (ValueError, SyntaxError) as exc:
+                raise CommandError(f"Invalid quoted argument: {arg}") from exc
+        else:
+            decoded.append(arg)
+    return decoded
 
 
 def parse_call(text: str) -> tuple[str, list[str]]:
@@ -171,9 +195,11 @@ def _resolve_run(state: "AppState", raw) -> int:
         if s.lstrip("-").isdigit():
             run_id = int(s)
         else:
-            for run in state.registry.runs:
-                if run.label == s:
-                    return run.id
+            matches = [run.id for run in state.registry.runs if run.label == s]
+            if len(matches) > 1:
+                raise CommandError(f"Ambiguous run name {s!r}; use a run_N identifier")
+            if matches:
+                return matches[0]
             raise CommandError(f"No loaded run named {s!r}")
     if state.registry.get(run_id) is None:
         raise CommandError(f"run_{run_id} is not loaded")
@@ -225,7 +251,7 @@ def _fmt_float(v: float) -> str:
 
 
 def _fmt_str(s: str) -> str:
-    return s if _BARE_STR_RE.match(s) else '"' + s.replace('"', '\\"') + '"'
+    return s if _BARE_STR_RE.fullmatch(s) else json.dumps(s, ensure_ascii=False)
 
 
 def format_call(cmd: Command, values: list) -> str:
@@ -326,11 +352,18 @@ def register_builtins(reg: CommandRegistry) -> None:
                 return t
         raise CommandError(f"Unknown plot type {token!r}; one of {PlotType.labels()}")
 
+    def reset_session(state, args):
+        from .session import clear_session
+        clear_session(state)
+    reg.add("clear_session", [], reset_session, "Clear runs, plots and analysis before restoring a session.")
+
     # -- data / layout ----------------------------------------------------
     def load(state, a):
         path, start = a
         run = state.load_sync(path)
-        if run is not None and start is not None:
+        if run is None:
+            raise CommandError(f"Failed to load {path}")
+        if start is not None:
             run.set_time_origin(float(start))
 
     reg.add("load", [Param("path", "str"), Param("start", "float", optional=True)], load,

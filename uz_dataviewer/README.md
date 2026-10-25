@@ -167,6 +167,13 @@ directory to keep window-layout files separate. The measured tradeoffs and
 baseline revision are recorded in the repository's
 [developer reference](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_architecture.rst).
 
+### Session format and analysis correctness
+
+Sessions now use schema version 2 with explicit run identities, including repeated opens and identical filenames in different directories.
+Restoring a saved session replaces the current session; old snapshots and older exported session scripts must be recreated.
+Analysis and exports use exact time windows, while plotting retains edge padding.
+FFT rejects duplicate or irregular timestamps instead of producing an incorrect frequency axis.
+
 ## Documentation
 
 | Doc | For |

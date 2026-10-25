@@ -148,11 +148,14 @@ def test_rename_relabels_derived_run():
 
 
 # -- session round-trip -------------------------------------------------------
-def test_json_round_trip_rebuilds_graph_and_derived_run():
+def test_json_round_trip_rebuilds_graph_and_derived_run(tmp_path):
     state = _state_with_sine(50.0)
     _run(state, "node_source(run_1, ia)", "node_add(fft)",
          "node_link(node_1, node_2)", "node_eval()",
          "add_signal(plot_1, node_2, out)")
+    source = state.registry.runs[0]
+    source.path = str(tmp_path / 'Log.csv')
+    np.savetxt(source.path, np.column_stack([source.time, source.signals['ia'].y]), delimiter=';', header='time;ia', comments='')
     data = to_dict(state)
 
     # Fresh state with the same source run already present (simulates reload).
@@ -167,15 +170,18 @@ def test_json_round_trip_rebuilds_graph_and_derived_run():
     assert any(ref[1] == "out" for ref in state2.cells[0].signals)
 
 
-def test_script_round_trip():
+def test_script_round_trip(tmp_path):
     state = _state_with_sine(50.0)
     _run(state, "node_source(run_1, ia)", "node_add(fft)",
          "node_link(node_1, node_2)", "node_eval()")
+    source = state.registry.runs[0]
+    source.path = str(tmp_path / 'Log.csv')
+    np.savetxt(source.path, np.column_stack([source.time, source.signals['ia'].y]), delimiter=';', header='time;ia', comments='')
     lines = to_script(state)
 
     state2 = _state_with_sine(50.0)
     for line in lines:
-        if line.startswith("load(") or line.startswith("#"):
+        if line.startswith("#"):
             continue  # source run is already present in state2
         state2.commands.dispatch(state2, line)
 

@@ -1,47 +1,27 @@
 """Streaming PyArrow CSV source without a persistent conversion or index."""
-import hashlib
-import threading
-from pathlib import Path
 
 import numpy as np
 
-from .sources import ParquetSource, ByteCache, Metadata, check
+from .sources import IndexedFileSource, Metadata, check
 
 
-class CsvSource(ParquetSource):
+class CsvSource(IndexedFileSource):
     def __init__(self, path, cache=None, cache_dir=None, cancel=None, *, disk_cache=False):
         from .loader import _read_header, _sniff_delimiter, _split_time_columns, _named_signals
-        self.path = Path(path).resolve()
-        self.signature = self._signature()
-        self.disk_cache = False
-        self.cache = cache if cache is not None else ByteCache()
-        self.summary_lock = threading.Lock()
+        identity = self._initialize(path, cache, cache_dir, False, 'csv')
         self.delimiter = _sniff_delimiter(str(self.path))
         columns = _read_header(str(self.path), self.delimiter)
         self.time_col, columns = _split_time_columns(columns)
         named, self.units = _named_signals(columns, lambda c: np.empty(0, np.float32))
         self.columns = dict(zip(named, columns))
-        first, last, offsets = [], [], [0]
-        previous = -np.inf
-        for t, _ in self._batches([], cancel):
-            if not len(t):
-                continue
-            if not np.isfinite(t).all() or np.any(t[1:] < t[:-1]) or t[0] < previous:
-                raise ValueError('time must be finite and non-decreasing')
-            first.append(float(t[0]))
-            previous = float(t[-1])
-            last.append(previous)
-            offsets.append(offsets[-1] + len(t))
-        if not first:
-            raise ValueError('time column is empty')
-        self.first, self.last = np.array(first), np.array(last)
-        self.index_offsets = np.array(offsets, dtype=np.int64)
-        identity = hashlib.sha256(repr(('csv', str(self.path), self.signature)).encode()).hexdigest()
-        self.metadata = Metadata(identity, offsets[-1], tuple(self.columns), (first[0], last[-1]))
+        self._ensure_index(cancel)
+        self.metadata = Metadata(identity, int(self.index_offsets[-1]), tuple(self.columns),
+                                 (float(self.first[0]), float(self.last[-1])))
         self.validate()
 
-    def _ensure_index(self, cancel=None):
-        check(cancel)
+    def _time_batches(self, cancel):
+        for t, _ in self._batches([], cancel):
+            yield t
 
     def _batches(self, channels, cancel):
         import pyarrow.csv as csv

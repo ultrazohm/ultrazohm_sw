@@ -408,6 +408,8 @@ class PlotsPanel:
         x_label = state.signal_label(cell.xy_source) if cell.xy_source else "X"
 
         if cell.fit_pending:
+            self._pending_fit.add(id(cell))
+        if id(cell) in self._pending_fit:
             implot.set_next_axes_to_fit()  # must precede begin_plot
             cell.fit_pending = False
         if implot.begin_plot(f"##plot{index}", imgui.ImVec2(width, plot_h)):
@@ -415,6 +417,7 @@ class PlotsPanel:
             if x_sig is not None:
                 stride = max(1, -(-x_sig.y.shape[0] // self._budget(state, len(cell.signals))))
                 want_marker = cell.xy_style in (XyStyle.MARKERS, XyStyle.BOTH)
+                all_ready = True
                 for i, ref in enumerate(list(cell.signals)):
                     sig = state.registry.get_signal(ref[0], ref[1])
                     run = state.registry.get(ref[0])
@@ -429,7 +432,7 @@ class PlotsPanel:
                             pieces, off = [], 0
                             for _, ys in src.iter_raw([name], cancel=cancel):
                                 y = ys[name]
-                                pieces.append(y[(-off) % stride::stride])
+                                pieces.append(y[(-off) % stride::stride].copy())
                                 off += len(y)
                             return np.ascontiguousarray(np.concatenate(pieces), dtype=np.float64)
                         x, y = sample(left, xn), sample(right, yn)
@@ -437,6 +440,8 @@ class PlotsPanel:
                         return x[:n], y[:n]
                     value = state.display.request(slot, (identity, stride), identity, compute,
                                                   immediate=left.metadata.rows <= 4096 and right.metadata.rows <= 4096)
+                    if not state.display.ready(slot, (identity, stride)):
+                        all_ready = False
                     if value is None:
                         continue
                     xs, ys = value
@@ -448,16 +453,14 @@ class PlotsPanel:
                     else:  # LINE (no markers) or BOTH (line + markers)
                         implot.plot_line(label, xs[:n], ys, spec)
                     self._legend_popup(state, cell, ref, label)
+                if all_ready:
+                    self._pending_fit.discard(id(cell))
             else:
                 implot.plot_dummy("(pick an X source)")
             self._accept_drop(state, index, cell)
             implot.end_plot()
         self._last_points[index] = 0
         self._last_raw[index] = 0
-
-    def _xy_stride(self, state: AppState, n: int) -> int:
-        budget = max(state.max_points, 2)
-        return max(1, n // budget)
 
     # -- cursors ------------------------------------------------------------
     @staticmethod
@@ -478,20 +481,6 @@ class PlotsPanel:
             return float(y[i - 1])
         frac = (x - t0) / (t1 - t0)
         return float(y[i - 1] + frac * (float(y[i]) - float(y[i - 1])))
-
-    def _cursor_readout(self, state: AppState, cell: SubplotCell, x1: float, x2: float) -> str:
-        dx = abs(x2 - x1)
-        freq = (1.0 / dx) if dx > 0 else float("inf")
-        parts = [f"Δx={dx:.4g}s", f"f={freq:.4g}Hz"]
-        for ref in cell.signals[:3]:
-            run = state.registry.get(ref[0])
-            signal = state.registry.get_signal(ref[0], ref[1])
-            if run is None or signal is None:
-                continue
-            y1 = self._value_at(run.time, signal.y, x1)
-            y2 = self._value_at(run.time, signal.y, x2)
-            parts.append(f"{ref[1]}: Δy={y2 - y1:.4g}")
-        return "   ".join(parts)
 
     def _draw_cursors(self, state: AppState, index: int, cell: SubplotCell) -> None:
         if cell.cursor_x is None:

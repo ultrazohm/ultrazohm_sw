@@ -6,13 +6,14 @@ import enum
 import math
 import os
 import threading
-from concurrent.futures import Future, ThreadPoolExecutor
+from concurrent.futures import Future
+from .loading import LoadExecutor
 from dataclasses import dataclass, field
 
 from . import webbridge
 from .commands import CommandRegistry
 from .console import Console
-from .loader import ParsedRun, load_file, parse_file, open_file
+from .loader import ParsedRun, load_file, open_file
 from .requests import Requests
 from .model import DataRegistry, Run, Signal
 from .nodes import NodeGraph
@@ -204,7 +205,7 @@ class AppState:
         self.dragged_ref: SignalRef | None = None
         self.dragged_log_path: str | None = None
 
-        self._executor = ThreadPoolExecutor(max_workers=1)
+        self._executor = LoadExecutor()
         # Worker parses into a ParsedRun (no registry touch); the main thread registers
         # it in poll_pending_loads, so DataRegistry stays single-threaded.
         self._pending: list[tuple[Future[ParsedRun], str]] = []
@@ -277,7 +278,7 @@ class AppState:
                                            request.backend, request.disk_cache)
         self._pending.append((future, path))
 
-    def _convert_and_open(self, source: str, request: LoadRequest):
+    def _convert_and_open(self, source: str, request: LoadRequest, cancel=None):
         from .loader import convert_csv_to_parquet
         import tempfile
         if os.path.lexists(request.path):
@@ -286,12 +287,14 @@ class AppState:
                                          dir=os.path.dirname(request.path))
         os.close(fd)
         try:
-            convert_csv_to_parquet(source, temporary, backend=request.backend)
+            convert_csv_to_parquet(source, temporary, backend=request.backend, cancel=cancel)
+            from .sources import check
+            check(cancel)
             # Publish only a complete file, without overwriting a concurrently created destination.
             os.link(temporary, request.path)
         finally:
             os.unlink(temporary)
-        return self._open_background(request.path, request.mode, request.backend, request.disk_cache)
+        return self._open_background(request.path, request.mode, request.backend, request.disk_cache, cancel=cancel)
 
     def load_sync(self, path: str) -> Run | None:
         """Load a file on the calling thread and report it.
@@ -440,11 +443,13 @@ class AppState:
             return ref[1]
         return f"{ref[1]} @ {run.label}"
 
-    def _open_background(self, path, mode, backend, disk_cache):
-        return open_file(path, mode, self.registry.cache, self.cache_dir, backend=backend, disk_cache=disk_cache)
+    def _open_background(self, path, mode, backend, disk_cache, cancel=None):
+        return open_file(path, mode, self.registry.cache, self.cache_dir, backend=backend, disk_cache=disk_cache, cancel=cancel)
 
     def shutdown(self) -> None:
         self.display.close()
         self.analysis_jobs.close()
         self.registry.cache.clear()
-        self._executor.shutdown(wait=False, cancel_futures=True)
+        self._executor.shutdown()
+        self._pending.clear()
+        self.large_csv_requests.clear()

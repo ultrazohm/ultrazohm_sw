@@ -8,7 +8,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 from imgui_bundle import imgui, implot
 
-from uz_dataviewer.loader import open_file
+from uz_dataviewer.loader import open_file, convert_csv_to_parquet
 from uz_dataviewer.model import DataRegistry
 
 
@@ -32,6 +32,13 @@ def run(report_path):
                 assert points.values.min() == -17 and points.values.max() == 23
                 indices = np.searchsorted(t, points.time)
                 np.testing.assert_array_equal(points.values, y[indices])
+        # Exercise the spawned native conversion worker in the frozen executable.
+        import threading
+        csv = root / 'convert.csv'
+        csv.write_text('time;signal\n0;1\n1;2\n')
+        converted = root / 'converted.parquet'
+        convert_csv_to_parquet(str(csv), str(converted), backend='polars', cancel=threading.Event())
+        assert converted.exists()
         context = imgui.create_context()
         plot_context = implot.create_context()
         implot.destroy_context(plot_context)

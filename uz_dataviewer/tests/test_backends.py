@@ -120,8 +120,7 @@ def test_web_uses_pyarrow_for_polars_session(logs, monkeypatch):
     try:
         with pytest.raises(CommandError, match='desktop'):
             state.commands.execute(state, 'backend', ['polars'])
-        apply_dict(state, {'backend':'polars', 'files':[str(logs[0])],
-                           'file_backends':{str(logs[0]):'polars'}})
+        apply_dict(state, {'version':2, 'backend':'polars', 'runs':[{'key':'run:1', 'path':str(logs[0]), 'backend':'polars', 'mode':'memory', 'disk_cache':False}]})
         assert state.backend == 'pyarrow'
         assert state.registry.runs[0].backend == 'pyarrow'
     finally:
@@ -147,23 +146,15 @@ def test_default_cache_and_removed_auto_controls():
         state.shutdown()
 
 
-def test_legacy_auto_session_and_script_load_lazily(logs, tmp_path):
-    for as_script in [False, True]:
-        state = AppState()
-        state.cache_dir = tmp_path/'cache'
-        try:
-            if as_script:
-                script = tmp_path/'legacy.uzscript'
-                script.write_text(f'loading_mode("auto")\nmemory_budget(512)\nload({json.dumps(str(logs[0]))})\n')
-                run_script(state, str(script))
-            else:
-                apply_dict(state, {'loading_mode': 'auto', 'memory_budget_mb': 512,
-                                   'files': [str(logs[0])], 'file_modes': {str(logs[0]): 'auto'}})
-            assert state.loading_mode == 'lazy'
-            assert isinstance(state.registry.runs[0].time, SourceColumn)
-            assert state.registry.cache.limit == 1024 * 1024**2
-        finally:
-            state.shutdown()
+def test_obsolete_sessions_are_rejected():
+    state = AppState()
+    try:
+        with pytest.raises(ValueError, match='Unsupported session version'):
+            apply_dict(state, {'version':1, 'loading_mode':'auto'})
+        with pytest.raises(CommandError):
+            state.commands.execute(state, 'memory_budget', [512])
+    finally:
+        state.shutdown()
 
 
 @pytest.mark.parametrize('online, expected', [(False, ('polars', 'lazy')), (True, ('pyarrow', 'memory'))])

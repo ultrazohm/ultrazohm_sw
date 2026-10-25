@@ -105,8 +105,8 @@ class Source(Protocol):
     metadata: Metadata
     def read_rows(self, channels, start, stop, cancel=None): ...
     def iter_raw(self, channels, start=0, stop=None, cancel=None): ...
-    def bounds(self, lo, hi, cancel=None): ...
-    def read_plot(self, channel, lo, hi, budget, cancel=None) -> PlotData: ...
+    def bounds(self, lo, hi, cancel=None, *, padding=True): ...
+    def read_plot(self, channel, lo, hi, budget, cancel=None, *, padding=True) -> PlotData: ...
 
 
 def envelope(t, y, indices, budget):
@@ -118,8 +118,8 @@ def envelope(t, y, indices, budget):
         return np.ascontiguousarray(t, dtype=np.float64), np.ascontiguousarray(y, dtype=np.float64)
     groups = max(1, budget // 2)
     # Sample-space buckets keep summaries and raw refinement on the same axis.
-    bucket = max(1, (int(indices[-1]) - int(indices[0]) + groups) // groups)
-    group = (indices - indices[0]) // bucket
+    span = max(1, int(indices[-1]) - int(indices[0]) + 1)
+    group = (indices - indices[0]) * groups // span
     starts = np.r_[0, np.flatnonzero(np.diff(group)) + 1]
     lengths = np.diff(np.r_[starts, len(y)])
     finite = np.isfinite(y)
@@ -152,13 +152,13 @@ class MemorySource:
         for i in range(start, stop, 65536):
             yield self.read_rows(channels, i, min(i + 65536, stop), cancel)
 
-    def bounds(self, lo, hi, cancel=None):
+    def bounds(self, lo, hi, cancel=None, *, padding=True):
         check(cancel)
         from .downsample import visible_slice
-        return visible_slice(self.time, lo, hi)
+        return visible_slice(self.time, lo, hi, padding=padding)
 
-    def read_plot(self, channel, lo, hi, budget, cancel=None):
-        start, stop = self.bounds(lo, hi, cancel)
+    def read_plot(self, channel, lo, hi, budget, cancel=None, *, padding=True):
+        start, stop = self.bounds(lo, hi, cancel, padding=padding)
         t, ys = self.read_rows([channel], start, stop, cancel)
         # Vectorised scan is kept off the rendering thread. Cached multiresolution
         # summaries are shared with Parquet through SummarySource below.
@@ -273,9 +273,9 @@ class SummarySource:
             offset += len(t)
         return summarize(np.concatenate(chunks), BASE)
 
-    def read_plot(self, channel, lo, hi, budget, cancel=None):
+    def read_plot(self, channel, lo, hi, budget, cancel=None, *, padding=True):
         budget = max(2, int(budget))
-        start, stop = self.bounds(lo, hi, cancel)
+        start, stop = self.bounds(lo, hi, cancel, padding=padding)
         if stop <= start:
             return PlotData(np.empty(0), np.empty(0), 0)
         # A summary must have at least one bucket per requested extrema pair.
@@ -340,88 +340,68 @@ class ArraySource(SummarySource, MemorySource):
         pass
 
 
-class ParquetSource(SummarySource):
-    def __init__(self, path, cache=None, cache_dir=None, cancel=None, *, disk_cache=False):
-        self.disk_cache = disk_cache
-        import pyarrow.parquet as pq
-        from .loader import _split_time_columns, _named_signals
+class IndexedFileSource(SummarySource):
+    """Backend-neutral file identity, timestamp index, raw windows and summaries."""
+    def _initialize(self, path, cache, cache_dir, disk_cache, backend):
         self.path = Path(path).resolve()
         self.signature = self._signature()
-        identity = hashlib.sha256(json.dumps([str(self.path), self.signature, CACHE_VERSION]).encode()).hexdigest()
+        self.disk_cache = disk_cache
+        identity = hashlib.sha256(json.dumps([backend, str(self.path), self.signature, CACHE_VERSION]).encode()).hexdigest()
         root = Path(cache_dir or os.environ.get('UZ_DATAVIEWER_CACHE', Path.home() / '.cache' / 'uz_dataviewer'))
-        self.directory = root / identity
+        self.directory = (root / 'polars' if backend == 'polars' else root) / identity
         self.cache = cache if cache is not None else ByteCache()
         self.summary_lock = threading.Lock()
         self.index_lock = threading.Lock()
         self._index_ready = False
-        with pq.ParquetFile(self.path) as pf:
-            self.time_col, columns = _split_time_columns(pf.schema_arrow.names)
-            named, self.units = _named_signals(columns, lambda c: np.empty(0, np.float32))
-            self.columns = dict(zip(named, columns))
-            self.offsets = np.r_[0, np.cumsum([pf.metadata.row_group(i).num_rows for i in range(pf.num_row_groups)])]
-            self._rows = int(self.offsets[-1])
-            if self._rows == 0:
-                raise ValueError('time column is empty')
-            try:
-                if not self.disk_cache:
-                    raise FileNotFoundError('Disk cache disabled')
-                with np.load(self.directory / 'time.npz', allow_pickle=False) as data:
-                    self.first, self.last, self.index_offsets = data['first'], data['last'], data['offsets']
-                if (self.first.ndim != 1 or self.last.ndim != 1 or self.index_offsets.ndim != 1
-                        or not len(self.first) or len(self.first) != len(self.last)
-                        or len(self.index_offsets) != len(self.first) + 1
-                        or self.index_offsets[0] != 0 or self.index_offsets[-1] != self._rows
-                        or np.any(np.diff(self.index_offsets) <= 0)
-                        or not np.isfinite(self.first).all() or not np.isfinite(self.last).all()
-                        or np.any(self.first > self.last) or np.any(self.first[1:] < self.last[:-1])):
-                    raise ValueError('Invalid timestamp index')
-                self._index_ready = True
-                extent = (float(self.first[0]), float(self.last[-1]))
-            except (OSError, ValueError, KeyError, EOFError, BadZipFile):
-                # Opening is metadata-only when Parquet has usable time statistics.
-                # Validate actual sample order on the first raw/display request.
-                index = pf.schema_arrow.names.index(self.time_col)
-                stats = [pf.metadata.row_group(g).column(index).statistics
-                         for g in range(pf.num_row_groups) if pf.metadata.row_group(g).num_rows]
-                if all(v is not None and v.has_min_max and v.null_count == 0 for v in stats):
-                    extent = (min(float(v.min) for v in stats), max(float(v.max) for v in stats))
-                    if not np.isfinite(extent).all():
-                        raise ValueError('time must be finite')
-                else:
-                    self._ensure_index(cancel)
-                    extent = (float(self.first[0]), float(self.last[-1]))
-        self.metadata = Metadata(identity, self._rows, tuple(self.columns), extent)
+        return identity
+
+    def _restore_index(self):
+        if not self.disk_cache:
+            return False
+        try:
+            with np.load(self.directory / 'time.npz', allow_pickle=False) as data:
+                first, last, offsets = data['first'], data['last'], data['offsets']
+            if (first.ndim != 1 or last.ndim != 1 or offsets.ndim != 1
+                    or not len(first) or len(first) != len(last) or len(offsets) != len(first) + 1
+                    or offsets.dtype.kind not in 'iu' or offsets[0] != 0 or offsets[-1] != self._rows
+                    or np.any(np.diff(offsets) <= 0) or not np.isfinite(first).all()
+                    or not np.isfinite(last).all() or np.any(first > last) or np.any(first[1:] < last[:-1])):
+                return False
+            self.first, self.last, self.index_offsets = first, last, offsets
+            self._index_ready = True
+            return True
+        except (OSError, ValueError, KeyError, EOFError, BadZipFile):
+            return False
 
     def _ensure_index(self, cancel=None):
         if self._index_ready:
             return
-        import pyarrow.parquet as pq
         with self.index_lock:
             if self._index_ready:
                 return
             first, last, offsets = [], [], [0]
             previous = -np.inf
-            with pq.ParquetFile(self.path) as pf:
-                for batch in pf.iter_batches(columns=[self.time_col], batch_size=65536, use_threads=False):
-                    check(cancel)
-                    t = batch.column(0).to_numpy(zero_copy_only=False)
-                    if not len(t):
-                        continue
-                    if not np.isfinite(t).all() or np.any(t[1:] < t[:-1]) or t[0] < previous:
-                        raise ValueError('time must be finite and non-decreasing')
-                    first.append(float(t[0]))
-                    previous = float(t[-1])
-                    last.append(previous)
-                    offsets.append(offsets[-1] + len(t))
+            for t in self._time_batches(cancel):
+                check(cancel)
+                if not len(t):
+                    continue
+                if not np.isfinite(t).all() or np.any(t[1:] < t[:-1]) or t[0] < previous:
+                    raise ValueError('time must be finite and non-decreasing')
+                first.append(float(t[0]))
+                previous = float(t[-1])
+                last.append(previous)
+                offsets.append(offsets[-1] + len(t))
+            if not first:
+                raise ValueError('time column is empty')
             self.first, self.last = np.array(first), np.array(last)
             self.index_offsets = np.array(offsets, dtype=np.int64)
             self.validate()
             check(cancel)
-            try:
-                if self.disk_cache:
+            if self.disk_cache:
+                try:
                     atomic_npz(self.directory / 'time.npz', first=self.first, last=self.last, offsets=self.index_offsets)
-            except OSError:
-                pass
+                except OSError:
+                    pass
             self._index_ready = True
 
     def _signature(self):
@@ -434,33 +414,6 @@ class ParquetSource(SummarySource):
 
     def summary_path(self, channel):
         return self.directory / (hashlib.sha256(channel.encode()).hexdigest() + '.npz') if self.disk_cache else None
-
-    def iter_raw(self, channels, start=0, stop=None, cancel=None):
-        import pyarrow.parquet as pq
-        self.validate()
-        self._ensure_index(cancel)
-        stop = self.metadata.rows if stop is None else min(stop, self.metadata.rows)
-        if start >= stop:
-            return
-        first = max(0, int(np.searchsorted(self.offsets, start, side='right')) - 1)
-        last = min(len(self.offsets) - 2, int(np.searchsorted(self.offsets, stop - 1, side='right')) - 1)
-        columns = [self.time_col] + [self.columns[c] for c in channels]
-        with pq.ParquetFile(self.path) as pf:
-            for g in range(first, last + 1):
-                offset = int(self.offsets[g])
-                for batch in pf.iter_batches(row_groups=[g], columns=columns, batch_size=65536, use_threads=False):
-                    check(cancel)
-                    end = offset + len(batch)
-                    a, b = max(start - offset, 0), min(stop - offset, len(batch))
-                    if a < b:
-                        batch = batch.slice(a, b - a)
-                        t = np.asarray(batch.column(0).to_numpy(zero_copy_only=False), dtype=np.float64)
-                        ys = {c: np.asarray(batch.column(i + 1).to_numpy(zero_copy_only=False), dtype=np.float32) for i, c in enumerate(channels)}
-                        yield t, ys
-                    offset = end
-                    if offset >= stop:
-                        break
-        self.validate()
 
     def read_rows(self, channels, start, stop, cancel=None):
         start, stop = max(0, start), min(stop, self.metadata.rows)
@@ -488,13 +441,81 @@ class ParquetSource(SummarySource):
             self.cache.put(key, t, t.nbytes)
         return a + int(np.searchsorted(t, value, side=side))
 
-    def bounds(self, lo, hi, cancel=None):
+    def bounds(self, lo, hi, cancel=None, *, padding=True):
         self.validate()
         check(cancel)
         self._ensure_index(cancel)
         start = self._search(lo, 'left', cancel)
         stop = self._search(hi, 'right', cancel)
-        return max(0, start - 1), min(self.metadata.rows, stop + 1)
+        if hi < lo:
+            return start, start
+        return (max(0, start - 1), min(self.metadata.rows, stop + 1)) if padding else (start, stop)
+
+
+
+class ParquetSource(IndexedFileSource):
+    def __init__(self, path, cache=None, cache_dir=None, cancel=None, *, disk_cache=False):
+        import pyarrow.parquet as pq
+        from .loader import _split_time_columns, _named_signals
+        identity = self._initialize(path, cache, cache_dir, disk_cache, 'pyarrow')
+        with pq.ParquetFile(self.path) as pf:
+            self.time_col, columns = _split_time_columns(pf.schema_arrow.names)
+            named, self.units = _named_signals(columns, lambda c: np.empty(0, np.float32))
+            self.columns = dict(zip(named, columns))
+            self.offsets = np.r_[0, np.cumsum([pf.metadata.row_group(i).num_rows for i in range(pf.num_row_groups)])]
+            self._rows = int(self.offsets[-1])
+            if self._rows == 0:
+                raise ValueError('time column is empty')
+            if self._restore_index():
+                extent = (float(self.first[0]), float(self.last[-1]))
+            else:
+                # Opening is metadata-only when Parquet has usable time statistics.
+                # Validate actual sample order on the first raw/display request.
+                index = pf.schema_arrow.names.index(self.time_col)
+                stats = [pf.metadata.row_group(g).column(index).statistics
+                         for g in range(pf.num_row_groups) if pf.metadata.row_group(g).num_rows]
+                if all(v is not None and v.has_min_max and v.null_count == 0 for v in stats):
+                    extent = (min(float(v.min) for v in stats), max(float(v.max) for v in stats))
+                    if not np.isfinite(extent).all():
+                        raise ValueError('time must be finite')
+                else:
+                    self._ensure_index(cancel)
+                    extent = (float(self.first[0]), float(self.last[-1]))
+        self.metadata = Metadata(identity, self._rows, tuple(self.columns), extent)
+
+    def _time_batches(self, cancel):
+        import pyarrow.parquet as pq
+        with pq.ParquetFile(self.path) as pf:
+            for batch in pf.iter_batches(columns=[self.time_col], batch_size=65536, use_threads=False):
+                check(cancel)
+                yield batch.column(0).to_numpy(zero_copy_only=False)
+
+    def iter_raw(self, channels, start=0, stop=None, cancel=None):
+        import pyarrow.parquet as pq
+        self.validate()
+        self._ensure_index(cancel)
+        stop = self.metadata.rows if stop is None else min(stop, self.metadata.rows)
+        if start >= stop:
+            return
+        first = max(0, int(np.searchsorted(self.offsets, start, side='right')) - 1)
+        last = min(len(self.offsets) - 2, int(np.searchsorted(self.offsets, stop - 1, side='right')) - 1)
+        columns = [self.time_col] + [self.columns[c] for c in channels]
+        with pq.ParquetFile(self.path) as pf:
+            for g in range(first, last + 1):
+                offset = int(self.offsets[g])
+                for batch in pf.iter_batches(row_groups=[g], columns=columns, batch_size=65536, use_threads=False):
+                    check(cancel)
+                    end = offset + len(batch)
+                    a, b = max(start - offset, 0), min(stop - offset, len(batch))
+                    if a < b:
+                        batch = batch.slice(a, b - a)
+                        t = np.asarray(batch.column(0).to_numpy(zero_copy_only=False), dtype=np.float64)
+                        ys = {c: np.asarray(batch.column(i + 1).to_numpy(zero_copy_only=False), dtype=np.float32) for i, c in enumerate(channels)}
+                        yield t, ys
+                    offset = end
+                    if offset >= stop:
+                        break
+        self.validate()
 
 
 class SourceColumn(np.lib.mixins.NDArrayOperatorsMixin):

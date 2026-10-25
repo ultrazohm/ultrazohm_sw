@@ -114,9 +114,8 @@ def fft(
     """
     t = np.asarray(time, dtype=np.float64)
     yy = np.asarray(y, dtype=np.float64)
-    # compute_fft falls back to the full span when x_max <= x_min.
-    lo = float(x_min) if x_min is not None else 0.0
-    hi = float(x_max) if x_max is not None else 0.0
+    lo = float(x_min) if x_min is not None else (float(t[0]) if len(t) else 0.)
+    hi = float(x_max) if x_max is not None else (float(t[-1]) if len(t) else 0.)
     return compute_fft(t, yy, lo, hi, remove_dc=remove_dc, window=window)
 
 

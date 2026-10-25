@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import numpy as np
 import polars as pl
+from .sources import check
 from .loader import (ParsedRun, _split_time_columns, _named_signals,
                      _sniff_delimiter, _read_header, _guard_csv_size, validate_time_axis)
 
@@ -33,13 +34,15 @@ def _numeric_scan(scan):
                        *[pl.col(c).cast(pl.Float32) for c in columns])
 
 
-def parse_csv(path: str) -> ParsedRun:
+def parse_csv(path: str, cancel=None) -> ParsedRun:
     _guard_csv_size(path, _read_header(path, _sniff_delimiter(path)))
     # Streaming execution still materializes the final frame for in-memory mode.
-    return _table_to_parsed(_scan_csv(path).collect(engine="streaming"), path)
+    table = _scan_csv(path).collect(engine="streaming")
+    check(cancel)
+    return _table_to_parsed(table, path)
 
 
-def parse_parquet(path: str) -> ParsedRun:
+def parse_parquet(path: str, cancel=None) -> ParsedRun:
     scan = _numeric_scan(pl.scan_parquet(path, glob=False))
     rows = scan.select(pl.len()).collect().item()
     time_col, columns = _split_time_columns(scan.collect_schema().names())
@@ -49,6 +52,7 @@ def parse_parquet(path: str) -> ParsedRun:
     arrays = {column: np.empty(rows, dtype=np.float32) for column in columns}
     offset = 0
     for batch in scan.collect_batches(chunk_size=65536, maintain_order=True, engine="streaming"):
+        check(cancel)
         end = offset + batch.height
         time[offset:end] = batch[time_col].to_numpy()
         for column in columns:
@@ -61,12 +65,14 @@ def parse_parquet(path: str) -> ParsedRun:
     return ParsedRun(os.path.basename(path), path, time, signals, units, backend="polars")
 
 
-def convert_csv_to_parquet(src: str, dst: str | None = None) -> str:
+def convert_csv_to_parquet(src: str, dst: str | None = None, cancel=None) -> str:
     """Native streaming sink: never collect the complete CSV before writing."""
     if not src.lower().endswith(".csv"):
         raise ValueError(f"convert expects a .csv file, got {src!r}")
     if dst is None:
         dst = os.path.splitext(src)[0] + ".parquet"
+    check(cancel)
     _scan_csv(src).sink_parquet(dst, compression="snappy", row_group_size=65536,
                                 maintain_order=True, engine="streaming")
+    check(cancel)
     return dst

@@ -129,7 +129,7 @@ class AnalysisPanel:
     def _result_labels(self) -> list[str]:
         return []
 
-    def _plot_decimated(self, state: "AppState", label: str, x: np.ndarray, y: np.ndarray, pyramid) -> None:
+    def _plot_decimated(self, state: "AppState", label: str, x: np.ndarray, y: np.ndarray, source) -> None:
         """Plot a line range-decimated to the current view, so a multi-million-point
         spectrum doesn't redraw at full resolution every frame."""
         if self._fitting:
@@ -141,7 +141,7 @@ class AnalysisPanel:
         key = (id(x), id(y), start, stop, budget)
         previous = self._display_cache.get(label)
         if previous is None or previous[0] != key:
-            xs, ys = decimate_range(x, y, pyramid, budget, start, stop)
+            xs, ys = decimate_range(x, y, source, budget, start, stop)
             previous = (key, np.ascontiguousarray(xs, np.float64), np.ascontiguousarray(ys, np.float64))
             self._display_cache[label] = previous
         implot.plot_line(label, previous[1], previous[2])

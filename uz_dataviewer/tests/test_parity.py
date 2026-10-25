@@ -70,7 +70,7 @@ def test_value_at_matches_linear_interp(tmp_path):
 
 def test_set_axis_assigns_right_and_back(tmp_path):
     state = _state(tmp_path)
-    state.commands.dispatch(state, "set_axis(plot_1, Log_test.csv, ib, right)")
+    state.commands.dispatch(state, "set_axis(plot_1, run_1, ib, right)")
     assert (1, "ib") in state.cells[0].y2_signals
     state.commands.dispatch(state, "set_axis(plot_1, Log_test.csv, ib, left)")
     assert (1, "ib") not in state.cells[0].y2_signals
@@ -85,7 +85,7 @@ def test_set_axis_rejects_unassigned_signal(tmp_path):
 
 def test_removing_signal_clears_secondary_axis(tmp_path):
     state = _state(tmp_path)
-    state.commands.dispatch(state, "set_axis(plot_1, Log_test.csv, ib, right)")
+    state.commands.dispatch(state, "set_axis(plot_1, run_1, ib, right)")
     state.commands.dispatch(state, "remove_signal(plot_1, Log_test.csv, ib)")
     assert state.cells[0].y2_signals == []
 
@@ -149,7 +149,7 @@ def test_export_then_import_roundtrips(tmp_path):
 
 def test_session_roundtrip_preserves_parity(tmp_path):
     state = _state(tmp_path)
-    state.commands.dispatch(state, "set_axis(plot_1, Log_test.csv, ib, right)")
+    state.commands.dispatch(state, "set_axis(plot_1, run_1, ib, right)")
     state.commands.dispatch(state, "cursors(plot_1, on)")
 
     snap = tmp_path / "s.json"
@@ -163,5 +163,5 @@ def test_session_roundtrip_preserves_parity(tmp_path):
     script = tmp_path / "s.uzscript"
     session.export_script(state, str(script))
     text = script.read_text()
-    assert "set_axis(plot_1, Log_test.csv, ib, right)" in text
+    assert "set_axis(plot_1, run_1, ib, right)" in text
     assert "cursors(plot_1, true)" in text

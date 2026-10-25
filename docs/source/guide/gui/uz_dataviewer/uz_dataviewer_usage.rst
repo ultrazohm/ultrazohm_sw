@@ -217,3 +217,13 @@ file label; ``fwindow`` = ``custom`` / ``full`` / ``plot_N``; ``bool`` = ``on``/
 
 This table is generated from the live command registry (``python -m uz_dataviewer.command_doc``),
 and ``help`` prints the same list in the console, so both stay current.
+
+Session compatibility and analysis windows
+------------------------------------------
+
+Saved sessions use schema version 2 and preserve separate instances of logs with identical filenames or paths.
+Restoring a session replaces the currently loaded session.
+Version 1 snapshots and older exported session scripts must be recreated.
+Histogram, FFT, export and node crop ranges include only samples inside the selected time window.
+FFT requires strictly increasing, uniformly spaced timestamps (100 ppm tolerance plus floating-point roundoff).
+It reports an error for unsupported sampling rather than interpolating the data.

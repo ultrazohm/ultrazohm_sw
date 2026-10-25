@@ -49,15 +49,11 @@ class Signal:
     unit: str
     """Unit guessed from the channel name (``rpm``, ``us``, ...) or ``""``."""
 
-    y: np.ndarray
+    y: np.ndarray | SourceColumn
     """Sample values (``float32``) aligned with the parent run ``time`` axis."""
 
     run_id: int
     """Identifier of the owning :class:`Run`."""
-
-    pyramid: object = field(default=None, repr=False, compare=False)
-    """Lazily-built multi-resolution min/max pyramid (:class:`downsample.Pyramid`)
-    for O(output) decimation of large signals. Built on first display."""
 
     version: int = field(default_factory=_next_data_version, repr=False, compare=False)
     """Globally-unique stamp identifying this signal's sample array. A new Signal
@@ -78,7 +74,7 @@ class Run:
     """Display name (the file name)."""
 
     path: str
-    time: np.ndarray
+    time: np.ndarray | SourceColumn
     """Shared time axis (``float64``), assumed monotonically increasing.
 
     This is the *displayed* axis: it equals :attr:`time_raw` shifted so the first
@@ -127,7 +123,7 @@ class Run:
     def read_window(self, channels, lo, hi, cancel=None):
         source = self.data_source()
         offset = self.time_offset
-        a, b = source.bounds(lo - offset, hi - offset, cancel)
+        a, b = source.bounds(lo - offset, hi - offset, cancel, padding=False)
         t, ys = source.read_rows(channels, a, b, cancel)
         return t + offset if offset else t, ys
 

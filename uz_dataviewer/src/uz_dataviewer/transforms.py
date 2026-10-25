@@ -160,5 +160,9 @@ def filter_node(time: np.ndarray, y: np.ndarray, params: dict
 
     if fc >= nyq:
         info += f" (clamped; Nyquist {nyq:g} Hz)"
-    out = np.convolve(y, h, mode="same")
+    # Full convolution plus a centered crop preserves the input length even
+    # when the FIR kernel is longer than the signal.
+    full = np.convolve(y, h, mode="full")
+    offset = (len(h) - 1) // 2
+    out = full[offset:offset + len(y)]
     return time, out, f"{info}, {len(h)} taps"

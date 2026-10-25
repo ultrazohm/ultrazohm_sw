@@ -24,9 +24,9 @@ from uz_dataviewer.session import to_dict, apply_dict, export_data, export_fft, 
 def source_backend(request, monkeypatch):
     """Exercise the same source contract and GUI regressions with both engines."""
     if request.param == "polars":
-        from uz_dataviewer.polars_source import PolarsParquetSource
+        from uz_dataviewer.polars_source import PolarsSource
         module = sys.modules[__name__]
-        monkeypatch.setattr(module, "ParquetSource", PolarsParquetSource)
+        monkeypatch.setattr(module, "ParquetSource", PolarsSource)
         original_open = open_file
         monkeypatch.setattr(module, "open_file", lambda *args, **kwargs:
                             original_open(*args, **kwargs, backend="polars"))
@@ -68,7 +68,7 @@ def test_raw_ranges_duplicates_and_normalization(recording, tmp_path):
     run.set_time_origin(0)
     assert isinstance(run.time, SourceColumn)
     ts, ys = run.read_window(['a'], .1, .2)
-    a, b = source.bounds(t[0] + .1, t[0] + .2)
+    a, b = source.bounds(t[0] + .1, t[0] + .2, padding=False)
     np.testing.assert_allclose(ts, t[a:b] - t[0])
     np.testing.assert_array_equal(ys['a'], y[a:b])
     run.set_time_origin(None)

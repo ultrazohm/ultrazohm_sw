@@ -23,7 +23,6 @@ import numpy as np
 
 from . import transforms
 from .analysis import compute_fft
-from .downsample import visible_slice
 
 _TRUE = {"1", "true", "on", "yes"}
 
@@ -286,15 +285,12 @@ def _node_output(state, node: Node) -> tuple[np.ndarray, np.ndarray]:
         sig = state.registry.get_signal(node.ref[0], node.ref[1])
         if run is None or sig is None:
             raise ValueError(f"{node.name}: source signal is not loaded")
-        time, y = run.time, sig.y
-        # Optional tmin/tmax crop (empty = full record).
+        source = run.data_source()
         tmin, tmax = node.params.get("tmin", ""), node.params.get("tmax", "")
-        if (tmin != "" or tmax != "") and time.shape[0]:
-            lo = float(tmin) if tmin != "" else float(time[0])
-            hi = float(tmax) if tmax != "" else float(time[-1])
-            start, stop = visible_slice(time, lo, hi)
-            time, y = time[start:stop], y[start:stop]
-        return np.asarray(time), np.asarray(y)
+        lo = float(tmin) if tmin != "" else source.metadata.time_range[0] + run.time_offset
+        hi = float(tmax) if tmax != "" else source.metadata.time_range[1] + run.time_offset
+        t, values = run.read_window([node.ref[1]], lo, hi)
+        return t, values[node.ref[1]]
     if node.out_time is None or node.out_y is None:
         raise ValueError(f"{node.name}: not evaluated yet")
     return node.out_time, node.out_y
@@ -356,6 +352,11 @@ def _compute(node: Node, inputs: list[tuple[np.ndarray, np.ndarray]]
         want = f"{lo}" if lo == hi else f"{lo}..{hi}"
         raise ValueError(f"{node.kind} needs {want} input(s), got {len(inputs)}")
     out_time, out_y, info = spec.compute(inputs, node.params)
+    out_time, out_y = np.asarray(out_time), np.asarray(out_y)
+    if out_time.ndim != 1 or out_y.ndim != 1 or out_time.shape != out_y.shape:
+        raise ValueError("Node output must contain equal-length one-dimensional time and value arrays")
+    from .loader import validate_time_axis
+    validate_time_axis(out_time, node.name)
     return out_time, out_y, info, spec.unit
 
 

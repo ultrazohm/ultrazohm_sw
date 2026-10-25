@@ -32,6 +32,7 @@ import pyarrow.csv as pa_csv
 import pyarrow.parquet as pq
 
 from .model import DataRegistry, Run
+from .sources import check
 
 
 @dataclass
@@ -233,7 +234,7 @@ def _grow(arr: np.ndarray, new_cap: int, used: int) -> np.ndarray:
     return out
 
 
-def _parse_csv_streaming(path: str, delimiter: str, columns: list[str]) -> ParsedRun:
+def _parse_csv_streaming(path: str, delimiter: str, columns: list[str], cancel=None) -> ParsedRun:
     """Stream a large CSV into preallocated arrays (peak ~= resident + a batch).
 
     Mirrors :func:`_parse_parquet_streaming`, but a CSV's row count is unknown up front,
@@ -262,6 +263,7 @@ def _parse_csv_streaming(path: str, delimiter: str, columns: list[str]) -> Parse
     off = 0
     try:
         for batch in reader:
+            check(cancel)
             m = batch.num_rows
             if off + m > cap:
                 cap = max(off + m, int(cap * 1.5))
@@ -282,13 +284,13 @@ def _parse_csv_streaming(path: str, delimiter: str, columns: list[str]) -> Parse
     return ParsedRun(os.path.basename(path), path, time, signals, units)
 
 
-def parse_csv(path: str) -> ParsedRun:
+def parse_csv(path: str, cancel=None) -> ParsedRun:
     delimiter = _sniff_delimiter(path)
     columns = _read_header(path, delimiter)
     _guard_csv_size(path, columns)
     # Large CSVs stream (peak ~1.5x resident); small ones keep the fast bulk read.
     if os.path.getsize(path) >= CSV_STREAM_MIN_BYTES:
-        return _parse_csv_streaming(path, delimiter, columns)
+        return _parse_csv_streaming(path, delimiter, columns, cancel)
     table = pa_csv.read_csv(
         path,
         parse_options=pa_csv.ParseOptions(delimiter=delimiter),
@@ -301,7 +303,7 @@ def parse_csv(path: str) -> ParsedRun:
     return _table_to_parsed(table, path)
 
 
-def _parse_parquet_streaming(pf: pq.ParquetFile, path: str, n_rows: int) -> ParsedRun:
+def _parse_parquet_streaming(pf: pq.ParquetFile, path: str, n_rows: int, cancel=None) -> ParsedRun:
     """Stream a large Parquet into preallocated arrays (peak ~= resident + a batch)."""
     time_col, data_columns = _split_time_columns(pf.schema_arrow.names)
     ordered = [time_col, *data_columns]
@@ -310,6 +312,7 @@ def _parse_parquet_streaming(pf: pq.ParquetFile, path: str, n_rows: int) -> Pars
 
     off = 0
     for batch in pf.iter_batches(columns=ordered):
+        check(cancel)
         m = batch.num_rows
         for j, name in enumerate(ordered):
             values = batch.column(j).to_numpy(zero_copy_only=False)
@@ -325,15 +328,15 @@ def _parse_parquet_streaming(pf: pq.ParquetFile, path: str, n_rows: int) -> Pars
     return ParsedRun(os.path.basename(path), path, time, signals, units)
 
 
-def parse_parquet(path: str) -> ParsedRun:
+def parse_parquet(path: str, cancel=None) -> ParsedRun:
     pf = pq.ParquetFile(path)
     n_rows = pf.metadata.num_rows
     if n_rows < PARQUET_STREAM_MIN_ROWS:
         return _table_to_parsed(pf.read(), path)
-    return _parse_parquet_streaming(pf, path, n_rows)
+    return _parse_parquet_streaming(pf, path, n_rows, cancel)
 
 
-def convert_csv_to_parquet(src: str, dst: str | None = None, *, backend="pyarrow") -> str:
+def convert_csv_to_parquet(src: str, dst: str | None = None, *, backend="pyarrow", cancel=None) -> str:
     """Stream-convert a CSV log to Parquet with bounded memory.
 
     Reads ``src`` in row-group batches (never the whole file at once), casts
@@ -342,10 +345,14 @@ def convert_csv_to_parquet(src: str, dst: str | None = None, *, backend="pyarrow
     the resulting Parquet round-trips through the same name parsing on load.
     Returns the output path (``src`` with a ``.parquet`` extension by default).
     """
+    if cancel is not None:
+        from .loading import convert_cancellable
+        return convert_cancellable(src, dst, backend, cancel)
+    check(cancel)
     validate_backend(backend)
     if backend == "polars":
         from .polars_io import convert_csv_to_parquet as convert
-        return convert(src, dst)
+        return convert(src, dst, cancel=cancel)
     if not src.lower().endswith(".csv"):
         raise ValueError(f"convert expects a .csv file, got {src!r}")
     if dst is None:
@@ -365,6 +372,7 @@ def convert_csv_to_parquet(src: str, dst: str | None = None, *, backend="pyarrow
     writer: pq.ParquetWriter | None = None
     try:
         for batch in reader:
+            check(cancel)
             batch = _drop_empty_columns(batch)
             if writer is None:
                 writer = pq.ParquetWriter(dst, batch.schema)
@@ -395,27 +403,29 @@ def _release_arrow_pool() -> None:
     pa.default_memory_pool().release_unused()
 
 
-def parse_file(path: str, *, backend="pyarrow") -> ParsedRun:
+def parse_file(path: str, *, backend="pyarrow", cancel=None) -> ParsedRun:
     """Parse ``path`` into a :class:`ParsedRun` without touching any registry.
 
     Safe to call off the main thread; the caller registers the result later.
     """
+    check(cancel)
     validate_backend(backend)
     if backend == "polars":
         from . import polars_io
         ext = os.path.splitext(path)[1].lower()
         if ext == ".csv":
-            return polars_io.parse_csv(path)
+            return polars_io.parse_csv(path, cancel=cancel)
         if ext == ".parquet":
-            return polars_io.parse_parquet(path)
+            return polars_io.parse_parquet(path, cancel=cancel)
         raise ValueError(f'Unsupported file type "{ext}". Expected .csv or .parquet.')
     ext = os.path.splitext(path)[1].lower()
     if ext == ".csv":
-        parsed = parse_csv(path)
+        parsed = parse_csv(path, cancel=cancel)
     elif ext == ".parquet":
-        parsed = parse_parquet(path)
+        parsed = parse_parquet(path, cancel=cancel)
     else:
         raise ValueError(f'Unsupported file type "{ext}". Expected .csv or .parquet.')
+    check(cancel)
     _release_arrow_pool()
     return parsed
 
@@ -445,22 +455,23 @@ def validate_backend(backend):
         raise ValueError("Polars is available only in the desktop viewer; use pyarrow in the browser")
 
 
-def open_file(path, mode="memory", cache=None, cache_dir=None, *, backend="pyarrow", disk_cache=False):
+def open_file(path, mode="memory", cache=None, cache_dir=None, *, backend="pyarrow", disk_cache=False, cancel=None):
     """Open using a selected storage policy. Existing parse_file stays eager."""
+    check(cancel)
     validate_backend(backend)
     if mode not in ("memory", "lazy"):
         raise ValueError("loading mode must be memory or lazy")
     if mode == "memory":
-        return parse_file(path, backend=backend)
+        return parse_file(path, backend=backend, cancel=cancel)
     if backend == "polars":
-        from .polars_source import PolarsParquetSource as SourceClass
+        from .polars_source import PolarsSource as SourceClass
     else:
         from .sources import ParquetSource as SourceClass
     original = path
     if path.lower().endswith(".csv") and not disk_cache:
         if backend == "pyarrow":
             from .csv_source import CsvSource as SourceClass
-        return OpenedSource(original, SourceClass(path, cache, cache_dir, disk_cache=False), backend=backend)
+        return OpenedSource(original, SourceClass(path, cache, cache_dir, cancel=cancel, disk_cache=False), backend=backend)
     if path.lower().endswith(".csv"):
         from pathlib import Path
         import hashlib
@@ -476,12 +487,13 @@ def open_file(path, mode="memory", cache=None, cache_dir=None, *, backend="pyarr
             fd, temp = tempfile.mkstemp(dir=root, suffix=".parquet")
             os.close(fd)
             try:
-                convert_csv_to_parquet(path, temp, backend=backend)
+                convert_csv_to_parquet(path, temp, backend=backend, cancel=cancel)
+                check(cancel)
                 os.replace(temp, destination)
             finally:
                 if os.path.exists(temp):
                     os.unlink(temp)
         path = str(destination)
     elif not path.lower().endswith(".parquet"):
-        return parse_file(path, backend=backend)
-    return OpenedSource(original, SourceClass(path, cache, cache_dir, disk_cache=disk_cache), backend=backend)
+        return parse_file(path, backend=backend, cancel=cancel)
+    return OpenedSource(original, SourceClass(path, cache, cache_dir, cancel=cancel, disk_cache=disk_cache), backend=backend)

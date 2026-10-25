@@ -96,6 +96,9 @@ def test_unknown_kind_restores_as_placeholder(tmp_path, clean_registry):
     state = _state_with_run(50)
     _run(state, "node_source(run_1, a)", "node_add(double)",
          "node_link(node_1, node_2)", "node_eval()")
+    source = state.registry.runs[0]
+    source.path = str(tmp_path / 'source.csv')
+    np.savetxt(source.path, np.column_stack([source.time, source.signals['a'].y]), delimiter=';', header='time;a', comments='')
     data = to_dict(state)
 
     REGISTRY.pop("double", None)  # simulate the plugin not being installed on reload

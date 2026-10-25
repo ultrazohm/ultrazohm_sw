@@ -9,16 +9,17 @@ import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from uz_dataviewer.downsample import Pyramid, decimate_range, visible_slice  # noqa: E402
+from uz_dataviewer.sources import ArraySource
+from uz_dataviewer.downsample import decimate_range, visible_slice  # noqa: E402
 
 
 def test_pyramid_envelope_bounds_the_signal():
     n = 4_000_000
     t = np.linspace(0.0, 100.0, n)
     y = np.sin(t * 7.0).astype(np.float32)
-    pyr = Pyramid.build(y)
+    pyr = ArraySource(t, {'value': y})
 
-    xs, ys = pyr.query(t, y, 4000, 0, n)
+    xs, ys = decimate_range(t, y, pyr, 4000, 0, n)
     assert xs.shape == ys.shape
     assert ys.min() <= y.min() + 1e-3  # envelope contains the true extremes
     assert ys.max() >= y.max() - 1e-3
@@ -31,7 +32,7 @@ def test_output_count_is_consistent_across_zoom():
     n = 20_000_000
     t = np.linspace(0.0, 100.0, n)
     y = np.sin(t).astype(np.float32)
-    pyr = Pyramid.build(y)
+    pyr = ArraySource(t, {'value': y})
     n_out = 10_000
     counts = []
     for frac in (1.0, 0.5, 0.2, 0.07, 0.02):
@@ -50,7 +51,7 @@ def test_budget_is_hit_on_both_paths_across_window_sizes():
     t = np.arange(n, dtype=np.float64)
     rng = np.random.default_rng(0)
     y = (np.sin(t * 1e-3) + 0.01 * rng.standard_normal(n)).astype(np.float32)
-    pyr = Pyramid.build(y)
+    pyr = ArraySource(t, {'value': y})
     for n_out in (2000, 5000):
         for count in (8_000_000, 5_000_000, 3_000_000, 1_500_000,  # pyramid
                       1_000_000, 500_000, 100_000, 20_000):         # one-shot
@@ -63,7 +64,7 @@ def test_spike_is_preserved():
     t = np.linspace(0.0, 10.0, n)
     y = np.zeros(n, dtype=np.float32)
     y[1_234_567] = 42.0
-    pyr = Pyramid.build(y)
+    pyr = ArraySource(t, {'value': y})
     _, ys = decimate_range(t, y, pyr, 2000, 0, n)
     assert ys.max() >= 42.0 - 1e-3
 
@@ -91,7 +92,7 @@ def test_zoom_window_confines_x():
     n = 2_000_000
     t = np.linspace(0.0, 10.0, n)
     y = np.sin(t * 30.0).astype(np.float32)
-    pyr = Pyramid.build(y)
+    pyr = ArraySource(t, {'value': y})
     start, stop = visible_slice(t, 5.0, 5.1)
     xs, _ = decimate_range(t, y, pyr, 2000, start, stop)
     assert xs.min() >= 4.9 and xs.max() <= 5.2

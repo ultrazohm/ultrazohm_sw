@@ -182,3 +182,47 @@ def test_uploaded_files_use_the_same_loading_policy_as_commands(app_state, tmp_p
             t, values = uploaded.read_window(['a'], 0, 1)
             np.testing.assert_array_equal(t, [0, 1])
             np.testing.assert_array_equal(values['a'], [10, 20])
+
+
+def test_browser_stream_budget_rejects_without_losing_samples(tmp_path):
+    import importlib.util
+    import shutil
+    import subprocess
+    import pytest
+    node = shutil.which('node')
+    if node is None:
+        pytest.skip('Node.js required for generated browser parser')
+    spec = importlib.util.spec_from_file_location('gen_web_budget', Path(__file__).parents[1]/'build/gen_web.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    html = module.build_html()
+    start = html.index('  async function loadStreamingCsv(file)')
+    end = html.index('  function wireFileInput()', start)
+    # Exercise the real parser with a ten-row budget, without allocating GiB.
+    code = html[start:end].replace('1.5 * 1024 * 1024 * 1024', '120')
+    harness = r'''
+const assert = require('node:assert/strict');
+function pyRun() {}
+let loaded = [];
+const pyodide = {pyimport: () => ({
+ load_columns: (name,names,columns,time) => loaded.push(Array.from(time)), destroy: () => {}
+})};
+(async () => {
+ const small = new Blob(['time,a\n0,3\n1,4\n2,5\n']); small.name = 'small.csv';
+ await loadStreamingCsv(small);
+ assert.deepEqual(loaded, [[0,1,2]]);
+ const large = new Blob(['time,a\n' + Array.from({length:20},(_,i)=>`${i},${i}\n`).join('')]);
+ large.name = 'large.csv';
+ await assert.rejects(() => loadStreamingCsv(large), /numeric-data budget/);
+ // Deliberately underestimate from the header sample: the growth guard must
+ // still reject, and no partial recording may reach Python.
+ const underestimated = {name:'underestimated.csv', size:large.size,
+  slice:() => new Blob(['time,a\n0,' + ' '.repeat(1000) + '0\n']),
+  stream:() => large.stream()};
+ await assert.rejects(() => loadStreamingCsv(underestimated), /numeric-data budget/);
+ assert.deepEqual(loaded, [[0,1,2]]);
+})().catch(error => {console.error(error); process.exitCode = 1;});
+'''
+    script = tmp_path/'budget.cjs'
+    script.write_text(code+harness)
+    subprocess.run([node, str(script)], check=True, capture_output=True, text=True, timeout=15)

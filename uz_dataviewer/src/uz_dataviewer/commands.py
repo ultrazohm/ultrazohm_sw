@@ -491,7 +491,14 @@ def register_builtins(reg: CommandRegistry) -> None:
     reg.add("clear_plot", [Param("plot", "plot")], clear_plot, "Remove all signals from a subplot.")
 
     def set_plot_type(state, a):
-        _cell(state, a[0]).plot_type = _resolve_plot_type(a[1])
+        cell = _cell(state, a[0])
+        kind = _resolve_plot_type(a[1])
+        if cell.plot_type != kind:
+            cell.plot_type = kind
+            cell.x_lim = cell.y_lim = None
+            cell.pending_x_lim = cell.pending_y_lim = None
+            cell.fit_pending = True
+            state.plot_x_ranges.pop(a[0], None)
 
     reg.add("set_plot_type", [Param("plot", "plot"), Param("type", "str")], set_plot_type,
             "Set a subplot's type (line/scatter/stairs/xy).")
@@ -511,9 +518,11 @@ def register_builtins(reg: CommandRegistry) -> None:
         plot_n, lo, hi = a
         cell = _cell(state, plot_n)
         cell.pending_x_lim = (lo, hi)
-        state.plot_x_ranges[plot_n] = (lo, hi)
-        if state.link_x:
-            state.shared_x = (lo, hi)
+        cell.x_lim = (lo, hi)
+        if cell.plot_type is not PlotType.XY:
+            state.plot_x_ranges[plot_n] = (lo, hi)
+            if state.link_x:
+                state.shared_x = (lo, hi)
 
     reg.add("set_x_lim", [Param("plot", "plot"), Param("min", "float"), Param("max", "float")],
             set_x_lim, "Set a subplot's X-axis limits.")
@@ -561,8 +570,8 @@ def register_builtins(reg: CommandRegistry) -> None:
         if state.registry.get_signal(run_id, name) is None:
             raise CommandError(f"run_{run_id} has no signal {name!r}")
         cell = _cell(state, plot_n)
+        set_plot_type(state, [plot_n, 'XY'])
         cell.xy_source = (run_id, name)
-        cell.plot_type = PlotType.XY
         cell.fit_pending = True
 
     reg.add("set_xy", [Param("plot", "plot"), Param("run", "run"), Param("signal", "str")],

@@ -206,7 +206,7 @@ Per time-series cell, each frame:
 
 #. Compute the data extent and apply any **pending** axis limits (``fit_pending``, ``pending_x_lim``, ``pending_y_lim``) with ``Cond_.Always``.
 #. **Linked X:** the hovered cell becomes the ``_driver`` and publishes its X range to ``state.shared_x``; followers lock to it. Every time-series cell also publishes its own range to ``state.plot_x_ranges[plot_n]`` (used by analysis windows' "follow plot_N").
-#. **Downsample** each signal to ~``max_points`` over the visible window (``decimate_range``, fed by ``visible_slice``) — this keeps multi-GB logs interactive. **XY cells are the exception**: they decimate by plain uniform stride (``_xy_stride``), not a min/max envelope, so a busy Lissajous figure can alias (acceptable for the phase-portrait case).
+#. **Downsample** each signal to ~``max_points`` over the visible window (``decimate_range``, fed by ``visible_slice``) — this keeps multi-GB logs interactive. **XY cells are the exception**: they decimate by plain uniform stride (``sampling.sample_xy``), not a min/max envelope, so a busy Lissajous figure can alias (acceptable for the phase-portrait case).
 #. Draw it (line/scatter/stairs), optionally with per-sample markers (``Spec.marker``), routing the left/right (secondary ``ImAxis_.y2``) axis per signal.
 #. **Cursors** (two ``drag_line_x``) and **spy** (``drag_rect`` + a ``canvas_only`` inset) draw on top. Their readouts and rectangles are recomputed only on move.
 #. **Zoom echo:** when a pan/zoom settles, ``echo set_x_lim(plot_n, ...)``.
@@ -305,7 +305,12 @@ Explicit console/script commands and node/plugin evaluation remain synchronous.
 Browser execution uses the same interfaces synchronously because its current runtime lacks workers.
 
 Time-series, XY and cursor requests share source validation, worker scheduling and error reporting through ``PlotsPanel._request_data``.
-Cached display results are validated before reuse; only small resident arrays can run immediately on the desktop render thread.
+Cached display and analysis results share the ``sources.validation_error`` contract with node stale detection.
+``FileIdentity`` validates both the original CSV and its cached Parquet representation; conversion publishes only if the original identity still matches.
+Derived ``ArraySource`` objects validate their owning node and upstream inputs before raw reads or cache reuse. Failed or stale outputs remain assigned but cannot be plotted, analysed or exported until successfully reevaluated.
+Only small resident arrays can run immediately on the desktop render thread.
+XY sampling validates all displayed timestamps in bounded paired batches, including timestamps omitted by the display stride. Different lengths or time bases are rejected; there is no implicit interpolation.
+XY view ranges are stored on their cell and never published as linked time ranges. Both plot types share explicit axis-limit application and view capture.
 
 FFT and ordinary plots now share the ``ArraySource`` / ``SummarySource`` sampling engine.
 FFT summaries are constructed by the analysis worker, and unchanged spectrum views reuse their reduced arrays.
@@ -324,6 +329,8 @@ Two complementary formats:
   Schema version 4 reloads explicit per-run records and remaps recording/node keys, preserving duplicate names and repeated opens of the same path.
 - **``.uzscript``** (``export_script``/``run_script``) — a human-readable, editable list of commands that reproduces the session when replayed.
   Scripts restore into a replacement state and use recording ``run_N`` and explicit ``node_output_N`` references. A failed restore preserves the current session.
+
+Both exporters start from ``session.to_dict``; script generation translates that canonical snapshot into commands instead of rereading live state independently.
 
 Old version 1/2/3 snapshots and old exported session scripts are rejected; Auto and memory-budget migrations have been removed.
 
@@ -357,7 +364,7 @@ Native vs web (``webbridge.py``)
 The same Python runs on the desktop and in the browser via Pyodide (CPython→WASM); a single flag, ``webbridge.IS_WEB``, gates the handful of edges that differ.
 The UI, command layer, plots, FFT/Histogram, nodes and downsampler are **identical** on both — the differences are file I/O, threading, the WASM memory ceiling, and plugin loading.
 
-Design-relevant points: loads are async on native and synchronous on web (Pyodide has no worker threads); the renderer never branches on the target because the **decimator is pure NumPy** (no native dependency to wheel for the browser); and the web build cannot hold a multi-GB log, so a large CSV is **stream-parsed into typed arrays** and **decimated on a memory budget** at load rather than materialised whole.
+Design-relevant points: loads are async on native and synchronous on web (Pyodide has no worker threads); the renderer never branches on the target because the **decimator is pure NumPy** (no native dependency to wheel for the browser); and the web build cannot hold a multi-GB log, so a large CSV is **stream-parsed into typed arrays** at full resolution. Recordings that exceed the browser numeric-data budget are rejected; load-time decimation has been removed.
 
 The user-facing comparison is in :doc:`uz_dataviewer_native_vs_web`; the wasm32 ~4 GB ceiling and the deferred out-of-core fix are analysed in :ref:`uz_dataviewer_web_large_logs`.
 
@@ -365,7 +372,7 @@ Web edges (``webbridge.py`` / ``build/gen_web.py``):
 
 - **File I/O.** Native uses ``portable_file_dialogs`` plus a GLFW drop callback; web uses a hidden HTML ``<input type=file>`` to open, ``webbridge.download`` (a Blob + synthetic anchor click) to save, and a second hidden picker (``uzSessionInput``) for session uploads, routed by extension in ``webbridge.load_uploaded_session`` (``.json`` → ``load_state``, ``.uzscript``/``.txt`` → ``run_script``).
 - **Loading.** ``wireFileInput`` (``build/gen_web.py``) dispatches by type: a CSV ≤ ``FULL_LOAD_LIMIT`` (200 MB) **and any Parquet** take ``loadFull`` → written to the Pyodide FS and parsed by Arrow, same code as native; a larger CSV takes ``loadStreamingCsv``.
-- **Streaming CSV decimation (CSV only).** ``loadStreamingCsv`` reads the ``File`` blob in chunks (the multi-GB text never sits in WASM memory) and pushes per-column typed arrays into ``webbridge.load_columns``. It estimates the numeric footprint (``estRows × (8 + 4·nDataCols)``) from a header sample and, if that exceeds ``MEM_BUDGET`` (~1.5 GB, the working budget below the ~4 GB heap ceiling), keeps every ``stride``-th row so the result fits — emitting the "decimated 1:N … use the native app" console note. **This safety net is CSV-only:** a large **Parquet** has no equivalent and goes through ``loadFull`` unguarded, so it loads at full resolution if it fits the heap or, if it doesn't, the oversize allocation **silently aborts the whole WASM runtime** ("loading does nothing"). The size estimate exists precisely to avoid that abort for the CSV path.
+- **Streaming CSV budget (CSV only).** ``loadStreamingCsv`` reads the ``File`` blob in chunks and passes full-resolution typed arrays to ``webbridge.load_columns``. It rejects recordings whose estimated numeric footprint exceeds ``MEM_BUDGET`` (~1.5 GiB), and checks the actual row count before growing arrays so an underestimate cannot bypass the budget. It never discards samples. This is a numeric-data budget, not a hard browser-memory limit: scratch space and transfer copies also need memory. Large Parquet files still use ``loadFull`` and must fit in the browser heap. Use native lazy loading for oversized recordings.
 - **Node plugins are native-only.** ``plugins.load_plugins`` (called once at startup in ``app.py``) scans filesystem/env plugin dirs (``$UZ_DATAVIEWER_PLUGINS``, ``~/.uz_dataviewer/nodes/``) that a browser tab cannot populate, so on web it finds nothing and the node graph runs the builtins in ``nodes.REGISTRY`` only. The ``load_plugins`` command still exists but has no dirs to read. See :doc:`uz_dataviewer_plugins`.
 - **Version pins.** ``PYODIDE_VERSION`` and ``IMGUI_BUNDLE_WHEEL`` (``build/gen_web.py``) must be a compatible pair — the ``imgui_bundle`` wheel is built against one specific Pyodide release, so bump them together (see the `imgui_bundle Pyodide docs <https://pthom.github.io/imgui_bundle/python_pyodide.html>`_). A true single-file, no-server build would require a C++/emscripten ``SINGLE_FILE`` rebuild and would drop the Python data stack (:ref:`uz_dataviewer_build_web`).
 
@@ -445,7 +452,7 @@ Design decisions
    * - Per-log time normalization keeps ``time_raw``
      - Reversible, cheap (recompute on change only), and signals are never touched.
    * - Web: stream-parse CSV → arrays
-     - Avoids holding multi-GB text in 32-bit WASM memory; may decimate to fit the browser budget.
+     - Avoids holding multi-GB text in 32-bit WASM memory; rejects oversized numeric data without discarding samples.
    * - Pending-flag pattern (``fit_pending``, ``compute_requested``, …)
      - The immediate-mode way to express "do X once next frame".
 

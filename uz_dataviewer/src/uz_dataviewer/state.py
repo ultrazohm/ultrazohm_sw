@@ -104,6 +104,9 @@ class SubplotCell:
     y_lim: tuple[float, float] | None = None
     """Last rendered primary Y range; persists after pending limits are consumed."""
 
+    x_lim: tuple[float, float] | None = None
+    """Last rendered X range, including XY coordinates (never linked as time)."""
+
     def add(self, ref: SignalRef) -> bool:
         if ref not in self.signals:
             self.signals.append(ref)

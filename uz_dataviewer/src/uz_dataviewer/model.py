@@ -111,12 +111,15 @@ class Run:
 
     source: object = field(default=None, repr=False, compare=False)
     _source_version: object = field(default=None, repr=False, compare=False)
+    output_validator: object = field(default=None, repr=False, compare=False)
 
     def data_source(self):
         version = (self.time_version, id(self.time), tuple((n, s.version, id(s.y)) for n, s in self.signals.items()))
         if self.source is None or (not isinstance(self.time, SourceColumn) and version != self._source_version):
             self.source = ArraySource(self.time, {n: s.y for n, s in self.signals.items()}, getattr(self, '_cache', None))
         self._source_version = version
+        if isinstance(self.source, ArraySource):
+            self.source.validator = self.output_validator
         return self.source
 
     @property

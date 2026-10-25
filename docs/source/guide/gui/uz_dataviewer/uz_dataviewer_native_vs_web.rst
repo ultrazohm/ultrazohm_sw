@@ -28,7 +28,7 @@ Otherwise the differences are in file access, loading speed, and the memory limi
      - Blocks the tab until the file is parsed
    * - **Very large logs**
      - Limited only by your machine's RAM
-     - Large **CSV** decimated on load to fit; **Parquet** must fit in memory (no auto-decimation)
+     - Large **CSV** rejected above the numeric-data budget; **Parquet** must fit in memory
    * - **Export / Save**
      - OS save dialog
      - Browser download (and a file picker to load sessions back)
@@ -74,7 +74,7 @@ The browser keeps a margin below that ceiling for the runtime and the app itself
 
 How a larger log is handled depends on the file type:
 
-- A large CSV is decimated on load (a coarse overview) so it always opens, with a message in the console (e.g. *"Loaded … decimated 1:3 … use the native app for full detail"*).
-- A Parquet log (and any CSV that is not over the threshold) loads at full resolution and is not auto-decimated — if it does not fit in the browser's memory the load simply fails. Open fewer channels, ``convert`` a trimmed selection, or use the native app.
+- Streamed CSVs preserve every sample. Files exceeding the estimated or actual numeric-data budget (~1.5 GiB) are rejected with a message directing users to the native app.
+- All accepted recordings load at full resolution. The CSV numeric-data budget does not bound total browser memory, and Parquet files have no equivalent preflight guard. Use the native app for recordings that do not fit.
 
 For full resolution on multi-gigabyte logs, use the native app — it is limited only by your machine's RAM.

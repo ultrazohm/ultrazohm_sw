@@ -147,7 +147,18 @@ class AnalysisPanel(SessionPanel):
         versions = tuple((ref, state.registry.get(ref[0]).time_version,
                           state.registry.get_signal(*ref).version)
                          for ref in cfg.sources if state.registry.get_signal(*ref) is not None)
-        return (versions, window[0], window[1]) + self._options_key(cfg)
+        return (versions, window[0], window[1], self._source_error(state, cfg)) + self._options_key(cfg)
+
+    @staticmethod
+    def _source_error(state, cfg):
+        from ..sources import validation_error
+        sources = []
+        for ref in cfg.sources:
+            run = state.registry.get(ref[0])
+            if run is None or ref[1] not in run.signals:
+                return 'Analysis source is no longer loaded'
+            sources.append(run.data_source())
+        return validation_error(sources)
 
     # -- shared render ------------------------------------------------------
     def _poll_export(self, state: "AppState") -> None:
@@ -201,6 +212,14 @@ class AnalysisPanel(SessionPanel):
                 )
 
         # -- compute on demand (command-driven; never per frame) --
+        source_error = self._source_error(state, cfg)
+        if source_error:
+            state.analysis_jobs.forget(self.prefix)
+            self._analysis_pending = None
+            self._results = []
+            self._display_cache.clear()
+            self._info = source_error
+            cfg.compute_requested = False
         if cfg.compute_requested:
             cfg.compute_requested = False
             x_min, x_max = state.resolve_x_window(cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources)
@@ -236,6 +255,8 @@ class AnalysisPanel(SessionPanel):
                 self._analysis_pending = None
             elif self.prefix in state.analysis_jobs.errors:
                 self._info = state.analysis_jobs.errors[self.prefix]
+                self._results = []
+                self._display_cache.clear()
                 self._analysis_pending = None
             else:
                 imgui.text_disabled("Computing...")

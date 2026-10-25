@@ -202,7 +202,7 @@ The problem
 
 Example: a ~4.6 GB CSV, 21 columns (``time`` + 20 channels), ~55M rows.
 Parsed to numbers that is ``time`` float64 (8 B) + 20 channels float32 (80 B) = 88 B/row × 55M ≈ **~4.8 GB**.
-The web build cannot hold that, so today it decimates ``1:stride`` on load (a lossy overview) or the tab runs out of memory; native opens it fine using the PC's RAM.
+The web build cannot hold that: streamed CSVs above its numeric-data budget are rejected, while other oversized allocations can exhaust the tab. Use native lazy loading for these recordings. The former lossy load-time stride fallback has been removed.
 
 The wasm32 ceiling
 ------------------

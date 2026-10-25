@@ -330,7 +330,9 @@ def _source_signature(state, node: Node):
     run = state.registry.get(node.ref[0])
     signal = state.registry.get_signal(*node.ref)
     sig = None if run is None or signal is None else (run.time_version, signal.version)
-    return ("ref", node.ref, sig, window)
+    from .sources import validation_error
+    error = validation_error([run.data_source()]) if run is not None else 'Source is missing'
+    return ("ref", node.ref, sig, window, error)
 
 
 def node_key(state, graph: NodeGraph, node: Node) -> tuple:
@@ -425,5 +427,9 @@ def evaluate(state, node_id: int | None = None) -> int:
         node.error = ""
         node.eval_key = node_key(state, graph, node)
         node.out_run_id = state.upsert_derived_run(node.name, node.out_time, node.out_y, unit, run_id=node.out_run_id)
+        def validate_output(node=node):
+            if is_stale(state, graph, node):
+                raise ValueError(f"{node.name}: derived output is not current; evaluate the node ({node.error or 'inputs changed'})")
+        state.registry.get(node.out_run_id).output_validator = validate_output
         computed += 1
     return computed

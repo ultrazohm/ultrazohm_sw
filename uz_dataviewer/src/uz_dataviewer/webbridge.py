@@ -48,9 +48,7 @@ def trigger_file_dialog() -> None:
 def load_uploaded(path: str, note: str = "") -> None:
     """Load a file the browser wrote into the Pyodide FS. Called from JS.
 
-    ``note`` carries an optional message (e.g. that the file was decimated on
-    the way in because it was too large to fit in the browser's 32-bit WASM
-    memory) to surface in the console.
+    ``note`` carries an optional diagnostic message to surface in the console.
     """
     if _active_state is None:
         return
@@ -161,8 +159,8 @@ def load_columns(label: str, names, arrays, time, note: str = "") -> None:
     The web loader stream-parses a large CSV directly into per-column typed
     arrays, avoiding the multi-gigabyte text ever being held in 32-bit WASM
     memory. ``names``/``arrays`` are parallel (raw channel header -> ``float32``
-    samples); ``time`` is the shared ``float64`` axis. ``note`` carries an optional
-    message (e.g. that the file had to be decimated to fit the WASM heap).
+    samples); ``time`` is the shared ``float64`` axis. All samples are preserved; oversized
+    files are rejected by the browser loader. ``note`` is an optional diagnostic.
     """
     if _active_state is None:
         return

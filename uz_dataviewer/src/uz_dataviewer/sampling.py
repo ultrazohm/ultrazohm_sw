@@ -36,3 +36,47 @@ def require_matching_time(left, right) -> None:
         tolerance = np.finfo(np.float64).eps * max(1., float(np.max(np.abs(a))), float(np.max(np.abs(b)))) * 8
         if np.any(np.abs(a - b) > tolerance):
             raise ValueError("Binary math needs matching time axes; inputs are not time-aligned")
+
+
+def sample_xy(left, right, x_channel, y_channel, x_offset, y_offset, stride, cancel=None):
+    """Validate every displayed timestamp while sampling aligned raw batches."""
+    from .sources import check
+    if left.metadata.rows != right.metadata.rows:
+        raise ValueError('XY needs matching time axes and equal-length inputs')
+    xs, ys, offset = [], [], 0
+    x_batches = iter(left.iter_raw([x_channel], cancel=cancel))
+    y_batches = iter(right.iter_raw([y_channel], cancel=cancel))
+    xt = yt = np.empty(0)
+    try:
+        while True:
+            check(cancel)
+            if not len(xt):
+                batch = next(x_batches, None)
+                if batch is not None:
+                    xt, values = batch
+                    xv = values[x_channel]
+            if not len(yt):
+                batch = next(y_batches, None)
+                if batch is not None:
+                    yt, values = batch
+                    yv = values[y_channel]
+            if not len(xt) or not len(yt):
+                if len(xt) or len(yt) or offset != left.metadata.rows:
+                    raise ValueError('XY needs equal-length inputs')
+                break
+            n = min(len(xt), len(yt))
+            try:
+                require_matching_time(xt[:n] + x_offset, yt[:n] + y_offset)
+            except ValueError as exc:
+                raise ValueError('XY needs matching displayed timestamps; inputs are not time-aligned') from exc
+            start = (-offset) % stride
+            xs.append(xv[start:n:stride].copy())
+            ys.append(yv[start:n:stride].copy())
+            offset += n
+            xt, xv = xt[n:], xv[n:]
+            yt, yv = yt[n:], yv[n:]
+    finally:
+        x_batches.close()
+        y_batches.close()
+    return (np.ascontiguousarray(np.concatenate(xs) if xs else [], dtype=np.float64),
+            np.ascontiguousarray(np.concatenate(ys) if ys else [], dtype=np.float64))

@@ -280,3 +280,33 @@ def test_restore_rejects_nonexistent_analysis_plot_transactionally(app_state):
     with pytest.raises(ValueError, match='Analysis window'):
         session.apply_dict(state, saved)
     assert state.session_token is token
+
+
+def test_script_and_json_share_hidden_view_and_analysis_settings(app_state, tmp_path):
+    """Inactive controls survive both serializers, including a former XY source."""
+    import json
+    state = app_state
+    state.backend, state.loading_mode = 'pyarrow', 'memory'
+    path = tmp_path/'data.csv'
+    path.write_text(SAMPLE)
+    state.load_sync(str(path))
+    state.commands.execute(state, 'set_xy', [1, 1, 'ia'])
+    state.commands.execute(state, 'add_signal', [1, 1, 'ib'])
+    state.commands.execute(state, 'set_plot_type', [1, 'Line'])
+    state.link_x = False
+    cell = state.cells[0]
+    cell.pending_x_lim, cell.pending_y_lim = (.05, .15), (1.05, 1.15)
+    cell.spy_rect, cell.cursor_x = (.06, 1.06, .14, 1.14), (.07, .13)
+    cell.spy = cell.cursors = False
+    state.fft.follow_plot, state.histogram.follow_plot = -1, -1
+    state.fft.x_min, state.fft.x_max = .01, .19
+    state.histogram.x_min, state.histogram.x_max = .02, .18
+    state.fft.remove_dc, state.fft.window, state.fft.log_y = False, False, True
+    state.histogram.bins = 17
+    saved = session.to_dict(state)
+    script = tmp_path/'view.uzscript'
+    session.export_script(state, str(script))
+    session.run_script(state, str(script))
+    assert json.loads(json.dumps(session.to_dict(state))) == json.loads(json.dumps(saved))
+    session.apply_dict(state, saved)
+    assert json.loads(json.dumps(session.to_dict(state))) == json.loads(json.dumps(saved))

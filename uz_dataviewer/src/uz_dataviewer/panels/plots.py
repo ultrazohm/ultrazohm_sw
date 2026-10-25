@@ -73,7 +73,7 @@ class PlotsPanel(SessionPanel):
         self._cursor_text: dict[int, str] = {}  # cell index -> cursor readout
         self._last_logged_cursor: dict[int, tuple[float, float]] = {}  # cursor echo
         self._last_logged_spy: dict[int, tuple] = {}  # spy-rect echo
-        self._export_dialog: tuple | None = None  # (pfd dialog, plot_n)
+        self._export_dialog: tuple | None = None  # (pfd dialog, cell)
         self._used_slots = set()
         self._pending_fit = set()
         self._reported_errors = {}
@@ -85,16 +85,12 @@ class PlotsPanel(SessionPanel):
 
     def _request_data(self, state, slot, key, identity, sources, compute):
         """Validate sources even for cache hits; share scheduling and error handling."""
-        from ..sources import ArraySource
+        from ..sources import ArraySource, validation_error
         self._used_slots.add(slot)
         for source in sources:
             source_id = source.metadata.identity
             if source_id not in self._validated_sources:
-                try:
-                    source.validate()
-                    self._validated_sources[source_id] = None
-                except (ValueError, OSError) as exc:
-                    self._validated_sources[source_id] = str(exc)
+                self._validated_sources[source_id] = validation_error([source])
             error = self._validated_sources[source_id]
             if error:
                 state.display.forget(slot)
@@ -129,12 +125,16 @@ class PlotsPanel(SessionPanel):
     def _poll_export(self, state: AppState) -> None:
         if self._export_dialog is None:
             return
-        dialog, plot_n = self._export_dialog
+        dialog, cell = self._export_dialog
         if not dialog.ready():
             return
         path = dialog.result()
         self._export_dialog = None
         if path:
+            plot_n = next((i for i, current in enumerate(state.cells, 1) if current is cell), None)
+            if plot_n is None:
+                state.console.warn('Export cancelled: the subplot was removed.')
+                return
             path = ensure_extension(path, ".csv")  # dialog may drop the extension
             relative = state.cells[plot_n - 1].export_relative
             self._emit(state, "export_data", plot_n, path, relative)
@@ -229,7 +229,7 @@ class PlotsPanel(SessionPanel):
             if pfd is not None and self._export_dialog is None:
                 self._export_dialog = (
                     pfd.save_file("Export plot data", name, ["CSV (*.csv)", "*.csv"]),
-                    plot_n,
+                    cell,
                 )
             elif webbridge.IS_WEB:  # no OS dialog in a tab -> write to FS + download
                 webbridge.save_and_download(
@@ -330,9 +330,7 @@ class PlotsPanel(SessionPanel):
 
             limits = implot.get_plot_limits()
             raw_lo, raw_hi = float(limits.x.min), float(limits.x.max)
-            y_lo, y_hi = float(limits.y.min), float(limits.y.max)
-            if _is_finite_range(y_lo, y_hi):
-                cell.y_lim = (y_lo, y_hi)
+            self._capture_limits(cell, limits)
             x_min, x_max = self._clamp_window(raw_lo, raw_hi, data_min, data_max)
             if did_fit:
                 x_min, x_max = data_min, data_max
@@ -423,6 +421,8 @@ class PlotsPanel(SessionPanel):
             cell.fit_pending = False
         if implot.begin_plot(f"##plot{index}", imgui.ImVec2(width, plot_h)):
             implot.setup_axes(x_label, "")
+            self._apply_explicit_limits(cell, consume=False)
+            all_ready = False
             if x_sig is not None:
                 stride = max(1, -(-x_sig.y.shape[0] // self._budget(state, len(cell.signals))))
                 want_marker = cell.xy_style in (XyStyle.MARKERS, XyStyle.BOTH)
@@ -433,19 +433,13 @@ class PlotsPanel(SessionPanel):
                     if sig is None or run is None or not run.active:
                         continue
                     left, right = x_run.data_source(), run.data_source()
-                    identity = (left.metadata.identity, right.metadata.identity, cell.xy_source[1], ref[1])
+                    identity = (left.metadata.identity, right.metadata.identity, cell.xy_source[1], ref[1],
+                                x_run.time_offset, run.time_offset, x_run.time_version, run.time_version)
                     slot = ("xy", index, ref)
-                    def compute(cancel, left=left, right=right, xn=cell.xy_source[1], yn=ref[1], stride=stride):
-                        def sample(src, name):
-                            pieces, off = [], 0
-                            for _, ys in src.iter_raw([name], cancel=cancel):
-                                y = ys[name]
-                                pieces.append(y[(-off) % stride::stride].copy())
-                                off += len(y)
-                            return np.ascontiguousarray(np.concatenate(pieces), dtype=np.float64)
-                        x, y = sample(left, xn), sample(right, yn)
-                        n = min(len(x), len(y))
-                        return x[:n], y[:n]
+                    def compute(cancel, left=left, right=right, xn=cell.xy_source[1], yn=ref[1],
+                                stride=stride, xo=x_run.time_offset, yo=run.time_offset):
+                        from ..sampling import sample_xy
+                        return sample_xy(left, right, xn, yn, xo, yo, stride, cancel)
                     value = self._request_data(state, slot, (identity, stride), identity, [left, right], compute)
                     if not state.display.ready(slot, (identity, stride)):
                         all_ready = False
@@ -464,6 +458,9 @@ class PlotsPanel(SessionPanel):
                     self._pending_fit.discard(id(cell))
             else:
                 implot.plot_dummy("(pick an X source)")
+            self._capture_limits(cell, implot.get_plot_limits())
+            if all_ready:
+                cell.pending_x_lim = cell.pending_y_lim = None
             self._accept_drop(state, index, cell)
             implot.end_plot()
         self._last_points[index] = 0
@@ -596,13 +593,26 @@ class PlotsPanel(SessionPanel):
             implot.end_plot()
 
     # -- shared bits --------------------------------------------------------
+    @staticmethod
+    def _capture_limits(cell, limits):
+        for field, axis in (('x_lim', limits.x), ('y_lim', limits.y)):
+            lo, hi = float(axis.min), float(axis.max)
+            if _is_finite_range(lo, hi):
+                setattr(cell, field, (lo, hi))
+
+    @staticmethod
+    def _apply_explicit_limits(cell, *, consume=True):
+        for field, axis in (('pending_x_lim', implot.ImAxis_.x1), ('pending_y_lim', implot.ImAxis_.y1)):
+            limits = getattr(cell, field)
+            if limits is not None:
+                implot.setup_axis_limits(axis, *limits, implot.Cond_.always)
+                if consume:
+                    setattr(cell, field, None)
+
     def _apply_pending_limits(self, state: AppState, cell: SubplotCell, data_min, data_max) -> bool:
         """Apply one-shot fit / set_x_lim / set_y_lim requests. Returns did_fit."""
         did_fit = False
         if cell.pending_x_lim is not None:
-            lo, hi = cell.pending_x_lim
-            implot.setup_axis_limits(implot.ImAxis_.x1, lo, hi, implot.Cond_.always)
-            cell.pending_x_lim = None
             if cell.fit_pending:
                 self._pending_fit.add(id(cell))
             else:
@@ -626,10 +636,7 @@ class PlotsPanel(SessionPanel):
                     implot.setup_axis_limits(implot.ImAxis_.y2, r_lo, r_hi, implot.Cond_.always)
                 if (not primary or y_lo is not None) and (not cell.y2_signals or r_lo is not None):
                     self._pending_fit.discard(id(cell))
-        if cell.pending_y_lim is not None:
-            lo, hi = cell.pending_y_lim
-            implot.setup_axis_limits(implot.ImAxis_.y1, lo, hi, implot.Cond_.always)
-            cell.pending_y_lim = None
+        self._apply_explicit_limits(cell)
         cell.fit_pending = False
         return did_fit
 

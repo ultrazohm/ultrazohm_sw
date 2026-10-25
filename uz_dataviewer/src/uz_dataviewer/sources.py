@@ -30,6 +30,36 @@ def check(cancel=None):
         raise Cancelled()
 
 
+@dataclass(frozen=True)
+class FileIdentity:
+    path: Path
+    signature: tuple
+
+    @staticmethod
+    def capture(path):
+        path = Path(path).resolve()
+        s = path.stat()
+        return FileIdentity(path, (s.st_size, s.st_mtime_ns, s.st_ctime_ns, s.st_ino))
+
+    def validate(self):
+        try:
+            current = FileIdentity.capture(self.path)
+        except OSError as exc:
+            raise ValueError(f'Source unavailable; reopen {self.path.name}') from exc
+        if current != self:
+            raise ValueError(f'Source changed; reopen {self.path.name}')
+
+
+def validation_error(sources):
+    """One validity contract for cached displays, analyses and node outputs."""
+    try:
+        for source in sources:
+            source.validate()
+    except (ValueError, OSError) as exc:
+        return str(exc)
+    return None
+
+
 class ByteCache:
     """Thread-safe, shared LRU; oversized entries are returned but not retained."""
     def __init__(self, limit=1024 * 1024**2):
@@ -145,6 +175,7 @@ class MemorySource:
                                  (float(time[0]), float(time[-1])) if len(time) else (0., 0.))
 
     def read_rows(self, channels, start, stop, cancel=None):
+        self.validate()
         check(cancel)
         return self.time[start:stop], {c: self.channels[c][start:stop] for c in channels}
 
@@ -154,9 +185,13 @@ class MemorySource:
             yield self.read_rows(channels, i, min(i + 65536, stop), cancel)
 
     def bounds(self, lo, hi, cancel=None, *, padding=True):
+        self.validate()
         check(cancel)
         from .downsample import visible_slice
         return visible_slice(self.time, lo, hi, padding=padding)
+
+    def validate(self):
+        pass
 
 # Each summary bucket keeps original extrema and a representative gap.
 POINT = np.dtype([('i', '<i8'), ('t', '<f8'), ('y', '<f4')])
@@ -315,6 +350,7 @@ class ArraySource(SummarySource, MemorySource):
         MemorySource.__init__(self, time, channels)
         self.cache = cache if cache is not None else ByteCache()
         self.summary_lock = threading.Lock()
+        self.validator = None
 
     def _base_summary(self, channel, cancel):
         check(cancel)
@@ -329,14 +365,17 @@ class ArraySource(SummarySource, MemorySource):
         return None
 
     def validate(self):
-        pass
+        if self.validator is not None:
+            self.validator()
 
 
 class IndexedFileSource(SummarySource):
     """Backend-neutral file identity, timestamp index, raw windows and summaries."""
     def _initialize(self, path, cache, cache_dir, disk_cache, backend):
         self.path = Path(path).resolve()
-        self.signature = self._signature()
+        self.file_identity = FileIdentity.capture(self.path)
+        self.signature = self.file_identity.signature
+        self.origin = None
         self.disk_cache = disk_cache
         identity = hashlib.sha256(json.dumps([backend, str(self.path), self.signature, CACHE_VERSION]).encode()).hexdigest()
         root = Path(cache_dir or os.environ.get('UZ_DATAVIEWER_CACHE', Path.home() / '.cache' / 'uz_dataviewer'))
@@ -396,13 +435,10 @@ class IndexedFileSource(SummarySource):
                     pass
             self._index_ready = True
 
-    def _signature(self):
-        s = self.path.stat()
-        return (s.st_size, s.st_mtime_ns, s.st_ctime_ns, s.st_ino)
-
     def validate(self):
-        if self._signature() != self.signature:
-            raise ValueError(f'Source changed; reopen {self.path.name}')
+        self.file_identity.validate()
+        if self.origin is not None:
+            self.origin.validate()
 
     def summary_path(self, channel):
         return self.directory / (hashlib.sha256(channel.encode()).hexdigest() + '.npz') if self.disk_cache else None

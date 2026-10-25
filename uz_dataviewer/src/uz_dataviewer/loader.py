@@ -484,6 +484,7 @@ def open_file(path, mode="memory", cache=None, cache_dir=None, *, backend="pyarr
     else:
         from .sources import ParquetSource as SourceClass
     original = path
+    origin = None
     if path.lower().endswith(".csv") and not disk_cache:
         if backend == "pyarrow":
             from .csv_source import CsvSource as SourceClass
@@ -492,8 +493,9 @@ def open_file(path, mode="memory", cache=None, cache_dir=None, *, backend="pyarr
         from pathlib import Path
         import hashlib
         import tempfile
-        st = os.stat(path)
-        identity = hashlib.sha256(f"{os.path.abspath(path)}:{st.st_size}:{st.st_mtime_ns}:{st.st_ctime_ns}".encode()).hexdigest()
+        from .sources import FileIdentity
+        origin = FileIdentity.capture(path)
+        identity = hashlib.sha256(repr(origin).encode()).hexdigest()
         root = Path(cache_dir or os.environ.get("UZ_DATAVIEWER_CACHE", Path.home() / ".cache" / "uz_dataviewer"))
         if backend == "polars":
             root = root / "polars"
@@ -505,6 +507,7 @@ def open_file(path, mode="memory", cache=None, cache_dir=None, *, backend="pyarr
             try:
                 convert_csv_to_parquet(path, temp, backend=backend, cancel=cancel)
                 check(cancel)
+                origin.validate()
                 os.replace(temp, destination)
             finally:
                 if os.path.exists(temp):
@@ -512,4 +515,7 @@ def open_file(path, mode="memory", cache=None, cache_dir=None, *, backend="pyarr
         path = str(destination)
     elif not path.lower().endswith(".parquet"):
         return parse_file(path, backend=backend, cancel=cancel)
-    return OpenedSource(original, SourceClass(path, cache, cache_dir, cancel=cancel, disk_cache=disk_cache), backend=backend)
+    source = SourceClass(path, cache, cache_dir, cancel=cancel, disk_cache=disk_cache)
+    source.origin = origin
+    source.validate()
+    return OpenedSource(original, source, backend=backend)

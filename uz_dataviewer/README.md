@@ -139,7 +139,7 @@ There is currently no automatic disk-cache size limit.
 Read-only or full summary-cache storage falls back to RAM; enabled lazy CSV conversion requires writable cache space.
 The browser build retains synchronous execution because its current runtime has no worker-thread support.
 Browser uploads with backing files honor the same loading and cache settings as console loads.
-Browser file caches live in the tab's temporary filesystem and are cleared on page reload; large streamed CSVs remain array-backed.
+Browser file caches live in the tab's temporary filesystem and are cleared on page reload; large streamed CSVs remain array-backed. Streamed CSVs preserve every sample and reject estimated or actual numeric data above the 1.5 GiB budget. Use native lazy loading for larger recordings; load-time stride decimation has been removed.
 
 ### Session format and analysis correctness
 
@@ -154,7 +154,9 @@ Streamed browser recordings have no backing file, so session saving is rejected;
 Chain transforms with node links; using derived outputs as new source nodes is no longer supported.
 Analysis and exports use exact time windows, while plotting retains edge padding.
 FFT and FIR filters reject duplicate or irregular timestamps (100 ppm tolerance plus roundoff).
-Binary math requires matching timestamps throughout both inputs; implicit index alignment has been removed.
+Binary math and XY plots require matching timestamps throughout both inputs; implicit index alignment and XY truncation have been removed. XY limits and zoom survive session round trips without changing linked time axes.
+Stale or failed derived outputs are blocked from plots, analysis and exports until successful reevaluation; existing assignments are preserved. Source validation covers original CSV files even when reading a cached conversion.
+JSON and script saves share one canonical snapshot. Completing an export dialog after its subplot was removed cancels the export.
 FFT export validates every selected signal before writing: an invalid channel fails the export with its name and reason, preserving any existing destination file.
 
 ## Documentation

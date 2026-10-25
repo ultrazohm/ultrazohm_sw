@@ -235,3 +235,10 @@ Binary math requires matching time axes throughout both inputs. Unsupported samp
 FFT export rejects an invalid selected channel with its name and reason before writing any output.
 Applied primary Y limits survive saving and restoring. Recomputing node outputs preserves their time normalization.
 Shrinking the grid switches analysis windows following removed plots to Full.
+
+XY alignment and invalid results
+-------------------------------
+
+XY inputs must have equal lengths and matching displayed timestamps, including any per-run normalization. Mismatches are rejected instead of pairing unrelated samples. XY zoom and explicit X/Y limits survive JSON and script round trips; XY coordinates never drive linked time axes.
+
+Changed source files must be reopened, including CSV files opened through a disk-cached Parquet conversion. Stale or failed node outputs keep their signal assignments but are unavailable to plots, analysis and exports until successful reevaluation.

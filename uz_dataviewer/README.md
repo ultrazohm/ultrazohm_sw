@@ -161,7 +161,13 @@ Analysis and exports use exact time windows, while plotting retains edge padding
 Linked time ranges apply immediately to scripts, exports and analysis, including
 before the first GUI frame. Reset view updates the linked range to the selected
 plot's recording extent. FFT inputs must be equal-length one-dimensional arrays.
-FFT and FIR filters reject duplicate or irregular timestamps (100 ppm tolerance plus roundoff).
+FFT and FIR filters reject duplicate or irregular timestamps. JavaScope logs identified by
+raw `CHn=n)` headers use their 10 ns timestamp resolution: samples must fit one uniform
+grid within ±5 ns plus floating-point roundoff. This also applies after conversion to
+Parquet and time normalization. Other inputs retain the 100 ppm interval tolerance.
+For plain-array API calls, pass `timestamp_resolution=data.timestamp_resolution` from
+`data = uz.read(path)` to `uz.fft(...)` or `uz.filter(...)`; the default is unspecified
+precision, not an assumed JavaScope format. No samples are resampled.
 Binary math and XY plots require matching timestamps throughout both inputs; implicit index alignment and XY truncation have been removed. XY limits and zoom survive session round trips without changing linked time axes.
 Stale or failed derived outputs are blocked from plots, analysis and exports until successful reevaluation; existing assignments are preserved, including across JSON restoration. Failed graphs restore with empty, unavailable output placeholders until repaired. Source validation covers original CSV files even when reading a cached conversion.
 JSON is the only saved-session format; generated session-script export has been removed. Ordinary `.uzscript` automation remains supported and can call `load_state("session.json")`; commands run sequentially and stop at the first error. Completing an export dialog after its subplot was removed cancels the export.

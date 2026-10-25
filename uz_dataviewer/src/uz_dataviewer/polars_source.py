@@ -6,7 +6,7 @@ from .sources import IndexedFileSource, Metadata, check
 
 class PolarsSource(IndexedFileSource):
     def __init__(self, path, cache=None, cache_dir=None, cancel=None, *, disk_cache=False):
-        from .loader import _split_time_columns, _named_signals
+        from .loader import _split_time_columns, _named_signals, timestamp_resolution
         identity = self._initialize(path, cache, cache_dir, disk_cache, 'polars')
         if self.path.suffix.lower() == ".csv":
             from .polars_io import _scan_csv
@@ -15,6 +15,7 @@ class PolarsSource(IndexedFileSource):
             self.scan = pl.scan_parquet(self.path, glob=False)
         self.time_col, columns = _split_time_columns(self.scan.collect_schema().names())
         named, self.units = _named_signals(columns, lambda c: np.empty(0, np.float32))
+        self.timestamp_resolution = timestamp_resolution(columns)
         self.columns = dict(zip(named, columns))
         self._rows = self.scan.select(pl.len()).collect(engine="streaming").item()
         check(cancel)

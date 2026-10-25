@@ -106,7 +106,7 @@ def _fir_lowpass(fc_norm: float, taps: int) -> np.ndarray:
     return h / h.sum()
 
 
-def filter_node(time: np.ndarray, y: np.ndarray, params: dict
+def filter_node(time: np.ndarray, y: np.ndarray, params: dict, *, timestamp_resolution=0.0
                 ) -> tuple[np.ndarray, np.ndarray, str]:
     """Linear-phase windowed-sinc FIR filter (low/high/band-pass).
 
@@ -121,7 +121,7 @@ def filter_node(time: np.ndarray, y: np.ndarray, params: dict
     y = np.asarray(y, dtype=np.float64)
     if time.shape[0] < 2:
         raise ValueError("filter needs at least 2 samples")
-    fs = 1.0 / regular_sample_interval(time, "filter")
+    fs = 1.0 / regular_sample_interval(time, "filter", timestamp_resolution=timestamp_resolution)
     from .validation import bounded_int
     taps = bounded_int(params.get("taps", 101), 3, 100_001, "Filter taps")
     fc = float(params.get("cutoff", 0.0))

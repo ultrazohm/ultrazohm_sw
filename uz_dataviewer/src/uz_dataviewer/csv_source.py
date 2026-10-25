@@ -7,12 +7,13 @@ from .sources import IndexedFileSource, Metadata, check
 
 class CsvSource(IndexedFileSource):
     def __init__(self, path, cache=None, cache_dir=None, cancel=None, *, disk_cache=False):
-        from .loader import _read_header, _sniff_delimiter, _split_time_columns, _named_signals
+        from .loader import _read_header, _sniff_delimiter, _split_time_columns, _named_signals, timestamp_resolution
         identity = self._initialize(path, cache, cache_dir, False, 'csv')
         self.delimiter = _sniff_delimiter(str(self.path))
         columns = _read_header(str(self.path), self.delimiter)
         self.time_col, columns = _split_time_columns(columns)
         named, self.units = _named_signals(columns, lambda c: np.empty(0, np.float32))
+        self.timestamp_resolution = timestamp_resolution(columns)
         self.columns = dict(zip(named, columns))
         self._ensure_index(cancel)
         self.metadata = Metadata(identity, int(self.index_offsets[-1]), tuple(self.columns),

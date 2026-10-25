@@ -752,3 +752,55 @@ def test_fft_rejects_unrepresentable_output():
     y = np.array([1, 1, 1, 1, -1, -1, -1, -1], np.float32) * np.finfo(np.float32).max
     result = compute_fft(np.arange(8.), y, 0, 7, window=False, remove_dc=False)
     assert not result.ok and 'output range' in result.info
+
+
+@pytest.mark.parametrize('backend', ['pyarrow', 'polars'])
+@pytest.mark.parametrize('mode', ['memory', 'lazy'])
+@pytest.mark.parametrize('extension', ['csv', 'parquet'])
+@pytest.mark.parametrize('fs', [30000, 60000])
+def test_javascope_quantized_logs_support_analysis_and_nodes(tmp_path, app_state, backend, mode, extension, fs):
+    from uz_dataviewer.loader import convert_csv_to_parquet, open_file
+    from uz_dataviewer.analysis import compute_signal_fft, AnalysisInput
+    from uz_dataviewer.nodes import evaluate
+    from uz_dataviewer.session import to_dict, apply_dict
+    t = np.rint(np.arange(6000) / fs * 1e8) / 1e8
+    y = np.sin(2 * np.pi * 1000 * t)
+    path = tmp_path / 'log.csv'
+    path.write_text('time;CH1=1)ia;\n' + ''.join(f'{a};{b};\n' for a, b in zip(t, y)))
+    if extension == 'parquet':
+        path = convert_csv_to_parquet(str(path), backend=backend)
+    run = open_file(str(path), mode, backend=backend).register(app_state.registry)
+    assert run.timestamp_resolution == 1e-8
+    run.set_time_origin(0.1)
+    lo, hi = float(run.time[0]), float(run.time[-1])
+    for result in [compute_signal_fft(run, 'ia', lo, hi),
+                   AnalysisInput.capture(app_state.registry, [(run.id, 'ia')])[0].fft(
+                       lo, hi, remove_dc=True, window=True)]:
+        assert result.ok
+        assert result.freqs[result.mag.argmax()] == pytest.approx(1000, abs=1)
+        assert result.mag.max() == pytest.approx(1, abs=.01)
+    source = app_state.nodes.add('source', ref=(run.id, 'ia'))
+    filtered = app_state.nodes.add('filter')
+    filtered.params['cutoff'] = '2000'
+    spectrum = app_state.nodes.add('fft')
+    app_state.nodes.link(source.id, filtered.id)
+    app_state.nodes.link(filtered.id, spectrum.id)
+    assert evaluate(app_state) == 2
+    assert app_state.registry.get(filtered.out_run_id).timestamp_resolution == 1e-8
+    assert app_state.registry.get(spectrum.out_run_id).timestamp_resolution == 0
+    apply_dict(app_state, to_dict(app_state))
+    assert all(not node.error for node in app_state.nodes.nodes.values())
+
+
+def test_generic_arrays_require_explicit_timestamp_precision(tmp_path):
+    from uz_dataviewer import api
+    t = np.rint(np.arange(6000) / 30000 * 1e8) / 1e8
+    y = np.sin(2 * np.pi * 1000 * t)
+    path = tmp_path / 'generic.csv'
+    path.write_text('time,value\n' + ''.join(f'{a},{b}\n' for a, b in zip(t, y)))
+    data = api.read(path)
+    assert data.timestamp_resolution == 0
+    assert not api.fft(data.time, data['value']).ok
+    assert api.fft(data.time, data['value'], timestamp_resolution=1e-8).ok
+    _, filtered, _ = api.filter(data.time, data['value'], cutoff=2000, timestamp_resolution=1e-8)
+    assert len(filtered) == len(t)

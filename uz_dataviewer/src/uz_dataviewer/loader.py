@@ -54,13 +54,26 @@ class ParsedRun:
     signals: dict[str, np.ndarray]
     units: dict[str, str]
     backend: str = "pyarrow"
+    timestamp_resolution: float = 0.0
 
     def register(self, registry: DataRegistry) -> Run:
         run = registry.add_run(self.label, self.path, self.time, self.signals, self.units)
         run.backend = self.backend
+        run.timestamp_resolution = self.timestamp_resolution
         return run
 
 _CHANNEL_PREFIX = re.compile(r"^CH\d+\s*=\s*\d+\s*\)\s*(.*)$")
+
+
+def timestamp_resolution(columns):
+    """JavaScope rounds timestamps to 10 ns; generic tables retain strict checks.
+
+    Raw CHn=n) headers survive CSV-to-Parquet conversion. They identify the
+    JavaScope format; friendly signal names alone do not establish precision.
+    """
+    return 1e-8 if any(_CHANNEL_PREFIX.fullmatch(c.strip()) for c in columns) else 0.0
+
+
 # Units commonly appended to JavaScope channel names.
 _KNOWN_UNITS = ("us", "ms", "rpm", "deg", "rad", "Hz", "V", "A", "W", "Nm", "C", "K")
 
@@ -265,7 +278,7 @@ def collect_csv_batches(path, columns, batches, cancel=None, *, backend="pyarrow
     time = time[:off]
     validate_time_axis(time, path)
     signals, units = _named_signals(data_columns, lambda raw: arrays[raw][:off])
-    return ParsedRun(os.path.basename(path), path, time, signals, units, backend=backend)
+    return ParsedRun(os.path.basename(path), path, time, signals, units, backend=backend, timestamp_resolution=timestamp_resolution(data_columns))
 
 
 def parse_csv(path: str, cancel=None) -> ParsedRun:
@@ -314,7 +327,7 @@ def _parse_parquet_streaming(pf: pq.ParquetFile, path: str, n_rows: int, cancel=
 
     validate_time_axis(time, path)
     signals, units = _named_signals(data_columns, lambda raw: arrays[raw])
-    return ParsedRun(os.path.basename(path), path, time, signals, units)
+    return ParsedRun(os.path.basename(path), path, time, signals, units, timestamp_resolution=timestamp_resolution(data_columns))
 
 
 def parse_parquet(path: str, cancel=None) -> ParsedRun:
@@ -460,6 +473,7 @@ class OpenedSource:
     def register(self, registry):
         run = registry.add_source(os.path.basename(self.path), self.path, self.source)
         run.backend = self.backend
+        run.timestamp_resolution = self.source.timestamp_resolution
         return run
 
 

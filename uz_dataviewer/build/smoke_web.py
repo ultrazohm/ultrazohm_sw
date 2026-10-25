@@ -86,6 +86,16 @@ s.commands.execute(s, "node_eval", [])
 assert s.registry.get(s.nodes.get(2).out_run_id).axis_domain == "frequency"
 session.export_data(s, 0, "/tmp/smoke.csv")
 assert len(Path("/tmp/smoke.csv").read_text().splitlines()) == 34
+# Streamed browser columns carry the same JavaScope precision as file loads.
+from uz_dataviewer import webbridge
+from uz_dataviewer.analysis import compute_signal_fft
+t = np.rint(np.arange(6000) / 30000 * 1e8) / 1e8
+y = np.sin(2 * np.pi * 1000 * t)
+webbridge.load_columns("quantized.csv", ["CH1=1)ia"], [y], t)
+quantized = s.registry.runs[-1]
+assert quantized.timestamp_resolution == 1e-8
+assert compute_signal_fft(quantized, "ia", t[0], t[-1]).ok
+assert not api.fft(t, y).ok
 True
 `)""")
             assert result is True

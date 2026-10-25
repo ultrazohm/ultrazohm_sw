@@ -77,6 +77,7 @@ def compute_fft(
     *,
     remove_dc: bool = True,
     window: bool = True,
+    timestamp_resolution: float = 0.0,
 ) -> FftResult:
     """Single-sided amplitude spectrum of ``y`` over ``[x_min, x_max]``.
 
@@ -120,7 +121,7 @@ def compute_fft(
 
     from .sampling import regular_sample_interval
     try:
-        dt = regular_sample_interval(ts, "FFT")
+        dt = regular_sample_interval(ts, "FFT", timestamp_resolution=timestamp_resolution)
     except ValueError as exc:
         return FftResult(None, None, str(exc))
 
@@ -167,7 +168,7 @@ def compute_signal_fft(run, channel, x_min, x_max, *, remove_dc=True, window=Tru
     if run.axis_domain != "time":
         raise ValueError("FFT requires a time-domain recording")
     label = label or f"{channel} @ {run.label}"
-    selected = AnalysisInput((run.id, channel), label, run.data_source(), run.time_offset)
+    selected = AnalysisInput((run.id, channel), label, run.data_source(), run.time_offset, run.timestamp_resolution)
     return selected.fft(x_min, x_max, remove_dc=remove_dc, window=window, cancel=cancel)
 
 
@@ -228,6 +229,7 @@ class AnalysisInput:
     label: str
     source: SampleSource
     time_offset: TimeShift | float
+    timestamp_resolution: float = 0.0
 
     @classmethod
     def capture(cls, registry, refs):
@@ -239,7 +241,7 @@ class AnalysisInput:
             if run.axis_domain != "time":
                 raise ValueError("Analysis windows require a time-domain recording")
             inputs.append(cls(ref, f"{ref[1]} @ {run.label} [run_{run.id}]",
-                              run.data_source(), run.time_offset))
+                              run.data_source(), run.time_offset, run.timestamp_resolution))
         return tuple(inputs)
 
     def read_window(self, lo, hi, cancel):
@@ -251,7 +253,8 @@ class AnalysisInput:
     def fft(self, lo, hi, *, remove_dc, window, cancel=None):
         try:
             t, y = self.read_window(lo, hi, cancel)
-            result = compute_fft(t, y, lo, hi, remove_dc=remove_dc, window=window)
+            result = compute_fft(t, y, lo, hi, remove_dc=remove_dc, window=window,
+                                 timestamp_resolution=self.timestamp_resolution)
             if not result.ok:
                 raise ValueError(result.info)
         except (ValueError, OSError) as exc:

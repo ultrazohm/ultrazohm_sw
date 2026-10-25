@@ -8,8 +8,14 @@ from .sources import shift_time
 _BLOCK = 65536
 
 
-def regular_sample_interval(time, operation: str) -> float:
-    """Validate a regular grid (100 ppm plus timestamp roundoff), returning dt."""
+def regular_sample_interval(time, operation: str, *, timestamp_resolution=0.0) -> float:
+    """Return dt for a regular grid without resampling measurements.
+
+    Known quantization permits +/- half a timestamp step around one fitted
+    grid. Unspecified precision retains the existing 100 ppm interval check.
+    """
+    if not np.isfinite(timestamp_resolution) or timestamp_resolution < 0:
+        raise ValueError("Timestamp resolution must be finite and nonnegative")
     if time.ndim != 1 or len(time) < 2:
         raise ValueError(f"{operation} needs at least two timestamps")
     dt = (float(time[-1]) - float(time[0])) / (len(time) - 1)
@@ -24,9 +30,47 @@ def regular_sample_interval(time, operation: str) -> float:
         intervals = np.diff(block)
         if not np.isfinite(block).all() or np.any(intervals <= 0):
             raise ValueError(f"{operation} needs finite, strictly increasing timestamps")
-        if np.any(np.abs(intervals - dt) > tolerance):
+        if not timestamp_resolution and np.any(np.abs(intervals - dt) > tolerance):
             raise ValueError(f"{operation} needs uniformly spaced timestamps; selected window is irregular")
+    if timestamp_resolution:
+        if timestamp_resolution > dt * .01:
+            raise ValueError(f"{operation} timestamp precision is insufficient to establish uniform sampling")
+        return _quantized_interval(time, timestamp_resolution, roundoff, operation)
     return dt
+
+
+def _quantized_interval(time, quantum, roundoff, operation):
+    """Find a grid whose timestamp residuals fit inside one quantization bin.
+
+    For a given slope, residual max-min <= quantum means an intercept exists
+    with every error <= quantum/2. Violating extrema bound the feasible slope;
+    intersect these bounds until a grid is found or no slope remains. Work in
+    blocks so even long recordings require only bounded temporary storage.
+    """
+    span = float(time[-1]) - float(time[0])
+    width = quantum + 2 * roundoff
+    lower, upper = (span - width) / (len(time) - 1), (span + width) / (len(time) - 1)
+    for _ in range(64):
+        dt = (lower + upper) / 2
+        low, high, imin, imax = np.inf, -np.inf, 0, 0
+        for start in range(0, len(time), _BLOCK):
+            stop = min(start + _BLOCK, len(time))
+            residual = (time[start:stop] - float(time[0])) - np.arange(start, stop, dtype=np.float64) * dt
+            a, b = int(residual.argmin()), int(residual.argmax())
+            if residual[a] < low:
+                low, imin = float(residual[a]), start + a
+            if residual[b] > high:
+                high, imax = float(residual[b]), start + b
+        if high - low <= width:
+            return dt
+        correction = (high - low - width) / (imax - imin)
+        if imax > imin:
+            lower = max(lower, dt + correction)
+        else:
+            upper = min(upper, dt + correction)
+        if lower >= upper:
+            break
+    raise ValueError(f"{operation} needs uniformly spaced timestamps; selected window is irregular")
 
 
 def require_matching_time(left, right) -> None:

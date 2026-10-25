@@ -199,3 +199,31 @@ def test_small_absolute_timestamps_are_not_treated_as_unit_scale():
     assert regular_sample_interval(t, 'FFT') == pytest.approx(1e-15, rel=1e-12, abs=0)
     with pytest.raises(ValueError, match='not time-aligned'):
         require_matching_time(t, t + 1e-16)
+
+
+@pytest.mark.parametrize('fs', [20000, 30000, 60000, 44100])
+@pytest.mark.parametrize('origin', [0., 12.3456789])
+def test_known_timestamp_quantization_fits_uniform_grid(fs, origin):
+    from uz_dataviewer.sampling import regular_sample_interval
+    t = np.rint((origin + np.arange(6001) / fs) * 1e8) / 1e8
+    for axis in (t, t - t[0]):
+        dt = regular_sample_interval(axis, 'FFT', timestamp_resolution=1e-8)
+        residual = axis - axis[0] - np.arange(len(axis)) * dt
+        assert np.ptp(residual) <= 1e-8 + 1e-12
+        assert dt == pytest.approx(1 / fs, rel=1e-6)
+
+
+@pytest.mark.parametrize('damage', ['missing', 'duplicate', 'backwards', 'jitter'])
+def test_quantization_does_not_hide_bad_sampling(damage):
+    from uz_dataviewer.sampling import regular_sample_interval
+    t = np.rint(np.arange(6001) / 30000 * 1e8) / 1e8
+    if damage == 'missing':
+        t = np.delete(t, 3000)
+    elif damage == 'duplicate':
+        t[3000] = t[2999]
+    elif damage == 'backwards':
+        t[3000] = t[2999] - 1e-5
+    else:
+        t[3000] += 1e-6
+    with pytest.raises(ValueError):
+        regular_sample_interval(t, 'FFT', timestamp_resolution=1e-8)

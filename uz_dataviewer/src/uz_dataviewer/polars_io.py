@@ -6,7 +6,7 @@ import polars as pl
 from .sources import check
 from .csv_policy import NULL_VALUES
 from .loader import (ParsedRun, _split_time_columns, _named_signals,
-                     _sniff_delimiter, _read_header, _guard_csv_size, validate_time_axis)
+                     _sniff_delimiter, _read_header, _guard_csv_size, validate_time_axis, timestamp_resolution)
 
 
 def _csv_column_types(columns):
@@ -62,7 +62,7 @@ def parse_parquet(path: str, cancel=None) -> ParsedRun:
         raise ValueError('Parquet row count changed during loading')
     validate_time_axis(time, path)
     signals, units = _named_signals(columns, arrays.__getitem__)
-    return ParsedRun(os.path.basename(path), path, time, signals, units, backend="polars")
+    return ParsedRun(os.path.basename(path), path, time, signals, units, backend="polars", timestamp_resolution=timestamp_resolution(columns))
 
 
 def _write_csv_to_parquet(src: str, dst: str) -> str:

@@ -543,11 +543,12 @@ class IndexedFileSource(SummarySource):
 class ParquetSource(IndexedFileSource):
     def __init__(self, path, cache=None, cache_dir=None, cancel=None, *, disk_cache=False):
         import pyarrow.parquet as pq
-        from .loader import _split_time_columns, _named_signals
+        from .loader import _split_time_columns, _named_signals, timestamp_resolution
         identity = self._initialize(path, cache, cache_dir, disk_cache, 'pyarrow')
         with pq.ParquetFile(self.path) as pf:
             self.time_col, columns = _split_time_columns(pf.schema_arrow.names)
             named, self.units = _named_signals(columns, lambda c: np.empty(0, np.float32))
+            self.timestamp_resolution = timestamp_resolution(columns)
             self.columns = dict(zip(named, columns))
             self.offsets = np.r_[0, np.cumsum([pf.metadata.row_group(i).num_rows for i in range(pf.num_row_groups)])]
             self._rows = int(self.offsets[-1])

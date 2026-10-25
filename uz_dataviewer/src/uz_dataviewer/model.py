@@ -104,6 +104,9 @@ class Run:
     owned_upload: bool = False
     """Browser-only temporary backing file, released by AppState."""
 
+    timestamp_resolution: float = 0.0
+    """Known timestamp quantization in seconds; zero means unspecified."""
+
     axis_domain: str = "time"
     """Independent-axis domain: time (seconds) or frequency (Hz)."""
 

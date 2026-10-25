@@ -328,7 +328,13 @@ FFT summaries are constructed by the analysis worker, and unchanged spectrum vie
 ``IndexedFileSource`` owns file identity, timestamp indexing, bounds and cache persistence for both backends.
 Analysis, export and node cropping select exact time windows; padding is reserved for display.
 FFT rejects duplicate or irregular timestamps instead of returning a misleading frequency axis.
-The regularity tolerance is 100 ppm plus floating-point roundoff. ``sampling.py`` shares this validation with FIR filters,
+JavaScope's raw ``CHn=n)`` headers identify its 10 ns timestamp quantization, including
+in converted Parquet files. These recordings must fit a single uniform grid within
+±5 ns plus floating-point roundoff; duplicate and backward timestamps remain invalid.
+The precision is retained through normalization and built-in time-domain node outputs.
+Other recordings use the existing 100 ppm interval tolerance plus roundoff. Array API
+calls can explicitly pass ``timestamp_resolution`` (available on ``Dataset``).
+``sampling.py`` shares this validation with FIR filters,
 and validates complete time axes for binary math. Derived-run refresh preserves the existing time normalization.
 
 Sessions (``session.py``)

@@ -53,9 +53,10 @@ class Dataset:
     whole thing into a DataFrame with :meth:`to_dataframe`.
     """
 
-    __slots__ = ("label", "path", "time", "signals", "units", "backend")
+    __slots__ = ("label", "path", "time", "signals", "units", "backend", "timestamp_resolution")
 
     def __init__(self, parsed) -> None:
+        self.timestamp_resolution = parsed.timestamp_resolution
         self.backend: str = parsed.backend
         self.label: str = parsed.label
         self.path: str = parsed.path
@@ -106,11 +107,14 @@ def fft(
     window: bool = True,
     x_min: float | None = None,
     x_max: float | None = None,
+    timestamp_resolution: float = 0.0,
 ) -> FftResult:
     """Single-sided amplitude spectrum of ``y``.
 
     With no ``x_min``/``x_max`` the whole record is transformed. Returns a
     ``uz_dataviewer.analysis.FftResult`` (``.freqs``, ``.mag``, ``.info``, ``.ok``).
+    Pass ``timestamp_resolution=data.timestamp_resolution`` for a loaded Dataset
+    to account for known logger quantization; plain arrays default to unspecified.
     """
     t = np.asarray(time, dtype=np.float64)
     yy = np.asarray(y, dtype=np.float64)
@@ -118,7 +122,8 @@ def fft(
         return FftResult(None, None, "FFT needs equal-length one-dimensional time and value arrays.")
     lo = float(x_min) if x_min is not None else (float(t[0]) if len(t) else 0.)
     hi = float(x_max) if x_max is not None else (float(t[-1]) if len(t) else 0.)
-    return compute_fft(t, yy, lo, hi, remove_dc=remove_dc, window=window)
+    return compute_fft(t, yy, lo, hi, remove_dc=remove_dc, window=window,
+                       timestamp_resolution=timestamp_resolution)
 
 
 def fft_frame(time, y, *, backend="pyarrow", **kwargs):
@@ -146,7 +151,7 @@ def kinds() -> tuple[str, ...]:
     return nodes.transform_kinds()
 
 
-def node(kind: str, *signals, **params):
+def node(kind: str, *signals, timestamp_resolution=0.0, **params):
     """Run a node transform headlessly.
 
     ``signals`` are ``(time, y)`` tuples (one for unary kinds, two for binary math);
@@ -162,7 +167,9 @@ def node(kind: str, *signals, **params):
     inputs = [
         (np.asarray(t, dtype=np.float64), np.asarray(s, dtype=np.float64)) for t, s in signals
     ]
-    time, values, info, _ = nodes.compute_node(nodes.Node(0, kind, kind, params=merged), inputs)
+    time, values, info, _ = nodes.compute_node(
+        nodes.Node(0, kind, kind, params=merged), inputs, timestamp_resolution=timestamp_resolution
+    )
     return time, values, info
 
 

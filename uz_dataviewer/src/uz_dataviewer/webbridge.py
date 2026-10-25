@@ -191,7 +191,7 @@ def load_columns(label: str, names, arrays, time, note: str = "") -> None:
     """
     if _active_state is None:
         return
-    from .loader import _named_signals
+    from .loader import _named_signals, timestamp_resolution
 
     if note:
         _active_state.console.warn(note)
@@ -204,4 +204,5 @@ def load_columns(label: str, names, arrays, time, note: str = "") -> None:
         raise ValueError("Signal arrays must match the time axis")
     signals, units = _named_signals(names, columns.__getitem__)
     run = _active_state.add_run_from_arrays(label, label, t, signals, units)
+    run.timestamp_resolution = timestamp_resolution(names)
     run.reloadable = False

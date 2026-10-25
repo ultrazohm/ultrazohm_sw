@@ -122,13 +122,14 @@ def default_params(kind: str) -> dict:
 
 
 # -- builtin transforms (registered at import) --------------------------------
-def _fft_compute(inputs, params):
+def _fft_compute(inputs, params, *, timestamp_resolution=0.0):
     time, y = inputs[0]
     res = compute_fft(
         np.asarray(time, np.float64), np.asarray(y, np.float64),
         float(time[0]), float(time[-1]),
         remove_dc=_as_bool(params.get("remove_dc", True)),
         window=_as_bool(params.get("window", True)),
+        timestamp_resolution=timestamp_resolution,
     )
     if not res.ok:
         raise ValueError(res.info)
@@ -139,9 +140,9 @@ def _math_compute(inputs, params):
     return transforms.math_node(inputs, params)
 
 
-def _filter_compute(inputs, params):
+def _filter_compute(inputs, params, *, timestamp_resolution=0.0):
     time, y = inputs[0]
-    return transforms.filter_node(time, y, params)
+    return transforms.filter_node(time, y, params, timestamp_resolution=timestamp_resolution)
 
 
 def _shift_compute(inputs, params):
@@ -439,7 +440,7 @@ def is_stale(registry, graph: NodeGraph, node: Node) -> bool:
 
 
 # -- computation --------------------------------------------------------------
-def compute_node(node: Node, inputs: list[tuple[np.ndarray, np.ndarray]]
+def compute_node(node: Node, inputs: list[tuple[np.ndarray, np.ndarray]], *, timestamp_resolution=0.0
              ) -> tuple[np.ndarray, np.ndarray, str, str]:
     """Dispatch to the node's registered transform. Returns ``(out_time, out_y,
     info, unit)``; raises a clear error if the kind has no spec (missing plugin)."""
@@ -465,7 +466,8 @@ def compute_node(node: Node, inputs: list[tuple[np.ndarray, np.ndarray]]
         from .loader import validate_time_axis
         validate_time_axis(t, node.name)
         protected.append((t, y))
-    out_time, out_y, info = spec.compute(protected, dict(node.params))
+    options = {"timestamp_resolution": timestamp_resolution} if spec.compute in (_fft_compute, _filter_compute) else {}
+    out_time, out_y, info = spec.compute(protected, dict(node.params), **options)
     # Own the published buffers: plugins may return aliases or retain references.
     out_time = np.array(out_time, dtype=np.float64, order="C", copy=True)
     out_y = np.array(out_y, dtype=np.float32, order="C", copy=True)
@@ -567,7 +569,10 @@ def evaluate(state, node_id: int | None = None) -> int:
             if requires_time and domains != {"time"}:
                 raise ValueError(f"{node.kind} requires time-domain inputs")
             inputs = [_node_output(state, graph.nodes[i]) for i in node.inputs]
-            out_time, out_y, info, unit = compute_node(node, inputs)
+            input_runs = [state.registry.get(up.ref[0] if up.kind == "source" else up.out_run_id)
+                          for i in node.inputs for up in [graph.nodes[i]]]
+            resolution = max((run.timestamp_resolution for run in input_runs if run is not None), default=0.0)
+            out_time, out_y, info, unit = compute_node(node, inputs, timestamp_resolution=resolution)
         except Exception as exc:  # noqa: BLE001 - surfaced to the console
             node.error = str(exc)
             node.info = ""
@@ -580,5 +585,9 @@ def evaluate(state, node_id: int | None = None) -> int:
         node.error = ""
         node.eval_key = node_key(state.registry, graph, node)
         publish_output(state, node, unit, domain=output_domain(graph, node, domain_cache))
+        # Built-ins preserve the timestamp grid except FFT. Plugins have no
+        # precision contract, so their outputs revert to strict validation.
+        state.registry.get(node.out_run_id).timestamp_resolution = (
+            resolution if node.kind in {"math", "filter", "shift"} else 0.0)
         computed += 1
     return computed

@@ -95,7 +95,7 @@ def test_derived_refresh_bumps_signal_and_time_version(tmp_path):
     rid = state.upsert_derived_run("deriv", t, np.zeros(8))
     run = state.registry.get(rid)
     sv0, tv0 = run.signals["out"].version, run.time_version
-    state.upsert_derived_run("deriv", t, np.ones(8))
+    state.upsert_derived_run("deriv", t, np.ones(8), run_id=rid)
     run2 = state.registry.get(rid)
     assert run2.id == rid
     assert run2.signals["out"].version != sv0

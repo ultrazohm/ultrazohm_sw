@@ -190,7 +190,15 @@ def build_html() -> str:
     // whole WASM runtime silently ("loading does nothing").
     const MEM_BUDGET = 1.5 * 1024 * 1024 * 1024;
     const firstLine = (head.split("\\n").find(l => l.trim() !== "")) || "";
-    const nDataCols = Math.max(firstLine.split(";").filter(s => s.trim() !== "").length - 1, 1);
+    let commas = 0, semicolons = 0, quotedHeader = false;
+    for (const ch of firstLine) {{
+      if (ch === '"') quotedHeader = !quotedHeader;
+      else if (!quotedHeader && ch === ',') commas++;
+      else if (!quotedHeader && ch === ';') semicolons++;
+    }}
+    const delimiter = commas > semicolons ? "," : ";";
+    const nDataCols = parseRow(firstLine).filter(s => s.trim() !== "").length - 1;
+    if (nDataCols < 1) throw new Error("CSV must contain time and at least one signal column");
     const estRows = file.size / Math.max(avgLineBytes, 1);
     const stride = Math.max(1, Math.ceil((estRows * (8 + 4 * nDataCols)) / MEM_BUDGET));
     pyRun("s and s.console.info(" + JSON.stringify(
@@ -203,6 +211,7 @@ def build_html() -> str:
     const decoder = new TextDecoder();
     let remainder = "";
     let header = null;
+    let fieldCount = 0;
     let timeIdx = 0;
     let dataIdx = [];       // field indices of the data columns
     let dataNames = [];     // their raw header names
@@ -221,14 +230,48 @@ def build_html() -> str:
       cap = nc;
     }}
 
+    function parseRow(line) {{
+      const fields = [];
+      let field = "", quoted = false, closed = false;
+      for (let i = 0; i < line.length; i++) {{
+        const ch = line[i];
+        if (quoted) {{
+          if (ch === '"' && line[i + 1] === '"') {{ field += '"'; i++; }}
+          else if (ch === '"') {{ quoted = false; closed = true; }}
+          else field += ch;
+        }} else if (ch === delimiter) {{
+          fields.push(field); field = ""; closed = false;
+        }} else if (ch === '"' && !field && !closed) quoted = true;
+        else if (ch === '\\r' && i === line.length - 1) {{}}
+        else if (closed || ch === '"') throw new Error("Malformed CSV quoting");
+        else field += ch;
+      }}
+      if (quoted) throw new Error("Unclosed CSV quote (multiline fields are not supported by browser streaming)");
+      fields.push(field);
+      return fields;
+    }}
+
+    function numeric(field) {{
+      const text = field.trim();
+      if (text === "" || /^(nan|null|na)$/i.test(text)) return NaN;
+      if (/^[+]?inf(inity)?$/i.test(text)) return Infinity;
+      if (/^-inf(inity)?$/i.test(text)) return -Infinity;
+      if (!/^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?$/.test(text))
+        throw new Error("Invalid numeric CSV value: " + text);
+      return Number(text);
+    }}
+
     function initHeader(line) {{
-      const fields = line.split(";");
+      const fields = parseRow(line);
+      fieldCount = fields.length;
       const kept = [];
       for (let i = 0; i < fields.length; i++) {{
         const nm = fields[i].trim();
         if (nm !== "") kept.push([i, nm]);
       }}
-      let tPos = kept.findIndex(k => k[1].toLowerCase() === "time");
+      if (kept.length < 2 || new Set(kept.map(k => k[1])).size !== kept.length)
+        throw new Error("CSV must contain distinct time and signal columns");
+      let tPos = kept.findIndex(k => k[1] === "time");
       if (tPos < 0) tPos = 0;
       timeIdx = kept.length ? kept[tPos][0] : 0;
       for (let k = 0; k < kept.length; k++) {{
@@ -241,12 +284,13 @@ def build_html() -> str:
     }}
 
     function pushRow(line) {{
-      if (line === "") return;
+      if (line.trim() === "") return;
       if ((seen++ % stride) !== 0) return;  // keep every stride-th row (memory fit)
-      const f = line.split(";");
+      const f = parseRow(line);
+      if (f.length !== fieldCount) throw new Error("CSV row has incorrect field count");
       grow(n + 1);
-      timeArr[n] = parseFloat(f[timeIdx]);
-      for (let c = 0; c < dataIdx.length; c++) cols[c][n] = parseFloat(f[dataIdx[c]]);
+      timeArr[n] = numeric(f[timeIdx]);
+      for (let c = 0; c < dataIdx.length; c++) cols[c][n] = numeric(f[dataIdx[c]]);
       n++;
     }}
 

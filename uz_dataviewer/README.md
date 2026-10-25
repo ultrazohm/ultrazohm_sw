@@ -34,7 +34,7 @@ is a replayable command.
   (follow a plot / full / custom), compute on demand, log axes, CSV export.
 - **Node canvas** — drag a signal into a graph, apply transforms (FFT / math /
   filter / shift), and the result becomes a new draggable signal. Fully scriptable
-  (`node_*`) and extensible with your own **Python plugin nodes** (see docs/PLUGINS.md).
+  (`node_*`) and extensible with your own **Python plugin nodes** (see [Plugins](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_plugins.rst)).
 - **Scriptable command console** — every action echoes a command; the input runs them, with
   completion, history and a selectable log. Sessions save to JSON or a replayable `.uzscript`.
 - **MaterialFlat theme.** Runs natively (Windows/Linux/macOS) and in the browser (Pyodide/WASM).
@@ -139,38 +139,13 @@ There is currently no automatic disk-cache size limit.
 Read-only or full summary-cache storage falls back to RAM; enabled lazy CSV conversion requires writable cache space.
 The browser build retains synchronous execution because its current runtime has no worker-thread support.
 
-### Reproducing performance measurements
-
-The CPU-side ImGui/ImPlot probe opens real files and covers stationary frames,
-viewport updates, spy insets, background imports, and a selected-window FFT:
-
-```bash
-uv run --project uz_dataviewer python uz_dataviewer/benchmarks/profile_viewer.py \
-  test_logs/Log_2026-06-16_10-03-55.parquet \
-  test_logs/Log_2026-06-16_10-46-24.parquet \
-  --mode lazy --signals 8 --subplots 4 --analysis \
-  --background-file test_logs/Log_2026-06-16_10-03-55.parquet \
-  --output /tmp/viewer-profile.json
-```
-
-Use a fresh `UZ_DATAVIEWER_CACHE` directory for a cold application-cache run;
-repeat with the same directory to measure reopen. Each process should use the
-same machine, inputs and thread settings. The checked-in
-[measurement records](benchmarks/results/) use `OPENBLAS_NUM_THREADS=2`.
-These are single-run CPU probes, **not GPU FPS or mouse-to-photon measurements**;
-the OS page cache was not flushed. First-plot completion and viewport completion
-include background work and are separate from GUI frame cost.
-
-`benchmarks/native_smoke.py` runs an automatically closing native window with
-six viewport changes and includes GPU completion. Run it from a temporary working
-directory to keep window-layout files separate. The measured tradeoffs and
-baseline revision are recorded in the repository's
-[developer reference](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_architecture.rst).
-
 ### Session format and analysis correctness
 
-Sessions now use schema version 2 with explicit run identities, including repeated opens and identical filenames in different directories.
-Restoring a saved session replaces the current session; old snapshots and older exported session scripts must be recreated.
+Sessions now use schema version 3 with explicit run identities, including repeated opens and identical filenames in different directories.
+Restoring a saved session replaces the current session only after successful loading. Failed restoration leaves the current session intact. Old snapshots and older exported session scripts must be recreated.
+Plot windows, precise time ranges and inactive recordings survive JSON and script round trips.
+Streamed browser recordings have no backing file, so session saving is rejected; export their data first.
+Chain transforms with node links; using derived outputs as new source nodes is no longer supported.
 Analysis and exports use exact time windows, while plotting retains edge padding.
 FFT rejects duplicate or irregular timestamps instead of producing an incorrect frequency axis.
 
@@ -178,14 +153,14 @@ FFT rejects duplicate or irregular timestamps instead of producing an incorrect 
 
 | Doc | For |
 |-----|-----|
-| **[docs/USAGE.md](docs/USAGE.md)** | Driving the app: panels, plots, analysis windows, the command console & scripting, full command reference. |
-| **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** | Developers: module map, the state-driven/command-routed design, internals, how to extend, testing, design decisions. |
-| **[docs/BUILD.md](docs/BUILD.md)** | Building native executables and the web/WASM app. |
-| **[docs/NATIVE_VS_WEB.md](docs/NATIVE_VS_WEB.md)** | What differs between the desktop and browser builds (file I/O, threading, memory) and what's identical. |
-| **[docs/PLUGINS.md](docs/PLUGINS.md)** | Writing your own node transforms as Python plugins. |
-| **[docs/LIBRARY.md](docs/LIBRARY.md)** | Using the data/analysis core headlessly as a Python library (load logs, FFT, node transforms) — no GUI. |
-| **[docs/ROADMAP.md](docs/ROADMAP.md)** | Open ideas and the record of what's already shipped. |
-| **[docs/dataviewer_v_javascope.md](docs/dataviewer_v_javascope.md)** | How the live JavaScope and this offline viewer relate, and the legacy `dataviewer.py` it succeeds. |
+| **[Usage](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_usage.rst)** | Driving the app: panels, plots, analysis windows, the command console & scripting, full command reference. |
+| **[Architecture](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_architecture.rst)** | Developers: module map, the state-driven/command-routed design, internals, how to extend, testing, design decisions. |
+| **[Build](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_build.rst)** | Building native executables and the web/WASM app. |
+| **[Native Vs Web](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_native_vs_web.rst)** | What differs between the desktop and browser builds (file I/O, threading, memory) and what's identical. |
+| **[Plugins](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_plugins.rst)** | Writing your own node transforms as Python plugins. |
+| **[Library](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_library.rst)** | Using the data/analysis core headlessly as a Python library (load logs, FFT, node transforms) — no GUI. |
+| **[Roadmap](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_roadmap.rst)** | Open ideas and the record of what's already shipped. |
+| **[Dataviewer V Javascope](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer.rst)** | How the live JavaScope and this offline viewer relate, and the legacy `dataviewer.py` it succeeds. |
 
 ## Project layout
 
@@ -208,9 +183,10 @@ uz_dataviewer/
 │   ├── webbridge.py          # browser integration (file input, array load, downloads)
 │   └── panels/               # navigation, plots, analysis base, fft, histogram, nodes
 ├── tests/                    # pytest (logic via commands + headless rendering)
-├── docs/                     # USAGE / ARCHITECTURE / BUILD / NATIVE_VS_WEB / PLUGINS / ROADMAP
 └── build/                    # native (PyInstaller) + web (Pyodide) build flow
 ```
+
+Documentation lives in `../docs/source/guide/gui/uz_dataviewer/`.
 
 ## Tests
 

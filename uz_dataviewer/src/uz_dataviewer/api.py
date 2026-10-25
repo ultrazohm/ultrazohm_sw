@@ -160,7 +160,8 @@ def node(kind: str, *signals, **params):
     inputs = [
         (np.asarray(t, dtype=np.float64), np.asarray(s, dtype=np.float64)) for t, s in signals
     ]
-    return spec.compute(inputs, merged)
+    time, values, info, _ = nodes._compute(nodes.Node(0, kind, kind, params=merged), inputs)
+    return time, values, info
 
 
 def filter(time, y, **params):

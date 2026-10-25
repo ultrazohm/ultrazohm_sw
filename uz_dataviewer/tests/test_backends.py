@@ -120,7 +120,7 @@ def test_web_uses_pyarrow_for_polars_session(logs, monkeypatch):
     try:
         with pytest.raises(CommandError, match='desktop'):
             state.commands.execute(state, 'backend', ['polars'])
-        apply_dict(state, {'version':2, 'backend':'polars', 'runs':[{'key':'run:1', 'path':str(logs[0]), 'backend':'polars', 'mode':'memory', 'disk_cache':False}]})
+        apply_dict(state, {'version':3, 'backend':'polars', 'runs':[{'key':'run:1', 'path':str(logs[0]), 'backend':'polars', 'mode':'memory', 'disk_cache':False}]})
         assert state.backend == 'pyarrow'
         assert state.registry.runs[0].backend == 'pyarrow'
     finally:

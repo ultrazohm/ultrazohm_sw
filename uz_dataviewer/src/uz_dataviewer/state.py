@@ -5,7 +5,6 @@ from __future__ import annotations
 import enum
 import math
 import os
-import threading
 from concurrent.futures import Future
 from .loading import LoadExecutor
 from dataclasses import dataclass, field
@@ -169,7 +168,6 @@ class AppState:
         self.cache_dir = None
         self.disk_cache = False
         self.large_csv_requests: list[LoadRequest] = []
-        self._load_lock = threading.RLock()
         self.display = Requests(synchronous=webbridge.IS_WEB)
         self.analysis_jobs = Requests(synchronous=webbridge.IS_WEB)
         self.console = Console()
@@ -338,7 +336,7 @@ class AppState:
         self._report_loaded(run)
         return run
 
-    def upsert_derived_run(self, label: str, time, signal_y, unit: str = "") -> int:
+    def upsert_derived_run(self, label: str, time, signal_y, unit: str = "", *, run_id=None) -> int:
         """Create or refresh the single-channel derived run a node materializes.
 
         Refreshing *in place* (rather than remove + re-add) keeps the run id stable
@@ -349,14 +347,17 @@ class AppState:
 
         time = np.ascontiguousarray(time, dtype=np.float64)
         y = np.ascontiguousarray(signal_y, dtype=np.float32)
-        for run in self.registry.runs:
-            if run.derived and run.label == label:
-                run.time = time
-                run.time_raw = time
-                run.time_origin = None
-                run.mark_time_changed()  # invalidate decimation caches keyed on the time version
-                run.signals = {"out": Signal("out", unit, y, run.id)}
-                return run.id
+        run = self.registry.get(run_id) if run_id is not None else None
+        if run is not None:
+            if not run.derived:
+                raise ValueError("Cannot overwrite a recording with a derived output")
+            run.label = label
+            run.time = time
+            run.time_raw = time
+            run.time_origin = None
+            run.mark_time_changed()
+            run.signals = {"out": Signal("out", unit, y, run.id)}
+            return run.id
         run = self.registry.add_run(label, f"<derived:{label}>", time, {"out": y}, {"out": unit})
         run.derived = True
         return run.id
@@ -370,6 +371,7 @@ class AppState:
         for node in self.nodes.nodes.values():
             if node.out_run_id == run_id:
                 node.out_run_id = None
+                node.eval_key = None
         for cell in self.cells:
             cell.signals = [s for s in cell.signals if s[0] != run_id]
             cell.y2_signals = [s for s in cell.y2_signals if s[0] != run_id]
@@ -399,8 +401,7 @@ class AppState:
                 continue
             try:
                 parsed = future.result()
-                with self._load_lock:
-                    run = parsed.register(self.registry)
+                run = parsed.register(self.registry)
             except Exception as exc:  # noqa: BLE001 - surfaced to the console
                 self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
                 continue
@@ -441,7 +442,7 @@ class AppState:
         run = self.registry.get(ref[0])
         if run is None:
             return ref[1]
-        return f"{ref[1]} @ {run.label}"
+        return f"{ref[1]} @ {run.label} [run_{run.id}]"
 
     def _open_background(self, path, mode, backend, disk_cache, cancel=None):
         return open_file(path, mode, self.registry.cache, self.cache_dir, backend=backend, disk_cache=disk_cache, cancel=cancel)

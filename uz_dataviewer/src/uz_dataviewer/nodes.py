@@ -180,6 +180,16 @@ class NodeGraph:
             known = ", ".join(("source",) + transform_kinds())
             raise ValueError(f"Unknown node kind {kind!r}; one of {known}")
         nid = node_id if node_id is not None else next(self._ids)
+        if nid <= 0 or nid in self.nodes:
+            raise ValueError(f"Invalid or duplicate node id: {nid}")
+        if name is not None and self.by_name(name) is not None:
+            raise ValueError(f"Duplicate node name: {name}")
+        if name is None:
+            name = f"node_{nid}"
+            suffix = 2
+            while self.by_name(name) is not None:
+                name = f"node_{nid}_{suffix}"
+                suffix += 1
         if node_id is not None:  # keep the counter ahead of restored ids
             self._ids = itertools.count(max(nid + 1, self._next_peek()))
         node = Node(id=nid, kind=kind, name=name or f"node_{nid}",
@@ -285,12 +295,16 @@ def _node_output(state, node: Node) -> tuple[np.ndarray, np.ndarray]:
         sig = state.registry.get_signal(node.ref[0], node.ref[1])
         if run is None or sig is None:
             raise ValueError(f"{node.name}: source signal is not loaded")
+        if run.derived:
+            raise ValueError("Derived signals must be connected with node_link, not source nodes")
         source = run.data_source()
         tmin, tmax = node.params.get("tmin", ""), node.params.get("tmax", "")
         lo = float(tmin) if tmin != "" else source.metadata.time_range[0] + run.time_offset
         hi = float(tmax) if tmax != "" else source.metadata.time_range[1] + run.time_offset
         t, values = run.read_window([node.ref[1]], lo, hi)
         return t, values[node.ref[1]]
+    if node.error or is_stale(state, state.nodes, node):
+        raise ValueError(f"{node.name}: upstream result is not current")
     if node.out_time is None or node.out_y is None:
         raise ValueError(f"{node.name}: not evaluated yet")
     return node.out_time, node.out_y
@@ -303,7 +317,8 @@ def _source_signature(state, node: Node):
     if node.ref is None:
         return ("ref", None, window)
     run = state.registry.get(node.ref[0])
-    sig = None if run is None else (run.n_rows, run.time_origin)
+    signal = state.registry.get_signal(*node.ref)
+    sig = None if run is None or signal is None else (run.time_version, signal.version)
     return ("ref", node.ref, sig, window)
 
 
@@ -396,6 +411,6 @@ def evaluate(state, node_id: int | None = None) -> int:
         node.info = info
         node.error = ""
         node.eval_key = node_key(state, graph, node)
-        node.out_run_id = state.upsert_derived_run(node.name, node.out_time, node.out_y, unit)
+        node.out_run_id = state.upsert_derived_run(node.name, node.out_time, node.out_y, unit, run_id=node.out_run_id)
         computed += 1
     return computed

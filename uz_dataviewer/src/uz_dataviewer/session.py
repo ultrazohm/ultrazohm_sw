@@ -11,21 +11,23 @@ Two complementary formats, both exposed as commands (see :mod:`commands`):
   ``add_signal(...)`` ...) that reproduces the session when replayed.
 
 JSON references use explicit recording/node keys, remapped when restoring.
-Scripts reset the session and reference deterministic run_N identifiers.
+Scripts restore transactionally and reference explicit recording/node identities.
 """
 
 from __future__ import annotations
 
 import json
+import math
 from typing import TYPE_CHECKING
 
-from .sources import SourceColumn
+from .loader import unique_name
 from .state import PlotType, XyStyle
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from .state import AppState, SubplotCell
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
+SCRIPT_HEADER = "# UltraZohm Data Viewer session script v3"
 
 
 def ensure_extension(path: str, ext: str) -> str:
@@ -58,10 +60,10 @@ def _ref_to_saved(state, ref):
 def _script_ref(state, ref):
     if ref is None:
         return None
-    from .nodes import _topo_order
     ids = [r.id for r in state.registry.runs if not r.derived]
-    ids += [state.nodes.get(n).out_run_id for n in _topo_order(state.nodes)
-            if state.nodes.get(n).is_transform and state.nodes.get(n).out_run_id is not None]
+    for index, node in enumerate(state.nodes.ordered(), start=1):
+        if node.out_run_id == ref[0]:
+            return [f"node_output_{index}", ref[1]]
     if ref[0] not in ids:
         return None
     return [f"run_{ids.index(ref[0]) + 1}", ref[1]]
@@ -92,6 +94,7 @@ def clear_session(state):
 def _nodes_to_list(state: "AppState") -> list[dict]:
     out = []
     for node in state.nodes.ordered():
+        run = state.registry.get(node.out_run_id)
         out.append(
             {
                 "id": node.id,
@@ -101,6 +104,7 @@ def _nodes_to_list(state: "AppState") -> list[dict]:
                 "inputs": list(node.inputs),
                 "ref": _ref_to_saved(state, node.ref) if node.ref else None,
                 "pos": list(node.pos),
+                "output_view": {"active": run.active, "time_origin": run.time_origin} if run else None,
             }
         )
     return out
@@ -108,12 +112,15 @@ def _nodes_to_list(state: "AppState") -> list[dict]:
 
 # -- JSON snapshot ------------------------------------------------------------
 def to_dict(state: "AppState") -> dict:
+    _check_reloadable(state)
     cells = []
     for cell in state.cells:
         cells.append(
             {
                 "signals": [_ref_to_saved(state, r) for r in cell.signals],
                 "type": cell.plot_type.value,
+                "x_lim": cell.pending_x_lim or state.plot_x_ranges.get(len(cells) + 1),
+                "y_lim": cell.pending_y_lim,
                 "show_samples": cell.show_samples,
                 "spy": cell.spy,
                 "spy_rect": list(cell.spy_rect) if cell.spy_rect else None,
@@ -129,13 +136,14 @@ def to_dict(state: "AppState") -> dict:
         "version": SCHEMA_VERSION,
         "grid": [state.rows, state.cols],
         "link_x": state.link_x,
+        "shared_x": state.shared_x,
         "max_points": state.max_points,
         "loading_mode": state.loading_mode,
         "disk_cache": state.disk_cache,
         "backend": state.backend,
         "cache_budget_mb": state.registry.cache.limit // 1024**2,
         "runs": [{"key": f"run:{r.id}", "path": r.path,
-                  "mode": "lazy" if isinstance(r.time, SourceColumn) else "memory",
+                  "mode": r.storage_mode,
                   "backend": r.backend, "disk_cache": getattr(r.source, "disk_cache", False),
                   "time_origin": r.time_origin, "active": r.active}
                  for r in state.registry.runs if not r.derived],
@@ -162,8 +170,9 @@ def to_dict(state: "AppState") -> dict:
 
 
 def save_state(state: "AppState", path: str) -> None:
+    data = to_dict(state)
     with open(path, "w", encoding="utf-8") as fh:
-        json.dump(to_dict(state), fh, indent=2)
+        json.dump(data, fh, indent=2)
 
 
 def load_state(state: "AppState", path: str) -> None:
@@ -180,13 +189,38 @@ def _session_backend(state, backend):
     return backend
 
 
+def _replacement_state(state):
+    from .state import AppState
+    replacement = AppState()
+    replacement.cache_dir = state.cache_dir
+    return replacement
+
+
+def _commit_state(state, replacement):
+    console, commands = state.console, state.commands
+    for entry in replacement.console._entries:
+        console._log(entry.level, entry.message)
+    state.shutdown()
+    state.__dict__.update(replacement.__dict__)
+    state.console, state.commands = console, commands
+
+
 def apply_dict(state: "AppState", data: dict) -> None:
+    replacement = _replacement_state(state)
+    try:
+        _apply_dict(replacement, data)
+    except BaseException:
+        replacement.shutdown()
+        raise
+    _commit_state(state, replacement)
+
+
+def _apply_dict(state: "AppState", data: dict) -> None:
     if data.get("version") != SCHEMA_VERSION:
         raise ValueError(f"Unsupported session version; expected {SCHEMA_VERSION}. Recreate old sessions.")
     specs = data.get("runs", [])
     if len({r["key"] for r in specs}) != len(specs):
         raise ValueError("Duplicate run keys in session")
-    clear_session(state)
     if "backend" in data:
         state.commands.execute(state, "backend", [_session_backend(state, data["backend"])])
     for command, field in (("disk_cache", "disk_cache"), ("loading_mode", "loading_mode"), ("cache_budget", "cache_budget_mb")):
@@ -209,9 +243,14 @@ def apply_dict(state: "AppState", data: dict) -> None:
         state.loading_mode, state.backend, state.disk_cache = mode, backend, disk_cache
 
     rows, cols = data.get("grid", [state.rows, state.cols])
+    if int(rows) < 1 or int(cols) < 1:
+        raise ValueError("Session grid dimensions must be positive")
     state.set_grid(int(rows), int(cols))
     state.link_x = bool(data.get("link_x", state.link_x))
+    state.shared_x = _limits(data.get("shared_x"))
     state.max_points = int(data.get("max_points", state.max_points))
+    if state.max_points < 2:
+        raise ValueError("Session display budget must be at least two points")
 
     def _resolve(labelled) -> tuple[int, str] | None:
         if not labelled:
@@ -222,7 +261,9 @@ def apply_dict(state: "AppState", data: dict) -> None:
             run_id = node.out_run_id if node is not None else None
         else:
             run_id = run_ids.get(key)
-        return None if run_id is None else (run_id, labelled[1])
+        if run_id is None or state.registry.get_signal(run_id, labelled[1]) is None:
+            raise ValueError(f"Cannot restore signal reference: {labelled}")
+        return run_id, labelled[1]
 
     # Rebuild the node graph and evaluate it *before* resolving cell/analysis
     # assignments, so any references to a derived run (label == node name) resolve.
@@ -249,6 +290,10 @@ def apply_dict(state: "AppState", data: dict) -> None:
         except ValueError:
             cell.xy_style = XyStyle.LINE
         cell.y2_signals = [r for r in (_resolve(s) for s in spec.get("y2", [])) if r is not None]
+        cell.pending_x_lim = _limits(spec.get("x_lim"))
+        cell.pending_y_lim = _limits(spec.get("y_lim"))
+        if cell.pending_x_lim:
+            state.plot_x_ranges[i + 1] = cell.pending_x_lim
         cell.fit_pending = True
 
     fft = data.get("fft") or {}
@@ -276,13 +321,25 @@ def apply_dict(state: "AppState", data: dict) -> None:
     state.histogram.compute_requested = bool(state.histogram.sources)
 
 
+def _limits(value):
+    if value is None:
+        return None
+    lo, hi = map(float, value)
+    if not math.isfinite(lo) or not math.isfinite(hi) or hi <= lo:
+        raise ValueError("Axis limits must be finite and increasing")
+    return lo, hi
+
+
 def _restore_nodes(state: "AppState", specs: list, resolve) -> None:
     """Rebuild the node graph from a snapshot (preserving ids) and evaluate it."""
     from .nodes import NodeGraph, evaluate
 
     state.nodes = NodeGraph()
     for spec in sorted(specs, key=lambda s: int(s["id"])):
-        ref = resolve(spec.get("ref")) if spec.get("kind") == "source" else None
+        saved_ref = spec.get("ref")
+        if spec.get("kind") == "source" and saved_ref and saved_ref[0].startswith("node:"):
+            raise ValueError("Derived signals must be connected with node_link, not source nodes")
+        ref = resolve(saved_ref) if spec.get("kind") == "source" else None
         # allow_unknown keeps a node whose plugin isn't installed as a placeholder
         # (params + links preserved) rather than dropping it.
         node = state.nodes.add(
@@ -295,12 +352,15 @@ def _restore_nodes(state: "AppState", specs: list, resolve) -> None:
     for spec in specs:  # links once every node exists
         dst = int(spec["id"])
         for in_id in spec.get("inputs", []):
-            try:
-                state.nodes.link(int(in_id), dst)
-            except ValueError:
-                pass
+            state.nodes.link(int(in_id), dst)
     if state.nodes.nodes:
         evaluate(state)
+    for spec in specs:
+        view = spec.get("output_view")
+        run = state.registry.get(state.nodes.get(int(spec["id"])).out_run_id)
+        if run is not None and view is not None:
+            run.active = bool(view["active"])
+            run.set_time_origin(view["time_origin"])
 
 
 # -- command script -----------------------------------------------------------
@@ -322,41 +382,70 @@ def _nodes_to_script(state: "AppState", lines: list[str]) -> None:
         if node.kind == "source":
             lab = _script_ref(state, node.ref)
             if not lab:
-                continue
+                raise ValueError(f"{node.name}: source recording is missing")
+            if lab[0].startswith("node_output_"):
+                raise ValueError("Derived signals must be connected with node_link, not source nodes")
             lines.append(f"node_source({_arg(lab[0])}, {_arg(lab[1])})")
         else:
             lines.append(f"node_add({node.kind})")
         nid = idmap[node.id]
         for key, value in node.params.items():
             lines.append(f"node_set(node_{nid}, {key}, {_arg(str(value))})")
-        if node.name != f"node_{node.id}":
-            lines.append(f"node_rename(node_{nid}, {_arg(node.name)})")
         if node.pos != (0.0, 0.0):
-            lines.append(f"node_pos(node_{nid}, {node.pos[0]:.6g}, {node.pos[1]:.6g})")
+            lines.append(f"node_pos(node_{nid}, {node.pos[0]!r}, {node.pos[1]!r})")
+    if any(node.name != f"node_{idmap[node.id]}" for node in nodes):
+        # Free every default name first so renaming can handle gaps and swaps.
+        prefix = "__restore_"
+        while any(node.name.startswith(prefix) for node in nodes):
+            prefix += "_"
+        for node in nodes:
+            nid = idmap[node.id]
+            lines.append(f"node_rename(node_{nid}, {_arg(prefix + str(nid))})")
+        for node in nodes:
+            lines.append(f"node_rename(node_{idmap[node.id]}, {_arg(node.name)})")
     for node in nodes:
         for in_id in node.inputs:
             if in_id in idmap:
                 lines.append(f"node_link(node_{idmap[in_id]}, node_{idmap[node.id]})")
     lines.append("node_eval()")
+    for node in nodes:
+        run = state.registry.get(node.out_run_id)
+        if run is not None:
+            ref = f"node_output_{idmap[node.id]}"
+            if not run.active:
+                lines.append(f"set_active({ref}, false)")
+            if run.time_origin is not None:
+                lines.append(f"normalize_time({ref}, {run.time_origin!r})")
+
+
+def _check_reloadable(state):
+    for run in state.registry.runs:
+        if not run.derived and not run.reloadable:
+            raise ValueError(f"Cannot save session: {run.label} has no backing file. Export its data first.")
 
 
 def to_script(state: "AppState") -> list[str]:
-    lines: list[str] = ["# UltraZohm Data Viewer session script v2", "clear_session()",
+    _check_reloadable(state)
+    lines: list[str] = [SCRIPT_HEADER, "clear_session()",
                         f"disk_cache({str(state.disk_cache).lower()})",
                         f"backend({_arg(state.backend)})",
                         f"loading_mode({_arg(state.loading_mode)})",
                         f"cache_budget({state.registry.cache.limit // 1024**2})"]
+    recording_number = 0
     for run in state.registry.runs:
         if run.derived:  # regenerated by the node section below, not a file
             continue
-        mode = "lazy" if isinstance(run.time, SourceColumn) else "memory"
+        recording_number += 1
+        mode = run.storage_mode
         lines.append(f"disk_cache({str(getattr(run.source, 'disk_cache', False)).lower()})")
         lines.append(f"backend({_arg(run.backend)})")
         lines.append(f"loading_mode({_arg(mode)})")
         if run.time_origin is not None:
-            lines.append(f"load({_arg(run.path)}, {run.time_origin:.6g})")
+            lines.append(f"load({_arg(run.path)}, {run.time_origin!r})")
         else:
             lines.append(f"load({_arg(run.path)})")
+        if not run.active:
+            lines.append(f"set_active(run_{recording_number}, false)")
     lines.append(f"disk_cache({str(state.disk_cache).lower()})")
     lines.append(f"backend({_arg(state.backend)})")
     lines.append(f"loading_mode({_arg(state.loading_mode)})")
@@ -387,17 +476,23 @@ def to_script(state: "AppState") -> list[str]:
         if cell.spy:
             if cell.spy_rect:
                 x1, y1, x2, y2 = cell.spy_rect
-                lines.append(f"set_spy_rect(plot_{i}, {x1:.6g}, {y1:.6g}, {x2:.6g}, {y2:.6g})")
+                lines.append(f"set_spy_rect(plot_{i}, {x1!r}, {y1!r}, {x2!r}, {y2!r})")
             else:
                 lines.append(f"spy(plot_{i}, true)")
         if cell.cursors:
             if cell.cursor_x:
-                lines.append(f"set_cursors(plot_{i}, {cell.cursor_x[0]:.6g}, {cell.cursor_x[1]:.6g})")
+                lines.append(f"set_cursors(plot_{i}, {cell.cursor_x[0]!r}, {cell.cursor_x[1]!r})")
             else:
                 lines.append(f"cursors(plot_{i}, true)")
         if cell.export_relative:
             lines.append(f"set_export_relative(plot_{i}, true)")
 
+    for i, cell in enumerate(state.cells, start=1):
+        limits = cell.pending_x_lim or state.plot_x_ranges.get(i)
+        if limits is not None:
+            lines.append(f"set_x_lim(plot_{i}, {limits[0]!r}, {limits[1]!r})")
+        if cell.pending_y_lim is not None:
+            lines.append(f"set_y_lim(plot_{i}, {cell.pending_y_lim[0]!r}, {cell.pending_y_lim[1]!r})")
     _analysis_to_script(state, lines)
     return lines
 
@@ -432,7 +527,7 @@ def _analysis_to_script(state: "AppState", lines: list[str]) -> None:
         if fft.follow_plot != 1:
             lines.append(f"fft_follow({_fwindow_token(fft.follow_plot)})")
         if fft.follow_plot == 0:
-            lines.append(f"fft_range({fft.x_min:.6g}, {fft.x_max:.6g})")
+            lines.append(f"fft_range({fft.x_min!r}, {fft.x_max!r})")
 
     hist = state.histogram
     for ref in hist.sources:
@@ -445,29 +540,39 @@ def _analysis_to_script(state: "AppState", lines: list[str]) -> None:
         if hist.follow_plot != 1:
             lines.append(f"hist_follow({_fwindow_token(hist.follow_plot)})")
         if hist.follow_plot == 0:
-            lines.append(f"hist_range({hist.x_min:.6g}, {hist.x_max:.6g})")
+            lines.append(f"hist_range({hist.x_min!r}, {hist.x_max!r})")
 
 
 def export_script(state: "AppState", path: str) -> None:
+    lines = to_script(state)
     with open(path, "w", encoding="utf-8") as fh:
-        fh.write("\n".join(to_script(state)) + "\n")
+        fh.write("\n".join(lines) + "\n")
 
 
 def run_script(state: "AppState", path: str) -> int:
     """Replay a script file line by line; returns the number of commands run."""
     with open(path, encoding="utf-8") as fh:
         lines = fh.readlines()
-    if lines and lines[0].strip() == "# UltraZohm Data Viewer session script":
+    exported = bool(lines and lines[0].strip().startswith("# UltraZohm Data Viewer session script"))
+    if exported and lines[0].strip() != SCRIPT_HEADER:
         raise ValueError("Unsupported session script version; recreate old exported sessions.")
+    target = _replacement_state(state) if exported else state
     count = 0
-    for line in lines:
-        line = line.strip()
-        if not line or line.startswith("#"):
-            continue
-        from .commands import parse_call
-        name, args = parse_call(line)
-        state.commands.execute(state, name, args)
-        count += 1
+    try:
+        for line in lines:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            from .commands import parse_call
+            name, args = parse_call(line)
+            target.commands.execute(target, name, args)
+            count += 1
+    except BaseException:
+        if exported:
+            target.shutdown()
+        raise
+    if exported:
+        _commit_state(state, target)
     return count
 
 
@@ -548,7 +653,7 @@ def export_fft(state: "AppState", path: str) -> int:
     x_min, x_max = state.resolve_x_window(cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources)
 
     spectra: list[tuple[str, np.ndarray, np.ndarray]] = []  # (name, freqs, mag)
-    used: set[str] = set()
+    used: set[str] = {"frequency"}
     for ref in cfg.sources:
         run = state.registry.get(ref[0])
         signal = state.registry.get_signal(ref[0], ref[1])
@@ -559,7 +664,7 @@ def export_fft(state: "AppState", path: str) -> int:
         if not result.ok:
             continue
         name = ref[1] if ref[1] not in used else f"{ref[1]} @ {run.label}"  # disambiguate dup names
-        used.add(name)
+        name = unique_name(name, used)
         spectra.append((name, result.freqs, result.mag))
     if not spectra:
         raise ValueError("no spectra to export")
@@ -574,12 +679,13 @@ def export_fft(state: "AppState", path: str) -> int:
     else:  # mixed axes -> per-signal (frequency, amplitude) pairs, NaN-padded
         maxlen = max(len(mag) for _, _, mag in spectra)
         columns = {}
+        column_names = set()
         for name, freqs, mag in spectra:
             fcol, acol = np.full(maxlen, np.nan), np.full(maxlen, np.nan)
             fcol[: len(freqs)] = freqs
             acol[: len(mag)] = mag
-            columns[f"{name}_frequency"] = fcol
-            columns[name] = acol
+            columns[unique_name(f"{name}_frequency", column_names)] = fcol
+            columns[unique_name(name, column_names)] = acol
     _write_csv(columns, path, state.backend)
     return len(columns)
 
@@ -596,12 +702,12 @@ def export_histogram(state: "AppState", path: str) -> int:
 
     from .analysis import histogram_sources
     series = []
-    used = set()
+    used = {"bin_center"}
     for ref in cfg.sources:
         run = state.registry.get(ref[0])
         if run is not None and ref[1] in run.signals:
             name = ref[1] if ref[1] not in used else state.signal_label(ref)
-            used.add(name)
+            name = unique_name(name, used)
             series.append((name, run.data_source(), ref[1], run.time_offset))
     results, _, _ = histogram_sources(series, x_min, x_max, cfg.bins)
     if not results:

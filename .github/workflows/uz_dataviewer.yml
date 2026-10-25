@@ -41,7 +41,7 @@ jobs:
       - name: Install GUI runtime libraries
         run: |
           apt-get update -qq
-          apt-get install -y --no-install-recommends libgl1 libx11-6 libxext6 libxau6 libxdmcp6 libxcb1
+          apt-get install -y --no-install-recommends libgl1 libx11-6 libxext6 libxau6 libxdmcp6 libxcb1 nodejs
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: '0.13.1'

@@ -221,7 +221,12 @@ and ``help`` prints the same list in the console, so both stay current.
 Session compatibility and analysis windows
 ------------------------------------------
 
-Saved sessions use schema version 2 and preserve separate instances of logs with identical filenames or paths.
+Failed restoration preserves the current session. Streamed browser recordings must be exported as data before saving a reloadable session.
+Transforms must be chained through node links, not by creating source nodes from derived outputs.
+
+Exported scripts reference derived outputs as ``node_output_N``, independently of which other nodes have been evaluated.
+
+Saved sessions use schema version 3 and preserve separate instances of logs with identical filenames or paths.
 Restoring a session replaces the currently loaded session.
 Version 1 snapshots and older exported session scripts must be recreated.
 Histogram, FFT, export and node crop ranges include only samples inside the selected time window.

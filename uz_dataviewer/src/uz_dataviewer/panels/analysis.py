@@ -126,7 +126,7 @@ class AnalysisPanel:
     def _draw(self, state: "AppState") -> None:
         raise NotImplementedError  # pragma: no cover - abstract
 
-    def _result_labels(self) -> list[str]:
+    def _result_refs(self) -> list[tuple[int, str]]:
         return []
 
     def _plot_decimated(self, state: "AppState", label: str, x: np.ndarray, y: np.ndarray, source) -> None:
@@ -255,7 +255,7 @@ class AnalysisPanel:
         # -- info + stale indicator --
         if self._info:
             imgui.text_disabled(self._info)
-        if self._result_labels() and self._computed_key != self._current_key(state, cfg):
+        if self._result_refs() and self._computed_key != self._current_key(state, cfg):
             imgui.same_line()
             imgui.text_colored((0.95, 0.75, 0.25, 1.0), "  ⚠ stale - press Compute")
         imgui.separator()
@@ -279,11 +279,12 @@ class AnalysisPanel:
 
             self._draw(state)
 
-            for label in self._result_labels():
+            for ref in self._result_refs():
+                label = state.signal_label(ref)
                 if implot.begin_legend_popup(label):
                     imgui.text_disabled(label)
                     if imgui.menu_item("Remove", "", False)[0]:
-                        self._remove(state, label)
+                        self._remove(state, ref)
                     implot.end_legend_popup()
 
             if implot.begin_drag_drop_target_plot():
@@ -313,8 +314,6 @@ class AnalysisPanel:
         if not first:
             state.commands.echo(state, self.xlim_command, [lo, hi])
 
-    def _remove(self, state: "AppState", label: str) -> None:
-        cfg = self.config(state)
-        for ref in list(cfg.sources):
-            if state.signal_label(ref) == label:
-                self._emit(state, f"{self.prefix}_remove", ref[0], ref[1])
+    def _remove(self, state: "AppState", ref: tuple[int, str]) -> None:
+        if ref in self.config(state).sources:
+            self._emit(state, f"{self.prefix}_remove", ref[0], ref[1])

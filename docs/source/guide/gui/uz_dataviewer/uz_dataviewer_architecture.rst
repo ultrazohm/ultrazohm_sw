@@ -134,7 +134,7 @@ Data model
 
 - A **``Run``** is one loaded file: a shared ``time`` axis (``float64``) plus one **``Signal``** per channel (``y`` as ``float32``).
   In-memory runs expose NumPy arrays; lazy runs expose ``SourceColumn`` views whose slices read original samples on demand.
-  Plotting uses ``Run.data_source()`` rather than materializing these views.
+  Plotting uses ``Run.data_source()``. ``SourceColumn.read_rows`` selects a row interval; ``materialize()`` or explicit ``np.asarray`` reads a whole column. Implicit arithmetic, fancy indexing and reverse slicing are unsupported.
 - **``DataRegistry``** owns runs and hands out stable integer ids; ``SignalRef = (run_id, name)`` identifies a signal everywhere.
 - **Time normalization** is per-log: ``Run.set_time_origin(target)`` keeps the original ``time_raw`` and derives ``time = time_raw - time_raw[0] + target``. It is reversible (``target=None`` restores raw) and re-derives only on change, never per frame.
 
@@ -244,7 +244,7 @@ Nodes *produce* data; nothing else in the app needs to know they exist.
 
 .. note::
 
-   Intentional v1 limits: binary math needs equal-length inputs (no resampling); a source node pointing at *another node's* derived output is a runtime convenience that may not fully survive restore (chaining is meant to go through ``node_link``).
+   Binary math needs equal-length inputs (no resampling). Source nodes accept recordings only; connect transforms with ``node_link`` so the graph tracks every dependency.
 
 .. _uz_dataviewer_downsampling:
 
@@ -315,11 +315,14 @@ Sessions (``session.py``)
 Two complementary formats:
 
 - **JSON snapshot** (``save_state``/``load_state``) — the exact view (grid, assignments, plot types, cursors/spy, secondary axes, FFT/Histogram config, time origins, file list).
-  Schema version 2 reloads explicit per-run records and remaps recording/node keys, preserving duplicate names and repeated opens of the same path.
+  Schema version 3 reloads explicit per-run records and remaps recording/node keys, preserving duplicate names and repeated opens of the same path.
 - **``.uzscript``** (``export_script``/``run_script``) — a human-readable, editable list of commands that reproduces the session when replayed.
-  Scripts reset the session and use deterministic ``run_N`` references.
+  Scripts restore into a replacement state and use recording ``run_N`` and explicit ``node_output_N`` references. A failed restore preserves the current session.
 
-Old version 1 snapshots and old exported session scripts are rejected; Auto and memory-budget migrations have been removed.
+Old version 1/2 snapshots and old exported session scripts are rejected; Auto and memory-budget migrations have been removed.
+
+Browser-streamed arrays have no backing file and cannot be saved in a reloadable session.
+Saving rejects them before opening the destination file. Export their data first.
 
 CSV exports (``export_data``, ``export_fft``, ``export_histogram``) also live here.
 
@@ -398,12 +401,9 @@ Design decisions
    * - Gestures **echo**, discrete actions **execute**
      - Zoom/drag are continuous; echoing once on settle keeps the console readable while
        staying replayable.
-   * - Min/max **pyramid** (pure NumPy) for decimation
-     - Per-frame cost becomes O(output), not O(visible points) (~0.7 ms vs ~23 ms/frame at
-       50 M points), so multi-GB logs pan at full fps — built once at first view (~75 ms/50 M),
-       ~3.6 % memory. Replaced the Rust ``tsdownsample`` dep so native and web run the same
-       code. Cost: lazy build hitches the first frame; the renderer re-decimates every frame
-       uncached (both accepted — see :ref:`uz_dataviewer_downsampling`).
+   * - Shared min/max summaries for resident and lazy sources
+     - Background workers build summaries and cache completed display requests.
+       Raw analysis and exports use original samples, never display summaries.
    * - XY cells decimate by uniform **stride**, not min/max
      - An XY/phase plot has no monotone time axis to bucket against; stride keeps it simple
        but can alias a dense Lissajous figure (the one place range-aware downsampling does not
@@ -417,12 +417,12 @@ Design decisions
        ``imgui_node_editor`` canvas only issues ``node_*`` commands.
    * - ``searchsorted`` not ``np.interp`` for cursors
      - ``np.interp`` up-casts the whole array each call — catastrophic per frame.
-   * - Session refs by run **label**
-     - Run ids are reassigned on reload; labels survive.
+   * - Session refs by recording/node **identity**
+     - Explicit references preserve repeated filenames and partially evaluated graphs.
    * - Per-log time normalization keeps ``time_raw``
      - Reversible, cheap (recompute on change only), and signals are never touched.
    * - Web: stream-parse CSV → arrays
-     - Avoids holding multi-GB text in 32-bit WASM memory; loads full resolution.
+     - Avoids holding multi-GB text in 32-bit WASM memory; may decimate to fit the browser budget.
    * - Pending-flag pattern (``fit_pending``, ``compute_requested``, …)
      - The immediate-mode way to express "do X once next frame".
 
@@ -436,5 +436,4 @@ Repository layout
    ├── src/uz_dataviewer/        # modules — see the module map above
    │   └── panels/               # navigation, plots, analysis base, fft, histogram, nodes
    ├── tests/                    # pytest (logic via commands + headless rendering)
-   ├── docs/                     # USAGE / ARCHITECTURE / BUILD / NATIVE_VS_WEB / PLUGINS / LIBRARY / ROADMAP
    └── build/                    # native (PyInstaller) + web (Pyodide) build flow

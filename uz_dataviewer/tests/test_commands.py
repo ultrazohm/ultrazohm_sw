@@ -126,7 +126,7 @@ def test_comment_and_blank_lines_ignored():
 def test_format_call_is_canonical():
     state = _state_with_run()
     cmd = state.commands.get("set_x_lim")
-    assert format_call(cmd, [1, 1.0, 2.0]) == "set_x_lim(plot_1, 1, 2)"
+    assert format_call(cmd, [1, 1.0, 2.0]) == "set_x_lim(plot_1, 1.0, 2.0)"
     cmd = state.commands.get("link_x")
     assert format_call(cmd, [True]) == "link_x(true)"
 

@@ -157,20 +157,11 @@ class MemorySource:
         from .downsample import visible_slice
         return visible_slice(self.time, lo, hi, padding=padding)
 
-    def read_plot(self, channel, lo, hi, budget, cancel=None, *, padding=True):
-        start, stop = self.bounds(lo, hi, cancel, padding=padding)
-        t, ys = self.read_rows([channel], start, stop, cancel)
-        # Vectorised scan is kept off the rendering thread. Cached multiresolution
-        # summaries are shared with Parquet through SummarySource below.
-        x, y = envelope(t, ys[channel], np.arange(start, stop), budget)
-        return PlotData(x, y, stop - start)
-
-
 # Each summary bucket keeps original extrema and a representative gap.
 POINT = np.dtype([('i', '<i8'), ('t', '<f8'), ('y', '<f4')])
 BASE = 1024
 FACTOR = 8
-CACHE_VERSION = 2
+CACHE_VERSION = 3
 
 
 def summarize(points, bucket):
@@ -518,11 +509,11 @@ class ParquetSource(IndexedFileSource):
         self.validate()
 
 
-class SourceColumn(np.lib.mixins.NDArrayOperatorsMixin):
-    """Compatibility view for explicit array APIs; slices read only requested rows.
+class SourceColumn:
+    """A lazy column handle with bounded row reads and explicit materialization.
 
     GUI code uses Source directly. np.asarray(view) explicitly materializes one
-    complete column, preserving existing plugin/NumPy behavior without retaining it.
+    complete column. Arithmetic must operate on explicitly materialized arrays.
     """
     def __init__(self, source, channel=None, offset=0.):
         self.source, self.channel, self.offset = source, channel, offset
@@ -535,8 +526,19 @@ class SourceColumn(np.lib.mixins.NDArrayOperatorsMixin):
         return self.size
 
     def __array__(self, dtype=None, copy=None):
-        result = self[:]
+        result = self.materialize()
         return np.array(result, dtype=dtype, copy=True) if copy else np.asarray(result, dtype=dtype)
+
+    def materialize(self):
+        """Read the full column; callers explicitly accept the allocation cost."""
+        return self.read_rows(0, self.size)
+
+    def read_rows(self, start, stop):
+        """Read a contiguous row interval without NumPy compatibility dispatch."""
+        t, ys = self.source.read_rows([] if self.channel is None else [self.channel], start, stop)
+        if self.channel is not None:
+            return ys[self.channel]
+        return t + self.offset if self.offset else t
 
     def __getitem__(self, item):
         if isinstance(item, (int, np.integer)):
@@ -549,18 +551,8 @@ class SourceColumn(np.lib.mixins.NDArrayOperatorsMixin):
                 return self.source.metadata.time_range[0 if i == 0 else 1] + self.offset
             return self[i:i + 1][0]
         if not isinstance(item, slice):
-            return np.asarray(self)[item]
+            raise TypeError("Use materialize() before fancy indexing a lazy column")
         start, stop, step = item.indices(self.size)
         if step < 0:
-            return np.asarray(self)[item]
-        t, ys = self.source.read_rows([] if self.channel is None else [self.channel], start, stop)
-        return (t + self.offset if self.channel is None else ys[self.channel])[::step]
-
-    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
-        return getattr(ufunc, method)(*(np.asarray(v) if isinstance(v, SourceColumn) else v for v in inputs), **kwargs)
-
-    def astype(self, dtype, **kwargs):
-        return np.asarray(self).astype(dtype, **kwargs)
-
-    def copy(self):
-        return np.asarray(self).copy()
+            raise TypeError("Use materialize() before reversing a lazy column")
+        return self.read_rows(start, stop)[::step]

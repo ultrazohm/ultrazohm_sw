@@ -9,7 +9,8 @@ console input or replayed from a saved ``.uzscript`` file.
 
 A command has a name, a typed parameter list and a handler. Parameters of kind
 ``plot``/``run`` accept the friendly ``plot_1`` / ``run_2`` forms (or bare
-integers); ``run`` also resolves a run *label* (file name) so scripts written
+integers); ``node_output_N`` resolves the evaluated output of a node.
+``run`` also resolves a run *label* (file name) so scripts written
 against ``load("Log.csv")`` keep working. The grammar is a single function call::
 
     name(arg1, arg2, ...)        # or just  name   for a no-arg command
@@ -186,6 +187,12 @@ def _resolve_node(state: "AppState", raw) -> int:
 
 
 def _resolve_run(state: "AppState", raw) -> int:
+    if isinstance(raw, str) and raw.startswith("node_output_"):
+        node_id = _resolve_node(state, raw[len("node_output_"):])
+        run_id = state.nodes.get(node_id).out_run_id
+        if run_id is None or state.registry.get(run_id) is None:
+            raise CommandError(f"node_{node_id} has no evaluated output")
+        return run_id
     if isinstance(raw, int):
         run_id = raw
     else:
@@ -247,7 +254,7 @@ def _coerce_args(state: "AppState", cmd: Command, args: list) -> list:
 
 # -- canonical formatting (for the echo / script export) ----------------------
 def _fmt_float(v: float) -> str:
-    return f"{float(v):.6g}"
+    return repr(float(v))
 
 
 def _fmt_str(s: str) -> str:
@@ -501,6 +508,7 @@ def register_builtins(reg: CommandRegistry) -> None:
         plot_n, lo, hi = a
         cell = _cell(state, plot_n)
         cell.pending_x_lim = (lo, hi)
+        state.plot_x_ranges[plot_n] = (lo, hi)
         if state.link_x:
             state.shared_x = (lo, hi)
 
@@ -792,6 +800,8 @@ def _register_node_commands(reg: CommandRegistry) -> None:
         run_id, name = a
         if state.registry.get_signal(run_id, name) is None:
             raise CommandError(f"run_{run_id} has no signal {name!r}")
+        if state.registry.get(run_id).derived:
+            raise CommandError("Derived signals must be connected with node_link, not source nodes")
         node = state.nodes.add("source", ref=(run_id, name))
         return f"Added {node.name} (source: {name})"
 

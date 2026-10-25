@@ -163,18 +163,17 @@ def load_columns(label: str, names, arrays, time, note: str = "") -> None:
     """
     if _active_state is None:
         return
-    from .loader import parse_channel_name
+    from .loader import _named_signals
 
     if note:
         _active_state.console.warn(note)
     t = _to_numpy(time, "float64")
-    signals: dict = {}
-    units: dict = {}
-    for raw, arr in zip(list(names), arrays):
-        raw = str(raw)
-        name, unit = parse_channel_name(raw)
-        if name in signals:  # guard duplicate friendly names
-            name = raw
-        signals[name] = _to_numpy(arr, "float32")
-        units[name] = unit
-    _active_state.add_run_from_arrays(label, label, t, signals, units)
+    names, arrays = [str(name) for name in names], list(arrays)
+    if not names or len(names) != len(arrays) or len(set(names)) != len(names):
+        raise ValueError("CSV must contain distinct signal columns and matching arrays")
+    columns = {name: _to_numpy(arr, "float32") for name, arr in zip(names, arrays)}
+    if any(values.ndim != 1 or len(values) != len(t) for values in columns.values()):
+        raise ValueError("Signal arrays must match the time axis")
+    signals, units = _named_signals(names, columns.__getitem__)
+    run = _active_state.add_run_from_arrays(label, label, t, signals, units)
+    run.reloadable = False

@@ -14,7 +14,7 @@ from imgui_bundle import imgui, implot
 from ..analysis import compute_fft
 from ..sources import ArraySource
 from ..state import AppState
-from .analysis import AnalysisPanel, follow_combo  # noqa: F401 - re-exported for callers
+from .analysis import AnalysisPanel
 
 
 class FftPanel(AnalysisPanel):
@@ -26,7 +26,7 @@ class FftPanel(AnalysisPanel):
     def __init__(self) -> None:
         super().__init__()
         # (label, freqs, mag, source-or-None) -- source decimates a huge spectrum.
-        self._results: list[tuple[str, np.ndarray, np.ndarray, object]] = []
+        self._results: list[tuple[tuple[int, str], np.ndarray, np.ndarray, object]] = []
 
     def config(self, state: AppState):
         return state.fft
@@ -81,14 +81,14 @@ class FftPanel(AnalysisPanel):
                 # Warm summaries off the rendering thread.
                 if result.mag.size > 4096:
                     source._summary('value', getattr(cfg, '_cancel', None))
-                results.append((state.signal_label(ref), result.freqs, result.mag, source))
+                results.append((ref, result.freqs, result.mag, source))
             info = result.info
         self._results = results
         self._info = info or "Drag signals here to analyse them."
 
     def _draw(self, state: AppState) -> None:
-        for label, freqs, mag, source in self._results:
-            self._plot_decimated(state, label, freqs, mag, source)
+        for ref, freqs, mag, source in self._results:
+            self._plot_decimated(state, state.signal_label(ref), freqs, mag, source)
 
-    def _result_labels(self) -> list[str]:
-        return [label for label, _, _, _ in self._results]
+    def _result_refs(self) -> list[tuple[int, str]]:
+        return [ref for ref, _, _, _ in self._results]

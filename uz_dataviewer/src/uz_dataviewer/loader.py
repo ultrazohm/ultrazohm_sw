@@ -9,7 +9,7 @@ Channel headers look like ``CH8=8)ia`` -- the ``CHn=n)`` bookkeeping prefix is
 stripped to leave the friendly signal name, and a trailing unit token
 (``_rpm``, ``_us`` ...) is extracted for axis labels.
 
-Large logs (see ``docs/WEB_LARGE_LOGS.md``) are handled leanly on native:
+Large logs (see ``uz_dataviewer_architecture.rst``) are handled leanly on native:
 
 * channels parse **directly to float32** (time stays float64), avoiding a
   float64 intermediate copy at load;
@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import os
 import re
+import csv
 from dataclasses import dataclass
 from typing import Callable
 
@@ -60,7 +61,7 @@ _CHANNEL_PREFIX = re.compile(r"^CH\d+\s*=\s*\d+\s*\)\s*(.*)$")
 # Units commonly appended to JavaScope channel names.
 _KNOWN_UNITS = ("us", "ms", "rpm", "deg", "rad", "Hz", "V", "A", "W", "Nm", "C", "K")
 
-# -- large-log tuning (see docs/WEB_LARGE_LOGS.md) ----------------------------
+# -- large-log tuning (see uz_dataviewer_architecture.rst) ----------------------------
 # Large CSVs stream-parse (see CSV_STREAM_MIN_BYTES / _parse_csv_streaming) at a peak of
 # ~1.5x the resident numeric size, so the load peak is no longer the constraint -- but the
 # *full record still has to fit in RAM*. We refuse a CSV whose estimated resident footprint
@@ -70,7 +71,7 @@ _KNOWN_UNITS = ("us", "ms", "rpm", "deg", "rad", "Hz", "V", "A", "W", "Nm", "C",
 # NOTE: this is a resident-RAM ceiling, not a fit guarantee for a specific machine -- it is a
 # deliberately high blanket limit that only blocks extreme files. A box with less RAM than the
 # resident size can still OOM below it; lifting the resident bound entirely is the out-of-core
-# work in docs/WEB_LARGE_LOGS.md.
+# work in uz_dataviewer_architecture.rst.
 MAX_CSV_NUMERIC_BYTES = 10_000_000_000  # ~10 GB resident (~110M rows at 20 channels)
 # Parquet files below this many rows use the simple bulk reader; larger ones stream.
 PARQUET_STREAM_MIN_ROWS = 2_000_000
@@ -118,21 +119,32 @@ def _split_time_columns(column_names: list[str]) -> tuple[str, list[str]]:
     return time_col, data_columns
 
 
+def unique_name(name: str, used: set[str]) -> str:
+    """Allocate a deterministic name without overwriting an existing column."""
+    base, number = name, 2
+    while name in used:
+        name = f"{base} [{number}]"
+        number += 1
+    used.add(name)
+    return name
+
+
 def _named_signals(
     data_columns: list[str], get_values: Callable[[str], np.ndarray]
 ) -> tuple[dict[str, np.ndarray], dict[str, str]]:
     """Map raw headers to ``{friendly_name: float32 array}`` plus units.
 
-    Shared by the bulk and streaming loaders so they agree on naming and on the
-    duplicate-name fallback (use the raw header when two channels clean to the
-    same friendly name).
+    Shared by all loaders. Prefer a raw-header fallback on collisions, then
+    allocate a numbered suffix. Reserve time for exported timestamp columns.
     """
     signals: dict[str, np.ndarray] = {}
     units: dict[str, str] = {}
+    used = {"time"}
     for raw in data_columns:
         name, unit = parse_channel_name(raw)
-        if name in signals:
+        if name in used:
             name = raw.strip()
+        name = unique_name(name, used)
         signals[name] = np.asarray(get_values(raw), dtype=np.float32)
         units[name] = unit
     return signals, units
@@ -175,16 +187,25 @@ def _sniff_delimiter(path: str) -> str:
     other tools) are ``,``-separated. Choosing by the header makes export -> import
     round-trip, and we default to ``;`` (the native format) on a tie.
     """
-    with open(path, encoding="utf-8", errors="replace") as fh:
+    with open(path, encoding="utf-8-sig", errors="replace") as fh:
         header = fh.readline()
-    return "," if header.count(",") > header.count(";") else ";"
+    counts = {",": 0, ";": 0}
+    quoted = False
+    for char in header:
+        if char == '"':
+            quoted = not quoted
+        elif not quoted and char in counts:
+            counts[char] += 1
+    return "," if counts[","] > counts[";"] else ";"
 
 
 def _read_header(path: str, delimiter: str) -> list[str]:
     """Return the non-empty column names from the CSV header row."""
-    with open(path, encoding="utf-8", errors="replace") as fh:
-        header = fh.readline()
-    return [c.strip() for c in header.rstrip("\r\n").split(delimiter) if c.strip() != ""]
+    with open(path, encoding="utf-8-sig", newline="") as fh:
+        header = next(csv.reader(fh, delimiter=delimiter, strict=True), [])
+    if len(set(header)) != len(header):
+        raise ValueError("CSV header contains duplicate column names")
+    return [c for c in header if c.strip() != ""]
 
 
 def _csv_column_types(columns: list[str]) -> dict[str, pa.DataType]:

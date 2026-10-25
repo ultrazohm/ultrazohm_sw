@@ -5,7 +5,7 @@ the same core functionality as the legacy Plotly/Dash ``dataviewer.py`` with a
 VSCode-style docked layout, drag-and-drop subplots and range-aware downsampling.
 
 The data/analysis core is also usable **headlessly as a library** -- see
-:mod:`uz_dataviewer.api` (and ``docs/LIBRARY.md``). Importing this package does
+:mod:`uz_dataviewer.api` (and the repository's ``uz_dataviewer_library.rst``). Importing this package does
 **not** import the imgui GUI stack; the GUI (``DataViewerApp``/``main``) is loaded
 lazily, only when first accessed, so a headless ``import uz_dataviewer`` needs only
 numpy/pandas/pyarrow.

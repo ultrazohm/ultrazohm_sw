@@ -23,7 +23,7 @@ class HistogramPanel(AnalysisPanel):
     def __init__(self) -> None:
         super().__init__()
         # (label, bin_centers, counts, bar_width) -- binned once at compute time.
-        self._results: list[tuple[str, np.ndarray, np.ndarray, float]] = []
+        self._results: list[tuple[tuple[int, str], np.ndarray, np.ndarray, float]] = []
 
     def config(self, state: AppState):
         return state.histogram
@@ -45,7 +45,7 @@ class HistogramPanel(AnalysisPanel):
         for ref in cfg.sources:
             run = state.registry.get(ref[0])
             if run is not None and ref[1] in run.signals:
-                series.append((state.signal_label(ref), run.data_source(), ref[1], run.time_offset))
+                series.append((ref, run.data_source(), ref[1], run.time_offset))
         results, total, dropped = histogram_sources(series, x_min, x_max, cfg.bins, getattr(cfg, "_cancel", None))
         self._results = [(label, centers, counts.astype(np.float64), width)
                          for label, centers, counts, width in results]
@@ -59,8 +59,8 @@ class HistogramPanel(AnalysisPanel):
             self._info = "Drag signals here to histogram them."
 
     def _draw(self, state: AppState) -> None:
-        for label, centers, counts, width in self._results:
-            implot.plot_bars(label, centers, counts, width)
+        for ref, centers, counts, width in self._results:
+            implot.plot_bars(state.signal_label(ref), centers, counts, width)
 
-    def _result_labels(self) -> list[str]:
-        return [label for label, _, _, _ in self._results]
+    def _result_refs(self) -> list[tuple[int, str]]:
+        return [ref for ref, _, _, _ in self._results]

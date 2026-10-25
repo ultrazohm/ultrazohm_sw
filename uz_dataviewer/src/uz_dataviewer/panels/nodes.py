@@ -23,7 +23,7 @@ from .navigation import SIGNAL_DND_TYPE
 
 # Editor IDs use two tag bits: node=0, output=1, input=2, link=3.
 # Pairing node/slot indices avoids fixed limits and overlapping input slots.
-_TRUE = {"1", "true", "on", "yes"}
+from ..validation import parse_bool
 
 
 def _pair(a: int, b: int) -> int:
@@ -63,7 +63,11 @@ def _decode_link(lid: int) -> tuple[int, int]:
 
 
 def _b(params: dict, key: str, default: bool) -> bool:
-    return str(params.get(key, default)).strip().lower() in _TRUE
+    try:
+        return parse_bool(params.get(key, default))
+    except ValueError:
+        # Preserve malformed session/plugin values for repair; evaluation reports them.
+        return default
 
 
 def _input_pin_count(node) -> int:
@@ -82,6 +86,7 @@ def _input_pin_count(node) -> int:
 class NodesPanel(SessionPanel):
     def __init__(self) -> None:
         self._positioned: set[int] = set()
+        self._model_positions: dict[int, tuple[float, float]] = {}
         self._last_pos: dict[int, tuple[float, float]] = {}
         self._renaming: int | None = None   # node whose name is being edited inline
         self._rename_buf: str = ""
@@ -113,13 +118,12 @@ class NodesPanel(SessionPanel):
     # -- one node -----------------------------------------------------------
     def _draw_node(self, state: AppState, node) -> None:
         nid = node.id
-        if nid not in self._positioned:
+        if nid not in self._positioned or self._model_positions.get(nid) != node.pos:
+            self._model_positions[nid] = node.pos
             px, py = node.pos
-            if (px, py) == (0.0, 0.0):  # fresh node: cascade so they don't stack
-                slot = len(self._positioned)
-                px, py = 30.0 + (slot % 6) * 190.0, 30.0 + (slot // 6) * 150.0
             ed.set_node_position(ed.NodeId(nid * 4), imgui.ImVec2(px, py))
             self._positioned.add(nid)
+            self._last_pos[nid] = (px, py)
 
         ed.begin_node(ed.NodeId(nid * 4))
         imgui.push_id(nid)
@@ -190,7 +194,6 @@ class NodesPanel(SessionPanel):
 
     def _params(self, state: AppState, node) -> None:
         imgui.push_item_width(120)
-        p = node.params
         if node.kind == "source":
             self._source_window(state, node)
         elif node.kind in REGISTRY:
@@ -287,6 +290,7 @@ class NodesPanel(SessionPanel):
         self._last_pos[nid] = (x, y)
         if not first:  # don't log the initial placement
             self._emit(state, "node_pos", nid, x, y)
+            self._model_positions[nid] = (x, y)
 
     # -- link create / delete ----------------------------------------------
     def _handle_create(self, state: AppState) -> None:
@@ -326,6 +330,10 @@ class NodesPanel(SessionPanel):
     # -- panel --------------------------------------------------------------
     def render(self, state: AppState) -> None:
         replaced = self._sync_session(state)
+        live = set(state.nodes.nodes)
+        self._positioned.intersection_update(live)
+        self._model_positions = {key: value for key, value in self._model_positions.items() if key in live}
+        self._last_pos = {key: value for key, value in self._last_pos.items() if key in live}
         self._toolbar(state)
         imgui.separator()
         ed.begin("##nodes", imgui.ImVec2(0.0, 0.0))

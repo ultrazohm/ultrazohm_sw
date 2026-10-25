@@ -79,3 +79,13 @@ def boolean(value):
     if not isinstance(value, bool):
         raise ValueError("Expected a JSON boolean")
     return value
+
+
+def parse_bool(value):
+    """Parse command and transform booleans; JSON state uses strict boolean()."""
+    token = str(value).strip().lower()
+    if token in {"1", "true", "on", "yes"}:
+        return True
+    if token in {"0", "false", "off", "no"}:
+        return False
+    raise ValueError(f"Expected a boolean (on/off), got {value!r}")

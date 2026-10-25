@@ -13,11 +13,11 @@ Core model
 The viewer is **state-driven and command-routed**:
 
 - A single source of truth, ``AppState`` (``state.py``). Panels are (almost) pure render functions: each frame they read ``AppState`` and draw it.
-- **Every discrete user action goes through the command registry** (``commands.py``). A command mutates ``AppState`` *and* echoes its canonical call to the console.
+- **Data and analysis controls use the command registry** (``commands.py``). A command mutates ``AppState`` *and* echoes its canonical call to the console.
 
 This model yields four properties:
 
-#. **Scriptability** — anything clickable can be typed or replayed (``.uzscript``).
+#. **Scriptability** — registered commands can be typed or replayed (``.uzscript``).
 #. **Live transcript** — the console shows what happened, as commands.
 #. **Save/restore** — sessions serialize to JSON through one restoration path.
 #. **Testability** — app logic is exercised by dispatching command strings; no window required.
@@ -162,7 +162,7 @@ The in-memory loaders reduce transient allocations; the complete recording and a
 - **Streaming CSV.** Both native backends stream numeric batches into the shared ``collect_csv_batches`` allocator. It checks actual rows and retained numeric capacity against ``MAX_CSV_NUMERIC_BYTES`` before allocating or growing arrays; the file-size estimate is only an initial admission check. Parser scratch and transient growth copies are additional memory. The former small-file bulk path and streaming-size threshold have been removed. ``csv_policy.NULL_VALUES`` defines the missing-value spellings used by both native backends and the generated browser parser.
 - **Releasing Arrow's pool.** After every parse, ``parse_file`` calls ``_release_arrow_pool`` (``pa.default_memory_pool().release_unused()``): Arrow otherwise retains freed parse scratch rather than returning it to the OS, pinning RSS at the parse high-water mark (measured ~1.2 GB reclaimed on the 9M-row log, ~10 GB on the 75M).
 - **CSV size guard.** ``_guard_csv_size`` estimates the resident footprint from file size × column count and **refuses** a CSV above ``MAX_CSV_NUMERIC_BYTES``. Now that large CSVs stream, this is a **resident-RAM** ceiling (the full record must fit in memory), not a bulk-parse guard; it routes the user to lazy loading or ``convert(...)``. Actual capacity is checked independently during materialization.
-- **Streaming Parquet.** For files above ``PARQUET_STREAM_MIN_ROWS``, ``_parse_parquet_streaming`` reads the exact row count from ``ParquetFile.metadata.num_rows``, **preallocates** the output arrays, and fills them with ``iter_batches`` (peak ≈ resident + one row group, ~1.5× measured) instead of materialising the whole table. Small Parquet keeps the simple bulk path.
+- **Streaming Parquet.** All eager PyArrow Parquet loads preallocate arrays from ``ParquetFile.metadata.num_rows`` and fill them with ``iter_batches``. There is one path for small and large files; lazy loads retain indexed sources.
 - **CSV→Parquet converter.** ``convert_csv_to_parquet`` stream-converts a CSV to Parquet with bounded memory (per-batch ``ParquetWriter.write_batch``), dropping JavaScope's empty trailing column and preserving raw headers so the result round-trips through the same name parsing. Exposed as the scriptable ``convert(src, [dst])`` command and the ``uz-dataviewer convert`` CLI.
   The shared converter owns temporary output, empty-recording validation, cancellation cleanup, and publication without overwriting existing destinations. GUI, console, and cache conversion use this same path; backend writers only fill unpublished temporary files.
 
@@ -186,7 +186,7 @@ The grammar is a single function call, ``name(arg, arg, ...)`` (``parse_call``).
 - **Run resolution by label** lets scripts say ``add_signal(plot_1, Log.csv, ia)`` and survive run-id reassignment after a reload.
 
 Panels never mutate ``AppState`` for a user action directly; they call ``state.commands.execute(...)`` (often via a small ``self._emit`` wrapper that logs errors).
-This invariant keeps everything scriptable.
+Command scripts automate the registered operations. A console transcript is not a complete GUI snapshot: dock layout, analysis Reset view, and some Y/XY gestures are not recorded. Use JSON snapshots to preserve supported view settings.
 
 .. _uz_dataviewer_generated_command_reference:
 
@@ -233,7 +233,7 @@ The base provides:
 - A **time-window selector** (``follow_combo``): ``Custom`` (``0``), ``Full`` (``-1``), or ``plot_N`` (``≥1``), resolved by ``AppState.resolve_x_window``. Switching to a plot computes immediately; switching to Custom/Full does **not** (the window can be the whole log).
 - **On-demand compute only** — never per frame. A compute happens on the *Compute* button, on a drag-in, or once when an input changes (``compute_requested``). Following a plot and then panning it goes **stale** rather than recomputing.
 - A **stale indicator**: a ``_computed_key`` snapshot (sources + window + options) is compared to the current key each frame; mismatch shows "⚠ stale - press Compute".
-- **Every control routed through commands** (``fft_follow``, ``fft_remove_dc``, ``hist_bins``, ``*_xlim`` on zoom, ``*_export``, …) and **Export** (OS dialog on desktop, browser download on web).
+- **Shared analysis controls use commands** (``fft_follow``, ``fft_remove_dc``, ``hist_bins``, ``*_xlim`` on zoom, ``*_export``, …) and **Export** (OS dialog on desktop, browser download on web).
 
 .. _uz_dataviewer_node_graph:
 
@@ -423,7 +423,7 @@ Persist it in ``session.py`` if it should be saved.
 **Add a plot type** — extend ``PlotType``, branch in ``PlotsPanel._render_cell``, and update ``session.py`` if it carries extra per-cell state.
 
 **Add a node transform** — register a ``TransformSpec`` in ``nodes.py`` (a compute function + default params + arity), or, for a user-supplied one, ship a plugin file with the ``@transform`` decorator (see :doc:`uz_dataviewer_plugins`).
-Builtins keep bespoke widgets in ``NodesPanel._params``; plugins render from their ``ParamSpec`` list automatically.
+Builtins and plugins use the same ``ParamSpec`` widgets in ``NodesPanel._params``.
 Commands and save/restore are generic (``node_set`` carries arbitrary params; the graph stores only the kind name), so nothing else needs touching.
 
 Testing

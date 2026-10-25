@@ -1,10 +1,10 @@
 """Unified command layer shared by the GUI and the console.
 
-Every discrete user action -- changing the grid, dropping a signal, picking a
-plot type, zooming -- is expressed as a *command*. Running a command mutates the
+Data and analysis controls, plot settings and supported gestures are expressed
+as commands. Some view-only gestures are not recorded. Running a command mutates the
 :class:`~uz_dataviewer.state.AppState` **and** echoes its canonical call (e.g.
 ``add_signal(plot_1, run_1, ia)``) to the console. The console therefore doubles
-as a live, replayable log of the session: the same calls can be typed into the
+as a log of replayable operations: the same calls can be typed into the
 console input or replayed from a saved ``.uzscript`` file.
 
 A command has a name, a typed parameter list and a handler. Parameters of kind
@@ -124,19 +124,12 @@ def parse_call(text: str) -> tuple[str, list[str]]:
 
 
 # -- coercion -----------------------------------------------------------------
-_TRUE = {"1", "true", "on", "yes"}
-_FALSE = {"0", "false", "off", "no"}
-
-
 def _parse_bool(raw) -> bool:
-    if isinstance(raw, bool):
-        return raw
-    s = str(raw).strip().lower()
-    if s in _TRUE:
-        return True
-    if s in _FALSE:
-        return False
-    raise CommandError(f"Expected a boolean (on/off), got {raw!r}")
+    from .validation import parse_bool
+    try:
+        return parse_bool(raw)
+    except ValueError as exc:
+        raise CommandError(str(exc)) from exc
 
 
 def _parse_fwindow(raw) -> int:
@@ -354,7 +347,7 @@ class CommandRegistry:
 def register_builtins(reg: CommandRegistry) -> None:
     # Imported lazily inside handlers to avoid a GUI/state import cycle.
     from .state import PlotType, XyStyle
-    from .validation import axis_limits, finite_float, coordinates, spy_rectangle, histogram_bins, display_budget, cache_budget_mb
+    from .validation import axis_limits, coordinates, spy_rectangle, histogram_bins, display_budget, cache_budget_mb
 
     def _cell(state, plot_n):
         return state.cells[plot_n - 1]
@@ -419,7 +412,7 @@ def register_builtins(reg: CommandRegistry) -> None:
             "Set the subplot grid to rows x cols.")
 
     def link_x(state, a):
-        state.link_x = a[0]
+        state.set_link_x(a[0])
 
     reg.add("link_x", [Param("on", "bool")], link_x, "Link/unlink the X axes across subplots.")
 
@@ -474,7 +467,15 @@ def register_builtins(reg: CommandRegistry) -> None:
         plot_n, run_id, name = a
         if state.registry.get_signal(run_id, name) is None:
             raise CommandError(f"run_{run_id} has no signal {name!r}")
-        _cell(state, plot_n).add((run_id, name))
+        cell = _cell(state, plot_n)
+        refs = cell.signals + ([cell.xy_source] if cell.xy_source else [])
+        domain = state.registry.get(run_id).axis_domain
+        if refs and any(state.registry.get(ref[0]).axis_domain != domain for ref in refs):
+            raise CommandError("Cannot combine time and frequency axes in one plot")
+        if not cell.signals:
+            cell.pending_x_lim = cell.x_lim = None
+            state.plot_x_ranges.pop(plot_n, None)
+        cell.add((run_id, name))
 
     reg.add("add_signal", [Param("plot", "plot"), Param("run", "run"), Param("signal", "str")],
             add_signal, "Add a signal to a subplot.")
@@ -567,6 +568,9 @@ def register_builtins(reg: CommandRegistry) -> None:
             raise CommandError(f"run_{run_id} has no signal {name!r}")
         cell = _cell(state, plot_n)
         set_plot_type(state, [plot_n, 'XY'])
+        domain = state.registry.get(run_id).axis_domain
+        if any(state.registry.get(ref[0]).axis_domain != domain for ref in cell.signals):
+            raise CommandError("XY signals must have the same axis domain")
         cell.xy_source = (run_id, name)
         cell.fit_pending = True
 
@@ -633,6 +637,8 @@ def register_builtins(reg: CommandRegistry) -> None:
             run_id, name = a
             if state.registry.get_signal(run_id, name) is None:
                 raise CommandError(f"run_{run_id} has no signal {name!r}")
+            if state.registry.get(run_id).axis_domain != "time":
+                raise CommandError("Analysis windows require a time-domain recording")
             cfg = _cfg(state)
             ref = (run_id, name)
             if ref not in cfg.sources:

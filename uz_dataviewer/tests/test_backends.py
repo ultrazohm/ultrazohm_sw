@@ -2,7 +2,6 @@
 
 from uz_dataviewer import runtime
 
-from pathlib import Path
 import json
 import subprocess
 import sys
@@ -12,7 +11,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 
-from uz_dataviewer import api, webbridge
+from uz_dataviewer import api
 from uz_dataviewer.commands import CommandError
 from uz_dataviewer.loader import convert_csv_to_parquet, open_file
 from uz_dataviewer.model import DataRegistry

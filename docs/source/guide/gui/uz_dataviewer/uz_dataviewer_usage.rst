@@ -174,7 +174,7 @@ Everything here is a command (``node_*``), so a graph is fully scriptable and sa
 Console & scripting
 ===================
 
-Every action is echoed to the **Console** as a canonical command (``> add_signal(plot_1, run_1, ia)``, and ``> set_x_lim(plot_1, 1.2, 1.8)`` when you zoom).
+Commands and supported gestures are echoed to the **Console** as a canonical command (``> add_signal(plot_1, run_1, ia)``, and ``> set_x_lim(plot_1, 1.2, 1.8)`` when you zoom).
 The input box runs the same commands:
 
 - type a command name for **completion** (matches listed below the box; **Tab** fills the first; **Up/Down** cycle history),

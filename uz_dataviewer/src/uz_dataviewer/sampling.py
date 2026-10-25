@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import numpy as np
 
+from .sources import shift_time
+
 _BLOCK = 65536
 
 
@@ -66,7 +68,7 @@ def sample_xy(left, right, x_channel, y_channel, x_offset, y_offset, stride, can
                 break
             n = min(len(xt), len(yt))
             try:
-                require_matching_time(xt[:n] + x_offset, yt[:n] + y_offset)
+                require_matching_time(shift_time(xt[:n], x_offset), shift_time(yt[:n], y_offset))
             except ValueError as exc:
                 raise ValueError('XY needs matching displayed timestamps; inputs are not time-aligned') from exc
             start = (-offset) % stride

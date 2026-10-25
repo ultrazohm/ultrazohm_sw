@@ -20,6 +20,8 @@ from .. import runtime
 import math
 
 import numpy as np
+
+from ..sources import shift_time
 from imgui_bundle import imgui, implot
 
 from .. import webbridge
@@ -119,8 +121,8 @@ class PlotsPanel(SessionPanel):
         identity = (source.metadata.identity, run.time_version, run.signals[channel].version)
         key = (identity, lo, hi, budget)
         def compute(cancel):
-            result = source.read_plot(channel, lo - offset, hi - offset, budget, cancel)
-            return result.time + offset if offset else result.time, result.values, result.raw_count
+            result = source.read_plot(channel, lo, hi, budget, cancel, offset=offset)
+            return shift_time(result.time, offset), result.values, result.raw_count
         return self._request_data(state, slot, key, identity, [source], compute)
 
     # -- helpers ------------------------------------------------------------
@@ -322,12 +324,12 @@ class PlotsPanel(SessionPanel):
         data_min, data_max = self._cell_x_extent(state, cell)
 
         if implot.begin_plot(f"##plot{index}", plot_size):
-            implot.setup_axes("time", "")
+            implot.setup_axes("time (s)" if state.plot_domain(cell) == "time" else "frequency (Hz)", "")
             if cell.y2_signals:
                 implot.setup_axis(implot.ImAxis_.y2, "", implot.AxisFlags_.aux_default)
 
             did_fit = self._apply_pending_limits(state, cell, data_min, data_max)
-            if state.link_x and state.shared_x is not None and index != self._driver:
+            if state.link_x and state.is_time_plot(cell) and state.shared_x is not None and index != self._driver:
                 implot.setup_axis_limits(
                     implot.ImAxis_.x1, state.shared_x[0], state.shared_x[1], implot.Cond_.always
                 )
@@ -359,7 +361,8 @@ class PlotsPanel(SessionPanel):
                 lo, hi = float(limits.x.min), float(limits.x.max)
                 if _is_finite_range(lo, hi):
                     self._driver = index
-                    state.shared_x = (lo, hi)
+                    if state.link_x and state.is_time_plot(cell):
+                        state.shared_x = (lo, hi)
                     self._maybe_echo_zoom(state, index, lo, hi, suppress=did_fit)
 
             if cell.spy:
@@ -513,15 +516,18 @@ class PlotsPanel(SessionPanel):
         sources = [(name, run.data_source(), run.time_offset, run.time_version) for name, run in sources if run is not None]
         identity = tuple((name, src.metadata.identity, off, version) for name, src, off, version in sources)
         slot = ("cursor", index)
+        domain = state.plot_domain(cell)
         def compute(cancel):
             dx = abs(x2 - x1)
-            parts = [f"Δx={dx:.4g}s", f"f={1 / dx if dx else float('inf'):.4g}Hz"]
+            parts = ([f"Δx={dx:.4g}s", f"f={1 / dx if dx else float('inf'):.4g}Hz"]
+                     if domain == "time" else [f"Δf={dx:.4g}Hz"])
             for name, src, off, _ in sources:
                 vals = []
                 for x in (x1, x2):
-                    a, b = src.bounds(x - off, x - off, cancel)
+                    from ..sources import displayed_bounds
+                    a, b = displayed_bounds(src, x, x, off, cancel, padding=True)
                     t, ys = src.read_rows([name], a, b, cancel)
-                    vals.append(self._value_at(t, ys[name], x - off))
+                    vals.append(self._value_at(shift_time(t, off), ys[name], x))
                 parts.append(f"{name}: Δy={vals[1] - vals[0]:.4g}")
             return "   ".join(parts)
         value = self._request_data(state, slot, (identity, x1, x2), identity,

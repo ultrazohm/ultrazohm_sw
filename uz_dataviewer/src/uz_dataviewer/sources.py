@@ -31,6 +31,31 @@ def check(cancel=None):
 
 
 @dataclass(frozen=True)
+class TimeShift:
+    """Rebase before adding the target to preserve small normalized origins."""
+    origin: float
+    target: float
+
+
+def shift_time(values, shift):
+    if isinstance(shift, TimeShift):
+        return (values - shift.origin) + shift.target
+    return values + shift if shift else values
+
+
+def displayed_bounds(source, lo, hi, offset=0., cancel=None, *, padding=False):
+    """Select by displayed float64 timestamps, including rounded duplicates.
+
+    Subtracting an offset from the window is not an inverse of floating-point
+    addition. Binary search the displayed values so lazy and resident sources
+    agree even when normalization collapses several raw timestamps together.
+    """
+    if not offset:
+        return source.bounds(lo, hi, cancel, padding=padding)
+    return source.bounds(lo, hi, cancel, padding=padding, offset=offset)
+
+
+@dataclass(frozen=True)
 class FileIdentity:
     path: Path
     signature: tuple
@@ -144,7 +169,7 @@ class SampleSource(Protocol):
     def validate(self) -> None: ...
 
     def bounds(self, lo: float, hi: float, cancel: threading.Event | None = None,
-               *, padding: bool = True) -> tuple[int, int]: ...
+               *, padding: bool = True, offset: TimeShift | float = 0.) -> tuple[int, int]: ...
 
     def read_rows(self, channels: Sequence[str], start: int, stop: int,
                   cancel: threading.Event | None = None
@@ -159,7 +184,8 @@ class DisplaySource(SampleSource, Protocol):
     """Display summaries are distinct from the raw-data analysis contract."""
 
     def read_plot(self, channel: str, lo: float, hi: float, budget: int,
-                  cancel: threading.Event | None = None, *, padding: bool = True
+                  cancel: threading.Event | None = None, *, padding: bool = True,
+                  offset: TimeShift | float = 0.
                   ) -> PlotData: ...
 
     def prepare_summary(self, channel: str, cancel: threading.Event | None = None) -> None: ...
@@ -210,11 +236,11 @@ class MemorySource:
         for i in range(start, stop, 65536):
             yield self.read_rows(channels, i, min(i + 65536, stop), cancel)
 
-    def bounds(self, lo, hi, cancel=None, *, padding=True):
+    def bounds(self, lo, hi, cancel=None, *, padding=True, offset=0.):
         self.validate()
         check(cancel)
         from .downsample import visible_slice
-        return visible_slice(self.time, lo, hi, padding=padding)
+        return visible_slice(shift_time(self.time, offset), lo, hi, padding=padding)
 
     def validate(self):
         pass
@@ -330,9 +356,9 @@ class SummarySource:
             offset += len(t)
         return summarize(np.concatenate(chunks), BASE)
 
-    def read_plot(self, channel, lo, hi, budget, cancel=None, *, padding=True):
+    def read_plot(self, channel, lo, hi, budget, cancel=None, *, padding=True, offset=0.):
         budget = max(2, int(budget))
-        start, stop = self.bounds(lo, hi, cancel, padding=padding)
+        start, stop = displayed_bounds(self, lo, hi, offset, cancel, padding=padding)
         if stop <= start:
             return PlotData(np.empty(0), np.empty(0), 0)
         # A summary must have at least one bucket per requested extrema pair.
@@ -486,8 +512,8 @@ class IndexedFileSource(SummarySource):
             off += len(t)
         return time, values
 
-    def _search(self, value, side, cancel):
-        g = int(np.searchsorted(self.last, value, side=side))
+    def _search(self, value, side, cancel, offset=0.):
+        g = int(np.searchsorted(shift_time(self.last, offset), value, side=side))
         if g == len(self.last):
             return self.metadata.rows
         a, b = int(self.index_offsets[g]), int(self.index_offsets[g + 1])
@@ -497,14 +523,14 @@ class IndexedFileSource(SummarySource):
         if t is None:
             t, _ = self.read_rows([], a, b, cancel)
             self.cache.put(key, t, t.nbytes)
-        return a + int(np.searchsorted(t, value, side=side))
+        return a + int(np.searchsorted(shift_time(t, offset), value, side=side))
 
-    def bounds(self, lo, hi, cancel=None, *, padding=True):
+    def bounds(self, lo, hi, cancel=None, *, padding=True, offset=0.):
         self.validate()
         check(cancel)
         self._ensure_index(cancel)
-        start = self._search(lo, 'left', cancel)
-        stop = self._search(hi, 'right', cancel)
+        start = self._search(lo, 'left', cancel, offset)
+        stop = self._search(hi, 'right', cancel, offset)
         if hi < lo:
             return start, start
         return (max(0, start - 1), min(self.metadata.rows, stop + 1)) if padding else (start, stop)
@@ -605,7 +631,7 @@ class SourceColumn:
         t, ys = self.source.read_rows([] if self.channel is None else [self.channel], start, stop)
         if self.channel is not None:
             return ys[self.channel]
-        return t + self.offset if self.offset else t
+        return shift_time(t, self.offset)
 
     def __getitem__(self, item):
         if isinstance(item, (int, np.integer)):
@@ -615,7 +641,7 @@ class SourceColumn:
             if not 0 <= i < self.size:
                 raise IndexError(i)
             if self.channel is None and i in (0, self.size - 1):
-                return self.source.metadata.time_range[0 if i == 0 else 1] + self.offset
+                return shift_time(self.source.metadata.time_range[0 if i == 0 else 1], self.offset)
             return self[i:i + 1][0]
         if not isinstance(item, slice):
             raise TypeError("Use materialize() before fancy indexing a lazy column")

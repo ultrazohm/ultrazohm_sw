@@ -122,7 +122,8 @@ def filter_node(time: np.ndarray, y: np.ndarray, params: dict
     if time.shape[0] < 2:
         raise ValueError("filter needs at least 2 samples")
     fs = 1.0 / regular_sample_interval(time, "filter")
-    taps = max(3, int(float(params.get("taps", 101))))
+    from .validation import bounded_int
+    taps = bounded_int(params.get("taps", 101), 3, 100_001, "Filter taps")
     fc = float(params.get("cutoff", 0.0))
     if not np.isfinite(fc) or fc <= 0.0:
         raise ValueError("filter 'cutoff' must be finite and > 0 Hz")
@@ -143,7 +144,7 @@ def filter_node(time: np.ndarray, y: np.ndarray, params: dict
         h = _fir_lowpass(min(fc2 / fs, 0.5 - 1e-6), taps) - lp
         info = f"band-pass {fc:g}-{fc2:g} Hz"
 
-    if fc >= nyq:
+    if fc >= nyq or (ftype == "band" and fc2 >= nyq):
         info += f" (clamped; Nyquist {nyq:g} Hz)"
     # Full convolution plus a centered crop preserves the input length even
     # when the FIR kernel is longer than the signal.

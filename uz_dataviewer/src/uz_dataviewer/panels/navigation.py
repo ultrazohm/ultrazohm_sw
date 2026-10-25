@@ -31,6 +31,8 @@ class NavigationPanel(SessionPanel):
         self._norm_target: dict[int, float] = {}  # per-run desired start time
 
     def _normalize_menu(self, state: AppState, run) -> None:
+        if run.axis_domain != "time":
+            return
         """Per-log time-normalisation controls (in the run's context popup)."""
         on = run.time_origin is not None
         changed, on_new = imgui.checkbox("Normalize start time", on)
@@ -125,7 +127,8 @@ class NavigationPanel(SessionPanel):
             if imgui.begin_popup_context_item("run_ctx"):
                 imgui.text_disabled(run.path)
                 imgui.text_disabled(f"Backend: {run.backend}")
-                imgui.text_disabled(f"{run.n_rows:,} rows  |  {run.duration:.3f} s")
+                unit = "s" if run.axis_domain == "time" else "Hz"
+                imgui.text_disabled(f"{run.n_rows:,} rows  |  {run.duration:.3f} {unit}")
                 imgui.separator()
                 self._normalize_menu(state, run)
                 imgui.separator()

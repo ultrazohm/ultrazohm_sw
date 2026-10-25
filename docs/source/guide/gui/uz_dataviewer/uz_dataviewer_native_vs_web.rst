@@ -53,7 +53,7 @@ The Session menu works on web too — **Save state** downloads JSON, and **Load 
 .. note::
 
    A restored JSON snapshot re-loads its data files by path, which won't exist in a fresh browser tab.
-   On web, the referenced logs must exist in the tab filesystem at the saved paths. JSON sessions saved on desktop use PyArrow in the browser when Polars is unavailable.
+   On web, uploaded recordings cannot be saved as reloadable sessions: their temporary paths are reclaimed on removal or session close. Imported desktop sessions require separately provisioned files at their saved paths. JSON sessions saved on desktop use PyArrow in the browser when Polars is unavailable.
 
 Loading speed
 =============

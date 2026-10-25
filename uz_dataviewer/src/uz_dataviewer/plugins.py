@@ -14,7 +14,9 @@ Example plugin (``~/.uz_dataviewer/nodes/movavg.py``)::
     def moving_average(inputs, params):
         t, y = inputs[0]
         w = max(1, int(float(params["width"])))
-        return t, np.convolve(np.asarray(y, float), np.ones(w) / w, mode="same"), f"avg {w}"
+        out = np.convolve(np.asarray(y, float), np.ones(w) / w, mode="full")
+        start = (w - 1) // 2
+        return t, out[start:start + len(y)], f"avg {w}"
 
 Loading is **entirely optional and failure-tolerant**: with no plugin files and no
 plugin directory present, the app runs exactly as before (only the builtins). A
@@ -40,7 +42,7 @@ from .nodes import REGISTRY, ParamSpec, TransformSpec, register_transform
 __all__ = ["transform", "ParamSpec", "API_VERSION", "load_plugins", "plugin_dirs"]
 
 # Bump if the plugin contract changes; plugins may check it.
-API_VERSION = 1
+API_VERSION = 2
 
 ENV_VAR = "UZ_DATAVIEWER_PLUGINS"
 DEFAULT_DIR = os.path.join(os.path.expanduser("~"), ".uz_dataviewer", "nodes")

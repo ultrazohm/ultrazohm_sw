@@ -259,6 +259,7 @@ def _apply_dict(state: "AppState", data: dict) -> None:
                 cell.set_limits(axis, *limits)
         if cell.pending_x_lim and cell.plot_type is not PlotType.XY:
             state.plot_x_ranges[i + 1] = cell.pending_x_lim
+        state.plot_domain(cell)  # reject snapshots mixing incompatible axes
         cell.fit_pending = True
 
     fft = data.get("fft") or {}
@@ -359,12 +360,21 @@ def run_script(state: "AppState", path: str) -> int:
 
 # -- data export --------------------------------------------------------------
 def _write_csv(columns, path, backend):
-    if backend == "polars":
-        import polars as pl
-        pl.DataFrame(columns).write_csv(path)
-    else:
-        import pandas as pd
-        pd.DataFrame(columns).to_csv(path, index=False)
+    import tempfile
+    fd, temporary = tempfile.mkstemp(prefix=".uz-export-", suffix=".csv",
+                                     dir=os.path.dirname(os.path.abspath(path)))
+    os.close(fd)
+    try:
+        if backend == "polars":
+            import polars as pl
+            pl.DataFrame(columns).write_csv(temporary)
+        else:
+            import pandas as pd
+            pd.DataFrame(columns).to_csv(temporary, index=False)
+        os.replace(temporary, path)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
 
 
 def export_data(state: "AppState", plot_index: int, path: str, relative: bool = False) -> int:
@@ -398,7 +408,9 @@ def export_data(state: "AppState", plot_index: int, path: str, relative: bool = 
 
     channels = [ref[1] for ref in cell.signals if ref[0] == run0.id and state.registry.get_signal(*ref) is not None]
     t, values = run0.read_window(channels, x_min, x_max)
-    columns = {"time": (t - t[0]) if relative and len(t) else t}
+    if relative and run0.axis_domain != "time":
+        raise ValueError("Relative time export requires a time-domain recording")
+    columns = {run0.axis_domain: (t - t[0]) if relative and len(t) else t}
     for ref in cell.signals:
         if ref[0] != run0.id:
             state.console.warn(f"export: skipped {state.signal_label(ref)} (different time base)")
@@ -469,7 +481,6 @@ def export_fft(state: "AppState", path: str) -> int:
 def export_histogram(state: "AppState", path: str) -> int:
     """Write the Histogram window's bins to a wide CSV: ``bin_center`` + one count
     column per signal, computed over a shared value range so columns align."""
-    import numpy as np
 
     cfg = state.histogram
     if not cfg.sources:

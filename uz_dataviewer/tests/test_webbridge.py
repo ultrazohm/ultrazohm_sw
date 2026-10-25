@@ -171,23 +171,25 @@ def test_uploaded_files_use_the_same_loading_policy_as_commands(app_state, tmp_p
     monkeypatch.setattr(runtime, 'IS_WEB', True)
     monkeypatch.setattr(webbridge, '_active_state', state)
     state.backend = 'pyarrow'
-    path = tmp_path / 'upload.csv'
-    path.write_text('time;a\n0;10\n1;20\n')
+    monkeypatch.setattr(webbridge, 'UPLOAD_ROOT', str(tmp_path))
     for mode in ('memory', 'lazy'):
         for disk_cache in (False, True):
+            path = tmp_path / f'{mode}-{disk_cache}.csv'
+            path.write_text('time;a\n0;10\n1;20\n')
             state.commands.execute(state, 'loading_mode', [mode])
             state.commands.execute(state, 'disk_cache', [disk_cache])
             webbridge.load_uploaded(str(path))
             uploaded = state.registry.runs[-1]
-            state.commands.execute(state, 'load', [str(path)])
-            commanded = state.registry.runs[-1]
-            assert uploaded.storage_mode == commanded.storage_mode == mode
-            assert uploaded.backend == commanded.backend == 'pyarrow'
+            assert uploaded.storage_mode == mode
+            assert uploaded.backend == 'pyarrow'
             assert getattr(uploaded.source, 'disk_cache', False) == (mode == 'lazy' and disk_cache)
-            assert getattr(commanded.source, 'disk_cache', False) == (mode == 'lazy' and disk_cache)
+            assert not uploaded.reloadable
+            assert path.exists() == (mode == 'lazy')
             t, values = uploaded.read_window(['a'], 0, 1)
             np.testing.assert_array_equal(t, [0, 1])
             np.testing.assert_array_equal(values['a'], [10, 20])
+            state.remove_run(uploaded.id)
+            assert not path.exists()
 
 
 def test_browser_stream_budget_rejects_without_losing_samples(tmp_path):
@@ -273,6 +275,9 @@ const pyodide={pyimport:()=>({load_columns:(name,names,columns,time)=>{
   await loadStreamingCsv(file);
   assert.deepEqual(loaded,{names:['a'],columns:[[10,20]],time:[0,1]});
  }
+ const whitespace=new Blob(['a, time\n0,100\n1,200\n']);whitespace.name='space.csv';
+ await loadStreamingCsv(whitespace);
+ assert.deepEqual(loaded,{names:[' time'],columns:[[100,200]],time:[0,1]});
  for(const text of ['time\n0\n','time,a\n0,10oops\n','time,a,a\n0,1,2\n','time,a\n0\n']){
   const file=new Blob([text]);file.name='bad.csv';await assert.rejects(()=>loadStreamingCsv(file));
  }

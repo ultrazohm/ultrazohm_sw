@@ -1,8 +1,8 @@
 """The bottom console: a scrolling log *and* a command line.
 
-Every action in the app is echoed here as a command (level ``CMD``, rendered
+Supported actions are echoed here as a command (level ``CMD``, rendered
 ``> add_signal(plot_1, run_1, ia)``), and the input box at the bottom runs the
-same commands -- so the console is a live, replayable transcript of the session.
+same commands -- so the console is a log of replayable commands, not a complete GUI snapshot.
 The input offers name completion (matching commands listed below the box, Tab to
 fill) and an Up/Down history.
 """
@@ -14,18 +14,9 @@ from collections import deque
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from imgui_bundle import imgui
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from .state import AppState
-
-_LEVEL_COLORS = {
-    "INFO": (0.80, 0.80, 0.80, 1.0),
-    "OK": (0.45, 0.85, 0.50, 1.0),
-    "WARN": (0.95, 0.75, 0.25, 1.0),
-    "ERROR": (0.95, 0.45, 0.45, 1.0),
-    "CMD": (0.45, 0.70, 0.98, 1.0),
-}
 
 _MAX_COMPLETIONS = 6
 
@@ -92,6 +83,7 @@ class Console:
 
     # -- rendering ----------------------------------------------------------
     def render(self, state: "AppState") -> None:
+        from imgui_bundle import imgui
         if imgui.button("Clear"):
             self.clear()
         imgui.same_line()
@@ -107,6 +99,7 @@ class Console:
         self._render_input(state, completions)
 
     def _render_body(self, reserved: float) -> None:
+        from imgui_bundle import imgui
         # The log body is always a read-only, mouse-selectable text box. To keep
         # it auto-scrolling (which a bare InputTextMultiline does not), the input
         # is sized to its full content height inside an outer scrolling child, and
@@ -136,6 +129,7 @@ class Console:
         return state.commands.complete(text)[:_MAX_COMPLETIONS]
 
     def _render_input(self, state: "AppState", completions: list[str]) -> None:
+        from imgui_bundle import imgui
         imgui.text(">")
         imgui.same_line()
         imgui.set_next_item_width(-1.0)

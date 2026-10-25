@@ -23,9 +23,12 @@ def convert_cancellable(source, destination, backend, cancel):
         check(cancel)
         process.start()
         send.close()
-        while process.is_alive():
+        # Drain the pipe while the worker is alive: a large result/error can
+        # fill its buffer and prevent the worker from exiting.
+        while not receive.poll(.05):
             check(cancel)
-            process.join(timeout=.05)
+            if not process.is_alive():
+                break
         check(cancel)
         if not receive.poll():
             raise RuntimeError(f'Conversion worker exited without a result (exit {process.exitcode})')

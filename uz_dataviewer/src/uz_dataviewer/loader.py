@@ -69,8 +69,6 @@ _KNOWN_UNITS = ("us", "ms", "rpm", "deg", "rad", "Hz", "V", "A", "W", "Nm", "C",
 # buffer capacity. Parser batches and temporary growth copies are additional
 # memory; use lazy loading when the recording cannot comfortably fit in RAM.
 MAX_CSV_NUMERIC_BYTES = 10_000_000_000  # ~10 GB resident (~110M rows at 20 channels)
-# Parquet files below this many rows use the simple bulk reader; larger ones stream.
-PARQUET_STREAM_MIN_ROWS = 2_000_000
 # Rough average characters per numeric text field, used *only* to turn a CSV file
 # size into a row estimate for the size guard (and its message). Not exact.
 _CSV_AVG_FIELD_CHARS = 8
@@ -159,17 +157,6 @@ def validate_time_axis(time: np.ndarray, path: str) -> None:
         raise ValueError(f"{name}: time column contains non-finite values (NaN/Inf).")
     if time.shape[0] > 1 and np.any(time[1:] < time[:-1]):
         raise ValueError(f"{name}: time column is not non-decreasing (timestamps go backwards).")
-
-
-def _table_to_parsed(table: pa.Table, path: str) -> ParsedRun:
-    time_col, data_columns = _split_time_columns(table.column_names)
-    time = table.column(time_col).to_numpy(zero_copy_only=False).astype(np.float64)
-    validate_time_axis(time, path)
-    signals, units = _named_signals(
-        data_columns,
-        lambda raw: table.column(raw).to_numpy(zero_copy_only=False),
-    )
-    return ParsedRun(os.path.basename(path), path, time, signals, units)
 
 
 def _sniff_delimiter(path: str) -> str:
@@ -331,11 +318,8 @@ def _parse_parquet_streaming(pf: pq.ParquetFile, path: str, n_rows: int, cancel=
 
 
 def parse_parquet(path: str, cancel=None) -> ParsedRun:
-    pf = pq.ParquetFile(path)
-    n_rows = pf.metadata.num_rows
-    if n_rows < PARQUET_STREAM_MIN_ROWS:
-        return _table_to_parsed(pf.read(), path)
-    return _parse_parquet_streaming(pf, path, n_rows, cancel)
+    with pq.ParquetFile(path) as pf:
+        return _parse_parquet_streaming(pf, path, pf.metadata.num_rows, cancel)
 
 
 def convert_csv_to_parquet(src: str, dst: str | None = None, *, backend="pyarrow", cancel=None) -> str:

@@ -33,6 +33,7 @@ import runpy
 # against one specific Pyodide/emscripten release.
 PYODIDE_VERSION = "v0.29.4"
 IMGUI_BUNDLE_WHEEL = "imgui_bundle-1.92.705-cp313-cp313-pyemscripten_2025_0_wasm32.whl"
+IMGUI_BUNDLE_WHEEL_SHA256 = "55a40423509820117babf3ac8a2f5e49fdf57a23518507958a38ee62a5fcfc8b"
 # Upstream host the wheel is fetched from at build time...
 IMGUI_BUNDLE_WHEEL_URL = f"https://imgui-bundle.pages.dev/local_wheels/{IMGUI_BUNDLE_WHEEL}"
 # ...then vendored here and installed via a same-origin relative path, so the
@@ -172,10 +173,17 @@ def build_html() -> str:
   let nextUploadId = 0;
   async function loadFull(file) {{
     const directory = "/uploads/" + (++nextUploadId);
+    const bytes = new Uint8Array(await file.arrayBuffer());
     pyodide.FS.mkdir(directory);
     const path = directory + "/" + file.name;
-    pyodide.FS.writeFile(path, new Uint8Array(await file.arrayBuffer()));
-    pyLoad(path, "");
+    try {{
+      pyodide.FS.writeFile(path, bytes);
+      pyLoad(path, "");
+    }} catch (error) {{
+      try {{ pyodide.FS.unlink(path); }} catch (_) {{}}
+      try {{ pyodide.FS.rmdir(directory); }} catch (_) {{}}
+      throw error;
+    }}
   }}
 
   // Stream-parse a large CSV directly into per-column typed arrays. The File blob
@@ -270,8 +278,8 @@ def build_html() -> str:
       fieldCount = fields.length;
       const kept = [];
       for (let i = 0; i < fields.length; i++) {{
-        const nm = fields[i].trim();
-        if (nm !== "") kept.push([i, nm]);
+        const nm = fields[i];
+        if (nm.trim() !== "") kept.push([i, nm]);
       }}
       if (kept.length < 2 || new Set(kept.map(k => k[1])).size !== kept.length)
         throw new Error("CSV must contain distinct time and signal columns");
@@ -402,24 +410,46 @@ def build_html() -> str:
 """
 
 
+def _valid_wheel(path):
+    import hashlib
+    import zipfile
+    try:
+        with open(path, "rb") as stream:
+            if hashlib.file_digest(stream, "sha256").hexdigest() != IMGUI_BUNDLE_WHEEL_SHA256:
+                return False
+        with zipfile.ZipFile(path) as wheel:
+            return (wheel.testzip() is None and
+                    any(name.endswith(".dist-info/WHEEL") for name in wheel.namelist()) and
+                    any(name.startswith("imgui_bundle/") for name in wheel.namelist()))
+    except (OSError, zipfile.BadZipFile, EOFError):
+        return False
+
+
 def _vendor_wheel(out_dir: str) -> None:
-    """Download the imgui_bundle WASM wheel into web/local_wheels/ (idempotent)."""
+    """Validate cached wheels and atomically publish complete downloads."""
+    import shutil
+    import tempfile
     import urllib.request
 
     dest_dir = os.path.join(out_dir, "local_wheels")
     os.makedirs(dest_dir, exist_ok=True)
     dest = os.path.join(dest_dir, IMGUI_BUNDLE_WHEEL)
-    if os.path.exists(dest) and os.path.getsize(dest) > 0:
+    if _valid_wheel(dest):
         print(f"  wheel already vendored: {dest} ({os.path.getsize(dest):,} bytes)")
         return
-    print(f"  downloading wheel: {IMGUI_BUNDLE_WHEEL_URL}")
-    # Cloudflare (pages.dev) rejects the default Python-urllib User-Agent (403),
-    # so present a browser-like one.
     req = urllib.request.Request(
         IMGUI_BUNDLE_WHEEL_URL, headers={"User-Agent": "Mozilla/5.0 (build script)"}
     )
-    with urllib.request.urlopen(req) as resp, open(dest, "wb") as fh:
-        fh.write(resp.read())
+    fd, temporary = tempfile.mkstemp(prefix=".wheel-", dir=dest_dir)
+    try:
+        with os.fdopen(fd, "wb") as output, urllib.request.urlopen(req, timeout=60) as response:
+            shutil.copyfileobj(response, output, length=1024 * 1024)
+        if not _valid_wheel(temporary):
+            raise ValueError("Downloaded imgui_bundle wheel is incomplete or invalid")
+        os.replace(temporary, dest)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
     print(f"  vendored: {dest} ({os.path.getsize(dest):,} bytes)")
 
 

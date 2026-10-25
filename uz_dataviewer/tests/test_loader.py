@@ -185,10 +185,9 @@ def test_csv_streaming_rejects_decreasing_time(tmp_path):
         open_file(str(path)).register(DataRegistry())
 
 
-def test_parquet_streaming_matches_bulk(tmp_path, monkeypatch):
+def test_parquet_streaming_preserves_all_row_groups(tmp_path):
     import pandas as pd
 
-    from uz_dataviewer import loader
 
     n = 5000
     df = pd.DataFrame(
@@ -202,16 +201,11 @@ def test_parquet_streaming_matches_bulk(tmp_path, monkeypatch):
     # Many small row groups so iter_batches yields multiple batches.
     df.to_parquet(path, row_group_size=512)
 
-    bulk = open_file(str(path)).register(DataRegistry())  # n < threshold -> bulk path
-
-    # Force the streaming path and confirm it fills exactly n_rows and agrees.
-    monkeypatch.setattr(loader, "PARQUET_STREAM_MIN_ROWS", 0)
     streamed = open_file(str(path)).register(DataRegistry())
-
-    assert streamed.n_rows == n == bulk.n_rows
-    np.testing.assert_allclose(streamed.time, bulk.time)
-    for name in bulk.signals:
-        np.testing.assert_array_equal(streamed.signals[name].y, bulk.signals[name].y)
+    assert streamed.n_rows == n
+    np.testing.assert_array_equal(streamed.time, df['time'].to_numpy())
+    for name in ('ia', 'ib'):
+        np.testing.assert_array_equal(streamed.signals[name].y, df[name].to_numpy())
 
 
 @pytest.mark.parametrize('backend', ['pyarrow', 'polars'])

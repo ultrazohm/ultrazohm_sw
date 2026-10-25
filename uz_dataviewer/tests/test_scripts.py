@@ -11,7 +11,6 @@ from uz_dataviewer.state import AppState
 
 @pytest.mark.parametrize('web', [False, True])
 def test_automation_can_load_json_and_continue(app_state, tmp_path, monkeypatch, web):
-    from uz_dataviewer import webbridge
     snapshot = tmp_path / 'state.json'
     app_state.set_grid(2, 1)
     session.save_state(app_state, str(snapshot))

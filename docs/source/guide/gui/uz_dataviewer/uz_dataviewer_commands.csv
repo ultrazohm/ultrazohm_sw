@@ -1,68 +1,68 @@
 Command,Group,Description,Arguments,Source
-clear_session,Data / runs,"Clear runs, plots and analysis before restoring a session.",,commands.py:368
-load,Data / runs,Load a .csv/.parquet log; the optional start normalises the time origin.,"path:str, [start:float]",commands.py:374
-convert,Data / runs,Stream-convert CSV to Parquet using the selected backend; dst defaults to src with a .parquet extension. Existing destinations and empty inputs are rejected.,"src:str, [dst:str]",commands.py:385
-normalize_time,Data / runs,Shift a run so its first sample sits at start (default 0).,"run:run, [start:float]",commands.py:396
-reset_time,Data / runs,Restore a run's original (un-normalised) timestamps.,run:run,commands.py:406
-backend,Data / runs,"IO backend for subsequent opens, exports and CSV conversion: pyarrow or polars (desktop only).",name:str,commands.py:426
-loading_mode,Data / runs,Storage policy for subsequent opens: memory or lazy.,mode:str,commands.py:436
-disk_cache,Data / runs,"Persist indexes, summaries and CSV conversions for subsequent opens (default: false).",on:bool,commands.py:444
-cache_budget,Data / runs,Shared timestamp/summary RAM cache budget in MiB.,mib:int,commands.py:447
-remove_run,Data / runs,Remove a loaded run and its plots.,run:run,commands.py:459
-set_active,Data / runs,Show/hide a run without removing it.,"run:run, on:bool",commands.py:464
-set_grid,Layout,Set the subplot grid to rows x cols.,"rows:int, cols:int",commands.py:415
-link_x,Layout,Link/unlink the X axes across subplots.,on:bool,commands.py:421
-set_max_points,Layout,Max points drawn per signal (downsample budget).,n:int,commands.py:453
-add_signal,Signals,Add a signal to a subplot.,"plot:plot, run:run, signal:str",commands.py:473
-remove_signal,Signals,Remove a signal from a subplot.,"plot:plot, run:run, signal:str",commands.py:482
-clear_plot,Signals,Remove all signals from a subplot.,plot:plot,commands.py:489
-set_plot_type,Signals,Set a subplot's type (line/scatter/stairs/xy).,"plot:plot, type:str",commands.py:494
-set_xy_style,Signals,"Set the XY plot draw style: Line, Markers, or Both.","plot:plot, style:str",commands.py:507
-set_xy,Signals,Use a signal as the X axis (XY plot) for a subplot.,"plot:plot, run:run, signal:str",commands.py:564
-set_axis,Signals,Assign a signal to the left or right Y axis of a subplot.,"plot:plot, run:run, signal:str, side:str",commands.py:594
-set_x_lim,View,Set a subplot's X-axis limits.,"plot:plot, min:float, max:float",commands.py:518
-set_y_lim,View,Set a subplot's Y-axis limits.,"plot:plot, min:float, max:float",commands.py:525
-reset_view,View,Auto-fit a subplot to its data extent.,plot:plot,commands.py:532
-show_samples,Tools,Toggle per-sample markers on a subplot.,"plot:plot, on:bool",commands.py:537
-spy,Tools,Toggle the spy (drag-rect zoom inset) on a subplot.,"plot:plot, on:bool",commands.py:543
-set_spy_rect,Tools,Position the spy rectangle (enables spy).,"plot:plot, xmin:float, ymin:float, xmax:float, ymax:float",commands.py:552
-cursors,Tools,Toggle two measurement cursors (Δx / frequency readout) on a subplot.,"plot:plot, on:bool",commands.py:576
-set_cursors,Tools,Place the two cursors at x1 and x2 (enables cursors).,"plot:plot, x1:float, x2:float",commands.py:585
-export_data,Tools,Export a subplot's signals to CSV (relative=true zeroes the start time).,"plot:plot, path:str, [relative:bool]",commands.py:609
-set_export_relative,Tools,Toggle 'start time at 0' for a subplot's CSV export.,"plot:plot, on:bool",commands.py:618
-fft_source,FFT window,Add a signal to the FFT window (it can show several at once).,"run:run, signal:str",commands.py:632
-fft_clear,FFT window,Remove all signals from the FFT window.,,commands.py:645
-fft_remove,FFT window,Remove a signal from the FFT window.,"run:run, signal:str",commands.py:650
-fft_follow,FFT window,Set the FFT time window source (custom / full / plot_N).,target:fwindow,commands.py:660
-fft_range,FFT window,Set the FFT custom time window.,"min:float, max:float",commands.py:672
-fft_xlim,FFT window,Set the FFT plot's X-axis view limits.,"min:float, max:float",commands.py:679
-fft,FFT window,Recompute and focus the FFT window.,,commands.py:689
-fft_remove_dc,FFT window,Toggle FFT DC removal.,on:bool,commands.py:695
-fft_hann,FFT window,Toggle the FFT Hann window.,on:bool,commands.py:701
-fft_logx,FFT window,Toggle the FFT log X axis.,on:bool,commands.py:707
-fft_logy,FFT window,Toggle the FFT log Y axis.,on:bool,commands.py:712
-fft_export,FFT window,Export the FFT spectra to CSV.,path:str,commands.py:717
-hist_source,Histogram window,Add a signal to the Histogram window (it can show several at once).,"run:run, signal:str",commands.py:632
-hist_clear,Histogram window,Remove all signals from the Histogram window.,,commands.py:645
-hist_remove,Histogram window,Remove a signal from the Histogram window.,"run:run, signal:str",commands.py:650
-hist_follow,Histogram window,Set the Histogram time window source (custom / full / plot_N).,target:fwindow,commands.py:660
-hist_range,Histogram window,Set the Histogram custom time window.,"min:float, max:float",commands.py:672
-hist_xlim,Histogram window,Set the Histogram plot's X-axis view limits.,"min:float, max:float",commands.py:679
-histogram,Histogram window,Recompute and focus the Histogram window.,,commands.py:724
-hist_bins,Histogram window,Set the Histogram bin count (1..100000).,n:int,commands.py:730
-hist_export,Histogram window,Export the histogram bins to CSV.,path:str,commands.py:736
-node_source,Nodes,Add a source node wrapping a loaded signal (the graph's input).,"run:run, signal:str",commands.py:795
-node_add,Nodes,"Add a transform node (fft, math, filter, shift, or an installed plugin kind).",kind:str,commands.py:807
-node_set,Nodes,"Set a transform node parameter (e.g. node_set(node_2, cutoff, 1000)).","node:node, key:str, value:str",commands.py:818
-node_link,Nodes,Connect to a zero-based input slot (default: first free slot).,"src:node, dst:node, [slot:int]",commands.py:827
-node_unlink,Nodes,Disconnect a node link at a zero-based slot (default: all matching slots).,"src:node, dst:node, [slot:int]",commands.py:833
-node_remove,Nodes,"Remove a node (and its derived run, if any).",node:node,commands.py:839
-node_rename,Nodes,Rename a node (its derived run takes the new name).,"node:node, name:str",commands.py:848
-node_pos,Nodes,Set a node's canvas position.,"node:node, x:float, y:float",commands.py:861
-node_eval,Nodes,"Evaluate the graph (or one node + its inputs), materializing derived signals.",[node:node],commands.py:867
-load_plugins,Nodes,Load external node plugins from a directory (or the configured defaults).,[dir:str],commands.py:874
-save_state,Session,Save the GUI state to a JSON file.,path:str,commands.py:747
-load_state,Session,Restore the GUI state from a JSON file.,path:str,commands.py:754
-run_script,Session,Replay commands from a .uzscript file.,path:str,commands.py:761
-clear_console,Console,Clear the console log.,,commands.py:769
-help,Console,"List commands, or show help for one.",[name:str],commands.py:774
+clear_session,Data / runs,"Clear runs, plots and analysis before restoring a session.",,commands.py:361
+load,Data / runs,Load a .csv/.parquet log; the optional start normalises the time origin.,"path:str, [start:float]",commands.py:367
+convert,Data / runs,Stream-convert CSV to Parquet using the selected backend; dst defaults to src with a .parquet extension. Existing destinations and empty inputs are rejected.,"src:str, [dst:str]",commands.py:378
+normalize_time,Data / runs,Shift a run so its first sample sits at start (default 0).,"run:run, [start:float]",commands.py:389
+reset_time,Data / runs,Restore a run's original (un-normalised) timestamps.,run:run,commands.py:399
+backend,Data / runs,"IO backend for subsequent opens, exports and CSV conversion: pyarrow or polars (desktop only).",name:str,commands.py:419
+loading_mode,Data / runs,Storage policy for subsequent opens: memory or lazy.,mode:str,commands.py:429
+disk_cache,Data / runs,"Persist indexes, summaries and CSV conversions for subsequent opens (default: false).",on:bool,commands.py:437
+cache_budget,Data / runs,Shared timestamp/summary RAM cache budget in MiB.,mib:int,commands.py:440
+remove_run,Data / runs,Remove a loaded run and its plots.,run:run,commands.py:452
+set_active,Data / runs,Show/hide a run without removing it.,"run:run, on:bool",commands.py:457
+set_grid,Layout,Set the subplot grid to rows x cols.,"rows:int, cols:int",commands.py:408
+link_x,Layout,Link/unlink the X axes across subplots.,on:bool,commands.py:414
+set_max_points,Layout,Max points drawn per signal (downsample budget).,n:int,commands.py:446
+add_signal,Signals,Add a signal to a subplot.,"plot:plot, run:run, signal:str",commands.py:466
+remove_signal,Signals,Remove a signal from a subplot.,"plot:plot, run:run, signal:str",commands.py:483
+clear_plot,Signals,Remove all signals from a subplot.,plot:plot,commands.py:490
+set_plot_type,Signals,Set a subplot's type (line/scatter/stairs/xy).,"plot:plot, type:str",commands.py:495
+set_xy_style,Signals,"Set the XY plot draw style: Line, Markers, or Both.","plot:plot, style:str",commands.py:508
+set_xy,Signals,Use a signal as the X axis (XY plot) for a subplot.,"plot:plot, run:run, signal:str",commands.py:565
+set_axis,Signals,Assign a signal to the left or right Y axis of a subplot.,"plot:plot, run:run, signal:str, side:str",commands.py:598
+set_x_lim,View,Set a subplot's X-axis limits.,"plot:plot, min:float, max:float",commands.py:519
+set_y_lim,View,Set a subplot's Y-axis limits.,"plot:plot, min:float, max:float",commands.py:526
+reset_view,View,Auto-fit a subplot to its data extent.,plot:plot,commands.py:533
+show_samples,Tools,Toggle per-sample markers on a subplot.,"plot:plot, on:bool",commands.py:538
+spy,Tools,Toggle the spy (drag-rect zoom inset) on a subplot.,"plot:plot, on:bool",commands.py:544
+set_spy_rect,Tools,Position the spy rectangle (enables spy).,"plot:plot, xmin:float, ymin:float, xmax:float, ymax:float",commands.py:553
+cursors,Tools,Toggle two measurement cursors (Δx / frequency readout) on a subplot.,"plot:plot, on:bool",commands.py:580
+set_cursors,Tools,Place the two cursors at x1 and x2 (enables cursors).,"plot:plot, x1:float, x2:float",commands.py:589
+export_data,Tools,Export a subplot's signals to CSV (relative=true zeroes the start time).,"plot:plot, path:str, [relative:bool]",commands.py:613
+set_export_relative,Tools,Toggle 'start time at 0' for a subplot's CSV export.,"plot:plot, on:bool",commands.py:622
+fft_source,FFT window,Add a signal to the FFT window (it can show several at once).,"run:run, signal:str",commands.py:636
+fft_clear,FFT window,Remove all signals from the FFT window.,,commands.py:651
+fft_remove,FFT window,Remove a signal from the FFT window.,"run:run, signal:str",commands.py:656
+fft_follow,FFT window,Set the FFT time window source (custom / full / plot_N).,target:fwindow,commands.py:666
+fft_range,FFT window,Set the FFT custom time window.,"min:float, max:float",commands.py:678
+fft_xlim,FFT window,Set the FFT plot's X-axis view limits.,"min:float, max:float",commands.py:685
+fft,FFT window,Recompute and focus the FFT window.,,commands.py:695
+fft_remove_dc,FFT window,Toggle FFT DC removal.,on:bool,commands.py:701
+fft_hann,FFT window,Toggle the FFT Hann window.,on:bool,commands.py:707
+fft_logx,FFT window,Toggle the FFT log X axis.,on:bool,commands.py:713
+fft_logy,FFT window,Toggle the FFT log Y axis.,on:bool,commands.py:718
+fft_export,FFT window,Export the FFT spectra to CSV.,path:str,commands.py:723
+hist_source,Histogram window,Add a signal to the Histogram window (it can show several at once).,"run:run, signal:str",commands.py:636
+hist_clear,Histogram window,Remove all signals from the Histogram window.,,commands.py:651
+hist_remove,Histogram window,Remove a signal from the Histogram window.,"run:run, signal:str",commands.py:656
+hist_follow,Histogram window,Set the Histogram time window source (custom / full / plot_N).,target:fwindow,commands.py:666
+hist_range,Histogram window,Set the Histogram custom time window.,"min:float, max:float",commands.py:678
+hist_xlim,Histogram window,Set the Histogram plot's X-axis view limits.,"min:float, max:float",commands.py:685
+histogram,Histogram window,Recompute and focus the Histogram window.,,commands.py:730
+hist_bins,Histogram window,Set the Histogram bin count (1..100000).,n:int,commands.py:736
+hist_export,Histogram window,Export the histogram bins to CSV.,path:str,commands.py:742
+node_source,Nodes,Add a source node wrapping a loaded signal (the graph's input).,"run:run, signal:str",commands.py:801
+node_add,Nodes,"Add a transform node (fft, math, filter, shift, or an installed plugin kind).",kind:str,commands.py:813
+node_set,Nodes,"Set a transform node parameter (e.g. node_set(node_2, cutoff, 1000)).","node:node, key:str, value:str",commands.py:824
+node_link,Nodes,Connect to a zero-based input slot (default: first free slot).,"src:node, dst:node, [slot:int]",commands.py:833
+node_unlink,Nodes,Disconnect a node link at a zero-based slot (default: all matching slots).,"src:node, dst:node, [slot:int]",commands.py:839
+node_remove,Nodes,"Remove a node (and its derived run, if any).",node:node,commands.py:845
+node_rename,Nodes,Rename a node (its derived run takes the new name).,"node:node, name:str",commands.py:854
+node_pos,Nodes,Set a node's canvas position.,"node:node, x:float, y:float",commands.py:867
+node_eval,Nodes,"Evaluate the graph (or one node + its inputs), materializing derived signals.",[node:node],commands.py:873
+load_plugins,Nodes,Load external node plugins from a directory (or the configured defaults).,[dir:str],commands.py:880
+save_state,Session,Save the GUI state to a JSON file.,path:str,commands.py:753
+load_state,Session,Restore the GUI state from a JSON file.,path:str,commands.py:760
+run_script,Session,Replay commands from a .uzscript file.,path:str,commands.py:767
+clear_console,Console,Clear the console log.,,commands.py:775
+help,Console,"List commands, or show help for one.",[name:str],commands.py:780

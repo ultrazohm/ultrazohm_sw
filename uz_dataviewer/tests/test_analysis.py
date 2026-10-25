@@ -653,9 +653,9 @@ def test_full_analysis_includes_all_recordings(app_state, tmp_path, backend, mod
     state = app_state
     state.backend, state.loading_mode = backend, mode
     runs = []
-    for name, time in [('short', np.arange(4.)), ('long', np.arange(10.) + offset)]:
+    for name, timestamps in [('short', np.arange(4.)), ('long', np.arange(10.) + offset)]:
         path = tmp_path / f'{name}.csv'
-        np.savetxt(path, np.column_stack([time, np.sin(time)]), delimiter=',',
+        np.savetxt(path, np.column_stack([timestamps, np.sin(timestamps)]), delimiter=',',
                    header=f'time,{name}', comments='')
         runs.append(state.load_sync(str(path)))
     refs = [(run.id, next(iter(run.signals))) for run in runs]

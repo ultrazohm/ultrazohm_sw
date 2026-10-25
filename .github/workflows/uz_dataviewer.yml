@@ -49,8 +49,34 @@ jobs:
           cache-dependency-glob: uz_dataviewer/uv.lock
       - name: Install locked test dependencies
         run: uv sync --locked --extra dev --python 3.12 --no-build-package imgui-bundle
+      - name: Check Python sources
+        run: uv run --no-sync ruff check src tests build examples
       - name: Test
         run: uv run --no-sync python -m pytest -q
+
+  test-web:
+    needs: test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: uz_dataviewer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: '0.13.1'
+      - name: Generate browser app
+        run: python build/gen_web.py
+      - name: Install browser test runtime
+        run: |
+          uv venv .venv-web --python 3.12
+          uv pip install --python .venv-web/bin/python playwright==1.64.1
+          .venv-web/bin/python -m playwright install --with-deps chromium
+      - name: Smoke-test Pyodide in Chromium
+        run: .venv-web/bin/python build/smoke_web.py
 
   build-linux:
     needs: test
@@ -113,6 +139,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Test on Windows
         run: |
+          node --version
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           uv run --no-sync python -m pytest -q
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Build executable
@@ -134,7 +162,7 @@ jobs:
           retention-days: 30
 
   release:
-    needs: [build-linux, build-windows]
+    needs: [build-linux, build-windows, test-web]
     # Temporary feature-branch exception for testing this workflow.
     if: >-
       github.event_name != 'pull_request' &&

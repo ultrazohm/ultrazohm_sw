@@ -4,8 +4,7 @@ A native/web data viewer for UltraZohm JavaScope logs, built with
 [Dear ImGui via `imgui_bundle`](https://github.com/pthom/imgui_bundle) and ImPlot.
 It is the offline successor to the Plotly/Dash `javascope/dataviewer.py`: a VSCode-style
 docked layout, drag-and-drop subplots, dedicated FFT/Histogram analysis windows, range-aware
-downsampling for multi-gigabyte logs, and a **scriptable command console** where every click
-is a replayable command.
+downsampling for multi-gigabyte logs, and a **scriptable command console** for automating data, analysis and plot settings.
 
 ```
 +------------------------------------------------------------------+
@@ -35,7 +34,7 @@ is a replayable command.
 - **Node canvas** — drag a signal into a graph, apply transforms (FFT / math /
   filter / shift), and the result becomes a new draggable signal. Fully scriptable
   (`node_*`) and extensible with your own **Python plugin nodes** (see [Plugins](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_plugins.rst)).
-- **Scriptable command console** — every action echoes a command; the input runs them, with
+- **Scriptable command console** — supported actions echo commands; the input runs them, with
   completion, history and a selectable log. Sessions save to JSON; `.uzscript` files run command automation.
 - **MaterialFlat theme.** Runs natively (Windows/Linux/macOS) and in the browser (Pyodide/WASM).
 
@@ -219,7 +218,8 @@ uz_dataviewer/
 │   ├── console.py            # console: selectable log + command input
 │   ├── model.py              # Run / Signal / DataRegistry (+ time normalization)
 │   ├── loader.py             # CSV/Parquet loading + channel-name parsing
-│   ├── downsample.py         # min/max pyramid (pure NumPy, O(output) per frame)
+│   ├── sources.py            # raw sources, bounded caches and min/max summaries
+│   ├── downsample.py         # visible-window selection and display adapter
 │   ├── analysis.py           # GUI-free transforms (FFT)
 │   ├── transforms.py         # GUI-free node transforms (math, FIR filter)
 │   ├── nodes.py              # dataflow graph + evaluation -> derived signals
@@ -239,3 +239,12 @@ Documentation lives in `../docs/source/guide/gui/uz_dataviewer/`.
 pip install pytest
 pytest
 ```
+
+The console transcript does not capture every GUI gesture (including analysis
+Reset view and some Y/XY gestures). Use JSON snapshots for supported view settings.
+FFT-derived plots use Hz, remain independent of linked time axes, and export a
+`frequency` column. Time normalization and time-based analysis reject spectra.
+
+Browser uploads are temporary and cannot be saved as reloadable sessions.
+Memory imports release the uploaded file after parsing; lazy imports release it
+when the last referencing run is removed or the session closes.

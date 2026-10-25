@@ -5,10 +5,9 @@ either follows a chosen subplot, uses the full record, or is entered manually,
 and a transform is computed on demand and overlaid for every source. This module
 factors that common control flow into :class:`AnalysisPanel`.
 
-Like the rest of the app, **every control here is routed through the command
-registry** (``state.commands``): each click/edit and even zooming the plot is
-executed/echoed as a command, so the window is fully scriptable and the console
-shows a replayable transcript. Subclasses only supply the command name prefix,
+Shared data/analysis controls and X zoom use the command registry. Reset view
+and Y-axis gestures are local view actions, so the transcript is not a complete
+GUI snapshot. Subclasses only supply the command name prefix,
 the transform-specific options, and the per-signal compute/draw.
 """
 
@@ -153,7 +152,10 @@ class AnalysisPanel(SessionPanel):
 
     # -- stale tracking -----------------------------------------------------
     def _current_key(self, state: "AppState", cfg: "AnalysisConfig") -> tuple:
-        window = state.resolve_x_window(cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources)
+        try:
+            window = state.resolve_x_window(cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources)
+        except ValueError:
+            window = (cfg.x_min, cfg.x_max)
         versions = tuple((ref, state.registry.get(ref[0]).time_version,
                           state.registry.get_signal(*ref).version)
                          for ref in cfg.sources if state.registry.get_signal(*ref) is not None)
@@ -167,6 +169,8 @@ class AnalysisPanel(SessionPanel):
             run = state.registry.get(ref[0])
             if run is None or ref[1] not in run.signals:
                 return 'Analysis source is no longer loaded'
+            if run.axis_domain != "time":
+                return 'Analysis windows require a time-domain recording'
             sources.append(run.data_source())
         return validation_error(sources)
 

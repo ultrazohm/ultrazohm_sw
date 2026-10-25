@@ -21,6 +21,7 @@ from . import runtime
 # reach it.
 _active_state = None  # type: ignore[var-annotated]
 
+UPLOAD_ROOT = "/uploads"
 FILE_INPUT_ID = "uzFileInput"
 SESSION_INPUT_ID = "uzSessionInput"
 
@@ -50,7 +51,30 @@ def load_uploaded(path: str, note: str = "") -> None:
         return
     if note:
         _active_state.console.warn(note)
-    _active_state.request_load(path)
+    if not runtime.IS_WEB:
+        _active_state.request_load(path)
+        return
+    # Browser loads are synchronous. Only accept ownership of upload paths,
+    # never arbitrary files supplied through the command interface.
+    from pathlib import Path
+    upload = Path(path).resolve()
+    if not upload.is_relative_to(Path(UPLOAD_ROOT)):
+        raise ValueError("Expected a browser upload under /uploads")
+    try:
+        run = _active_state.load_sync(str(upload))
+        if run is not None:
+            run.reloadable = False
+            if _active_state.loading_mode == "lazy":
+                run.owned_upload = True
+                return
+    finally:
+        if not any(r.owned_upload and r.path == str(upload) for r in _active_state.registry.runs):
+            upload.unlink(missing_ok=True)
+            if upload.parent != Path(UPLOAD_ROOT):
+                try:
+                    upload.parent.rmdir()
+                except OSError:
+                    pass
 
 
 def trigger_session_open() -> None:
@@ -83,6 +107,13 @@ def load_uploaded_session(path: str) -> None:
         _active_state.commands.execute(_active_state, command, [path])
     except Exception as exc:  # noqa: BLE001 - surfaced to the console
         _active_state.console.error(str(exc))
+
+    finally:
+        if runtime.IS_WEB:
+            from pathlib import Path
+            upload = Path(path).resolve()
+            if upload.is_relative_to(Path(UPLOAD_ROOT)):
+                upload.unlink(missing_ok=True)
 
 
 def download(path: str, filename: str | None = None) -> None:

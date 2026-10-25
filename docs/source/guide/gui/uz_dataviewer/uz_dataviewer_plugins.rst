@@ -56,7 +56,8 @@ The function takes ``inputs`` (a list of ``(time, y)`` NumPy arrays (one per con
    def moving_average(inputs, params):
        time, y = inputs[0]
        width = max(1, int(float(params.get("width", 51))))
-       out = np.convolve(np.asarray(y, float), np.ones(width) / width, mode="same")
+       start = (width - 1) // 2
+       out = np.convolve(np.asarray(y, float), np.ones(width) / width, mode="full")[start:start + len(y)] if len(y) else np.empty(0)
        return time, out, f"moving avg, {width} samples"   # info shows under the node
 
 A working example is located at ``ultrazohm_sw/uz_dataviewer/examples/plugins/moving_average.py``.
@@ -98,3 +99,12 @@ Rules & tips
   Native plugins can import anything that's installed.
 - Scripting & sessions: a graph stores only the node *kind* and its params, never your code, so ``.uzscript``/JSON round-trip unchanged.
   Opening a session whose plugin isn't installed keeps the node as a greyed **"missing plugin"** placeholder (params + links preserved); install the plugin and re-evaluate to restore it.
+
+Transform ownership
+-------------------
+
+Plugin API version 2 makes inputs read-only array views. Allocate a separate working array before
+mutating samples. Returned arrays are validated, converted to float64 axes and
+float32 values, and copied into owned output buffers before publication. Invalid
+outputs fail only their node; independent graph branches continue evaluating.
+Plugins preserve the independent-axis domain of their inputs.

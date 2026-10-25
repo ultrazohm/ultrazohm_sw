@@ -15,7 +15,6 @@ import numpy as np
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer.downsample import visible_slice  # noqa: E402
-from uz_dataviewer.model import DataRegistry  # noqa: E402
 from uz_dataviewer.panels.plots import PlotsPanel, _is_finite_range  # noqa: E402
 from uz_dataviewer.state import AppState, SubplotCell  # noqa: E402
 
@@ -74,7 +73,7 @@ def test_plot_line_receives_matched_dtype_arrays(gui_frame):
     scattered/negative-time corruption. Drive a real frame and assert the
     arrays handed to plot_line share a dtype and span the true time range.
     """
-    from imgui_bundle import imgui, implot
+    from imgui_bundle import implot
 
     state, run = _registry_with_run(t_start=11.979)
     panel = PlotsPanel()

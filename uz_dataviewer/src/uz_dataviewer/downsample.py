@@ -19,7 +19,8 @@ def visible_slice(time: np.ndarray, x_min: float, x_max: float, *, padding: bool
     """
     from .sources import SourceColumn
     if isinstance(time, SourceColumn):
-        return time.source.bounds(x_min - time.offset, x_max - time.offset, padding=padding)
+        from .sources import displayed_bounds
+        return displayed_bounds(time.source, x_min, x_max, time.offset, padding=padding)
     # Integer axes must retain fractional bounds (e.g. 0.2 must exclude 0).
     # Matching floating dtypes avoids promoting a large float32 FFT axis.
     lo = time.dtype.type(x_min) if time.dtype.kind == 'f' else x_min

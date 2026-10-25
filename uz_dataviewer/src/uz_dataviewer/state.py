@@ -8,6 +8,10 @@ import enum
 import math
 import os
 from concurrent.futures import Future
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import numpy as np
 from .workers import CancellableExecutor
 from dataclasses import dataclass, field, fields
 
@@ -289,30 +293,57 @@ class AppState(SessionData):
                 cfg.compute_requested = bool(cfg.sources)
 
     def validate_follow_plot(self, target: int) -> int:
+        if target > 0 and target <= self.cell_count and self.plot_domain(self.cells[target - 1]) != "time":
+            raise ValueError("Analysis cannot follow a frequency-domain plot")
         if not -1 <= target <= self.cell_count:
             raise ValueError(f"Analysis window must be custom, full, or plot_1..plot_{self.cell_count}")
         return target
 
+    def plot_domain(self, cell):
+        refs = cell.signals + ([cell.xy_source] if cell.xy_source else [])
+        domains = {run.axis_domain for ref in refs
+                   if (run := self.registry.get(ref[0])) is not None}
+        if len(domains) > 1:
+            raise ValueError("Cannot combine time and frequency axes in one plot")
+        return next(iter(domains), "time")
+
+    def is_time_plot(self, cell):
+        return cell.plot_type is not PlotType.XY and self.plot_domain(cell) == "time"
+
     def plot_time_range(self, plot_n: int):
-        """Effective time window, independent of whether a GUI frame has run."""
+        """Effective X window; only time-domain plots use the linked range."""
         cell = self.cells[plot_n - 1]
         if cell.plot_type is PlotType.XY:
             return None
-        if self.link_x and self.shared_x is not None:
+        if self.link_x and self.is_time_plot(cell) and self.shared_x is not None:
             return self.shared_x
         return cell.pending_x_lim or self.plot_x_ranges.get(plot_n) or cell.x_lim
+
+    def set_link_x(self, enabled: bool) -> None:
+        self.link_x = enabled
+        if enabled:
+            window = self.shared_x
+            if window is None:
+                window = next((cell.pending_x_lim or cell.x_lim for cell in self.cells
+                               if self.is_time_plot(cell) and
+                               (cell.pending_x_lim or cell.x_lim)), None)
+            if window is not None:
+                for index, cell in enumerate(self.cells, 1):
+                    if self.is_time_plot(cell):
+                        self.set_plot_x_limits(index, *window)
+                        break
 
     def set_plot_x_limits(self, plot_n: int, lo: float, hi: float) -> None:
         cell = self.cells[plot_n - 1]
         cell.set_limits('x', lo, hi)
-        if cell.plot_type is not PlotType.XY:
+        if self.is_time_plot(cell):
             self.plot_x_ranges[plot_n] = cell.pending_x_lim
             if self.link_x:
                 self.shared_x = cell.pending_x_lim
                 # Explicit commands must also move the last hovered driver,
                 # whose axis is otherwise left free for interactive panning.
                 for index, linked in enumerate(self.cells, 1):
-                    if linked.plot_type is not PlotType.XY:
+                    if self.is_time_plot(linked):
                         linked.set_limits('x', lo, hi)
                         self.plot_x_ranges[index] = linked.pending_x_lim
 
@@ -369,7 +400,18 @@ class AppState(SessionData):
 
     def _submit_load(self, request: LoadRequest, convert_from=None) -> None:
         path = request.path
+        settings = (("backend", request.backend, self.backend),
+                    ("loading_mode", request.mode, self.loading_mode),
+                    ("disk_cache", request.disk_cache, self.disk_cache))
+        for name, selected, current in settings:
+            if selected != current:
+                self.commands.echo(self, name, [selected])
+        if convert_from:
+            self.commands.echo(self, "convert", [convert_from, path])
         self.commands.echo(self, "load", [path])
+        for name, selected, current in settings:
+            if selected != current:
+                self.commands.echo(self, name, [current])
         self.console.info(f"{'Converting and loading' if convert_from else 'Loading'} {os.path.basename(path)} ...")
         if runtime.IS_WEB:
             try:
@@ -479,7 +521,10 @@ class AppState(SessionData):
                 cfg.sources = remaining
                 self.services.analysis_jobs.forget(slot)
                 cfg.compute_requested = bool(remaining)
+        removed = self.registry.get(run_id)
         self.registry.remove_run(run_id)
+        if removed is not None:
+            self._release_upload(removed)
         self.console.info(f"Removed run {run.label}")
 
     def _report_loaded(self, run: Run) -> None:
@@ -522,10 +567,13 @@ class AppState(SessionData):
         subplot's live X range (falling back to the full record if that plot has
         no range yet).
         """
+        if any(run.axis_domain != "time" for run_id, _ in signals
+               if (run := self.registry.get(run_id)) is not None):
+            raise ValueError("Analysis windows require a time-domain recording")
         if follow_plot == 0:  # Custom
             return custom
 
-        if follow_plot >= 1:  # follow a specific plot, if it has a live range
+        if follow_plot >= 1 and self.is_time_plot(self.cells[follow_plot - 1]):
             rng = self.plot_time_range(follow_plot)
             if rng is not None and math.isfinite(rng[0]) and math.isfinite(rng[1]) and rng[1] > rng[0]:
                 return rng
@@ -547,8 +595,28 @@ class AppState(SessionData):
     def _open_background(self, path, mode, backend, disk_cache, cancel=None):
         return open_file(path, mode, self.registry.cache, self.cache_dir, backend=backend, disk_cache=disk_cache, cancel=cancel)
 
+    def _release_upload(self, run, *, closing=False) -> None:
+        if not run.owned_upload:
+            return
+        others = [r for r in self.registry.runs if r.id != run.id and r.path == run.path]
+        if others and not closing:
+            for other in others:
+                other.owned_upload, other.reloadable = True, False
+            return
+        from pathlib import Path
+        path = Path(run.path)
+        path.unlink(missing_ok=True)
+        from .webbridge import UPLOAD_ROOT
+        if path.parent != Path(UPLOAD_ROOT):
+            try:
+                path.parent.rmdir()
+            except OSError:
+                pass  # shared or nonempty upload directory
+
     def shutdown(self) -> None:
         if self.services is not None:
             self.services.close()
             self.registry.cache.clear()
+            for run in list(self.registry.runs):
+                self._release_upload(run, closing=True)
             self.services = None

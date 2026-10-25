@@ -57,7 +57,6 @@ def test_set_spy_rect_places_and_enables(tmp_path):
 
 def test_value_at_matches_linear_interp(tmp_path):
     # The cheap searchsorted lookup must agree with np.interp on the data.
-    import numpy as np
 
     from uz_dataviewer.panels.plots import PlotsPanel
 

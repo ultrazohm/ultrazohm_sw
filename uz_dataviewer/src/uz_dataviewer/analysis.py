@@ -9,6 +9,8 @@ from dataclasses import dataclass
 
 import numpy as np
 
+from .sources import shift_time, TimeShift
+
 from .downsample import visible_slice
 from .sources import ByteCache, SampleSource
 
@@ -154,6 +156,8 @@ def compute_fft(
 def compute_signal_fft(run, channel, x_min, x_max, *, remove_dc=True, window=True,
                        cancel=None, label=None):
     """Read and validate one spectrum, reporting failures with the signal identity."""
+    if run.axis_domain != "time":
+        raise ValueError("FFT requires a time-domain recording")
     label = label or f"{channel} @ {run.label}"
     selected = AnalysisInput((run.id, channel), label, run.data_source(), run.time_offset)
     return selected.fft(x_min, x_max, remove_dc=remove_dc, window=window, cancel=cancel)
@@ -171,7 +175,8 @@ def histogram_sources(series, lo, hi, bins, cancel=None):
     ranges, minimum, maximum, dropped = [], None, None, 0
     for label, source, channel, offset in series:
         check(cancel)
-        start, stop = source.bounds(lo - offset, hi - offset, cancel, padding=False)
+        from .sources import displayed_bounds
+        start, stop = displayed_bounds(source, lo, hi, offset, cancel)
         count = 0
         for _, values in source.iter_raw([channel], start, stop, cancel):
             y = values[channel]
@@ -214,7 +219,7 @@ class AnalysisInput:
     ref: tuple[int, str]
     label: str
     source: SampleSource
-    time_offset: float
+    time_offset: TimeShift | float
 
     @classmethod
     def capture(cls, registry, refs):
@@ -223,15 +228,17 @@ class AnalysisInput:
             run = registry.get(ref[0])
             if run is None or ref[1] not in run.signals:
                 raise ValueError(f"Analysis source {ref} is no longer loaded")
+            if run.axis_domain != "time":
+                raise ValueError("Analysis windows require a time-domain recording")
             inputs.append(cls(ref, f"{ref[1]} @ {run.label} [run_{run.id}]",
                               run.data_source(), run.time_offset))
         return tuple(inputs)
 
     def read_window(self, lo, hi, cancel):
-        start, stop = self.source.bounds(lo - self.time_offset, hi - self.time_offset,
-                                         cancel, padding=False)
+        from .sources import displayed_bounds
+        start, stop = displayed_bounds(self.source, lo, hi, self.time_offset, cancel)
         t, values = self.source.read_rows([self.ref[1]], start, stop, cancel)
-        return t + self.time_offset if self.time_offset else t, values[self.ref[1]]
+        return shift_time(t, self.time_offset), values[self.ref[1]]
 
     def fft(self, lo, hi, *, remove_dc, window, cancel=None):
         try:

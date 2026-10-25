@@ -88,3 +88,28 @@ At load time the page:
    ``uz_dataviewer`` is not fully identical in the web-version to the native version.
    See :doc:`uz_dataviewer_native_vs_web` for details.
 
+Validation and dependency updates
+---------------------------------
+
+Native builds require Python 3.12 or newer and use the versions in ``uv.lock``.
+The browser embeds the sources and uses its separate Pyodide package index and
+ABI-compatible imgui-bundle wheel. When updating that wheel, update both its
+filename and SHA-256 in ``build/gen_web.py``; incomplete or mismatched downloads
+are rejected before publication.
+
+Run the Python checks from ``uz_dataviewer/``::
+
+   uv sync --locked --extra dev --python 3.12
+   uv run --no-sync ruff check src tests build examples
+   uv run --no-sync python -m pytest
+
+The browser smoke test uses Playwright and Chromium::
+
+   python build/gen_web.py
+   uv venv .venv-web --python 3.12
+   uv pip install --python .venv-web/bin/python playwright==1.64.1
+   .venv-web/bin/python -m playwright install chromium
+   .venv-web/bin/python build/smoke_web.py
+
+Set ``UZ_BROWSER_EXECUTABLE`` to use an existing Chromium/Chrome installation.
+CI runs the browser smoke test before publishing native release artifacts.

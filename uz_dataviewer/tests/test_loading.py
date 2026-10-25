@@ -41,7 +41,6 @@ def _slow_native_conversion(source, destination, backend, connection):
 
 def test_cancel_conversion_stops_process_and_removes_temporary_file(tmp_path, monkeypatch):
     import uz_dataviewer.loading as loading
-    from pathlib import Path
     monkeypatch.setattr(loading, '_convert_worker', _slow_native_conversion)
     monkeypatch.setattr('uz_dataviewer.state.LARGE_CSV_BYTES', 1)
     state = AppState()
@@ -66,3 +65,22 @@ def test_cancel_conversion_stops_process_and_removes_temporary_file(tmp_path, mo
         assert not path.with_suffix('.parquet').exists()
     finally:
         state.shutdown()
+
+
+def _large_conversion_error(source, destination, backend, connection):
+    connection.send((False, 'large error ' + 'x' * 1_000_000))
+    connection.close()
+
+
+def test_conversion_drains_large_error_before_worker_exits(monkeypatch):
+    import uz_dataviewer.loading as loading
+    monkeypatch.setattr(loading, '_convert_worker', _large_conversion_error)
+    cancel = threading.Event()
+    watchdog = threading.Timer(10, cancel.set)
+    watchdog.start()
+    try:
+        with pytest.raises(ValueError, match='large error'):
+            loading.convert_cancellable('unused', 'unused', 'pyarrow', cancel)
+        assert not cancel.is_set()
+    finally:
+        watchdog.cancel()

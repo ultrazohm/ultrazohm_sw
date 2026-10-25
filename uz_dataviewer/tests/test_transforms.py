@@ -12,7 +12,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer.transforms import filter_node, math_node
 from uz_dataviewer.analysis import compute_fft
-from uz_dataviewer.transforms import math_node
 
 
 def _sine(f, n=4000, dur=1.0):

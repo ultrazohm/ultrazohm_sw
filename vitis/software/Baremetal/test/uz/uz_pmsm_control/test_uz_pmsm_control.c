@@ -85,7 +85,7 @@ const struct csv_field_descriptor_t pmsm_control_swmodel_log[] = {
     CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_log_t, theta_mech_rad, CSV_FIELD_FLOAT)};
 
 const struct csv_field_descriptor_t pmsm_control_swmodel_config_fields[] = {
-    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_config_export_t, sample_time, CSV_FIELD_FLOAT),
+    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_config_export_t, sample_time, CSV_FIELD_FLOAT_PRECISE),
     CSV_NESTED_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_config_export_t, machine, R_ph_Ohm, CSV_FIELD_FLOAT),
     CSV_NESTED_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_config_export_t, machine, Ld_Henry, CSV_FIELD_FLOAT),
     CSV_NESTED_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_config_export_t, machine, Lq_Henry, CSV_FIELD_FLOAT),

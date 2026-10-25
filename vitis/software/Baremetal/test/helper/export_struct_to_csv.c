@@ -81,6 +81,9 @@ void write_csv_field(FILE *file, const void *field_ptr, enum csv_field_type_t ty
     case CSV_FIELD_FLOAT:
         fprintf(file, "%f", (double)(*(const float *)field_ptr));
         break;
+    case CSV_FIELD_FLOAT_PRECISE:
+        fprintf(file, "%.9g", (double)(*(const float *)field_ptr));
+        break;
     case CSV_FIELD_DOUBLE:
         fprintf(file, "%f", *(const double *)field_ptr);
         break;
@@ -235,7 +238,9 @@ void export_array_of_struct_to_csv(const char *filename,
  * multi-million-row log). This version formats into a large user buffer flushed with
  * a few big fwrites, and converts numbers with a fixed-precision integer-scaling
  * formatter instead of %f. Output is numerically identical to the slow version's
- * "%f" (6 decimals) / "%.10f" (time) form.
+ * "%f" (6 decimals) / "%.10f" (time) form. Fields explicitly marked
+ * CSV_FIELD_FLOAT_PRECISE use the same nine-significant-digit formatter in both
+ * exporters; ordinary trace fields keep the faster fixed-precision path.
  *
  * Rounding note: the integer-scaling path rounds half away from zero, whereas %f
  * rounds half to even, so a value landing exactly on a 0.5e-6 (or 0.5e-10) boundary
@@ -375,6 +380,14 @@ static void csv_buffer_put_field(struct csv_out_buffer_t *buffer, const void *fi
 {
     switch (type)
     {
+    case CSV_FIELD_FLOAT_PRECISE:
+    {
+        char formatted[32];
+        const int length = snprintf(formatted, sizeof(formatted), "%.9g", (double)(*(const float *)field_ptr));
+        TEST_ASSERT_TRUE(length > 0 && (size_t)length < sizeof(formatted));
+        csv_buffer_write(buffer, formatted, (size_t)length);
+        break;
+    }
     case CSV_FIELD_FLOAT:
         csv_buffer_put_fixed(buffer, (double)(*(const float *)field_ptr), 6U, 1000000ULL, "%f");
         break;

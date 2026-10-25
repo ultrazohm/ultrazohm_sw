@@ -12,7 +12,10 @@ enum csv_field_type_t
     CSV_FIELD_UINT16,
     CSV_FIELD_INT16,
     CSV_FIELD_UINT8,
-    CSV_FIELD_INT8
+    CSV_FIELD_INT8,
+    /* Nine significant digits preserve binary32 values, including sub-microsecond
+     * configuration sample times. CSV_FIELD_FLOAT retains six-decimal log output. */
+    CSV_FIELD_FLOAT_PRECISE
 };
 
 struct csv_field_descriptor_t

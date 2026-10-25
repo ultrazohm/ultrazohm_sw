@@ -84,9 +84,9 @@ static const struct csv_field_descriptor_t pmsm_control_swmodel_log_fields[] = {
 static const struct csv_field_descriptor_t pmsm_control_swmodel_config_fields[] = {
     CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_config_export_t, control_frequency_Hz, CSV_FIELD_UINT32),
     CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_config_export_t, swmodel_oversampling_factor, CSV_FIELD_UINT32),
-    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_config_export_t, controller_sample_time, CSV_FIELD_FLOAT),
-    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_config_export_t, swmodel_sample_time, CSV_FIELD_FLOAT),
-    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_config_export_t, magnitude_optimum_tau_sigma_sec, CSV_FIELD_FLOAT),
+    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_config_export_t, controller_sample_time, CSV_FIELD_FLOAT_PRECISE),
+    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_config_export_t, swmodel_sample_time, CSV_FIELD_FLOAT_PRECISE),
+    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_config_export_t, magnitude_optimum_tau_sigma_sec, CSV_FIELD_FLOAT_PRECISE),
     CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_config_export_t, v_dc_V, CSV_FIELD_FLOAT),
     CSV_NESTED_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_config_export_t, machine, R_ph_Ohm, CSV_FIELD_FLOAT),
     CSV_NESTED_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_config_export_t, machine, Ld_Henry, CSV_FIELD_FLOAT),

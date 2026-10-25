@@ -5,6 +5,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "export_struct_to_csv.h"
@@ -129,6 +130,54 @@ void test_export_can_overwrite_an_existing_artifact(void)
     export_array_of_struct_to_csv(path, &second, sizeof(second), &field, 1U, 1U, 0.0f);
     read_file(path, read_buffer, sizeof(read_buffer));
     TEST_ASSERT_EQUAL_STRING("value\n2.500000\n", read_buffer);
+}
+
+/* These helper tests intentionally run even when CEEDLING_GLOBAL_CSV_EXPORT=0.
+ * Use exact float comparisons: a rounded-to-zero sample time must never pass. */
+static const float sample_times[] = {1.0f / 10000.0f / 200.0f, 1.0e-12f};
+static const struct csv_field_descriptor_t sample_time_field = {
+    "sample_time", 0U, CSV_FIELD_FLOAT_PRECISE};
+
+static void assert_sample_times_round_trip(const char *path)
+{
+    read_file(path, read_buffer, sizeof(read_buffer));
+    char *cursor = strchr(read_buffer, '\n');
+    TEST_ASSERT_NOT_NULL(cursor);
+    cursor++;
+    for (size_t i = 0U; i < sizeof(sample_times) / sizeof(sample_times[0]); i++)
+    {
+        char *end;
+        const float parsed = strtof(cursor, &end);
+        TEST_ASSERT_TRUE(end != cursor);
+        TEST_ASSERT_TRUE(parsed > 0.0f);
+        TEST_ASSERT_TRUE(parsed == sample_times[i]);
+        TEST_ASSERT_EQUAL_CHAR('\n', *end);
+        cursor = end + 1;
+    }
+    TEST_ASSERT_EQUAL_CHAR('\0', *cursor);
+}
+
+void test_precise_sample_times_round_trip_in_regular_export(void)
+{
+    export_array_of_struct_to_csv(SLOW_PATH, sample_times, sizeof(sample_times[0]),
+                                  &sample_time_field, 1U, 2U, 0.0f);
+    assert_sample_times_round_trip(SLOW_PATH);
+}
+
+void test_precise_sample_times_round_trip_in_fast_export(void)
+{
+    export_array_of_struct_to_csv_fast(FAST_PATH, sample_times, sizeof(sample_times[0]),
+                                       &sample_time_field, 1U, 2U, 0.0f);
+    assert_sample_times_round_trip(FAST_PATH);
+}
+
+void test_precise_sample_times_round_trip_in_input_output_export(void)
+{
+    export_input_output_arrays_to_csv(SLOW_PATH,
+                                      sample_times, sizeof(sample_times[0]), &sample_time_field, 0U,
+                                      sample_times, sizeof(sample_times[0]), &sample_time_field, 1U,
+                                      2U, 0.0f);
+    assert_sample_times_round_trip(SLOW_PATH);
 }
 
 #endif // TEST

@@ -16,7 +16,6 @@ import uuid
 import threading
 import time
 from zipfile import BadZipFile
-from typing import Protocol
 
 import numpy as np
 
@@ -131,15 +130,6 @@ class PlotData:
     raw_count: int
 
 
-class Source(Protocol):
-    metadata: Metadata
-    def validate(self): ...
-    def read_rows(self, channels, start, stop, cancel=None): ...
-    def iter_raw(self, channels, start=0, stop=None, cancel=None): ...
-    def bounds(self, lo, hi, cancel=None, *, padding=True): ...
-    def read_plot(self, channel, lo, hi, budget, cancel=None, *, padding=True) -> PlotData: ...
-
-
 def envelope(t, y, indices, budget):
     """Ordered min/max plus a gap marker per bucket, using original samples.
 
@@ -158,10 +148,11 @@ def envelope(t, y, indices, budget):
     high = np.maximum.reduceat(np.where(finite, y, -np.inf), starts)
     pos = np.arange(len(y))
     mins = np.minimum.reduceat(np.where(finite & (y == np.repeat(low, lengths)), pos, len(y)), starts)
-    maxs = np.minimum.reduceat(np.where(finite & (y == np.repeat(high, lengths)), pos, len(y)), starts)
+    # First minimum / last maximum retain both ends of constant buckets.
+    maxs = np.maximum.reduceat(np.where(finite & (y == np.repeat(high, lengths)), pos, -1), starts)
     gaps = np.minimum.reduceat(np.where(~finite, pos, len(y)), starts)
     selected = np.unique(np.r_[mins, maxs, gaps])
-    selected = selected[selected < len(y)]
+    selected = selected[(selected >= 0) & (selected < len(y))]
     values = np.asarray(y[selected], dtype=np.float64).copy()
     values[~np.isfinite(values)] = np.nan
     return np.ascontiguousarray(t[selected], dtype=np.float64), values
@@ -197,7 +188,7 @@ class MemorySource:
 POINT = np.dtype([('i', '<i8'), ('t', '<f8'), ('y', '<f4')])
 BASE = 1024
 FACTOR = 8
-CACHE_VERSION = 3
+CACHE_VERSION = 4
 
 
 def summarize(points, bucket):
@@ -212,10 +203,10 @@ def summarize(points, bucket):
     high = np.maximum.reduceat(np.where(finite, y, -np.inf), starts)
     pos = np.arange(len(y))
     mins = np.minimum.reduceat(np.where(finite & (y == np.repeat(low, lengths)), pos, len(y)), starts)
-    maxs = np.minimum.reduceat(np.where(finite & (y == np.repeat(high, lengths)), pos, len(y)), starts)
+    maxs = np.maximum.reduceat(np.where(finite & (y == np.repeat(high, lengths)), pos, -1), starts)
     gaps = np.minimum.reduceat(np.where(~finite, pos, len(y)), starts)
     select = np.unique(np.r_[mins, maxs, gaps])
-    return points[select[select < len(y)]]
+    return points[select[(select >= 0) & (select < len(y))]]
 
 
 def raw_summary(t, y, offset, finite=False):
@@ -231,7 +222,7 @@ def raw_summary(t, y, offset, finite=False):
     block = y[lead:end].reshape(-1, BASE)
     base = np.arange(len(block)) * BASE + lead
     indices = np.unique(np.r_[np.arange(lead), base + block.argmin(axis=1),
-                              base + block.argmax(axis=1), np.arange(end, n)])
+                              base + BASE - 1 - block[:, ::-1].argmax(axis=1), np.arange(end, n)])
     p = np.empty(len(indices), dtype=POINT)
     p['i'], p['t'], p['y'] = indices + offset, t[indices], y[indices]
     return summarize(p, BASE)
@@ -549,7 +540,7 @@ class ParquetSource(IndexedFileSource):
 class SourceColumn:
     """A lazy column handle with bounded row reads and explicit materialization.
 
-    GUI code uses Source directly. np.asarray(view) explicitly materializes one
+    GUI code uses the source directly. np.asarray(view) explicitly materializes one
     complete column. Arithmetic must operate on explicitly materialized arrays.
     """
     def __init__(self, source, channel=None, offset=0.):

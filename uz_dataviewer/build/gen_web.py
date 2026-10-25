@@ -38,7 +38,7 @@ IMGUI_BUNDLE_WHEEL_URL = f"https://imgui-bundle.pages.dev/local_wheels/{IMGUI_BU
 # except the Pyodide CDN.
 IMGUI_BUNDLE_WHEEL_REL = f"local_wheels/{IMGUI_BUNDLE_WHEEL}"
 # Available in the Pyodide distribution. Downsampling is pure NumPy (the min/max
-# pyramid in downsample.py), so native and web run the same decimation code.
+# pyramid in sources.py), so native and web run the same decimation code.
 EXTRA_PACKAGES = ["numpy", "pandas", "pyarrow"]
 
 HERE = os.path.dirname(os.path.abspath(__file__))

@@ -277,6 +277,45 @@ class AppState:
             raise ValueError(f"Analysis window must be custom, full, or plot_1..plot_{self.cell_count}")
         return target
 
+    def plot_time_range(self, plot_n: int):
+        """Effective time window, independent of whether a GUI frame has run."""
+        cell = self.cells[plot_n - 1]
+        if cell.plot_type is PlotType.XY:
+            return None
+        if self.link_x and self.shared_x is not None:
+            return self.shared_x
+        return cell.pending_x_lim or self.plot_x_ranges.get(plot_n) or cell.x_lim
+
+    def set_plot_x_limits(self, plot_n: int, lo: float, hi: float) -> None:
+        cell = self.cells[plot_n - 1]
+        cell.set_limits('x', lo, hi)
+        if cell.plot_type is not PlotType.XY:
+            self.plot_x_ranges[plot_n] = cell.pending_x_lim
+            if self.link_x:
+                self.shared_x = cell.pending_x_lim
+                # Explicit commands must also move the last hovered driver,
+                # whose axis is otherwise left free for interactive panning.
+                for index, linked in enumerate(self.cells, 1):
+                    if linked.plot_type is not PlotType.XY:
+                        linked.set_limits('x', lo, hi)
+                        self.plot_x_ranges[index] = linked.pending_x_lim
+
+    def reset_plot_view(self, plot_n: int) -> None:
+        cell = self.cells[plot_n - 1]
+        cell.pending_x_lim = cell.pending_y_lim = None
+        cell.x_lim = cell.y_lim = None
+        cell.fit_pending = True
+        if cell.plot_type is PlotType.XY:
+            return
+        self.plot_x_ranges.pop(plot_n, None)
+        runs = [self.registry.get(ref[0]) for ref in cell.signals]
+        runs = [run for run in runs if run is not None and run.active and run.n_rows]
+        if runs:
+            lo = min(float(run.time[0]) for run in runs)
+            hi = max(float(run.time[-1]) for run in runs)
+            if hi > lo:
+                self.set_plot_x_limits(plot_n, lo, hi)
+
     # -- file loading (async on desktop, synchronous in the browser) -------
     def request_load(self, path: str, loading_mode: str | None = None) -> None:
         """Open a file, optionally overriding the mode for this request only."""
@@ -467,7 +506,7 @@ class AppState:
             return custom
 
         if follow_plot >= 1:  # follow a specific plot, if it has a live range
-            rng = self.plot_x_ranges.get(follow_plot)
+            rng = self.plot_time_range(follow_plot)
             if rng is not None and math.isfinite(rng[0]) and math.isfinite(rng[1]) and rng[1] > rng[0]:
                 return rng
 

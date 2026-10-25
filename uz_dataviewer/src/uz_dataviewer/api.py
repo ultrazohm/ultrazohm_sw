@@ -114,6 +114,8 @@ def fft(
     """
     t = np.asarray(time, dtype=np.float64)
     yy = np.asarray(y, dtype=np.float64)
+    if t.ndim != 1 or yy.ndim != 1 or t.shape != yy.shape:
+        return FftResult(None, None, "FFT needs equal-length one-dimensional time and value arrays.")
     lo = float(x_min) if x_min is not None else (float(t[0]) if len(t) else 0.)
     hi = float(x_max) if x_max is not None else (float(t[-1]) if len(t) else 0.)
     return compute_fft(t, yy, lo, hi, remove_dc=remove_dc, window=window)

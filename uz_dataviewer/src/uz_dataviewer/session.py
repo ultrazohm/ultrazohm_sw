@@ -83,7 +83,8 @@ def to_dict(state: "AppState") -> dict:
             {
                 "signals": [_ref_to_saved(state, r) for r in cell.signals],
                 "type": cell.plot_type.value,
-                "x_lim": cell.pending_x_lim or cell.x_lim or state.plot_x_ranges.get(len(cells) + 1),
+                "x_lim": (cell.pending_x_lim or cell.x_lim) if cell.plot_type is PlotType.XY
+                         else state.plot_time_range(len(cells) + 1),
                 "y_lim": cell.pending_y_lim or cell.y_lim,
                 "show_samples": cell.show_samples,
                 "spy": cell.spy,
@@ -378,9 +379,8 @@ def export_data(state: "AppState", plot_index: int, path: str, relative: bool = 
     run0.data_source().validate()
     time = run0.time
 
-    # Use *this* subplot's own visible X range (not the global linked range), so
-    # it is unambiguous which plot you are exporting. Fall back to the full extent.
-    own = state.plot_x_ranges.get(plot_index + 1)
+    # Resolve linked and explicit ranges without requiring a render first.
+    own = state.plot_time_range(plot_index + 1)
     if own is not None:
         x_min = max(own[0], float(time[0]))
         x_max = min(own[1], float(time[-1]))

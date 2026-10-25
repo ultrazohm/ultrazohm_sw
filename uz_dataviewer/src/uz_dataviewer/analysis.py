@@ -96,6 +96,9 @@ def compute_fft(
     transform. Returns an empty :class:`FftResult` (with an ``info`` reason) when
     the slice is too short or the time axis is unusable.
     """
+    time, y = np.asarray(time), np.asarray(y)
+    if time.ndim != 1 or y.ndim != 1 or time.shape != y.shape:
+        return FftResult(None, None, "FFT needs equal-length one-dimensional time and value arrays.")
     if time.shape[0] == 0:
         return FftResult(None, None, "No samples in this run to transform.")
     if x_max <= x_min:

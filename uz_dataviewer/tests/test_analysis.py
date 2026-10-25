@@ -366,3 +366,17 @@ def test_histogram_exact_window():
 @pytest.mark.parametrize('timestamps', [[0,0,0,100], [0,1,2,4], [0,1,np.nan,3]])
 def test_fft_rejects_irregular_time(timestamps):
     assert not compute_fft(np.array(timestamps,dtype=float), np.arange(4.), 0,100).ok
+
+@pytest.mark.parametrize('time,values', [
+    (np.arange(8.), np.ones((8, 2))),
+    (np.ones((8, 2)), np.arange(8.)),
+    (np.arange(8.), np.arange(4.)),
+    (np.array(1.), np.array(2.)),
+])
+@pytest.mark.parametrize('window', [False, True])
+def test_fft_rejects_malformed_input_shapes(time, values, window):
+    from uz_dataviewer.api import fft
+    for result in (compute_fft(time, values, 0., 7., window=window),
+                   fft(time, values, window=window)):
+        assert not result.ok
+        assert 'equal-length one-dimensional' in result.info

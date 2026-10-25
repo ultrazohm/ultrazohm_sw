@@ -114,8 +114,6 @@ def filter_node(time: np.ndarray, y: np.ndarray, params: dict
     from a validated uniform time step. ``taps`` sets the kernel length (more = sharper).
     """
     ftype = str(params.get("type", "low")).lower()
-    if ftype in ("lowpass", "bandpass", "highpass"):
-        ftype = ftype.replace("pass", "")
     if ftype not in FILTER_TYPES:
         raise ValueError(f"Unknown filter type {ftype!r}; one of {', '.join(FILTER_TYPES)}")
 

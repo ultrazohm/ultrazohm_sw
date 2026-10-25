@@ -18,6 +18,7 @@ from .panels.navigation import NavigationPanel
 from .panels.log_browser import LogBrowserPanel
 from .panels.nodes import NodesPanel
 from .panels.plots import PlotsPanel
+from .panels.status import StatusPanel
 from .session import ensure_extension
 from .state import AppState, default_data_settings
 
@@ -45,6 +46,7 @@ class DataViewerApp:
         self.navigation = NavigationPanel()
         self.log_browser = LogBrowserPanel()
         self.plots = PlotsPanel()
+        self.status = StatusPanel()
         self.fft = FftPanel()
         self.histogram = HistogramPanel()
         self.nodes = NodesPanel()
@@ -56,16 +58,19 @@ class DataViewerApp:
         from . import plugins
 
         plugins.load_plugins(console=self.state.console)
+        # Startup arguments are ordered automation. Register recordings before
+        # executing dependent scripts; GUI opens remain asynchronous.
         for path in initial_files or []:
             if not os.path.exists(path):
                 self.state.console.warn(f"File not found: {path}")
-            elif path.lower().endswith(".json"):
-                self.state.commands.execute(self.state, "load_state", [path])
-            elif path.lower().endswith(".uzscript"):
-                # Execute an automation script.
-                self.state.commands.execute(self.state, "run_script", [path])
-            else:
-                self.state.request_load(path)
+                break
+            command = ("load_state" if path.lower().endswith(".json") else
+                       "run_script" if path.lower().endswith(".uzscript") else "load")
+            try:
+                self.state.commands.execute(self.state, command, [path])
+            except Exception as exc:
+                self.state.console.error(f"Startup stopped at {path}: {exc}")
+                break
 
     # -- docking layout -----------------------------------------------------
     def _docking_splits(self) -> list[hello_imgui.DockingSplit]:
@@ -277,29 +282,15 @@ class DataViewerApp:
             imgui.end_popup()
 
     def _show_status(self) -> None:
-        cache = self.state.registry.cache.status()
-        label = (f"FPS: {imgui.get_io().framerate:.1f}  |  "
-                 f"RAM cache: {cache['bytes'] / 1024**2:.1f} / {cache['limit'] / 1024**2:.0f} MiB")
-        if cache['limit_hit']:
-            label += "  |  cache limit hit"
-        imgui.set_cursor_pos_x(max(imgui.get_cursor_pos_x(),
-                                  imgui.get_window_width() - imgui.calc_text_size(label).x
-                                  - imgui.get_style().window_padding.x))
-        if cache['limit_hit']:
-            imgui.text_colored(imgui.ImVec4(1.0, 0.72, 0.25, 1.0), label)
-        else:
-            imgui.text_unformatted(label)
-        if imgui.is_item_hovered():
-            imgui.set_tooltip(
-                "Retained RAM cache, not total application memory.\n"
-                "Limit hit is highlighted for 5 seconds after eviction or an oversized result.\n"
-                f"Since cache clear: {cache['evictions']} entries evicted; "
-                f"{cache['oversized']} oversized results not retained.\n"
-                "Evicted data is reread or recomputed when needed; no measurement data is lost.")
+        # The framework draws its FPS/idling controls after this callback.
+        # Keep one display even if its View-menu toggle is selected.
+        self._runner_params.imgui_window_params.show_status_fps = False
+        self.status.render(self.state)
 
     # -- runner -------------------------------------------------------------
     def run(self) -> None:
         params = hello_imgui.RunnerParams()
+        self._runner_params = params
         params.app_window_params.window_title = "UltraZohm Data Viewer"
         params.app_window_params.window_geometry.size = (1500, 900)
         params.imgui_window_params.default_imgui_window_type = (
@@ -307,6 +298,7 @@ class DataViewerApp:
         )
         params.imgui_window_params.show_status_bar = True
         params.imgui_window_params.show_status_fps = False  # FPS and cache share our status item.
+        params.imgui_window_params.remember_status_bar_settings = False
         params.imgui_window_params.show_menu_bar = True
         # Always render at full rate. hello_imgui idles to ~9 fps when there's no
         # input; for live panning/zooming of large logs we want full FPS throughout.

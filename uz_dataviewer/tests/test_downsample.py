@@ -65,10 +65,8 @@ def test_downsample_small_series_passthrough():
 
 
 def test_downsample_budget_is_max_points_not_pixel_width():
-    # The plots panel now passes n_out = max_points (no pixel-width cap). A window with
-    # <= max_points raw samples must come back lossless (this is the user-visible promise
-    # that a 5.5k-sample window with max_points=20000 is NOT downsampled); a larger
-    # window decimates to ~max_points.
+    # The sampler honors its supplied budget. The plot panel separately caps
+    # that budget by pixel width and trace count before calling the sampler.
     time = np.linspace(0.0, 50.0, 5_000_000)
     y = np.sin(time).astype(np.float32)
     max_points = 20_000

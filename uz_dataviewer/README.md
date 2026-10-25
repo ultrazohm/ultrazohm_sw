@@ -66,6 +66,9 @@ An existing `.venv` using another Python version is recreated by uv.
 The first run needs internet access and uses the included `uz_dataviewer/uv.lock`.
 No manual virtual environment activation is needed. Input paths are relative to
 your current directory; the launcher itself can be called from any directory.
+Startup files are processed in argument order, so a script can use recordings
+listed before it. A failed startup argument stops the remaining arguments and
+reports the error in the console.
 
 Alternatively, install and run manually from `uz_dataviewer/`:
 
@@ -92,7 +95,7 @@ plots (or the FFT / Histogram windows).
 ## Large recordings and responsiveness
 
 The desktop defaults to **Polars + Lazy**; the online version uses **PyArrow + In memory**.
-Choose **Loading → In memory / Lazy** in Navigation before opening files,
+Choose **Loading → In memory / Lazy** on the bottom status bar before opening files,
 or select the mode at startup:
 
 ```bash
@@ -124,7 +127,7 @@ Changed files must be reopened; cached results from their previous version are
 not reused, including in XY plots and cursor readouts. Lazy reads run on the desktop worker even for short recordings.
 
 The shared timestamp/summary RAM cache defaults to 1,024 MiB and is configurable
-under **Memory settings**. Prepared plot arrays are bounded by display budgets.
+with **Cache (MiB)** on the bottom status bar. Prepared plot arrays are bounded by display budgets.
 Cache limits are **not a hard process-RAM limit**: decoded batches, index-building
 scratch, FFTs, explicit NumPy conversions, exports and Python transformation
 plugins can allocate additional memory. A full-recording FFT still needs its raw
@@ -132,7 +135,7 @@ input and output arrays. Histograms stream raw batches in two passes. Explicit
 console/script commands and node/plugin evaluation retain synchronous semantics.
 
 Measurement caches stay in RAM by default; no automatic CSV conversion is written.
-Enable **Disk cache (new opens)** under **Cache settings**, pass `--disk-cache`, or use `disk_cache(true)` to persist indexes and summaries and convert lazy CSV inputs into reusable Parquet files.
+Enable **Disk cache** on the bottom status bar, pass `--disk-cache`, or use `disk_cache(true)` to persist indexes and summaries and convert lazy CSV inputs into reusable Parquet files.
 Reopen existing files to change their cache policy.
 JSON sessions preserve the setting for each file.
 When enabled, disk caches live in `~/.cache/uz_dataviewer` (Polars uses its `polars/` subdirectory), or the directory selected by `UZ_DATAVIEWER_CACHE`.
@@ -156,6 +159,9 @@ Small browser uploads use separate backing paths even when filenames match. Fail
 Streamed browser recordings have no backing file, so session saving is rejected; export their data first.
 Chain transforms with node links; using derived outputs as new source nodes is no longer supported.
 Analysis and exports use exact time windows, while plotting retains edge padding.
+Linked time ranges apply immediately to scripts, exports and analysis, including
+before the first GUI frame. Reset view updates the linked range to the selected
+plot's recording extent. FFT inputs must be equal-length one-dimensional arrays.
 FFT and FIR filters reject duplicate or irregular timestamps (100 ppm tolerance plus roundoff).
 Binary math and XY plots require matching timestamps throughout both inputs; implicit index alignment and XY truncation have been removed. XY limits and zoom survive session round trips without changing linked time axes.
 Stale or failed derived outputs are blocked from plots, analysis and exports until successful reevaluation; existing assignments are preserved, including across JSON restoration. Failed graphs restore with empty, unavailable output placeholders until repaired. Source validation covers original CSV files even when reading a cached conversion.

@@ -40,3 +40,57 @@ def test_console_renders_and_logs_commands():
     text = state.console.as_text()
     assert "set_x_lim(plot_1, 49, 50)" in text
     assert "boom" in text
+
+
+def test_console_follows_new_lines_but_preserves_history_scroll(app_state, gui_frame, monkeypatch):
+    from imgui_bundle import imgui
+    positions = []
+    last_line_positions = []
+    scroll_up = [False]
+    begin_child = imgui.begin_child
+
+    def capture(name, *args, **kwargs):
+        result = begin_child(name, *args, **kwargs)
+        if name == 'console_scroll':
+            positions.append((imgui.get_scroll_y(), imgui.get_scroll_max_y()))
+            if scroll_up[0]:
+                imgui.set_scroll_y(0)
+                scroll_up[0] = False
+        return result
+
+    monkeypatch.setattr(imgui, 'begin_child', capture)
+    multiline = imgui.input_text_multiline
+
+    def capture_text(label, text, *args, **kwargs):
+        last_y = (imgui.get_cursor_screen_pos().y + imgui.get_style().frame_padding.y
+                  + text.count('\n') * imgui.get_text_line_height())
+        top = imgui.get_window_pos().y
+        bottom = top + imgui.get_window_size().y
+        last_line_positions.append((last_y, top, bottom))
+        return multiline(label, text, *args, **kwargs)
+
+    monkeypatch.setattr(imgui, 'input_text_multiline', capture_text)
+    console = app_state.console
+    for i in range(200):
+        console.info(f'Initial message {i}')
+    for _ in range(4):
+        gui_frame(console, app_state)
+    assert positions[-1][1] > 0
+    assert positions[-1][0] >= positions[-1][1] - 2
+    last_y, top, bottom = last_line_positions[-1]
+    assert top <= last_y < bottom
+    for i in range(20):
+        console.info(f'New message {i}')
+        gui_frame(console, app_state)
+    for _ in range(2):
+        gui_frame(console, app_state)
+    assert positions[-1][0] >= positions[-1][1] - 2
+    last_y, top, bottom = last_line_positions[-1]
+    assert top <= last_y < bottom
+    scroll_up[0] = True
+    for _ in range(3):
+        gui_frame(console, app_state)
+    console.info('Stay in history')
+    for _ in range(3):
+        gui_frame(console, app_state)
+    assert positions[-1][0] == 0

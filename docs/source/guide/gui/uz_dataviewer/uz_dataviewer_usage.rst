@@ -42,7 +42,7 @@ Loading data
 Backend and loading mode
 ------------------------
 
-The **Backend** selector in Navigation chooses **PyArrow** or **Polars** for subsequently opened recordings.
+The **Backend** selector on the bottom status bar chooses **PyArrow** or **Polars** for subsequently opened recordings.
 The independent **Loading** selector chooses **In memory** or **Lazy**.
 Changing either setting leaves already loaded recordings unchanged.
 Desktop CSV selections larger than 1 GiB show a conversion recommendation for drag-and-drop, the Log Browser and the file picker.
@@ -51,7 +51,7 @@ Desktop CSV selections larger than 1 GiB show a conversion recommendation for dr
 Existing Parquet files are protected from overwriting; the dialog offers **Open existing Parquet** instead.
 **Cancel** skips the selected file, and multi-file selections are prompted individually.
 
-The shared timestamp and summary cache defaults to **1,024 MiB** and remains configurable under **Cache settings**.
+The shared timestamp and summary cache defaults to **1,024 MiB** and remains configurable with **Cache (MiB)** on the bottom status bar.
 This is a retained-cache budget, not a limit on total application RAM.
 The status bar shows retained RAM cache usage next to FPS.
 An amber **cache limit hit** indication appears for five seconds after an entry is evicted or a result exceeds the cache capacity.
@@ -77,7 +77,7 @@ The headless library accepts ``uz.read(path, backend="polars")``; its dataframe 
 The default library backend preserves the existing pandas DataFrame interface.
 Polars uses the native streaming reader and writer from the prototype; CSV conversion can use more RAM than PyArrow.
 Disk caching is disabled by default; indexes and summaries stay in RAM, and lazy CSV files are scanned directly.
-Enable **Disk cache (new opens)**, ``--disk-cache`` or ``disk_cache(true)`` to reuse disk summaries and converted CSVs across restarts.
+Enable **Disk cache** on the bottom status bar, ``--disk-cache`` or ``disk_cache(true)`` to reuse disk summaries and converted CSVs across restarts.
 The setting affects newly opened files; reopen existing files to apply it.
 When enabled, the application cache remains under ``~/.cache/uz_dataviewer`` or ``UZ_DATAVIEWER_CACHE``.
 Polars stores its disk caches in a separate ``polars/`` subdirectory, and the engines have distinct in-memory cache identities.

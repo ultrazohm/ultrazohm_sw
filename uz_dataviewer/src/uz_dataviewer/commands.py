@@ -517,12 +517,7 @@ def register_builtins(reg: CommandRegistry) -> None:
 
     def set_x_lim(state, a):
         plot_n, lo, hi = a
-        cell = _cell(state, plot_n)
-        cell.set_limits("x", lo, hi)
-        if cell.plot_type is not PlotType.XY:
-            state.plot_x_ranges[plot_n] = (lo, hi)
-            if state.link_x:
-                state.shared_x = (lo, hi)
+        state.set_plot_x_limits(plot_n, lo, hi)
 
     reg.add("set_x_lim", [Param("plot", "plot"), Param("min", "float"), Param("max", "float")],
             set_x_lim, "Set a subplot's X-axis limits.")
@@ -535,7 +530,7 @@ def register_builtins(reg: CommandRegistry) -> None:
             set_y_lim, "Set a subplot's Y-axis limits.")
 
     def reset_view(state, a):
-        _cell(state, a[0]).fit_pending = True
+        state.reset_plot_view(a[0])
 
     reg.add("reset_view", [Param("plot", "plot")], reset_view, "Auto-fit a subplot to its data extent.")
 

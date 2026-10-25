@@ -148,7 +148,10 @@ Loading & large logs (``loader.py``)
 ``open_file`` selects the storage policy for GUI uploads, native loads and commands.
 Memory loads dispatch through ``parse_file`` → ``parse_csv`` / ``parse_parquet`` and return a ``ParsedRun``; lazy loads return an ``OpenedSource``.
 Both register through their ``register`` method. The redundant eager-only ``load_file`` wrapper has been removed.
-On native, loads run on the cancellable daemon worker in ``loading.py``.
+On native, interactive GUI loads run on the cancellable daemon worker in ``loading.py``.
+Startup arguments and explicit commands load synchronously in order, so scripts can
+refer to preceding recordings without waiting for a GUI frame. A startup failure
+is logged and stops the remaining arguments.
 The worker prepares a resident run or lazy source; the main thread registers it in ``state.poll_pending_loads``, so ``DataRegistry`` is only mutated from one thread.
 Conversion runs in a spawned process so shutdown can interrupt native streaming IO and remove partial output.
 Readers check cancellation between batches; an in-flight native read may finish before cancellation is observed, but it cannot keep the application process alive.
@@ -163,8 +166,10 @@ The default in-memory loader reduces transient allocations; the complete recordi
 - **CSV→Parquet converter.** ``convert_csv_to_parquet`` stream-converts a CSV to Parquet with bounded memory (per-batch ``ParquetWriter.write_batch``), dropping JavaScope's empty trailing column and preserving raw headers so the result round-trips through the same name parsing. Exposed as the scriptable ``convert(src, [dst])`` command and the ``uz-dataviewer convert`` CLI.
   The shared converter owns temporary output, empty-recording validation, cancellation cleanup, and publication without overwriting existing destinations. GUI, console, and cache conversion use this same path; backend writers only fill unpublished temporary files.
 
-The data stays **in RAM**, so FFT / histogram / node transforms operate on the full record.
-Lifting the in-RAM bound entirely (out-of-core, web's hard ~4 GB case) is deferred — see :ref:`uz_dataviewer_web_large_logs`.
+In-memory mode retains the complete recording. Native lazy mode reads raw windows
+and streams histogram batches without keeping the full recording resident;
+FFTs and node transforms still materialize their selected inputs. Browser memory
+constraints are described in :ref:`uz_dataviewer_web_large_logs`.
 
 The command layer
 =================
@@ -375,7 +380,7 @@ The UI, command layer, plots, FFT/Histogram, nodes and downsampler are **identic
 
 Design-relevant points: loads are async on native and synchronous on web (Pyodide has no worker threads); the renderer never branches on the target because the **decimator is pure NumPy** (no native dependency to wheel for the browser); and the web build cannot hold a multi-GB log, so a large CSV is **stream-parsed into typed arrays** at full resolution. Recordings that exceed the browser numeric-data budget are rejected; load-time decimation has been removed.
 
-The user-facing comparison is in :doc:`uz_dataviewer_native_vs_web`; the wasm32 ~4 GB ceiling and the deferred out-of-core fix are analysed in :ref:`uz_dataviewer_web_large_logs`.
+The user-facing comparison is in :doc:`uz_dataviewer_native_vs_web`; the wasm32 memory ceiling is discussed in :ref:`uz_dataviewer_web_large_logs`.
 
 Web edges (``webbridge.py`` / ``build/gen_web.py``):
 

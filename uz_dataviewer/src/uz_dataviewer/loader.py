@@ -70,8 +70,8 @@ _KNOWN_UNITS = ("us", "ms", "rpm", "deg", "rad", "Hz", "V", "A", "W", "Nm", "C",
 #
 # NOTE: this is a resident-RAM ceiling, not a fit guarantee for a specific machine -- it is a
 # deliberately high blanket limit that only blocks extreme files. A box with less RAM than the
-# resident size can still OOM below it; lifting the resident bound entirely is the out-of-core
-# work in uz_dataviewer_architecture.rst.
+# resident size can still OOM below it. Lazy loading avoids retaining the full
+# recording; this guard applies only to the in-memory CSV path.
 MAX_CSV_NUMERIC_BYTES = 10_000_000_000  # ~10 GB resident (~110M rows at 20 channels)
 # Parquet files below this many rows use the simple bulk reader; larger ones stream.
 PARQUET_STREAM_MIN_ROWS = 2_000_000

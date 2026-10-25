@@ -96,3 +96,14 @@ def test_zoom_window_confines_x():
     start, stop = visible_slice(t, 5.0, 5.1)
     xs, _ = decimate_range(t, y, pyr, 2000, start, stop)
     assert xs.min() >= 4.9 and xs.max() <= 5.2
+
+
+def test_constant_trace_keeps_both_ends_through_summary_levels():
+    # Exercise direct sampling and several pyramid levels at the smallest budget.
+    for n in (100, 100_000, 2_000_000):
+        t = np.arange(n, dtype=np.float64)
+        source = ArraySource(t, {'value': np.ones(n, dtype=np.float32)})
+        for lo, hi in ((0, n - 1), (11, n - 17)):
+            result = source.read_plot('value', lo, hi, 2, padding=False)
+            np.testing.assert_array_equal(result.time, [lo, hi])
+            np.testing.assert_array_equal(result.values, [1, 1])

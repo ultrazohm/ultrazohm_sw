@@ -43,7 +43,6 @@ class Console:
     def __init__(self, max_lines: int = 2000) -> None:
         self._entries: deque[LogEntry] = deque(maxlen=max_lines)
         self._scroll_to_bottom = False
-        self._was_at_bottom = True  # only auto-stick to bottom if already there
 
         # Command line state.
         self._input = ""
@@ -114,17 +113,20 @@ class Console:
         # we pin that child to the bottom -- but only when the user is already
         # there, so scrolling up to read history is not yanked back.
         imgui.begin_child("console_scroll", imgui.ImVec2(0.0, -reserved))
+        # Inspect the current scroll position, not a previous-frame flag: a
+        # queued scroll takes effect on the next frame, after content grows.
+        at_bottom = imgui.get_scroll_y() >= imgui.get_scroll_max_y() - 2.0
         text = self.as_text()
         n_lines = text.count("\n") + 1
-        body_h = n_lines * imgui.get_text_line_height_with_spacing() + 8.0
+        # Multiline text uses font height, not the spacing between widgets.
+        # Adding item spacing per line creates a large blank tail in long logs.
+        body_h = n_lines * imgui.get_text_line_height() + 2 * imgui.get_style().frame_padding.y
         imgui.input_text_multiline(
             "##console_text", text, imgui.ImVec2(-1.0, body_h), imgui.InputTextFlags_.read_only
         )
-        at_bottom = imgui.get_scroll_y() >= imgui.get_scroll_max_y() - 2.0
-        if self._scroll_to_bottom and self._was_at_bottom:
+        if self._scroll_to_bottom and at_bottom:
             imgui.set_scroll_here_y(1.0)
         self._scroll_to_bottom = False
-        self._was_at_bottom = at_bottom
         imgui.end_child()
 
     def _completions(self, state: "AppState") -> list[str]:

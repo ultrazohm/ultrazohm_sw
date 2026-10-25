@@ -94,38 +94,6 @@ class NavigationPanel(SessionPanel):
             imgui.same_line()
             imgui.text_colored((0.95, 0.75, 0.25, 1.0), "loading...")
 
-        backends = ["pyarrow"] if webbridge.IS_WEB else ["pyarrow", "polars"]
-        labels = ["PyArrow"] if webbridge.IS_WEB else ["PyArrow", "Polars"]
-        imgui.set_next_item_width(130)
-        changed, backend = imgui.combo("Backend", backends.index(state.backend), labels)
-        if changed:
-            self._emit(state, "backend", backends[backend])
-        if imgui.is_item_hovered():
-            imgui.set_tooltip("Applies to newly opened files. Existing runs keep their backend.")
-
-        modes = ["memory", "lazy"]
-        imgui.set_next_item_width(130)
-        changed, mode = imgui.combo("Loading", modes.index(state.loading_mode), ["In memory", "Lazy"])
-        if changed:
-            self._emit(state, "loading_mode", modes[mode])
-        if imgui.is_item_hovered():
-            imgui.set_tooltip("Applies to files with backing storage; large browser-streamed CSVs remain in memory. "
-                              "Existing runs keep their storage mode.")
-        if imgui.tree_node("Cache settings"):
-            changed, mb = imgui.input_int("Cache (MiB)", state.registry.cache.limit // 1024**2)
-            if changed:
-                self._emit(state, "cache_budget", max(1, mb))
-            changed, enabled = imgui.checkbox("Disk cache (new opens)", state.disk_cache)
-            if changed:
-                self._emit(state, "disk_cache", enabled)
-            if imgui.is_item_hovered():
-                imgui.set_tooltip(
-                    "Cache indexes, summaries and CSV conversions in this tab; cleared on page reload. Reopen files to apply."
-                    if webbridge.IS_WEB else
-                    "Save indexes, summaries and CSV conversions across restarts. Reopen files to apply."
-                )
-            imgui.text_disabled("FFT and plugins can use additional memory.")
-            imgui.tree_pop()
         imgui.separator()
         imgui.text_disabled("Drag a signal into a plot cell")
         imgui.separator()

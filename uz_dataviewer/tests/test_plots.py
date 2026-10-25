@@ -162,3 +162,34 @@ def test_restored_x_window_still_fits_delayed_y(app_state, gui_frame, tmp_path, 
         assert limits[-1][2] <= 502 and limits[-1][3] >= 504
     finally:
         release.set()
+
+
+def test_linked_reset_updates_export_and_render(app_state, gui_frame, tmp_path):
+    from uz_dataviewer.session import export_data, to_dict
+    state = app_state
+    state.backend = 'pyarrow'
+    run = state.registry.add_run('test', 'test', np.arange(100.),
+                                 {'a': np.arange(100, dtype=np.float32)}, {})
+    state.set_grid(1, 2)
+    for cell in state.cells:
+        cell.add((run.id, 'a'))
+    state.commands.execute(state, 'set_x_lim', [1, 20, 30])
+    output = tmp_path / 'plot.csv'
+    export_data(state, 1, str(output))
+    data = np.genfromtxt(output, delimiter=',', skip_header=1)
+    np.testing.assert_array_equal(data[:, 0], np.arange(20, 31))
+    assert state.resolve_x_window(2, (0, 0), [(run.id, 'a')]) == (20, 30)
+    assert to_dict(state)['cells'][1]['x_lim'] == (20, 30)
+    panel = PlotsPanel()
+    for _ in range(3):
+        gui_frame(panel, state)
+    panel._driver = 0
+    state.commands.execute(state, 'reset_view', [2])
+    assert state.plot_time_range(1) == (0, 99)
+    for _ in range(3):
+        gui_frame(panel, state)
+    assert all(cell.x_lim == (0, 99) for cell in state.cells)
+    state.commands.execute(state, 'link_x', [False])
+    state.commands.execute(state, 'set_x_lim', [2, 40, 50])
+    assert state.plot_time_range(1) == (0, 99)
+    assert state.plot_time_range(2) == (40, 50)

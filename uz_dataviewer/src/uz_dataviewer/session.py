@@ -6,12 +6,14 @@ current state; they do not provide a second session serialization protocol.
 
 from __future__ import annotations
 
+from . import runtime
+
 import json
 from typing import TYPE_CHECKING
 
 from .loader import unique_name
 from .state import PlotType, XyStyle
-from .validation import axis_limits
+from .validation import axis_limits, finite_float, coordinates, spy_rectangle, histogram_bins, bounded_int, display_budget, boolean
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from .state import AppState
@@ -149,8 +151,7 @@ def load_state(state: "AppState", path: str) -> None:
 
 
 def _session_backend(state, backend):
-    from . import webbridge
-    if webbridge.IS_WEB and backend == "polars":
+    if runtime.IS_WEB and backend == "polars":
         state.console.warn("Polars session opened with PyArrow in the browser.")
         return "pyarrow"
     return backend
@@ -190,25 +191,21 @@ def _apply_dict(state: "AppState", data: dict) -> None:
         for spec in specs:
             state.loading_mode = spec["mode"]
             state.backend = _session_backend(state, spec["backend"])
-            state.disk_cache = spec["disk_cache"]
+            state.disk_cache = boolean(spec["disk_cache"])
             run = state.load_sync(spec["path"])
             if run is None:
                 raise ValueError(f"Cannot restore recording: {spec['path']}")
             run.set_time_origin(spec.get("time_origin"))
-            run.active = spec.get("active", True)
+            run.active = boolean(spec.get("active", True))
             run_ids[spec["key"]] = run.id
     finally:
         state.loading_mode, state.backend, state.disk_cache = mode, backend, disk_cache
 
     rows, cols = data.get("grid", [state.rows, state.cols])
-    if int(rows) < 1 or int(cols) < 1:
-        raise ValueError("Session grid dimensions must be positive")
-    state.set_grid(int(rows), int(cols))
-    state.link_x = bool(data.get("link_x", state.link_x))
+    state.set_grid(rows, cols)
+    state.link_x = boolean(data.get("link_x", state.link_x))
     state.shared_x = axis_limits(*data["shared_x"]) if data.get("shared_x") is not None else None
-    state.max_points = int(data.get("max_points", state.max_points))
-    if state.max_points < 2:
-        raise ValueError("Session display budget must be at least two points")
+    state.max_points = display_budget(data.get("max_points", state.max_points))
 
     def _resolve(labelled) -> tuple[int, str] | None:
         if not labelled:
@@ -232,21 +229,15 @@ def _apply_dict(state: "AppState", data: dict) -> None:
             break
         cell = state.cells[i]
         cell.signals = [r for r in (_resolve(s) for s in spec.get("signals", [])) if r is not None]
-        try:
-            cell.plot_type = PlotType(spec.get("type", PlotType.LINE.value))
-        except ValueError:
-            cell.plot_type = PlotType.LINE
-        cell.show_samples = bool(spec.get("show_samples", False))
-        cell.spy = bool(spec.get("spy", False))
-        cell.spy_rect = tuple(spec["spy_rect"]) if spec.get("spy_rect") else None
-        cell.cursors = bool(spec.get("cursors", False))
-        cell.cursor_x = tuple(spec["cursor_x"]) if spec.get("cursor_x") else None
-        cell.export_relative = bool(spec.get("export_relative", False))
+        cell.plot_type = PlotType(spec.get("type", PlotType.LINE.value))
+        cell.show_samples = boolean(spec.get("show_samples", False))
+        cell.spy = boolean(spec.get("spy", False))
+        cell.spy_rect = spy_rectangle(spec["spy_rect"]) if spec.get("spy_rect") is not None else None
+        cell.cursors = boolean(spec.get("cursors", False))
+        cell.cursor_x = coordinates(spec["cursor_x"], 2) if spec.get("cursor_x") is not None else None
+        cell.export_relative = boolean(spec.get("export_relative", False))
         cell.xy_source = _resolve(spec.get("xy_source"))
-        try:
-            cell.xy_style = XyStyle(spec.get("xy_style", XyStyle.LINE.value))
-        except ValueError:
-            cell.xy_style = XyStyle.LINE
+        cell.xy_style = XyStyle(spec.get("xy_style", XyStyle.LINE.value))
         for ref in (_resolve(r) for r in spec.get("y2", [])):
             if ref is not None:
                 cell.set_secondary(ref, True)
@@ -260,20 +251,20 @@ def _apply_dict(state: "AppState", data: dict) -> None:
 
     fft = data.get("fft") or {}
     state.fft.sources = [r for r in (_resolve(s) for s in fft.get("sources", [])) if r is not None]
-    state.fft.follow_plot = state.validate_follow_plot(int(fft.get("follow_plot", state.fft.follow_plot)))
-    state.fft.x_min = float(fft.get("x_min", state.fft.x_min))
-    state.fft.x_max = float(fft.get("x_max", state.fft.x_max))
-    state.fft.remove_dc = bool(fft.get("remove_dc", state.fft.remove_dc))
-    state.fft.window = bool(fft.get("window", state.fft.window))
-    state.fft.log_x = bool(fft.get("log_x", state.fft.log_x))
-    state.fft.log_y = bool(fft.get("log_y", state.fft.log_y))
+    state.fft.follow_plot = bounded_int(fft.get("follow_plot", state.fft.follow_plot), -1, state.cell_count, "FFT follow plot")
+    state.fft.x_min = finite_float(fft.get("x_min", state.fft.x_min))
+    state.fft.x_max = finite_float(fft.get("x_max", state.fft.x_max))
+    state.fft.remove_dc = boolean(fft.get("remove_dc", state.fft.remove_dc))
+    state.fft.window = boolean(fft.get("window", state.fft.window))
+    state.fft.log_x = boolean(fft.get("log_x", state.fft.log_x))
+    state.fft.log_y = boolean(fft.get("log_y", state.fft.log_y))
 
     hist = data.get("histogram") or {}
     state.histogram.sources = [r for r in (_resolve(s) for s in hist.get("sources", [])) if r is not None]
-    state.histogram.follow_plot = state.validate_follow_plot(int(hist.get("follow_plot", state.histogram.follow_plot)))
-    state.histogram.x_min = float(hist.get("x_min", state.histogram.x_min))
-    state.histogram.x_max = float(hist.get("x_max", state.histogram.x_max))
-    state.histogram.bins = int(hist.get("bins", state.histogram.bins))
+    state.histogram.follow_plot = bounded_int(hist.get("follow_plot", state.histogram.follow_plot), -1, state.cell_count, "Histogram follow plot")
+    state.histogram.x_min = finite_float(hist.get("x_min", state.histogram.x_min))
+    state.histogram.x_max = finite_float(hist.get("x_max", state.histogram.x_max))
+    state.histogram.bins = histogram_bins(hist.get("bins", state.histogram.bins))
 
     for cfg, spec in ((state.fft, fft), (state.histogram, hist)):
         if spec.get("x_lim") is not None:
@@ -304,8 +295,8 @@ def _restore_nodes(state: "AppState", specs: list, resolve) -> None:
             allow_unknown=True,
         )
         node.params = dict(spec.get("params", {}))
-        pos = spec.get("pos") or (0.0, 0.0)
-        node.pos = (float(pos[0]), float(pos[1]))
+        pos = spec.get("pos", (0.0, 0.0))
+        node.pos = coordinates(pos, 2)
     for spec in specs:  # links once every node exists
         dst = int(spec["id"])
         for slot, in_id in enumerate(spec.get("inputs", [])):
@@ -324,7 +315,7 @@ def _restore_nodes(state: "AppState", specs: list, resolve) -> None:
             publish_output(state, node)
             run = state.registry.get(node.out_run_id)
         if run is not None and view is not None:
-            run.active = bool(view["active"])
+            run.active = boolean(view["active"])
             run.set_time_origin(view["time_origin"])
 
 

@@ -1,15 +1,16 @@
 """Bottom status bar: loading controls on the left, usage on the right."""
+
+from .. import runtime
 from imgui_bundle import imgui
 
-from .. import webbridge
 from .base import SessionPanel
 
 
 class StatusPanel(SessionPanel):
     def render(self, state):
         imgui.push_id('data_settings')
-        backends = ['pyarrow'] if webbridge.IS_WEB else ['pyarrow', 'polars']
-        labels = ['PyArrow'] if webbridge.IS_WEB else ['PyArrow', 'Polars']
+        backends = ['pyarrow'] if runtime.IS_WEB else ['pyarrow', 'polars']
+        labels = ['PyArrow'] if runtime.IS_WEB else ['PyArrow', 'Polars']
         imgui.set_next_item_width(imgui.get_font_size() * 7)
         changed, backend = imgui.combo('Backend', backends.index(state.backend), labels)
         if changed:
@@ -40,7 +41,7 @@ class StatusPanel(SessionPanel):
         if imgui.is_item_hovered():
             imgui.set_tooltip(
                 'Cache indexes, summaries and CSV conversions in this tab; cleared on page reload. Reopen files to apply.'
-                if webbridge.IS_WEB else
+                if runtime.IS_WEB else
                 'Save indexes, summaries and CSV conversions across restarts. Reopen files to apply.'
             )
         imgui.pop_id()

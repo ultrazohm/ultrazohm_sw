@@ -174,7 +174,7 @@ Client — "Open from cloud" reuses the existing loader:
 
 From step 4 on it is a normal ``Run`` with the lazily-built client ``Pyramid``, identical to a local file.
 It is scriptable via ``connect(url[, token])`` + ``open_cloud(run_id)`` in ``commands.py``.
-Transport is gated on ``webbridge.IS_WEB``: web uses ``js.fetch`` to pull the file into the FS then loads it; native uses ``urllib``/``requests`` on the loader thread.
+Transport is gated on ``runtime.IS_WEB``: web uses ``js.fetch`` to pull the file into the FS then loads it; native uses ``urllib``/``requests`` on the loader thread.
 
 Limit and future hook
 ---------------------

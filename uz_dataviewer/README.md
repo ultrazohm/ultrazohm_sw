@@ -185,6 +185,15 @@ including actual row counts and retained buffer capacity. Parser scratch and
 transient growth copies remain outside the numeric-data budget. Native and
 browser CSV loaders share missing-value spellings (including NA, NULL and NaN).
 
+Session restoration rejects malformed coordinates, unknown plot types/styles, and
+invalid numeric settings before replacing the current session. Commands use the
+same bounds: 1–100,000 histogram bins, 1–16 rows/columns, 2–1,000,000 display
+points, and 1–1,048,576 MiB of cache. Mouse zoom in analysis windows persists
+through recomputation and JSON restoration. FFT display sampling, including
+summary rebuilds after cache eviction, runs on a desktop worker.
+Headless reads, conversions, and analysis do not import the GUI. Import GUI entry
+points explicitly from `uz_dataviewer.app`; package-root GUI aliases were removed.
+
 ## Documentation
 
 | Doc | For |

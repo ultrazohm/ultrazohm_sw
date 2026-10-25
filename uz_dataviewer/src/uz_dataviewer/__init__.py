@@ -6,8 +6,7 @@ VSCode-style docked layout, drag-and-drop subplots and range-aware downsampling.
 
 The data/analysis core is also usable **headlessly as a library** -- see
 :mod:`uz_dataviewer.api` (and the repository's ``uz_dataviewer_library.rst``). Importing this package does
-**not** import the imgui GUI stack; the GUI (``DataViewerApp``/``main``) is loaded
-lazily, only when first accessed, so a headless ``import uz_dataviewer`` needs only
+**not** import the imgui GUI stack; GUI entry points live in ``uz_dataviewer.app``. Headless operations need only
 numpy/pandas/pyarrow.
 """
 
@@ -27,21 +26,4 @@ __all__ = [
     "fft_frame",
     "node",
     "kinds",
-    # GUI entry points (lazily imported -- see __getattr__)
-    "DataViewerApp",
-    "main",
 ]
-
-
-def __getattr__(name: str):
-    """Lazily expose the GUI entry points without importing imgui at package load.
-
-    ``from uz_dataviewer import main`` / ``DataViewerApp`` keep working, but the
-    ``.app`` module (and the whole imgui_bundle stack it pulls in) is only imported
-    on first access -- so a headless ``import uz_dataviewer`` stays GUI-free.
-    """
-    if name in ("DataViewerApp", "main"):
-        from . import app
-
-        return getattr(app, name)
-    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

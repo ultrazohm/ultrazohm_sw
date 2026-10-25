@@ -21,6 +21,8 @@ Large logs (see ``uz_dataviewer_architecture.rst``) are handled leanly on native
 
 from __future__ import annotations
 
+from . import runtime
+
 import os
 import re
 import csv
@@ -372,8 +374,7 @@ def convert_csv_to_parquet(src: str, dst: str | None = None, *, backend="pyarrow
         check(cancel)
         # Publish only complete output, and never overwrite a destination created
         # while conversion was running. The parent owns cleanup on cancellation.
-        from . import webbridge
-        if webbridge.IS_WEB:
+        if runtime.IS_WEB:
             # The browser filesystem lacks hard links. Its synchronous, single-
             # threaded runtime cannot interleave a writer between check/rename.
             if os.path.lexists(dst):
@@ -481,8 +482,7 @@ class OpenedSource:
 def validate_backend(backend):
     if backend not in ("pyarrow", "polars"):
         raise ValueError("backend must be pyarrow or polars")
-    from . import webbridge
-    if webbridge.IS_WEB and backend == "polars":
+    if runtime.IS_WEB and backend == "polars":
         raise ValueError("Polars is available only in the desktop viewer; use pyarrow in the browser")
 
 

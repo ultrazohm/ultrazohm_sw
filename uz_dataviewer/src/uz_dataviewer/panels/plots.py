@@ -15,6 +15,8 @@ a typed command or a replayed script. Continuous pan/zoom gestures echo a
 
 from __future__ import annotations
 
+from .. import runtime
+
 import math
 
 import numpy as np
@@ -231,7 +233,7 @@ class PlotsPanel(SessionPanel):
                     pfd.save_file("Export plot data", name, ["CSV (*.csv)", "*.csv"]),
                     cell,
                 )
-            elif webbridge.IS_WEB:  # no OS dialog in a tab -> write to FS + download
+            elif runtime.IS_WEB:  # no OS dialog in a tab -> write to FS + download
                 webbridge.save_and_download(
                     state, name,
                     lambda path: self._emit(state, "export_data", plot_n, path, cell.export_relative),

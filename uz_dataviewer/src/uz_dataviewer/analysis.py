@@ -160,6 +160,8 @@ def histogram_sources(series, lo, hi, bins, cancel=None):
     never used here. Memory is proportional to one batch and the output bins.
     """
     from .sources import check
+    from .validation import histogram_bins
+    bins = histogram_bins(bins)
     ranges, minimum, maximum, dropped = [], None, None, 0
     for label, source, channel, offset in series:
         check(cancel)
@@ -180,7 +182,6 @@ def histogram_sources(series, lo, hi, bins, cancel=None):
     if minimum is None:
         return [], 0, dropped
     from .validation import expanded_range
-    bins = max(1, bins)
     minimum, maximum = expanded_range(minimum, maximum, bins)
     edges = np.linspace(minimum, maximum, bins + 1)
     centers = (edges[:-1] + edges[1:]) / 2

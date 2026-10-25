@@ -254,7 +254,7 @@ def test_restore_rejects_nonexistent_analysis_plot_transactionally(app_state):
     token = state.session_token
     saved = session.to_dict(state)
     saved['fft']['follow_plot'] = 2
-    with pytest.raises(ValueError, match='Analysis window'):
+    with pytest.raises(ValueError, match='FFT follow plot'):
         session.apply_dict(state, saved)
     assert state.session_token is token
 
@@ -470,7 +470,7 @@ def test_bad_session_structure_is_transactional(states, recording_csv):
     assert state.registry.get(original.id) is original
     data['cells'][0]['signals'] = []
     data['grid'] = [0, 1]
-    with pytest.raises(ValueError, match='grid dimensions'):
+    with pytest.raises(ValueError, match='Grid rows'):
         apply_dict(state, data)
     assert state.registry.get(original.id) is original
 

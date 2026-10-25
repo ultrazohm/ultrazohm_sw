@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from . import runtime
+
 import enum
 import math
 import os
@@ -9,14 +11,13 @@ from concurrent.futures import Future
 from .loading import LoadExecutor
 from dataclasses import dataclass, field
 
-from . import webbridge
 from .commands import CommandRegistry
 from .console import Console
 from .loader import ParsedRun, open_file
 from .requests import Requests
 from .model import DataRegistry, Run, Signal
 from .nodes import NodeGraph
-from .validation import axis_limits
+from .validation import axis_limits, bounded_int
 
 # Identifies a signal across runs: (run_id, signal_name).
 LARGE_CSV_BYTES = 1024**3
@@ -188,7 +189,7 @@ class HistogramConfig(AnalysisConfig):
 
 def default_data_settings():
     """The browser cannot use the native Polars runtime."""
-    return ("pyarrow", "memory") if webbridge.IS_WEB else ("polars", "lazy")
+    return ("pyarrow", "memory") if runtime.IS_WEB else ("polars", "lazy")
 
 
 class AppState:
@@ -199,8 +200,9 @@ class AppState:
         self.cache_dir = None
         self.disk_cache = False
         self.large_csv_requests: list[LoadRequest] = []
-        self.display = Requests(synchronous=webbridge.IS_WEB)
-        self.analysis_jobs = Requests(synchronous=webbridge.IS_WEB)
+        self.display = Requests(synchronous=runtime.IS_WEB)
+        self.analysis_jobs = Requests(synchronous=runtime.IS_WEB)
+        self.analysis_displays = {name: Requests(synchronous=runtime.IS_WEB) for name in ("fft", "hist")}
         self.console = Console()
         # The command registry routes every discrete GUI action and console
         # input through one place, so the console doubles as a replayable log.
@@ -263,6 +265,8 @@ class AppState:
 
     def set_grid(self, rows: int, cols: int) -> None:
         """Resize the grid, preserving the assignments of surviving cells."""
+        rows = bounded_int(rows, 1, 16, "Grid rows")
+        cols = bounded_int(cols, 1, 16, "Grid columns")
         new_cells = [SubplotCell() for _ in range(rows * cols)]
         for i in range(min(len(new_cells), len(self.cells))):
             new_cells[i] = self.cells[i]
@@ -329,7 +333,7 @@ class AppState:
         validate_backend(backend)
         path = os.path.abspath(path)
         request = LoadRequest(path, mode, backend, self.disk_cache)
-        if not webbridge.IS_WEB and path.lower().endswith(".csv"):
+        if not runtime.IS_WEB and path.lower().endswith(".csv"):
             try:
                 if os.path.getsize(path) > LARGE_CSV_BYTES:
                     self.large_csv_requests.append(request)
@@ -357,7 +361,7 @@ class AppState:
         path = request.path
         self.commands.echo(self, "load", [path])
         self.console.info(f"{'Converting and loading' if convert_from else 'Loading'} {os.path.basename(path)} ...")
-        if webbridge.IS_WEB:
+        if runtime.IS_WEB:
             try:
                 parsed = self._open_background(path, request.mode, request.backend, request.disk_cache)
                 self._report_loaded(parsed.register(self.registry))
@@ -536,6 +540,8 @@ class AppState:
     def shutdown(self) -> None:
         self.display.close()
         self.analysis_jobs.close()
+        for requests in self.analysis_displays.values():
+            requests.close()
         self.registry.cache.clear()
         self._executor.shutdown()
         self._pending.clear()

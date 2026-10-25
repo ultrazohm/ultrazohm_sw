@@ -22,6 +22,8 @@ from headless tests.
 
 from __future__ import annotations
 
+from .validation import finite_float
+
 import re
 import json
 from dataclasses import dataclass
@@ -218,7 +220,7 @@ def _coerce_one(state: "AppState", param: Param, raw):
     if kind == "int":
         return int(str(raw).strip())
     if kind == "float":
-        return float(str(raw).strip())
+        return finite_float(raw)
     if kind == "bool":
         return _parse_bool(raw)
     if kind == "str":
@@ -352,7 +354,7 @@ class CommandRegistry:
 def register_builtins(reg: CommandRegistry) -> None:
     # Imported lazily inside handlers to avoid a GUI/state import cycle.
     from .state import PlotType, XyStyle
-    from .validation import axis_limits
+    from .validation import axis_limits, finite_float, coordinates, spy_rectangle, histogram_bins, display_budget, cache_budget_mb
 
     def _cell(state, plot_n):
         return state.cells[plot_n - 1]
@@ -411,7 +413,7 @@ def register_builtins(reg: CommandRegistry) -> None:
             "Restore a run's original (un-normalised) timestamps.")
 
     def set_grid(state, a):
-        state.set_grid(max(1, a[0]), max(1, a[1]))
+        state.set_grid(a[0], a[1])
 
     reg.add("set_grid", [Param("rows", "int"), Param("cols", "int")], set_grid,
             "Set the subplot grid to rows x cols.")
@@ -443,15 +445,13 @@ def register_builtins(reg: CommandRegistry) -> None:
             "Persist indexes, summaries and CSV conversions for subsequent opens (default: false).")
 
     def cache_budget(state, a):
-        if a[0] < 1:
-            raise CommandError("Budget must be positive (MiB)")
-        state.registry.cache.limit = a[0] * 1024**2
+        state.registry.cache.limit = cache_budget_mb(a[0]) * 1024**2
         state.registry.cache.trim()
     reg.add("cache_budget", [Param("mib", "int")], cache_budget,
             "Shared timestamp/summary RAM cache budget in MiB.")
 
     def set_max_points(state, a):
-        state.max_points = max(100, a[0])
+        state.max_points = display_budget(a[0])
 
     reg.add("set_max_points", [Param("n", "int")], set_max_points,
             "Max points drawn per signal (downsample budget).")
@@ -552,8 +552,9 @@ def register_builtins(reg: CommandRegistry) -> None:
     def set_spy_rect(state, a):
         plot_n, xmin, ymin, xmax, ymax = a
         cell = _cell(state, plot_n)
+        rectangle = spy_rectangle((xmin, ymin, xmax, ymax))
         cell.spy = True
-        cell.spy_rect = (xmin, ymin, xmax, ymax)
+        cell.spy_rect = rectangle
 
     reg.add("set_spy_rect",
             [Param("plot", "plot"), Param("xmin", "float"), Param("ymin", "float"),
@@ -585,7 +586,7 @@ def register_builtins(reg: CommandRegistry) -> None:
         plot_n, x1, x2 = a
         cell = _cell(state, plot_n)
         cell.cursors = True
-        cell.cursor_x = (x1, x2)
+        cell.cursor_x = coordinates((x1, x2), 2)
 
     reg.add("set_cursors", [Param("plot", "plot"), Param("x1", "float"), Param("x2", "float")],
             set_cursors, "Place the two cursors at x1 and x2 (enables cursors).")
@@ -727,10 +728,10 @@ def register_builtins(reg: CommandRegistry) -> None:
     reg.add("histogram", [], histogram, "Recompute and focus the Histogram window.")
 
     def hist_bins(state, a):
-        state.histogram.bins = max(1, a[0])
+        state.histogram.bins = histogram_bins(a[0])
         state.histogram.compute_requested = True
 
-    reg.add("hist_bins", [Param("n", "int")], hist_bins, "Set the Histogram bin count.")
+    reg.add("hist_bins", [Param("n", "int")], hist_bins, "Set the Histogram bin count (1..100000).")
 
     def hist_export(state, a):
         from .session import export_histogram

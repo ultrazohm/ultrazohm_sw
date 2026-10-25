@@ -1,6 +1,8 @@
 """Dockable browser of local log files; directory scans never read log contents."""
 from __future__ import annotations
 
+from .. import runtime
+
 from concurrent.futures import ThreadPoolExecutor
 import os
 from pathlib import Path
@@ -9,7 +11,6 @@ from threading import Event
 
 from imgui_bundle import imgui
 
-from .. import webbridge
 from .navigation import LOG_DND_TYPE, pfd
 
 
@@ -70,7 +71,7 @@ class LogBrowserPanel:
             self._executor.shutdown(wait=False, cancel_futures=True)
 
     def render(self, state):
-        if webbridge.IS_WEB:
+        if runtime.IS_WEB:
             imgui.text_wrapped("Local directory browsing is available in the desktop app.")
             return
         if not self._started:

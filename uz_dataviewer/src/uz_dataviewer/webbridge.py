@@ -10,16 +10,12 @@ Everything here is a no-op on desktop. In the browser, native facilities differ:
 * threads -- Pyodide has no usable worker threads by default, so file loading
   runs synchronously (see ``AppState.request_load``).
 
-Web mode is detected via imgui_bundle's ``__bundle_pyodide__`` flag, which is
-True only in the Pyodide wheel.
+Web mode is detected without importing the GUI, using the Emscripten platform.
 """
 
 from __future__ import annotations
 
-try:
-    from imgui_bundle import __bundle_pyodide__ as IS_WEB
-except Exception:  # pragma: no cover - defensive; flag should always exist
-    IS_WEB = False
+from . import runtime
 
 # The running AppState, registered by the app so the JS->Python file bridge can
 # reach it.
@@ -36,7 +32,7 @@ def register_state(state) -> None:
 
 def trigger_file_dialog() -> None:
     """Click the hidden HTML file input (browser only)."""
-    if not IS_WEB:
+    if not runtime.IS_WEB:
         return
     import js  # type: ignore[import-not-found]
 
@@ -64,7 +60,7 @@ def trigger_session_open() -> None:
     routed to :func:`load_uploaded_session` (state restore / script replay)
     rather than to the data loader.
     """
-    if not IS_WEB:
+    if not runtime.IS_WEB:
         return
     import js  # type: ignore[import-not-found]
 
@@ -96,7 +92,7 @@ def download(path: str, filename: str | None = None) -> None:
     so the file is written to the in-memory FS and handed to the browser as a
     download via a Blob + anchor click.
     """
-    if not IS_WEB:
+    if not runtime.IS_WEB:
         return
     import js  # type: ignore[import-not-found]
     from pyodide.ffi import to_js  # type: ignore[import-not-found]
@@ -129,7 +125,7 @@ def save_and_download(state, name: str, emit) -> None:
     ``emit`` must raise on failure or return False (SessionPanel._emit's contract).
     The browser Blob owns the bytes before the temporary directory is removed.
     """
-    if not IS_WEB:
+    if not runtime.IS_WEB:
         return
     from pathlib import Path
     from tempfile import TemporaryDirectory

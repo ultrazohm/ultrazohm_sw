@@ -35,3 +35,47 @@ def expanded_range(lo, hi, intervals=1):
         else:
             lo = hi - width
     return axis_limits(lo, hi)
+
+
+def bounded_int(value, minimum, maximum, label):
+    if isinstance(value, bool):
+        raise ValueError(f"{label} must be an integer")
+    try:
+        number = int(value)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(f"{label} must be an integer") from exc
+    if number != float(value) or not minimum <= number <= maximum:
+        raise ValueError(f"{label} must be an integer from {minimum} to {maximum}")
+    return number
+
+
+def histogram_bins(value):
+    # Bound both native integer widgets and per-signal bin allocations.
+    return bounded_int(value, 1, 100_000, "Histogram bins")
+
+
+def coordinates(value, length):
+    if not isinstance(value, (list, tuple)) or len(value) != length:
+        raise ValueError(f"Expected {length} coordinates")
+    return tuple(finite_float(v) for v in value)
+
+
+def spy_rectangle(value):
+    xmin, ymin, xmax, ymax = coordinates(value, 4)
+    axis_limits(xmin, xmax)
+    axis_limits(ymin, ymax)
+    return xmin, ymin, xmax, ymax
+
+
+def display_budget(value):
+    return bounded_int(value, 2, 1_000_000, "Display points")
+
+
+def cache_budget_mb(value):
+    return bounded_int(value, 1, 1_048_576, "Cache MiB")
+
+
+def boolean(value):
+    if not isinstance(value, bool):
+        raise ValueError("Expected a JSON boolean")
+    return value

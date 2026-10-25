@@ -109,7 +109,7 @@ Module map
      - ``to_dict``/``apply_dict``, ``export_*``
    * - ``webbridge.py``
      - Browser integration (file input, array load, downloads)
-     - ``IS_WEB``, ``load_columns``, ``download``
+     - ``load_columns``, ``download``
    * - ``panels/navigation.py``
      - Left tree, drag sources, file dialog, normalize menu
      - ``NavigationPanel``
@@ -381,7 +381,7 @@ FFT export validates all selected channels before writing; a missing or invalid 
 Native vs web (``webbridge.py``)
 ==================================
 
-The same Python runs on the desktop and in the browser via Pyodide (CPython→WASM); a single flag, ``webbridge.IS_WEB``, gates the handful of edges that differ.
+The same Python runs on the desktop and in the browser via Pyodide (CPython→WASM); a single flag, ``runtime.IS_WEB``, gates the handful of edges that differ.
 The UI, command layer, plots, FFT/Histogram, nodes and downsampler are **identical** on both — the differences are file I/O, threading, the WASM memory ceiling, and plugin loading.
 
 Design-relevant points: loads are async on native and synchronous on web (Pyodide has no worker threads); the renderer never branches on the target because the **decimator is pure NumPy** (no native dependency to wheel for the browser); and the web build cannot hold a multi-GB log, so a large CSV is **stream-parsed into typed arrays** at full resolution. Recordings that exceed the browser numeric-data budget are rejected; load-time decimation has been removed.

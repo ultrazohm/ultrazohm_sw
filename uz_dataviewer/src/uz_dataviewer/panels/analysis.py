@@ -14,6 +14,8 @@ the transform-specific options, and the per-signal compute/draw.
 
 from __future__ import annotations
 
+from .. import runtime
+
 from typing import TYPE_CHECKING
 import copy
 
@@ -71,9 +73,11 @@ class AnalysisPanel(SessionPanel):
         self._computed_key: tuple | None = None  # state at last compute (stale check)
         self._last_logged_x: tuple[float, float] | None = None  # zoom echo baseline
         self._fit_pending: bool = True  # one-shot auto-fit (first show / Reset / new result)
+        self._zoom_after_fit = False
         self._generation = 0
         self._analysis_pending = None
-        self._display_cache = {}
+        self._display_slots = set()
+        self._display_pending = False
         self._fitting: bool = False     # this frame is an auto-fit (decimate full range)
 
     # -- command-name helpers ----------------------------------------------
@@ -133,13 +137,20 @@ class AnalysisPanel(SessionPanel):
             lim = implot.get_plot_limits()
             start, stop = visible_slice(x, float(lim.x.min), float(lim.x.max))
         budget = max(2, min(state.max_points, int(implot.get_plot_size().x * 2)))
-        key = (id(x), id(y), start, stop, budget)
-        previous = self._display_cache.get(label)
-        if previous is None or previous[0] != key:
-            xs, ys = decimate_range(x, y, source, budget, start, stop)
-            previous = (key, np.ascontiguousarray(xs, np.float64), np.ascontiguousarray(ys, np.float64))
-            self._display_cache[label] = previous
-        implot.plot_line(label, previous[1], previous[2])
+        identity = source.metadata.identity
+        key = (identity, start, stop, budget)
+        self._display_slots.add(label)
+        def prepare(cancel):
+            xs, ys = decimate_range(x, y, source, budget, start, stop, cancel)
+            return np.ascontiguousarray(xs, np.float64), np.ascontiguousarray(ys, np.float64)
+        requests = state.analysis_displays[self.prefix]
+        result = requests.request(label, key, identity, prepare)
+        if not requests.ready(label, key) and requests.error(label) is None:
+            self._display_pending = True
+        if result is not None:
+            implot.plot_line(label, *result)
+        else:
+            implot.plot_dummy(label)
 
     # -- stale tracking -----------------------------------------------------
     def _current_key(self, state: "AppState", cfg: "AnalysisConfig") -> tuple:
@@ -207,7 +218,7 @@ class AnalysisPanel(SessionPanel):
                 self._export_dialog = pfd.save_file(
                     f"Export {self.prefix} data", name, ["CSV (*.csv)", "*.csv"]
                 )
-            elif webbridge.IS_WEB:  # no OS dialog in a tab -> write to FS + download
+            elif runtime.IS_WEB:  # no OS dialog in a tab -> write to FS + download
                 webbridge.save_and_download(
                     state, name, lambda path: self._emit(state, self.export_command, path)
                 )
@@ -217,7 +228,7 @@ class AnalysisPanel(SessionPanel):
             state.analysis_jobs.forget(self.prefix)
             self._analysis_pending = None
             self._results = []
-            self._display_cache.clear()
+            state.analysis_displays[self.prefix].retain(set())
             self._info = ""
             cfg.compute_requested = bool(cfg.sources)
 
@@ -227,7 +238,7 @@ class AnalysisPanel(SessionPanel):
             state.analysis_jobs.forget(self.prefix)
             self._analysis_pending = None
             self._results = []
-            self._display_cache.clear()
+            state.analysis_displays[self.prefix].retain(set())
             self._info = source_error
             cfg.compute_requested = False
         if cfg.compute_requested:
@@ -256,13 +267,13 @@ class AnalysisPanel(SessionPanel):
                 if key[1] == self._current_key(state, cfg):
                     self._results, self._info = result
                     self._computed_key = key[1]
-                    self._display_cache.clear()
+                    state.analysis_displays[self.prefix].retain(set())
                     self._fit_pending = True
                 self._analysis_pending = None
             elif state.analysis_jobs.error(self.prefix) is not None:
                 self._info = state.analysis_jobs.error(self.prefix)
                 self._results = []
-                self._display_cache.clear()
+                state.analysis_displays[self.prefix].retain(set())
                 self._analysis_pending = None
             else:
                 imgui.text_disabled("Computing...")
@@ -273,7 +284,7 @@ class AnalysisPanel(SessionPanel):
             state.analysis_jobs.forget(self.prefix)
             self._analysis_pending = None
             self._results = []
-            self._display_cache.clear()
+            state.analysis_displays[self.prefix].retain(set())
 
         # -- info + stale indicator --
         if self._info:
@@ -303,7 +314,16 @@ class AnalysisPanel(SessionPanel):
                 cfg.pending_x_lim = None
                 did_set = True
 
+            self._display_slots.clear()
+            self._display_pending = False
             self._draw(state)
+            state.analysis_displays[self.prefix].retain(self._display_slots)
+            if self._display_pending:
+                self._fit_pending = self._fitting
+            for slot in self._display_slots:
+                error = state.analysis_displays[self.prefix].error(slot)
+                if error:
+                    self._info = error
 
             for ref in self._result_refs():
                 label = state.signal_label(ref)
@@ -322,16 +342,25 @@ class AnalysisPanel(SessionPanel):
                 implot.end_drag_drop_target()
 
             # Echo a *_xlim command when a pan/zoom of this plot settles.
+            lim = implot.get_plot_limits()
             if implot.is_plot_hovered():
-                lim = implot.get_plot_limits()
-                if cfg.x_lim is not None:
-                    cfg.x_lim = (float(lim.x.min), float(lim.x.max))
-                self._maybe_echo_zoom(state, float(lim.x.min), float(lim.x.max), suppress=did_set)
+                self._maybe_echo_zoom(state, float(lim.x.min), float(lim.x.max), suppress=did_set or self._zoom_after_fit)
+            elif not did_set:
+                self._last_logged_x = (float(lim.x.min), float(lim.x.max))
 
+            self._zoom_after_fit = did_set
             implot.end_plot()
 
     def _maybe_echo_zoom(self, state: "AppState", lo: float, hi: float, *, suppress: bool) -> None:
-        if suppress or imgui.is_mouse_down(0) or not (hi > lo):
+        from ..validation import axis_limits
+        try:
+            limits = axis_limits(lo, hi)
+        except ValueError:
+            return
+        if suppress:
+            self._last_logged_x = limits
+            return
+        if imgui.is_mouse_down(0):
             return
         span = hi - lo
         last = self._last_logged_x
@@ -340,6 +369,9 @@ class AnalysisPanel(SessionPanel):
         first = last is None
         self._last_logged_x = (lo, hi)
         if not first:
+            # The gesture has already moved ImPlot; persist it without queuing a
+            # redundant axis update that would interfere with the next gesture.
+            self.config(state).x_lim = limits
             state.commands.echo(state, self.xlim_command, [lo, hi])
 
     def _remove(self, state: "AppState", ref: tuple[int, str]) -> None:

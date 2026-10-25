@@ -6,6 +6,8 @@ headers + float arrays, with no Arrow text parse. No browser needed.
 
 from __future__ import annotations
 
+from uz_dataviewer import runtime
+
 from pathlib import Path
 import importlib.util
 import os
@@ -55,7 +57,7 @@ def test_save_and_download_runs_command_then_downloads(monkeypatch):
     state = AppState()
     webbridge.register_state(state)
     calls: dict = {}
-    monkeypatch.setattr(webbridge, "IS_WEB", True)
+    monkeypatch.setattr(runtime, "IS_WEB", True)
     monkeypatch.setattr(webbridge, "download", lambda path, name: calls.update(download=(path, name)))
 
     webbridge.save_and_download(state, "plot_1.csv", lambda path: calls.update(emit=path))
@@ -68,7 +70,7 @@ def test_save_and_download_runs_command_then_downloads(monkeypatch):
 def test_save_and_download_native_is_noop(monkeypatch):
     # On native the caller drives an OS save dialog; the helper must do nothing.
     state = AppState()
-    monkeypatch.setattr(webbridge, "IS_WEB", False)
+    monkeypatch.setattr(runtime, "IS_WEB", False)
     called: list = []
     webbridge.save_and_download(state, "x.csv", lambda path: called.append(path))
     assert called == []
@@ -78,7 +80,7 @@ def test_save_and_download_surfaces_errors(monkeypatch):
     # A failing command goes to the console, not up the call stack.
     state = AppState()
     webbridge.register_state(state)
-    monkeypatch.setattr(webbridge, "IS_WEB", True)
+    monkeypatch.setattr(runtime, "IS_WEB", True)
     monkeypatch.setattr(webbridge, "download", lambda *a: None)
 
     def boom(path):
@@ -98,7 +100,7 @@ def test_failed_panel_export_never_downloads_previous_data(app_state, monkeypatc
     state.fft.follow_plot = -1
     panel = FftPanel()
     downloads, paths = [], []
-    monkeypatch.setattr(webbridge, 'IS_WEB', True)
+    monkeypatch.setattr(runtime, 'IS_WEB', True)
     monkeypatch.setattr(webbridge, 'download', lambda path, name: downloads.append(Path(path).read_text()))
 
     def export(path):
@@ -167,7 +169,7 @@ function pyLoad(path) { paths.push(root + path); }
 
 def test_uploaded_files_use_the_same_loading_policy_as_commands(app_state, tmp_path, monkeypatch):
     state = app_state
-    monkeypatch.setattr(webbridge, 'IS_WEB', True)
+    monkeypatch.setattr(runtime, 'IS_WEB', True)
     monkeypatch.setattr(webbridge, '_active_state', state)
     state.backend = 'pyarrow'
     path = tmp_path / 'upload.csv'

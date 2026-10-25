@@ -6,6 +6,8 @@ in the center, and Console below the plots.
 
 from __future__ import annotations
 
+from . import runtime
+
 import os
 import sys
 
@@ -136,7 +138,7 @@ class DataViewerApp:
     def _show_menus(self) -> None:
         if not imgui.begin_menu("Session"):
             return
-        if webbridge.IS_WEB:
+        if runtime.IS_WEB:
             self._web_session_menu()
         else:
             self._native_session_menu()
@@ -207,7 +209,7 @@ class DataViewerApp:
         web build, a non-GLFW backend, or a missing `glfw` module this is a no-op and
         the **Open file(s)...** button remains the way in.
         """
-        if webbridge.IS_WEB:
+        if runtime.IS_WEB:
             return
         try:
             import glfw

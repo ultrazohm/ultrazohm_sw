@@ -1,4 +1,6 @@
 """Conversion publishes complete recordings without overwriting existing files."""
+
+from uz_dataviewer import runtime
 import threading
 
 import pytest
@@ -77,7 +79,7 @@ def test_cancellation_before_publication_cleans_output(tmp_path, monkeypatch):
 
 def test_browser_conversion_uses_rename_without_hard_links(tmp_path, monkeypatch):
     from uz_dataviewer import webbridge
-    monkeypatch.setattr(webbridge, 'IS_WEB', True)
+    monkeypatch.setattr(runtime, 'IS_WEB', True)
 
     def unsupported(*args):
         raise AssertionError('Browser conversion must not require hard links')

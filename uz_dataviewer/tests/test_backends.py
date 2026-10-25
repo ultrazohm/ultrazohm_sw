@@ -1,5 +1,7 @@
 """Backend selection is independent of storage policy and survives session restore."""
 
+from uz_dataviewer import runtime
+
 from pathlib import Path
 import json
 import subprocess
@@ -114,7 +116,7 @@ def test_conversion_export_and_library(tmp_path, backend):
 
 def test_web_uses_pyarrow_for_polars_session(logs, monkeypatch):
     state = AppState()
-    monkeypatch.setattr(webbridge, 'IS_WEB', True)
+    monkeypatch.setattr(runtime, 'IS_WEB', True)
     try:
         with pytest.raises(CommandError, match='desktop'):
             state.commands.execute(state, 'backend', ['polars'])
@@ -157,7 +159,7 @@ def test_obsolete_sessions_are_rejected():
 @pytest.mark.parametrize('online, expected', [(False, ('polars', 'lazy')), (True, ('pyarrow', 'memory'))])
 def test_application_defaults_by_platform(monkeypatch, online, expected):
     from uz_dataviewer.app import DataViewerApp
-    monkeypatch.setattr(webbridge, 'IS_WEB', online)
+    monkeypatch.setattr(runtime, 'IS_WEB', online)
     app = DataViewerApp()
     try:
         assert (app.state.backend, app.state.loading_mode) == expected
@@ -172,14 +174,14 @@ def test_cli_defaults_and_explicit_overrides(monkeypatch):
         def __init__(self, **kwargs): captured.append(kwargs)
         def run(self): pass
     monkeypatch.setattr(app, 'DataViewerApp', Viewer)
-    monkeypatch.setattr(webbridge, 'IS_WEB', False)
+    monkeypatch.setattr(runtime, 'IS_WEB', False)
     app.main([])
     assert captured[-1]['disk_cache'] is False
     assert (captured[-1]['backend'], captured[-1]['loading_mode']) == ('polars', 'lazy')
     app.main(['--backend', 'pyarrow', '--loading-mode', 'memory', '--disk-cache'])
     assert captured[-1]['disk_cache'] is True
     assert (captured[-1]['backend'], captured[-1]['loading_mode']) == ('pyarrow', 'memory')
-    monkeypatch.setattr(webbridge, 'IS_WEB', True)
+    monkeypatch.setattr(runtime, 'IS_WEB', True)
     app.main([])
     assert (captured[-1]['backend'], captured[-1]['loading_mode']) == ('pyarrow', 'memory')
 

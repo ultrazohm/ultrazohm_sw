@@ -260,10 +260,10 @@ def test_lazy_frame_does_not_read_raw_on_gui_thread(recording, tmp_path, monkeyp
             panel.render(state)
             imgui.end()
             imgui.render()
-            if n > 4 and not state.display.pending:
+            if n > 4 and not state.services.display.pending:
                 break
             time.sleep(.005)
-        assert not state.display.errors
+        assert not state.services.display.errors
         assert panel._last_points[0] > 0
     finally:
         state.shutdown()
@@ -369,7 +369,7 @@ def test_per_file_loading_mode_does_not_change_default(tmp_path):
     try:
         state.request_load(str(path), loading_mode='lazy')
         state.request_load(str(path), loading_mode='memory')
-        for future, _ in state._pending:
+        for future, _ in state.services.pending:
             future.result(timeout=10)
         state.poll_pending_loads()
         assert isinstance(state.registry.runs[0].time, SourceColumn)

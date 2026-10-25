@@ -50,7 +50,7 @@ def test_cancel_conversion_stops_process_and_removes_temporary_file(tmp_path, mo
     try:
         state.request_load(str(path))
         state.resolve_large_csv('convert')
-        future = state._pending[0][0]
+        future = state.services.pending[0][0]
         deadline = time.monotonic()+10
         while time.monotonic() < deadline:
             files = list(tmp_path.glob('.uz-convert-*'))

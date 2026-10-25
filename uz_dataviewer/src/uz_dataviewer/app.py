@@ -247,9 +247,9 @@ class DataViewerApp:
         self.state.shutdown()
 
     def _show_load_dialog(self) -> None:
-        if not self.state.large_csv_requests:
+        if not self.state.services.large_csv_requests:
             return
-        request = self.state.large_csv_requests[0]
+        request = self.state.services.large_csv_requests[0]
         title = "Large CSV log"
         if not imgui.is_popup_open(title):
             imgui.open_popup(title)

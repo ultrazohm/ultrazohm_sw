@@ -9,7 +9,7 @@ import math
 import os
 from concurrent.futures import Future
 from .loading import LoadExecutor
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 
 from .commands import CommandRegistry
 from .console import Console
@@ -103,6 +103,10 @@ class SubplotCell:
     pending_y_lim: tuple[float, float] | None = None
     """One-shot Y-axis limits to apply next render (from ``set_y_lim``)."""
 
+    pending_y2_lim: tuple[float, float] | None = None
+    y2_lim: tuple[float, float] | None = None
+    """Secondary Y range, including a one-shot restored view."""
+
     y_lim: tuple[float, float] | None = None
     """Last rendered primary Y range; persists after pending limits are consumed."""
 
@@ -131,7 +135,7 @@ class SubplotCell:
         self.fit_pending = True
 
     def set_limits(self, axis: str, lo: float, hi: float) -> None:
-        if axis not in ('x', 'y'):
+        if axis not in ('x', 'y', 'y2'):
             raise ValueError(f"Unknown axis: {axis}")
         limits = axis_limits(lo, hi)
         setattr(self, f'pending_{axis}_lim', limits)
@@ -192,71 +196,77 @@ def default_data_settings():
     return ("pyarrow", "memory") if runtime.IS_WEB else ("polars", "lazy")
 
 
-class AppState:
+@dataclass
+class SessionData:
+    """Replaceable recording, graph and view state; owns no background workers."""
+
+    session_token: object = field(default_factory=object)
+    registry: DataRegistry = field(default_factory=DataRegistry)
+    backend: str = field(default_factory=lambda: default_data_settings()[0])
+    loading_mode: str = field(default_factory=lambda: default_data_settings()[1])
+    cache_dir: str | None = None
+    disk_cache: bool = False
+    rows: int = 1
+    cols: int = 1
+    cells: list[SubplotCell] = field(default_factory=lambda: [SubplotCell()])
+    link_x: bool = True
+    shared_x: tuple[float, float] | None = None
+    # Live time ranges, keyed by 1-based subplot number.
+    plot_x_ranges: dict[int, tuple[float, float]] = field(default_factory=dict)
+    max_points: int = 2000
+    downsampling_active: bool = False
+    fft: FftConfig = field(default_factory=FftConfig)
+    histogram: HistogramConfig = field(default_factory=HistogramConfig)
+    nodes: NodeGraph = field(default_factory=NodeGraph)
+    dragged_ref: SignalRef | None = None
+    dragged_log_path: str | None = None
+    focus_fft: bool = False
+    focus_histogram: bool = False
+
+
+@dataclass
+class RuntimeServices:
+    """Workers and pending IO owned by exactly one live AppState."""
+
+    display: Requests = field(default_factory=lambda: Requests(synchronous=runtime.IS_WEB))
+    analysis_jobs: Requests = field(default_factory=lambda: Requests(synchronous=runtime.IS_WEB))
+    analysis_displays: dict[str, Requests] = field(default_factory=lambda: {
+        name: Requests(synchronous=runtime.IS_WEB) for name in ("fft", "hist")})
+    executor: LoadExecutor = field(default_factory=LoadExecutor)
+    pending: list[tuple[Future, str]] = field(default_factory=list)
+    large_csv_requests: list[LoadRequest] = field(default_factory=list)
+
+    def close(self) -> None:
+        self.display.close()
+        self.analysis_jobs.close()
+        for requests in self.analysis_displays.values():
+            requests.close()
+        self.executor.shutdown()
+        self.pending.clear()
+        self.large_csv_requests.clear()
+
+
+class AppState(SessionData):
     def __init__(self) -> None:
-        self.session_token = object()
-        self.registry = DataRegistry()
-        self.backend, self.loading_mode = default_data_settings()
-        self.cache_dir = None
-        self.disk_cache = False
-        self.large_csv_requests: list[LoadRequest] = []
-        self.display = Requests(synchronous=runtime.IS_WEB)
-        self.analysis_jobs = Requests(synchronous=runtime.IS_WEB)
-        self.analysis_displays = {name: Requests(synchronous=runtime.IS_WEB) for name in ("fft", "hist")}
+        super().__init__()
+        self.services = RuntimeServices()
         self.console = Console()
-        # The command registry routes every discrete GUI action and console
-        # input through one place, so the console doubles as a replayable log.
         self.commands = CommandRegistry()
 
-        self.rows = 1
-        self.cols = 1
-        self.cells: list[SubplotCell] = [SubplotCell() for _ in range(self.rows * self.cols)]
-
-        self.link_x = True
-        self.shared_x: tuple[float, float] | None = None
-        # Current X range of each time-series subplot, keyed by 1-based plot
-        # number, refreshed every frame. Lets the FFT explicitly follow a chosen
-        # plot rather than "whichever was last hovered".
-        self.plot_x_ranges: dict[int, tuple[float, float]] = {}
-
-        # Downsampling target: max points drawn per signal. When the visible
-        # window holds fewer samples than this, all raw points are shown.
-        self.max_points = 2000
-        # Set each frame: True if any signal was actually decimated.
-        self.downsampling_active = False
-
-        self.fft = FftConfig()
-        self.histogram = HistogramConfig()
-
-        # Dataflow node graph: transforms produce derived runs (see nodes.py).
-        self.nodes = NodeGraph()
-
-        # The signal currently being dragged from the navigation tree, picked up
-        # by the plot panel on drop.
-        self.dragged_ref: SignalRef | None = None
-        self.dragged_log_path: str | None = None
-
-        self._executor = LoadExecutor()
-        # Worker parses into a ParsedRun (no registry touch); the main thread registers
-        # it in poll_pending_loads, so DataRegistry stays single-threaded.
-        self._pending: list[tuple[Future[ParsedRun], str]] = []
-
-        # Signal that the docking layout should focus an analysis window this frame.
-        self.focus_fft = False
-        self.focus_histogram = False
-
     def replace_session(self, replacement: "AppState") -> None:
-        """Take ownership of a fully prepared session; retain command/console UI.
+        """Transfer declared session data and services; retain console and commands.
 
-        All other fields, including the unique session token, belong to the new
-        session. Panels observe the token before using their caches. The caller
-        must not use or shut down the consumed replacement afterwards.
+        The prepared replacement is consumed. Its shutdown becomes a no-op so it
+        cannot close workers or clear caches now owned by this application.
         """
+        if replacement is self or replacement.services is None:
+            raise ValueError("Session replacement must be a live, distinct state")
         self.console.extend_from(replacement.console)
         self.shutdown()
-        attributes = vars(replacement).copy()
-        attributes.update(console=self.console, commands=self.commands)
-        self.__dict__ = attributes
+        for attribute in fields(SessionData):
+            setattr(self, attribute.name, getattr(replacement, attribute.name))
+        self.services = replacement.services
+        replacement.services = None
 
     # -- grid management ----------------------------------------------------
     @property
@@ -308,8 +318,8 @@ class AppState:
 
     def reset_plot_view(self, plot_n: int) -> None:
         cell = self.cells[plot_n - 1]
-        cell.pending_x_lim = cell.pending_y_lim = None
-        cell.x_lim = cell.y_lim = None
+        cell.pending_x_lim = cell.pending_y_lim = cell.pending_y2_lim = None
+        cell.x_lim = cell.y_lim = cell.y2_lim = None
         cell.fit_pending = True
         if cell.plot_type is PlotType.XY:
             return
@@ -336,7 +346,7 @@ class AppState:
         if not runtime.IS_WEB and path.lower().endswith(".csv"):
             try:
                 if os.path.getsize(path) > LARGE_CSV_BYTES:
-                    self.large_csv_requests.append(request)
+                    self.services.large_csv_requests.append(request)
                     return
             except OSError:
                 pass  # The normal loader reports missing or unreadable files.
@@ -346,7 +356,7 @@ class AppState:
         """Resolve the oldest GUI prompt using the settings captured at selection."""
         if choice not in {"csv", "convert", "existing", "cancel"}:
             raise ValueError(f"Unknown large CSV action: {choice}")
-        request = self.large_csv_requests.pop(0)
+        request = self.services.large_csv_requests.pop(0)
         if choice == "cancel":
             return
         if choice == "csv":
@@ -369,11 +379,11 @@ class AppState:
                 self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
             return
         if convert_from:
-            future = self._executor.submit(self._convert_and_open, convert_from, request)
+            future = self.services.executor.submit(self._convert_and_open, convert_from, request)
         else:
-            future = self._executor.submit(self._open_background, path, request.mode,
+            future = self.services.executor.submit(self._open_background, path, request.mode,
                                            request.backend, request.disk_cache)
-        self._pending.append((future, path))
+        self.services.pending.append((future, path))
 
     def _convert_and_open(self, source: str, request: LoadRequest, cancel=None):
         from .loader import convert_csv_to_parquet
@@ -467,7 +477,7 @@ class AppState:
             remaining = [ref for ref in cfg.sources if ref[0] != run_id]
             if remaining != cfg.sources:
                 cfg.sources = remaining
-                self.analysis_jobs.forget(slot)
+                self.services.analysis_jobs.forget(slot)
                 cfg.compute_requested = bool(remaining)
         self.registry.remove_run(run_id)
         self.console.info(f"Removed run {run.label}")
@@ -485,7 +495,7 @@ class AppState:
         the main thread, so the UI never reads a registry mid-write.
         """
         still_pending: list[tuple[Future[ParsedRun], str]] = []
-        for future, path in self._pending:
+        for future, path in self.services.pending:
             if not future.done():
                 still_pending.append((future, path))
                 continue
@@ -496,11 +506,11 @@ class AppState:
                 self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
                 continue
             self._report_loaded(run)
-        self._pending = still_pending
+        self.services.pending = still_pending
 
     @property
     def is_loading(self) -> bool:
-        return bool(self._pending)
+        return bool(self.services.pending)
 
     def resolve_x_window(
         self, follow_plot: int, custom: tuple[float, float], signals: list[SignalRef]
@@ -508,7 +518,7 @@ class AppState:
         """Resolve an FFT/analysis time window.
 
         ``follow_plot``: ``0`` uses the explicit ``custom`` ``(min, max)``; ``-1``
-        (*Full*) uses the first signal's whole record; ``>= 1`` follows that
+        (*Full*) covers all selected recordings; ``>= 1`` follows that
         subplot's live X range (falling back to the full record if that plot has
         no range yet).
         """
@@ -520,11 +530,11 @@ class AppState:
             if rng is not None and math.isfinite(rng[0]) and math.isfinite(rng[1]) and rng[1] > rng[0]:
                 return rng
 
-        # Full (-1), or a followed plot with no range yet: the whole record.
-        if signals:
-            run = self.registry.get(signals[0][0])
-            if run is not None and run.n_rows:
-                return float(run.time[0]), float(run.time[-1])
+        # A shared extent includes every selected recording, independent of order.
+        runs = [self.registry.get(run_id) for run_id, _ in signals]
+        runs = [run for run in runs if run is not None and run.n_rows]
+        if runs:
+            return min(float(run.time[0]) for run in runs), max(float(run.time[-1]) for run in runs)
         return custom
 
     # -- signal assignment helpers -----------------------------------------
@@ -538,11 +548,7 @@ class AppState:
         return open_file(path, mode, self.registry.cache, self.cache_dir, backend=backend, disk_cache=disk_cache, cancel=cancel)
 
     def shutdown(self) -> None:
-        self.display.close()
-        self.analysis_jobs.close()
-        for requests in self.analysis_displays.values():
-            requests.close()
-        self.registry.cache.clear()
-        self._executor.shutdown()
-        self._pending.clear()
-        self.large_csv_requests.clear()
+        if self.services is not None:
+            self.services.close()
+            self.registry.cache.clear()
+            self.services = None

@@ -11,8 +11,7 @@ from __future__ import annotations
 import numpy as np
 from imgui_bundle import imgui, implot
 
-from ..analysis import compute_signal_fft
-from ..sources import ArraySource
+from ..analysis import AnalysisInput, FftRequest
 from ..state import AppState
 from .analysis import AnalysisPanel
 
@@ -61,38 +60,9 @@ class FftPanel(AnalysisPanel):
             implot.ImAxis_.y1, implot.Scale_.log10 if cfg.log_y else implot.Scale_.linear
         )
 
-    def _compute(self, state: AppState, cfg, x_min: float, x_max: float) -> None:
-        self._sync_session(state)
-        results = []
-        info = ""
-        errors = []
-        from ..sources import check
-        for ref in cfg.sources:
-            check(getattr(cfg, "_cancel", None))
-            run = state.registry.get(ref[0])
-            signal = state.registry.get_signal(ref[0], ref[1])
-            if run is None or signal is None:
-                errors.append(f"{state.signal_label(ref)}: source is not loaded")
-                continue
-            try:
-                result = compute_signal_fft(
-                    run, ref[1], x_min, x_max, remove_dc=cfg.remove_dc, window=cfg.window,
-                    cancel=getattr(cfg, '_cancel', None), label=state.signal_label(ref),
-                )
-            except ValueError as exc:
-                errors.append(str(exc))
-                continue
-            source = ArraySource(result.freqs, {'value': result.mag}, state.registry.cache)
-            # Warm summaries off the rendering thread.
-            if result.mag.size > 4096:
-                source._summary('value', getattr(cfg, '_cancel', None))
-            results.append((ref, result.freqs, result.mag, source))
-            info = result.info
-        self._results = results
-        if errors:
-            self._info = "\n".join([f"{len(results)} succeeded, {len(errors)} failed", *errors])
-        else:
-            self._info = info or "Drag signals here to analyse them."
+    def _make_request(self, state: AppState, cfg, x_min: float, x_max: float) -> FftRequest:
+        return FftRequest(AnalysisInput.capture(state.registry, cfg.sources),
+                          (x_min, x_max), cfg.remove_dc, cfg.window, state.registry.cache)
 
     def _draw(self, state: AppState) -> None:
         for ref, freqs, mag, source in self._results:

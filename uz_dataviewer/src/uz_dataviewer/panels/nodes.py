@@ -127,7 +127,7 @@ class NodesPanel(SessionPanel):
             self._rename_field(state)
         else:
             imgui.text(f"{node.name}  ({node.kind})")
-            if is_stale(state, state.nodes, node):
+            if is_stale(state.registry, state.nodes, node):
                 imgui.same_line()
                 imgui.text_colored((0.95, 0.75, 0.25, 1.0), "(stale)")
 

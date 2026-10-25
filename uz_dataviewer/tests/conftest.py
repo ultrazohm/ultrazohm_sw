@@ -75,3 +75,13 @@ def execute_commands():
         for line in lines:
             state.commands.execute(state, *parse_call(line))
     return execute
+
+
+@pytest.fixture
+def compute_panel():
+    """Seed a panel using the same independent request used by its worker."""
+    def compute(panel, state, cfg, lo, hi):
+        panel._sync_session(state)
+        result = panel._make_request(state, cfg, lo, hi).compute()
+        panel._results, panel._info = result.series, result.info
+    return compute

@@ -4,13 +4,15 @@ from __future__ import annotations
 
 import os
 import sys
-
 import numpy as np
 import pytest
+
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer.transforms import filter_node, math_node
+from uz_dataviewer.analysis import compute_fft
+from uz_dataviewer.transforms import math_node
 
 
 def _sine(f, n=4000, dur=1.0):
@@ -158,3 +160,16 @@ def test_short_filter_keeps_length():
     t = np.arange(10.)
     out_t, out_y, _ = filter_node(t, t, {'type':'low', 'cutoff':.1})
     assert out_t.shape == out_y.shape == (10,)
+
+
+@pytest.mark.parametrize('operation', ['div', 'reciprocal'])
+def test_undefined_math_stays_invalid_through_analysis(operation):
+    t = np.arange(8.)
+    y = np.ones(8)
+    y[2] = 0
+    inputs = [(t, y)] if operation == 'reciprocal' else [(t, np.ones(8)), (t, y)]
+    _, result, _ = math_node(inputs, {'op': operation})
+    assert np.isnan(result[2])
+    np.testing.assert_array_equal(result[np.arange(8) != 2], np.ones(7))
+    fft = compute_fft(t, result, 0, 7)
+    assert not fft.ok and 'non-finite' in fft.info

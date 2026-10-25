@@ -17,7 +17,6 @@ from __future__ import annotations
 from .. import runtime
 
 from typing import TYPE_CHECKING
-import copy
 
 import numpy as np
 from imgui_bundle import imgui, implot
@@ -119,7 +118,7 @@ class AnalysisPanel(SessionPanel):
         """The transform options that, when changed, make the result stale."""
         return ()
 
-    def _compute(self, state: "AppState", cfg: "AnalysisConfig", x_min: float, x_max: float) -> None:
+    def _make_request(self, state: "AppState", cfg: "AnalysisConfig", x_min: float, x_max: float):
         raise NotImplementedError  # pragma: no cover - abstract
 
     def _draw(self, state: "AppState") -> None:
@@ -143,7 +142,7 @@ class AnalysisPanel(SessionPanel):
         def prepare(cancel):
             xs, ys = decimate_range(x, y, source, budget, start, stop, cancel)
             return np.ascontiguousarray(xs, np.float64), np.ascontiguousarray(ys, np.float64)
-        requests = state.analysis_displays[self.prefix]
+        requests = state.services.analysis_displays[self.prefix]
         result = requests.request(label, key, identity, prepare)
         if not requests.ready(label, key) and requests.error(label) is None:
             self._display_pending = True
@@ -225,20 +224,20 @@ class AnalysisPanel(SessionPanel):
 
         # Removed sources must disappear immediately, including while recomputing.
         if any(ref not in cfg.sources for ref in self._result_refs()):
-            state.analysis_jobs.forget(self.prefix)
+            state.services.analysis_jobs.forget(self.prefix)
             self._analysis_pending = None
             self._results = []
-            state.analysis_displays[self.prefix].retain(set())
+            state.services.analysis_displays[self.prefix].retain(set())
             self._info = ""
             cfg.compute_requested = bool(cfg.sources)
 
         # -- compute on demand (command-driven; never per frame) --
         source_error = self._source_error(state, cfg)
         if source_error:
-            state.analysis_jobs.forget(self.prefix)
+            state.services.analysis_jobs.forget(self.prefix)
             self._analysis_pending = None
             self._results = []
-            state.analysis_displays[self.prefix].retain(set())
+            state.services.analysis_displays[self.prefix].retain(set())
             self._info = source_error
             cfg.compute_requested = False
         if cfg.compute_requested:
@@ -246,45 +245,34 @@ class AnalysisPanel(SessionPanel):
             x_min, x_max = state.resolve_x_window(cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources)
             self._generation += 1
             key = (self._generation, self._current_key(state, cfg))
-            # Worker owns shallow snapshots of model/config, never live GUI state.
-            snapshot = copy.copy(state)
-            snapshot.registry = state.registry.snapshot()
-            options = copy.deepcopy(cfg)
-            worker = type(self)()
-            def compute(cancel):
-                from ..sources import check
-                check(cancel)
-                options._cancel = cancel
-                worker._compute(snapshot, options, x_min, x_max)
-                check(cancel)
-                return worker._results, worker._info
+            request = self._make_request(state, cfg, x_min, x_max)
             self._analysis_pending = key
-            state.analysis_jobs.request(self.prefix, key, key, compute)
+            state.services.analysis_jobs.request(self.prefix, key, key, request.compute)
         if self._analysis_pending is not None:
             key = self._analysis_pending
-            result = state.analysis_jobs.completed(self.prefix, key)
+            result = state.services.analysis_jobs.completed(self.prefix, key)
             if result is not None:
                 if key[1] == self._current_key(state, cfg):
-                    self._results, self._info = result
+                    self._results, self._info = result.series, result.info
                     self._computed_key = key[1]
-                    state.analysis_displays[self.prefix].retain(set())
+                    state.services.analysis_displays[self.prefix].retain(set())
                     self._fit_pending = True
                 self._analysis_pending = None
-            elif state.analysis_jobs.error(self.prefix) is not None:
-                self._info = state.analysis_jobs.error(self.prefix)
+            elif state.services.analysis_jobs.error(self.prefix) is not None:
+                self._info = state.services.analysis_jobs.error(self.prefix)
                 self._results = []
-                state.analysis_displays[self.prefix].retain(set())
+                state.services.analysis_displays[self.prefix].retain(set())
                 self._analysis_pending = None
             else:
                 imgui.text_disabled("Computing...")
         if self._analysis_pending is not None and self._analysis_pending[1] != self._current_key(state, cfg):
-            state.analysis_jobs.forget(self.prefix)
+            state.services.analysis_jobs.forget(self.prefix)
             self._analysis_pending = None
         if not cfg.sources:
-            state.analysis_jobs.forget(self.prefix)
+            state.services.analysis_jobs.forget(self.prefix)
             self._analysis_pending = None
             self._results = []
-            state.analysis_displays[self.prefix].retain(set())
+            state.services.analysis_displays[self.prefix].retain(set())
 
         # -- info + stale indicator --
         if self._info:
@@ -317,11 +305,11 @@ class AnalysisPanel(SessionPanel):
             self._display_slots.clear()
             self._display_pending = False
             self._draw(state)
-            state.analysis_displays[self.prefix].retain(self._display_slots)
+            state.services.analysis_displays[self.prefix].retain(self._display_slots)
             if self._display_pending:
                 self._fit_pending = self._fitting
             for slot in self._display_slots:
-                error = state.analysis_displays[self.prefix].error(slot)
+                error = state.services.analysis_displays[self.prefix].error(slot)
                 if error:
                     self._info = error
 

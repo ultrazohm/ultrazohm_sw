@@ -77,11 +77,11 @@ def test_stale_after_param_change():
     _run(state, "node_source(run_1, ia)", "node_add(fft)",
          "node_link(node_1, node_2)", "node_eval()")
     node = state.nodes.get(2)
-    assert not nodemod.is_stale(state, state.nodes, node)
+    assert not nodemod.is_stale(state.registry, state.nodes, node)
     state.commands.execute(state, "node_set", [2, "window", "false"])
-    assert nodemod.is_stale(state, state.nodes, node)
+    assert nodemod.is_stale(state.registry, state.nodes, node)
     state.commands.execute(state, "node_eval", [])
-    assert not nodemod.is_stale(state, state.nodes, node)
+    assert not nodemod.is_stale(state.registry, state.nodes, node)
 
 
 def test_shared_upstream_validation_is_linear_and_observes_edits(app_state, monkeypatch):
@@ -104,14 +104,14 @@ def test_shared_upstream_validation_is_linear_and_observes_edits(app_state, monk
         return original(state, graph, node)
 
     monkeypatch.setattr(nodes, 'node_key', counted)
-    assert not nodes.is_stale(app_state, app_state.nodes, previous)
+    assert not nodes.is_stale(app_state.registry, app_state.nodes, previous)
     assert len(checked) == len(set(checked)) == len(transforms)
     transforms[0].params['op'] = 'sub'
-    assert nodes.is_stale(app_state, app_state.nodes, previous)
+    assert nodes.is_stale(app_state.registry, app_state.nodes, previous)
     with pytest.raises(ValueError, match='not current'):
         app_state.registry.get(previous.out_run_id).data_source().validate()
     assert nodes.evaluate(app_state) == len(transforms)
-    assert not nodes.is_stale(app_state, app_state.nodes, previous)
+    assert not nodes.is_stale(app_state.registry, app_state.nodes, previous)
     np.testing.assert_array_equal(previous.out_y, np.zeros(8))
 
 
@@ -132,9 +132,9 @@ def test_source_crop_limits_window():
     assert run.n_rows < 1000  # cropped
     assert run.time[0] >= 0.19 and run.time[-1] <= 0.41
     # widening the crop restales the downstream node
-    assert not nodemod.is_stale(state, state.nodes, state.nodes.get(2))
+    assert not nodemod.is_stale(state.registry, state.nodes, state.nodes.get(2))
     state.commands.execute(state, "node_set", [1, "tmax", "0.6"])
-    assert nodemod.is_stale(state, state.nodes, state.nodes.get(2))
+    assert nodemod.is_stale(state.registry, state.nodes, state.nodes.get(2))
 
 
 def test_stale_propagates_downstream():
@@ -146,12 +146,12 @@ def test_stale_propagates_downstream():
          "node_set(node_2, cutoff, 40)", "node_link(node_1, node_2)",
          "node_add(fft)", "node_link(node_2, node_3)", "node_eval()")
     filt, fft = state.nodes.get(2), state.nodes.get(3)
-    assert not nodemod.is_stale(state, state.nodes, fft)
+    assert not nodemod.is_stale(state.registry, state.nodes, fft)
     state.commands.execute(state, "node_set", [2, "cutoff", "80"])  # change upstream
-    assert nodemod.is_stale(state, state.nodes, filt)
-    assert nodemod.is_stale(state, state.nodes, fft)  # propagated
+    assert nodemod.is_stale(state.registry, state.nodes, filt)
+    assert nodemod.is_stale(state.registry, state.nodes, fft)  # propagated
     state.commands.execute(state, "node_eval", [])
-    assert not nodemod.is_stale(state, state.nodes, fft)
+    assert not nodemod.is_stale(state.registry, state.nodes, fft)
 
 
 def test_link_cycle_is_rejected():
@@ -213,7 +213,7 @@ def test_failed_parameter_revert_recovers_downstream(app_state):
     state.nodes.get(2).params['k'] = 'bad'
     evaluate(state)
     _run(state, 'node_set(node_2,k,2)', 'node_add(math)', 'node_link(node_2,node_3)')
-    assert is_stale(state, state.nodes, state.nodes.get(2))
+    assert is_stale(state.registry, state.nodes, state.nodes.get(2))
     assert evaluate(state) == 2
     assert not state.nodes.get(2).error and not state.nodes.get(3).error
     np.testing.assert_array_equal(state.nodes.get(3).out_y, np.full(8, 2))
@@ -287,7 +287,7 @@ def test_source_version_invalidates_downstream(states, recording_csv, execute_co
     run = state.load_sync(str(recording_csv))
     execute_commands(state, 'node_source(run_1,a)', 'node_add(math)', 'node_link(node_1,node_2)', 'node_eval()')
     run.signals['a'] = Signal('a', '', np.full(8, 42, dtype=np.float32), run.id)
-    assert nodes.is_stale(state, state.nodes, state.nodes.get(2))
+    assert nodes.is_stale(state.registry, state.nodes, state.nodes.get(2))
     nodes.evaluate(state)
     np.testing.assert_array_equal(state.nodes.get(2).out_y, np.full(8, 42))
 

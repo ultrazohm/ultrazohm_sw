@@ -138,7 +138,7 @@ def test_async_xy_fits_and_releases_input_batches():
         # Alignment keeps one batch per input, plus a transient replacement
         # batch while an iterator advances. Retention must stay bounded.
         assert max(alive) <= 3
-        assert not state.display.errors
+        assert not state.services.display.errors
     finally:
         implot.end_plot=original_end
         state.shutdown(); implot.destroy_context(); imgui.destroy_context()

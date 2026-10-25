@@ -4,14 +4,16 @@ from __future__ import annotations
 
 import os
 import sys
-
 import numpy as np
 import pytest
+import copy
+
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer.commands import CommandError, _fmt_str, format_call, parse_call
 from uz_dataviewer.state import AppState, PlotType
+from uz_dataviewer.session import to_dict
 
 
 def _state_with_run():
@@ -191,3 +193,16 @@ def test_script_string_roundtrip(value):
 def test_unterminated_quote_rejected():
     with pytest.raises(CommandError):
         parse_call('load("incomplete)')
+
+
+@pytest.mark.parametrize('command,args', [
+    ('set_grid', [0, 1]), ('set_grid', [1000000, 1]),
+    ('set_max_points', [2147483648]), ('cache_budget', [2147483648]),
+    ('set_cursors', [1, float('inf'), 1]),
+    ('set_spy_rect', [1, 2, 0, 1, 1]),
+])
+def test_invalid_command_is_atomic(app_state, command, args):
+    before = copy.deepcopy(to_dict(app_state))
+    with pytest.raises(ValueError):
+        app_state.commands.execute(app_state, command, args)
+    assert to_dict(app_state) == before

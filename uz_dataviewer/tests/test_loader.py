@@ -4,14 +4,16 @@ from __future__ import annotations
 
 import os
 import sys
-
 import numpy as np
 import pytest
+from pathlib import Path
+
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer.loader import open_file, parse_channel_name
 from uz_dataviewer.model import DataRegistry
+from uz_dataviewer import loader
 
 
 SAMPLE = (
@@ -240,3 +242,21 @@ def test_native_quoted_csv_headers(tmp_path, states, backend, mode):
     run = open_file(str(path), mode, backend=backend).register(states().registry)
     assert list(run.signals) == ['a,b,c']
     np.testing.assert_array_equal(run.read_window(['a,b,c'], 0, 1)[1]['a,b,c'], [10, 20])
+
+
+@pytest.mark.parametrize('backend', ['pyarrow', 'polars'])
+@pytest.mark.parametrize('mode', ['memory', 'lazy', 'converted'])
+def test_csv_missing_values_have_one_policy(tmp_path, backend, mode):
+    from uz_dataviewer.csv_policy import NULL_VALUES
+    import csv
+    path = tmp_path / 'missing.csv'
+    with path.open('w', newline='') as fh:
+        writer = csv.writer(fh)
+        writer.writerow(['time', 'y'])
+        writer.writerows(enumerate(NULL_VALUES))
+    if mode == 'converted':
+        path = Path(loader.convert_csv_to_parquet(str(path), backend=backend))
+    run = loader.open_file(str(path), 'lazy' if mode == 'lazy' else 'memory', backend=backend).register(DataRegistry())
+    t, values = run.read_window(['y'], 0, len(NULL_VALUES))
+    assert len(t) == len(NULL_VALUES)
+    assert np.isnan(values['y']).all()

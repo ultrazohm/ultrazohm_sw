@@ -226,7 +226,7 @@ Analysis windows (``panels/analysis.py``)
 ==========================================
 
 FFT and Histogram share ``AnalysisPanel``.
-Subclasses set a command ``prefix`` (``fft``/``hist``) and a ``compute_command``, then implement ``_compute``, ``_draw``, ``_options_key``, and any ``_extra_controls``.
+Subclasses set a command ``prefix`` (``fft``/``hist``) and a ``compute_command``, then implement ``_make_request``, ``_draw``, ``_options_key``, and any ``_extra_controls``.
 The base provides:
 
 - A **sources list** fed by drag-drop (``*_source`` command) and the legend "Remove" (``*_remove``).
@@ -303,7 +303,10 @@ Enabling ``disk_cache(true)`` for subsequent opens persists indexes and summarie
 Existing cache files are left untouched when disk caching is disabled.
 JSON sessions preserve per-file storage modes and the current settings.
 
-GUI FFT and histogram computations use a separate worker with snapshots of their input configuration.
+GUI FFT and histogram computations use a separate worker with frozen ``FftRequest`` / ``HistogramRequest`` inputs.
+``AnalysisInput`` captures each selected source, reference, label and time offset; options and the resolved window are copied as scalar values.
+Sources and the thread-safe byte cache are shared deliberately. Workers receive neither ``AppState`` nor GUI panels and return an explicit ``AnalysisResult``.
+Full analysis resolves the union of selected recording extents, so selection order cannot truncate a longer or disjoint recording. Custom and followed ranges remain shared explicit windows.
 Histograms make two bounded passes over raw batches with shared bin edges.
 FFT still materializes the selected window.
 Hann windows belong to that computation and are released afterwards; there is no
@@ -355,8 +358,10 @@ set so shared inputs do not multiply work and subsequent edits remain visible.
 Explicit FFT and histogram view limits are saved and restored alongside their
 analysis settings, then reapplied when the panels recompute.
 
-``AppState.replace_session`` owns the transfer of prepared session state and shuts down the old workers.
-It preserves the command registry and console, and installs a new session token.
+``AppState`` inherits the explicitly declared ``SessionData`` fields and owns a separate ``RuntimeServices`` object at ``state.services``.
+Runtime services own display/analysis workers, the loading executor, pending loads and large-CSV prompts.
+``AppState.replace_session`` transfers only declared session fields and service ownership, after shutting down the old workers.
+It preserves the command registry and console, and installs a new session token. The consumed replacement no longer owns services; shutting it down cannot clear the transferred cache or stop the new workers.
 ``SessionPanel`` resets view caches and dialogs on token changes, including analysis results and canvas positions.
 ``clear_session`` uses the same replacement lifecycle.
 GUI command wrappers share an explicit success result; browser exports download only successful writes to fresh temporary paths.
@@ -365,8 +370,8 @@ Small browser uploads receive separate backing directories so duplicate filename
 Browser-streamed arrays have no backing file and cannot be saved in a reloadable session.
 Saving rejects them before opening the destination file. Export their data first.
 
-``SubplotCell.y_lim`` records the last rendered primary Y range, separately from one-shot ``pending_y_lim`` commands.
-JSON persists pending limits when present, otherwise the live range.
+``SubplotCell.y_lim`` and ``y2_lim`` record the last rendered primary and secondary Y ranges, separately from their one-shot pending limits.
+JSON persists pending limits when present, otherwise the live range. Each Y axis completes fitting independently, so a restored zoom is not overwritten when lazy data arrives for the other axis. Reset view clears both ranges.
 Grid reduction prunes removed ranges and switches affected FFT/Histogram followers to Full.
 Invalid analysis plot references are rejected by commands and session restore.
 ``validation.axis_limits`` rejects non-finite or non-increasing limits before mutation.
@@ -413,7 +418,7 @@ Persist it in ``session.py`` if it should be saved.
 
 **Add a time-series option** — add a field to ``SubplotCell``, a command to toggle it, a checkbox in ``PlotsPanel._cell_header`` that emits the command, the rendering in ``_render_time_series``, and the session round-trip.
 
-**Add an analysis window** — subclass ``AnalysisPanel``, set ``prefix``/``compute_command``, implement ``_compute``/``_draw``/``_options_key``/``_extra_controls``; register the per-type commands (the common ones come from ``_register_analysis_common``); add a ``DockableWindow`` in ``app.py`` and a config dataclass + serialisation.
+**Add an analysis window** — subclass ``AnalysisPanel``, set ``prefix``/``compute_command``, implement ``_make_request``/``_draw``/``_options_key``/``_extra_controls``; register the per-type commands (the common ones come from ``_register_analysis_common``); add a ``DockableWindow`` in ``app.py`` and a config dataclass + serialisation.
 
 **Add a plot type** — extend ``PlotType``, branch in ``PlotsPanel._render_cell``, and update ``session.py`` if it carries extra per-cell state.
 

@@ -6,6 +6,7 @@ import os
 import sys
 
 import numpy as np
+import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
@@ -81,3 +82,9 @@ def test_downsample_budget_is_max_points_not_pixel_width():
     xs, ys = decimate_range(time, y, ArraySource(time, {'value': y}), max_points, start, stop)
     assert xs.shape[0] <= max_points
     assert xs.shape[0] >= max_points // 2  # lands near the budget, not far below it
+
+
+@pytest.mark.parametrize('dtype', [np.int32, np.int64, np.uint64])
+@pytest.mark.parametrize('window,expected', [((.2, 1.2), (1, 2)), ((.8, .9), (1, 1)), ((-.8, -.2), (0, 0))])
+def test_integer_time_preserves_fractional_bounds(dtype, window, expected):
+    assert visible_slice(np.arange(4, dtype=dtype), *window, padding=False) == expected

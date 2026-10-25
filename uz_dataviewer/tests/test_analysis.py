@@ -5,9 +5,11 @@ from __future__ import annotations
 import csv
 import os
 import sys
-
 import numpy as np
 import pytest
+import threading
+import time
+
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
@@ -17,16 +19,20 @@ from uz_dataviewer.commands import _parse_fwindow
 from uz_dataviewer.session import export_fft, export_histogram
 from uz_dataviewer.sources import ArraySource
 from uz_dataviewer.state import AppState
+from uz_dataviewer.panels.fft import FftPanel
+from uz_dataviewer.panels.histogram import HistogramPanel
+from uz_dataviewer.requests import Requests
+from uz_dataviewer.session import apply_dict, to_dict
 
 
 @pytest.mark.parametrize('channels', [('bad', 'good'), ('good', 'bad'), ('bad',)])
-def test_fft_panel_reports_each_failed_signal(app_state, tmp_path, channels):
+def test_fft_panel_reports_each_failed_signal(app_state, tmp_path, channels, compute_panel):
     from uz_dataviewer.panels.fft import FftPanel
     run = app_state.registry.add_run('recording', 'recording', np.arange(8.),
                                      {'bad': np.full(8, np.nan), 'good': np.arange(8.)}, {})
     app_state.fft.sources = [(run.id, channel) for channel in channels]
     panel = FftPanel()
-    panel._compute(app_state, app_state.fft, 0, 7)
+    compute_panel(panel, app_state, app_state.fft, 0, 7)
     expected = [(run.id, 'good')] if 'good' in channels else []
     assert panel._result_refs() == expected
     assert f'{len(expected)} succeeded, 1 failed' in panel._info
@@ -221,7 +227,7 @@ def test_fft_export_command_via_dispatch(tmp_path):
     assert out.exists()
 
 
-def test_analysis_replacement_clears_old_results_until_new_computation(app_state, gui_frame, tmp_path, monkeypatch):
+def test_analysis_replacement_clears_old_results_until_new_computation(app_state, gui_frame, tmp_path, monkeypatch, compute_panel):
     import threading
     import time
     from imgui_bundle import implot
@@ -236,7 +242,7 @@ def test_analysis_replacement_clears_old_results_until_new_computation(app_state
     state.fft.sources = [(1, 'a')]
     state.fft.follow_plot = -1
     panel = FftPanel()
-    panel._compute(state, state.fft, 0, 63/64)
+    compute_panel(panel, state, state.fft, 0, 63/64)
     panel._computed_key = panel._current_key(state, state.fft)
     for _ in range(3):
         gui_frame(panel, state)
@@ -249,7 +255,7 @@ def test_analysis_replacement_clears_old_results_until_new_computation(app_state
         started.set()
         assert release.wait(5)
 
-    state.analysis_jobs.request('block', 1, 1, block)
+    state.services.analysis_jobs.request('block', 1, 1, block)
     assert started.wait(2)
     drawn = []
     original_line = implot.plot_line
@@ -344,14 +350,14 @@ def test_exports_preserve_duplicate_recordings(states, tmp_path, exporter, confi
         np.testing.assert_array_equal(frame.iloc[:, 1:].sum(axis=0), [8, 8, 8])
 
 
-def test_analysis_remove_uses_reference_after_rename(states, recording_csv):
+def test_analysis_remove_uses_reference_after_rename(states, recording_csv, compute_panel):
     from uz_dataviewer.panels.fft import FftPanel
     state = states()
     for _ in range(3):
         run = state.load_sync(str(recording_csv))
         state.fft.sources.append((run.id, 'a'))
     panel = FftPanel()
-    panel._compute(state, state.fft, 0, 7)
+    compute_panel(panel, state, state.fft, 0, 7)
     state.registry.get(2).label = 'renamed'
     panel._remove(state, panel._result_refs()[1])
     assert state.fft.sources == [(1, 'a'), (3, 'a')]
@@ -425,3 +431,304 @@ def test_fft_rejects_malformed_input_shapes(time, values, window):
                    fft(time, values, window=window)):
         assert not result.ok
         assert 'equal-length one-dimensional' in result.info
+
+
+@pytest.mark.parametrize('value', [0, -1, 100001, 2147483648, float('inf'), 1.5])
+def test_histogram_bounds_reject_before_mutation(app_state, gui_frame, value):
+    previous = app_state.histogram.bins
+    with pytest.raises((ValueError, OverflowError)):
+        app_state.commands.execute(app_state, 'hist_bins', [value])
+    assert app_state.histogram.bins == previous
+    data = to_dict(app_state)
+    data['histogram']['bins'] = value
+    token = app_state.session_token
+    with pytest.raises(ValueError):
+        apply_dict(app_state, data)
+    assert app_state.session_token is token
+    gui_frame(HistogramPanel(), app_state)
+
+
+@pytest.mark.parametrize('panel_type,field', [(FftPanel, 'fft'), (HistogramPanel, 'histogram')])
+def test_mouse_zoom_saved_and_preserved_on_compute(app_state, gui_frame, monkeypatch, recording_csv,
+                                                  panel_type, field):
+    from imgui_bundle import implot
+    state = app_state
+    state.load_sync(str(recording_csv))
+    state.services.analysis_jobs.close()
+    state.services.analysis_jobs = Requests(synchronous=True)
+    state.services.analysis_displays['fft'].close()
+    state.services.analysis_displays['fft'] = Requests(synchronous=True)
+    panel = panel_type()
+    cfg = panel.config(state)
+    cfg.sources = [(1, 'a')]
+    cfg.follow_plot = -1
+    cfg.compute_requested = True
+    for _ in range(4):
+        gui_frame(panel, state)
+    # Exercise the render path for a settled mouse gesture, not a limit command.
+    panel._last_logged_x = (0., 10.)
+    monkeypatch.setattr(implot, 'is_plot_hovered', lambda: True)
+    class Axis:
+        min, max = 2., 5.
+    class Limits:
+        x = Axis()
+    monkeypatch.setattr(implot, 'get_plot_limits', lambda: Limits())
+    gui_frame(panel, state)
+    assert cfg.x_lim == (2., 5.)
+    assert cfg.pending_x_lim is None
+    saved = to_dict(state)
+    assert saved[field]['x_lim'] == (2., 5.)
+    cfg.compute_requested = True
+    gui_frame(panel, state)
+    assert cfg.x_lim == (2., 5.)
+    apply_dict(state, saved)
+    assert panel.config(state).x_lim == (2., 5.)
+
+
+def test_evicted_fft_summary_rebuilds_in_worker(app_state, gui_frame, monkeypatch, compute_panel):
+    state = app_state
+    t = np.arange(262144.) / 1000
+    state.registry.add_run('test', 'test', t, {'y': np.sin(t)}, {})
+    state.fft.sources = [(1, 'y')]
+    state.fft.follow_plot = -1
+    state.max_points = 100
+    panel = FftPanel()
+    compute_panel(panel, state, state.fft, t[0], t[-1])
+    state.registry.cache.clear()  # Equivalent to eviction by another trace.
+    started, release = threading.Event(), threading.Event()
+    threads = []
+    original = ArraySource._base_summary
+    def blocked_summary(self, *args):
+        threads.append(threading.current_thread())
+        started.set()
+        assert release.wait(5)
+        return original(self, *args)
+    monkeypatch.setattr(ArraySource, '_base_summary', blocked_summary)
+    try:
+        gui_frame(panel, state)
+        assert started.wait(2)
+        assert threads and all(t is not threading.main_thread() for t in threads)
+        assert panel._fit_pending  # Fit once asynchronously prepared data arrives.
+        # Rendering the other analysis panel must not cancel FFT display requests.
+        gui_frame(HistogramPanel(), state, 'Histogram')
+        assert state.services.analysis_displays['fft'].pending
+        release.set()
+        deadline = time.monotonic() + 3
+        while state.services.analysis_displays['fft'].pending and time.monotonic() < deadline:
+            time.sleep(.005)
+        gui_frame(panel, state)
+        assert not panel._fit_pending
+        assert state.services.analysis_displays['fft'].results
+    finally:
+        release.set()
+
+
+@pytest.mark.parametrize('panel_type', [FftPanel, HistogramPanel])
+def test_analysis_autofit_does_not_become_explicit_zoom(app_state, gui_frame, monkeypatch, panel_type):
+    from imgui_bundle import implot
+    monkeypatch.setattr(implot, 'is_plot_hovered', lambda: True)
+    panel = panel_type()
+    for _ in range(4):
+        gui_frame(panel, app_state)
+    assert panel.config(app_state).x_lim is None
+
+
+@pytest.mark.parametrize('bins', [1, 100000])
+def test_histogram_accepts_both_bounds(app_state, gui_frame, bins):
+    app_state.commands.execute(app_state, 'hist_bins', [bins])
+    apply_dict(app_state, to_dict(app_state))
+    assert app_state.histogram.bins == bins
+    gui_frame(HistogramPanel(), app_state)
+
+
+def analysis_setup(state, panel_type):
+    state.services.analysis_jobs.close()
+    state.services.analysis_jobs = Requests(synchronous=True)
+    for label in ('a', 'b'):
+        state.registry.add_run(label, label, np.arange(64.) / 64,
+                               {'y': np.sin(np.arange(64.))}, {})
+    panel = panel_type()
+    cfg = panel.config(state)
+    cfg.sources = [(1, 'y'), (2, 'y')]
+    cfg.follow_plot = -1
+    cfg.compute_requested = True
+    return panel, cfg
+
+
+@pytest.mark.parametrize('panel_type', [FftPanel, HistogramPanel])
+def test_removed_analysis_trace_disappears_while_worker_is_blocked(app_state, gui_frame, panel_type):
+    state = app_state
+    panel, cfg = analysis_setup(state, panel_type)
+    for _ in range(3):
+        gui_frame(panel, state)
+    assert len(panel._result_refs()) == 2
+    state.services.analysis_jobs.close()
+    state.services.analysis_jobs = Requests()
+    started, release = threading.Event(), threading.Event()
+    def block(cancel):
+        started.set()
+        assert release.wait(5)
+    state.services.analysis_jobs.request('block', 1, 1, block)
+    assert started.wait(2)
+    try:
+        state.remove_run(1)
+        gui_frame(panel, state)
+        assert (1, 'y') not in panel._result_refs()
+        assert cfg.sources == [(2, 'y')]
+    finally:
+        release.set()
+
+
+@pytest.mark.parametrize('panel_type,prefix', [(FftPanel, 'fft'), (HistogramPanel, 'hist')])
+def test_explicit_analysis_zoom_survives_recompute(app_state, gui_frame, monkeypatch, panel_type, prefix):
+    from imgui_bundle import implot
+    state = app_state
+    panel, cfg = analysis_setup(state, panel_type)
+    for _ in range(3):
+        gui_frame(panel, state)
+    state.commands.execute(state, prefix + '_xlim', [2, 5])
+    # First consume the zoom in a frame, then complete another computation.
+    gui_frame(panel, state)
+    assert cfg.pending_x_lim is None
+    cfg.compute_requested = True
+    applied = []
+    original = implot.setup_axis_limits
+    def capture(axis, lo, hi, *args):
+        applied.append((axis, lo, hi))
+        return original(axis, lo, hi, *args)
+    monkeypatch.setattr(implot, 'setup_axis_limits', capture)
+    gui_frame(panel, state)
+    assert (implot.ImAxis_.x1, 2, 5) in applied
+    assert cfg.x_lim == (2, 5)
+
+
+@pytest.mark.parametrize('panel_type,prefix', [(FftPanel, 'fft'), (HistogramPanel, 'hist')])
+def test_zoom_issued_during_computation_survives_completion(app_state, gui_frame, monkeypatch, panel_type, prefix):
+    import time
+    from imgui_bundle import implot
+    state = app_state
+    panel, cfg = analysis_setup(state, panel_type)
+    for _ in range(3):
+        gui_frame(panel, state)
+    state.services.analysis_jobs.close()
+    state.services.analysis_jobs = Requests()
+    started, release = threading.Event(), threading.Event()
+    from uz_dataviewer.analysis import FftRequest, HistogramRequest
+    request_type = FftRequest if panel_type is FftPanel else HistogramRequest
+    original_compute = request_type.compute
+    def blocked_compute(self, *args):
+        started.set()
+        assert release.wait(5)
+        return original_compute(self, *args)
+    monkeypatch.setattr(request_type, 'compute', blocked_compute)
+    cfg.compute_requested = True
+    gui_frame(panel, state)
+    assert started.wait(2)
+    applied = []
+    original_limits = implot.setup_axis_limits
+    def capture(axis, lo, hi, *args):
+        applied.append((axis, lo, hi))
+        return original_limits(axis, lo, hi, *args)
+    monkeypatch.setattr(implot, 'setup_axis_limits', capture)
+    try:
+        state.commands.execute(state, prefix + '_xlim', [2, 5])
+        gui_frame(panel, state)
+        assert (implot.ImAxis_.x1, 2, 5) in applied
+        applied.clear()
+    finally:
+        release.set()
+    deadline = time.monotonic() + 3
+    while panel._analysis_pending is not None and time.monotonic() < deadline:
+        gui_frame(panel, state)
+        time.sleep(.01)
+    assert panel._analysis_pending is None
+    assert (implot.ImAxis_.x1, 2, 5) in applied
+
+
+@pytest.mark.parametrize('backend', ['pyarrow', 'polars'])
+@pytest.mark.parametrize('mode', ['memory', 'lazy'])
+@pytest.mark.parametrize('offset', [0, 10])
+@pytest.mark.parametrize('reverse', [False, True])
+def test_full_analysis_includes_all_recordings(app_state, tmp_path, backend, mode, offset, reverse):
+    state = app_state
+    state.backend, state.loading_mode = backend, mode
+    runs = []
+    for name, time in [('short', np.arange(4.)), ('long', np.arange(10.) + offset)]:
+        path = tmp_path / f'{name}.csv'
+        np.savetxt(path, np.column_stack([time, np.sin(time)]), delimiter=',',
+                   header=f'time,{name}', comments='')
+        runs.append(state.load_sync(str(path)))
+    refs = [(run.id, next(iter(run.signals))) for run in runs]
+    if reverse:
+        refs.reverse()
+    state.fft.sources = state.histogram.sources = refs
+    state.fft.follow_plot = state.histogram.follow_plot = -1
+    window = state.resolve_x_window(-1, (0, 0), refs)
+    assert window == (0, offset + 9)
+    for panel_type in (FftPanel, HistogramPanel):
+        panel = panel_type()
+        result = panel._make_request(state, panel.config(state), *window).compute()
+        if panel_type is HistogramPanel:
+            assert {ref[1]: counts.sum() for ref, _, counts, _ in result.series} == {'short': 4, 'long': 10}
+        else:
+            assert {ref[1]: len(freqs) for ref, freqs, _, _ in result.series} == {'short': 3, 'long': 6}
+    hist_path, fft_path = tmp_path / 'hist.csv', tmp_path / 'fft.csv'
+    export_histogram(state, str(hist_path))
+    export_fft(state, str(fft_path))
+    with hist_path.open() as fh:
+        rows = list(csv.DictReader(fh))
+    assert sum(int(row['short']) for row in rows) == 4
+    assert sum(int(row['long']) for row in rows) == 10
+    with fft_path.open() as fh:
+        rows = list(csv.DictReader(fh))
+    for name, count in [('short', 3), ('long', 6)]:
+        actual = [float(row[f'{name}_frequency']) for row in rows if row[f'{name}_frequency']]
+        actual = [value for value in actual if np.isfinite(value)]
+        np.testing.assert_allclose(actual, np.fft.rfftfreq((count - 1) * 2))
+
+
+def test_full_window_fallback_and_explicit_windows(app_state):
+    state = app_state
+    a = state.registry.add_run('a', 'a', np.arange(4.), {'y': np.ones(4)}, {})
+    b = state.registry.add_run('b', 'b', np.arange(10.) + 20, {'y': np.ones(10)}, {})
+    refs = [(a.id, 'y'), (b.id, 'y')]
+    assert state.resolve_x_window(1, (0, 0), refs) == (0, 29)
+    assert state.resolve_x_window(0, (1, 2), refs) == (1, 2)
+    state.set_plot_x_limits(1, 1, 2)
+    assert state.resolve_x_window(1, (0, 0), refs) == (1, 2)
+    b.set_time_origin(-20)
+    assert state.resolve_x_window(-1, (0, 0), refs) == (-20, 3)
+
+
+def test_fft_integer_time_matches_float_time():
+    t, y = np.arange(10), np.arange(10.)
+    actual = compute_fft(t, y, .2, 7.2, window=False)
+    expected = compute_fft(t.astype(float), y, .2, 7.2, window=False)
+    assert actual.ok and expected.ok
+    assert actual.info == expected.info
+    np.testing.assert_array_equal(actual.freqs, expected.freqs)
+    np.testing.assert_array_equal(actual.mag, expected.mag)
+    assert not compute_fft(t, y, .2, .9).ok
+
+
+@pytest.mark.parametrize('panel_type', [FftPanel, HistogramPanel])
+def test_analysis_request_captures_inputs_without_gui_state(app_state, panel_type):
+    from dataclasses import FrozenInstanceError
+    state = app_state
+    run = state.registry.add_run('a', 'a', np.arange(8.), {'y': np.arange(8.)}, {})
+    panel = panel_type()
+    cfg = panel.config(state)
+    cfg.sources = [(run.id, 'y')]
+    request = panel._make_request(state, cfg, 0, 7)
+    expected = request.compute()
+    cfg.sources.clear()
+    cfg.bins = 3
+    cfg.remove_dc = False
+    run.set_time_origin(100)
+    state.registry.remove_run(run.id)
+    actual = request.compute()
+    assert actual.info == expected.info
+    for left, right in zip(actual.series[0][1:3], expected.series[0][1:3]):
+        np.testing.assert_array_equal(left, right)
+    with pytest.raises(FrozenInstanceError):
+        request.window = (100, 107)

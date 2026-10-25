@@ -92,7 +92,7 @@ def test_failed_reload_preserves_module_and_cached_output(tmp_path, clean_regist
     assert load_plugins([str(tmp_path)]) == ()
     assert REGISTRY['double'] is original
     assert sys.modules[module_name] is original_module
-    assert not is_stale(app_state, app_state.nodes, output)
+    assert not is_stale(app_state.registry, app_state.nodes, output)
     assert evaluate(app_state) == 0
     np.testing.assert_array_equal(output.out_y, np.full(8, 2.))
 

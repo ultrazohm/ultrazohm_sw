@@ -11,7 +11,7 @@ def visible_slice(time: np.ndarray, x_min: float, x_max: float, *, padding: bool
     One sample of padding is added on each side so lines reach the plot edges.
     ``time`` is assumed monotonically increasing.
 
-    The search scalars are cast to ``time``'s dtype first: ``np.searchsorted`` on a
+    For floating axes, search scalars are cast to ``time``'s dtype first: ``np.searchsorted`` on a
     float32 array with a Python (float64) scalar **up-casts the whole array** to
     float64 every call -- ~31 ms on the 7.5 M-bin FFT ``freqs`` array, i.e. the
     per-frame killer behind a sluggish spectrum (the same landmine as ``np.interp``
@@ -20,8 +20,10 @@ def visible_slice(time: np.ndarray, x_min: float, x_max: float, *, padding: bool
     from .sources import SourceColumn
     if isinstance(time, SourceColumn):
         return time.source.bounds(x_min - time.offset, x_max - time.offset, padding=padding)
-    lo = time.dtype.type(x_min)
-    hi = time.dtype.type(x_max)
+    # Integer axes must retain fractional bounds (e.g. 0.2 must exclude 0).
+    # Matching floating dtypes avoids promoting a large float32 FFT axis.
+    lo = time.dtype.type(x_min) if time.dtype.kind == 'f' else x_min
+    hi = time.dtype.type(x_max) if time.dtype.kind == 'f' else x_max
     start = int(np.searchsorted(time, lo, side="left"))
     stop = int(np.searchsorted(time, hi, side="right"))
     if x_max < x_min:

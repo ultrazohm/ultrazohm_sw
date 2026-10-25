@@ -26,7 +26,7 @@ def test_startup_failure_is_reported_and_stops_following_scripts(tmp_path, monke
     try:
         assert app.state.cell_count == 1
         assert 'Startup stopped' in app.state.console.as_text()
-        assert app.state._executor.thread is None
+        assert app.state.services.executor.thread is None
     finally:
         app.state.shutdown()
 

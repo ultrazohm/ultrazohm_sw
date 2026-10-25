@@ -5,6 +5,8 @@ Kept GUI-free so it is unit-testable and reusable from other analysis windows.
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 import numpy as np
 
 from .downsample import visible_slice
@@ -142,15 +144,8 @@ def compute_signal_fft(run, channel, x_min, x_max, *, remove_dc=True, window=Tru
                        cancel=None, label=None):
     """Read and validate one spectrum, reporting failures with the signal identity."""
     label = label or f"{channel} @ {run.label}"
-    try:
-        t, values = run.read_window([channel], x_min, x_max, cancel)
-        result = compute_fft(t, values[channel], x_min, x_max,
-                             remove_dc=remove_dc, window=window)
-        if not result.ok:
-            raise ValueError(result.info)
-    except (ValueError, OSError) as exc:
-        raise ValueError(f"Cannot compute FFT for {label}: {exc}") from exc
-    return result
+    selected = AnalysisInput((run.id, channel), label, run.data_source(), run.time_offset)
+    return selected.fft(x_min, x_max, remove_dc=remove_dc, window=window, cancel=cancel)
 
 
 def histogram_sources(series, lo, hi, bins, cancel=None):
@@ -194,3 +189,104 @@ def histogram_sources(series, lo, hi, bins, cancel=None):
         results.append((label, centers, counts, float(edges[1] - edges[0])))
         total += count
     return results, total, dropped
+
+
+@dataclass(frozen=True)
+class AnalysisInput:
+    """A selected source and its displayed time offset, captured before scheduling.
+
+    Requests capture sources and scalar view/options, rather than GUI state.
+    Sources and the byte cache are shared. Derived-source validators also share
+    the graph/registry deliberately so they can detect invalidation during work.
+    """
+
+    ref: tuple[int, str]
+    label: str
+    source: object
+    time_offset: float
+
+    @classmethod
+    def capture(cls, registry, refs):
+        inputs = []
+        for ref in refs:
+            run = registry.get(ref[0])
+            if run is None or ref[1] not in run.signals:
+                raise ValueError(f"Analysis source {ref} is no longer loaded")
+            inputs.append(cls(ref, f"{ref[1]} @ {run.label} [run_{run.id}]",
+                              run.data_source(), run.time_offset))
+        return tuple(inputs)
+
+    def read_window(self, lo, hi, cancel):
+        start, stop = self.source.bounds(lo - self.time_offset, hi - self.time_offset,
+                                         cancel, padding=False)
+        t, values = self.source.read_rows([self.ref[1]], start, stop, cancel)
+        return t + self.time_offset if self.time_offset else t, values[self.ref[1]]
+
+    def fft(self, lo, hi, *, remove_dc, window, cancel=None):
+        try:
+            t, y = self.read_window(lo, hi, cancel)
+            result = compute_fft(t, y, lo, hi, remove_dc=remove_dc, window=window)
+            if not result.ok:
+                raise ValueError(result.info)
+        except (ValueError, OSError) as exc:
+            raise ValueError(f"Cannot compute FFT for {self.label}: {exc}") from exc
+        return result
+
+
+@dataclass(frozen=True)
+class AnalysisResult:
+    series: list
+    info: str
+
+
+@dataclass(frozen=True)
+class FftRequest:
+    sources: tuple[AnalysisInput, ...]
+    window: tuple[float, float]
+    remove_dc: bool
+    hann: bool
+    cache: object
+
+    def compute(self, cancel=None) -> AnalysisResult:
+        from .sources import ArraySource, check
+        results, errors, info = [], [], ""
+        lo, hi = self.window
+        for selected in self.sources:
+            check(cancel)
+            try:
+                result = selected.fft(lo, hi, remove_dc=self.remove_dc, window=self.hann, cancel=cancel)
+            except ValueError as exc:
+                errors.append(str(exc))
+                continue
+            source = ArraySource(result.freqs, {'value': result.mag}, self.cache)
+            if result.mag.size > 4096:
+                source._summary('value', cancel)
+            results.append((selected.ref, result.freqs, result.mag, source))
+            info = result.info
+        check(cancel)
+        if errors:
+            info = "\n".join([f"{len(results)} succeeded, {len(errors)} failed", *errors])
+        return AnalysisResult(results, info or "Drag signals here to analyse them.")
+
+
+@dataclass(frozen=True)
+class HistogramRequest:
+    sources: tuple[AnalysisInput, ...]
+    window: tuple[float, float]
+    bins: int
+
+    def compute(self, cancel=None) -> AnalysisResult:
+        from .sources import check
+        lo, hi = self.window
+        series = [(s.ref, s.source, s.ref[1], s.time_offset) for s in self.sources]
+        results, total, dropped = histogram_sources(series, lo, hi, self.bins, cancel)
+        check(cancel)
+        values = [(ref, centers, counts.astype(np.float64), width)
+                  for ref, centers, counts, width in results]
+        if results:
+            note = f", {dropped:,} non-finite skipped" if dropped else ""
+            info = (f"{len(results)} signal(s), {total:,} samples{note}, "
+                    f"window [{lo:.4f}, {hi:.4f}] s")
+        else:
+            info = "Drag signals here to histogram them."
+        return AnalysisResult(values, info)

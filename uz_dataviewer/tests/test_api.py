@@ -5,9 +5,9 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
-
 import numpy as np
 import pytest
+
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
@@ -132,3 +132,21 @@ def test_convenience_wrappers_validate_output_shape(kind, params):
             api.math((t, y), **params)
         else:
             api.filter(t, y, **params)
+
+
+def test_headless_operations_do_not_import_gui(recording_csv):
+    code = '''
+import sys
+import uz_dataviewer as uz
+from uz_dataviewer.loader import convert_csv_to_parquet
+for backend in ('pyarrow', 'polars'):
+    data = uz.read(sys.argv[1], backend=backend)
+    data.to_dataframe()
+    uz.fft_frame(data.time, data['a'], backend=backend)
+convert_csv_to_parquet(sys.argv[1])
+assert 'imgui_bundle' not in sys.modules
+assert 'uz_dataviewer.webbridge' not in sys.modules
+'''
+    result = subprocess.run([sys.executable, '-c', code, str(recording_csv)],
+                            capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr

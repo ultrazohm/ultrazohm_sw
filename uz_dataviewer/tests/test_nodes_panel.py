@@ -9,10 +9,14 @@ from __future__ import annotations
 
 import os
 import sys
-
 import numpy as np
+import pytest
+
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+
+from uz_dataviewer.nodes import evaluate
+from uz_dataviewer.panels.nodes import NodesPanel
 
 
 def test_nodes_panel_renders_a_graph():
@@ -128,3 +132,24 @@ def test_existing_canvas_applies_restored_positions(app_state, gui_frame):
     position = ed.get_node_position(ed.NodeId(node.id * 4))
     assert (position.x, position.y) == (600., 400.)
     assert state.nodes.get(node.id).pos == (600., 400.)
+
+
+@pytest.mark.parametrize('value', ['inf', 'nan', '1e309', '2147483648', '1.5', 'bad'])
+def test_invalid_integer_parameter_is_rejected_and_legacy_value_renders(app_state, gui_frame, value):
+    state = app_state
+    state.commands.execute(state, 'node_add', ['filter'])
+    node = state.nodes.get(1)
+    before = dict(node.params)
+    with pytest.raises(ValueError):
+        state.commands.execute(state, 'node_set', [1, 'taps', value])
+    assert node.params == before
+    # Session data is intentionally preserved for repair; its editor must survive.
+    node.params['taps'] = value
+    from uz_dataviewer.session import apply_dict, to_dict
+    apply_dict(state, to_dict(state))
+    node = state.nodes.get(1)
+    panel = NodesPanel()
+    gui_frame(panel, state)
+    gui_frame(panel, state)
+    evaluate(state)
+    assert node.error

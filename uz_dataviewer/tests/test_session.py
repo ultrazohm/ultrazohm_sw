@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import os
 import sys
-
 import numpy as np
 import pytest
+
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
@@ -14,6 +14,7 @@ from uz_dataviewer import session
 from uz_dataviewer.commands import CommandError
 from uz_dataviewer.session import apply_dict, to_dict
 from uz_dataviewer.state import AppState, PlotType
+from uz_dataviewer.panels.plots import PlotsPanel
 
 
 SAMPLE = (
@@ -47,7 +48,7 @@ def test_analysis_view_limits_survive_json_roundtrip(app_state, tmp_path, consum
     path = tmp_path / 'session.json'
     session.save_state(app_state, str(path))
     session.load_state(app_state, str(path))
-    app_state.analysis_jobs.synchronous = True
+    app_state.services.analysis_jobs.synchronous = True
     for cfg, panel in ((app_state.fft, FftPanel()), (app_state.histogram, HistogramPanel())):
         assert cfg.x_lim == cfg.pending_x_lim == (10., 20.)
         drawn_limits = []
@@ -497,7 +498,7 @@ def test_restored_plot_window_survives_rendering(states, recording_csv, tmp_path
     state.plot_x_ranges[1] = (2., 4.)
     restored = states()
     apply_dict(restored, to_dict(state))
-    restored.display.synchronous = True
+    restored.services.display.synchronous = True
     imgui.create_context()
     implot.create_context()
     try:
@@ -515,7 +516,7 @@ def test_restored_plot_window_survives_rendering(states, recording_csv, tmp_path
             imgui.end()
             imgui.render()
         np.testing.assert_allclose(restored.plot_x_ranges[1], (2., 4.))
-        assert not restored.display.errors
+        assert not restored.services.display.errors
     finally:
         implot.destroy_context()
         imgui.destroy_context()
@@ -562,3 +563,145 @@ def test_json_session_can_be_opened_at_startup(app_state, tmp_path, monkeypatch)
     finally:
         app.state.shutdown()
         webbridge.register_state(None)
+
+
+@pytest.mark.parametrize('field,value', [
+    ('cursor_x', [1]), ('cursor_x', [0, float('nan')]),
+    ('spy_rect', [0, 1]), ('spy_rect', [2, 0, 1, 1]),
+    ('type', 'obsolete'), ('xy_style', 'obsolete'), ('cursors', 'false'),
+])
+def test_bad_session_view_preserves_current_session(app_state, gui_frame, field, value):
+    data = to_dict(app_state)
+    data['cells'][0][field] = value
+    token, cell = app_state.session_token, app_state.cells[0]
+    with pytest.raises(ValueError):
+        apply_dict(app_state, data)
+    assert app_state.session_token is token
+    assert app_state.cells[0] is cell
+    gui_frame(PlotsPanel(), app_state)
+
+
+@pytest.mark.parametrize('field,value', [
+    ('max_points', 2147483648), ('grid', [1.5, 1]),
+    ('shared_x', [0, float('inf')]), ('link_x', 'false'),
+])
+def test_invalid_session_settings_are_transactional(app_state, field, value):
+    data = to_dict(app_state)
+    data[field] = value
+    token = app_state.session_token
+    with pytest.raises(ValueError):
+        apply_dict(app_state, data)
+    assert app_state.session_token is token
+
+
+def test_session_transfer_preserves_service_ownership(app_state):
+    import threading
+    state = app_state
+    replacement = AppState()
+    old_services = state.services
+    started = threading.Event()
+    def wait_for_cancellation(cancel):
+        started.set()
+        assert cancel.wait(5)
+    old_services.analysis_jobs.request('pending', 1, 1, wait_for_cancellation)
+    assert started.wait(2)
+    commands, console = state.commands, state.console
+    state.application_marker = object()
+    marker = state.application_marker
+    new_services, cache = replacement.services, replacement.registry.cache
+    cache.put('test', np.ones(4), 32)
+    try:
+        state.replace_session(replacement)
+        assert old_services.analysis_jobs.closed
+        assert not old_services.analysis_jobs.thread.is_alive()
+        assert state.services is new_services
+        assert state.commands is commands and state.console is console
+        assert state.application_marker is marker
+        replacement.shutdown()  # consumed state no longer owns these resources
+        assert not new_services.analysis_jobs.closed
+        assert cache.get('test') is not None
+        with pytest.raises(ValueError, match='live, distinct'):
+            state.replace_session(replacement)
+    finally:
+        replacement.shutdown()
+
+
+@pytest.mark.parametrize('mode', ['memory', 'lazy'])
+def test_secondary_axis_zoom_survives_restore_and_delayed_fit(app_state, gui_frame, tmp_path, monkeypatch, mode):
+    import threading
+    import time
+    from imgui_bundle import implot
+    state = app_state
+    state.backend, state.loading_mode = 'pyarrow', mode
+    path = tmp_path / 'axes.csv'
+    path.write_text('time;a;b\n' + ''.join(f'{i};{i+10};{i+100}\n' for i in range(8)))
+    run = state.load_sync(str(path))
+    cell = state.cells[0]
+    cell.signals = [(run.id, 'a'), (run.id, 'b')]
+    cell.set_secondary((run.id, 'b'), True)
+    panel = PlotsPanel()
+    deadline = time.monotonic() + 5
+    while time.monotonic() < deadline:
+        gui_frame(panel, state)
+        if cell.y2_lim == (100., 107.) and not panel._pending_fit:
+            break
+        time.sleep(.005)
+    assert cell.y2_lim == (100., 107.)
+    # Set the real ImPlot viewport after the secondary axis has been declared.
+    setup = implot.setup_axis
+    def zoom(axis, *args):
+        setup(axis, *args)
+        if axis == implot.ImAxis_.y2:
+            implot.setup_axis_limits(axis, 102., 104., implot.Cond_.always)
+    with monkeypatch.context() as patch:
+        patch.setattr(implot, 'setup_axis', zoom)
+        for _ in range(3):
+            gui_frame(panel, state)
+    assert cell.y2_lim == (102., 104.)
+    saved = session.to_dict(state)
+    assert saved['cells'][0]['y2_lim'] == (102., 104.)
+    # Exercise restoring the right zoom while the left axis still needs fitting.
+    saved['cells'][0]['y_lim'] = None
+    session.apply_dict(state, saved)
+    cell = state.cells[0]
+    started, release = threading.Event(), threading.Event()
+    def block(cancel):
+        started.set()
+        assert release.wait(5)
+    state.services.display.request('block', 1, 1, block)
+    assert started.wait(2)
+    try:
+        gui_frame(panel, state)
+        assert cell.pending_y2_lim is None
+        assert cell.y2_lim == (102., 104.)
+        if mode == 'lazy':
+            assert panel._pending_fit[id(cell)] == {'y'}
+    finally:
+        release.set()
+    deadline = time.monotonic() + 5
+    while time.monotonic() < deadline:
+        gui_frame(panel, state)
+        if not panel._pending_fit and not state.services.display.pending:
+            break
+        time.sleep(.005)
+    assert not panel._pending_fit
+    assert cell.y_lim == (10., 17.)
+    assert cell.y2_lim == (102., 104.)
+    state.reset_plot_view(1)
+    deadline = time.monotonic() + 5
+    while time.monotonic() < deadline:
+        gui_frame(panel, state)
+        if not panel._pending_fit:
+            break
+        time.sleep(.005)
+    assert cell.y2_lim == (100., 107.)
+
+
+@pytest.mark.parametrize('limits', [[1], [3, 2], [0, float('inf')]])
+def test_invalid_secondary_axis_limits_preserve_session(app_state, limits):
+    saved = session.to_dict(app_state)
+    saved['cells'][0]['y2_lim'] = limits
+    token = app_state.session_token
+    with pytest.raises((ValueError, TypeError)):
+        session.apply_dict(app_state, saved)
+    assert app_state.session_token is token

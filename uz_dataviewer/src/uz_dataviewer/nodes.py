@@ -351,28 +351,28 @@ def _node_output(state, node: Node) -> tuple[np.ndarray, np.ndarray]:
         hi = float(tmax) if tmax != "" else source.metadata.time_range[1] + run.time_offset
         t, values = run.read_window([node.ref[1]], lo, hi)
         return t, values[node.ref[1]]
-    if node.error or is_stale(state, state.nodes, node):
+    if node.error or is_stale(state.registry, state.nodes, node):
         raise ValueError(f"{node.name}: upstream result is not current")
     if node.out_time is None or node.out_y is None:
         raise ValueError(f"{node.name}: not evaluated yet")
     return node.out_time, node.out_y
 
 
-def _source_signature(state, node: Node):
+def _source_signature(registry, node: Node):
     """Identity of a source's underlying signal (incl. its crop window), for stale
     detection of downstream nodes."""
     window = (node.params.get("tmin", ""), node.params.get("tmax", ""))
     if node.ref is None:
         return ("ref", None, window)
-    run = state.registry.get(node.ref[0])
-    signal = state.registry.get_signal(*node.ref)
+    run = registry.get(node.ref[0])
+    signal = registry.get_signal(*node.ref)
     sig = None if run is None or signal is None else (run.time_version, signal.version)
     from .sources import validation_error
     error = validation_error([run.data_source()]) if run is not None else 'Source is missing'
     return ("ref", node.ref, sig, window, error)
 
 
-def node_key(state, graph: NodeGraph, node: Node) -> tuple:
+def node_key(registry, graph: NodeGraph, node: Node) -> tuple:
     """A hashable key of everything that affects a node's output; a change since
     the last evaluation marks the node stale (UI badge)."""
     parts: list = [node.kind, tuple(sorted(node.params.items()))]
@@ -381,13 +381,13 @@ def node_key(state, graph: NodeGraph, node: Node) -> tuple:
         if up is None:
             parts.append((in_id, "missing"))
         elif up.kind == "source":
-            parts.append(_source_signature(state, up))
+            parts.append(_source_signature(registry, up))
         else:
             parts.append((in_id, up.version))
     return tuple(parts)
 
 
-def is_stale(state, graph: NodeGraph, node: Node) -> bool:
+def is_stale(registry, graph: NodeGraph, node: Node) -> bool:
     """A transform is stale if its own key changed *or* anything upstream is stale.
 
     Upstream traversal matters: editing a filter's cutoff makes the filter stale, but the
@@ -401,7 +401,7 @@ def is_stale(state, graph: NodeGraph, node: Node) -> bool:
         if current.id in visited or not current.is_transform:
             continue
         visited.add(current.id)
-        if current.error or current.eval_key is None or current.eval_key != node_key(state, graph, current):
+        if current.error or current.eval_key is None or current.eval_key != node_key(registry, graph, current):
             return True
         pending.extend(graph.nodes[i] for i in current.inputs if i in graph.nodes)
     return False
@@ -435,10 +435,10 @@ def publish_output(state, node: Node, unit: str = "") -> None:
     time = node.out_time if node.out_time is not None else np.empty(0, np.float64)
     values = node.out_y if node.out_y is not None else np.empty(0, np.float32)
     node.out_run_id = state.upsert_derived_run(node.name, time, values, unit, run_id=node.out_run_id)
-    graph = state.nodes
+    graph, registry = state.nodes, state.registry
 
     def validate_output():
-        if is_stale(state, graph, node):
+        if is_stale(registry, graph, node):
             raise ValueError(f"{node.name}: derived output is not current; evaluate the node ({node.error or 'inputs changed'})")
 
     state.registry.get(node.out_run_id).output_validator = validate_output
@@ -464,7 +464,7 @@ def evaluate(state, node_id: int | None = None) -> int:
         # Skip work that is already up to date. Safe because we go in topo order:
         # if an upstream was just recomputed its version bumps, so this node reads
         # stale (via node_key) and is recomputed; only genuinely-current nodes skip.
-        if node.out_y is not None and not is_stale(state, graph, node):
+        if node.out_y is not None and not is_stale(state.registry, graph, node):
             continue
         try:
             if any(i is None for i in node.inputs):
@@ -481,7 +481,7 @@ def evaluate(state, node_id: int | None = None) -> int:
         node.version += 1
         node.info = info
         node.error = ""
-        node.eval_key = node_key(state, graph, node)
+        node.eval_key = node_key(state.registry, graph, node)
         publish_output(state, node, unit)
         computed += 1
     return computed

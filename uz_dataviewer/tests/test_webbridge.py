@@ -6,20 +6,19 @@ headers + float arrays, with no Arrow text parse. No browser needed.
 
 from __future__ import annotations
 
-from uz_dataviewer import runtime
-
 from pathlib import Path
 import importlib.util
 import os
 import shutil
 import subprocess
 import sys
-
 import numpy as np
 import pytest
 
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
+from uz_dataviewer import runtime
 from uz_dataviewer import webbridge
 from uz_dataviewer.session import save_state
 from uz_dataviewer.state import AppState
@@ -291,3 +290,14 @@ const pyodide={pyimport:()=>({load_columns:(name,names,columns,time)=>{
  for(const d of""")
     target.write_text('const TOKENS=' + json.dumps(NULL_VALUES) + ';\n' + html[start:end] + harness)
     subprocess.run([node, str(target)], check=True, capture_output=True, text=True, timeout=15)
+
+
+def test_browser_generator_embeds_shared_null_policy():
+    import json
+    from uz_dataviewer.csv_policy import NULL_VALUES
+    path = Path(__file__).parents[1] / 'build' / 'gen_web.py'
+    spec = importlib.util.spec_from_file_location('review_gen_web', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    html = module.build_html()
+    assert json.dumps(NULL_VALUES) + '.includes(text)' in html

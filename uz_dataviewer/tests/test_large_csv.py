@@ -1,11 +1,12 @@
 """GUI large-CSV prompts, captured settings, and safe sibling conversion."""
 from pathlib import Path
-
 import numpy as np
 import pytest
 
 from uz_dataviewer.state import AppState, LARGE_CSV_BYTES
 from uz_dataviewer.sources import SourceColumn
+from uz_dataviewer import loader
+from uz_dataviewer.model import DataRegistry
 
 
 @pytest.fixture
@@ -16,7 +17,7 @@ def state():
 
 
 def finish(state):
-    for future, _ in state._pending:
+    for future, _ in state.services.pending:
         future.result(timeout=20)
     state.poll_pending_loads()
 
@@ -34,13 +35,13 @@ def test_threshold_and_queue(state, tmp_path, monkeypatch):
     state.request_load(str(path), loading_mode='memory')
     state.request_load(str(path), loading_mode='lazy')
     assert len(submitted) == 1
-    assert [r.mode for r in state.large_csv_requests] == ['memory', 'lazy']
+    assert [r.mode for r in state.services.large_csv_requests] == ['memory', 'lazy']
     state.resolve_large_csv('cancel')
     state.backend = 'pyarrow'
     state.resolve_large_csv('csv')
     assert submitted[-1].backend == 'polars'
     assert submitted[-1].mode == 'lazy'
-    assert not state.large_csv_requests
+    assert not state.services.large_csv_requests
 
 
 @pytest.mark.parametrize('backend', ['polars', 'pyarrow'])
@@ -108,3 +109,24 @@ def test_failed_conversion_cleans_partial_file(state, tmp_path, monkeypatch):
         finish(state)
     assert not path.with_suffix('.parquet').exists()
     assert not list(tmp_path.glob('.uz-convert-*'))
+
+
+@pytest.mark.parametrize('backend', ['pyarrow', 'polars'])
+def test_actual_csv_budget_checked_before_overallocation(tmp_path, monkeypatch, backend):
+    path = tmp_path / 'short.csv'
+    path.write_text('time,y\n' + ''.join(f'{i},0\n' for i in range(100)))
+    monkeypatch.setattr(loader, 'MAX_CSV_NUMERIC_BYTES', 500)
+    assert loader._estimate_csv_rows_and_bytes(str(path), ['time', 'y'])[1] < 500
+    allocations = []
+    original = loader.np.empty
+    def empty(size, *args, **kwargs):
+        result = original(size, *args, **kwargs)
+        allocations.append(result.nbytes)
+        return result
+    monkeypatch.setattr(loader.np, 'empty', empty)
+    with pytest.raises(ValueError, match='numeric memory budget'):
+        loader.parse_file(str(path), backend=backend)
+    assert max(allocations) <= 500
+    # The lazy path still supports the same file without resident materialization.
+    run = loader.open_file(str(path), 'lazy', backend=backend).register(DataRegistry())
+    assert run.n_rows == 100

@@ -88,6 +88,7 @@ def to_dict(state: "AppState") -> dict:
                 "x_lim": (cell.pending_x_lim or cell.x_lim) if cell.plot_type is PlotType.XY
                          else state.plot_time_range(len(cells) + 1),
                 "y_lim": cell.pending_y_lim or cell.y_lim,
+                "y2_lim": cell.pending_y2_lim or cell.y2_lim,
                 "show_samples": cell.show_samples,
                 "spy": cell.spy,
                 "spy_rect": list(cell.spy_rect) if cell.spy_rect else None,
@@ -241,7 +242,7 @@ def _apply_dict(state: "AppState", data: dict) -> None:
         for ref in (_resolve(r) for r in spec.get("y2", [])):
             if ref is not None:
                 cell.set_secondary(ref, True)
-        for axis in ('x', 'y'):
+        for axis in ('x', 'y', 'y2'):
             limits = spec.get(f'{axis}_lim')
             if limits is not None:
                 cell.set_limits(axis, *limits)

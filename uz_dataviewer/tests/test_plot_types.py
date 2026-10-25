@@ -147,7 +147,7 @@ def test_histogram_window_renders_multiple_signals():
     assert len(panel._results) == 2  # one distribution per source
 
 
-def test_histogram_skips_non_finite_samples():
+def test_histogram_skips_non_finite_samples(compute_panel):
     from uz_dataviewer.panels.histogram import HistogramPanel
 
     state = AppState()
@@ -156,7 +156,7 @@ def test_histogram_skips_non_finite_samples():
     state.registry.add_run("L.csv", "L.csv", t, {"s": y}, {"s": ""})
     state.histogram.sources = [(1, "s")]
     panel = HistogramPanel()
-    panel._compute(state, state.histogram, float(t[0]), float(t[-1]))
+    compute_panel(panel, state, state.histogram, float(t[0]), float(t[-1]))
     assert len(panel._results) == 1
     _, centers, counts, _ = panel._results[0]
     assert np.isfinite(centers).all()  # NaN/Inf did not poison the bin edges
@@ -225,7 +225,7 @@ def test_xy_rejects_changed_files_and_reads_lazy_data_off_thread(app_state, gui_
         gui_frame(panel, state)
     assert not drawn
     assert any('Source changed' in entry.message for entry in state.console._entries)
-    assert not state.display.results  # no reusable stale XY data remains
+    assert not state.services.display.results  # no reusable stale XY data remains
 
 
 def test_xy_surfaces_read_errors_without_drawing_stale_data(app_state, gui_frame, tmp_path, monkeypatch):
@@ -259,10 +259,10 @@ def test_xy_surfaces_read_errors_without_drawing_stale_data(app_state, gui_frame
     monkeypatch.setattr(run.data_source(), 'iter_raw', broken)
     state.max_points = 2  # new stride requests fresh data
     deadline = time.monotonic() + 5
-    while not state.display.errors and time.monotonic() < deadline:
+    while not state.services.display.errors and time.monotonic() < deadline:
         gui_frame(panel, state)
         time.sleep(.01)
-    assert state.display.errors
+    assert state.services.display.errors
     drawn.clear()
     for _ in range(3):
         gui_frame(panel, state)

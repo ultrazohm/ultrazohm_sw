@@ -63,7 +63,7 @@ def test_queued_load_captures_backend(logs, tmp_path):
         state.backend = 'pyarrow'
         state.disk_cache = False
         state.request_load(str(logs[1]), loading_mode='memory')
-        for future, _ in state._pending:
+        for future, _ in state.services.pending:
             future.result(timeout=10)
         state.poll_pending_loads()
         assert [r.backend for r in state.registry.runs] == ['polars', 'pyarrow']

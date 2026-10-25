@@ -152,13 +152,13 @@ Browser file caches live in the tab's temporary filesystem and are cleared on pa
 Sessions now use schema version 4 with explicit run identities, including repeated opens and identical filenames in different directories.
 Node links preserve explicit input slots, including disconnected slots. Canvas connection order does not change subtraction or division.
 Restoring a saved session replaces the current session only after successful loading. Failed restoration leaves the current session intact. Old snapshots and generated session scripts must be recreated as JSON sessions.
-Plot windows, precise time ranges and inactive recordings survive JSON round trips. Restoring a session resets panel caches and canvas positions; Y fitting completes when lazy samples arrive. Applied primary Y limits survive JSON saves.
+Plot windows, precise time ranges and inactive recordings survive JSON round trips. Restoring a session resets panel caches and canvas positions; Y fitting completes when lazy samples arrive. Both primary and secondary Y limits survive JSON saves, including mouse zoom.
 Removing a followed subplot switches its analysis windows to Full and discards the removed plot's cached range.
 Recomputing a node preserves its derived recording's selected time origin.
 Small browser uploads use separate backing paths even when filenames match. Failed exports never download an earlier result.
 Streamed browser recordings have no backing file, so session saving is rejected; export their data first.
 Chain transforms with node links; using derived outputs as new source nodes is no longer supported.
-Analysis and exports use exact time windows, while plotting retains edge padding.
+Analysis and exports use exact time windows, while plotting retains edge padding. Full analysis covers all selected recordings regardless of selection order.
 Linked time ranges apply immediately to scripts, exports and analysis, including
 before the first GUI frame. Reset view updates the linked range to the selected
 plot's recording extent. FFT inputs must be equal-length one-dimensional arrays.

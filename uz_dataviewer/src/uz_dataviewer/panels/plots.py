@@ -77,7 +77,7 @@ class PlotsPanel(SessionPanel):
         self._last_logged_spy: dict[int, tuple] = {}  # spy-rect echo
         self._export_dialog: tuple | None = None  # (pfd dialog, cell)
         self._used_slots = set()
-        self._pending_fit = set()
+        self._pending_fit: dict[int, set[str]] = {}
         self._reported_errors = {}
         self._validated_sources = {}
 
@@ -95,13 +95,13 @@ class PlotsPanel(SessionPanel):
                 self._validated_sources[source_id] = validation_error([source])
             error = self._validated_sources[source_id]
             if error:
-                state.display.forget(slot)
+                state.services.display.forget(slot)
                 self._report_error(state, slot, error)
                 return None
         immediate = all(isinstance(source, ArraySource) and source.metadata.rows <= 4096
                         for source in sources)
-        value = state.display.request(slot, key, identity, compute, immediate=immediate)
-        error = state.display.errors.get(slot)
+        value = state.services.display.request(slot, key, identity, compute, immediate=immediate)
+        error = state.services.display.errors.get(slot)
         if error:
             self._report_error(state, slot, error)
             return None
@@ -333,6 +333,10 @@ class PlotsPanel(SessionPanel):
             limits = implot.get_plot_limits()
             raw_lo, raw_hi = float(limits.x.min), float(limits.x.max)
             self._capture_limits(cell, limits)
+            if cell.y2_signals:
+                right = implot.get_plot_limits(implot.ImAxis_.x1, implot.ImAxis_.y2).y
+                if _is_finite_range(float(right.min), float(right.max)):
+                    cell.y2_lim = (float(right.min), float(right.max))
             x_min, x_max = self._clamp_window(raw_lo, raw_hi, data_min, data_max)
             if did_fit:
                 x_min, x_max = data_min, data_max
@@ -417,7 +421,7 @@ class PlotsPanel(SessionPanel):
         x_label = state.signal_label(cell.xy_source) if cell.xy_source else "X"
 
         if cell.fit_pending:
-            self._pending_fit.add(id(cell))
+            self._pending_fit[id(cell)] = {'x', 'y'}
         if id(cell) in self._pending_fit:
             implot.set_next_axes_to_fit()  # must precede begin_plot
             cell.fit_pending = False
@@ -443,7 +447,7 @@ class PlotsPanel(SessionPanel):
                         from ..sampling import sample_xy
                         return sample_xy(left, right, xn, yn, xo, yo, stride, cancel)
                     value = self._request_data(state, slot, (identity, stride), identity, [left, right], compute)
-                    if not state.display.ready(slot, (identity, stride)):
+                    if not state.services.display.ready(slot, (identity, stride)):
                         all_ready = False
                     if value is None:
                         continue
@@ -457,7 +461,7 @@ class PlotsPanel(SessionPanel):
                         implot.plot_line(label, xs[:n], ys, spec)
                     self._legend_popup(state, cell, ref, label)
                 if all_ready:
-                    self._pending_fit.discard(id(cell))
+                    self._pending_fit.pop(id(cell), None)
             else:
                 implot.plot_dummy("(pick an X source)")
             self._capture_limits(cell, implot.get_plot_limits())
@@ -604,7 +608,10 @@ class PlotsPanel(SessionPanel):
 
     @staticmethod
     def _apply_explicit_limits(cell, *, consume=True):
-        for field, axis in (('pending_x_lim', implot.ImAxis_.x1), ('pending_y_lim', implot.ImAxis_.y1)):
+        axes = [('pending_x_lim', implot.ImAxis_.x1), ('pending_y_lim', implot.ImAxis_.y1)]
+        if cell.y2_signals and cell.plot_type in _TIME_SERIES:
+            axes.append(('pending_y2_lim', implot.ImAxis_.y2))
+        for field, axis in axes:
             limits = getattr(cell, field)
             if limits is not None:
                 implot.setup_axis_limits(axis, *limits, implot.Cond_.always)
@@ -614,30 +621,36 @@ class PlotsPanel(SessionPanel):
     def _apply_pending_limits(self, state: AppState, cell: SubplotCell, data_min, data_max) -> bool:
         """Apply one-shot fit / set_x_lim / set_y_lim requests. Returns did_fit."""
         did_fit = False
-        if cell.pending_x_lim is not None:
-            if cell.fit_pending:
-                self._pending_fit.add(id(cell))
-            else:
-                self._pending_fit.discard(id(cell))
-        elif cell.fit_pending and data_min is not None:
-            implot.setup_axis_limits(implot.ImAxis_.x1, data_min, data_max, implot.Cond_.always)
-            self._pending_fit.add(id(cell))
-            did_fit = True
-        if cell.pending_y_lim is not None:
-            self._pending_fit.discard(id(cell))
-        if id(cell) in self._pending_fit:
-            if imgui.is_mouse_down(0) or imgui.get_io().mouse_wheel:
-                self._pending_fit.discard(id(cell))
-            else:
-                primary = [r for r in cell.signals if r not in cell.y2_signals]
-                y_lo, y_hi = self._cell_y_extent(state, cell, primary)
-                r_lo, r_hi = self._cell_y_extent(state, cell, cell.y2_signals)
-                if y_lo is not None:
-                    implot.setup_axis_limits(implot.ImAxis_.y1, y_lo, y_hi, implot.Cond_.always)
-                if r_lo is not None:
-                    implot.setup_axis_limits(implot.ImAxis_.y2, r_lo, r_hi, implot.Cond_.always)
-                if (not primary or y_lo is not None) and (not cell.y2_signals or r_lo is not None):
-                    self._pending_fit.discard(id(cell))
+        if cell.fit_pending:
+            self._pending_fit[id(cell)] = {'y', 'y2'}
+            if cell.pending_x_lim is None and data_min is not None:
+                implot.setup_axis_limits(implot.ImAxis_.x1, data_min, data_max, implot.Cond_.always)
+                did_fit = True
+        elif cell.pending_x_lim is not None:
+            self._pending_fit.pop(id(cell), None)
+        fitting = self._pending_fit.get(id(cell), set())
+        # Explicit limits finish fitting only their own axis. The other axis
+        # can continue waiting for lazy samples without overwriting this view.
+        for axis in ('y', 'y2'):
+            if getattr(cell, f'pending_{axis}_lim') is not None:
+                fitting.discard(axis)
+        if imgui.is_mouse_down(0) or imgui.get_io().mouse_wheel:
+            fitting.clear()
+        for axis, im_axis, refs in (
+            ('y', implot.ImAxis_.y1, [r for r in cell.signals if r not in cell.y2_signals]),
+            ('y2', implot.ImAxis_.y2, cell.y2_signals),
+        ):
+            if axis not in fitting:
+                continue
+            if not refs:
+                fitting.discard(axis)
+                continue
+            lo, hi = self._cell_y_extent(state, cell, refs)
+            if lo is not None:
+                implot.setup_axis_limits(im_axis, lo, hi, implot.Cond_.always)
+                fitting.discard(axis)
+        if not fitting:
+            self._pending_fit.pop(id(cell), None)
         self._apply_explicit_limits(cell)
         cell.fit_pending = False
         return did_fit
@@ -733,7 +746,8 @@ class PlotsPanel(SessionPanel):
     # -- panel --------------------------------------------------------------
     def render(self, state: AppState) -> None:
         self._sync_session(state)
-        self._pending_fit.intersection_update(id(cell) for cell in state.cells)
+        live_cells = {id(cell) for cell in state.cells}
+        self._pending_fit = {key: axes for key, axes in self._pending_fit.items() if key in live_cells}
         if self._driver >= state.cell_count:
             self._driver = -1
         for cache in (self._last_logged_x, self._last_logged_cursor, self._last_logged_spy,
@@ -745,7 +759,7 @@ class PlotsPanel(SessionPanel):
         self._validated_sources.clear()
         self._poll_export(state)
         self._toolbar(state)
-        if state.display.pending:
+        if state.services.display.pending:
             imgui.same_line()
             imgui.text_disabled("Updating plots...")
         imgui.separator()
@@ -767,7 +781,7 @@ class PlotsPanel(SessionPanel):
                 if c < state.cols - 1:
                     imgui.same_line(0.0, spacing)
 
-        state.display.retain(self._used_slots)
+        state.services.display.retain(self._used_slots)
 
 
 def cell_index_of(state: AppState, cell: SubplotCell) -> int:

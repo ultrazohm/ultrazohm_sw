@@ -132,7 +132,7 @@ FFT window
 #. **Window** selector — choose the time window:
 
    - ``plot_N`` — follow that subplot's current X range (computes immediately),
-   - ``Full`` — the whole record,
+   - ``Full`` — the complete time extent of all selected recordings,
    - ``Custom`` — type ``t min`` / ``t max``.
 
    Switching to ``Full`` / ``Custom`` does **not** auto-compute (the window may be huge).
@@ -233,7 +233,7 @@ Histogram, FFT, export and node crop ranges include only samples inside the sele
 FFT and FIR filters require strictly increasing, uniformly spaced timestamps (100 ppm tolerance plus floating-point roundoff).
 Binary math requires matching time axes throughout both inputs. Unsupported sampling is rejected without interpolation.
 FFT export rejects an invalid selected channel with its name and reason before writing any output.
-Applied primary Y limits survive saving and restoring. Recomputing node outputs preserves their time normalization.
+Applied primary and secondary Y limits, including mouse zoom, survive saving and restoring. Recomputing node outputs preserves their time normalization.
 Shrinking the grid switches analysis windows following removed plots to Full.
 
 XY alignment and invalid results

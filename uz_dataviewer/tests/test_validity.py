@@ -62,7 +62,7 @@ def test_nodes_validate_source_before_reusing_results(app_state, tmp_path):
     write_csv(path)
     a, b = graph(state, state.load_sync(str(path)))
     write_csv(path, 99)
-    assert is_stale(state, state.nodes, a) and is_stale(state, state.nodes, b)
+    assert is_stale(state.registry, state.nodes, a) and is_stale(state.registry, state.nodes, b)
     assert evaluate(state) == 0
     assert 'Source changed' in a.error and b.error
     for node in (a, b):
@@ -100,7 +100,7 @@ def test_invalid_output_clears_cached_plots_and_analysis(app_state, gui_frame, m
     from imgui_bundle import implot
     from uz_dataviewer.panels.fft import FftPanel
     state = app_state
-    state.analysis_jobs.synchronous = True
+    state.services.analysis_jobs.synchronous = True
     run = state.registry.add_run('input', 'input', np.arange(8.), {'y':np.arange(8.)}, {})
     a, b = graph(state, run)
     ref = (b.out_run_id, 'out')
@@ -117,5 +117,26 @@ def test_invalid_output_clears_cached_plots_and_analysis(app_state, gui_frame, m
     evaluate(state)
     gui_frame(plots, state)
     gui_frame(fft, state)
-    assert not drawn and not fft._results and not state.display.results
+    assert not drawn and not fft._results and not state.services.display.results
     assert 'not current' in fft._info
+
+
+def test_derived_source_validation_does_not_retain_application():
+    import gc
+    import weakref
+    from uz_dataviewer.state import AppState
+    state = AppState()
+    try:
+        run = state.registry.add_run('input', 'input', np.arange(8.), {'y': np.arange(8.)}, {})
+        state.commands.execute(state, 'node_source', [run.id, 'y'])
+        state.commands.execute(state, 'node_add', ['math'])
+        state.commands.execute(state, 'node_link', [1, 2])
+        state.commands.execute(state, 'node_eval', [])
+        source = state.registry.get(state.nodes.get(2).out_run_id).data_source()
+        reference = weakref.ref(state)
+    finally:
+        state.shutdown()
+    del state
+    gc.collect()
+    assert reference() is None
+    source.validate()  # graph and recording data still suffice to check validity

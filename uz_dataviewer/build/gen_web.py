@@ -166,8 +166,11 @@ def build_html() -> str:
     pyodide.runPython("from uz_dataviewer.webbridge import _active_state as s\\n" + body);
   }}
 
+  let nextUploadId = 0;
   async function loadFull(file) {{
-    const path = "/uploads/" + file.name;
+    const directory = "/uploads/" + (++nextUploadId);
+    pyodide.FS.mkdir(directory);
+    const path = directory + "/" + file.name;
     pyodide.FS.writeFile(path, new Uint8Array(await file.arrayBuffer()));
     pyLoad(path, "");
   }}

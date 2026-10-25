@@ -196,3 +196,55 @@ def test_fft_export_command_via_dispatch(tmp_path):
     out = tmp_path / "viacmd.csv"
     state.commands.dispatch(state, f'fft_export("{out}")')
     assert out.exists()
+
+
+def test_analysis_replacement_clears_old_results_until_new_computation(app_state, gui_frame, tmp_path, monkeypatch):
+    import threading
+    import time
+    from imgui_bundle import implot
+    from uz_dataviewer.panels.fft import FftPanel
+    from uz_dataviewer.session import to_dict, apply_dict
+    state = app_state
+    for name, frequency in [('old', 8), ('new', 16)]:
+        t = np.arange(64) / 64
+        np.savetxt(tmp_path / f'{name}.csv', np.column_stack([t, np.sin(2*np.pi*frequency*t)]),
+                   delimiter=';', header='time;a', comments='')
+    state.load_sync(str(tmp_path / 'old.csv'))
+    state.fft.sources = [(1, 'a')]
+    state.fft.follow_plot = -1
+    panel = FftPanel()
+    panel._compute(state, state.fft, 0, 63/64)
+    panel._computed_key = panel._current_key(state, state.fft)
+    for _ in range(3):
+        gui_frame(panel, state)
+    saved = to_dict(state)
+    saved['runs'][0]['path'] = str(tmp_path / 'new.csv')
+    apply_dict(state, saved)
+    release, started = threading.Event(), threading.Event()
+
+    def block(cancel):
+        started.set()
+        assert release.wait(5)
+
+    state.analysis_jobs.request('block', 1, 1, block)
+    assert started.wait(2)
+    drawn = []
+    original_line = implot.plot_line
+
+    def capture(label, x, y, *args):
+        drawn.append((label, float(x[np.argmax(y)])))
+        original_line(label, x, y, *args)
+
+    monkeypatch.setattr(implot, 'plot_line', capture)
+    try:
+        for _ in range(3):
+            gui_frame(panel, state)
+        assert not drawn and not panel._results
+        release.set()
+        deadline = time.monotonic() + 5
+        while time.monotonic() < deadline and not drawn:
+            gui_frame(panel, state)
+            time.sleep(.01)
+        assert drawn and all('new.csv' in label and peak == 16 for label, peak in drawn)
+    finally:
+        release.set()

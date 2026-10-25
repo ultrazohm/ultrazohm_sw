@@ -22,7 +22,7 @@ class HistogramPanel(AnalysisPanel):
 
     def __init__(self) -> None:
         super().__init__()
-        # (label, bin_centers, counts, bar_width) -- binned once at compute time.
+        # (signal reference, bin_centers, counts, bar_width) -- binned once at compute time.
         self._results: list[tuple[tuple[int, str], np.ndarray, np.ndarray, float]] = []
 
     def config(self, state: AppState):
@@ -40,6 +40,7 @@ class HistogramPanel(AnalysisPanel):
         imgui.same_line()
 
     def _compute(self, state: AppState, cfg, x_min: float, x_max: float) -> None:
+        self._sync_session(state)
         from ..analysis import histogram_sources
         series = []
         for ref in cfg.sources:

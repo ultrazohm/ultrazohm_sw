@@ -126,20 +126,23 @@ def download(path: str, filename: str | None = None) -> None:
 
 
 def save_and_download(state, name: str, emit) -> None:
-    """Web-only: write a file to ``/tmp/<name>`` then hand it to the browser as a download.
+    """Export to a fresh temporary path, downloading only on command success.
 
-    Consolidates the export/save pattern that every web branch repeats: pick a temp path,
-    run the command that writes it (``emit(path)`` -- usually a ``commands.execute`` /
-    panel ``_emit`` that takes the path), then :func:`download` it. A no-op on native, where
-    the caller drives an OS save dialog instead. Errors are surfaced to the console.
+    ``emit`` must raise on failure or return False (SessionPanel._emit's contract).
+    The browser Blob owns the bytes before the temporary directory is removed.
     """
     if not IS_WEB:
         return
-    path = "/tmp/" + name
+    from pathlib import Path
+    from tempfile import TemporaryDirectory
+
     try:
-        emit(path)
-        download(path, name)
-    except Exception as exc:  # noqa: BLE001 - surfaced to the console
+        with TemporaryDirectory(prefix="uz-export-") as directory:
+            path = str(Path(directory) / name)
+            if emit(path) is False:
+                return
+            download(path, name)
+    except Exception as exc:  # GUI boundary
         state.console.error(str(exc))
 
 

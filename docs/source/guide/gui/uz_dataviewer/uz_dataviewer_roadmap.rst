@@ -284,10 +284,9 @@ From a review of the node-graph feature (engine in ``nodes.py`` / ``transforms.p
 The review fixed three items first: transitive staleness (a downstream node reads ``(stale)`` when an upstream changes), op-aware input-pin count on ``math`` nodes, and skip-fresh evaluation (``node_eval`` only recomputes stale nodes).
 The items below are edges and polish, not core-path bugs.
 
-A. **Binary math input order is implicit (connection order).** ``A-B`` / ``A/B`` take ``inputs[0]`` and ``inputs[1]`` in the order the links were *created*, not by which input pin (``in1``/``in2``) the user dropped onto.
-The editor reports the target slot in ``query_new_link``, but ``NodesPanel._try_link`` ignores it and ``node_link`` just appends.
-Severity low–medium (wrong order silently swaps A and B).
-Fix: decode the dropped slot and have ``node_link`` place the source at that index (a small command-grammar change to carry an optional slot).
+A. **Resolved: binary math input order.** Canvas links now retain the selected input slot.
+``node_link(src, dst, slot)`` addresses a zero-based slot; JSON v4 and exported scripts preserve slots and gaps.
+Connection order no longer swaps subtraction or division operands.
 
 B. **FFT-derived run's x-axis is frequency but plots label it "time".** An ``fft`` node's derived run uses ``time = freqs``, so dropping it into a time-series cell shows a spectrum under an x-axis labelled "time", and **Link X** would couple a frequency axis to time axes.
 Severity low (cosmetic / semantic).

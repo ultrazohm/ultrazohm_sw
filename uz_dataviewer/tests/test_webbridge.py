@@ -7,6 +7,7 @@ headers + float arrays, with no Arrow text parse. No browser needed.
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 
 import numpy as np
@@ -45,7 +46,7 @@ def test_load_columns_no_state_is_noop():
 
 
 def test_save_and_download_runs_command_then_downloads(monkeypatch):
-    # Web export path: write /tmp/<name> via the emit callback, then hand it to download().
+    # Web exports use a fresh temporary directory, removed after download.
     state = AppState()
     webbridge.register_state(state)
     calls: dict = {}
@@ -54,8 +55,9 @@ def test_save_and_download_runs_command_then_downloads(monkeypatch):
 
     webbridge.save_and_download(state, "plot_1.csv", lambda path: calls.update(emit=path))
 
-    assert calls["emit"] == "/tmp/plot_1.csv"
-    assert calls["download"] == ("/tmp/plot_1.csv", "plot_1.csv")
+    assert Path(calls["emit"]).name == "plot_1.csv"
+    assert calls["download"] == (calls["emit"], "plot_1.csv")
+    assert not Path(calls["emit"]).parent.exists()
 
 
 def test_save_and_download_native_is_noop(monkeypatch):
@@ -80,3 +82,79 @@ def test_save_and_download_surfaces_errors(monkeypatch):
     webbridge.save_and_download(state, "x.csv", boom)  # must not raise
     errors = [e.message for e in state.console._entries if e.level == "ERROR"]
     assert any("export failed" in m for m in errors)
+
+
+def test_failed_panel_export_never_downloads_previous_data(app_state, monkeypatch):
+    from uz_dataviewer.panels.fft import FftPanel
+    state = app_state
+    state.backend = 'pyarrow'
+    state.add_run_from_arrays('input', 'input', np.arange(16)/16, {'a': np.sin(np.arange(16))}, {})
+    state.fft.sources = [(1, 'a')]
+    state.fft.follow_plot = -1
+    panel = FftPanel()
+    downloads, paths = [], []
+    monkeypatch.setattr(webbridge, 'IS_WEB', True)
+    monkeypatch.setattr(webbridge, 'download', lambda path, name: downloads.append(Path(path).read_text()))
+
+    def export(path):
+        paths.append(path)
+        return panel._emit(state, 'fft_export', path)
+
+    webbridge.save_and_download(state, 'fft.csv', export)
+    assert len(downloads) == 1
+    state.fft.follow_plot = 0
+    state.fft.x_min, state.fft.x_max = 0, .01
+    webbridge.save_and_download(state, 'fft.csv', export)
+    assert len(downloads) == 1
+    assert paths[0] != paths[1]
+    assert all(not Path(path).exists() for path in paths)
+    assert any('no spectra' in e.message for e in state.console._entries)
+
+
+def test_generated_uploads_keep_same_name_recordings_distinct(app_state, tmp_path):
+    import importlib.util
+    import json
+    import shutil
+    import subprocess
+    import pytest
+    from uz_dataviewer.session import to_dict, apply_dict
+    node = shutil.which('node')
+    if node is None:
+        pytest.skip('Node.js required for generated upload handler')
+    spec = importlib.util.spec_from_file_location('gen_web_upload', Path(__file__).parents[1] / 'build/gen_web.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    html = module.build_html()
+    start = html.index('  let nextUploadId')
+    end = html.index('  // Stream-parse', start)
+    harness = r'''
+const fs = require('node:fs');
+const root = process.argv[2];
+fs.mkdirSync(root + '/uploads');
+const paths = [];
+const pyodide = {FS: {
+  mkdir: path => fs.mkdirSync(root + path),
+  writeFile: (path, data) => fs.writeFileSync(root + path, data)
+}};
+function pyLoad(path) { paths.push(root + path); }
+(async () => {
+  for (const value of [10, 20]) {
+    const file = new Blob([`time;a\n0;${value}\n1;${value}\n`]);
+    file.name = 'same.csv';
+    await loadFull(file);
+  }
+  console.log(JSON.stringify(paths));
+})().catch(error => { console.error(error); process.exitCode = 1; });
+'''
+    script = tmp_path / 'upload.cjs'
+    script.write_text(html[start:end] + harness)
+    result = subprocess.run([node, str(script), str(tmp_path)], check=True, capture_output=True, text=True, timeout=15)
+    paths = json.loads(result.stdout)
+    assert len(set(paths)) == 2
+    state = app_state
+    state.backend, state.loading_mode = 'pyarrow', 'memory'
+    for path in paths:
+        state.load_sync(path)
+    assert [r.label for r in state.registry.runs] == ['same.csv', 'same.csv']
+    apply_dict(state, to_dict(state))
+    assert [r.signals['a'].y[0] for r in state.registry.runs] == [10, 20]

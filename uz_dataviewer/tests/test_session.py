@@ -195,3 +195,29 @@ def test_script_preserves_analysis_options(tmp_path):
     assert replayed.histogram.bins == 128
     assert [r[1] for r in replayed.histogram.sources] == ["ib"]
     assert replayed.cells[0].export_relative is True
+
+
+def test_clear_and_replace_share_lifecycle(app_state):
+    from uz_dataviewer.session import clear_session, to_dict, apply_dict
+    from uz_dataviewer.panels.plots import PlotsPanel
+    from uz_dataviewer.panels.navigation import NavigationPanel
+    state = app_state
+    commands, console, token = state.commands, state.console, state.session_token
+    plots, navigation = PlotsPanel(), NavigationPanel()
+    for panel in (plots, navigation):
+        panel._sync_session(state)
+    plots._last_logged_x[0] = (3., 5.)
+    navigation._norm_target[1] = 42.
+    state.dragged_ref = (1, 'a')
+    state.registry.cache.limit = 123 * 1024**2
+    clear_session(state)
+    assert state.session_token is not token and state.dragged_ref is None
+    assert state.registry.cache.limit == 123 * 1024**2
+    assert state.commands is commands and state.console is console
+    for panel in (plots, navigation):
+        assert panel._sync_session(state)
+    assert not plots._last_logged_x and not navigation._norm_target
+    token = state.session_token
+    apply_dict(state, to_dict(state))
+    assert state.session_token is not token
+    assert state.commands is commands and state.console is console

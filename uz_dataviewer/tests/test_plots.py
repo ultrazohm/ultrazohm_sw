@@ -113,3 +113,52 @@ def test_plot_line_receives_matched_dtype_arrays():
     assert seen["xs_dtype"] == seen["ys_dtype"]
     assert seen["x_min"] >= 11.979 - 1e-6  # no negative/garbage times
     assert seen["monotonic"]
+
+
+def test_restored_x_window_still_fits_delayed_y(app_state, gui_frame, tmp_path, monkeypatch):
+    import threading
+    import time
+    from imgui_bundle import implot
+    from uz_dataviewer.session import to_dict, apply_dict
+    state = app_state
+    path = tmp_path / 'high.csv'
+    path.write_text('time;a\n' + ''.join(f'{i};{500+i}\n' for i in range(8)))
+    state.load_sync(str(path))
+    state.cells[0].signals = [(1, 'a')]
+    state.plot_x_ranges[1] = (2., 4.)
+    apply_dict(state, to_dict(state))
+    panel = PlotsPanel()
+    release, started = threading.Event(), threading.Event()
+    source = state.registry.get(1).data_source()
+    original_read = source.read_plot
+
+    def delayed(*args, **kwargs):
+        started.set()
+        assert release.wait(5)
+        return original_read(*args, **kwargs)
+
+    monkeypatch.setattr(source, 'read_plot', delayed)
+    limits = []
+    original_end = implot.end_plot
+
+    def capture():
+        value = implot.get_plot_limits()
+        limits.append((value.x.min, value.x.max, value.y.min, value.y.max))
+        original_end()
+
+    monkeypatch.setattr(implot, 'end_plot', capture)
+    try:
+        for _ in range(3):
+            gui_frame(panel, state)
+        assert started.wait(2)
+        release.set()
+        deadline = time.monotonic() + 5
+        while time.monotonic() < deadline:
+            gui_frame(panel, state)
+            if limits and limits[-1][2] <= 502 and limits[-1][3] >= 504:
+                break
+            time.sleep(.01)
+        assert limits[-1][:2] == (2., 4.)
+        assert limits[-1][2] <= 502 and limits[-1][3] >= 504
+    finally:
+        release.set()

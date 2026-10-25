@@ -25,7 +25,7 @@ class FftPanel(AnalysisPanel):
 
     def __init__(self) -> None:
         super().__init__()
-        # (label, freqs, mag, source-or-None) -- source decimates a huge spectrum.
+        # (signal reference, freqs, mag, source) -- source decimates a huge spectrum.
         self._results: list[tuple[tuple[int, str], np.ndarray, np.ndarray, object]] = []
 
     def config(self, state: AppState):
@@ -62,6 +62,7 @@ class FftPanel(AnalysisPanel):
         )
 
     def _compute(self, state: AppState, cfg, x_min: float, x_max: float) -> None:
+        self._sync_session(state)
         results = []
         info = ""
         from ..sources import check

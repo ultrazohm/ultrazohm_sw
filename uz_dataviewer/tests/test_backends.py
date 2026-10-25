@@ -13,7 +13,7 @@ from uz_dataviewer import api, webbridge
 from uz_dataviewer.commands import CommandError
 from uz_dataviewer.loader import open_file, convert_csv_to_parquet
 from uz_dataviewer.model import DataRegistry
-from uz_dataviewer.session import to_dict, apply_dict, to_script, run_script, export_data
+from uz_dataviewer.session import SCHEMA_VERSION, to_dict, apply_dict, to_script, run_script, export_data
 from uz_dataviewer.sources import ByteCache, SourceColumn
 from uz_dataviewer.state import AppState
 
@@ -120,7 +120,7 @@ def test_web_uses_pyarrow_for_polars_session(logs, monkeypatch):
     try:
         with pytest.raises(CommandError, match='desktop'):
             state.commands.execute(state, 'backend', ['polars'])
-        apply_dict(state, {'version':3, 'backend':'polars', 'runs':[{'key':'run:1', 'path':str(logs[0]), 'backend':'polars', 'mode':'memory', 'disk_cache':False}]})
+        apply_dict(state, {'version':SCHEMA_VERSION, 'backend':'polars', 'runs':[{'key':'run:1', 'path':str(logs[0]), 'backend':'polars', 'mode':'memory', 'disk_cache':False}]})
         assert state.backend == 'pyarrow'
         assert state.registry.runs[0].backend == 'pyarrow'
     finally:

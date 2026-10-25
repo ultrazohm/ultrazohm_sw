@@ -12,6 +12,7 @@ from imgui_bundle import imgui
 
 from .. import webbridge
 from ..state import AppState
+from .base import SessionPanel
 
 try:  # portable_file_dialogs opens an OS dialog -- unavailable in the browser
     from imgui_bundle import portable_file_dialogs as pfd
@@ -22,16 +23,10 @@ SIGNAL_DND_TYPE = "UZ_SIGNAL"
 LOG_DND_TYPE = "UZ_LOG_FILE"
 
 
-class NavigationPanel:
+class NavigationPanel(SessionPanel):
     def __init__(self) -> None:
         self._open_dialog = None
         self._norm_target: dict[int, float] = {}  # per-run desired start time
-
-    def _emit(self, state: AppState, name: str, *args) -> None:
-        try:
-            state.commands.execute(state, name, list(args))
-        except Exception as exc:  # noqa: BLE001 - surfaced to the console
-            state.console.error(str(exc))
 
     def _normalize_menu(self, state: AppState, run) -> None:
         """Per-log time-normalisation controls (in the run's context popup)."""
@@ -76,6 +71,7 @@ class NavigationPanel:
             imgui.end_drag_drop_target()
 
     def render(self, state: AppState) -> None:
+        self._sync_session(state)
         self._render_contents(state)
         # Cover the whole Navigation window, including empty space below runs.
         self._accept_log_drop(state)

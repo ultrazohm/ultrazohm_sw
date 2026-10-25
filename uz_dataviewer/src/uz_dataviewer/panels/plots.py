@@ -23,6 +23,7 @@ from imgui_bundle import imgui, implot
 from .. import webbridge
 from ..session import ensure_extension
 from ..state import GRID_PRESETS, AppState, PlotType, SignalRef, SubplotCell, XyStyle
+from .base import SessionPanel
 from .navigation import SIGNAL_DND_TYPE
 
 try:  # portable_file_dialogs is unavailable in the browser build
@@ -63,7 +64,7 @@ def _abbrev(n: int) -> str:
     return str(n)
 
 
-class PlotsPanel:
+class PlotsPanel(SessionPanel):
     def __init__(self) -> None:
         self._driver: int = -1  # cell index that currently drives linked X axes
         self._last_points: dict[int, int] = {}  # cell index -> samples drawn last frame
@@ -113,13 +114,6 @@ class PlotsPanel:
         return value
 
     # -- helpers ------------------------------------------------------------
-    def _emit(self, state: AppState, name: str, *args) -> None:
-        """Run a command for a GUI action, logging any error to the console."""
-        try:
-            state.commands.execute(state, name, list(args))
-        except Exception as exc:  # noqa: BLE001 - surfaced to the console
-            state.console.error(str(exc))
-
     def _poll_export(self, state: AppState) -> None:
         if self._export_dialog is None:
             return
@@ -594,7 +588,10 @@ class PlotsPanel:
             lo, hi = cell.pending_x_lim
             implot.setup_axis_limits(implot.ImAxis_.x1, lo, hi, implot.Cond_.always)
             cell.pending_x_lim = None
-            self._pending_fit.discard(id(cell))
+            if cell.fit_pending:
+                self._pending_fit.add(id(cell))
+            else:
+                self._pending_fit.discard(id(cell))
         elif cell.fit_pending and data_min is not None:
             implot.setup_axis_limits(implot.ImAxis_.x1, data_min, data_max, implot.Cond_.always)
             self._pending_fit.add(id(cell))
@@ -712,6 +709,7 @@ class PlotsPanel:
 
     # -- panel --------------------------------------------------------------
     def render(self, state: AppState) -> None:
+        self._sync_session(state)
         self._used_slots.clear()
         self._validated_sources.clear()
         self._poll_export(state)

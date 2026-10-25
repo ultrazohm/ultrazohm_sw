@@ -827,16 +827,16 @@ def _register_node_commands(reg: CommandRegistry) -> None:
             node_set, "Set a transform node parameter (e.g. node_set(node_2, cutoff, 1000)).")
 
     def node_link(state, a):
-        state.nodes.link(a[0], a[1])
+        state.nodes.link(a[0], a[1], a[2])
 
-    reg.add("node_link", [Param("src", "node"), Param("dst", "node")], node_link,
-            "Connect a node's output to another node's input.")
+    reg.add("node_link", [Param("src", "node"), Param("dst", "node"), Param("slot", "int", optional=True)], node_link,
+            "Connect to a zero-based input slot (default: first free slot).")
 
     def node_unlink(state, a):
-        state.nodes.unlink(a[0], a[1])
+        state.nodes.unlink(a[0], a[1], a[2])
 
-    reg.add("node_unlink", [Param("src", "node"), Param("dst", "node")], node_unlink,
-            "Disconnect a node link.")
+    reg.add("node_unlink", [Param("src", "node"), Param("dst", "node"), Param("slot", "int", optional=True)], node_unlink,
+            "Disconnect a node link at a zero-based slot (default: all matching slots).")
 
     def node_remove(state, a):
         node = state.nodes.get(a[0])

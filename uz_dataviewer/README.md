@@ -141,9 +141,11 @@ The browser build retains synchronous execution because its current runtime has 
 
 ### Session format and analysis correctness
 
-Sessions now use schema version 3 with explicit run identities, including repeated opens and identical filenames in different directories.
+Sessions now use schema version 4 with explicit run identities, including repeated opens and identical filenames in different directories.
+Node links preserve explicit input slots, including disconnected slots. Canvas connection order does not change subtraction or division.
 Restoring a saved session replaces the current session only after successful loading. Failed restoration leaves the current session intact. Old snapshots and older exported session scripts must be recreated.
-Plot windows, precise time ranges and inactive recordings survive JSON and script round trips.
+Plot windows, precise time ranges and inactive recordings survive JSON and script round trips. Restoring a session resets panel caches and canvas positions; Y fitting completes when lazy samples arrive.
+Small browser uploads use separate backing paths even when filenames match. Failed exports never download an earlier result.
 Streamed browser recordings have no backing file, so session saving is rejected; export their data first.
 Chain transforms with node links; using derived outputs as new source nodes is no longer supported.
 Analysis and exports use exact time windows, while plotting retains edge padding.

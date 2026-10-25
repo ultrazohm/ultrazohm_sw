@@ -187,3 +187,39 @@ def test_script_round_trip(tmp_path):
 
     assert state2.nodes.get(2) is not None and state2.nodes.get(2).kind == "fft"
     assert _derived(state2, "node_2") is not None
+
+
+def test_failed_parameter_revert_recovers_downstream(app_state):
+    from uz_dataviewer.nodes import evaluate, is_stale
+    state = app_state
+    state.add_run_from_arrays('input', 'input', np.arange(8.), {'a': np.ones(8)}, {})
+    _run(state, 'node_source(run_1,a)', 'node_add(math)', 'node_link(node_1,node_2)',
+         'node_set(node_2,k,2)', 'node_eval()', 'node_set(node_2,k,bad)', 'node_eval()',
+         'node_set(node_2,k,2)', 'node_add(math)', 'node_link(node_2,node_3)')
+    assert is_stale(state, state.nodes, state.nodes.get(2))
+    assert evaluate(state) == 2
+    assert not state.nodes.get(2).error and not state.nodes.get(3).error
+    np.testing.assert_array_equal(state.nodes.get(3).out_y, np.full(8, 2))
+    assert evaluate(state) == 0
+
+
+def test_slots_preserve_holes_and_allow_same_source_twice(app_state):
+    import pytest
+    from uz_dataviewer.nodes import evaluate
+    state = app_state
+    state.add_run_from_arrays('input', 'input', np.arange(8.), {'a': np.full(8, 10)}, {})
+    source = state.nodes.add('source', ref=(1, 'a'))
+    node = state.nodes.add('math')
+    node.params['op'] = 'sub'
+    state.nodes.link(source.id, node.id, 1)
+    assert node.inputs == [None, source.id]
+    assert evaluate(state) == 0 and 'input slots' in node.error
+    state.nodes.link(source.id, node.id, 0)
+    assert evaluate(state) == 1
+    np.testing.assert_array_equal(node.out_y, np.zeros(8))
+    state.nodes.unlink(source.id, node.id, 0)
+    assert node.inputs == [None, source.id]
+    with pytest.raises(ValueError, match='input range'):
+        state.nodes.link(source.id, node.id, 2)
+    state.nodes.remove(source.id)
+    assert node.inputs == []

@@ -163,6 +163,7 @@ def default_data_settings():
 
 class AppState:
     def __init__(self) -> None:
+        self.session_token = object()
         self.registry = DataRegistry()
         self.backend, self.loading_mode = default_data_settings()
         self.cache_dir = None
@@ -211,6 +212,19 @@ class AppState:
         # Signal that the docking layout should focus an analysis window this frame.
         self.focus_fft = False
         self.focus_histogram = False
+
+    def replace_session(self, replacement: "AppState") -> None:
+        """Take ownership of a fully prepared session; retain command/console UI.
+
+        All other fields, including the unique session token, belong to the new
+        session. Panels observe the token before using their caches. The caller
+        must not use or shut down the consumed replacement afterwards.
+        """
+        self.console.extend_from(replacement.console)
+        self.shutdown()
+        attributes = vars(replacement).copy()
+        attributes.update(console=self.console, commands=self.commands)
+        self.__dict__ = attributes
 
     # -- grid management ----------------------------------------------------
     @property

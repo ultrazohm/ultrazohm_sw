@@ -142,7 +142,7 @@ class Node:
     kind: str
     name: str
     params: dict = field(default_factory=dict)
-    inputs: list[int] = field(default_factory=list)  # upstream node ids
+    inputs: list[int | None] = field(default_factory=list)  # indexed input slots; None = disconnected
     ref: tuple | None = None  # source nodes only: (run_id, signal_name)
     pos: tuple[float, float] = (0.0, 0.0)
 
@@ -205,10 +205,10 @@ class NodeGraph:
         node = self.nodes.pop(node_id, None)
         if node is not None:
             for other in self.nodes.values():
-                other.inputs = [i for i in other.inputs if i != node_id]
+                self.unlink(node_id, other.id)
         return node
 
-    def link(self, src_id: int, dst_id: int) -> None:
+    def link(self, src_id: int, dst_id: int, slot: int | None = None) -> None:
         if src_id not in self.nodes or dst_id not in self.nodes:
             raise ValueError("link references a node that does not exist")
         dst = self.nodes[dst_id]
@@ -216,13 +216,24 @@ class NodeGraph:
             raise ValueError(f"{dst.name} is a source node and takes no inputs")
         if src_id == dst_id or self._reaches(dst_id, src_id):
             raise ValueError("link would create a cycle")
-        if src_id not in dst.inputs:
-            dst.inputs.append(src_id)
+        if slot is None:
+            slot = next((i for i, value in enumerate(dst.inputs) if value is None), len(dst.inputs))
+        spec = REGISTRY.get(dst.kind)
+        if slot < 0 or (spec is not None and slot >= spec.inputs[1]):
+            raise ValueError("Input slot is outside the node's input range")
+        if slot < len(dst.inputs) and dst.inputs[slot] not in (None, src_id):
+            raise ValueError("Input slot is already connected; disconnect it first")
+        dst.inputs.extend([None] * (slot + 1 - len(dst.inputs)))
+        dst.inputs[slot] = src_id
 
-    def unlink(self, src_id: int, dst_id: int) -> None:
+    def unlink(self, src_id: int, dst_id: int, slot: int | None = None) -> None:
         dst = self.nodes.get(dst_id)
         if dst is not None:
-            dst.inputs = [i for i in dst.inputs if i != src_id]
+            for i, value in enumerate(dst.inputs):
+                if value == src_id and (slot is None or i == slot):
+                    dst.inputs[i] = None
+            while dst.inputs and dst.inputs[-1] is None:
+                dst.inputs.pop()
 
     def _reaches(self, start: int, target: int) -> bool:
         """True if ``target`` is downstream of ``start`` (follows inputs backwards)."""
@@ -256,7 +267,7 @@ class NodeGraph:
 def _topo_order(graph: NodeGraph) -> list[int]:
     indeg = {nid: 0 for nid in graph.nodes}
     for node in graph.nodes.values():
-        for inp in node.inputs:
+        for inp in set(node.inputs):
             if inp in graph.nodes:
                 indeg[node.id] += 1
     queue = [nid for nid, d in indeg.items() if d == 0]
@@ -345,7 +356,7 @@ def is_stale(state, graph: NodeGraph, node: Node) -> bool:
     it must read stale too, even though the filter's version hasn't bumped yet."""
     if not node.is_transform:
         return False
-    if node.eval_key is None or node.eval_key != node_key(state, graph, node):
+    if node.error or node.eval_key is None or node.eval_key != node_key(state, graph, node):
         return True
     return any(
         is_stale(state, graph, graph.nodes[i])
@@ -398,6 +409,8 @@ def evaluate(state, node_id: int | None = None) -> int:
         if node.out_y is not None and not is_stale(state, graph, node):
             continue
         try:
+            if any(i is None for i in node.inputs):
+                raise ValueError("Connect all input slots before evaluating")
             inputs = [_node_output(state, graph.nodes[i]) for i in node.inputs]
             out_time, out_y, info, unit = _compute(node, inputs)
         except Exception as exc:  # noqa: BLE001 - surfaced to the console

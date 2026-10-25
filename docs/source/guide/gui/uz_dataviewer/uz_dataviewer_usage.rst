@@ -226,9 +226,9 @@ Transforms must be chained through node links, not by creating source nodes from
 
 Exported scripts reference derived outputs as ``node_output_N``, independently of which other nodes have been evaluated.
 
-Saved sessions use schema version 3 and preserve separate instances of logs with identical filenames or paths.
+Saved sessions use schema version 4 and preserve separate instances of logs with identical filenames or paths.
 Restoring a session replaces the currently loaded session.
-Version 1 snapshots and older exported session scripts must be recreated.
+Version 1/2/3 snapshots and older exported session scripts must be recreated.
 Histogram, FFT, export and node crop ranges include only samples inside the selected time window.
 FFT requires strictly increasing, uniformly spaced timestamps (100 ppm tolerance plus floating-point roundoff).
 It reports an error for unsupported sampling rather than interpolating the data.

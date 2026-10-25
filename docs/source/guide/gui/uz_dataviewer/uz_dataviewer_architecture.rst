@@ -315,11 +315,22 @@ Sessions (``session.py``)
 Two complementary formats:
 
 - **JSON snapshot** (``save_state``/``load_state``) — the exact view (grid, assignments, plot types, cursors/spy, secondary axes, FFT/Histogram config, time origins, file list).
-  Schema version 3 reloads explicit per-run records and remaps recording/node keys, preserving duplicate names and repeated opens of the same path.
+  Schema version 4 reloads explicit per-run records and remaps recording/node keys, preserving duplicate names and repeated opens of the same path.
 - **``.uzscript``** (``export_script``/``run_script``) — a human-readable, editable list of commands that reproduces the session when replayed.
   Scripts restore into a replacement state and use recording ``run_N`` and explicit ``node_output_N`` references. A failed restore preserves the current session.
 
-Old version 1/2 snapshots and old exported session scripts are rejected; Auto and memory-budget migrations have been removed.
+Old version 1/2/3 snapshots and old exported session scripts are rejected; Auto and memory-budget migrations have been removed.
+
+Input lists are indexed slots (``null`` represents a disconnected slot). ``node_link(src, dst, slot)``
+and ``node_unlink(src, dst, slot)`` use zero-based slots; scripts serialize the slot explicitly.
+The same upstream node can feed both binary inputs without collapsing the links.
+
+``AppState.replace_session`` owns the transfer of prepared session state and shuts down the old workers.
+It preserves the command registry and console, and installs a new session token.
+``SessionPanel`` resets view caches and dialogs on token changes, including analysis results and canvas positions.
+``clear_session`` uses the same replacement lifecycle.
+GUI command wrappers share an explicit success result; browser exports download only successful writes to fresh temporary paths.
+Small browser uploads receive separate backing directories so duplicate filenames retain independent contents.
 
 Browser-streamed arrays have no backing file and cannot be saved in a reloadable session.
 Saving rejects them before opening the destination file. Export their data first.

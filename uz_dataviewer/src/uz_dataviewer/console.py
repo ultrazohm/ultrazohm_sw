@@ -73,6 +73,11 @@ class Console:
         """Echo an executed/issued command (rendered with a ``>`` prefix)."""
         self._log("CMD", message)
 
+    def extend_from(self, other: "Console") -> None:
+        """Append messages from a prepared session without replacing input/history."""
+        self._entries.extend(other._entries)
+        self._scroll_to_bottom = True
+
     def clear(self) -> None:
         self._entries.clear()
 

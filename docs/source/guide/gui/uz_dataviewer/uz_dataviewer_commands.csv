@@ -54,8 +54,8 @@ hist_export,Histogram window,Export the histogram bins to CSV.,path:str,commands
 node_source,Nodes,Add a source node wrapping a loaded signal (the graph's input).,"run:run, signal:str",commands.py:799
 node_add,Nodes,"Add a transform node (fft, math, filter, shift, or an installed plugin kind).",kind:str,commands.py:811
 node_set,Nodes,"Set a transform node parameter (e.g. node_set(node_2, cutoff, 1000)).","node:node, key:str, value:str",commands.py:822
-node_link,Nodes,Connect a node's output to another node's input.,"src:node, dst:node",commands.py:829
-node_unlink,Nodes,Disconnect a node link.,"src:node, dst:node",commands.py:835
+node_link,Nodes,Connect to a zero-based input slot (default: first free slot).,"src:node, dst:node, [slot:int]",commands.py:829
+node_unlink,Nodes,Disconnect a node link at a zero-based slot (default: all matching slots).,"src:node, dst:node, [slot:int]",commands.py:835
 node_remove,Nodes,"Remove a node (and its derived run, if any).",node:node,commands.py:841
 node_rename,Nodes,Rename a node (its derived run takes the new name).,"node:node, name:str",commands.py:850
 node_pos,Nodes,Set a node's canvas position.,"node:node, x:float, y:float",commands.py:863

@@ -26,8 +26,8 @@ from .state import PlotType, XyStyle
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from .state import AppState, SubplotCell
 
-SCHEMA_VERSION = 3
-SCRIPT_HEADER = "# UltraZohm Data Viewer session script v3"
+SCHEMA_VERSION = 4
+SCRIPT_HEADER = "# UltraZohm Data Viewer session script v4"
 
 
 def ensure_extension(path: str, ext: str) -> str:
@@ -71,24 +71,11 @@ def _script_ref(state, ref):
 
 def clear_session(state):
     """Reset recording identities and consumers before restoring a complete session."""
-    from .model import DataRegistry
-    from .nodes import NodeGraph
-    from .state import FftConfig, HistogramConfig
-    from .loading import LoadExecutor
-    state._executor.shutdown()
-    state._executor = LoadExecutor()
-    state._pending.clear()
-    state.large_csv_requests.clear()
-    state.display.retain(set())
-    state.analysis_jobs.retain(set())
-    state.registry = DataRegistry()
-    state.nodes = NodeGraph()
-    state.set_grid(1, 1)
-    from .state import SubplotCell
-    state.cells = [SubplotCell()]
-    state.fft, state.histogram = FftConfig(), HistogramConfig()
-    state.plot_x_ranges.clear()
-    state.shared_x = None
+    replacement = _replacement_state(state)
+    for field in ("backend", "loading_mode", "disk_cache", "max_points", "link_x"):
+        setattr(replacement, field, getattr(state, field))
+    replacement.registry.cache.limit = state.registry.cache.limit
+    state.replace_session(replacement)
 
 
 def _nodes_to_list(state: "AppState") -> list[dict]:
@@ -196,15 +183,6 @@ def _replacement_state(state):
     return replacement
 
 
-def _commit_state(state, replacement):
-    console, commands = state.console, state.commands
-    for entry in replacement.console._entries:
-        console._log(entry.level, entry.message)
-    state.shutdown()
-    state.__dict__.update(replacement.__dict__)
-    state.console, state.commands = console, commands
-
-
 def apply_dict(state: "AppState", data: dict) -> None:
     replacement = _replacement_state(state)
     try:
@@ -212,7 +190,7 @@ def apply_dict(state: "AppState", data: dict) -> None:
     except BaseException:
         replacement.shutdown()
         raise
-    _commit_state(state, replacement)
+    state.replace_session(replacement)
 
 
 def _apply_dict(state: "AppState", data: dict) -> None:
@@ -351,8 +329,9 @@ def _restore_nodes(state: "AppState", specs: list, resolve) -> None:
         node.pos = (float(pos[0]), float(pos[1]))
     for spec in specs:  # links once every node exists
         dst = int(spec["id"])
-        for in_id in spec.get("inputs", []):
-            state.nodes.link(int(in_id), dst)
+        for slot, in_id in enumerate(spec.get("inputs", [])):
+            if in_id is not None:
+                state.nodes.link(int(in_id), dst, slot)
     if state.nodes.nodes:
         evaluate(state)
     for spec in specs:
@@ -404,9 +383,9 @@ def _nodes_to_script(state: "AppState", lines: list[str]) -> None:
         for node in nodes:
             lines.append(f"node_rename(node_{idmap[node.id]}, {_arg(node.name)})")
     for node in nodes:
-        for in_id in node.inputs:
+        for slot, in_id in enumerate(node.inputs):
             if in_id in idmap:
-                lines.append(f"node_link(node_{idmap[in_id]}, node_{idmap[node.id]})")
+                lines.append(f"node_link(node_{idmap[in_id]}, node_{idmap[node.id]}, {slot})")
     lines.append("node_eval()")
     for node in nodes:
         run = state.registry.get(node.out_run_id)
@@ -572,7 +551,7 @@ def run_script(state: "AppState", path: str) -> int:
             target.shutdown()
         raise
     if exported:
-        _commit_state(state, target)
+        state.replace_session(target)
     return count
 
 

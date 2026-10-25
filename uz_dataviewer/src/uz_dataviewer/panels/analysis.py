@@ -23,6 +23,7 @@ from imgui_bundle import imgui, implot
 from .. import webbridge
 from ..downsample import decimate_range, visible_slice
 from ..session import ensure_extension
+from .base import SessionPanel
 from .navigation import SIGNAL_DND_TYPE
 
 try:  # portable_file_dialogs is unavailable in the browser build
@@ -55,7 +56,7 @@ def follow_combo(label: str, follow_plot: int, n_plots: int) -> tuple[bool, int]
     return changed, value
 
 
-class AnalysisPanel:
+class AnalysisPanel(SessionPanel):
     """Base class wiring sources, the window selector, zoom and drag-drop together,
     all routed through commands. Subclasses set ``prefix`` / ``compute_command``."""
 
@@ -99,12 +100,6 @@ class AnalysisPanel:
     @property
     def export_command(self) -> str:
         return f"{self.prefix}_export"
-
-    def _emit(self, state: "AppState", name: str, *args) -> None:
-        try:
-            state.commands.execute(state, name, list(args))
-        except Exception as exc:  # noqa: BLE001 - surfaced to the console
-            state.console.error(str(exc))
 
     # -- subclass hooks -----------------------------------------------------
     def config(self, state: "AppState") -> "AnalysisConfig":  # pragma: no cover - abstract
@@ -165,6 +160,7 @@ class AnalysisPanel:
             self._emit(state, self.export_command, path)
 
     def render(self, state: "AppState") -> None:
+        self._sync_session(state)
         self._poll_export(state)
         cfg = self.config(state)
 

@@ -280,7 +280,10 @@ class PlotsPanel(SessionPanel):
     def _xy_source_combo(self, state: AppState, index: int, cell: SubplotCell) -> None:
         refs: list[SignalRef] = []
         labels: list[str] = []
+        domain = state.plot_domain(cell) if cell.signals else None
         for run in state.registry.runs:
+            if domain is not None and run.axis_domain != domain:
+                continue
             for name in run.signals:
                 refs.append((run.id, name))
                 labels.append(state.signal_label((run.id, name)))

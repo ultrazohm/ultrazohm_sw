@@ -163,11 +163,9 @@ jobs:
 
   release:
     needs: [build-linux, build-windows, test-web]
-    # Temporary feature-branch exception for testing this workflow.
     if: >-
       github.event_name != 'pull_request' &&
-      (github.ref == 'refs/heads/main' ||
-       github.ref == 'refs/heads/feature/uz_dataviewer_revision')
+      github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -192,8 +190,6 @@ jobs:
           test -s "$linux_archive"
           test -s "$windows_archive"
           sha256sum "$linux_archive" "$windows_archive" > SHA256SUMS
-          prerelease=true
-          if [[ "$GITHUB_REF" == refs/heads/main ]]; then prerelease=false; fi
           cat > release-notes.md <<EOF
           Native UltraZohm Data Viewer binaries.
 
@@ -215,7 +211,7 @@ jobs:
           else
             gh release create "$release_tag" --target "$GITHUB_SHA" --draft \
               --title "UltraZohm Data Viewer ${GITHUB_SHA:0:7}" \
-              --notes-file release-notes.md --prerelease="$prerelease" --latest=false
+              --notes-file release-notes.md --prerelease=false --latest=false
           fi
           gh release upload "$release_tag" "$linux_archive" "$windows_archive" SHA256SUMS --clobber
-          gh release edit "$release_tag" --draft=false --prerelease="$prerelease" --latest=false
+          gh release edit "$release_tag" --draft=false --prerelease=false --latest=false

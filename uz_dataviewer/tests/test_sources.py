@@ -1,6 +1,5 @@
 """Lazy/eager contract, persisted caches, raw-analysis parity and cancellation."""
 
-from pathlib import Path
 import os
 import sys
 import threading
@@ -11,7 +10,6 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 
 from uz_dataviewer.analysis import compute_fft
 from uz_dataviewer.loader import open_file
@@ -438,3 +436,15 @@ def test_lazy_column_requires_explicit_materialization(states, recording_csv):
     np.testing.assert_array_equal(column.read_rows(1, 3), [2, 3])
     np.testing.assert_array_equal(column.materialize(), np.arange(1, 9))
     np.testing.assert_array_equal(np.asarray(column), np.arange(1, 9))
+
+
+@pytest.mark.parametrize('count', [0, -1, 65, 1.5, [1]])
+def test_invalid_summary_metadata_rebuilds(recording, tmp_path, count):
+    path, t, y = recording
+    source = ParquetSource(path, cache_dir=tmp_path / 'cache', disk_cache=True)
+    source.read_plot('a', t[0], t[-1], 100)
+    np.savez(source.summary_path('a'), count=count)
+    source.cache.clear()
+    result = source.read_plot('a', t[0], t[-1], 100)
+    assert np.nanmin(result.values) == np.nanmin(y)
+    assert np.nanmax(result.values) == np.nanmax(y)

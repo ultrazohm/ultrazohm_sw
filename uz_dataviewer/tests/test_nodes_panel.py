@@ -7,13 +7,10 @@ are exercised without a window. The graph logic itself is covered by test_nodes.
 
 from __future__ import annotations
 
-import os
-import sys
 import numpy as np
 import pytest
 
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer.nodes import evaluate
 from uz_dataviewer.panels.nodes import NodesPanel
@@ -129,3 +126,39 @@ def test_invalid_integer_parameter_is_rejected_and_legacy_value_renders(app_stat
     gui_frame(panel, state)
     evaluate(state)
     assert node.error
+
+
+def test_node_pos_moves_existing_canvas(app_state, gui_frame):
+    from imgui_bundle import imgui_node_editor as ed
+
+    node = app_state.nodes.add("math")
+    node.pos = (100.0, 100.0)
+    panel = NodesPanel()
+    for _ in range(3):
+        gui_frame(panel, app_state)
+    app_state.commands.execute(app_state, "node_pos", [node.id, 600, 400])
+    for _ in range(3):
+        gui_frame(panel, app_state)
+    pos = ed.get_node_position(ed.NodeId(node.id * 4))
+    assert node.pos == (600.0, 400.0) and (pos.x, pos.y) == (600.0, 400.0)
+
+
+def test_node_position_zero_is_explicit(app_state, gui_frame):
+    from imgui_bundle import imgui_node_editor as ed
+
+    node = app_state.nodes.add("math")
+    app_state.commands.execute(app_state, "node_pos", [node.id, 0, 0])
+    panel = NodesPanel()
+    for _ in range(3):
+        gui_frame(panel, app_state)
+    pos = ed.get_node_position(ed.NodeId(node.id * 4))
+    assert (pos.x, pos.y) == node.pos == (0.0, 0.0)
+
+
+def test_invalid_boolean_can_be_repaired_in_node_canvas(app_state, gui_frame):
+    node = app_state.nodes.add("fft")
+    node.params["window"] = "invalid"
+    gui_frame(NodesPanel(), app_state)
+    assert node.params["window"] == "invalid"
+    app_state.commands.execute(app_state, "node_set", [node.id, "window", "true"])
+    assert node.params["window"] == "true"

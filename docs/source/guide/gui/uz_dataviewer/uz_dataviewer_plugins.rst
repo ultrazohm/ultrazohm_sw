@@ -92,7 +92,7 @@ Each renders a widget that writes back to ``params[key]``; read it in your funct
 Rules & tips
 ============
 
-- Output an ``(out_time, out_y, info)`` tuple. ``out_time`` is the x-axis of the derived signal (for a spectrum-like node it can be frequency).
+- Output an ``(out_time, out_y, info)`` tuple. ``out_time`` is the independent axis of the derived signal and must preserve the input domain. Only the built-in FFT changes a time axis to frequency.
   Raise a normal exception with a clear message on bad input — it's caught, shown on the node, and the rest of the graph keeps working.
 - The result is materialized as a **derived run** named after the node, so it appears in Navigation and is draggable into plots / FFT / Histogram.
 - Keep transforms **pure NumPy** if you want them to also work in the web build. 
@@ -108,3 +108,8 @@ mutating samples. Returned arrays are validated, converted to float64 axes and
 float32 values, and copied into owned output buffers before publication. Invalid
 outputs fail only their node; independent graph branches continue evaluating.
 Plugins preserve the independent-axis domain of their inputs.
+Registration validates lowercase kind identifiers, callable implementations,
+input arity (0–1,024), unique parameter keys, declared widget types, nonempty
+unique enum choices, and typed defaults. Invalid declarations roll back the
+plugin import. Input arrays must be one-dimensional and paired with equal-length
+axes; output diagnostic text must be a string.

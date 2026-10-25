@@ -3,13 +3,11 @@
 from __future__ import annotations
 
 import os
-import sys
 import numpy as np
 import pytest
 from pathlib import Path
 
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer.loader import open_file, parse_channel_name
 from uz_dataviewer.model import DataRegistry
@@ -254,3 +252,15 @@ def test_csv_missing_values_have_one_policy(tmp_path, backend, mode):
     t, values = run.read_window(['y'], 0, len(NULL_VALUES))
     assert len(t) == len(NULL_VALUES)
     assert np.isnan(values['y']).all()
+
+
+@pytest.mark.parametrize('time,values', [(np.arange(8.), np.ones(2)),
+                                         (np.ones((8, 1)), np.ones(8)),
+                                         (np.array(1.), np.array(2.))])
+def test_registry_rejects_invalid_array_shapes_before_registration(time, values):
+    registry = DataRegistry()
+    with pytest.raises(ValueError, match='equal-length one-dimensional'):
+        registry.add_run('bad', 'bad', time, {'a': values}, {})
+    assert len(registry) == 0
+    run = registry.add_run('good', 'good', np.arange(8.), {'a': np.ones(8)}, {})
+    assert run.id == 1

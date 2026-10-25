@@ -335,7 +335,7 @@ Sessions (``session.py``)
 ==========================
 
 **JSON snapshot** (``save_state``/``load_state``) is the only session format.
-Schema version 4 reloads explicit per-run records and remaps recording/node keys,
+Schema version 5 reloads explicit per-run records and remaps recording/node keys,
 preserving duplicate names and repeated opens of the same path. Restoration uses
 a replacement state; failures leave the current session intact.
 
@@ -343,7 +343,7 @@ a replacement state; failures leave the current session intact.
 automation. They stop at the first error and retain changes from earlier commands.
 Use ``load_state("session.json")`` within a script to invoke transactional restoration.
 Generated session-script export and its separate restoration path have been removed.
-Old version 1/2/3 snapshots and all generated session scripts are rejected.
+Old version 1/2/3/4 snapshots and all generated session scripts are rejected.
 
 Failed or incomplete transforms with saved output assignments receive empty derived
 run placeholders. The same validity check used for stale outputs blocks their data
@@ -510,3 +510,14 @@ validated computation entry point for the graph and headless API.
 Session saves write a temporary file beside the destination and replace the old
 snapshot only after serialization and writing succeed. Failed saves remove the
 temporary file and preserve the previous session.
+
+Sampling and domain transitions
+------------------------------
+
+Timestamp roundoff allowances are bounded to one percent of a sample interval.
+FFT and FIR reject axes whose absolute timestamp precision cannot establish that
+bound; binary math and XY never treat a sample-sized displacement as roundoff.
+Graph domain resolution shares a per-evaluation cache and uses iterative traversal.
+When a saved graph changes an output's domain, restoration discards its incompatible
+normalization and consumer assignments, matching live reevaluation. Failed outputs
+retain their saved domain as unavailable placeholders until repaired.

@@ -45,9 +45,7 @@ GitHub binary releases
 
 ``.github/workflows/uz_dataviewer.yml`` tests and builds Linux and Windows binaries when viewer files, the workflow, or the command reference change.
 Pull requests run validation without publishing releases.
-Pushes to ``main`` publish a release after both builds succeed.
-Temporarily, pushes to ``feature/uz_dataviewer_revision`` also publish, marked as prereleases for testing.
-Remove that branch exception from the release job after testing.
+Pushes to ``main`` publish a release after both native builds and the browser smoke test succeed.
 Manual workflow runs follow the same branch restrictions.
 Each release uses a unique ``uz-dataviewer-build-<run-id>`` tag and includes two archives and SHA-256 checksums.
 Viewer releases do not replace the repository's latest release designation.

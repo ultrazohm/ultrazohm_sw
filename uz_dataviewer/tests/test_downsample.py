@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-import os
-import sys
 
 import numpy as np
 import pytest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer.sources import ArraySource
 from uz_dataviewer.downsample import decimate_range, visible_slice  # noqa: E402

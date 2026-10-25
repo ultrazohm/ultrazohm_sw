@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-import os
-import sys
 import numpy as np
 import pytest
 
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer import session
 from uz_dataviewer.commands import CommandError
@@ -742,3 +739,84 @@ def test_successful_save_replaces_snapshot(app_state, tmp_path):
     save_state(app_state, path)
     assert json.loads(path.read_text())['grid'] == [2, 2]
     assert sorted(p.name for p in tmp_path.iterdir()) == ['session.json']
+
+
+@pytest.mark.parametrize('normalized', [False, True])
+def test_stale_domain_transition_roundtrip_clears_incompatible_consumers(app_state, recording_csv, normalized):
+    from uz_dataviewer import nodes
+    s = app_state
+    run = s.load_sync(str(recording_csv))
+    src = s.nodes.add('source', ref=(run.id, 'a'))
+    fft, math = s.nodes.add('fft'), s.nodes.add('math')
+    s.nodes.link(src.id, fft.id)
+    s.nodes.link(src.id, math.id)
+    nodes.evaluate(s)
+    output = s.registry.get(math.out_run_id)
+    if normalized:
+        output.set_time_origin(100)
+    s.cells[0].signals = [(run.id, 'a'), (output.id, 'out')]
+    s.cells[0].xy_source = (output.id, 'out')
+    s.fft.sources = s.histogram.sources = [(output.id, 'out')]
+    s.nodes.unlink(src.id, math.id)
+    s.nodes.link(fft.id, math.id)
+    apply_dict(s, to_dict(s))
+    output = s.registry.get(s.nodes.get(math.id).out_run_id)
+    assert output.axis_domain == 'frequency' and output.time_origin is None
+    assert s.cells[0].signals == [(1, 'a')] and s.cells[0].xy_source is None
+    assert not s.fft.sources and not s.histogram.sources
+    apply_dict(s, to_dict(s))
+    assert s.registry.get(s.nodes.get(math.id).out_run_id).axis_domain == 'frequency'
+
+
+def test_csv_export_preserves_existing_file_on_failure(
+    app_state, tmp_path, monkeypatch
+):
+    s = app_state
+    s.backend = "pyarrow"
+    s.registry.add_run("a", "a", np.arange(8.0), {"a": np.ones(8)}, {})
+    s.cells[0].add((1, "a"))
+    path = tmp_path / "previous.csv"
+    path.write_text("previous successful export")
+    import pandas as pd
+
+    def fail(self, path, **kw):
+        with open(path, "w") as f:
+            f.write("time,a\n")
+        raise OSError("disk full")
+
+    monkeypatch.setattr(pd.DataFrame, "to_csv", fail)
+    with pytest.raises(OSError):
+        session.export_data(s, 0, str(path))
+    assert path.read_text() == "previous successful export"
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["previous.csv"]
+
+
+def test_failed_mixed_domain_graph_preserves_saved_placeholder(app_state, recording_csv):
+    from uz_dataviewer import nodes
+    s = app_state
+    run = s.load_sync(str(recording_csv))
+    source = s.nodes.add('source', ref=(run.id, 'a'))
+    fft, math = s.nodes.add('fft'), s.nodes.add('math')
+    s.nodes.link(source.id, fft.id)
+    s.nodes.link(source.id, math.id)
+    nodes.evaluate(s)
+    output = s.registry.get(math.out_run_id)
+    output.set_time_origin(10)
+    s.cells[0].add((output.id, 'out'))
+    math.params['op'] = 'add'
+    s.nodes.link(fft.id, math.id, 1)
+    apply_dict(s, to_dict(s))
+    output = s.registry.get(s.nodes.get(math.id).out_run_id)
+    assert output.axis_domain == 'time' and output.time_origin == 10
+    assert output.n_rows == 0 and s.cells[0].signals == [(output.id, 'out')]
+    with pytest.raises(ValueError, match='not current'):
+        output.data_source().validate()
+
+
+def test_old_session_without_domain_contract_is_rejected_atomically(app_state):
+    data = to_dict(app_state)
+    data['version'] = 4
+    token = app_state.session_token
+    with pytest.raises(ValueError, match='Unsupported session version'):
+        apply_dict(app_state, data)
+    assert app_state.session_token is token

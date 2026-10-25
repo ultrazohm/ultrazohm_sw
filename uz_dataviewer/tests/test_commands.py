@@ -2,14 +2,11 @@
 
 from __future__ import annotations
 
-import os
-import sys
 import numpy as np
 import pytest
 import copy
 
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer.commands import CommandError, _fmt_str, format_call, parse_call
 from uz_dataviewer.state import AppState, PlotType
@@ -206,3 +203,30 @@ def test_invalid_command_is_atomic(app_state, command, args):
     with pytest.raises(ValueError):
         app_state.commands.execute(app_state, command, args)
     assert to_dict(app_state) == before
+
+
+def test_xy_rejection_preserves_plot_and_clear_releases_hidden_source(app_state):
+    from uz_dataviewer import nodes
+    s = app_state
+    run = s.registry.add_run('input', 'input', np.arange(8.), {'a': np.ones(8)}, {})
+    source = s.nodes.add('source', ref=(run.id, 'a'))
+    fft = s.nodes.add('fft')
+    s.nodes.link(source.id, fft.id)
+    nodes.evaluate(s)
+    execute = lambda command, *args: s.commands.execute(s, command, list(args))
+    execute('add_signal', 1, run.id, 'a')
+    execute('set_x_lim', 1, 1, 5)
+    before = copy.deepcopy(s.cells[0])
+    with pytest.raises(CommandError, match='axis domain'):
+        execute('set_xy', 1, fft.out_run_id, 'out')
+    assert s.cells[0] == before
+    execute('set_xy', 1, run.id, 'a')
+    execute('set_plot_type', 1, 'line')
+    execute('remove_signal', 1, run.id, 'a')
+    execute('add_signal', 1, fft.out_run_id, 'out')
+    assert s.plot_domain(s.cells[0]) == 'frequency'
+    execute('set_plot_type', 1, 'xy')
+    assert s.cells[0].xy_source is None
+    execute('set_xy', 1, fft.out_run_id, 'out')
+    execute('clear_plot', 1)
+    assert not s.cells[0].signals and s.cells[0].xy_source is None

@@ -7,12 +7,9 @@ histogram, XY and FFT paths, and the drag-rect spy inset.
 
 from __future__ import annotations
 
-import os
-import sys
 
 import numpy as np
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer.panels.plots import PlotsPanel  # noqa: E402
 from uz_dataviewer.state import PlotType  # noqa: E402
@@ -270,3 +267,20 @@ def test_spy_uses_primary_axis_independent_of_trace_order(states, gui_frame, mon
         gui_frame(panel, state, str(order))
         np.testing.assert_allclose(cell.spy_rect, (2.25, 2.5, 6.75, 7.5))
         assert drawn == [state.signal_label((1, 'a'))]
+
+
+def test_xy_source_picker_chooses_compatible_domain(app_state, gui_frame):
+    from uz_dataviewer import nodes
+    s = app_state
+    s.services.display.synchronous = True
+    run = s.registry.add_run('time', 'time', np.arange(8.), {'a': np.ones(8)}, {})
+    src, fft = s.nodes.add('source', ref=(run.id, 'a')), s.nodes.add('fft')
+    s.nodes.link(src.id, fft.id)
+    nodes.evaluate(s)
+    s.commands.execute(s, 'add_signal', [1, fft.out_run_id, 'out'])
+    s.commands.execute(s, 'set_plot_type', [1, 'xy'])
+    panel = PlotsPanel()
+    for _ in range(3):
+        gui_frame(panel, s)
+    assert s.cells[0].xy_source == (fft.out_run_id, 'out')
+    assert not [entry for entry in s.console._entries if entry.level == 'ERROR']

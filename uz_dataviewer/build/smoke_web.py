@@ -47,8 +47,30 @@ def main():
                 'pyodide.runPython("len(_app.state.registry)") === 1'
             )
             result = page.evaluate("""() => pyodide.runPython(`
-from uz_dataviewer import session
+from uz_dataviewer import session, api
+from uz_dataviewer.sampling import require_matching_time, regular_sample_interval
+import numpy as np
 from pathlib import Path
+# Exercise numerical guards with the browser's separately pinned NumPy runtime.
+try:
+    api.math((np.arange(8.), np.array([1., 2.])), op="integral")
+except ValueError:
+    pass
+else:
+    raise AssertionError("Malformed integral input accepted")
+t = 1.7e9 + np.arange(8) * 1e-6
+for validate in (lambda: require_matching_time(t, t + 1e-6),
+                 lambda: regular_sample_interval(t, "FFT")):
+    try:
+        validate()
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Unsafe timestamp precision accepted")
+large = api.fft(np.arange(8.), np.full(8, 1e38, np.float32),
+                remove_dc=False, window=False)
+assert large.ok and np.isfinite(large.mag).all()
+np.testing.assert_allclose(large.mag[0], 1e38, rtol=1e-6)
 s = _app.state
 run = s.registry.runs[0]
 assert run.n_rows == 64 and not run.reloadable

@@ -15,8 +15,10 @@ def regular_sample_interval(time, operation: str) -> float:
     dt = (float(time[-1]) - float(time[0])) / (len(time) - 1)
     if not np.isfinite(dt) or dt <= 0:
         raise ValueError(f"{operation} needs finite, strictly increasing timestamps")
-    tolerance = max(abs(dt) * 1e-4,
-                    np.finfo(np.float64).eps * max(1., abs(float(time[0])), abs(float(time[-1]))) * 8)
+    roundoff = np.finfo(np.float64).eps * max(abs(float(time[0])), abs(float(time[-1]))) * 8
+    if roundoff > abs(dt) * .01:
+        raise ValueError(f"{operation} timestamp precision is insufficient to establish uniform sampling")
+    tolerance = max(abs(dt) * 1e-4, roundoff)
     for start in range(0, len(time) - 1, _BLOCK):
         block = time[start:min(len(time), start + _BLOCK + 1)]
         intervals = np.diff(block)
@@ -35,7 +37,12 @@ def require_matching_time(left, right) -> None:
         a, b = left[start:start + _BLOCK], right[start:start + _BLOCK]
         if not np.isfinite(a).all() or not np.isfinite(b).all():
             raise ValueError("Binary math needs finite timestamps")
-        tolerance = np.finfo(np.float64).eps * max(1., float(np.max(np.abs(a))), float(np.max(np.abs(b)))) * 8
+        tolerance = np.finfo(np.float64).eps * max(float(np.max(np.abs(a))), float(np.max(np.abs(b)))) * 8
+        # Roundoff must never permit a meaningful fraction of a sample period.
+        steps = np.concatenate([np.diff(left[max(0, start - 1):start + _BLOCK]),
+                                np.diff(right[max(0, start - 1):start + _BLOCK])])
+        positive = steps[steps > 0]
+        tolerance = min(tolerance, float(positive.min()) * .01) if len(positive) else 0.
         if np.any(np.abs(a - b) > tolerance):
             raise ValueError("Binary math needs matching time axes; inputs are not time-aligned")
 

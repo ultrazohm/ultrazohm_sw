@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-import os
-import sys
 import numpy as np
 import pytest
 
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer.transforms import filter_node, math_node
 from uz_dataviewer.analysis import compute_fft
@@ -172,3 +169,33 @@ def test_undefined_math_stays_invalid_through_analysis(operation):
     np.testing.assert_array_equal(result[np.arange(8) != 2], np.ones(7))
     fft = compute_fft(t, result, 0, 7)
     assert not fft.ok and 'non-finite' in fft.info
+
+
+def test_epoch_time_cannot_hide_misalignment_or_irregular_sampling():
+    from uz_dataviewer.sampling import require_matching_time, regular_sample_interval
+    t = 1.7e9 + np.arange(8) * 1e-6
+    irregular = t.copy()
+    irregular[4] += .7e-6
+    for origin in (0, t[0]):
+        with pytest.raises(ValueError, match='not time-aligned'):
+            require_matching_time(t - origin, t + 1e-6 - origin)
+        with pytest.raises(ValueError, match='precision|uniformly spaced'):
+            regular_sample_interval(irregular - origin, 'FFT')
+    require_matching_time(t, t.copy())
+
+
+def test_time_alignment_checks_spacing_across_block_boundary():
+    from uz_dataviewer.sampling import require_matching_time
+    t = 1.7e9 + np.arange(65537) * 1e-6
+    other = t.copy()
+    other[-1] += 1e-6
+    with pytest.raises(ValueError, match='not time-aligned'):
+        require_matching_time(t, other)
+
+
+def test_small_absolute_timestamps_are_not_treated_as_unit_scale():
+    from uz_dataviewer.sampling import regular_sample_interval, require_matching_time
+    t = np.arange(8.) * 1e-15
+    assert regular_sample_interval(t, 'FFT') == pytest.approx(1e-15, rel=1e-12, abs=0)
+    with pytest.raises(ValueError, match='not time-aligned'):
+        require_matching_time(t, t + 1e-16)

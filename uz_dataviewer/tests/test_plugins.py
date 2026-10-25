@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-import os
+from uz_dataviewer import nodes
+
 import sys
 
 import numpy as np
 import pytest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer.nodes import REGISTRY, transform_kinds  # noqa: E402
 from uz_dataviewer.plugins import load_plugins  # noqa: E402
@@ -176,3 +176,107 @@ def test_plugin_node_renders_headless(tmp_path, clean_registry, gui_frame):
         state.shutdown()
 
     assert any(r.derived and r.label == "node_2" for r in state.registry.runs)
+
+
+@pytest.mark.parametrize('declaration', [
+    'ui=[ParamSpec.enum("choice", [])]',
+    'inputs=(2, 1)', 'inputs=(0, 1000000)',
+    'ui=[ParamSpec("x", "unknown")]',
+    'ui=[ParamSpec.float("x"), ParamSpec.int("x")]',
+    'params={"x": "nan"}, ui=[ParamSpec.float("x")]',
+    'params={"x": "other"}, ui=[ParamSpec.enum("x", ["valid"])]',
+])
+def test_invalid_plugin_declarations_roll_back(tmp_path, clean_registry, declaration):
+    before = dict(REGISTRY)
+    (tmp_path / 'bad.py').write_text(_PLUGIN + f'''
+@transform("invalid", {declaration})
+def invalid(inputs, params):
+    return inputs[0][0], inputs[0][1], ""
+''')
+    assert load_plugins([str(tmp_path)]) == ()
+    assert REGISTRY == before
+
+
+def test_nonstring_plugin_info_fails_only_its_node(app_state, monkeypatch):
+    from uz_dataviewer import nodes
+    monkeypatch.setitem(REGISTRY, 'bad_info', nodes.TransformSpec(
+        'bad_info', lambda i, p: (*i[0], 42)))
+    run = app_state.registry.add_run('a', 'a', np.arange(8.), {'a': np.ones(8)}, {})
+    source = app_state.nodes.add('source', ref=(run.id, 'a'))
+    bad, good = app_state.nodes.add('bad_info'), app_state.nodes.add('math')
+    for node in (bad, good):
+        app_state.nodes.link(source.id, node.id)
+    assert nodes.evaluate(app_state) == 1
+    assert 'info must be a string' in bad.error
+
+
+def test_plugin_bad_dtype_does_not_abort_siblings(app_state, monkeypatch):
+    s = app_state
+    s.registry.add_run("a", "a", np.arange(8.0), {"a": np.ones(8)}, {})
+    src = s.nodes.add("source", ref=(1, "a"))
+    monkeypatch.setitem(
+        nodes.REGISTRY,
+        "bad_dtype",
+        nodes.TransformSpec("bad_dtype", lambda i, p: (i[0][0], ["bad"] * 8, "")),
+    )
+    bad = s.nodes.add("bad_dtype")
+    good = s.nodes.add("math")
+    s.nodes.link(src.id, bad.id)
+    s.nodes.link(src.id, good.id)
+    assert nodes.evaluate(s) == 1
+    assert bad.error and good.out_y is not None
+
+
+def test_plugin_cannot_mutate_recording(app_state, monkeypatch):
+    s = app_state
+    run = s.registry.add_run("a", "a", np.arange(8.0), {"a": np.ones(8)}, {})
+    src = s.nodes.add("source", ref=(1, "a"))
+    cached = s.nodes.add("math")
+    s.nodes.link(src.id, cached.id)
+    assert nodes.evaluate(s) == 1
+
+    def mutate(inputs, params):
+        t, y = inputs[0]
+        y *= 10
+        return t, y, "mutated"
+
+    monkeypatch.setitem(nodes.REGISTRY, "mutate", nodes.TransformSpec("mutate", mutate))
+    mut = s.nodes.add("mutate")
+    s.nodes.link(src.id, mut.id)
+    assert nodes.evaluate(s) == 0
+    assert "read-only" in mut.error
+    assert np.all(run.signals["a"].y == 1) and np.all(cached.out_y == 1)
+    assert not nodes.is_stale(s.registry, s.nodes, cached)
+
+
+def test_documented_moving_average_handles_short_input(monkeypatch):
+    import runpy
+    from uz_dataviewer import api
+
+    with monkeypatch.context() as patch:
+        patch.setattr(nodes, "REGISTRY", dict(nodes.REGISTRY))
+        import uz_dataviewer.plugins as plugins
+
+        patch.setattr(plugins, "REGISTRY", nodes.REGISTRY)
+        from pathlib import Path
+
+        runpy.run_path(
+            str(Path(__file__).parents[1] / "examples/plugins/moving_average.py")
+        )
+        t, y, _ = api.node("movavg", (np.arange(8.0), np.ones(8)))
+        assert len(t) == len(y) == 8
+
+
+def test_plugin_output_owns_its_buffers(app_state, monkeypatch):
+    t, y = np.arange(8.0), np.ones(8, dtype=np.float32)
+    monkeypatch.setitem(
+        nodes.REGISTRY,
+        "retained",
+        nodes.TransformSpec("retained", lambda i, p: (t, y, ""), inputs=(0, 0)),
+    )
+    node = app_state.nodes.add("retained")
+    assert nodes.evaluate(app_state) == 1
+    t[:] = -1
+    y[:] = 99
+    np.testing.assert_array_equal(node.out_time, np.arange(8.0))
+    np.testing.assert_array_equal(node.out_y, np.ones(8))

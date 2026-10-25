@@ -81,10 +81,33 @@ REGISTRY: dict[str, TransformSpec] = {}
 
 def register_transform(spec: TransformSpec) -> None:
     """Register a transform kind (used by builtins at import and by plugins)."""
-    if not spec.kind or spec.kind == "source":
+    import re
+    if not isinstance(spec.kind, str) or not re.fullmatch(r"[a-z][a-z0-9_]*", spec.kind) or spec.kind == "source":
         raise ValueError(f"invalid transform kind {spec.kind!r}")
     if spec.kind in REGISTRY:
         raise ValueError(f"Transform {spec.kind!r} is already registered; restart to load a changed plugin")
+    if not callable(spec.compute):
+        raise ValueError("Transform compute must be callable")
+    if (not isinstance(spec.inputs, (tuple, list)) or len(spec.inputs) != 2 or any(type(n) is not int for n in spec.inputs)
+            or not 0 <= spec.inputs[0] <= spec.inputs[1] <= 1024):
+        raise ValueError("Transform input arity must satisfy 0 <= min <= max <= 1024")
+    keys = set()
+    for parameter in spec.ui:
+        if not isinstance(parameter, ParamSpec) or parameter.kind not in {"float", "int", "bool", "enum", "str"}:
+            raise ValueError("Invalid transform parameter declaration")
+        if not isinstance(parameter.key, str) or not parameter.key or parameter.key in keys:
+            raise ValueError("Parameter keys must be nonempty and unique")
+        keys.add(parameter.key)
+        if not isinstance(parameter.label, str):
+            raise ValueError("Parameter labels must be strings")
+        if parameter.kind == "enum" and (not parameter.options or
+                any(not isinstance(v, str) for v in parameter.options) or
+                len(set(parameter.options)) != len(parameter.options)):
+            raise ValueError("Enum options must be nonempty, distinct strings")
+    if not isinstance(spec.params, dict) or any(not isinstance(k, str) for k in spec.params):
+        raise ValueError("Transform defaults must be a mapping with string keys")
+    for key, value in spec.params.items():
+        _validate_parameter(spec.kind, next((p for p in spec.ui if p.key == key), None), key, value)
     REGISTRY[spec.kind] = spec
 
 
@@ -127,20 +150,6 @@ def _shift_compute(inputs, params):
     return np.asarray(time, np.float64) + by, np.asarray(y, np.float64), f"shift {by:+g} s"
 
 
-register_transform(TransformSpec("fft", _fft_compute,
-    {"remove_dc": "true", "window": "true"}, (1, 1),
-    (ParamSpec.bool("remove_dc", "remove DC"), ParamSpec.bool("window", "Hann"))))
-register_transform(TransformSpec("math", _math_compute,
-    {"op": "scale", "k": "1.0"}, (1, 2),
-    (ParamSpec.enum("op", transforms.MATH_OPS), ParamSpec.float("k"))))
-register_transform(TransformSpec("filter", _filter_compute,
-    {"type": "low", "cutoff": "0", "cutoff2": "0", "taps": "101"}, (1, 1),
-    (ParamSpec.enum("type", transforms.FILTER_TYPES), ParamSpec.float("cutoff", "cutoff Hz"),
-     ParamSpec.float("cutoff2", "cutoff2 Hz"), ParamSpec.int("taps"))))
-register_transform(TransformSpec("shift", _shift_compute, {"by": "0"}, (1, 1),
-    (ParamSpec.float("by", "by (s)"),)))
-
-
 def validate_parameter(kind, key, value):
     """Share declared parameter validation across commands, evaluation and UI.
 
@@ -154,6 +163,10 @@ def validate_parameter(kind, key, value):
     else:
         spec = REGISTRY.get(kind)
         parameter = next((p for p in spec.ui if p.key == key), None) if spec else None
+    _validate_parameter(kind, parameter, key, value)
+
+
+def _validate_parameter(kind, parameter, key, value):
     if parameter is None:
         return
     try:
@@ -169,6 +182,20 @@ def validate_parameter(kind, key, value):
             raise ValueError(f"must be one of {parameter.options}")
     except (ValueError, TypeError, OverflowError) as exc:
         raise ValueError(f"{kind}.{key}: invalid value {value!r} ({exc})") from exc
+
+
+register_transform(TransformSpec("fft", _fft_compute,
+    {"remove_dc": "true", "window": "true"}, (1, 1),
+    (ParamSpec.bool("remove_dc", "remove DC"), ParamSpec.bool("window", "Hann"))))
+register_transform(TransformSpec("math", _math_compute,
+    {"op": "scale", "k": "1.0"}, (1, 2),
+    (ParamSpec.enum("op", transforms.MATH_OPS), ParamSpec.float("k"))))
+register_transform(TransformSpec("filter", _filter_compute,
+    {"type": "low", "cutoff": "0", "cutoff2": "0", "taps": "101"}, (1, 1),
+    (ParamSpec.enum("type", transforms.FILTER_TYPES), ParamSpec.float("cutoff", "cutoff Hz"),
+     ParamSpec.float("cutoff2", "cutoff2 Hz"), ParamSpec.int("taps"))))
+register_transform(TransformSpec("shift", _shift_compute, {"by": "0"}, (1, 1),
+    (ParamSpec.float("by", "by (s)"),)))
 
 
 @dataclass
@@ -302,34 +329,38 @@ class NodeGraph:
 
 # -- topology -----------------------------------------------------------------
 def _topo_order(graph: NodeGraph) -> list[int]:
+    from collections import deque
     indeg = {nid: 0 for nid in graph.nodes}
+    children = {nid: [] for nid in graph.nodes}
     for node in graph.nodes.values():
         for inp in set(node.inputs):
             if inp in graph.nodes:
                 indeg[node.id] += 1
-    queue = [nid for nid, d in indeg.items() if d == 0]
-    order: list[int] = []
+                children[inp].append(node.id)
+    queue = deque(nid for nid, degree in indeg.items() if degree == 0)
+    order = []
     while queue:
-        nid = queue.pop(0)
+        nid = queue.popleft()
         order.append(nid)
-        for other in graph.nodes.values():
-            if nid in other.inputs:
-                indeg[other.id] -= 1
-                if indeg[other.id] == 0:
-                    queue.append(other.id)
+        for child in children[nid]:
+            indeg[child] -= 1
+            if indeg[child] == 0:
+                queue.append(child)
     if len(order) != len(graph.nodes):
         raise ValueError("node graph has a cycle")
     return order
 
 
 def _upstream(graph: NodeGraph, node_id: int, acc: set[int]) -> None:
-    acc.add(node_id)
-    node = graph.nodes.get(node_id)
-    if node is None:
-        return
-    for inp in node.inputs:
-        if inp in graph.nodes and inp not in acc:
-            _upstream(graph, inp, acc)
+    pending = [node_id]
+    while pending:
+        nid = pending.pop()
+        if nid in acc:
+            continue
+        acc.add(nid)
+        node = graph.nodes.get(nid)
+        if node is not None:
+            pending.extend(i for i in node.inputs if i in graph.nodes)
 
 
 # -- output resolution --------------------------------------------------------
@@ -426,7 +457,14 @@ def compute_node(node: Node, inputs: list[tuple[np.ndarray, np.ndarray]]
         view = np.asarray(array).view()
         view.flags.writeable = False
         return view
-    protected = [(readonly(t), readonly(y)) for t, y in inputs]
+    protected = []
+    for t, y in inputs:
+        t, y = readonly(t), readonly(y)
+        if t.ndim != 1 or y.ndim != 1 or t.shape != y.shape:
+            raise ValueError("Node input must contain equal-length one-dimensional time and value arrays")
+        from .loader import validate_time_axis
+        validate_time_axis(t, node.name)
+        protected.append((t, y))
     out_time, out_y, info = spec.compute(protected, dict(node.params))
     # Own the published buffers: plugins may return aliases or retain references.
     out_time = np.array(out_time, dtype=np.float64, order="C", copy=True)
@@ -435,24 +473,38 @@ def compute_node(node: Node, inputs: list[tuple[np.ndarray, np.ndarray]]
         raise ValueError("Node output must contain equal-length one-dimensional time and value arrays")
     from .loader import validate_time_axis
     validate_time_axis(out_time, node.name)
+    if not isinstance(info, str):
+        raise ValueError("Node output info must be a string")
     return out_time, out_y, info, spec.unit
 
 
-def output_domain(graph, node):
-    """Built-in FFT changes domains; other transforms preserve their input axis."""
-    if node.kind == "fft":
-        return "frequency"
-    if node.kind == "source":
-        return "time"
-    domains = {output_domain(graph, graph.nodes[i]) for i in node.inputs if i in graph.nodes}
-    if len(domains) > 1:
-        raise ValueError("Cannot combine time and frequency axes")
-    return next(iter(domains), "time")
+def output_domain(graph, node, domains=None):
+    """Resolve shared inputs once, without recursion; cache only within an operation."""
+    domains = {} if domains is None else domains
+    pending = [(node.id, False)]
+    while pending:
+        nid, ready = pending.pop()
+        if nid in domains:
+            continue
+        current = graph.nodes[nid]
+        if current.kind in {"fft", "source"}:
+            domains[nid] = "frequency" if current.kind == "fft" else "time"
+            continue
+        inputs = set(i for i in current.inputs if i in graph.nodes)
+        if not ready:
+            pending.append((nid, True))
+            pending.extend((i, False) for i in inputs if i not in domains)
+            continue
+        inherited = {domains[i] for i in inputs}
+        if len(inherited) > 1:
+            raise ValueError("Cannot combine time and frequency axes")
+        domains[nid] = next(iter(inherited), "time")
+    return domains[node.id]
 
 
-def publish_output(state, node: Node, unit: str = "") -> None:
+def publish_output(state, node: Node, unit: str = "", *, domain=None) -> None:
     """Create/refresh a stable output, including an unavailable empty placeholder."""
-    domain = output_domain(state.nodes, node)
+    domain = domain or output_domain(state.nodes, node)
     existing = state.registry.get(node.out_run_id) if node.out_run_id is not None else None
     if existing is not None and existing.axis_domain != domain:
         existing.time_origin = None
@@ -477,7 +529,7 @@ def publish_output(state, node: Node, unit: str = "") -> None:
             raise ValueError(f"{node.name}: derived output is not current; evaluate the node ({node.error or 'inputs changed'})")
 
     run = state.registry.get(node.out_run_id)
-    run.axis_domain = output_domain(graph, node)
+    run.axis_domain = domain
     run.output_validator = validate_output
 
 
@@ -493,6 +545,7 @@ def evaluate(state, node_id: int | None = None) -> int:
         _upstream(graph, node_id, wanted)
         order = [nid for nid in order if nid in wanted]
 
+    domain_cache = {}
     computed = 0
     for nid in order:
         node = graph.nodes[nid]
@@ -506,7 +559,7 @@ def evaluate(state, node_id: int | None = None) -> int:
         try:
             if any(i is None for i in node.inputs):
                 raise ValueError("Connect all input slots before evaluating")
-            domains = {output_domain(graph, graph.nodes[i]) for i in node.inputs}
+            domains = {output_domain(graph, graph.nodes[i], domain_cache) for i in node.inputs}
             if len(domains) > 1:
                 raise ValueError("Cannot combine time and frequency axes")
             requires_time = node.kind in {"fft", "filter", "shift"} or (
@@ -526,6 +579,6 @@ def evaluate(state, node_id: int | None = None) -> int:
         node.info = info
         node.error = ""
         node.eval_key = node_key(state.registry, graph, node)
-        publish_output(state, node, unit)
+        publish_output(state, node, unit, domain=output_domain(graph, node, domain_cache))
         computed += 1
     return computed

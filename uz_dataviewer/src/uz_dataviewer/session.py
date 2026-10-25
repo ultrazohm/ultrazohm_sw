@@ -20,7 +20,7 @@ from .validation import axis_limits, finite_float, coordinates, spy_rectangle, h
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from .state import AppState
 
-SCHEMA_VERSION = 4
+SCHEMA_VERSION = 5
 
 
 def ensure_extension(path: str, ext: str) -> str:
@@ -72,7 +72,7 @@ def _nodes_to_list(state: "AppState") -> list[dict]:
                 "inputs": list(node.inputs),
                 "ref": _ref_to_saved(state, node.ref) if node.ref else None,
                 "pos": list(node.pos),
-                "output_view": {"active": run.active, "time_origin": run.time_origin} if run else None,
+                "output_view": {"active": run.active, "time_origin": run.time_origin, "axis_domain": run.axis_domain} if run else None,
             }
         )
     return out
@@ -219,6 +219,8 @@ def _apply_dict(state: "AppState", data: dict) -> None:
     state.shared_x = axis_limits(*data["shared_x"]) if data.get("shared_x") is not None else None
     state.max_points = display_budget(data.get("max_points", state.max_points))
 
+    changed_domains = set()
+
     def _resolve(labelled) -> tuple[int, str] | None:
         if not labelled:
             return None
@@ -230,11 +232,11 @@ def _apply_dict(state: "AppState", data: dict) -> None:
             run_id = run_ids.get(key)
         if run_id is None or state.registry.get_signal(run_id, labelled[1]) is None:
             raise ValueError(f"Cannot restore signal reference: {labelled}")
-        return run_id, labelled[1]
+        return None if run_id in changed_domains else (run_id, labelled[1])
 
     # Rebuild the node graph and evaluate it *before* resolving cell/analysis
     # assignments, so any references to a derived run (label == node name) resolve.
-    _restore_nodes(state, data.get("nodes", []), _resolve)
+    changed_domains = _restore_nodes(state, data.get("nodes", []), _resolve)
 
     for i, spec in enumerate(data.get("cells", [])):
         if i >= len(state.cells):
@@ -253,9 +255,11 @@ def _apply_dict(state: "AppState", data: dict) -> None:
         for ref in (_resolve(r) for r in spec.get("y2", [])):
             if ref is not None:
                 cell.set_secondary(ref, True)
+        lost_axis = any(_resolve(ref) is None for ref in spec.get("signals", [])) or (
+            spec.get("xy_source") is not None and cell.xy_source is None)
         for axis in ('x', 'y', 'y2'):
             limits = spec.get(f'{axis}_lim')
-            if limits is not None:
+            if limits is not None and not lost_axis:
                 cell.set_limits(axis, *limits)
         if cell.pending_x_lim and cell.plot_type is not PlotType.XY:
             state.plot_x_ranges[i + 1] = cell.pending_x_lim
@@ -317,6 +321,7 @@ def _restore_nodes(state: "AppState", specs: list, resolve) -> None:
                 state.nodes.link(int(in_id), dst, slot)
     if state.nodes.nodes:
         evaluate(state)
+    changed_domains = set()
     for spec in specs:
         view = spec.get("output_view")
         node = state.nodes.get(int(spec["id"]))
@@ -325,11 +330,18 @@ def _restore_nodes(state: "AppState", specs: list, resolve) -> None:
             # Keep the output identity/assignments while editing an incomplete or
             # failed graph. The empty placeholder is blocked by the same validator
             # as stale materialized outputs and is filled in on successful eval.
-            publish_output(state, node)
+            publish_output(state, node, domain=view["axis_domain"])
             run = state.registry.get(node.out_run_id)
         if run is not None and view is not None:
             run.active = boolean(view["active"])
-            run.set_time_origin(view["time_origin"])
+            saved_domain = view["axis_domain"]
+            if saved_domain not in {"time", "frequency"}:
+                raise ValueError("Invalid saved output axis domain")
+            if saved_domain != run.axis_domain:
+                changed_domains.add(run.id)
+            else:
+                run.set_time_origin(view["time_origin"])
+    return changed_domains
 
 
 def _check_reloadable(state):

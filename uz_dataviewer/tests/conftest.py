@@ -1,6 +1,11 @@
 """Keep persisted indexes and lazy CSV conversions out of the user's cache."""
 
+import sys
+from pathlib import Path
+
 import pytest
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 
 @pytest.fixture(autouse=True)

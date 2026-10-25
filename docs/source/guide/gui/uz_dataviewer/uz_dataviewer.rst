@@ -27,7 +27,7 @@ Features
 Starting uz_dataviewer
 ======================
 
-The ``uz_dataviewer`` is located in ``ultrazohm_sw/dataviewer/`` and there are multiple options to run the application.
+The ``uz_dataviewer`` is located in ``ultrazohm_sw/uz_dataviewer/`` and there are multiple options to run the application.
 The ``uz_dataviewer`` is available as a local web version, a native application using the compiled binary, or as a native application running directly from source.
 See :ref:`uz_dataviewer_build` for instructions on how to build the binary.
 
@@ -35,9 +35,9 @@ See :ref:`uz_dataviewer_build` for instructions on how to build the binary.
 
     .. tab-item:: Native from binary
 
-       Starting ``uz_dataviewer`` from the binary, assuming the binary is located in ``ultrazohm_sw/dataviewer/dist``.
+       Starting ``uz_dataviewer`` from the binary, assuming the binary is located in ``ultrazohm_sw/uz_dataviewer/dist``.
        The application can be run in an arbitrary location.
-       When the binary is not located in ``ultrazohm_sw/dataviewer/dist``, see :ref:`uz_dataviewer_plugins`.
+       When the binary is not located in ``ultrazohm_sw/uz_dataviewer/dist``, see :ref:`uz_dataviewer_plugins`.
        
        .. code-block:: bash
        
@@ -63,7 +63,7 @@ See :ref:`uz_dataviewer_build` for instructions on how to build the binary.
 
     .. tab-item:: Local Web version
 
-           Starting ``uz_dataviewer`` from the binary, assuming the binary is located in ``ultrazohm_sw/dataviewer/dist``.
+           Build the web assets using :ref:`uz_dataviewer_build_web`, then serve the generated directory.
            
            .. code-block:: bash
            

@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-import os
-import sys
 
 import numpy as np
 import pytest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer import nodes, nodes as nodemod
 from uz_dataviewer.commands import CommandError
@@ -301,3 +298,41 @@ def test_node_output_shape_validation():
             compute_node(Node(1, 'bad_shape', 'bad'), [(np.arange(2.), np.arange(2.))])
     finally:
         REGISTRY.pop('bad_shape')
+
+
+def test_domain_resolution_visits_shared_inputs_once_and_supports_deep_graphs():
+    class CountedNodes(dict):
+        reads = 0
+        def __getitem__(self, key):
+            self.reads += 1
+            return super().__getitem__(key)
+    graph = nodes.NodeGraph()
+    graph.nodes = CountedNodes({1: nodes.Node(1, 'source', 'source')})
+    for i in range(2, 2002):
+        graph.nodes[i] = nodes.Node(i, 'math', f'n{i}', inputs=[i - 1, i - 1])
+    assert nodes.output_domain(graph, graph.nodes[2001]) == 'time'
+    assert graph.nodes.reads <= 2 * len(graph.nodes)
+    upstream = set()
+    nodes._upstream(graph, 2001, upstream)
+    assert upstream == set(graph.nodes)
+    assert nodes._topo_order(graph) == list(graph.nodes)
+
+
+def test_evaluation_reuses_domain_resolution(app_state, monkeypatch):
+    run = app_state.registry.add_run('input', 'input', np.arange(8.), {'a': np.ones(8)}, {})
+    previous = app_state.nodes.add('source', ref=(run.id, 'a'))
+    for _ in range(30):
+        current = app_state.nodes.add('math')
+        current.params['op'] = 'add'
+        app_state.nodes.link(previous.id, current.id, 0)
+        app_state.nodes.link(previous.id, current.id, 1)
+        previous = current
+    original = nodes.output_domain
+    caches = []
+    def resolve(graph, node, domains=None):
+        caches.append(domains)
+        return original(graph, node, domains)
+    monkeypatch.setattr(nodes, 'output_domain', resolve)
+    assert nodes.evaluate(app_state) == 30
+    assert caches and all(cache is caches[0] and cache is not None for cache in caches)
+    assert len(caches[0]) == 31

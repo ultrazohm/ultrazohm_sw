@@ -194,9 +194,14 @@ class DataRegistry:
         signals: dict[str, np.ndarray],
         units: dict[str, str],
     ) -> Run:
+        time_arr = np.asarray(time, dtype=np.float64)
+        values_by_name = {name: np.asarray(values, dtype=np.float32) for name, values in signals.items()}
+        if time_arr.ndim != 1 or any(values.ndim != 1 or values.shape != time_arr.shape
+                                     for values in values_by_name.values()):
+            raise ValueError("Recording arrays must contain equal-length one-dimensional time and values")
+        time_arr = np.ascontiguousarray(time_arr)
         run_id = next(self._ids)
         color = _RUN_COLORS[(run_id - 1) % len(_RUN_COLORS)]
-        time_arr = np.ascontiguousarray(time, dtype=np.float64)
         run = Run(
             id=run_id,
             label=label,
@@ -206,7 +211,7 @@ class DataRegistry:
             color=color,
             time_raw=time_arr,
         )
-        for name, values in signals.items():
+        for name, values in values_by_name.items():
             run.signals[name] = Signal(
                 name=name,
                 unit=units.get(name, ""),

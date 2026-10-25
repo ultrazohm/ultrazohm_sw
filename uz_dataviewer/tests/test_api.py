@@ -9,7 +9,6 @@ import numpy as np
 import pytest
 
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer import api, nodes
 import uz_dataviewer as uz
@@ -161,3 +160,24 @@ def test_fft_rejects_invalid_axis_before_selecting_window():
             result = fft(time, list(range(len(time))), **limits)
             assert not result.ok
             assert 'time column' in result.info
+
+
+@pytest.mark.parametrize('values', [np.array([1., 2.]), np.ones((8, 1)), np.array(1.)])
+def test_integral_rejects_broadcastable_malformed_inputs(values):
+    with pytest.raises(ValueError, match='equal-length one-dimensional'):
+        api.math((np.arange(8.), values), op='integral')
+
+
+def test_state_import_does_not_load_gui():
+    import subprocess
+    import sys
+
+    subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "import sys; from uz_dataviewer.state import AppState; "
+            's=AppState(); s.shutdown(); assert "imgui_bundle" not in sys.modules',
+        ],
+        check=True,
+    )

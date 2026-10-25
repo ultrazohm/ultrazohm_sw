@@ -37,7 +37,7 @@ Loading data
 - **Navigation ▸ Open file(s)…** loads ``.csv`` (JavaScope ``;``-separated **or** standard ``,``-separated — the delimiter is auto-detected) and ``.parquet``, multiple at once. On the desktop you can also drag ``.csv``/``.parquet`` files onto the window.
 - Expand a run to see its channels. The checkbox (de)activates a run; right-click ▸ **Remove run** drops it.
 - **Per-log time normalization:** right-click a run ▸ tick **Normalize start time** and enter a start (default ``0``), then **Apply**. This shifts that log's time axis without touching the samples; untick to restore. (Also ``load("Log.csv", 0)``.)
-- **Large logs:** channels load compactly and large Parquet files stream in, so a multi-million-sample log opens at roughly its in-memory size. A **very large CSV is refused** (parsing it whole would risk running out of memory) with a message pointing you to convert it once: ``convert("Log.csv")`` in the console, or ``uz-dataviewer convert Log.csv`` from a shell — both write a ``.parquet`` beside the source that loads leanly. (Native; the browser build is bounded by its ~4 GB limit — see :doc:`uz_dataviewer_native_vs_web`.)
+- **Large logs:** desktop lazy loading reads raw windows without retaining the complete recording. In-memory CSV loading enforces a numeric-data budget. Convert CSV to Parquet for faster repeated access, using ``convert("Log.csv")`` or ``uz-dataviewer convert Log.csv``. Browser limits are described in :doc:`uz_dataviewer_native_vs_web`.
 
 Backend and loading mode
 ------------------------
@@ -56,7 +56,6 @@ This is a retained-cache budget, not a limit on total application RAM.
 The status bar shows retained RAM cache usage next to FPS.
 An amber **cache limit hit** indication appears for five seconds after an entry is evicted or a result exceeds the cache capacity.
 Hover over it to see eviction and oversized-result counts since the last cache clear.
-Auto loading and its separate memory-budget setting have been removed.
 Auto loading and the obsolete memory-budget controls have been removed; recreate old sessions with explicit loading settings.
 The desktop application defaults to **Polars + Lazy**.
 The online version defaults to **PyArrow + In memory** and supports PyArrow only.
@@ -75,7 +74,7 @@ Opening a Polars JSON session in the browser falls back to PyArrow with a consol
 The console equivalent is ``backend(polars)`` followed by ``loading_mode(lazy)`` and ``load("path/to/log.parquet")``.
 The headless library accepts ``uz.read(path, backend="polars")``; its dataframe conversion returns a Polars DataFrame when that backend is selected.
 The default library backend preserves the existing pandas DataFrame interface.
-Polars uses the native streaming reader and writer from the prototype; CSV conversion can use more RAM than PyArrow.
+Polars uses its native streaming reader and writer; CSV conversion can use more RAM than PyArrow.
 Disk caching is disabled by default; indexes and summaries stay in RAM, and lazy CSV files are scanned directly.
 Enable **Disk cache** on the bottom status bar, ``--disk-cache`` or ``disk_cache(true)`` to reuse disk summaries and converted CSVs across restarts.
 The setting affects newly opened files; reopen existing files to apply it.
@@ -226,9 +225,9 @@ Transforms must be chained through node links, not by creating source nodes from
 
 Automation commands can reference derived outputs as ``node_output_N``, independently of which other nodes have been evaluated.
 
-Saved sessions use schema version 4 and preserve separate instances of logs with identical filenames or paths.
+Saved sessions use schema version 5 and preserve separate instances of logs with identical filenames or paths.
 Restoring a session replaces the currently loaded session.
-Version 1/2/3 snapshots and all generated session scripts must be recreated as JSON sessions. Generated script export has been removed.
+Version 1/2/3/4 snapshots and all generated session scripts must be recreated as JSON sessions. Generated script export has been removed.
 Histogram, FFT, export and node crop ranges include only samples inside the selected time window.
 FFT and FIR filters require strictly increasing, uniformly spaced timestamps (100 ppm tolerance plus floating-point roundoff).
 Binary math requires matching time axes throughout both inputs. Unsupported sampling is rejected without interpolation.

@@ -124,6 +124,9 @@ def compute_fft(
     except ValueError as exc:
         return FftResult(None, None, str(exc))
 
+    # Scale before demeaning/FFT to avoid overflowing float32 intermediates.
+    scale = max(abs(float(ys.min())), abs(float(ys.max()))) or 1.0
+    ys /= scale
     if remove_dc:
         ys -= ys.mean(dtype=np.float64)  # accumulate the mean in float64, subtract in place
     # Amplitude normalisation is by the window's *coherent gain* (Σw): a tone of
@@ -149,6 +152,11 @@ def compute_fft(
         mag[0] *= 0.5
         if m % 2 == 0:
             mag[-1] *= 0.5
+    if not np.isfinite(freqs).all() or np.any(freqs > np.finfo(np.float32).max):
+        return FftResult(None, None, "FFT frequency exceeds the finite float32 output range.")
+    mag = mag.astype(np.float64) * scale
+    if not np.isfinite(mag).all() or np.any(mag > np.finfo(np.float32).max):
+        return FftResult(None, None, "FFT amplitude exceeds the finite float32 output range.")
     info = f"{n:,} samples, fs = {1.0 / dt:,.1f} Hz, window [{x_min:.4f}, {x_max:.4f}] s"
     return FftResult(freqs.astype(np.float32), mag.astype(np.float32), info)
 

@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-import os
-import sys
 
 import numpy as np
 import pytest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer import session
 from uz_dataviewer.state import AppState
@@ -125,3 +122,69 @@ def test_nonfinite_origin_is_rejected_before_mutation(app_state, tmp_path, mode,
         app_state.commands.execute(app_state, 'normalize_time', [run.id, target])
     assert run.time_version == version and run.time_origin is None
     np.testing.assert_array_equal(np.asarray(run.time), original)
+
+
+@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
+def test_normalized_full_window_preserves_all_samples(tmp_path, backend):
+    p = tmp_path / "log.csv"
+    p.write_text("time;a\n" + "".join(f"{i / 10};{i}\n" for i in range(1, 9)))
+    from uz_dataviewer.loader import open_file
+    from uz_dataviewer.model import DataRegistry
+
+    results = []
+    for mode in ("memory", "lazy"):
+        run = open_file(str(p), mode, backend=backend).register(DataRegistry())
+        run.set_time_origin(100)
+        limits = (float(run.time[0]), float(run.time[-1]))
+        results.append(run.read_window(["a"], *limits)[1]["a"].tolist())
+    assert results == [list(range(1, 9)), list(range(1, 9))]
+
+
+@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
+@pytest.mark.parametrize("origin", [100.0, 1e16, -100.0, 0.1])
+@pytest.mark.parametrize("raw_origin", [0.0, 1e16])
+def test_displayed_selection_matches_resident_mask(
+    tmp_path, backend, origin, raw_origin
+):
+    from uz_dataviewer.loader import open_file
+    from uz_dataviewer.model import DataRegistry
+    from uz_dataviewer.analysis import AnalysisInput, histogram_sources
+    from uz_dataviewer.sources import displayed_bounds
+
+    path = tmp_path / "samples.csv"
+    raw = raw_origin + np.array([0.1, 0.2, 0.2, 0.3, 0.8])
+    path.write_text("time,a\n" + "".join(f"{t},{i}\n" for i, t in enumerate(raw)))
+    displayed = (raw - raw[0]) + origin
+    for mode in ("memory", "lazy"):
+        run = open_file(str(path), mode, backend=backend).register(DataRegistry())
+        run.set_time_origin(origin)
+        assert run.time[0] == origin
+        selected = AnalysisInput.capture(DataRegistryWithRun(run), [(run.id, "a")])[0]
+        for lo, hi in [
+            (displayed[0], displayed[-1]),
+            (displayed[1], displayed[1]),
+            (displayed[1], displayed[-1]),
+            (origin - 10, origin - 5),
+        ]:
+            mask = (displayed >= lo) & (displayed <= hi)
+            t, y = selected.read_window(lo, hi, None)
+            np.testing.assert_array_equal(t, displayed[mask])
+            np.testing.assert_array_equal(y, np.arange(len(raw))[mask])
+            a, b = displayed_bounds(run.data_source(), lo, hi, run.time_offset)
+            assert b - a == mask.sum()
+            plot = run.data_source().read_plot(
+                "a", lo, hi, 100, padding=False, offset=run.time_offset
+            )
+            assert plot.raw_count == mask.sum()
+            _, count, dropped = histogram_sources(
+                [("a", run.data_source(), "a", run.time_offset)], lo, hi, 5
+            )
+            assert count == mask.sum() and dropped == 0
+
+
+class DataRegistryWithRun:
+    def __init__(self, run):
+        self.run = run
+
+    def get(self, run_id):
+        return self.run if run_id == self.run.id else None

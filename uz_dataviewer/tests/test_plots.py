@@ -7,12 +7,13 @@ or non-finite axis limits must not be used as a downsample window.
 
 from __future__ import annotations
 
-import os
-import sys
+import pytest
+from uz_dataviewer import nodes, session
+from uz_dataviewer.commands import CommandError
+
 
 import numpy as np
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer.downsample import visible_slice  # noqa: E402
 from uz_dataviewer.panels.plots import PlotsPanel, _is_finite_range  # noqa: E402
@@ -182,3 +183,69 @@ def test_linked_reset_updates_export_and_render(app_state, gui_frame, tmp_path):
     state.commands.execute(state, 'set_x_lim', [2, 40, 50])
     assert state.plot_time_range(1) == (0, 99)
     assert state.plot_time_range(2) == (40, 50)
+
+
+def test_link_enable_syncs_driver(app_state, gui_frame):
+    s = app_state
+    s.services.display.synchronous = True
+    s.registry.add_run("a", "a", np.arange(100.0), {"a": np.arange(100.0)}, {})
+    s.set_grid(1, 2)
+    for c in s.cells:
+        c.add((1, "a"))
+    panel = PlotsPanel()
+    s.set_plot_x_limits(1, 10, 20)
+    for _ in range(3):
+        gui_frame(panel, s)
+    panel._driver = 0
+    s.commands.execute(s, "link_x", [False])
+    s.set_plot_x_limits(1, 30, 40)
+    for _ in range(3):
+        gui_frame(panel, s)
+    s.commands.execute(s, "link_x", [True])
+    for _ in range(3):
+        gui_frame(panel, s)
+    assert s.cells[0].x_lim == s.cells[1].x_lim
+    assert s.plot_time_range(1) == s.cells[0].x_lim
+
+
+def test_frequency_outputs_keep_independent_axes(app_state, gui_frame, tmp_path):
+    s = app_state
+    s.services.display.synchronous = True
+    t = np.arange(128.0) / 128
+    run = s.registry.add_run("a", "a", t, {"a": np.sin(2 * np.pi * 8 * t)}, {})
+    src = s.nodes.add("source", ref=(run.id, "a"))
+    fft = s.nodes.add("fft")
+    s.nodes.link(src.id, fft.id)
+    assert nodes.evaluate(s) == 1
+    spectrum = s.registry.get(fft.out_run_id)
+    assert spectrum.axis_domain == "frequency"
+    s.set_grid(1, 2)
+    s.commands.execute(s, "add_signal", [1, run.id, "a"])
+    s.commands.execute(s, "add_signal", [2, spectrum.id, "out"])
+    s.set_plot_x_limits(1, 0.1, 0.5)
+    s.set_plot_x_limits(2, 1, 40)
+    assert s.shared_x == (0.1, 0.5)
+    assert s.plot_time_range(2) == (1, 40)
+    panel = PlotsPanel()
+    for _ in range(3):
+        gui_frame(panel, s)
+    assert s.cells[1].x_lim == (1, 40)
+    path = tmp_path / "spectrum.csv"
+    session.export_data(s, 1, str(path))
+    assert path.read_text().splitlines()[0] == "frequency,out"
+    for command, args in [
+        ("add_signal", [1, spectrum.id, "out"]),
+        ("fft_source", [spectrum.id, "out"]),
+        ("normalize_time", [spectrum.id, 0]),
+        ("fft_follow", [2]),
+    ]:
+        with pytest.raises((ValueError, CommandError)):
+            s.commands.execute(s, command, args)
+    math = s.nodes.add("math")
+    s.nodes.link(fft.id, math.id)
+    assert nodes.evaluate(s) == 1
+    assert s.registry.get(math.out_run_id).axis_domain == "frequency"
+    filter_node = s.nodes.add("filter")
+    s.nodes.link(fft.id, filter_node.id)
+    assert nodes.evaluate(s) == 0
+    assert "time-domain" in filter_node.error

@@ -148,9 +148,9 @@ Browser file caches live in the tab's temporary filesystem and are cleared on pa
 
 ### Session format and analysis correctness
 
-Sessions now use schema version 4 with explicit run identities, including repeated opens and identical filenames in different directories.
+Sessions now use schema version 5 with explicit run identities, including repeated opens and identical filenames in different directories.
 Node links preserve explicit input slots, including disconnected slots. Canvas connection order does not change subtraction or division.
-Restoring a saved session replaces the current session only after successful loading. Failed restoration leaves the current session intact. Old snapshots and generated session scripts must be recreated as JSON sessions.
+Restoring a saved session replaces the current session only after successful loading. Failed restoration leaves the current session intact. Version 1–4 snapshots and generated session scripts must be recreated as JSON sessions; version 5 records the materialized output domain explicitly.
 Plot windows, precise time ranges and inactive recordings survive JSON round trips. Restoring a session resets panel caches and canvas positions; Y fitting completes when lazy samples arrive. Both primary and secondary Y limits survive JSON saves, including mouse zoom.
 Removing a followed subplot switches its analysis windows to Full and discards the removed plot's cached range.
 Recomputing a node preserves its derived recording's selected time origin.
@@ -248,3 +248,14 @@ FFT-derived plots use Hz, remain independent of linked time axes, and export a
 Browser uploads are temporary and cannot be saved as reloadable sessions.
 Memory imports release the uploaded file after parsing; lazy imports release it
 when the last referencing run is removed or the session closes.
+
+Sampling and domain transitions
+------------------------------
+
+Timestamp roundoff allowances are bounded to one percent of a sample interval.
+FFT and FIR reject axes whose absolute timestamp precision cannot establish that
+bound; binary math and XY never treat a sample-sized displacement as roundoff.
+Graph domain resolution shares a per-evaluation cache and uses iterative traversal.
+When a saved graph changes an output's domain, restoration discards its incompatible
+normalization and consumer assignments, matching live reevaluation. Failed outputs
+retain their saved domain as unavailable placeholders until repaired.

@@ -468,7 +468,7 @@ def register_builtins(reg: CommandRegistry) -> None:
         if state.registry.get_signal(run_id, name) is None:
             raise CommandError(f"run_{run_id} has no signal {name!r}")
         cell = _cell(state, plot_n)
-        refs = cell.signals + ([cell.xy_source] if cell.xy_source else [])
+        refs = cell.active_refs
         domain = state.registry.get(run_id).axis_domain
         if refs and any(state.registry.get(ref[0]).axis_domain != domain for ref in refs):
             raise CommandError("Cannot combine time and frequency axes in one plot")
@@ -495,6 +495,10 @@ def register_builtins(reg: CommandRegistry) -> None:
     def set_plot_type(state, a):
         cell = _cell(state, a[0])
         kind = _resolve_plot_type(a[1])
+        if kind is PlotType.XY and cell.xy_source:
+            domain = state.registry.get(cell.xy_source[0]).axis_domain
+            if any(state.registry.get(ref[0]).axis_domain != domain for ref in cell.signals):
+                cell.xy_source = None
         if cell.plot_type != kind:
             cell.plot_type = kind
             cell.x_lim = cell.y_lim = None
@@ -567,10 +571,10 @@ def register_builtins(reg: CommandRegistry) -> None:
         if state.registry.get_signal(run_id, name) is None:
             raise CommandError(f"run_{run_id} has no signal {name!r}")
         cell = _cell(state, plot_n)
-        set_plot_type(state, [plot_n, 'XY'])
         domain = state.registry.get(run_id).axis_domain
         if any(state.registry.get(ref[0]).axis_domain != domain for ref in cell.signals):
             raise CommandError("XY signals must have the same axis domain")
+        set_plot_type(state, [plot_n, 'XY'])
         cell.xy_source = (run_id, name)
         cell.fit_pending = True
 

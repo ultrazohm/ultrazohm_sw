@@ -2,10 +2,7 @@
 
 from __future__ import annotations
 
-import os
-import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 def test_console_renders_and_logs_commands(app_state, gui_frame):
     state = app_state

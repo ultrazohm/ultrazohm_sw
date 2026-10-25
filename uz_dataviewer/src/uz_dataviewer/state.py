@@ -117,6 +117,11 @@ class SubplotCell:
     x_lim: tuple[float, float] | None = None
     """Last rendered X range, including XY coordinates (never linked as time)."""
 
+    @property
+    def active_refs(self) -> list[SignalRef]:
+        """Only visible inputs constrain the independent-axis domain."""
+        return self.signals + ([self.xy_source] if self.plot_type is PlotType.XY and self.xy_source else [])
+
     def add(self, ref: SignalRef) -> bool:
         if ref not in self.signals:
             self.signals.append(ref)
@@ -127,6 +132,7 @@ class SubplotCell:
     def clear(self) -> None:
         self.signals.clear()
         self.y2_signals.clear()
+        self.xy_source = None
         self.fit_pending = True
 
     def set_secondary(self, ref: SignalRef, secondary: bool) -> None:
@@ -300,7 +306,7 @@ class AppState(SessionData):
         return target
 
     def plot_domain(self, cell):
-        refs = cell.signals + ([cell.xy_source] if cell.xy_source else [])
+        refs = cell.active_refs
         domains = {run.axis_domain for ref in refs
                    if (run := self.registry.get(ref[0])) is not None}
         if len(domains) > 1:
@@ -437,8 +443,8 @@ class AppState(SessionData):
 
         Used by the ``load`` command and by session restore/replay so that any
         commands that follow (``add_signal`` ...) can immediately resolve the
-        run. Errors are raised as :class:`commands.CommandError`-compatible
-        ``ValueError`` so the dispatcher logs them.
+        run. Errors are logged and return ``None``; command handlers convert that
+        result into a command failure.
         """
         path = os.path.abspath(path)
         self.console.info(f"Loading {os.path.basename(path)} ...")

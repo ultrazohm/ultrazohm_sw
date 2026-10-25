@@ -8,15 +8,12 @@ from __future__ import annotations
 
 from pathlib import Path
 import importlib.util
-import os
 import shutil
 import subprocess
-import sys
 import numpy as np
 import pytest
 
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer import runtime
 from uz_dataviewer import webbridge
@@ -306,3 +303,22 @@ def test_browser_generator_embeds_shared_null_policy():
     spec.loader.exec_module(module)
     html = module.build_html()
     assert json.dumps(NULL_VALUES) + '.includes(text)' in html
+
+
+@pytest.mark.parametrize("closing", [False, True])
+def test_owned_upload_released_after_last_reference(app_state, tmp_path, closing):
+    path = tmp_path / "upload.csv"
+    path.write_text("time,a\n0,1\n1,2\n")
+    app_state.backend = "pyarrow"
+    app_state.loading_mode = "lazy"
+    first = app_state.load_sync(str(path))
+    second = app_state.load_sync(str(path))
+    first.owned_upload = True
+    first.reloadable = False
+    app_state.remove_run(first.id)
+    assert path.exists() and second.owned_upload and not second.reloadable
+    if closing:
+        app_state.shutdown()
+    else:
+        app_state.remove_run(second.id)
+    assert not path.exists()

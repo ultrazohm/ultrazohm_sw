@@ -84,3 +84,20 @@ def test_conversion_drains_large_error_before_worker_exits(monkeypatch):
         assert not cancel.is_set()
     finally:
         watchdog.cancel()
+
+
+def test_async_load_echo_preserves_captured_settings(states, tmp_path):
+    from uz_dataviewer.state import LoadRequest
+
+    state, replay = states(), states()
+    path = tmp_path / "recording.csv"
+    path.write_text("time,a\n0,10\n1,20\n")
+    state.backend = replay.backend = "polars"
+    state.loading_mode = replay.loading_mode = "lazy"
+    state._submit_load(LoadRequest(str(path), "memory", "pyarrow", False))
+    for entry in state.console._entries:
+        if entry.level == "CMD":
+            replay.commands.dispatch(replay, entry.message)
+    run = replay.registry.runs[0]
+    assert run.storage_mode == "memory" and run.backend == "pyarrow"
+    assert replay.loading_mode == "lazy" and replay.backend == "polars"

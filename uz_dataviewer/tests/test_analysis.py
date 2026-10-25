@@ -3,15 +3,12 @@
 from __future__ import annotations
 
 import csv
-import os
-import sys
 import numpy as np
 import pytest
 import threading
 import time
 
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer import session
 from uz_dataviewer.analysis import _next_fast_len, compute_fft, histogram_sources
@@ -732,3 +729,26 @@ def test_analysis_request_captures_inputs_without_gui_state(app_state, panel_typ
         np.testing.assert_array_equal(left, right)
     with pytest.raises(FrozenInstanceError):
         request.window = (100, 107)
+
+
+@pytest.mark.parametrize('window', [False, True])
+def test_fft_large_finite_dc_does_not_overflow(window):
+    t = np.arange(8.)
+    result = compute_fft(t, np.full(8, 1e38, np.float32), 0, 7,
+                         remove_dc=False, window=window)
+    assert result.ok and np.isfinite(result.mag).all()
+    np.testing.assert_allclose(result.mag[0], 1e38, rtol=1e-6)
+
+
+def test_fft_large_finite_ac_does_not_overflow():
+    t = np.arange(64.) / 64
+    y = (1e38 * np.cos(2 * np.pi * 8 * t)).astype(np.float32)
+    result = compute_fft(t, y, t[0], t[-1], window=False)
+    assert result.ok and np.isfinite(result.mag).all()
+    np.testing.assert_allclose(result.mag[8], 1e38, rtol=1e-6)
+
+
+def test_fft_rejects_unrepresentable_output():
+    y = np.array([1, 1, 1, 1, -1, -1, -1, -1], np.float32) * np.finfo(np.float32).max
+    result = compute_fft(np.arange(8.), y, 0, 7, window=False, remove_dc=False)
+    assert not result.ok and 'output range' in result.info

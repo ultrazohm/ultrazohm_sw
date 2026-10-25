@@ -324,7 +324,10 @@ class SummarySource:
             if path is not None and path.exists():
                 try:
                     with np.load(path, allow_pickle=False) as saved:
-                        levels = [saved[f'l{i}'] for i in range(int(saved['count']))]
+                        count = saved['count']
+                        if count.ndim != 0 or count.dtype.kind not in "iu" or not 1 <= int(count) <= 64:
+                            raise ValueError('Invalid summary count')
+                        levels = [saved[f'l{i}'] for i in range(int(count))]
                     for level in levels:
                         if level.dtype != POINT or level.ndim != 1 or not len(level) or np.any(np.diff(level['i']) <= 0) or level['i'][0] < 0 or level['i'][-1] >= self.metadata.rows or not np.isfinite(level['t']).all():
                             raise ValueError('Invalid summary')

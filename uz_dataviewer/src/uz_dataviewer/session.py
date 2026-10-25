@@ -115,6 +115,7 @@ def to_dict(state: "AppState") -> dict:
         "nodes": _nodes_to_list(state),
         "cells": cells,
         "fft": {
+            "x_lim": state.fft.pending_x_lim or state.fft.x_lim,
             "sources": [_ref_to_saved(state, r) for r in state.fft.sources],
             "follow_plot": state.fft.follow_plot,
             "x_min": state.fft.x_min,
@@ -125,6 +126,7 @@ def to_dict(state: "AppState") -> dict:
             "log_y": state.fft.log_y,
         },
         "histogram": {
+            "x_lim": state.histogram.pending_x_lim or state.histogram.x_lim,
             "sources": [_ref_to_saved(state, r) for r in state.histogram.sources],
             "follow_plot": state.histogram.follow_plot,
             "x_min": state.histogram.x_min,
@@ -272,6 +274,10 @@ def _apply_dict(state: "AppState", data: dict) -> None:
     state.histogram.x_min = float(hist.get("x_min", state.histogram.x_min))
     state.histogram.x_max = float(hist.get("x_max", state.histogram.x_max))
     state.histogram.bins = int(hist.get("bins", state.histogram.bins))
+
+    for cfg, spec in ((state.fft, fft), (state.histogram, hist)):
+        if spec.get("x_lim") is not None:
+            cfg.x_lim = cfg.pending_x_lim = axis_limits(*spec["x_lim"])
 
     # Restoring sources alone leaves the windows blank until the user clicks
     # Compute (the panels only ever compute on request). Flag a recompute so a

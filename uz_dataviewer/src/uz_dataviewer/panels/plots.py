@@ -725,9 +725,8 @@ class PlotsPanel(SessionPanel):
             hi = y_hi if hi is None else max(hi, y_hi)
         if lo is None or hi is None:
             return None, None
-        if hi <= lo:
-            hi = lo + 1.0
-        return lo, hi
+        from ..validation import expanded_range
+        return expanded_range(lo, hi)
 
     # -- panel --------------------------------------------------------------
     def render(self, state: AppState) -> None:

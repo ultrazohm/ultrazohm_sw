@@ -5,34 +5,17 @@ Kept GUI-free so it is unit-testable and reusable from other analysis windows.
 
 from __future__ import annotations
 
-from collections import OrderedDict
-
 import numpy as np
 
 from .downsample import visible_slice
 
-# Hann windows are recomputed per FFT; cache by length (with the window sum, used
-# for the amplitude correction below) since the same window is re-used across
-# recomputes at the same span (cheap, avoids a cos over millions of samples each
-# Compute). Bounded LRU: a long session computing FFTs at many distinct window
-# lengths would otherwise retain a float32 window per length (~60 MB at 15 M
-# samples) for the life of the process.
-_HANN_CACHE_MAX = 8
-_HANN_CACHE: "OrderedDict[int, tuple[np.ndarray, float]]" = OrderedDict()
-
-
 def _hann(n: int) -> tuple[np.ndarray, float]:
-    """Return the length-``n`` Hann window and its sum (coherent gain · n)."""
-    cached = _HANN_CACHE.get(n)
-    if cached is None:
-        w = np.hanning(n).astype(np.float32)
-        cached = (w, float(w.sum(dtype=np.float64)))
-        _HANN_CACHE[n] = cached
-        if len(_HANN_CACHE) > _HANN_CACHE_MAX:
-            _HANN_CACHE.popitem(last=False)  # evict least-recently-used
-    else:
-        _HANN_CACHE.move_to_end(n)  # mark most-recently-used
-    return cached
+    """Return a computation-owned Hann window and its coherent-gain sum.
+
+    Do not retain potentially large windows after their FFT completes.
+    """
+    w = np.hanning(n).astype(np.float32)
+    return w, float(w.sum(dtype=np.float64))
 
 
 def _next_fast_len(n: int) -> int:
@@ -196,9 +179,10 @@ def histogram_sources(series, lo, hi, bins, cancel=None):
             ranges.append((label, source, channel, start, stop, count))
     if minimum is None:
         return [], 0, dropped
-    if maximum <= minimum:
-        maximum = minimum + 1.
-    edges = np.linspace(minimum, maximum, max(1, bins) + 1)
+    from .validation import expanded_range
+    bins = max(1, bins)
+    minimum, maximum = expanded_range(minimum, maximum, bins)
+    edges = np.linspace(minimum, maximum, bins + 1)
     centers = (edges[:-1] + edges[1:]) / 2
     results, total = [], 0
     for label, source, channel, start, stop, count in ranges:

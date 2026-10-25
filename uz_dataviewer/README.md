@@ -177,6 +177,9 @@ parameters must be finite, and integer parameters must fit a 32-bit integer.
 Built-in and plugin parameter editors use the same declared types as validation.
 Removing a recording immediately invalidates its analysis results. Explicit
 FFT/histogram X limits survive recomputation; Reset view clears those limits.
+These explicit analysis view limits also survive JSON session restoration.
+Shared upstream nodes are validated once per traversal, avoiding exponential
+work in graphs with reused inputs. Hann windows are released after each FFT.
 Native CSV materialization uses checked batch allocation for both backends,
 including actual row counts and retained buffer capacity. Parser scratch and
 transient growth copies remain outside the numeric-data budget. Native and

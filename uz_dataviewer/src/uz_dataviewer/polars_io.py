@@ -9,14 +9,6 @@ from .loader import (ParsedRun, _split_time_columns, _named_signals,
                      _sniff_delimiter, _read_header, _guard_csv_size, validate_time_axis)
 
 
-def _table_to_parsed(table, path):
-    time_col, columns = _split_time_columns(table.columns)
-    time = table[time_col].cast(pl.Float64).to_numpy()
-    validate_time_axis(time, path)
-    signals, units = _named_signals(columns, lambda c: table[c].cast(pl.Float32).to_numpy())
-    return ParsedRun(os.path.basename(path), path, time, signals, units, backend="polars")
-
-
 def _csv_column_types(columns):
     time_col, _ = _split_time_columns(columns)
     return {c: pl.Float64 if c == time_col else pl.Float32 for c in columns}

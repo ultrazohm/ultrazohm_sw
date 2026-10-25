@@ -306,6 +306,8 @@ JSON sessions preserve per-file storage modes and the current settings.
 GUI FFT and histogram computations use a separate worker with snapshots of their input configuration.
 Histograms make two bounded passes over raw batches with shared bin edges.
 FFT still materializes the selected window.
+Hann windows belong to that computation and are released afterwards; there is no
+process-global cache retaining windows from previous FFT sizes.
 Cancellation of a NumPy FFT takes effect after its native call returns.
 Explicit console/script commands and node/plugin evaluation remain synchronous.
 Browser execution uses the same interfaces synchronously because its current runtime lacks workers.
@@ -348,6 +350,10 @@ preserving assignments, visibility and time origin without saving stale sample a
 Input lists are indexed slots (``null`` represents a disconnected slot). ``node_link(src, dst, slot)``
 and ``node_unlink(src, dst, slot)`` use zero-based slots; JSON preserves the slot explicitly.
 The same upstream node can feed both binary inputs without collapsing the links.
+Staleness checks traverse each upstream node once per call, with a local visited
+set so shared inputs do not multiply work and subsequent edits remain visible.
+Explicit FFT and histogram view limits are saved and restored alongside their
+analysis settings, then reapplied when the panels recompute.
 
 ``AppState.replace_session`` owns the transfer of prepared session state and shuts down the old workers.
 It preserves the command registry and console, and installs a new session token.

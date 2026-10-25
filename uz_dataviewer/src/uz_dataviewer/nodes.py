@@ -390,18 +390,21 @@ def node_key(state, graph: NodeGraph, node: Node) -> tuple:
 def is_stale(state, graph: NodeGraph, node: Node) -> bool:
     """A transform is stale if its own key changed *or* anything upstream is stale.
 
-    The recursion matters: editing a filter's cutoff makes the filter stale, but the
+    Upstream traversal matters: editing a filter's cutoff makes the filter stale, but the
     FFT fed by it is still showing results computed from the *old* filter output -- so
     it must read stale too, even though the filter's version hasn't bumped yet."""
-    if not node.is_transform:
-        return False
-    if node.error or node.eval_key is None or node.eval_key != node_key(state, graph, node):
-        return True
-    return any(
-        is_stale(state, graph, graph.nodes[i])
-        for i in node.inputs
-        if i in graph.nodes
-    )
+    # Shared upstream nodes must be checked only once per call. Keep the visited
+    # set local so edits and source-file changes are visible on the next call.
+    pending, visited = [node], set()
+    while pending:
+        current = pending.pop()
+        if current.id in visited or not current.is_transform:
+            continue
+        visited.add(current.id)
+        if current.error or current.eval_key is None or current.eval_key != node_key(state, graph, current):
+            return True
+        pending.extend(graph.nodes[i] for i in current.inputs if i in graph.nodes)
+    return False
 
 
 # -- computation --------------------------------------------------------------

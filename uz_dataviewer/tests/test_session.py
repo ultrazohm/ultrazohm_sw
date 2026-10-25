@@ -32,6 +32,48 @@ def test_ensure_extension():
     assert session.ensure_extension("", ".json") == ""  # no path -> unchanged
 
 
+@pytest.mark.parametrize('consumed', [False, True])
+def test_analysis_view_limits_survive_json_roundtrip(app_state, tmp_path, consumed,
+                                                    gui_frame, monkeypatch, recording_csv):
+    from imgui_bundle import implot
+    from uz_dataviewer.panels.fft import FftPanel
+    from uz_dataviewer.panels.histogram import HistogramPanel
+    run = app_state.load_sync(str(recording_csv))
+    for prefix in ('fft', 'hist'):
+        app_state.commands.execute(app_state, f'{prefix}_source', [run.id, 'a'])
+        app_state.commands.execute(app_state, f'{prefix}_xlim', [10, 20])
+    if consumed:
+        app_state.fft.pending_x_lim = app_state.histogram.pending_x_lim = None
+    path = tmp_path / 'session.json'
+    session.save_state(app_state, str(path))
+    session.load_state(app_state, str(path))
+    app_state.analysis_jobs.synchronous = True
+    for cfg, panel in ((app_state.fft, FftPanel()), (app_state.histogram, HistogramPanel())):
+        assert cfg.x_lim == cfg.pending_x_lim == (10., 20.)
+        drawn_limits = []
+
+        def capture(state):
+            limits = implot.get_plot_limits()
+            drawn_limits.append((limits.x.min, limits.x.max))
+
+        monkeypatch.setattr(panel, '_draw', capture)
+        for _ in range(3):
+            gui_frame(panel, app_state)
+        assert drawn_limits and all(limits == (10., 20.) for limits in drawn_limits)
+        assert cfg.pending_x_lim is None and cfg.x_lim == (10., 20.)
+
+
+@pytest.mark.parametrize('config', ['fft', 'histogram'])
+@pytest.mark.parametrize('limits', [[2, 1], [1, 1], [0, float('nan')], [0, float('inf')]])
+def test_invalid_analysis_view_limits_leave_session_intact(app_state, config, limits):
+    token = app_state.session_token
+    saved = to_dict(app_state)
+    saved[config]['x_lim'] = limits
+    with pytest.raises(ValueError):
+        apply_dict(app_state, saved)
+    assert app_state.session_token is token
+
+
 def _populated_state(csv_path):
     state = AppState()
     state.commands.dispatch(state, f'load("{csv_path}")')

@@ -84,6 +84,37 @@ def test_stale_after_param_change():
     assert not nodemod.is_stale(state, state.nodes, node)
 
 
+def test_shared_upstream_validation_is_linear_and_observes_edits(app_state, monkeypatch):
+    run = app_state.registry.add_run('test', 'test', np.arange(8.), {'a': np.ones(8)}, {})
+    previous = app_state.nodes.add('source', ref=(run.id, 'a'))
+    transforms = []
+    for _ in range(20):
+        node = app_state.nodes.add('math')
+        node.params['op'] = 'add'
+        app_state.nodes.link(previous.id, node.id, 0)
+        app_state.nodes.link(previous.id, node.id, 1)
+        transforms.append(node)
+        previous = node
+    assert nodes.evaluate(app_state) == len(transforms)
+    original = nodes.node_key
+    checked = []
+
+    def counted(state, graph, node):
+        checked.append(node.id)
+        return original(state, graph, node)
+
+    monkeypatch.setattr(nodes, 'node_key', counted)
+    assert not nodes.is_stale(app_state, app_state.nodes, previous)
+    assert len(checked) == len(set(checked)) == len(transforms)
+    transforms[0].params['op'] = 'sub'
+    assert nodes.is_stale(app_state, app_state.nodes, previous)
+    with pytest.raises(ValueError, match='not current'):
+        app_state.registry.get(previous.out_run_id).data_source().validate()
+    assert nodes.evaluate(app_state) == len(transforms)
+    assert not nodes.is_stale(app_state, app_state.nodes, previous)
+    np.testing.assert_array_equal(previous.out_y, np.zeros(8))
+
+
 def test_shift_node_offsets_time():
     state = _state_with_sine(50.0)
     _run(state, "node_source(run_1, ia)", "node_add(shift)", "node_set(node_2, by, 5)",

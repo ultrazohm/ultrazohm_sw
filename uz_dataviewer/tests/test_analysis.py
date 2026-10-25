@@ -363,6 +363,51 @@ def test_histogram_exact_window():
     assert histogram_sources([('a',source,'a',0)], 10, 11, 5)[1] == 0
 
 
+@pytest.mark.parametrize('value', [0., 1., -1., 1e16, -1e16, 1e20, -1e20,
+                                  np.finfo(np.float32).max, -np.finfo(np.float32).max])
+def test_constant_histogram_and_plot_fit_have_distinct_finite_bounds(app_state, value):
+    from uz_dataviewer.panels.plots import PlotsPanel
+    run = app_state.registry.add_run('constant', 'constant', np.arange(8.),
+                                     {'a': np.full(8, value, dtype=np.float32)}, {})
+    results, total, dropped = histogram_sources([('a', run.data_source(), 'a', 0)], 0, 7, 50)
+    _, centers, counts, width = results[0]
+    assert total == counts.sum() == 8 and dropped == 0
+    assert width > 0 and np.isfinite(width)
+    assert np.isfinite(centers).all() and np.all(np.diff(centers) > 0)
+    app_state.cells[0].add((run.id, 'a'))
+    lo, hi = PlotsPanel()._cell_y_extent(app_state, app_state.cells[0])
+    assert np.isfinite([lo, hi]).all() and lo < hi
+    assert lo <= float(run.signals['a'].y[0]) <= hi
+
+
+def test_fft_releases_hann_window_after_computation(monkeypatch):
+    import weakref
+    from uz_dataviewer import analysis
+    original = analysis._hann
+    windows = []
+
+    def track(n):
+        window, total = original(n)
+        windows.append(weakref.ref(window))
+        return window, total
+
+    monkeypatch.setattr(analysis, '_hann', track)
+    for n in (64, 128, 64):
+        result = compute_fft(np.arange(n, dtype=float), np.ones(n), 0, n - 1)
+        assert result.ok
+        assert all(reference() is None for reference in windows)
+
+
+@pytest.mark.parametrize('value', [1e20, -1e20])
+def test_histogram_expands_nearly_constant_float64_range(value):
+    values = np.array([value, np.nextafter(value, np.inf)])
+    source = ArraySource(np.arange(2.), {'a': values})
+    results, total, _ = histogram_sources([('a', source, 'a', 0)], 0, 1, 50)
+    _, centers, counts, width = results[0]
+    assert total == counts.sum() == 2
+    assert width > 0 and np.all(np.diff(centers) > 0)
+
+
 @pytest.mark.parametrize('timestamps', [[0,0,0,100], [0,1,2,4], [0,1,np.nan,3]])
 def test_fft_rejects_irregular_time(timestamps):
     assert not compute_fft(np.array(timestamps,dtype=float), np.arange(4.), 0,100).ok

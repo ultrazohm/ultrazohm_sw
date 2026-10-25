@@ -65,14 +65,8 @@ def parse_parquet(path: str, cancel=None) -> ParsedRun:
     return ParsedRun(os.path.basename(path), path, time, signals, units, backend="polars")
 
 
-def convert_csv_to_parquet(src: str, dst: str | None = None, cancel=None) -> str:
-    """Native streaming sink: never collect the complete CSV before writing."""
-    if not src.lower().endswith(".csv"):
-        raise ValueError(f"convert expects a .csv file, got {src!r}")
-    if dst is None:
-        dst = os.path.splitext(src)[0] + ".parquet"
-    check(cancel)
+def _write_csv_to_parquet(src: str, dst: str) -> str:
+    """Stream to an unpublished temporary file; loader owns validation/publication."""
     _scan_csv(src).sink_parquet(dst, compression="snappy", row_group_size=65536,
                                 maintain_order=True, engine="streaming")
-    check(cancel)
     return dst

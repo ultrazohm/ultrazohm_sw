@@ -332,20 +332,7 @@ class AppState:
 
     def _convert_and_open(self, source: str, request: LoadRequest, cancel=None):
         from .loader import convert_csv_to_parquet
-        import tempfile
-        if os.path.lexists(request.path):
-            raise FileExistsError(f"Parquet file already exists: {request.path}")
-        fd, temporary = tempfile.mkstemp(prefix=".uz-convert-", suffix=".parquet",
-                                         dir=os.path.dirname(request.path))
-        os.close(fd)
-        try:
-            convert_csv_to_parquet(source, temporary, backend=request.backend, cancel=cancel)
-            from .sources import check
-            check(cancel)
-            # Publish only a complete file, without overwriting a concurrently created destination.
-            os.link(temporary, request.path)
-        finally:
-            os.unlink(temporary)
+        convert_csv_to_parquet(source, request.path, backend=request.backend, cancel=cancel)
         return self._open_background(request.path, request.mode, request.backend, request.disk_cache, cancel=cancel)
 
     def load_sync(self, path: str) -> Run | None:

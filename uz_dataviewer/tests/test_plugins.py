@@ -64,6 +64,55 @@ def test_missing_directory_is_safe(clean_registry):
     assert load_plugins(["/no/such/uz/plugin/dir"]) == ()  # no error, nothing loaded
 
 
+def test_partial_plugin_registration_is_rolled_back(tmp_path, clean_registry):
+    before = dict(REGISTRY)
+    modules = set(sys.modules)
+    (tmp_path / 'partial.py').write_text(_PLUGIN + "\nraise RuntimeError('failed after registration')\n")
+    assert load_plugins([str(tmp_path)]) == ()
+    assert REGISTRY == before
+    assert not {name for name in set(sys.modules) - modules if name.startswith('uz_plugin_')}
+
+
+def test_failed_reload_preserves_module_and_cached_output(tmp_path, clean_registry, app_state):
+    from uz_dataviewer.nodes import evaluate, is_stale, register_transform, TransformSpec
+    path = tmp_path / 'double.py'
+    path.write_text(_PLUGIN)
+    load_plugins([str(tmp_path)])
+    original = REGISTRY['double']
+    module_name = original.compute.__module__
+    original_module = sys.modules[module_name]
+    run = app_state.registry.add_run('input', 'input', np.arange(8.), {'a': np.ones(8)}, {})
+    source = app_state.nodes.add('source', ref=(run.id, 'a'))
+    output = app_state.nodes.add('double')
+    app_state.nodes.link(source.id, output.id)
+    evaluate(app_state)
+    with pytest.raises(ValueError, match='already registered'):
+        register_transform(TransformSpec('double', lambda inputs, params: None))
+    path.write_text(_PLUGIN.replace('"2"', '"300"'))
+    assert load_plugins([str(tmp_path)]) == ()
+    assert REGISTRY['double'] is original
+    assert sys.modules[module_name] is original_module
+    assert not is_stale(app_state, app_state.nodes, output)
+    assert evaluate(app_state) == 0
+    np.testing.assert_array_equal(output.out_y, np.full(8, 2.))
+
+
+def test_plugin_cannot_replace_builtin_or_leave_earlier_registrations(tmp_path, clean_registry):
+    before = dict(REGISTRY)
+    (tmp_path / 'collision.py').write_text(_PLUGIN + '\n' + _PLUGIN.replace('"double"', '"math"'))
+    assert load_plugins([str(tmp_path)]) == ()
+    assert REGISTRY == before
+
+
+def test_same_filename_in_different_directories_has_distinct_modules(tmp_path, clean_registry):
+    directories = [tmp_path / 'a', tmp_path / 'b']
+    for directory, kind in zip(directories, ('double', 'triple')):
+        directory.mkdir()
+        (directory / 'plugin.py').write_text(_PLUGIN.replace('"double"', repr(kind)))
+    assert set(load_plugins([str(d) for d in directories])) == {'double', 'triple'}
+    assert REGISTRY['double'].compute.__module__ != REGISTRY['triple'].compute.__module__
+
+
 def test_no_plugins_leaves_builtins_intact(clean_registry):
     load_plugins([])  # empty search list
     assert {"fft", "math", "filter", "shift"} <= set(transform_kinds())

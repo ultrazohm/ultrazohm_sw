@@ -166,7 +166,7 @@ def test_histogram_skips_non_finite_samples():
 
 def test_analysis_window_computes_on_demand_not_every_frame(monkeypatch):
     """The FFT window computes only when asked (drag/compute), never per frame."""
-    import uz_dataviewer.panels.fft as fft_mod
+    import uz_dataviewer.analysis as fft_mod
     from uz_dataviewer.panels.fft import FftPanel
 
     calls = {"n": 0}

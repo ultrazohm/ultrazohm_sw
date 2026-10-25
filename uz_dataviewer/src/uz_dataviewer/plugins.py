@@ -30,6 +30,7 @@ Both are scanned only if they exist; either may be absent.
 
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import os
 import sys
@@ -71,13 +72,25 @@ def plugin_dirs(extra: list[str] | None = None) -> list[str]:
 
 
 def _load_file(path: str):
-    name = "uz_plugin_" + os.path.splitext(os.path.basename(path))[0]
+    identity = hashlib.sha256(os.path.realpath(path).encode()).hexdigest()
+    name = "uz_plugin_" + identity
     spec = importlib.util.spec_from_file_location(name, path)
     if spec is None or spec.loader is None:
         raise ImportError(f"cannot import {path}")
     module = importlib.util.module_from_spec(spec)
+    previous_module = sys.modules.get(name)
+    previous_registry = dict(REGISTRY)
     sys.modules[name] = module
-    spec.loader.exec_module(module)  # runs the @transform registrations
+    try:
+        spec.loader.exec_module(module)  # runs the @transform registrations
+    except BaseException:
+        REGISTRY.clear()
+        REGISTRY.update(previous_registry)
+        if previous_module is None:
+            sys.modules.pop(name, None)
+        else:
+            sys.modules[name] = previous_module
+        raise
     return module
 
 

@@ -23,14 +23,18 @@ Plugins location
    export UZ_DATAVIEWER_PLUGINS=/path/to/my/plugins
    python run.py
 
-You can also load a folder at runtime from the console (no restart):
+You can also load new node kinds at runtime from the console:
 
 .. code-block:: text
 
    load_plugins("/path/to/my/plugins")     # or load_plugins() for the configured dirs
 
 A missing folder or file is silently skipped.
-A plugin that throws an error on import is logged to the console and skipped.
+A plugin that throws an error on import is logged to the console and skipped;
+its registrations and module entry are rolled back.
+Node kinds cannot replace an existing plugin or builtin registration. Restart the
+viewer to load changes to an already registered kind. This keeps cached node
+outputs consistent with the implementation that produced them.
 
 Plugin structure
 ================

@@ -82,6 +82,9 @@ This applies to native drag-and-drop, the Log Browser and the file picker.
 Conversion runs in the background using the selected backend and opens the result with the selected loading mode.
 The original CSV is preserved; an existing Parquet file is never overwritten and can instead be opened explicitly.
 Choosing **Open CSV** skips automatic disk-cache conversion for that load, even when disk caching is enabled.
+Console/API conversion follows the same safety policy: existing destinations are
+never overwritten, empty recordings are rejected, and failed or cancelled
+conversions clean up temporary output.
 
 Then **Open file(s)…** in the Navigation panel, expand the run, and drag signals into the
 plots (or the FFT / Histogram windows).
@@ -158,6 +161,9 @@ Binary math and XY plots require matching timestamps throughout both inputs; imp
 Stale or failed derived outputs are blocked from plots, analysis and exports until successful reevaluation; existing assignments are preserved, including across JSON restoration. Failed graphs restore with empty, unavailable output placeholders until repaired. Source validation covers original CSV files even when reading a cached conversion.
 JSON is the only saved-session format; generated session-script export has been removed. Ordinary `.uzscript` automation remains supported and can call `load_state("session.json")`; commands run sequentially and stop at the first error. Completing an export dialog after its subplot was removed cancels the export.
 FFT export validates every selected signal before writing: an invalid channel fails the export with its name and reason, preserving any existing destination file.
+The FFT window reports each failed channel even when other channels succeed.
+Plugin imports roll back their registrations on failure. Existing transform kinds
+cannot be replaced at runtime; restart the viewer after editing a loaded plugin.
 
 ## Documentation
 

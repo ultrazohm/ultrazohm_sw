@@ -74,7 +74,7 @@ def test_oneshot_envelope_true_positions():
     n = 300_000
     t = np.linspace(0.0, 10.0, n)
     y = np.sin(t * 50.0).astype(np.float32)
-    xs, ys = decimate_range(t, y, None, 2000, 0, n)
+    xs, ys = decimate_range(t, y, ArraySource(t, {'value': y}), 2000, 0, n)
     assert 1000 <= xs.shape[0] <= 2000
     assert ys.min() <= y.min() + 1e-3 and ys.max() >= y.max() - 1e-3
     assert bool(np.all(np.diff(xs) >= 0))
@@ -83,7 +83,7 @@ def test_oneshot_envelope_true_positions():
 def test_decimate_range_passthrough_when_small():
     t = np.linspace(0.0, 1.0, 500)
     y = np.cos(t).astype(np.float32)
-    xs, ys = decimate_range(t, y, None, 2000, 0, 500)  # window <= n_out
+    xs, ys = decimate_range(t, y, ArraySource(t, {'value': y}), 2000, 0, 500)  # window <= n_out
     np.testing.assert_array_equal(xs, t)
     np.testing.assert_array_equal(ys, y)
 

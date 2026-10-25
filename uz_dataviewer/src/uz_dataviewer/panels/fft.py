@@ -11,7 +11,7 @@ from __future__ import annotations
 import numpy as np
 from imgui_bundle import imgui, implot
 
-from ..analysis import compute_fft
+from ..analysis import compute_signal_fft
 from ..sources import ArraySource
 from ..state import AppState
 from .analysis import AnalysisPanel
@@ -65,27 +65,34 @@ class FftPanel(AnalysisPanel):
         self._sync_session(state)
         results = []
         info = ""
+        errors = []
         from ..sources import check
         for ref in cfg.sources:
             check(getattr(cfg, "_cancel", None))
             run = state.registry.get(ref[0])
             signal = state.registry.get_signal(ref[0], ref[1])
             if run is None or signal is None:
+                errors.append(f"{state.signal_label(ref)}: source is not loaded")
                 continue
-            t, values = run.read_window([ref[1]], x_min, x_max, getattr(cfg, "_cancel", None))
-            result = compute_fft(
-                t, values[ref[1]], x_min, x_max,
-                remove_dc=cfg.remove_dc, window=cfg.window,
-            )
-            if result.ok:
-                source = ArraySource(result.freqs, {'value': result.mag}, state.registry.cache)
-                # Warm summaries off the rendering thread.
-                if result.mag.size > 4096:
-                    source._summary('value', getattr(cfg, '_cancel', None))
-                results.append((ref, result.freqs, result.mag, source))
+            try:
+                result = compute_signal_fft(
+                    run, ref[1], x_min, x_max, remove_dc=cfg.remove_dc, window=cfg.window,
+                    cancel=getattr(cfg, '_cancel', None), label=state.signal_label(ref),
+                )
+            except ValueError as exc:
+                errors.append(str(exc))
+                continue
+            source = ArraySource(result.freqs, {'value': result.mag}, state.registry.cache)
+            # Warm summaries off the rendering thread.
+            if result.mag.size > 4096:
+                source._summary('value', getattr(cfg, '_cancel', None))
+            results.append((ref, result.freqs, result.mag, source))
             info = result.info
         self._results = results
-        self._info = info or "Drag signals here to analyse them."
+        if errors:
+            self._info = "\n".join([f"{len(results)} succeeded, {len(errors)} failed", *errors])
+        else:
+            self._info = info or "Drag signals here to analyse them."
 
     def _draw(self, state: AppState) -> None:
         for ref, freqs, mag, source in self._results:

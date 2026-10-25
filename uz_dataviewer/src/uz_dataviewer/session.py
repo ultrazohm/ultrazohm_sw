@@ -417,7 +417,7 @@ def export_fft(state: "AppState", path: str) -> int:
     """
     import numpy as np
 
-    from .analysis import compute_fft
+    from .analysis import compute_signal_fft
 
     cfg = state.fft
     if not cfg.sources:
@@ -431,10 +431,8 @@ def export_fft(state: "AppState", path: str) -> int:
         signal = state.registry.get_signal(ref[0], ref[1])
         if run is None or signal is None:
             raise ValueError(f"Cannot export FFT: {state.signal_label(ref)} is not loaded")
-        t, values = run.read_window([ref[1]], x_min, x_max)
-        result = compute_fft(t, values[ref[1]], x_min, x_max, remove_dc=cfg.remove_dc, window=cfg.window)
-        if not result.ok:
-            raise ValueError(f"Cannot export FFT for {state.signal_label(ref)}: {result.info}")
+        result = compute_signal_fft(run, ref[1], x_min, x_max, remove_dc=cfg.remove_dc,
+                                    window=cfg.window, label=state.signal_label(ref))
         name = ref[1] if ref[1] not in used else f"{ref[1]} @ {run.label}"  # disambiguate dup names
         name = unique_name(name, used)
         spectra.append((name, result.freqs, result.mag))

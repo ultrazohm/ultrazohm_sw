@@ -26,7 +26,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from . import nodes, transforms
+from . import nodes
 from .analysis import FftResult, compute_fft
 from .loader import parse_file, validate_backend
 from .plugins import load_plugins
@@ -165,22 +165,17 @@ def node(kind: str, *signals, **params):
 
 
 def filter(time, y, **params):
-    """Convenience wrapper over ``transforms.filter_node`` (FIR low/high/band-pass).
+    """Validated ``node('filter', ...)`` convenience wrapper (FIR low/high/band-pass).
 
     Returns ``(time, filtered_y, info)``.
     """
-    return transforms.filter_node(
-        np.asarray(time, dtype=np.float64), np.asarray(y, dtype=np.float64), params
-    )
+    return node("filter", (time, y), **params)
 
 
 def math(*signals, **params):
-    """Convenience wrapper over ``transforms.math_node`` (scale/offset/derivative/
+    """Validated ``node('math', ...)`` convenience wrapper (scale/offset/derivative/
     integral/reciprocal and binary add/sub/mul/div).
 
     ``signals`` are ``(time, y)`` tuples. Returns ``(time, y_out, info)``.
     """
-    inputs = [
-        (np.asarray(t, dtype=np.float64), np.asarray(s, dtype=np.float64)) for t, s in signals
-    ]
-    return transforms.math_node(inputs, params)
+    return node("math", *signals, **params)

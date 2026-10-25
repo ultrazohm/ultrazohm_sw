@@ -33,10 +33,8 @@ def visible_slice(time: np.ndarray, x_min: float, x_max: float, *, padding: bool
 
 
 def decimate_range(time, y, source, n_out, start, stop):
-    """Sample a resident array window using the same engine as CSV/Parquet plots."""
-    from .sources import ArraySource
+    """Sample a resident array window through its existing ArraySource."""
     if stop <= start:
         return time[:0], y[:0]
-    source = source if source is not None else ArraySource(time, {'value': y})
     result = source.read_plot('value', float(time[start]), float(time[stop - 1]), n_out, padding=False)
     return result.time, result.values

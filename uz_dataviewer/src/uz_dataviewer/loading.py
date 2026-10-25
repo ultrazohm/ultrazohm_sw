@@ -58,8 +58,8 @@ class LoadExecutor:
 
 def _convert_worker(source, destination, backend, connection):
     try:
-        from .loader import convert_csv_to_parquet
-        result = convert_csv_to_parquet(source, destination, backend=backend)
+        from .loader import _write_csv_to_parquet
+        result = _write_csv_to_parquet(source, destination, backend=backend)
         connection.send((True, result))
     except Exception as exc:
         connection.send((False, str(exc)))

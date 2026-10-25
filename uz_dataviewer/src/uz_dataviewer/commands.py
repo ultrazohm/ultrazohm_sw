@@ -389,7 +389,7 @@ def register_builtins(reg: CommandRegistry) -> None:
 
     reg.add("convert", [Param("src", "str"), Param("dst", "str", optional=True)], convert,
             "Stream-convert CSV to Parquet using the selected backend; "
-            "dst defaults to src with a .parquet extension.")
+            "dst defaults to src with a .parquet extension. Existing destinations and empty inputs are rejected.")
 
     def normalize_time(state, a):
         run_id, start = a

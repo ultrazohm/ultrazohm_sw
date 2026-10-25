@@ -122,3 +122,13 @@ def test_public_node_api_shares_validation(monkeypatch):
         api.node('bad')
     with pytest.raises(ValueError, match='equal-length'):
         api.node('bad', (np.arange(4.0), np.arange(4.0)))
+
+
+@pytest.mark.parametrize('kind,params', [('math', {}), ('filter', {'cutoff': .1})])
+def test_convenience_wrappers_validate_output_shape(kind, params):
+    t, y = np.arange(8.), np.ones(7)
+    with pytest.raises(ValueError, match='equal-length'):
+        if kind == 'math':
+            api.math((t, y), **params)
+        else:
+            api.filter(t, y, **params)

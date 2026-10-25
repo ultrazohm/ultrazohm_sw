@@ -85,6 +85,8 @@ def register_transform(spec: TransformSpec) -> None:
     """Register a transform kind (used by builtins at import and by plugins)."""
     if not spec.kind or spec.kind == "source":
         raise ValueError(f"invalid transform kind {spec.kind!r}")
+    if spec.kind in REGISTRY:
+        raise ValueError(f"Transform {spec.kind!r} is already registered; restart to load a changed plugin")
     REGISTRY[spec.kind] = spec
 
 

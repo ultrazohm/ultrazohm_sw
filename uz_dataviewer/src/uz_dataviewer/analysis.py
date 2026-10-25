@@ -152,6 +152,21 @@ def compute_fft(
     return FftResult(freqs.astype(np.float32), mag.astype(np.float32), info)
 
 
+def compute_signal_fft(run, channel, x_min, x_max, *, remove_dc=True, window=True,
+                       cancel=None, label=None):
+    """Read and validate one spectrum, reporting failures with the signal identity."""
+    label = label or f"{channel} @ {run.label}"
+    try:
+        t, values = run.read_window([channel], x_min, x_max, cancel)
+        result = compute_fft(t, values[channel], x_min, x_max,
+                             remove_dc=remove_dc, window=window)
+        if not result.ok:
+            raise ValueError(result.info)
+    except (ValueError, OSError) as exc:
+        raise ValueError(f"Cannot compute FFT for {label}: {exc}") from exc
+    return result
+
+
 def histogram_sources(series, lo, hi, bins, cancel=None):
     """Two-pass histogram over raw batches with common edges for all sources.
 

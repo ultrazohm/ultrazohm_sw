@@ -19,6 +19,26 @@ from uz_dataviewer.sources import ArraySource
 from uz_dataviewer.state import AppState
 
 
+@pytest.mark.parametrize('channels', [('bad', 'good'), ('good', 'bad'), ('bad',)])
+def test_fft_panel_reports_each_failed_signal(app_state, tmp_path, channels):
+    from uz_dataviewer.panels.fft import FftPanel
+    run = app_state.registry.add_run('recording', 'recording', np.arange(8.),
+                                     {'bad': np.full(8, np.nan), 'good': np.arange(8.)}, {})
+    app_state.fft.sources = [(run.id, channel) for channel in channels]
+    panel = FftPanel()
+    panel._compute(app_state, app_state.fft, 0, 7)
+    expected = [(run.id, 'good')] if 'good' in channels else []
+    assert panel._result_refs() == expected
+    assert f'{len(expected)} succeeded, 1 failed' in panel._info
+    assert 'bad @ recording' in panel._info
+    assert 'non-finite' in panel._info
+    destination = tmp_path / 'fft.csv'
+    destination.write_text('existing export')
+    with pytest.raises(ValueError, match='bad @ recording.*non-finite'):
+        export_fft(app_state, str(destination))
+    assert destination.read_text() == 'existing export'
+
+
 def test_next_fast_len_is_5_smooth_and_ge():
     for n in (1, 6, 7, 17, 100, 19_997, 9_000_001):
         m = _next_fast_len(n)

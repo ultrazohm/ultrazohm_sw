@@ -1,7 +1,7 @@
 Command,Group,Description,Arguments,Source
 clear_session,Data / runs,"Clear runs, plots and analysis before restoring a session.",,commands.py:366
 load,Data / runs,Load a .csv/.parquet log; the optional start normalises the time origin.,"path:str, [start:float]",commands.py:372
-convert,Data / runs,Stream-convert CSV to Parquet using the selected backend; dst defaults to src with a .parquet extension.,"src:str, [dst:str]",commands.py:383
+convert,Data / runs,Stream-convert CSV to Parquet using the selected backend; dst defaults to src with a .parquet extension. Existing destinations and empty inputs are rejected.,"src:str, [dst:str]",commands.py:383
 normalize_time,Data / runs,Shift a run so its first sample sits at start (default 0).,"run:run, [start:float]",commands.py:394
 reset_time,Data / runs,Restore a run's original (un-normalised) timestamps.,run:run,commands.py:404
 backend,Data / runs,"IO backend for subsequent opens, exports and CSV conversion: pyarrow or polars (desktop only).",name:str,commands.py:424

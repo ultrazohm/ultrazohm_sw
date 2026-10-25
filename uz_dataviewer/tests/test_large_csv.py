@@ -98,10 +98,10 @@ def test_failed_conversion_cleans_partial_file(state, tmp_path, monkeypatch):
     monkeypatch.setattr('uz_dataviewer.state.LARGE_CSV_BYTES', 1)
     path = tmp_path / 'input.csv'
     path.write_text('time;a\n0;1\n1;2\n')
-    def fail(src, dst, **kwargs):
+    def fail(src, dst, backend, cancel):
         Path(dst).write_bytes(b'partial')
         raise ValueError('invalid CSV')
-    monkeypatch.setattr('uz_dataviewer.loader.convert_csv_to_parquet', fail)
+    monkeypatch.setattr('uz_dataviewer.loading.convert_cancellable', fail)
     state.request_load(str(path))
     state.resolve_large_csv('convert')
     with pytest.raises(ValueError, match='invalid CSV'):

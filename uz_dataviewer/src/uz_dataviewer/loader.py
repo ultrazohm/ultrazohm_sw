@@ -364,21 +364,55 @@ def convert_csv_to_parquet(src: str, dst: str | None = None, *, backend="pyarrow
     channels to float32 / time to float64, drops empty columns (JavaScope's
     trailing ``;``) and writes ``dst``. Raw headers (``CH8=8)ia``) are preserved so
     the resulting Parquet round-trips through the same name parsing on load.
+    Rejects empty input and existing destinations. Publishes complete output only.
     Returns the output path (``src`` with a ``.parquet`` extension by default).
     """
-    if cancel is not None:
-        from .loading import convert_cancellable
-        return convert_cancellable(src, dst, backend, cancel)
+    import tempfile
+
+    src = os.fspath(src)
+    dst = os.fspath(dst) if dst is not None else os.path.splitext(src)[0] + ".parquet"
     check(cancel)
     validate_backend(backend)
-    if backend == "polars":
-        from .polars_io import convert_csv_to_parquet as convert
-        return convert(src, dst, cancel=cancel)
     if not src.lower().endswith(".csv"):
         raise ValueError(f"convert expects a .csv file, got {src!r}")
-    if dst is None:
-        dst = os.path.splitext(src)[0] + ".parquet"
+    if os.path.lexists(dst):
+        raise FileExistsError(f"Parquet file already exists: {dst}")
+    fd, temporary = tempfile.mkstemp(prefix=".uz-convert-", suffix=".parquet",
+                                     dir=os.path.dirname(os.path.abspath(dst)))
+    os.close(fd)
+    try:
+        if cancel is not None:
+            from .loading import convert_cancellable
+            convert_cancellable(src, temporary, backend, cancel)
+        else:
+            _write_csv_to_parquet(src, temporary, backend=backend)
+        check(cancel)
+        with pq.ParquetFile(temporary) as converted:
+            if converted.metadata.num_rows == 0:
+                raise ValueError("Cannot convert CSV: time column is empty")
+        check(cancel)
+        # Publish only complete output, and never overwrite a destination created
+        # while conversion was running. The parent owns cleanup on cancellation.
+        from . import webbridge
+        if webbridge.IS_WEB:
+            # The browser filesystem lacks hard links. Its synchronous, single-
+            # threaded runtime cannot interleave a writer between check/rename.
+            if os.path.lexists(dst):
+                raise FileExistsError(f"Parquet file already exists: {dst}")
+            os.rename(temporary, dst)
+        else:
+            os.link(temporary, dst)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
+    return dst
 
+
+def _write_csv_to_parquet(src, dst, *, backend="pyarrow"):
+    """Backend writer for an unpublished temporary file owned by the caller."""
+    if backend == "polars":
+        from .polars_io import _write_csv_to_parquet as write
+        return write(src, dst)
     delimiter = _sniff_delimiter(src)
     columns = _read_header(src, delimiter)
     reader = pa_csv.open_csv(
@@ -393,7 +427,6 @@ def convert_csv_to_parquet(src: str, dst: str | None = None, *, backend="pyarrow
     writer: pq.ParquetWriter | None = None
     try:
         for batch in reader:
-            check(cancel)
             batch = _drop_empty_columns(batch)
             if writer is None:
                 writer = pq.ParquetWriter(dst, batch.schema)
@@ -402,6 +435,8 @@ def convert_csv_to_parquet(src: str, dst: str | None = None, *, backend="pyarrow
         if writer is not None:
             writer.close()
         reader.close()
+    if writer is None:
+        raise ValueError("Cannot convert CSV: time column is empty")
     return dst
 
 
@@ -502,16 +537,12 @@ def open_file(path, mode="memory", cache=None, cache_dir=None, *, backend="pyarr
         root.mkdir(parents=True, exist_ok=True)
         destination = root / (identity + ".parquet")
         if not destination.exists():
-            fd, temp = tempfile.mkstemp(dir=root, suffix=".parquet")
-            os.close(fd)
-            try:
+            with tempfile.TemporaryDirectory(dir=root) as directory:
+                temp = str(Path(directory) / "converted.parquet")
                 convert_csv_to_parquet(path, temp, backend=backend, cancel=cancel)
                 check(cancel)
                 origin.validate()
                 os.replace(temp, destination)
-            finally:
-                if os.path.exists(temp):
-                    os.unlink(temp)
         path = str(destination)
     elif not path.lower().endswith(".parquet"):
         return parse_file(path, backend=backend, cancel=cancel)

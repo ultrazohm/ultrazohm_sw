@@ -171,7 +171,10 @@ To verify that committed files match the source CSVs and recipes:
 
    make pyuzlib-check-generated
 
-Checks render the expected content in memory and compare it byte-for-byte with the existing files.
+Checks render the expected content in memory and compare it with the existing files.
+Flux and differential-inductance CSV value columns tolerate floating-point roundoff with a relative tolerance of ``1e-12`` or an absolute tolerance of ``1e-14`` (Vs or H).
+Column names, row structure, operating-point identifiers, and current coordinates must still match exactly.
+Generated headers remain byte-for-byte comparisons.
 They do not rewrite artifacts, create temporary output files, or change machine IDs.
 They exit with status 0 when everything matches, or status 1 with filenames, diffs for stale files, and a regeneration command when files are stale or missing.
 

@@ -62,6 +62,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.check:
         return check_generated_artifacts(
             outputs,
+            numeric_csv_columns=frozenset({
+                "psi_d_Vs", "psi_q_Vs", "L_dd_H", "L_dq_H", "L_qd_H", "L_qq_H",
+            }),
             regenerate_args=["python3", "-m", "pyuzlib.dataset_pipeline", "--uz-pmsm-dir", str(args.uz_pmsm_dir.resolve())],
         )
     for path, content in outputs.items():

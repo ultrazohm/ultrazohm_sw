@@ -55,14 +55,17 @@ def test_queued_load_captures_backend(logs, tmp_path):
     state.cache_dir = tmp_path/'cache'
     try:
         state.backend = 'polars'
+        state.disk_cache = True
         state.request_load(str(logs[0]), loading_mode='lazy')
         state.backend = 'pyarrow'
+        state.disk_cache = False
         state.request_load(str(logs[1]), loading_mode='memory')
         for future, _ in state._pending:
             future.result(timeout=10)
         state.poll_pending_loads()
         assert [r.backend for r in state.registry.runs] == ['polars', 'pyarrow']
         assert isinstance(state.registry.runs[0].time, SourceColumn)
+        assert state.registry.runs[0].source.disk_cache
         assert isinstance(state.registry.runs[1].time, np.ndarray)
     finally:
         state.shutdown()
@@ -183,9 +186,34 @@ def test_cli_defaults_and_explicit_overrides(monkeypatch):
     monkeypatch.setattr(app, 'DataViewerApp', Viewer)
     monkeypatch.setattr(webbridge, 'IS_WEB', False)
     app.main([])
+    assert captured[-1]['disk_cache'] is False
     assert (captured[-1]['backend'], captured[-1]['loading_mode']) == ('polars', 'lazy')
-    app.main(['--backend', 'pyarrow', '--loading-mode', 'memory'])
+    app.main(['--backend', 'pyarrow', '--loading-mode', 'memory', '--disk-cache'])
+    assert captured[-1]['disk_cache'] is True
     assert (captured[-1]['backend'], captured[-1]['loading_mode']) == ('pyarrow', 'memory')
     monkeypatch.setattr(webbridge, 'IS_WEB', True)
     app.main([])
     assert (captured[-1]['backend'], captured[-1]['loading_mode']) == ('pyarrow', 'memory')
+
+
+def test_disk_cache_session_settings(logs, tmp_path):
+    states = [AppState(), AppState(), AppState()]
+    state, restored, replayed = states
+    try:
+        assert state.disk_cache is False
+        state.cache_dir = tmp_path / 'cache'
+        state.disk_cache = True
+        run = state.load_sync(str(logs[0]))
+        assert run is not None and run.source.disk_cache
+        state.disk_cache = False
+        apply_dict(restored, to_dict(state))
+        from uz_dataviewer.session import run_script
+        script = tmp_path / 'cache.uzscript'
+        script.write_text('\n'.join(to_script(state)))
+        run_script(replayed, str(script))
+        for s in (restored, replayed):
+            assert not s.disk_cache
+            assert s.registry.runs[0].source.disk_cache
+    finally:
+        for s in states:
+            s.shutdown()

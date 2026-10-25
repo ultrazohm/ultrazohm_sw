@@ -76,6 +76,13 @@ python run.py ../javascope/Log_2026-06-11_22-45-16.csv   # preload
 python run.py session.uzscript       # replay a saved session
 ```
 
+On desktop, selecting a CSV larger than 1 GiB prompts **Large log, conversion to parquet recommended**.
+Choose **Open CSV** to read it directly, or **Convert to Parquet** to create and open a file with the same stem and directory (for example, `logs/run.csv` becomes `logs/run.parquet`).
+This applies to native drag-and-drop, the Log Browser and the file picker.
+Conversion runs in the background using the selected backend and opens the result with the selected loading mode.
+The original CSV is preserved; an existing Parquet file is never overwritten and can instead be opened explicitly.
+Choosing **Open CSV** skips automatic disk-cache conversion for that load, even when disk caching is enabled.
+
 Then **Open file(s)…** in the Navigation panel, expand the run, and drag signals into the
 plots (or the FFT / Histogram windows).
 
@@ -91,8 +98,8 @@ or select the mode at startup:
 ```
 
 - **In memory** retains the existing full NumPy arrays for fast analysis.
-- **Lazy** (desktop default) reads selected Parquet columns and sample ranges. CSV files are first
-  converted into reusable Parquet files in the application cache.
+- **Lazy** (desktop default) reads selected columns and sample ranges from Parquet or streams CSV directly.
+  CSV requires repeated text scanning and is slower for interactive navigation.
 
 The setting affects subsequent opens. Existing runs retain their storage mode;
 JSON sessions and exported scripts preserve mixed modes. The console equivalents
@@ -121,13 +128,16 @@ plugins can allocate additional memory. A full-recording FFT still needs its raw
 input and output arrays. Histograms stream raw batches in two passes. Explicit
 console/script commands and node/plugin evaluation retain synchronous semantics.
 
-Persistent indexes, summaries and converted CSVs live in
-`~/.cache/uz_dataviewer`, or the directory selected by `UZ_DATAVIEWER_CACHE`.
-They are disposable and source-versioned; close the viewer before clearing that
-directory. There is currently no automatic disk-cache size limit. Read-only or
-full summary-cache storage falls back to RAM; lazy CSV conversion requires
-writable cache space. The browser build retains synchronous execution because
-its current runtime has no worker-thread support.
+Measurement caches stay in RAM by default; no automatic CSV conversion is written.
+Enable **Disk cache (new opens)** under **Cache settings**, pass `--disk-cache`, or use `disk_cache(true)` to persist indexes and summaries and convert lazy CSV inputs into reusable Parquet files.
+Reopen existing files to change their cache policy.
+Sessions and scripts preserve the setting for each file.
+When enabled, disk caches live in `~/.cache/uz_dataviewer` (Polars uses its `polars/` subdirectory), or the directory selected by `UZ_DATAVIEWER_CACHE`.
+They are disposable and source-versioned; close the viewer before clearing that directory.
+Disabling disk caching leaves existing cache files untouched and does not read them.
+There is currently no automatic disk-cache size limit.
+Read-only or full summary-cache storage falls back to RAM; enabled lazy CSV conversion requires writable cache space.
+The browser build retains synchronous execution because its current runtime has no worker-thread support.
 
 ### Reproducing performance measurements
 

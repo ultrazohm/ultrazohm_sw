@@ -18,6 +18,17 @@ from .model import DataRegistry, Run, Signal
 from .nodes import NodeGraph
 
 # Identifies a signal across runs: (run_id, signal_name).
+LARGE_CSV_BYTES = 1024**3
+
+
+@dataclass(frozen=True)
+class LoadRequest:
+    path: str
+    mode: str
+    backend: str
+    disk_cache: bool
+
+
 SignalRef = tuple[int, str]
 
 
@@ -155,6 +166,8 @@ class AppState:
         self.registry = DataRegistry()
         self.backend, self.loading_mode = default_data_settings()
         self.cache_dir = None
+        self.disk_cache = False
+        self.large_csv_requests: list[LoadRequest] = []
         self._load_lock = threading.RLock()
         self.display = Requests(synchronous=webbridge.IS_WEB)
         self.analysis_jobs = Requests(synchronous=webbridge.IS_WEB)
@@ -222,20 +235,63 @@ class AppState:
         from .loader import validate_backend
         validate_backend(backend)
         path = os.path.abspath(path)
-        # Echo the equivalent command so GUI-triggered (async) loads appear in
-        # the console transcript just like a typed/scripted `load(...)`.
+        request = LoadRequest(path, mode, backend, self.disk_cache)
+        if not webbridge.IS_WEB and path.lower().endswith(".csv"):
+            try:
+                if os.path.getsize(path) > LARGE_CSV_BYTES:
+                    self.large_csv_requests.append(request)
+                    return
+            except OSError:
+                pass  # The normal loader reports missing or unreadable files.
+        self._submit_load(request)
+
+    def resolve_large_csv(self, choice: str) -> None:
+        """Resolve the oldest GUI prompt using the settings captured at selection."""
+        if choice not in {"csv", "convert", "existing", "cancel"}:
+            raise ValueError(f"Unknown large CSV action: {choice}")
+        request = self.large_csv_requests.pop(0)
+        if choice == "cancel":
+            return
+        if choice == "csv":
+            # Explicitly opening CSV bypasses automatic cached conversion.
+            self._submit_load(LoadRequest(request.path, request.mode, request.backend, False))
+            return
+        destination = os.path.splitext(request.path)[0] + ".parquet"
+        target = LoadRequest(destination, request.mode, request.backend, request.disk_cache)
+        self._submit_load(target, convert_from=request.path if choice == "convert" else None)
+
+    def _submit_load(self, request: LoadRequest, convert_from=None) -> None:
+        path = request.path
         self.commands.echo(self, "load", [path])
-        self.console.info(f"Loading {os.path.basename(path)} ...")
+        self.console.info(f"{'Converting and loading' if convert_from else 'Loading'} {os.path.basename(path)} ...")
         if webbridge.IS_WEB:
-            # Pyodide has no usable worker threads -- load on the main thread.
             try:
                 self._report_loaded(load_file(path, self.registry))
-            except Exception as exc:  # noqa: BLE001 - surfaced to the console
+            except Exception as exc:
                 self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
             return
-        # Parse on the worker; registration happens on the main thread (poll below).
-        future = self._executor.submit(self._open_background, path, mode, backend)
+        if convert_from:
+            future = self._executor.submit(self._convert_and_open, convert_from, request)
+        else:
+            future = self._executor.submit(self._open_background, path, request.mode,
+                                           request.backend, request.disk_cache)
         self._pending.append((future, path))
+
+    def _convert_and_open(self, source: str, request: LoadRequest):
+        from .loader import convert_csv_to_parquet
+        import tempfile
+        if os.path.lexists(request.path):
+            raise FileExistsError(f"Parquet file already exists: {request.path}")
+        fd, temporary = tempfile.mkstemp(prefix=".uz-convert-", suffix=".parquet",
+                                         dir=os.path.dirname(request.path))
+        os.close(fd)
+        try:
+            convert_csv_to_parquet(source, temporary, backend=request.backend)
+            # Publish only a complete file, without overwriting a concurrently created destination.
+            os.link(temporary, request.path)
+        finally:
+            os.unlink(temporary)
+        return self._open_background(request.path, request.mode, request.backend, request.disk_cache)
 
     def load_sync(self, path: str) -> Run | None:
         """Load a file on the calling thread and report it.
@@ -248,7 +304,7 @@ class AppState:
         path = os.path.abspath(path)
         self.console.info(f"Loading {os.path.basename(path)} ...")
         try:
-            run = open_file(path, self.loading_mode, self.registry.cache, self.cache_dir, backend=self.backend).register(self.registry)
+            run = open_file(path, self.loading_mode, self.registry.cache, self.cache_dir, backend=self.backend, disk_cache=self.disk_cache).register(self.registry)
         except Exception as exc:  # noqa: BLE001 - surfaced to the console
             self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
             return None
@@ -384,8 +440,8 @@ class AppState:
             return ref[1]
         return f"{ref[1]} @ {run.label}"
 
-    def _open_background(self, path, mode, backend):
-        return open_file(path, mode, self.registry.cache, self.cache_dir, backend=backend)
+    def _open_background(self, path, mode, backend, disk_cache):
+        return open_file(path, mode, self.registry.cache, self.cache_dir, backend=backend, disk_cache=disk_cache)
 
     def shutdown(self) -> None:
         self.display.close()

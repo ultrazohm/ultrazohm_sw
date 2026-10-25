@@ -11,7 +11,8 @@ from .sources import ParquetSource, ByteCache, CACHE_VERSION, Metadata, atomic_n
 
 
 class PolarsParquetSource(ParquetSource):
-    def __init__(self, path, cache=None, cache_dir=None, cancel=None):
+    def __init__(self, path, cache=None, cache_dir=None, cancel=None, *, disk_cache=False):
+        self.disk_cache = disk_cache
         from .loader import _split_time_columns, _named_signals
         self.path = Path(path).resolve()
         self.signature = self._signature()
@@ -22,14 +23,20 @@ class PolarsParquetSource(ParquetSource):
         self.summary_lock = threading.Lock()
         self.index_lock = threading.Lock()
         self._index_ready = False
-        self.scan = pl.scan_parquet(self.path, glob=False)
+        if self.path.suffix.lower() == ".csv":
+            from .polars_io import _scan_csv
+            self.scan = _scan_csv(str(self.path))
+        else:
+            self.scan = pl.scan_parquet(self.path, glob=False)
         self.time_col, columns = _split_time_columns(self.scan.collect_schema().names())
         named, self.units = _named_signals(columns, lambda c: np.empty(0, np.float32))
         self.columns = dict(zip(named, columns))
-        self._rows = self.scan.select(pl.len()).collect().item()
+        self._rows = self.scan.select(pl.len()).collect(engine="streaming").item()
         if not self._rows:
             raise ValueError('time column is empty')
         try:
+            if not self.disk_cache:
+                raise FileNotFoundError('Disk cache disabled')
             with np.load(self.directory / 'time.npz', allow_pickle=False) as data:
                 self.first, self.last, self.index_offsets = data['first'], data['last'], data['offsets']
             if (self.first.ndim != 1 or self.last.ndim != 1 or self.index_offsets.ndim != 1
@@ -80,7 +87,8 @@ class PolarsParquetSource(ParquetSource):
             self.validate()
             check(cancel)
             try:
-                atomic_npz(self.directory / 'time.npz', first=self.first, last=self.last, offsets=self.index_offsets)
+                if self.disk_cache:
+                    atomic_npz(self.directory / 'time.npz', first=self.first, last=self.last, offsets=self.index_offsets)
             except OSError:
                 pass
             self._index_ready = True
@@ -94,7 +102,7 @@ class PolarsParquetSource(ParquetSource):
             raise ValueError(f'Source changed; reopen {self.path.name}')
 
     def summary_path(self, channel):
-        return self.directory / (hashlib.sha256(channel.encode()).hexdigest() + '.npz')
+        return self.directory / (hashlib.sha256(channel.encode()).hexdigest() + '.npz') if self.disk_cache else None
 
     def iter_raw(self, channels, start=0, stop=None, cancel=None):
         self.validate()

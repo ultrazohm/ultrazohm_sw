@@ -14,6 +14,7 @@ import os
 import tempfile
 import uuid
 import threading
+import time
 from zipfile import BadZipFile
 from typing import Protocol
 
@@ -36,6 +37,16 @@ class ByteCache:
         self.bytes = 0
         self.entries = OrderedDict()
         self.lock = threading.RLock()
+        self.evictions = 0
+        self.oversized = 0
+        self.last_limit_hit = None
+
+    def status(self):
+        """Snapshot for the UI; highlight pressure for five seconds after a miss in capacity."""
+        with self.lock:
+            return dict(bytes=self.bytes, limit=self.limit, evictions=self.evictions,
+                        oversized=self.oversized,
+                        limit_hit=self.last_limit_hit is not None and time.monotonic() - self.last_limit_hit < 5)
 
     def get(self, key):
         with self.lock:
@@ -52,6 +63,9 @@ class ByteCache:
             if size <= self.limit:
                 self.entries[key] = (value, size)
                 self.bytes += size
+            else:
+                self.oversized += 1
+                self.last_limit_hit = time.monotonic()
             self.trim()
         return value
 
@@ -60,11 +74,16 @@ class ByteCache:
             while self.bytes > self.limit and self.entries:
                 _, (_, size) = self.entries.popitem(last=False)
                 self.bytes -= size
+                self.evictions += 1
+                self.last_limit_hit = time.monotonic()
 
     def clear(self):
         with self.lock:
             self.entries.clear()
             self.bytes = 0
+            self.evictions = 0
+            self.oversized = 0
+            self.last_limit_hit = None
 
 
 @dataclass(frozen=True)
@@ -322,7 +341,8 @@ class ArraySource(SummarySource, MemorySource):
 
 
 class ParquetSource(SummarySource):
-    def __init__(self, path, cache=None, cache_dir=None, cancel=None):
+    def __init__(self, path, cache=None, cache_dir=None, cancel=None, *, disk_cache=False):
+        self.disk_cache = disk_cache
         import pyarrow.parquet as pq
         from .loader import _split_time_columns, _named_signals
         self.path = Path(path).resolve()
@@ -343,6 +363,8 @@ class ParquetSource(SummarySource):
             if self._rows == 0:
                 raise ValueError('time column is empty')
             try:
+                if not self.disk_cache:
+                    raise FileNotFoundError('Disk cache disabled')
                 with np.load(self.directory / 'time.npz', allow_pickle=False) as data:
                     self.first, self.last, self.index_offsets = data['first'], data['last'], data['offsets']
                 if (self.first.ndim != 1 or self.last.ndim != 1 or self.index_offsets.ndim != 1
@@ -396,7 +418,8 @@ class ParquetSource(SummarySource):
             self.validate()
             check(cancel)
             try:
-                atomic_npz(self.directory / 'time.npz', first=self.first, last=self.last, offsets=self.index_offsets)
+                if self.disk_cache:
+                    atomic_npz(self.directory / 'time.npz', first=self.first, last=self.last, offsets=self.index_offsets)
             except OSError:
                 pass
             self._index_ready = True
@@ -410,7 +433,7 @@ class ParquetSource(SummarySource):
             raise ValueError(f'Source changed; reopen {self.path.name}')
 
     def summary_path(self, channel):
-        return self.directory / (hashlib.sha256(channel.encode()).hexdigest() + '.npz')
+        return self.directory / (hashlib.sha256(channel.encode()).hexdigest() + '.npz') if self.disk_cache else None
 
     def iter_raw(self, channels, start=0, stop=None, cancel=None):
         import pyarrow.parquet as pq

@@ -114,10 +114,15 @@ class NavigationPanel:
             self._emit(state, "loading_mode", modes[mode])
         if imgui.is_item_hovered():
             imgui.set_tooltip("Applies to newly opened files. Existing runs keep their storage mode.")
-        if imgui.tree_node("Memory settings"):
+        if imgui.tree_node("Cache settings"):
             changed, mb = imgui.input_int("Cache (MiB)", state.registry.cache.limit // 1024**2)
             if changed:
                 self._emit(state, "cache_budget", max(1, mb))
+            changed, enabled = imgui.checkbox("Disk cache (new opens)", state.disk_cache)
+            if changed:
+                self._emit(state, "disk_cache", enabled)
+            if imgui.is_item_hovered():
+                imgui.set_tooltip("Save indexes, summaries and CSV conversions across restarts. Reopen files to apply.")
             imgui.text_disabled("FFT and plugins can use additional memory.")
             imgui.tree_pop()
         imgui.separator()

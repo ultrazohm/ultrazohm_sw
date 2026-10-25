@@ -44,6 +44,7 @@ _EXPLICIT_GROUPS: dict[str, str] = {
     # Data / runs
     "backend": "Data / runs",
     "loading_mode": "Data / runs",
+    "disk_cache": "Data / runs",
     "cache_budget": "Data / runs",    "load": "Data / runs",
     "convert": "Data / runs",
     "remove_run": "Data / runs",

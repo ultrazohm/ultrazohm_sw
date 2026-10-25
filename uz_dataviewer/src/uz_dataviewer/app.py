@@ -33,8 +33,9 @@ LOG_DOCK = "LogBrowserSpace"
 
 
 class DataViewerApp:
-    def __init__(self, initial_files: list[str] | None = None, loading_mode: str | None = None, backend: str | None = None) -> None:
+    def __init__(self, initial_files: list[str] | None = None, loading_mode: str | None = None, backend: str | None = None, disk_cache: bool = False) -> None:
         self.state = AppState()
+        self.state.disk_cache = disk_cache
         if loading_mode is not None:
             self.state.loading_mode = loading_mode
         from .loader import validate_backend
@@ -246,6 +247,64 @@ class DataViewerApp:
         self.log_browser.shutdown()
         self.state.shutdown()
 
+    def _show_load_dialog(self) -> None:
+        if not self.state.large_csv_requests:
+            return
+        request = self.state.large_csv_requests[0]
+        title = "Large CSV log"
+        if not imgui.is_popup_open(title):
+            imgui.open_popup(title)
+        visible, _ = imgui.begin_popup_modal(title, flags=imgui.WindowFlags_.always_auto_resize)
+        if visible:
+            imgui.text_unformatted("Large log, conversion to parquet recommended")
+            imgui.text_unformatted(os.path.basename(request.path))
+            destination = os.path.splitext(request.path)[0] + ".parquet"
+            imgui.text_unformatted("Conversion saves beside the CSV and opens the Parquet file.")
+            imgui.text_unformatted(f"Output: {destination}")
+            exists = os.path.lexists(destination)
+            if exists:
+                imgui.text_unformatted("A Parquet file already exists; it will not be overwritten.")
+            choice = None
+            if imgui.button("Open CSV"):
+                choice = "csv"
+            imgui.same_line()
+            imgui.begin_disabled(exists)
+            if imgui.button("Convert to Parquet"):
+                choice = "convert"
+            imgui.end_disabled()
+            if exists:
+                imgui.same_line()
+                if imgui.button("Open existing Parquet"):
+                    choice = "existing"
+            imgui.same_line()
+            if imgui.button("Cancel"):
+                choice = "cancel"
+            if choice:
+                self.state.resolve_large_csv(choice)
+                imgui.close_current_popup()
+            imgui.end_popup()
+
+    def _show_status(self) -> None:
+        cache = self.state.registry.cache.status()
+        label = (f"FPS: {imgui.get_io().framerate:.1f}  |  "
+                 f"RAM cache: {cache['bytes'] / 1024**2:.1f} / {cache['limit'] / 1024**2:.0f} MiB")
+        if cache['limit_hit']:
+            label += "  |  cache limit hit"
+        imgui.set_cursor_pos_x(max(imgui.get_cursor_pos_x(),
+                                  imgui.get_window_width() - imgui.calc_text_size(label).x
+                                  - imgui.get_style().window_padding.x))
+        if cache['limit_hit']:
+            imgui.text_colored(imgui.ImVec4(1.0, 0.72, 0.25, 1.0), label)
+        else:
+            imgui.text_unformatted(label)
+        if imgui.is_item_hovered():
+            imgui.set_tooltip(
+                "Retained RAM cache, not total application memory.\n"
+                "Limit hit is highlighted for 5 seconds after eviction or an oversized result.\n"
+                f"Since cache clear: {cache['evictions']} entries evicted; "
+                f"{cache['oversized']} oversized results not retained.\n"
+                "Evicted data is reread or recomputed when needed; no measurement data is lost.")
+
     # -- runner -------------------------------------------------------------
     def run(self) -> None:
         params = hello_imgui.RunnerParams()
@@ -255,6 +314,7 @@ class DataViewerApp:
             hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
         )
         params.imgui_window_params.show_status_bar = True
+        params.imgui_window_params.show_status_fps = False  # FPS and cache share our status item.
         params.imgui_window_params.show_menu_bar = True
         # Always render at full rate. hello_imgui idles to ~9 fps when there's no
         # input; for live panning/zooming of large logs we want full FPS throughout.
@@ -271,6 +331,8 @@ class DataViewerApp:
 
         params.callbacks.pre_new_frame = self._pre_new_frame
         params.callbacks.show_menus = self._show_menus
+        params.callbacks.show_gui = self._show_load_dialog
+        params.callbacks.show_status = self._show_status
         params.callbacks.before_exit = self._shutdown
         params.callbacks.post_init = self._install_file_drop
 
@@ -310,9 +372,10 @@ def main(argv: list[str] | None = None) -> int:
                         help=f"storage policy for opening recordings (default: {default_mode})")
     parser.add_argument("--backend", choices=("pyarrow", "polars"), default=default_backend,
                         help=f"IO backend for file loading (default: {default_backend})")
+    parser.add_argument("--disk-cache", action="store_true", help="Persist measurement caches on disk (default: RAM only)")
     parser.add_argument("files", nargs="*", help="CSV, Parquet, or session script files")
     args = parser.parse_args(argv)
-    app = DataViewerApp(initial_files=args.files, loading_mode=args.loading_mode, backend=args.backend)
+    app = DataViewerApp(initial_files=args.files, loading_mode=args.loading_mode, backend=args.backend, disk_cache=args.disk_cache)
     app.run()
     return 0
 

@@ -45,8 +45,17 @@ Backend and loading mode
 The **Backend** selector in Navigation chooses **PyArrow** or **Polars** for subsequently opened recordings.
 The independent **Loading** selector chooses **In memory** or **Lazy**.
 Changing either setting leaves already loaded recordings unchanged.
-The shared timestamp and summary cache defaults to **1,024 MiB** and remains configurable under **Memory settings**.
+Desktop CSV selections larger than 1 GiB show a conversion recommendation for drag-and-drop, the Log Browser and the file picker.
+**Open CSV** reads the original directly without automatic cached conversion.
+**Convert to Parquet** writes a sibling file with the same stem and a ``.parquet`` extension in the background, then opens it using the selected backend and loading mode.
+Existing Parquet files are protected from overwriting; the dialog offers **Open existing Parquet** instead.
+**Cancel** skips the selected file, and multi-file selections are prompted individually.
+
+The shared timestamp and summary cache defaults to **1,024 MiB** and remains configurable under **Cache settings**.
 This is a retained-cache budget, not a limit on total application RAM.
+The status bar shows retained RAM cache usage next to FPS.
+An amber **cache limit hit** indication appears for five seconds after an entry is evicted or a result exceeds the cache capacity.
+Hover over it to see eviction and oversized-result counts since the last cache clear.
 Auto loading and its separate memory-budget setting have been removed.
 Legacy sessions and scripts using Auto are opened lazily; obsolete memory-budget settings are ignored.
 The desktop application defaults to **Polars + Lazy**.
@@ -67,7 +76,10 @@ The console equivalent is ``backend(polars)`` followed by ``loading_mode(lazy)``
 The headless library accepts ``uz.read(path, backend="polars")``; its dataframe conversion returns a Polars DataFrame when that backend is selected.
 The default library backend preserves the existing pandas DataFrame interface.
 Polars uses the native streaming reader and writer from the prototype; CSV conversion can use more RAM than PyArrow.
-The normal application cache remains under ``~/.cache/uz_dataviewer`` or ``UZ_DATAVIEWER_CACHE``.
+Disk caching is disabled by default; indexes and summaries stay in RAM, and lazy CSV files are scanned directly.
+Enable **Disk cache (new opens)**, ``--disk-cache`` or ``disk_cache(true)`` to reuse disk summaries and converted CSVs across restarts.
+The setting affects newly opened files; reopen existing files to apply it.
+When enabled, the application cache remains under ``~/.cache/uz_dataviewer`` or ``UZ_DATAVIEWER_CACHE``.
 Polars stores its disk caches in a separate ``polars/`` subdirectory, and the engines have distinct in-memory cache identities.
 
 Local log browser

@@ -445,7 +445,7 @@ def validate_backend(backend):
         raise ValueError("Polars is available only in the desktop viewer; use pyarrow in the browser")
 
 
-def open_file(path, mode="memory", cache=None, cache_dir=None, *, backend="pyarrow"):
+def open_file(path, mode="memory", cache=None, cache_dir=None, *, backend="pyarrow", disk_cache=False):
     """Open using a selected storage policy. Existing parse_file stays eager."""
     validate_backend(backend)
     if mode not in ("memory", "lazy"):
@@ -457,6 +457,10 @@ def open_file(path, mode="memory", cache=None, cache_dir=None, *, backend="pyarr
     else:
         from .sources import ParquetSource as SourceClass
     original = path
+    if path.lower().endswith(".csv") and not disk_cache:
+        if backend == "pyarrow":
+            from .csv_source import CsvSource as SourceClass
+        return OpenedSource(original, SourceClass(path, cache, cache_dir, disk_cache=False), backend=backend)
     if path.lower().endswith(".csv"):
         from pathlib import Path
         import hashlib
@@ -480,4 +484,4 @@ def open_file(path, mode="memory", cache=None, cache_dir=None, *, backend="pyarr
         path = str(destination)
     elif not path.lower().endswith(".parquet"):
         return parse_file(path, backend=backend)
-    return OpenedSource(original, SourceClass(path, cache, cache_dir), backend=backend)
+    return OpenedSource(original, SourceClass(path, cache, cache_dir, disk_cache=disk_cache), backend=backend)

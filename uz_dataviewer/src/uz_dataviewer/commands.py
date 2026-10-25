@@ -394,6 +394,10 @@ def register_builtins(reg: CommandRegistry) -> None:
     reg.add("loading_mode", [Param("mode", "str")], loading_mode,
             "Storage policy for subsequent opens: memory or lazy.")
 
+    reg.add("disk_cache", [Param("on", "bool")],
+            lambda state, a: setattr(state, "disk_cache", a[0]),
+            "Persist indexes, summaries and CSV conversions for subsequent opens (default: false).")
+
     def cache_budget(state, a):
         if a[0] < 1:
             raise CommandError("Budget must be positive (MiB)")

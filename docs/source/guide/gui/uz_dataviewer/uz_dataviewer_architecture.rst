@@ -279,13 +279,17 @@ Removed consumers release their results and idle workers release source referenc
 The shared timestamp/summary RAM cache is byte-bounded (1,024 MiB by default).
 Display buffers are bounded by trace/plot budgets.
 These are not total-process memory limits: decoded batches, summary-construction scratch, full FFTs and explicit array-based plugins/exports need additional memory.
-Persistent caches have no automatic disk-size limit and can be removed while the viewer is closed.
+Indexes and summaries are kept in RAM by default, without reading or writing disk caches.
+Optional persistent caches have no automatic disk-size limit and can be removed while the viewer is closed.
 The cache directory defaults to ``~/.cache/uz_dataviewer`` and is overridden by ``UZ_DATAVIEWER_CACHE``.
 Writes are atomic; invalid cache containers are rebuilt.
 
 ``loading_mode(memory|lazy)`` affects subsequent opens.
 The user explicitly selects resident or lazy loading; legacy Auto sessions migrate to lazy loading.
-Lazy CSV input is converted to a versioned Parquet cache.
+Lazy CSV input is scanned directly by the selected backend by default.
+CSV navigation requires repeated text scanning and can be slower than Parquet.
+Enabling ``disk_cache(true)`` for subsequent opens persists indexes and summaries and converts lazy CSV input to a versioned Parquet cache.
+Existing cache files are left untouched when disk caching is disabled.
 Sessions and scripts preserve per-file storage modes and the current settings.
 
 GUI FFT and histogram computations use a separate worker with snapshots of their input configuration.

@@ -54,7 +54,7 @@ def recording(tmp_path):
 def test_raw_ranges_duplicates_and_normalization(recording, tmp_path):
     path, t, y = recording
     cache = ByteCache(2 * 1024**2)
-    source = ParquetSource(path, cache, tmp_path / 'cache')
+    source = ParquetSource(path, cache, tmp_path / 'cache', disk_cache=True)
     eager = ArraySource(t, {'a': y})
     for lo, hi in [(t[0], t[-1]), (t[65534], t[65534]), (t[500] + .0002, t[503]), (-10, -9), (999, 1000)]:
         a, b = source.bounds(lo, hi)
@@ -78,7 +78,7 @@ def test_raw_ranges_duplicates_and_normalization(recording, tmp_path):
 def test_summary_extrema_gaps_boundaries_and_reopen(recording, tmp_path, monkeypatch):
     path, t, y = recording
     root = tmp_path / 'cache'
-    source = ParquetSource(path, cache_dir=root)
+    source = ParquetSource(path, cache_dir=root, disk_cache=True)
     result = source.read_plot('a', t[0], t[-1], 200)
     assert np.nanmin(result.values) == -23
     assert np.nanmax(result.values) == 31
@@ -94,7 +94,7 @@ def test_summary_extrema_gaps_boundaries_and_reopen(recording, tmp_path, monkeyp
         if np.isfinite(y[a:b]).any():
             assert np.nanmin(result.values) == np.nanmin(y[a:b])
             assert np.nanmax(result.values) == np.nanmax(y[a:b])
-    reopened = ParquetSource(path, cache_dir=root)
+    reopened = ParquetSource(path, cache_dir=root, disk_cache=True)
     def no_build(*args, **kwargs):
         raise AssertionError('Summary rebuilt on reopen')
     monkeypatch.setattr(reopened, 'iter_raw', no_build)
@@ -104,11 +104,11 @@ def test_summary_extrema_gaps_boundaries_and_reopen(recording, tmp_path, monkeyp
 def test_cache_corruption_rebuild_and_changed_file(recording, tmp_path):
     path, t, y = recording
     root = tmp_path / 'cache'
-    source = ParquetSource(path, cache_dir=root)
+    source = ParquetSource(path, cache_dir=root, disk_cache=True)
     source.read_plot('a', t[0], t[-1], 200)
     source.summary_path('a').write_bytes(b'broken')
     (source.directory / 'time.npz').write_bytes(b'broken')
-    reopened = ParquetSource(path, cache_dir=root)
+    reopened = ParquetSource(path, cache_dir=root, disk_cache=True)
     assert np.nanmax(reopened.read_plot('a', t[0], t[-1], 200).values) == 31
     stat = path.stat()
     os.utime(path, ns=(stat.st_atime_ns, stat.st_mtime_ns + 1000))
@@ -198,7 +198,7 @@ def test_cancellation_and_budget(recording, tmp_path):
     cache = ByteCache(10)
     cache.put('x', np.zeros(5), 40)
     assert cache.bytes == 0
-    source = ParquetSource(path, cache, tmp_path / 'cache')
+    source = ParquetSource(path, cache, tmp_path / 'cache', disk_cache=True)
     cancel = threading.Event()
     cancel.set()
     with pytest.raises(Cancelled):
@@ -287,13 +287,13 @@ def test_invalid_time_axis_is_rejected(tmp_path):
         pq.write_table(pa.table({'time': np.asarray(t, dtype=np.float64),
                                  'a': np.zeros(len(t), dtype=np.float32)}), path)
         with pytest.raises(ValueError):
-            source = ParquetSource(path, cache_dir=tmp_path / 'cache')
+            source = ParquetSource(path, cache_dir=tmp_path / 'cache', disk_cache=True)
             source.bounds(0, 2)
 
 
 def test_open_uses_footer_then_validates_on_first_query(recording, tmp_path):
     path, t, _ = recording
-    source = ParquetSource(path, cache_dir=tmp_path / 'cache')
+    source = ParquetSource(path, cache_dir=tmp_path / 'cache', disk_cache=True)
     assert source.metadata.rows == len(t)
     assert not source._index_ready
     assert not (source.directory / 'time.npz').exists()
@@ -327,7 +327,7 @@ def test_close_zoom_uses_raw_window_when_finest_summary_is_too_coarse(recording,
     from uz_dataviewer.sources import envelope
     path, t, y = recording
     source = (ArraySource(t, {'a': y}) if backend == 'memory'
-              else ParquetSource(path, cache_dir=tmp_path / 'cache'))
+              else ParquetSource(path, cache_dir=tmp_path / 'cache', disk_cache=True))
     # Reproduce the ~13k-sample screenshot window, offset from summary boundaries.
     lo, hi = t[40013], t[53013]
     start, stop = source.bounds(lo, hi)
@@ -376,3 +376,47 @@ def test_per_file_loading_mode_does_not_change_default(tmp_path):
         assert state.loading_mode == 'memory'
     finally:
         state.shutdown()
+
+
+@pytest.mark.parametrize('format', ['csv', 'parquet'])
+@pytest.mark.parametrize('persistent', [False, True])
+def test_optional_disk_cache_parity(recording, tmp_path, format, persistent):
+    path, t, y = recording
+    if format == 'csv':
+        path = tmp_path / 'input.csv'
+        # Round-trip float32 signal values, including gaps and extrema.
+        np.savetxt(path, np.column_stack([t, y, y * 2]), delimiter=';',
+                   header='time;a;b', comments='', fmt='%.17g')
+    root = tmp_path / 'optional-cache'
+    source = open_file(str(path), 'lazy', cache_dir=root, disk_cache=persistent).source
+    raw_t, raw_y = source.read_rows(['a'], 65530, 65550)
+    np.testing.assert_array_equal(raw_t, t[65530:65550])
+    np.testing.assert_allclose(raw_y['a'], y[65530:65550], equal_nan=True)
+    plot = source.read_plot('a', t[0], t[-1], 200)
+    assert np.nanmin(plot.values) == -23
+    assert np.nanmax(plot.values) == 31
+    if persistent:
+        assert list(root.rglob('*.npz'))
+        assert bool(list(root.rglob('*.parquet'))) == (format == 'csv')
+    else:
+        assert not root.exists()
+    # Raw windows remain available after summary/timestamp eviction.
+    source.cache.clear()
+    np.testing.assert_allclose(source.read_rows(['a'], 70000, 70010)[1]['a'],
+                               y[70000:70010], equal_nan=True)
+    if not persistent:
+        assert not root.exists()
+
+
+def test_disabled_disk_cache_ignores_existing_files(recording, tmp_path):
+    path, t, _ = recording
+    root = tmp_path / 'existing-cache'
+    source = open_file(str(path), 'lazy', cache_dir=root, disk_cache=True).source
+    source.read_plot('a', t[0], t[-1], 200)
+    for file in root.rglob('*.npz'):
+        file.write_bytes(b'existing cache must remain untouched')
+    before = {p: p.read_bytes() for p in root.rglob('*') if p.is_file()}
+    source = open_file(str(path), 'lazy', cache_dir=root).source
+    assert source.summary_path('a') is None
+    source.read_plot('a', t[0], t[-1], 200)
+    assert {p: p.read_bytes() for p in root.rglob('*') if p.is_file()} == before

@@ -230,5 +230,8 @@ Saved sessions use schema version 4 and preserve separate instances of logs with
 Restoring a session replaces the currently loaded session.
 Version 1/2/3 snapshots and older exported session scripts must be recreated.
 Histogram, FFT, export and node crop ranges include only samples inside the selected time window.
-FFT requires strictly increasing, uniformly spaced timestamps (100 ppm tolerance plus floating-point roundoff).
-It reports an error for unsupported sampling rather than interpolating the data.
+FFT and FIR filters require strictly increasing, uniformly spaced timestamps (100 ppm tolerance plus floating-point roundoff).
+Binary math requires matching time axes throughout both inputs. Unsupported sampling is rejected without interpolation.
+FFT export rejects an invalid selected channel with its name and reason before writing any output.
+Applied primary Y limits survive saving and restoring. Recomputing node outputs preserves their time normalization.
+Shrinking the grid switches analysis windows following removed plots to Full.

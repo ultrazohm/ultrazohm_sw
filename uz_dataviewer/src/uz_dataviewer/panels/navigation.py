@@ -109,7 +109,8 @@ class NavigationPanel(SessionPanel):
         if changed:
             self._emit(state, "loading_mode", modes[mode])
         if imgui.is_item_hovered():
-            imgui.set_tooltip("Applies to newly opened files. Existing runs keep their storage mode.")
+            imgui.set_tooltip("Applies to files with backing storage; large browser-streamed CSVs remain in memory. "
+                              "Existing runs keep their storage mode.")
         if imgui.tree_node("Cache settings"):
             changed, mb = imgui.input_int("Cache (MiB)", state.registry.cache.limit // 1024**2)
             if changed:
@@ -118,7 +119,11 @@ class NavigationPanel(SessionPanel):
             if changed:
                 self._emit(state, "disk_cache", enabled)
             if imgui.is_item_hovered():
-                imgui.set_tooltip("Save indexes, summaries and CSV conversions across restarts. Reopen files to apply.")
+                imgui.set_tooltip(
+                    "Cache indexes, summaries and CSV conversions in this tab; cleared on page reload. Reopen files to apply."
+                    if webbridge.IS_WEB else
+                    "Save indexes, summaries and CSV conversions across restarts. Reopen files to apply."
+                )
             imgui.text_disabled("FFT and plugins can use additional memory.")
             imgui.tree_pop()
         imgui.separator()

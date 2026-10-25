@@ -223,3 +223,30 @@ def test_slots_preserve_holes_and_allow_same_source_twice(app_state):
         state.nodes.link(source.id, node.id, 2)
     state.nodes.remove(source.id)
     assert node.inputs == []
+
+
+def test_recomputed_output_preserves_normalization_and_consumers(app_state):
+    from uz_dataviewer.nodes import evaluate
+    state = app_state
+    time = np.arange(8.) + 100
+    values = np.arange(8.) + 1
+    state.add_run_from_arrays('input', 'input', time, {'a': values}, {})
+    _run(state, 'node_source(run_1,a)', 'node_add(math)', 'node_link(node_1,node_2)',
+         'node_eval()', 'normalize_time(node_output_2,0)')
+    node = state.nodes.get(2)
+    run = state.registry.get(node.out_run_id)
+    state.cells[0].signals = [(run.id, 'out')]
+    state.fft.sources = [(run.id, 'out')]
+    # Exercise replacement of an already constructed source too.
+    run.data_source()
+    version = run.time_version
+    _run(state, 'node_set(node_2,k,2)')
+    assert evaluate(state) == 1
+    assert state.registry.get(node.out_run_id) is run and run.time_version != version
+    assert run.time_origin == 0
+    np.testing.assert_array_equal(run.time, np.arange(8.))
+    np.testing.assert_array_equal(run.time_raw, time)
+    actual_time, actual_values = run.read_window(['out'], 0, 7)
+    np.testing.assert_array_equal(actual_time, np.arange(8.))
+    np.testing.assert_array_equal(actual_values['out'], 2*values)
+    assert state.cells[0].signals == state.fft.sources == [(run.id, 'out')]

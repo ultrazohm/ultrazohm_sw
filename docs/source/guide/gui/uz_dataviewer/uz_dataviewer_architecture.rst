@@ -81,7 +81,7 @@ Module map
      - ``Run``, ``Signal``, ``DataRegistry``
    * - ``loader.py``
      - CSV (Arrow) / Parquet loading, header cleaning, delimiter sniffing; lean large-log loading (float32-at-parse, CSV size guard, streaming Parquet, CSV→Parquet ``convert``) — see :ref:`uz_dataviewer_loader_large_logs`
-     - ``open_file``, ``load_file``, ``parse_file``, ``ParsedRun``, ``parse_channel_name``,
+     - ``open_file``, ``parse_file``, ``ParsedRun``, ``parse_channel_name``,
        ``convert_csv_to_parquet``
    * - ``sources.py``
      - Resident/lazy raw-sample access, timestamp indexes, persistent display summaries, shared byte-bounded cache
@@ -145,7 +145,9 @@ Channel headers like ``CH8=8)ia`` are cleaned to ``ia`` by ``parse_channel_name`
 Loading & large logs (``loader.py``)
 =====================================
 
-``load_file`` dispatches by extension through ``parse_file`` → ``parse_csv`` / ``parse_parquet``, each returning a ``ParsedRun`` (plain arrays, no registry touch) that is turned into a ``Run`` via ``ParsedRun.register`` (``DataRegistry.add_run``).
+``open_file`` selects the storage policy for GUI uploads, native loads and commands.
+Memory loads dispatch through ``parse_file`` → ``parse_csv`` / ``parse_parquet`` and return a ``ParsedRun``; lazy loads return an ``OpenedSource``.
+Both register through their ``register`` method. The redundant eager-only ``load_file`` wrapper has been removed.
 On native, loads run on the cancellable daemon worker in ``loading.py``.
 The worker prepares a resident run or lazy source; the main thread registers it in ``state.poll_pending_loads``, so ``DataRegistry`` is only mutated from one thread.
 Conversion runs in a spawned process so shutdown can interrupt native streaming IO and remove partial output.
@@ -244,7 +246,7 @@ Nodes *produce* data; nothing else in the app needs to know they exist.
 
 .. note::
 
-   Binary math needs equal-length inputs (no resampling). Source nodes accept recordings only; connect transforms with ``node_link`` so the graph tracks every dependency.
+   Binary math needs equal-length inputs with matching timestamps throughout both axes (no resampling or implicit index alignment). Source nodes accept recordings only; connect transforms with ``node_link`` so the graph tracks every dependency.
 
 .. _uz_dataviewer_downsampling:
 
@@ -302,12 +304,16 @@ Cancellation of a NumPy FFT takes effect after its native call returns.
 Explicit console/script commands and node/plugin evaluation remain synchronous.
 Browser execution uses the same interfaces synchronously because its current runtime lacks workers.
 
+Time-series, XY and cursor requests share source validation, worker scheduling and error reporting through ``PlotsPanel._request_data``.
+Cached display results are validated before reuse; only small resident arrays can run immediately on the desktop render thread.
+
 FFT and ordinary plots now share the ``ArraySource`` / ``SummarySource`` sampling engine.
 FFT summaries are constructed by the analysis worker, and unchanged spectrum views reuse their reduced arrays.
 ``IndexedFileSource`` owns file identity, timestamp indexing, bounds and cache persistence for both backends.
 Analysis, export and node cropping select exact time windows; padding is reserved for display.
 FFT rejects duplicate or irregular timestamps instead of returning a misleading frequency axis.
-The regularity tolerance is 100 ppm plus floating-point roundoff.
+The regularity tolerance is 100 ppm plus floating-point roundoff. ``sampling.py`` shares this validation with FIR filters,
+and validates complete time axes for binary math. Derived-run refresh preserves the existing time normalization.
 
 Sessions (``session.py``)
 ==========================
@@ -335,7 +341,13 @@ Small browser uploads receive separate backing directories so duplicate filename
 Browser-streamed arrays have no backing file and cannot be saved in a reloadable session.
 Saving rejects them before opening the destination file. Export their data first.
 
+``SubplotCell.y_lim`` records the last rendered primary Y range, separately from one-shot ``pending_y_lim`` commands.
+JSON and scripts persist pending limits when present, otherwise the live range.
+Grid reduction prunes removed ranges and switches affected FFT/Histogram followers to Full.
+Invalid analysis plot references are rejected by commands and session restore.
+
 CSV exports (``export_data``, ``export_fft``, ``export_histogram``) also live here.
+FFT export validates all selected channels before writing; a missing or invalid channel aborts with its identity and reason.
 
 .. _uz_dataviewer_arch_native_web:
 

@@ -233,7 +233,10 @@ def _coerce_one(state: "AppState", param: Param, raw):
     if kind == "node":
         return _resolve_node(state, raw)
     if kind == "fwindow":
-        return _parse_fwindow(raw)
+        try:
+            return state.validate_follow_plot(_parse_fwindow(raw))
+        except ValueError as exc:
+            raise CommandError(str(exc)) from exc
     raise CommandError(f"Unknown parameter kind: {kind}")
 
 

@@ -118,7 +118,7 @@ usable statistics need that scan during opening. First display of a channel
 builds its persistent min/max summaries. These operations stream through the
 file and can take seconds for large recordings. Reopening reuses valid indexes.
 Changed files must be reopened; cached results from their previous version are
-not reused.
+not reused, including in XY plots and cursor readouts. Lazy reads run on the desktop worker even for short recordings.
 
 The shared timestamp/summary RAM cache defaults to 1,024 MiB and is configurable
 under **Memory settings**. Prepared plot arrays are bounded by display budgets.
@@ -138,18 +138,24 @@ Disabling disk caching leaves existing cache files untouched and does not read t
 There is currently no automatic disk-cache size limit.
 Read-only or full summary-cache storage falls back to RAM; enabled lazy CSV conversion requires writable cache space.
 The browser build retains synchronous execution because its current runtime has no worker-thread support.
+Browser uploads with backing files honor the same loading and cache settings as console loads.
+Browser file caches live in the tab's temporary filesystem and are cleared on page reload; large streamed CSVs remain array-backed.
 
 ### Session format and analysis correctness
 
 Sessions now use schema version 4 with explicit run identities, including repeated opens and identical filenames in different directories.
 Node links preserve explicit input slots, including disconnected slots. Canvas connection order does not change subtraction or division.
 Restoring a saved session replaces the current session only after successful loading. Failed restoration leaves the current session intact. Old snapshots and older exported session scripts must be recreated.
-Plot windows, precise time ranges and inactive recordings survive JSON and script round trips. Restoring a session resets panel caches and canvas positions; Y fitting completes when lazy samples arrive.
+Plot windows, precise time ranges and inactive recordings survive JSON and script round trips. Restoring a session resets panel caches and canvas positions; Y fitting completes when lazy samples arrive. Applied primary Y limits survive both JSON and script saves.
+Removing a followed subplot switches its analysis windows to Full and discards the removed plot's cached range.
+Recomputing a node preserves its derived recording's selected time origin.
 Small browser uploads use separate backing paths even when filenames match. Failed exports never download an earlier result.
 Streamed browser recordings have no backing file, so session saving is rejected; export their data first.
 Chain transforms with node links; using derived outputs as new source nodes is no longer supported.
 Analysis and exports use exact time windows, while plotting retains edge padding.
-FFT rejects duplicate or irregular timestamps instead of producing an incorrect frequency axis.
+FFT and FIR filters reject duplicate or irregular timestamps (100 ppm tolerance plus roundoff).
+Binary math requires matching timestamps throughout both inputs; implicit index alignment has been removed.
+FFT export validates every selected signal before writing: an invalid channel fails the export with its name and reason, preserving any existing destination file.
 
 ## Documentation
 

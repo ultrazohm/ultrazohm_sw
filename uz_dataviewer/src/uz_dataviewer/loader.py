@@ -451,11 +451,6 @@ def parse_file(path: str, *, backend="pyarrow", cancel=None) -> ParsedRun:
     return parsed
 
 
-def load_file(path: str, registry: DataRegistry) -> Run:
-    """Parse ``path`` and register it into ``registry`` (single-threaded callers)."""
-    return parse_file(path).register(registry)
-
-
 @dataclass
 class OpenedSource:
     path: str

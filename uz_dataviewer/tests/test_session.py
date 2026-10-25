@@ -5,6 +5,8 @@ from __future__ import annotations
 import os
 import sys
 
+import pytest
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer import session  # noqa: E402
@@ -221,3 +223,60 @@ def test_clear_and_replace_share_lifecycle(app_state):
     apply_dict(state, to_dict(state))
     assert state.session_token is not token
     assert state.commands is commands and state.console is console
+
+
+@pytest.mark.parametrize('script', [False, True])
+@pytest.mark.parametrize('gesture', [False, True])
+def test_rendered_y_limits_survive_round_trip(app_state, gui_frame, tmp_path, monkeypatch, script, gesture):
+    from imgui_bundle import implot
+    from uz_dataviewer.panels.plots import PlotsPanel
+    state = app_state
+    state.backend, state.loading_mode = 'pyarrow', 'memory'
+    path = tmp_path / 'limits.csv'
+    path.write_text('time;a\n' + ''.join(f'{i};{i+10}\n' for i in range(8)))
+    state.load_sync(str(path))
+    state.cells[0].signals = [(1, 'a')]
+    panel = PlotsPanel()
+    for _ in range(3):
+        gui_frame(panel, state)
+    if gesture:
+        # Change the actual plot viewport without issuing a command, like a mouse zoom.
+        setup = implot.setup_axes
+        def zoom(*args):
+            setup(*args)
+            implot.setup_axis_limits(implot.ImAxis_.y1, 12., 14., implot.Cond_.always)
+        with monkeypatch.context() as patch:
+            patch.setattr(implot, 'setup_axes', zoom)
+            for _ in range(3):
+                gui_frame(panel, state)
+    else:
+        state.commands.execute(state, 'set_y_lim', [1, 12., 14.])
+        for _ in range(3):
+            gui_frame(panel, state)
+    assert state.cells[0].pending_y_lim is None
+    assert state.cells[0].y_lim == (12., 14.)
+    if script:
+        destination = tmp_path / 'view.uzscript'
+        session.export_script(state, str(destination))
+        session.run_script(state, str(destination))
+    else:
+        saved = session.to_dict(state)
+        assert saved['cells'][0]['y_lim'] == (12., 14.)
+        session.apply_dict(state, saved)
+    for _ in range(3):
+        gui_frame(panel, state)
+    assert state.cells[0].y_lim == (12., 14.)
+    state.commands.execute(state, 'reset_view', [1])
+    for _ in range(3):
+        gui_frame(panel, state)
+    assert state.cells[0].y_lim == (10., 17.)
+
+
+def test_restore_rejects_nonexistent_analysis_plot_transactionally(app_state):
+    state = app_state
+    token = state.session_token
+    saved = session.to_dict(state)
+    saved['fft']['follow_plot'] = 2
+    with pytest.raises(ValueError, match='Analysis window'):
+        session.apply_dict(state, saved)
+    assert state.session_token is token

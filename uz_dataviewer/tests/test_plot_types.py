@@ -181,3 +181,90 @@ def test_analysis_window_computes_on_demand_not_every_frame(monkeypatch):
     state.commands.dispatch(state, "fft_source(Log.csv, ia)")  # sets compute_requested
     _drive_window(FftPanel(), state, frames=6)
     assert calls["n"] == 1  # computed once for the one source, not 6x
+
+
+def test_xy_rejects_changed_files_and_reads_lazy_data_off_thread(app_state, gui_frame, tmp_path, monkeypatch):
+    import threading
+    import time
+    from imgui_bundle import implot
+    state = app_state
+    state.backend, state.loading_mode = 'pyarrow', 'lazy'
+    path = tmp_path / 'xy.csv'
+
+    def write(offset):
+        path.write_text('time;a;b\n' + ''.join(f'{i};{i};{i+offset}\n' for i in range(8)))
+
+    write(10)
+    run = state.load_sync(str(path))
+    cell = state.cells[0]
+    cell.plot_type, cell.xy_source, cell.signals = PlotType.XY, (run.id, 'a'), [(run.id, 'b')]
+    source = run.data_source()
+    threads, drawn = [], []
+    original_read, original_line = source.iter_raw, implot.plot_line
+
+    def read(*args, **kwargs):
+        threads.append(threading.current_thread())
+        yield from original_read(*args, **kwargs)
+
+    def line(label, x, y, *args):
+        drawn.append(float(y[0]))
+        original_line(label, x, y, *args)
+
+    monkeypatch.setattr(source, 'iter_raw', read)
+    monkeypatch.setattr(implot, 'plot_line', line)
+    panel = PlotsPanel()
+    deadline = time.monotonic() + 5
+    while not drawn and time.monotonic() < deadline:
+        gui_frame(panel, state)
+        time.sleep(.01)
+    assert drawn and drawn[-1] == 10
+    assert threads and all(thread is not threading.main_thread() for thread in threads)
+    write(20)
+    drawn.clear()
+    for _ in range(3):
+        gui_frame(panel, state)
+    assert not drawn
+    assert any('Source changed' in entry.message for entry in state.console._entries)
+    assert not state.display.results  # no reusable stale XY data remains
+
+
+def test_xy_surfaces_read_errors_without_drawing_stale_data(app_state, gui_frame, tmp_path, monkeypatch):
+    import time
+    from imgui_bundle import implot
+    state = app_state
+    state.backend, state.loading_mode = 'pyarrow', 'lazy'
+    path = tmp_path / 'xy.csv'
+    path.write_text('time;a;b\n' + ''.join(f'{i};{i};{i+10}\n' for i in range(8)))
+    run = state.load_sync(str(path))
+    cell = state.cells[0]
+    cell.plot_type, cell.xy_source, cell.signals = PlotType.XY, (run.id, 'a'), [(run.id, 'b')]
+    panel = PlotsPanel()
+    drawn = []
+    original = implot.plot_line
+
+    def line(label, x, y, *args):
+        drawn.append(label)
+        original(label, x, y, *args)
+
+    monkeypatch.setattr(implot, 'plot_line', line)
+    deadline = time.monotonic() + 5
+    while not drawn and time.monotonic() < deadline:
+        gui_frame(panel, state)
+        time.sleep(.01)
+    assert drawn
+
+    def broken(*args, **kwargs):
+        raise OSError('test read failure')
+
+    monkeypatch.setattr(run.data_source(), 'iter_raw', broken)
+    state.max_points = 2  # new stride requests fresh data
+    deadline = time.monotonic() + 5
+    while not state.display.errors and time.monotonic() < deadline:
+        gui_frame(panel, state)
+        time.sleep(.01)
+    assert state.display.errors
+    drawn.clear()
+    for _ in range(3):
+        gui_frame(panel, state)
+    assert not drawn
+    assert any('test read failure' in entry.message for entry in state.console._entries)

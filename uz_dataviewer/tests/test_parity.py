@@ -136,13 +136,13 @@ def test_export_command_via_dispatch(tmp_path):
 
 def test_export_then_import_roundtrips(tmp_path):
     """Exported CSV is comma-separated; the loader must sniff that and re-import."""
-    from uz_dataviewer.loader import load_file
+    from uz_dataviewer.loader import open_file
     from uz_dataviewer.model import DataRegistry
 
     state = _state(tmp_path)
     out = tmp_path / "exported.csv"
     session.export_data(state, 0, str(out))
-    run = load_file(str(out), DataRegistry())
+    run = open_file(str(out)).register(DataRegistry())
     assert set(run.signals) >= {"ia", "ib"}
     assert run.n_rows >= 1
 

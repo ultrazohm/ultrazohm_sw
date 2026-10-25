@@ -248,3 +248,49 @@ def test_analysis_replacement_clears_old_results_until_new_computation(app_state
         assert drawn and all('new.csv' in label and peak == 16 for label, peak in drawn)
     finally:
         release.set()
+
+
+def test_fft_export_rejects_partial_results_before_writing(app_state, tmp_path):
+    import pytest
+    state = app_state
+    t = np.arange(16) / 16
+    good = np.sin(2*np.pi*2*t)
+    bad = good.copy()
+    bad[3] = np.nan
+    state.add_run_from_arrays('input', 'input', t, {'good': good, 'bad': bad}, {})
+    state.fft.follow_plot = -1
+    destination = tmp_path / 'spectra.csv'
+    for refs in [[(1, 'good'), (1, 'bad')], [(1, 'bad'), (1, 'good')], [(1, 'good'), (1, 'missing')]]:
+        state.fft.sources = refs
+        destination.write_text('previous successful export')
+        with pytest.raises(ValueError, match='bad|missing'):
+            session.export_fft(state, str(destination))
+        assert destination.read_text() == 'previous successful export'
+        destination.unlink()
+        with pytest.raises(ValueError, match='bad|missing'):
+            session.export_fft(state, str(destination))
+        assert not destination.exists()
+
+
+def test_grid_shrink_resets_removed_analysis_targets(app_state):
+    import pytest
+    from uz_dataviewer.commands import CommandError
+    state = app_state
+    state.add_run_from_arrays('input', 'input', np.arange(8.) + 100, {'a': np.arange(8.)}, {})
+    state.set_grid(1, 2)
+    state.plot_x_ranges = {1: (100., 104.), 2: (101., 102.)}
+    for cfg in (state.fft, state.histogram):
+        cfg.sources = [(1, 'a')]
+        cfg.follow_plot = 2
+        cfg.compute_requested = False
+    state.commands.execute(state, 'set_grid', [1, 1])
+    assert state.plot_x_ranges == {1: (100., 104.)}
+    for cfg in (state.fft, state.histogram):
+        assert cfg.follow_plot == -1 and cfg.compute_requested
+        assert state.resolve_x_window(cfg.follow_plot, (0., 1.), cfg.sources) == (100., 107.)
+    for command in ('fft_follow', 'hist_follow'):
+        for target in ('plot_2', -2):
+            with pytest.raises(CommandError, match='Analysis window'):
+                state.commands.execute(state, command, [target])
+    state.set_grid(1, 2)
+    assert 2 not in state.plot_x_ranges

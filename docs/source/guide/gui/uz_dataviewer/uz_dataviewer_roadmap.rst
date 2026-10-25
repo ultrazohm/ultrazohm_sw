@@ -170,7 +170,7 @@ Client — "Open from cloud" reuses the existing loader:
 #. **Authenticate** against the PocketBase instance (token / OAuth2).
 #. **List** runs from the ``runs`` collection (shown in Navigation, like local runs).
 #. **Download** the chosen Parquet into the Pyodide FS (web) or a temp file (native).
-#. Hand it to the existing ``loader.load_file`` via ``AppState.request_load`` (``state.py``, ``loader.py``).
+#. Hand it to the existing ``loader.open_file`` via ``AppState.request_load`` (``state.py``, ``loader.py``).
 
 From step 4 on it is a normal ``Run`` with the lazily-built client ``Pyramid``, identical to a local file.
 It is scriptable via ``connect(url[, token])`` + ``open_cloud(run_id)`` in ``commands.py``.

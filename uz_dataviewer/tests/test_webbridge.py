@@ -108,7 +108,7 @@ def test_failed_panel_export_never_downloads_previous_data(app_state, monkeypatc
     assert len(downloads) == 1
     assert paths[0] != paths[1]
     assert all(not Path(path).exists() for path in paths)
-    assert any('no spectra' in e.message for e in state.console._entries)
+    assert any('input' in e.message and 'too short' in e.message for e in state.console._entries)
 
 
 def test_generated_uploads_keep_same_name_recordings_distinct(app_state, tmp_path):
@@ -158,3 +158,27 @@ function pyLoad(path) { paths.push(root + path); }
     assert [r.label for r in state.registry.runs] == ['same.csv', 'same.csv']
     apply_dict(state, to_dict(state))
     assert [r.signals['a'].y[0] for r in state.registry.runs] == [10, 20]
+
+
+def test_uploaded_files_use_the_same_loading_policy_as_commands(app_state, tmp_path, monkeypatch):
+    state = app_state
+    monkeypatch.setattr(webbridge, 'IS_WEB', True)
+    monkeypatch.setattr(webbridge, '_active_state', state)
+    state.backend = 'pyarrow'
+    path = tmp_path / 'upload.csv'
+    path.write_text('time;a\n0;10\n1;20\n')
+    for mode in ('memory', 'lazy'):
+        for disk_cache in (False, True):
+            state.commands.execute(state, 'loading_mode', [mode])
+            state.commands.execute(state, 'disk_cache', [disk_cache])
+            webbridge.load_uploaded(str(path))
+            uploaded = state.registry.runs[-1]
+            state.commands.execute(state, 'load', [str(path)])
+            commanded = state.registry.runs[-1]
+            assert uploaded.storage_mode == commanded.storage_mode == mode
+            assert uploaded.backend == commanded.backend == 'pyarrow'
+            assert getattr(uploaded.source, 'disk_cache', False) == (mode == 'lazy' and disk_cache)
+            assert getattr(commanded.source, 'disk_cache', False) == (mode == 'lazy' and disk_cache)
+            t, values = uploaded.read_window(['a'], 0, 1)
+            np.testing.assert_array_equal(t, [0, 1])
+            np.testing.assert_array_equal(values['a'], [10, 20])

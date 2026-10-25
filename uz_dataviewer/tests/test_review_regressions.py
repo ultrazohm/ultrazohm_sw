@@ -116,7 +116,7 @@ def test_async_xy_fits_and_releases_input_batches():
             alive.append(sum(ref() is not None for ref in references))
             yield np.arange(20000), {name:values for name in channels}
     source = SimpleNamespace(metadata=Metadata('xy-review',400000,('a','b'),(0,400000)),
-                             units={'a':'','b':''}, iter_raw=batches)
+                             units={'a':'','b':''}, iter_raw=batches, validate=lambda: None)
     run=state.registry.add_source('test','test',source)
     cell=state.cells[0]
     cell.plot_type=PlotType.XY

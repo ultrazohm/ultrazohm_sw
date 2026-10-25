@@ -10,7 +10,7 @@ import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from uz_dataviewer.loader import load_file, parse_channel_name  # noqa: E402
+from uz_dataviewer.loader import open_file, parse_channel_name  # noqa: E402
 from uz_dataviewer.model import DataRegistry  # noqa: E402
 
 SAMPLE = (
@@ -32,7 +32,7 @@ def test_load_csv(tmp_path):
     path = tmp_path / "Log_test.csv"
     path.write_text(SAMPLE)
     registry = DataRegistry()
-    run = load_file(str(path), registry)
+    run = open_file(str(path)).register(registry)
 
     assert run.n_rows == 3
     assert set(run.signals) == {"ISR_ExecTime_us", "ia", "Speed_rpm"}
@@ -50,7 +50,7 @@ def test_load_parquet(tmp_path):
     df.to_parquet(path)
 
     registry = DataRegistry()
-    run = load_file(str(path), registry)
+    run = open_file(str(path)).register(registry)
     assert run.n_rows == 3
     assert "ia" in run.signals
 
@@ -69,7 +69,7 @@ def test_sniff_delimiter(tmp_path):
 def test_load_comma_separated_csv(tmp_path):
     path = tmp_path / "comma.csv"
     path.write_text("time,ia,ib\n0.0,0.1,1.0\n0.1,0.2,1.1\n")
-    run = load_file(str(path), DataRegistry())
+    run = open_file(str(path)).register(DataRegistry())
     assert run.n_rows == 2
     assert set(run.signals) == {"ia", "ib"}
 
@@ -90,20 +90,20 @@ def test_load_rejects_decreasing_time(tmp_path):
     path = tmp_path / "Log_back.csv"
     path.write_text("time;CH8=8)ia;\n0.0;1.0;\n0.2;2.0;\n0.1;3.0;\n")
     with pytest.raises(ValueError, match="non-decreasing"):
-        load_file(str(path), DataRegistry())
+        open_file(str(path)).register(DataRegistry())
 
 
 def test_unsupported_extension(tmp_path):
     path = tmp_path / "data.txt"
     path.write_text("nope")
     with pytest.raises(ValueError):
-        load_file(str(path), DataRegistry())
+        open_file(str(path)).register(DataRegistry())
 
 
 def test_csv_channels_are_float32_time_float64(tmp_path):
     path = tmp_path / "Log_dtypes.csv"
     path.write_text(SAMPLE)
-    run = load_file(str(path), DataRegistry())
+    run = open_file(str(path)).register(DataRegistry())
     assert run.time.dtype == np.float64
     assert all(sig.y.dtype == np.float32 for sig in run.signals.values())
 
@@ -116,7 +116,7 @@ def test_csv_size_guard_refuses_with_guidance(tmp_path, monkeypatch):
     # A tiny file trips the guard once the budget is lowered below its footprint.
     monkeypatch.setattr(loader, "MAX_CSV_NUMERIC_BYTES", 1)
     with pytest.raises(ValueError) as exc:
-        load_file(str(path), DataRegistry())
+        open_file(str(path)).register(DataRegistry())
     assert "convert(" in str(exc.value)
 
 
@@ -127,11 +127,11 @@ def test_convert_csv_to_parquet_round_trips(tmp_path):
     csv_path.write_text(SAMPLE)
 
     # Loading the CSV directly is the reference.
-    ref = load_file(str(csv_path), DataRegistry())
+    ref = open_file(str(csv_path)).register(DataRegistry())
 
     dst = convert_csv_to_parquet(str(csv_path))
     assert dst.endswith(".parquet") and os.path.exists(dst)
-    via_parquet = load_file(dst, DataRegistry())
+    via_parquet = open_file(dst).register(DataRegistry())
 
     assert set(via_parquet.signals) == set(ref.signals)
     np.testing.assert_allclose(via_parquet.time, ref.time)
@@ -157,13 +157,13 @@ def test_csv_streaming_matches_bulk(tmp_path, monkeypatch):
     path = tmp_path / "Log_stream.csv"
     path.write_text(_javascope_csv(n))
 
-    bulk = load_file(str(path), DataRegistry())  # file < threshold -> bulk path
+    bulk = open_file(str(path)).register(DataRegistry())  # file < threshold -> bulk path
 
     # Force streaming, and seed a deliberately low row estimate so the preallocated
     # arrays must grow at least once (exercises _grow).
     monkeypatch.setattr(loader, "CSV_STREAM_MIN_BYTES", 0)
     monkeypatch.setattr(loader, "_estimate_csv_rows_and_bytes", lambda p, c: (10, 10))
-    streamed = load_file(str(path), DataRegistry())
+    streamed = open_file(str(path)).register(DataRegistry())
 
     assert streamed.n_rows == n == bulk.n_rows
     # Trailing ';' empty column is dropped -- only the three named signals remain.
@@ -183,7 +183,7 @@ def test_csv_streaming_rejects_decreasing_time(tmp_path, monkeypatch):
     path.write_text("time;CH8=8)ia;\n0.0;1.0;\n0.2;2.0;\n0.1;3.0;\n")
     monkeypatch.setattr(loader, "CSV_STREAM_MIN_BYTES", 0)  # force the streaming path
     with pytest.raises(ValueError, match="non-decreasing"):
-        load_file(str(path), DataRegistry())
+        open_file(str(path)).register(DataRegistry())
 
 
 def test_parquet_streaming_matches_bulk(tmp_path, monkeypatch):
@@ -203,11 +203,11 @@ def test_parquet_streaming_matches_bulk(tmp_path, monkeypatch):
     # Many small row groups so iter_batches yields multiple batches.
     df.to_parquet(path, row_group_size=512)
 
-    bulk = load_file(str(path), DataRegistry())  # n < threshold -> bulk path
+    bulk = open_file(str(path)).register(DataRegistry())  # n < threshold -> bulk path
 
     # Force the streaming path and confirm it fills exactly n_rows and agrees.
     monkeypatch.setattr(loader, "PARQUET_STREAM_MIN_ROWS", 0)
-    streamed = load_file(str(path), DataRegistry())
+    streamed = open_file(str(path)).register(DataRegistry())
 
     assert streamed.n_rows == n == bulk.n_rows
     np.testing.assert_allclose(streamed.time, bulk.time)

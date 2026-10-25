@@ -49,12 +49,18 @@ def test_math_binary_requires_equal_length():
         math_node([(t1, y1), (t2, y2)], {"op": "sub"})
 
 
-def test_math_binary_flags_time_base_mismatch():
+@pytest.mark.parametrize('interior_only', [False, True])
+def test_math_binary_rejects_time_base_mismatch(interior_only):
     t1, y1 = _sine(5, n=1000)
-    _, _, info = math_node([(t1, y1), (t1 + 10.0, y1)], {"op": "sub"})  # same rate, shifted origin
-    assert "time bases differ" in info
-    _, _, info2 = math_node([(t1, y1), (t1, y1)], {"op": "sub"})  # identical axis
-    assert "time bases differ" not in info2
+    t2 = t1.copy()
+    if interior_only:
+        t2[500] += .0001  # endpoints still match; index pairing is invalid
+    else:
+        t2 += 10.
+    with pytest.raises(ValueError, match="matching time axes"):
+        math_node([(t1, y1), (t2, y1)], {"op": "sub"})
+    _, result, _ = math_node([(t1, y1), (t1.copy(), y1)], {"op": "sub"})
+    np.testing.assert_array_equal(result, np.zeros(len(t1)))
 
 
 def test_derivative_rejects_non_increasing_time():
@@ -113,3 +119,36 @@ def test_filter_requires_positive_cutoff():
     t, y = _sine(5)
     with pytest.raises(ValueError):
         filter_node(t, y, {"type": "low", "cutoff": "0"})
+
+
+@pytest.mark.parametrize('ftype', ['low', 'high', 'band'])
+def test_filter_rejects_irregular_sampling(ftype):
+    t = np.array([0., .001, .002, 1.003, 1.004, 1.005, 1.006, 1.007])
+    with pytest.raises(ValueError, match='uniformly spaced'):
+        filter_node(t, np.arange(8.), {'type': ftype, 'cutoff': 100, 'cutoff2': 200})
+
+
+@pytest.mark.parametrize('parameter', ['cutoff', 'cutoff2'])
+@pytest.mark.parametrize('value', [np.nan, np.inf])
+def test_filter_rejects_nonfinite_cutoffs(parameter, value):
+    t, y = _sine(5)
+    params = {'type': 'band', 'cutoff': 20, 'cutoff2': 40, parameter: value}
+    with pytest.raises(ValueError, match='finite'):
+        filter_node(t, y, params)
+
+
+def test_sampling_roundoff_and_block_boundary_validation():
+    # Timestamp roundoff at a large origin must not reject an otherwise regular grid.
+    t = 1e6 + np.arange(65540) * .001
+    y = np.sin(np.arange(len(t)))
+    _, filtered, _ = filter_node(t, y, {'cutoff': 100, 'taps': 3})
+    assert np.isfinite(filtered).all()
+    rounded = np.nextafter(t, np.inf)
+    _, difference, _ = math_node([(t, y), (rounded, y)], {'op': 'sub'})
+    assert not difference.any()
+    changed = t.copy()
+    changed[65536] += .0001
+    with pytest.raises(ValueError, match='matching time axes'):
+        math_node([(t, y), (changed, y)], {'op': 'sub'})
+    with pytest.raises(ValueError, match='uniformly spaced'):
+        filter_node(changed, y, {'cutoff': 100, 'taps': 3})

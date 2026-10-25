@@ -107,7 +107,7 @@ def to_dict(state: "AppState") -> dict:
                 "signals": [_ref_to_saved(state, r) for r in cell.signals],
                 "type": cell.plot_type.value,
                 "x_lim": cell.pending_x_lim or state.plot_x_ranges.get(len(cells) + 1),
-                "y_lim": cell.pending_y_lim,
+                "y_lim": cell.pending_y_lim or cell.y_lim,
                 "show_samples": cell.show_samples,
                 "spy": cell.spy,
                 "spy_rect": list(cell.spy_rect) if cell.spy_rect else None,
@@ -270,13 +270,14 @@ def _apply_dict(state: "AppState", data: dict) -> None:
         cell.y2_signals = [r for r in (_resolve(s) for s in spec.get("y2", [])) if r is not None]
         cell.pending_x_lim = _limits(spec.get("x_lim"))
         cell.pending_y_lim = _limits(spec.get("y_lim"))
+        cell.y_lim = cell.pending_y_lim
         if cell.pending_x_lim:
             state.plot_x_ranges[i + 1] = cell.pending_x_lim
         cell.fit_pending = True
 
     fft = data.get("fft") or {}
     state.fft.sources = [r for r in (_resolve(s) for s in fft.get("sources", [])) if r is not None]
-    state.fft.follow_plot = int(fft.get("follow_plot", state.fft.follow_plot))
+    state.fft.follow_plot = state.validate_follow_plot(int(fft.get("follow_plot", state.fft.follow_plot)))
     state.fft.x_min = float(fft.get("x_min", state.fft.x_min))
     state.fft.x_max = float(fft.get("x_max", state.fft.x_max))
     state.fft.remove_dc = bool(fft.get("remove_dc", state.fft.remove_dc))
@@ -286,7 +287,7 @@ def _apply_dict(state: "AppState", data: dict) -> None:
 
     hist = data.get("histogram") or {}
     state.histogram.sources = [r for r in (_resolve(s) for s in hist.get("sources", [])) if r is not None]
-    state.histogram.follow_plot = int(hist.get("follow_plot", state.histogram.follow_plot))
+    state.histogram.follow_plot = state.validate_follow_plot(int(hist.get("follow_plot", state.histogram.follow_plot)))
     state.histogram.x_min = float(hist.get("x_min", state.histogram.x_min))
     state.histogram.x_max = float(hist.get("x_max", state.histogram.x_max))
     state.histogram.bins = int(hist.get("bins", state.histogram.bins))
@@ -470,8 +471,9 @@ def to_script(state: "AppState") -> list[str]:
         limits = cell.pending_x_lim or state.plot_x_ranges.get(i)
         if limits is not None:
             lines.append(f"set_x_lim(plot_{i}, {limits[0]!r}, {limits[1]!r})")
-        if cell.pending_y_lim is not None:
-            lines.append(f"set_y_lim(plot_{i}, {cell.pending_y_lim[0]!r}, {cell.pending_y_lim[1]!r})")
+        y_limits = cell.pending_y_lim or cell.y_lim
+        if y_limits is not None:
+            lines.append(f"set_y_lim(plot_{i}, {y_limits[0]!r}, {y_limits[1]!r})")
     _analysis_to_script(state, lines)
     return lines
 
@@ -637,17 +639,14 @@ def export_fft(state: "AppState", path: str) -> int:
         run = state.registry.get(ref[0])
         signal = state.registry.get_signal(ref[0], ref[1])
         if run is None or signal is None:
-            continue
+            raise ValueError(f"Cannot export FFT: {state.signal_label(ref)} is not loaded")
         t, values = run.read_window([ref[1]], x_min, x_max)
         result = compute_fft(t, values[ref[1]], x_min, x_max, remove_dc=cfg.remove_dc, window=cfg.window)
         if not result.ok:
-            continue
+            raise ValueError(f"Cannot export FFT for {state.signal_label(ref)}: {result.info}")
         name = ref[1] if ref[1] not in used else f"{ref[1]} @ {run.label}"  # disambiguate dup names
         name = unique_name(name, used)
         spectra.append((name, result.freqs, result.mag))
-    if not spectra:
-        raise ValueError("no spectra to export")
-
     freqs0 = spectra[0][1]
     shared = all(f.shape == freqs0.shape and np.array_equal(f, freqs0) for _, f, _ in spectra)
     if shared:  # one `frequency` column + one amplitude column per signal

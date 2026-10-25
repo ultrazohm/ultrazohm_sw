@@ -83,35 +83,47 @@ class PlotsPanel(SessionPanel):
         width = max(1., implot.get_plot_size().x)
         return max(2, min(state.max_points, int(width * 2), max(128, 32000 // max(1, traces))))
 
+    def _request_data(self, state, slot, key, identity, sources, compute):
+        """Validate sources even for cache hits; share scheduling and error handling."""
+        from ..sources import ArraySource
+        self._used_slots.add(slot)
+        for source in sources:
+            source_id = source.metadata.identity
+            if source_id not in self._validated_sources:
+                try:
+                    source.validate()
+                    self._validated_sources[source_id] = None
+                except (ValueError, OSError) as exc:
+                    self._validated_sources[source_id] = str(exc)
+            error = self._validated_sources[source_id]
+            if error:
+                state.display.forget(slot)
+                self._report_error(state, slot, error)
+                return None
+        immediate = all(isinstance(source, ArraySource) and source.metadata.rows <= 4096
+                        for source in sources)
+        value = state.display.request(slot, key, identity, compute, immediate=immediate)
+        error = state.display.errors.get(slot)
+        if error:
+            self._report_error(state, slot, error)
+            return None
+        self._reported_errors.pop(slot, None)
+        return value
+
+    def _report_error(self, state, slot, error):
+        if self._reported_errors.get(slot) != error:
+            state.console.error(error)
+            self._reported_errors[slot] = error
+
     def _display(self, state, slot, run, channel, lo, hi, budget):
         source = run.data_source()
-        identity_key = source.metadata.identity
-        if identity_key not in self._validated_sources:
-            try:
-                source.validate()
-                self._validated_sources[identity_key] = None
-            except (ValueError, OSError) as exc:
-                self._validated_sources[identity_key] = str(exc)
-        error = self._validated_sources[identity_key]
-        if error:
-            if self._reported_errors.get(slot) != error:
-                state.console.error(error)
-                self._reported_errors[slot] = error
-            return None
         offset = run.time_offset
         identity = (source.metadata.identity, run.time_version, run.signals[channel].version)
         key = (identity, lo, hi, budget)
-        self._used_slots.add(slot)
         def compute(cancel):
             result = source.read_plot(channel, lo - offset, hi - offset, budget, cancel)
             return result.time + offset if offset else result.time, result.values, result.raw_count
-        value = state.display.request(slot, key, identity, compute,
-                                      immediate=source.metadata.rows <= 4096 and source.metadata.identity.startswith("memory:"))
-        error = state.display.errors.get(slot)
-        if error and self._reported_errors.get(slot) != error:
-            state.console.error(error)
-            self._reported_errors[slot] = error
-        return value
+        return self._request_data(state, slot, key, identity, [source], compute)
 
     # -- helpers ------------------------------------------------------------
     def _poll_export(self, state: AppState) -> None:
@@ -318,6 +330,9 @@ class PlotsPanel(SessionPanel):
 
             limits = implot.get_plot_limits()
             raw_lo, raw_hi = float(limits.x.min), float(limits.x.max)
+            y_lo, y_hi = float(limits.y.min), float(limits.y.max)
+            if _is_finite_range(y_lo, y_hi):
+                cell.y_lim = (y_lo, y_hi)
             x_min, x_max = self._clamp_window(raw_lo, raw_hi, data_min, data_max)
             if did_fit:
                 x_min, x_max = data_min, data_max
@@ -420,7 +435,6 @@ class PlotsPanel(SessionPanel):
                     left, right = x_run.data_source(), run.data_source()
                     identity = (left.metadata.identity, right.metadata.identity, cell.xy_source[1], ref[1])
                     slot = ("xy", index, ref)
-                    self._used_slots.add(slot)
                     def compute(cancel, left=left, right=right, xn=cell.xy_source[1], yn=ref[1], stride=stride):
                         def sample(src, name):
                             pieces, off = [], 0
@@ -432,8 +446,7 @@ class PlotsPanel(SessionPanel):
                         x, y = sample(left, xn), sample(right, yn)
                         n = min(len(x), len(y))
                         return x[:n], y[:n]
-                    value = state.display.request(slot, (identity, stride), identity, compute,
-                                                  immediate=left.metadata.rows <= 4096 and right.metadata.rows <= 4096)
+                    value = self._request_data(state, slot, (identity, stride), identity, [left, right], compute)
                     if not state.display.ready(slot, (identity, stride)):
                         all_ready = False
                     if value is None:
@@ -496,7 +509,6 @@ class PlotsPanel(SessionPanel):
         sources = [(name, run.data_source(), run.time_offset, run.time_version) for name, run in sources if run is not None]
         identity = tuple((name, src.metadata.identity, off, version) for name, src, off, version in sources)
         slot = ("cursor", index)
-        self._used_slots.add(slot)
         def compute(cancel):
             dx = abs(x2 - x1)
             parts = [f"Δx={dx:.4g}s", f"f={1 / dx if dx else float('inf'):.4g}Hz"]
@@ -508,9 +520,12 @@ class PlotsPanel(SessionPanel):
                     vals.append(self._value_at(t, ys[name], x - off))
                 parts.append(f"{name}: Δy={vals[1] - vals[0]:.4g}")
             return "   ".join(parts)
-        value = state.display.request(slot, (identity, x1, x2), identity, compute)
+        value = self._request_data(state, slot, (identity, x1, x2), identity,
+                                   [src for _, src, _, _ in sources], compute)
         if value is not None:
             self._cursor_text[index] = value
+        else:
+            self._cursor_text.pop(index, None)
         self._maybe_echo_cursors(state, index, x1, x2)
 
     def _maybe_echo_cursors(self, state: AppState, index: int, x1: float, x2: float) -> None:
@@ -710,6 +725,14 @@ class PlotsPanel(SessionPanel):
     # -- panel --------------------------------------------------------------
     def render(self, state: AppState) -> None:
         self._sync_session(state)
+        self._pending_fit.intersection_update(id(cell) for cell in state.cells)
+        if self._driver >= state.cell_count:
+            self._driver = -1
+        for cache in (self._last_logged_x, self._last_logged_cursor, self._last_logged_spy,
+                      self._cursor_text, self._last_points, self._last_raw):
+            for index in list(cache):
+                if index >= state.cell_count:
+                    del cache[index]
         self._used_slots.clear()
         self._validated_sources.clear()
         self._poll_export(state)

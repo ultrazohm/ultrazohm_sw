@@ -66,8 +66,10 @@ The browser has no background threads, so a load blocks the tab until parsing fi
 Memory limit
 ============
 
-A browser tab can address only ~4 GB of memory, and the whole dataset must fit there.
-What counts is the numeric size after parsing (roughly ``rows x channels x 4`` bytes), not the raw text size — so a multi-gigabyte CSV is far smaller once loaded.
+A browser tab can address only ~4 GB of WASM memory. Uploaded backing files and any file caches occupy the tab's temporary filesystem within that budget.
+Memory loading also retains the parsed numeric arrays (roughly ``rows x channels x 4`` bytes plus timestamps); Lazy delays reading decoded channels.
+Small CSV uploads and Parquet files honor the same loading/cache settings as console loads. File caches disappear on page reload.
+Large streamed CSVs have no backing file and remain numeric arrays regardless of the loading setting.
 The browser keeps a margin below that ceiling for the runtime and the app itself, so a log loads at full resolution in the browser only while its numeric size stays under ~1.5 GB.
 
 How a larger log is handled depends on the file type:

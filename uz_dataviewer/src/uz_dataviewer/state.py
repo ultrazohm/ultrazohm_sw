@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from . import webbridge
 from .commands import CommandRegistry
 from .console import Console
-from .loader import ParsedRun, load_file, open_file
+from .loader import ParsedRun, open_file
 from .requests import Requests
 from .model import DataRegistry, Run, Signal
 from .nodes import NodeGraph
@@ -100,6 +100,9 @@ class SubplotCell:
 
     pending_y_lim: tuple[float, float] | None = None
     """One-shot Y-axis limits to apply next render (from ``set_y_lim``)."""
+
+    y_lim: tuple[float, float] | None = None
+    """Last rendered primary Y range; persists after pending limits are consumed."""
 
     def add(self, ref: SignalRef) -> bool:
         if ref not in self.signals:
@@ -237,6 +240,17 @@ class AppState:
         for i in range(min(len(new_cells), len(self.cells))):
             new_cells[i] = self.cells[i]
         self.rows, self.cols, self.cells = rows, cols, new_cells
+        self.plot_x_ranges = {i: limits for i, limits in self.plot_x_ranges.items()
+                              if 1 <= i <= len(new_cells)}
+        for cfg in (self.fft, self.histogram):
+            if cfg.follow_plot > len(new_cells):
+                cfg.follow_plot = -1  # removed plot: use the full recording
+                cfg.compute_requested = bool(cfg.sources)
+
+    def validate_follow_plot(self, target: int) -> int:
+        if not -1 <= target <= self.cell_count:
+            raise ValueError(f"Analysis window must be custom, full, or plot_1..plot_{self.cell_count}")
+        return target
 
     # -- file loading (async on desktop, synchronous in the browser) -------
     def request_load(self, path: str, loading_mode: str | None = None) -> None:
@@ -279,7 +293,8 @@ class AppState:
         self.console.info(f"{'Converting and loading' if convert_from else 'Loading'} {os.path.basename(path)} ...")
         if webbridge.IS_WEB:
             try:
-                self._report_loaded(load_file(path, self.registry))
+                parsed = self._open_background(path, request.mode, request.backend, request.disk_cache)
+                self._report_loaded(parsed.register(self.registry))
             except Exception as exc:
                 self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
             return
@@ -368,8 +383,7 @@ class AppState:
             run.label = label
             run.time = time
             run.time_raw = time
-            run.time_origin = None
-            run.mark_time_changed()
+            run.set_time_origin(run.time_origin)
             run.signals = {"out": Signal("out", unit, y, run.id)}
             return run.id
         run = self.registry.add_run(label, f"<derived:{label}>", time, {"out": y}, {"out": unit})

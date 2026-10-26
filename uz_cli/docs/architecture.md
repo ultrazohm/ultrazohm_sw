@@ -42,9 +42,20 @@ flowchart LR
     Service --> Metadata[Run metadata and command events]
 ```
 
-The reader owns receive framing and a bounded 64-frame ring. A mutex serializes
+The reader owns receive framing and a bounded sample ring (960 samples by default).
+Snapshots clone only references to immutable frames while holding the ring lock, then build
+and serialize independent Arrow data after releasing it. Retention is configurable
+with `buffer_samples`; the physical ring may retain one partial extra frame.
+Successful channel-selection commands clear the ring; firmware-buffered samples
+remain unconfirmed. A mutex serializes
 all command/ACK writes, independently of receive progress. Each active logger consumes its own
-128-frame bounded queue and writes batches of about 4096 rows or every 500 ms.
+2,048-frame bounded queue and writes batches of about 1,000,000 rows or every
+60 seconds by default. At 10 kHz with 15-sample frames this produces roughly one
+600,000-row chunk per minute, and the queue provides 3.072 seconds of headroom
+while the worker encodes and syncs a chunk. The queue is separate from live history.
+`segment_rows` and `flush_interval_ms` configure the chunk thresholds. Every
+size-triggered flush resets the interval timer, preventing an extra timer-driven
+small segment immediately afterward.
 Sample buffers do not grow with recording duration. During finalization, Parquet
 footer metadata grows with the number of row groups; the full sample data is not
 loaded into RAM. Default frame payload is 1324 bytes; Rust decoded allocations
@@ -59,7 +70,8 @@ files while `end.json` still reports the acquisition error.
 
 A disk write failure is terminal. Merge and CSV export failures retain all source
 segments, plus the final Parquet if already published. A process kill/power failure
-can lose uncommitted memory and leave `.partial` files; complete segments remain
+can lose uncommitted memory (normally up to one minute plus queue/write delays with
+the defaults) and leave `.partial` files; complete segments remain
 available for recovery. No automatic recovery command is implemented yet.
 Directory-entry durability across power loss depends on the host filesystem;
 fsync of data files is not a universal transactional guarantee.
@@ -156,7 +168,11 @@ binary are separate deliverables.
 
 ## Deferred platform work
 
-No `uz_dataviewer` code or live data IPC connection is added in this change.
+No `uz_dataviewer` integration is added. A bounded request/reply live snapshot API
+is available to Python and CLI clients over the existing loopback TCP endpoint:
+small JSON metadata followed by binary Arrow IPC stream bytes. Python exposes
+Polars DataFrames; the CLI prints a limited table preview. NNG/WebSocket live
+subscriptions, cursors, and combined RAM/disk history remain deferred.
 The existing imgui_bundle/ImPlot viewer remains the intended single UI for live,
 local, test and cloud data. It should depend on run/signal/query interfaces,
 not legacy TCP offsets or a particular physical database.
@@ -168,9 +184,9 @@ Future steps:
   device timestamps or command acknowledgments.
 - Add a live batch subscription adapter. Decide NNG versus WebSocket after
   benchmarking local throughput, Python/browser clients, Windows packaging and
-  backpressure. Current loopback JSON is only a control transport; bulk samples
-  must not be serialized as per-value JSON. Arrow record batches are the intended
-  columnar interchange boundary.
+  backpressure. Loopback JSON carries control and snapshot metadata; snapshot
+  samples already use binary Arrow IPC. Reuse that columnar interchange contract
+  for future subscriptions rather than serializing per-value JSON.
 - Query history from active Parquet segments and completed recordings, with optional DuckDB indexing.
   Merge history and recent RAM samples using recording identity and nominal `time` ranges,
   deduplicate their overlap and expose a committed-history watermark. Keep data

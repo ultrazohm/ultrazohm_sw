@@ -146,7 +146,7 @@ class IntegrationTest(unittest.TestCase):
         return data
 
     def start(self, legacy=False, ack="off", format="both", interactive=False, logging=True,
-              profile=None, mapping=None):
+              profile=None, mapping=None, data_options=None):
         self.server = self.spawn([sys.executable, ROOT/"javascope/test_server.py", "--port", self.device_port,
                                  "--sample-rate", 1000, *(["--legacy-ack"] if legacy else [])])
         def ready():
@@ -156,6 +156,10 @@ class IntegrationTest(unittest.TestCase):
         self.run_dir = Path(self.tmp.name)/"run"
         args = [BIN,"--endpoint",self.endpoint,"serve","--device",f"127.0.0.1:{self.device_port}",
                 "--output",self.run_dir,"--format",format,"--ack",ack]
+        # Most fixtures need multiple chunks within seconds, independently of production defaults.
+        if data_options is None:
+            data_options = ("--segment-rows", "4096", "--flush-interval-ms", "500")
+        args += list(data_options)
         if legacy and profile is None:
             profile = self.runtime_profile({})
         if profile is not None:
@@ -198,6 +202,160 @@ class IntegrationTest(unittest.TestCase):
             self.assertTrue(reply['ok'])
             self.assertFalse(reply['state']['connected'])
         self.assertTrue(self.cli('status')['ok'])
+
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for snapshot test")
+    def test_live_snapshot_without_logging_and_cli_preview(self):
+        from ultrazohm import Client
+        import polars as pl
+        self.start(logging=False)
+        client = Client(self.endpoint)
+        wait_for(lambda: client.status()["buffer_available_samples"] == 960)
+        first = client.get_live_data(953)  # Exercise non-frame-aligned reads and >64 KiB responses.
+        saved = first.clone()
+        self.assertEqual(first.height, 953)
+        self.assertEqual(first.columns[:3], ["time", "status", "JSO_ISR_ExecTime_us"])
+        self.assertEqual(first.schema["status"], pl.UInt32)
+        self.assertEqual(first.schema["JSO_lifecheck"], pl.Float32)
+        self.assertTrue(first["time"].is_sorted())
+        wait_for(lambda: client.status()["state"]["samples"] > 1500)
+        second = client.get_live_data(953)
+        self.assertGreater(second["time"][-1], first["time"][-1])
+        self.assertTrue(first.equals(saved))
+        self.assertFalse(list(self.run_dir.glob("*.parquet")))
+        with self.assertRaisesRegex(RuntimeError, "only 960 available"):
+            client.get_live_data(961)
+        for count in (0, -1, True, 1.5):
+            with self.assertRaises(ValueError):
+                client.get_live_data(count)
+        result = subprocess.run([str(BIN), "--endpoint", self.endpoint, "get-live-data",
+                                 "--last-n-samples", "30"], capture_output=True, text=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("30 rows", result.stdout)
+        self.assertIn("JSO_lifecheck", result.stdout)
+        self.assertLess(len(result.stdout.splitlines()), 30)
+        # Old buffered channels are discarded when requested assignments change.
+        client.set_observable("lifecheck", 1)
+        wait_for(lambda: client.status()["buffer_available_samples"] >= 15)
+        remapped = client.get_live_data(15)
+        self.assertEqual(remapped.columns[2], "JSO_lifecheck")
+        self.assertEqual(remapped.columns.count("JSO_lifecheck"), 1)
+
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for recording test")
+    def test_python_configurable_buffers_and_recording_reads(self):
+        import polars as pl
+        from ultrazohm import Acquisition, Client
+        self.spawn([sys.executable, ROOT/"javascope/test_server.py", "--port", self.device_port,
+                    "--sample-rate", "1000"])
+        def ready():
+            with socket.create_connection(("127.0.0.1", self.device_port), timeout=.1):
+                return True
+        wait_for(ready)
+        output = Path(self.tmp.name)/"configured"
+        a = Acquisition(f"127.0.0.1:{self.device_port}", endpoint=self.endpoint, output=str(output),
+                        buffer_samples=17, segment_rows=31, flush_interval_ms=10000)
+        client = Client(self.endpoint)
+        try:
+            wait_for(lambda: client.status()["buffer_available_samples"] == 17)
+            self.assertEqual(client.get_live_data(17).height, 17)
+            with self.assertRaisesRegex(RuntimeError, "only 17 available"):
+                client.get_live_data(18)
+            with self.assertRaisesRegex(RuntimeError, "close"):
+                a.read_recording()
+            client.start_logging()
+            client.start_logging_slow_data()
+            wait_for(lambda: len(list(output.glob("data-part-*.parquet"))) >= 2)
+            for part in sorted(output.glob("data-part-*.parquet"))[:2]:
+                self.assertEqual(pl.read_parquet(part).height, 45)
+            client.stop_logging()
+            wait_for(lambda: client.status()["logging"]["fast"]["phase"] == "complete")
+            client.start_logging()
+            wait_for(lambda: list(output.glob("data_0002-part-*.parquet")))
+        finally:
+            a.close()
+        for stream, recording, filename in [("fast", 1, "data.parquet"),
+                                             ("fast", 2, "data_0002.parquet"),
+                                             ("slow", 1, "data_slow_data.parquet")]:
+            self.assertTrue(a.read_recording(stream, recording).equals(pl.read_parquet(output/filename)))
+        with self.assertRaises(RuntimeError):
+            a.read_recording(recording=3)
+        with self.assertRaisesRegex(RuntimeError, "stream"):
+            a.read_recording("invalid")
+        with self.assertRaisesRegex(RuntimeError, "positive"):
+            a.read_recording(recording=0)
+        metadata = output/"data.json"
+        info = json.loads(metadata.read_text())
+        info["complete"] = False
+        metadata.write_text(json.dumps(info))
+        with self.assertRaisesRegex(RuntimeError, "not complete"):
+            a.read_recording()
+
+    def test_cli_flush_interval_and_invalid_buffer_options(self):
+        for option in ("--buffer-samples", "--segment-rows", "--flush-interval-ms"):
+            result = subprocess.run([str(BIN), "--endpoint", self.endpoint, "serve", option, "0",
+                                     "--output", str(Path(self.tmp.name)/option[2:])],
+                                    capture_output=True, text=True, timeout=10)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("positive", result.stderr)
+        self.spawn([sys.executable, ROOT/"javascope/test_server.py", "--port", self.device_port,
+                    "--sample-rate", "1000"])
+        def ready():
+            with socket.create_connection(("127.0.0.1", self.device_port), timeout=.1):
+                return True
+        wait_for(ready)
+        output = Path(self.tmp.name)/"timed"
+        self.spawn([BIN, "--endpoint", self.endpoint, "serve", "--device", f"127.0.0.1:{self.device_port}",
+                    "--buffer-samples", "25", "--segment-rows", "1000000", "--flush-interval-ms", "50",
+                    "--output", output])
+        wait_for(lambda: self.cli("status"))
+        self.cli("start-logging")
+        wait_for(lambda: list(output.glob("data-part-*.parquet")))
+        status = self.cli("status")
+        self.assertEqual(status["data_options"], {"buffer_samples": 25, "segment_rows": 1000000, "flush_interval_ms": 50})
+        self.assertLessEqual(status["buffer_available_samples"], 25)
+        self.cli("shutdown")
+
+    @unittest.skipUnless(importlib.util.find_spec("polars"), "install polars for segment reads")
+    def test_default_recording_flushes_on_stop_before_interval(self):
+        import polars as pl
+        self.start(logging=False, format="parquet", data_options=())
+        self.assertEqual(self.cli("status")["data_options"],
+                         {"buffer_samples": 960, "segment_rows": 1_000_000, "flush_interval_ms": 60_000})
+        before = self.cli("status")["state"]["samples"]
+        self.cli("start-logging")
+        wait_for(lambda: self.cli("status")["state"]["samples"] >= before + 1500)
+        self.assertFalse(list(self.run_dir.glob("*.parquet")))
+        self.cli("stop-logging")
+        wait_for(lambda: self.cli("status")["logging"]["fast"]["phase"] == "complete")
+        data = pl.read_parquet(self.run_dir/"data.parquet")
+        self.assertGreater(data.height, 0)
+        self.assertEqual(data.height, json.loads((self.run_dir/"data.json").read_text())["rows"])
+        self.assertTrue(self.cli("status")["state"]["connected"])
+
+    @unittest.skipUnless(importlib.util.find_spec("polars"), "install polars for segment reads")
+    def test_row_flush_resets_interval_timer(self):
+        import polars as pl
+        self.start(logging=False, data_options=("--segment-rows", "300", "--flush-interval-ms", "500"))
+        self.cli("start-logging")
+        wait_for(lambda: len(list(self.run_dir.glob("data-part-*.parquet"))) >= 3)
+        for part in sorted(self.run_dir.glob("data-part-*.parquet"))[:3]:
+            self.assertEqual(pl.read_parquet(part).height, 300)
+
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for offline test")
+    def test_live_data_offline_and_invalid_python_configuration(self):
+        from ultrazohm import Acquisition, Client
+        for option in ("buffer_samples", "segment_rows", "flush_interval_ms"):
+            with self.assertRaisesRegex(RuntimeError, "positive"):
+                Acquisition(endpoint=self.endpoint, **{option: 0})
+        a = Acquisition(endpoint=self.endpoint, output=str(Path(self.tmp.name)/"offline-snapshot"))
+        try:
+            self.assertEqual(Client(self.endpoint).status()["data_options"],
+                             {"buffer_samples": 960, "segment_rows": 1_000_000, "flush_interval_ms": 60_000})
+            with self.assertRaisesRegex(RuntimeError, "not connected"):
+                Client(self.endpoint).get_live_data(1)
+        finally:
+            a.close()
+        with self.assertRaises(RuntimeError):
+            a.read_recording()  # No recording was started.
 
     def test_offline_retry_connect_and_log(self):
         self.run_dir=Path(self.tmp.name)/'offline'

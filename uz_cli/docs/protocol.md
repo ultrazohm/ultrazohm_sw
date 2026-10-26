@@ -183,6 +183,8 @@ service, survives CLI exit and lasts until shutdown. Default: off for this firmw
 CLI and native Python bindings call the same Rust control client. Current local
 control is one bounded JSON request/response per loopback TCP connection, newline
 terminated, maximum 64 KiB. Requests and responses carry `api_version: 1`.
+The live-snapshot operation additionally returns a length-delimited binary Arrow
+body after its JSON response header, as specified below.
 This is a small local command transport, not a decision on future viewer IPC.
 The endpoint is restricted to numeric loopback addresses and has no multi-user
 authentication. Local users with access to it can control the attached device;
@@ -273,6 +275,33 @@ The service reserves the output directory at startup, even offline. `run.json`
 contains the optional startup device; later connection requests are in
 `commands.jsonl`, and `end.json` includes the final device address. Sample time
 starts with acquisition, excluding time spent waiting offline.
+
+## Local live snapshot operation
+
+`{"api_version":1,"command":{"op":"get_live_data","last_n_samples":500}}`
+requests an independent fast-data snapshot from the connected service's RAM ring.
+It does not send a device command or enable either logger. Counts must be positive
+and no greater than retained availability. Canonical selected names are deduplicated
+by observable ID; unknown channels are omitted. Time is nominal acquisition time;
+status is the frame's last-sample word repeated over its rows, as for recording.
+
+Unlike other local operations, success returns one JSON header line containing
+`api_version`, `ok`, `rows`, `arrow_bytes`, and `mapping_confirmed:false`, followed
+by exactly `arrow_bytes` bytes containing an Arrow IPC stream. The header is still
+subject to the 64 KiB control-message limit; the binary body is limited to 128 MiB.
+Errors use the ordinary JSON error line without a binary body. Receivers must read
+the advertised byte count, preserving bytes already received after the newline.
+Python uses the native binary client rather than the JSON-only request helper.
+Snapshots preserve Float32 NaN/Inf and UInt32 status values.
+
+Service configuration is exposed in `status.data_options`: positive `buffer_samples`
+(default 960), `segment_rows` (1,000,000), and `flush_interval_ms` (60,000).
+Logging flushes at the first of the row or elapsed-time thresholds and on stop.
+Each logger also has an independent bounded 2,048-frame queue; it is not configured
+by `buffer_samples`. Queue and write delays can extend the publication interval.
+`status.buffer_available_samples` reports retained rows. Observable changes clear
+history; the legacy firmware does not acknowledge the exact selection boundary.
+There is no live subscription or query into recording history in this operation.
 
 ## Generating a mapping from firmware headers
 

@@ -519,6 +519,90 @@ finally:
 Python access to local build/flash/generation commands and optional Vitis tool
 paths is tracked in the [roadmap](docs/architecture.md#todo-python-access-to-local-tooling).
 
+### Live snapshots and completed recordings
+
+The service retains recent fast-channel samples in RAM even when logging is off.
+Python returns independent Polars DataFrames; the CLI prints the first 20 rows
+and the total returned row count:
+
+```sh
+ultrazohm get-live-data --last-n-samples 500
+```
+
+The same command works at the interactive prompt (`get_live_data` is an alias).
+Snapshots use the acquisition's nominal `time`, packet `status`, and canonical
+observable names in channel order. Duplicate selected observables appear once.
+They contain the fast channels, not the rotating slow-data updates. Float32
+NaN/Inf values are preserved. Samples cross the local socket as binary Arrow IPC,
+not per-value JSON. The Python package includes Polars as a runtime dependency.
+
+```python
+import ultrazohm
+
+acquisition = ultrazohm.Acquisition(
+    buffer_samples=100_000, segment_rows=50_000, flush_interval_ms=1000,
+)
+uz = ultrazohm.Client()
+try:
+    uz.connect()
+    import time
+    while uz.status()["buffer_available_samples"] < 500:
+        time.sleep(0.05)
+    df = uz.get_live_data(last_n_samples=500)
+    uz.start_logging()
+    time.sleep(1)  # Perform the measurement here.
+finally:
+    acquisition.close()
+
+# Resolves this acquisition's files; no repeated output path is needed.
+recorded = acquisition.read_recording()  # stream="fast", recording=1
+# If slow logging or additional fast recordings were started:
+# slow = acquisition.read_recording(stream="slow", recording=1)
+# second = acquisition.read_recording(recording=2)
+```
+
+`get_live_data` requires a connection, a positive sample count, and enough
+retained samples. Requests exceeding current availability fail with the available
+count; they never silently truncate. An individual response is limited to 128 MiB,
+including Arrow metadata. Old snapshots remain unchanged as acquisition continues.
+Successful observable changes clear retained history to avoid relabeling it.
+Firmware-buffered old values can still arrive afterward: selection is unconfirmed,
+as with logging. No pre-trigger recording, live subscription, or disk-history query
+is implemented. Samples that leave RAM while logging is off cannot be retrieved.
+
+`read_recording` requires `close()` first and a successful recording sidecar. It
+materializes the selected final Parquet file into RAM, so large recordings must fit
+in memory. Never-started, missing, and failed recordings raise errors. Recording
+numbers start at 1 and are independent for fast and slow streams.
+
+Configure the service from the CLI with:
+
+```sh
+ultrazohm serve --buffer-samples 100000 --segment-rows 50000 --flush-interval-ms 1000
+```
+
+Defaults are 960 retained samples, a 1,000,000-row segment target, and a 60,000 ms
+flush interval. At a sustained 10 kHz this normally produces about one 600,000-row
+chunk per minute (60 files per hour per stream), instead of thousands of small files.
+The row limit still bounds batches at higher rates. All values must be positive
+and are fixed for the service lifetime.
+The buffer retains whole frames internally, with at most one partial extra frame;
+queries expose only the configured number of samples. Each logger flushes at the
+row target or elapsed interval, rounded to complete frames, and resets its timer
+after every flush. Queue and disk delays can extend commit latency. Each logger has
+a separate bounded 2,048-frame queue (3.072 seconds at 10 kHz with 15-sample frames)
+to absorb acquisition while a large chunk is encoded and synced. The live-history
+buffer does not affect chunk size or logger queue capacity. These settings are
+recorded in `run.json` and exposed as `status.data_options`;
+`status.buffer_available_samples` reports current history.
+
+Stopping logging or shutting down flushes a partial batch immediately. A process
+crash can lose the current uncommitted interval plus pending writes, so choose a
+shorter flush interval if a minute of buffered data is unacceptable. The example
+above requests more frequent publication; both thresholds must be increased to
+produce larger chunks. Larger chunks do not by themselves provide seamless RAM/disk
+history or change final merging and chunk cleanup.
+
 The embedded service lifetime is bounded by the Python process. The external
 service is the option for logging that must survive Python exit. Both use Rust
 threads, Rust TCP decoding and Rust Polars writers. Python control calls release

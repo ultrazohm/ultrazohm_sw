@@ -20,6 +20,7 @@ pub enum Format {
 }
 
 pub struct LogWriter {
+    pub segment_rows: usize,
     dir: PathBuf,
     profile: Profile,
     format: Format,
@@ -83,6 +84,7 @@ impl LogWriter {
             "recording already exists"
         );
         Ok(Self {
+            segment_rows: crate::live::DataOptions::default().segment_rows,
             dir,
             profile,
             format,
@@ -98,7 +100,8 @@ impl LogWriter {
             written_rows: 0,
         })
     }
-    pub fn push(&mut self, index: u64, frame: Frame) -> Result<()> {
+    /// Return whether this push committed a segment, to reset the flush timer.
+    pub fn push(&mut self, index: u64, frame: Frame) -> Result<bool> {
         ensure!(
             self.next_index.is_none_or(|next| next == index),
             "missing or out-of-order samples"
@@ -107,10 +110,11 @@ impl LogWriter {
         self.next_index = Some(index + frame.slow_raw.len() as u64);
         self.rows += frame.slow_raw.len();
         self.batch.push((index, frame));
-        if self.rows >= 4096 {
+        if self.rows >= self.segment_rows {
             self.flush()?;
+            return Ok(true);
         }
-        Ok(())
+        Ok(false)
     }
     fn dataframe(&self) -> Result<DataFrame> {
         let mut time = Vec::with_capacity(self.rows);
@@ -367,6 +371,44 @@ mod tests {
     }
 
     #[test]
+    fn default_segment_limit_preserves_full_frames_and_final_tail() -> Result<()> {
+        let run = Run::new();
+        let profile = Profile::load(None)?;
+        let mut log = LogWriter::new(
+            run.0.clone(),
+            profile.clone(),
+            Format::Parquet,
+            "data".into(),
+            false,
+            &serde_json::to_value(&profile.initial_channels)?,
+        )?;
+        let frame_rows = profile.samples_per_packet;
+        let segment_rows = log.segment_rows.div_ceil(frame_rows) * frame_rows;
+        for first in (0..segment_rows - frame_rows).step_by(frame_rows) {
+            assert!(!log.push(first as u64, frame(first, frame_rows))?);
+        }
+        assert!(!log.segment(0).exists());
+        let started = std::time::Instant::now();
+        assert!(log.push(
+            (segment_rows - frame_rows) as u64,
+            frame(segment_rows - frame_rows, frame_rows),
+        )?);
+        eprintln!("default-size segment flush: {:?}", started.elapsed());
+        assert_eq!(read(log.segment(0))?.height(), segment_rows);
+        assert!(!log.push(segment_rows as u64, frame(segment_rows, frame_rows))?);
+        log.finish()?;
+        let df = read(run.0.join("data.parquet"))?;
+        assert_eq!(df.height(), segment_rows + frame_rows);
+        assert!(
+            df.column("time")?
+                .f64()?
+                .into_no_null_iter()
+                .eq((0..df.height()).map(|i| i as f64 * profile.sample_period_us * 1e-6))
+        );
+        Ok(())
+    }
+
+    #[test]
     fn segments_merge_and_csv_is_exported_from_final_parquet() -> Result<()> {
         for format in [Format::Parquet, Format::Csv, Format::Both] {
             let run = Run::new();
@@ -386,6 +428,8 @@ mod tests {
                 true,
                 &serde_json::to_value(Profile::load(None)?.initial_channels)?,
             )?;
+            log.segment_rows = 4096;
+            slow_log.segment_rows = 4096;
             // Cross the CSV export slice boundary as well as recording batch boundaries.
             for i in 0..17 {
                 log.push(i * 4096, frame(i as usize * 4096, 4096))?;

@@ -1,6 +1,7 @@
 use crate::{
+    live::{DataOptions, LiveBuffer, MAX_SNAPSHOT_BYTES, selected_columns},
     profile::Profile,
-    protocol::{Frame, decode_frame, encode_command},
+    protocol::{decode_frame, encode_command},
     recording::{Recordings, Routes},
     storage::Format,
 };
@@ -8,7 +9,6 @@ use anyhow::{Context, Result, bail, ensure};
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::{
-    collections::VecDeque,
     fs::{self, File, OpenOptions},
     io::{Read, Write},
     net::{Shutdown, SocketAddr, TcpListener, TcpStream, ToSocketAddrs},
@@ -43,6 +43,7 @@ pub enum Operation {
     Connect { ip: String, port: u16 },
     Status,
     Observables,
+    GetLiveData { last_n_samples: usize },
     Stop,
     EnableSystem,
     EnableControl,
@@ -71,6 +72,7 @@ pub struct Config {
     pub output: Option<PathBuf>,
     pub format: Format,
     pub ack: bool,
+    pub data: DataOptions,
 }
 #[derive(Default, Serialize)]
 struct State {
@@ -118,8 +120,23 @@ fn read_line(stream: &mut TcpStream, timeout: Duration) -> Result<Vec<u8>> {
     bail!("control message exceeds {MAX_MESSAGE} bytes")
 }
 pub fn request(endpoint: &str, command: Operation) -> Result<Value> {
+    ensure!(
+        !matches!(command, Operation::GetLiveData { .. }),
+        "use get_live_data for binary sample responses"
+    );
+    let (reply, _) = exchange(endpoint, command, false)?;
+    Ok(reply)
+}
+
+/// Control metadata followed by Arrow IPC stream bytes; samples are never JSON numbers.
+pub fn get_live_data(endpoint: &str, last_n_samples: usize) -> Result<Vec<u8>> {
+    let (_, bytes) = exchange(endpoint, Operation::GetLiveData { last_n_samples }, true)?;
+    Ok(bytes)
+}
+
+fn exchange(endpoint: &str, command: Operation, binary: bool) -> Result<(Value, Vec<u8>)> {
     let mut socket = TcpStream::connect_timeout(&local_address(endpoint)?, Duration::from_secs(2))?;
-    let timeout = Duration::from_secs(if matches!(command, Operation::Connect { .. }) {
+    let timeout = Duration::from_secs(if binary || matches!(command, Operation::Connect { .. }) {
         30
     } else {
         5
@@ -140,7 +157,19 @@ pub fn request(endpoint: &str, command: Operation) -> Result<Value> {
         "unsupported response API version"
     );
     ensure!(reply["ok"] == true, "{}", reply["error"]);
-    Ok(reply)
+    let mut bytes = Vec::new();
+    if binary {
+        let len = reply["arrow_bytes"]
+            .as_u64()
+            .context("missing Arrow response length")?;
+        ensure!(
+            len <= MAX_SNAPSHOT_BYTES as u64,
+            "snapshot exceeds response limit"
+        );
+        bytes.resize(len as usize, 0);
+        socket.read_exact(&mut bytes)?;
+    }
+    Ok((reply, bytes))
 }
 fn send(writer: &Mutex<TcpStream>, id: u32, value: f32) -> Result<()> {
     writer
@@ -162,6 +191,7 @@ pub fn serve_with_ready(
     ready: impl FnOnce(),
 ) -> Result<()> {
     config.profile.validate()?;
+    config.data.validate()?;
     // Claim the control endpoint before touching the device (new device clients replace old ones).
     let listener = TcpListener::bind(local_address(&config.endpoint)?)?;
     listener.set_nonblocking(true)?;
@@ -181,7 +211,7 @@ pub fn serve_with_ready(
             dir.join("run.json"),
             serde_json::to_vec_pretty(&json!({
                 "schema_version":4,"run_id":format!("{}-{}",now_ns(),std::process::id()),"started_unix_ns":now_ns(),"device":config.device,
-                "profile":config.profile,"format":config.format,
+                "profile":config.profile,"format":config.format,"data_options":config.data,
                 "time_basis":"seconds from acquisition start; configured sample period; gaps unknown",
                 "storage_layout":"explicit_independent_recordings","source":"ultrazohm",
                 "software_version":env!("CARGO_PKG_VERSION")
@@ -194,8 +224,13 @@ pub fn serve_with_ready(
                 .open(dir.join("commands.jsonl"))?,
         );
     }
-    let mut recordings =
-        Recordings::new(config.output.clone(), config.profile.clone(), config.format);
+    let mut recordings = Recordings::new(
+        config.output.clone(),
+        config.profile.clone(),
+        config.format,
+        config.data.clone(),
+    );
+    let ring = Arc::new(Mutex::new(LiveBuffer::new(config.data.buffer_samples)));
     let routes = recordings.routes.clone();
     let context = ConnectionContext {
         profile: config.profile.clone(),
@@ -203,6 +238,7 @@ pub fn serve_with_ready(
         state: state.clone(),
         ack: ack.clone(),
         routes,
+        ring: ring.clone(),
     };
     let mut connection = None;
     let mut selections = json!({});
@@ -227,17 +263,43 @@ pub fn serve_with_ready(
         }
         match listener.accept() {
             Ok((mut socket, _)) => {
+                let mut payload = None;
                 let result: Result<Value> = (|| {
                     // Windows accepted sockets inherit the nonblocking listener mode.
                     // Requests and replies below use blocking I/O with bounded timeouts.
                     socket.set_nonblocking(false)?;
                     socket.set_read_timeout(Some(Duration::from_secs(1)))?;
-                    socket.set_write_timeout(Some(Duration::from_secs(1)))?;
+                    socket.set_write_timeout(Some(Duration::from_secs(5)))?;
                     let req: Request =
                         serde_json::from_slice(&read_line(&mut socket, Duration::from_secs(2))?)?;
                     ensure!(req.api_version == 1, "unsupported API version");
                     let mut wire = None;
                     match &req.command {
+                        Operation::GetLiveData { last_n_samples } => {
+                            use polars::prelude::*;
+                            ensure!(connection.is_some(), "not connected; use connect first");
+                            ensure!(*last_n_samples > 0, "last_n_samples must be positive");
+                            let columns = selected_columns(&config.profile, &selections)?;
+                            // Reserve headroom for Arrow metadata and buffer alignment.
+                            let row_bytes = 12 + 4 * columns.len();
+                            ensure!(
+                                *last_n_samples <= (MAX_SNAPSHOT_BYTES - 65536) / row_bytes,
+                                "snapshot exceeds response limit; request fewer samples"
+                            );
+                            let snapshot = ring.lock().unwrap().snapshot(*last_n_samples)?;
+                            let mut df =
+                                snapshot.dataframe(config.profile.sample_period_us, &columns)?;
+                            let mut bytes = Vec::new();
+                            IpcStreamWriter::new(&mut bytes).finish(&mut df)?;
+                            ensure!(
+                                bytes.len() <= MAX_SNAPSHOT_BYTES,
+                                "snapshot exceeds response limit"
+                            );
+                            let reply = json!({"api_version":1,"ok":true,"rows":snapshot.rows,
+                                "arrow_bytes":bytes.len(),"mapping_confirmed":false});
+                            payload = Some(bytes);
+                            return Ok(reply);
+                        }
                         Operation::Connect { ip, port } => {
                             ensure!(connection.is_none(), "already connected");
                             ensure!(*port != 0, "port must be 1..65535");
@@ -253,7 +315,8 @@ pub fn serve_with_ready(
                         }
                         Operation::Status => {
                             return Ok(
-                                json!({"api_version":1,"ok":true,"state":*state.lock().unwrap(),"send_ack":ack.load(Ordering::SeqCst),"logging":recordings.status()}),
+                                json!({"api_version":1,"ok":true,"state":*state.lock().unwrap(),"send_ack":ack.load(Ordering::SeqCst),"logging":recordings.status(),
+                                    "data_options":config.data,"buffer_available_samples":ring.lock().unwrap().available()}),
                             );
                         }
                         Operation::Observables => {
@@ -341,6 +404,8 @@ pub fn serve_with_ready(
                         state.lock().unwrap().commands_sent += 1;
                         if let Operation::SetObservable { name, channel } = &req.command {
                             selections[channel.to_string()] = json!(name);
+                            // Previously retained samples must not acquire the new column labels.
+                            ring.lock().unwrap().clear();
                         }
                     }
                     if let Some(file) = events.as_mut()
@@ -367,8 +432,12 @@ pub fn serve_with_ready(
                     Ok(v) => v,
                     Err(e) => json!({"api_version":1,"ok":false,"error":format!("{e:#}")}),
                 };
-                let _ = serde_json::to_writer(&mut socket, &response);
-                let _ = socket.write_all(b"\n");
+                if serde_json::to_writer(&mut socket, &response).is_ok()
+                    && socket.write_all(b"\n").is_ok()
+                    && let Some(bytes) = payload
+                {
+                    let _ = socket.write_all(&bytes);
+                }
             }
             Err(e) if e.kind() == std::io::ErrorKind::WouldBlock => {
                 thread::sleep(Duration::from_millis(5))
@@ -421,6 +490,7 @@ struct ConnectionContext {
     state: Arc<Mutex<State>>,
     ack: Arc<AtomicBool>,
     routes: Routes,
+    ring: Arc<Mutex<LiveBuffer>>,
 }
 impl ConnectionContext {
     fn connect(&self, device: &str, events: &mut Option<File>) -> Result<(Connection, Value)> {
@@ -468,7 +538,8 @@ impl ConnectionContext {
         let output = writer.clone();
         let profile = self.profile.clone();
         let routes = self.routes.clone();
-        let ring = Arc::new(Mutex::new(VecDeque::<Frame>::with_capacity(64)));
+        let ring = self.ring.clone();
+        ring.lock().unwrap().clear();
         let acquisition = thread::spawn(move || {
             let result: Result<()> = (|| {
                 let mut buf = vec![0; 4 + (profile.channels + 2) * profile.samples_per_packet * 4];
@@ -523,11 +594,7 @@ impl ConnectionContext {
                             .map(str::to_owned);
                     }
                     {
-                        let mut r = ring.lock().unwrap();
-                        if r.len() == 64 {
-                            r.pop_front();
-                        }
-                        r.push_back(frame.clone());
+                        ring.lock().unwrap().push(index, frame.clone());
                     }
                     {
                         let destinations = routes.lock().unwrap();

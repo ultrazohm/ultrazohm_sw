@@ -1,5 +1,6 @@
 //! Independent recording lifetimes. Disk finalization never blocks device control.
 use crate::{
+    live::DataOptions,
     profile::Profile,
     protocol::Frame,
     storage::{Format, LogWriter},
@@ -21,6 +22,10 @@ use std::{
 type Batch = (u64, Frame);
 pub type Routes = Arc<Mutex<[Option<SyncSender<Batch>>; 2]>>;
 
+// Leave headroom while a large segment is encoded and synced. With 15 samples
+// per frame at 10 kHz this holds 3.072 seconds, independently of live history.
+const LOGGER_QUEUE_FRAMES: usize = 2048;
+
 #[derive(Clone, Serialize)]
 pub struct RecordingState {
     pub phase: &'static str,
@@ -38,6 +43,7 @@ impl Default for RecordingState {
 }
 
 pub struct Recordings {
+    options: DataOptions,
     pub routes: Routes,
     states: Arc<Mutex<[RecordingState; 2]>>,
     workers: [Option<thread::JoinHandle<()>>; 2],
@@ -47,8 +53,14 @@ pub struct Recordings {
     format: Format,
 }
 impl Recordings {
-    pub fn new(dir: Option<PathBuf>, profile: Profile, format: Format) -> Self {
+    pub fn new(
+        dir: Option<PathBuf>,
+        profile: Profile,
+        format: Format,
+        options: DataOptions,
+    ) -> Self {
         Self {
+            options,
             routes: Arc::new(Mutex::new([None, None])),
             states: Arc::new(Mutex::new(Default::default())),
             workers: [None, None],
@@ -109,6 +121,7 @@ impl Recordings {
             slow,
             selections,
         )?;
+        log.segment_rows = self.options.segment_rows;
         let metadata_path = dir.join(format!("{stem}.json"));
         let metadata = json!({"schema_version":5, "stream":if slow {"slow"} else {"fast"},
             "requested_observables":selections, "mapping_confirmed":false,
@@ -119,28 +132,33 @@ impl Recordings {
         // Exclusive creation also reserves empty recordings before the first segment.
         let file = fs::File::create_new(&metadata_path)?;
         serde_json::to_writer_pretty(file, &metadata)?;
-        let (tx, rx) = mpsc::sync_channel::<Batch>(128);
+        let (tx, rx) = mpsc::sync_channel::<Batch>(LOGGER_QUEUE_FRAMES);
         self.states.lock().unwrap()[slot] = RecordingState {
             phase: "recording",
             parquet: Some(dir.join(format!("{stem}.parquet"))),
             error: None,
         };
         let states = self.states.clone();
+        let flush_interval = Duration::from_millis(self.options.flush_interval_ms);
         self.workers[slot] = Some(thread::spawn(move || {
             let mut rows = 0u64;
             let result: Result<()> = (|| {
                 let mut last_flush = Instant::now();
                 loop {
-                    match rx.recv_timeout(Duration::from_millis(500)) {
+                    match rx.recv_timeout(flush_interval.saturating_sub(last_flush.elapsed())) {
                         Ok((index, frame)) => {
                             rows += frame.slow_raw.len() as u64;
-                            log.push(index, frame)?;
-                            if last_flush.elapsed() >= Duration::from_millis(500) {
+                            if log.push(index, frame)? {
+                                last_flush = Instant::now();
+                            } else if last_flush.elapsed() >= flush_interval {
                                 log.flush()?;
                                 last_flush = Instant::now();
                             }
                         }
-                        Err(mpsc::RecvTimeoutError::Timeout) => log.flush()?,
+                        Err(mpsc::RecvTimeoutError::Timeout) => {
+                            log.flush()?;
+                            last_flush = Instant::now();
+                        }
                         Err(mpsc::RecvTimeoutError::Disconnected) => break,
                     }
                 }

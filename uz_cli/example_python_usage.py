@@ -9,6 +9,7 @@ Set PROFILE for startup selections and CHANNEL_MAPPING for firmware names/IDs.
 The JSON is loaded at runtime; changing it does not require rebuilding Rust.
 Enable commands request state changes; firmware interlocks still apply.
 After each 10-second phase, print the latest reported platform state.
+Before closing, return the latest 20 samples as a DataFrame and print them.
 """
 
 import time
@@ -59,11 +60,15 @@ uz.stop()
 time.sleep(1)
 print("Reported platform state:", uz.status()["state"]["platform_state"])
 time.sleep(9)
+latest = uz.get_live_data(last_n_samples=20)  # Independent Polars DataFrame from RAM.
+print("Latest 20 samples:")
+with pl.Config(tbl_rows=20, tbl_cols=-1):
+    print(latest)
 uz.stop_logging()  # Finalizes in the background; close() below waits for it.
 acquisition.close()  # Wait until data.parquet is complete.
 
 # Nominal sample time uses the profile sampling period (default: 100 microseconds).
-data = pl.read_parquet(OUTPUT / "data.parquet")
+data = acquisition.read_recording()
 seconds = data["time"]
 plt.plot(seconds.to_numpy(), data["JSO_lifecheck"].to_numpy())
 plt.xlabel("Time since acquisition started [s]")

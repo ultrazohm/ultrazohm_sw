@@ -1,6 +1,16 @@
 """Named API v1; all device IO and logging execute in Rust."""
 import json
-from ._native import request as _request, Acquisition
+from io import BytesIO
+from ._native import request as _request, live_data as _live_data, Acquisition as _Acquisition
+
+
+class Acquisition(_Acquisition):
+    """Own an embedded acquisition; close it before reading finalized recordings."""
+
+    def read_recording(self, stream="fast", recording=1):
+        """Return a completed recording as a Polars DataFrame after close()."""
+        import polars as pl
+        return pl.read_parquet(self.recording_path(stream, recording))
 
 class Client:
     """Control an existing external or embedded acquisition service."""
@@ -21,6 +31,12 @@ class Client:
     def observables(self):
         """Return all channel assignments requested in this session; no device readback."""
         return self._call("observables")
+    def get_live_data(self, last_n_samples):
+        """Return an independent Polars snapshot of the last N retained fast samples."""
+        import polars as pl
+        if isinstance(last_n_samples, bool) or not isinstance(last_n_samples, int) or last_n_samples <= 0:
+            raise ValueError("last_n_samples must be a positive integer")
+        return pl.read_ipc_stream(BytesIO(_live_data(self.endpoint, last_n_samples)))
     def status(self):
         """Return service status; state.platform_state is the mapped name or None."""
         return self._call("status")

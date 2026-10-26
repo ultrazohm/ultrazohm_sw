@@ -1,0 +1,270 @@
+//! Bounded sample history and independent, columnar snapshots.
+use crate::{profile::Profile, protocol::Frame};
+use anyhow::{Result, ensure};
+use polars::prelude::*;
+use serde::{Deserialize, Serialize};
+use serde_json::Value;
+use std::{collections::VecDeque, sync::Arc};
+
+// Bound an individual response independently of the configured history capacity.
+pub const MAX_SNAPSHOT_BYTES: usize = 128 * 1024 * 1024;
+
+#[derive(Clone, Debug, clap::Args, Serialize, Deserialize)]
+pub struct DataOptions {
+    /// Recent sample history retained in RAM, independent of logging.
+    #[arg(long, default_value_t = 960)]
+    pub buffer_samples: usize,
+    /// Target rows per Parquet segment (rounded up to a complete frame).
+    #[arg(long, default_value_t = 1_000_000)]
+    pub segment_rows: usize,
+    /// Maximum batch wait between flushes, excluding queue and disk delays.
+    #[arg(long, default_value_t = 60_000)]
+    pub flush_interval_ms: u64,
+}
+
+impl Default for DataOptions {
+    fn default() -> Self {
+        Self {
+            buffer_samples: 960,
+            segment_rows: 1_000_000,
+            flush_interval_ms: 60_000,
+        }
+    }
+}
+
+impl DataOptions {
+    pub fn validate(&self) -> Result<()> {
+        ensure!(self.buffer_samples > 0, "buffer_samples must be positive");
+        ensure!(self.segment_rows > 0, "segment_rows must be positive");
+        ensure!(
+            self.flush_interval_ms > 0,
+            "flush_interval_ms must be positive"
+        );
+        Ok(())
+    }
+}
+
+#[derive(Clone)]
+pub struct Snapshot {
+    frames: Vec<(u64, Arc<Frame>)>,
+    skip: usize,
+    pub rows: usize,
+}
+
+pub struct LiveBuffer {
+    capacity: usize,
+    frames: VecDeque<(u64, Arc<Frame>)>,
+    rows: usize,
+}
+
+impl LiveBuffer {
+    pub fn new(capacity: usize) -> Self {
+        Self {
+            capacity,
+            frames: VecDeque::new(),
+            rows: 0,
+        }
+    }
+
+    pub fn clear(&mut self) {
+        self.frames.clear();
+        self.rows = 0;
+    }
+
+    pub fn available(&self) -> usize {
+        self.rows.min(self.capacity)
+    }
+
+    pub fn push(&mut self, index: u64, frame: Frame) {
+        self.rows += frame.slow_raw.len();
+        self.frames.push_back((index, Arc::new(frame)));
+        // Retain at most one partial extra frame; queries expose exactly capacity rows.
+        while let Some((_, first)) = self.frames.front() {
+            if self.rows - first.slow_raw.len() < self.capacity {
+                break;
+            }
+            self.rows -= first.slow_raw.len();
+            self.frames.pop_front();
+        }
+    }
+
+    pub fn snapshot(&self, count: usize) -> Result<Snapshot> {
+        ensure!(count > 0, "last_n_samples must be positive");
+        ensure!(
+            count <= self.available(),
+            "requested {count} samples, but only {} available (buffer capacity {})",
+            self.available(),
+            self.capacity
+        );
+        let mut remaining = count;
+        let mut frames = Vec::new();
+        for (index, frame) in self.frames.iter().rev() {
+            frames.push((*index, frame.clone()));
+            if frame.slow_raw.len() >= remaining {
+                let skip = frame.slow_raw.len() - remaining;
+                frames.reverse();
+                return Ok(Snapshot {
+                    frames,
+                    skip,
+                    rows: count,
+                });
+            }
+            remaining -= frame.slow_raw.len();
+        }
+        unreachable!("available rows must be retained")
+    }
+}
+
+/// Canonical names in channel order, deduplicated by observable ID like recording columns.
+pub fn selected_columns(profile: &Profile, selections: &Value) -> Result<Vec<(usize, String)>> {
+    let mut columns = Vec::new();
+    let mut seen = std::collections::BTreeSet::new();
+    for channel in 1..=profile.channels {
+        if let Some(requested) = selections[channel.to_string()].as_str() {
+            let (_, value) = profile.observable(requested, channel as u32)?;
+            let id = value as u32;
+            let canonical = if profile.observables.contains_key(requested) {
+                requested.to_owned()
+            } else {
+                format!("JSO_{requested}")
+            };
+            ensure!(
+                canonical != "time" && canonical != "status",
+                "observable name {canonical} conflicts with a reserved log column"
+            );
+            if seen.insert(id) {
+                columns.push((channel - 1, canonical));
+            }
+        }
+    }
+    ensure!(
+        !columns.is_empty(),
+        "select at least one observable before requesting live data"
+    );
+    Ok(columns)
+}
+
+impl Snapshot {
+    pub fn dataframe(&self, period_us: f64, columns: &[(usize, String)]) -> Result<DataFrame> {
+        let mut time = Vec::with_capacity(self.rows);
+        let mut status = Vec::with_capacity(self.rows);
+        let mut values = vec![Vec::with_capacity(self.rows); columns.len()];
+        for (frame_number, (first, frame)) in self.frames.iter().enumerate() {
+            let skip = if frame_number == 0 { self.skip } else { 0 };
+            for row in skip..frame.slow_raw.len() {
+                time.push((first + row as u64) as f64 * period_us * 1e-6);
+                status.push(frame.status);
+                for ((channel, _), dest) in columns.iter().zip(&mut values) {
+                    dest.push(frame.channels[*channel][row]);
+                }
+            }
+        }
+        let mut result = vec![
+            Column::new("time".into(), time),
+            Column::new("status".into(), status),
+        ];
+        for ((_, name), values) in columns.iter().zip(values) {
+            result.push(Column::new(name.clone().into(), values));
+        }
+        Ok(DataFrame::new(result)?)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    fn frame(first: usize, rows: usize) -> Frame {
+        Frame {
+            status: 7,
+            slow_raw: vec![0; rows],
+            slow_ids: vec![0; rows],
+            channels: (0..20)
+                .map(|_| (first..first + rows).map(|x| x as f32).collect())
+                .collect(),
+        }
+    }
+
+    #[test]
+    fn exact_capacity_partial_frames_and_independent_snapshot() -> Result<()> {
+        let mut ring = LiveBuffer::new(17);
+        ring.push(0, frame(0, 15));
+        ring.push(15, frame(15, 15));
+        ring.push(30, frame(30, 15));
+        assert_eq!(ring.available(), 17);
+        assert!(ring.snapshot(18).is_err());
+        assert!(ring.snapshot(0).is_err());
+        let snapshot = ring.snapshot(17)?;
+        ring.clear();
+        ring.push(45, frame(45, 15));
+        let df = snapshot.dataframe(100., &[(0, "signal".into())])?;
+        assert_eq!(df.height(), 17);
+        assert_eq!(df.column("signal")?.f32()?.get(0), Some(28.));
+        assert_eq!(df.column("signal")?.f32()?.get(16), Some(44.));
+        assert!((df.column("time")?.f64()?.get(0).unwrap() - 0.0028).abs() < 1e-12);
+        Ok(())
+    }
+
+    #[test]
+    fn buffer_smaller_than_a_frame() -> Result<()> {
+        let mut ring = LiveBuffer::new(1);
+        ring.push(0, frame(0, 15));
+        ring.push(15, frame(15, 15));
+        assert_eq!(ring.available(), 1);
+        assert_eq!(ring.frames.len(), 1);
+        let df = ring.snapshot(1)?.dataframe(100., &[(19, "last".into())])?;
+        assert_eq!(df.column("last")?.f32()?.get(0), Some(29.));
+        Ok(())
+    }
+
+    #[test]
+    fn arrow_preserves_nonfinite_samples_and_status() -> Result<()> {
+        let mut f = frame(0, 3);
+        f.channels[0] = vec![f32::NAN, f32::INFINITY, f32::NEG_INFINITY];
+        f.status = u32::MAX;
+        let mut ring = LiveBuffer::new(3);
+        ring.push(0, f);
+        let mut df = ring.snapshot(3)?.dataframe(100., &[(0, "signal".into())])?;
+        let mut bytes = Vec::new();
+        IpcStreamWriter::new(&mut bytes).finish(&mut df)?;
+        let read = IpcStreamReader::new(std::io::Cursor::new(bytes)).finish()?;
+        let values = read.column("signal")?.f32()?;
+        assert!(values.get(0).unwrap().is_nan());
+        assert_eq!(values.get(1), Some(f32::INFINITY));
+        assert_eq!(values.get(2), Some(f32::NEG_INFINITY));
+        assert_eq!(read.column("status")?.u32()?.get(0), Some(u32::MAX));
+        Ok(())
+    }
+
+    #[test]
+    fn canonical_columns_deduplicate_and_reject_reserved_names() -> Result<()> {
+        let mut profile = Profile::load(None)?;
+        let columns = selected_columns(
+            &profile,
+            &serde_json::json!({"1":"lifecheck", "2":"JSO_lifecheck"}),
+        )?;
+        assert_eq!(columns, vec![(0, "JSO_lifecheck".into())]);
+        profile.observables.insert("time".into(), 100);
+        assert!(selected_columns(&profile, &serde_json::json!({"1":"time"})).is_err());
+        Ok(())
+    }
+
+    #[test]
+    fn zero_limits_are_rejected() {
+        for options in [
+            DataOptions {
+                buffer_samples: 0,
+                ..Default::default()
+            },
+            DataOptions {
+                segment_rows: 0,
+                ..Default::default()
+            },
+            DataOptions {
+                flush_interval_ms: 0,
+                ..Default::default()
+            },
+        ] {
+            assert!(options.validate().is_err());
+        }
+    }
+}

@@ -1,9 +1,10 @@
 use crate::{
+    live::DataOptions,
     profile::Profile,
     service::{self, Config, Operation},
     storage::Format,
 };
-use pyo3::{exceptions::PyRuntimeError, prelude::*};
+use pyo3::{exceptions::PyRuntimeError, prelude::*, types::PyBytes};
 use std::{
     path::PathBuf,
     sync::{
@@ -24,6 +25,18 @@ fn request(py: Python<'_>, endpoint: String, command_json: String) -> PyResult<S
         serde_json::to_string(&result).map_err(error)
     })
 }
+#[pyfunction]
+fn live_data(
+    py: Python<'_>,
+    endpoint: String,
+    last_n_samples: usize,
+) -> PyResult<Bound<'_, PyBytes>> {
+    let bytes = py
+        .detach(move || service::get_live_data(&endpoint, last_n_samples))
+        .map_err(error)?;
+    Ok(PyBytes::new(py, &bytes))
+}
+
 /// Run the same CLI as the standalone binary, without requiring that binary.
 #[pyfunction]
 fn cli_main(py: Python<'_>, argv: Vec<String>) -> i32 {
@@ -31,7 +44,7 @@ fn cli_main(py: Python<'_>, argv: Vec<String>) -> i32 {
 }
 
 /// Optional embedded Rust service. External `ultrazohm serve` survives Python exit.
-#[pyclass]
+#[pyclass(subclass)]
 struct Acquisition {
     output: PathBuf,
     stop: Arc<AtomicBool>,
@@ -41,7 +54,7 @@ struct Acquisition {
 impl Acquisition {
     #[new]
     #[allow(clippy::too_many_arguments)] // Python keyword options plus the GIL token.
-    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="both".to_string(), ack=false, channel_mapping=None))]
+    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="both".to_string(), ack=false, channel_mapping=None, *, buffer_samples=960, segment_rows=1_000_000, flush_interval_ms=60_000))]
     fn new(
         py: Python<'_>,
         device: Option<String>,
@@ -51,7 +64,16 @@ impl Acquisition {
         format: String,
         ack: bool,
         channel_mapping: Option<String>,
+        buffer_samples: usize,
+        segment_rows: usize,
+        flush_interval_ms: u64,
     ) -> PyResult<Self> {
+        let data = DataOptions {
+            buffer_samples,
+            segment_rows,
+            flush_interval_ms,
+        };
+        data.validate().map_err(error)?;
         let profile = Profile::load_files(
             profile.as_deref().map(std::path::Path::new),
             channel_mapping.as_deref().map(std::path::Path::new),
@@ -71,6 +93,7 @@ impl Acquisition {
         let worker = thread::spawn(move || {
             service::serve_with_ready(
                 Config {
+                    data,
                     device,
                     endpoint,
                     output: Some(worker_output),
@@ -121,6 +144,42 @@ impl Acquisition {
     fn is_finished(&self) -> bool {
         self.worker.as_ref().is_none_or(|w| w.is_finished())
     }
+    /// Resolve only a successfully finalized recording from this acquisition.
+    #[pyo3(signature=(stream="fast", recording=1))]
+    fn recording_path(&self, stream: &str, recording: u32) -> PyResult<String> {
+        if self.worker.is_some() {
+            return Err(error("call acquisition.close() before reading recordings"));
+        }
+        if !matches!(stream, "fast" | "slow") || recording == 0 {
+            return Err(error(
+                "stream must be fast or slow; recording must be positive",
+            ));
+        }
+        let base = if recording == 1 {
+            "data".into()
+        } else {
+            format!("data_{recording:04}")
+        };
+        let stem = if stream == "slow" {
+            format!("{base}_slow_data")
+        } else {
+            base
+        };
+        let sidecar: serde_json::Value = serde_json::from_slice(
+            &std::fs::read(self.output.join(format!("{stem}.json"))).map_err(error)?,
+        )
+        .map_err(error)?;
+        if sidecar["complete"] != true {
+            return Err(error(
+                "recording is not complete; inspect its metadata for errors",
+            ));
+        }
+        let path = self.output.join(format!("{stem}.parquet"));
+        if !path.is_file() {
+            return Err(error("completed recording file is missing"));
+        }
+        Ok(path.to_string_lossy().into_owned())
+    }
 }
 impl Drop for Acquisition {
     fn drop(&mut self) {
@@ -130,6 +189,7 @@ impl Drop for Acquisition {
 #[pymodule]
 fn _native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(request, m)?)?;
+    m.add_function(wrap_pyfunction!(live_data, m)?)?;
     m.add_function(wrap_pyfunction!(cli_main, m)?)?;
     m.add_class::<Acquisition>()?;
     Ok(())

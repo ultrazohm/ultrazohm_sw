@@ -21,7 +21,7 @@ ctrlc = "3"
 rustyline = { version = "17", default-features = false }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-polars = { version = "0.51", default-features = false, features = ["csv", "parquet"] }
+polars = { version = "0.51", default-features = false, features = ["csv", "parquet", "ipc_streaming"] }
 pyo3 = { version = "0.26", optional = true, features = ["extension-module", "abi3-py310"] }
 
 [profile.dev]

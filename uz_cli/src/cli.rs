@@ -1,4 +1,5 @@
 use crate::{
+    live::DataOptions,
     profile::{ChannelMapping, Profile, ProfileSettings},
     service::{self, Config, Operation},
     storage::Format,
@@ -52,6 +53,8 @@ enum Command {
     },
     /// Run the control service until Ctrl-C or shutdown; starts disconnected by default. Run as an OS service for unattended use.
     Serve {
+        #[command(flatten)]
+        data: DataOptions,
         /// Connect immediately instead of waiting for the connect command.
         #[arg(long)]
         device: Option<String>,
@@ -94,6 +97,12 @@ enum Command {
     /// List all channel assignments requested in this service session (not device readback).
     #[command(aliases = ["get-observables", "get_observables"])]
     Observables,
+    /// Print a preview of an independent snapshot from the live RAM buffer.
+    #[command(alias = "get_live_data")]
+    GetLiveData {
+        #[arg(long)]
+        last_n_samples: usize,
+    },
     Stop,
     #[command(alias = "enable_system")]
     EnableSystem,
@@ -169,6 +178,7 @@ pub fn run(argv: impl IntoIterator<Item = String>) -> i32 {
 
 fn dispatch(args: Args) -> Result<()> {
     let command = args.command.unwrap_or_else(|| Command::Serve {
+        data: DataOptions::default(),
         device: None,
         profile: None,
         channel_mapping: None,
@@ -179,6 +189,7 @@ fn dispatch(args: Args) -> Result<()> {
     });
     match command {
         Command::Serve {
+            data,
             device,
             profile,
             channel_mapping,
@@ -199,6 +210,7 @@ fn dispatch(args: Args) -> Result<()> {
             let stopped = shutdown.clone();
             service::serve_with_ready(
                 Config {
+                    data,
                     device,
                     endpoint: args.endpoint,
                     profile: Profile::load_files(profile.as_deref(), channel_mapping.as_deref())?,
@@ -388,6 +400,34 @@ fn prompt(endpoint: &str, shutdown: &AtomicBool) -> Result<()> {
 
 fn execute(command: Command, endpoint: &str) -> Result<()> {
     let op = match command {
+        Command::GetLiveData { last_n_samples } => {
+            use polars::prelude::*;
+            let bytes = service::get_live_data(endpoint, last_n_samples)?;
+            let df = IpcStreamReader::new(std::io::Cursor::new(bytes)).finish()?;
+            println!(
+                "{} rows × {} columns (showing first {})",
+                df.height(),
+                df.width(),
+                df.height().min(20)
+            );
+            println!(
+                "{}",
+                df.get_column_names()
+                    .iter()
+                    .map(|n| n.as_str())
+                    .collect::<Vec<_>>()
+                    .join("\t")
+            );
+            for row in 0..df.height().min(20) {
+                let cells = df
+                    .get_columns()
+                    .iter()
+                    .map(|c| c.get(row).map(|v| v.to_string()))
+                    .collect::<std::result::Result<Vec<_>, _>>()?;
+                println!("{}", cells.join("\t"));
+            }
+            return Ok(());
+        }
         Command::Generate { repo, open } => {
             return crate::vitis::run(
                 if open { "generate-open" } else { "generate" },

@@ -45,11 +45,11 @@ struct uz_JL_SigmaDelta_Interface_output_t
 
 struct uz_JL_SigmaDelta_Interface_output_t_float
 {
-    float data_U;
-    float data_PH1;
-    float data_PH2;
-    float data_PH3;
-    float data_PH4;
+    float data_U_V;
+    float data_PH1_A;
+    float data_PH2_A;
+    float data_PH3_A;
+    float data_PH4_A;
 }; 
 
 /**

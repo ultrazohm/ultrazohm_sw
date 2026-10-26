@@ -95,12 +95,12 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_SD_PH1]				= &Global_Data.av.Sinc3_Filter.data_PH1;
-	js_ch_observable[JSO_SD_PH2]				= &Global_Data.av.Sinc3_Filter.data_PH2;
-	js_ch_observable[JSO_SD_PH3]				= &Global_Data.av.Sinc3_Filter.data_PH3;
-	js_ch_observable[JSO_SD2_PH1]				= &Global_Data.av.Sinc3_Filter_2.data_PH1;
-	js_ch_observable[JSO_SD2_PH2]				= &Global_Data.av.Sinc3_Filter_2.data_PH2;
-	js_ch_observable[JSO_SD2_PH3]				= &Global_Data.av.Sinc3_Filter_2.data_PH3;
+	js_ch_observable[JSO_SD_PH1]				= &Global_Data.av.Sinc3_Filter_P.data_PH1_A;
+	js_ch_observable[JSO_SD_PH2]				= &Global_Data.av.Sinc3_Filter_P.data_PH2_A;
+	js_ch_observable[JSO_SD_PH3]				= &Global_Data.av.Sinc3_Filter_P.data_PH3_A;
+	js_ch_observable[JSO_SD2_PH1]				= &Global_Data.av.Sinc3_Filter_I.data_PH1_A;
+	js_ch_observable[JSO_SD2_PH2]				= &Global_Data.av.Sinc3_Filter_I.data_PH2_A;
+	js_ch_observable[JSO_SD2_PH3]				= &Global_Data.av.Sinc3_Filter_I.data_PH3_A;
 	js_ch_observable[JSO_theta_el]				= &Global_Data.av.theta_el;
 	js_ch_observable[JSO_theta_mech]			= &Global_Data.av.mechanicalPosition;
 	js_ch_observable[JSO_n_rpm]					= &Global_Data.av.resolver_pl_outputs.n_mech_rpm;
@@ -125,7 +125,7 @@ int JavaScope_initialize(DS_Data* data)
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
 	js_slowDataArray[JSSD_FLOAT_resolver_counter] 		= &(Global_Data.av.resolver_pl_outputs.revolution_counter);
-	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
+	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.resolver_pl_outputs.n_mech_rpm);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
@@ -168,7 +168,6 @@ void JavaScope_update(DS_Data* data){
 	conv_board_rst_f		= (float)conv_status_signals.board_rst;
 	conv_board_ready_f		= (float)conv_status_signals.board_ready;
 	conv_igbt_desat_f		= (float)conv_status_signals.igbt_desat;
-	dpt_state_f				= (float)data->av.dpt_state;
 
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){

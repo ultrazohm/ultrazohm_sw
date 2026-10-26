@@ -24,7 +24,7 @@ Modul ist angepasst für SH-Strommessplatine
 // data valid reset �berpr�fen
 /* Initilalisieurng der IP Cores (s. Treiber). Jede Filterinstanz hat eine eigene, unabhaengige Config. */
 struct uz_JL_SigmaDelta_Interface_config_t filter_config[SDW_FILTER_ENDMARKER] = {
-	[SDW_FILTER_0] = {
+	[SDW_FILTER_P] = {
 		.base_address = XPAR_UZ_USER_UZ_JL_SIGMADELTA_INT_0_BASEADDR,
 		.ip_clk_frequency_Hz = 100000000.0f,
 		.dezimation = 100,	// Dezimierungsfaktor für ZK-Spannungsmessung
@@ -39,7 +39,7 @@ struct uz_JL_SigmaDelta_Interface_config_t filter_config[SDW_FILTER_ENDMARKER] =
 		.use_clk_ext = false,	// TODO: neues Inport-Signal aus IP-Core-Regenerierung, Bedeutung/gewünschter Wert noch nicht validiert
 		.sel_pwm_trigger = false,
 	},
-	[SDW_FILTER_1] = {
+	[SDW_FILTER_I] = {
 		// TODO: eigenstaendige Config fuer den zweiten Filter (z.B. andere Dezimation/Sinc-Sample-Periods
 		// fuer eine staerkere/schwaechere Filterung). base_address = 0 bis die zweite HW-Instanz existiert;
 		// SigmaDeltaWandler_init() initialisiert diese Instanz erst, wenn SDW_SECOND_FILTER_HW_AVAILABLE == 1 ist.
@@ -79,14 +79,14 @@ struct SigmaDeltaWandler_calibration_t {
 
 /* Struct zum Kalibrieren der Kanäle. Hier für vier Strommessungen und eine Spannungsmeessung, je Filterinstanz. */
 static struct SigmaDeltaWandler_calibration_t calibration[SDW_FILTER_ENDMARKER][SDW_CH_ENDMARKER] = {
-	[SDW_FILTER_0] = {
+	[SDW_FILTER_P] = {
 		[SDW_CH_PH1] = {.k_manual =  70.0f, .offset_manual = -0.00037f},//68.91812
 		[SDW_CH_PH2] = {.k_manual =  70.0f, .offset_manual = -0.00028f},//71.22505
 		[SDW_CH_PH3] = {.k_manual =  70.0f, .offset_manual = -0.0005f},
 	//	[SDW_CH_PH4] = {.k_manual = 1.0f, .offset_manual = 0.0f}, // TODO: Platzhalter, reale Kalibrierwerte noch zu bestimmen
 	//	[SDW_CH_U]   = {.k_manual = 1.0f, .offset_manual = 0.0f}, // TODO: Platzhalter, reale Kalibrierwerte noch zu bestimmen
 	},
-	[SDW_FILTER_1] = {
+	[SDW_FILTER_I] = {
 		[SDW_CH_PH1] = {.k_manual =  70.0f, .offset_manual = -0.00037f},//68.91812
 		[SDW_CH_PH2] = {.k_manual =  70.0f, .offset_manual = -0.00028f},//71.22505
 		[SDW_CH_PH3] = {.k_manual =  70.0f, .offset_manual = -0.0005f},
@@ -97,9 +97,13 @@ static struct SigmaDeltaWandler_calibration_t calibration[SDW_FILTER_ENDMARKER][
 static bool is_initialized[SDW_FILTER_ENDMARKER] = {false};
 
 // Gleitender Fenster-Mittelwert des rohen (unkalibrierten) Werts je Filterinstanz und Kanal, zur
-// Bestimmung von offset_counts (siehe SigmaDeltaWandler_get_raw_average).
+// Bestimmung von offset_counts (siehe SigmaDeltaWandler_get_raw_average). Filter und Puffer werden
+// nur bei aktiviertem Feature (SDW_RAW_AVERAGE_ENABLED) allokiert; raw_average[][] bleibt immer
+// definiert, damit SigmaDeltaWandler_get_raw_average unabhaengig davon kompiliert.
+#if SDW_RAW_AVERAGE_ENABLED
 static uz_movingAverageFilter_t *raw_average_filter[SDW_FILTER_ENDMARKER][SDW_CH_ENDMARKER];
 static float raw_average_buffer[SDW_FILTER_ENDMARKER][SDW_CH_ENDMARKER][SDW_OFFSET_AVG_WINDOW_LENGTH];
+#endif
 static float raw_average[SDW_FILTER_ENDMARKER][SDW_CH_ENDMARKER] = {0};
 
 uz_JL_SigmaDelta_Interface_t *SigmaDeltaWandler_init(enum SigmaDeltaWandler_filter_instance filter)
@@ -109,12 +113,14 @@ uz_JL_SigmaDelta_Interface_t *SigmaDeltaWandler_init(enum SigmaDeltaWandler_filt
 	/* Initialisierung des IP Cores*/
 	uz_JL_SigmaDelta_Interface_t *filter_instance = uz_JL_SigmaDelta_Interface_init(filter_config[filter]);
 
+#if SDW_RAW_AVERAGE_ENABLED
 	/* Initialisierung des gleitenden Fenster-Mittelwerts für jeden Kanal */
 	struct uz_movingAverageFilter_config avg_config = {.filterLength = SDW_OFFSET_AVG_WINDOW_LENGTH};
 	for (uint32_t ch = 0U; ch < SDW_CH_ENDMARKER; ch++) {
 		uz_array_float_t buffer = {.length = SDW_OFFSET_AVG_WINDOW_LENGTH, .data = raw_average_buffer[filter][ch]};
 		raw_average_filter[filter][ch] = uz_movingAverageFilter_init(avg_config, buffer);
 	}
+#endif
 
 	// DC-Gain (OSR^3) je Kanal: PH1..PH4 nutzen dezimation_I, U nutzt dezimation_U.
 	float osr = (float)filter_config[filter].dezimation;
@@ -133,42 +139,7 @@ uz_JL_SigmaDelta_Interface_t *SigmaDeltaWandler_init(enum SigmaDeltaWandler_filt
 	return filter_instance;
 }
 
-/* Funktion zum Verarbeiten der Filterrohwerte */
-static float SigmaDeltaWandler_process_channel(enum SigmaDeltaWandler_filter_instance filter, int32_t raw_fpga_value, enum SigmaDeltaWandler_channel channel)
-{
-	uz_assert(is_initialized[filter]);
-	uz_assert(channel < SDW_CH_ENDMARKER);
-
-	int32_t centered_val = raw_fpga_value - calibration[filter][channel].offset_counts;
-	float output = (float)centered_val * calibration[filter][channel].k_per_count;
-
-//	raw_average[filter][channel] = uz_movingAverageFilter_sample(raw_average_filter[filter][channel], output);
-	return output;
-}
-
-// float *SigmaDeltaWandler_get_raw_average(enum SigmaDeltaWandler_filter_instance filter, enum SigmaDeltaWandler_channel channel)
-// {
-// 	uz_assert(filter < SDW_FILTER_ENDMARKER);
-// 	uz_assert(channel < SDW_CH_ENDMARKER);
-// 	return &raw_average[filter][channel];
-// }
-
-/* Funktion, um die Verarbeitung von allen Phasenströmen aufzurufen*/
-void SigmaDeltaWandler_process(enum SigmaDeltaWandler_filter_instance filter, struct uz_JL_SigmaDelta_Interface_output_t raw, struct uz_JL_SigmaDelta_Interface_output_t_float *result)
-{
-	uz_assert_not_NULL(result);
-
-
-	result->data_PH1 = SigmaDeltaWandler_process_channel(filter, raw.data_PH1, SDW_CH_PH1);
-	result->data_PH2 = SigmaDeltaWandler_process_channel(filter, raw.data_PH2, SDW_CH_PH2);
-	result->data_PH3 = SigmaDeltaWandler_process_channel(filter, raw.data_PH3, SDW_CH_PH3);
-//	result->data_PH4 = SigmaDeltaWandler_process_channel(filter, raw.data_PH4, SDW_CH_PH4);
-//	result->data_U   = SigmaDeltaWandler_process_channel(filter, raw.data_U,   SDW_CH_U);
-}
-
-/* ISR-Pfad: Strobe + Registerreads + Kalibrierung in einem Aufruf. Vermeidet gegenueber
- * get_outputs()+SigmaDeltaWandler_process() das int-Zwischen-Struct, die Wertuebergabe der
- * 20-Byte-Structs und die pro-Kanal-Funktionsaufrufe/-Asserts. */
+/* ISR-Pfad: Strobe + Registerreads + Kalibrierung in einem Aufruf. */
 void SigmaDeltaWandler_read_and_process(uz_JL_SigmaDelta_Interface_t *instance, enum SigmaDeltaWandler_filter_instance filter, struct uz_JL_SigmaDelta_Interface_output_t_float *result)
 {
 	uz_assert(is_initialized[filter]);
@@ -177,19 +148,30 @@ void SigmaDeltaWandler_read_and_process(uz_JL_SigmaDelta_Interface_t *instance, 
 	struct uz_JL_SigmaDelta_Interface_output_t raw = uz_JL_SigmaDelta_Interface_get_outputs(instance);
 	const struct SigmaDeltaWandler_calibration_t *cal = calibration[filter];
 
-	result->data_PH1 = (float)(raw.data_PH1 - cal[SDW_CH_PH1].offset_counts) * cal[SDW_CH_PH1].k_per_count;
-	result->data_PH2 = (float)(raw.data_PH2 - cal[SDW_CH_PH2].offset_counts) * cal[SDW_CH_PH2].k_per_count;
-	result->data_PH3 = (float)(raw.data_PH3 - cal[SDW_CH_PH3].offset_counts) * cal[SDW_CH_PH3].k_per_count;
-//	result->data_PH4 = (float)(raw.data_PH4 - cal[SDW_CH_PH4].offset_counts) * cal[SDW_CH_PH4].k_per_count;
-//	result->data_U   = (float)(raw.data_U   - cal[SDW_CH_U].offset_counts)   * cal[SDW_CH_U].k_per_count;
+	result->data_PH1_A = (float)(raw.data_PH1 - cal[SDW_CH_PH1].offset_counts) * cal[SDW_CH_PH1].k_per_count;
+	result->data_PH2_A = (float)(raw.data_PH2 - cal[SDW_CH_PH2].offset_counts) * cal[SDW_CH_PH2].k_per_count;
+	result->data_PH3_A = (float)(raw.data_PH3 - cal[SDW_CH_PH3].offset_counts) * cal[SDW_CH_PH3].k_per_count;
+	result->data_PH4_A = (float)(raw.data_PH4 - cal[SDW_CH_PH4].offset_counts) * cal[SDW_CH_PH4].k_per_count;
+	result->data_U_V   = (float)(raw.data_U   - cal[SDW_CH_U].offset_counts)   * cal[SDW_CH_U].k_per_count;
 
-	// Gleitender Fenster-Mittelwert des rohen (unkalibrierten) FPGA-Werts je Kanal, bei Bedarf
-	// aktivieren, um offset_counts zu bestimmen (bei 0A/0V einschwingen lassen, siehe
-	// SigmaDeltaWandler_get_raw_average). Statt (float)raw.data_PHx kann auch der kalibrierte
-	// result->data_PHx gemittelt werden.
-//	raw_average[filter][SDW_CH_PH1] = uz_movingAverageFilter_sample(raw_average_filter[filter][SDW_CH_PH1], (float)raw.data_PH1);
-//	raw_average[filter][SDW_CH_PH2] = uz_movingAverageFilter_sample(raw_average_filter[filter][SDW_CH_PH2], (float)raw.data_PH2);
-//	raw_average[filter][SDW_CH_PH3] = uz_movingAverageFilter_sample(raw_average_filter[filter][SDW_CH_PH3], (float)raw.data_PH3);
-//	raw_average[filter][SDW_CH_PH4] = uz_movingAverageFilter_sample(raw_average_filter[filter][SDW_CH_PH4], (float)raw.data_PH4);
-//	raw_average[filter][SDW_CH_U]   = uz_movingAverageFilter_sample(raw_average_filter[filter][SDW_CH_U],   (float)raw.data_U);
+	// Gleitender Fenster-Mittelwert des rohen (unkalibrierten) FPGA-Werts je Kanal, nur bei
+	// aktiviertem SDW_RAW_AVERAGE_ENABLED, um offset_counts zu bestimmen (bei 0A/0V einschwingen
+	// lassen, siehe SigmaDeltaWandler_get_raw_average). Statt (float)raw.data_PHx kann auch der
+	// kalibrierte result->data_PHx gemittelt werden.
+#if SDW_RAW_AVERAGE_ENABLED
+	raw_average[filter][SDW_CH_PH1] = uz_movingAverageFilter_sample(raw_average_filter[filter][SDW_CH_PH1], (float)raw.data_PH1);
+	raw_average[filter][SDW_CH_PH2] = uz_movingAverageFilter_sample(raw_average_filter[filter][SDW_CH_PH2], (float)raw.data_PH2);
+	raw_average[filter][SDW_CH_PH3] = uz_movingAverageFilter_sample(raw_average_filter[filter][SDW_CH_PH3], (float)raw.data_PH3);
+	raw_average[filter][SDW_CH_PH4] = uz_movingAverageFilter_sample(raw_average_filter[filter][SDW_CH_PH4], (float)raw.data_PH4);
+	raw_average[filter][SDW_CH_U]   = uz_movingAverageFilter_sample(raw_average_filter[filter][SDW_CH_U],   (float)raw.data_U);
+#endif
+}
+
+/* Zugriff auf den eingeschwungenen Rohwert-Mittelwert je Kanal (siehe raw_average). Wird nur
+ * aktualisiert, wenn SDW_RAW_AVERAGE_ENABLED gesetzt ist; sonst bleibt der Wert 0. */
+float *SigmaDeltaWandler_get_raw_average(enum SigmaDeltaWandler_filter_instance filter, enum SigmaDeltaWandler_channel channel)
+{
+	uz_assert(filter < SDW_FILTER_ENDMARKER);
+	uz_assert(channel < SDW_CH_ENDMARKER);
+	return &raw_average[filter][channel];
 }

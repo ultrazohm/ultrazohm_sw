@@ -22,26 +22,10 @@ DS_Data Global_Data = {
         .halfBridge1DutyCycle = 0.0f,
         .halfBridge2DutyCycle = 0.0f,
         .halfBridge3DutyCycle = 0.0f,
-        .halfBridge4DutyCycle = 0.0f,
-        .halfBridge5DutyCycle = 0.0f,
-        .halfBridge6DutyCycle = 0.0f,
-        .halfBridge7DutyCycle = 0.0f,
-        .halfBridge8DutyCycle = 0.0f,
-        .halfBridge9DutyCycle = 0.0f,
-        .halfBridge10DutyCycle = 0.0f,
-        .halfBridge11DutyCycle = 0.0f,
-        .halfBridge12DutyCycle = 0.0f,
         .ctrl_state = ctrl_state_none,
         .Soll_Drehzahl = 0.0f,
         .Soll_id = 0.0f,
-        .Soll_iq = 0.0f,
-        .Soll_Square_DutyCycle = 0.5f,
-        .Soll_Square_Frequency_Hz = 25.0f,
-        .Soll_DPT_Current_A = 0.0f,
-        .Soll_DPT_MaxCurrent_A = 2.0f,
-        .Soll_DPT_ChargeTimeout_ms = 100.0f,
-        .Soll_DPT_Deadtime_us = 5.0f,
-        .Soll_DPT_Pulse2_us = 5.0f},
+        .Soll_iq = 0.0f},
     .objects.platform_state_old = running_state,
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
 	.av.theta_el_offset = 0.0f,
@@ -62,7 +46,6 @@ enum init_chain
 enum init_chain initialization_chain = init_assertions;
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
-#include "include/uz_foc_init.h"
 
 
 uint32_t apu_version_final = 0;
@@ -83,42 +66,11 @@ struct uz_axi_gpio_config_t gpio_out_config={
             .direction_of_pins=UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
 };
 
-uz_JL_SigmaDelta_Interface_t *Sinc3_Filter = NULL;
-uz_JL_SigmaDelta_Interface_t *Sinc3_Filter_2 = NULL;
-
-uz_axi_gpio_t* input_gpio=NULL;
-uz_axi_gpio_t* output_gpio=NULL;
 uz_codegen regelung;
-
 
 int main(void)
 {
-		regelung.input.Bus_ZM_In_j.Fehlermeldung = false;
-		regelung.input.Bus_ZM_In_j.Soll_Drehzahl_Umin = 0;
-		regelung.input.Bus_ZM_In_j.Soll_Regelungsart = Drehzahl;
-		regelung.input.Bus_ZM_In_j.Soll_Status = Ready;
-		regelung.input.Bus_ZM_In_j.Soll_id_A = 0;
-		regelung.input.Bus_ZM_In_j.Soll_iq_A = 0;
-		regelung.input.Bus_ZM_In_j.Start_Traj = false;
-		regelung.input.Bus_PMSM_Out_f.pmsm_Omega_mech_rad_s = 0;
-		regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_P_A[0] = 0;
-		regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_P_A[1] = 0;
-		regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_P_A[2] = 0;
-		regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_I_A[0] = 0;
-		regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_I_A[1] = 0;
-		regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_I_A[2] = 0;
-		regelung.input.Bus_PMSM_Out_f.pmsm_m_mot_Nm = 0;
-		regelung.input.Bus_PMSM_Out_f.pmsm_theta_mech_rad = 0;
-		struct_Ctrl_Config.sel_act_I = true; // Start-Konfiguration: (de)aktiviert die P-/I-Trennung in der Regelung
-		regelung.output.Bus_Ctrl_Out_f.Dutycycle[0] = 0.0;
-		regelung.output.Bus_Ctrl_Out_f.Dutycycle[1] = 0.0;
-		regelung.output.Bus_Ctrl_Out_f.Dutycycle[2] = 0.0;
-		regelung.output.Bus_Ctrl_Out_f.ctrl_Ualpha_V = 0;
-		regelung.output.Bus_Ctrl_Out_f.ctrl_Ubeta_V = 0;
-		regelung.output.Bus_Ctrl_Out_f.act_pwm = false;
-		regelung.output.Bus_Ctrl_Out_f.board_en = false;
-		regelung.output.Bus_Ctrl_Out_f.pwr_en = false;
-		regelung.output.Bus_Ctrl_Out_f.reset = false;
+
     int status = UZ_SUCCESS;
     while (1)
     {
@@ -154,25 +106,20 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
             uz_codegen_init(&regelung);
+            uz_codegen0_initialize(regelung.PtrToModelData); 
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
-            Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
+            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, false);
             Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
-            Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.resolver = initialize_resolver();
 			Global_Data.objects.resolver_pl_interface = initialize_resolver_pl_interface();
-            input_gpio= uz_axi_gpio_init(input_config);
-            output_gpio = uz_axi_gpio_init(gpio_out_config);
-			Sinc3_Filter = SigmaDeltaWandler_init(SDW_FILTER_0);
-			Sinc3_Filter_2 = SigmaDeltaWandler_init(SDW_FILTER_1); // liefert NULL, solange SDW_SECOND_FILTER_HW_AVAILABLE == 0
-			Global_Data.objects.current_controller=init_uz_foc();
-			Global_Data.objects.speed_controller = speed_ctrl_init();
-			Global_Data.objects.setpoint_controller = setpoint_ctrl_init();
+            Global_Data.objects.input_gpio = uz_axi_gpio_init(input_config);
+            Global_Data.objects.output_gpio = uz_axi_gpio_init(gpio_out_config);
+			Global_Data.objects.Sinc3_Filter_P = SigmaDeltaWandler_init(SDW_FILTER_P);
+			Global_Data.objects.Sinc3_Filter_I = SigmaDeltaWandler_init(SDW_FILTER_I); // liefert NULL, solange SDW_SECOND_FILTER_HW_AVAILABLE == 0
             initialization_chain = print_msg;
             break;
         case print_msg:
@@ -186,7 +133,6 @@ int main(void)
         case init_interrupts:
             uz_axigpio_enable_datamover();
             Initialize_ISR();
-            uz_dpt_init(); // uses the GIC instance initialized in Initialize_ISR(), must be called after it
             Global_Data.objects.mux_axi = initialize_uz_mux_axi(); // Initialize the Interrupt-Mux - last line of code before infinite loop
             initialization_chain = infinite_loop;
             break;

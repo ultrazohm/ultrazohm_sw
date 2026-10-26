@@ -57,7 +57,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6): // switch to test_sine
-			data->rasv.ctrl_state = test_sine;
 			break;
 
 		case (My_Button_7): // switch back to ctrl_state_none
@@ -65,20 +64,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_8): // switch to test_square
-			data->rasv.ctrl_state = test_square;
 			break;
 
 		case (My_Button_9): // start DPT (Doppelpulstest), parameters via Set_Send_Field_12..16
 		{
-			uz_dpt_config_t dpt_cfg = {
-				.target_current_A = data->rasv.Soll_DPT_Current_A,
-				.max_current_A = data->rasv.Soll_DPT_MaxCurrent_A,
-				.charge_timeout_ms = data->rasv.Soll_DPT_ChargeTimeout_ms,
-				.deadtime_us = data->rasv.Soll_DPT_Deadtime_us,
-				.pulse2_width_us = data->rasv.Soll_DPT_Pulse2_us
-			};
-			data->rasv.ctrl_state = DPT;
-			uz_dpt_arm(data->objects.pwm_d1_pin_0_to_5, dpt_cfg);
+
 		}
 			break;
 
@@ -282,31 +272,24 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_10): // Soll_Square_DutyCycle
-		data->rasv.Soll_Square_DutyCycle = value;
 			break;
 
 		case (Set_Send_Field_11): // Soll_Square_Frequency_Hz
-		data->rasv.Soll_Square_Frequency_Hz = value;
 			break;
 
 		case (Set_Send_Field_12): // Soll_DPT_Current_A
-		data->rasv.Soll_DPT_Current_A = value;
 			break;
 
 		case (Set_Send_Field_13): // Soll_DPT_MaxCurrent_A
-		data->rasv.Soll_DPT_MaxCurrent_A = value;
 			break;
 
 		case (Set_Send_Field_14): // Soll_DPT_ChargeTimeout_ms
-		data->rasv.Soll_DPT_ChargeTimeout_ms = value;
 			break;
 
 		case (Set_Send_Field_15): // Soll_DPT_Deadtime_us
-		data->rasv.Soll_DPT_Deadtime_us = value;
 			break;
 
 		case (Set_Send_Field_16): // Soll_DPT_Pulse2_us
-		data->rasv.Soll_DPT_Pulse2_us = value;
 			break;
 
 		case (Set_Send_Field_17):
@@ -331,12 +314,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (My_Button_2):
 			ultrazohm_state_machine_set_userLED(true);
-		data->rasv.ctrl_state=uz_current_control;
 			break;
 
 		case (My_Button_3):
 			ultrazohm_state_machine_set_userLED(false);
-		data->rasv.ctrl_state=uz_speed_control;
 			break;
 
 		case (Error_Reset):

@@ -22,8 +22,8 @@ enum SigmaDeltaWandler_channel {
 // SDW_FILTER_1 ist ein zweiter, softwareseitig vorbereiteter Filter fuer eine zukuenftige
 // getrennte P-/I-Messwertversorgung des Stromreglers (siehe SDW_SECOND_FILTER_HW_AVAILABLE).
 enum SigmaDeltaWandler_filter_instance {
-	SDW_FILTER_0 = 0,
-	SDW_FILTER_1,
+	SDW_FILTER_P = 0,
+	SDW_FILTER_I,
 	SDW_FILTER_ENDMARKER
 };
 
@@ -40,6 +40,13 @@ enum SigmaDeltaWandler_filter_instance {
 // Nur sinnvoll aktivierbar, wenn SDW_SECOND_FILTER_HW_AVAILABLE == 1 (sonst bleibt der I-Zweig auf 0).
 #define SDW_ACT_I_SEPARATE_CALC_ENABLED 1U
 
+// Aktiviert die Berechnung des gleitenden Fenster-Mittelwerts der rohen FPGA-Werte
+// (nur Inbetriebnahme-Hilfsmittel zur Bestimmung von offset_counts, siehe
+// SigmaDeltaWandler_get_raw_average). Im Normalbetrieb auf 0 lassen: spart den
+// ISR-Rechenaufwand und den statischen Mittelwert-Puffer
+// (SDW_FILTER_ENDMARKER * SDW_CH_ENDMARKER * SDW_OFFSET_AVG_WINDOW_LENGTH floats).
+#define SDW_RAW_AVERAGE_ENABLED 0U
+
 /**
  * @brief Initialisiert den SD-Demod-IP-Core (filter_config[filter]).
  * Muss in main.c (init_ip_cores) vor dem ersten Aufruf von
@@ -52,20 +59,6 @@ enum SigmaDeltaWandler_filter_instance {
 uz_JL_SigmaDelta_Interface_t *SigmaDeltaWandler_init(enum SigmaDeltaWandler_filter_instance filter);
 
 /**
- * @brief Wandelt die rohen Sinc3-Ausgangswerte des SD-Demod-IP-Cores (Spannung + 4
- * Phasenstroeme) in die kalibrierten physikalischen Werte (V, A) um. Der AMC1204-
- * Bitstream wird vom Sinc3-Filter bipolar (-1/+1) verarbeitet, der Rohwert ist bei
- * 0A/0V bereits um 0 zentriert. Kein LEM-Wandler mehr vorhanden (neuer ADC), daher
- * kein bekannter theoretischer Vollausschlag - die Umrechnung erfolgt je Kanal ueber
- * eine im Code hinterlegte lineare Kalibrierung (k, Offset), siehe SigmaDeltaWandler.c.
- *
- * @param filter Filterinstanz, deren Kalibrierung/OSR fuer die Umrechnung verwendet wird.
- * @param raw Unbeschnittene Rohwerte aus den Sinc3-Ausgangsregistern (uz_JL_SDDemod_get_outputs).
- * @param result Ausgabe: kalibrierte Werte (data_U in Volt, data_PH1..PH4 in Ampere).
- */
-void SigmaDeltaWandler_process(enum SigmaDeltaWandler_filter_instance filter, struct uz_JL_SigmaDelta_Interface_output_t raw, struct uz_JL_SigmaDelta_Interface_output_t_float *result);
-
-/**
  * @brief ISR-optimierte Variante: liest die Sinc3-Ausgangsregister (Strobe + Registerreads)
  * und schreibt die kalibrierten physikalischen Werte direkt nach *result. Ersetzt die
  * Aufrufkette uz_JL_SigmaDelta_Interface_get_outputs() + SigmaDeltaWandler_process() im
@@ -74,7 +67,7 @@ void SigmaDeltaWandler_process(enum SigmaDeltaWandler_filter_instance filter, st
  *
  * @param instance Filter-Instanz aus SigmaDeltaWandler_init (z.B. Sinc3_Filter).
  * @param filter Filterinstanz, deren Kalibrierung/OSR fuer die Umrechnung verwendet wird.
- * @param result Ausgabe: kalibrierte Werte (data_U in Volt, data_PH1..PH4 in Ampere).
+ * @param result Ausgabe: kalibrierte Werte (data_U_V in Volt, data_PH1_A..PH4_A in Ampere).
  */
 void SigmaDeltaWandler_read_and_process(uz_JL_SigmaDelta_Interface_t *instance, enum SigmaDeltaWandler_filter_instance filter, struct uz_JL_SigmaDelta_Interface_output_t_float *result);
 

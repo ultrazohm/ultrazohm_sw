@@ -10,12 +10,9 @@
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 #include "IP_Cores/uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Interface.h"
+#include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 #include "include/JL_SH_Umrichter.h"
-#include "include/uz_dpt.h"
 #include "include/uz_platform_state_machine.h"
-#include "uz/uz_CurrentControl/uz_CurrentControl.h"
-#include "uz/uz_SpeedControl/uz_speedcontrol.h"
-#include "uz/uz_setpoint/uz_setpoint.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -61,94 +58,40 @@ typedef struct _AnalogAdapters_ {
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
-	float I_L1; 		// Grid side current in A
-	float I_L2; 		// Grid side current in A
-	float I_L3; 		// Grid side current in A
-	float U_L1; 		// Grid side voltage in V
-	float U_L2; 		// Grid side voltage in V
-	float U_L3; 		// Grid side voltage in V
-	float I_U; 		// Machine side current in A
-	float I_V; 		// Machine side current in A
-	float I_W; 		// Machine side current in A
-	float U_U; 		// Machine side voltage in V
-	float U_V; 		// Machine side voltage in V
-	float U_W; 		// Machine side voltage in V
-	float U_ZK; 		// DC-Link voltage in V
-	float U_ZK2; 	// DC-Link voltage 2 in V
-	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
-	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
-	float mechanicalRotorSpeed; 		// in rpm
-	float mechanicalRotorSpeed_filtered; // in rpm
 	float mechanicalPosition; 		// in m
-	float mechanicalTorque; 			// in Nm
-	float mechanicalTorqueSensitive; // in Nm
-	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
-	float I_d;
-	float I_q;
-	float U_d;
-	float U_q;
-	float theta_elec;
-	float theta_mech;
-	float theta_offset; //in rad/s
-	float temperature;
-	uint32_t  heartbeatframe_content;
-	float electricalRotorSpeed;
 	float snd_fld[21];
 	float theta_el_offset;
 	float theta_el;
 	float omega_el;
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs;
 	uint32_t slowDataCounter;
-	struct uz_JL_SigmaDelta_Interface_output_t_float Sinc3_Filter;
-	struct uz_JL_SigmaDelta_Interface_output_t_float Sinc3_Filter_2;
-	uz_dpt_state_t dpt_state;
+	struct uz_JL_SigmaDelta_Interface_output_t_float Sinc3_Filter_P;
+	struct uz_JL_SigmaDelta_Interface_output_t_float Sinc3_Filter_I;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
 	float halfBridge1DutyCycle;
 	float halfBridge2DutyCycle;
 	float halfBridge3DutyCycle;
-	float halfBridge4DutyCycle;
-	float halfBridge5DutyCycle;
-	float halfBridge6DutyCycle;
-	float halfBridge7DutyCycle;
-	float halfBridge8DutyCycle;
-	float halfBridge9DutyCycle;
-	float halfBridge10DutyCycle;
-	float halfBridge11DutyCycle;
-	float halfBridge12DutyCycle;
 	ctrl_state_t ctrl_state;
 	float Soll_Drehzahl; // speed setpoint for rpm_control, in rpm
 	float Soll_id; // d-axis current setpoint for current_control, in A
 	float Soll_iq; // q-axis current setpoint for current_control, in A
-	float Soll_Square_DutyCycle; // duty cycle setpoint for test_square, 0.0 .. 1.0
-	float Soll_Square_Frequency_Hz; // frequency setpoint for test_square, in Hz
 	float Soll_HB1_DutyCycle; // manual duty cycle setpoint for HB1, 0.0 .. 1.0
 	float Soll_HB2_DutyCycle; // manual duty cycle setpoint for HB2, 0.0 .. 1.0
 	float Soll_HB3_DutyCycle; // manual duty cycle setpoint for HB3, 0.0 .. 1.0
-	float Soll_DPT_Current_A; // target current at which pulse 1 of the DPT ends, in A
-	float Soll_DPT_MaxCurrent_A; // hard overcurrent threshold, aborts the DPT immediately, in A
-	float Soll_DPT_ChargeTimeout_ms; // safety timeout for pulse 1 (target current never reached), in ms
-	float Soll_DPT_Deadtime_us; // time between end of pulse 1 and start of pulse 2, in us
-	float Soll_DPT_Pulse2_us; // width of pulse 2, in us
 } referenceAndSetValues;
 
 typedef struct{
 	uz_PWM_SS_2L_t* pwm_d1_pin_0_to_5;
-	uz_PWM_SS_2L_t* pwm_d1_pin_6_to_11;
-	uz_PWM_SS_2L_t* pwm_d1_pin_12_to_17;
-	uz_PWM_SS_2L_t* pwm_d1_pin_18_to_23;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_0_to_5;
-	uz_CurrentControl_t* current_controller;
-	uz_SpeedControl_t* speed_controller;
-	uz_SetPoint_t* setpoint_controller;
-	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_6_to_11;
-	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
-	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
-	uz_incrementalEncoder_t* encoder_D5;
 	uz_resolverIP_t* resolver;
 	uz_resolver_pl_interface_t* resolver_pl_interface;
 	uz_mux_axi_t* mux_axi;
+	uz_JL_SigmaDelta_Interface_t* Sinc3_Filter_P;
+	uz_JL_SigmaDelta_Interface_t* Sinc3_Filter_I;
+	uz_axi_gpio_t* input_gpio;
+	uz_axi_gpio_t* output_gpio;
 	platform_state_t platform_state_old;
 }object_pointers_t;
 

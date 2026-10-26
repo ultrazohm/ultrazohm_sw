@@ -18,12 +18,8 @@ typedef enum _ctrl_state_t_ {
 	ctrl_state_none = 0, // Anfangszustand: keiner der folgenden Zustaende aktiv
 	current_control,
 	rpm_control,
-	test_sine,
-	test_square,
-	DPT, // Doppelpulstest, siehe uz_dpt.h
 	manual_duty_cycle, // manuelle Vorgabe der HB1-3 Duty-Cycles ueber Set_Send_Field_1..3
-	uz_current_control,
-	uz_speed_control
+	profil,
 } ctrl_state_t;
 
 typedef struct Conv_status_signals_t_ {

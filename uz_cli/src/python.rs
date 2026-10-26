@@ -9,6 +9,7 @@ use std::{
     sync::{
         Arc,
         atomic::{AtomicBool, Ordering},
+        mpsc,
     },
     thread,
 };
@@ -32,14 +33,17 @@ fn cli_main(py: Python<'_>, argv: Vec<String>) -> i32 {
 /// Optional embedded Rust service. External `ultrazohm serve` survives Python exit.
 #[pyclass]
 struct Acquisition {
+    output: PathBuf,
     stop: Arc<AtomicBool>,
     worker: Option<thread::JoinHandle<anyhow::Result<()>>>,
 }
 #[pymethods]
 impl Acquisition {
     #[new]
-    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="parquet".to_string(), ack=false, channel_mapping=None))]
+    #[allow(clippy::too_many_arguments)] // Python keyword options plus the GIL token.
+    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="both".to_string(), ack=false, channel_mapping=None))]
     fn new(
+        py: Python<'_>,
         device: Option<String>,
         endpoint: String,
         output: Option<String>,
@@ -59,25 +63,48 @@ impl Acquisition {
             "both" => Format::Both,
             _ => return Err(error("format must be csv, parquet or both")),
         };
+        let output = service::session_output(output.map(PathBuf::from)).map_err(error)?;
+        let worker_output = output.clone();
+        let (ready_tx, ready_rx) = mpsc::sync_channel(1);
         let stop = Arc::new(AtomicBool::new(false));
         let signal = stop.clone();
         let worker = thread::spawn(move || {
-            service::serve(
+            service::serve_with_ready(
                 Config {
                     device,
                     endpoint,
-                    output: output.map(PathBuf::from),
+                    output: Some(worker_output),
                     profile,
                     format,
                     ack,
                 },
                 signal,
+                move || {
+                    let _ = ready_tx.send(());
+                },
             )
         });
+        // Dropping the readiness sender on an early return/panic wakes the
+        // constructor too. Surface startup failures here, not on a later close().
+        if py.detach(move || ready_rx.recv()).is_err() {
+            let result = py
+                .detach(move || worker.join())
+                .map_err(|_| error("acquisition thread panicked during startup"))?;
+            return match result {
+                Err(e) => Err(error(format!("{e:#}"))),
+                Ok(()) => Err(error("acquisition ended before startup completed")),
+            };
+        }
         Ok(Self {
+            output,
             stop,
             worker: Some(worker),
         })
+    }
+    /// The session directory, including automatically generated defaults.
+    #[getter]
+    fn output(&self) -> String {
+        self.output.to_string_lossy().into_owned()
     }
     fn close(&mut self, py: Python<'_>) -> PyResult<()> {
         self.stop.store(true, Ordering::SeqCst);

@@ -717,7 +717,7 @@ class IntegrationTest(unittest.TestCase):
         mapping["platform_state"]["values"]["0"] = "waiting"
         mapping_path=self.config_file("python-mapping.json",mapping)
         a=Acquisition(f"127.0.0.1:{self.device_port}",endpoint=self.endpoint,output=str(run_dir),
-                      profile=str(profile_path),channel_mapping=str(mapping_path))
+                      profile=str(profile_path),channel_mapping=str(mapping_path),format="parquet")
         try:
             c=Client(self.endpoint)
             wait_for(lambda: c.status()["state"]["platform_state"] == "waiting")
@@ -737,10 +737,10 @@ class IntegrationTest(unittest.TestCase):
     @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for embedded API test")
     def test_embedded_python_connect_later(self):
         from ultrazohm import Acquisition, Client
-        acquisition = Acquisition(endpoint=self.endpoint)
+        acquisition = Acquisition(endpoint=self.endpoint, output=str(Path(self.tmp.name)/"connect-later"))
         try:
             client = Client(self.endpoint)
-            self.assertFalse(wait_for(client.status)["state"]["connected"])
+            self.assertFalse(client.status()["state"]["connected"])
             self.spawn([sys.executable, ROOT/"javascope/test_server.py", "--port", self.device_port])
             def ready():
                 with socket.create_connection(("127.0.0.1", self.device_port), timeout=.1):
@@ -753,6 +753,58 @@ class IntegrationTest(unittest.TestCase):
         finally:
             acquisition.close()
         self.assertTrue(acquisition.is_finished())
+
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for embedded API test")
+    def test_embedded_python_defaults(self):
+        repo = Path(self.tmp.name)/"repo"
+        (repo/"tcl_scripts").mkdir(parents=True)
+        (repo/"tcl_scripts/vitis_headless.tcl").touch()
+        (repo/"vitis/software").mkdir(parents=True)
+        cwd = repo/"uz_cli"
+        cwd.mkdir()
+        self.spawn([sys.executable, ROOT/"javascope/test_server.py", "--port", self.device_port])
+        def ready():
+            with socket.create_connection(("127.0.0.1", self.device_port), timeout=.1):
+                return True
+        wait_for(ready)
+        code = r'''import json, sys, time
+from pathlib import Path
+import ultrazohm
+endpoint, device_port = sys.argv[1:]
+a = ultrazohm.Acquisition(endpoint=endpoint)
+try:
+    uz = ultrazohm.Client(endpoint)
+    assert not uz.status()["state"]["connected"]
+    # A second owner must fail during construction, leaving this service usable.
+    try:
+        ultrazohm.Acquisition(endpoint=endpoint)
+    except RuntimeError:
+        pass
+    else:
+        raise AssertionError("duplicate service unexpectedly started")
+    uz.connect("127.0.0.1", int(device_port))
+    uz.start_logging()
+    deadline = time.monotonic() + 10
+    while uz.status()["state"]["samples"] < 30:
+        assert time.monotonic() < deadline
+        time.sleep(.03)
+finally:
+    a.close()
+output = Path(a.output)
+assert output.parent == Path.cwd().parent/"artifacts/live_logs", output
+assert (output/"data.csv").is_file()
+assert (output/"data.parquet").is_file()
+assert json.loads((output/"end.json").read_text())["complete"]
+# Existing output directories must fail immediately too.
+try:
+    ultrazohm.Acquisition(endpoint=endpoint, output=str(output))
+except RuntimeError:
+    pass
+else:
+    raise AssertionError("existing output unexpectedly accepted")
+'''
+        subprocess.run([sys.executable, "-c", code, self.endpoint, str(self.device_port)],
+                       cwd=cwd, check=True, capture_output=True, text=True, timeout=30)
 
     def test_disconnect_flushes_partial_batch(self):
         self.start()

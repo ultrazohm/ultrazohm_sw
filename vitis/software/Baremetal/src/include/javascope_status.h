@@ -25,7 +25,7 @@
 
 /* Bits 31:30 carry the platform state; bits 29:0 keep their existing meanings.
  * Explicit codes keep the wire format independent of enum ordering.
- * Keep these codes in sync with uz_cli/src/protocol.rs.
+ * Regenerate the CLI channel mapping after changing these codes.
  */
 #define JAVASCOPE_PLATFORM_STATE_MASK    UINT32_C(0xC0000000)
 #define JAVASCOPE_PLATFORM_IDLE          UINT32_C(0x00000000)

@@ -122,6 +122,9 @@ impl Profile {
     pub fn load_files(profile: Option<&Path>, mapping: Option<&Path>) -> Result<Self> {
         let settings = ProfileSettings::load(profile)?;
         let mapping = ChannelMapping::load(mapping)?;
+        Self::from_mapping(settings, mapping)
+    }
+    pub fn from_mapping(settings: ProfileSettings, mapping: ChannelMapping) -> Result<Self> {
         let p = Self {
             api_version: mapping.api_version,
             name: settings.name,

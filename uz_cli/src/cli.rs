@@ -125,6 +125,15 @@ enum Command {
     Shutdown,
     /// Print the built-in runtime profile (initial channels and sampling period).
     Profile,
+    /// Generate a channel-mapping JSON from the repository's JavaScope headers.
+    CreateJsonFromJavascopeH {
+        /// Repository root; otherwise search upward from the current directory.
+        #[arg(long)]
+        repo: Option<PathBuf>,
+        /// Output JSON (default: <repo>/artifacts/channel_mappings/javascope.json).
+        #[arg(long)]
+        output: Option<PathBuf>,
+    },
     /// Print the built-in firmware channel mapping (IDs and provenance).
     ChannelMapping,
 }
@@ -178,17 +187,7 @@ fn dispatch(args: Args) -> Result<()> {
             ack,
             interactive,
         } => {
-            let output = match output {
-                Some(path) => path,
-                None => {
-                    let root =
-                        crate::vitis::repository(None).or_else(|_| std::env::current_dir())?;
-                    let parent = root.join("artifacts/live_logs");
-                    std::fs::create_dir_all(&parent)?;
-                    let now: chrono::DateTime<chrono::Utc> = std::time::SystemTime::now().into();
-                    parent.join(now.format("%Y%m%d-%H%M%S-%fZ").to_string())
-                }
-            };
+            let output = service::session_output(output)?;
             eprintln!(
                 "Session output: {} (logging starts on request)",
                 output.display()
@@ -415,6 +414,11 @@ fn execute(command: Command, endpoint: &str) -> Result<()> {
             );
             return Ok(());
         }
+        Command::CreateJsonFromJavascopeH { repo, output } => {
+            let path = crate::header_mapping::run(repo.as_deref(), output.as_deref())?;
+            println!("Created channel mapping: {}", path.display());
+            return Ok(());
+        }
         Command::ChannelMapping => {
             println!(
                 "{}",
@@ -468,6 +472,10 @@ mod tests {
                 .contains(&"start_logging".into())
         );
         assert!(helper.candidates("", 0).1.contains(&"help".into()));
+        assert_eq!(
+            helper.candidates("create-json", 11).1,
+            vec!["create-json-from-javascope-h"]
+        );
         assert!(!helper.candidates("", 0).1.contains(&"serve".into()));
         assert!(helper.candidates("connect ", 8).1.is_empty());
         assert!(helper.candidates("unknown", 7).1.is_empty());

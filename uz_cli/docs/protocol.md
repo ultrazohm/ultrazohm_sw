@@ -273,3 +273,14 @@ The service reserves the output directory at startup, even offline. `run.json`
 contains the optional startup device; later connection requests are in
 `commands.jsonl`, and `end.json` includes the final device address. Sample time
 starts with acquisition, excluding time spent waiting offline.
+
+## Generating a mapping from firmware headers
+
+`create-json-from-javascope-h` reads the repository's `javascope.h` enum sections
+and commented send-field names, `javascope_status.h` platform-state masks/codes,
+and the shared/FreeRTOS packet-size constants. It emits the same channel-mapping
+schema consumed by `--channel-mapping` and Python `channel_mapping`.
+By default the output is `artifacts/channel_mappings/javascope.json` beneath the
+repository root; `--repo` and `--output` override discovery and destination.
+Unsupported expressions and ambiguous names are errors. Existing output is not
+touched on parse/validation failure. See the README for supported header syntax.

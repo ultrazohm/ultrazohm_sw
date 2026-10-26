@@ -394,6 +394,55 @@ old data may arrive after a selection because firmware has no acknowledgment, so
 labels represent requested assignments rather than confirmed sample boundaries.
 Changes are allowed only before either logger starts or after both loggers stop.
 
+### Generate a mapping from the checkout
+
+```sh
+ultrazohm create-json-from-javascope-h
+# Optional overrides:
+ultrazohm create-json-from-javascope-h --repo /path/to/ultrazohm_sw --output my-mapping.json
+```
+
+The command works standalone and at the `ultrazohm>` prompt, including tab
+completion. It finds the repository above the current directory and writes
+`<repo>/artifacts/channel_mappings/javascope.json` by default, creating its parent
+directories. An explicit `--output` path is relative to the current directory.
+Re-running replaces the output after parsing and validation succeed.
+
+It reads these repository paths:
+
+- `vitis/software/Baremetal/src/include/javascope.h`: observable, slow-signal,
+  and command enums, plus the commented `SND_FLD` names used by JavaScope.
+  Send-field names become writable variable names mapped to `Set_Send_Field_N` IDs.
+- `vitis/software/Baremetal/src/include/javascope_status.h`: platform-state mask
+  and wire codes. Names come from `JAVASCOPE_PLATFORM_<NAME>`, lowercased.
+- `vitis/software/shared/APU_RPU_shared.h`: `JS_CHANNELS`.
+- `vitis/software/FreeRTOS/main.h` and `defines.h`: `NETWORK_SEND_FIELD_SIZE`
+  and its referenced `JS_SAMPLES_PER_PACKET` constant.
+
+Like JavaScope, header sections use one entry per line between the existing
+zero/end markers. Inline comments and whitespace are removed; the commented
+visualization block is intentionally read. Numeric enums honor explicit integer
+assignments and implicit increments. Constants support decimal, hex, octal,
+integer suffixes, `UINT32_C`, parentheses, and named constant aliases. This is
+not a C preprocessor: unsupported expressions, missing/duplicate markers,
+duplicate writable names, and unsupported wire geometry fail with an error
+instead of silently producing a mapping. GUI-only units, button labels, and
+receive-field layout are not part of the CLI mapping schema.
+
+No Vitis, C compiler, Python parser, or Rust toolchain is needed at runtime.
+Git is optional: provenance records HEAD and a `-dirty` suffix when the input
+headers have local changes; without Git metadata it records `unknown`.
+
+Load the result when starting a new service:
+
+```sh
+ultrazohm serve --interactive --channel-mapping artifacts/channel_mappings/javascope.json
+```
+
+Or pass that path as Python `Acquisition(channel_mapping=...)`. Generating JSON
+inside a running shell does not change that service's active mapping. It also
+does not replace the embedded default or change the runtime profile.
+
 ## Python
 
 Build/install the native package using a Python virtual environment:
@@ -421,36 +470,52 @@ uz.stop_logging_slow_data()
 uz.stop()
 ```
 
-For embedded acquisition (no CLI executable required; omit `profile` and
-`channel_mapping` to use embedded defaults):
+For embedded acquisition with the same defaults as bare `ultrazohm`:
+
+```python
+import ultrazohm
+
+acquisition = ultrazohm.Acquisition()
+uz = ultrazohm.Client()
+uz.connect()       # 192.168.1.233:1000
+uz.start_logging()
+print(acquisition.output)
+# Run your tests, then finalize all logs:
+acquisition.close()
+```
+
+`Acquisition()` starts disconnected on `127.0.0.1:19740`, loads the embedded
+profile and channel mapping, and prepares
+`<repo>/artifacts/live_logs/<UTC timestamp>` (or beneath the current directory
+when outside a checkout). Parent directories are created automatically. It
+records Parquet and CSV by default, with ACKs and both loggers initially off.
+The constructor returns only when the service is ready, so immediate `connect()`
+and `start_logging()` calls need no startup polling. If a `device` is passed,
+it also waits for that initial connection. Startup failures raise immediately;
+`close()` waits for finalization and surfaces later runtime/logging errors.
+
+For custom settings and guaranteed cleanup:
 
 ```python
 import time
-from ultrazohm import Acquisition, Client
+import ultrazohm
 
-acquisition = Acquisition(
+acquisition = ultrazohm.Acquisition(
     "127.0.0.1:1000", output="python-run", format="parquet",
     profile="my-profile.json", channel_mapping="my-channel-mapping.json",
 )
 try:
-    uz = Client()
-    # Service startup is asynchronous. close() surfaces any startup/runtime error.
-    while True:
-        if acquisition.is_finished():
-            acquisition.close()
-            raise RuntimeError("acquisition ended before startup")
-        try:
-            uz.status()
-            break
-        except RuntimeError:
-            time.sleep(0.05)
+    uz = ultrazohm.Client()
     uz.set_observable("lifecheck", 1)
     uz.start_logging()
     time.sleep(2)
     uz.stop_logging()
 finally:
-    acquisition.close()  # Wait for draining, Parquet merge and optional CSV export
+    acquisition.close()
 ```
+
+Python access to local build/flash/generation commands and optional Vitis tool
+paths is tracked in the [roadmap](docs/architecture.md#todo-python-access-to-local-tooling).
 
 The embedded service lifetime is bounded by the Python process. The external
 service is the option for logging that must survive Python exit. Both use Rust
@@ -607,7 +672,7 @@ require a connection. A second connect while connected is rejected. Transport
 failure after connection still ends acquisition and finalizes logs.
 
 Python can also create `Acquisition(output="measurement-010")` without a device,
-then call `Client().connect()` once the service endpoint is ready. Passing
+then call `Client().connect()` immediately after construction. Passing
 `device="192.168.1.233:1000"` to `Acquisition` retains immediate connection.
 The launchers also support explicit `--launch cli` or `--launch example`.
 

@@ -145,7 +145,11 @@ local response. Use an OS process supervisor for unattended operation.
 
 Python `Client` uses a PyO3 native extension, releases the GIL during socket calls,
 and talks to an existing service. `Acquisition` optionally runs the very same
-Rust service in a native thread inside Python, also with no Python sample loop.
+Rust service in a native thread inside Python, also with no Python sample loop. The
+constructor waits (without holding the GIL) until the service and optional device
+connection are ready, and raises startup errors immediately. It shares CLI session
+path resolution and defaults to CSV plus Parquet, with logging initially off.
+`Acquisition.output` exposes the resolved session directory.
 An embedded service ends with its Python process; use the external executable
 when logging must outlive Python as well as the GUI. The wheel and standalone
 binary are separate deliverables.
@@ -267,3 +271,23 @@ output and viewer support are designed and implemented together.
   never-received observables, empty recordings, segment boundaries, invalid
   values, and differing fast/slow timestamps. Verify equivalent CSV/Parquet
   interpretation and continued support for existing forward-filled recordings.
+
+## TODO: Python access to local tooling
+
+- Expose module-level Python functions for the existing local CLI commands:
+  `build`, `build_clean`, `flash`, `generate` (including opening the GUI),
+  `create_json_from_javascope_h`, `profile`, and `channel_mapping`.
+  Keep device-control operations on `Client` and embedded service ownership on
+  `Acquisition`; local tools should not require an acquisition service.
+- Reuse the Rust implementations. Return dictionaries/paths for configuration
+  operations; stream build output and raise Python exceptions on tool failures.
+  Release the GIL during blocking tool execution.
+- Add optional `repo` and `tool_path` parameters, with matching CLI options.
+  Resolve the Vitis installation's XSCT launcher and required Make/compiler
+  environment on Linux and Windows; retain environment/PATH discovery when omitted.
+- Prevent concurrent operations against one workspace. Document stopping and
+  closing acquisition before flashing, then reconnecting after programming.
+- Test Python/CLI parity, paths with spaces, absent tools, failed builds,
+  unchanged builds, and interruption without requiring attached hardware.
+
+These Python tooling functions and tool-path overrides are planned, not implemented.

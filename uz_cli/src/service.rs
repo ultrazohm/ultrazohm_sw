@@ -24,6 +24,18 @@ use std::{
 pub const DEFAULT_DEVICE_IP: &str = "192.168.1.233";
 pub const DEFAULT_DEVICE_PORT: u16 = 1000;
 pub const DEFAULT_ENDPOINT: &str = "127.0.0.1:19740";
+/// Resolve session output identically for CLI and embedded Python acquisition.
+pub fn session_output(output: Option<PathBuf>) -> Result<PathBuf> {
+    if let Some(path) = output {
+        return std::path::absolute(path).context("cannot resolve output directory");
+    }
+    let root = crate::vitis::repository(None).or_else(|_| std::env::current_dir())?;
+    let parent = root.join("artifacts/live_logs");
+    fs::create_dir_all(&parent)?;
+    let now: chrono::DateTime<chrono::Utc> = std::time::SystemTime::now().into();
+    Ok(parent.join(now.format("%Y%m%d-%H%M%S-%fZ").to_string()))
+}
+
 const MAX_MESSAGE: usize = 65536;
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(tag = "op", rename_all = "snake_case", deny_unknown_fields)]

@@ -8,6 +8,7 @@ Run (without a separate `ultrazohm serve` process):
 Set PROFILE for startup selections and CHANNEL_MAPPING for firmware names/IDs.
 The JSON is loaded at runtime; changing it does not require rebuilding Rust.
 Enable commands request state changes; firmware interlocks still apply.
+After each 10-second phase, print the latest reported platform state.
 """
 
 import time
@@ -16,7 +17,7 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import polars as pl
-from ultrazohm import Acquisition, Client
+import ultrazohm
 
 DEVICE = "192.168.1.233:1000"
 PROFILE = Path(__file__).parent / "profiles" / "standard.json"
@@ -27,56 +28,39 @@ LOG_ROOT = Path(__file__).resolve().parents[1] / "artifacts" / "live_logs"
 LOG_ROOT.mkdir(parents=True, exist_ok=True)
 OUTPUT = LOG_ROOT / ("lifecheck-" + datetime.now().strftime("%Y%m%d-%H%M%S-%f"))
 
-# Rust connects in the background; logging starts explicitly below.
-acquisition = Acquisition(
+# Construction waits for the service and device connection; logging starts below.
+acquisition = ultrazohm.Acquisition(
     DEVICE, profile=str(PROFILE), channel_mapping=str(CHANNEL_MAPPING),
     output=str(OUTPUT), format="parquet"
 )
-uz = Client()
-connected = False
+uz = ultrazohm.Client()
 
-try:
-    # Startup is asynchronous: wait until the control API is ready.
-    deadline = time.monotonic() + 10
-    while True:
-        if acquisition.is_finished():
-            acquisition.close()  # Report a connection or logging error.
-            raise RuntimeError("Acquisition ended during startup")
-        try:
-            uz.status()
-            connected = True
-            break
-        except RuntimeError:
-            if time.monotonic() >= deadline:
-                raise TimeoutError("UltraZohm did not become ready")
-            time.sleep(0.1)
+# Startup applies PROFILE["initial_channels"]. Names come from CHANNEL_MAPPING.
+# Override a selection before starting any logging if desired.
+uz.set_observable("JSO_lifecheck", 1)
+# If implemented in your firmware and listed in your custom channel mapping:
+# uz.set_observable("JSO_MY_NEW_OBSERVABLE", 5)
+uz.start_logging()  # Fast channels only; slow logging is independently optional.
 
-    # Startup applies PROFILE["initial_channels"]. Names come from CHANNEL_MAPPING.
-    # Override a selection before starting any logging if desired.
-    uz.set_observable("JSO_lifecheck", 1)
-    # If implemented in your firmware and listed in your custom channel mapping:
-    # uz.set_observable("JSO_MY_NEW_OBSERVABLE", 5)
-    uz.start_logging()  # Fast channels only; slow logging is independently optional.
+print("Running for 10 seconds...")
+uz.enable_system()
+time.sleep(1)
+print("Reported platform state:", uz.status()["state"]["platform_state"])
+time.sleep(9)
 
-    print("Running for 10 seconds...")
-    uz.enable_system()
-    time.sleep(10)
+print("Control for 10 seconds...")
+uz.enable_control()
+time.sleep(1)
+print("Reported platform state:", uz.status()["state"]["platform_state"])
+time.sleep(10)
 
-    print("Control for 10 seconds...")
-    uz.enable_control()
-    time.sleep(10)
-
-    print("Stopped for 10 seconds (still logging)...")
-    uz.stop()
-    time.sleep(10)
-    uz.stop_logging()  # Finalizes in the background; close() below waits for it.
-finally:
-    # Also request Stop if interrupted; always finish writing the log.
-    try:
-        if connected and not acquisition.is_finished():
-            uz.stop()
-    finally:
-        acquisition.close()  # Wait until data.parquet is complete.
+print("Stopped for 10 seconds (still logging)...")
+uz.stop()
+time.sleep(1)
+print("Reported platform state:", uz.status()["state"]["platform_state"])
+time.sleep(9)
+uz.stop_logging()  # Finalizes in the background; close() below waits for it.
+acquisition.close()  # Wait until data.parquet is complete.
 
 # Nominal sample time uses the profile sampling period (default: 100 microseconds).
 data = pl.read_parquet(OUTPUT / "data.parquet")

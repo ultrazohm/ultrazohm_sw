@@ -1,4 +1,5 @@
 use crate::{
+    data::{DataView, Query, Selection, Source},
     live::{DataOptions, LiveBuffer, MAX_SNAPSHOT_BYTES, selected_columns},
     profile::Profile,
     protocol::{decode_frame, encode_command},
@@ -44,6 +45,9 @@ pub enum Operation {
     Status,
     Observables,
     GetLiveData { last_n_samples: usize },
+    DataInfo { source: Source },
+    ReadData { query: Query },
+    Recordings,
     Stop,
     EnableSystem,
     EnableControl,
@@ -121,7 +125,10 @@ fn read_line(stream: &mut TcpStream, timeout: Duration) -> Result<Vec<u8>> {
 }
 pub fn request(endpoint: &str, command: Operation) -> Result<Value> {
     ensure!(
-        !matches!(command, Operation::GetLiveData { .. }),
+        !matches!(
+            command,
+            Operation::GetLiveData { .. } | Operation::ReadData { .. }
+        ),
         "use get_live_data for binary sample responses"
     );
     let (reply, _) = exchange(endpoint, command, false)?;
@@ -134,7 +141,11 @@ pub fn get_live_data(endpoint: &str, last_n_samples: usize) -> Result<Vec<u8>> {
     Ok(bytes)
 }
 
-fn exchange(endpoint: &str, command: Operation, binary: bool) -> Result<(Value, Vec<u8>)> {
+pub(crate) fn exchange(
+    endpoint: &str,
+    command: Operation,
+    binary: bool,
+) -> Result<(Value, Vec<u8>)> {
     let mut socket = TcpStream::connect_timeout(&local_address(endpoint)?, Duration::from_secs(2))?;
     let timeout = Duration::from_secs(if binary || matches!(command, Operation::Connect { .. }) {
         30
@@ -204,13 +215,14 @@ pub fn serve_with_ready(
     }
     let state = Arc::new(Mutex::new(State::default()));
     let ack = Arc::new(AtomicBool::new(config.ack));
+    let run_id = format!("{}-{}", now_ns(), std::process::id());
     let mut events: Option<File> = None;
     if let Some(dir) = &config.output {
         fs::create_dir(dir)?;
         fs::write(
             dir.join("run.json"),
             serde_json::to_vec_pretty(&json!({
-                "schema_version":4,"run_id":format!("{}-{}",now_ns(),std::process::id()),"started_unix_ns":now_ns(),"device":config.device,
+                "schema_version":4,"run_id":run_id,"started_unix_ns":now_ns(),"device":config.device,
                 "profile":config.profile,"format":config.format,"data_options":config.data,
                 "time_basis":"seconds from acquisition start; configured sample period; gaps unknown",
                 "storage_layout":"explicit_independent_recordings","source":"ultrazohm",
@@ -249,7 +261,9 @@ pub fn serve_with_ready(
     }
     eprintln!("UltraZohm service listening on {}", config.endpoint);
     ready();
+    let mut query_workers: Vec<thread::JoinHandle<()>> = Vec::new();
     while !shutdown.load(Ordering::SeqCst) {
+        query_workers.retain(|worker| !worker.is_finished());
         if let Some(error) = recordings.error() {
             state.lock().unwrap().error.get_or_insert(error);
             shutdown.store(true, Ordering::SeqCst);
@@ -264,6 +278,7 @@ pub fn serve_with_ready(
         match listener.accept() {
             Ok((mut socket, _)) => {
                 let mut payload = None;
+                let mut query_job = None;
                 let result: Result<Value> = (|| {
                     // Windows accepted sockets inherit the nonblocking listener mode.
                     // Requests and replies below use blocking I/O with bounded timeouts.
@@ -275,6 +290,56 @@ pub fn serve_with_ready(
                     ensure!(req.api_version == 1, "unsupported API version");
                     let mut wire = None;
                     match &req.command {
+                        Operation::ReadData { query } => {
+                            ensure!(
+                                query_workers.len() < 4,
+                                "too many concurrent data queries; retry after a current query finishes"
+                            );
+                            let view = data_view(
+                                &run_id,
+                                &query.source,
+                                &ring,
+                                &recordings,
+                                &config.profile,
+                                &selections,
+                                connection.is_some(),
+                                Some(&query.selection),
+                            )?;
+                            query_job = Some((view, query.clone()));
+                            return Ok(json!({}));
+                        }
+                        Operation::DataInfo { source } => {
+                            let view = data_view(
+                                &run_id,
+                                source,
+                                &ring,
+                                &recordings,
+                                &config.profile,
+                                &selections,
+                                connection.is_some(),
+                                None,
+                            )?;
+                            return Ok(json!({"api_version":1,"ok":true,"info":view.info}));
+                        }
+                        Operation::Recordings => {
+                            let mut infos = Vec::new();
+                            for source in recordings.sources() {
+                                infos.push(
+                                    data_view(
+                                        &run_id,
+                                        &source,
+                                        &ring,
+                                        &recordings,
+                                        &config.profile,
+                                        &selections,
+                                        connection.is_some(),
+                                        None,
+                                    )?
+                                    .info,
+                                );
+                            }
+                            return Ok(json!({"api_version":1,"ok":true,"recordings":infos}));
+                        }
                         Operation::GetLiveData { last_n_samples } => {
                             use polars::prelude::*;
                             ensure!(connection.is_some(), "not connected; use connect first");
@@ -428,6 +493,11 @@ pub fn serve_with_ready(
                         json!({"api_version":1,"ok":true,"outcome":if wire.is_some(){"sent_unconfirmed"}else{"applied_locally"},"logging":recordings.status()}),
                     )
                 })();
+                if let Some((view, query)) = query_job {
+                    query_workers
+                        .push(thread::spawn(move || serve_data_query(socket, view, query)));
+                    continue;
+                }
                 let response = match result {
                     Ok(v) => v,
                     Err(e) => json!({"api_version":1,"ok":false,"error":format!("{e:#}")}),
@@ -447,6 +517,9 @@ pub fn serve_with_ready(
                 shutdown.store(true, Ordering::SeqCst);
             }
         }
+    }
+    for worker in query_workers {
+        let _ = worker.join();
     }
     if let Some(Connection {
         writer,
@@ -478,6 +551,59 @@ pub fn serve_with_ready(
         bail!("{e}");
     }
     Ok(())
+}
+
+#[allow(clippy::too_many_arguments)] // Immutable service context plus the requested source/window.
+fn data_view(
+    run_id: &str,
+    source: &Source,
+    ring: &Mutex<LiveBuffer>,
+    recordings: &Recordings,
+    profile: &Profile,
+    selections: &Value,
+    connected: bool,
+    selection: Option<&Selection>,
+) -> Result<DataView> {
+    if let Some(n) = source.recording {
+        DataView::recorded(
+            run_id,
+            source,
+            recordings.history(&source.stream, n)?.as_ref(),
+            profile,
+            selection,
+        )
+    } else {
+        ensure!(connected, "not connected; use connect first");
+        DataView::live(run_id, source, ring, profile, selections, selection)
+    }
+}
+
+fn serve_data_query(mut socket: TcpStream, view: DataView, query: Query) {
+    use polars::prelude::*;
+    let result = (|| -> Result<(Value, Vec<u8>)> {
+        let (mut df, cursor, start, stop) = view.read(&query)?;
+        let mut bytes = Vec::new();
+        IpcStreamWriter::new(&mut bytes).finish(&mut df)?;
+        ensure!(
+            bytes.len() <= MAX_SNAPSHOT_BYTES,
+            "snapshot exceeds response limit; request a smaller range"
+        );
+        Ok((
+            json!({"api_version":1,"ok":true,"info":view.info,"cursor":cursor,"start":start,"stop":stop,
+            "rows":df.height(),"arrow_bytes":bytes.len(),"mapping_confirmed":false}),
+            bytes,
+        ))
+    })();
+    let (header, body) = match result {
+        Ok(value) => value,
+        Err(error) => (
+            json!({"api_version":1,"ok":false,"error":format!("{error:#}")}),
+            Vec::new(),
+        ),
+    };
+    if serde_json::to_writer(&mut socket, &header).is_ok() && socket.write_all(b"\n").is_ok() {
+        let _ = socket.write_all(&body);
+    }
 }
 
 struct Connection {
@@ -593,13 +719,14 @@ impl ConnectionContext {
                             .decode(frame.status)
                             .map(str::to_owned);
                     }
+                    let frame = Arc::new(frame);
                     {
                         ring.lock().unwrap().push(index, frame.clone());
                     }
                     {
                         let destinations = routes.lock().unwrap();
                         for tx in destinations.iter().flatten() {
-                            tx.try_send((index, frame.clone())).context("logger queue full or failed; acquisition stopped, samples not silently discarded")?;
+                            tx.send(index, frame.clone())?;
                         }
                     }
                     index += profile.samples_per_packet as u64;

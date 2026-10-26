@@ -1,6 +1,7 @@
 //! Independent recording lifetimes. Disk finalization never blocks device control.
 use crate::{
-    live::DataOptions,
+    data::{History, Stream},
+    live::{DataOptions, selected_columns},
     profile::Profile,
     protocol::Frame,
     storage::{Format, LogWriter},
@@ -19,8 +20,29 @@ use std::{
     time::{Duration, Instant},
 };
 
-type Batch = (u64, Frame);
-pub type Routes = Arc<Mutex<[Option<SyncSender<Batch>>; 2]>>;
+type Batch = (u64, Arc<Frame>);
+pub struct Route {
+    tx: SyncSender<Batch>,
+    history: Arc<Mutex<History>>,
+}
+impl Route {
+    pub fn send(&self, index: u64, frame: Arc<Frame>) -> Result<()> {
+        let mut history = self.history.lock().unwrap();
+        ensure!(
+            history.stop.is_none_or(|stop| stop == index),
+            "recording sample gap"
+        );
+        ensure!(
+            history.pending_samples + frame.slow_raw.len() <= history.max_pending_samples,
+            "pending recording memory limit exceeded"
+        );
+        self.tx.try_send((index, frame.clone())).context(
+            "logger queue full or failed; acquisition stopped, samples not silently discarded",
+        )?;
+        history.accepted(index, frame)
+    }
+}
+pub type Routes = Arc<Mutex<[Option<Route>; 2]>>;
 
 // Leave headroom while a large segment is encoded and synced. With 15 samples
 // per frame at 10 kHz this holds 3.072 seconds, independently of live history.
@@ -31,6 +53,8 @@ pub struct RecordingState {
     pub phase: &'static str,
     pub parquet: Option<PathBuf>,
     pub error: Option<String>,
+    pub handle: Option<PathBuf>,
+    pub backend: &'static str,
 }
 impl Default for RecordingState {
     fn default() -> Self {
@@ -38,12 +62,15 @@ impl Default for RecordingState {
             phase: "idle",
             parquet: None,
             error: None,
+            handle: None,
+            backend: "parquet",
         }
     }
 }
 
 pub struct Recordings {
     options: DataOptions,
+    histories: std::collections::BTreeMap<(bool, u64), Arc<Mutex<History>>>,
     pub routes: Routes,
     states: Arc<Mutex<[RecordingState; 2]>>,
     workers: [Option<thread::JoinHandle<()>>; 2],
@@ -61,6 +88,7 @@ impl Recordings {
     ) -> Self {
         Self {
             options,
+            histories: Default::default(),
             routes: Arc::new(Mutex::new([None, None])),
             states: Arc::new(Mutex::new(Default::default())),
             workers: [None, None],
@@ -73,6 +101,21 @@ impl Recordings {
     pub fn status(&self) -> Value {
         let s = self.states.lock().unwrap();
         json!({"fast":s[0], "slow":s[1]})
+    }
+    pub fn history(&self, stream: &Stream, recording: u64) -> Result<Arc<Mutex<History>>> {
+        self.histories
+            .get(&(*stream == Stream::Slow, recording))
+            .cloned()
+            .context("recording does not exist")
+    }
+    pub fn sources(&self) -> Vec<crate::data::Source> {
+        self.histories
+            .keys()
+            .map(|(slow, n)| crate::data::Source {
+                stream: if *slow { Stream::Slow } else { Stream::Fast },
+                recording: Some(*n),
+            })
+            .collect()
     }
     pub fn active(&self) -> bool {
         self.routes.lock().unwrap().iter().any(Option::is_some)
@@ -113,13 +156,14 @@ impl Recordings {
         } else {
             base
         };
-        let mut log = LogWriter::new(
+        let mut log = LogWriter::new_for_backend(
             dir.clone(),
             self.profile.clone(),
             self.format,
             stem.clone(),
             slow,
             selections,
+            self.options.recording_backend,
         )?;
         log.segment_rows = self.options.segment_rows;
         let metadata_path = dir.join(format!("{stem}.json"));
@@ -133,11 +177,33 @@ impl Recordings {
         let file = fs::File::create_new(&metadata_path)?;
         serde_json::to_writer_pretty(file, &metadata)?;
         let (tx, rx) = mpsc::sync_channel::<Batch>(LOGGER_QUEUE_FRAMES);
+        let history = Arc::new(Mutex::new(History {
+            reader: log.reader(),
+            start: None,
+            stop: None,
+            persisted_stop: None,
+            pending: Default::default(),
+            pending_samples: 0,
+            max_pending_samples: self
+                .options
+                .segment_rows
+                .saturating_add((LOGGER_QUEUE_FRAMES + 2) * self.profile.samples_per_packet),
+            columns: if slow {
+                Vec::new()
+            } else {
+                selected_columns(&self.profile, selections)?
+            },
+            slow,
+        }));
+        self.histories.insert((slow, n), history.clone());
         self.states.lock().unwrap()[slot] = RecordingState {
             phase: "recording",
             parquet: Some(dir.join(format!("{stem}.parquet"))),
             error: None,
+            handle: Some(crate::backend::index_path(dir, &stem)),
+            backend: "parquet",
         };
+        let writer_history = history.clone();
         let states = self.states.clone();
         let flush_interval = Duration::from_millis(self.options.flush_interval_ms);
         self.workers[slot] = Some(thread::spawn(move || {
@@ -149,19 +215,24 @@ impl Recordings {
                         Ok((index, frame)) => {
                             rows += frame.slow_raw.len() as u64;
                             if log.push(index, frame)? {
+                                writer_history.lock().unwrap().committed()?;
                                 last_flush = Instant::now();
                             } else if last_flush.elapsed() >= flush_interval {
                                 log.flush()?;
+                                writer_history.lock().unwrap().committed()?;
                                 last_flush = Instant::now();
                             }
                         }
                         Err(mpsc::RecvTimeoutError::Timeout) => {
                             log.flush()?;
+                            writer_history.lock().unwrap().committed()?;
                             last_flush = Instant::now();
                         }
                         Err(mpsc::RecvTimeoutError::Disconnected) => break,
                     }
                 }
+                log.flush()?;
+                writer_history.lock().unwrap().committed()?;
                 log.finish()
             })();
             let mut error = result.err().map(|e| format!("logging: {e:#}"));
@@ -179,7 +250,7 @@ impl Recordings {
             s[slot].error = error;
         }));
         // Receiver uses the same lock: the recording starts at a complete frame boundary.
-        self.routes.lock().unwrap()[slot] = Some(tx);
+        self.routes.lock().unwrap()[slot] = Some(Route { tx, history });
         self.counts[slot] = n;
         Ok(())
     }

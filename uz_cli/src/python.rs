@@ -37,6 +37,72 @@ fn live_data(
     Ok(PyBytes::new(py, &bytes))
 }
 
+/// Query metadata and Arrow payload together so cursors describe exactly these rows.
+#[pyfunction]
+fn data_query<'py>(
+    py: Python<'py>,
+    endpoint: String,
+    command_json: String,
+) -> PyResult<(String, Bound<'py, PyBytes>)> {
+    let (reply, bytes) = py.detach(move || -> PyResult<_> {
+        let op: Operation = serde_json::from_str(&command_json).map_err(error)?;
+        if !matches!(op, Operation::ReadData { .. }) {
+            return Err(error("expected read_data operation"));
+        }
+        service::exchange(&endpoint, op, true).map_err(error)
+    })?;
+    Ok((
+        serde_json::to_string(&reply).map_err(error)?,
+        PyBytes::new(py, &bytes),
+    ))
+}
+#[pyfunction]
+fn recording_info(py: Python<'_>, path: String) -> PyResult<String> {
+    py.detach(move || {
+        let reader = crate::backend::open(std::path::Path::new(&path)).map_err(error)?;
+        serde_json::to_string(&reader.info().map_err(error)?).map_err(error)
+    })
+}
+#[pyfunction]
+fn recording_data(
+    py: Python<'_>,
+    path: String,
+    start: u64,
+    stop: u64,
+) -> PyResult<Bound<'_, PyBytes>> {
+    let bytes = py.detach(move || -> PyResult<Vec<u8>> {
+        use polars::prelude::*;
+        let reader = crate::backend::open(std::path::Path::new(&path)).map_err(error)?;
+        let info = reader.info().map_err(error)?;
+        let per_row: usize = info
+            .fields
+            .iter()
+            .map(|f| match f.dtype.as_str() {
+                "f64" => 8,
+                "str" => 256,
+                _ => 4,
+            })
+            .sum();
+        if start > stop
+            || stop - start > ((crate::live::MAX_SNAPSHOT_BYTES - 65536) / per_row) as u64
+        {
+            return Err(error(
+                "range is invalid or exceeds response limit; use iter_batches",
+            ));
+        }
+        let mut df = reader.read_range(start, stop).map_err(error)?;
+        let mut bytes = Vec::new();
+        IpcStreamWriter::new(&mut bytes)
+            .finish(&mut df)
+            .map_err(error)?;
+        if bytes.len() > crate::live::MAX_SNAPSHOT_BYTES {
+            return Err(error("snapshot exceeds response limit"));
+        }
+        Ok(bytes)
+    })?;
+    Ok(PyBytes::new(py, &bytes))
+}
+
 /// Run the same CLI as the standalone binary, without requiring that binary.
 #[pyfunction]
 fn cli_main(py: Python<'_>, argv: Vec<String>) -> i32 {
@@ -54,7 +120,7 @@ struct Acquisition {
 impl Acquisition {
     #[new]
     #[allow(clippy::too_many_arguments)] // Python keyword options plus the GIL token.
-    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="both".to_string(), ack=false, channel_mapping=None, *, buffer_samples=960, segment_rows=1_000_000, flush_interval_ms=60_000))]
+    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="both".to_string(), ack=false, channel_mapping=None, *, buffer_samples=960, segment_rows=1_000_000, flush_interval_ms=60_000, recording_backend="parquet"))]
     fn new(
         py: Python<'_>,
         device: Option<String>,
@@ -67,8 +133,13 @@ impl Acquisition {
         buffer_samples: usize,
         segment_rows: usize,
         flush_interval_ms: u64,
+        recording_backend: &str,
     ) -> PyResult<Self> {
+        if recording_backend != "parquet" {
+            return Err(error("unsupported recording backend"));
+        }
         let data = DataOptions {
+            recording_backend: Default::default(),
             buffer_samples,
             segment_rows,
             flush_interval_ms,
@@ -144,7 +215,36 @@ impl Acquisition {
     fn is_finished(&self) -> bool {
         self.worker.as_ref().is_none_or(|w| w.is_finished())
     }
-    /// Resolve only a successfully finalized recording from this acquisition.
+    #[pyo3(signature=(stream="fast", recording=1))]
+    fn recording_handle_path(&self, stream: &str, recording: u64) -> PyResult<String> {
+        if self.worker.is_some() {
+            return Err(error("call acquisition.close() before reading recordings"));
+        }
+        if !matches!(stream, "fast" | "slow") || recording == 0 {
+            return Err(error(
+                "stream must be fast or slow; recording must be positive",
+            ));
+        }
+        let base = if recording == 1 {
+            "data".to_string()
+        } else {
+            format!("data_{recording:04}")
+        };
+        let id = if stream == "slow" {
+            format!("{base}_slow_data")
+        } else {
+            base
+        };
+        let path = crate::backend::index_path(&self.output, &id);
+        let reader = crate::backend::open(&path).map_err(error)?;
+        if !reader.info().map_err(error)?.complete {
+            return Err(error(
+                "recording is not complete; inspect its metadata for errors",
+            ));
+        }
+        Ok(path.to_string_lossy().into_owned())
+    }
+    /// Resolve only a successfully completed compatibility export from this acquisition.
     #[pyo3(signature=(stream="fast", recording=1))]
     fn recording_path(&self, stream: &str, recording: u32) -> PyResult<String> {
         if self.worker.is_some() {
@@ -190,6 +290,9 @@ impl Drop for Acquisition {
 fn _native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(request, m)?)?;
     m.add_function(wrap_pyfunction!(live_data, m)?)?;
+    m.add_function(wrap_pyfunction!(data_query, m)?)?;
+    m.add_function(wrap_pyfunction!(recording_info, m)?)?;
+    m.add_function(wrap_pyfunction!(recording_data, m)?)?;
     m.add_function(wrap_pyfunction!(cli_main, m)?)?;
     m.add_class::<Acquisition>()?;
     Ok(())

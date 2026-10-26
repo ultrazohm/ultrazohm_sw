@@ -1,8 +1,13 @@
 //! Finalized Parquet segments during acquisition; separate fast/slow Parquet and optional CSV at close.
-use crate::{profile::Profile, protocol::Frame};
+use crate::{
+    backend::{self, BackendKind, RecordingBackend, RecordingReader, SampleBatch},
+    profile::Profile,
+    protocol::Frame,
+};
 use anyhow::{Context, Result, ensure};
 use polars::prelude::*;
 use serde::{Deserialize, Serialize};
+use std::sync::Arc;
 use std::{
     fs::{self, File},
     path::{Path, PathBuf},
@@ -24,7 +29,8 @@ pub struct LogWriter {
     dir: PathBuf,
     profile: Profile,
     format: Format,
-    batch: Vec<(u64, Frame)>,
+    batch: Vec<(u64, Arc<Frame>)>,
+    backend: Box<dyn RecordingBackend>,
     fast_columns: Vec<(usize, String)>,
     slow_names: Vec<String>,
     stem: String,
@@ -43,6 +49,47 @@ impl LogWriter {
         stem: String,
         slow: bool,
         selections: &serde_json::Value,
+    ) -> Result<Self> {
+        Self::new_for_backend(
+            dir,
+            profile,
+            format,
+            stem,
+            slow,
+            selections,
+            BackendKind::Parquet,
+        )
+    }
+    pub fn new_for_backend(
+        dir: PathBuf,
+        profile: Profile,
+        format: Format,
+        stem: String,
+        slow: bool,
+        selections: &serde_json::Value,
+        kind: BackendKind,
+    ) -> Result<Self> {
+        Self::new_with_factory(
+            dir,
+            profile,
+            format,
+            stem,
+            slow,
+            selections,
+            move |dir, id, slow, period, schema| {
+                backend::create(kind, dir, id, slow, period, schema)
+            },
+        )
+    }
+    /// Inject a storage implementation without changing acquisition or query code.
+    pub fn new_with_factory(
+        dir: PathBuf,
+        profile: Profile,
+        format: Format,
+        stem: String,
+        slow: bool,
+        selections: &serde_json::Value,
+        factory: impl FnOnce(&Path, &str, bool, f64, &DataFrame) -> Result<Box<dyn RecordingBackend>>,
     ) -> Result<Self> {
         let mut fast_columns = Vec::new();
         let mut seen = std::collections::BTreeSet::new();
@@ -83,7 +130,10 @@ impl LogWriter {
             !dir.join(format!("{stem}.parquet")).exists(),
             "recording already exists"
         );
+        let empty = frames_dataframe(&[], 0, &profile, &fast_columns, &slow_names, slow)?;
+        let backend = factory(&dir, &stem, slow, profile.sample_period_us, &empty)?;
         Ok(Self {
+            backend,
             segment_rows: crate::live::DataOptions::default().segment_rows,
             dir,
             profile,
@@ -101,7 +151,8 @@ impl LogWriter {
         })
     }
     /// Return whether this push committed a segment, to reset the flush timer.
-    pub fn push(&mut self, index: u64, frame: Frame) -> Result<bool> {
+    pub fn push(&mut self, index: u64, frame: impl Into<Arc<Frame>>) -> Result<bool> {
+        let frame = frame.into();
         ensure!(
             self.next_index.is_none_or(|next| next == index),
             "missing or out-of-order samples"
@@ -116,68 +167,28 @@ impl LogWriter {
         }
         Ok(false)
     }
-    fn dataframe(&self) -> Result<DataFrame> {
-        let mut time = Vec::with_capacity(self.rows);
-        let mut status = Vec::with_capacity(self.rows);
-        let mut slow_id = Vec::with_capacity(self.rows);
-        let mut slow_name = Vec::with_capacity(self.rows);
-        let mut slow_raw = Vec::with_capacity(self.rows);
-        let mut slow_value = Vec::with_capacity(self.rows);
-        let mut channels: Vec<Vec<f32>> = (0..20).map(|_| Vec::with_capacity(self.rows)).collect();
-        for (first, f) in &self.batch {
-            for i in 0..f.slow_raw.len() {
-                time.push((first + i as u64) as f64 * self.profile.sample_period_us * 1e-6);
-                status.push(f.status);
-                if self.slow {
-                    slow_id.push(f.slow_ids[i]);
-                    slow_name.push(self.slow_names[f.slow_ids[i] as usize].as_str());
-                    slow_raw.push(f.slow_raw[i]);
-                    slow_value.push(f32::from_bits(f.slow_raw[i]));
-                } else {
-                    for (dest, source) in channels.iter_mut().zip(&f.channels) {
-                        dest.push(source[i]);
-                    }
-                }
-            }
-        }
-        let mut cols = vec![
-            Column::new("time".into(), time),
-            Column::new("status".into(), status),
-        ];
-        if self.slow {
-            cols.extend([
-                Column::new("observable".into(), slow_name),
-                Column::new("slow_id".into(), slow_id),
-                Column::new("slow_raw".into(), slow_raw),
-                Column::new("slow_value".into(), slow_value),
-            ]);
-        } else {
-            for (index, name) in &self.fast_columns {
-                cols.push(Column::new(
-                    name.clone().into(),
-                    std::mem::take(&mut channels[*index]),
-                ));
-            }
-        }
-        Ok(DataFrame::new(cols)?)
+    pub fn reader(&self) -> Arc<dyn RecordingReader> {
+        self.backend.reader()
     }
-
+    fn dataframe(&self) -> Result<DataFrame> {
+        frames_dataframe(
+            &self.batch,
+            self.rows,
+            &self.profile,
+            &self.fast_columns,
+            &self.slow_names,
+            self.slow,
+        )
+    }
     /// Commit a complete, independently readable Parquet segment for every format.
     pub fn flush(&mut self) -> Result<()> {
         if self.rows == 0 {
             return Ok(());
         }
-        {
-            let mut df = self.dataframe()?;
-            let target = self.segment(self.part);
-            ensure!(!target.exists(), "refusing to overwrite log segment");
-            let tmp = target.with_extension("parquet.partial");
-            let mut file = File::create_new(&tmp)?;
-            ParquetWriter::new(&mut file).finish(&mut df)?;
-            file.sync_all()?;
-            drop(file);
-            fs::rename(tmp, target)?;
-        }
+        self.backend.append(SampleBatch {
+            start: self.first_index.unwrap() + self.written_rows as u64,
+            data: self.dataframe()?,
+        })?;
         self.part += 1;
         self.written_rows += self.rows;
         self.rows = 0;
@@ -185,15 +196,25 @@ impl LogWriter {
         Ok(())
     }
 
+    #[cfg(test)]
     fn segment(&self, part: u64) -> PathBuf {
         self.dir
             .join(format!("{}-part-{part:08}.parquet", self.stem))
     }
 
-    /// Finalize before deleting any segments. Conversion failures retain the final
-    /// Parquet and all source segments; merge failures retain the source segments.
-    pub fn finish(mut self) -> Result<()> {
+    /// Finish the canonical recording, then create the requested compatibility exports.
+    pub fn finish(&mut self) -> Result<()> {
+        self.finish_recording()?;
+        self.export()
+    }
+
+    /// Storage completion is independent of any optional local export.
+    pub fn finish_recording(&mut self) -> Result<()> {
         self.flush()?;
+        self.backend.finish()
+    }
+
+    pub fn export(&self) -> Result<()> {
         self.merge()?;
         if !matches!(self.format, Format::Parquet) {
             let stem = &self.stem;
@@ -202,10 +223,6 @@ impl LogWriter {
                 &self.dir.join(format!("{stem}.csv")),
             )
             .context("CSV export failed; final Parquet and segments retained")?;
-        }
-        for part in 0..self.part {
-            fs::remove_file(self.segment(part))
-                .context("final files ready but segment cleanup failed")?;
         }
         Ok(())
     }
@@ -251,15 +268,12 @@ impl LogWriter {
         let mut writer = ParquetWriter::new(&mut file).batched(final_empty.schema())?;
         let mut merged_rows = 0usize;
         let mut output_rows = 0usize;
-        for part in 0..self.part {
-            // Each segment is bounded by the acquisition batch limit, not run length.
-            let df = ParquetReader::new(File::open(self.segment(part))?)
-                .finish()
-                .with_context(|| format!("reading segment {part}"))?;
-            ensure!(
-                df.schema() == empty.schema(),
-                "segment {part} schema mismatch"
-            );
+        for offset in (0..self.written_rows).step_by(65536) {
+            let first = self.first_index.unwrap_or(0) + offset as u64;
+            let stop =
+                self.first_index.unwrap_or(0) + (offset + 65536).min(self.written_rows) as u64;
+            let df = self.backend.reader().read_range(first, stop)?;
+            ensure!(df.schema() == empty.schema(), "recording schema mismatch");
             let times = df.column("time")?.f64()?;
             let first = self.first_index.unwrap_or(0) + merged_rows as u64;
             ensure!(
@@ -268,7 +282,7 @@ impl LogWriter {
                         .into_no_null_iter()
                         .eq((first..first + df.height() as u64)
                             .map(|i| i as f64 * self.profile.sample_period_us * 1e-6)),
-                "segment {part} has missing or out-of-order samples"
+                "recording has missing or out-of-order samples"
             );
             merged_rows += df.height();
             let output = if self.slow {
@@ -303,6 +317,59 @@ impl LogWriter {
         fs::rename(tmp, &target)?;
         Ok(())
     }
+}
+
+pub(crate) fn frames_dataframe(
+    frames: &[(u64, Arc<Frame>)],
+    rows: usize,
+    profile: &Profile,
+    fast_columns: &[(usize, String)],
+    slow_names: &[String],
+    slow: bool,
+) -> Result<DataFrame> {
+    let mut time = Vec::with_capacity(rows);
+    let mut status = Vec::with_capacity(rows);
+    let mut slow_id = Vec::with_capacity(rows);
+    let mut slow_name = Vec::with_capacity(rows);
+    let mut slow_raw = Vec::with_capacity(rows);
+    let mut slow_value = Vec::with_capacity(rows);
+    let mut channels: Vec<Vec<f32>> = (0..20).map(|_| Vec::with_capacity(rows)).collect();
+    for (first, f) in frames {
+        for i in 0..f.slow_raw.len() {
+            time.push((first + i as u64) as f64 * profile.sample_period_us * 1e-6);
+            status.push(f.status);
+            if slow {
+                slow_id.push(f.slow_ids[i]);
+                slow_name.push(slow_names[f.slow_ids[i] as usize].as_str());
+                slow_raw.push(f.slow_raw[i]);
+                slow_value.push(f32::from_bits(f.slow_raw[i]));
+            } else {
+                for (dest, source) in channels.iter_mut().zip(&f.channels) {
+                    dest.push(source[i]);
+                }
+            }
+        }
+    }
+    let mut cols = vec![
+        Column::new("time".into(), time),
+        Column::new("status".into(), status),
+    ];
+    if slow {
+        cols.extend([
+            Column::new("observable".into(), slow_name),
+            Column::new("slow_id".into(), slow_id),
+            Column::new("slow_raw".into(), slow_raw),
+            Column::new("slow_value".into(), slow_value),
+        ]);
+    } else {
+        for (index, name) in fast_columns {
+            cols.push(Column::new(
+                name.clone().into(),
+                std::mem::take(&mut channels[*index]),
+            ));
+        }
+    }
+    Ok(DataFrame::new(cols)?)
 }
 
 /// Convert the completed Parquet file in bounded slices; no CSV is written at ingest.
@@ -480,9 +547,13 @@ mod tests {
                     .all(|v| v == 2.5)
             );
             let csv_enabled = !matches!(format, Format::Parquet);
+            assert!(backend::index_path(&run.0, "data").is_file());
+            assert!(backend::index_path(&run.0, "data_slow_data").is_file());
             assert_eq!(
-                fs::read_dir(&run.0)?.count(),
-                if csv_enabled { 4 } else { 2 }
+                backend::open(&backend::index_path(&run.0, "data"))?
+                    .read_range(0, df.height() as u64)?
+                    .height(),
+                df.height()
             );
             if csv_enabled {
                 let csv = fs::read_to_string(run.0.join("data.csv"))?;
@@ -672,6 +743,10 @@ mod tests {
             log.flush()?;
             fs::create_dir(run.0.join(blocked))?;
             assert!(log.finish().is_err());
+            // Optional export failure does not invalidate committed measurement data.
+            let canonical = backend::open(&backend::index_path(&run.0, stem))?;
+            assert!(canonical.info()?.complete);
+            assert_eq!(canonical.read_range(150, 165)?.height(), 15);
             assert_eq!(
                 read(run.0.join(format!("{stem}-part-00000000.parquet")))?.height(),
                 15
@@ -702,6 +777,99 @@ mod tests {
         assert_eq!(read(run.0.join("data-part-00000000.parquet"))?.height(), 15);
         assert!(!run.0.join("data.parquet").exists());
         assert!(!run.0.join("data.csv").exists());
+        Ok(())
+    }
+
+    // A second backend used only in tests proves the recording/export code uses
+    // the storage contract rather than reaching into Parquet segment files.
+    #[derive(Clone)]
+    struct MemoryBackend(Arc<std::sync::Mutex<(backend::RecordingInfo, DataFrame)>>);
+    impl RecordingReader for MemoryBackend {
+        fn info(&self) -> Result<backend::RecordingInfo> {
+            Ok(self.0.lock().unwrap().0.clone())
+        }
+        fn read_range(&self, start: u64, stop: u64) -> Result<DataFrame> {
+            let state = self.0.lock().unwrap();
+            let first = state.0.start.unwrap_or(0);
+            ensure!(
+                start >= first && start <= stop && stop <= state.0.stop.unwrap_or(0),
+                "unavailable memory range"
+            );
+            Ok(state
+                .1
+                .slice((start - first) as i64, (stop - start) as usize))
+        }
+    }
+    impl RecordingBackend for MemoryBackend {
+        fn append(&mut self, batch: SampleBatch) -> Result<()> {
+            let mut state = self.0.lock().unwrap();
+            ensure!(
+                !state.0.complete && state.0.stop.is_none_or(|end| end == batch.start),
+                "invalid append"
+            );
+            state.0.start.get_or_insert(batch.start);
+            state.0.stop = Some(batch.start + batch.data.height() as u64);
+            state.1.vstack_mut(&batch.data)?;
+            Ok(())
+        }
+        fn reader(&self) -> Arc<dyn RecordingReader> {
+            Arc::new(self.clone())
+        }
+        fn finish(&mut self) -> Result<()> {
+            self.0.lock().unwrap().0.complete = true;
+            Ok(())
+        }
+    }
+    #[test]
+    fn alternate_backend_uses_same_recording_and_export_pipeline() -> Result<()> {
+        let run = Run::new();
+        let profile = Profile::load(None)?;
+        let mut log = LogWriter::new_with_factory(
+            run.0.clone(),
+            profile.clone(),
+            Format::Parquet,
+            "custom".into(),
+            false,
+            &serde_json::to_value(&profile.initial_channels)?,
+            |_dir, id, _slow, period, schema| {
+                Ok(Box::new(MemoryBackend(Arc::new(std::sync::Mutex::new((
+                    backend::RecordingInfo {
+                        schema_version: 1,
+                        backend: "test_memory".into(),
+                        recording_id: id.into(),
+                        stream: "fast".into(),
+                        sample_period_us: period,
+                        fields: schema
+                            .get_columns()
+                            .iter()
+                            .map(|c| backend::Field {
+                                name: c.name().to_string(),
+                                dtype: c.dtype().to_string(),
+                            })
+                            .collect(),
+                        start: None,
+                        stop: None,
+                        complete: false,
+                    },
+                    schema.clone(),
+                ))))))
+            },
+        )?;
+        log.segment_rows = 15;
+        log.push(100, frame(100, 15))?;
+        log.push(115, frame(115, 15))?;
+        let reader = log.reader();
+        let middle = reader.read_range(103, 127)?;
+        assert_eq!(middle.height(), 24);
+        assert_eq!(reader.info()?.backend, "test_memory");
+        log.finish()?;
+        assert!(reader.info()?.complete);
+        assert!(
+            read(run.0.join("custom.parquet"))?
+                .slice(3, 24)
+                .equals_missing(&middle)
+        );
+        assert!(!run.0.join("custom-part-00000000.parquet").exists());
         Ok(())
     }
 }

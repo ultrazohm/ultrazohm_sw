@@ -11,6 +11,9 @@ pub const MAX_SNAPSHOT_BYTES: usize = 128 * 1024 * 1024;
 
 #[derive(Clone, Debug, clap::Args, Serialize, Deserialize)]
 pub struct DataOptions {
+    /// Durable recording implementation, independent of CSV/Parquet export options.
+    #[arg(long, value_enum, default_value = "parquet")]
+    pub recording_backend: crate::backend::BackendKind,
     /// Recent sample history retained in RAM, independent of logging.
     #[arg(long, default_value_t = 960)]
     pub buffer_samples: usize,
@@ -25,6 +28,7 @@ pub struct DataOptions {
 impl Default for DataOptions {
     fn default() -> Self {
         Self {
+            recording_backend: Default::default(),
             buffer_samples: 960,
             segment_rows: 1_000_000,
             flush_interval_ms: 60_000,
@@ -55,6 +59,7 @@ pub struct LiveBuffer {
     capacity: usize,
     frames: VecDeque<(u64, Arc<Frame>)>,
     rows: usize,
+    pub generation: u64,
 }
 
 impl LiveBuffer {
@@ -63,10 +68,12 @@ impl LiveBuffer {
             capacity,
             frames: VecDeque::new(),
             rows: 0,
+            generation: 0,
         }
     }
 
     pub fn clear(&mut self) {
+        self.generation += 1;
         self.frames.clear();
         self.rows = 0;
     }
@@ -75,9 +82,10 @@ impl LiveBuffer {
         self.rows.min(self.capacity)
     }
 
-    pub fn push(&mut self, index: u64, frame: Frame) {
+    pub fn push(&mut self, index: u64, frame: impl Into<Arc<Frame>>) {
+        let frame = frame.into();
         self.rows += frame.slow_raw.len();
-        self.frames.push_back((index, Arc::new(frame)));
+        self.frames.push_back((index, frame));
         // Retain at most one partial extra frame; queries expose exactly capacity rows.
         while let Some((_, first)) = self.frames.front() {
             if self.rows - first.slow_raw.len() < self.capacity {
@@ -88,6 +96,20 @@ impl LiveBuffer {
         }
     }
 
+    pub fn range(&self) -> (Option<u64>, Option<u64>) {
+        let stop = self
+            .frames
+            .back()
+            .map(|(first, f)| first + f.slow_raw.len() as u64);
+        (stop.map(|end| end - self.available() as u64), stop)
+    }
+    pub fn frames(&self, start: u64, stop: u64) -> Vec<(u64, Arc<Frame>)> {
+        self.frames
+            .iter()
+            .filter(|(first, f)| *first < stop && first + f.slow_raw.len() as u64 > start)
+            .cloned()
+            .collect()
+    }
     pub fn snapshot(&self, count: usize) -> Result<Snapshot> {
         ensure!(count > 0, "last_n_samples must be positive");
         ensure!(

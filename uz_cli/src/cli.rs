@@ -1,4 +1,5 @@
 use crate::{
+    data::{Cursor, Query, Selection, Source, Stream},
     live::DataOptions,
     profile::{ChannelMapping, Profile, ProfileSettings},
     service::{self, Config, Operation},
@@ -102,6 +103,49 @@ enum Command {
     GetLiveData {
         #[arg(long)]
         last_n_samples: usize,
+    },
+    /// List recordings created in this acquisition, including older recording numbers.
+    Recordings,
+    /// Report the available sample range and durable write boundary.
+    DataInfo {
+        #[arg(long, value_enum, default_value = "fast")]
+        stream: Stream,
+        #[arg(long)]
+        recording: Option<u64>,
+    },
+    /// Preview the last N available samples from RAM or a recording.
+    Tail {
+        count: usize,
+        #[arg(long, value_enum, default_value = "fast")]
+        stream: Stream,
+        #[arg(long)]
+        recording: Option<u64>,
+        #[arg(long, value_delimiter = ',')]
+        channels: Option<Vec<String>>,
+    },
+    /// Preview an absolute acquisition sample range [start, stop).
+    ReadRange {
+        start: u64,
+        stop: u64,
+        #[arg(long, value_enum, default_value = "fast")]
+        stream: Stream,
+        #[arg(long)]
+        recording: Option<u64>,
+        #[arg(long, value_delimiter = ',')]
+        channels: Option<Vec<String>>,
+    },
+    /// Read a bounded page; use the returned JSON cursor for the next call.
+    ReadSince {
+        #[arg(long)]
+        cursor: Option<String>,
+        #[arg(long, default_value_t = 10000)]
+        limit: usize,
+        #[arg(long, value_enum, default_value = "fast")]
+        stream: Stream,
+        #[arg(long)]
+        recording: Option<u64>,
+        #[arg(long, value_delimiter = ',')]
+        channels: Option<Vec<String>>,
     },
     Stop,
     #[command(alias = "enable_system")]
@@ -428,6 +472,58 @@ fn execute(command: Command, endpoint: &str) -> Result<()> {
             }
             return Ok(());
         }
+        Command::Recordings => Operation::Recordings,
+        Command::DataInfo { stream, recording } => Operation::DataInfo {
+            source: Source { stream, recording },
+        },
+        Command::Tail {
+            count,
+            stream,
+            recording,
+            channels,
+        } => Operation::ReadData {
+            query: Query {
+                source: Source { stream, recording },
+                selection: Selection::Tail { count },
+                channels,
+            },
+        },
+        Command::ReadRange {
+            start,
+            stop,
+            stream,
+            recording,
+            channels,
+        } => Operation::ReadData {
+            query: Query {
+                source: Source { stream, recording },
+                selection: Selection::Range { start, stop },
+                channels,
+            },
+        },
+        Command::ReadSince {
+            cursor,
+            limit,
+            stream,
+            recording,
+            channels,
+        } => {
+            let cursor: Option<Cursor> = cursor.map(|s| serde_json::from_str(&s)).transpose()?;
+            let source = cursor
+                .as_ref()
+                .map(|c| Source {
+                    stream: c.stream.clone(),
+                    recording: c.recording,
+                })
+                .unwrap_or(Source { stream, recording });
+            Operation::ReadData {
+                query: Query {
+                    source,
+                    selection: Selection::Since { cursor, limit },
+                    channels,
+                },
+            }
+        }
         Command::Generate { repo, open } => {
             return crate::vitis::run(
                 if open { "generate-open" } else { "generate" },
@@ -485,6 +581,37 @@ fn execute(command: Command, endpoint: &str) -> Result<()> {
             enabled: enabled == "on",
         },
     };
+    if matches!(op, Operation::ReadData { .. }) {
+        use polars::prelude::*;
+        let (header, bytes) = service::exchange(endpoint, op, true)?;
+        println!("{}", serde_json::to_string(&header)?);
+        let df = IpcStreamReader::new(std::io::Cursor::new(bytes)).finish()?;
+        println!(
+            "{} rows × {} columns (showing first {})",
+            df.height(),
+            df.width(),
+            df.height().min(20)
+        );
+        println!(
+            "{}",
+            df.get_column_names()
+                .iter()
+                .map(|s| s.as_str())
+                .collect::<Vec<_>>()
+                .join("\t")
+        );
+        for row in 0..df.height().min(20) {
+            println!(
+                "{}",
+                df.get_columns()
+                    .iter()
+                    .map(|c| c.get(row).map(|v| v.to_string()))
+                    .collect::<std::result::Result<Vec<_>, _>>()?
+                    .join("\t")
+            );
+        }
+        return Ok(());
+    }
     println!(
         "{}",
         serde_json::to_string_pretty(&service::request(endpoint, op)?)?

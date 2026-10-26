@@ -290,8 +290,7 @@ both stop commands have detached their streams, even while files finalize.
 firmware requests. `stop` sends the device Stop request; acquisition continues.
 `shutdown` requests the end of acquisition; its reply acknowledges the request,
 not completed export. The service then drains its queue, merges segments into
-the fast/slow final Parquet files, optionally exports their CSV counterparts, and removes the segments only after
-that recording's requested outputs succeed. Wait for process exit and inspect `end.json` for
+the fast/slow final Parquet files, optionally exports their CSV counterparts, and retains the indexed segments as the canonical recording. Wait for process exit and inspect `end.json` for
 the result. Shutdown does not stop the device. Ctrl-C follows the same finalization
 path. Large recordings can take time and require space for segments plus the final
 Parquet and optional CSV during finalization. For detached use, run `serve` under systemd,
@@ -567,12 +566,12 @@ count; they never silently truncate. An individual response is limited to 128 Mi
 including Arrow metadata. Old snapshots remain unchanged as acquisition continues.
 Successful observable changes clear retained history to avoid relabeling it.
 Firmware-buffered old values can still arrive afterward: selection is unconfirmed,
-as with logging. No pre-trigger recording, live subscription, or disk-history query
-is implemented. Samples that leave RAM while logging is off cannot be retrieved.
+as with logging. This compatibility snapshot operation reads RAM only. The range API below also reads recording history. Pre-trigger capture and live subscriptions remain deferred. Samples that leave RAM while logging is off cannot be retrieved.
 
-`read_recording` requires `close()` first and a successful recording sidecar. It
-materializes the selected final Parquet file into RAM, so large recordings must fit
-in memory. Never-started, missing, and failed recordings raise errors. Recording
+`read_recording` requires `close()` first and a completed backend index. It reads
+through the recording backend and materializes the result, so large recordings must
+fit in memory. For slow streams it now returns the original ID/value updates;
+`recording_path(stream="slow")` still resolves the separate wide Parquet export. Never-started, missing, and failed recordings raise errors. Recording
 numbers start at 1 and are independent for fast and slow streams.
 
 Configure the service from the CLI with:
@@ -600,8 +599,8 @@ Stopping logging or shutting down flushes a partial batch immediately. A process
 crash can lose the current uncommitted interval plus pending writes, so choose a
 shorter flush interval if a minute of buffered data is unacceptable. The example
 above requests more frequent publication; both thresholds must be increased to
-produce larger chunks. Larger chunks do not by themselves provide seamless RAM/disk
-history or change final merging and chunk cleanup.
+produce larger chunks. Range queries provide recording history independently of
+these thresholds; pending samples remain readable before their chunk is committed.
 
 The embedded service lifetime is bounded by the Python process. The external
 service is the option for logging that must survive Python exit. Both use Rust
@@ -637,9 +636,12 @@ produce a typed zero-row Parquet and, if requested, a header-only CSV.
 
 The finalizer reads one segment at a time and validates the schema, nominal times
 and row count. CSV conversion reads the completed Parquet in slices of at most
-65,536 rows. Each recording removes its segments only after its own merge and
-requested CSV export succeed. A failure retains that recording's segments and
-already published outputs; independently completed recordings remain usable.
+65,536 rows. The backend retains canonical segments and a `*.recording.json`
+range index, including after successful export. The final Parquet/CSV files are
+additional exports, so budget disk space for both. Existing index readers remain
+valid during finalization. A failure retains committed chunks and published outputs. Canonical backend
+completion precedes export; a failed optional export does not invalidate indexed
+data, although the logging status and acquisition close still report that error.
 
 `time` is the only time column: nominal seconds since **acquisition** started,
 using the profile's configured sample period. It does not reset when a logger
@@ -676,10 +678,80 @@ data = pl.read_parquet("measurement-001/data.parquet")
 
 Shutdown and Python `Acquisition.close()` finalize all active recordings and wait
 for finalizers already running. A sudden kill leaves complete segments recoverable
-but does not automatically merge them. Automatic recovery is not implemented.
+but does not automatically merge them. A `Recording` handle can read indexed,
+committed ranges of an incomplete run; unindexed partial/orphan files are excluded.
+Automatic repair is not implemented.
 `run.json` contains session metadata; `commands.jsonl` audits host command events;
 recording sidecars summarize individual files; `end.json` reports session health.
 Existing recordings are not migrated. See [architecture.md](docs/architecture.md).
+
+## Unified RAM and recording access
+
+The existing Rust/Polars/TCP/Arrow stack now exposes a common range API. The only
+registered recording backend is `parquet` (`--recording-backend parquet`, or Python
+`recording_backend="parquet"`). Backend selection is separate from `--format`,
+which controls the additional completed Parquet/CSV exports.
+
+```python
+from ultrazohm import Client, Recording
+
+uz = Client()
+recent = uz.tail(500)                         # Recent RAM, independent of logging
+info = uz.data_info()                         # start/stop are absolute sample positions
+# Enable logging first, then wait for data_info(recording=1)["stop"] to become non-null.
+recorded = uz.data_info(recording=1)
+if recorded["start"] is not None:
+    df = uz.read_range(recorded["start"], recorded["stop"], recording=1)
+page = uz.read_since(recording=1, limit=10000)
+next_page = uz.read_since(page.cursor, limit=10000)
+# Each page contains .data (Polars), .cursor, .start, .stop, and .info.
+# Supply channels=["JSO_lifecheck"] to return that signal plus time/status.
+
+# After acquisition.close(), the originating object provides the handle:
+# handle = acquisition.recording(stream="fast", recording=1)
+# df = acquisition.read_recording()            # Backend-independent convenience
+# Or reopen the durable handle without a running service:
+# handle = Recording("measurement-001/data.recording.json")
+# for batch in handle.iter_batches(10000):
+#     analyze(batch)
+```
+
+`recording=None` queries the bounded live ring; `recording=1`, `2`, etc. queries
+that recording's complete history from its own start. Fast and slow numbering is
+independent; `stream="slow"` exposes `time`, `status`, `observable`, `slow_id`,
+`slow_raw`, and `slow_value`. Wide forward-filled slow tables remain separate
+exports. `uz.recordings()` lists every recording in the acquisition.
+
+Ranges are half-open `[start, stop)`. Indices count received samples since
+connection, using the configured nominal period; they are not device sequence
+numbers or proof of gap-free firmware delivery. No samples before logging started
+are implicitly included. A recording's selected columns remain fixed even after
+later live observable changes. Metadata reports `start`, `stop` (accepted),
+`persisted_stop` (successfully indexed), `complete`, schema, and nominal timing.
+Up to four background range queries run concurrently, leaving control requests
+available during disk reads. A busy limit returns an explicit retryable error.
+Published chunks and pending RAM are combined at one captured write boundary;
+queries neither duplicate nor omit the overlap. The pending frame references are
+bounded by the configured writer batch plus the bounded logger queue, independently
+of the live ring. They share immutable payloads with the receiver and writers.
+
+`read_since` starts at the earliest available position when no cursor is supplied.
+Its opaque JSON cursor identifies the run, stream, recording and live mapping
+generation. Reuse it unchanged. Empty pages preserve the position. Expired RAM
+cursors, mismatched sources, unavailable ranges and unknown channels raise errors.
+Each network response is limited to 128 MiB; page large requests. The durable
+`Recording` reader reads only indexed data; use `Client` to include pending samples.
+
+CLI equivalents print metadata and at most 20 preview rows:
+
+```sh
+ultrazohm data-info --recording 1
+ultrazohm recordings
+ultrazohm tail 500 --recording 1
+ultrazohm read-range 1000 2000 --recording 1 --channels JSO_lifecheck
+ultrazohm read-since --recording 1 --limit 10000
+# Resume with --cursor '<cursor JSON from the previous reply>'.
+```
 
 ## Tests
 
@@ -716,19 +788,19 @@ hardware run are separate from local Linux simulator validation.
 
 ### Local validation (2026-10-26)
 
-- Linux x86_64 standalone release build succeeded; dynamic dependencies are the
-  standard C/math/GCC runtimes, with no Python or Java dependency.
-- Native abi3 Python wheel built and installed; tested using CPython 3.10.
-- Six Rust codec/storage tests cover multiple-segment merging, final batches,
-  empty recordings, CSV conversion across slice boundaries, and retention after
-  merge/export failure. Twenty-four simulator/integration tests cover release-binary
-  control, ACK toggling, active segment reads, native Python acquisition,
-  malformed/fragmented frames, disconnects, disk errors, final CSV outputs, and
-  interactive commands, EOF, external shutdown and Ctrl-C.
-- `cargo fmt --check`, strict Clippy with Python enabled, and `git diff --check`
-  passed.
-- Windows CI is configured but was not executed locally. Hardware/ARM64 runs and
-  rebuilding the full devcontainer image were not performed in this environment.
+- Release abi3 wheel built in the development container, installed with `run.sh`,
+  and tested in its CPython 3.12 virtual environment.
+- 24 Rust tests cover codec/storage, range indexing, publication failure,
+  final exports, and injection of an alternate recording backend.
+- 70 Python tests cover simulator communication, RAM/pending/disk history,
+  cursor validation, independent recordings, completed handles, disk/export errors,
+  CLI operations, and the existing build/mapping/release workflows.
+- Connected UltraZohm tests through the `run.sh` interactive CLI verified a
+  recording of over 30,000 samples with a 31-sample live ring, reads across chunk boundaries,
+  concurrent history/status requests, slow updates, ACK policy, restarts, and
+  readback after service exit. Embedded Python close/readback also passed.
+- Rust formatting, strict Clippy with Python enabled, and `git diff --check` passed.
+- Windows and ARM64 execution were not tested locally.
 
 ### Starting offline and connecting later
 

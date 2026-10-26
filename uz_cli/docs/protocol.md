@@ -183,7 +183,7 @@ service, survives CLI exit and lasts until shutdown. Default: off for this firmw
 CLI and native Python bindings call the same Rust control client. Current local
 control is one bounded JSON request/response per loopback TCP connection, newline
 terminated, maximum 64 KiB. Requests and responses carry `api_version: 1`.
-The live-snapshot operation additionally returns a length-delimited binary Arrow
+The live-snapshot and range-query operations additionally return a length-delimited binary Arrow
 body after its JSON response header, as specified below.
 This is a small local command transport, not a decision on future viewer IPC.
 The endpoint is restricted to numeric loopback addresses and has no multi-user
@@ -313,3 +313,34 @@ By default the output is `artifacts/channel_mappings/javascope.json` beneath the
 repository root; `--repo` and `--output` override discovery and destination.
 Unsupported expressions and ambiguous names are errors. Existing output is not
 touched on parse/validation failure. See the README for supported header syntax.
+
+## Range queries and recording backend handles
+
+The local API adds `recordings`, `data_info` and `read_data`. `data_info` takes
+`source: {"stream":"fast"|"slow", "recording":null|positive_integer}`. Null selects
+the recent RAM ring; a number selects a recording, including pending data and
+older indexed chunks. `recordings` lists all sources in this service run.
+
+```json
+{"api_version":1,"command":{"op":"read_data","query":{"source":{"stream":"fast","recording":1},"selection":{"kind":"range","start":100,"stop":200},"channels":["JSO_lifecheck"]}}}
+```
+
+Selection alternatives are `{"kind":"tail","count":500}` and
+`{"kind":"since","cursor":null,"limit":10000}`. Range positions are absolute
+received-sample indices, half-open. A since response returns an opaque cursor
+containing run/source/generation identity and the next position. Supply that
+object unchanged on the next since call. Expired or mismatched cursors fail.
+A source with no samples returns an empty page and an unset cursor position.
+
+Success returns a JSON line with `info`, `cursor`, actual `start`/`stop`, `rows`,
+`arrow_bytes`, and `mapping_confirmed:false`, followed by exactly that many bytes
+of Arrow IPC. The 128 MiB body cap and ordinary JSON-only errors apply. `info`
+contains available accepted range, `persisted_stop`, `complete`, schema/layout,
+and nominal sample period. Pending data is part of a recording's available range
+before flush. Read failures return an error without terminating acquisition.
+
+Slow range queries preserve one original slow ID/value update per received sample;
+wide slow Parquet/CSV exports are a distinct derived representation. Durable
+`*.recording.json` handles identify the backend, schema, ordered immutable chunks
+and successfully committed ranges. They remain readable independently of service
+finalization and require no device connection.

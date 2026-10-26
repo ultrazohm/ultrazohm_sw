@@ -275,16 +275,21 @@ class IntegrationTest(unittest.TestCase):
         for stream, recording, filename in [("fast", 1, "data.parquet"),
                                              ("fast", 2, "data_0002.parquet"),
                                              ("slow", 1, "data_slow_data.parquet")]:
-            self.assertTrue(a.read_recording(stream, recording).equals(pl.read_parquet(output/filename)))
+            actual=a.read_recording(stream, recording)
+            if stream == "fast":
+                self.assertTrue(actual.equals(pl.read_parquet(output/filename)))
+            else:
+                self.assertEqual(actual.columns,["time","status","observable","slow_id","slow_raw","slow_value"])
+                self.assertEqual(actual.height,json.loads((output/"data_slow_data.json").read_text())["rows"])
         with self.assertRaises(RuntimeError):
             a.read_recording(recording=3)
-        with self.assertRaisesRegex(RuntimeError, "stream"):
+        with self.assertRaisesRegex(ValueError, "stream"):
             a.read_recording("invalid")
-        with self.assertRaisesRegex(RuntimeError, "positive"):
+        with self.assertRaisesRegex(ValueError, "positive"):
             a.read_recording(recording=0)
-        metadata = output/"data.json"
+        metadata = output/"data.recording.json"
         info = json.loads(metadata.read_text())
-        info["complete"] = False
+        info["info"]["complete"] = False
         metadata.write_text(json.dumps(info))
         with self.assertRaisesRegex(RuntimeError, "not complete"):
             a.read_recording()
@@ -310,7 +315,7 @@ class IntegrationTest(unittest.TestCase):
         self.cli("start-logging")
         wait_for(lambda: list(output.glob("data-part-*.parquet")))
         status = self.cli("status")
-        self.assertEqual(status["data_options"], {"buffer_samples": 25, "segment_rows": 1000000, "flush_interval_ms": 50})
+        self.assertEqual(status["data_options"], {"recording_backend": "parquet", "buffer_samples": 25, "segment_rows": 1000000, "flush_interval_ms": 50})
         self.assertLessEqual(status["buffer_available_samples"], 25)
         self.cli("shutdown")
 
@@ -319,7 +324,7 @@ class IntegrationTest(unittest.TestCase):
         import polars as pl
         self.start(logging=False, format="parquet", data_options=())
         self.assertEqual(self.cli("status")["data_options"],
-                         {"buffer_samples": 960, "segment_rows": 1_000_000, "flush_interval_ms": 60_000})
+                         {"recording_backend": "parquet", "buffer_samples": 960, "segment_rows": 1_000_000, "flush_interval_ms": 60_000})
         before = self.cli("status")["state"]["samples"]
         self.cli("start-logging")
         wait_for(lambda: self.cli("status")["state"]["samples"] >= before + 1500)
@@ -349,13 +354,128 @@ class IntegrationTest(unittest.TestCase):
         a = Acquisition(endpoint=self.endpoint, output=str(Path(self.tmp.name)/"offline-snapshot"))
         try:
             self.assertEqual(Client(self.endpoint).status()["data_options"],
-                             {"buffer_samples": 960, "segment_rows": 1_000_000, "flush_interval_ms": 60_000})
+                             {"recording_backend": "parquet", "buffer_samples": 960, "segment_rows": 1_000_000, "flush_interval_ms": 60_000})
             with self.assertRaisesRegex(RuntimeError, "not connected"):
                 Client(self.endpoint).get_live_data(1)
         finally:
             a.close()
         with self.assertRaises(RuntimeError):
             a.read_recording()  # No recording was started.
+
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install wheel for data API tests")
+    def test_history_reads_unflushed_data_beyond_live_ring(self):
+        from ultrazohm import Client, Recording
+        self.start(logging=False, format="parquet", data_options=(
+            "--buffer-samples", "17", "--segment-rows", "100000", "--flush-interval-ms", "60000"))
+        client = Client(self.endpoint)
+        client.start_logging()
+        info = wait_for(lambda: (i if (i := client.data_info(recording=1))["start"] is not None
+                                and i["stop"] - i["start"] >= 150 else None))
+        self.assertIsNone(info["persisted_stop"])
+        self.assertFalse(list(self.run_dir.glob("data-part-*.parquet")))
+        start, stop = info["start"], info["stop"]
+        df = client.read_range(start, stop, recording=1)
+        self.assertEqual(df.height, stop-start)
+        self.assertEqual(df["time"].to_list(), [i*100.*1e-6 for i in range(start, stop)])
+        self.assertTrue(client.tail(150, recording=1).height == 150)
+        with self.assertRaises(RuntimeError):
+            client.read_range(start, stop)
+        handle = Recording(client.status()["logging"]["fast"]["handle"])
+        self.assertIsNone(handle.info()["stop"])
+        client.stop_logging()
+        wait_for(lambda: client.status()["logging"]["fast"]["phase"] == "complete")
+        self.assertTrue(handle.info()["complete"])
+        self.assertTrue(handle.read_range(start, stop).equals(df))
+
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install wheel for data API tests")
+    def test_history_pages_cross_persisted_pending_and_finalized_ranges(self):
+        import polars as pl
+        from ultrazohm import Client, Recording
+        self.start(logging=False, format="both", data_options=(
+            "--buffer-samples", "17", "--segment-rows", "300", "--flush-interval-ms", "60000"))
+        client = Client(self.endpoint)
+        client.start_logging()
+        client.start_logging_slow_data()
+        info = wait_for(lambda: (i if (i := client.data_info(recording=1))["persisted_stop"] is not None
+                                and i["stop"] - i["persisted_stop"] >= 60 else None))
+        start, boundary, stop = info["start"], info["persisted_stop"], info["stop"]
+        mixed = client.read_range(boundary-13, stop, recording=1)
+        self.assertEqual(mixed.height, stop-boundary+13)
+        self.assertEqual(mixed["time"].to_list(), [i*100.*1e-6 for i in range(boundary-13,stop)])
+        selected = client.read_range(start, stop, recording=1, channels=["JSO_lifecheck"])
+        self.assertEqual(selected.columns, ["time", "status", "JSO_lifecheck"])
+        slow = client.read_since(stream="slow", recording=1, limit=100)
+        self.assertEqual(slow.data.columns, ["time", "status", "observable", "slow_id", "slow_raw", "slow_value"])
+        self.assertGreater(slow.data.height, 0)
+        slow_values = slow.data["slow_value"].to_list()
+        client.stop_logging()
+        client.stop_logging_slow_data()
+        wait_for(lambda: all(client.status()["logging"][s]["phase"] == "complete" for s in ("fast", "slow")))
+        final = client.data_info(recording=1)
+        cursor, frames, expected = None, [], final["start"]
+        while expected < final["stop"]:
+            page = client.read_since(cursor, limit=73, recording=1)
+            self.assertEqual(page.start, expected)
+            self.assertEqual(page.data.height, page.stop-page.start)
+            expected, cursor = page.stop, page.cursor
+            frames.append(page.data)
+        self.assertEqual(client.read_since(cursor, limit=73).data.height, 0)
+        merged = pl.concat(frames)
+        self.assertTrue(merged.equals(pl.read_parquet(self.run_dir/"data.parquet")))
+        self.assertTrue(client.read_range(boundary-13, stop, recording=1).equals(mixed))
+        handle = Recording(client.status()["logging"]["fast"]["handle"])
+        self.assertTrue(handle.read().equals(merged))
+        self.assertTrue(client.recordings()[0]["complete"])
+        raw_slow = Recording(client.status()["logging"]["slow"]["handle"])
+        self.assertEqual(raw_slow.read_range(slow.start,slow.stop)["slow_value"].to_list(),slow_values)
+        # A second recording and a changed live mapping do not relabel the first run.
+        client.set_observable("lifecheck",1)
+        self.assertTrue(client.read_range(boundary-13, stop, recording=1).equals(mixed))
+        client.start_logging()
+        wait_for(lambda: client.data_info(recording=2)["stop"] is not None)
+        client.stop_logging()
+        wait_for(lambda: client.status()["logging"]["fast"]["phase"] == "complete")
+        self.assertEqual(len(client.recordings()),3)
+        client.shutdown()
+        self.assertEqual(self.service.wait(timeout=8),0)
+        self.assertTrue(Recording(handle.path).read().equals(merged))
+
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install wheel for data API tests")
+    def test_data_cursors_expire_and_validate_source_identity(self):
+        from ultrazohm import Client
+        self.start(logging=False, data_options=("--buffer-samples", "17"))
+        client = Client(self.endpoint)
+        wait_for(lambda: client.data_info()["stop"] is not None)
+        page = client.read_since(limit=10)
+        time.sleep(.08)
+        with self.assertRaisesRegex(RuntimeError,"unavailable"):
+            client.read_since(page.cursor)
+        cursor = client.read_since().cursor
+        client.set_observable("lifecheck",1)
+        with self.assertRaisesRegex(RuntimeError,"generation"):
+            client.read_since(cursor)
+        wait_for(lambda: client.data_info()["stop"] is not None)
+        cursor = client.read_since().cursor
+        wrong = dict(cursor,run_id="another acquisition")
+        with self.assertRaisesRegex(RuntimeError,"different run"):
+            client.read_since(wrong)
+        with self.assertRaisesRegex(RuntimeError,"does not exist"):
+            client.data_info(recording=1)
+        for value in (0,-1,True):
+            with self.assertRaises(ValueError):
+                client.tail(value)
+        with self.assertRaises(RuntimeError):
+            client.read_range(20,10)
+        with self.assertRaises(ValueError):
+            client.data_info(stream="missing")
+        with self.assertRaises(RuntimeError):
+            client.tail(1,channels=["missing"])
+        # Exercise CLI metadata, query parsing, cursor output, and bounded preview.
+        self.assertIn("info",self.cli("data-info"))
+        result = subprocess.run([str(BIN),"--endpoint",self.endpoint,"read-since","--limit","10"],capture_output=True,text=True,timeout=8)
+        self.assertEqual(result.returncode,0,result.stderr)
+        self.assertIn("cursor",json.loads(result.stdout.splitlines()[0]))
+        self.assertIn("10 rows",result.stdout)
 
     def test_offline_retry_connect_and_log(self):
         self.run_dir=Path(self.tmp.name)/'offline'
@@ -714,7 +834,7 @@ class IntegrationTest(unittest.TestCase):
             self.assertTrue(c.status()["send_ack"])
         self.cli("shutdown")
         self.assertEqual(self.service.wait(timeout=8),0)
-        self.assertEqual(set(self.run_dir.glob("*.parquet")), {self.run_dir/"data.parquet", self.run_dir/"data_slow_data.parquet"})
+        self.assertEqual(set(p for p in self.run_dir.glob("*.parquet") if "-part-" not in p.name), {self.run_dir/"data.parquet", self.run_dir/"data_slow_data.parquet"})
         snapshot = (self.run_dir/"data.parquet").read_bytes()
         self.assertEqual(snapshot[:4],b"PAR1")
         self.assertEqual(snapshot[-4:],b"PAR1")
@@ -722,7 +842,7 @@ class IntegrationTest(unittest.TestCase):
         self.assertTrue(end["complete"],end)
         self.assertFalse(list(self.run_dir.glob("*.partial")))
         self.assertEqual(set(self.run_dir.glob("*.csv")), {self.run_dir/"data.csv", self.run_dir/"data_slow_data.csv"})
-        self.assertFalse(list(self.run_dir.glob("*-part-*")))
+        self.assertTrue(list(self.run_dir.glob("*-part-*.parquet")))
         import csv
         rows=[]
         for p in [self.run_dir/"data.csv"]:
@@ -768,7 +888,7 @@ class IntegrationTest(unittest.TestCase):
         self.assertEqual(self.service.wait(timeout=8),0)
         self.assertTrue((self.run_dir/"data.parquet").is_file())
         self.assertTrue((self.run_dir/"data.csv").is_file())
-        self.assertFalse(list(self.run_dir.glob("*-part-*")))
+        self.assertTrue(list(self.run_dir.glob("*-part-*.parquet")))
 
     def test_csv_export_failure_retains_final_parquet_and_segments(self):
         self.start(format="csv")
@@ -889,7 +1009,7 @@ class IntegrationTest(unittest.TestCase):
             a.close()
         self.assertTrue(a.is_finished())
         self.assertTrue(json.loads((run_dir/"end.json").read_text())["complete"])
-        self.assertEqual(set(run_dir.glob("*.parquet")), {run_dir/"data.parquet", run_dir/"data_slow_data.parquet"})
+        self.assertEqual(set(p for p in run_dir.glob("*.parquet") if "-part-" not in p.name), {run_dir/"data.parquet", run_dir/"data_slow_data.parquet"})
         self.assertFalse(list(run_dir.glob("*.csv")))
 
     @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for embedded API test")
@@ -971,7 +1091,7 @@ else:
         self.assertNotEqual(self.service.wait(timeout=8),0)
         end=json.loads((self.run_dir/"end.json").read_text())
         self.assertFalse(end["complete"])
-        self.assertEqual(set(self.run_dir.glob("*.parquet")), {self.run_dir/"data.parquet", self.run_dir/"data_slow_data.parquet"})
+        self.assertEqual(set(p for p in self.run_dir.glob("*.parquet") if "-part-" not in p.name), {self.run_dir/"data.parquet", self.run_dir/"data_slow_data.parquet"})
         if importlib.util.find_spec("polars"):
             import polars as pl
             self.assertEqual(pl.read_parquet(self.run_dir/"data.parquet").height,json.loads((self.run_dir/"data.json").read_text())["rows"])

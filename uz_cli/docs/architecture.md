@@ -166,13 +166,52 @@ An embedded service ends with its Python process; use the external executable
 when logging must outlive Python as well as the GUI. The wheel and standalone
 binary are separate deliverables.
 
+## Recording backend and query interfaces
+
+`backend.rs` defines `SampleBatch` (absolute first sample plus a Polars DataFrame),
+`RecordingBackend` (append, reader, finish), and concurrent `RecordingReader`
+(info, range read). Only `ParquetBackend` is registered today. `LogWriter` converts
+legacy frames into columns and exports complete Parquet/CSV through that interface;
+its injectable factory is tested with a second, in-memory backend. A future local
+or remote backend implements these traits without changing query callers.
+
+`data.rs` captures a source view, then combines its persisted prefix and pending
+suffix outside the receiver lock. All ranges use acquisition sample indices,
+not floating-point timestamp comparisons. `History` tracks accepted and committed
+positions. Queues, batching, pending views and live history reference the same
+immutable `Arc<Frame>` payload. Pending retention is bounded by the rounded batch
+limit plus queue headroom; it does not grow with recording length.
+
+Every recording has an atomically published `*.recording.json` backend/schema/range
+index and immutable Parquet parts. Publication advances only after the chunk and
+index writes succeed. Canonical parts remain after finalization so concurrent
+readers never race with deletion; merged Parquet and optional CSV are additional
+exports. Index size grows with chunk count, not sample count. Python `Recording`
+opens this handle without a service, including the committed prefix of an incomplete
+run. Backend completion and compatibility export are separate operations: export
+errors do not invalidate canonical measurement data. Complete acquisition helpers require close and a successful backend finish.
+Slow canonical history preserves original updates; wide forward-filled slow files
+are derived exports. This avoids inventing simultaneous slow observations.
+
+The API offers RAM/recording `tail`, `read_range`, `read_since`, data metadata,
+and a recording catalogue. At most four background workers perform data reads and
+serialization, leaving control requests independent of history I/O. Only the
+requested RAM window is pinned by a query; metadata queries pin no sample buffers.
+A response includes an opaque run/source/generation
+cursor and a captured available/persisted range. Live schema changes invalidate
+old cursors; a recording's schema and identity remain fixed. Python returns Polars
+DataFrames or a DataPage containing both rows and cursor. CLI previews use the
+same Arrow IPC operation. Requests stay bounded to 128 MiB; callers page history.
+GUI integration, subscription transports and cloud authentication/upload remain
+separate implementation stages. Current pending data can be lost on process failure.
+
 ## Deferred platform work
 
 No `uz_dataviewer` integration is added. A bounded request/reply live snapshot API
 is available to Python and CLI clients over the existing loopback TCP endpoint:
 small JSON metadata followed by binary Arrow IPC stream bytes. Python exposes
 Polars DataFrames; the CLI prints a limited table preview. NNG/WebSocket live
-subscriptions, cursors, and combined RAM/disk history remain deferred.
+subscriptions remain deferred. Cursors and combined RAM/backend history use this same endpoint.
 The existing imgui_bundle/ImPlot viewer remains the intended single UI for live,
 local, test and cloud data. It should depend on run/signal/query interfaces,
 not legacy TCP offsets or a particular physical database.
@@ -187,10 +226,8 @@ Future steps:
   backpressure. Loopback JSON carries control and snapshot metadata; snapshot
   samples already use binary Arrow IPC. Reuse that columnar interchange contract
   for future subscriptions rather than serializing per-value JSON.
-- Query history from active Parquet segments and completed recordings, with optional DuckDB indexing.
-  Merge history and recent RAM samples using recording identity and nominal `time` ranges,
-  deduplicate their overlap and expose a committed-history watermark. Keep data
-  reduction/FFT in the analysis layer rather than acquisition.
+- Add GUI source adapters to the implemented cursor/range interface. Full history
+  is available only for enabled recordings; reduce/FFT data in the analysis layer.
 - Emit Ceedling structured runs locally first, including Git commit, test name,
   timestamps and measurements; normalize into the same model. A separate uploader
   handles retry/idempotency and network absence.

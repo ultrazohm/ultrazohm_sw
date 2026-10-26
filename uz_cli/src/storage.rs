@@ -71,6 +71,10 @@ impl LogWriter {
         );
         let mut slow_names = vec![String::new(); profile.slow_signals.len()];
         for (name, &id) in &profile.slow_signals {
+            ensure!(
+                !slow || (name != "time" && name != "status"),
+                "slow observable name {name} conflicts with a reserved log column"
+            );
             slow_names[id as usize] = name.clone();
         }
         ensure!(dir.is_dir(), "recording directory does not exist");
@@ -202,6 +206,31 @@ impl LogWriter {
         Ok(())
     }
 
+    /// Expand received updates while retaining the last value across segment boundaries.
+    /// None means this observable has not yet been sampled in this recording.
+    fn wide_slow(&self, df: &DataFrame, last: &mut [Option<f32>]) -> Result<DataFrame> {
+        let ids = df.column("slow_id")?.u32()?;
+        let values = df.column("slow_value")?.f32()?;
+        ensure!(
+            ids.null_count() == 0
+                && values.null_count() == 0
+                && ids.into_no_null_iter().all(|id| (id as usize) < last.len()),
+            "invalid slow update in segment"
+        );
+        let mut columns = vec![df.column("time")?.clone(), df.column("status")?.clone()];
+        for (id, name) in self.slow_names.iter().enumerate() {
+            let mut output = Vec::with_capacity(df.height());
+            for (received_id, value) in ids.into_no_null_iter().zip(values.into_no_null_iter()) {
+                if received_id as usize == id {
+                    last[id] = Some(value);
+                }
+                output.push(last[id]);
+            }
+            columns.push(Column::new(name.clone().into(), output));
+        }
+        Ok(DataFrame::new(columns)?.drop_nulls::<String>(None)?)
+    }
+
     fn merge(&self) -> Result<()> {
         let stem = &self.stem;
         let target = self.dir.join(format!("{stem}.parquet"));
@@ -209,8 +238,15 @@ impl LogWriter {
         let tmp = self.dir.join(format!("{stem}.parquet.partial"));
         let mut file = File::create_new(&tmp)?;
         let empty = self.dataframe()?;
-        let mut writer = ParquetWriter::new(&mut file).batched(empty.schema())?;
+        let mut last = vec![None; self.slow_names.len()];
+        let final_empty = if self.slow {
+            self.wide_slow(&empty, &mut last)?
+        } else {
+            empty.clone()
+        };
+        let mut writer = ParquetWriter::new(&mut file).batched(final_empty.schema())?;
         let mut merged_rows = 0usize;
+        let mut output_rows = 0usize;
         for part in 0..self.part {
             // Each segment is bounded by the acquisition batch limit, not run length.
             let df = ParquetReader::new(File::open(self.segment(part))?)
@@ -231,7 +267,13 @@ impl LogWriter {
                 "segment {part} has missing or out-of-order samples"
             );
             merged_rows += df.height();
-            writer.write_batch(&df)?;
+            let output = if self.slow {
+                self.wide_slow(&df, &mut last)?
+            } else {
+                df
+            };
+            output_rows += output.height();
+            writer.write_batch(&output)?;
         }
         ensure!(
             merged_rows == self.written_rows,
@@ -245,12 +287,12 @@ impl LogWriter {
         {
             let mut check = ParquetReader::new(File::open(&tmp)?);
             ensure!(
-                check.num_rows()? == self.written_rows,
+                check.num_rows()? == output_rows,
                 "final Parquet row count mismatch"
             );
             let schema = check.with_slice(Some((0, 0))).finish()?;
             ensure!(
-                schema.schema() == empty.schema(),
+                schema.schema() == final_empty.schema(),
                 "final Parquet schema mismatch"
             );
         }
@@ -316,7 +358,7 @@ mod tests {
         Frame {
             status: 7,
             slow_raw: vec![2.5f32.to_bits(); count],
-            slow_ids: vec![1; count],
+            slow_ids: (start..start + count).map(|i| (i % 17) as u32).collect(),
             channels: vec![(start..start + count).map(|i| i as f32).collect(); 20],
         }
     }
@@ -372,26 +414,23 @@ mod tests {
             );
             let slow = read(run.0.join("data_slow_data.parquet"))?;
             assert_eq!(df.width(), 22);
-            assert_eq!(slow.shape(), (df.height(), 6));
+            assert_eq!(slow.shape(), (df.height() - 16, 19));
             assert!(df.column("slow_id").is_err());
             assert!(slow.column("ch_1").is_err());
             for column in ["time", "status"] {
-                assert_eq!(df.column(column)?, slow.column(column)?);
+                assert_eq!(
+                    &df.column(column)?.slice(16, slow.height()),
+                    slow.column(column)?
+                );
             }
+            assert!(slow.column("slow_id").is_err());
             assert!(
-                slow.column("slow_id")?
-                    .u32()?
-                    .into_no_null_iter()
-                    .all(|v| v == 1)
+                slow.get_columns()
+                    .iter()
+                    .all(|column| column.null_count() == 0)
             );
             assert!(
-                slow.column("slow_raw")?
-                    .u32()?
-                    .into_no_null_iter()
-                    .all(|v| v == 2.5f32.to_bits())
-            );
-            assert!(
-                slow.column("slow_value")?
+                slow.column("JSSD_FLOAT_SecondsSinceSystemStart")?
                     .f32()?
                     .into_no_null_iter()
                     .all(|v| v == 2.5)
@@ -421,15 +460,110 @@ mod tests {
                 );
                 let slow_csv = fs::read_to_string(run.0.join("data_slow_data.csv"))?;
                 assert_eq!(slow_csv.lines().count(), slow.height() + 1);
-                assert!(
-                    slow_csv
-                        .lines()
-                        .last()
-                        .unwrap()
-                        .ends_with(",1,1075838976,2.5")
-                );
+                let fields: Vec<_> = slow_csv.lines().last().unwrap().split(',').collect();
+                assert_eq!(fields.len(), 19);
+                assert_eq!(fields[2], "2.5");
+                assert_eq!(fields[3], "2.5");
             }
         }
+        Ok(())
+    }
+
+    #[test]
+    fn slow_forward_fill_crosses_segments_and_resets_for_each_recording() -> Result<()> {
+        let run = Run::new();
+        let mut profile = Profile::load(None)?;
+        profile.slow_signals = [
+            ("zero".into(), 0),
+            ("voltage".into(), 1),
+            ("current".into(), 2),
+        ]
+        .into();
+        for stem in ["data_slow_data", "data_0002_slow_data"] {
+            let mut log = LogWriter::new(
+                run.0.clone(),
+                profile.clone(),
+                Format::Both,
+                stem.into(),
+                true,
+                &serde_json::json!({}),
+            )?;
+            let mut first = frame(0, 2);
+            first.slow_ids = vec![1, 2];
+            first.slow_raw = vec![12.0f32.to_bits(), 3.0f32.to_bits()];
+            log.push(150, first)?;
+            log.flush()?;
+            let segment = read(log.segment(0))?;
+            assert_eq!(segment.width(), 6); // Ingest remains raw, not wide or filled.
+            assert_eq!(segment.column("slow_id")?.u32()?.get(0), Some(1));
+            let mut second = frame(0, 3);
+            second.status = 9;
+            second.slow_ids = vec![0, 1, 2];
+            second.slow_raw = vec![0.0f32.to_bits(), 14.0f32.to_bits(), f32::NAN.to_bits()];
+            log.push(152, second)?;
+            log.finish()?;
+            let df = read(run.0.join(format!("{stem}.parquet")))?;
+            assert_eq!(
+                df.column("voltage")?.f32()?.into_iter().collect::<Vec<_>>(),
+                vec![Some(12.0), Some(14.0), Some(14.0)]
+            );
+            let current = df.column("current")?.f32()?;
+            assert_eq!(current.get(0), Some(3.0));
+            assert_eq!(current.get(1), Some(3.0));
+            assert!(current.get(2).unwrap().is_nan()); // Real NaN updates are not missing updates.
+            assert_eq!(
+                df.column("zero")?.f32()?.into_iter().collect::<Vec<_>>(),
+                vec![Some(0.0), Some(0.0), Some(0.0)]
+            );
+            assert_eq!(
+                df.column("status")?
+                    .u32()?
+                    .into_no_null_iter()
+                    .collect::<Vec<_>>(),
+                vec![9, 9, 9]
+            );
+            assert!(
+                df.column("time")?
+                    .f64()?
+                    .into_no_null_iter()
+                    .eq((152..155).map(|i| i as f64 * 100.0 * 1e-6))
+            );
+            let csv = fs::read_to_string(run.0.join(format!("{stem}.csv")))?;
+            let lines: Vec<_> = csv.lines().collect();
+            assert_eq!(lines[0], "time,status,zero,voltage,current");
+            assert_eq!(lines.len(), 4);
+            assert!(lines[1].ends_with(",9,0.0,12.0,3.0"));
+        }
+        let mut incomplete = LogWriter::new(
+            run.0.clone(),
+            profile.clone(),
+            Format::Both,
+            "incomplete".into(),
+            true,
+            &serde_json::json!({}),
+        )?;
+        incomplete.push(0, frame(0, 1))?;
+        incomplete.finish()?;
+        assert_eq!(read(run.0.join("incomplete.parquet"))?.shape(), (0, 5));
+        assert_eq!(
+            fs::read_to_string(run.0.join("incomplete.csv"))?
+                .lines()
+                .count(),
+            1
+        );
+        // A custom mapping must not overwrite the shared time/status columns.
+        profile.slow_signals = [("time".into(), 0)].into();
+        assert!(
+            LogWriter::new(
+                run.0.clone(),
+                profile,
+                Format::Both,
+                "invalid".into(),
+                true,
+                &serde_json::json!({})
+            )
+            .is_err()
+        );
         Ok(())
     }
 
@@ -456,7 +590,7 @@ mod tests {
         .finish()?;
         let df = read(run.0.join("data.parquet"))?;
         assert_eq!(df.shape(), (0, 22));
-        assert_eq!(read(run.0.join("data_slow_data.parquet"))?.shape(), (0, 6));
+        assert_eq!(read(run.0.join("data_slow_data.parquet"))?.shape(), (0, 19));
         assert_eq!(
             fs::read_to_string(run.0.join("data_slow_data.csv"))?
                 .lines()

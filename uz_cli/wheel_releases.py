@@ -1,4 +1,5 @@
 """Select and download public GitHub CLI release wheels (no build tools needed)."""
+import configparser
 import hashlib
 import json
 import os
@@ -6,6 +7,7 @@ from pathlib import Path
 import re
 import subprocess
 import tempfile
+from zipfile import BadZipFile, ZipFile
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
@@ -47,6 +49,38 @@ print(json.dumps([name for _, _, name in sorted(found, reverse=True)]))
     return json.loads(result.stdout)
 
 
+def validate_cli_wheel(path):
+    """Reject legacy library-only wheels before replacing a working CLI install."""
+    try:
+        with ZipFile(path) as wheel:
+            entries = [name for name in wheel.namelist()
+                       if name.endswith(".dist-info/entry_points.txt")]
+            if len(entries) == 1:
+                config = configparser.ConfigParser(interpolation=None)
+                config.read_string(wheel.read(entries[0]).decode("utf-8"))
+                if config.get("console_scripts", "ultrazohm", fallback="").strip():
+                    return
+    except (BadZipFile, UnicodeError, configparser.Error) as error:
+        raise ValueError(f"Invalid CLI wheel {Path(path).name}: {error}") from error
+    raise ValueError(f"Wheel {Path(path).name} has no ultrazohm console command; "
+                     "use a newer CLI wheel or --latest")
+
+
+def local_cli_wheels(names, python, env):
+    """Compatible CLI wheels, newest file first (versions may repeat locally)."""
+    valid = []
+    for name in compatible_wheels(names, python, env):
+        path = Path(name)
+        try:
+            validate_cli_wheel(path)
+        except ValueError as error:
+            print(f"Skipping local wheel: {error}", flush=True)
+            continue
+        valid.append(path)
+    # Stable sorting preserves version/tag preference for equal timestamps.
+    return sorted(valid, key=lambda path: path.stat().st_mtime_ns, reverse=True)
+
+
 def choose_local(wheels, channel, interactive, input_fn=input):
     """None means download newest; never silently choose a local build in CI."""
     if not wheels:
@@ -54,16 +88,17 @@ def choose_local(wheels, channel, interactive, input_fn=input):
     if not interactive:
         raise ValueError("Compatible local wheels exist; use --wheel PATH, --local-newest, "
                          "or --latest when standard input is not interactive.")
+    newest = Path(wheels[0])  # Already sorted by local file modification time.
     print("Choose an UltraZohm wheel:")
-    for number, wheel in enumerate(wheels, 1):
-        print(f"  {number}. Local: {Path(wheel).name}")
-    download = len(wheels) + 1
-    print(f"  {download}. Download newest {channel} CLI release")
+    print(f"  1. Use latest local build: {newest.name}")
+    print(f"  2. Download latest from GitHub ({channel})")
     while True:
-        answer = input_fn(f"Selection [1]: ").strip() or "1"
-        if answer.isdigit() and 1 <= int(answer) <= download:
-            return None if int(answer) == download else Path(wheels[int(answer) - 1])
-        print(f"Enter a number between 1 and {download}.")
+        answer = input_fn("Selection [1]: ").strip() or "1"
+        if answer == "1":
+            return newest
+        if answer == "2":
+            return None
+        print("Enter 1 or 2.")
 
 
 def read_url(url):

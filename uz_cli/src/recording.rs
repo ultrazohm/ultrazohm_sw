@@ -110,8 +110,10 @@ impl Recordings {
             selections,
         )?;
         let metadata_path = dir.join(format!("{stem}.json"));
-        let metadata = json!({"schema_version":4, "stream":if slow {"slow"} else {"fast"},
+        let metadata = json!({"schema_version":5, "stream":if slow {"slow"} else {"fast"},
             "requested_observables":selections, "mapping_confirmed":false,
+            "slow_layout": if slow {Some("wide_forward_filled")} else {None},
+            "slow_initial_values": if slow {Some("rows_omitted_until_all_observables_received")} else {None},
             "time_basis":"seconds from acquisition start, configured sample period; gaps unknown",
             "parquet":format!("{stem}.parquet"), "csv":!matches!(self.format, Format::Parquet)});
         // Exclusive creation also reserves empty recordings before the first segment.

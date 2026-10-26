@@ -101,7 +101,15 @@ Run schema version 4 exports these columns:
 | File | Columns |
 |---|---|
 | Fast | `time` (float64 seconds), `status` (uint32), one column per selected observable name (float32; no channel prefixes) |
-| Slow | `time`, `status`, `observable` (string signal name), `slow_id` (uint32), `slow_raw` (uint32), `slow_value` (float32) |
+| Slow (final) | `time`, `status`, one float32 column per slow observable, ordered by ID; values forward-filled from received updates |
+
+Slow segments retain the raw `observable`, `slow_id`, `slow_raw`, and `slow_value`
+columns. Merge converts them to wide output while carrying the last value across
+segments. Rows with missing values are dropped after filling; output starts once
+all observables have been received in that recording, or stays empty if any are
+never received. CSV
+is exported from the finalized wide Parquet. Metadata schema version 5 identifies
+this layout; held values are not new samples at the row timestamp.
 
 `time` is the received sample ordinal since acquisition began multiplied by the
 configured period. Starts/stops do not reset the clock. Internal exact counters
@@ -214,3 +222,46 @@ selections and recording snapshots. The default uses IDs 1..20; an explicit empt
 or omitted initial map in a custom profile opts out. No API readback is invented.
 The standard profile is separate from the firmware tables so multiple measurement
 setups can reuse a single mapping without duplicating firmware IDs/provenance.
+
+## TODO: Sparse slow-data output and uz_dataviewer support
+
+This is future work. The current logger exports wide, forward-filled slow data
+and drops incomplete rows during finalization. Keep that behavior until sparse
+output and viewer support are designed and implemented together.
+
+- Add an explicit sparse slow-output mode for final CSV and Parquet, using the
+  same `time`, `status`, and observable column names. Each row contains only the
+  slow observable actually received at that time; other observable cells are
+  null (empty in CSV). Preserve initial partial cycles and never-received columns.
+  Do not forward fill or drop incomplete rows in sparse mode: such rows are the
+  expected representation of rotating updates.
+- Record the layout and missing-value semantics in versioned metadata so readers
+  can distinguish sparse updates from held values. A null means no update for
+  that observable at this row, not zero or an invalid measurement. Preserve
+  explicitly received NaN/Inf separately from nulls. Timestamps remain nominal
+  received-sample times; sparse output does not add a hardware clock or identify
+  updates lost before reception.
+- Change `uz_dataviewer`'s data model to support a separate time/value series for
+  each slow observable instead of assuming every table row samples every signal.
+  Extract each series from its non-null updates while retaining the corresponding
+  `time`. Keep row-level status associated with its original timestamp. Align
+  fast and slow data by time, not by row number or equal row counts.
+- Make plotting distinguish sampled points, optional connecting lines, and
+  explicitly requested sample-and-hold views. Structural nulls should not create
+  artificial gaps between successive updates of one slow observable; genuine
+  invalid samples should remain distinguishable. Never present a held value as a
+  newly sampled value. Show sampling times or value age where needed.
+- Make calculations choose an alignment policy explicitly. Cross-signal math
+  needs time alignment or resampling; interpolation and forward fill must be
+  deliberate operations with documented boundary and gap handling. FFT must use
+  each signal's actual time spacing, validate uniform sampling, and require an
+  explicit resampling step when necessary. Histograms/statistics should use
+  received updates by default, avoiding accidental weighting by repeated held
+  values; any time-weighted analysis should be explicit.
+- Preserve nulls during CSV/Parquet loading (including conversion to NumPy), and
+  define consistent pandas/Polars examples for extracting updates and optional
+  resampling. Do not silently conflate missing updates with received NaN values.
+- Add logger/viewer compatibility tests for recordings starting mid-cycle,
+  never-received observables, empty recordings, segment boundaries, invalid
+  values, and differing fast/slow timestamps. Verify equivalent CSV/Parquet
+  interpretation and continued support for existing forward-filled recordings.

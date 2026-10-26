@@ -8,6 +8,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from zipfile import ZipFile
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,6 +32,36 @@ def asset(name):
 
 
 class WheelReleaseTest(unittest.TestCase):
+    def test_local_cli_selection_uses_mtime_and_skips_legacy(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = [Path(tmp) / name for name in [
+                "ultrazohm-0.1.0-cp310-abi3-linux_x86_64.whl",
+                "ultrazohm-0.1.0.dev4001-cp310-abi3-linux_x86_64.whl",
+                "ultrazohm-0.1.0.dev5001-cp310-abi3-linux_x86_64.whl"]]
+            for index, path in enumerate(paths):
+                with ZipFile(path, "w") as wheel:
+                    if index:
+                        wheel.writestr("ultrazohm.dist-info/entry_points.txt",
+                                       "[console_scripts]\nultrazohm = ultrazohm.cli:main\n")
+                os.utime(path, (100 + index, 100 + index))
+            with self.assertRaisesRegex(ValueError, "no ultrazohm console command"):
+                releases.validate_cli_wheel(paths[0])
+            with patch.object(releases, "compatible_wheels", return_value=paths):
+                self.assertEqual(releases.local_cli_wheels(paths, sys.executable, {}),
+                                 [paths[2], paths[1]])
+
+    def test_cli_wheel_rejects_corrupt_or_wrong_entry_point(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / LINUX
+            path.write_bytes(b"not a zip")
+            with self.assertRaisesRegex(ValueError, "Invalid CLI wheel"):
+                releases.validate_cli_wheel(path)
+            with ZipFile(path, "w") as wheel:
+                wheel.writestr("ultrazohm.dist-info/entry_points.txt",
+                               "[console_scripts]\nother = ultrazohm.cli:main\n")
+            with self.assertRaisesRegex(ValueError, "no ultrazohm console command"):
+                releases.validate_cli_wheel(path)
+
     def test_channel_detection_and_override_fallback(self):
         for branch, expected in [("main", "stable"), ("feature/uz_cli26", "testing"),
                                  ("other", "stable"), ("", "stable")]:
@@ -61,11 +92,15 @@ class WheelReleaseTest(unittest.TestCase):
 
     def test_local_menu_includes_newest_release(self):
         wheels = [LINUX, "older.whl"]
-        with patch("builtins.print"):
+        with patch("builtins.print") as printed:
             self.assertEqual(releases.choose_local(wheels, "testing", True, lambda _: ""), Path(LINUX))
-            self.assertIsNone(releases.choose_local(wheels, "testing", True, lambda _: "3"))
-            inputs = iter(["bad", "9", "2"])
-            self.assertEqual(releases.choose_local(wheels, "stable", True, lambda _: next(inputs)), Path("older.whl"))
+            menu = "\n".join(str(call.args[0]) for call in printed.call_args_list)
+            self.assertIn("1. Use latest local build", menu)
+            self.assertIn("2. Download latest from GitHub (testing)", menu)
+            self.assertNotIn("older.whl", menu)
+            self.assertIsNone(releases.choose_local(wheels, "testing", True, lambda _: "2"))
+            inputs = iter(["bad", "3", "1"])
+            self.assertEqual(releases.choose_local(wheels, "stable", True, lambda _: next(inputs)), Path(LINUX))
         self.assertIsNone(releases.choose_local([], "stable", False))
         with self.assertRaisesRegex(ValueError, "--latest"):
             releases.choose_local(wheels, "stable", False)

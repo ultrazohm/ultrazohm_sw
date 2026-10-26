@@ -232,15 +232,31 @@ class IntegrationTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("ultrazohm>", result.stdout)
         self.assertIn('"connected": false', result.stdout)
-        directories = list(Path(self.tmp.name).glob("measurement-*"))
+        directories = list(Path(self.tmp.name).glob("artifacts/live_logs/*"))
         self.assertEqual(len(directories), 1)
-        self.assertRegex(directories[0].name, r"^measurement-\d{8}-\d{6}-\d{9}Z$")
+        self.assertRegex(directories[0].name, r"^\d{8}-\d{6}-\d{9}Z$")
         metadata = json.loads((directories[0]/"run.json").read_text())
         self.assertEqual(metadata["format"], "both")
         self.assertIsNone(metadata["device"])
         self.assertFalse(list(directories[0].glob("*.parquet")))
         self.assertFalse(list(directories[0].glob("*.csv")))
         self.assertTrue(json.loads((directories[0]/"end.json").read_text())["complete"])
+
+    def test_default_output_from_repository_subdirectory(self):
+        root = Path(self.tmp.name)
+        (root / "tcl_scripts").mkdir()
+        (root / "tcl_scripts/vitis_headless.tcl").touch()
+        (root / "vitis/software").mkdir(parents=True)
+        nested = root / "uz_cli/nested"
+        nested.mkdir(parents=True)
+        result = subprocess.run(
+            [str(BIN), "--endpoint", self.endpoint, "serve", "--interactive"],
+            cwd=nested, input="shutdown\n", text=True, capture_output=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        directories = list((root / "artifacts/live_logs").iterdir())
+        self.assertEqual(len(directories), 1)
+        self.assertTrue((directories[0] / "run.json").is_file())
+        self.assertFalse((nested / "artifacts").exists())
 
     def test_offline_interactive_shutdown(self):
         result=subprocess.run([str(BIN),'--endpoint',self.endpoint,'serve','--interactive'],input='status\nshutdown\n',text=True,capture_output=True,timeout=10)
@@ -536,13 +552,18 @@ class IntegrationTest(unittest.TestCase):
             self.assertNotIn("slow_id", parquet.columns)
             self.assertFalse(any(name.startswith("ch_") for name in parquet.columns))
             self.assertEqual(parquet.columns.count("JSO_lifecheck"), 1)
-            self.assertIn("observable", slow.columns)
             mapping=json.loads((ROOT/"uz_cli/channel_mappings/default.json").read_text())["slow_signals"]
-            by_id={ident:name for name,ident in mapping.items()}
-            self.assertEqual(slow["observable"].to_list(), [by_id[i] for i in slow["slow_id"]])
-            self.assertNotIn("ch_1", slow.columns)
-            self.assertEqual(pl.read_csv(self.run_dir/"data_slow_data.csv").height, slow.height)
-            self.assertGreater(slow["slow_id"].n_unique(), 1)
+            names = sorted(mapping, key=mapping.get)
+            self.assertEqual(slow.columns, ["time", "status", *names])
+            self.assertTrue(all(slow[name].dtype == pl.Float32 for name in names))
+            self.assertTrue(all(slow[name].null_count() == 0 for name in names))
+            csv_slow = pl.read_csv(self.run_dir/"data_slow_data.csv",
+                                   schema_overrides=slow.schema)
+            from polars.testing import assert_frame_equal
+            assert_frame_equal(csv_slow, slow)
+            metadata = json.loads((self.run_dir/"data_slow_data.json").read_text())["recording"]
+            self.assertEqual(metadata["slow_layout"], "wide_forward_filled")
+
 
     def test_csv_option_retains_final_parquet(self):
         self.start(format="csv")

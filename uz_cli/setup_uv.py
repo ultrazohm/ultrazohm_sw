@@ -4,7 +4,7 @@ From the repository root (uv must already be installed):
     uv run --no-project --python 3.12 uz_cli/setup_uv.py
     uv run --no-project --python 3.12 uz_cli/setup_uv.py --examples
 
-Choose among compatible local wheels or download the newest CLI release.
+Use the newest compatible local wheel or download the newest CLI release.
 With no compatible local wheels, download automatically.
 """
 import argparse
@@ -15,7 +15,7 @@ import subprocess
 import sys
 import shlex
 import tempfile
-from wheel_releases import compatible_wheels, choose_local, detect_channel, download_latest
+from wheel_releases import compatible_wheels, choose_local, detect_channel, download_latest, local_cli_wheels, validate_cli_wheel
 
 
 def main():
@@ -24,7 +24,7 @@ def main():
     selection = parser.add_mutually_exclusive_group()
     selection.add_argument("--wheel", type=Path, help="Use this exact local wheel")
     selection.add_argument("--latest", action="store_true", help="Download newest CLI release, even with local wheels")
-    selection.add_argument("--local-newest", action="store_true", help="Use the highest-version compatible local wheel without prompting")
+    selection.add_argument("--local-newest", action="store_true", help="Use the most recently modified compatible local CLI wheel without prompting")
     parser.add_argument("--channel", choices=["stable", "testing"],
                         help="Release channel (default: testing on feature/uz_cli26, stable otherwise)")
     in_container = Path("/.dockerenv").exists() or Path("/run/.containerenv").exists()
@@ -83,7 +83,7 @@ def main():
         if not compatible_wheels([wheel], python, install_env):
             parser.error(f"Wheel is incompatible with this environment: {wheel.name}")
     else:
-        local = compatible_wheels([p.resolve() for p in wheels], python, install_env)
+        local = local_cli_wheels([p.resolve() for p in wheels], python, install_env)
         if args.local_newest:
             if not local:
                 parser.error("No compatible local wheel exists; use --latest to download one")
@@ -92,6 +92,7 @@ def main():
             wheel = choose_local(local, channel, sys.stdin.isatty())
         if wheel is None:
             wheel = download_latest(channel, root / "target" / "wheels", python, install_env)
+    validate_cli_wheel(wheel)
     print(f"Using wheel: {wheel.name}", flush=True)
     package = "ultrazohm[examples]" if args.examples else "ultrazohm"
     # Wheel-only installation means no Rust/compiler/build backend is needed.
@@ -99,6 +100,9 @@ def main():
                     "--only-binary", ":all:", "--reinstall-package", "ultrazohm",
                     f"{package} @ {wheel.as_uri()}"], check=True, env=install_env)
     subprocess.run([str(python), "-c", "from ultrazohm import Acquisition, Client"], check=True)
+    if not command.is_file():
+        raise ValueError(f"Installation did not create the CLI command: {command}")
+    subprocess.run([str(command), "--version"], check=True, env=install_env)
     if args.launch:
         extra = args.command[1:] if args.command[:1] == ["--"] else args.command
         rc_path = None

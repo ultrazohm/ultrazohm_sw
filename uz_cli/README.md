@@ -49,6 +49,7 @@ The [Makefile](Makefile) provides separate build targets (GNU Make):
 | `make cli` | Standalone executable in `target/release` |
 | `make native` | Rust library artifacts (`.rlib` and platform shared library) in `target/release`, without Python bindings |
 | `make all` | All three outputs |
+| `make clean` | Remove `uz_cli/target/`, including build artifacts and wheels stored there; keep virtual environments and logs |
 
 From the repository root, use `make -C uz_cli wheel`, etc. Both Maturin and Cargo
 reuse Cargo's build cache. The wheel already contains its native Python extension;
@@ -89,15 +90,15 @@ environment must use that Python series; choose a new `--venv` path when changin
 Python versions. Run the scripts rather than sourcing/dot-sourcing them.
 
 If compatible wheels exist in `uz_cli/target/wheels`, setup offers a numbered
-menu with each local wheel and **Download newest CLI release**. Local wheels are
-ordered by package version, then platform-tag preference. With no compatible local
+menu with only **Use latest local build** and **Download latest from GitHub**.
+The local choice uses file modification time (newest first), and excludes legacy wheels
+without the `ultrazohm` console command. With no compatible local
 wheel, it automatically downloads the newest published release for the selected
 channel, verifies its SHA-256 checksum and saves it in that directory.
 
 The channel defaults to `testing` on `feature/uz_cli26` and `stable` on all other
 branches (including detached checkouts or when Git is unavailable). Override it
-with `--channel stable` or `--channel testing`. Local wheels from either channel
-remain selectable; the channel controls downloads. Drafts, other software releases
+with `--channel stable` or `--channel testing`. The latest local wheel may come from either channel; the channel controls downloads. Drafts, other software releases
 and releases from the other channel are ignored. If the newest release has no
 compatible wheel, setup fails clearly instead of silently installing an older one.
 
@@ -106,7 +107,7 @@ For explicit selection or unattended setup:
 ```sh
 ./uz_cli/run.sh --latest --channel stable   # download even if local wheels exist
 ./uz_cli/run.sh --latest --channel testing
-./uz_cli/run.sh --local-newest              # highest-version compatible local wheel
+./uz_cli/run.sh --local-newest              # most recently modified compatible local CLI wheel
 ```
 
 Without an interactive terminal, local wheels require `--wheel`, `--local-newest`
@@ -470,7 +471,7 @@ measurement-001/
     commands.jsonl
     data.parquet            # Fast: time, status, JSO_ISR_ExecTime_us, ...
     data.json               # Requested channel assignments, rows, completion
-    data_slow_data.parquet   # Slow: time, status, observable, slow_id, slow_raw, slow_value
+    data_slow_data.parquet   # Slow: time, status, JSSD_ZEROVALUE, JSSD_FLOAT_..., ...
     data_slow_data.json
     data.csv                # Only for --format csv or --format both
     data_slow_data.csv       # Only for --format csv or --format both
@@ -496,12 +497,24 @@ The internal sample counter is not exported. No `sample_index`, `time_s` or
 `host_received_unix_ns` columns remain. `status` is still the packet's last-sample
 status word, repeated across that packet; it is not a precise transition timestamp.
 
-Slow rows contain the received rotating updates, including placeholder ID 0. The
-`observable` string column gives the full signal name on each row alongside
-`slow_id`, `slow_raw` and `slow_value`; no mapping lookup is required. There is no
-forward-fill. Because start/stop
-times are independent, fast/slow row counts need not match. Overlapping rows can
-be aligned on `time`. Firmware gaps and exact selection boundaries remain unknown.
+Slow segments contain raw rotating updates (`observable`, `slow_id`, `slow_raw`,
+`slow_value`), including placeholder ID 0. During finalization they are converted
+into a wide table: `time`, `status`, then one Float32 column per slow observable,
+ordered by numeric slow ID and named using the full mapping name. Each update
+sets that observable's value; subsequent rows hold its last received value, across
+segment boundaries. Rows with any missing values are omitted after forward filling, so final output
+starts only once every slow observable has been received in this recording. Values
+are never backfilled from future updates or carried from a previous recording.
+If any observable is never received, final slow output has no data rows. Received NaN/Inf
+values are retained as values, rather than replaced by older finite values.
+
+Final CSV is exported from this same wide Parquet table. The raw ID/value columns
+are not included in final files. Recording metadata uses schema version 5 and
+marks slow output as `wide_forward_filled`. A filled value may have been sampled
+earlier than its row's `time`; the table is not a simultaneous slow-signal snapshot.
+Fast output is unchanged. Because start/stop times are independent, fast/slow row
+counts need not match. Overlapping rows can be aligned on `time`. Firmware gaps
+and exact selection boundaries remain unknown.
 
 ```python
 import polars as pl
@@ -601,8 +614,17 @@ The launchers also support explicit `--launch cli` or `--launch example`.
 ### Default interactive session
 
 Run `ultrazohm` (or `python -m ultrazohm`) without a command to open an interactive,
-disconnected session. It creates `measurement-YYYYMMDD-HHMMSS-NNNNNNNNNZ` in the
-current directory; the timestamp is UTC with nanoseconds to avoid collisions.
+disconnected session. Without an explicit `--output`, sessions use
+`artifacts/live_logs/YYYYMMDD-HHMMSS-NNNNNNNNNZ` at the repository root, found by
+searching upward from the current directory. Outside a checkout, the current
+directory is used as the base. Missing directories are created automatically.
+The entire repo-level `artifacts/` directory is ignored by Git. The timestamp is
+UTC with nanoseconds to avoid collisions.
+In a terminal, press Tab to complete command names (including aliases), or press
+Tab twice to list ambiguous matches. Up/Down recalls commands from the current
+session. Completion applies to command names, not arguments or observable names.
+Piped input remains supported without terminal editing.
+
 The output path is printed at startup. Both Parquet and CSV are enabled, but
 logging stays off until requested:
 
@@ -613,8 +635,8 @@ ultrazohm> stop-logging
 ultrazohm> shutdown
 ```
 
-Explicit commands retain their behavior, including `serve`, `serve --interactive`,
-and `--help`. `--endpoint ADDRESS` can also select the control endpoint for the
+`serve` and `serve --interactive` use the same default output location when
+`--output` is omitted; explicit output paths are used unchanged. `--endpoint ADDRESS` can also select the control endpoint for the
 default session. The uv launch scripts still only open an environment shell.
 
 ### Vitis workspace, build and JTAG programming

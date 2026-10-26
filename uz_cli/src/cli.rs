@@ -4,9 +4,10 @@ use crate::{
     storage::Format,
 };
 use anyhow::{Result, bail};
-use clap::{Parser, Subcommand};
+use clap::{CommandFactory, Parser, Subcommand};
+use rustyline::{completion::Completer, error::ReadlineError, history::DefaultHistory};
 use std::{
-    io::{self, BufRead, Write},
+    io::{self, BufRead, IsTerminal, Write},
     path::PathBuf,
     sync::{
         Arc,
@@ -59,7 +60,8 @@ enum Command {
         /// Firmware names, numeric IDs, wire geometry and repository provenance.
         #[arg(long)]
         channel_mapping: Option<PathBuf>,
-        /// New session directory; logging stays off until start-logging commands.
+        /// New session directory (default: repo artifacts/live_logs/<UTC timestamp>).
+        /// Logging stays off until start-logging commands.
         #[arg(long)]
         output: Option<PathBuf>,
         /// parquet: final Parquet only; csv/both: also convert the final Parquet to CSV.
@@ -157,22 +159,14 @@ pub fn run(argv: impl IntoIterator<Item = String>) -> i32 {
 }
 
 fn dispatch(args: Args) -> Result<()> {
-    let command = args.command.unwrap_or_else(|| {
-        let now: chrono::DateTime<chrono::Utc> = std::time::SystemTime::now().into();
-        let output = PathBuf::from(format!("measurement-{}", now.format("%Y%m%d-%H%M%S-%fZ")));
-        eprintln!(
-            "Session output: {} (Parquet and CSV; logging starts on request)",
-            output.display()
-        );
-        Command::Serve {
-            device: None,
-            profile: None,
-            channel_mapping: None,
-            output: Some(output),
-            format: Format::Both,
-            ack: "off".into(),
-            interactive: true,
-        }
+    let command = args.command.unwrap_or_else(|| Command::Serve {
+        device: None,
+        profile: None,
+        channel_mapping: None,
+        output: None,
+        format: Format::Both,
+        ack: "off".into(),
+        interactive: true,
     });
     match command {
         Command::Serve {
@@ -184,6 +178,21 @@ fn dispatch(args: Args) -> Result<()> {
             ack,
             interactive,
         } => {
+            let output = match output {
+                Some(path) => path,
+                None => {
+                    let root =
+                        crate::vitis::repository(None).or_else(|_| std::env::current_dir())?;
+                    let parent = root.join("artifacts/live_logs");
+                    std::fs::create_dir_all(&parent)?;
+                    let now: chrono::DateTime<chrono::Utc> = std::time::SystemTime::now().into();
+                    parent.join(now.format("%Y%m%d-%H%M%S-%fZ").to_string())
+                }
+            };
+            eprintln!(
+                "Session output: {} (logging starts on request)",
+                output.display()
+            );
             let shutdown = Arc::new(AtomicBool::new(false));
             let signal = shutdown.clone();
             ctrlc::set_handler(move || signal.store(true, Ordering::SeqCst))?;
@@ -194,7 +203,7 @@ fn dispatch(args: Args) -> Result<()> {
                     device,
                     endpoint: args.endpoint,
                     profile: Profile::load_files(profile.as_deref(), channel_mapping.as_deref())?,
-                    output,
+                    output: Some(output),
                     format,
                     ack: ack == "on",
                 },
@@ -253,19 +262,101 @@ fn prompt_words(line: &str) -> Result<Vec<String>> {
     Ok(words)
 }
 
+struct CommandCompleter {
+    names: Vec<String>,
+}
+
+impl CommandCompleter {
+    fn new() -> Self {
+        let mut parser = InteractiveArgs::command();
+        parser.build();
+        let mut names = Vec::new();
+        for command in parser.get_subcommands() {
+            if command.get_name() == "serve" || command.is_hide_set() {
+                continue;
+            }
+            names.push(command.get_name().to_owned());
+            names.extend(command.get_all_aliases().map(str::to_owned));
+        }
+        names.sort();
+        names.dedup();
+        Self { names }
+    }
+
+    fn candidates(&self, line: &str, pos: usize) -> (usize, Vec<String>) {
+        let prefix = &line[..pos];
+        let word = prefix.trim_start();
+        let start = prefix.len() - word.len();
+        if word.chars().any(char::is_whitespace) {
+            return (pos, Vec::new());
+        }
+        (
+            start,
+            self.names
+                .iter()
+                .filter(|name| name.starts_with(word))
+                .cloned()
+                .collect(),
+        )
+    }
+}
+
+impl Completer for CommandCompleter {
+    type Candidate = String;
+
+    fn complete(
+        &self,
+        line: &str,
+        pos: usize,
+        _ctx: &rustyline::Context<'_>,
+    ) -> rustyline::Result<(usize, Vec<String>)> {
+        Ok(self.candidates(line, pos))
+    }
+}
+impl rustyline::hint::Hinter for CommandCompleter {
+    type Hint = String;
+}
+impl rustyline::highlight::Highlighter for CommandCompleter {}
+impl rustyline::validate::Validator for CommandCompleter {}
+impl rustyline::Helper for CommandCompleter {}
+
 fn prompt(endpoint: &str, shutdown: &AtomicBool) -> Result<()> {
     eprintln!(
-        "Type help for commands. shutdown, Ctrl-C or EOF ends acquisition and finalizes logs."
+        "Type help for commands; Tab completes command names. shutdown, Ctrl-C or EOF ends acquisition and finalizes logs."
     );
     let stdin = io::stdin();
+    // Keep redirected input unchanged for scripts and automated sessions.
+    let mut editor = if stdin.is_terminal() && io::stdout().is_terminal() {
+        let config = rustyline::Config::builder()
+            .completion_type(rustyline::CompletionType::List)
+            .build();
+        let mut editor =
+            rustyline::Editor::<CommandCompleter, DefaultHistory>::with_config(config)?;
+        editor.set_helper(Some(CommandCompleter::new()));
+        Some(editor)
+    } else {
+        None
+    };
     let mut input = stdin.lock();
     while !shutdown.load(Ordering::SeqCst) {
-        print!("ultrazohm> ");
-        io::stdout().flush()?;
-        let mut line = String::new();
-        if input.read_line(&mut line)? == 0 {
-            break;
-        }
+        let line = if let Some(editor) = &mut editor {
+            match editor.readline("ultrazohm> ") {
+                Ok(line) => {
+                    editor.add_history_entry(line.as_str())?;
+                    line
+                }
+                Err(ReadlineError::Interrupted | ReadlineError::Eof) => break,
+                Err(error) => return Err(error.into()),
+            }
+        } else {
+            print!("ultrazohm> ");
+            io::stdout().flush()?;
+            let mut line = String::new();
+            if input.read_line(&mut line)? == 0 {
+                break;
+            }
+            line
+        };
         if shutdown.load(Ordering::SeqCst) {
             break;
         }
@@ -360,6 +451,27 @@ fn execute(command: Command, endpoint: &str) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn completion_matches_commands_and_aliases_only_in_first_word() {
+        let helper = CommandCompleter::new();
+        assert_eq!(helper.candidates("shut", 4), (0, vec!["shutdown".into()]));
+        assert_eq!(helper.candidates("  shut", 6), (2, vec!["shutdown".into()]));
+        assert_eq!(
+            helper.candidates("build", 5).1,
+            vec!["build", "build-clean"]
+        );
+        assert!(
+            helper
+                .candidates("start_", 6)
+                .1
+                .contains(&"start_logging".into())
+        );
+        assert!(helper.candidates("", 0).1.contains(&"help".into()));
+        assert!(!helper.candidates("", 0).1.contains(&"serve".into()));
+        assert!(helper.candidates("connect ", 8).1.is_empty());
+        assert!(helper.candidates("unknown", 7).1.is_empty());
+    }
 
     #[test]
     fn prompt_preserves_quoted_paths_and_windows_separators() {

@@ -67,8 +67,7 @@ are outside this implementation.
 
 ## One-command setup and launch
 
-With uv installed and a compatible wheel in `uz_cli/target/wheels` (built manually
-or by the container post-create setup):
+With uv installed (no Rust, Cargo or C/C++ build tools needed):
 
 ```sh
 ./uz_cli/run.sh
@@ -89,14 +88,36 @@ The Docker tag specifies the 3.12 series, not an exact patch release. An existin
 environment must use that Python series; choose a new `--venv` path when changing
 Python versions. Run the scripts rather than sourcing/dot-sourcing them.
 
-The newest compatible local wheel is selected automatically. Override it with
-`--wheel` if needed, and pass CLI arguments after `--`:
+If compatible wheels exist in `uz_cli/target/wheels`, setup offers a numbered
+menu with each local wheel and **Download newest CLI release**. Local wheels are
+ordered by package version, then platform-tag preference. With no compatible local
+wheel, it automatically downloads the newest published release for the selected
+channel, verifies its SHA-256 checksum and saves it in that directory.
+
+The channel defaults to `testing` on `feature/uz_cli26` and `stable` on all other
+branches (including detached checkouts or when Git is unavailable). Override it
+with `--channel stable` or `--channel testing`. Local wheels from either channel
+remain selectable; the channel controls downloads. Drafts, other software releases
+and releases from the other channel are ignored. If the newest release has no
+compatible wheel, setup fails clearly instead of silently installing an older one.
+
+For explicit selection or unattended setup:
+
+```sh
+./uz_cli/run.sh --latest --channel stable   # download even if local wheels exist
+./uz_cli/run.sh --latest --channel testing
+./uz_cli/run.sh --local-newest              # highest-version compatible local wheel
+```
+
+Without an interactive terminal, local wheels require `--wheel`, `--local-newest`
+or `--latest`. `--wheel` validates and uses that exact file. Pass CLI arguments
+after `--`:
 
 ```sh
 ./uz_cli/run.sh --wheel /path/to/ultrazohm-VERSION-TAGS.whl --launch cli -- serve --interactive --device 192.168.1.233:1000 --output measurement-008 --format both
 ```
 
-PowerShell accepts the same `--wheel`, `--venv`, and arguments after `--`.
+PowerShell accepts the same selection, channel, `--venv`, and launch arguments.
 For the existing Python example instead of the CLI, use `--launch example`:
 
 ```sh
@@ -106,7 +127,10 @@ For the existing Python example instead of the CLI, use `--launch example`:
 That example executes the running/control/stop sequence against its configured
 device; edit its device/profile settings first. `--launch cli -- --help` launches CLI help
 without connecting. Output paths remain relative to the directory you launch from.
-The scripts install local wheels only; they never build Rust or install docs tools.
+The scripts install binary wheels only; they never build Rust or install docs tools.
+Release downloads use the public `ultrazohm/ultrazohm_sw` GitHub repository and
+need network access. A local-wheel selection does not contact the GitHub API.
+Downloaded wheels contain the released code, not changes in your local Rust sources.
 
 ## Install a local wheel with uv (no Rust needed)
 
@@ -121,12 +145,12 @@ uv run --no-project --python 3.12 uz_cli/setup_uv.py --examples
 ```
 
 The cross-platform script creates `uz_cli/.venv-host` on the host or
-`uz_cli/.venv-container` inside Docker and installs the newest compatible local
-`ultrazohm-*.whl` in `uz_cli/target/wheels`. It **never builds the package** and
-allows only binary dependency distributions. `--examples` also installs Python
-Polars and Matplotlib; omit it for just the CLI and Python API. If multiple wheels
-are present, target-interpreter wheel-tag checks filter them and file modification time selects
-the newest usable build. Nothing is deleted. To override this selection:
+`uz_cli/.venv-container` inside Docker and uses the same selection/download flow.
+It **never builds the package** and allows only binary dependency distributions.
+`--examples` also installs Python Polars and Matplotlib; omit it for just the CLI
+and Python API. Compatibility checks use the destination interpreter's wheel tags.
+Existing local wheels are preserved (a verified download may replace the same
+release filename). To select a particular local wheel:
 
 ```sh
 uv run --no-project --python 3.12 uz_cli/setup_uv.py --wheel /path/to/ultrazohm-VERSION-TAGS.whl --examples
@@ -642,3 +666,33 @@ both applications and the platform (including BSPs), then rebuilds the applicati
 it preserves workspace configuration and sources. Neither build command generates
 SD-card boot images. The corresponding Make targets are `make -C vitis build`
 and `make -C vitis build-clean`.
+
+## Publishing CLI wheels
+
+The `UltraZohm CLI` GitHub Actions workflow tests on pushes and pull requests.
+After its tests pass, pushes affecting the CLI/workflow on `main` publish stable
+CLI releases; `feature/uz_cli26` publishes testing prereleases. Manual workflow
+dispatch is also supported on those two branches. Other branches and pull requests
+never publish. No separate upload credential is needed: the publish job uses
+`GITHUB_TOKEN` with `contents: write`.
+
+Each release builds and tests these wheels before publishing:
+
+- Windows x86-64 (`win_amd64`).
+- Linux x86-64 (`manylinux_2_28`, glibc 2.28+, including Ubuntu 20.04 and newer).
+
+ARM64 and macOS release wheels are not included. The extension uses the Python
+3.10+ stable ABI; the launch scripts currently provision Python 3.12. Linux wheels
+are built inside the manylinux container, not the newer development container.
+
+`pyproject.toml` contains the base version. CI adds `.postN` for stable releases
+or `.devN` for testing, where N combines the workflow run number and retry attempt.
+This makes every published build identifiable without changing the source version
+on each commit. The release CLI's `--version` reports that same wheel version.
+Tags are `uz-cli-v<VERSION>` and `uz-cli-testing-v<VERSION>`. Assets are staged in a
+draft release with `SHA256SUMS`, then published after both uploads are complete.
+CLI releases do not replace GitHub's overall latest repository release; setup
+selects CLI releases by tag prefix, channel and publication time.
+
+The first successful workflow run on the relevant branch must publish a release
+before automatic downloads can work. Existing local wheels work before that.

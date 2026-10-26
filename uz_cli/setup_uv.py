@@ -1,11 +1,11 @@
-"""Create a uv environment from a manually built local wheel; never build Rust.
+"""Create a uv environment from a local or GitHub release wheel; never build Rust.
 
 From the repository root (uv must already be installed):
     uv run --no-project --python 3.12 uz_cli/setup_uv.py
     uv run --no-project --python 3.12 uz_cli/setup_uv.py --examples
 
-By default, use the newest compatible ultrazohm wheel in uz_cli/target/wheels.
-Use --wheel PATH to explicitly select a particular build.
+Choose among compatible local wheels or download the newest CLI release.
+With no compatible local wheels, download automatically.
 """
 import argparse
 import os
@@ -15,42 +15,18 @@ import subprocess
 import sys
 import shlex
 import tempfile
-
-
-def select_wheel(wheels, python, env):
-    """Check wheel tags against the actual target interpreter, newest build first."""
-    candidates = sorted(wheels, key=lambda p: (p.stat().st_mtime_ns, p.name), reverse=True)
-    code = """
-import json, sys
-from pathlib import Path
-from packaging.tags import sys_tags
-from packaging.utils import parse_wheel_filename
-supported = set(sys_tags())
-selected = None
-for path in sys.argv[1:]:
-    try:
-        name, version, build, tags = parse_wheel_filename(Path(path).name)
-        if name == 'ultrazohm' and tags.intersection(supported):
-            selected = path
-            break
-    except ValueError:
-        pass
-    print('Skipping incompatible wheel: ' + Path(path).name, file=sys.stderr)
-print(json.dumps(selected))
-"""
-    result = subprocess.run([str(python), "-c", code, *(str(p.resolve()) for p in candidates)],
-                            env=env, text=True, capture_output=True, check=True)
-    if result.stderr:
-        print(result.stderr.rstrip(), file=sys.stderr)
-    import json
-    selected = json.loads(result.stdout)
-    return Path(selected) if selected else None
+from wheel_releases import compatible_wheels, choose_local, detect_channel, download_latest
 
 
 def main():
     root = Path(__file__).resolve().parent
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--wheel", type=Path, help="Path to a prebuilt ultrazohm .whl")
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument("--wheel", type=Path, help="Use this exact local wheel")
+    selection.add_argument("--latest", action="store_true", help="Download newest CLI release, even with local wheels")
+    selection.add_argument("--local-newest", action="store_true", help="Use the highest-version compatible local wheel without prompting")
+    parser.add_argument("--channel", choices=["stable", "testing"],
+                        help="Release channel (default: testing on feature/uz_cli26, stable otherwise)")
     in_container = Path("/.dockerenv").exists() or Path("/run/.containerenv").exists()
     default_venv = root / (".venv-container" if in_container else ".venv-host")
     parser.add_argument("--venv", type=Path, default=default_venv,
@@ -69,8 +45,6 @@ def main():
 
     wheel = args.wheel
     wheels = list((root / "target" / "wheels").glob("ultrazohm-*.whl")) if wheel is None else []
-    if wheel is None and not wheels:
-        parser.error("No ultrazohm wheel found in uz_cli/target/wheels; run make wheel first or use --wheel PATH")
     if wheel is not None:
         wheel = wheel.resolve()
         if not wheel.is_file() or not wheel.name.startswith("ultrazohm-") or wheel.suffix != ".whl":
@@ -99,14 +73,25 @@ def main():
     if actual_version != expected_version:
         parser.error(f"Existing environment uses Python {actual_version}, expected {expected_version}; "
                      "use --venv with a new path to preserve the existing environment.")
-    if wheel is None:
-        # Use standard wheel tags from the target environment, not the bootstrap
-        # interpreter. uv's install dry-run alone does not reject all wheel tags.
-        subprocess.run([uv, "pip", "install", "--python", str(python),
-                        "--only-binary", ":all:", "packaging"], check=True, env=install_env)
-        wheel = select_wheel(wheels, python, install_env)
+    # Compatibility must be checked against the destination Python, including
+    # for explicitly selected wheels and remote release assets.
+    subprocess.run([uv, "pip", "install", "--python", str(python),
+                    "--only-binary", ":all:", "packaging"], check=True, env=install_env)
+    channel = args.channel or detect_channel(root.parent)
+    print(f"CLI release channel: {channel}", flush=True)
+    if wheel is not None:
+        if not compatible_wheels([wheel], python, install_env):
+            parser.error(f"Wheel is incompatible with this environment: {wheel.name}")
+    else:
+        local = compatible_wheels([p.resolve() for p in wheels], python, install_env)
+        if args.local_newest:
+            if not local:
+                parser.error("No compatible local wheel exists; use --latest to download one")
+            wheel = Path(local[0])
+        elif not args.latest:
+            wheel = choose_local(local, channel, sys.stdin.isatty())
         if wheel is None:
-            parser.error("No usable wheel matches this environment; build a wheel for this OS/architecture/Python or use --wheel PATH")
+            wheel = download_latest(channel, root / "target" / "wheels", python, install_env)
     print(f"Using wheel: {wheel.name}", flush=True)
     package = "ultrazohm[examples]" if args.examples else "ultrazohm"
     # Wheel-only installation means no Rust/compiler/build backend is needed.
@@ -166,6 +151,6 @@ def main():
 if __name__ == "__main__":
     try:
         main()
-    except (OSError, subprocess.CalledProcessError) as error:
+    except (OSError, subprocess.CalledProcessError, ValueError, EOFError) as error:
         print(f"Setup failed: {error}", file=sys.stderr)
         raise SystemExit(1)

@@ -1,4 +1,4 @@
-# Usage: .\uz_cli\run.ps1 [--wheel PATH] [--launch cli|example] [-- CLI_ARGUMENTS...]
+# Usage: .\uz_cli\run.ps1 [--wheel PATH | --latest | --local-newest] [--channel stable|testing] [--launch cli|example] [-- CLI_ARGUMENTS...]
 # Arguments are forwarded verbatim to setup_uv.py; use its --wheel/--venv options.
 $ErrorActionPreference = "Stop"
 $forwardedArgs = @($args)

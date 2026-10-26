@@ -1,9 +1,12 @@
 name: UltraZohm CLI
 on:
+  workflow_dispatch:
   push:
     paths: ['uz_cli/**', 'javascope/test_server.py', '.github/workflows/ultrazohm-cli.yml']
   pull_request:
     paths: ['uz_cli/**', 'javascope/test_server.py', '.github/workflows/ultrazohm-cli.yml']
+permissions:
+  contents: read
 jobs:
   test:
     strategy:
@@ -27,9 +30,120 @@ jobs:
       - run: cargo test --manifest-path uz_cli/Cargo.toml --locked
       - run: cargo clippy --manifest-path uz_cli/Cargo.toml --all-targets --features python --locked -- -D warnings
       - run: cargo build --manifest-path uz_cli/Cargo.toml --locked
-      - run: python -m pip install maturin polars
+      - run: python -m pip install maturin polars packaging
       - run: python -m pip install ./uz_cli
       - run: python -m unittest discover -s uz_cli/tests -v
       - name: Test wheel-installed console command
         run: >-
           python -c "import os, shutil, subprocess, sys; command = shutil.which('ultrazohm'); assert command, 'console entry point missing'; os.environ['UZ_CLI_BIN'] = command; subprocess.run([sys.executable, '-m', 'unittest', 'discover', '-s', 'uz_cli/tests', '-v'], check=True)"
+
+  release-metadata:
+    if: >-
+      github.event_name != 'pull_request' &&
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature/uz_cli26')
+    runs-on: ubuntu-22.04
+    outputs:
+      version: ${{ steps.metadata.outputs.version }}
+      channel: ${{ steps.metadata.outputs.channel }}
+      tag: ${{ steps.metadata.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - id: metadata
+        run: python uz_cli/release_ci.py metadata
+
+  release-wheels:
+    needs: [test, release-metadata]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            manylinux: '2_28'
+            interpreter: python3.12
+          - os: windows-2022
+            target: x86_64-pc-windows-msvc
+            manylinux: auto
+            interpreter: python
+    runs-on: ${{ matrix.os }}
+    env:
+      CARGO_BUILD_JOBS: 2
+      RELEASE_VERSION: ${{ needs.release-metadata.outputs.version }}
+      ULTRAZOHM_RELEASE_VERSION: ${{ needs.release-metadata.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Set unique wheel version
+        shell: bash
+        run: python uz_cli/release_ci.py version "$RELEASE_VERSION"
+      - uses: PyO3/maturin-action@v1
+        with:
+          command: build
+          rust-toolchain: '1.90.0'
+          docker-options: -e ULTRAZOHM_RELEASE_VERSION
+          target: ${{ matrix.target }}
+          manylinux: ${{ matrix.manylinux }}
+          args: --manifest-path uz_cli/Cargo.toml --release --locked --out dist --interpreter ${{ matrix.interpreter }}
+      - name: Install the release wheel
+        run: python uz_cli/release_ci.py install dist
+      - name: Test the release wheel
+        run: >-
+          python -c "import os, shutil, subprocess, sys; command = shutil.which('ultrazohm'); assert command; os.environ['UZ_CLI_BIN'] = command; subprocess.run([sys.executable, '-m', 'unittest', 'discover', '-s', 'uz_cli/tests', '-v'], check=True)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cli-wheel-${{ matrix.target }}
+          path: dist/*.whl
+          if-no-files-found: error
+
+  publish-cli:
+    needs: [release-metadata, release-wheels]
+    if: >-
+      github.event_name != 'pull_request' &&
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature/uz_cli26')
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    concurrency:
+      group: cli-publish-${{ github.ref }}
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      RELEASE_TAG: ${{ needs.release-metadata.outputs.tag }}
+      RELEASE_CHANNEL: ${{ needs.release-metadata.outputs.channel }}
+      RELEASE_VERSION: ${{ needs.release-metadata.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cli-wheel-*
+          path: dist
+          merge-multiple: true
+      - run: python uz_cli/release_ci.py checksums dist
+      - name: Publish complete CLI release
+        shell: bash
+        run: |
+          flags=()
+          if [[ "$RELEASE_CHANNEL" == testing ]]; then flags+=(--prerelease); fi
+          printf 'UltraZohm CLI %s (%s).\nSource commit: %s\n\nWheels: Windows x86-64 and Linux x86-64 (glibc 2.28+). Python 3.10+.\n' \
+            "$RELEASE_VERSION" "$RELEASE_CHANNEL" "$GITHUB_SHA" > release-notes.txt
+          # Keep partial uploads invisible to the launchers. Do not replace
+          # the repository's overall latest firmware/software release.
+          gh release create "$RELEASE_TAG" dist/*.whl dist/SHA256SUMS \
+            --target "$GITHUB_SHA" --title "UltraZohm CLI $RELEASE_VERSION" \
+            --notes-file release-notes.txt --draft "${flags[@]}"
+          gh release edit "$RELEASE_TAG" --draft=false --latest=false

@@ -14,7 +14,7 @@ use std::{
     },
 };
 #[derive(Parser)]
-#[command(version, about = "Standalone UltraZohm control and acquisition")]
+#[command(version = option_env!("ULTRAZOHM_RELEASE_VERSION").unwrap_or(env!("CARGO_PKG_VERSION")), about = "Standalone UltraZohm control and acquisition")]
 struct Args {
     #[arg(long,global=true,default_value=service::DEFAULT_ENDPOINT)]
     endpoint: String,

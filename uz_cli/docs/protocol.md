@@ -137,8 +137,12 @@ Other slow slots, including Error_Code (7) and torque (13), return zero.
 Slow IDs rotate once per sample from zero through 16. Sparse measurements are
 not simultaneous values; the logger preserves one ID/value pair per sample.
 
-Status bits 0..3: Ready, Running, Error, User LEDs. Bits 4..11 are commented
-custom button feedback hooks; bit 12 is a commented external logging hook.
+Status bits 0..3: Ready, Running, Error, User LEDs. Bits 4..11 carry custom
+button feedback; bit 12 is the external logging trigger. The default firmware
+explicitly clears bits 4..12 in `ipc_Control_func()`. To enable a hook, replace
+its `false` assignment with the application condition and assign the return
+value of `uz_javascope_set_status_bit()` back to `js_status_BareToRTOS`. Do not
+leave a later default assignment that clears the same bit.
 ParameterID GUI extensions inspect bits 13..19 that current firmware does not set.
 Bits 31:30 encode the explicit platform state: `00` idle, `01` running (system
 enabled), `10` control (control enabled), `11` error. There is no validity flag.
@@ -147,7 +151,10 @@ LED bits retain their existing behavior, including Ready blinking. JavaScope rea
 all 32 bits unsigned into a `long`, masks individual indicator bits, and displays
 all 32 bits in its binary status label. The new field does not change its indicators.
 CLI/Python status exposes `state.platform_state` as `idle`, `running`, `control`,
-or `error`, alongside the raw `state.status`. It is null before the first frame
+or `error`, alongside the raw `state.status`. The active channel mapping supplies
+these labels through `platform_state.values`, indexed by `(status & mask) >> shift`
+using `platform_state.mask` and `platform_state.shift`. The default mask is
+3221225472 (`0xC0000000`), the shift is 30, and codes 0..3 name the four states. It is null before the first frame
 and after disconnection; while connected it describes the latest received frame,
 not a command acknowledgment or proof of fresh data.
 Status is sampled only once per frame and must not be treated as per-sample
@@ -232,7 +239,10 @@ successful socket writes for accepted selections update it, never rejected reque
 `--profile` loads runtime `schema_version: 1`, name, configured sample period, and
 `initial_channels` (1-based channel keys to observable names). `--channel-mapping`
 loads firmware `api_version: 1`, mapping name, repository name/commit, channel count,
-samples per packet, and numeric ID maps. Both flags also exist as Python constructor
+samples per packet, numeric ID maps, and the required `platform_state` object.
+Its mask must select two adjacent bits at shift 0..30, and its `values` object
+must name all four codes (`"0"` through `"3"`) with nonempty strings. Older custom
+mappings must add this object; invalid mappings are rejected before device access. Both flags also exist as Python constructor
 arguments `profile` and `channel_mapping`. Defaults are embedded independently.
 
 Default initial channels select IDs 1..20 into slots 1..20. All channel/name pairs

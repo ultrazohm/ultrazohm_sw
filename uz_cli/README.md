@@ -317,7 +317,7 @@ Two independent JSON files are loaded at startup:
 | File | Purpose |
 |---|---|
 | `profiles/standard.json` | Profile schema/name, sample period, initial channel selections |
-| `channel_mappings/default.json` | Firmware API version, mapping name, repository name/commit, packet geometry, observable/slow/variable/command IDs |
+| `channel_mappings/default.json` | Firmware API version, mapping name, repository name/commit, packet geometry, observable/slow/variable/command IDs, platform-state mask/shift/names |
 
 Both defaults are embedded in the executable, so no JSON files are required at
 runtime unless you want overrides. Export editable copies:
@@ -677,7 +677,12 @@ so the prompt waits for completion. Do not run concurrent Vitis operations on th
 same workspace, or program hardware while recording from that device.
 
 `build` reuses Vitis-generated Makefiles when workspace inputs are unchanged.
-Make checks source/header dependencies each time. Platform inputs/outputs,
+`build` and `flash` report `changes found, building` when work is needed, or
+`no changes found` when both applications are up to date. Make checks source/header
+dependencies with `make -q` before running build recipes. A missing build-state
+stamp or changed workspace metadata takes the build path. Dependency-check errors
+stop the operation. `flash` still programs the board after `no changes found`.
+`build-clean` reports `clean build requested, building` and always rebuilds. Platform inputs/outputs,
 application metadata, generated Makefiles, source-file lists and toolchain paths
 are checked against the last successful build. Changes or missing files fall back
 to Vitis named application builds to refresh the workspace. The first build after
@@ -730,7 +735,29 @@ before automatic downloads can work. Existing local wheels work before that.
 
 `uz.status()["state"]["platform_state"]` (also in CLI `status`) reports `idle`,
 `running` (system enabled), `control` (control enabled), or `error` from status
-bits 31:30. It is `None`/JSON null before reception and after disconnection.
+bits 31:30. The decoder reads the mask, shift, and names from the active channel
+mapping's required `platform_state` object (shown below), rather than hard-coding
+the names in Rust. Existing custom mapping files must add this object.
+It is `None`/JSON null before reception and after disconnection.
+
+```json
+"platform_state": {
+  "mask": 3221225472,
+  "shift": 30,
+  "values": {"0": "idle", "1": "running", "2": "control", "3": "error"}
+}
+```
+
+The mask is `0xC0000000` written as a decimal JSON integer. State codes are
+`(status & mask) >> shift`; `values` must contain a nonempty name for each code
+0 through 3. The mask must select two bits at `shift` (0 through 30).
+Use `--channel-mapping PATH` or Python `Acquisition(channel_mapping=PATH)` to
+select a custom mapping. `ultrazohm channel-mapping` exports the embedded default.
+
+```python
+state = uz.status()["state"]["platform_state"]  # e.g. "running"
+```
+
 This is the latest received platform state, independent of blinking LED bits;
 it is not an acknowledgment of a sent command. The raw `status` is retained in
 status responses and recordings. See [protocol.md](docs/protocol.md#signals-and-status).

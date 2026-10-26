@@ -113,5 +113,15 @@
   "repository": {
     "name": "ultrazohm/ultrazohm_sw",
     "commit": "6b04d018fc11898247ef8c4ce3dc6fde7adaecca"
+  },
+  "platform_state": {
+    "mask": 3221225472,
+    "shift": 30,
+    "values": {
+      "0": "idle",
+      "1": "running",
+      "2": "control",
+      "3": "error"
+    }
   }
 }

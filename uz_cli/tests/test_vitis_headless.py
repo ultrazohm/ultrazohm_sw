@@ -44,6 +44,7 @@ source [file join [file dirname [info script]] vitis_headless.tcl]
     def test_incremental_does_not_force_generation_or_configuration(self):
         result = self.run_build("build")
         self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("changes found, building", result.stdout)
         self.assertNotIn("generate", result.stdout)
         self.assertNotIn("clean", result.stdout)
         self.assertNotIn("build-config Debug", result.stdout)
@@ -123,3 +124,72 @@ check {![uz_can_make $workspace $signature $stamp]}
                                      str(ROOT / "tcl_scripts/vitis_incremental.tcl"), tmp],
                                     capture_output=True, text=True, timeout=10)
             self.assertEqual(result.returncode, 0, result.stderr)
+
+    @unittest.skipUnless(shutil.which("make"), "Make required")
+    def test_build_and_flash_report_dependency_changes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            scripts = repo / "tcl_scripts"
+            scripts.mkdir()
+            workspace = repo / "vitis/workspace"
+            for name in ("vitis_headless.tcl", "vitis_incremental.tcl"):
+                shutil.copy(ROOT / "tcl_scripts" / name, scripts)
+            hardware = workspace / "UltraZohm/hw"
+            hardware.mkdir(parents=True)
+            (hardware / "psu_init.tcl").touch()
+            (hardware / "design.bit").touch()
+            utility = repo / "tools/scripts/vitis/util"
+            utility.mkdir(parents=True)
+            for name in ("zynqmp_utils.tcl", "fsbl.tcl"):
+                (utility / name).touch()
+            (scripts / "vitis_run_freertos_baremetal_fpga.tcl").write_text('puts "PROGRAMMED"')
+            for app in ("Baremetal", "FreeRTOS"):
+                folder = workspace / app / "Debug"
+                folder.mkdir(parents=True)
+                (folder / "source.c").write_text("original")
+                (folder / "header.h").write_text("original")
+                (folder / "makefile").write_text(
+                    f".PHONY: all\nall: {app}.elf\n{app}.elf: source.c header.h\n\tcp source.c $@\n")
+            harness = scripts / "test.tcl"
+            harness.write_text('''set ::env(XILINX_VITIS) [lindex $argv 1]
+set argv [list [lindex $argv 0]]
+proc setws {args} {}
+proc disconnect {} {}
+proc app {args} {
+    if {[lindex $args 0] eq "config"} {return "Debug"}
+    if {[lindex $args 0] eq "build"} {
+        exec make -C [file join $::workspace [lindex $args 2] Debug] all
+    }
+}
+source [file join [file dirname [info script]] vitis_headless.tcl]
+''')
+            def run(action):
+                return subprocess.run(["tclsh", str(harness), action, str(repo / "tools")],
+                                      capture_output=True, text=True, timeout=10)
+            first = run("build")
+            self.assertEqual(first.returncode, 0, first.stderr)
+            self.assertIn("changes found, building", first.stdout)
+            for action in ("build", "flash"):
+                unchanged = run(action)
+                self.assertEqual(unchanged.returncode, 0, unchanged.stderr)
+                self.assertIn("no changes found", unchanged.stdout)
+                self.assertEqual("PROGRAMMED" in unchanged.stdout, action == "flash")
+            # An updated header must trigger a build even though source names are unchanged.
+            import os
+            elf = workspace / "Baremetal/Debug/Baremetal.elf"
+            (workspace / "Baremetal/Debug/header.h").write_text("updated header")
+            os.utime(elf, (1, 1))
+            changed = run("flash")
+            self.assertEqual(changed.returncode, 0, changed.stderr)
+            self.assertIn("changes found, building", changed.stdout)
+            self.assertIn("PROGRAMMED", changed.stdout)
+            (workspace / "FreeRTOS/Debug/FreeRTOS.elf").unlink()
+            missing = run("build")
+            self.assertEqual(missing.returncode, 0, missing.stderr)
+            self.assertIn("changes found, building", missing.stdout)
+            # Dependency-check failures must not be mistaken for an up-to-date build.
+            (workspace / "Baremetal/Debug/header.h").unlink()
+            failed = run("flash")
+            self.assertNotEqual(failed.returncode, 0)
+            self.assertNotIn("no changes found", failed.stdout)
+            self.assertNotIn("PROGRAMMED", failed.stdout)

@@ -211,7 +211,9 @@ arrival time is not used as the measurement clock.
 `profiles/standard.json` is the default runtime profile: schema version, name,
 sample period and initial slot selections. `channel_mappings/default.json` holds
 firmware wire geometry, API version, mapping name, repository name/commit and all
-numeric signal/command IDs. `Profile::load_files` combines and validates the two
+numeric signal/command IDs and the platform-state bit mask, shift, and value names.
+Status decoding uses this mapping for both CLI and Python responses.
+`Profile::load_files` combines and validates the two
 before the service touches a device. Each omitted file uses its embedded default.
 The CLI can export each default independently with `profile` and `channel-mapping`.
 

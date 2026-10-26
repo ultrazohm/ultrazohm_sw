@@ -21,7 +21,9 @@ class Client:
     def observables(self):
         """Return all channel assignments requested in this session; no device readback."""
         return self._call("observables")
-    def status(self): return self._call("status")
+    def status(self):
+        """Return service status; state.platform_state is the mapped name or None."""
+        return self._call("status")
     def stop(self): return self._call("stop")
     def enable_system(self): return self._call("enable_system")
     def enable_control(self): return self._call("enable_control")

@@ -56,11 +56,27 @@ if {[catch {
         # Never reuse a state from a failed or interrupted build.
         file delete -force $stamp
         if {$use_make} {
+            set changes 0
             foreach application {Baremetal FreeRTOS} {
-                puts "Incremental build: $application"
-                exec make -C [file join $workspace $application Debug] all >@stdout 2>@stderr
+                if {[uz_make_needs_build [file join $workspace $application Debug]]} {
+                    set changes 1
+                }
+            }
+            if {$changes} {
+                puts "changes found, building"
+                foreach application {Baremetal FreeRTOS} {
+                    puts "Incremental build: $application"
+                    exec make -C [file join $workspace $application Debug] all >@stdout 2>@stderr
+                }
+            } else {
+                puts "no changes found"
             }
         } else {
+            if {$action eq "build-clean"} {
+                puts "clean build requested, building"
+            } else {
+                puts "changes found, building"
+            }
             # Launch scripts load Debug/*.elf even in RUN mode.
             foreach application {Baremetal FreeRTOS} {
                 if {[app config -name $application build-config] ne "Debug"} {

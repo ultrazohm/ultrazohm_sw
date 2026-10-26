@@ -36,6 +36,38 @@ pub struct Repository {
     pub commit: String,
 }
 
+/// Two-bit platform-state field and its user-facing names, supplied by firmware mapping.
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PlatformStateMapping {
+    pub mask: u32,
+    pub shift: u32,
+    pub values: BTreeMap<u32, String>,
+}
+impl PlatformStateMapping {
+    pub fn validate(&self) -> Result<()> {
+        ensure!(self.shift <= 30, "platform_state.shift must be 0..30");
+        ensure!(
+            self.mask == (3_u32 << self.shift),
+            "platform_state.mask must select two bits at shift"
+        );
+        ensure!(
+            self.values.len() == 4
+                && (0..4).all(|code| self
+                    .values
+                    .get(&code)
+                    .is_some_and(|name| !name.trim().is_empty())),
+            "platform_state.values must name codes 0, 1, 2, and 3"
+        );
+        Ok(())
+    }
+    pub fn decode(&self, status: u32) -> Option<&str> {
+        self.values
+            .get(&((status & self.mask).checked_shr(self.shift)?))
+            .map(String::as_str)
+    }
+}
+
 /// Firmware wire geometry, names and IDs. Provenance is descriptive, not device readback.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -49,6 +81,7 @@ pub struct ChannelMapping {
     pub slow_signals: BTreeMap<String, u32>,
     pub variables: BTreeMap<String, u32>,
     pub commands: BTreeMap<String, u32>,
+    pub platform_state: PlatformStateMapping,
 }
 impl ChannelMapping {
     pub fn load(path: Option<&Path>) -> Result<Self> {
@@ -57,7 +90,10 @@ impl ChannelMapping {
                 .with_context(|| format!("reading channel mapping {}", p.display()))?,
             None => include_str!("../channel_mappings/default.json").to_owned(),
         };
-        serde_json::from_str(&text).context("invalid firmware channel mapping")
+        let mapping: Self =
+            serde_json::from_str(&text).context("invalid firmware channel mapping")?;
+        mapping.platform_state.validate()?;
+        Ok(mapping)
     }
 }
 
@@ -77,6 +113,7 @@ pub struct Profile {
     pub slow_signals: BTreeMap<String, u32>,
     pub variables: BTreeMap<String, u32>,
     pub commands: BTreeMap<String, u32>,
+    pub platform_state: PlatformStateMapping,
 }
 impl Profile {
     pub fn load(path: Option<&Path>) -> Result<Self> {
@@ -98,11 +135,13 @@ impl Profile {
             slow_signals: mapping.slow_signals,
             variables: mapping.variables,
             commands: mapping.commands,
+            platform_state: mapping.platform_state,
         };
         p.validate()?;
         Ok(p)
     }
     pub fn validate(&self) -> Result<()> {
+        self.platform_state.validate()?;
         ensure!(
             self.api_version == 1 && self.channels == 20,
             "requires v1 profile and 20-channel firmware"
@@ -163,5 +202,43 @@ impl Profile {
             .or_else(|| self.observables.get(&format!("JSO_{name}")))
             .with_context(|| format!("unknown observable: {name}"))?;
         Ok((200 + channel, *id as f32))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn platform_state_uses_mapping_and_preserves_feedback() {
+        let mut mapping = ChannelMapping::load(None).unwrap().platform_state;
+        for (code, name) in [(0, "idle"), (1, "running"), (2, "control"), (3, "error")] {
+            for feedback in [0, 1, 15, 0x3FFF_FFFF] {
+                assert_eq!(mapping.decode((code << 30) | feedback), Some(name));
+            }
+        }
+        mapping.values.insert(1, "enabled".into());
+        assert_eq!(mapping.decode(0x4000_0001), Some("enabled"));
+        mapping.shift = 4;
+        mapping.mask = 0x30;
+        mapping.validate().unwrap();
+        assert_eq!(mapping.decode(0xFFFF_FFDF), Some("enabled"));
+    }
+
+    #[test]
+    fn rejects_invalid_state_mappings() {
+        let original = ChannelMapping::load(None).unwrap().platform_state;
+        let mut mapping = original.clone();
+        mapping.shift = 32;
+        assert!(mapping.validate().is_err());
+        mapping = original.clone();
+        mapping.mask = 1;
+        assert!(mapping.validate().is_err());
+        mapping = original.clone();
+        mapping.values.remove(&3);
+        assert!(mapping.validate().is_err());
+        mapping = original;
+        mapping.values.insert(0, " ".into());
+        assert!(mapping.validate().is_err());
     }
 }

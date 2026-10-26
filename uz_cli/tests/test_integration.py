@@ -248,6 +248,20 @@ class IntegrationTest(unittest.TestCase):
         self.cli("stop")
         wait_for(lambda: self.cli("status")["state"]["platform_state"] == "idle")
 
+    def test_platform_state_names_from_channel_mapping(self):
+        mapping = json.loads((ROOT/"uz_cli/channel_mappings/default.json").read_text())
+        mapping["platform_state"]["values"] = {
+            "0": "waiting", "1": "enabled", "2": "regulating", "3": "fault"
+        }
+        self.start(mapping=mapping, logging=False)
+        wait_for(lambda: self.cli("status")["state"]["platform_state"] == "waiting")
+        self.cli("enable-system")
+        wait_for(lambda: self.cli("status")["state"]["platform_state"] == "enabled")
+        self.cli("enable-control")
+        wait_for(lambda: self.cli("status")["state"]["platform_state"] == "regulating")
+        self.cli("button", "1")
+        wait_for(lambda: self.cli("status")["state"]["platform_state"] == "fault")
+
     def test_default_interactive_session(self):
         result = subprocess.run(
             [str(BIN), "--endpoint", self.endpoint], cwd=self.tmp.name,
@@ -700,12 +714,13 @@ class IntegrationTest(unittest.TestCase):
         profile_path=self.config_file("python-profile.json", self.runtime_profile({"5":"JSO_PYTHON_SIGNAL"}))
         mapping=json.loads((ROOT/"uz_cli/channel_mappings/default.json").read_text())
         mapping["observables"]["JSO_PYTHON_SIGNAL"] = 29
+        mapping["platform_state"]["values"]["0"] = "waiting"
         mapping_path=self.config_file("python-mapping.json",mapping)
         a=Acquisition(f"127.0.0.1:{self.device_port}",endpoint=self.endpoint,output=str(run_dir),
                       profile=str(profile_path),channel_mapping=str(mapping_path))
         try:
             c=Client(self.endpoint)
-            wait_for(c.status)
+            wait_for(lambda: c.status()["state"]["platform_state"] == "waiting")
             self.assertEqual(c.observables()["channels"][4]["name"], "JSO_PYTHON_SIGNAL")
             self.assertEqual(c.observables()["channels"][4]["id"], 29)
             c.set_observable("lifecheck",1)

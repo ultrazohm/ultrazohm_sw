@@ -62,3 +62,16 @@ proc uz_save_build_signature {stamp signature} {
     close $stream
     file rename -force ${stamp}.tmp $stamp
 }
+
+# Make -q uses the same dependencies as the actual build without running recipes.
+# Exit 1 means work is pending; all other failures must stop build/flash.
+proc uz_make_needs_build {directory} {
+    if {[catch {exec make -q -C $directory all 2>@stderr} message options]} {
+        set code [dict get $options -errorcode]
+        if {[lindex $code 0] eq "CHILDSTATUS" && [lindex $code 2] == 1} {
+            return 1
+        }
+        return -options $options $message
+    }
+    return 0
+}

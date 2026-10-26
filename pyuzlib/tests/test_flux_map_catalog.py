@@ -97,6 +97,22 @@ def test_differential_inductance_map_from_csv_reads_dummy_grid():
     assert diff_ind.L_qq.to_numpy().ravel() == pytest.approx([0.003] * 9)
 
 
+def test_differential_inductance_csv_preserves_decimal_precision(tmp_path):
+    csv_path = tmp_path / "differential_inductances.csv"
+    literals = (
+        "0.0024042911488787605", "0.000118276271903739",
+        "-0.00021384026456549", "1.2345678901234567e-12",
+    )
+    csv_path.write_text(
+        "i_d_A,i_q_A,L_dd_H,L_dq_H,L_qd_H,L_qq_H\n"
+        + "0,0," + ",".join(literals) + "\n",
+        encoding="utf-8",
+    )
+    result = DifferentialInductanceMap.from_csv(csv_path)
+    for field, literal in zip(("L_dd_H", "L_dq_H", "L_qd_H", "L_qq_H"), literals):
+        assert result.data[field].iloc[0] == float(literal)
+
+
 def test_differential_inductance_map_from_csv_rejects_missing_columns(tmp_path):
     csv_path = tmp_path / "differential_inductances.csv"
     csv_path.write_text("i_d_A,i_q_A,L_dd_H\n0,0,0.002\n", encoding="utf-8")

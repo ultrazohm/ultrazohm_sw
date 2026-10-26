@@ -73,7 +73,10 @@ class DifferentialInductanceMap:
     @classmethod
     def from_csv(cls, csv_path: str | Path, *, name: str = "default") -> "DifferentialInductanceMap":
         csv_path = resolve_csv_path(csv_path)
-        data = pd.read_csv(csv_path)
+        # Parse numbers in the explicit astype(float) conversion below. Pandas'
+        # CSV float parser changed precision between versions, which otherwise
+        # changes generated C literals for the same committed CSV.
+        data = pd.read_csv(csv_path, dtype=str)
         required_columns = ("i_d_A", "i_q_A", *DIFFERENTIAL_INDUCTANCE_VALUE_COLUMNS)
         missing_columns = set(required_columns) - set(data.columns)
         if missing_columns:

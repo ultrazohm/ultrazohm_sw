@@ -13,14 +13,19 @@ profile to different firmware. Viewer integration is deliberately deferred.
 Install Rust 1.90.0 and a native C/C++ build toolchain (Linux: build-essential;
 Windows: Visual Studio Build Tools with Desktop development with C++).
 The updated devcontainer includes Rust, rustfmt, clippy, maturin and uv. Its
-`.devcontainer/post-create.sh` installs the native Python package from the mounted
-checkout with the `examples` extra (Python Polars and Matplotlib), then verifies
-imports. Wait for post-create setup to finish; the first Rust build can take time.
-To install/update these packages in an already running container, from the repo root:
+`.devcontainer/post-create.sh` builds a wheel from the mounted checkout and saves
+it in `uz_cli/target/wheels` for `run.sh`. It installs that same wheel with the
+`examples` extra (Python Polars and Matplotlib), then verifies imports.
+Wait for post-create setup to finish; the first Rust build can take time.
+To rebuild the wheel and update packages in an already running container, run
+from the repository root:
 
 ```sh
-python -m pip install './uz_cli[examples]'
+bash .devcontainer/post-create.sh
 ```
+
+The saved wheel targets the container's Linux environment; using it on a host
+requires a compatible OS, architecture and glibc version. Windows needs its own wheel.
 
 Use the same Python interpreter to run `uz_cli/example_python_usage.py`.
 Installing the Python package also provides an `ultrazohm` console command and
@@ -62,7 +67,8 @@ are outside this implementation.
 
 ## One-command setup and launch
 
-With uv installed and a compatible wheel built manually in `uz_cli/target/wheels`:
+With uv installed and a compatible wheel in `uz_cli/target/wheels` (built manually
+or by the container post-create setup):
 
 ```sh
 ./uz_cli/run.sh

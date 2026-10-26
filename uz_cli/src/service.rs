@@ -215,6 +215,9 @@ pub fn serve_with_ready(
         match listener.accept() {
             Ok((mut socket, _)) => {
                 let result: Result<Value> = (|| {
+                    // Windows accepted sockets inherit the nonblocking listener mode.
+                    // Requests and replies below use blocking I/O with bounded timeouts.
+                    socket.set_nonblocking(false)?;
                     socket.set_read_timeout(Some(Duration::from_secs(1)))?;
                     socket.set_write_timeout(Some(Duration::from_secs(1)))?;
                     let req: Request =

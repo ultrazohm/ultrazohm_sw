@@ -169,6 +169,26 @@ class IntegrationTest(unittest.TestCase):
             self.cli("start-logging")
             self.cli("start-logging-slow-data")
 
+    def test_fragmented_control_request(self):
+        self.spawn([BIN, '--endpoint', self.endpoint, 'serve',
+                    '--output', Path(self.tmp.name) / 'fragmented-control'])
+        wait_for(lambda: self.cli('status'))
+        host, port_text = self.endpoint.rsplit(':', 1)
+        with socket.create_connection((host, int(port_text)), timeout=3) as sock:
+            # Let accept run before sending, then split the JSON and newline.
+            # Windows inherits nonblocking mode from the listener unless reset.
+            time.sleep(.1)
+            sock.sendall(b'{"api_version":1,"command":')
+            time.sleep(.1)
+            sock.sendall(b'{"op":"status"}}')
+            time.sleep(.1)
+            sock.sendall(b'\n')
+            with sock.makefile('rb') as response:
+                reply = json.loads(response.readline())
+            self.assertTrue(reply['ok'])
+            self.assertFalse(reply['state']['connected'])
+        self.assertTrue(self.cli('status')['ok'])
+
     def test_offline_retry_connect_and_log(self):
         self.run_dir=Path(self.tmp.name)/'offline'
         service=self.spawn([BIN,'--endpoint',self.endpoint,'serve','--output',self.run_dir,'--format','both'])

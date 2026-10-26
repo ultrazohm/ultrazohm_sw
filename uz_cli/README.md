@@ -83,8 +83,10 @@ Windows PowerShell:
 Both scripts read the Python version from `.devcontainer/Dockerfile` (currently
 3.12), ask uv to install that interpreter, create/reuse the host or container
 virtual environment, install the wheel plus Polars/Matplotlib, and launch
-an activated environment shell. No device connection is opened. Type `exit` to leave
-the environment shell. No Rust toolchain is needed.
+`ultrazohm` directly in that environment. Its interactive session starts disconnected,
+with CSV and Parquet output configured and logging off. Type `connect` to connect
+to the device and `shutdown` to exit. No Rust toolchain is needed.
+Use `--launch shell` to open an activated environment shell instead.
 The Docker tag specifies the 3.12 series, not an exact patch release. An existing
 environment must use that Python series; choose a new `--venv` path when changing
 Python versions. Run the scripts rather than sourcing/dot-sourcing them.
@@ -649,8 +651,7 @@ hardware run are separate from local Linux simulator validation.
 `serve` starts disconnected unless `--device IP:PORT` is supplied:
 
 ```sh
-./uz_cli/run.sh                 # prepare uv environment and open an activated shell
-ultrazohm serve --interactive --output measurement-009 --format both
+./uz_cli/run.sh                 # prepare uv environment and launch ultrazohm
 ```
 
 At the `ultrazohm>` prompt:
@@ -702,7 +703,7 @@ ultrazohm> shutdown
 
 `serve` and `serve --interactive` use the same default output location when
 `--output` is omitted; explicit output paths are used unchanged. `--endpoint ADDRESS` can also select the control endpoint for the
-default session. The uv launch scripts still only open an environment shell.
+default session. The uv launch scripts start this default session after setup.
 
 ### Vitis workspace, build and JTAG programming
 

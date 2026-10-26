@@ -34,7 +34,7 @@ def main():
     parser.add_argument("--python", default="3.12", help="Python version or interpreter for a new environment")
     parser.add_argument("--examples", action="store_true", help="Also install Python Polars and Matplotlib")
     parser.add_argument("--launch", choices=["shell", "cli", "example"], help="Open an activated shell, CLI or Python example after installation")
-    parser.add_argument("command", nargs=argparse.REMAINDER, help="CLI arguments after -- (default: serve --interactive)")
+    parser.add_argument("command", nargs=argparse.REMAINDER, help="CLI arguments after -- (default: ultrazohm's interactive session)")
     args = parser.parse_args()
     extra = args.command[1:] if args.command[:1] == ["--"] else args.command
     if extra and args.launch != "cli":
@@ -127,7 +127,7 @@ def main():
                 parser.error("the Python example does not take CLI arguments")
             launch = [str(python), str(root / "example_python_usage.py")]
         else:
-            launch = [str(command), *(extra or ["serve", "--interactive"])]
+            launch = [str(command), *extra]
         launch_env = install_env.copy()
         launch_env["VIRTUAL_ENV"] = str(venv)
         launch_env["PATH"] = str(scripts) + os.pathsep + launch_env.get("PATH", "")

@@ -17,4 +17,4 @@ fi
 unset VIRTUAL_ENV
 uv python install "$python_version"
 exec uv run --no-project --managed-python --python "$python_version" \
-    "$script_dir/setup_uv.py" --python "$python_version" --examples --launch shell "$@"
+    "$script_dir/setup_uv.py" --python "$python_version" --examples --launch cli "$@"

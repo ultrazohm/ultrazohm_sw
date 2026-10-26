@@ -20,7 +20,7 @@ try {
     & uv python install $pythonVersion
     if ($LASTEXITCODE -ne 0) { throw "uv could not install Python $pythonVersion." }
     $setupScript = Join-Path $PSScriptRoot "setup_uv.py"
-    & uv run --no-project --managed-python --python $pythonVersion $setupScript --python $pythonVersion --examples --launch shell @forwardedArgs
+    & uv run --no-project --managed-python --python $pythonVersion $setupScript --python $pythonVersion --examples --launch cli @forwardedArgs
     $exitCode = $LASTEXITCODE
 }
 finally {

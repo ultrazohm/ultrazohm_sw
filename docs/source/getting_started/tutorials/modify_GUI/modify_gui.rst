@@ -122,21 +122,23 @@ Guideline
 
 #. To be able to disable the three-phase wave again, assign in the case ``case (My_Button_5):`` the variable ``is_three_phase_active`` the value *false*.
 #. Set the ``ultrazohm_state_machine_set_userLED()`` to true, if ``My_Button_4`` is pressed and to false, if ``My_Button_5`` is pressed. This will turn the *userLED* on, when the three-phase wave is active.
-#. Comment in the code of ``Bit_7`` and ``Bit_8`` for ``My_Button_4`` and ``My_Button_5`` and change it to the following.
+#. In ``ipc_ARM.c``, replace the default ``false`` assignments for ``JAVASCOPE_STATUS_BUTTON_4`` (bit 7) and ``JAVASCOPE_STATUS_BUTTON_5`` (bit 8) with the following conditions.
 
+   * Replace the existing assignments; leaving a default assignment after your custom code would clear the feedback again.
+   * ``javascope_status.h`` is already included by ``ipc_ARM.c``. The helper returns the updated status word, so assign its return value.
    * These status bits relay information from the R5 back to the GUI.
    * They are, e.g., used to sync the *Ready LED*, *Running LED* etc.
    * For this specific tutorial, these two bits are used to relay the information to the GUI that the button press was acknowledged by the R5.
 
    .. code-block:: c
      :linenos:
-     :emphasize-lines: 2,8,9,13,14,17-29
+     :emphasize-lines: 2,8,9,13,14,17-23
      :caption: ipc_ARM.c code after changes. ``//....`` marks left-out code.
 
       //....
       extern bool is_three_phase_active;
 
-      int ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
+      void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
       {
          //.... 
          case (My_Button_4):
@@ -149,19 +151,11 @@ Guideline
             ultrazohm_state_machine_set_userLED(false);
             break;
          //.... 
-         /* Bit 7 - My_Button_4 */
-         if (is_three_phase_active) {
-            js_status_BareToRTOS |= 1 << 7;
-         } else {
-            js_status_BareToRTOS &= ~(1 << 7);
-         }
+         /* Bit 7 - My_Button_4: replace the default assignment. */
+         js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_4, is_three_phase_active);
 
-         /* Bit 8 - My_Button_5 */
-         if (!is_three_phase_active) {
-            js_status_BareToRTOS |= 1 << 8;
-         } else {
-            js_status_BareToRTOS &= ~(1 << 8);
-	      }
+         /* Bit 8 - My_Button_5: replace the default assignment. */
+         js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_5, !is_three_phase_active);
          //....
       }
 
@@ -216,7 +210,7 @@ Guideline
       extern float frequency;
       extern float offset;
 
-      int ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
+      void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
       {
          //.... 
          case (My_Button_4):
@@ -241,19 +235,11 @@ Guideline
             offset = value;
             break;
          //....
-         /* Bit 7 - My_Button_4 */
-         if (is_three_phase_active) {
-            js_status_BareToRTOS |= 1 << 7;
-         } else {
-            js_status_BareToRTOS &= ~(1 << 7);
-         }
+         /* Bit 7 - My_Button_4: replace the default assignment. */
+         js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_4, is_three_phase_active);
 
-         /* Bit 8 - My_Button_5 */
-         if (!is_three_phase_active) {
-            js_status_BareToRTOS |= 1 << 8;
-         } else {
-            js_status_BareToRTOS &= ~(1 << 8);
-	      }
+         /* Bit 8 - My_Button_5: replace the default assignment. */
+         js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_5, !is_three_phase_active);
          //....
       }
 

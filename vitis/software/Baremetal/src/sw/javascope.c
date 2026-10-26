@@ -138,7 +138,7 @@ void JavaScope_update(DS_Data* data){
 	}
 	javascope_data->slowDataID 		= js_cnt_slowData;
 	javascope_data->slowDataContent = *js_slowDataArray[js_cnt_slowData];
-	javascope_data->status = javascope_status_with_platform_state(js_status_BareToRTOS, ultrazohm_state_machine_get_state());
+	javascope_data->status = uz_javascope_set_platform_state(js_status_BareToRTOS, ultrazohm_state_machine_get_state());
 
 	// flush data cache of shared memory region to make sure shared memory is updated
 	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE);

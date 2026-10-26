@@ -187,83 +187,83 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-			data->av.snd_fld[1] = value;
+		data->av.snd_fld[1] = value;
 			break;
 
 		case (Set_Send_Field_2):
-			data->av.snd_fld[2] = value;
+		data->av.snd_fld[2] = value;
 			break;
 
 		case (Set_Send_Field_3):
-			data->av.snd_fld[3] = value;
+		data->av.snd_fld[3] = value;
 			break;
 
 		case (Set_Send_Field_4):
-			data->av.snd_fld[4] = value;
+		data->av.snd_fld[4] = value;
 			break;
 
 		case (Set_Send_Field_5):
-			data->av.snd_fld[5] = value;
+		data->av.snd_fld[5] = value;
 			break;
 
 		case (Set_Send_Field_6):
-			data->av.snd_fld[6] = value;
+		data->av.snd_fld[6] = value;
 			break;
 
 		case (Set_Send_Field_7):
-			data->av.snd_fld[7] = value;
+		data->av.snd_fld[7] = value;
 			break;
 
 		case (Set_Send_Field_8):
-			data->av.snd_fld[8] = value;
+		data->av.snd_fld[8] = value;
 			break;
 
 		case (Set_Send_Field_9):
-			data->av.snd_fld[9] = value;
+		data->av.snd_fld[9] = value;
 			break;
 
 		case (Set_Send_Field_10):
-			data->av.snd_fld[10] = value;
+		data->av.snd_fld[10] = value;
 			break;
 
 		case (Set_Send_Field_11):
-			data->av.snd_fld[11] = value;
+		data->av.snd_fld[11] = value;
 			break;
 
 		case (Set_Send_Field_12):
-			data->av.snd_fld[12] = value;
+		data->av.snd_fld[12] = value;
 			break;
 
 		case (Set_Send_Field_13):
-			data->av.snd_fld[13] = value;
+		data->av.snd_fld[13] = value;
 			break;
 
 		case (Set_Send_Field_14):
-			data->av.snd_fld[14] = value;
+		data->av.snd_fld[14] = value;
 			break;
 
 		case (Set_Send_Field_15):
-			data->av.snd_fld[15] = value;
+		data->av.snd_fld[15] = value;
 			break;
 
 		case (Set_Send_Field_16):
-			data->av.snd_fld[16] = value;
+		data->av.snd_fld[16] = value;
 			break;
 
 		case (Set_Send_Field_17):
-			data->av.snd_fld[17] = value;
+		data->av.snd_fld[17] = value;
 			break;
 
 		case (Set_Send_Field_18):
-			data->av.snd_fld[18] = value;
+		data->av.snd_fld[18] = value;
 			break;
 
 		case (Set_Send_Field_19):
-			data->av.snd_fld[19] = value;
+		data->av.snd_fld[19] = value;
 			break;
 
 		case (Set_Send_Field_20):
-			data->av.snd_fld[20] = value;
+		data->av.snd_fld[20] = value;
 			break;
 
 		case (My_Button_1):
@@ -313,15 +313,25 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	}
 
 	// Feedback for the GUI indicators, including the current Ready blink level.
-	javascope_status_set_flag(&js_status_BareToRTOS, JAVASCOPE_STATUS_LED_READY, ultrazohm_state_get_led_ready());
-	javascope_status_set_flag(&js_status_BareToRTOS, JAVASCOPE_STATUS_LED_RUNNING, ultrazohm_state_get_led_running());
-	javascope_status_set_flag(&js_status_BareToRTOS, JAVASCOPE_STATUS_LED_ERROR, ultrazohm_state_get_led_error());
-	javascope_status_set_flag(&js_status_BareToRTOS, JAVASCOPE_STATUS_LED_USER, ultrazohm_state_get_led_user());
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_LED_READY, ultrazohm_state_get_led_ready());
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_LED_RUNNING, ultrazohm_state_get_led_running());
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_LED_ERROR, ultrazohm_state_get_led_error());
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_LED_USER, ultrazohm_state_get_led_user());
+
+	// Default feedback: these optional application conditions are inactive.
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_1, false);
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_2, false);
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_3, false);
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_4, false);
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_5, false);
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_6, false);
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_7, false);
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_8, false);
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_LOGGING_TRIGGER, false);
 
 	// Optional feedback hooks: JAVASCOPE_STATUS_BUTTON_1 through _BUTTON_8,
-	// and JAVASCOPE_STATUS_LOGGING_TRIGGER. Populate from application conditions:
-	// javascope_status_set_flag(&js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_1,
-	//                          button_1_feedback);
-	// javascope_status_set_flag(&js_status_BareToRTOS, JAVASCOPE_STATUS_LOGGING_TRIGGER,
-	//                          logging_requested);
+	// and JAVASCOPE_STATUS_LOGGING_TRIGGER. Replace the defaults above with application conditions, for example:
+	// js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_1, button_1_feedback);
+	// js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_LOGGING_TRIGGER, logging_requested);
+
 }

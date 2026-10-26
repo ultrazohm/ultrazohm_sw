@@ -99,7 +99,7 @@ Logging
 - ``Logging OFF/ON`` starts or stops writing log files.
 - ``Log FastData`` includes fast scope samples in the log file.
 - ``Log SlowData`` includes ``SlowData`` values in the log file. All received ``SlowData`` is logged.
-- ``ext. log trigger`` allows the UltraZohm software to control logging via its status bit.
+- ``ext. log trigger`` allows the UltraZohm software to control logging via status bit 12.   In ``ipc_ARM.c``, replace the default ``false`` assignment for ``JAVASCOPE_STATUS_LOGGING_TRIGGER`` with your Boolean condition using ``uz_javascope_set_status_bit()`` and assign its return value.
 - ``Log every N`` reduces the logging rate of FastData by saving only every Nth sample group. If enabled, ``SlowData`` is logged at full rate.
 - ``Log state`` shows whether logging is active.
 - Each logging start creates a new ``Log_yyyy-mm-dd_hh-mm-ss.csv`` file.
@@ -116,6 +116,12 @@ Footer and connection area
    JavaScope footer and connection controls
 
 - ``Status`` shows 32-bit status register.
+  Bits 0 through 3 show the Ready, Running, Error, and User LED levels, including Ready blinking.
+  Bits 4 through 11 carry custom button feedback, and bit 12 controls external logging.
+  These optional flags are cleared by default in ``ipc_ARM.c``; replace the respective default assignments to supply application feedback.
+  Bits 13 through 19 are used by the ParameterID GUI extension; bits 20 through 29 are reserved.
+  Bits 31:30 encode the current platform state: ``00`` idle, ``01`` running (system enabled), ``10`` control (control enabled), and ``11`` error.
+  This state field is independent of the LED levels and is added by ``JavaScope_update()`` when preparing the outgoing frame.
 - ``Connection indicator`` moves when new data package arrives.
 - ``IP address`` shows the target device address.
 - ``connect`` opens the connection to the UltraZohm at the configured IP address.

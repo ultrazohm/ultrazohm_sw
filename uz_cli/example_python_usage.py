@@ -22,7 +22,10 @@ DEVICE = "192.168.1.233:1000"
 PROFILE = Path(__file__).parent / "profiles" / "standard.json"
 CHANNEL_MAPPING = Path(__file__).parent / "channel_mappings" / "default.json"
 # For your own firmware, point these to your two custom JSON files.
-OUTPUT = Path("lifecheck-" + datetime.now().strftime("%Y%m%d-%H%M%S-%f"))
+# Resolve from this script so the destination does not depend on the working directory.
+LOG_ROOT = Path(__file__).resolve().parents[1] / "artifacts" / "live_logs"
+LOG_ROOT.mkdir(parents=True, exist_ok=True)
+OUTPUT = LOG_ROOT / ("lifecheck-" + datetime.now().strftime("%Y%m%d-%H%M%S-%f"))
 
 # Rust connects in the background; logging starts explicitly below.
 acquisition = Acquisition(

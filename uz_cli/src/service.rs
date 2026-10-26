@@ -1,6 +1,6 @@
 use crate::{
     profile::Profile,
-    protocol::{Frame, decode_frame, encode_command},
+    protocol::{Frame, PlatformState, decode_frame, encode_command},
     recording::{Recordings, Routes},
     storage::Format,
 };
@@ -67,6 +67,7 @@ struct State {
     frames: u64,
     samples: u64,
     status: u32,
+    platform_state: Option<PlatformState>,
     commands_sent: u64,
     ack_sent: u64,
     error: Option<String>,
@@ -504,6 +505,7 @@ impl ConnectionContext {
                         s.frames += 1;
                         s.samples += profile.samples_per_packet as u64;
                         s.status = frame.status;
+                        s.platform_state = Some(PlatformState::from_status(frame.status));
                     }
                     {
                         let mut r = ring.lock().unwrap();
@@ -522,7 +524,11 @@ impl ConnectionContext {
                 }
                 Ok(())
             })();
-            health.lock().unwrap().connected = false;
+            {
+                let mut state = health.lock().unwrap();
+                state.connected = false;
+                state.platform_state = None;
+            }
             if let Err(e) = &result {
                 health
                     .lock()

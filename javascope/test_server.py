@@ -418,7 +418,13 @@ class UltraZohmModel:
         self.last_status = self.build_status_word()
 
     def build_status_word(self) -> int:
-        status_word = 0
+        # Explicit wire codes for platform state in bits 31:30; LEDs remain below.
+        status_word = {
+            IDLE_STATE: 0x00000000,
+            RUNNING_STATE: 0x40000000,
+            CONTROL_STATE: 0x80000000,
+            ERROR_STATE: 0xC0000000,
+        }[self.current_state]
         if self.ready_led:
             status_word |= 1 << 0
         if self.running_led:

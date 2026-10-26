@@ -725,3 +725,12 @@ selects CLI releases by tag prefix, channel and publication time.
 
 The first successful workflow run on the relevant branch must publish a release
 before automatic downloads can work. Existing local wheels work before that.
+
+### Platform state feedback
+
+`uz.status()["state"]["platform_state"]` (also in CLI `status`) reports `idle`,
+`running` (system enabled), `control` (control enabled), or `error` from status
+bits 31:30. It is `None`/JSON null before reception and after disconnection.
+This is the latest received platform state, independent of blinking LED bits;
+it is not an acknowledgment of a sent command. The raw `status` is retained in
+status responses and recordings. See [protocol.md](docs/protocol.md#signals-and-status).

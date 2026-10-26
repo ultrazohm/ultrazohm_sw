@@ -2,6 +2,29 @@
 use anyhow::{Result, ensure};
 use serde::{Deserialize, Serialize};
 
+/// Explicit platform state in status bits 31:30; low LED/feedback bits are independent.
+/// Wire codes match Baremetal's include/javascope_status.h.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum PlatformState {
+    Idle,
+    Running,
+    Control,
+    Error,
+}
+
+impl PlatformState {
+    pub fn from_status(status: u32) -> Self {
+        const PLATFORM_STATE_MASK: u32 = 0xC000_0000;
+        match status & PLATFORM_STATE_MASK {
+            0x0000_0000 => Self::Idle,
+            0x4000_0000 => Self::Running,
+            0x8000_0000 => Self::Control,
+            _ => Self::Error,
+        }
+    }
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Frame {
     pub status: u32,
@@ -61,6 +84,21 @@ pub fn decode_frame(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn platform_state_ignores_leds_and_other_feedback() {
+        for (bits, expected, name) in [
+            (0x0000_0000, PlatformState::Idle, "idle"),
+            (0x4000_0000, PlatformState::Running, "running"),
+            (0x8000_0000, PlatformState::Control, "control"),
+            (0xC000_0000, PlatformState::Error, "error"),
+        ] {
+            for low_bits in [0, 1, 0xF, 0x3FFF_FFFF] {
+                assert_eq!(PlatformState::from_status(bits | low_bits), expected);
+            }
+            assert_eq!(serde_json::to_value(expected).unwrap(), name);
+        }
+    }
+
     #[test]
     fn golden_command() {
         assert_eq!(

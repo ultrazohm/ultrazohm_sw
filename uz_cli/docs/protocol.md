@@ -139,7 +139,17 @@ not simultaneous values; the logger preserves one ID/value pair per sample.
 
 Status bits 0..3: Ready, Running, Error, User LEDs. Bits 4..11 are commented
 custom button feedback hooks; bit 12 is a commented external logging hook.
-ParameterID GUI extensions inspect higher bits that current firmware does not set.
+ParameterID GUI extensions inspect bits 13..19 that current firmware does not set.
+Bits 31:30 encode the explicit platform state: `00` idle, `01` running (system
+enabled), `10` control (control enabled), `11` error. There is no validity flag.
+Baremetal samples the state when copying status into the outgoing JavaScope data;
+LED bits retain their existing behavior, including Ready blinking. JavaScope reads
+all 32 bits unsigned into a `long`, masks individual indicator bits, and displays
+all 32 bits in its binary status label. The new field does not change its indicators.
+CLI/Python status exposes `state.platform_state` as `idle`, `running`, `control`,
+or `error`, alongside the raw `state.status`. It is null before the first frame
+and after disconnection; while connected it describes the latest received frame,
+not a command acknowledgment or proof of fresh data.
 Status is sampled only once per frame and must not be treated as per-sample
 transition timing.
 

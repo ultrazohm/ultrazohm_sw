@@ -63,6 +63,16 @@ class SimulatorTest(unittest.TestCase):
             self.assertEqual(profile[field], expected)
         self.assertEqual(server_module.CMD_ERROR_RESET, profile["commands"]["Error_Reset"])
 
+    def test_platform_state_wire_bits(self):
+        model = server_module.UltraZohmModel(1000, 50, 1, 17)
+        for state in range(4):
+            model.current_state = state
+            for ready in [False, True]:
+                model.ready_led = ready
+                status = model.build_status_word()
+                self.assertEqual(status >> 30, state)
+                self.assertEqual(bool(status & 1), ready)
+
     def test_fragmented_and_coalesced_commands(self):
         m = server_module.UltraZohmModel(1000, 50, 1, 17)
         raw = struct.pack("<IfIfIf", 4, 12.5, 201, 3., 25, 0.)
@@ -195,6 +205,7 @@ class IntegrationTest(unittest.TestCase):
         status=wait_for(lambda:self.cli('status'))
         self.assertFalse(status['state']['connected'])
         self.assertIsNone(status['state']['device'])
+        self.assertIsNone(status['state']['platform_state'])
         self.assertTrue(all(c['state']=='unknown' for c in self.cli('observables')['channels']))
         for command in [('start-logging',),('start-logging-slow-data',),('stop',),('set-observable','lifecheck','1')]:
             with self.assertRaisesRegex(RuntimeError,'not connected'):
@@ -225,6 +236,18 @@ class IntegrationTest(unittest.TestCase):
         self.cli('shutdown');self.assertEqual(service.wait(timeout=10),0)
         self.assertTrue((self.run_dir/'data.parquet').exists())
         self.assertIn('JSO_lifecheck',(self.run_dir/'data.csv').read_text().splitlines()[0])
+    def test_explicit_platform_state_feedback(self):
+        self.start()
+        wait_for(lambda: self.cli("status")["state"]["platform_state"] == "idle")
+        self.cli("enable-system")
+        wait_for(lambda: self.cli("status")["state"]["platform_state"] == "running")
+        self.cli("enable-control")
+        wait_for(lambda: self.cli("status")["state"]["platform_state"] == "control")
+        self.cli("button", "1")  # Simulator's error injection.
+        wait_for(lambda: self.cli("status")["state"]["platform_state"] == "error")
+        self.cli("stop")
+        wait_for(lambda: self.cli("status")["state"]["platform_state"] == "idle")
+
     def test_default_interactive_session(self):
         result = subprocess.run(
             [str(BIN), "--endpoint", self.endpoint], cwd=self.tmp.name,

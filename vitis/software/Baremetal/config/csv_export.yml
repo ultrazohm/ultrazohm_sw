@@ -1,0 +1,10 @@
+---
+# Opt-in host-test CSV exports, without modifying the tracked configuration header.
+# Keep export-enabled objects separate from the ordinary test build.
+:project:
+  :build_root: build/artifacts/csv-export-build
+:defines:
+  :test:
+    - CEEDLING_GLOBAL_CSV_EXPORT=1
+  :preprocess:
+    - CEEDLING_GLOBAL_CSV_EXPORT=1

@@ -58,7 +58,8 @@ The PMSM generates an inner torque :math:`T_I` according to:
 
     T_I=\frac{3}{2}p(\psi_d i_q - \psi_q i_d)
 
-This can be rearranged to the following equation [[#Schroeder_Regelung]_, p. 1092]. Note that the flux-based equation above is implemented in the model.
+This can be rearranged to the following equation [[#Schroeder_Regelung]_, p. 1092].
+Note that the flux-based equation above is implemented in the model.
 
 .. math::
 
@@ -177,6 +178,12 @@ Integration
 
 The differential equations of the electrical and mechanical system are discretized using the explicit Euler method [ [#Sanchez_LimitsOfFloat]_, p. 3 ].
 Using this method is justified by the small integration step of the implementation (:math:`t_s=0.5~\mu s`) and is a commonly used approach [#Sanchez_LimitsOfFloat]_, p. 3 ].
+External inputs are held constant over each integration step (zero-order hold).
+Speed is supplied externally when mechanical simulation is disabled and is an integrated state when mechanical simulation is enabled.
+The model integrates flux linkage and derives current from the present flux state before evaluating the voltage balance for the next step.
+For smooth dynamics, the local truncation error of explicit Euler is :math:`\mathcal{O}(t_s^2)`, but the step size alone does not guarantee negligible error or stability.
+Accuracy depends on the machine parameters, speed-dependent coupling, and operating conditions and should be checked against a converged reference solution.
+The software counterpart :ref:`uz_pmsm_swmodel <uz_pmsm_swmodel>` additionally offers a 2nd-order Heun integration option, which may reach comparable accuracy with a larger step after checking stability and convergence.
 The new value at time :math:`k+1` of the state variable is calcualted for every time step based on the *old* values (:math:`k`):
 
 .. math:: 

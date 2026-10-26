@@ -12,7 +12,10 @@ enum csv_field_type_t
     CSV_FIELD_UINT16,
     CSV_FIELD_INT16,
     CSV_FIELD_UINT8,
-    CSV_FIELD_INT8
+    CSV_FIELD_INT8,
+    /* Nine significant digits preserve binary32 values, including sub-microsecond
+     * configuration sample times. CSV_FIELD_FLOAT retains six-decimal log output. */
+    CSV_FIELD_FLOAT_PRECISE
 };
 
 struct csv_field_descriptor_t
@@ -21,6 +24,11 @@ struct csv_field_descriptor_t
     size_t offset;
     enum csv_field_type_t type;
 };
+
+/* Host-test artifacts only. Relative to the Baremetal working directory unless
+ * UZ_TEST_DATA_DIR selects another root (use an absolute path across tools).
+ * Export filenames are relative to this root; parents are created on demand. */
+const char *test_csv_output_directory(void);
 
 void export_input_output_arrays_to_csv(const char *filename,
                                       const void *input_array,
@@ -41,5 +49,14 @@ void export_array_of_struct_to_csv(const char *filename,
                                   size_t field_count,
                                   size_t length,
                                   float add_time);
+
+/* Same output as export_array_of_struct_to_csv, but buffered and much faster for large logs. */
+void export_array_of_struct_to_csv_fast(const char *filename,
+                                        const void *array,
+                                        size_t element_size,
+                                        const struct csv_field_descriptor_t *fields,
+                                        size_t field_count,
+                                        size_t length,
+                                        float add_time);
 
 void write_csv_field(FILE *file, const void *field_ptr, enum csv_field_type_t type);

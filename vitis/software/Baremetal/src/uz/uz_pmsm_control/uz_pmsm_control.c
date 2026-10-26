@@ -45,7 +45,7 @@ static uz_pmsm_control_t *uz_pmsm_control_allocation(void)
 
 uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t config, uz_PMSM_t machine_data)
 {
-    uz_PMSM_config_assert(machine_data);
+    uz_PMSM_config_assert_model(machine_data);
     uz_assert(config.sample_time > 0.0f);
     uz_assert(config.speed_controller_kp >= 0.0f);
     uz_assert(config.speed_controller_ki >= 0.0f);

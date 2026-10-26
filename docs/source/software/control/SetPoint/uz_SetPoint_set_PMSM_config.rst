@@ -11,7 +11,7 @@ Example
 
 .. code-block:: c
   :linenos:
-  :caption: Example function call. Init of instance via :ref:`init-function <uz_SetPoint_init>`.
+  :caption: Update the motor parameters of an instance created via :ref:`uz_SetPoint_init`.
 
   int main(void) {
     uz_PMSM_t input = {
@@ -23,12 +23,15 @@ Example
       .J_kg_m_squared = 0.00001773f,
       .I_max_Ampere = 10.0f
     };
-    uz_SetPoint_set_PMSM_config(SP_instance, input);
+    uz_SetPoint_set_PMSM_config(SP_instance, &input);
   }
 
 
 Description
 ===========
 
-Updates the PMSM-parameters in the SpeedControl object to the new input values.
-Every value of the struct will be asserted again.
+Updates the PMSM parameters in the SetPoint object to the new input values.
+Pass a pointer to the parameter struct; the setter copies the complete struct into the instance's own configuration.
+The caller's struct only needs to remain valid during the call, and later changes to it do not affect the instance.
+The parameters used by setpoint generation are asserted again; inertia and the rating envelope are not required.
+``Psi_PM_Vs`` must be greater than zero because FOC setpoint generation divides by it.

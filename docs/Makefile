@@ -17,6 +17,31 @@ help:
 # Delete build folder before make
 .PHONY: clean
 
+# PMSM catalog targets forward to the root Makefile.
+.PHONY: auto_generate_available_machines check_available_machines auto_generate_flux_maps check_flux_maps
+auto_generate_available_machines:
+	$(MAKE) -C .. pyuzlib-generate-machine-catalog
+
+check_available_machines:
+	$(MAKE) -C .. pyuzlib-check-machines
+
+auto_generate_flux_maps:
+	$(MAKE) -C .. pyuzlib-generate-flux-maps
+
+check_flux_maps:
+	$(MAKE) -C .. pyuzlib-check-flux-maps
+
+# Umbrella targets: regenerate/verify every committed PMSM artifact (canonical CSVs, scalar
+# machine catalog, flux-map and differential-inductance headers) in one command. CI uses the equivalent
+# root pyuzlib-check-generated target. The explicit recipe and .PHONY entry keep the catch-all
+# "%: Makefile" (sphinx-build) rule below from matching these recipe-less names.
+.PHONY: auto_generate_all check_all
+auto_generate_all:
+	$(MAKE) -C .. pyuzlib-generate-machines
+
+check_all:
+	$(MAKE) -C .. pyuzlib-check-generated
+
 clean:
 	 rm -r build
 
@@ -26,27 +51,13 @@ doxygen:
 doxygen_clean:
 	 rm -r doxygen_output
 
-# Taken from here since I'm not sure how to ensure the proper environment for ceedling otherwise https://stackoverflow.com/questions/10566532/how-can-bash-execute-a-command-in-a-different-directory-context
-ceedling_tests:
-	(cd ../vitis/software/Baremetal/; ceedling test:all) 
-
 ceedling_clean:
-	(cd ../vitis/software/Baremetal/; ceedling clobber)
+	cd ../vitis/software/Baremetal && ceedling clobber
 
-ceedling_test_output:
-	rm -rf ceedling_test_output
-	mkdir -p ceedling_test_output
-	cd ../vitis/software/Baremetal/test && find . -type d -exec mkdir -p ../../../../docs/ceedling_test_output/{} \;
-
-docs_with_ceedling_tests:
-	make ceedling_test_output
-	make ceedling_tests
-	make doxygen
-	make html SPHINXOPTS="-W --keep-going -n"
-
+.PHONY: ceedling_clean docs
 docs:
-	make doxygen
-	make html SPHINXOPTS="-W --keep-going -n"
+	$(MAKE) doxygen
+	$(MAKE) html SPHINXOPTS="-W --keep-going -n"
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
@@ -55,4 +66,3 @@ docs:
 
 livehtml:
 	sphinx-autobuild "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-

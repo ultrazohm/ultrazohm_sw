@@ -1,19 +1,10 @@
-from pathlib import Path
+from pyuzlib.docs.test_results import pmsm_swmodel_result_paths
 
 import pandas as pd
 from bokeh.layouts import column
 from bokeh.plotting import figure, show
 
-try:
-    _SCRIPT_PATH = Path(__file__).resolve()
-except NameError:
-    # Keep compatibility with directive runners that execute via exec().
-    _SCRIPT_PATH = Path.cwd()
-
-SCRIPT_DIR = _SCRIPT_PATH.parent if _SCRIPT_PATH.is_file() else _SCRIPT_PATH
-REPO_ROOT = next(path for path in (SCRIPT_DIR, *SCRIPT_DIR.parents) if (path / "README.MD").is_file())
-CSV_PATH = REPO_ROOT / "docs" / "ceedling_test_output" / "uz" / "uz_pmsm_swmodel" / "uz_pmsm_swmodel_results.csv"
-CONFIG_CSV_PATH = REPO_ROOT / "docs" / "ceedling_test_output" / "uz" / "uz_pmsm_swmodel" / "uz_pmsm_swmodel_config.csv"
+CSV_PATH, CONFIG_CSV_PATH = pmsm_swmodel_result_paths()
 SUBPLOT_HEIGHT_PX = 210
 
 config_df = pd.read_csv(CONFIG_CSV_PATH, sep=";")
@@ -31,8 +22,8 @@ p_d = figure(
     tools=TOOLS,
     active_scroll="wheel_zoom",
 )
-p_d.line(t, df["output_i_d_A"], line_width=2, color="#26597e", legend_label="i_d (A)")
-p_d.line(t, df["input_v_d_V"], line_width=2, color="#ff7f0e", legend_label="v_d (V)")
+p_d.line(t, df["output_d"], line_width=2, color="#26597e", legend_label="i_d (A)")
+p_d.line(t, df["input_d"], line_width=2, color="#ff7f0e", legend_label="v_d (V)")
 
 p_q = figure(
     title="q-axis",
@@ -44,8 +35,8 @@ p_q = figure(
     active_scroll="wheel_zoom",
     x_range=p_d.x_range,
 )
-p_q.line(t, df["output_i_q_A"], line_width=2, color="#2ca02c", legend_label="i_q (A)")
-p_q.line(t, df["input_v_q_V"], line_width=2, color="#d62728", legend_label="v_q (V)")
+p_q.line(t, df["output_q"], line_width=2, color="#2ca02c", legend_label="i_q (A)")
+p_q.line(t, df["input_q"], line_width=2, color="#d62728", legend_label="v_q (V)")
 
 p_torque = figure(
     title="Torque",

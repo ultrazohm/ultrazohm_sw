@@ -424,8 +424,8 @@ Setup
 
                 case (ParaID_EID_Admit_Params):
                     //If FOC is used
-                    uz_CurrentControl_set_PMSM_parameters(CC_instance, ParaID_Data.ElectricalID_Output->PMSM_parameters);
-                    uz_SetPoint_set_PMSM_config(SP_instance, ParaID_Data.ElectricalID_Output->PMSM_parameters);
+                    uz_CurrentControl_set_PMSM_parameters(CC_instance, &ParaID_Data.ElectricalID_Output->PMSM_parameters);
+                    uz_SetPoint_set_PMSM_config(SP_instance, &ParaID_Data.ElectricalID_Output->PMSM_parameters);
                     break;
 
                 case (ParaID_FID_max_speed):

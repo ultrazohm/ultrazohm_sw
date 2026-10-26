@@ -1,0 +1,9 @@
+{
+  "columns": {
+    "i_d": "I_d",
+    "i_q": "I_q",
+    "psi_d": "Psi_d",
+    "psi_q": "Psi_q"
+  },
+  "edge_order": 2
+}

@@ -142,11 +142,15 @@ void uz_CurrentControl_set_Ki_iq(uz_CurrentControl_t* self, float Ki_iq);
 
 /**
  * @brief Function to change the PMSM parameters during runtime
+ *
+ * Copies the complete supplied struct into the instance's configuration.
+ * The pointer only needs to remain valid during this call; later changes to the
+ * caller's struct do not affect the instance.
  * 
  * @param self uz_CurrentControl_t instance
- * @param pmsm_config PMSM_config struct with updated values
+ * @param pmsm_config pointer to PMSM_config struct with updated values
  */
-void uz_CurrentControl_set_PMSM_parameters(uz_CurrentControl_t* self, uz_PMSM_t pmsm_config);
+void uz_CurrentControl_set_PMSM_parameters(uz_CurrentControl_t* self, const uz_PMSM_t *pmsm_config);
 
 /**
  * @brief Function to change the type of decoupling during runtime

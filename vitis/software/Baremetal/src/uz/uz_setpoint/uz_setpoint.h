@@ -68,11 +68,15 @@ void uz_SetPoint_set_field_weakening(uz_SetPoint_t* self, bool is_field_weakenin
 
 /**
  * @brief Updates the motor related parameters in the uz_PMSM_t struct
+ *
+ * Copies the complete supplied struct into the instance's configuration.
+ * The pointer only needs to remain valid during this call; later changes to the
+ * caller's struct do not affect the instance.
  * 
  * @param self pointer to uz_SetPoint_t object
- * @param input uz_PMSM_t struct with new values
+ * @param input pointer to uz_PMSM_t struct with new values
  */
-void uz_SetPoint_set_PMSM_config(uz_SetPoint_t* self, uz_PMSM_t input);
+void uz_SetPoint_set_PMSM_config(uz_SetPoint_t* self, const uz_PMSM_t *input);
 
 /**
  * @brief Updates the manual reference id-current

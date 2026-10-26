@@ -2,7 +2,9 @@
 # These operations share Vitis metadata and must not run concurrently, even -j.
 .NOTPARALLEL:
 PROFILE ?= Run_UltraZohm
-export PROFILE
+XSCT ?= xsct
+# Invoke with make -C vitis <target> (or from the vitis directory).
+SCRIPT := ../tcl_scripts/vitis_headless.tcl
 
 .PHONY: help generate generate-open open build run flash build-run
 help:
@@ -14,13 +16,13 @@ help:
 	@echo 'run / build-run Aliases for flash'
 	@echo 'PROFILE=Run_UltraZohm (default; Debug profiles currently require GUI)'
 generate:
-	./run_generate_workspace.sh --headless
+	"$(XSCT)" -nodisp "$(SCRIPT)" generate
 generate-open:
-	./run_generate_workspace.sh
+	"$(XSCT)" -nodisp "$(SCRIPT)" generate-open
 open:
-	./open_vitis.sh
+	"$(XSCT)" -nodisp "$(SCRIPT)" open
 build:
-	./build_workspace.sh
+	"$(XSCT)" -nodisp "$(SCRIPT)" build
 flash:
-	./run_workspace.sh "$$PROFILE"
+	"$(XSCT)" -nodisp "$(SCRIPT)" flash "$(PROFILE)"
 run build-run: flash

@@ -4,6 +4,7 @@ import configparser
 import math
 import os
 import re
+import select
 import socket
 import struct
 import threading
@@ -36,7 +37,7 @@ CMD_SET_SEND_FIELD_LAST = 23
 CMD_MY_BUTTON_1 = 24
 CMD_MY_BUTTON_2 = 25
 CMD_MY_BUTTON_3 = 26
-CMD_ERROR_RESET = 33
+CMD_ERROR_RESET = 32
 CMD_SELECT_DATA_CH_FIRST = 201
 CMD_SELECT_DATA_CH_LAST = 220
 
@@ -193,7 +194,7 @@ class UltraZohmModel:
     base_freq_hz: float
     amplitude: float
     slow_data_count: int
-    selected_observables: list[int] = field(default_factory=lambda: list(DEFAULT_SELECTED_OBSERVABLES))
+    selected_observables: list[int] = field(default_factory=lambda: [OBS_ZERO] * DEFAULT_CHANNELS)
     send_fields: list[float] = field(default_factory=lambda: [0.0] * 21)
     current_state: int = IDLE_STATE
     ready_led: bool = False
@@ -237,18 +238,24 @@ class UltraZohmModel:
     adc_conversion_factor: float = 10.0
     error_code: float = 0.0
 
-    def process_command_bytes(self, payload: bytes) -> None:
-        if len(payload) < 8:
-            return
-        command_id = struct.unpack_from("<I", payload, 0)[0]
-        command_value = struct.unpack_from("<f", payload, 4)[0]
-        self.apply_command(command_id, command_value)
+    command_buffer: bytearray = field(default_factory=bytearray)
+
+    def process_command_bytes(self, payload: bytes) -> int:
+        self.command_buffer.extend(payload)
+        complete = len(self.command_buffer) // 8
+        for offset in range(0, complete * 8, 8):
+            command_id, command_value = struct.unpack_from("<If", self.command_buffer, offset)
+            self.apply_command(command_id, command_value)
+        del self.command_buffer[:complete * 8]
+        return complete
 
     def apply_command(self, command_id: int, command_value: float) -> None:
         if command_id == 0:
             return
         if CMD_SELECT_DATA_CH_FIRST <= command_id <= CMD_SELECT_DATA_CH_LAST:
             channel_index = command_id - CMD_SELECT_DATA_CH_FIRST
+            if not math.isfinite(command_value) or command_value < 0:
+                return
             observable_index = int(command_value)
             if 0 <= channel_index < len(self.selected_observables) and 0 <= observable_index <= OBS_PSIPM_MVS:
                 self.selected_observables[channel_index] = observable_index
@@ -271,8 +278,7 @@ class UltraZohmModel:
         elif command_id == CMD_MY_BUTTON_3:
             self.user_led = False
         elif command_id == CMD_ERROR_RESET:
-            self.error_flag = False
-            self.error_code = 0.0
+            pass  # Current ipc_ARM.c has an empty Error_Reset case.
         self.step_state_machine()
 
     def step_state_machine(self) -> None:
@@ -432,6 +438,8 @@ class UltraZohmModel:
         return slow_data_value, slow_data_id
 
     def get_slow_data_value(self, slow_data_id: int) -> float:
+        if slow_data_id in (4, 6, 7, 13, 14, 15, 16):
+            return 0.0  # Unassigned pointers in current JavaScope_initialize.
         if slow_data_id == SLOW_ZERO:
             return 0.0
         if slow_data_id == SLOW_SECONDS:
@@ -469,6 +477,8 @@ class UltraZohmModel:
         return 0.0
 
     def get_observable_value(self, observable_id: int) -> float:
+        if observable_id in (17, 18, 19, 21, 22, 23, 24, 25, 26, 27, 28):
+            return 0.0  # Unassigned pointers in current JavaScope_initialize.
         if observable_id == OBS_ZERO:
             return 0.0
         if observable_id == OBS_ISR_EXEC_TIME_US:
@@ -583,29 +593,36 @@ def handle_client(
     amplitude: float,
     base_freq: float,
     slow_data_count: int,
+    legacy_ack: bool = False,
+    model: UltraZohmModel | None = None,
 ) -> None:
     print(f"Testbench: Connected by {addr}", flush=True)
-    model = UltraZohmModel(
+    model = model or UltraZohmModel(
         sample_rate_hz=sample_rate_hz,
         base_freq_hz=base_freq,
         amplitude=amplitude,
         slow_data_count=slow_data_count,
     )
+    model.command_buffer.clear()
     packet_interval_s = samples_per_packet / sample_rate_hz
     next_send_time = time.monotonic()
     try:
-        next_send_time = wait_for_next_packet(next_send_time)
-        conn.sendall(generate_packet(model, samples_per_packet, channel_count))
-        next_send_time += packet_interval_s
+        conn.settimeout(2.0)
+        credit = True
         while True:
-            command_payload = recv_command(conn)
-            if not command_payload:
-                print("Testbench: Client disconnected.", flush=True)
-                break
-            model.process_command_bytes(command_payload)
-            next_send_time = wait_for_next_packet(next_send_time)
-            conn.sendall(generate_packet(model, samples_per_packet, channel_count))
-            next_send_time += packet_interval_s
+            now = time.monotonic()
+            if (not legacy_ack or credit) and now >= next_send_time:
+                conn.sendall(generate_packet(model, samples_per_packet, channel_count))
+                next_send_time = max(next_send_time + packet_interval_s, now)
+                credit = False
+            timeout = max(0.0, next_send_time - time.monotonic()) if not legacy_ack or credit else 0.05
+            ready, _, _ = select.select([conn], [], [], min(timeout, 0.05))
+            if ready:
+                payload = recv_command(conn)
+                if not payload:
+                    break
+                if model.process_command_bytes(payload):
+                    credit = True
     except Exception as exception:
         print(f"Testbench: Exception: {exception}", flush=True)
     finally:
@@ -622,6 +639,7 @@ def start_server(
     amplitude: float,
     base_freq: float,
     slow_data_count: int,
+    legacy_ack: bool = False,
 ) -> None:
     effective_sample_rate_hz = limit_sample_rate(sample_rate_hz)
     packet_rate_hz = effective_sample_rate_hz / samples_per_packet
@@ -643,8 +661,19 @@ def start_server(
             "Testbench: Commands model Enable_System, Enable_Control, Stop, My_Button_1/2/3, Error_Reset, Set_Send_Field_1..20, and channel selection 201..220",
             flush=True,
         )
+        active_connection = None
+        client_thread = None
+        model = UltraZohmModel(effective_sample_rate_hz, base_freq, amplitude, slow_data_count)
         while True:
             conn, addr = server_socket.accept()
+            if active_connection is not None:
+                try:
+                    active_connection.shutdown(socket.SHUT_RDWR)
+                except OSError:
+                    pass
+            if client_thread is not None:
+                client_thread.join()
+            active_connection = conn
             client_thread = threading.Thread(
                 target=handle_client,
                 args=(
@@ -656,6 +685,8 @@ def start_server(
                     amplitude,
                     base_freq,
                     slow_data_count,
+                    legacy_ack,
+                    model,
                 ),
                 daemon=True,
             )
@@ -687,7 +718,10 @@ def main() -> None:
     )
     parser.add_argument("--amplitude", type=float, default=DEFAULT_AMPLITUDE)
     parser.add_argument("--base-freq", type=float, default=DEFAULT_BASE_FREQ_HZ)
+    parser.add_argument("--legacy-ack", action="store_true", help="Legacy lock-step fixture; current firmware streams without ACKs")
     args = parser.parse_args()
+    if args.channels != 20 or not 1 <= args.samples_per_packet <= 4096 or not math.isfinite(args.sample_rate) or args.sample_rate <= 0:
+        parser.error("requires 20 channels, 1..4096 samples per packet and a positive finite sample rate")
     start_server(
         host=args.host,
         port=args.port,
@@ -697,6 +731,7 @@ def main() -> None:
         amplitude=args.amplitude,
         base_freq=args.base_freq,
         slow_data_count=detect_slow_data_count(),
+        legacy_ack=args.legacy_ack,
     )
 
 

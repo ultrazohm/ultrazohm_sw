@@ -1,0 +1,30 @@
+[package]
+name = "ultrazohm"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.90"
+license = "Apache-2.0"
+description = "Headless UltraZohm acquisition and control"
+
+[lib]
+name = "ultrazohm"
+crate-type = ["rlib", "cdylib"]
+
+[features]
+python = ["dep:pyo3"]
+
+[dependencies]
+anyhow = "1"
+chrono = { version = "0.4", default-features = false, features = ["std"] }
+clap = { version = "4", features = ["derive"] }
+ctrlc = "3"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+polars = { version = "0.51", default-features = false, features = ["csv", "parquet"] }
+pyo3 = { version = "0.26", optional = true, features = ["extension-module", "abi3-py310"] }
+
+[profile.dev]
+debug = 0
+
+[profile.release]
+codegen-units = 16

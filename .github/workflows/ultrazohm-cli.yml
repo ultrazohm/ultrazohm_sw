@@ -1,0 +1,35 @@
+name: UltraZohm CLI
+on:
+  push:
+    paths: ['uz_cli/**', 'javascope/test_server.py', '.github/workflows/ultrazohm-cli.yml']
+  pull_request:
+    paths: ['uz_cli/**', 'javascope/test_server.py', '.github/workflows/ultrazohm-cli.yml']
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      CARGO_BUILD_JOBS: 2
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.90.0'
+          components: rustfmt, clippy
+      - run: cargo fmt --manifest-path uz_cli/Cargo.toml --check
+      - run: cargo test --manifest-path uz_cli/Cargo.toml --locked
+      - run: cargo clippy --manifest-path uz_cli/Cargo.toml --all-targets --features python --locked -- -D warnings
+      - run: cargo build --manifest-path uz_cli/Cargo.toml --locked
+      - run: python -m pip install maturin polars
+      - run: python -m pip install ./uz_cli
+      - run: python -m unittest discover -s uz_cli/tests -v
+      - name: Test wheel-installed console command
+        run: >-
+          python -c "import os, shutil, subprocess, sys; command = shutil.which('ultrazohm'); assert command, 'console entry point missing'; os.environ['UZ_CLI_BIN'] = command; subprocess.run([sys.executable, '-m', 'unittest', 'discover', '-s', 'uz_cli/tests', '-v'], check=True)"

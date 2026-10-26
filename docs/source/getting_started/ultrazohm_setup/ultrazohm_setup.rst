@@ -207,6 +207,78 @@ Generate the Vitis workspace
 
 
 
+Headless Vitis workflow (Linux)
+******************************
+
+Source the Vitis 2022.2 ``settings64.sh`` so that ``xsct``, ``vitis``, and
+``hw_server`` are on ``PATH``. Run the following commands from the repository
+root. Close Vitis before modifying its workspace from the command line.
+
+.. code-block:: bash
+
+   # First use only: create and build an empty vitis/workspace, without a GUI.
+   make -C vitis generate
+
+   # Subsequent builds: platform/BSPs, all applications, and system projects.
+   make -C vitis build
+
+   # Start a local hardware server in another terminal if none is running.
+   hw_server
+
+   # Build, then program the FPGA and download/start both processor applications.
+   make -C vitis flash
+
+``build`` explicitly selects the ``Debug`` build configuration for Baremetal
+(R5_0) and FreeRTOS (A53_0), because the existing launch scripts load those ELF
+paths even in Run mode. It uses the existing exported hardware; it does not run
+Vivado synthesis. The workspace uses the checked-in FSBL binary, as configured
+by the workspace generator.
+
+``make -C vitis flash`` always runs an incremental build of the platform and
+applications, including R5/Baremetal and A53/FreeRTOS, before programming.
+Unchanged sources are not recompiled. ``run`` and ``build-run`` are aliases for
+``flash``; direct invocation of the Tcl ``flash`` or ``run`` action also builds
+first. It defaults to ``PROFILE=Run_UltraZohm`` and sources the same Tcl
+wrapper as ``vitis/software/Run_UltraZohm.launch``. This resets the board,
+programs the FPGA, initializes the PS, and downloads and starts FreeRTOS and
+Baremetal via the local JTAG hardware server at ``127.0.0.1:3121``. The download
+is volatile; it does not write QSPI flash or create an SD boot image. Use one
+connected UltraZohm, as assumed by the existing target-selection script.
+
+``Debug_UltraZohm`` and ``Debug_UltraZohm_fast_restart_PL_reset`` still require
+the Vitis GUI. The headless launcher rejects these profiles until debugger
+session handling is implemented; it never silently substitutes Run mode.
+
+``make -C vitis open`` opens the existing workspace. ``generate-open`` preserves
+the original generate-and-open workflow. Generation refuses a nonempty
+workspace, except for ``create_Vitis_workspace_here.txt``. The Ubuntu Makefile
+is a convenience wrapper around a shared Tcl entry point; Bash wrappers are
+not required. Override ``XSCT`` to select an executable outside ``PATH``.
+
+On Ubuntu or Windows, call the same Tcl entry point through XSCT directly.
+From the repository root:
+
+.. code-block:: text
+
+   xsct -nodisp tcl_scripts/vitis_headless.tcl generate
+   xsct -nodisp tcl_scripts/vitis_headless.tcl build
+   xsct -nodisp tcl_scripts/vitis_headless.tcl flash Run_UltraZohm
+   xsct -nodisp tcl_scripts/vitis_headless.tcl open
+
+Use ``xsct.bat`` if required by your Windows command shell. For other working
+directories, supply the absolute path to the Tcl script; workspace paths are
+resolved relative to that script. ``generate-open`` generates the workspace and
+then starts Vitis. GUI actions require ``vitis`` on ``PATH`` and return after
+launching it; they do not wait for the GUI to close.
+
+These scripts target Vitis 2022.2. Programming also requires ``XILINX_VITIS``
+to point to the installation containing its Tcl utility scripts. Use the vendor
+environment setup and installed JTAG drivers. Build and programming errors
+return a nonzero exit status; programming never proceeds after a failed build.
+Do not run multiple workspace operations concurrently, including from separate
+terminals. Native Windows build and hardware programming still require validation.
+
+
 Physical Setup of the UltraZohm
 *******************************
 

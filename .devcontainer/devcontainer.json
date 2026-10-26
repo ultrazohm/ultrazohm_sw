@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.166.1/containers/ubuntu
 {
-	"name": "Python 3.12 Trixie",
+	"name": "Python 3.12 + Rust Trixie",
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
@@ -33,6 +33,7 @@
 				"trond-snekvik.simple-rst",
 				"ms-vscode.test-adapter-converter",
 				"ms-python.python",
+				"rust-lang.rust-analyzer",
 				"redhat.java",
 				"vscjava.vscode-java-debug",
 				"vscjava.vscode-java-dependency"
@@ -48,7 +49,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "pip install -r docs/requirements.txt && chmod +x /workspaces/ultrazohm_sw/javascope/build.sh /workspaces/ultrazohm_sw/javascope/run_with_test_server.sh"
+	"postCreateCommand": "bash .devcontainer/post-create.sh"
 	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	//"remoteUser": "vscode"
 }

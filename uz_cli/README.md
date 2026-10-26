@@ -676,6 +676,13 @@ dispatch is also supported on those two branches. Other branches and pull reques
 never publish. No separate upload credential is needed: the publish job uses
 `GITHUB_TOKEN` with `contents: write`.
 
+Rust checks and release-wheel builds run in parallel. Check jobs use cached Rust
+dependencies and a debug wheel for integration tests, avoiding a second optimized
+wheel build. Release builds use Maturin's compiler cache. Publishing waits for both
+platform check jobs and both tested release wheels; PRs and other branches run
+only the check jobs. The first run populates the caches, so subsequent runs should
+be faster. Cache misses still perform complete builds.
+
 Each release builds and tests these wheels before publishing:
 
 - Windows x86-64 (`win_amd64`).

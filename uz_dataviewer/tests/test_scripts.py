@@ -1,5 +1,7 @@
 """Command scripts are automation; JSON is the sole session format."""
 
+import json
+
 from uz_dataviewer import runtime
 
 import pytest
@@ -17,7 +19,7 @@ def test_automation_can_load_json_and_continue(app_state, tmp_path, monkeypatch,
     app_state.set_grid(1, 1)
     monkeypatch.setattr(runtime, 'IS_WEB', web)
     script = tmp_path / 'commands.uzscript'
-    script.write_text(f'# Automation\n\nload_state("{snapshot}")\nset_max_points(750)\n')
+    script.write_text(f'# Automation\n\nload_state({json.dumps(str(snapshot))})\nset_max_points(750)\n')
     assert session.run_script(app_state, str(script)) == 2
     assert (app_state.rows, app_state.cols) == (2, 1)
     assert app_state.max_points == 750

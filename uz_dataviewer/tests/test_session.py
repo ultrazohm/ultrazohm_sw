@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 import numpy as np
 import pytest
 
@@ -74,7 +76,7 @@ def test_invalid_analysis_view_limits_leave_session_intact(app_state, config, li
 
 def _populated_state(csv_path):
     state = AppState()
-    state.commands.dispatch(state, f'load("{csv_path}")')
+    state.commands.dispatch(state, f'load({json.dumps(str(csv_path))})')
     state.commands.dispatch(state, "set_grid(2, 1)")
     state.commands.dispatch(state, "add_signal(plot_1, Log_test.csv, ia)")
     state.commands.dispatch(state, "set_plot_type(plot_2, Scatter)")
@@ -91,23 +93,23 @@ def test_export_relative_flag(tmp_path):
     csv = tmp_path / "Log_export.csv"
     csv.write_text("time;CH8=8)ia;\n100.0;1.0;\n100.1;2.0;\n100.2;3.0;\n")
     state = AppState()
-    state.commands.dispatch(state, f'load("{csv}")')
+    state.commands.dispatch(state, f'load({json.dumps(str(csv))})')
     state.commands.dispatch(state, "add_signal(plot_1, Log_export.csv, ia)")
     out = tmp_path / "out.csv"
 
     # relative off -> keeps the real start time
-    state.commands.dispatch(state, f'export_data(plot_1, "{out}", false)')
+    state.commands.dispatch(state, f'export_data(plot_1, {json.dumps(str(out))}, false)')
     assert float(pd.read_csv(out)["time"].iloc[0]) == 100.0
 
     # toggling the flag on then off must NOT leave the export rebased
     state.commands.dispatch(state, "set_export_relative(plot_1, on)")
     state.commands.dispatch(state, "set_export_relative(plot_1, off)")
     assert state.cells[0].export_relative is False
-    state.commands.dispatch(state, f'export_data(plot_1, "{out}", false)')
+    state.commands.dispatch(state, f'export_data(plot_1, {json.dumps(str(out))}, false)')
     assert float(pd.read_csv(out)["time"].iloc[0]) == 100.0
 
     # relative on -> rebased to 0
-    state.commands.dispatch(state, f'export_data(plot_1, "{out}", true)')
+    state.commands.dispatch(state, f'export_data(plot_1, {json.dumps(str(out))}, true)')
     assert float(pd.read_csv(out)["time"].iloc[0]) == 0.0
 
 
@@ -138,7 +140,7 @@ def test_xy_style_roundtrip(tmp_path):
     csv = tmp_path / "Log_test.csv"
     csv.write_text(SAMPLE)
     state = AppState()
-    state.commands.dispatch(state, f'load("{csv}")')
+    state.commands.dispatch(state, f'load({json.dumps(str(csv))})')
     state.commands.dispatch(state, "set_xy(plot_1, Log_test.csv, ia)")
     state.commands.dispatch(state, "add_signal(plot_1, Log_test.csv, ib)")
     state.commands.dispatch(state, "set_xy_style(plot_1, both)")

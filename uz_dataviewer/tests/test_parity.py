@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 
 import numpy as np
 
@@ -23,7 +25,7 @@ def _state(tmp_path):
     csv = tmp_path / "Log_test.csv"
     csv.write_text(SAMPLE)
     state = AppState()
-    state.commands.dispatch(state, f'load("{csv}")')
+    state.commands.dispatch(state, f'load({json.dumps(str(csv))})')
     state.commands.dispatch(state, "set_grid(1, 1)")
     state.commands.dispatch(state, "add_signal(plot_1, Log_test.csv, ia)")
     state.commands.dispatch(state, "add_signal(plot_1, Log_test.csv, ib)")
@@ -127,7 +129,7 @@ def test_export_relative_time_zeroes_start(tmp_path):
 def test_export_command_via_dispatch(tmp_path):
     state = _state(tmp_path)
     out = tmp_path / "cmd.csv"
-    state.commands.dispatch(state, f'export_data(plot_1, "{out}")')
+    state.commands.dispatch(state, f'export_data(plot_1, {json.dumps(str(out))})')
     assert out.exists()
 
 

@@ -236,7 +236,7 @@ Applied primary and secondary Y limits, including mouse zoom, survive saving and
 Shrinking the grid switches analysis windows following removed plots to Full.
 
 XY alignment and invalid results
--------------------------------
+--------------------------------
 
 XY inputs must have equal lengths and matching displayed timestamps, including any per-run normalization. Mismatches are rejected instead of pairing unrelated samples. XY zoom and explicit X/Y limits survive JSON round trips; XY coordinates never drive linked time axes.
 

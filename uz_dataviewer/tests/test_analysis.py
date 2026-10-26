@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 import csv
 import numpy as np
 import pytest
@@ -220,7 +222,7 @@ def test_fft_export_command_via_dispatch(tmp_path):
     state = _state()
     state.commands.dispatch(state, "fft_source(run_1, ia)")
     out = tmp_path / "viacmd.csv"
-    state.commands.dispatch(state, f'fft_export("{out}")')
+    state.commands.dispatch(state, f'fft_export({json.dumps(str(out))})')
     assert out.exists()
 
 

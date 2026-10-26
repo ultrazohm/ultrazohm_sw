@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 
 import numpy as np
 import pytest
@@ -23,7 +25,7 @@ def _state(tmp_path):
     csv = tmp_path / "Log_test.csv"
     csv.write_text(SAMPLE)
     state = AppState()
-    state.commands.dispatch(state, f'load("{csv}")')
+    state.commands.dispatch(state, f'load({json.dumps(str(csv))})')
     return state, state.registry.get(1)
 
 
@@ -50,7 +52,7 @@ def test_load_with_normalize_flag(tmp_path):
     csv = tmp_path / "Log_test.csv"
     csv.write_text(SAMPLE)
     state = AppState()
-    state.commands.dispatch(state, f'load("{csv}", 0)')
+    state.commands.dispatch(state, f'load({json.dumps(str(csv))}, 0)')
     run = state.registry.get(1)
     assert abs(run.time[0] - 0.0) < 1e-6
 

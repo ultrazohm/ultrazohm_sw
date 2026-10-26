@@ -518,7 +518,7 @@ snapshot only after serialization and writing succeed. Failed saves remove the
 temporary file and preserve the previous session.
 
 Sampling and domain transitions
-------------------------------
+-------------------------------
 
 Timestamp roundoff allowances are bounded to one percent of a sample interval.
 FFT and FIR reject axes whose absolute timestamp precision cannot establish that

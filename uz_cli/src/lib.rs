@@ -6,3 +6,4 @@ mod python;
 mod recording;
 pub mod service;
 pub mod storage;
+mod vitis;

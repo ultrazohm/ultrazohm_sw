@@ -23,6 +23,32 @@ struct Args {
 }
 #[derive(Subcommand)]
 enum Command {
+    /// Generate/build an empty Vitis workspace (optionally open the GUI).
+    #[command(alias = "generate-workspace")]
+    Generate {
+        /// Repository root; otherwise search upward from the current directory.
+        #[arg(long)]
+        repo: Option<PathBuf>,
+        #[arg(long)]
+        open: bool,
+    },
+    /// Incrementally build Baremetal and FreeRTOS (including platform dependencies).
+    Build {
+        #[arg(long)]
+        repo: Option<PathBuf>,
+    },
+    /// Clean the platform and applications, then rebuild both applications.
+    BuildClean {
+        #[arg(long)]
+        repo: Option<PathBuf>,
+    },
+    /// Build, then JTAG program and run. Does not write persistent flash memory.
+    Flash {
+        #[arg(long)]
+        repo: Option<PathBuf>,
+        #[arg(long, default_value = "Run_UltraZohm", value_parser = ["Run_UltraZohm"])]
+        profile: String,
+    },
     /// Run the control service until Ctrl-C or shutdown; starts disconnected by default. Run as an OS service for unattended use.
     Serve {
         /// Connect immediately instead of waiting for the connect command.
@@ -191,6 +217,42 @@ fn dispatch(args: Args) -> Result<()> {
     }
 }
 
+// Quotes group paths containing spaces. Backslashes remain literal, including
+// Windows paths; this prompt does not perform shell expansion or escape processing.
+fn prompt_words(line: &str) -> Result<Vec<String>> {
+    let mut words = Vec::new();
+    let mut word = String::new();
+    let mut quote = None;
+    let mut started = false;
+    for ch in line.chars() {
+        if let Some(delimiter) = quote {
+            if ch == delimiter {
+                quote = None;
+            } else {
+                word.push(ch);
+            }
+        } else if ch == '\'' || ch == '"' {
+            quote = Some(ch);
+            started = true;
+        } else if ch.is_whitespace() {
+            if started {
+                words.push(std::mem::take(&mut word));
+                started = false;
+            }
+        } else {
+            word.push(ch);
+            started = true;
+        }
+    }
+    if quote.is_some() {
+        bail!("unclosed quote in command");
+    }
+    if started {
+        words.push(word);
+    }
+    Ok(words)
+}
+
 fn prompt(endpoint: &str, shutdown: &AtomicBool) -> Result<()> {
     eprintln!(
         "Type help for commands. shutdown, Ctrl-C or EOF ends acquisition and finalizes logs."
@@ -207,11 +269,17 @@ fn prompt(endpoint: &str, shutdown: &AtomicBool) -> Result<()> {
         if shutdown.load(Ordering::SeqCst) {
             break;
         }
-        let words: Vec<_> = line.split_whitespace().collect();
+        let words = match prompt_words(&line) {
+            Ok(words) => words,
+            Err(error) => {
+                eprintln!("Error: {error:#}");
+                continue;
+            }
+        };
         if words.is_empty() {
             continue;
         }
-        match InteractiveArgs::try_parse_from(std::iter::once("").chain(words)) {
+        match InteractiveArgs::try_parse_from(std::iter::once(String::new()).chain(words)) {
             Ok(args) => {
                 let finishing = matches!(args.command, Command::Shutdown);
                 match execute(args.command, endpoint) {
@@ -230,6 +298,22 @@ fn prompt(endpoint: &str, shutdown: &AtomicBool) -> Result<()> {
 
 fn execute(command: Command, endpoint: &str) -> Result<()> {
     let op = match command {
+        Command::Generate { repo, open } => {
+            return crate::vitis::run(
+                if open { "generate-open" } else { "generate" },
+                repo.as_deref(),
+                None,
+            );
+        }
+        Command::Build { repo } => {
+            return crate::vitis::run("build", repo.as_deref(), None);
+        }
+        Command::BuildClean { repo } => {
+            return crate::vitis::run("build-clean", repo.as_deref(), None);
+        }
+        Command::Flash { repo, profile } => {
+            return crate::vitis::run("flash", repo.as_deref(), Some(&profile));
+        }
         Command::Serve { .. } => {
             bail!("serve cannot be started inside an existing interactive session")
         }
@@ -276,6 +360,19 @@ fn execute(command: Command, endpoint: &str) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn prompt_preserves_quoted_paths_and_windows_separators() {
+        assert_eq!(
+            prompt_words(r#"build --repo "C:\My Projects\ultrazohm_sw""#).unwrap(),
+            vec!["build", "--repo", r"C:\My Projects\ultrazohm_sw"]
+        );
+        assert_eq!(
+            prompt_words("generate --repo '/tmp/repo with spaces'").unwrap(),
+            vec!["generate", "--repo", "/tmp/repo with spaces"]
+        );
+        assert!(prompt_words("build --repo 'unfinished").is_err());
+    }
 
     #[test]
     fn connect_defaults_match_in_shell_and_standalone_cli() {

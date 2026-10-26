@@ -5,8 +5,8 @@ set workspace [file normalize [file join $script_dir ../vitis/workspace]]
 # Keep this at global scope: the existing launch wrappers use global variables.
 if {[catch {
     set action [lindex $argv 0]
-    if {$action ni {build run flash generate generate-open open}} {
-        error "Usage: xsct -nodisp vitis_headless.tcl {generate|generate-open|open|build|flash|run} ?Run_UltraZohm?"
+    if {$action ni {build build-clean run flash generate generate-open open}} {
+        error "Usage: xsct -nodisp vitis_headless.tcl {generate|generate-open|open|build|build-clean|flash|run} ?Run_UltraZohm?"
     }
     if {$action eq "flash"} { set action run }
     set profile Run_UltraZohm
@@ -47,21 +47,46 @@ if {[catch {
     if {$action ne "open"} { setws $workspace }
     cd $workspace
     # Every programming entry point builds first, including direct XSCT calls.
-    # Vitis/make track changed sources and headers; do not clean here.
-    if {$action in {build run}} {
-        # Launch scripts load Debug/*.elf even in RUN mode.
-        foreach application {Baremetal FreeRTOS} {
-            app config -name $application build-config Debug
+    # Vitis/make track changed sources and headers; clean only on request.
+    if {$action in {build build-clean run}} {
+        source [file join $script_dir vitis_incremental.tcl]
+        set stamp [file join $workspace .ultrazohm-build-state]
+        set signature [uz_build_signature $workspace $script_dir]
+        set use_make [expr {$action ne "build-clean" && [uz_can_make $workspace $signature $stamp]}]
+        # Never reuse a state from a failed or interrupted build.
+        file delete -force $stamp
+        if {$use_make} {
+            foreach application {Baremetal FreeRTOS} {
+                puts "Incremental build: $application"
+                exec make -C [file join $workspace $application Debug] all >@stdout 2>@stderr
+            }
+        } else {
+            # Launch scripts load Debug/*.elf even in RUN mode.
+            foreach application {Baremetal FreeRTOS} {
+                if {[app config -name $application build-config] ne "Debug"} {
+                    app config -name $application build-config Debug
+                }
+            }
+            if {$action eq "build-clean"} {
+                platform active UltraZohm
+                foreach application {Baremetal FreeRTOS} {
+                    app clean -name $application
+                }
+                platform clean
+            }
+            # Named application builds let Vitis check platform dependencies. The
+            # -all workspace build also packages system projects; JTAG needs only
+            # the ELFs and bitstream, not BOOT.BIN. Do not force platform generation.
+            foreach application {Baremetal FreeRTOS} {
+                app build -name $application
+            }
         }
-        platform active UltraZohm
-        platform generate
-        app build -all
-        sysproj build -all
         foreach application {Baremetal FreeRTOS} {
             set elf [file join $workspace $application Debug ${application}.elf]
             if {![file isfile $elf]} { error "Build did not produce $elf" }
         }
-        puts "UltraZohm platform, applications, and system projects built successfully."
+        uz_save_build_signature $stamp [uz_build_signature $workspace $script_dir]
+        puts "UltraZohm applications built successfully."
     }
     switch -- $action {
         generate - generate-open {

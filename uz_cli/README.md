@@ -586,3 +586,53 @@ ultrazohm> shutdown
 Explicit commands retain their behavior, including `serve`, `serve --interactive`,
 and `--help`. `--endpoint ADDRESS` can also select the control endpoint for the
 default session. The uv launch scripts still only open an environment shell.
+
+### Vitis workspace, build and JTAG programming
+
+With the Vitis 2022.2 environment loaded and `xsct` on `PATH`:
+
+```sh
+ultrazohm generate              # generate/build an empty vitis/workspace
+ultrazohm generate --open       # also open the Vitis GUI
+ultrazohm build                 # incremental application build
+ultrazohm build-clean           # clean platform and applications, then rebuild
+ultrazohm flash                 # incremental build, then JTAG program and run
+ultrazohm build --repo "/path/to/ultrazohm_sw"
+```
+
+`generate-workspace` is an alias for `generate`. `flash --profile Run_UltraZohm`
+is the supported launch profile; debug profiles require the Vitis GUI. Here
+“flash” means JTAG programming and execution, not persistent flash-memory writing.
+
+These commands run locally without a running acquisition service. They search
+upward from the current working directory for `tcl_scripts/vitis_headless.tcl`
+and `vitis/software`, or use the exact repository root supplied by `--repo`.
+They do not search relative to the installed executable or Python package. A wheel
+installation still needs a checkout containing the Vitis scripts and sources.
+Relative `--repo` paths are relative to your current directory. The workspace
+remains `<repo>/vitis/workspace`; generation refuses an already populated workspace.
+
+The CLI invokes `xsct -nodisp <repo>/tcl_scripts/vitis_headless.tcl <action>`,
+with the repository as its working directory, and streams tool output to the
+terminal. Missing XSCT and failed tool invocations return errors. Load
+`settings64.sh` on Linux or use the Vitis command environment on Windows;
+`generate --open` additionally requires the `vitis` GUI launcher on `PATH`.
+
+The same commands work at the interactive prompt. Quote paths containing spaces,
+e.g. `build --repo "C:\Projects with spaces\ultrazohm_sw"`. Prompt backslashes
+are literal; it does not perform shell expansion. Vitis runs in the foreground,
+so the prompt waits for completion. Do not run concurrent Vitis operations on the
+same workspace, or program hardware while recording from that device.
+
+`build` reuses Vitis-generated Makefiles when workspace inputs are unchanged.
+Make checks source/header dependencies each time. Platform inputs/outputs,
+application metadata, generated Makefiles, source-file lists and toolchain paths
+are checked against the last successful build. Changes or missing files fall back
+to Vitis named application builds to refresh the workspace. The first build after
+this update also takes that path.
+It does not force platform regeneration or package system-project BOOT.BIN files.
+`flash` uses this same incremental path before programming. `build-clean` cleans
+both applications and the platform (including BSPs), then rebuilds the applications;
+it preserves workspace configuration and sources. Neither build command generates
+SD-card boot images. The corresponding Make targets are `make -C vitis build`
+and `make -C vitis build-clean`.

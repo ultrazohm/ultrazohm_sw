@@ -254,10 +254,10 @@ proc vitis_main {} {
   ####################################################
   puts "Info (UltraZohm): clean platform and all application projects"
   platform clean
-  app clean -all
+  app_clean
   puts "Info (UltraZohm): build platform and all application projects"
   platform generate
-  app build -all
+  app_build
 
 
   puts "========================================"

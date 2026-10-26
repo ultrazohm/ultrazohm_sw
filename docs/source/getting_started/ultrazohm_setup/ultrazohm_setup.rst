@@ -208,7 +208,7 @@ Generate the Vitis workspace
 
 
 Headless Vitis workflow (Linux)
-******************************
+*******************************
 
 Source the Vitis 2022.2 ``settings64.sh`` so that ``xsct``, ``vitis``, and
 ``hw_server`` are on ``PATH``. Run the following commands from the repository

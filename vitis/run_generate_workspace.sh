@@ -6,6 +6,14 @@ WORKSPACE="${SCRIPT_DIR}/workspace"
 TCL_SCRIPT="${SCRIPT_DIR}/../tcl_scripts/vitis_generate_UltraZohm_workspace.tcl"
 PLACEHOLDER="create_Vitis_workspace_here.txt"
 
+HEADLESS=false
+if [[ $# == 1 && "$1" == --headless ]]; then
+    HEADLESS=true
+elif (( $# != 0 )); then
+    echo "Usage: $0 [--headless]" >&2
+    exit 2
+fi
+
 if ! command -v xsct >/dev/null 2>&1; then
     echo "ERROR: xsct not found on PATH"
     exit 1
@@ -43,7 +51,11 @@ echo "${WORKSPACE}"
 echo "========================================"
 
 cd "${WORKSPACE}"
-xsct -eval "setws {${WORKSPACE}}; source {${TCL_SCRIPT}}"
+xsct -nodisp "${SCRIPT_DIR}/../tcl_scripts/vitis_headless.tcl" generate
+
+if ${HEADLESS}; then
+    exit 0
+fi
 
 echo
 echo "========================================"

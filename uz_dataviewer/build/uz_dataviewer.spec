@@ -21,7 +21,7 @@ if SRC not in sys.path:
     sys.path.insert(0, SRC)
 
 datas, binaries, hiddenimports = [], [], []
-for pkg in ("imgui_bundle", "pyarrow"):
+for pkg in ("imgui_bundle", "pyarrow", "polars", "_polars_runtime_32"):
     d, b, h = collect_all(pkg)
     datas += d
     binaries += b
@@ -30,27 +30,23 @@ for pkg in ("imgui_bundle", "pyarrow"):
 # Bundle our own package (entry point imports it absolutely).
 hiddenimports += collect_submodules("uz_dataviewer")
 
-block_cipher = None
-
 a = Analysis(
     [os.path.join(SPECPATH, "entrypoint.py")],
-    pathex=[SRC],
+    pathex=[SRC, SPECPATH],
     binaries=binaries,
     datas=datas,
     hiddenimports=hiddenimports,
     hookspath=[],
     runtime_hooks=[],
     excludes=[],
-    cipher=block_cipher,
 )
 
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+pyz = PYZ(a.pure)
 
 exe = EXE(
     pyz,
     a.scripts,
     a.binaries,
-    a.zipfiles,
     a.datas,
     [],
     name="uz_dataviewer",

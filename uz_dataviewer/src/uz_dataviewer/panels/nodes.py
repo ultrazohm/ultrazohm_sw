@@ -17,46 +17,57 @@ from imgui_bundle import imgui_node_editor as ed
 
 from ..nodes import REGISTRY, is_stale, transform_kinds
 from ..state import AppState
-from ..transforms import FILTER_TYPES, MATH_BINARY, MATH_OPS
+from ..transforms import MATH_BINARY
+from .base import SessionPanel
 from .navigation import SIGNAL_DND_TYPE
 
-# Kinds with bespoke param widgets below; any other transform (a plugin) uses the
-# generic ParamSpec renderer.
-_BUILTIN_KINDS = ("fft", "math", "filter", "shift")
-# Disjoint id ranges so node / pin / link ids never collide in the editor.
-_OUT_BASE = 1_000_000
-_IN_BASE = 2_000_000
-_LINK_BASE = 3_000_000
-_TRUE = {"1", "true", "on", "yes"}
+# Editor IDs use two tag bits: node=0, output=1, input=2, link=3.
+# Pairing node/slot indices avoids fixed limits and overlapping input slots.
+from ..validation import parse_bool
+
+
+def _pair(a: int, b: int) -> int:
+    return (a + b) * (a + b + 1) // 2 + b
+
+
+def _unpair(value: int) -> tuple[int, int]:
+    from math import isqrt
+    total = (isqrt(8 * value + 1) - 1) // 2
+    b = value - total * (total + 1) // 2
+    return total - b, b
 
 
 def _out_pin(node_id: int) -> int:
-    return _OUT_BASE + node_id
+    return node_id * 4 + 1
 
 
 def _in_pin(node_id: int, slot: int) -> int:
-    return _IN_BASE + node_id * 10 + slot
+    return _pair(node_id, slot) * 4 + 2
 
 
-def _decode_pin(pid: int) -> tuple[str, int]:
-    if _OUT_BASE <= pid < _IN_BASE:
-        return "out", pid - _OUT_BASE
-    if pid >= _IN_BASE:
-        return "in", (pid - _IN_BASE) // 10
-    return "?", 0
+def _decode_pin(pid: int) -> tuple[str, int, int | None]:
+    if pid % 4 == 1:
+        return "out", pid // 4, None
+    if pid % 4 == 2:
+        node, slot = _unpair(pid // 4)
+        return "in", node, slot
+    return "?", 0, None
 
 
-def _link_id(src: int, dst: int) -> int:
-    return _LINK_BASE + src * 1000 + dst
+def _link_id(dst: int, slot: int) -> int:
+    return _pair(dst, slot) * 4 + 3
 
 
 def _decode_link(lid: int) -> tuple[int, int]:
-    v = lid - _LINK_BASE
-    return v // 1000, v % 1000
+    return _unpair(lid // 4)
 
 
 def _b(params: dict, key: str, default: bool) -> bool:
-    return str(params.get(key, default)).strip().lower() in _TRUE
+    try:
+        return parse_bool(params.get(key, default))
+    except ValueError:
+        # Preserve malformed session/plugin values for repair; evaluation reports them.
+        return default
 
 
 def _input_pin_count(node) -> int:
@@ -72,20 +83,14 @@ def _input_pin_count(node) -> int:
     return max(base, len(node.inputs))
 
 
-class NodesPanel:
+class NodesPanel(SessionPanel):
     def __init__(self) -> None:
         self._positioned: set[int] = set()
+        self._model_positions: dict[int, tuple[float, float]] = {}
         self._last_pos: dict[int, tuple[float, float]] = {}
         self._renaming: int | None = None   # node whose name is being edited inline
         self._rename_buf: str = ""
         self._rename_focus: bool = False
-
-    # -- command helper -----------------------------------------------------
-    def _emit(self, state: AppState, name: str, *args) -> None:
-        try:
-            state.commands.execute(state, name, list(args))
-        except Exception as exc:  # noqa: BLE001 - surfaced to the console
-            state.console.error(str(exc))
 
     # -- toolbar ------------------------------------------------------------
     def _toolbar(self, state: AppState) -> None:
@@ -113,21 +118,20 @@ class NodesPanel:
     # -- one node -----------------------------------------------------------
     def _draw_node(self, state: AppState, node) -> None:
         nid = node.id
-        if nid not in self._positioned:
+        if nid not in self._positioned or self._model_positions.get(nid) != node.pos:
+            self._model_positions[nid] = node.pos
             px, py = node.pos
-            if (px, py) == (0.0, 0.0):  # fresh node: cascade so they don't stack
-                slot = len(self._positioned)
-                px, py = 30.0 + (slot % 6) * 190.0, 30.0 + (slot // 6) * 150.0
-            ed.set_node_position(ed.NodeId(nid), imgui.ImVec2(px, py))
+            ed.set_node_position(ed.NodeId(nid * 4), imgui.ImVec2(px, py))
             self._positioned.add(nid)
+            self._last_pos[nid] = (px, py)
 
-        ed.begin_node(ed.NodeId(nid))
+        ed.begin_node(ed.NodeId(nid * 4))
         imgui.push_id(nid)
         if self._renaming == nid:
             self._rename_field(state)
         else:
             imgui.text(f"{node.name}  ({node.kind})")
-            if is_stale(state, state.nodes, node):
+            if is_stale(state.registry, state.nodes, node):
                 imgui.same_line()
                 imgui.text_colored((0.95, 0.75, 0.25, 1.0), "(stale)")
 
@@ -156,7 +160,7 @@ class NodesPanel:
         imgui.pop_id()
         ed.end_node()
 
-        pos = ed.get_node_position(ed.NodeId(nid))
+        pos = ed.get_node_position(ed.NodeId(nid * 4))
         self._maybe_echo_pos(state, nid, float(pos.x), float(pos.y))
 
     # -- inline rename (double-click a node) --------------------------------
@@ -183,45 +187,29 @@ class NodesPanel:
 
     def _begin_rename(self, state: AppState) -> None:
         dc = ed.get_double_clicked_node()
-        if dc.id() != 0 and state.nodes.get(dc.id()) is not None:
-            self._renaming = dc.id()
-            self._rename_buf = state.nodes.get(dc.id()).name
+        if dc.id() != 0 and state.nodes.get(dc.id() // 4) is not None:
+            self._renaming = dc.id() // 4
+            self._rename_buf = state.nodes.get(dc.id() // 4).name
             self._rename_focus = True
 
     def _params(self, state: AppState, node) -> None:
         imgui.push_item_width(120)
-        p = node.params
         if node.kind == "source":
             self._source_window(state, node)
-        elif node.kind == "fft":
-            ch, on = imgui.checkbox("remove DC", _b(p, "remove_dc", True))
-            if ch:
-                self._emit(state, "node_set", node.id, "remove_dc", "true" if on else "false")
-            ch, on = imgui.checkbox("Hann", _b(p, "window", True))
-            if ch:
-                self._emit(state, "node_set", node.id, "window", "true" if on else "false")
-        elif node.kind == "math":
-            self._combo(state, node, "op", "##op", list(MATH_OPS))
-            if str(p.get("op", "scale")) in ("scale", "offset"):
-                self._float(state, node, "k", "k")
-        elif node.kind == "filter":
-            self._combo(state, node, "type", "##ft", list(FILTER_TYPES))
-            self._float(state, node, "cutoff", "cutoff Hz")
-            if str(p.get("type", "low")) == "band":
-                self._float(state, node, "cutoff2", "cutoff2 Hz")
-            self._int(state, node, "taps", "taps")
-        elif node.kind == "shift":
-            self._float(state, node, "by", "by (s)")
         elif node.kind in REGISTRY:
-            self._plugin_params(state, node)  # plugin: render from its ParamSpec list
+            self._transform_params(state, node)
         else:
             imgui.text_colored((0.95, 0.4, 0.4, 1.0), "missing plugin")
         imgui.pop_item_width()
 
-    def _plugin_params(self, state: AppState, node) -> None:
-        """Generic renderer for a plugin node's declared ParamSpec list."""
+    def _transform_params(self, state: AppState, node) -> None:
+        """Generic renderer for built-in and plugin parameter declarations."""
         spec = REGISTRY.get(node.kind)
         for ps in (spec.ui if spec is not None else ()):
+            if node.kind == "math" and ps.key == "k" and node.params.get("op") not in ("scale", "offset"):
+                continue
+            if node.kind == "filter" and ps.key == "cutoff2" and node.params.get("type") != "band":
+                continue
             if ps.kind == "bool":
                 ch, on = imgui.checkbox(ps.label, _b(node.params, ps.key, False))
                 if ch:
@@ -245,8 +233,8 @@ class NodesPanel:
                 run = state.registry.get(node.ref[0]) if node.ref else None
                 lo = float(run.time[0]) if run is not None and run.n_rows else 0.0
                 hi = float(run.time[-1]) if run is not None and run.n_rows else 0.0
-                self._emit(state, "node_set", node.id, "tmin", f"{lo:g}")
-                self._emit(state, "node_set", node.id, "tmax", f"{hi:g}")
+                self._emit(state, "node_set", node.id, "tmin", repr(lo))
+                self._emit(state, "node_set", node.id, "tmax", repr(hi))
             else:
                 self._emit(state, "node_set", node.id, "tmin", "")
                 self._emit(state, "node_set", node.id, "tmax", "")
@@ -264,20 +252,21 @@ class NodesPanel:
 
     def _float(self, state, node, key, label) -> None:
         try:
+            from ..nodes import validate_parameter
+            validate_parameter(node.kind, key, node.params.get(key, 0.0))
             val = float(node.params.get(key, 0.0))
-        except ValueError:
+        except (ValueError, TypeError, OverflowError):
             val = 0.0
-        # "%g" shows the value plainly (e.g. "2", "0.5") instead of the input_float
-        # default "%.3f" which pads to thousandths ("2.000") -- and matches how the
-        # value is stored below.
-        changed, val = imgui.input_float(label, val, 0.0, 0.0, "%g")
+        changed, val = imgui.input_double(label, val, 0.0, 0.0, "%.17g")
         if changed:
-            self._emit(state, "node_set", node.id, key, f"{val:g}")
+            self._emit(state, "node_set", node.id, key, repr(val))
 
     def _int(self, state, node, key, label) -> None:
         try:
+            from ..nodes import validate_parameter
+            validate_parameter(node.kind, key, node.params.get(key, 0))
             val = int(float(node.params.get(key, 0)))
-        except ValueError:
+        except (ValueError, TypeError, OverflowError):
             val = 0
         changed, val = imgui.input_int(label, val)
         if changed:
@@ -301,6 +290,7 @@ class NodesPanel:
         self._last_pos[nid] = (x, y)
         if not first:  # don't log the initial placement
             self._emit(state, "node_pos", nid, x, y)
+            self._model_positions[nid] = (x, y)
 
     # -- link create / delete ----------------------------------------------
     def _handle_create(self, state: AppState) -> None:
@@ -312,38 +302,49 @@ class NodesPanel:
             ed.end_create()
 
     def _try_link(self, state: AppState, pa: int, pb: int) -> None:
-        ka, na = _decode_pin(pa)
-        kb, nb = _decode_pin(pb)
+        ka, na, sa = _decode_pin(pa)
+        kb, nb, sb = _decode_pin(pb)
         if ka == "out" and kb == "in":
-            self._emit(state, "node_link", na, nb)
+            self._emit(state, "node_link", na, nb, sb)
         elif ka == "in" and kb == "out":
-            self._emit(state, "node_link", nb, na)
+            self._emit(state, "node_link", nb, na, sa)
 
     def _handle_delete(self, state: AppState) -> None:
         if ed.begin_delete():
             lid = ed.LinkId()
             while ed.query_deleted_link(lid):
                 if ed.accept_deleted_item():
-                    src, dst = _decode_link(lid.id())
-                    self._emit(state, "node_unlink", src, dst)
+                    dst, slot = _decode_link(lid.id())
+                    node = state.nodes.get(dst)
+                    if node is not None and slot < len(node.inputs):
+                        src = node.inputs[slot]
+                        if src is not None:
+                            self._emit(state, "node_unlink", src, dst, slot)
             nid = ed.NodeId()
             while ed.query_deleted_node(nid):
                 if ed.accept_deleted_item():
-                    self._emit(state, "node_remove", nid.id())
-                    self._positioned.discard(nid.id())
+                    self._emit(state, "node_remove", nid.id() // 4)
+                    self._positioned.discard(nid.id() // 4)
             ed.end_delete()
 
     # -- panel --------------------------------------------------------------
     def render(self, state: AppState) -> None:
+        replaced = self._sync_session(state)
+        live = set(state.nodes.nodes)
+        self._positioned.intersection_update(live)
+        self._model_positions = {key: value for key, value in self._model_positions.items() if key in live}
+        self._last_pos = {key: value for key, value in self._last_pos.items() if key in live}
         self._toolbar(state)
         imgui.separator()
         ed.begin("##nodes", imgui.ImVec2(0.0, 0.0))
+        if replaced:
+            ed.clear_selection()
         for node in state.nodes.ordered():
             self._draw_node(state, node)
         for node in state.nodes.ordered():
             for slot, in_id in enumerate(node.inputs):
                 if in_id in state.nodes.nodes:
-                    ed.link(ed.LinkId(_link_id(in_id, node.id)),
+                    ed.link(ed.LinkId(_link_id(node.id, slot)),
                             ed.PinId(_out_pin(in_id)), ed.PinId(_in_pin(node.id, slot)))
         self._handle_create(state)
         self._handle_delete(state)

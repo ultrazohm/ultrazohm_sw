@@ -7,15 +7,15 @@ or non-finite axis limits must not be used as a downsample window.
 
 from __future__ import annotations
 
-import os
-import sys
+import pytest
+from uz_dataviewer import nodes, session
+from uz_dataviewer.commands import CommandError
+
 
 import numpy as np
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer.downsample import visible_slice  # noqa: E402
-from uz_dataviewer.model import DataRegistry  # noqa: E402
 from uz_dataviewer.panels.plots import PlotsPanel, _is_finite_range  # noqa: E402
 from uz_dataviewer.state import AppState, SubplotCell  # noqa: E402
 
@@ -68,20 +68,13 @@ def test_add_sets_fit_pending():
     assert cell.fit_pending is True
 
 
-def test_plot_line_receives_matched_dtype_arrays():
+def test_plot_line_receives_matched_dtype_arrays(gui_frame):
     """ImPlot's PlotLine is templated on one type for xs and ys; a dtype
     mismatch makes it reinterpret a buffer as the wrong type, producing the
     scattered/negative-time corruption. Drive a real frame and assert the
     arrays handed to plot_line share a dtype and span the true time range.
     """
-    from imgui_bundle import imgui, implot
-
-    imgui.create_context()
-    implot.create_context()
-    io = imgui.get_io()
-    io.display_size = imgui.ImVec2(1200, 800)
-    io.delta_time = 1.0 / 60.0
-    io.backend_flags |= imgui.BackendFlags_.renderer_has_textures
+    from imgui_bundle import implot
 
     state, run = _registry_with_run(t_start=11.979)
     panel = PlotsPanel()
@@ -101,15 +94,158 @@ def test_plot_line_receives_matched_dtype_arrays():
     implot.plot_line = capture
     try:
         for _ in range(3):  # first frame's begin_plot returns False
-            imgui.new_frame()
-            imgui.begin("Plots")
-            panel.render(state)
-            imgui.end()
-            imgui.render()
+            gui_frame(panel, state, 'Plots')
     finally:
+        state.shutdown()
         implot.plot_line = original
 
     assert seen, "plot_line was never called"
     assert seen["xs_dtype"] == seen["ys_dtype"]
     assert seen["x_min"] >= 11.979 - 1e-6  # no negative/garbage times
     assert seen["monotonic"]
+
+
+def test_restored_x_window_still_fits_delayed_y(app_state, gui_frame, tmp_path, monkeypatch):
+    import threading
+    import time
+    from imgui_bundle import implot
+    from uz_dataviewer.session import to_dict, apply_dict
+    state = app_state
+    path = tmp_path / 'high.csv'
+    path.write_text('time;a\n' + ''.join(f'{i};{500+i}\n' for i in range(8)))
+    state.load_sync(str(path))
+    state.cells[0].signals = [(1, 'a')]
+    state.plot_x_ranges[1] = (2., 4.)
+    apply_dict(state, to_dict(state))
+    panel = PlotsPanel()
+    release, started = threading.Event(), threading.Event()
+    source = state.registry.get(1).data_source()
+    original_read = source.read_plot
+
+    def delayed(*args, **kwargs):
+        started.set()
+        assert release.wait(5)
+        return original_read(*args, **kwargs)
+
+    monkeypatch.setattr(source, 'read_plot', delayed)
+    limits = []
+    original_end = implot.end_plot
+
+    def capture():
+        value = implot.get_plot_limits()
+        limits.append((value.x.min, value.x.max, value.y.min, value.y.max))
+        original_end()
+
+    monkeypatch.setattr(implot, 'end_plot', capture)
+    try:
+        for _ in range(3):
+            gui_frame(panel, state)
+        assert started.wait(2)
+        release.set()
+        deadline = time.monotonic() + 5
+        while time.monotonic() < deadline:
+            gui_frame(panel, state)
+            if limits and limits[-1][2] <= 502 and limits[-1][3] >= 504:
+                break
+            time.sleep(.01)
+        assert limits[-1][:2] == (2., 4.)
+        assert limits[-1][2] <= 502 and limits[-1][3] >= 504
+    finally:
+        release.set()
+
+
+def test_linked_reset_updates_export_and_render(app_state, gui_frame, tmp_path):
+    from uz_dataviewer.session import export_data, to_dict
+    state = app_state
+    state.backend = 'pyarrow'
+    run = state.registry.add_run('test', 'test', np.arange(100.),
+                                 {'a': np.arange(100, dtype=np.float32)}, {})
+    state.set_grid(1, 2)
+    for cell in state.cells:
+        cell.add((run.id, 'a'))
+    state.commands.execute(state, 'set_x_lim', [1, 20, 30])
+    output = tmp_path / 'plot.csv'
+    export_data(state, 1, str(output))
+    data = np.genfromtxt(output, delimiter=',', skip_header=1)
+    np.testing.assert_array_equal(data[:, 0], np.arange(20, 31))
+    assert state.resolve_x_window(2, (0, 0), [(run.id, 'a')]) == (20, 30)
+    assert to_dict(state)['cells'][1]['x_lim'] == (20, 30)
+    panel = PlotsPanel()
+    for _ in range(3):
+        gui_frame(panel, state)
+    panel._driver = 0
+    state.commands.execute(state, 'reset_view', [2])
+    assert state.plot_time_range(1) == (0, 99)
+    for _ in range(3):
+        gui_frame(panel, state)
+    assert all(cell.x_lim == (0, 99) for cell in state.cells)
+    state.commands.execute(state, 'link_x', [False])
+    state.commands.execute(state, 'set_x_lim', [2, 40, 50])
+    assert state.plot_time_range(1) == (0, 99)
+    assert state.plot_time_range(2) == (40, 50)
+
+
+def test_link_enable_syncs_driver(app_state, gui_frame):
+    s = app_state
+    s.services.display.synchronous = True
+    s.registry.add_run("a", "a", np.arange(100.0), {"a": np.arange(100.0)}, {})
+    s.set_grid(1, 2)
+    for c in s.cells:
+        c.add((1, "a"))
+    panel = PlotsPanel()
+    s.set_plot_x_limits(1, 10, 20)
+    for _ in range(3):
+        gui_frame(panel, s)
+    panel._driver = 0
+    s.commands.execute(s, "link_x", [False])
+    s.set_plot_x_limits(1, 30, 40)
+    for _ in range(3):
+        gui_frame(panel, s)
+    s.commands.execute(s, "link_x", [True])
+    for _ in range(3):
+        gui_frame(panel, s)
+    assert s.cells[0].x_lim == s.cells[1].x_lim
+    assert s.plot_time_range(1) == s.cells[0].x_lim
+
+
+def test_frequency_outputs_keep_independent_axes(app_state, gui_frame, tmp_path):
+    s = app_state
+    s.services.display.synchronous = True
+    t = np.arange(128.0) / 128
+    run = s.registry.add_run("a", "a", t, {"a": np.sin(2 * np.pi * 8 * t)}, {})
+    src = s.nodes.add("source", ref=(run.id, "a"))
+    fft = s.nodes.add("fft")
+    s.nodes.link(src.id, fft.id)
+    assert nodes.evaluate(s) == 1
+    spectrum = s.registry.get(fft.out_run_id)
+    assert spectrum.axis_domain == "frequency"
+    s.set_grid(1, 2)
+    s.commands.execute(s, "add_signal", [1, run.id, "a"])
+    s.commands.execute(s, "add_signal", [2, spectrum.id, "out"])
+    s.set_plot_x_limits(1, 0.1, 0.5)
+    s.set_plot_x_limits(2, 1, 40)
+    assert s.shared_x == (0.1, 0.5)
+    assert s.plot_time_range(2) == (1, 40)
+    panel = PlotsPanel()
+    for _ in range(3):
+        gui_frame(panel, s)
+    assert s.cells[1].x_lim == (1, 40)
+    path = tmp_path / "spectrum.csv"
+    session.export_data(s, 1, str(path))
+    assert path.read_text().splitlines()[0] == "frequency,out"
+    for command, args in [
+        ("add_signal", [1, spectrum.id, "out"]),
+        ("fft_source", [spectrum.id, "out"]),
+        ("normalize_time", [spectrum.id, 0]),
+        ("fft_follow", [2]),
+    ]:
+        with pytest.raises((ValueError, CommandError)):
+            s.commands.execute(s, command, args)
+    math = s.nodes.add("math")
+    s.nodes.link(fft.id, math.id)
+    assert nodes.evaluate(s) == 1
+    assert s.registry.get(math.out_run_id).axis_domain == "frequency"
+    filter_node = s.nodes.add("filter")
+    s.nodes.link(fft.id, filter_node.id)
+    assert nodes.evaluate(s) == 0
+    assert "time-domain" in filter_node.error

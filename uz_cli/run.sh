@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Usage: ./uz_cli/run.sh [--wheel PATH | --latest | --local-newest] [--channel stable|testing] [--launch cli|example] [-- CLI_ARGUMENTS...]
+# Usage: ./uz_cli/run.sh [--wheel PATH | --latest | --local-newest] [--channel stable|testing] [--launch none|shell|cli|example] [-- CLI_ARGUMENTS...]
 set -euo pipefail
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"

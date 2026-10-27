@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Install runtime dependencies with uv and launch the native data viewer.
+# Usage: start.sh [--use-live] [--live-wheel PATH] [--live-channel stable|testing] [VIEWER_ARGUMENTS...]
 set -euo pipefail
 
 if ! command -v uv >/dev/null 2>&1; then
@@ -29,15 +30,28 @@ fi
 
 PROJECT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
+USE_LIVE=false
 LIVE_OPTIONS=()
 VIEWER_ARGS=()
 while [[ $# -gt 0 ]]; do
-    if [[ "$1" == "--live-wheel" ]]; then
+    if [[ "$1" == "--use-live" ]]; then
+        USE_LIVE=true
+        shift
+    elif [[ "$1" == "--live-wheel" ]]; then
         if [[ $# -lt 2 || ! -f "$2" ]]; then
             echo '--live-wheel requires a compatible ultrazohm wheel path.' >&2
             exit 1
         fi
-        LIVE_OPTIONS+=(--with "$(cd -- "$(dirname -- "$2")" && pwd)/$(basename -- "$2")")
+        USE_LIVE=true
+        LIVE_OPTIONS+=(--wheel "$(cd -- "$(dirname -- "$2")" && pwd)/$(basename -- "$2")")
+        shift 2
+    elif [[ "$1" == "--live-channel" ]]; then
+        if [[ $# -lt 2 || ( "$2" != "stable" && "$2" != "testing" ) ]]; then
+            echo '--live-channel requires stable or testing.' >&2
+            exit 1
+        fi
+        USE_LIVE=true
+        LIVE_OPTIONS+=(--channel "$2")
         shift 2
     else
         VIEWER_ARGS+=("$1")
@@ -45,9 +59,19 @@ while [[ $# -gt 0 ]]; do
     fi
 done
 
+if "$USE_LIVE"; then
+    # Sync first, then install the backend into this same environment. Launch
+    # directly afterward so another sync cannot remove the optional backend.
+    uv sync --project "$PROJECT_DIR" --python 3.12 --inexact --no-build-package imgui-bundle
+    "$PROJECT_DIR/../uz_cli/run.sh" --venv "$PROJECT_DIR/.venv" \
+        --launch none --no-examples "${LIVE_OPTIONS[@]}"
+    "$PROJECT_DIR/.venv/bin/python" -m uz_dataviewer.check_live
+    exec "$PROJECT_DIR/.venv/bin/uz-dataviewer" "${VIEWER_ARGS[@]}"
+fi
+
 # Keep the caller's working directory so relative input paths still work.
 # uv creates/reuses .venv and installs the project and its runtime dependencies.
 # Use the tested Python version: current imgui-bundle Linux wheels omit 3.10.
 # Never fall back to compiling the GUI and its native dependencies on startup.
 exec uv run --project "$PROJECT_DIR" --python 3.12 \
-    --no-build-package imgui-bundle "${LIVE_OPTIONS[@]}" uz-dataviewer "${VIEWER_ARGS[@]}"
+    --no-build-package imgui-bundle uz-dataviewer "${VIEWER_ARGS[@]}"

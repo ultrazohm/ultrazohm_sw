@@ -32,8 +32,10 @@ def main():
     parser.add_argument("--venv", type=Path, default=default_venv,
                         help="Environment path (default: .venv-host, or .venv-container inside Docker)")
     parser.add_argument("--python", default="3.12", help="Python version or interpreter for a new environment")
-    parser.add_argument("--examples", action="store_true", help="Also install Python Polars and Matplotlib")
-    parser.add_argument("--launch", choices=["shell", "cli", "example"], help="Open an activated shell, CLI or Python example after installation")
+    parser.add_argument("--examples", action=argparse.BooleanOptionalAction, default=False,
+                        help="Also install Python Polars and Matplotlib")
+    parser.add_argument("--launch", choices=["none", "shell", "cli", "example"],
+                        help="What to start after installation; none performs setup only")
     parser.add_argument("command", nargs=argparse.REMAINDER, help="CLI arguments after -- (default: ultrazohm's interactive session)")
     args = parser.parse_args()
     extra = args.command[1:] if args.command[:1] == ["--"] else args.command
@@ -103,7 +105,7 @@ def main():
     if not command.is_file():
         raise ValueError(f"Installation did not create the CLI command: {command}")
     subprocess.run([str(command), "--version"], check=True, env=install_env)
-    if args.launch:
+    if args.launch and args.launch != "none":
         extra = args.command[1:] if args.command[:1] == ["--"] else args.command
         rc_path = None
         if args.launch == "shell":
@@ -144,6 +146,9 @@ def main():
         finally:
             if rc_path is not None:
                 rc_path.unlink(missing_ok=True)
+    if args.launch == "none":
+        print(f"Backend setup complete: {venv}", flush=True)
+        return
     print(f"Ready. Run: {command} serve --interactive", flush=True)
     print(f"Or: {python} -m ultrazohm --help", flush=True)
     if sys.platform == "win32":

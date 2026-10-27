@@ -44,6 +44,7 @@ Run the launcher from the repository root (Linux/macOS):
 
 ```bash
 ./uz_dataviewer/start.sh
+./uz_dataviewer/start.sh --use-live          # set up CLI backend, then open viewer
 ./uz_dataviewer/start.sh path/to/log.csv    # preload one or more files
 ./uz_dataviewer/start.sh session.json       # restore a saved session
 ```
@@ -52,6 +53,7 @@ On Windows, use PowerShell:
 
 ```powershell
 .\uz_dataviewer\start.ps1
+.\uz_dataviewer\start.ps1 --use-live
 .\uz_dataviewer\start.ps1 "path\to\log.csv"
 ```
 
@@ -268,8 +270,30 @@ retain their saved domain as unavailable placeholders until repaired.
 
 ## Native live-data prototype
 
-Build/install a compatible `ultrazohm` wheel using the CLI's `run.sh` flow, then
-launch the viewer with that wheel (no Rust compiler is needed on the workstation):
+Enable live support using the same wheel selection/download flow as `uz_cli`:
+
+```bash
+./uz_dataviewer/start.sh --use-live
+```
+
+```powershell
+.\uz_dataviewer\start.ps1 --use-live
+```
+
+The launcher installs the locked viewer dependencies, then calls `uz_cli/run.sh`
+or `run.ps1` in setup-only mode, targeting `uz_dataviewer/.venv`. It offers the
+CLI's local-wheel menu when compatible local wheels exist, or downloads the latest
+release when none exist. No Rust compiler is needed for prebuilt wheels. The CLI
+launcher does not start an interactive CLI or connect to hardware; the viewer
+opens afterward and **Connect** starts/attaches acquisition as usual. Relative
+recording arguments keep their original working directory.
+
+The release channel follows the CLI default. Override it with
+`--use-live --live-channel testing` (or `stable`). A published wheel must contain
+the live-viewer APIs; incompatible older wheels fail during setup with an error.
+For unpublished prototype changes, build a matching wheel in the development
+container and use `--live-wheel` to select it explicitly. That flag also enables
+live setup, so `--use-live` is optional with an exact wheel:
 
 ```bash
 ./uz_dataviewer/start.sh --live-wheel /absolute/path/to/ultrazohm-....whl

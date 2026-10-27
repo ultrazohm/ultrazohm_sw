@@ -1,5 +1,6 @@
 # Install uv and runtime dependencies, then launch the native data viewer.
-# All arguments are forwarded to the viewer, including relative file paths.
+# Launcher options: --use-live, --live-wheel PATH, --live-channel stable|testing.
+# Remaining arguments are forwarded to the viewer, including relative file paths.
 $ErrorActionPreference = 'Stop'
 
 try {
@@ -34,21 +35,60 @@ try {
         }
     }
 
+    $useLive = $false
     $liveOptions = @()
     $viewerArgs = @()
     for ($i = 0; $i -lt $args.Count; $i++) {
-        if ($args[$i] -eq '--live-wheel') {
+        if ($args[$i] -eq '--use-live') {
+            $useLive = $true
+        } elseif ($args[$i] -eq '--live-wheel') {
             if ($i + 1 -ge $args.Count -or -not (Test-Path -LiteralPath $args[$i + 1] -PathType Leaf)) {
                 throw '--live-wheel requires a compatible ultrazohm wheel path.'
             }
             $i++
-            $liveOptions += @('--with', (Resolve-Path -LiteralPath $args[$i]).Path)
+            $useLive = $true
+            $liveOptions += @('--wheel', (Resolve-Path -LiteralPath $args[$i]).Path)
+        } elseif ($args[$i] -eq '--live-channel') {
+            if ($i + 1 -ge $args.Count -or $args[$i + 1] -notin @('stable', 'testing')) {
+                throw '--live-channel requires stable or testing.'
+            }
+            $i++
+            $useLive = $true
+            $liveOptions += @('--channel', $args[$i])
         } else {
             $viewerArgs += $args[$i]
         }
     }
+    if ($useLive) {
+        & $uvExecutable sync --project $PSScriptRoot --python 3.12 --inexact --no-build-package imgui-bundle
+        if ($LASTEXITCODE -ne 0) { throw 'Viewer dependency setup failed.' }
+        $viewerVenv = Join-Path $PSScriptRoot '.venv'
+        $isWindowsPlatform = [Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT
+        $shellName = if ($PSVersionTable.PSEdition -eq 'Core') {
+            if ($isWindowsPlatform) { 'pwsh.exe' } else { 'pwsh' }
+        } else { 'powershell.exe' }
+        $cliShell = Join-Path $PSHOME $shellName
+        # The CLI launcher discovers uv through PATH, including after bootstrap.
+        $previousPath = $env:PATH
+        try {
+            $env:PATH = (Split-Path -Parent $uvExecutable) + [IO.Path]::PathSeparator + $env:PATH
+            # Isolate the CLI launcher's exit from this viewer launcher's scope.
+            & $cliShell -NoProfile -File (Join-Path $PSScriptRoot '../uz_cli/run.ps1') --venv $viewerVenv --launch none --no-examples @liveOptions
+            if ($LASTEXITCODE -ne 0) { throw 'UltraZohm backend setup failed.' }
+        } finally {
+            $env:PATH = $previousPath
+        }
+        $scripts = if ($isWindowsPlatform) { 'Scripts' } else { 'bin' }
+        $pythonName = if ($scripts -eq 'Scripts') { 'python.exe' } else { 'python' }
+        $viewerName = if ($scripts -eq 'Scripts') { 'uz-dataviewer.exe' } else { 'uz-dataviewer' }
+        $viewerScripts = Join-Path $viewerVenv $scripts
+        & (Join-Path $viewerScripts $pythonName) -m uz_dataviewer.check_live
+        if ($LASTEXITCODE -ne 0) { throw 'The selected backend is incompatible with live viewing.' }
+        & (Join-Path $viewerScripts $viewerName) @viewerArgs
+        exit $LASTEXITCODE
+    }
     # Keep the caller's working directory so relative input paths still work.
-    & $uvExecutable run --project $PSScriptRoot --python 3.12 --no-build-package imgui-bundle @liveOptions uz-dataviewer @viewerArgs
+    & $uvExecutable run --project $PSScriptRoot --python 3.12 --no-build-package imgui-bundle uz-dataviewer @viewerArgs
     exit $LASTEXITCODE
 } catch {
     [Console]::Error.WriteLine($_.Exception.Message)

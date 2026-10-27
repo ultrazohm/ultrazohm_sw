@@ -222,7 +222,7 @@ class LiveWorkspace:
 
     def render_data(self, main_state):
         if not self.available:
-            imgui.text_wrapped('Live acquisition requires the ultrazohm wheel. Launch start.sh --live-wheel PATH (start.ps1 on Windows).')
+            imgui.text_wrapped('Live acquisition requires the ultrazohm backend. Restart with start.sh --use-live (start.ps1 on Windows). Use --live-wheel PATH to select an exact wheel.')
             return
         activity = self.update.activity or self.pending_message
         error = self.error or self.update.error

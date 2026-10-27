@@ -87,6 +87,10 @@ virtual environment, install the wheel plus Polars/Matplotlib, and launch
 with CSV and Parquet output configured and logging off. Type `connect` to connect
 to the device and `shutdown` to exit. No Rust toolchain is needed.
 Use `--launch shell` to open an activated environment shell instead.
+Use `--launch none` for setup only, without starting a CLI, shell or acquisition.
+`--venv PATH` targets another environment; `--no-examples` omits example-only
+dependencies. The Data Viewer uses these options for `start.sh --use-live`
+and `start.ps1 --use-live`.
 The Docker tag specifies the 3.12 series, not an exact patch release. An existing
 environment must use that Python series; choose a new `--venv` path when changing
 Python versions. Run the scripts rather than sourcing/dot-sourcing them.

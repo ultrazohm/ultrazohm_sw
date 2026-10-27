@@ -14,9 +14,9 @@ pub struct DataOptions {
     /// Durable recording implementation, independent of CSV/Parquet export options.
     #[arg(long, value_enum, default_value = "parquet")]
     pub recording_backend: crate::backend::BackendKind,
-    /// Recent sample history retained in RAM, independent of logging.
-    #[arg(long, default_value_t = 100_000)]
-    pub buffer_samples: usize,
+    /// Recent samples retained in RAM; defaults to 30 seconds at the profile's sample rate.
+    #[arg(long)]
+    pub buffer_samples: Option<usize>,
     /// Target rows per Parquet segment (rounded up to a complete frame).
     #[arg(long, default_value_t = 1_000_000)]
     pub segment_rows: usize,
@@ -29,7 +29,7 @@ impl Default for DataOptions {
     fn default() -> Self {
         Self {
             recording_backend: Default::default(),
-            buffer_samples: 100_000,
+            buffer_samples: None,
             segment_rows: 1_000_000,
             flush_interval_ms: 60_000,
         }
@@ -37,8 +37,27 @@ impl Default for DataOptions {
 }
 
 impl DataOptions {
+    pub fn resolve(&mut self, sample_period_us: f64) -> Result<()> {
+        ensure!(
+            sample_period_us.is_finite() && sample_period_us > 0.0,
+            "invalid sample period"
+        );
+        if self.buffer_samples.is_none() {
+            let samples = (30_000_000.0 / sample_period_us).ceil();
+            ensure!(
+                samples.is_finite() && samples >= 1.0 && samples < usize::MAX as f64,
+                "30-second buffer capacity exceeds supported sample count"
+            );
+            self.buffer_samples = Some(samples as usize);
+        }
+        self.validate()
+    }
+
     pub fn validate(&self) -> Result<()> {
-        ensure!(self.buffer_samples > 0, "buffer_samples must be positive");
+        ensure!(
+            self.buffer_samples != Some(0),
+            "buffer_samples must be positive"
+        );
         ensure!(self.segment_rows > 0, "segment_rows must be positive");
         ensure!(
             self.flush_interval_ms > 0,
@@ -271,10 +290,34 @@ mod tests {
     }
 
     #[test]
+    fn default_history_is_thirty_seconds_at_configured_rate() -> Result<()> {
+        for (period, expected) in [
+            (100.0, 300_000),
+            (50.0, 600_000),
+            (10.0, 3_000_000),
+            (333.0, 90_091),
+        ] {
+            let mut options = DataOptions::default();
+            options.resolve(period)?;
+            assert_eq!(options.buffer_samples, Some(expected));
+        }
+        let mut explicit = DataOptions {
+            buffer_samples: Some(17),
+            ..Default::default()
+        };
+        explicit.resolve(10.0)?;
+        assert_eq!(explicit.buffer_samples, Some(17));
+        for period in [0.0, f64::NAN, f64::INFINITY, f64::MIN_POSITIVE] {
+            assert!(DataOptions::default().resolve(period).is_err());
+        }
+        Ok(())
+    }
+
+    #[test]
     fn zero_limits_are_rejected() {
         for options in [
             DataOptions {
-                buffer_samples: 0,
+                buffer_samples: Some(0),
                 ..Default::default()
             },
             DataOptions {

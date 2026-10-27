@@ -52,6 +52,10 @@ class DataViewerApp:
         self.fft = FftPanel()
         self.histogram = HistogramPanel()
         self.nodes = NodesPanel()
+        self.live = None
+        if not runtime.IS_WEB:
+            from .panels.live import LiveWorkspace
+            self.live = LiveWorkspace()
         # Pending Session-menu file dialogs: (dialog, command_name, is_multi).
         self._session_dialog: tuple = ()
         # Let the browser file-input bridge reach this state (no-op on desktop).
@@ -132,7 +136,19 @@ class DataViewerApp:
         logs.dock_space_name = LOG_DOCK
         logs.gui_function = lambda: self.log_browser.render(self.state)
 
-        return [nav, logs, plots, fft, histogram, nodes, console]
+        windows = [nav, logs, plots, fft, histogram, nodes, console]
+        if self.live is not None:
+            for label, dock, render in (
+                ('Live Data', LEFT_DOCK, lambda: self.live.render_data(self.state)),
+                ('Control', LOG_DOCK, self.live.render_control),
+                ('Live Plots', MAIN_DOCK, lambda: self.live.render_plots(self.state)),
+            ):
+                window = hello_imgui.DockableWindow()
+                window.label = label
+                window.dock_space_name = dock
+                window.gui_function = render
+                windows.append(window)
+        return windows
 
     # -- Session menu (save/restore + scripting) ----------------------------
     def _show_menus(self) -> None:
@@ -233,6 +249,8 @@ class DataViewerApp:
 
     # -- per-frame ----------------------------------------------------------
     def _pre_new_frame(self) -> None:
+        if self.live is not None:
+            self.live.pump(self.state)
         self.state.poll_pending_loads()
         self._poll_session_dialog()
         if self.state.focus_fft:
@@ -243,6 +261,8 @@ class DataViewerApp:
             self.state.focus_histogram = False
 
     def _shutdown(self) -> None:
+        if self.live is not None:
+            self.live.close()
         self.log_browser.shutdown()
         self.state.shutdown()
 

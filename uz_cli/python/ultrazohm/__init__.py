@@ -95,6 +95,9 @@ class Client:
     def observables(self):
         """Return all channel assignments requested in this session; no device readback."""
         return self._call("observables")
+    def catalog(self):
+        """Return the service's firmware mapping and runtime profile, not device readback."""
+        return self._call("catalog")
     def get_live_data(self, last_n_samples):
         """Return an independent Polars snapshot of the last N retained fast samples."""
         import polars as pl

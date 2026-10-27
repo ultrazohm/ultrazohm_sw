@@ -43,6 +43,7 @@ const MAX_MESSAGE: usize = 65536;
 pub enum Operation {
     Connect { ip: String, port: u16 },
     Status,
+    Catalog,
     Observables,
     GetLiveData { last_n_samples: usize },
     DataInfo { source: Source },
@@ -197,12 +198,12 @@ pub fn serve(config: Config, shutdown: Arc<AtomicBool>) -> Result<()> {
 /// Invoke `ready` once this service owns the endpoint and any requested initial connection is ready.
 /// The callback must return promptly so control requests can be processed.
 pub fn serve_with_ready(
-    config: Config,
+    mut config: Config,
     shutdown: Arc<AtomicBool>,
     ready: impl FnOnce(),
 ) -> Result<()> {
     config.profile.validate()?;
-    config.data.validate()?;
+    config.data.resolve(config.profile.sample_period_us)?;
     // Claim the control endpoint before touching the device (new device clients replace old ones).
     let listener = TcpListener::bind(local_address(&config.endpoint)?)?;
     listener.set_nonblocking(true)?;
@@ -242,7 +243,12 @@ pub fn serve_with_ready(
         config.format,
         config.data.clone(),
     );
-    let ring = Arc::new(Mutex::new(LiveBuffer::new(config.data.buffer_samples)));
+    let ring = Arc::new(Mutex::new(LiveBuffer::new(
+        config
+            .data
+            .buffer_samples
+            .expect("buffer capacity resolved"),
+    )));
     let routes = recordings.routes.clone();
     let context = ConnectionContext {
         profile: config.profile.clone(),
@@ -383,6 +389,11 @@ pub fn serve_with_ready(
                                 json!({"api_version":1,"ok":true,"state":*state.lock().unwrap(),"send_ack":ack.load(Ordering::SeqCst),"logging":recordings.status(),
                                     "data_options":config.data,"buffer_available_samples":ring.lock().unwrap().available()}),
                             );
+                        }
+                        Operation::Catalog => {
+                            return Ok(json!({"api_version":1,"ok":true,
+                                "profile":config.profile,
+                                "device_readback":false}));
                         }
                         Operation::Observables => {
                             let channels: Vec<Value> = (1..=config.profile.channels).map(|channel| {

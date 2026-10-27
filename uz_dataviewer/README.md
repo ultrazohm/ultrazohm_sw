@@ -2,7 +2,7 @@
 
 A native/web data viewer for UltraZohm JavaScope logs, built with
 [Dear ImGui via `imgui_bundle`](https://github.com/pthom/imgui_bundle) and ImPlot.
-It is the offline successor to the Plotly/Dash `javascope/dataviewer.py`: a VSCode-style
+It succeeds the Plotly/Dash `javascope/dataviewer.py`, with a native live-data prototype and a VSCode-style
 docked layout, drag-and-drop subplots, dedicated FFT/Histogram analysis windows, range-aware
 downsampling for multi-gigabyte logs, and a **scriptable command console** for automating data, analysis and plot settings.
 
@@ -265,3 +265,81 @@ Graph domain resolution shares a per-evaluation cache and uses iterative travers
 When a saved graph changes an output's domain, restoration discards its incompatible
 normalization and consumer assignments, matching live reevaluation. Failed outputs
 retain their saved domain as unavailable placeholders until repaired.
+
+## Native live-data prototype
+
+Build/install a compatible `ultrazohm` wheel using the CLI's `run.sh` flow, then
+launch the viewer with that wheel (no Rust compiler is needed on the workstation):
+
+```bash
+./uz_dataviewer/start.sh --live-wheel /absolute/path/to/ultrazohm-....whl
+```
+
+```powershell
+.\uz_dataviewer\start.ps1 --live-wheel C:\path\to\ultrazohm-....whl
+```
+
+Use a wheel built with the `catalog` API. Without the wheel, offline viewing still
+works and Live Data displays installation instructions. Live acquisition is native
+only; the browser cannot connect to the local CLI socket.
+
+- **Live Data** sits beside Navigation. **Connect** attaches to the service endpoint,
+  or launches an independent CLI service if none is available, then connects to the
+  device. **Attach service** attaches without changing the device connection. An
+  existing service owns its settings; session directory and channel mapping fields
+  apply only when launching a new service. The session directory must not exist.
+  A sibling `<session>.service.log` contains service startup diagnostics.
+  Connection progress appears immediately above the controls, followed by a
+  connected/data-reception indicator or an error. Progress and results also appear
+  in the Console; connection buttons stay disabled while a request is pending.
+- The 20 channel slots show the service's requested assignments. Double-click a slot
+  to choose an observable using case-insensitive fuzzy search. Selection is blocked
+  while either stream is recording. A mapping/reconnect generation change clears
+  live plot assignments and cached samples; drag the desired signals again.
+- Drag channels into **Live Plots**. This reuses the normal plot renderer, grid,
+  zooming and display downsampling, with independent live axes and drag targets.
+  **Follow live** anchors the right edge at the newest sample. Mouse-wheel zoom
+  changes X and Y like the ordinary Plots window; X zoom updates **Time depth (s)**.
+  Live Plots uses exactly the ordinary Plots window's ImPlot mouse mapping, including
+  its pan/box-selection buttons and modifier-based axis constraints; it does not
+  remap buttons. Ordinary wheel and box zoom keep following: their X span becomes
+  the time depth and the right edge returns to the newest samples. **Shift-modified
+  zoom** enters **Inspect** and keeps the selected region, freezing the current
+  bounded RAM snapshot while acquisition and logging continue. Panning also enters
+  Inspect. The slider controls the same X duration. Inspect has a button (or uncheck
+  Follow live).
+  In Inspect, normal cursor-centered zoom and pan work; the slider changes duration
+  around the current view's center. **Resume live** catches up to the newest samples
+  at the chosen duration. No disk/cloud history is fetched in either mode.
+- **Freeze plot 1 for analysis** copies all channels in that plot's time window to
+  Navigation and assigns its plotted signals to the normal Plots window. FFT,
+  histogram and nodes can then consume stable samples. Snapshots are memory-only;
+  export them if needed before closing the viewer.
+- **Control** exposes Enable System, Enable Control, device Stop, user buttons 1–8,
+  and searchable named variables with an explicit Send action. Commands are sent
+  without firmware acknowledgment; streamed platform state is shown separately.
+  Error Reset is omitted because current firmware does not implement it.
+- Fast and slow logging have independent Start/Stop controls and phase/error/path
+  indicators. **Open completed log** opens the final Parquet through the ordinary
+  lazy file workflow. Stopping logging does not stop acquisition or the device.
+- Closing the viewer or **Detach viewer** leaves the service and logging running.
+  **Shutdown service** ends acquisition and finalizes logs; device Stop is separate.
+  An external CLI can attach to the same endpoint throughout.
+
+The IO worker uses `Client.read_since()` at up to 30 Hz and retains at most the
+service's configured sample capacity. Each publication is an immutable NumPy-backed
+snapshot; plotting work uses the existing background request scheduler and visible
+window min/max decimation. The GUI does not read intermediate recording files.
+The default ring covers 30 seconds at the configured sample rate (300,000 samples
+at 10 kHz; 3,000,000 at 100 kHz). The slider's maximum automatically follows the
+service capacity times its configured sample period, not a measured wall clock.
+Your selected time depth is preserved and clamped when needed. The plot shows
+only the samples received so far while the buffer fills. Requests are paged
+independently of buffer capacity to respect the CLI response-size limit.
+Stale data, backend errors and cursor resynchronization are shown in the UI.
+
+Prototype limits: live history is RAM-bounded even while logging. Full recording
+history during acquisition and cloud access are future adapters using the same
+source/query boundary. Live windows/settings are not saved in offline sessions;
+analysis runs only on explicit frozen snapshots. Session times follow the CLI's
+nominal sampling clock; transport gaps cannot currently be reconstructed.

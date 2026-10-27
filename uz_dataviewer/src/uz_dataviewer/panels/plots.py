@@ -69,7 +69,8 @@ def _abbrev(n: int) -> str:
 
 
 class PlotsPanel(SessionPanel):
-    def __init__(self) -> None:
+    def __init__(self, signal_payload_type=SIGNAL_DND_TYPE) -> None:
+        self.signal_payload_type = signal_payload_type
         self._driver: int = -1  # cell index that currently drives linked X axes
         self._last_points: dict[int, int] = {}  # cell index -> samples drawn last frame
         self._last_raw: dict[int, int] = {}  # cell index -> raw samples in view last frame
@@ -332,14 +333,12 @@ class PlotsPanel(SessionPanel):
                 implot.setup_axis(implot.ImAxis_.y2, "", implot.AxisFlags_.aux_default)
 
             did_fit = self._apply_pending_limits(state, cell, data_min, data_max)
-            if state.link_x and state.is_time_plot(cell) and state.shared_x is not None and index != self._driver:
-                implot.setup_axis_limits(
-                    implot.ImAxis_.x1, state.shared_x[0], state.shared_x[1], implot.Cond_.always
-                )
+            self._setup_shared_x(state, index, cell)
 
             limits = implot.get_plot_limits()
             raw_lo, raw_hi = float(limits.x.min), float(limits.x.max)
             self._capture_limits(cell, limits)
+            self._time_series_input(state, index, cell, raw_lo, raw_hi)
             if cell.y2_signals:
                 right = implot.get_plot_limits(implot.ImAxis_.x1, implot.ImAxis_.y2).y
                 if _is_finite_range(float(right.min), float(right.max)):
@@ -375,6 +374,13 @@ class PlotsPanel(SessionPanel):
 
         if cell.spy and cell.spy_rect is not None:
             self._render_spy_inset(state, index, cell, width, inset_h)
+
+    def _setup_shared_x(self, state, index, cell):
+        if state.link_x and state.is_time_plot(cell) and state.shared_x is not None and index != self._driver:
+            implot.setup_axis_limits(implot.ImAxis_.x1, *state.shared_x, implot.Cond_.always)
+
+    def _time_series_input(self, state, index, cell, lo, hi):
+        """Optional source-specific interaction handling after ImPlot processes input."""
 
     def _plot_signals(
         self, state: AppState, index: int, cell: SubplotCell, x_min: float, x_max: float
@@ -699,7 +705,7 @@ class PlotsPanel(SessionPanel):
 
     def _accept_drop(self, state: AppState, index: int, cell: SubplotCell) -> None:
         if implot.begin_drag_drop_target_plot():
-            payload = imgui.accept_drag_drop_payload_py_id(SIGNAL_DND_TYPE)
+            payload = imgui.accept_drag_drop_payload_py_id(self.signal_payload_type)
             if payload is not None:
                 ref = getattr(state, "dragged_ref", None)
                 if ref is not None and ref not in cell.signals:

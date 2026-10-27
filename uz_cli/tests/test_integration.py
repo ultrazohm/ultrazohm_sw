@@ -183,6 +183,29 @@ class IntegrationTest(unittest.TestCase):
             self.cli("start-logging")
             self.cli("start-logging-slow-data")
 
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for duration test")
+    def test_default_buffer_duration_uses_configured_sample_period(self):
+        from ultrazohm import Acquisition, Client
+        profile = self.runtime_profile({})
+        profile['sample_period_us'] = 10.0
+        path = self.config_file('100khz.json', profile)
+        for index, (extra, expected) in enumerate((({}, 3_000_000), ({'buffer_samples': 17}, 17))):
+            acquisition = Acquisition(endpoint=self.endpoint, profile=str(path),
+                                      output=str(Path(self.tmp.name)/f'duration-{index}'), **extra)
+            try:
+                self.assertEqual(Client(self.endpoint).status()['data_options']['buffer_samples'], expected)
+            finally:
+                acquisition.close()
+
+    def test_service_catalog_matches_loaded_mapping(self):
+        self.start(logging=False)
+        catalog = self.cli('catalog')
+        self.assertFalse(catalog['device_readback'])
+        mapping = json.loads((ROOT/'uz_cli/channel_mappings/default.json').read_text())
+        for field in ('observables', 'slow_signals', 'variables', 'commands'):
+            self.assertEqual(catalog['profile'][field], mapping[field])
+        self.assertEqual(catalog['profile']['channels'], 20)
+
     def test_fragmented_control_request(self):
         self.spawn([BIN, '--endpoint', self.endpoint, 'serve',
                     '--output', Path(self.tmp.name) / 'fragmented-control'])
@@ -324,7 +347,7 @@ class IntegrationTest(unittest.TestCase):
         import polars as pl
         self.start(logging=False, format="parquet", data_options=())
         self.assertEqual(self.cli("status")["data_options"],
-                         {"recording_backend": "parquet", "buffer_samples": 100_000, "segment_rows": 1_000_000, "flush_interval_ms": 60_000})
+                         {"recording_backend": "parquet", "buffer_samples": 300_000, "segment_rows": 1_000_000, "flush_interval_ms": 60_000})
         before = self.cli("status")["state"]["samples"]
         self.cli("start-logging")
         wait_for(lambda: self.cli("status")["state"]["samples"] >= before + 1500)
@@ -354,7 +377,7 @@ class IntegrationTest(unittest.TestCase):
         a = Acquisition(endpoint=self.endpoint, output=str(Path(self.tmp.name)/"offline-snapshot"))
         try:
             self.assertEqual(Client(self.endpoint).status()["data_options"],
-                             {"recording_backend": "parquet", "buffer_samples": 100_000, "segment_rows": 1_000_000, "flush_interval_ms": 60_000})
+                             {"recording_backend": "parquet", "buffer_samples": 300_000, "segment_rows": 1_000_000, "flush_interval_ms": 60_000})
             with self.assertRaisesRegex(RuntimeError, "not connected"):
                 Client(self.endpoint).get_live_data(1)
         finally:

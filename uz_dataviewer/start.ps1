@@ -34,8 +34,21 @@ try {
         }
     }
 
+    $liveOptions = @()
+    $viewerArgs = @()
+    for ($i = 0; $i -lt $args.Count; $i++) {
+        if ($args[$i] -eq '--live-wheel') {
+            if ($i + 1 -ge $args.Count -or -not (Test-Path -LiteralPath $args[$i + 1] -PathType Leaf)) {
+                throw '--live-wheel requires a compatible ultrazohm wheel path.'
+            }
+            $i++
+            $liveOptions += @('--with', (Resolve-Path -LiteralPath $args[$i]).Path)
+        } else {
+            $viewerArgs += $args[$i]
+        }
+    }
     # Keep the caller's working directory so relative input paths still work.
-    & $uvExecutable run --project $PSScriptRoot --python 3.12 --no-build-package imgui-bundle uz-dataviewer @args
+    & $uvExecutable run --project $PSScriptRoot --python 3.12 --no-build-package imgui-bundle @liveOptions uz-dataviewer @viewerArgs
     exit $LASTEXITCODE
 } catch {
     [Console]::Error.WriteLine($_.Exception.Message)

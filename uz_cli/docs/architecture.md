@@ -42,7 +42,7 @@ flowchart LR
     Service --> Metadata[Run metadata and command events]
 ```
 
-The reader owns receive framing and a bounded sample ring (100,000 samples by default).
+The reader owns receive framing and a bounded sample ring (30 seconds at the configured sample rate by default).
 Snapshots clone only references to immutable frames while holding the ring lock, then build
 and serialize independent Arrow data after releasing it. Retention is configurable
 with `buffer_samples`; the physical ring may retain one partial extra frame.

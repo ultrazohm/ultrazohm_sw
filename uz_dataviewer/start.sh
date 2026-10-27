@@ -29,9 +29,25 @@ fi
 
 PROJECT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
+LIVE_OPTIONS=()
+VIEWER_ARGS=()
+while [[ $# -gt 0 ]]; do
+    if [[ "$1" == "--live-wheel" ]]; then
+        if [[ $# -lt 2 || ! -f "$2" ]]; then
+            echo '--live-wheel requires a compatible ultrazohm wheel path.' >&2
+            exit 1
+        fi
+        LIVE_OPTIONS+=(--with "$(cd -- "$(dirname -- "$2")" && pwd)/$(basename -- "$2")")
+        shift 2
+    else
+        VIEWER_ARGS+=("$1")
+        shift
+    fi
+done
+
 # Keep the caller's working directory so relative input paths still work.
 # uv creates/reuses .venv and installs the project and its runtime dependencies.
 # Use the tested Python version: current imgui-bundle Linux wheels omit 3.10.
 # Never fall back to compiling the GUI and its native dependencies on startup.
 exec uv run --project "$PROJECT_DIR" --python 3.12 \
-    --no-build-package imgui-bundle uz-dataviewer "$@"
+    --no-build-package imgui-bundle "${LIVE_OPTIONS[@]}" uz-dataviewer "${VIEWER_ARGS[@]}"

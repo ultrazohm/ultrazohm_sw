@@ -126,7 +126,7 @@ struct Acquisition {
 impl Acquisition {
     #[new]
     #[allow(clippy::too_many_arguments)] // Python keyword options plus the GIL token.
-    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="both".to_string(), ack=false, channel_mapping=None, *, buffer_samples=100_000, segment_rows=1_000_000, flush_interval_ms=60_000, recording_backend="parquet"))]
+    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="both".to_string(), ack=false, channel_mapping=None, *, buffer_samples=None, segment_rows=1_000_000, flush_interval_ms=60_000, recording_backend="parquet"))]
     fn new(
         py: Python<'_>,
         device: Option<String>,
@@ -136,7 +136,7 @@ impl Acquisition {
         format: String,
         ack: bool,
         channel_mapping: Option<String>,
-        buffer_samples: usize,
+        buffer_samples: Option<usize>,
         segment_rows: usize,
         flush_interval_ms: u64,
         recording_backend: &str,

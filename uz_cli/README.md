@@ -580,9 +580,11 @@ Configure the service from the CLI with:
 ultrazohm serve --buffer-samples 100000 --segment-rows 50000 --flush-interval-ms 1000
 ```
 
-Defaults are 100,000 retained samples, a 1,000,000-row segment target, and a 60,000 ms
-flush interval. The live ring covers 10 seconds at 10 kHz or one second at
-100 kHz, independently of logging. At a sustained 10 kHz this normally produces about one 600,000-row
+Defaults are 30 seconds of retained samples at the configured profile sample rate,
+a 1,000,000-row segment target, and a 60,000 ms flush interval. The live ring
+automatically holds 300,000 samples at 10 kHz or 3,000,000 at 100 kHz, independently
+of logging. An explicit `--buffer-samples N` / Python `buffer_samples=N` overrides
+the duration-based default; Python `None` uses the default. At a sustained 10 kHz this normally produces about one 600,000-row
 chunk per minute (60 files per hour per stream), instead of thousands of small files.
 The row limit still bounds batches at higher rates. All values must be positive
 and are fixed for the service lifetime.
@@ -799,9 +801,9 @@ hardware run are separate from local Linux simulator validation.
 
 - Release abi3 wheel built in the development container, installed with `run.sh`,
   and tested in its CPython 3.12 virtual environment.
-- 26 Rust tests cover codec/storage, projected range reads, range indexing, publication failure,
+- 27 Rust tests cover codec/storage, projected range reads, rate-aware buffer defaults, range indexing, publication failure,
   final exports, and injection of an alternate recording backend.
-- 71 Python tests cover simulator communication, projected RAM/pending/disk history,
+- 73 Python tests cover simulator communication, projected RAM/pending/disk history,
   cursor validation, independent recordings, completed handles, disk/export errors,
   CLI operations, and the existing build/mapping/release workflows.
 - Connected UltraZohm tests through the `run.sh` interactive CLI verified a

@@ -95,6 +95,8 @@ enum Command {
         port: u16,
     },
     Status,
+    /// Show the firmware mapping and runtime profile loaded by the service.
+    Catalog,
     /// List all channel assignments requested in this service session (not device readback).
     #[command(aliases = ["get-observables", "get_observables"])]
     Observables,
@@ -569,6 +571,7 @@ fn execute(command: Command, endpoint: &str) -> Result<()> {
         Command::Connect { ip, port } => Operation::Connect { ip, port },
         Command::Status => Operation::Status,
         Command::Observables => Operation::Observables,
+        Command::Catalog => Operation::Catalog,
         Command::Stop => Operation::Stop,
         Command::EnableSystem => Operation::EnableSystem,
         Command::EnableControl => Operation::EnableControl,

@@ -32,3 +32,4 @@ vitis/Packages/*
 
 # Generated artifacts, including live measurement logs
 /artifacts/
+*.ini

@@ -167,12 +167,18 @@ class IntegrationTest(unittest.TestCase):
         if mapping is not None:
             args += ["--channel-mapping", self.config_file("mapping.json", mapping)]
         if interactive:
+            # The test polls the service before collecting prompt output. An
+            # unread PIPE can fill (especially on Windows) and block the prompt
+            # before it executes the commands the test is waiting for.
+            self.interactive_stdout = tempfile.TemporaryFile(mode="w+t", encoding="utf-8")
+            self.interactive_stderr = tempfile.TemporaryFile(mode="w+t", encoding="utf-8")
+            self.addCleanup(self.interactive_stdout.close)
+            self.addCleanup(self.interactive_stderr.close)
             self.service = subprocess.Popen([str(x) for x in [*args, "--interactive"]],
-                                            stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                                            stderr=subprocess.PIPE, text=True)
+                                            stdin=subprocess.PIPE, stdout=self.interactive_stdout,
+                                            stderr=self.interactive_stderr, text=True)
             self.processes.append(self.service)
-            for stream in (self.service.stdin, self.service.stdout, self.service.stderr):
-                self.addCleanup(stream.close)
+            self.addCleanup(self.service.stdin.close)
         else:
             self.service = self.spawn(args)
         wait_for(lambda:self.cli("status"))
@@ -648,7 +654,8 @@ class IntegrationTest(unittest.TestCase):
 
     def test_interactive_commands_and_finalization(self):
         self.start(interactive=True)
-        self.service.stdin.write("help\nunknown-command\nset-variable missing 1\n"
+        # Exercise output larger than a small pipe before checking command effects.
+        self.service.stdin.write("help\n" * 4 + "unknown-command\nset-variable missing 1\n"
                                  "serve\nset_variable send_field_1 -12.5\n"
                                  "set-observable lifecheck 1\nsend_ack on\nbutton 2\n")
         self.service.stdin.flush()
@@ -661,7 +668,10 @@ class IntegrationTest(unittest.TestCase):
         self.service.stdin.flush()
         wait_for(lambda: self.cli("status")["state"]["commands_sent"] >= 5)
         self.assertIsNone(self.service.poll())
-        stdout, stderr = self.service.communicate("shutdown\n", timeout=15)
+        self.service.communicate("shutdown\n", timeout=15)
+        self.interactive_stdout.seek(0)
+        self.interactive_stderr.seek(0)
+        stdout, stderr = self.interactive_stdout.read(), self.interactive_stderr.read()
         self.assertEqual(self.service.returncode, 0, stderr)
         self.assertIn("ultrazohm> ", stdout)
         self.assertIn("sent_unconfirmed", stdout)
@@ -677,7 +687,9 @@ class IntegrationTest(unittest.TestCase):
     def test_interactive_eof_finalizes(self):
         self.start(interactive=True)
         wait_for(lambda: self.cli("status")["state"]["samples"] >= 30)
-        _, stderr = self.service.communicate("", timeout=15)
+        self.service.communicate("", timeout=15)
+        self.interactive_stderr.seek(0)
+        stderr = self.interactive_stderr.read()
         self.assertEqual(self.service.returncode, 0, stderr)
         self.assertTrue((self.run_dir/"data.parquet").is_file())
         self.assertTrue((self.run_dir/"data.csv").is_file())

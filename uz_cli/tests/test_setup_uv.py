@@ -40,4 +40,5 @@ class SetupOnlyTest(unittest.TestCase):
             installs = [cmd for cmd in commands if any('ultrazohm @' in str(arg) for arg in cmd)]
             self.assertEqual(len(installs), 1)
             self.assertNotIn('[examples]', installs[0][-1])
-            self.assertIn(str(scripts/('python.exe' if sys.platform == 'win32' else 'python')), installs[0])
+            expected_python = (scripts/('python.exe' if sys.platform == 'win32' else 'python')).resolve()
+            self.assertEqual(Path(installs[0][installs[0].index('--python') + 1]).resolve(), expected_python)

@@ -1,6 +1,6 @@
 //! Unified bounded queries over recent RAM, pending recording data, and a backend.
 use crate::{
-    backend::{Field, RecordingReader},
+    backend::{Field, RecordingReader, query_projection},
     live::{LiveBuffer, MAX_SNAPSHOT_BYTES, selected_columns},
     profile::Profile,
     protocol::Frame,
@@ -339,6 +339,7 @@ impl DataView {
     }
     pub fn read(&self, query: &Query) -> Result<(DataFrame, Cursor, u64, u64)> {
         let (start, stop) = self.bounds(&query.selection)?;
+        let projection = query_projection(&self.info.fields, query.channels.as_deref())?;
         let boundary = self
             .info
             .persisted_stop
@@ -346,33 +347,31 @@ impl DataView {
             .max(start)
             .min(stop);
         let slow = self.info.stream == Stream::Slow;
-        let mut data = if let Some(reader) = &self.reader {
-            if boundary > start {
-                reader.read_range(start, boundary)?
-            } else {
-                from_frames(&[], 0, 0, &self.profile, &self.columns, slow)?
-            }
-        } else {
-            from_frames(&[], 0, 0, &self.profile, &self.columns, slow)?
-        };
-        if boundary < stop {
-            data.vstack_mut(&from_frames(
+        let read_ram = |start, stop| -> Result<DataFrame> {
+            let data = from_frames(
                 &self.frames,
-                boundary,
+                start,
                 stop,
                 &self.profile,
                 &self.columns,
                 slow,
-            )?)?;
-        }
-        if let Some(channels) = &query.channels {
-            let mut names = vec!["time".to_string(), "status".to_string()];
-            for name in channels {
-                if !names.contains(name) {
-                    names.push(name.clone());
-                }
+            )?;
+            Ok(match &projection {
+                Some(names) => data.select(names.clone())?,
+                None => data,
+            })
+        };
+        let mut data = if let Some(reader) = &self.reader {
+            if boundary > start {
+                reader.read_projected_range(start, boundary, projection.as_deref())?
+            } else {
+                read_ram(start, start)?
             }
-            data = data.select(names)?;
+        } else {
+            read_ram(start, start)?
+        };
+        if boundary < stop {
+            data.vstack_mut(&read_ram(boundary, stop)?)?;
         }
         ensure!(
             data.height() as u64 == stop - start,

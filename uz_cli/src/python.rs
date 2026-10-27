@@ -64,16 +64,20 @@ fn recording_info(py: Python<'_>, path: String) -> PyResult<String> {
     })
 }
 #[pyfunction]
+#[pyo3(signature=(path, start, stop, channels=None))]
 fn recording_data(
     py: Python<'_>,
     path: String,
     start: u64,
     stop: u64,
+    channels: Option<Vec<String>>,
 ) -> PyResult<Bound<'_, PyBytes>> {
     let bytes = py.detach(move || -> PyResult<Vec<u8>> {
         use polars::prelude::*;
         let reader = crate::backend::open(std::path::Path::new(&path)).map_err(error)?;
         let info = reader.info().map_err(error)?;
+        let projection =
+            crate::backend::query_projection(&info.fields, channels.as_deref()).map_err(error)?;
         let per_row: usize = info
             .fields
             .iter()
@@ -90,7 +94,9 @@ fn recording_data(
                 "range is invalid or exceeds response limit; use iter_batches",
             ));
         }
-        let mut df = reader.read_range(start, stop).map_err(error)?;
+        let mut df = reader
+            .read_projected_range(start, stop, projection.as_deref())
+            .map_err(error)?;
         let mut bytes = Vec::new();
         IpcStreamWriter::new(&mut bytes)
             .finish(&mut df)
@@ -120,7 +126,7 @@ struct Acquisition {
 impl Acquisition {
     #[new]
     #[allow(clippy::too_many_arguments)] // Python keyword options plus the GIL token.
-    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="both".to_string(), ack=false, channel_mapping=None, *, buffer_samples=960, segment_rows=1_000_000, flush_interval_ms=60_000, recording_backend="parquet"))]
+    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="both".to_string(), ack=false, channel_mapping=None, *, buffer_samples=100_000, segment_rows=1_000_000, flush_interval_ms=60_000, recording_backend="parquet"))]
     fn new(
         py: Python<'_>,
         device: Option<String>,

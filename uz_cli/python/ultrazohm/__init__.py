@@ -49,10 +49,7 @@ class Recording:
         import polars as pl
         _position(start, "start")
         _position(stop, "stop")
-        df = pl.read_ipc_stream(BytesIO(_recording_data(self.path, start, stop)))
-        if channels is not None:
-            df = df.select(list(dict.fromkeys(["time", "status", *channels])))
-        return df
+        return pl.read_ipc_stream(BytesIO(_recording_data(self.path, start, stop, channels)))
 
     def iter_batches(self, batch_samples=10_000, *, channels=None):
         _position(batch_samples, "batch_samples", positive=True)

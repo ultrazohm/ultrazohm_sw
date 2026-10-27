@@ -580,8 +580,9 @@ Configure the service from the CLI with:
 ultrazohm serve --buffer-samples 100000 --segment-rows 50000 --flush-interval-ms 1000
 ```
 
-Defaults are 960 retained samples, a 1,000,000-row segment target, and a 60,000 ms
-flush interval. At a sustained 10 kHz this normally produces about one 600,000-row
+Defaults are 100,000 retained samples, a 1,000,000-row segment target, and a 60,000 ms
+flush interval. The live ring covers 10 seconds at 10 kHz or one second at
+100 kHz, independently of logging. At a sustained 10 kHz this normally produces about one 600,000-row
 chunk per minute (60 files per hour per stream), instead of thousands of small files.
 The row limit still bounds batches at higher rates. All values must be positive
 and are fixed for the service lifetime.
@@ -742,6 +743,14 @@ cursors, mismatched sources, unavailable ranges and unknown channels raise error
 Each network response is limited to 128 MiB; page large requests. The durable
 `Recording` reader reads only indexed data; use `Client` to include pending samples.
 
+Supplying `channels=[...]` pushes column selection into the Rust Polars Parquet
+reader for both `Client` and durable `Recording` queries. Only the requested
+signals plus `time`/`status` are decoded and transferred from disk-backed ranges.
+Channel order is preserved and duplicates are removed; `channels=[]` returns only
+`time`/`status`, while `None` returns the full schema. Pending RAM portions are
+projected to the same schema before concatenation. Parquet page/row-group layout
+still determines the amount of row data read for a requested slice.
+
 CLI equivalents print metadata and at most 20 preview rows:
 
 ```sh
@@ -786,13 +795,13 @@ The CI workflow builds/tests on Linux and Windows and builds the native Python
 wheel. Hardware validation, Windows runtime validation outside CI, and an ARM64
 hardware run are separate from local Linux simulator validation.
 
-### Local validation (2026-10-26)
+### Local validation (2026-10-27)
 
 - Release abi3 wheel built in the development container, installed with `run.sh`,
   and tested in its CPython 3.12 virtual environment.
-- 24 Rust tests cover codec/storage, range indexing, publication failure,
+- 26 Rust tests cover codec/storage, projected range reads, range indexing, publication failure,
   final exports, and injection of an alternate recording backend.
-- 70 Python tests cover simulator communication, RAM/pending/disk history,
+- 71 Python tests cover simulator communication, projected RAM/pending/disk history,
   cursor validation, independent recordings, completed handles, disk/export errors,
   CLI operations, and the existing build/mapping/release workflows.
 - Connected UltraZohm tests through the `run.sh` interactive CLI verified a

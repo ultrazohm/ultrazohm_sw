@@ -295,7 +295,7 @@ Python uses the native binary client rather than the JSON-only request helper.
 Snapshots preserve Float32 NaN/Inf and UInt32 status values.
 
 Service configuration is exposed in `status.data_options`: positive `buffer_samples`
-(default 960), `segment_rows` (1,000,000), and `flush_interval_ms` (60,000).
+(default 100,000), `segment_rows` (1,000,000), and `flush_interval_ms` (60,000).
 Logging flushes at the first of the row or elapsed-time thresholds and on stop.
 Each logger also has an independent bounded 2,048-frame queue; it is not configured
 by `buffer_samples`. Queue and write delays can extend the publication interval.

@@ -788,16 +788,25 @@ mod tests {
         fn info(&self) -> Result<backend::RecordingInfo> {
             Ok(self.0.lock().unwrap().0.clone())
         }
-        fn read_range(&self, start: u64, stop: u64) -> Result<DataFrame> {
+        fn read_projected_range(
+            &self,
+            start: u64,
+            stop: u64,
+            projection: Option<&[String]>,
+        ) -> Result<DataFrame> {
             let state = self.0.lock().unwrap();
             let first = state.0.start.unwrap_or(0);
             ensure!(
                 start >= first && start <= stop && stop <= state.0.stop.unwrap_or(0),
                 "unavailable memory range"
             );
-            Ok(state
+            let data = state
                 .1
-                .slice((start - first) as i64, (stop - start) as usize))
+                .slice((start - first) as i64, (stop - start) as usize);
+            Ok(match projection {
+                Some(names) => data.select(names.to_vec())?,
+                None => data,
+            })
         }
     }
     impl RecordingBackend for MemoryBackend {

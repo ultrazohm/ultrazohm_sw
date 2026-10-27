@@ -42,7 +42,7 @@ flowchart LR
     Service --> Metadata[Run metadata and command events]
 ```
 
-The reader owns receive framing and a bounded sample ring (960 samples by default).
+The reader owns receive framing and a bounded sample ring (100,000 samples by default).
 Snapshots clone only references to immutable frames while holding the ring lock, then build
 and serialize independent Arrow data after releasing it. Retention is configurable
 with `buffer_samples`; the physical ring may retain one partial extra frame.
@@ -170,7 +170,8 @@ binary are separate deliverables.
 
 `backend.rs` defines `SampleBatch` (absolute first sample plus a Polars DataFrame),
 `RecordingBackend` (append, reader, finish), and concurrent `RecordingReader`
-(info, range read). Only `ParquetBackend` is registered today. `LogWriter` converts
+(info, projected range read, and a full-schema `read_range` convenience method).
+Only `ParquetBackend` is registered today. `LogWriter` converts
 legacy frames into columns and exports complete Parquet/CSV through that interface;
 its injectable factory is tested with a second, in-memory backend. A future local
 or remote backend implements these traits without changing query callers.
@@ -181,6 +182,13 @@ not floating-point timestamp comparisons. `History` tracks accepted and committe
 positions. Queues, batching, pending views and live history reference the same
 immutable `Arc<Frame>` payload. Pending retention is bounded by the rounded batch
 limit plus queue headroom; it does not grow with recording length.
+
+Column projection travels through the recording-reader contract into Polars'
+`ParquetReader::with_columns`, alongside the row slice. Requested channel order,
+deduplication and mandatory time/status columns are resolved before disk I/O.
+Disk results and pending RAM are projected to the same schema before joining;
+durable Python reads also project before Arrow serialization. Read limits remain
+conservative, based on the full source schema to bound pending RAM construction.
 
 Every recording has an atomically published `*.recording.json` backend/schema/range
 index and immutable Parquet parts. Publication advances only after the chunk and

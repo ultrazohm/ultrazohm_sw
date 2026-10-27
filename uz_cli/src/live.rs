@@ -15,7 +15,7 @@ pub struct DataOptions {
     #[arg(long, value_enum, default_value = "parquet")]
     pub recording_backend: crate::backend::BackendKind,
     /// Recent sample history retained in RAM, independent of logging.
-    #[arg(long, default_value_t = 960)]
+    #[arg(long, default_value_t = 100_000)]
     pub buffer_samples: usize,
     /// Target rows per Parquet segment (rounded up to a complete frame).
     #[arg(long, default_value_t = 1_000_000)]
@@ -29,7 +29,7 @@ impl Default for DataOptions {
     fn default() -> Self {
         Self {
             recording_backend: Default::default(),
-            buffer_samples: 960,
+            buffer_samples: 100_000,
             segment_rows: 1_000_000,
             flush_interval_ms: 60_000,
         }

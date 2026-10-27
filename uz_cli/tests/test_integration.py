@@ -207,7 +207,7 @@ class IntegrationTest(unittest.TestCase):
     def test_live_snapshot_without_logging_and_cli_preview(self):
         from ultrazohm import Client
         import polars as pl
-        self.start(logging=False)
+        self.start(logging=False, data_options=("--buffer-samples", "960"))
         client = Client(self.endpoint)
         wait_for(lambda: client.status()["buffer_available_samples"] == 960)
         first = client.get_live_data(953)  # Exercise non-frame-aligned reads and >64 KiB responses.
@@ -324,7 +324,7 @@ class IntegrationTest(unittest.TestCase):
         import polars as pl
         self.start(logging=False, format="parquet", data_options=())
         self.assertEqual(self.cli("status")["data_options"],
-                         {"recording_backend": "parquet", "buffer_samples": 960, "segment_rows": 1_000_000, "flush_interval_ms": 60_000})
+                         {"recording_backend": "parquet", "buffer_samples": 100_000, "segment_rows": 1_000_000, "flush_interval_ms": 60_000})
         before = self.cli("status")["state"]["samples"]
         self.cli("start-logging")
         wait_for(lambda: self.cli("status")["state"]["samples"] >= before + 1500)
@@ -354,7 +354,7 @@ class IntegrationTest(unittest.TestCase):
         a = Acquisition(endpoint=self.endpoint, output=str(Path(self.tmp.name)/"offline-snapshot"))
         try:
             self.assertEqual(Client(self.endpoint).status()["data_options"],
-                             {"recording_backend": "parquet", "buffer_samples": 960, "segment_rows": 1_000_000, "flush_interval_ms": 60_000})
+                             {"recording_backend": "parquet", "buffer_samples": 100_000, "segment_rows": 1_000_000, "flush_interval_ms": 60_000})
             with self.assertRaisesRegex(RuntimeError, "not connected"):
                 Client(self.endpoint).get_live_data(1)
         finally:
@@ -476,6 +476,51 @@ class IntegrationTest(unittest.TestCase):
         self.assertEqual(result.returncode,0,result.stderr)
         self.assertIn("cursor",json.loads(result.stdout.splitlines()[0]))
         self.assertIn("10 rows",result.stdout)
+
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install wheel for projection tests")
+    def test_projection_across_disk_pending_ram_and_completed_handles(self):
+        from ultrazohm import Client, Recording
+        self.start(logging=False, format="parquet", data_options=(
+            "--buffer-samples", "17", "--segment-rows", "300", "--flush-interval-ms", "60000"))
+        client=Client(self.endpoint)
+        client.start_logging()
+        client.start_logging_slow_data()
+        info=wait_for(lambda: (i if (i:=client.data_info(recording=1))["persisted_stop"] is not None
+                              and i["stop"]-i["persisted_stop"]>=60 else None))
+        lo,hi=info["persisted_stop"]-13,info["stop"]
+        full=client.read_range(lo,hi,recording=1)
+        channels=["JSO_lifecheck","JSO_ISR_ExecTime_us","JSO_lifecheck","time"]
+        names=["time","status","JSO_lifecheck","JSO_ISR_ExecTime_us"]
+        self.assertTrue(client.read_range(lo,hi,recording=1,channels=channels).equals(full.select(names)))
+        self.assertTrue(client.read_range(lo,hi,recording=1,channels=[]).equals(full.select("time","status")))
+        self.assertEqual(client.read_range(lo,lo,recording=1,channels=channels).schema,full.select(names).schema)
+        page=client.read_since(recording=1,limit=31,channels=channels)
+        self.assertEqual(page.data.columns,names)
+        self.assertEqual(client.read_since(page.cursor,limit=31,channels=channels).start,page.stop)
+        self.assertEqual(client.tail(1,channels=channels).columns,names)
+        slow_info=wait_for(lambda:(i if (i:=client.data_info(stream="slow",recording=1))["persisted_stop"] is not None
+                                   and i["stop"]-i["persisted_stop"]>=30 else None))
+        slow_lo,slow_hi=slow_info["persisted_stop"]-7,slow_info["stop"]
+        slow_full=client.read_range(slow_lo,slow_hi,stream="slow",recording=1)
+        slow_names=["time","status","slow_value","observable","slow_id"]
+        self.assertTrue(client.read_range(slow_lo,slow_hi,stream="slow",recording=1,
+                                         channels=slow_names[2:]).equals(slow_full.select(slow_names)))
+        client.stop_logging()
+        client.stop_logging_slow_data()
+        wait_for(lambda:all(client.status()["logging"][s]["phase"]=="complete" for s in ("fast","slow")))
+        handles={s:Recording(client.status()["logging"][s]["handle"]) for s in ("fast","slow")}
+        self.assertTrue(handles["fast"].read_range(lo,hi,channels=channels).equals(full.select(names)))
+        self.assertTrue(handles["slow"].read_range(slow_lo,slow_hi,channels=slow_names[2:]).equals(slow_full.select(slow_names)))
+        projected=handles["fast"].read(channels=["JSO_lifecheck"])
+        self.assertTrue(projected.equals(handles["fast"].read().select("time","status","JSO_lifecheck")))
+        for read in (lambda:client.read_range(lo,lo,recording=1,channels=["missing"]),
+                     lambda:handles["fast"].read_range(lo,lo,channels=["missing"])):
+            with self.assertRaisesRegex(RuntimeError,"unknown recording column"):
+                read()
+        result=subprocess.run([str(BIN),"--endpoint",self.endpoint,"read-range",str(lo),str(hi),
+                               "--recording","1","--channels","JSO_lifecheck"],capture_output=True,text=True,timeout=8)
+        self.assertEqual(result.returncode,0,result.stderr)
+        self.assertIn("3 columns",result.stdout)
 
     def test_offline_retry_connect_and_log(self):
         self.run_dir=Path(self.tmp.name)/'offline'

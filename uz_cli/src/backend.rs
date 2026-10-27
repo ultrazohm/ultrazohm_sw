@@ -36,8 +36,30 @@ pub struct RecordingInfo {
 }
 impl RecordingInfo {
     pub fn empty(&self) -> Result<DataFrame> {
+        self.empty_projected(None)
+    }
+
+    pub fn empty_projected(&self, projection: Option<&[String]>) -> Result<DataFrame> {
         let mut columns = Vec::new();
-        for field in &self.fields {
+        let fields = match projection {
+            None => self.fields.iter().collect::<Vec<_>>(),
+            Some(names) => {
+                ensure!(
+                    !names.is_empty(),
+                    "projection must select at least one column"
+                );
+                names
+                    .iter()
+                    .map(|name| {
+                        self.fields
+                            .iter()
+                            .find(|f| f.name == *name)
+                            .with_context(|| format!("unknown recording column {name}"))
+                    })
+                    .collect::<Result<Vec<_>>>()?
+            }
+        };
+        for field in fields {
             let dtype = match field.dtype.as_str() {
                 "f32" => DataType::Float32,
                 "f64" => DataType::Float64,
@@ -51,6 +73,30 @@ impl RecordingInfo {
     }
 }
 
+/// Public queries always retain time/status and preserve requested channel order.
+pub fn query_projection(
+    fields: &[Field],
+    channels: Option<&[String]>,
+) -> Result<Option<Vec<String>>> {
+    channels
+        .map(|channels| {
+            let mut names = vec!["time".to_owned(), "status".to_owned()];
+            for name in channels {
+                if !names.contains(name) {
+                    names.push(name.clone());
+                }
+            }
+            for name in &names {
+                ensure!(
+                    fields.iter().any(|f| f.name == *name),
+                    "unknown recording column {name}"
+                );
+            }
+            Ok(names)
+        })
+        .transpose()
+}
+
 pub struct SampleBatch {
     pub start: u64,
     pub data: DataFrame,
@@ -59,7 +105,16 @@ pub struct SampleBatch {
 /// Readers may run concurrently with appends/finalization. Published data is immutable.
 pub trait RecordingReader: Send + Sync {
     fn info(&self) -> Result<RecordingInfo>;
-    fn read_range(&self, start: u64, stop: u64) -> Result<DataFrame>;
+    fn read_range(&self, start: u64, stop: u64) -> Result<DataFrame> {
+        self.read_projected_range(start, stop, None)
+    }
+    /// Read exactly these columns in this order; None requests the complete schema.
+    fn read_projected_range(
+        &self,
+        start: u64,
+        stop: u64,
+        projection: Option<&[String]>,
+    ) -> Result<DataFrame>;
 }
 pub trait RecordingBackend: Send {
     /// Return only after this batch and its index have been published successfully.
@@ -228,9 +283,14 @@ impl RecordingReader for ParquetReaderHandle {
     fn info(&self) -> Result<RecordingInfo> {
         Ok(self.index.lock().unwrap().info.clone())
     }
-    fn read_range(&self, start: u64, stop: u64) -> Result<DataFrame> {
+    fn read_projected_range(
+        &self,
+        start: u64,
+        stop: u64,
+        projection: Option<&[String]>,
+    ) -> Result<DataFrame> {
         let index = self.index.lock().unwrap().clone();
-        let mut result = index.info.empty()?;
+        let mut result = index.info.empty_projected(projection)?;
         let first = index.info.start.unwrap_or(0);
         let end = index.info.stop.unwrap_or(0);
         ensure!(
@@ -249,6 +309,7 @@ impl RecordingReader for ParquetReaderHandle {
             let hi = stop.min(segment.stop);
             ensure!(lo == next, "recording index contains a gap");
             let df = ParquetReader::new(File::open(self.dir.join(&segment.file))?)
+                .with_columns(projection.map(|names| names.to_vec()))
                 .with_slice(Some(((lo - segment.start) as usize, (hi - lo) as usize)))
                 .finish()?;
             ensure!(
@@ -385,6 +446,100 @@ mod tests {
         assert!(open(&path).is_err());
         assert!(
             ParquetBackend::create(&run.0, "../outside", false, 100., &batch(0, 0)?.data).is_err()
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn projected_ranges_preserve_order_schema_and_segment_boundaries() -> Result<()> {
+        let run = Run::new();
+        let make_batch = |start: u64, rows: usize| -> Result<SampleBatch> {
+            Ok(SampleBatch {
+                start,
+                data: DataFrame::new(vec![
+                    Column::new(
+                        "time".into(),
+                        (start..start + rows as u64)
+                            .map(|i| i as f64)
+                            .collect::<Vec<_>>(),
+                    ),
+                    Column::new("status".into(), vec![u32::MAX; rows]),
+                    Column::new(
+                        "first".into(),
+                        (start..start + rows as u64)
+                            .map(|i| i as f32)
+                            .collect::<Vec<_>>(),
+                    ),
+                    Column::new("second".into(), vec![f32::NAN; rows]),
+                ])?,
+            })
+        };
+        let mut backend =
+            ParquetBackend::create(&run.0, "data", false, 100., &make_batch(0, 0)?.data)?;
+        backend.append(make_batch(100, 15)?)?;
+        backend.append(make_batch(115, 15)?)?;
+        let reader = backend.reader();
+        for channels in [
+            vec!["second".into(), "first".into(), "second".into()],
+            Vec::new(),
+        ] {
+            let names = query_projection(&reader.info()?.fields, Some(&channels))?.unwrap();
+            let projected = reader.read_projected_range(103, 127, Some(&names))?;
+            let expected = reader.read_range(103, 127)?.select(names.clone())?;
+            assert!(projected.equals_missing(&expected));
+            assert_eq!(
+                reader
+                    .read_projected_range(115, 115, Some(&names))?
+                    .schema(),
+                projected.schema()
+            );
+            backend.finish()?;
+            assert!(
+                open(&index_path(&run.0, "data"))?
+                    .read_projected_range(103, 127, Some(&names))?
+                    .equals_missing(&expected)
+            );
+        }
+        assert!(query_projection(&reader.info()?.fields, Some(&["missing".into()])).is_err());
+        assert!(
+            reader
+                .read_projected_range(100, 100, Some(&["missing".into()]))
+                .is_err()
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn projection_skips_unrequested_column_pages() -> Result<()> {
+        use std::io::{Seek, SeekFrom, Write};
+        let run = Run::new();
+        let mut data = batch(0, 10000)?.data;
+        data.with_column(Column::new(
+            "ignored".into(),
+            (0..10000u32)
+                .map(|i| i.wrapping_mul(1664525).wrapping_add(1013904223) as f32)
+                .collect::<Vec<_>>(),
+        ))?;
+        let mut backend = ParquetBackend::create(&run.0, "data", false, 100., &data.clear())?;
+        backend.append(SampleBatch { start: 0, data })?;
+        let path = run.0.join("data-part-00000000.parquet");
+        let mut parquet = ParquetReader::new(File::open(&path)?);
+        let metadata = parquet.get_metadata()?.clone();
+        let bytes = metadata.row_groups[0].parquet_columns()[1].byte_range();
+        drop(parquet);
+        // Leave the page header intact and damage only the excluded column body.
+        assert!(bytes.end - bytes.start > 128);
+        let mut file = std::fs::OpenOptions::new().write(true).open(path)?;
+        file.seek(SeekFrom::Start(bytes.start + 64))?;
+        file.write_all(&vec![0xff; (bytes.end - bytes.start - 64) as usize])?;
+        file.sync_all()?;
+        drop(file);
+        let reader = backend.reader();
+        let projected = reader.read_projected_range(10, 30, Some(&["signal".into()]))?;
+        assert!(projected.equals_missing(&batch(10, 20)?.data));
+        assert!(
+            reader.read_range(10, 30).is_err(),
+            "full decoding must encounter the damaged column"
         );
         Ok(())
     }

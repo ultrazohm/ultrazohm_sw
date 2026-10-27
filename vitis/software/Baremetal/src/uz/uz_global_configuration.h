@@ -29,7 +29,7 @@
 */
 #define INTERRUPT_ISR_SOURCE_USER_CHOICE         1U
 
-#define INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY  0U // 0: ISR triggers on selected PWM event. 1: ISR triggers on axi2tcm_write_done (ADC data in TCM). See r5_interrupts in docs.
+#define INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY  1U // 0: ISR triggers on selected PWM event. 1: ISR triggers on axi2tcm_write_done (ADC data in TCM). See r5_interrupts in docs.
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE   1U  // Trigger the ADC at every PWM event, but trigger ISR_Control only every N-th interrupt event
 #define ADC_TRIGGER_DELAY_IN_US                  0.01f // ADC trigger delay in us; applies in both ISR trigger modes. 10ns delay to keep default behavior. See uz_mux_axi in docs.
 
@@ -40,17 +40,17 @@
 // Configuration defines for the number of used instances
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
 #define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES            1U
-#define UZ_WAVEGEN_SINE_MAX_INSTANCES                     8U
+#define UZ_WAVEGEN_SINE_MAX_INSTANCES                     0U
 #define UZ_WAVEGEN_SAWTOOTH_MAX_INSTANCES                 0U
 #define UZ_WAVEGEN_PULSE_MAX_INSTANCES                    0U
 #define UZ_WAVEGEN_SQUARE_MAX_INSTANCES                   0U
 #define UZ_WAVEGEN_TRIANGLE_MAX_INSTANCES                 0U
 #define UZ_MYIP2_MAX_INSTANCES                          0U
-#define UZ_ADCLTC2311_MAX_INSTANCES                       1U
-#define UZ_ADCMAX11331_MAX_INSTANCES                      1U
+#define UZ_ADCLTC2311_MAX_INSTANCES                       3U
+#define UZ_ADCMAX11331_MAX_INSTANCES                      0U
 #define UZ_PI_CONTROLLER_MAX_INSTANCES                  3U
 #define UZ_CURRENTCONTROL_MAX_INSTANCES                 2U
-#define UZ_INCREMENTALENCODER_MAX_INSTANCES               1U
+#define UZ_INCREMENTALENCODER_MAX_INSTANCES               3U
 #define UZ_PWM_SS_2L_MAX_INSTANCES                        4U
 #define UZ_NN_LAYER_MAX_INSTANCES                       0U
 #define UZ_NN_MAX_INSTANCES                             0U
@@ -61,7 +61,7 @@
 #define UZ_IIR_FILTER_MAX_INSTANCES                     1U
 #define UZ_RAMP_MAX_INSTANCES                           1U
 #define UZ_PARAMETERID_MAX_INSTANCES					1U
-#define UZ_DAC_INTERFACE_MAX_INSTANCES                    1U
+#define UZ_DAC_INTERFACE_MAX_INSTANCES                    0U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
 #define UZ_PMSM6PH_TRANSFORMATION_MAX_INSTANCES         0U
 #define UZ_PMSM9PH_TRANSFORMATION_MAX_INSTANCES         0U

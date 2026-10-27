@@ -82,32 +82,43 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ADC_A1_CH5] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch5;
 	js_ch_observable[JSO_ADC_A1_CH6] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch6;
 	js_ch_observable[JSO_ADC_A1_CH7] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch7;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH0] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch0;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH1] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch1;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH2] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch2;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH3] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch3;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH4] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch4;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH5] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch5;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH6] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch6;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH7] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch7;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH8] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch8;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH9] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch9;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH10] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch10;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH11] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch11;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH12] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch12;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH13] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch13;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH14] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch14;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH15] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch15;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH16] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch16;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH17] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch17;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH18] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch18;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH19] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch19;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH20] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch20;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH21] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch21;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH22] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch22;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH23] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch23;
+	js_ch_observable[JSO_ADC_A2_CH0] = &project_wizard_visualization_data.viz_adc_ltc2311_a2_ch0;
+	js_ch_observable[JSO_ADC_A2_CH1] = &project_wizard_visualization_data.viz_adc_ltc2311_a2_ch1;
+	js_ch_observable[JSO_ADC_A2_CH2] = &project_wizard_visualization_data.viz_adc_ltc2311_a2_ch2;
+	js_ch_observable[JSO_ADC_A2_CH3] = &project_wizard_visualization_data.viz_adc_ltc2311_a2_ch3;
+	js_ch_observable[JSO_ADC_A2_CH4] = &project_wizard_visualization_data.viz_adc_ltc2311_a2_ch4;
+	js_ch_observable[JSO_ADC_A2_CH5] = &project_wizard_visualization_data.viz_adc_ltc2311_a2_ch5;
+	js_ch_observable[JSO_ADC_A2_CH6] = &project_wizard_visualization_data.viz_adc_ltc2311_a2_ch6;
+	js_ch_observable[JSO_ADC_A2_CH7] = &project_wizard_visualization_data.viz_adc_ltc2311_a2_ch7;
+	js_ch_observable[JSO_ADC_A3_CH0] = &project_wizard_visualization_data.viz_adc_ltc2311_a3_ch0;
+	js_ch_observable[JSO_ADC_A3_CH1] = &project_wizard_visualization_data.viz_adc_ltc2311_a3_ch1;
+	js_ch_observable[JSO_ADC_A3_CH2] = &project_wizard_visualization_data.viz_adc_ltc2311_a3_ch2;
+	js_ch_observable[JSO_ADC_A3_CH3] = &project_wizard_visualization_data.viz_adc_ltc2311_a3_ch3;
+	js_ch_observable[JSO_ADC_A3_CH4] = &project_wizard_visualization_data.viz_adc_ltc2311_a3_ch4;
+	js_ch_observable[JSO_ADC_A3_CH5] = &project_wizard_visualization_data.viz_adc_ltc2311_a3_ch5;
+	js_ch_observable[JSO_ADC_A3_CH6] = &project_wizard_visualization_data.viz_adc_ltc2311_a3_ch6;
+	js_ch_observable[JSO_ADC_A3_CH7] = &project_wizard_visualization_data.viz_adc_ltc2311_a3_ch7;
+	js_ch_observable[JSO_IO_CARD_D2_PIN_16] = &project_wizard_visualization_data.viz_io_card_d2_pin_16;
+	js_ch_observable[JSO_IO_CARD_D2_PIN_17] = &project_wizard_visualization_data.viz_io_card_d2_pin_17;
+	js_ch_observable[JSO_IO_CARD_D2_PIN_18] = &project_wizard_visualization_data.viz_io_card_d2_pin_18;
+	js_ch_observable[JSO_IO_CARD_D2_PIN_19] = &project_wizard_visualization_data.viz_io_card_d2_pin_19;
+	js_ch_observable[JSO_IO_CARD_D2_PIN_20] = &project_wizard_visualization_data.viz_io_card_d2_pin_20;
+	js_ch_observable[JSO_IO_CARD_D2_PIN_21] = &project_wizard_visualization_data.viz_io_card_d2_pin_21;
+	js_ch_observable[JSO_IO_CARD_D2_PIN_22] = &project_wizard_visualization_data.viz_io_card_d2_pin_22;
+	js_ch_observable[JSO_IO_CARD_D2_PIN_23] = &project_wizard_visualization_data.viz_io_card_d2_pin_23;
+	js_ch_observable[JSO_IO_CARD_D2_PIN_24] = &project_wizard_visualization_data.viz_io_card_d2_pin_24;
+	js_ch_observable[JSO_IO_CARD_D2_PIN_25] = &project_wizard_visualization_data.viz_io_card_d2_pin_25;
+	js_ch_observable[JSO_IO_CARD_D2_PIN_26] = &project_wizard_visualization_data.viz_io_card_d2_pin_26;
+	js_ch_observable[JSO_IO_CARD_D2_PIN_27] = &project_wizard_visualization_data.viz_io_card_d2_pin_27;
+	js_ch_observable[JSO_IO_CARD_D2_PIN_28] = &project_wizard_visualization_data.viz_io_card_d2_pin_28;
+	js_ch_observable[JSO_IO_CARD_D2_PIN_29] = &project_wizard_visualization_data.viz_io_card_d2_pin_29;
+	js_ch_observable[JSO_INCREMENTAL_ENCODER_D5_CH1_THETA_EL] = &project_wizard_visualization_data.viz_incremental_encoder_d5_1_theta_el;
+	js_ch_observable[JSO_INCREMENTAL_ENCODER_D5_CH1_OMEGA_MECH] = &project_wizard_visualization_data.viz_incremental_encoder_d5_1_omega_mech;
+	js_ch_observable[JSO_INCREMENTAL_ENCODER_D5_CH2_THETA_EL] = &project_wizard_visualization_data.viz_incremental_encoder_d5_2_theta_el;
+	js_ch_observable[JSO_INCREMENTAL_ENCODER_D5_CH2_OMEGA_MECH] = &project_wizard_visualization_data.viz_incremental_encoder_d5_2_omega_mech;
+	js_ch_observable[JSO_INCREMENTAL_ENCODER_D5_CH3_THETA_EL] = &project_wizard_visualization_data.viz_incremental_encoder_d5_3_theta_el;
+	js_ch_observable[JSO_INCREMENTAL_ENCODER_D5_CH3_OMEGA_MECH] = &project_wizard_visualization_data.viz_incremental_encoder_d5_3_omega_mech;
 /* Project Wizard END: javascope_observable_pointers */
-	js_ch_observable[JSO_D3_INPUT_LOOPBACK_UINT32] = &data->av.d3_input_loopback_uint32;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -118,6 +129,17 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 /* Project Wizard BEGIN: javascope_slowdata_pointers */
+	js_slowDataArray[JSSD_FLOAT_ADC_A1_CH0] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch0;
+	js_slowDataArray[JSSD_FLOAT_ADC_A1_CH1] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch1;
+	js_slowDataArray[JSSD_FLOAT_ADC_A1_CH2] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch2;
+	js_slowDataArray[JSSD_FLOAT_ADC_A1_CH3] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch3;
+	js_slowDataArray[JSSD_FLOAT_ADC_A1_CH4] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch4;
+	js_slowDataArray[JSSD_FLOAT_ADC_A1_CH5] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch5;
+	js_slowDataArray[JSSD_FLOAT_ADC_A1_CH6] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch6;
+	js_slowDataArray[JSSD_FLOAT_ADC_A1_CH7] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch7;
+	js_slowDataArray[JSSD_FLOAT_INCREMENTAL_ENCODER_D5_CH1_THETA_EL] = &project_wizard_visualization_data.viz_incremental_encoder_d5_1_theta_el;
+	js_slowDataArray[JSSD_FLOAT_INCREMENTAL_ENCODER_D5_CH2_THETA_EL] = &project_wizard_visualization_data.viz_incremental_encoder_d5_2_theta_el;
+	js_slowDataArray[JSSD_FLOAT_INCREMENTAL_ENCODER_D5_CH3_THETA_EL] = &project_wizard_visualization_data.viz_incremental_encoder_d5_3_theta_el;
 /* Project Wizard END: javascope_slowdata_pointers */
 
 	return Status;

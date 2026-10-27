@@ -2,10 +2,9 @@
 
 /* Project Wizard BEGIN: A3 includes */
 /* Project Wizard generated content for A3 */
-#include "../IP_Cores/uz_adcMax11331/uz_adcMax11331.h"
+#include "../IP_Cores/uz_adcLtc2311/uz_adcLtc2311.h"
 /* Project Wizard END: A3 includes */
 
 /* Project Wizard BEGIN: A3 prototypes */
-uz_adcMax11331_t* initialize_adc_max11331_a3(void);
-float convert_adc_max11331_a3_raw_to_physical_value(int16_t raw_value);
+uz_adcLtc2311_t* initialize_adc_ltc2311_a3(void);
 /* Project Wizard END: A3 prototypes */

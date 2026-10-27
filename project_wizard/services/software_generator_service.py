@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 from ..models import ResolvedAnalogDataMover, ResolvedSystemModel, VisualizationSignal
@@ -54,7 +55,7 @@ from .software_digital import (
     serial_encoder_context,
     ssi_main_init,
 )
-from .software_patcher import apply_software_plan, hardware_revision_define_value
+from .software_patcher import apply_software_plan, hardware_revision_define_value, user_named_block_markers
 from .software_pwm import (
     build_project_wizard_pwm_context,
     deadtime_2l_config_fields,
@@ -538,6 +539,7 @@ class SoftwareGenerator:
                     isr_user_blocks_by_slot[slot].extend(
                         axi_gpio_isr_user_block(str(context["slot_lower"]), output_pins)
                     )
+                    warnings.extend(self._axi_gpio_user_output_block_warnings(source_dir, slot, output_pins))
                     available_visualization_signals.extend(
                         io_card_visualization_signals(str(context["slot_lower"]), card, slot_options)
                     )
@@ -665,6 +667,36 @@ class SoftwareGenerator:
             },
             warnings=warnings,
         )
+
+    def _axi_gpio_user_output_block_warnings(
+        self,
+        source_dir: Path,
+        slot: str,
+        configured_output_pins: list[int],
+    ) -> list[str]:
+        if not configured_output_pins:
+            return []
+        isr_path = source_dir / "sw" / "isr.c"
+        if not isr_path.exists():
+            return []
+        text = isr_path.read_text(encoding="utf-8")
+        begin, end = user_named_block_markers(slot, "axi_gpio_outputs")
+        block_pattern = re.compile(rf"{re.escape(begin)}(?P<body>.*?){re.escape(end)}", re.DOTALL)
+        match = block_pattern.search(text)
+        if not match:
+            return []
+        existing_pins = sorted({int(pin) for pin in re.findall(r"\bDIG_(\d{2})\b", match.group("body"))})
+        expected_pins = sorted(configured_output_pins)
+        if existing_pins == expected_pins:
+            return []
+        expected = ", ".join(f"DIG_{pin:02d}" for pin in expected_pins)
+        existing = ", ".join(f"DIG_{pin:02d}" for pin in existing_pins) or "none"
+        return [
+            f"{slot}: AXI GPIO output pin selection changed, but the existing USER-owned output block is preserved. "
+            f"Configured output pins: {expected}. Pins currently written in sw/isr.c: {existing}. "
+            f"Update the {slot} axi_gpio_outputs USER block manually or delete that USER block and regenerate software "
+            "to recreate the default for the current pin selection."
+        ]
 
     def build_plan(self, model: ResolvedSystemModel, resolve_base_addresses: bool = True) -> SoftwarePlan:
         legacy_values = model.config.legacy_generator_values()

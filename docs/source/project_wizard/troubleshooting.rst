@@ -64,6 +64,21 @@ Fix:
 * use preserved user blocks where provided;
 * if a generated section needs permanent customization, add a wizard option or template change.
 
+AXI GPIO Output Pins Changed But Software Still Writes The Old Pins
+-------------------------------------------------------------------
+
+AXI GPIO output helper functions in ``sw/isr.c`` are placed in explicit Project Wizard user blocks, for example
+``D1 axi_gpio_outputs``. These blocks are preserved during software regeneration so user code is not overwritten.
+If the AXI GPIO output pin selection is changed later, the wizard updates the normal generated integration code but keeps
+the existing user-owned output function unchanged.
+
+Fix:
+
+* inspect the software generation warning;
+* update the affected ``axi_gpio_outputs`` user block manually; or
+* delete the affected user block and regenerate software to let the wizard recreate the default output helper for the
+  current pin selection.
+
 Bypass Did Not Clean A Slot
 ---------------------------
 

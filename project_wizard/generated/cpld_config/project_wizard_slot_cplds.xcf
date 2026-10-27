@@ -20,7 +20,7 @@
 				<BScanVal>0</BScanVal>
 			</Bypass>
 			<File>C:/GIT/UltraZohm/software/cpld_lattice/MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/Voltage_3v3_5v/voltage_8tx_8tx_8tx_6tx/uz_d_slots_voltage_8tx_8tx_8tx_6tx.jed</File>
-			<FileTime>07/21/26 09:52:28</FileTime>
+			<FileTime>09/24/26 14:08:50</FileTime>
 			<JedecChecksum>0xB49B</JedecChecksum>
 			<Operation>FLASH Erase,Program,Verify</Operation>
 			<Option>
@@ -50,7 +50,7 @@
 				<BScanVal>0</BScanVal>
 			</Bypass>
 			<File>C:/GIT/UltraZohm/software/cpld_lattice/MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/Voltage_3v3_5v/voltage_8tx_8tx_8rx_6rx/uz_d_slots_voltage_8tx_8tx_8rx_6rx.jed</File>
-			<FileTime>07/21/26 09:52:28</FileTime>
+			<FileTime>09/24/26 14:08:50</FileTime>
 			<JedecChecksum>0x661B</JedecChecksum>
 			<Operation>FLASH Erase,Program,Verify</Operation>
 			<Option>
@@ -80,7 +80,7 @@
 				<BScanVal>0</BScanVal>
 			</Bypass>
 			<File>C:/GIT/UltraZohm/software/cpld_lattice/MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/template_dslots/uz_d_slots_template_dslots.jed</File>
-			<FileTime>07/21/26 09:52:28</FileTime>
+			<FileTime>09/24/26 14:08:50</FileTime>
 			<JedecChecksum>0xD6B6</JedecChecksum>
 			<Operation>FLASH Erase,Program,Verify</Operation>
 			<Option>
@@ -110,7 +110,7 @@
 				<BScanVal>0</BScanVal>
 			</Bypass>
 			<File>C:/GIT/UltraZohm/software/cpld_lattice/MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/template_dslots/uz_d_slots_template_dslots.jed</File>
-			<FileTime>07/21/26 09:52:28</FileTime>
+			<FileTime>09/24/26 14:08:50</FileTime>
 			<JedecChecksum>0xD6B6</JedecChecksum>
 			<Operation>FLASH Erase,Program,Verify</Operation>
 			<Option>
@@ -140,7 +140,7 @@
 				<BScanVal>0</BScanVal>
 			</Bypass>
 			<File>C:/GIT/UltraZohm/software/cpld_lattice/MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/rx30/uz_d_slots_rx30.jed</File>
-			<FileTime>07/21/26 09:52:28</FileTime>
+			<FileTime>09/24/26 14:08:50</FileTime>
 			<JedecChecksum>0x268F</JedecChecksum>
 			<Operation>FLASH Erase,Program,Verify</Operation>
 			<Option>

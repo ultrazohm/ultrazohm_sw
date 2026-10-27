@@ -1,4 +1,5 @@
 *.csv
+*.parquet
 *.mat
 dist/
 nbproject/private/

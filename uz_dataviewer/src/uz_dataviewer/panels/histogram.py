@@ -10,7 +10,7 @@ from __future__ import annotations
 import numpy as np
 from imgui_bundle import imgui, implot
 
-from ..downsample import visible_slice
+from ..analysis import AnalysisInput, HistogramRequest
 from ..state import AppState
 from .analysis import AnalysisPanel
 
@@ -23,8 +23,8 @@ class HistogramPanel(AnalysisPanel):
 
     def __init__(self) -> None:
         super().__init__()
-        # (label, bin_centers, counts, bar_width) -- binned once at compute time.
-        self._results: list[tuple[str, np.ndarray, np.ndarray, float]] = []
+        # (signal reference, bin_centers, counts, bar_width) -- binned once at compute time.
+        self._results: list[tuple[tuple[int, str], np.ndarray, np.ndarray, float]] = []
 
     def config(self, state: AppState):
         return state.histogram
@@ -40,64 +40,13 @@ class HistogramPanel(AnalysisPanel):
             self._emit(state, "hist_bins", max(1, n))
         imgui.same_line()
 
-    def _compute(self, state: AppState, cfg, x_min: float, x_max: float) -> None:
-        bins = max(1, cfg.bins)
-        # Collect the in-window slices first, then bin them all on a *shared* range so
-        # the bars align across signals (and match the CSV from session.export_histogram,
-        # which uses the same shared edges). Per-signal auto-range gave each signal a
-        # different width/centre set -> overlapping, misaligned bars.
-        slices: list[tuple[str, np.ndarray]] = []
-        lo = hi = None
-        dropped = 0
-        for ref in cfg.sources:
-            run = state.registry.get(ref[0])
-            signal = state.registry.get_signal(ref[0], ref[1])
-            if run is None or signal is None:
-                continue
-            start, stop = visible_slice(run.time, x_min, x_max)
-            values = signal.y[start:stop]
-            # Drop non-finite samples: a single NaN/Inf otherwise makes min/max -> NaN,
-            # so np.linspace produces NaN edges and every bin is meaningless. The
-            # .all() fast-path keeps the common (clean) case copy-free.
-            finite = np.isfinite(values)
-            if not finite.all():
-                kept = values[finite]
-                dropped += int(values.size - kept.size)
-                values = kept
-            if values.size == 0:
-                continue
-            slices.append((state.signal_label(ref), values))
-            vlo, vhi = float(values.min()), float(values.max())
-            lo = vlo if lo is None else min(lo, vlo)
-            hi = vhi if hi is None else max(hi, vhi)
-        results = []
-        total = 0
-        if slices:
-            if hi <= lo:
-                hi = lo + 1.0
-            # Shared edges: np.histogram accepts float32 directly (edges are float64
-            # regardless), so no full-array float64 upcast of up to tens of millions
-            # of samples. Bin once here (not every frame); plotting bars is O(bins).
-            edges = np.linspace(lo, hi, bins + 1)
-            centers = (edges[:-1] + edges[1:]) / 2.0  # shared across signals
-            width = float(edges[1] - edges[0])
-            for label, values in slices:
-                counts, _ = np.histogram(values, bins=edges)
-                results.append((label, centers, counts.astype(np.float64), width))
-                total += int(values.size)
-        self._results = results
-        if results:
-            note = f", {dropped:,} non-finite skipped" if dropped else ""
-            self._info = (
-                f"{len(results)} signal(s), {total:,} samples{note}, "
-                f"window [{x_min:.4f}, {x_max:.4f}] s"
-            )
-        else:
-            self._info = "Drag signals here to histogram them."
+    def _make_request(self, state: AppState, cfg, x_min: float, x_max: float) -> HistogramRequest:
+        return HistogramRequest(AnalysisInput.capture(state.registry, cfg.sources),
+                          (x_min, x_max), cfg.bins)
 
     def _draw(self, state: AppState) -> None:
-        for label, centers, counts, width in self._results:
-            implot.plot_bars(label, centers, counts, width)
+        for ref, centers, counts, width in self._results:
+            implot.plot_bars(state.signal_label(ref), centers, counts, width)
 
-    def _result_labels(self) -> list[str]:
-        return [label for label, _, _, _ in self._results]
+    def _result_refs(self) -> list[tuple[int, str]]:
+        return [ref for ref, _, _, _ in self._results]

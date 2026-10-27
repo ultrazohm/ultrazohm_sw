@@ -42,7 +42,11 @@ GROUP_ORDER: list[str] = [
 # families (fft_*, hist_*, node_*) are handled by rule in :func:`group_for`.
 _EXPLICIT_GROUPS: dict[str, str] = {
     # Data / runs
-    "load": "Data / runs",
+    "backend": "Data / runs",
+    "loading_mode": "Data / runs",
+    "clear_session": "Data / runs",
+    "disk_cache": "Data / runs",
+    "cache_budget": "Data / runs",    "load": "Data / runs",
     "convert": "Data / runs",
     "remove_run": "Data / runs",
     "set_active": "Data / runs",
@@ -75,7 +79,6 @@ _EXPLICIT_GROUPS: dict[str, str] = {
     # Session
     "save_state": "Session",
     "load_state": "Session",
-    "export_script": "Session",
     "run_script": "Session",
     # Console
     "help": "Console",

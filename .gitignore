@@ -29,3 +29,6 @@ control_algorithms/uz_FOC.slxc
 vitis/Packages/*
 *.slxc
 *cpAnnotation.mat
+
+# Generated artifacts, including live measurement logs
+/artifacts/

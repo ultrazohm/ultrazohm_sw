@@ -3,7 +3,6 @@ from pathlib import Path
 import os
 import signal
 import subprocess
-import sys
 import tempfile
 import threading
 
@@ -71,8 +70,6 @@ class ScriptRunner:
     def start(self, path, endpoint):
         if self.busy:
             raise RuntimeError('A script is already running or stopping')
-        if getattr(sys, 'frozen', False):
-            raise RuntimeError('Python scripts require the source launcher and its Python environment')
         self._cleanup()
         self._directory = tempfile.TemporaryDirectory(prefix='uz-script-')
         self._log = Path(self._directory.name) / 'output.log'
@@ -81,10 +78,8 @@ class ScriptRunner:
         env = os.environ.copy()
         env['PYTHONIOENCODING'] = 'utf-8'
         script_args = [str(Path(path).resolve()), '--endpoint', endpoint]
-        # POSIX executes the file directly. Windows first establishes a job
-        # object so forced termination also cleans up descendant processes.
-        command = ([sys.executable, '-u', '-m', 'uz_dataviewer.script_worker', *script_args]
-                   if os.name == 'nt' else [sys.executable, '-u', *script_args])
+        from .process_launcher import command as worker_command
+        command = worker_command('script', *script_args)
         with self._log.open('wb') as output:
             self.process = subprocess.Popen(
                 command,

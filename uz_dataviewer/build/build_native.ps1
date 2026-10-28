@@ -18,6 +18,10 @@ if (-not $env:UV_PROJECT_ENVIRONMENT) {
 uv sync --locked --extra dev --python 3.12 --no-build-package imgui-bundle
 if ($LASTEXITCODE -ne 0) { throw "Dependency installation failed ($LASTEXITCODE)" }
 
+if (-not $env:UZ_CLI_WHEEL) { throw 'Set UZ_CLI_WHEEL to the matching CLI wheel' }
+uv pip install --python "$env:UV_PROJECT_ENVIRONMENT/Scripts/python.exe" --no-deps $env:UZ_CLI_WHEEL
+if ($LASTEXITCODE -ne 0) { throw 'CLI wheel installation failed' }
+
 if (Test-Path build\native) { Remove-Item -Recurse -Force build\native }
 if (Test-Path dist) { Remove-Item -Recurse -Force dist }
 

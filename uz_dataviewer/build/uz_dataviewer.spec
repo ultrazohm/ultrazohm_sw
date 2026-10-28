@@ -1,7 +1,7 @@
 # PyInstaller spec for the UltraZohm Data Viewer.
 #
-# Produces a single self-contained native executable (Windows .exe / Linux ELF /
-# macOS binary). Build with:
+# Produces a self-contained folder with a native executable and _internal.
+# Build with:
 #
 #     pyinstaller build/uz_dataviewer.spec
 #
@@ -21,7 +21,7 @@ if SRC not in sys.path:
     sys.path.insert(0, SRC)
 
 datas, binaries, hiddenimports = [], [], []
-for pkg in ("imgui_bundle", "pyarrow", "polars", "_polars_runtime_32"):
+for pkg in ("imgui_bundle", "pyarrow", "polars", "_polars_runtime_32", "ultrazohm"):
     d, b, h = collect_all(pkg)
     datas += d
     binaries += b
@@ -46,9 +46,8 @@ pyz = PYZ(a.pure)
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.datas,
     [],
+    exclude_binaries=True,
     name="uz_dataviewer",
     debug=False,
     bootloader_ignore_signals=False,
@@ -56,3 +55,5 @@ exe = EXE(
     upx=True,
     console=False,  # GUI app: no console window on Windows
 )
+
+coll = COLLECT(exe, a.binaries, a.datas, strip=False, upx=False, name="uz_dataviewer")

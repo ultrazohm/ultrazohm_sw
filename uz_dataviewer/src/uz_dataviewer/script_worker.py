@@ -1,4 +1,4 @@
-"""Windows process-containment bootstrap with ordinary script/argv semantics."""
+"""Shared process-containment bootstrap with ordinary script/argv semantics."""
 import runpy
 import sys
 from pathlib import Path

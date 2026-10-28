@@ -4,7 +4,6 @@ import json
 from pathlib import Path
 import re
 import subprocess
-import sys
 import tempfile
 
 HEADER = Path('vitis/software/Baremetal/src/include/javascope.h')
@@ -24,14 +23,14 @@ def repository(explicit=None):
 
 
 def generate_mapping(repo=None, *, overwrite=False):
+    from .process_launcher import command
     root = repository(repo)
     cache = root / 'uz_cli_channel_mappings'
     cache.mkdir(parents=True, exist_ok=True)
     # Only publish successful output; a parser error must never reuse stale data.
     with tempfile.TemporaryDirectory(prefix='.generate-', dir=cache) as temporary:
         generated = Path(temporary) / 'javascope.json'
-        result = subprocess.run([sys.executable, '-m', 'ultrazohm',
-            'create-json-from-javascope-h', '--repo', str(root), '--output', str(generated)],
+        result = subprocess.run(command('cli', 'create-json-from-javascope-h', '--repo', str(root), '--output', str(generated)),
             capture_output=True, text=True, encoding='utf-8', errors='replace')
         if result.returncode:
             raise RuntimeError('Channel mapping generation failed: ' + (result.stderr.strip() or result.stdout.strip()))

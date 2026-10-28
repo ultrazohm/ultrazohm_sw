@@ -36,7 +36,7 @@ Windows (PowerShell)
 .. code-block:: powershell
 
    .\build\build_native.ps1 # from ultrazohm_sw/uz_dataviewer
-   # -> dist\uz_dataviewer.exe
+   # -> dist\uz_dataviewer\uz_dataviewer.exe
 
 
 
@@ -56,7 +56,7 @@ Linux binaries are built on Debian 12 and require x86_64, glibc 2.36 or newer, a
 Windows binaries target x86_64 and must be extracted from the ZIP before launching.
 Each build runs a headless smoke test of the frozen executable, checking native imports, Parquet reading, and lazy downsampling.
 This check does not verify window creation or graphics drivers on the user's desktop.
-To repeat it locally after building, run ``python build/smoke_binary.py dist/uz_dataviewer`` (use ``dist/uz_dataviewer.exe`` on Windows).
+To repeat it locally after building, run ``python build/smoke_binary.py dist/uz_dataviewer/uz_dataviewer`` (use ``dist/uz_dataviewer/uz_dataviewer.exe`` on Windows).
 
 .. _uz_dataviewer_build_web:
 
@@ -111,3 +111,19 @@ The browser smoke test uses Playwright and Chromium::
 
 Set ``UZ_BROWSER_EXECUTABLE`` to use an existing Chromium/Chrome installation.
 CI runs the browser smoke test before publishing native release artifacts.
+
+Combined desktop packaging
+==========================
+
+Set ``UZ_CLI_WHEEL`` to the absolute path of a matching CLI wheel before running
+native build scripts. The result is a folder distribution: extract the entire
+archive and keep ``_internal`` beside the executable. The CLI and Python runtime
+are bundled. Windows and Linux releases include matching standalone wheels.
+The integration branch publishes prereleases; main publishes stable releases.
+
+Select the ``ultrazohm_sw`` root at startup, or supply ``--live-repo``. Live windows
+start hidden and can be opened through View. Source launchers still use
+``--use-live`` to install the backend. Both deployments use the same subprocess
+worker code; bundled scripts can import bundled dependencies, while source
+scripts can also use packages installed in the developer environment. Vitis is
+external and remains required for build/flash.

@@ -33,7 +33,7 @@ def test_generate_mapping_calls_cli_and_publishes_timestamp_commit_cache(repo, m
     assert first.parent == repo/'uz_cli_channel_mappings'
     assert re.fullmatch(r'javascope_\d{8}T\d{6}\.\d{6}Z_a{40}-dirty\.json', first.name)
     assert json.loads(first.read_text()) == mapping
-    assert calls[0][:6] == [sys.executable, '-m', 'ultrazohm', 'create-json-from-javascope-h', '--repo', str(repo)]
+    assert calls[0][:8] == [sys.executable, '-u', '-m', 'uz_dataviewer.process_launcher', 'cli', 'create-json-from-javascope-h', '--repo', str(repo)]
     assert sorted(first.parent.iterdir()) == sorted([first, second])
 
 
@@ -66,7 +66,7 @@ def test_invalid_headers_abort_live_startup(monkeypatch):
     monkeypatch.setattr(app.runtime, 'IS_WEB', False)
     monkeypatch.setattr(app, 'DataViewerApp', lambda **kwargs: pytest.fail('Viewer must not open'))
     with pytest.raises(SystemExit) as exc:
-        app.main(['--use-live'])
+        app.main(['--use-live', '--live-repo', '/unused'])
     assert exc.value.code == 2
 
 

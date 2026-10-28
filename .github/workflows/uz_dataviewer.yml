@@ -5,11 +5,17 @@ on:
     branches: ['**']
     paths:
       - 'uz_dataviewer/**'
+      - 'uz_cli/**'
+      - 'javascope/test_server.py'
+      - 'vitis/software/**'
       - '.github/workflows/uz_dataviewer.yml'
       - 'docs/source/guide/gui/uz_dataviewer/uz_dataviewer_commands.csv'
   pull_request:
     paths:
       - 'uz_dataviewer/**'
+      - 'uz_cli/**'
+      - 'javascope/test_server.py'
+      - 'vitis/software/**'
       - '.github/workflows/uz_dataviewer.yml'
       - 'docs/source/guide/gui/uz_dataviewer/uz_dataviewer_commands.csv'
   workflow_dispatch:
@@ -27,6 +33,38 @@ env:
   OPENBLAS_NUM_THREADS: '2'
 
 jobs:
+  cli-wheels:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            manylinux: '2_28'
+          - os: windows-2022
+            target: x86_64-pc-windows-msvc
+            manylinux: auto
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: PyO3/maturin-action@v1
+        with:
+          command: build
+          rust-toolchain: '1.90.0'
+          target: ${{ matrix.target }}
+          manylinux: ${{ matrix.manylinux }}
+          args: --manifest-path uz_cli/Cargo.toml --release --locked --out dist
+      - name: Install and test matching CLI wheel
+        run: |
+          python uz_cli/release_ci.py install dist
+          python -c "import os, shutil, subprocess, sys; os.environ['UZ_CLI_BIN'] = shutil.which('ultrazohm'); subprocess.run([sys.executable, '-m', 'unittest', 'discover', '-s', 'uz_cli/tests', '-v'], check=True)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bundled-cli-${{ matrix.os }}
+          path: dist/*.whl
+
   test:
     runs-on: ubuntu-24.04
     container: python:3.12-slim-bookworm
@@ -79,7 +117,7 @@ jobs:
         run: .venv-web/bin/python build/smoke_web.py
 
   build-linux:
-    needs: test
+    needs: [test, cli-wheels]
     runs-on: ubuntu-24.04
     # Build against glibc 2.36, rather than the host runner's newer libc.
     container: python:3.12-slim-bookworm
@@ -100,10 +138,18 @@ jobs:
           version: '0.13.1'
           enable-cache: true
           cache-dependency-glob: uz_dataviewer/uv.lock
+      - uses: actions/download-artifact@v4
+        with:
+          name: bundled-cli-ubuntu-22.04
+          path: cli-wheels
+      - name: Select matching CLI wheel
+        run: echo "UZ_CLI_WHEEL=$(find "$GITHUB_WORKSPACE/cli-wheels" -name '*.whl')" >> "$GITHUB_ENV"
       - name: Build executable
         run: bash build/build_native.sh
       - name: Smoke-test frozen executable
-        run: uv run --no-sync python build/smoke_binary.py dist/uz_dataviewer
+        run: uv run --no-sync python build/smoke_binary.py dist/uz_dataviewer/uz_dataviewer
+      - name: Test packaged live workers
+        run: uv run --no-sync python build/smoke_live.py dist/uz_dataviewer/uz_dataviewer
       - name: Package Linux executable
         run: |
           mkdir -p packages
@@ -117,7 +163,7 @@ jobs:
           retention-days: 30
 
   build-windows:
-    needs: test
+    needs: [test, cli-wheels]
     runs-on: windows-2022
     timeout-minutes: 30
     defaults:
@@ -143,16 +189,26 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           uv run --no-sync python -m pytest -q
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - uses: actions/download-artifact@v4
+        with:
+          name: bundled-cli-windows-2022
+          path: cli-wheels
+      - name: Select matching CLI wheel
+        run: '"UZ_CLI_WHEEL=$((Get-ChildItem "$env:GITHUB_WORKSPACE/cli-wheels/*.whl").FullName)" >> $env:GITHUB_ENV'
       - name: Build executable
         run: .\build\build_native.ps1
       - name: Smoke-test frozen executable
         run: |
-          uv run --no-sync python build/smoke_binary.py dist/uz_dataviewer.exe
+          uv run --no-sync python build/smoke_binary.py dist/uz_dataviewer/uz_dataviewer.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test packaged live workers
+        run: |
+          uv run --no-sync python build/smoke_live.py dist/uz_dataviewer/uz_dataviewer.exe
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Package Windows executable
         run: |
           New-Item -ItemType Directory -Force packages | Out-Null
-          Compress-Archive -Path dist\uz_dataviewer.exe -DestinationPath "packages\uz_dataviewer-$env:GITHUB_SHA-windows-x86_64.zip" -Force
+          Compress-Archive -Path dist\uz_dataviewer -DestinationPath "packages\uz_dataviewer-$env:GITHUB_SHA-windows-x86_64.zip" -Force
       - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: uz-dataviewer-windows
@@ -165,7 +221,7 @@ jobs:
     needs: [build-linux, build-windows, test-web]
     if: >-
       github.event_name != 'pull_request' &&
-      github.ref == 'refs/heads/main'
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature/uz_cli_dataviewer_testing')
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -174,6 +230,11 @@ jobs:
       - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           pattern: uz-dataviewer-*
+          path: packages
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: bundled-cli-*
           path: packages
           merge-multiple: true
       - name: Publish binary release
@@ -189,9 +250,12 @@ jobs:
           windows_archive="uz_dataviewer-${GITHUB_SHA}-windows-x86_64.zip"
           test -s "$linux_archive"
           test -s "$windows_archive"
-          sha256sum "$linux_archive" "$windows_archive" > SHA256SUMS
+          printf '{"source_commit":"%s","branch":"%s","service_api_version":1}\n' "$GITHUB_SHA" "$GITHUB_REF_NAME" > manifest.json
+          sha256sum "$linux_archive" "$windows_archive" *.whl manifest.json > SHA256SUMS
+          prerelease=true
+          if [[ "$GITHUB_REF_NAME" == main ]]; then prerelease=false; fi
           cat > release-notes.md <<EOF
-          Native UltraZohm Data Viewer binaries.
+          UltraZohm Data Viewer with bundled CLI and matching standalone Python wheels.
 
           Commit: ${GITHUB_SHA}
           Branch: ${GITHUB_REF_NAME}
@@ -211,7 +275,7 @@ jobs:
           else
             gh release create "$release_tag" --target "$GITHUB_SHA" --draft \
               --title "UltraZohm Data Viewer ${GITHUB_SHA:0:7}" \
-              --notes-file release-notes.md --prerelease=false --latest=false
+              --notes-file release-notes.md --prerelease="$prerelease" --latest=false
           fi
-          gh release upload "$release_tag" "$linux_archive" "$windows_archive" SHA256SUMS --clobber
-          gh release edit "$release_tag" --draft=false --prerelease=false --latest=false
+          gh release upload "$release_tag" "$linux_archive" "$windows_archive" *.whl manifest.json SHA256SUMS --clobber
+          gh release edit "$release_tag" --draft=false --prerelease="$prerelease" --latest=false

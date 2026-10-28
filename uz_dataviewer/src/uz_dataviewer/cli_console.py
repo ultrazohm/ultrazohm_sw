@@ -7,7 +7,6 @@ from pathlib import Path
 import shlex
 import shutil
 import subprocess
-import sys
 import tempfile
 
 
@@ -51,8 +50,6 @@ class CliConsole:
         if importlib.util.find_spec('ultrazohm') is None:
             self.console.error('Live is not activated.')
             return
-        if getattr(sys, 'frozen', False):
-            raise RuntimeError('CLI debugging requires the Python source launcher')
         if len(self.jobs) >= 4:
             raise RuntimeError('Four CLI commands are already running; wait for one to finish')
         if not any(arg == '--endpoint' or arg.startswith('--endpoint=') for arg in args):
@@ -66,8 +63,9 @@ class CliConsole:
         env['PYTHONIOENCODING'] = 'utf-8'
         options = {'start_new_session': True} if os.name != 'nt' else {
             'creationflags': subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP}
+        from .process_launcher import command
         with path.open('wb') as output:
-            process = subprocess.Popen([sys.executable, '-u', '-m', 'ultrazohm', *args],
+            process = subprocess.Popen(command('cli', *args),
                 stdin=subprocess.DEVNULL, stdout=output, stderr=subprocess.STDOUT, env=env, **options)
         job = Job(self.sequence, process, path)
         self.jobs.append(job)

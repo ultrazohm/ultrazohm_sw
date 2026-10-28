@@ -168,9 +168,8 @@ class DataViewerApp:
             ):
                 window = hello_imgui.DockableWindow()
                 window.label = label
-                window.is_visible = label != "Python"
-                if label == "Python":
-                    window.remember_is_visible = False
+                window.is_visible = False
+                window.remember_is_visible = False
                 window.dock_space_name = dock
                 window.gui_function = render
                 windows.append(window)
@@ -342,6 +341,10 @@ class DataViewerApp:
     # -- runner -------------------------------------------------------------
     def run(self) -> None:
         params = hello_imgui.RunnerParams()
+        if not runtime.IS_WEB:
+            from .user_paths import data_directory
+            params.ini_filename = str(data_directory() / 'viewer.ini')
+            params.ini_filename_use_app_window_title = False
         self._runner_params = params
         params.app_window_params.window_title = "UltraZohm Data Viewer"
         params.app_window_params.window_geometry.size = (1500, 900)
@@ -409,12 +412,18 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--backend", choices=("pyarrow", "polars"), default=default_backend,
                         help=f"IO backend for file loading (default: {default_backend})")
     parser.add_argument("--disk-cache", action="store_true", help="Persist measurement caches on disk (default: RAM only)")
-    parser.add_argument("--use-live", action="store_true", help="Show live acquisition, control, and Python panels (native only)")
+    parser.add_argument("--use-live", action="store_true", default=getattr(sys, "frozen", False), help="Enable live acquisition, control, and Python panels (native only)")
     parser.add_argument("--live-repo", help="UltraZohm repository whose headers generate the live channel mapping")
     parser.add_argument("files", nargs="*", help="CSV, Parquet, JSON sessions, or command scripts")
     args = parser.parse_args(argv)
     live_mapping = ''
     if args.use_live and not runtime.IS_WEB:
+        if not args.live_repo:
+            if pfd is None:
+                parser.error('Select an ultrazohm_sw workspace using --live-repo PATH')
+            args.live_repo = pfd.select_folder('Select ultrazohm_sw workspace', str(Path.cwd())).result()
+            if not args.live_repo:
+                return 0
         from .live_mapping import generate_mapping
         try:
             live_mapping = str(generate_mapping(args.live_repo))

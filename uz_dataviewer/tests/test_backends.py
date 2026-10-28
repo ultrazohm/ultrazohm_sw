@@ -187,10 +187,12 @@ def test_cli_defaults_and_explicit_overrides(monkeypatch):
     app.main(['--backend', 'pyarrow', '--loading-mode', 'memory', '--disk-cache'])
     assert captured[-1]['disk_cache'] is True
     assert (captured[-1]['backend'], captured[-1]['loading_mode']) == ('pyarrow', 'memory')
+    from types import SimpleNamespace
+    monkeypatch.setattr(app, 'pfd', SimpleNamespace(select_folder=lambda *a: SimpleNamespace(result=lambda: '/selected/workspace')))
     app.main(['--use-live'])
     assert captured[-1]['use_live'] is True
     assert captured[-1]['live_mapping'] == 'cached-mapping.json'
-    assert mapping_calls == [None]
+    assert mapping_calls == ['/selected/workspace']
     app.main(['--use-live', '--live-repo', '/example/repository'])
     assert mapping_calls[-1] == '/example/repository'
     monkeypatch.setattr(runtime, 'IS_WEB', True)

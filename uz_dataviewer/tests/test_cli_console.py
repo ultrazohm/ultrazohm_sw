@@ -86,7 +86,7 @@ def test_cli_arguments_output_exit_errors_and_explicit_endpoint(tmp_path, monkey
     monkeypatch.setattr('uz_dataviewer.cli_console.subprocess.Popen', launch)
     try:
         runner.submit('set-variable send_field_1 5', '127.0.0.1:20333')
-        assert calls[0][0] == [sys.executable, '-u', '-m', 'ultrazohm', '--endpoint',
+        assert calls[0][0] == [sys.executable, '-u', '-m', 'uz_dataviewer.process_launcher', 'cli', '--endpoint',
                               '127.0.0.1:20333', 'set-variable', 'send_field_1', '5']
         assert not calls[0][1].get('shell', False)
         assert calls[0][1]['stdin'] == subprocess.DEVNULL
@@ -95,7 +95,7 @@ def test_cli_arguments_output_exit_errors_and_explicit_endpoint(tmp_path, monkey
         assert 'exited with code 2' in console.as_text()
         assert not runner.jobs
         runner.submit('--endpoint=127.0.0.1:20444 status', '127.0.0.1:20333')
-        assert calls[-1][0][4:] == ['--endpoint=127.0.0.1:20444', 'status']
+        assert calls[-1][0][5:] == ['--endpoint=127.0.0.1:20444', 'status']
         runner.poll()
         runner.submit('', '127.0.0.1:20333')
         assert calls[-1][0][-1] == '--help'

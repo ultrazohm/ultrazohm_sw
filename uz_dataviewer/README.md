@@ -569,3 +569,29 @@ packages are preserved in shell mode. Run `python measurement.py` or
 within the child shell, or `exit` to return to the original terminal.
 The CLI equivalent is `./uz_cli/run.sh --local-newest --launch shell`
 (`run.ps1` on Windows).
+
+### Combined desktop distribution
+
+Extract the entire release archive and launch `uz_dataviewer/uz_dataviewer`
+(or `uz_dataviewer.exe` inside that folder on Windows). Keep `_internal` beside
+it. Python and uv are bundled; Vitis is not. Select the `ultrazohm_sw` workspace
+at startup, or pass `--live-repo PATH`. The normal analysis layout opens first;
+use View to open Live Data, Control, Live Plots, or Python. Source launchers retain
+`--use-live` for installing the CLI wheel; live windows also start hidden there.
+
+The source and packaged applications use the same CLI and script worker logic.
+Scripts execute as ordinary `__main__` files with `--endpoint`, with no injected
+client. Source scripts use the venv's modules; packaged scripts use bundled
+modules. Additional dependencies can be used in an external venv with a matching
+CLI wheel attached to the service. Such scripts are not terminated by GUI Stop.
+
+Default recording directories and GUI layout settings are stored under
+`$XDG_DATA_HOME/uz_dataviewer` (default `~/.local/share/uz_dataviewer`) or
+`%LOCALAPPDATA%/uz_dataviewer`, outside the installation folder.
+
+To build the combined application, set `UZ_CLI_WHEEL` to the absolute path of a
+wheel built from the same commit, then run `build/build_native.sh` or its
+PowerShell equivalent. Build scripts synchronize locked dependencies before
+installing that wheel. CI builds both OS wheels, packages folder distributions,
+and tests frozen workers against the JavaScope simulator. Integration-branch
+releases are prereleases; main releases are stable. Browser builds remain separate.

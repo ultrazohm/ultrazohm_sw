@@ -17,6 +17,9 @@ fi
 export UV_PROJECT_ENVIRONMENT="${UV_PROJECT_ENVIRONMENT:-$HERE/.venv-build}"
 uv sync --locked --extra dev --python 3.12 --no-build-package imgui-bundle
 
+: "${UZ_CLI_WHEEL:?Set UZ_CLI_WHEEL to the matching CLI wheel}"
+uv pip install --python "$UV_PROJECT_ENVIRONMENT/bin/python" --no-deps "$UZ_CLI_WHEEL"
+
 rm -rf build/native dist
 uv run --no-sync python -m PyInstaller --noconfirm --clean --distpath dist --workpath build/native build/uz_dataviewer.spec
 

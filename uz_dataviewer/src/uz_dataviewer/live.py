@@ -221,8 +221,6 @@ class LiveController:
 
     def _start_service(self, output, mapping, profile=None, data_options=None, ack=False):
         self._progress('Starting local acquisition service…')
-        if getattr(sys, 'frozen', False):
-            raise RuntimeError('Start ultrazohm serve separately and use Attach service in the packaged viewer')
         if self.process is not None and self.process.poll() is None:
             raise RuntimeError('The launched service is still running; check its endpoint and service.log')
         output = Path(output).expanduser().resolve()
@@ -231,8 +229,9 @@ class LiveController:
         if output.exists():
             raise ValueError('Choose a new session directory; existing recordings are never overwritten')
         log_path = output.with_name(output.name + '.service.log')
-        args = [sys.executable, '-c', 'from ultrazohm.cli import main; raise SystemExit(main())',
-                '--endpoint', self.endpoint, 'serve', '--output', str(output), '--format', 'parquet']
+        from .process_launcher import command
+        args = command('cli',
+                '--endpoint', self.endpoint, 'serve', '--output', str(output), '--format', 'parquet')
         if mapping:
             args += ['--channel-mapping', str(Path(mapping).expanduser().resolve())]
         if profile:
@@ -557,5 +556,6 @@ class LiveController:
 
 
 def new_output_directory():
-    return str(Path.cwd() / 'artifacts' / 'live_logs' /
+    from .user_paths import data_directory
+    return str(data_directory() / 'live_logs' /
                (time.strftime('%Y%m%d-%H%M%S') + '-' + uuid.uuid4().hex[:6]))

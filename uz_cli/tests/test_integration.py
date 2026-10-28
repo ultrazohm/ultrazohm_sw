@@ -315,8 +315,10 @@ class IntegrationTest(unittest.TestCase):
     def test_python_configurable_buffers_and_recording_reads(self):
         import polars as pl
         from ultrazohm import Acquisition, Client
+        # Tiny 45-row segments exercise the configured threshold. Keep their
+        # arrival rate below the debug wheel's disk throughput on Windows CI.
         self.spawn([sys.executable, ROOT/"javascope/test_server.py", "--port", self.device_port,
-                    "--sample-rate", "1000"])
+                    "--sample-rate", "100"])
         def ready():
             with socket.create_connection(("127.0.0.1", self.device_port), timeout=.1):
                 return True
@@ -335,10 +337,18 @@ class IntegrationTest(unittest.TestCase):
             client.start_logging()
             client.start_logging_slow_data()
             wait_for(lambda: len(list(output.glob("data-part-*.parquet"))) >= 2)
+            client.stop_logging()
+            def completed():
+                state = client.status()["logging"]["fast"]
+                self.assertIsNone(state["error"], state)
+                return state["phase"] == "complete"
+            try:
+                wait_for(completed, seconds=30)
+            except AssertionError as error:
+                self.fail(f'{error}\nLogging: {client.status()["logging"]}')
+            # Read after stopping so slow reads cannot grow the writer backlog.
             for part in sorted(output.glob("data-part-*.parquet"))[:2]:
                 self.assertEqual(pl.read_parquet(part).height, 45)
-            client.stop_logging()
-            wait_for(lambda: client.status()["logging"]["fast"]["phase"] == "complete")
             client.start_logging()
             wait_for(lambda: list(output.glob("data_0002-part-*.parquet")))
         finally:

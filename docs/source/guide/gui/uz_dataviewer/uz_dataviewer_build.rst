@@ -121,8 +121,8 @@ archive and keep ``_internal`` beside the executable. The CLI and Python runtime
 are bundled. Windows and Linux releases include matching standalone wheels.
 The integration branch publishes prereleases; main publishes stable releases.
 
-Select the ``ultrazohm_sw`` root at startup, or supply ``--live-repo``. Live windows
-start hidden and can be opened through View. Source launchers still use
+Select the ``ultrazohm_sw`` root at startup, or supply ``--live-repo``. All windows except Python start open, with Analysis tabs selected. Mode switches
+select Analysis or Live tabs once without closing other windows. Source launchers still use
 ``--use-live`` to install the backend. Both deployments use the same subprocess
 worker code; bundled scripts can import bundled dependencies, while source
 scripts can also use packages installed in the developer environment. Vitis is

@@ -409,7 +409,7 @@ recording arguments keep their original working directory.
 
 Each live startup then calls the installed CLI's `create-json-from-javascope-h`
 command against the checkout's current JavaScope headers. It stores a fresh JSON
-in `<repo>/uz_cli_channel_mappings/`, named
+in `<repo>/artifacts/channel_mappings/`, named
 `javascope_<UTC timestamp>_<repository commit>.json`. The commit is taken from the
 generated metadata and includes `-dirty` when the relevant headers have local
 changes. These cache files are ignored by Git. Header parsing failures stop startup
@@ -455,7 +455,7 @@ startup state. Cancel makes no changes. If no service is running, programming ca
 start directly. A Python script or active debug CLI jobs disable the flash button;
 the workflow locks device controls, script execution, and debug CLI submissions.
 
-Managed flashing uses `uz_cli_channel_mappings/javascope_<commit>.json`, including
+Managed flashing uses `artifacts/channel_mappings/javascope_<commit>.json`, including
 `-dirty` when applicable, and regenerates/replaces that cache on every attempt.
 Startup's timestamped caches remain available. The prototype assumes headers stay
 unchanged during build/programming, as agreed; no checksum check is performed.
@@ -575,9 +575,10 @@ The CLI equivalent is `./uz_cli/run.sh --local-newest --launch shell`
 Extract the entire release archive and launch `uz_dataviewer/uz_dataviewer`
 (or `uz_dataviewer.exe` inside that folder on Windows). Keep `_internal` beside
 it. Python and uv are bundled; Vitis is not. Select the `ultrazohm_sw` workspace
-at startup, or pass `--live-repo PATH`. The normal analysis layout opens first;
-use View to open Live Data, Control, Live Plots, or Python. Source launchers retain
-`--use-live` for installing the CLI wheel; live windows also start hidden there.
+at startup, or pass `--live-repo PATH`. All available windows except Python open at startup; Navigation, Plots and Log
+Browser are selected. Mode selects Analysis or Live tabs without closing other
+windows. Use View to open Python or toggle individual windows. Source launchers retain
+`--use-live` for installing the CLI wheel; all available windows except Python start open, with Analysis tabs selected.
 
 The source and packaged applications use the same CLI and script worker logic.
 Scripts execute as ordinary `__main__` files with `--endpoint`, with no injected
@@ -586,8 +587,10 @@ modules. Additional dependencies can be used in an external venv with a matching
 CLI wheel attached to the service. Such scripts are not terminated by GUI Stop.
 
 Default recording directories and GUI layout settings are stored under
-`$XDG_DATA_HOME/uz_dataviewer` (default `~/.local/share/uz_dataviewer`) or
-`%LOCALAPPDATA%/uz_dataviewer`, outside the installation folder.
+the selected workspace’s `artifacts` directory: `live_logs/` for recordings,
+`viewer.ini` for layout settings and `viewer_cache/` for optional data caches.
+Generated mapping JSON files are in `artifacts/channel_mappings/`. Explicit
+output paths and `UZ_DATAVIEWER_CACHE` still override their respective defaults.
 
 To build the combined application, set `UZ_CLI_WHEEL` to the absolute path of a
 wheel built from the same commit, then run `build/build_native.sh` or its

@@ -38,7 +38,17 @@ LOG_DOCK = "LogBrowserSpace"
 
 class DataViewerApp:
     def __init__(self, initial_files: list[str] | None = None, loading_mode: str | None = None, backend: str | None = None, disk_cache: bool = False, use_live: bool = False, live_mapping: str = '') -> None:
+        from .user_paths import data_directory
+        mapping_path = Path(live_mapping).expanduser().resolve() if live_mapping else None
+        workspace = None
+        if mapping_path and mapping_path.parent.name == 'channel_mappings' and mapping_path.parent.parent.name == 'artifacts':
+            workspace = mapping_path.parents[2]
+        elif mapping_path and mapping_path.parent.name == 'uz_cli_channel_mappings':
+            workspace = mapping_path.parents[1]
+        self.artifacts = data_directory(workspace) if not runtime.IS_WEB else None
         self.state = AppState()
+        if self.artifacts is not None:
+            self.state.cache_dir = os.environ.get('UZ_DATAVIEWER_CACHE', str(self.artifacts / 'viewer_cache'))
         self.state.disk_cache = disk_cache
         if loading_mode is not None:
             self.state.loading_mode = loading_mode
@@ -55,13 +65,16 @@ class DataViewerApp:
         self.nodes = NodesPanel()
         self.live = None
         self._cli_console = None
+        self._select_initial_tabs = True
         self.state.console.cli_handler = self._run_cli_command
         if use_live and not runtime.IS_WEB:
             from .panels.live import LiveWorkspace
             self.live = LiveWorkspace()
             self.live.mapping = live_mapping
-            if live_mapping and Path(live_mapping).parent.name == 'uz_cli_channel_mappings':
-                self.live.repo = str(Path(live_mapping).parent.parent)
+            if workspace is not None:
+                from .live import new_output_directory
+                self.live.repo = str(workspace)
+                self.live.output = new_output_directory(workspace)
             self.live.cli_busy = lambda: self._cli_console is not None and bool(self._cli_console.jobs)
         # Pending Session-menu file dialogs: (dialog, command_name, is_multi).
         self._session_dialog: tuple = ()
@@ -173,10 +186,32 @@ class DataViewerApp:
                 window.dock_space_name = dock
                 window.gui_function = render
                 windows.append(window)
+        for window in windows:
+            window.is_visible = window.label != 'Python'
+            window.remember_is_visible = False
         return windows
 
     # -- Session menu (save/restore + scripting) ----------------------------
+    def _apply_window_mode(self, live: bool) -> None:
+        """Select the requested tabs once without hiding or redocking other windows."""
+        if live and (self.live is None or not self.live.available):
+            return
+        active = ('Live Data', 'Control', 'Live Plots') if live else ('Navigation', 'Log Browser', 'Plots')
+        docking = self._runner_params.docking_params
+        for window in docking.dockable_windows:
+            if window.label in active:
+                window.is_visible = True
+        for label in active:
+            docking.focus_dockable_window(label)
+
     def _show_menus(self) -> None:
+        if imgui.begin_menu("Mode"):
+            if imgui.menu_item("Analysis", "", False)[0]:
+                self._apply_window_mode(False)
+            available = self.live is not None and self.live.available
+            if imgui.menu_item("Live", "", False, available)[0]:
+                self._apply_window_mode(True)
+            imgui.end_menu()
         if not imgui.begin_menu("Session"):
             return
         if runtime.IS_WEB:
@@ -274,6 +309,10 @@ class DataViewerApp:
 
     # -- per-frame ----------------------------------------------------------
     def _pre_new_frame(self) -> None:
+        # Wait until restored docking/windows exist, then select Analysis once.
+        if self._select_initial_tabs and hasattr(self, '_runner_params') and imgui.get_frame_count() >= 2:
+            self._apply_window_mode(False)
+            self._select_initial_tabs = False
         if self._cli_console is not None:
             self._cli_console.poll()
         if self.live is not None:
@@ -342,8 +381,7 @@ class DataViewerApp:
     def run(self) -> None:
         params = hello_imgui.RunnerParams()
         if not runtime.IS_WEB:
-            from .user_paths import data_directory
-            params.ini_filename = str(data_directory() / 'viewer.ini')
+            params.ini_filename = str(self.artifacts / 'viewer.ini')
             params.ini_filename_use_app_window_title = False
         self._runner_params = params
         params.app_window_params.window_title = "UltraZohm Data Viewer"

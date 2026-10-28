@@ -12,7 +12,7 @@ def test_live_panels_are_opt_in(use_live, monkeypatch):
         windows = app._dockable_windows()
         labels = {window.label for window in windows}
         if use_live:
-            assert all(not w.is_visible for w in windows if w.label in {'Live Data', 'Live Plots', 'Control', 'Python'})
+            assert all(w.is_visible == (w.label != 'Python') for w in windows)
         live_labels = {'Live Data', 'Live Plots', 'Control', 'Python'}
         assert labels & live_labels == (live_labels if use_live else set())
         assert (app.live is not None) == use_live
@@ -80,3 +80,56 @@ def test_status_owns_fps_even_after_framework_toggle(monkeypatch, gui_frame):
         assert not params.imgui_window_params.show_status_fps
     finally:
         app.state.shutdown()
+
+
+def test_open_mode_menu_uses_real_imgui_binding(monkeypatch, gui_frame):
+    from imgui_bundle import imgui
+    from types import SimpleNamespace
+    app = DataViewerApp()
+    try:
+        # Exercise actual menu_item bindings, including the Analysis item that
+        # previously raised TypeError only after opening the Mode menu.
+        monkeypatch.setattr(imgui, 'begin_menu', lambda label: label == 'Mode')
+        monkeypatch.setattr(imgui, 'end_menu', lambda: None)
+        gui_frame(SimpleNamespace(render=lambda state: app._show_menus()), app.state)
+    finally:
+        app._shutdown()
+
+
+def test_selected_workspace_owns_generated_artifacts(tmp_path, monkeypatch):
+    from uz_dataviewer.live import new_output_directory
+    monkeypatch.delenv('UZ_DATAVIEWER_CACHE', raising=False)
+    mapping = tmp_path/'workspace'/'artifacts'/'channel_mappings'/'mapping.json'
+    monkeypatch.setattr('uz_dataviewer.plugins.load_plugins', lambda **kwargs: None)
+    app = DataViewerApp(use_live=True, live_mapping=str(mapping))
+    try:
+        assert app.live.repo == str(tmp_path/'workspace')
+        assert app.artifacts == tmp_path/'workspace'/'artifacts'
+        assert app.state.cache_dir == str(app.artifacts/'viewer_cache')
+        assert app.live.output.startswith(str(app.artifacts/'live_logs'))
+        assert new_output_directory(app.live.repo).startswith(str(app.artifacts/'live_logs'))
+    finally:
+        app._shutdown()
+
+
+def test_mode_only_focuses_targets_and_preserves_other_windows(monkeypatch):
+    from types import SimpleNamespace
+    monkeypatch.setattr('uz_dataviewer.plugins.load_plugins', lambda **kwargs: None)
+    app = DataViewerApp(use_live=True)
+    try:
+        app.live.available = True
+        windows = app._dockable_windows()
+        focused = []
+        app._runner_params = SimpleNamespace(docking_params=SimpleNamespace(
+            dockable_windows=windows, focus_dockable_window=focused.append))
+        app._apply_window_mode(True)
+        assert focused == ['Live Data', 'Control', 'Live Plots']
+        assert all(w.is_visible for w in windows if w.label != 'Python')
+        # User choices outside the selected group survive subsequent switches.
+        next(w for w in windows if w.label == 'FFT').is_visible = False
+        app._apply_window_mode(False)
+        assert focused[-3:] == ['Navigation', 'Log Browser', 'Plots']
+        assert all(w.is_visible for w in windows if w.label in {'Live Data', 'Control', 'Live Plots'})
+        assert not next(w for w in windows if w.label == 'FFT').is_visible
+    finally:
+        app._shutdown()

@@ -555,7 +555,7 @@ class LiveController:
                     print(f'Owned service cleanup failed: {exc}', file=sys.stderr)
 
 
-def new_output_directory():
+def new_output_directory(repo=None):
     from .user_paths import data_directory
-    return str(data_directory() / 'live_logs' /
+    return str(data_directory(repo) / 'live_logs' /
                (time.strftime('%Y%m%d-%H%M%S') + '-' + uuid.uuid4().hex[:6]))

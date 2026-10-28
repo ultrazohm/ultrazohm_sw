@@ -20,26 +20,28 @@ use std::{
     time::{Duration, Instant},
 };
 
-type Batch = (u64, Arc<Frame>);
+type Batch = (u64, u64, Arc<Frame>);
 pub struct Route {
+    paused: bool,
     tx: SyncSender<Batch>,
     history: Arc<Mutex<History>>,
 }
 impl Route {
     pub fn send(&self, index: u64, frame: Arc<Frame>) -> Result<()> {
+        if self.paused {
+            return Ok(());
+        }
         let mut history = self.history.lock().unwrap();
-        ensure!(
-            history.stop.is_none_or(|stop| stop == index),
-            "recording sample gap"
-        );
+        // Positions remain contiguous for paging; timestamps retain acquisition time.
+        let position = history.stop.unwrap_or(index);
         ensure!(
             history.pending_samples + frame.slow_raw.len() <= history.max_pending_samples,
             "pending recording memory limit exceeded"
         );
-        self.tx.try_send((index, frame.clone())).context(
+        self.tx.try_send((position, index, frame.clone())).context(
             "logger queue full or failed; acquisition stopped, samples not silently discarded",
         )?;
-        history.accepted(index, frame)
+        history.accepted(position, index, frame)
     }
 }
 pub type Routes = Arc<Mutex<[Option<Route>; 2]>>;
@@ -132,7 +134,7 @@ impl Recordings {
         ensure!(
             !matches!(
                 self.states.lock().unwrap()[slot].phase,
-                "recording" | "finalizing"
+                "recording" | "paused" | "finalizing"
             ),
             "this recording is already active or still finalizing; check status"
         );
@@ -164,6 +166,7 @@ impl Recordings {
         let metadata_path = dir.join(format!("{stem}.json"));
         let metadata = json!({"schema_version":5, "stream":if slow {"slow"} else {"fast"},
             "requested_observables":selections, "mapping_confirmed":false,
+            "position_basis":"contiguous recorded samples; time retains acquisition gaps",
             "slow_layout": if slow {Some("wide_forward_filled")} else {None},
             "slow_initial_values": if slow {Some("rows_omitted_until_all_observables_received")} else {None},
             "time_basis":"seconds from acquisition start, configured sample period; gaps unknown",
@@ -219,9 +222,9 @@ impl Recordings {
                 let mut last_flush = Instant::now();
                 loop {
                     match rx.recv_timeout(flush_interval.saturating_sub(last_flush.elapsed())) {
-                        Ok((index, frame)) => {
+                        Ok((position, index, frame)) => {
                             rows += frame.slow_raw.len() as u64;
-                            if log.push(index, frame)? {
+                            if log.push_recorded(position, index, frame)? {
                                 writer_history.lock().unwrap().committed()?;
                                 last_flush = Instant::now();
                             } else if last_flush.elapsed() >= flush_interval {
@@ -257,8 +260,28 @@ impl Recordings {
             s[slot].error = error;
         }));
         // Receiver uses the same lock: the recording starts at a complete frame boundary.
-        self.routes.lock().unwrap()[slot] = Some(Route { tx, history });
+        self.routes.lock().unwrap()[slot] = Some(Route {
+            tx,
+            history,
+            paused: false,
+        });
         self.counts[slot] = n;
+        Ok(())
+    }
+    pub fn pause(&mut self, slow: bool, paused: bool) -> Result<()> {
+        let slot = usize::from(slow);
+        let mut routes = self.routes.lock().unwrap();
+        let route = routes[slot]
+            .as_mut()
+            .context("this recording is not active")?;
+        let mut states = self.states.lock().unwrap();
+        let expected = if paused { "recording" } else { "paused" };
+        ensure!(
+            states[slot].phase == expected,
+            "recording must be {expected} before this operation"
+        );
+        route.paused = paused;
+        states[slot].phase = if paused { "paused" } else { "recording" };
         Ok(())
     }
     pub fn stop(&mut self, slow: bool) -> Result<()> {
@@ -267,7 +290,7 @@ impl Recordings {
         ensure!(routes[slot].is_some(), "this recording is not active");
         {
             let mut states = self.states.lock().unwrap();
-            if states[slot].phase == "recording" {
+            if matches!(states[slot].phase, "recording" | "paused") {
                 states[slot].phase = "finalizing";
             }
         }
@@ -291,5 +314,49 @@ impl Recordings {
             anyhow::bail!("{e}");
         }
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn pause_before_first_frame_and_finalize_without_resume() -> Result<()> {
+        let dir = std::env::temp_dir().join(format!(
+            "uz-empty-pause-{}-{}",
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)?
+                .as_nanos()
+        ));
+        fs::create_dir(&dir)?;
+        let result = (|| -> Result<()> {
+            let profile = Profile::load(None)?;
+            let selections = serde_json::to_value(&profile.initial_channels)?;
+            let mut recordings = Recordings::new(
+                Some(dir.clone()),
+                profile,
+                Format::Parquet,
+                DataOptions::default(),
+            );
+            assert!(recordings.pause(false, true).is_err());
+            recordings.start(false, &selections)?;
+            assert!(recordings.pause(false, false).is_err());
+            recordings.pause(false, true)?;
+            assert!(recordings.active());
+            assert!(recordings.start(false, &selections).is_err());
+            assert!(recordings.pause(false, true).is_err());
+            recordings.pause(false, false)?;
+            recordings.pause(false, true)?;
+            recordings.finish()?;
+            assert_eq!(recordings.status()["fast"]["phase"], "complete");
+            assert!(dir.join("data.parquet").is_file());
+            let info = crate::backend::open(&crate::backend::index_path(&dir, "data"))?.info()?;
+            assert!(info.complete && info.start.is_none() && info.stop.is_none());
+            Ok(())
+        })();
+        let _ = fs::remove_dir_all(dir);
+        result
     }
 }

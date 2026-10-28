@@ -63,7 +63,11 @@ def test_script_import_completion_error_and_stop_preserve_logging(tmp_path, serv
         return not runner.busy
     try:
         path.write_text('from helpers import configure\n'
-            'def run(uz):\n'
+            'import argparse\nfrom ultrazohm import Client\n'
+            'if __name__ == "__main__":\n'
+            '    parser = argparse.ArgumentParser()\n'
+            '    parser.add_argument("--endpoint", required=True)\n'
+            '    uz = Client(parser.parse_args().endpoint)\n'
             '    configure(uz)\n'
             '    uz.enable_system()\n'
             '    uz.enable_control()\n'
@@ -75,14 +79,14 @@ def test_script_import_completion_error_and_stop_preserve_logging(tmp_path, serv
         assert 'sequence completed' in runner.output
         assert client.status()['logging']['fast']['phase'] == 'recording'
         commands = client.status()['state']['commands_sent']
-        path.write_text('def run(uz):\n    raise ValueError("example error")\n')
+        path.write_text('raise ValueError("example error")\n')
         runner.start(path, endpoint)
         wait_for(finished)
         assert 'failed' in runner.message
         assert 'ValueError: example error' in runner.output
         assert client.status()['logging']['fast']['phase'] == 'recording'
         assert client.status()['state']['commands_sent'] == commands
-        path.write_text('import time\ndef run(uz):\n    print("waiting", flush=True)\n    while True:\n        time.sleep(.01)\n')
+        path.write_text('import time\nprint("waiting", flush=True)\nwhile True:\n    time.sleep(.01)\n')
         runner.start(path, endpoint)
         wait_for(lambda: (runner.poll(), 'waiting' in runner.output)[1])
         runner.stop()
@@ -162,7 +166,7 @@ def test_stop_uses_independent_control_path_while_poll_blocks(tmp_path, service)
     controller = LiveController(lambda _: BlockedPoll())
     workspace = LiveWorkspace(controller)
     path = tmp_path/'wait.py'
-    path.write_text('import time\ndef run(uz):\n    print("waiting", flush=True)\n    time.sleep(60)\n')
+    path.write_text('import time\nprint("waiting", flush=True)\ntime.sleep(60)\n')
     try:
         controller.submit('attach', endpoint=endpoint)
         assert entered.wait(3)
@@ -215,57 +219,6 @@ def test_close_waits_for_inflight_script_stop():
     assert not runner.busy
 
 
-def test_sine_template_uses_wall_clock_ramps_and_exact_endpoints():
-    namespace = {}
-    exec(compile(TEMPLATES['Sine sweep (30 s)'], '<sine-template>', 'exec'), namespace)
-    class Clock:
-        now = 0.
-        def monotonic(self): return self.now
-        def sleep(self, duration):
-            assert duration >= 0
-            self.now += duration
-    clock = Clock()
-    class Device:
-        def __init__(self):
-            self.calls = []
-            self.tail_calls = 0
-        def catalog(self):
-            return {'profile': {'observables': dict.fromkeys(
-                ('JSO_SineDemo', 'JSO_SineDemoAmplitude', 'JSO_SineDemoFrequency_Hz'))}}
-        def status(self): return {'logging': {'fast': {'phase': 'idle'}, 'slow': {'phase': 'idle'}}}
-        def observables(self): return {'channels': []}
-        def set_variable(self, name, value):
-            self.calls.append((clock.now, name, value))
-            clock.now += .003  # Command latency must not accumulate in the ramp duration.
-        def set_observable(self, name, channel): self.calls.append(('observable', name, channel))
-        def start_logging(self): self.started = clock.now
-        def stop_logging(self): self.stopped = clock.now
-        def tail(self, n, channels):
-            self.tail_calls += 1
-            return {'JSO_SineDemoAmplitude': [10.],
-                    'JSO_SineDemoFrequency_Hz': [49. if self.tail_calls < 3 else 50.]}
-    device = Device()
-    namespace['time'] = clock
-    namespace['run'](device)
-    assert device.stopped - device.started == pytest.approx(30.02, abs=.01)
-    assert device.tail_calls == 3
-    amplitude = [(t, v) for t, n, v in device.calls if n == 'send_field_19']
-    frequency = [(t, v) for t, n, v in device.calls if n == 'send_field_20']
-    assert amplitude[0][1] == 0. and amplitude[-1][1] == 10.
-    assert frequency[0][1] == 10. and frequency[-1][1] == 50.
-    for t, value in amplitude[1:]:
-        assert value == pytest.approx(min(10., (t - device.started) * 10. / 15.))
-    for t, value in frequency[1:]:
-        assert value == pytest.approx(min(50., 10. + (t - device.started - 15.) * 40. / 15.))
-    clock = Clock()
-    namespace['time'] = clock
-    failed = Device()
-    failed.tail = lambda n, channels: {'JSO_SineDemoAmplitude': [10.], 'JSO_SineDemoFrequency_Hz': [49.]}
-    with pytest.raises(RuntimeError, match='logging remains active'):
-        namespace['run'](failed)
-    assert not hasattr(failed, 'stopped')
-
-
 def test_managed_flash_restarts_real_service_and_preserves_recordings(service, tmp_path, monkeypatch):
     from pathlib import Path
     import json
@@ -311,3 +264,66 @@ def test_managed_flash_restarts_real_service_and_preserves_recordings(service, t
             except subprocess.TimeoutExpired:
                 controller.process.kill()
                 controller.process.wait()
+
+
+def test_script_main_and_arguments_match_terminal_execution(tmp_path):
+    import json
+    path = tmp_path / 'ordinary script.py'
+    (tmp_path / 'helper.py').write_text('VALUE = 42\n')
+    path.write_text('import argparse, json, sys\nfrom helper import VALUE\n'
+        'assert "uz" not in globals()\n'
+        'def run(uz):\n    raise AssertionError("must not be called automatically")\n'
+        'if __name__ == "__main__":\n'
+        '    p = argparse.ArgumentParser()\n'
+        '    p.add_argument("--endpoint", required=True)\n'
+        '    print(json.dumps([p.parse_args().endpoint, VALUE, sys.argv[0]]))\n')
+    endpoint = '127.0.0.1:23456'
+    expected = subprocess.check_output([sys.executable, str(path), '--endpoint', endpoint], text=True)
+    runner = ScriptRunner()
+    try:
+        runner.start(path, endpoint)
+        def finished():
+            runner.poll()
+            return not runner.busy
+        wait_for(finished)
+        assert 'Completed' in runner.message
+        assert json.loads(runner.output) == json.loads(expected)
+    finally:
+        runner.close()
+
+
+def test_windows_bootstrap_preserves_main_and_exit_code(tmp_path):
+    # Also runnable on Linux: containment is a no-op there, but argv/main/exit
+    # behavior uses the same bootstrap that Windows executes.
+    path = tmp_path / 'exit script.py'
+    path.write_text('import sys\nassert __name__ == "__main__"\n'
+                    'assert sys.argv[1:] == ["--endpoint", "127.0.0.1:23456"]\n'
+                    'assert "uz" not in globals()\nsys.exit(7)\n')
+    result = subprocess.run([sys.executable, '-m', 'uz_dataviewer.script_worker',
+                             str(path), '--endpoint', '127.0.0.1:23456'], capture_output=True, text=True)
+    assert result.returncode == 7, result.stderr
+
+
+@pytest.mark.parametrize('name', ['Blank', 'Timed recording', 'Control sequence'])
+def test_templates_are_standalone_scripts_with_endpoint(tmp_path, monkeypatch, name):
+    import runpy
+    calls = []
+    class Client:
+        def __init__(self, endpoint): calls.append(('endpoint', endpoint))
+        def status(self): return {'connected': True}
+        def start_logging(self): calls.append(('start',))
+        def stop_logging(self): calls.append(('stop_logging',))
+        def set_variable(self, name, value): calls.append(('variable', name, value))
+        def enable_system(self): calls.append(('system',))
+        def enable_control(self): calls.append(('control',))
+    monkeypatch.setitem(sys.modules, 'ultrazohm', SimpleNamespace(Client=Client))
+    monkeypatch.setattr(time, 'sleep', lambda duration: None)
+    path = tmp_path / 'measurement.py'
+    path.write_text(TEMPLATES[name])
+    monkeypatch.setattr(sys, 'argv', [str(path), '--endpoint', '127.0.0.1:23456'])
+    runpy.run_path(str(path), run_name='__main__')
+    assert calls[0] == ('endpoint', '127.0.0.1:23456')
+    if name == 'Timed recording':
+        assert calls[1:] == [('start',), ('stop_logging',)]
+    if name == 'Control sequence':
+        assert calls[1:] == [('variable', 'send_field_1', 0.0), ('system',), ('control',)]

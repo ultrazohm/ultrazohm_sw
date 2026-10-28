@@ -201,12 +201,13 @@ Status returns counters, last status word, ACK policy, terminal error and
 `logging.fast` / `logging.slow` with phase, Parquet path and recording error.
 Operations: connect, status, observables, stop, enable_system, enable_control, error_reset,
 set_variable, set_observable, button, send_ack, start_logging, stop_logging,
-start_logging_slow_data, stop_logging_slow_data, shutdown.
+start_logging_slow_data, stop_logging_slow_data, pause_logging, resume_logging,
+pause_logging_slow_data, resume_logging_slow_data, shutdown.
 Unknown operations/fields and unsupported versions fail without sending bytes.
 
 `stop` affects the device; `shutdown` requests acquisition shutdown; the logger drains, merges Parquet segments
 and optionally exports CSV before the service exits.
-Shutdown does not implicitly send Stop. Loss of the client connection is not an
+Shutdown sends device Stop before finalization. Loss of the client connection is not an
 emergency stop. No automatic reconnect/replay occurs; a new service run starts
 new metadata and new log files.
 
@@ -220,7 +221,7 @@ in the background. Replies include current logging states. Wait for `complete`;
 restart, never appended or overwritten. Fast and slow starts/stops are independent.
 
 `set_observable` fails locally with "setting observable is not possible when logging
-is active; stop fast and slow logging first" whenever either stream is recording.
+is active; stop fast and slow logging first" whenever either stream is recording or paused.
 No device command is sent. `set_variable` and ordinary device control remain allowed.
 Stopping the device is independent of stopping acquisition or either logger.
 
@@ -329,7 +330,7 @@ older indexed chunks. `recordings` lists all sources in this service run.
 
 Selection alternatives are `{"kind":"tail","count":500}` and
 `{"kind":"since","cursor":null,"limit":10000}`. Range positions are absolute
-received-sample indices, half-open. A since response returns an opaque cursor
+sample positions, half-open (acquisition positions for live data, contiguous recorded-row positions for recordings). A since response returns an opaque cursor
 containing run/source/generation identity and the next position. Supply that
 object unchanged on the next since call. Expired or mismatched cursors fail.
 A source with no samples returns an empty page and an unset cursor position.
@@ -363,3 +364,18 @@ active recordings, and exits the service. The reply acknowledges acceptance, not
 completed finalization. Process exit and `end.json` report completion/failure.
 Ctrl-C, interactive EOF, and embedded `Acquisition.close()` use the same cleanup
 sequence. A Stop transmission failure is recorded; logging still finalizes.
+
+### Paused recordings
+
+`pause_logging` and `resume_logging` transition fast logging between `recording`
+and `paused`. The corresponding `_slow_data` operations affect only slow logging.
+Invalid transitions return an error. Pausing keeps the recording handle open and
+skips future frames at a frame boundary; accepted frames still drain normally.
+Stop/shutdown also finalize paused recordings. The schema cannot change while
+paused. Live acquisition is unaffected.
+
+Recording ranges/cursors address contiguous recorded rows (first position remains
+anchored at the first accepted acquisition position). Live ranges address
+acquisition samples. Data info and durable recording info include `position_basis`
+(`recorded_samples` or `acquisition_samples`); old durable handles without this
+field default to `acquisition_samples`. Timestamps retain omitted intervals.

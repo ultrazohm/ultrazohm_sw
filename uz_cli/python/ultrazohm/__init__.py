@@ -90,8 +90,16 @@ class Client:
 
     def start_logging(self): return self._call("start_logging")
     def stop_logging(self): return self._call("stop_logging")
+    def pause_logging(self):
+        """Suspend fast recording; keep acquisition/RAM and the recording open."""
+        return self._call("pause_logging")
+    def resume_logging(self):
+        """Resume the same fast recording; timestamps retain the pause gap."""
+        return self._call("resume_logging")
     def start_logging_slow_data(self): return self._call("start_logging_slow_data")
     def stop_logging_slow_data(self): return self._call("stop_logging_slow_data")
+    def pause_logging_slow_data(self): return self._call("pause_logging_slow_data")
+    def resume_logging_slow_data(self): return self._call("resume_logging_slow_data")
     def observables(self):
         """Return all channel assignments requested in this session; no device readback."""
         return self._call("observables")
@@ -109,7 +117,7 @@ class Client:
         return self._call("recordings")["recordings"]
 
     def data_info(self, *, stream="fast", recording=None):
-        """Available acquisition sample positions; stop is exclusive."""
+        """Available sample positions; stop is exclusive. See position_basis for live vs recorded rows."""
         return self._call("data_info", source=_source(stream, recording))["info"]
 
     def _read(self, selection, *, stream, recording, channels):

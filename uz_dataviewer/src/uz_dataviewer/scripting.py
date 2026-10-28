@@ -7,76 +7,46 @@ import sys
 import tempfile
 import threading
 
+# This text is visible/editable in every template, not injected at execution.
+_ENTRY_POINT = """
+
+if __name__ == "__main__":
+    import argparse
+    from ultrazohm import Client
+
+    parser = argparse.ArgumentParser(description="UltraZohm measurement")
+    parser.add_argument("--endpoint", default="127.0.0.1:19740",
+                        help="Acquisition service host:port")
+    args = parser.parse_args()
+    main(Client(args.endpoint))
+"""
+
 TEMPLATES = {
-    'Blank': '''def run(uz):
+    'Blank': '''def main(uz):
     print(uz.status())
-''',
+''' + _ENTRY_POINT,
     'Timed recording': '''import time
 
 
-def run(uz):
+def main(uz):
     uz.start_logging()
     print("Logging started")
     time.sleep(10)
     uz.stop_logging()
     print("Logging finalizing; device state unchanged")
-''',
+''' + _ENTRY_POINT,
     'Control sequence': '''import time
 
 
-def run(uz):
+def main(uz):
     # Adapt the variable and value to your firmware before running.
     uz.set_variable("send_field_1", 0.0)
     uz.enable_system()
     time.sleep(1)
     uz.enable_control()
     print("Control enable sent; check the streamed platform state")
-''',
-    'Sine sweep (30 s)': '''import time
+''' + _ENTRY_POINT,
 
-
-def ramp(uz, field, first, last, started, duration):
-    # Wall-clock interpolation avoids accumulating command/sleep delays.
-    while True:
-        fraction = min(1.0, max(0.0, (time.monotonic() - started) / duration))
-        uz.set_variable(field, first + (last - first) * fraction)
-        if fraction >= 1.0:
-            return
-        time.sleep(max(0.0, min(0.05, started + duration - time.monotonic())))
-
-
-def run(uz):
-    # Requires the Baremetal sine demo and its matching channel-mapping JSON.
-    signals = ("JSO_SineDemo", "JSO_SineDemoAmplitude", "JSO_SineDemoFrequency_Hz")
-    if not all(name in uz.catalog()["profile"]["observables"] for name in signals):
-        raise RuntimeError("Load the sine-demo firmware and matching channel mapping first")
-    if any(s["phase"] in ("recording", "finalizing") for s in uz.status()["logging"].values()):
-        raise RuntimeError("Finish existing fast and slow logging before running this example")
-    assignments = {s["channel"]: s["name"] for s in uz.observables()["channels"]}
-    for channel, name in enumerate(signals, 1):
-        if assignments.get(channel) != name:
-            uz.set_observable(name, channel)
-    uz.set_variable("send_field_19", 0.0)
-    uz.set_variable("send_field_20", 10.0)
-    uz.start_logging()
-    started = time.monotonic()
-    print("0-15 s: amplitude 0 -> 10, frequency 10 Hz", flush=True)
-    ramp(uz, "send_field_19", 0.0, 10.0, started, 15.0)
-    print("15-30 s: frequency 10 -> 50 Hz, amplitude 10", flush=True)
-    ramp(uz, "send_field_20", 10.0, 50.0, started + 15.0, 15.0)
-    # Sending a command does not acknowledge firmware application. Keep recording
-    # until the final setpoints have returned in the sampled data.
-    deadline = time.monotonic() + 2.0
-    while True:
-        last = uz.tail(1, channels=list(signals[1:]))
-        if last[signals[1]][0] == 10.0 and last[signals[2]][0] == 50.0:
-            break
-        if time.monotonic() >= deadline:
-            raise RuntimeError("Final sine setpoints not observed; logging remains active")
-        time.sleep(0.01)
-    uz.stop_logging()
-    print("Sweep complete; logging finalizing. Sine remains at amplitude 10, frequency 50 Hz.")
-''',
 }
 
 
@@ -110,9 +80,14 @@ class ScriptRunner:
             'creationflags': subprocess.CREATE_NEW_PROCESS_GROUP}
         env = os.environ.copy()
         env['PYTHONIOENCODING'] = 'utf-8'
+        script_args = [str(Path(path).resolve()), '--endpoint', endpoint]
+        # POSIX executes the file directly. Windows first establishes a job
+        # object so forced termination also cleans up descendant processes.
+        command = ([sys.executable, '-u', '-m', 'uz_dataviewer.script_worker', *script_args]
+                   if os.name == 'nt' else [sys.executable, '-u', *script_args])
         with self._log.open('wb') as output:
             self.process = subprocess.Popen(
-                [sys.executable, '-u', '-m', 'uz_dataviewer.script_worker', str(Path(path).resolve()), endpoint],
+                command,
                 stdin=subprocess.DEVNULL, stdout=output, stderr=subprocess.STDOUT, env=env, **options)
         self.endpoint = endpoint
         self.message = 'Running'

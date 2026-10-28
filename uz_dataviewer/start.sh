@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Install runtime dependencies with uv and launch the native data viewer.
-# Usage: start.sh [--use-live] [--live-wheel PATH] [--live-channel stable|testing] [VIEWER_ARGUMENTS...]
+# Usage: start.sh [--launch gui|shell] [--use-live] [--live-wheel PATH] [--live-channel stable|testing] [VIEWER_ARGUMENTS...]
 set -euo pipefail
 
 if ! command -v uv >/dev/null 2>&1; then
@@ -30,11 +30,19 @@ fi
 
 PROJECT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
+LAUNCH=gui
 USE_LIVE=false
 LIVE_OPTIONS=()
 VIEWER_ARGS=()
 while [[ $# -gt 0 ]]; do
-    if [[ "$1" == "--use-live" ]]; then
+    if [[ "$1" == "--launch" ]]; then
+        if [[ $# -lt 2 || ( "$2" != "gui" && "$2" != "shell" ) ]]; then
+            echo '--launch requires gui or shell.' >&2
+            exit 1
+        fi
+        LAUNCH="$2"
+        shift 2
+    elif [[ "$1" == "--use-live" ]]; then
         USE_LIVE=true
         shift
     elif [[ "$1" == "--live-wheel" ]]; then
@@ -59,6 +67,11 @@ while [[ $# -gt 0 ]]; do
     fi
 done
 
+if [[ "$LAUNCH" == shell && ${#VIEWER_ARGS[@]} -gt 0 ]]; then
+    echo 'Viewer arguments cannot be used with --launch shell.' >&2
+    exit 1
+fi
+
 if "$USE_LIVE"; then
     # Sync first, then install the backend into this same environment. Launch
     # directly afterward so another sync cannot remove the optional backend.
@@ -66,7 +79,15 @@ if "$USE_LIVE"; then
     "$PROJECT_DIR/../uz_cli/run.sh" --venv "$PROJECT_DIR/.venv" \
         --launch none --no-examples "${LIVE_OPTIONS[@]}"
     "$PROJECT_DIR/.venv/bin/python" -m uz_dataviewer.check_live
+    if [[ "$LAUNCH" == shell ]]; then
+        exec "$PROJECT_DIR/.venv/bin/python" -m uz_dataviewer.env_shell
+    fi
     exec "$PROJECT_DIR/.venv/bin/uz-dataviewer" --use-live --live-repo "$PROJECT_DIR/.." "${VIEWER_ARGS[@]}"
+fi
+
+if [[ "$LAUNCH" == shell ]]; then
+    uv sync --project "$PROJECT_DIR" --python 3.12 --inexact --no-build-package imgui-bundle
+    exec "$PROJECT_DIR/.venv/bin/python" -m uz_dataviewer.env_shell
 fi
 
 # Keep the caller's working directory so relative input paths still work.

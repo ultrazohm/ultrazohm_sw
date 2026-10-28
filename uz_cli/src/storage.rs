@@ -37,6 +37,7 @@ pub struct LogWriter {
     slow: bool,
     first_index: Option<u64>,
     next_index: Option<u64>,
+    next_acquisition_index: Option<u64>,
     rows: usize,
     part: u64,
     written_rows: usize,
@@ -145,6 +146,7 @@ impl LogWriter {
             slow,
             first_index: None,
             next_index: None,
+            next_acquisition_index: None,
             rows: 0,
             part: 0,
             written_rows: 0,
@@ -152,7 +154,21 @@ impl LogWriter {
     }
     /// Return whether this push committed a segment, to reset the flush timer.
     pub fn push(&mut self, index: u64, frame: impl Into<Arc<Frame>>) -> Result<bool> {
+        self.push_recorded(index, index, frame)
+    }
+    pub fn push_recorded(
+        &mut self,
+        index: u64,
+        acquisition_index: u64,
+        frame: impl Into<Arc<Frame>>,
+    ) -> Result<bool> {
         let frame = frame.into();
+        ensure!(
+            self.next_acquisition_index
+                .is_none_or(|next| acquisition_index >= next),
+            "out-of-order acquisition timestamps"
+        );
+        self.next_acquisition_index = Some(acquisition_index + frame.slow_raw.len() as u64);
         ensure!(
             self.next_index.is_none_or(|next| next == index),
             "missing or out-of-order samples"
@@ -160,7 +176,7 @@ impl LogWriter {
         self.first_index.get_or_insert(index);
         self.next_index = Some(index + frame.slow_raw.len() as u64);
         self.rows += frame.slow_raw.len();
-        self.batch.push((index, frame));
+        self.batch.push((acquisition_index, frame));
         if self.rows >= self.segment_rows {
             self.flush()?;
             return Ok(true);
@@ -229,7 +245,12 @@ impl LogWriter {
 
     /// Expand received updates while retaining the last value across segment boundaries.
     /// None means this observable has not yet been sampled in this recording.
-    fn wide_slow(&self, df: &DataFrame, last: &mut [Option<f32>]) -> Result<DataFrame> {
+    fn wide_slow(
+        &self,
+        df: &DataFrame,
+        last: &mut [Option<f32>],
+        previous_time: &mut Option<f64>,
+    ) -> Result<DataFrame> {
         let ids = df.column("slow_id")?.u32()?;
         let values = df.column("slow_value")?.f32()?;
         ensure!(
@@ -239,15 +260,30 @@ impl LogWriter {
             "invalid slow update in segment"
         );
         let mut columns = vec![df.column("time")?.clone(), df.column("status")?.clone()];
+        let times = df.column("time")?.f64()?;
         for (id, name) in self.slow_names.iter().enumerate() {
             let mut output = Vec::with_capacity(df.height());
-            for (received_id, value) in ids.into_no_null_iter().zip(values.into_no_null_iter()) {
+            let mut previous = *previous_time;
+            for ((received_id, value), time) in ids
+                .into_no_null_iter()
+                .zip(values.into_no_null_iter())
+                .zip(times.into_no_null_iter())
+            {
+                if previous
+                    .is_some_and(|last| time - last > self.profile.sample_period_us * 1e-6 * 1.5)
+                {
+                    last[id] = None; // Never forward-fill a pre-pause value across omitted data.
+                }
+                previous = Some(time);
                 if received_id as usize == id {
                     last[id] = Some(value);
                 }
                 output.push(last[id]);
             }
             columns.push(Column::new(name.clone().into(), output));
+        }
+        if let Some(time) = times.last() {
+            *previous_time = Some(time);
         }
         Ok(DataFrame::new(columns)?.drop_nulls::<String>(None)?)
     }
@@ -261,11 +297,13 @@ impl LogWriter {
         let empty = self.dataframe()?;
         let mut last = vec![None; self.slow_names.len()];
         let final_empty = if self.slow {
-            self.wide_slow(&empty, &mut last)?
+            self.wide_slow(&empty, &mut last, &mut None)?
         } else {
             empty.clone()
         };
         let mut writer = ParquetWriter::new(&mut file).batched(final_empty.schema())?;
+        let mut previous_time: Option<f64> = None;
+        let mut slow_previous_time: Option<f64> = None;
         let mut merged_rows = 0usize;
         let mut output_rows = 0usize;
         for offset in (0..self.written_rows).step_by(65536) {
@@ -275,18 +313,17 @@ impl LogWriter {
             let df = self.backend.reader().read_range(first, stop)?;
             ensure!(df.schema() == empty.schema(), "recording schema mismatch");
             let times = df.column("time")?.f64()?;
-            let first = self.first_index.unwrap_or(0) + merged_rows as u64;
-            ensure!(
-                times.null_count() == 0
-                    && times
-                        .into_no_null_iter()
-                        .eq((first..first + df.height() as u64)
-                            .map(|i| i as f64 * self.profile.sample_period_us * 1e-6)),
-                "recording has missing or out-of-order samples"
-            );
+            ensure!(times.null_count() == 0, "recording has missing timestamps");
+            for time in times.into_no_null_iter() {
+                ensure!(
+                    time.is_finite() && previous_time.is_none_or(|last| time > last),
+                    "recording has out-of-order timestamps"
+                );
+                previous_time = Some(time);
+            }
             merged_rows += df.height();
             let output = if self.slow {
-                self.wide_slow(&df, &mut last)?
+                self.wide_slow(&df, &mut last, &mut slow_previous_time)?
             } else {
                 df
             };
@@ -585,6 +622,53 @@ mod tests {
     }
 
     #[test]
+    fn paused_recording_preserves_time_gaps_and_resets_slow_fill() -> Result<()> {
+        let run = Run::new();
+        let mut profile = Profile::load(None)?;
+        profile.slow_signals = [("a".into(), 0), ("b".into(), 1)].into();
+        for slow in [false, true] {
+            let stem = if slow { "slow" } else { "fast" };
+            let mut log = LogWriter::new(
+                run.0.clone(),
+                profile.clone(),
+                Format::Both,
+                stem.into(),
+                slow,
+                &serde_json::to_value(&profile.initial_channels)?,
+            )?;
+            let mut first = frame(0, 2);
+            first.slow_ids = vec![0, 1];
+            first.slow_raw = vec![1.0f32.to_bits(), 2.0f32.to_bits()];
+            log.push_recorded(150, 150, first)?;
+            log.flush()?;
+            let mut second = frame(0, 2);
+            second.slow_ids = vec![0, 1];
+            second.slow_raw = vec![3.0f32.to_bits(), 4.0f32.to_bits()];
+            log.push_recorded(152, 300, second)?;
+            log.finish()?;
+            let raw = backend::open(&backend::index_path(&run.0, stem))?.read_range(150, 154)?;
+            assert_eq!(raw.height(), 4);
+            assert!(
+                raw.column("time")?
+                    .f64()?
+                    .into_no_null_iter()
+                    .eq([150, 151, 300, 301]
+                        .into_iter()
+                        .map(|i| i as f64 * profile.sample_period_us * 1e-6))
+            );
+            let exported = read(run.0.join(format!("{stem}.parquet")))?;
+            if slow {
+                // The first update after resume must not inherit b=2 from before pause.
+                assert_eq!(exported.height(), 2);
+                assert_eq!(exported.column("b")?.f32()?.get(1), Some(4.0));
+            } else {
+                assert!(raw.equals_missing(&exported));
+            }
+        }
+        Ok(())
+    }
+
+    #[test]
     fn slow_forward_fill_crosses_segments_and_resets_for_each_recording() -> Result<()> {
         let run = Run::new();
         let mut profile = Profile::load(None)?;
@@ -848,6 +932,7 @@ mod tests {
                         recording_id: id.into(),
                         stream: "fast".into(),
                         sample_period_us: period,
+                        position_basis: "recorded_samples".into(),
                         fields: schema
                             .get_columns()
                             .iter()

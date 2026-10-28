@@ -405,7 +405,7 @@ class LiveWorkspace:
         self._render_logging(main_state, state)
         imgui.separator()
         imgui.text_wrapped('Drag a channel into Live Plots. Double-click to change its observable.')
-        locked = any(v.get('phase') == 'recording' for v in logging.values())
+        locked = any(v.get('phase') in ('recording', 'paused') for v in logging.values())
         if locked:
             imgui.text_disabled('Stop fast and slow logging to change assignments.')
         for assignment in self.update.assignments:
@@ -449,7 +449,7 @@ class LiveWorkspace:
                     self.send(start)
                 imgui.end_disabled()
                 imgui.same_line()
-                imgui.begin_disabled(phase != 'recording')
+                imgui.begin_disabled(phase not in ('recording', 'paused'))
                 if imgui.button('Stop logging##' + stream):
                     self.send(stop)
                 imgui.end_disabled()
@@ -538,8 +538,8 @@ class LiveWorkspace:
             imgui.end_table()
 
     def render_python(self):
-        imgui.text_wrapped('Define run(uz). The connected service Client is supplied automatically. '
-                           'Scripts run in this Python environment and can import modules beside the script.')
+        imgui.text_wrapped('Run executes this file with --endpoint HOST:PORT in this Python environment. '
+                           'Use a template for argument parsing and Client setup; imports and __main__ work normally.')
         imgui.text_unformatted(Path(self.script_path).name if self.script_path else 'Unsaved script')
         imgui.begin_disabled(self.scripts.busy or self._script_dialog is not None)
         if imgui.button('Open Python file...'):

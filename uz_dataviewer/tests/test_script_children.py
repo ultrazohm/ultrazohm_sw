@@ -14,9 +14,8 @@ def test_script_completion_terminates_background_child(tmp_path):
         f'Path({str(action)!r}).touch()\n')
     parent = tmp_path/'parent.py'
     parent.write_text('import subprocess,sys,time\nfrom pathlib import Path\n'
-        'def run(uz):\n'
-        f'    subprocess.Popen([sys.executable,{str(child)!r}])\n'
-        f'    while not Path({str(ready)!r}).exists(): time.sleep(.01)\n')
+        f'subprocess.Popen([sys.executable,{str(child)!r}])\n'
+        f'while not Path({str(ready)!r}).exists(): time.sleep(.01)\n')
     class Client:
         def stop(self): pass
     runner = ScriptRunner(lambda _: Client())

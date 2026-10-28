@@ -1,5 +1,5 @@
 # Install uv and runtime dependencies, then launch the native data viewer.
-# Launcher options: --use-live, --live-wheel PATH, --live-channel stable|testing.
+# Launcher options: --launch gui|shell, --use-live, --live-wheel PATH, --live-channel stable|testing.
 # Remaining arguments are forwarded to the viewer, including relative file paths.
 $ErrorActionPreference = 'Stop'
 
@@ -35,11 +35,18 @@ try {
         }
     }
 
+    $launch = "gui"
     $useLive = $false
     $liveOptions = @()
     $viewerArgs = @()
     for ($i = 0; $i -lt $args.Count; $i++) {
-        if ($args[$i] -eq '--use-live') {
+        if ($args[$i] -eq '--launch') {
+            if ($i + 1 -ge $args.Count -or $args[$i + 1] -notin @('gui', 'shell')) {
+                throw '--launch requires gui or shell.'
+            }
+            $i++
+            $launch = $args[$i]
+        } elseif ($args[$i] -eq '--use-live') {
             $useLive = $true
         } elseif ($args[$i] -eq '--live-wheel') {
             if ($i + 1 -ge $args.Count -or -not (Test-Path -LiteralPath $args[$i + 1] -PathType Leaf)) {
@@ -58,6 +65,9 @@ try {
         } else {
             $viewerArgs += $args[$i]
         }
+    }
+    if ($launch -eq 'shell' -and $viewerArgs.Count -gt 0) {
+        throw 'Viewer arguments cannot be used with --launch shell.'
     }
     if ($useLive) {
         & $uvExecutable sync --project $PSScriptRoot --python 3.12 --inexact --no-build-package imgui-bundle
@@ -84,7 +94,20 @@ try {
         $viewerScripts = Join-Path $viewerVenv $scripts
         & (Join-Path $viewerScripts $pythonName) -m uz_dataviewer.check_live
         if ($LASTEXITCODE -ne 0) { throw 'The selected backend is incompatible with live viewing.' }
+        if ($launch -eq 'shell') {
+            & (Join-Path $viewerScripts $pythonName) -m uz_dataviewer.env_shell
+            exit $LASTEXITCODE
+        }
         & (Join-Path $viewerScripts $viewerName) --use-live --live-repo (Join-Path $PSScriptRoot '..') @viewerArgs
+        exit $LASTEXITCODE
+    }
+    if ($launch -eq 'shell') {
+        & $uvExecutable sync --project $PSScriptRoot --python 3.12 --inexact --no-build-package imgui-bundle
+        if ($LASTEXITCODE -ne 0) { throw 'Viewer dependency setup failed.' }
+        $pythonRelative = if ([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT) {
+            '.venv/Scripts/python.exe'
+        } else { '.venv/bin/python' }
+        & (Join-Path $PSScriptRoot $pythonRelative) -m uz_dataviewer.env_shell
         exit $LASTEXITCODE
     }
     # Keep the caller's working directory so relative input paths still work.

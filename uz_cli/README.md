@@ -279,7 +279,7 @@ arguments; Python provides `client.set_variable("send_field_1", 12.5)`.
 `stop-logging-slow-data` control slow data. Neither changes device state.
 Stopping removes the recording from the receiver at a complete frame boundary;
 already queued frames drain and finalization runs in the background. The reply's
-`logging` object (also returned by `status`) reports `idle`, `recording`,
+`logging` object (also returned by `status`) reports `idle`, `recording`, `paused`,
 `finalizing`, `complete`, or `failed`, with the output path and any error.
 Wait for `complete` before reading the final file or restarting that stream.
 Acquisition and the other stream continue. Repeated starts while recording or
@@ -706,7 +706,7 @@ from ultrazohm import Client, Recording
 
 uz = Client()
 recent = uz.tail(500)                         # Recent RAM, independent of logging
-info = uz.data_info()                         # start/stop are absolute sample positions
+info = uz.data_info()                         # start/stop are positions; see position_basis
 # Enable logging first, then wait for data_info(recording=1)["stop"] to become non-null.
 recorded = uz.data_info(recording=1)
 if recorded["start"] is not None:
@@ -1006,3 +1006,38 @@ Shutdown (`ultrazohm shutdown`, interactive EOF/Ctrl-C, or
 `Acquisition.close()`) sends device Stop before ending acquisition and finalizing
 active recordings. The shutdown command's reply acknowledges acceptance; service
 process exit and `end.json` indicate whether finalization succeeded.
+
+### Pause and resume recording
+
+Fast and slow logging can be paused independently without closing the recording:
+
+```python
+uz.start_logging()
+# ... acquire the first interval ...
+uz.pause_logging()
+# Acquisition and the live RAM buffer continue; fast samples are not recorded.
+uz.resume_logging()
+# ... acquire the next interval into the same recording ...
+uz.stop_logging()
+```
+
+CLI commands are `pause-logging` and `resume-logging`; underscore aliases
+`pause_logging` and `resume_logging` also work. Slow-data equivalents are
+`pause-logging-slow-data` / `resume-logging-slow-data` and Python
+`pause_logging_slow_data()` / `resume_logging_slow_data()`.
+
+Pause requires `recording`; resume requires `paused`. Repeating either command in
+the wrong state returns an error. Start does not replace or resume a paused
+recording. Stop and shutdown finalize paused recordings normally. No device Stop
+is sent by pause/resume. Observable assignments remain locked while a recording
+is paused; variables and device controls remain usable. Already accepted samples
+may still flush while paused; pause itself is not a disk-durability barrier.
+
+Resuming appends to the same recording ID and final file. Paused samples are
+omitted, while acquisition timestamps retain the gap. Recording query positions
+count recorded rows consecutively, anchored at the first recorded acquisition
+position; live positions still count acquisition samples. `position_basis`
+identifies the convention. Use the `time` column for timestamps, not position
+multiplied by sample period. Slow-data wide exports reset forward-filled values
+after a pause gap and wait for fresh updates before emitting fully populated rows.
+No pause/resume GUI buttons are provided; existing Stop logging still works.

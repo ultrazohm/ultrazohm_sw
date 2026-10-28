@@ -753,6 +753,64 @@ class IntegrationTest(unittest.TestCase):
         self.assertTrue(json.loads((self.run_dir/"end.json").read_text())["complete"])
         self.assertTrue((self.run_dir/"data.parquet").is_file())
 
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel")
+    def test_pause_resume_preserves_recording_and_timestamp_gaps(self):
+        self._pause_resume_scenario(60)
+
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel")
+    def test_pause_resume_queries_unflushed_data(self):
+        self._pause_resume_scenario(1_000_000)
+
+    def _pause_resume_scenario(self, segment_rows):
+        import polars as pl
+        from ultrazohm import Client, Recording
+        self.start(logging=False, format="both", data_options=("--segment-rows", str(segment_rows), "--flush-interval-ms", "60000"))
+        client = Client(self.endpoint)
+        with self.assertRaises(RuntimeError): client.pause_logging()
+        with self.assertRaises(RuntimeError): client.resume_logging()
+        client.start_logging()
+        client.start_logging_slow_data()
+        wait_for(lambda: client.data_info(recording=1)["stop"] is not None)
+        base = client.status()["state"]["samples"]
+        wait_for(lambda: client.status()["state"]["samples"] > base + 120)
+        self.cli("pause-logging")
+        fast = client.data_info(recording=1)
+        slow_stop = client.data_info(recording=1, stream="slow")["stop"]
+        self.assertEqual(client.status()["logging"]["fast"]["phase"], "paused")
+        with self.assertRaises(RuntimeError): client.pause_logging()
+        with self.assertRaises(RuntimeError): client.start_logging()
+        with self.assertRaises(RuntimeError): client.set_observable("JSO_lifecheck", 1)
+        wait_for(lambda: client.data_info(recording=1, stream="slow")["stop"] > slow_stop + 90)
+        self.assertEqual(client.data_info(recording=1)["stop"], fast["stop"])
+        client.pause_logging_slow_data()
+        slow = client.data_info(recording=1, stream="slow")
+        before = client.status()["state"]["samples"]
+        wait_for(lambda: client.status()["state"]["samples"] > before + 90)
+        self.assertEqual(client.data_info(recording=1, stream="slow")["stop"], slow["stop"])
+        self.assertGreater(client.tail(1)["time"][0], client.tail(1, recording=1)["time"][0])
+        self.cli("resume_logging")  # underscore alias
+        client.resume_logging_slow_data()
+        wait_for(lambda: client.data_info(recording=1)["stop"] > fast["stop"] + 90)
+        client.pause_logging()
+        self.cli("pause-logging-slow-data")
+        snapshots = {}
+        for stream in ("fast", "slow"):
+            info = client.data_info(recording=1, stream=stream)
+            self.assertEqual(info["position_basis"], "recorded_samples")
+            df = client.read_range(info["start"], info["stop"], recording=1, stream=stream)
+            self.assertEqual(df.height, info["stop"] - info["start"])
+            self.assertGreater(df["time"].diff().max(), .001)
+            snapshots[stream] = df
+        # Stopping/shutting down from paused must finalize both streams.
+        client.stop_logging()
+        client.shutdown()
+        self.assertEqual(self.service.wait(timeout=15), 0)
+        for stream, stem in (("fast", "data"), ("slow", "data_slow_data")):
+            recorded = Recording(self.run_dir/(stem + ".recording.json")).read()
+            self.assertTrue(recorded.equals(snapshots[stream]))
+        self.assertTrue(pl.read_parquet(self.run_dir/"data.parquet").equals(snapshots["fast"]))
+        self.assertFalse((self.run_dir/"data_0002.recording.json").exists())
+
     def test_default_initial_channels_and_exports(self):
         self.start(logging=False)
         channels=self.cli("observables")["channels"]

@@ -323,18 +323,42 @@ separate Python process using the viewer's environment. Unsaved scripts first
 open a save dialog. Cancelling that dialog leaves the editor unchanged and does
 not execute code. File dialogs are polled without blocking live plots.
 
-Scripts define `run(uz)`. The viewer supplies a `ultrazohm.Client` for the attached
-service, so connection setup is already handled:
+Run launches an ordinary Python script with the attached service endpoint:
+
+```bash
+python measurement.py --endpoint 127.0.0.1:19740
+```
+
+The same file works unchanged from an activated terminal. The viewer does not
+inject variables or call a special function. Templates include explicit imports,
+argument parsing, and Client construction:
 
 ```python
+import argparse
 import time
+from ultrazohm import Client
 
-def run(uz):
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--endpoint", default="127.0.0.1:19740")
+    uz = Client(parser.parse_args().endpoint)
     uz.set_variable("send_field_1", 0.0)
     uz.start_logging()
     time.sleep(10)
     uz.stop_logging()
 ```
+
+Each Run uses a fresh process in the existing viewer virtual environment, not a
+new environment. The script receives `--endpoint HOST:PORT` and should parse it
+if it needs device access. `__name__`, `__file__`, arguments, imports beside the
+script, and exit codes follow ordinary script conventions. On Windows a minimal
+bootstrap establishes the child-process job before executing the script as
+`__main__`; it does not import the CLI or inject a Client.
+
+Existing files that only define `run(uz)` need an explicit entry point (parse
+`--endpoint`, create `Client`, then call `run(uz)`). Saved user files are not
+rewritten automatically. Terminal execution does not lock viewer controls or
+provide its Stop button/process cleanup.
 
 Use `uz.enable_system()`, `uz.enable_control()`, `uz.stop()`, and the other Client
 methods for device commands. Commands have no firmware acknowledgment: sequences
@@ -362,38 +386,6 @@ service and logging continue when the service was started externally. When the
 viewer started the service, closing the viewer requests shutdown and waits for
 recordings to finalize and the service to exit, even if the viewer was detached.
 Other CLI clients are not locked.
-
-#### Baremetal sine sweep example
-
-The Baremetal ISR includes a software sine example. It runs in every platform
-state, without enabling system/control or feeding a PWM/reference signal.
-`send_field_19` sets amplitude (clamped to 0–10), and `send_field_20` sets frequency
-in Hz (clamped to 0–50). Defaults are amplitude 0 and frequency 10 Hz. The oscillator
-keeps its phase when either value changes. Three appended JavaScope observables
-expose the waveform (`JSO_SineDemo`) and the two requested setpoints
-(`JSO_SineDemoAmplitude`, `JSO_SineDemoFrequency_Hz`).
-
-Build/program this firmware and start a service using its matching mapping and
-the example profile. Stop any existing acquisition service first:
-
-```bash
-./uz_cli/run.sh --local-newest -- flash
-./uz_cli/run.sh --local-newest -- serve --device 192.168.1.233:1000 \
-    --profile uz_cli/profiles/sine_demo.json --format parquet
-```
-
-In a second terminal, launch the viewer with `--use-live`, attach to that service,
-and select **Sine sweep (30 s)** in the Python template menu. Drag `JSO_SineDemo`
-into Live Plots before Run, and run it with existing logging stopped.
-The example profile already assigns the signals to channels 1–3; the template
-only changes assignments if needed, preserving plots when they already match. It
-records a 30-second sweep: seconds 0–15 ramp amplitude linearly from 0 to 10 at
-10 Hz; seconds 15–30 hold amplitude 10 and ramp frequency linearly from 10 to
-50 Hz. Setpoints update approximately every 50 ms using elapsed wall-clock time.
-After the 30-second sweep, the template waits up to two seconds for the sampled
-final setpoints, then requests logging stop and leaves the generator at amplitude
-10 / frequency 50 Hz. A confirmation timeout raises an error and retains logging.
-Interrupting it retains logging and the latest setpoints, as with other scripts.
 
 ### Starting acquisition
 
@@ -562,3 +554,18 @@ process exit before enabling Connect again. Each subsequent connection uses a
 fresh recording directory. The **Existing service** section contains Attach,
 Detach (viewer only), and Shutdown; Disconnect also shuts down an attached external
 service, whereas closing the GUI retains the external-service ownership policy.
+
+To open an activated DataViewer environment without launching the GUI or a service:
+
+```bash
+./uz_dataviewer/start.sh --launch shell
+# Also set up live dependencies if needed:
+./uz_dataviewer/start.sh --use-live --launch shell
+```
+
+PowerShell supports the same options through `start.ps1`. Existing optional CLI
+packages are preserved in shell mode. Run `python measurement.py` or
+`ultrazohm status` (when the CLI wheel is installed). Type `deactivate` to deactivate
+within the child shell, or `exit` to return to the original terminal.
+The CLI equivalent is `./uz_cli/run.sh --local-newest --launch shell`
+(`run.ps1` on Windows).

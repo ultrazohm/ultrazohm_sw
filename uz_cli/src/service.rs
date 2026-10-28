@@ -105,8 +105,12 @@ pub enum Operation {
     SendAck { enabled: bool },
     StartLogging,
     StopLogging,
+    PauseLogging,
+    ResumeLogging,
     StartLoggingSlowData,
     StopLoggingSlowData,
+    PauseLoggingSlowData,
+    ResumeLoggingSlowData,
     Shutdown,
 }
 #[derive(Debug, Serialize, Deserialize)]
@@ -462,11 +466,15 @@ pub fn serve_with_ready(
                             recordings.start(false, &selections)?;
                         }
                         Operation::StopLogging => recordings.stop(false)?,
+                        Operation::PauseLogging => recordings.pause(false, true)?,
+                        Operation::ResumeLogging => recordings.pause(false, false)?,
                         Operation::StartLoggingSlowData => {
                             ensure!(connection.is_some(), "not connected; use connect first");
                             recordings.start(true, &selections)?;
                         }
                         Operation::StopLoggingSlowData => recordings.stop(true)?,
+                        Operation::PauseLoggingSlowData => recordings.pause(true, true)?,
+                        Operation::ResumeLoggingSlowData => recordings.pause(true, false)?,
                         Operation::Shutdown => {
                             shutdown.store(true, Ordering::SeqCst);
                             if connection.is_some() {

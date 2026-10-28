@@ -131,9 +131,10 @@ def main():
         else:
             launch = [str(command), *extra]
         launch_env = install_env.copy()
-        launch_env["VIRTUAL_ENV"] = str(venv)
-        launch_env["PATH"] = str(scripts) + os.pathsep + launch_env.get("PATH", "")
-        print({"shell": "Opening activated environment shell; type exit to return.",
+        if args.launch != "shell":
+            launch_env["VIRTUAL_ENV"] = str(venv)
+            launch_env["PATH"] = str(scripts) + os.pathsep + launch_env.get("PATH", "")
+        print({"shell": "Opening activated environment shell; use deactivate to deactivate, or exit to return.",
                "example": "Starting Python example", "cli": "Starting UltraZohm CLI"}[args.launch], flush=True)
         try:
             child = subprocess.Popen(launch, env=launch_env)

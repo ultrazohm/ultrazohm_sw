@@ -14,7 +14,8 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-pub type Frames = Vec<(u64, Arc<Frame>)>;
+// Recording position, acquisition position (for timestamps), and samples.
+pub type Frames = Vec<(u64, u64, Arc<Frame>)>;
 
 /// Pending samples are bounded by one writer batch plus its bounded queue.
 pub struct History {
@@ -22,14 +23,19 @@ pub struct History {
     pub start: Option<u64>,
     pub stop: Option<u64>,
     pub persisted_stop: Option<u64>,
-    pub pending: VecDeque<(u64, Arc<Frame>)>,
+    pub pending: VecDeque<(u64, u64, Arc<Frame>)>,
     pub columns: Vec<(usize, String)>,
     pub slow: bool,
     pub max_pending_samples: usize,
     pub pending_samples: usize,
 }
 impl History {
-    pub fn accepted(&mut self, index: u64, frame: Arc<Frame>) -> Result<()> {
+    pub fn accepted(
+        &mut self,
+        index: u64,
+        acquisition_index: u64,
+        frame: Arc<Frame>,
+    ) -> Result<()> {
         ensure!(
             self.stop.is_none_or(|end| end == index),
             "recording sample gap"
@@ -41,7 +47,7 @@ impl History {
         self.start.get_or_insert(index);
         self.stop = Some(index + frame.slow_raw.len() as u64);
         self.pending_samples += frame.slow_raw.len();
-        self.pending.push_back((index, frame));
+        self.pending.push_back((index, acquisition_index, frame));
         Ok(())
     }
     pub fn committed(&mut self) -> Result<()> {
@@ -55,9 +61,9 @@ impl History {
             while self
                 .pending
                 .front()
-                .is_some_and(|(first, f)| first + f.slow_raw.len() as u64 <= end)
+                .is_some_and(|(first, _, f)| first + f.slow_raw.len() as u64 <= end)
             {
-                self.pending_samples -= self.pending.pop_front().unwrap().1.slow_raw.len();
+                self.pending_samples -= self.pending.pop_front().unwrap().2.slow_raw.len();
             }
         }
         Ok(())
@@ -123,6 +129,7 @@ pub struct DataInfo {
     pub fields: Vec<Field>,
     pub layout: String,
     pub sample_period_us: f64,
+    pub position_basis: String,
 }
 impl DataInfo {
     pub fn cursor(&self, next_sample: Option<u64>) -> Cursor {
@@ -160,7 +167,7 @@ fn slow_names(profile: &Profile) -> Vec<String> {
     names
 }
 fn from_frames(
-    frames: &[(u64, Arc<Frame>)],
+    frames: &[(u64, u64, Arc<Frame>)],
     start: u64,
     stop: u64,
     profile: &Profile,
@@ -169,30 +176,36 @@ fn from_frames(
 ) -> Result<DataFrame> {
     let selected: Frames = frames
         .iter()
-        .filter(|(first, f)| *first < stop && first + f.slow_raw.len() as u64 > start)
+        .filter(|(first, _, f)| *first < stop && first + f.slow_raw.len() as u64 > start)
         .cloned()
         .collect();
-    let mut next = selected.first().map_or(start, |(first, _)| *first);
-    for (first, frame) in &selected {
+    let mut next = selected.first().map_or(start, |(first, _, _)| *first);
+    for (first, _, frame) in &selected {
         ensure!(*first == next, "sample history contains a gap");
         next += frame.slow_raw.len() as u64;
     }
     ensure!(
         start <= stop
             && (start == stop
-                || selected.first().is_some_and(|(first, _)| *first <= start) && next >= stop),
+                || selected
+                    .first()
+                    .is_some_and(|(first, _, _)| *first <= start)
+                    && next >= stop),
         "requested RAM samples are unavailable"
     );
-    let rows = selected.iter().map(|(_, f)| f.slow_raw.len()).sum();
+    let rows = selected.iter().map(|(_, _, f)| f.slow_raw.len()).sum();
     let df = frames_dataframe(
-        &selected,
+        &selected
+            .iter()
+            .map(|(_, acquisition, frame)| (*acquisition, frame.clone()))
+            .collect::<Vec<_>>(),
         rows,
         profile,
         columns,
         &slow_names(profile),
         slow,
     )?;
-    let offset = selected.first().map_or(0, |(first, _)| start - first);
+    let offset = selected.first().map_or(0, |(first, _, _)| start - first);
     Ok(df.slice(offset as i64, (stop - start) as usize))
 }
 impl DataView {
@@ -217,6 +230,7 @@ impl DataView {
                 run_id: run_id.into(),
                 stream: source.stream.clone(),
                 recording: None,
+                position_basis: "acquisition_samples".into(),
                 generation: ring.generation,
                 start,
                 stop,
@@ -245,7 +259,11 @@ impl DataView {
         };
         if let Some(selection) = selection {
             let (start, stop) = view.bounds(selection)?;
-            view.frames = ring.frames(start, stop);
+            view.frames = ring
+                .frames(start, stop)
+                .into_iter()
+                .map(|(index, frame)| (index, index, frame))
+                .collect();
         }
         Ok(view)
     }
@@ -264,6 +282,7 @@ impl DataView {
                 run_id: run_id.into(),
                 stream: source.stream.clone(),
                 recording: source.recording,
+                position_basis: persisted.position_basis,
                 generation: 0,
                 start: h.start,
                 stop: h.stop,
@@ -289,7 +308,7 @@ impl DataView {
             view.frames = h
                 .pending
                 .iter()
-                .filter(|(first, f)| *first < stop && first + f.slow_raw.len() as u64 > start)
+                .filter(|(first, _, f)| *first < stop && first + f.slow_raw.len() as u64 > start)
                 .cloned()
                 .collect();
         }

@@ -177,7 +177,7 @@ its injectable factory is tested with a second, in-memory backend. A future loca
 or remote backend implements these traits without changing query callers.
 
 `data.rs` captures a source view, then combines its persisted prefix and pending
-suffix outside the receiver lock. All ranges use acquisition sample indices,
+suffix outside the receiver lock. Live ranges use acquisition sample indices; recording ranges use contiguous recorded-row positions,
 not floating-point timestamp comparisons. `History` tracks accepted and committed
 positions. Queues, batching, pending views and live history reference the same
 immutable `Arc<Frame>` payload. Pending retention is bounded by the rounded batch
@@ -363,3 +363,10 @@ output and viewer support are designed and implemented together.
   unchanged builds, and interruption without requiring attached hardware.
 
 These Python tooling functions and tool-path overrides are planned, not implemented.
+
+Pause keeps the recording route and worker alive but skips incoming frames for
+that stream. Positions used for storage/query paging remain contiguous; a separate
+acquisition position accompanies each accepted frame to generate its original
+timestamps. Pauses therefore introduce time gaps without holes in row pagination.
+The recording queue and pending-data bounds are unchanged. Both paused and active
+recordings prevent observable reassignment and are finalized during shutdown.

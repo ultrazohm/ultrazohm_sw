@@ -83,10 +83,22 @@ enum Command {
     /// Stop fast recording and finalize it in the background; check status.
     #[command(alias = "stop_logging")]
     StopLogging,
+    /// Suspend fast recording; acquisition continues. Resume keeps the same file.
+    #[command(alias = "pause_logging")]
+    PauseLogging,
+    /// Resume a paused fast recording, retaining the acquisition timestamp gap.
+    #[command(alias = "resume_logging")]
+    ResumeLogging,
     #[command(alias = "start_logging_slow_data")]
     StartLoggingSlowData,
     #[command(alias = "stop_logging_slow_data")]
     StopLoggingSlowData,
+    /// Suspend slow recording without finalizing it.
+    #[command(alias = "pause_logging_slow_data")]
+    PauseLoggingSlowData,
+    /// Resume the same slow recording.
+    #[command(alias = "resume_logging_slow_data")]
+    ResumeLoggingSlowData,
     /// Connect to a device and apply the configured initial observables.
     Connect {
         #[arg(default_value = service::DEFAULT_DEVICE_IP)]
@@ -566,8 +578,12 @@ fn execute(command: Command, endpoint: &str) -> Result<()> {
         }
         Command::StartLogging => Operation::StartLogging,
         Command::StopLogging => Operation::StopLogging,
+        Command::PauseLogging => Operation::PauseLogging,
+        Command::ResumeLogging => Operation::ResumeLogging,
         Command::StartLoggingSlowData => Operation::StartLoggingSlowData,
         Command::StopLoggingSlowData => Operation::StopLoggingSlowData,
+        Command::PauseLoggingSlowData => Operation::PauseLoggingSlowData,
+        Command::ResumeLoggingSlowData => Operation::ResumeLoggingSlowData,
         Command::Connect { ip, port } => Operation::Connect { ip, port },
         Command::Status => Operation::Status,
         Command::Observables => Operation::Observables,

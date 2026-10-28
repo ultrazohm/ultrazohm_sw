@@ -40,7 +40,7 @@ def files(monkeypatch):
 def test_open_save_and_save_as(files, tmp_path):
     ws = files.ws
     original = tmp_path/'source with spaces.py'
-    original.write_text('def run(uz):\n    print("original")\n')
+    original.write_text('print("original")\n')
     dialog = Dialog([str(original)])
     files.pending.append(dialog)
     ws._open_script_dialog('open')
@@ -50,7 +50,7 @@ def test_open_save_and_save_as(files, tmp_path):
     ws._poll_script_dialog()
     assert ws.script_code == original.read_text()
     assert ws.script_path == str(original)
-    ws.script_code = 'def run(uz):\n    print("edited")\n'
+    ws.script_code = 'print("edited")\n'
     ws._request_script_save()
     assert original.read_text() == ws.script_code
     target = tmp_path/'another script.py'
@@ -175,7 +175,7 @@ def test_python_panel_shows_filename_only(files, tmp_path, gui_frame, app_state,
 def test_dialog_completes_without_new_acquisition_updates(files, tmp_path):
     ws = files.ws
     path = tmp_path/'script.py'
-    path.write_text('def run(uz):\n    pass\n')
+    path.write_text('pass\n')
     dialog = Dialog([str(path)])
     files.pending.append(dialog)
     ws.controller.update = ws.update

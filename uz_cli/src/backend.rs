@@ -1,4 +1,4 @@
-//! Recording storage contract. Sample positions are acquisition indices, [start, stop).
+//! Recording storage contract. Positions address contiguous recorded rows, [start, stop); time retains acquisition gaps.
 //! Backends receive typed columns, never device frames or GUI requests.
 use anyhow::{Context, Result, ensure};
 use polars::prelude::*;
@@ -29,10 +29,15 @@ pub struct RecordingInfo {
     pub recording_id: String,
     pub stream: String,
     pub sample_period_us: f64,
+    #[serde(default = "acquisition_positions")]
+    pub position_basis: String,
     pub fields: Vec<Field>,
     pub start: Option<u64>,
     pub stop: Option<u64>,
     pub complete: bool,
+}
+fn acquisition_positions() -> String {
+    "acquisition_samples".into()
 }
 impl RecordingInfo {
     pub fn empty(&self) -> Result<DataFrame> {
@@ -206,6 +211,7 @@ impl ParquetBackend {
                 recording_id: id.into(),
                 stream: if slow { "slow" } else { "fast" }.into(),
                 sample_period_us: period,
+                position_basis: "recorded_samples".into(),
                 fields,
                 start: None,
                 stop: None,

@@ -115,3 +115,23 @@ def test_live_api_check_accepts_backend_without_connecting(monkeypatch, capsys):
     monkeypatch.setitem(sys.modules, 'ultrazohm', SimpleNamespace(Client=Client))
     assert check_live() == 0
     assert 'Live backend ready' in capsys.readouterr().out
+
+
+@pytest.mark.parametrize('live', [False, True])
+def test_shell_launch_sets_up_environment_without_starting_gui(launcher, live):
+    args = ['--launch', 'shell'] + (['--use-live'] if live else [])
+    result, calls = launcher.run(*args)
+    assert result.returncode == 0, result.stderr
+    assert calls[-1]['name'] == 'python'
+    assert calls[-1]['args'] == ['-m', 'uz_dataviewer.env_shell']
+    assert all(c['name'] != 'uz-dataviewer' for c in calls)
+    assert '--inexact' in calls[0]['args']  # Preserve an already installed CLI wheel.
+    assert any(c['name'] == 'run.sh' for c in calls) == live
+
+
+@pytest.mark.parametrize('args', [('--launch',), ('--launch', 'wrong'),
+                                  ('--launch', 'shell', 'measurement.csv')])
+def test_invalid_shell_arguments_do_not_setup_environment(launcher, args):
+    result, calls = launcher.run(*args)
+    assert result.returncode != 0
+    assert calls == []

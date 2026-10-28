@@ -386,14 +386,14 @@ class LiveController:
                 self.client.stop()
             self._progress('Stopping and finalizing recordings…')
             for stream, stop in (('fast', 'stop_logging'), ('slow', 'stop_logging_slow_data')):
-                if status.get('logging', {}).get(stream, {}).get('phase') == 'recording':
+                if status.get('logging', {}).get(stream, {}).get('phase') in ('recording', 'paused'):
                     getattr(self.client, stop)()
             def finalized():
                 self._status = self.client.status()
                 for info in self._status.get('logging', {}).values():
                     if info.get('phase') == 'failed':
                         raise RuntimeError(f'Recording finalization failed: {info.get("error")}')
-                    if info.get('phase') in ('recording', 'finalizing'):
+                    if info.get('phase') in ('recording', 'paused', 'finalizing'):
                         return False
                 return True
             self._wait_for(finalized, 300, 'recordings to finalize')

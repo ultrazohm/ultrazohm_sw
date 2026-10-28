@@ -49,6 +49,11 @@ Run the launcher from the repository root (Linux/macOS):
 ./uz_dataviewer/start.sh session.json       # restore a saved session
 ```
 
+Ordinary startup shows the offline workspace, even if the CLI wheel is already
+installed. Pass `--use-live` (or `--live-wheel PATH` / `--live-channel CHANNEL`)
+to include Live Data, Live Plots, Control, and Python. The Python entry point and
+installed `uz-dataviewer` command also accept `--use-live` to enable those panels.
+
 On Windows, use PowerShell:
 
 ```powershell
@@ -270,6 +275,128 @@ retain their saved domain as unavailable placeholders until repaired.
 
 ## Native live-data prototype
 
+### Debug CLI in the Console
+
+With live mode enabled, enter `uz` followed by CLI arguments in the existing
+Console:
+
+```text
+uz --help
+uz status
+uz set-variable send_field_19 5
+uz start-logging
+uz build
+uz flash
+```
+
+Only the exact first token `uz` bypasses the viewer command parser. The installed
+CLI handles parsing, validation, and help, so all its commands are available.
+Each invocation runs asynchronously in the viewer's Python environment; stdout
+and stderr appear incrementally in the Console with a command number and exit
+status. Up to four invocations can run concurrently. Bare `uz` shows CLI help.
+Without live mode or the CLI wheel, the Console reports **Live is not activated.**
+
+Service commands use the attached endpoint (or the endpoint entered in Live Data
+when detached); an explicit CLI `--endpoint` overrides this default. Local commands
+inherit the viewer's working directory and environment, including Vitis/XSCT on
+PATH. Use `--repo` on commands that need a different checkout. Quoted paths are
+supported. This is a noninteractive CLI interface with no shell expansion or
+shell operators.
+
+These are direct debug invocations, including while GUI controls are locked by
+a Python script. `flash` runs as entered and may disconnect the viewer; it does
+not coordinate recording finalization, shutdown, or reconnection. CLI processes
+continue if the viewer closes, with active output files retained in a temporary
+`uz-cli-console-*` directory. The regular viewer console commands remain available
+without the `uz` prefix.
+
+### Python measurement scripts
+
+The native source launcher with `--use-live` includes a **Python** window beside
+Live Plots. **Open Python file…** opens a native file picker. **Save** writes the
+current file; **Save as…** chooses a new filename. **Choose template** opens the
+built-in template list and loads the selection as an unsaved script. The editor
+shows only the filename or “Unsaved script”; full paths stay internal.
+
+Connect in Live Data, then press **Run** to save and execute the script in a
+separate Python process using the viewer's environment. Unsaved scripts first
+open a save dialog. Cancelling that dialog leaves the editor unchanged and does
+not execute code. File dialogs are polled without blocking live plots.
+
+Scripts define `run(uz)`. The viewer supplies a `ultrazohm.Client` for the attached
+service, so connection setup is already handled:
+
+```python
+import time
+
+def run(uz):
+    uz.set_variable("send_field_1", 0.0)
+    uz.start_logging()
+    time.sleep(10)
+    uz.stop_logging()
+```
+
+Use `uz.enable_system()`, `uz.enable_control()`, `uz.stop()`, and the other Client
+methods for device commands. Commands have no firmware acknowledgment: sequences
+requiring state confirmation must check `uz.status()` before proceeding. Stopping
+logging starts finalization; check its phase in `uz.status()['logging']` if the
+script needs a completed file before continuing.
+
+Scripts can import helper modules beside their file and packages installed in the
+viewer environment. The window shows output and Python tracebacks (the most recent
+64 KiB). The ImGuiColorTextEdit editor provides Python syntax highlighting, line
+numbers, four-space indentation, matching brackets, and undo/redo. It becomes
+read-only during execution. This prototype does not include an interactive REPL
+or package management. Frozen executables
+do not support script execution; use `start.sh --use-live` / `start.ps1 --use-live`.
+
+While a script runs, manual connection, assignment, logging, and device controls
+are locked in this viewer; plots remain interactive. **Stop script + device** in
+Python and **Stop** in Control terminate the script process before independently
+sending device Stop. Logging remains enabled. Normal completion and errors leave
+device and logging state as the script left them, then restore manual controls.
+Stop discards pending GUI commands and waits for an in-flight control command
+before sending device Stop. Closing a connected viewer sends Stop, including when
+no script is running; an active script is terminated first. The acquisition
+service and logging continue when the service was started externally. When the
+viewer started the service, closing the viewer requests shutdown and waits for
+recordings to finalize and the service to exit, even if the viewer was detached.
+Other CLI clients are not locked.
+
+#### Baremetal sine sweep example
+
+The Baremetal ISR includes a software sine example. It runs in every platform
+state, without enabling system/control or feeding a PWM/reference signal.
+`send_field_19` sets amplitude (clamped to 0–10), and `send_field_20` sets frequency
+in Hz (clamped to 0–50). Defaults are amplitude 0 and frequency 10 Hz. The oscillator
+keeps its phase when either value changes. Three appended JavaScope observables
+expose the waveform (`JSO_SineDemo`) and the two requested setpoints
+(`JSO_SineDemoAmplitude`, `JSO_SineDemoFrequency_Hz`).
+
+Build/program this firmware and start a service using its matching mapping and
+the example profile. Stop any existing acquisition service first:
+
+```bash
+./uz_cli/run.sh --local-newest -- flash
+./uz_cli/run.sh --local-newest -- serve --device 192.168.1.233:1000 \
+    --profile uz_cli/profiles/sine_demo.json --format parquet
+```
+
+In a second terminal, launch the viewer with `--use-live`, attach to that service,
+and select **Sine sweep (30 s)** in the Python template menu. Drag `JSO_SineDemo`
+into Live Plots before Run, and run it with existing logging stopped.
+The example profile already assigns the signals to channels 1–3; the template
+only changes assignments if needed, preserving plots when they already match. It
+records a 30-second sweep: seconds 0–15 ramp amplitude linearly from 0 to 10 at
+10 Hz; seconds 15–30 hold amplitude 10 and ramp frequency linearly from 10 to
+50 Hz. Setpoints update approximately every 50 ms using elapsed wall-clock time.
+After the 30-second sweep, the template waits up to two seconds for the sampled
+final setpoints, then requests logging stop and leaves the generator at amplitude
+10 / frequency 50 Hz. A confirmation timeout raises an error and retains logging.
+Interrupting it retains logging and the latest setpoints, as with other scripts.
+
+### Starting acquisition
+
 Enable live support using the same wheel selection/download flow as `uz_cli`:
 
 ```bash
@@ -285,8 +412,24 @@ or `run.ps1` in setup-only mode, targeting `uz_dataviewer/.venv`. It offers the
 CLI's local-wheel menu when compatible local wheels exist, or downloads the latest
 release when none exist. No Rust compiler is needed for prebuilt wheels. The CLI
 launcher does not start an interactive CLI or connect to hardware; the viewer
-opens afterward and **Connect** starts/attaches acquisition as usual. Relative
+opens afterward and **Connect** starts acquisition; **Existing service → Attach** reuses an existing service. Relative
 recording arguments keep their original working directory.
+
+Each live startup then calls the installed CLI's `create-json-from-javascope-h`
+command against the checkout's current JavaScope headers. It stores a fresh JSON
+in `<repo>/uz_cli_channel_mappings/`, named
+`javascope_<UTC timestamp>_<repository commit>.json`. The commit is taken from the
+generated metadata and includes `-dirty` when the relevant headers have local
+changes. These cache files are ignored by Git. Header parsing failures stop startup
+with an error. Offline startup does not generate a mapping.
+
+The cached path is prefilled in **Live Data → Service settings → Channel mapping
+JSON** and passed to services launched by the viewer. An existing service keeps
+its loaded configuration; Connect/Attach reports a notice when its mapping differs
+from the selected file. Use Shutdown service and reconnect to apply the new map.
+Both launchers pass their checkout root, so this also works from another working
+directory. With a manually installed viewer, use `--use-live --live-repo PATH`
+when the repository cannot be discovered from the current directory or source tree.
 
 The release channel follows the CLI default. Override it with
 `--use-live --live-channel testing` (or `stable`). A published wheel must contain
@@ -303,13 +446,38 @@ live setup, so `--use-live` is optional with an exact wheel:
 .\uz_dataviewer\start.ps1 --live-wheel C:\path\to\ultrazohm-....whl
 ```
 
-Use a wheel built with the `catalog` API. Without the wheel, offline viewing still
-works and Live Data displays installation instructions. Live acquisition is native
+Use a wheel built with the `catalog` API. Offline viewing works without the wheel;
+live panels are only created when explicitly enabled. Live acquisition is native
 only; the browser cannot connect to the local CLI socket.
 
-- **Live Data** sits beside Navigation. **Connect** attaches to the service endpoint,
-  or launches an independent CLI service if none is available, then connects to the
-  device. **Attach service** attaches without changing the device connection. An
+**Flash UZ**, beside Connect/Disconnect, opens an **OK / Cancel** confirmation.
+The button is greyed out when Vitis XSCT is missing from PATH, with a tooltip
+explaining how to load the Vitis environment and restart the viewer. Availability
+is also checked again before any device or logging changes.
+OK sends device Stop, stops active fast and slow logging and waits for completed
+files, shuts down the service, regenerates the header mapping, and runs the CLI's
+build/program operation. Progress and tool output appear in the Console while
+the GUI stays responsive. After success, a fresh acquisition session starts and
+connects to the device. Logging is idle and system/control remain in the firmware
+startup state. Cancel makes no changes. If no service is running, programming can
+start directly. A Python script or active debug CLI jobs disable the flash button;
+the workflow locks device controls, script execution, and debug CLI submissions.
+
+Managed flashing uses `uz_cli_channel_mappings/javascope_<commit>.json`, including
+`-dirty` when applicable, and regenerates/replaces that cache on every attempt.
+Startup's timestamped caches remain available. The prototype assumes headers stay
+unchanged during build/programming, as agreed; no checksum check is performed.
+The restarted service loads the new JSON, keeps existing channel assignments
+whose names remain available, and reports removed names. Sampling period, buffer,
+flush settings, and ACK policy are preserved when restarting an existing service.
+Existing recordings retain their original data and mapping. Errors stop later
+steps and appear in the Console; retries retain the captured service settings.
+If the viewer closes during programming, the CLI finishes independently and the
+viewer does not start a replacement service afterward.
+
+- **Live Data** sits beside Navigation. **Connect** starts a service at the selected endpoint
+  and connects it to the device. **Existing service → Attach** attaches to an
+  already running service without changing its device connection. An
   existing service owns its settings; session directory and channel mapping fields
   apply only when launching a new service. The session directory must not exist.
   A sibling `<session>.service.log` contains service startup diagnostics.
@@ -340,14 +508,21 @@ only; the browser cannot connect to the local CLI socket.
   histogram and nodes can then consume stable samples. Snapshots are memory-only;
   export them if needed before closing the viewer.
 - **Control** exposes Enable System, Enable Control, device Stop, user buttons 1–8,
-  and searchable named variables with an explicit Send action. Commands are sent
+  and a scrollable variable table populated from the service's JSON mapping. Each
+  row retains its own entered value; press **Enter** in that input to send it.
+  A successful send highlights that value blue for 0.2 seconds.
+  Editing, leaving a field, and filtering do not send commands. The filter narrows
+  the table; rows follow command-ID order. Entered values are local, not device
+  readbacks, and inputs are disabled while a Python script runs. Commands are sent
   without firmware acknowledgment; streamed platform state is shown separately.
   Error Reset is omitted because current firmware does not implement it.
 - Fast and slow logging have independent Start/Stop controls and phase/error/path
   indicators. **Open completed log** opens the final Parquet through the ordinary
   lazy file workflow. Stopping logging does not stop acquisition or the device.
-- Closing the viewer or **Detach viewer** leaves the service and logging running.
-  **Shutdown service** ends acquisition and finalizes logs; device Stop is separate.
+- **Existing service → Detach** leaves the service and logging running. Closing
+  the viewer shuts down a viewer-started service; for an external service it sends
+  device Stop and leaves logging running.
+  **Disconnect** and **Existing service → Shutdown** send device Stop, ends acquisition, finalizes logs, and exits the service.
   An external CLI can attach to the same endpoint throughout.
 
 The IO worker uses `Client.read_since()` at up to 30 Hz and retains at most the
@@ -367,3 +542,23 @@ history during acquisition and cloud access are future adapters using the same
 source/query boundary. Live windows/settings are not saved in offline sessions;
 analysis runs only on explicit frozen snapshots. Session times follow the CLI's
 nominal sampling clock; transport gaps cannot currently be reconstructed.
+
+GUI plot, FFT, and histogram exports run in the background using captured settings.
+The Console reports completion or failure; one export per workspace runs at a time.
+Closing the workspace cancels publication of an unfinished export.
+Measurement-script completion terminates remaining child processes in its process group
+(on Windows, its job object) before manual controls are restored.
+
+The Python panel starts hidden in live mode; open it with **View → Python**.
+GUI `.uzscript` replay yields between commands and waits for each background
+export before running dependent commands. An export failure aborts the replay.
+Startup command-line scripts still execute sequentially before the GUI opens.
+
+**Connect** starts a viewer-managed service and connects to the selected device IP.
+If an external service already occupies that endpoint, use **Existing service →
+Attach**. **Disconnect** sends shutdown (device Stop, recording finalization, and
+service exit) and leaves the GUI open. For a viewer-started service it waits for
+process exit before enabling Connect again. Each subsequent connection uses a
+fresh recording directory. The **Existing service** section contains Attach,
+Detach (viewer only), and Shutdown; Disconnect also shuts down an attached external
+service, whereas closing the GUI retains the external-service ownership policy.

@@ -317,15 +317,16 @@ stall timeout. Real current FreeRTOS streams continuously with ACKs disabled.
 
 ## Runtime profile and firmware channel mapping
 
-Two independent JSON files are loaded at startup:
+Runtime settings and firmware IDs are independent:
 
 | File | Purpose |
 |---|---|
 | `profiles/standard.json` | Profile schema/name, sample period, initial channel selections |
-| `channel_mappings/default.json` | Firmware API version, mapping name, repository name/commit, packet geometry, observable/slow/variable/command IDs, platform-state mask/shift/names |
+| Generated from checkout headers | Firmware API version, mapping name, repository name/commit, packet geometry, observable/slow/variable/command IDs, platform-state mask/shift/names |
 
-Both defaults are embedded in the executable, so no JSON files are required at
-runtime unless you want overrides. Export editable copies:
+The standard runtime profile is embedded. Firmware mappings are always generated
+from headers when no `--channel-mapping` is supplied; run from inside the checkout.
+There is no bundled firmware mapping. Export settings and a header-generated mapping:
 
 ```sh
 ultrazohm profile > my-profile.json
@@ -333,9 +334,10 @@ ultrazohm channel-mapping > my-channel-mapping.json
 ultrazohm serve --interactive --device 192.168.1.233:1000 --output measurement-001 --profile my-profile.json --channel-mapping my-channel-mapping.json
 ```
 
-Either flag can be omitted independently. The other file then uses its embedded
-default. Both files are read at startup; changing them requires restarting the
-service, not recompiling. The former combined `profiles/default.json` has been
+Either flag can be omitted independently. An omitted profile uses the standard
+settings; an omitted mapping triggers fresh header generation. To run outside the
+checkout, supply a previously header-generated mapping. Configuration is loaded at
+startup; changing it requires restarting the service, not recompiling. The former combined `profiles/default.json` has been
 replaced by these two files; old combined profiles are rejected rather than
 silently interpreted with the wrong settings.
 
@@ -445,8 +447,8 @@ ultrazohm serve --interactive --channel-mapping artifacts/channel_mappings/javas
 ```
 
 Or pass that path as Python `Acquisition(channel_mapping=...)`. Generating JSON
-inside a running shell does not change that service's active mapping. It also
-does not replace the embedded default or change the runtime profile.
+inside a running shell does not change that service's active mapping or runtime
+profile. A new service regenerates from headers unless given an explicit mapping.
 
 ## Python
 
@@ -989,7 +991,8 @@ The mask is `0xC0000000` written as a decimal JSON integer. State codes are
 `(status & mask) >> shift`; `values` must contain a nonempty name for each code
 0 through 3. The mask must select two bits at `shift` (0 through 30).
 Use `--channel-mapping PATH` or Python `Acquisition(channel_mapping=PATH)` to
-select a custom mapping. `ultrazohm channel-mapping` exports the embedded default.
+select a header-generated mapping. `ultrazohm channel-mapping` generates the current
+checkout's mapping and prints it as JSON.
 
 ```python
 state = uz.status()["state"]["platform_state"]  # e.g. "running"
@@ -998,3 +1001,8 @@ state = uz.status()["state"]["platform_state"]  # e.g. "running"
 This is the latest received platform state, independent of blinking LED bits;
 it is not an acknowledgment of a sent command. The raw `status` is retained in
 status responses and recordings. See [protocol.md](docs/protocol.md#signals-and-status).
+
+Shutdown (`ultrazohm shutdown`, interactive EOF/Ctrl-C, or
+`Acquisition.close()`) sends device Stop before ending acquisition and finalizing
+active recordings. The shutdown command's reply acknowledges acceptance; service
+process exit and `end.json` indicate whether finalization succeeded.

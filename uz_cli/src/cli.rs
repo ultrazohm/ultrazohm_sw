@@ -176,7 +176,7 @@ enum Command {
         #[arg(value_parser=["on","off"])]
         enabled: String,
     },
-    /// End acquisition and flush logs. Does not send the device Stop command.
+    /// Send device Stop, end acquisition, finalize recordings, and exit the service.
     Shutdown,
     /// Print the built-in runtime profile (initial channels and sampling period).
     Profile,
@@ -189,7 +189,7 @@ enum Command {
         #[arg(long)]
         output: Option<PathBuf>,
     },
-    /// Print the built-in firmware channel mapping (IDs and provenance).
+    /// Generate and print the firmware channel mapping from the checkout headers.
     ChannelMapping,
 }
 #[derive(Parser)]
@@ -379,7 +379,7 @@ impl rustyline::Helper for CommandCompleter {}
 
 fn prompt(endpoint: &str, shutdown: &AtomicBool) -> Result<()> {
     eprintln!(
-        "Type help for commands; Tab completes command names. shutdown, Ctrl-C or EOF ends acquisition and finalizes logs."
+        "Type help for commands; Tab completes command names. shutdown, Ctrl-C or EOF sends device Stop, ends acquisition and finalizes logs."
     );
     let stdin = io::stdin();
     // Keep redirected input unchanged for scripts and automated sessions.

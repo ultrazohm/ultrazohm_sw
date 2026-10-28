@@ -243,6 +243,8 @@ class RuntimeServices:
     analysis_displays: dict[str, Requests] = field(default_factory=lambda: {
         name: Requests(synchronous=runtime.IS_WEB) for name in ("fft", "hist")})
     executor: CancellableExecutor = field(default_factory=CancellableExecutor)
+    exports: list = field(default_factory=list)
+    replay: object | None = None
     pending: list[tuple[Future, str]] = field(default_factory=list)
     large_csv_requests: list[LoadRequest] = field(default_factory=list)
 
@@ -252,6 +254,8 @@ class RuntimeServices:
         for requests in self.analysis_displays.values():
             requests.close()
         self.executor.shutdown()
+        self.exports.clear()
+        self.replay = None
         self.pending.clear()
         self.large_csv_requests.clear()
 
@@ -545,6 +549,8 @@ class AppState(SessionData):
         The worker only *parsed*; the registry mutation (``register``) happens here on
         the main thread, so the UI never reads a registry mid-write.
         """
+        from .exports import poll
+        poll(self)
         still_pending: list[tuple[Future[ParsedRun], str]] = []
         for future, path in self.services.pending:
             if not future.done():

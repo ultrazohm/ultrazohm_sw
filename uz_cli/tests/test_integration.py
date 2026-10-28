@@ -9,6 +9,7 @@ from pathlib import Path
 import socket
 import signal
 import struct
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -44,9 +45,30 @@ def wait_for(fn, seconds=10):
     raise AssertionError("timed out waiting for condition")
 
 
+def generated_mapping():
+    result = subprocess.run([str(BIN), "channel-mapping"], cwd=ROOT,
+                            capture_output=True, text=True, check=True, timeout=15)
+    return json.loads(result.stdout)
+
+
+def repository_fixture(root):
+    for name in (
+        'tcl_scripts/vitis_headless.tcl',
+        'vitis/software/Baremetal/src/include/javascope.h',
+        'vitis/software/Baremetal/src/include/javascope_status.h',
+        'vitis/software/shared/APU_RPU_shared.h',
+        'vitis/software/FreeRTOS/main.h',
+        'vitis/software/FreeRTOS/defines.h',
+    ):
+        destination = root/name
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT/name, destination)
+
+
 class SimulatorTest(unittest.TestCase):
+    @unittest.skipUnless(BIN.exists(), "build Rust CLI first")
     def test_profile_matches_current_header(self):
-        profile = json.loads((ROOT / "uz_cli/channel_mappings/default.json").read_text())
+        profile = generated_mapping()
         header = (ROOT / "vitis/software/Baremetal/src/include/javascope.h").read_text()
         for field, enum in [("commands", "gui_button_mapping"), ("observables", "JS_OberservableData"), ("slow_signals", "JS_SlowData")]:
             body = re.search(r"enum " + enum + r"\s*\{(.*?)\}", header, re.S)[1]
@@ -207,7 +229,7 @@ class IntegrationTest(unittest.TestCase):
         self.start(logging=False)
         catalog = self.cli('catalog')
         self.assertFalse(catalog['device_readback'])
-        mapping = json.loads((ROOT/'uz_cli/channel_mappings/default.json').read_text())
+        mapping = generated_mapping()
         for field in ('observables', 'slow_signals', 'variables', 'commands'):
             self.assertEqual(catalog['profile'][field], mapping[field])
         self.assertEqual(catalog['profile']['channels'], 20)
@@ -601,7 +623,7 @@ class IntegrationTest(unittest.TestCase):
         wait_for(lambda: self.cli("status")["state"]["platform_state"] == "idle")
 
     def test_platform_state_names_from_channel_mapping(self):
-        mapping = json.loads((ROOT/"uz_cli/channel_mappings/default.json").read_text())
+        mapping = generated_mapping()
         mapping["platform_state"]["values"] = {
             "0": "waiting", "1": "enabled", "2": "regulating", "3": "fault"
         }
@@ -615,6 +637,7 @@ class IntegrationTest(unittest.TestCase):
         wait_for(lambda: self.cli("status")["state"]["platform_state"] == "fault")
 
     def test_default_interactive_session(self):
+        repository_fixture(Path(self.tmp.name))
         result = subprocess.run(
             [str(BIN), "--endpoint", self.endpoint], cwd=self.tmp.name,
             input="status\nshutdown\n", text=True, capture_output=True, timeout=10)
@@ -633,9 +656,7 @@ class IntegrationTest(unittest.TestCase):
 
     def test_default_output_from_repository_subdirectory(self):
         root = Path(self.tmp.name)
-        (root / "tcl_scripts").mkdir()
-        (root / "tcl_scripts/vitis_headless.tcl").touch()
-        (root / "vitis/software").mkdir(parents=True)
+        repository_fixture(root)
         nested = root / "uz_cli/nested"
         nested.mkdir(parents=True)
         result = subprocess.run(
@@ -719,6 +740,19 @@ class IntegrationTest(unittest.TestCase):
         self.assertFalse(json.loads((self.run_dir/"end.json").read_text())["complete"])
         self.assertTrue((self.run_dir/"data.parquet").is_file())
 
+    def test_shutdown_sends_stop_and_finalizes_active_recording(self):
+        self.start(format="parquet")
+        self.cli("enable-system")
+        self.cli("enable-control")
+        wait_for(lambda: self.cli("status")["state"]["samples"] >= 100)
+        self.cli("shutdown")
+        self.assertEqual(self.service.wait(timeout=15), 0)
+        events = [json.loads(line) for line in (self.run_dir/"commands.jsonl").read_text().splitlines()]
+        shutdown = next(event for event in events if event.get("request", {}).get("command", {}).get("op") == "shutdown")
+        self.assertEqual(shutdown["wire"], [generated_mapping()["commands"]["Stop"], 0.0])
+        self.assertTrue(json.loads((self.run_dir/"end.json").read_text())["complete"])
+        self.assertTrue((self.run_dir/"data.parquet").is_file())
+
     def test_default_initial_channels_and_exports(self):
         self.start(logging=False)
         channels=self.cli("observables")["channels"]
@@ -741,7 +775,7 @@ class IntegrationTest(unittest.TestCase):
         self.assertEqual(self.service.wait(timeout=15),0)
 
     def test_runtime_mapping_and_partial_initial_channels(self):
-        mapping=json.loads((ROOT/"uz_cli/channel_mappings/default.json").read_text())
+        mapping=generated_mapping()
         mapping["observables"]["JSO_MY_NEW_OBSERVABLE"] = 29
         mapping["repository"] = {"name":"my/firmware", "commit":"test-commit"}
         self.start(logging=False, profile=self.runtime_profile({"5":"JSO_MY_NEW_OBSERVABLE"}), mapping=mapping)
@@ -947,7 +981,7 @@ class IntegrationTest(unittest.TestCase):
             self.assertNotIn("slow_id", parquet.columns)
             self.assertFalse(any(name.startswith("ch_") for name in parquet.columns))
             self.assertEqual(parquet.columns.count("JSO_lifecheck"), 1)
-            mapping=json.loads((ROOT/"uz_cli/channel_mappings/default.json").read_text())["slow_signals"]
+            mapping=generated_mapping()["slow_signals"]
             names = sorted(mapping, key=mapping.get)
             self.assertEqual(slow.columns, ["time", "status", *names])
             self.assertTrue(all(slow[name].dtype == pl.Float32 for name in names))
@@ -1070,7 +1104,7 @@ class IntegrationTest(unittest.TestCase):
         wait_for(ready)
         run_dir=Path(self.tmp.name)/"embedded"
         profile_path=self.config_file("python-profile.json", self.runtime_profile({"5":"JSO_PYTHON_SIGNAL"}))
-        mapping=json.loads((ROOT/"uz_cli/channel_mappings/default.json").read_text())
+        mapping=generated_mapping()
         mapping["observables"]["JSO_PYTHON_SIGNAL"] = 29
         mapping["platform_state"]["values"]["0"] = "waiting"
         mapping_path=self.config_file("python-mapping.json",mapping)
@@ -1115,9 +1149,7 @@ class IntegrationTest(unittest.TestCase):
     @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for embedded API test")
     def test_embedded_python_defaults(self):
         repo = Path(self.tmp.name)/"repo"
-        (repo/"tcl_scripts").mkdir(parents=True)
-        (repo/"tcl_scripts/vitis_headless.tcl").touch()
-        (repo/"vitis/software").mkdir(parents=True)
+        repository_fixture(repo)
         cwd = repo/"uz_cli"
         cwd.mkdir()
         self.spawn([sys.executable, ROOT/"javascope/test_server.py", "--port", self.device_port])

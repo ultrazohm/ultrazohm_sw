@@ -156,16 +156,11 @@ impl Recordings {
         } else {
             base
         };
-        let mut log = LogWriter::new_for_backend(
-            dir.clone(),
-            self.profile.clone(),
-            self.format,
-            stem.clone(),
-            slow,
-            selections,
-            self.options.recording_backend,
-        )?;
-        log.segment_rows = self.options.segment_rows;
+        let dir = dir.clone();
+        let profile = self.profile.clone();
+        let format = self.format;
+        let options = self.options.clone();
+        let selections = selections.clone();
         let metadata_path = dir.join(format!("{stem}.json"));
         let metadata = json!({"schema_version":5, "stream":if slow {"slow"} else {"fast"},
             "requested_observables":selections, "mapping_confirmed":false,
@@ -173,12 +168,9 @@ impl Recordings {
             "slow_initial_values": if slow {Some("rows_omitted_until_all_observables_received")} else {None},
             "time_basis":"seconds from acquisition start, configured sample period; gaps unknown",
             "parquet":format!("{stem}.parquet"), "csv":!matches!(self.format, Format::Parquet)});
-        // Exclusive creation also reserves empty recordings before the first segment.
-        let file = fs::File::create_new(&metadata_path)?;
-        serde_json::to_writer_pretty(file, &metadata)?;
         let (tx, rx) = mpsc::sync_channel::<Batch>(LOGGER_QUEUE_FRAMES);
         let history = Arc::new(Mutex::new(History {
-            reader: log.reader(),
+            reader: None,
             start: None,
             stop: None,
             persisted_stop: None,
@@ -191,7 +183,7 @@ impl Recordings {
             columns: if slow {
                 Vec::new()
             } else {
-                selected_columns(&self.profile, selections)?
+                selected_columns(&self.profile, &selections)?
             },
             slow,
         }));
@@ -200,7 +192,7 @@ impl Recordings {
             phase: "recording",
             parquet: Some(dir.join(format!("{stem}.parquet"))),
             error: None,
-            handle: Some(crate::backend::index_path(dir, &stem)),
+            handle: Some(crate::backend::index_path(&dir, &stem)),
             backend: "parquet",
         };
         let writer_history = history.clone();
@@ -209,6 +201,21 @@ impl Recordings {
         self.workers[slot] = Some(thread::spawn(move || {
             let mut rows = 0u64;
             let result: Result<()> = (|| {
+                // Disk initialization runs on the writer, never the control loop.
+                // Frames accepted meanwhile remain in the bounded recording queue.
+                let mut log = LogWriter::new_for_backend(
+                    dir,
+                    profile,
+                    format,
+                    stem,
+                    slow,
+                    &selections,
+                    options.recording_backend,
+                )?;
+                log.segment_rows = options.segment_rows;
+                writer_history.lock().unwrap().reader = Some(log.reader());
+                let file = fs::File::create_new(&metadata_path)?;
+                serde_json::to_writer_pretty(file, &metadata)?;
                 let mut last_flush = Instant::now();
                 loop {
                     match rx.recv_timeout(flush_interval.saturating_sub(last_flush.elapsed())) {

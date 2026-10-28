@@ -6,7 +6,7 @@ use crate::{
     protocol::Frame,
     storage::frames_dataframe,
 };
-use anyhow::{Result, ensure};
+use anyhow::{Context, Result, ensure};
 use polars::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::{
@@ -18,7 +18,7 @@ pub type Frames = Vec<(u64, Arc<Frame>)>;
 
 /// Pending samples are bounded by one writer batch plus its bounded queue.
 pub struct History {
-    pub reader: Arc<dyn RecordingReader>,
+    pub reader: Option<Arc<dyn RecordingReader>>,
     pub start: Option<u64>,
     pub stop: Option<u64>,
     pub persisted_stop: Option<u64>,
@@ -45,7 +45,12 @@ impl History {
         Ok(())
     }
     pub fn committed(&mut self) -> Result<()> {
-        self.persisted_stop = self.reader.info()?.stop;
+        self.persisted_stop = self
+            .reader
+            .as_ref()
+            .context("recording is initializing")?
+            .info()?
+            .stop;
         if let Some(end) = self.persisted_stop {
             while self
                 .pending
@@ -252,7 +257,8 @@ impl DataView {
         selection: Option<&Selection>,
     ) -> Result<Self> {
         let h = history.lock().unwrap();
-        let persisted = h.reader.info()?;
+        let reader = h.reader.as_ref().context("recording is initializing")?;
+        let persisted = reader.info()?;
         let mut view = Self {
             info: DataInfo {
                 run_id: run_id.into(),
@@ -274,7 +280,7 @@ impl DataView {
             },
             frames: Vec::new(),
             columns: h.columns.clone(),
-            reader: Some(h.reader.clone()),
+            reader: Some(reader.clone()),
             profile: profile.clone(),
         };
         if let Some(selection) = selection {
@@ -296,7 +302,8 @@ impl DataView {
             Selection::Tail { count } => {
                 ensure!(
                     *count > 0 && *count as u64 <= end - first,
-                    "requested tail unavailable; range [{first}, {end})"
+                    "requested tail unavailable; only {} available; range [{first}, {end})",
+                    end - first
                 );
                 (end - *count as u64, end)
             }

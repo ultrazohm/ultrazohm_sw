@@ -201,6 +201,14 @@ errors do not invalidate canonical measurement data. Complete acquisition helper
 Slow canonical history preserves original updates; wide forward-filled slow files
 are derived exports. This avoids inventing simultaneous slow observations.
 
+Recording initialization and command audit writes also run on workers. Starting
+logging accepts frames immediately into the bounded recording queue; disk errors
+are reported asynchronously through service status and trigger the fatal-error
+Stop path. Recording queries can return `recording is initializing` until the
+backend reader is ready. Audit entries use a bounded queue; a full or failed queue
+fails the service rather than silently dropping command records. Shutdown drains
+both workers, so it can still wait for storage.
+
 The API offers RAM/recording `tail`, `read_range`, `read_since`, data metadata,
 and a recording catalogue. At most four background workers perform data reads and
 serialization, leaving control requests independent of history I/O. Only the
@@ -274,13 +282,16 @@ arrival time is not used as the measurement clock.
 ## Startup configuration
 
 `profiles/standard.json` is the default runtime profile: schema version, name,
-sample period and initial slot selections. `channel_mappings/default.json` holds
+sample period and initial slot selections. Header-generated firmware mappings hold
 firmware wire geometry, API version, mapping name, repository name/commit and all
 numeric signal/command IDs and the platform-state bit mask, shift, and value names.
 Status decoding uses this mapping for both CLI and Python responses.
 `Profile::load_files` combines and validates the two
-before the service touches a device. Each omitted file uses its embedded default.
-The CLI can export each default independently with `profile` and `channel-mapping`.
+before the service touches a device. An omitted profile uses embedded standard
+settings; an omitted mapping is generated from the current checkout headers.
+There is no embedded firmware mapping. Outside the checkout, provide a generated
+mapping explicitly. The CLI exports runtime settings with `profile` and generates
+the current mapping with `channel-mapping`.
 
 Initial selections are sent before the command loop becomes ready, after exclusive
 endpoint ownership and device connection. There are no automatic enable or logging

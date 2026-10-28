@@ -46,7 +46,9 @@ class HeaderMappingTest(unittest.TestCase):
                               env={**os.environ, "PATH": ""})
         self.assertEqual(result.returncode, 0, result.stderr)
         generated = json.loads(self.output.read_text())
-        default = json.loads((ROOT / "uz_cli/channel_mappings/default.json").read_text())
+        result = self.run_cli("channel-mapping", env={**os.environ, "PATH": ""})
+        self.assertEqual(result.returncode, 0, result.stderr)
+        default = json.loads(result.stdout)
         for field in ("api_version", "channels", "samples_per_packet", "observables", "slow_signals", "variables", "commands", "platform_state"):
             self.assertEqual(generated[field], default[field], field)
         self.assertEqual(generated["repository"]["commit"], "unknown")
@@ -70,11 +72,20 @@ class HeaderMappingTest(unittest.TestCase):
         self.assertEqual(mapping["variables"]["speed_reference"], 4)
         self.assertEqual(mapping["samples_per_packet"], 7)
         self.assertEqual(mapping["platform_state"]["values"]["1"], "enabled")
+        # Default loading regenerates from this checkout, including local edits.
+        result = self.run_cli("channel-mapping")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout), mapping)
         # The output is directly consumable by the CLI, without editing its schema.
         result = self.run_cli("--endpoint", self.endpoint, "serve", "--interactive",
                               "--channel-mapping", destination, "--output", self.repo / "session",
                               input="status\nshutdown\n")
         self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_missing_checkout_has_no_bundled_fallback(self):
+        result = self.run_cli("channel-mapping", cwd=self.tmp.name)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("generating firmware mapping requires a checkout", result.stderr)
 
     def test_bad_headers_do_not_replace_output(self):
         self.output.parent.mkdir(parents=True)

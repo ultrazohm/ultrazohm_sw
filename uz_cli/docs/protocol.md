@@ -126,7 +126,7 @@ Firmware truncates fractional selection values; API v1 avoids them entirely.
 
 ## Signals and status
 
-See `channel_mappings/default.json` for the complete numeric enum tables. Enum membership
+Run `ultrazohm channel-mapping` in the checkout for the current numeric enum tables. Enum membership
 alone does not imply that a pointer has been assigned. All fast and slow pointers
 start at a shared zero value; all selected channels initially point to zero.
 
@@ -245,7 +245,9 @@ samples per packet, numeric ID maps, and the required `platform_state` object.
 Its mask must select two adjacent bits at shift 0..30, and its `values` object
 must name all four codes (`"0"` through `"3"`) with nonempty strings. Older custom
 mappings must add this object; invalid mappings are rejected before device access. Both flags also exist as Python constructor
-arguments `profile` and `channel_mapping`. Defaults are embedded independently.
+arguments `profile` and `channel_mapping`. The standard profile is embedded;
+firmware mappings are generated from checkout headers when omitted. Outside the
+checkout, pass a previously header-generated mapping explicitly.
 
 Default initial channels select IDs 1..20 into slots 1..20. All channel/name pairs
 are validated before device access. Connection initialization emits their ordinary 201..220 wire
@@ -353,3 +355,11 @@ observable, slow-signal, variable and command names/IDs, channel geometry, initi
 assignments, nominal sample period and platform-state decoding. Native viewers use
 it to populate selectors instead of maintaining a second mapping. It is service
 configuration, not firmware readback. Python: `Client.catalog()`; CLI: `ultrazohm catalog`.
+
+### Unified shutdown
+
+`shutdown` sends device Stop when connected, then ends acquisition, finalizes all
+active recordings, and exits the service. The reply acknowledges acceptance, not
+completed finalization. Process exit and `end.json` report completion/failure.
+Ctrl-C, interactive EOF, and embedded `Acquisition.close()` use the same cleanup
+sequence. A Stop transmission failure is recorded; logging still finalizes.

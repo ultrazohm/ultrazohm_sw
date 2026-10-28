@@ -5,8 +5,8 @@ Install from the repository root:
 Run (without a separate `ultrazohm serve` process):
     python uz_cli/example_python_usage.py
 
-Set PROFILE for startup selections and CHANNEL_MAPPING for firmware names/IDs.
-The JSON is loaded at runtime; changing it does not require rebuilding Rust.
+Set PROFILE for startup selections. Firmware names/IDs are generated from the
+checkout headers at startup. Run from the repository or pass a generated mapping.
 Enable commands request state changes; firmware interlocks still apply.
 After each 10-second phase, print the latest reported platform state.
 Before closing, return the latest 20 samples as a DataFrame and print them.
@@ -22,8 +22,6 @@ import ultrazohm
 
 DEVICE = "192.168.1.233:1000"
 PROFILE = Path(__file__).parent / "profiles" / "standard.json"
-CHANNEL_MAPPING = Path(__file__).parent / "channel_mappings" / "default.json"
-# For your own firmware, point these to your two custom JSON files.
 # Resolve from this script so the destination does not depend on the working directory.
 LOG_ROOT = Path(__file__).resolve().parents[1] / "artifacts" / "live_logs"
 LOG_ROOT.mkdir(parents=True, exist_ok=True)
@@ -31,12 +29,12 @@ OUTPUT = LOG_ROOT / ("lifecheck-" + datetime.now().strftime("%Y%m%d-%H%M%S-%f"))
 
 # Construction waits for the service and device connection; logging starts below.
 acquisition = ultrazohm.Acquisition(
-    DEVICE, profile=str(PROFILE), channel_mapping=str(CHANNEL_MAPPING),
+    DEVICE, profile=str(PROFILE),
     output=str(OUTPUT), format="parquet"
 )
 uz = ultrazohm.Client()
 
-# Startup applies PROFILE["initial_channels"]. Names come from CHANNEL_MAPPING.
+# Startup applies PROFILE["initial_channels"]. Names come from the checkout headers.
 # Override a selection before starting any logging if desired.
 uz.set_observable("JSO_lifecheck", 1)
 # If implemented in your firmware and listed in your custom channel mapping:

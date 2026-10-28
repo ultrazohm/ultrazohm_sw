@@ -84,7 +84,7 @@ try {
         $viewerScripts = Join-Path $viewerVenv $scripts
         & (Join-Path $viewerScripts $pythonName) -m uz_dataviewer.check_live
         if ($LASTEXITCODE -ne 0) { throw 'The selected backend is incompatible with live viewing.' }
-        & (Join-Path $viewerScripts $viewerName) @viewerArgs
+        & (Join-Path $viewerScripts $viewerName) --use-live --live-repo (Join-Path $PSScriptRoot '..') @viewerArgs
         exit $LASTEXITCODE
     }
     # Keep the caller's working directory so relative input paths still work.

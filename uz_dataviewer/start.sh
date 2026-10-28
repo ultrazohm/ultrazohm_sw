@@ -66,7 +66,7 @@ if "$USE_LIVE"; then
     "$PROJECT_DIR/../uz_cli/run.sh" --venv "$PROJECT_DIR/.venv" \
         --launch none --no-examples "${LIVE_OPTIONS[@]}"
     "$PROJECT_DIR/.venv/bin/python" -m uz_dataviewer.check_live
-    exec "$PROJECT_DIR/.venv/bin/uz-dataviewer" "${VIEWER_ARGS[@]}"
+    exec "$PROJECT_DIR/.venv/bin/uz-dataviewer" --use-live --live-repo "$PROJECT_DIR/.." "${VIEWER_ARGS[@]}"
 fi
 
 # Keep the caller's working directory so relative input paths still work.

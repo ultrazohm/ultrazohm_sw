@@ -1,6 +1,6 @@
 use crate::{
     data::{DataView, Query, Selection, Source},
-    live::{DataOptions, LiveBuffer, MAX_SNAPSHOT_BYTES, selected_columns},
+    live::{DataOptions, LiveBuffer, MAX_SNAPSHOT_BYTES},
     profile::Profile,
     protocol::{decode_frame, encode_command},
     recording::{Recordings, Routes},
@@ -10,7 +10,7 @@ use anyhow::{Context, Result, bail, ensure};
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::{
-    fs::{self, File, OpenOptions},
+    fs::{self, OpenOptions},
     io::{Read, Write},
     net::{Shutdown, SocketAddr, TcpListener, TcpStream, ToSocketAddrs},
     path::PathBuf,
@@ -21,6 +21,52 @@ use std::{
     thread,
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
+
+// Bounded audit IO: slow storage must never hold up device Stop.
+struct Audit {
+    tx: std::sync::mpsc::SyncSender<Value>,
+    worker: thread::JoinHandle<()>,
+}
+impl Audit {
+    fn new(
+        mut file: impl Write + Send + 'static,
+        state: Arc<Mutex<State>>,
+        shutdown: Arc<AtomicBool>,
+    ) -> Self {
+        let (tx, rx) = std::sync::mpsc::sync_channel::<Value>(2048);
+        let worker = thread::spawn(move || {
+            for event in rx {
+                let result = (|| -> Result<()> {
+                    serde_json::to_writer(&mut file, &event)?;
+                    file.write_all(b"\n")?;
+                    file.flush()?;
+                    Ok(())
+                })();
+                if let Err(error) = result {
+                    state
+                        .lock()
+                        .unwrap()
+                        .error
+                        .get_or_insert_with(|| format!("command audit failed: {error:#}"));
+                    shutdown.store(true, Ordering::SeqCst);
+                    break;
+                }
+            }
+        });
+        Self { tx, worker }
+    }
+    fn send(&self, event: Value) -> Result<()> {
+        self.tx
+            .try_send(event)
+            .context("command audit queue full or failed")
+    }
+    fn finish(self) -> Result<()> {
+        drop(self.tx);
+        self.worker
+            .join()
+            .map_err(|_| anyhow::anyhow!("command audit worker panicked"))
+    }
+}
 
 pub const DEFAULT_DEVICE_IP: &str = "192.168.1.233";
 pub const DEFAULT_DEVICE_PORT: u16 = 1000;
@@ -217,7 +263,7 @@ pub fn serve_with_ready(
     let state = Arc::new(Mutex::new(State::default()));
     let ack = Arc::new(AtomicBool::new(config.ack));
     let run_id = format!("{}-{}", now_ns(), std::process::id());
-    let mut events: Option<File> = None;
+    let mut events: Option<Audit> = None;
     if let Some(dir) = &config.output {
         fs::create_dir(dir)?;
         fs::write(
@@ -230,12 +276,14 @@ pub fn serve_with_ready(
                 "software_version":env!("CARGO_PKG_VERSION")
             }))?,
         )?;
-        events = Some(
+        events = Some(Audit::new(
             OpenOptions::new()
                 .create_new(true)
                 .append(true)
                 .open(dir.join("commands.jsonl"))?,
-        );
+            state.clone(),
+            shutdown.clone(),
+        ));
     }
     let mut recordings = Recordings::new(
         config.output.clone(),
@@ -268,6 +316,7 @@ pub fn serve_with_ready(
     eprintln!("UltraZohm service listening on {}", config.endpoint);
     ready();
     let mut query_workers: Vec<thread::JoinHandle<()>> = Vec::new();
+    let mut shutdown_stop_sent = false;
     while !shutdown.load(Ordering::SeqCst) {
         query_workers.retain(|worker| !worker.is_finished());
         if let Some(error) = recordings.error() {
@@ -283,7 +332,6 @@ pub fn serve_with_ready(
         }
         match listener.accept() {
             Ok((mut socket, _)) => {
-                let mut payload = None;
                 let mut query_job = None;
                 let result: Result<Value> = (|| {
                     // Windows accepted sockets inherit the nonblocking listener mode.
@@ -347,29 +395,27 @@ pub fn serve_with_ready(
                             return Ok(json!({"api_version":1,"ok":true,"recordings":infos}));
                         }
                         Operation::GetLiveData { last_n_samples } => {
-                            use polars::prelude::*;
                             ensure!(connection.is_some(), "not connected; use connect first");
-                            ensure!(*last_n_samples > 0, "last_n_samples must be positive");
-                            let columns = selected_columns(&config.profile, &selections)?;
-                            // Reserve headroom for Arrow metadata and buffer alignment.
-                            let row_bytes = 12 + 4 * columns.len();
-                            ensure!(
-                                *last_n_samples <= (MAX_SNAPSHOT_BYTES - 65536) / row_bytes,
-                                "snapshot exceeds response limit; request fewer samples"
-                            );
-                            let snapshot = ring.lock().unwrap().snapshot(*last_n_samples)?;
-                            let mut df =
-                                snapshot.dataframe(config.profile.sample_period_us, &columns)?;
-                            let mut bytes = Vec::new();
-                            IpcStreamWriter::new(&mut bytes).finish(&mut df)?;
-                            ensure!(
-                                bytes.len() <= MAX_SNAPSHOT_BYTES,
-                                "snapshot exceeds response limit"
-                            );
-                            let reply = json!({"api_version":1,"ok":true,"rows":snapshot.rows,
-                                "arrow_bytes":bytes.len(),"mapping_confirmed":false});
-                            payload = Some(bytes);
-                            return Ok(reply);
+                            ensure!(query_workers.len() < 4, "too many concurrent data queries");
+                            let query = Query {
+                                source: Default::default(),
+                                selection: crate::data::Selection::Tail {
+                                    count: *last_n_samples,
+                                },
+                                channels: None,
+                            };
+                            let view = data_view(
+                                &run_id,
+                                &query.source,
+                                &ring,
+                                &recordings,
+                                &config.profile,
+                                &selections,
+                                true,
+                                Some(&query.selection),
+                            )?;
+                            query_job = Some((view, query));
+                            return Ok(json!({}));
                         }
                         Operation::Connect { ip, port } => {
                             ensure!(connection.is_none(), "already connected");
@@ -423,6 +469,9 @@ pub fn serve_with_ready(
                         Operation::StopLoggingSlowData => recordings.stop(true)?,
                         Operation::Shutdown => {
                             shutdown.store(true, Ordering::SeqCst);
+                            if connection.is_some() {
+                                wire = Some((config.profile.command("Stop")?, 0.0));
+                            }
                         }
                         Operation::SendAck { enabled } => {
                             // An immediate zero wakes a paused legacy peer when re-enabling.
@@ -478,22 +527,17 @@ pub fn serve_with_ready(
                             return Err(e);
                         }
                         state.lock().unwrap().commands_sent += 1;
+                        if matches!(req.command, Operation::Shutdown) {
+                            shutdown_stop_sent = true;
+                        }
                         if let Operation::SetObservable { name, channel } = &req.command {
                             selections[channel.to_string()] = json!(name);
                             // Previously retained samples must not acquire the new column labels.
                             ring.lock().unwrap().clear();
                         }
                     }
-                    if let Some(file) = events.as_mut()
-                        && let Err(e) = (|| -> Result<()> {
-                            serde_json::to_writer(
-                                &mut *file,
-                                &json!({"host_unix_ns":now_ns(),"request":req,"wire":wire,"outcome":if wire.is_some(){"sent_unconfirmed"}else{"applied_locally"}}),
-                            )?;
-                            file.write_all(b"\n")?;
-                            file.flush()?;
-                            Ok(())
-                        })()
+                    if let Some(audit) = events.as_ref()
+                        && let Err(e) = audit.send(json!({"host_unix_ns":now_ns(),"request":req,"wire":wire,"outcome":if wire.is_some(){"sent_unconfirmed"}else{"applied_locally"}}))
                     {
                         state.lock().unwrap().error =
                             Some(format!("command audit failed after send: {e}"));
@@ -513,11 +557,8 @@ pub fn serve_with_ready(
                     Ok(v) => v,
                     Err(e) => json!({"api_version":1,"ok":false,"error":format!("{e:#}")}),
                 };
-                if serde_json::to_writer(&mut socket, &response).is_ok()
-                    && socket.write_all(b"\n").is_ok()
-                    && let Some(bytes) = payload
-                {
-                    let _ = socket.write_all(&bytes);
+                if serde_json::to_writer(&mut socket, &response).is_ok() {
+                    let _ = socket.write_all(b"\n");
                 }
             }
             Err(e) if e.kind() == std::io::ErrorKind::WouldBlock => {
@@ -526,6 +567,25 @@ pub fn serve_with_ready(
             Err(e) => {
                 state.lock().unwrap().error = Some(e.to_string());
                 shutdown.store(true, Ordering::SeqCst);
+            }
+        }
+    }
+    // All exit paths (shutdown command, Ctrl-C, EOF, embedded close, or failure)
+    // stop the device before waiting for data queries and recording finalization.
+    if !shutdown_stop_sent && let Some(c) = &connection {
+        match config
+            .profile
+            .command("Stop")
+            .and_then(|id| send(&c.writer, id, 0.0))
+        {
+            Ok(()) => state.lock().unwrap().commands_sent += 1,
+            Err(error) => {
+                eprintln!("Shutdown device Stop failed: {error:#}");
+                state
+                    .lock()
+                    .unwrap()
+                    .error
+                    .get_or_insert_with(|| format!("shutdown device Stop failed: {error:#}"));
             }
         }
     }
@@ -548,6 +608,15 @@ pub fn serve_with_ready(
             .unwrap()
             .error
             .get_or_insert_with(|| format!("{e:#}"));
+    }
+    if let Some(audit) = events {
+        if let Err(error) = audit.finish() {
+            state
+                .lock()
+                .unwrap()
+                .error
+                .get_or_insert_with(|| format!("{error:#}"));
+        }
     }
     let s = state.lock().unwrap();
     if let Some(dir) = config.output {
@@ -630,7 +699,7 @@ struct ConnectionContext {
     ring: Arc<Mutex<LiveBuffer>>,
 }
 impl ConnectionContext {
-    fn connect(&self, device: &str, events: &mut Option<File>) -> Result<(Connection, Value)> {
+    fn connect(&self, device: &str, events: &mut Option<Audit>) -> Result<(Connection, Value)> {
         let addr = device
             .to_socket_addrs()?
             .next()
@@ -651,17 +720,12 @@ impl ConnectionContext {
             })?;
             selections[channel.to_string()] = json!(name);
             self.state.lock().unwrap().commands_sent += 1;
-            if let Some(file) = events.as_mut() {
-                serde_json::to_writer(
-                    &mut *file,
-                    &json!({
+            if let Some(audit) = events.as_ref() {
+                audit.send(json!({
                         "host_unix_ns":now_ns(),"source":"initial_channels",
                         "request":{"api_version":1,"command":{"op":"set_observable","name":name,"channel":channel}},
                         "wire":[id,value],"outcome":"sent_unconfirmed"
-                    }),
-                )?;
-                file.write_all(b"\n")?;
-                file.flush()?;
+                    }))?;
             }
         }
         {
@@ -766,5 +830,49 @@ impl ConnectionContext {
             },
             selections,
         ))
+    }
+}
+
+#[cfg(test)]
+mod audit_tests {
+    use super::*;
+    use std::sync::mpsc;
+
+    struct BlockedWriter {
+        entered: Option<mpsc::Sender<()>>,
+        release: mpsc::Receiver<()>,
+    }
+    impl Write for BlockedWriter {
+        fn write(&mut self, bytes: &[u8]) -> std::io::Result<usize> {
+            if let Some(entered) = self.entered.take() {
+                entered.send(()).unwrap();
+                self.release.recv_timeout(Duration::from_secs(5)).unwrap();
+            }
+            Ok(bytes.len())
+        }
+        fn flush(&mut self) -> std::io::Result<()> {
+            Ok(())
+        }
+    }
+    #[test]
+    fn slow_audit_is_bounded_and_does_not_block_submission() {
+        let (entered_tx, entered_rx) = mpsc::channel();
+        let (release_tx, release_rx) = mpsc::channel();
+        let audit = Audit::new(
+            BlockedWriter {
+                entered: Some(entered_tx),
+                release: release_rx,
+            },
+            Arc::new(Mutex::new(State::default())),
+            Arc::new(AtomicBool::new(false)),
+        );
+        audit.send(json!({"first": true})).unwrap();
+        entered_rx.recv_timeout(Duration::from_secs(2)).unwrap();
+        for _ in 0..2048 {
+            audit.send(json!({"queued": true})).unwrap();
+        }
+        assert!(audit.send(json!({"overflow": true})).is_err());
+        release_tx.send(()).unwrap();
+        audit.finish().unwrap();
     }
 }

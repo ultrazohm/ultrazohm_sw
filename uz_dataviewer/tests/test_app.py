@@ -1,5 +1,36 @@
 """Startup ordering and application-owned status rendering."""
+import pytest
+
 from uz_dataviewer.app import DataViewerApp
+
+
+@pytest.mark.parametrize('use_live', [False, True])
+def test_live_panels_are_opt_in(use_live, monkeypatch):
+    monkeypatch.setattr('uz_dataviewer.plugins.load_plugins', lambda **kwargs: None)
+    app = DataViewerApp(use_live=use_live, live_mapping='cached-mapping.json')
+    try:
+        windows = app._dockable_windows()
+        labels = {window.label for window in windows}
+        if use_live:
+            assert not next(w for w in windows if w.label == 'Python').is_visible
+        live_labels = {'Live Data', 'Live Plots', 'Control', 'Python'}
+        assert labels & live_labels == (live_labels if use_live else set())
+        assert (app.live is not None) == use_live
+        if app.live is not None:
+            assert app.live.controller.thread is None
+            assert app.live.mapping == 'cached-mapping.json'
+    finally:
+        app._shutdown()
+
+
+def test_web_never_creates_live_workspace(monkeypatch):
+    monkeypatch.setattr('uz_dataviewer.runtime.IS_WEB', True)
+    monkeypatch.setattr('uz_dataviewer.plugins.load_plugins', lambda **kwargs: None)
+    app = DataViewerApp(use_live=True)
+    try:
+        assert app.live is None
+    finally:
+        app._shutdown()
 
 
 def test_startup_recording_precedes_script(tmp_path, monkeypatch):

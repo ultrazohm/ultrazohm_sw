@@ -30,13 +30,14 @@ def wait_for(function, seconds=4):
 
 class FakeClient:
     def __init__(self):
-        self.stop = 30
+        self.end = 30
         self.generation = 0
         self.connected = True
         self.calls = []
 
     def status(self):
-        return {'state': {'connected': self.connected, 'platform_state': 'idle'},
+        return {'state': {'connected': self.connected, 'platform_state': 'idle',
+                          'device': '192.168.1.233:1000'},
                 'data_options': {'buffer_samples': 100}, 'logging': {}}
 
     def catalog(self):
@@ -47,14 +48,20 @@ class FakeClient:
         return {'channels': [{'channel': 1, 'name': 'a'}, {'channel': 2, 'name': 'b'}]}
 
     def read_since(self, cursor=None, limit=100):
-        first = max(0, self.stop - 100)
+        first = max(0, self.end - 100)
         if cursor and (cursor['generation'] != self.generation or cursor['next_sample'] < first):
             raise RuntimeError('expired cursor')
         start = cursor['next_sample'] if cursor else first
-        stop = min(start + limit, self.stop)
+        stop = min(start + limit, self.end)
         return SimpleNamespace(data=frame(start, stop),
             cursor={'next_sample': stop, 'generation': self.generation},
             info={'run_id': 'fake', 'generation': self.generation})
+
+    def shutdown(self):
+        self.calls.append(('shutdown',))
+
+    def stop(self):
+        self.calls.append(('stop',))
 
     def set_variable(self, name, value):
         self.calls.append(('variable', name, value))
@@ -87,11 +94,11 @@ def test_worker_incremental_bound_recovery_and_persistent_command_error():
         controller.submit('attach', endpoint='127.0.0.1:19740')
         first = wait_for(lambda: controller.latest().source)
         assert first.metadata.rows == 30
-        client.stop = 80
+        client.end = 80
         second = wait_for(lambda: (s if (s := controller.latest().source).metadata.rows == 80 else None))
         assert first.metadata.rows == 30  # old display/analysis readers stay immutable
         assert second.time[-1] == pytest.approx(.079)
-        client.stop = 500  # Advance beyond the retained window.
+        client.end = 500  # Advance beyond the retained window.
         recovered = wait_for(lambda: (s if (s := controller.latest().source).time[-1] > .4 else None))
         assert recovered.metadata.rows == 100
         assert 'resynchronized' in controller.latest().notice
@@ -163,7 +170,196 @@ def test_fuzzy_observable_names():
     assert fuzzy_names(names, 'xyz') == []
 
 
-def test_real_service_controls_and_logging_outlive_viewer(tmp_path):
+def test_variable_send_feedback_only_follows_successful_command():
+    class Client(FakeClient):
+        def set_variable(self, name, value):
+            if value < 0:
+                raise RuntimeError('send failed')
+    controller = LiveController(lambda _: Client(), hz=100)
+    try:
+        controller.submit('attach', endpoint='fake')
+        wait_for(lambda: controller.latest().attached)
+        controller.submit('set_variable', name='setpoint', value=3.)
+        sent = wait_for(lambda: controller.latest().variable_sends.get('setpoint'))
+        assert sent[1] == 3.
+        previous = controller.latest()
+        controller.submit('set_variable', name='setpoint', value=-1.)
+        wait_for(lambda: 'send failed' in controller.latest().error)
+        assert controller.latest().variable_sends['setpoint'] == sent
+        controller.submit('set_variable', name='setpoint', value=4.)
+        wait_for(lambda: controller.latest().variable_sends.get('setpoint', (0, 0))[1] == 4.)
+        assert previous.variable_sends['setpoint'] == sent
+    finally:
+        controller.close()
+
+
+def test_attach_reports_mapping_mismatch_without_reconfiguring_service(tmp_path):
+    import json
+    client = FakeClient()
+    controller = LiveController(lambda _: client)
+    path = tmp_path/'generated.json'
+    path.write_text(json.dumps({'observables': {'new_signal': 42}}))
+    try:
+        controller._command('attach', {'endpoint': 'fake', 'mapping': str(path)})
+        assert controller.attached
+        assert 'different channel mapping' in controller._notice
+        assert client.calls == []
+        path.write_text(json.dumps(client.catalog()['profile']))
+        controller._command('attach', {'endpoint': 'fake', 'mapping': str(path)})
+        assert 'different channel mapping' not in controller._notice
+    finally:
+        controller.close()
+
+
+@pytest.mark.parametrize('device,ip,port,matches', [
+    ('192.168.1.233:1000', '192.168.1.233', 1000, True),
+    ('192.168.1.111:1000', '192.168.1.233', 1000, False),
+    ('192.168.1.233:2000', '192.168.1.233', 1000, False),
+    ('[::1]:1000', '0:0:0:0:0:0:0:1', 1000, True),
+    ('', '192.168.1.233', 1000, False),
+])
+def test_connect_verifies_existing_device(device, ip, port, matches):
+    class Client(FakeClient):
+        def status(self):
+            value = super().status()
+            value['state']['device'] = device
+            return value
+    controller = LiveController(lambda _: Client())
+    try:
+        controller._owned_endpoint = 'fake'
+        controller.process = SimpleNamespace(poll=lambda: None, wait=lambda: 0)
+        request = {'endpoint': 'fake', 'ip': ip, 'port': port}
+        if matches:
+            controller._command('connect', request)
+            assert controller.attached
+        else:
+            with pytest.raises(RuntimeError, match='Service is already connected'):
+                controller._command('connect', request)
+            assert not controller.attached
+    finally:
+        controller.close()
+
+
+@pytest.mark.parametrize('script_busy', [False, True])
+def test_script_stop_discards_queued_commands_while_poll_is_blocked(script_busy):
+    import threading
+    entered, release, stopped = threading.Event(), threading.Event(), threading.Event()
+    class Client(FakeClient):
+        def read_since(self, *args, **kwargs):
+            entered.set()
+            assert release.wait(5)
+            return super().read_since(*args, **kwargs)
+        def enable_control(self): self.calls.append(('enable_control',))
+        def stop(self):
+            super().stop()
+            stopped.set()
+    client = Client()
+    workspace = LiveWorkspace(LiveController(lambda _: client, hz=100))
+    controller = workspace.controller
+    # A running process is unnecessary: exercise the same busy Stop path while
+    # preserving ScriptRunner's real independent Stop thread and callback.
+    class Process:
+        def poll(self): return 0
+    if script_busy:
+        workspace.scripts.process = Process()
+        workspace.scripts.endpoint = 'fake'
+    try:
+        controller.submit('attach', endpoint='fake')
+        assert entered.wait(3)
+        controller.submit('enable_control')
+        workspace.send('stop')
+        assert stopped.wait(2)
+        assert not release.is_set()
+        release.set()
+        wait_for(lambda: controller.latest().revision > 3)
+        assert client.calls == [('stop',)]
+        assert controller.commands.empty()
+    finally:
+        release.set()
+        workspace.close()
+
+
+def test_stop_follows_inflight_control_and_cancels_next_command():
+    import threading
+    entered, release, stopped = threading.Event(), threading.Event(), threading.Event()
+    class Client(FakeClient):
+        def enable_system(self):
+            entered.set()
+            assert release.wait(5)
+            self.calls.append(('enable_system',))
+        def enable_control(self): self.calls.append(('enable_control',))
+        def stop(self):
+            super().stop()
+            stopped.set()
+    client = Client()
+    controller = LiveController(lambda _: client, hz=100)
+    try:
+        controller.submit('attach', endpoint='fake')
+        wait_for(lambda: controller.latest().attached)
+        controller.submit('enable_system')
+        assert entered.wait(3)
+        controller.submit('enable_control')
+        controller.cancel_pending_commands()
+        stopper = threading.Thread(target=controller.send_stop)
+        stopper.start()
+        assert not stopped.wait(.05)
+        release.set()
+        assert stopped.wait(2)
+        stopper.join()
+        assert client.calls == [('enable_system',), ('stop',)]
+    finally:
+        release.set()
+        controller.close()
+
+
+def test_script_start_cancels_queue_and_rejects_inflight_command(monkeypatch, tmp_path):
+    controller = LiveController(lambda _: FakeClient())
+    workspace = LiveWorkspace(controller)
+    started = []
+    monkeypatch.setattr(workspace.scripts, 'start', lambda *args: started.append(args))
+    try:
+        controller._command('attach', {'endpoint': 'fake'})
+        controller._publish()
+        workspace.pump()
+        controller.commands.put((controller._command_generation, 'enable_system', {}))
+        with controller._command_lock:
+            workspace._start_script(tmp_path/'script.py', 'fake')
+            assert not started
+            assert 'still running' in workspace.script_error
+            assert controller.commands.empty()
+        workspace._start_script(tmp_path/'script.py', 'fake')
+        assert len(started) == 1
+    finally:
+        workspace.close()
+
+
+def test_close_waits_for_stop_without_script_or_logging_changes():
+    import threading
+    entered, release = threading.Event(), threading.Event()
+    class Client(FakeClient):
+        def stop(self):
+            entered.set()
+            assert release.wait(5)
+            super().stop()
+    client = Client()
+    controller = LiveController(lambda _: client)
+    controller._command('attach', {'endpoint': 'fake'})
+    closer = threading.Thread(target=controller.close)
+    closer.start()
+    try:
+        assert entered.wait(2)
+        assert closer.is_alive()
+    finally:
+        release.set()
+        closer.join(3)
+    assert not closer.is_alive()
+    assert client.calls == [('stop',)]
+    controller.close()  # Idempotent shutdown sends Stop once.
+    assert client.calls == [('stop',)]
+
+
+@pytest.mark.parametrize('disconnect_first', [False, True])
+def test_viewer_owned_service_finalizes_and_exits_on_close(tmp_path, disconnect_first):
     """Exercise the actual wheel/IPC and detached service against the simulator."""
     from pathlib import Path
     import socket
@@ -198,7 +394,9 @@ def test_real_service_controls_and_logging_outlive_viewer(tmp_path):
         controller.submit('set_observable', name='JSO_lifecheck', channel=1)
         wait_for(lambda: controller.latest().epoch != generation and controller.latest().source)
         for operation in ('enable_system', 'enable_control', 'stop'):
+            completed = controller.latest().completed_commands
             controller.submit(operation)
+            wait_for(lambda: controller.latest().completed_commands > completed)
         controller.submit('button', number=1)
         variable = next(iter(controller.latest().catalog['variables']))
         controller.submit('set_variable', name=variable, value=1.25)
@@ -206,22 +404,32 @@ def test_real_service_controls_and_logging_outlive_viewer(tmp_path):
         wait_for(lambda: controller.latest().status.get('logging', {}).get('fast', {}).get('phase') == 'recording')
         controller.submit('set_observable', name='JSO_lifecheck', channel=2)
         wait_for(lambda: 'logging' in controller.latest().error)
-        # Closing the window/controller leaves the independent service recording.
-        controller.close()
         before = client.status()['state']['samples']
-        wait_for(lambda: client.status()['state']['samples'] > before + 1000)
-        assert client.status()['logging']['fast']['phase'] == 'recording'
-        client.stop_logging()
-        wait_for(lambda: client.status()['logging']['fast']['phase'] == 'complete')
-        status = client.status()
-        recorded = pl.read_parquet(status['logging']['fast']['parquet'])
+        wait_for(lambda: client.status()['state']['samples'] > before + 1500)
+        if disconnect_first:
+            controller.submit('shutdown')
+            wait_for(lambda: controller.process.poll() == 0 and not controller.latest().activity)
+            assert not controller.stop_event.is_set()
+        else:
+            controller.close()
+        assert controller.process.poll() == 0
+        import json
+        end = json.loads((tmp_path/'recording/end.json').read_text())
+        assert end['complete']
+        recorded = pl.read_parquet(tmp_path/'recording/data.parquet')
         assert recorded.height > 1000
         assert 'JSO_lifecheck' in recorded.columns
         import json
         events = [json.loads(line) for line in (tmp_path/'recording/commands.jsonl').read_text().splitlines()]
         text = json.dumps(events)
-        for operation in ('enable_system', 'enable_control', 'stop', 'button', 'set_variable'):
+        for operation in ('enable_system', 'enable_control', 'stop', 'button', 'set_variable', 'shutdown'):
             assert operation in text
+        if disconnect_first:
+            controller.submit('connect', endpoint=client.endpoint, ip='127.0.0.1', port=device_port,
+                              output=str(tmp_path/'second-recording'))
+            wait_for(lambda: controller.latest().attached and controller.latest().source, seconds=12)
+            controller.close()
+            assert controller.process.poll() == 0
     finally:
         controller.close()
         if controller.process is not None:
@@ -265,6 +473,8 @@ def test_connect_click_reports_progress_and_completion(gui_frame, app_state, mon
             gate.wait(timeout=3)
             return super().catalog()
     controller = LiveController(lambda endpoint: SlowClient())
+    controller._owned_endpoint = '127.0.0.1:19740'
+    controller.process = SimpleNamespace(poll=lambda: None, wait=lambda: 0)
     workspace = LiveWorkspace(controller)
     workspace.available = True
     try:
@@ -297,6 +507,8 @@ def test_connect_failure_clears_busy_and_reports_error(gui_frame, app_state):
         def catalog(self):
             raise RuntimeError('incompatible service version')
     workspace = LiveWorkspace(LiveController(lambda endpoint: BrokenClient()))
+    workspace.controller._owned_endpoint = workspace.endpoint
+    workspace.controller.process = SimpleNamespace(poll=lambda: None, wait=lambda: 0)
     workspace.available = True
     try:
         workspace.send('connect', endpoint=workspace.endpoint, ip=workspace.ip,
@@ -566,5 +778,80 @@ def test_shift_wheel_inspects_with_normal_mouse_controls(gui_frame, app_state):
         gui_frame(panel, app_state)
         assert workspace.run.source is held
         assert workspace.state.cells[0].x_lim == pytest.approx(limits)
+    finally:
+        workspace.close()
+
+
+@pytest.mark.parametrize('attached', [False, True])
+def test_close_shuts_down_owned_service_even_when_detached(attached):
+    calls = []
+    class Client:
+        def shutdown(self): calls.append('shutdown')
+    class Process:
+        def poll(self): return None
+        def wait(self):
+            calls.append('wait')
+            return 0
+    controller = LiveController(lambda endpoint: Client())
+    controller.process = Process()
+    controller.endpoint = controller._owned_endpoint = '127.0.0.1:19740'
+    controller.attached = attached
+    controller._status = {'state': {'connected': True}}
+    controller.close()
+    assert calls == ['shutdown', 'wait']
+    controller.close()
+    assert calls == ['shutdown', 'wait']
+
+
+def test_connect_rejects_external_service_without_changing_device():
+    client = FakeClient()
+    controller = LiveController(lambda _: client)
+    with pytest.raises(RuntimeError, match='Existing service > Attach'):
+        controller._command('connect', {'endpoint': 'external'})
+    assert not controller.attached
+    assert client.calls == []
+    controller.close()
+
+
+@pytest.mark.parametrize('fail_stop', [False, True])
+def test_close_handles_both_services_independently(fail_stop):
+    calls = []
+    class Client:
+        def __init__(self, endpoint): self.endpoint = endpoint
+        def stop(self):
+            calls.append((self.endpoint, 'stop'))
+            if fail_stop:
+                raise RuntimeError('stop failure')
+        def shutdown(self): calls.append((self.endpoint, 'shutdown'))
+    class Process:
+        def poll(self): return None
+        def wait(self):
+            calls.append(('owned', 'wait'))
+            return 1
+    controller = LiveController(Client)
+    controller.endpoint = 'external'
+    controller._owned_endpoint = 'owned'
+    controller.process = Process()
+    controller.attached = True
+    controller._status = {'state': {'connected': True}}
+    controller.close()
+    assert calls == [('external', 'stop'), ('owned', 'shutdown'), ('owned', 'wait')]
+
+
+def test_disconnect_button_requests_shutdown_and_keeps_viewer_open(gui_frame, app_state, monkeypatch):
+    from imgui_bundle import imgui
+    controller = LiveController(lambda _: FakeClient())
+    workspace = LiveWorkspace(controller)
+    workspace.available = True
+    workspace.update = replace(workspace.update, attached=True, status={'state': {'connected': True}})
+    sent = []
+    monkeypatch.setattr(controller, 'submit', lambda operation, **kwargs: sent.append(operation))
+    monkeypatch.setattr(imgui, 'button', lambda label, *args, **kwargs: label == 'Disconnect')
+    old_output = workspace.output
+    try:
+        gui_frame(SimpleNamespace(render=workspace.render_data), app_state)
+        assert sent == ['shutdown']
+        assert workspace.output != old_output
+        assert not controller.stop_event.is_set()
     finally:
         workspace.close()

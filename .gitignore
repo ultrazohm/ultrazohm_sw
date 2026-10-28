@@ -33,3 +33,4 @@ vitis/Packages/*
 # Generated artifacts, including live measurement logs
 /artifacts/
 *.ini
+/uz_cli_channel_mappings/

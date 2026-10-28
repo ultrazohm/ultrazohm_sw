@@ -173,13 +173,26 @@ def test_cli_defaults_and_explicit_overrides(monkeypatch):
         def __init__(self, **kwargs): captured.append(kwargs)
         def run(self): pass
     monkeypatch.setattr(app, 'DataViewerApp', Viewer)
+    mapping_calls = []
+    def generate(repo):
+        mapping_calls.append(repo)
+        return 'cached-mapping.json'
+    monkeypatch.setattr('uz_dataviewer.live_mapping.generate_mapping', generate)
     monkeypatch.setattr(runtime, 'IS_WEB', False)
     app.main([])
     assert captured[-1]['disk_cache'] is False
+    assert captured[-1]['use_live'] is False
+    assert not mapping_calls
     assert (captured[-1]['backend'], captured[-1]['loading_mode']) == ('polars', 'lazy')
     app.main(['--backend', 'pyarrow', '--loading-mode', 'memory', '--disk-cache'])
     assert captured[-1]['disk_cache'] is True
     assert (captured[-1]['backend'], captured[-1]['loading_mode']) == ('pyarrow', 'memory')
+    app.main(['--use-live'])
+    assert captured[-1]['use_live'] is True
+    assert captured[-1]['live_mapping'] == 'cached-mapping.json'
+    assert mapping_calls == [None]
+    app.main(['--use-live', '--live-repo', '/example/repository'])
+    assert mapping_calls[-1] == '/example/repository'
     monkeypatch.setattr(runtime, 'IS_WEB', True)
     app.main([])
     assert (captured[-1]['backend'], captured[-1]['loading_mode']) == ('pyarrow', 'memory')

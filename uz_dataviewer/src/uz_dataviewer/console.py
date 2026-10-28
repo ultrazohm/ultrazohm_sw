@@ -3,6 +3,8 @@
 Supported actions are echoed here as a command (level ``CMD``, rendered
 ``> add_signal(plot_1, run_1, ia)``), and the input box at the bottom runs the
 same commands -- so the console is a log of replayable commands, not a complete GUI snapshot.
+Lines beginning with the exact token ``uz`` instead launch debug CLI commands;
+these are separate from the viewer's replayable command language.
 The input offers name completion (matching commands listed below the box, Tab to
 fill) and an Up/Down history.
 """
@@ -40,6 +42,7 @@ class Console:
         self._history: list[str] = []
         self._hist_idx = 0  # index into _history; == len means "current draft"
         self._focus_input = False
+        self.cli_handler = None
 
     # -- logging API --------------------------------------------------------
     def _log(self, level: str, message: str) -> None:
@@ -87,7 +90,7 @@ class Console:
         if imgui.button("Clear"):
             self.clear()
         imgui.same_line()
-        imgui.text_disabled("select to copy  |  type 'help' for commands")
+        imgui.text_disabled("select to copy  |  help: viewer commands  |  uz --help: CLI")
         imgui.separator()
 
         # Reserve space for the input row (+ its completion hints) at the bottom.
@@ -124,6 +127,8 @@ class Console:
 
     def _completions(self, state: "AppState") -> list[str]:
         text = self._input
+        if text.strip() and text.split(maxsplit=1)[0] == 'uz':
+            return []
         if not text.strip() or "(" in text:
             return []
         return state.commands.complete(text)[:_MAX_COMPLETIONS]
@@ -166,7 +171,18 @@ class Console:
             if not self._history or self._history[-1] != text:
                 self._history.append(text)
             self._hist_idx = len(self._history)
-            state.commands.dispatch(state, text)
+            parts = text.split(maxsplit=1)
+            if parts[0] == 'uz':
+                self.command(text)
+                if self.cli_handler is None:
+                    self.error('Live is not activated.')
+                else:
+                    try:
+                        self.cli_handler(parts[1] if len(parts) > 1 else '')
+                    except Exception as exc:
+                        self.error(str(exc))
+            else:
+                state.commands.dispatch(state, text)
         self._input = ""
         self._focus_input = True
 

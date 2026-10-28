@@ -351,7 +351,7 @@ def _check_reloadable(state):
 
 
 # -- command scripts ----------------------------------------------------------
-def run_script(state: "AppState", path: str) -> int:
+def run_script(state: "AppState", path: str) -> int | None:
     """Run automation commands sequentially, stopping at the first error."""
     from .commands import parse_call
 
@@ -359,6 +359,12 @@ def run_script(state: "AppState", path: str) -> int:
         lines = fh.readlines()
     if any(line.strip().startswith("# UltraZohm Data Viewer session script") for line in lines):
         raise ValueError("Generated session scripts are no longer supported; save sessions as JSON.")
+    if getattr(state, 'async_exports', False):
+        from .automation import start
+        commands = [parse_call(line.strip()) for line in lines
+                    if line.strip() and not line.strip().startswith('#')]
+        start(state, commands, path)
+        return None
     count = 0
     for line in lines:
         line = line.strip()
@@ -371,7 +377,7 @@ def run_script(state: "AppState", path: str) -> int:
 
 
 # -- data export --------------------------------------------------------------
-def _write_csv(columns, path, backend):
+def _write_csv(columns, path, backend, cancel=None):
     import tempfile
     fd, temporary = tempfile.mkstemp(prefix=".uz-export-", suffix=".csv",
                                      dir=os.path.dirname(os.path.abspath(path)))
@@ -383,6 +389,8 @@ def _write_csv(columns, path, backend):
         else:
             import pandas as pd
             pd.DataFrame(columns).to_csv(temporary, index=False)
+        from .sources import check
+        check(cancel)
         os.replace(temporary, path)
     finally:
         if os.path.exists(temporary):
@@ -433,7 +441,7 @@ def export_data(state: "AppState", plot_index: int, path: str, relative: bool = 
             # the "ia @ Log.csv" display label.
             columns[ref[1]] = values[ref[1]]
 
-    _write_csv(columns, path, state.backend)
+    _write_csv(columns, path, state.backend, getattr(state, '_export_cancel', None))
     return len(columns)
 
 
@@ -486,7 +494,7 @@ def export_fft(state: "AppState", path: str) -> int:
             acol[: len(mag)] = mag
             columns[unique_name(f"{name}_frequency", column_names)] = fcol
             columns[unique_name(name, column_names)] = acol
-    _write_csv(columns, path, state.backend)
+    _write_csv(columns, path, state.backend, getattr(state, '_export_cancel', None))
     return len(columns)
 
 
@@ -513,5 +521,5 @@ def export_histogram(state: "AppState", path: str) -> int:
         raise ValueError("no data to export")
     columns = {"bin_center": results[0][1]}
     columns.update({label: counts for label, _, counts, _ in results})
-    _write_csv(columns, path, state.backend)
+    _write_csv(columns, path, state.backend, getattr(state, '_export_cancel', None))
     return len(columns)

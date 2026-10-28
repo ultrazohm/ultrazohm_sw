@@ -2,15 +2,25 @@
 from __future__ import annotations
 
 import importlib.util
+import math
 import time
+from pathlib import Path
+from queue import Empty
 
-from imgui_bundle import imgui, implot
+from imgui_bundle import imgui, implot, imgui_color_text_edit
 
 from ..live import LiveController, fuzzy_names, new_output_directory
 from ..model import Signal
 from ..sources import SourceColumn, shift_time
 from ..state import AppState
+from ..scripting import ScriptRunner, TEMPLATES
+from ..flashing import xsct_available
 from .plots import PlotsPanel
+
+try:
+    from imgui_bundle import portable_file_dialogs as pfd
+except ImportError:
+    pfd = None
 
 LIVE_SIGNAL_DND_TYPE = 'UZ_LIVE_SIGNAL'
 
@@ -123,6 +133,7 @@ class LiveWorkspace:
     def __init__(self, controller=None):
         self.controller = controller or LiveController()
         self.state = AppState()
+        self.state.async_exports = True
         self.state.registry.cache.limit = 64 * 1024**2
         self.plots = LivePlotsPanel(self)
         self.endpoint = '127.0.0.1:19740'
@@ -130,14 +141,17 @@ class LiveWorkspace:
         self.port = 1000
         self.output = new_output_directory()
         self.mapping = ''
+        self.repo = None
+        self.cli_busy = lambda: False
+        self.flash_available = xsct_available()
+        self._flash_config = None
         self.follow = True
         self.paused = False
         self.window_seconds = 2.
         self.query = ''
         self.selected_slot = None
-        self.variable = ''
         self.variable_query = ''
-        self.variable_value = 0.
+        self.variable_values = {}
         self.run = None
         self._source = None
         self._epoch = None
@@ -148,21 +162,80 @@ class LiveWorkspace:
         self._pending_completion = 0
         self._last_feedback = None
         self.available = importlib.util.find_spec('ultrazohm') is not None
+        self.scripts = ScriptRunner(send_stop=self.controller.send_stop)
+        self.script_path = ''
+        self._script_dialog = None
+        self.script_editor = None
+        self.script_code = TEMPLATES['Blank']
+        self.script_error = ''
+
+    @property
+    def script_code(self):
+        return self.script_editor.get_text() if self.script_editor is not None else self._script_code
+
+    @script_code.setter
+    def script_code(self, code):
+        self._script_code = code
+        if self.script_editor is not None:
+            self.script_editor.set_text(code)
+
+    def _python_editor(self):
+        # Create only in a GUI context. Do not reset text each frame: that would
+        # discard the cursor, selection, and undo history while the user types.
+        if self.script_editor is None:
+            editor = imgui_color_text_edit.TextEditor()
+            editor.set_language(imgui_color_text_edit.TextEditor.Language.python())
+            editor.set_palette(editor.get_dark_palette())
+            editor.set_tab_size(4)
+            editor.set_insert_spaces_on_tabs(True)
+            editor.set_auto_indent_enabled(True)
+            editor.set_show_line_numbers_enabled(True)
+            editor.set_show_matching_brackets(True)
+            editor.set_text(self._script_code)
+            self.script_editor = editor
+        return self.script_editor
 
     def send(self, operation, **kwargs):
         try:
+            if self.controller.flashing:
+                raise RuntimeError('Flash UZ is running')
+            if operation == 'stop':
+                self.controller.cancel_pending_commands()
+                if not self.scripts.busy:
+                    self.scripts.endpoint = self.controller.endpoint
+                self.scripts.stop()
+                self.error = ''
+                return
+            if self.scripts.busy:
+                raise RuntimeError('Manual controls are locked while the script runs')
             if operation in ('connect', 'attach'):
                 self.pending_message = 'Connecting…' if operation == 'connect' else 'Attaching to service…'
                 self._pending_completion = self.controller.latest().completed_commands + 1
             self.controller.submit(operation, **kwargs)
+            if operation == 'shutdown':
+                self.output = str(Path(self.output).expanduser().resolve().parent / Path(new_output_directory()).name)
             self.error = ''
         except Exception as exc:
             self.error = str(exc)
             self.pending_message = ''
 
     def pump(self, main_state=None):
+        from ..exports import poll
+        poll(self.state)
+        self.scripts.poll()
         update = self.controller.latest()
         self.update = update
+        self._poll_script_dialog()
+        if update.flash_config is not None and update.flash_config != self._flash_config:
+            self.mapping, self.output = update.flash_config
+            self._flash_config = update.flash_config
+        if main_state is not None:
+            for _ in range(200):
+                try:
+                    level, text = self.controller.messages.get_nowait()
+                except Empty:
+                    break
+                getattr(main_state.console, level)(text)
         if update.revision == self._revision:
             return
         self._revision = update.revision
@@ -221,6 +294,13 @@ class LiveWorkspace:
         target.console.info(f'Frozen {len(t):,} live samples for analysis (not saved to disk)')
 
     def render_data(self, main_state):
+        imgui.begin_disabled(self.scripts.busy or self.controller.flashing)
+        try:
+            self._render_data(main_state)
+        finally:
+            imgui.end_disabled()
+
+    def _render_data(self, main_state):
         if not self.available:
             imgui.text_wrapped('Live acquisition requires the ultrazohm backend. Restart with start.sh --use-live (start.ps1 on Windows). Use --live-wheel PATH to select an exact wheel.')
             return
@@ -245,42 +325,84 @@ class LiveWorkspace:
         _, port = imgui.input_int('Device port', self.port)
         self.port = max(1, min(65535, port))
         imgui.begin_disabled(bool(activity))
-        if imgui.button('Connecting…' if activity else 'Connect'):
-            self.send('connect', endpoint=self.endpoint, ip=self.ip, port=self.port,
-                      output=self.output, mapping=self.mapping)
-        imgui.same_line()
-        if imgui.button('Attach service'):
-            self.send('attach', endpoint=self.endpoint)
-        if imgui.is_item_hovered():
-            imgui.set_tooltip('Attach to an existing CLI service without connecting or changing the device.')
+        connection_label = 'Disconnect' if self.update.attached else 'Connect'
+        if imgui.button(connection_label):
+            if self.update.attached:
+                self.send('shutdown')
+            else:
+                self.send('connect', endpoint=self.endpoint, ip=self.ip, port=self.port,
+                          output=self.output, mapping=self.mapping)
+        if imgui.is_item_hovered(imgui.HoveredFlags_.allow_when_disabled):
+            imgui.set_tooltip(
+                'Send device Stop, finalize recordings, and shut down the service. Keep the viewer open.'
+                if self.update.attached else
+                'Start a viewer-managed service and connect to the selected UltraZohm IP. For a service already running, use Existing service > Attach.')
+
+        def next_button(label):
+            # Keep the actions together, wrapping in narrow docked panels.
+            width = imgui.calc_text_size(label).x + 2 * imgui.get_style().frame_padding.x
+            right = imgui.get_cursor_screen_pos().x + imgui.get_content_region_avail().x
+            if imgui.get_item_rect_max().x + imgui.get_style().item_spacing.x + width <= right:
+                imgui.same_line()
+
+        next_button('Flash UZ')
+        imgui.begin_disabled(self.cli_busy() or not self.flash_available)
+        if imgui.button('Flash UZ'):
+            imgui.open_popup('Flash UltraZohm?')
         imgui.end_disabled()
+        if imgui.is_item_hovered(imgui.HoveredFlags_.allow_when_disabled):
+            imgui.set_tooltip(
+                'Vitis XSCT (xsct) is not on PATH. Load the Vitis environment and restart the viewer.'
+                if not self.flash_available else
+                'Ask for confirmation, then send device Stop, finalize logging, shut down the service, regenerate the mapping, flash, and reconnect.')
+        imgui.end_disabled()
+        if imgui.collapsing_header('Existing service'):
+            imgui.begin_disabled(bool(activity))
+            if imgui.button('Attach'):
+                self.send('attach', endpoint=self.endpoint, mapping=self.mapping)
+            if imgui.is_item_hovered(imgui.HoveredFlags_.allow_when_disabled):
+                imgui.set_tooltip('Attach to the service at the selected endpoint without starting a service or changing its device connection.')
+            imgui.same_line()
+            imgui.begin_disabled(not self.update.attached)
+            if imgui.button('Detach'):
+                self.send('detach')
+            if imgui.is_item_hovered(imgui.HoveredFlags_.allow_when_disabled):
+                imgui.set_tooltip('Detach only this viewer. Acquisition and logging continue; no device Stop is sent.')
+            imgui.same_line()
+            if imgui.button('Shutdown'):
+                self.send('shutdown')
+            if imgui.is_item_hovered(imgui.HoveredFlags_.allow_when_disabled):
+                imgui.set_tooltip('Same as Disconnect: send device Stop, finalize recordings, and exit the attached service, including one started externally.')
+            imgui.end_disabled()
+            imgui.end_disabled()
+        self._render_flash_confirmation()
         if imgui.collapsing_header('Service settings (used when launching)'):
             _, self.output = imgui.input_text('New session directory', self.output)
             _, self.mapping = imgui.input_text('Channel mapping JSON (optional)', self.mapping)
-            imgui.text_wrapped('Connect attaches to an existing service, or launches one if unavailable. Existing service settings take precedence.')
+            imgui.text_wrapped('Connect launches a new service with these settings. Use Existing service to attach to a running service.')
         state = self.update.status.get('state', {})
-        imgui.separator()
-        imgui.text_unformatted('Service: ' + ('attached' if self.update.attached else 'detached'))
-        imgui.text_unformatted('Device: ' + ('connected' if state.get('connected') else 'disconnected'))
-        imgui.text_unformatted('Platform: ' + str(state.get('platform_state') or 'unknown'))
-        if self.update.received_at:
-            age = time.monotonic() - self.update.received_at
-            imgui.text_unformatted(f'Last data: {age:.1f}s ago' + (' — STALE' if age > 1 else ''))
-        if self.run:
-            imgui.text_unformatted(f'Visible RAM: {self.run.n_rows:,} samples / {self.run.duration:.2f}s')
         profile = self.update.catalog
-        if profile:
-            imgui.text_wrapped('Mapping: ' + profile.get('channel_mapping_name', ''))
+        imgui.separator()
+        if imgui.collapsing_header('Connection details'):
+            imgui.text_unformatted('Service: ' + ('attached' if self.update.attached else 'detached'))
+            imgui.text_unformatted('Device: ' + ('connected' if state.get('connected') else 'disconnected'))
+            imgui.text_unformatted('Platform: ' + str(state.get('platform_state') or 'unknown'))
+            if self.update.received_at:
+                age = time.monotonic() - self.update.received_at
+                imgui.text_unformatted(f'Last data: {age:.1f}s ago' + (' — STALE' if age > 1 else ''))
+            if self.run:
+                imgui.text_unformatted(f'Visible RAM: {self.run.n_rows:,} samples / {self.run.duration:.2f}s')
+            if profile:
+                imgui.text_wrapped('Mapping: ' + profile.get('channel_mapping_name', ''))
+            if self.update.notice:
+                imgui.text_wrapped(self.update.notice)
         if state.get('error'):
             imgui.text_wrapped('Device error: ' + str(state['error']))
         if self.update.error or self.error:
             imgui.text_wrapped('Error: ' + (self.error or self.update.error))
-        if self.update.notice:
-            imgui.text_wrapped(self.update.notice)
-        imgui.separator()
         logging = self.update.status.get('logging', {})
-        if imgui.collapsing_header('Logging'):
-            self._render_logging(main_state, state)
+        imgui.separator_text('Logging')
+        self._render_logging(main_state, state)
         imgui.separator()
         imgui.text_wrapped('Drag a channel into Live Plots. Double-click to change its observable.')
         locked = any(v.get('phase') == 'recording' for v in logging.values())
@@ -309,74 +431,265 @@ class LiveWorkspace:
                     imgui.close_current_popup()
             imgui.end_disabled()
             imgui.end_popup()
-        imgui.separator()
-        if imgui.button('Detach viewer'):
-            self.send('detach')
-        imgui.same_line()
-        if imgui.button('Shutdown service'):
-            self.send('shutdown')
-        imgui.text_wrapped('Closing or detaching the viewer leaves logging running. Shutdown finalizes logs; it does not send device Stop.')
 
     def _render_logging(self, main_state, state):
         logging = self.update.status.get('logging', {})
-        imgui.begin_disabled(not self.update.attached or not state.get('connected'))
-        for stream, title, start, stop in (
-            ('fast', 'Fast logging', 'start_logging', 'stop_logging'),
-            ('slow', 'Slow logging', 'start_logging_slow_data', 'stop_logging_slow_data')):
-            info = logging.get(stream, {})
-            phase = info.get('phase', 'idle')
-            imgui.text_unformatted(f'{title}: {phase}')
-            imgui.begin_disabled(phase not in ('idle', 'complete', 'failed'))
-            if imgui.button('Start##' + stream):
-                self.send(start)
-            imgui.end_disabled()
-            imgui.same_line()
-            imgui.begin_disabled(phase != 'recording')
-            if imgui.button('Stop logging##' + stream):
-                self.send(stop)
-            imgui.end_disabled()
-            if info.get('parquet'):
-                imgui.text_wrapped(str(info['parquet']))
-            if info.get('error'):
-                imgui.text_wrapped(str(info['error']))
-        imgui.end_disabled()
-        for item in self.update.status.get('logging', {}).values():
-            path = item.get('parquet')
-            if item.get('phase') == 'complete' and path:
-                if imgui.button('Open completed log##' + path):
-                    main_state.request_load(path)
+        flags = imgui.TableFlags_.sizing_stretch_same | imgui.TableFlags_.borders_inner_v
+        if imgui.begin_table('##logging', 2, flags):
+            for stream, title, start, stop in (
+                ('fast', 'Fast logging', 'start_logging', 'stop_logging'),
+                ('slow', 'Slow logging', 'start_logging_slow_data', 'stop_logging_slow_data')):
+                imgui.table_next_column()
+                info = logging.get(stream, {})
+                phase = info.get('phase', 'idle')
+                imgui.text_unformatted(f'{title}: {phase}')
+                imgui.begin_disabled(not self.update.attached or not state.get('connected'))
+                imgui.begin_disabled(phase not in ('idle', 'complete', 'failed'))
+                if imgui.button('Start##' + stream):
+                    self.send(start)
+                imgui.end_disabled()
+                imgui.same_line()
+                imgui.begin_disabled(phase != 'recording')
+                if imgui.button('Stop logging##' + stream):
+                    self.send(stop)
+                imgui.end_disabled()
+                imgui.end_disabled()
+                path = info.get('parquet')
+                if path:
+                    imgui.text_wrapped(str(path))
+                if info.get('error'):
+                    imgui.text_wrapped(str(info['error']))
+                if phase == 'complete' and path:
+                    if imgui.button('Open completed log##' + stream):
+                        main_state.request_load(path)
+            imgui.end_table()
 
     def render_control(self):
         state = self.update.status.get('state', {})
         imgui.text_unformatted('Platform: ' + str(state.get('platform_state') or 'unknown'))
-        imgui.begin_disabled(not self.update.attached or not state.get('connected'))
+        imgui.begin_disabled(self.controller.flashing or
+                             (not self.scripts.busy and (not self.update.attached or not state.get('connected'))))
         for label, operation in [('Enable System', 'enable_system'), ('Enable Control', 'enable_control'), ('Stop', 'stop')]:
+            imgui.begin_disabled(self.scripts.busy and operation != 'stop')
             if imgui.button(label):
                 self.send(operation)
+            imgui.end_disabled()
             imgui.same_line()
         imgui.new_line()
+        imgui.begin_disabled(self.scripts.busy)
         for number in range(1, 9):
             if imgui.button(f'User {number}'):
                 self.send('button', number=number)
             if number % 4:
                 imgui.same_line()
         imgui.separator()
-        _, self.variable_query = imgui.input_text('Find variable', self.variable_query)
-        names = fuzzy_names(self.update.catalog.get('variables', {}), self.variable_query)
-        if imgui.begin_combo('Variable', self.variable or 'Select variable'):
-            for name in names:
-                if imgui.selectable(name, self.variable == name)[0]:
-                    self.variable = name
-            imgui.end_combo()
-        _, self.variable_value = imgui.input_float('Value', self.variable_value)
-        imgui.begin_disabled(not self.variable)
-        if imgui.button('Send variable'):
-            self.send('set_variable', name=self.variable, value=self.variable_value)
+        self._render_variables()
         imgui.end_disabled()
         imgui.end_disabled()
-        imgui.text_wrapped('Device commands are sent without acknowledgment. Platform state is observed from streamed status. Error Reset is not implemented by the current firmware.')
         if self.update.error or self.error:
             imgui.text_wrapped('Error: ' + (self.error or self.update.error))
+
+    def _render_variables(self):
+        _, self.variable_query = imgui.input_text('Filter variables', self.variable_query)
+        variables = self.update.catalog.get('variables', {})
+        names = sorted(variables, key=lambda name: (variables[name], name))
+        if self.variable_query.strip():
+            matches = set(fuzzy_names(names, self.variable_query))
+            names = [name for name in names if name in matches]
+        flags = (imgui.TableFlags_.row_bg | imgui.TableFlags_.borders_inner_v |
+                 imgui.TableFlags_.resizable | imgui.TableFlags_.scroll_y)
+        height = max(120., min(420., imgui.get_content_region_avail().y - 80.))
+        if imgui.begin_table('##variables', 2, flags, imgui.ImVec2(0., height)):
+            imgui.table_setup_column('Variable')
+            imgui.table_setup_column('Value (Enter to send)')
+            imgui.table_setup_scroll_freeze(0, 1)
+            imgui.table_headers_row()
+            for name in names:
+                imgui.table_next_row()
+                imgui.table_set_column_index(0)
+                imgui.text_unformatted(name)
+                imgui.table_set_column_index(1)
+                imgui.set_next_item_width(-1.)
+                text = self.variable_values.get(name, '0')
+                sent = self.update.variable_sends.get(name)
+                try:
+                    highlight = sent is not None and time.monotonic() - sent[0] < .2 and float(text) == sent[1]
+                except ValueError:
+                    highlight = False
+                if highlight:
+                    for color in (imgui.Col_.frame_bg, imgui.Col_.frame_bg_hovered, imgui.Col_.frame_bg_active):
+                        imgui.push_style_color(color, (.12, .32, .65, 1.))
+                try:
+                    submitted, text = imgui.input_text(f'##variable_value_{name}',
+                        text, imgui.InputTextFlags_.enter_returns_true)
+                finally:
+                    if highlight:
+                        imgui.pop_style_color(3)
+                self.variable_values[name] = text
+                if submitted:
+                    try:
+                        value = float(text)
+                        if not math.isfinite(value):
+                            raise ValueError('enter a finite number')
+                    except ValueError as exc:
+                        self.error = f'Invalid value for {name}: {exc}'
+                    else:
+                        self.send('set_variable', name=name, value=value)
+            imgui.end_table()
+
+    def render_python(self):
+        imgui.text_wrapped('Define run(uz). The connected service Client is supplied automatically. '
+                           'Scripts run in this Python environment and can import modules beside the script.')
+        imgui.text_unformatted(Path(self.script_path).name if self.script_path else 'Unsaved script')
+        imgui.begin_disabled(self.scripts.busy or self._script_dialog is not None)
+        if imgui.button('Open Python file...'):
+            self._open_script_dialog('open')
+        imgui.same_line()
+        if imgui.button('Save'):
+            self._request_script_save()
+        imgui.same_line()
+        if imgui.button('Save as...'):
+            self._open_script_dialog('save')
+        imgui.same_line()
+        if imgui.begin_combo('Template', 'Choose template'):
+            for name in TEMPLATES:
+                if imgui.selectable(name, False)[0]:
+                    self._choose_script_template(name)
+            imgui.end_combo()
+        editor = self._python_editor()
+        editor.set_read_only_enabled(self.scripts.busy or self._script_dialog is not None)
+        editor.render('##python-code', imgui.ImVec2(max(100., imgui.get_content_region_avail().x), 260.))
+        connected = self.available and self.update.attached and self.update.status.get('state', {}).get('connected')
+        imgui.begin_disabled(not connected or self.controller.flashing)
+        if imgui.button('Run'):
+            self._request_script_save(run_after=True)
+        imgui.end_disabled()
+        imgui.end_disabled()
+        imgui.same_line()
+        imgui.begin_disabled(not self.scripts.busy)
+        if imgui.button('Stop script + device'):
+            self.send('stop')
+        imgui.end_disabled()
+        imgui.text_wrapped(self.scripts.message)
+        imgui.text_wrapped('Run saves the file, asking for a filename for unsaved scripts. '
+                           'Stop terminates Python and sends device Stop; logging stays enabled. '
+                           'Completion or errors leave the device and logging in their resulting state.')
+        if self.script_error:
+            imgui.text_wrapped(self.script_error)
+        imgui.separator()
+        imgui.text_unformatted(self.scripts.output)
+
+    def _choose_script_template(self, name):
+        self.script_code = TEMPLATES[name]
+        self.script_path = ''
+        self.script_error = ''
+
+    def _open_script_dialog(self, action, default_path=None, endpoint=None):
+        if self.scripts.busy or self._script_dialog is not None:
+            return
+        try:
+            if pfd is None:
+                raise RuntimeError('Native file dialogs are unavailable in this build')
+            filters = ['Python files (*.py)', '*.py']
+            default_path = default_path or self.script_path or 'measurement.py'
+            dialog = (pfd.open_file('Open Python file', default_path, filters) if action == 'open' else
+                      pfd.save_file('Save Python file', default_path, filters))
+            self._script_dialog = (dialog, action, endpoint or self.controller.endpoint)
+            self.script_error = ''
+        except Exception as exc:
+            self.script_error = str(exc)
+
+    def _poll_script_dialog(self):
+        if self._script_dialog is None:
+            return
+        dialog, action, endpoint = self._script_dialog
+        if not dialog.ready(0):
+            return
+        self._script_dialog = None
+        try:
+            result = dialog.result()
+            selected = (result[0] if result else '') if action == 'open' else result
+            if not selected:
+                return
+            path = Path(selected).expanduser().resolve()
+            if action == 'open':
+                if path.suffix.lower() != '.py':
+                    raise ValueError('Choose a .py file')
+                self.script_code = path.read_text(encoding='utf-8')
+                self.script_path = str(path)
+                self.script_error = ''
+                return
+            if not path.suffix:
+                path = path.with_suffix('.py')
+                if path.exists():
+                    # Reopen on the actual destination so the native dialog
+                    # confirms replacement after we supply the .py extension.
+                    self._open_script_dialog(action, str(path), endpoint)
+                    return
+            saved = self._save_script(path)
+            if saved is not None and action == 'run':
+                self._start_script(saved, endpoint)
+        except Exception as exc:
+            self.script_error = str(exc)
+
+    def _request_script_save(self, run_after=False):
+        if self.scripts.busy or self._script_dialog is not None:
+            return
+        if not self.script_path:
+            self._open_script_dialog('run' if run_after else 'save')
+            return
+        path = self._save_script()
+        if path is not None and run_after:
+            self._start_script(path, self.controller.endpoint)
+
+    def _start_script(self, path, endpoint):
+        try:
+            if self.controller.flashing:
+                raise RuntimeError('Flash UZ is running')
+            if (endpoint != self.controller.endpoint or not self.update.attached or
+                    not self.update.status.get('state', {}).get('connected')):
+                raise RuntimeError('Service connection changed; connect and press Run again')
+            self.controller.cancel_pending_commands()
+            if not self.controller.commands_idle():
+                raise RuntimeError('A device command is still running; wait for it to finish and press Run again')
+            self.scripts.start(path, endpoint)
+        except Exception as exc:
+            self.script_error = str(exc)
+
+    def _render_flash_confirmation(self):
+        opened, _ = imgui.begin_popup_modal('Flash UltraZohm?', flags=imgui.WindowFlags_.always_auto_resize)
+        if not opened:
+            return
+        imgui.text_wrapped('Send device Stop, finish fast and slow logging, flash the system, and reconnect?')
+        imgui.text_wrapped('The acquisition service will restart with a fresh channel mapping.')
+        if imgui.button('OK'):
+            if not self.flash_available:
+                self.error = 'Vitis XSCT (xsct) is not on PATH'
+            elif self.cli_busy():
+                self.error = 'Wait for running CLI commands to finish before flashing'
+            else:
+                endpoint = self.controller.endpoint if self.update.attached else self.endpoint
+                self.send('flash', endpoint=endpoint or self.endpoint, ip=self.ip, port=self.port,
+                          output=self.output, repo=self.repo)
+            imgui.close_current_popup()
+        imgui.same_line()
+        if imgui.button('Cancel'):
+            imgui.close_current_popup()
+        imgui.end_popup()
+
+    def _save_script(self, destination=None):
+        try:
+            path = Path(destination or self.script_path).expanduser().resolve()
+            if path.suffix.lower() != '.py':
+                raise ValueError('Choose a .py file')
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(self.script_code, encoding='utf-8')
+            self.script_path = str(path)
+            self.script_error = ''
+            return path
+        except Exception as exc:
+            self.script_error = str(exc)
+            return None
 
     def maximum_depth(self):
         capacity = self.update.status.get('data_options', {}).get('buffer_samples', 300_000)
@@ -405,15 +718,25 @@ class LiveWorkspace:
         if not self.follow or self.paused:
             if imgui.button('Resume live'):
                 self.resume_live()
-            imgui.same_line()
-            imgui.text_disabled('Inspect — snapshot frozen; acquisition continues')
         else:
             if imgui.button('Inspect'):
                 self.inspect()
+        imgui.same_line()
+        imgui.begin_disabled(self.run is None)
+        if imgui.button('Freeze plot 1 for analysis'):
+            try:
+                self.freeze(main_state)
+            except Exception as exc:
+                self.error = str(exc)
+        imgui.end_disabled()
+        imgui.same_line()
         maximum = self.maximum_depth()
+        imgui.set_next_item_width(180.)
         changed, seconds = imgui.slider_float('Time depth (s)', min(self.window_seconds, maximum),
                                        .001, maximum, '%.3f s')
         self.window_seconds = max(.001, min(maximum, seconds))
+        if not self.follow or self.paused:
+            imgui.text_disabled('Inspect — snapshot frozen; acquisition continues')
         imgui.text_disabled('Same mouse controls as Plots  |  Normal zoom: follow  |  Shift+zoom: inspect')
         if changed and not self.follow:
             for cell in self.state.cells:
@@ -422,13 +745,6 @@ class LiveWorkspace:
                     cell.pending_x_lim = (center - self.window_seconds / 2, center + self.window_seconds / 2)
             self.state.shared_x = None
         self.state.following_live = self.follow and not self.paused
-        imgui.begin_disabled(self.run is None)
-        if imgui.button('Freeze plot 1 for analysis'):
-            try:
-                self.freeze(main_state)
-            except Exception as exc:
-                self.error = str(exc)
-        imgui.end_disabled()
         if not self.run:
             imgui.text_wrapped('Connect, then drag channels from Live Data into these plots. History is bounded by the CLI RAM buffer; disk/cloud history is a later step.')
         elif self.follow and not self.paused:
@@ -441,5 +757,10 @@ class LiveWorkspace:
         self.plots.render(self.state)
 
     def close(self):
+        self.controller.cancel_pending_commands()
+        if self._script_dialog is not None:
+            self._script_dialog[0].kill()
+            self._script_dialog = None
+        self.scripts.close()
         self.controller.close()
         self.state.shutdown()

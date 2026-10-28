@@ -10,6 +10,7 @@ from . import runtime
 
 import os
 import sys
+from pathlib import Path
 
 from imgui_bundle import hello_imgui, imgui, immapp
 
@@ -36,7 +37,7 @@ LOG_DOCK = "LogBrowserSpace"
 
 
 class DataViewerApp:
-    def __init__(self, initial_files: list[str] | None = None, loading_mode: str | None = None, backend: str | None = None, disk_cache: bool = False) -> None:
+    def __init__(self, initial_files: list[str] | None = None, loading_mode: str | None = None, backend: str | None = None, disk_cache: bool = False, use_live: bool = False, live_mapping: str = '') -> None:
         self.state = AppState()
         self.state.disk_cache = disk_cache
         if loading_mode is not None:
@@ -53,9 +54,15 @@ class DataViewerApp:
         self.histogram = HistogramPanel()
         self.nodes = NodesPanel()
         self.live = None
-        if not runtime.IS_WEB:
+        self._cli_console = None
+        self.state.console.cli_handler = self._run_cli_command
+        if use_live and not runtime.IS_WEB:
             from .panels.live import LiveWorkspace
             self.live = LiveWorkspace()
+            self.live.mapping = live_mapping
+            if live_mapping and Path(live_mapping).parent.name == 'uz_cli_channel_mappings':
+                self.live.repo = str(Path(live_mapping).parent.parent)
+            self.live.cli_busy = lambda: self._cli_console is not None and bool(self._cli_console.jobs)
         # Pending Session-menu file dialogs: (dialog, command_name, is_multi).
         self._session_dialog: tuple = ()
         # Let the browser file-input bridge reach this state (no-op on desktop).
@@ -78,7 +85,22 @@ class DataViewerApp:
                 self.state.console.error(f"Startup stopped at {path}: {exc}")
                 break
 
+        self.state.async_exports = not runtime.IS_WEB
+
     # -- docking layout -----------------------------------------------------
+    def _run_cli_command(self, text):
+        if self.live is None or not self.live.available:
+            self.state.console.error('Live is not activated.')
+            return
+        if self.live.controller.flashing:
+            self.state.console.error('Flash UZ is running; wait for it to finish')
+            return
+        if self._cli_console is None:
+            from .cli_console import CliConsole
+            self._cli_console = CliConsole(self.state.console)
+        endpoint = self.live.controller.endpoint if self.live.update.attached else self.live.endpoint
+        self._cli_console.submit(text, endpoint or self.live.endpoint)
+
     def _docking_splits(self) -> list[hello_imgui.DockingSplit]:
         left = hello_imgui.DockingSplit()
         left.initial_dock = MAIN_DOCK
@@ -142,9 +164,13 @@ class DataViewerApp:
                 ('Live Data', LEFT_DOCK, lambda: self.live.render_data(self.state)),
                 ('Control', LOG_DOCK, self.live.render_control),
                 ('Live Plots', MAIN_DOCK, lambda: self.live.render_plots(self.state)),
+                ('Python', MAIN_DOCK, self.live.render_python),
             ):
                 window = hello_imgui.DockableWindow()
                 window.label = label
+                window.is_visible = label != "Python"
+                if label == "Python":
+                    window.remember_is_visible = False
                 window.dock_space_name = dock
                 window.gui_function = render
                 windows.append(window)
@@ -249,6 +275,8 @@ class DataViewerApp:
 
     # -- per-frame ----------------------------------------------------------
     def _pre_new_frame(self) -> None:
+        if self._cli_console is not None:
+            self._cli_console.poll()
         if self.live is not None:
             self.live.pump(self.state)
         self.state.poll_pending_loads()
@@ -261,6 +289,8 @@ class DataViewerApp:
             self.state.focus_histogram = False
 
     def _shutdown(self) -> None:
+        if self._cli_console is not None:
+            self._cli_console.close()
         if self.live is not None:
             self.live.close()
         self.log_browser.shutdown()
@@ -379,9 +409,19 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--backend", choices=("pyarrow", "polars"), default=default_backend,
                         help=f"IO backend for file loading (default: {default_backend})")
     parser.add_argument("--disk-cache", action="store_true", help="Persist measurement caches on disk (default: RAM only)")
+    parser.add_argument("--use-live", action="store_true", help="Show live acquisition, control, and Python panels (native only)")
+    parser.add_argument("--live-repo", help="UltraZohm repository whose headers generate the live channel mapping")
     parser.add_argument("files", nargs="*", help="CSV, Parquet, JSON sessions, or command scripts")
     args = parser.parse_args(argv)
-    app = DataViewerApp(initial_files=args.files, loading_mode=args.loading_mode, backend=args.backend, disk_cache=args.disk_cache)
+    live_mapping = ''
+    if args.use_live and not runtime.IS_WEB:
+        from .live_mapping import generate_mapping
+        try:
+            live_mapping = str(generate_mapping(args.live_repo))
+        except (OSError, ValueError, RuntimeError) as exc:
+            parser.error(str(exc))
+    app = DataViewerApp(initial_files=args.files, loading_mode=args.loading_mode, backend=args.backend,
+                        disk_cache=args.disk_cache, use_live=args.use_live, live_mapping=live_mapping)
     app.run()
     return 0
 

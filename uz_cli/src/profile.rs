@@ -85,11 +85,14 @@ pub struct ChannelMapping {
 }
 impl ChannelMapping {
     pub fn load(path: Option<&Path>) -> Result<Self> {
-        let text = match path {
-            Some(p) => std::fs::read_to_string(p)
-                .with_context(|| format!("reading channel mapping {}", p.display()))?,
-            None => include_str!("../channel_mappings/default.json").to_owned(),
+        let Some(path) = path else {
+            let root = crate::vitis::repository(None).context(
+                "generating firmware mapping requires a checkout; run from the repository or pass --channel-mapping with header-generated JSON",
+            )?;
+            return crate::header_mapping::generate(&root);
         };
+        let text = std::fs::read_to_string(path)
+            .with_context(|| format!("reading channel mapping {}", path.display()))?;
         let mapping: Self =
             serde_json::from_str(&text).context("invalid firmware channel mapping")?;
         mapping.platform_state.validate()?;

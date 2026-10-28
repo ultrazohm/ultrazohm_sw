@@ -71,7 +71,7 @@ def test_use_live_installs_cli_in_viewer_env_before_launch(launcher):
     assert calls[1]['args'] == ['--venv', str(launcher.project/'.venv'), '--launch', 'none',
                                '--no-examples', '--channel', 'testing']
     assert calls[2]['args'] == ['-m', 'uz_dataviewer.check_live']
-    assert calls[3]['args'] == ['a recording.csv']
+    assert calls[3]['args'] == ['--use-live', '--live-repo', str(launcher.project/'..'), 'a recording.csv']
     assert len({c['cwd'] for c in calls}) == 1
 
 
@@ -82,7 +82,7 @@ def test_explicit_live_wheel_uses_same_setup_flow(launcher):
     assert result.returncode == 0, result.stderr
     assert calls[1]['name'] == 'run.sh'
     assert calls[1]['args'][-2:] == ['--wheel', str(wheel)]
-    assert calls[-1]['args'] == ['--help']
+    assert calls[-1]['args'] == ['--use-live', '--live-repo', str(launcher.project/'..'), '--help']
 
 
 @pytest.mark.parametrize('variable,expected', [('FAIL_BACKEND', ['uv', 'run.sh']),

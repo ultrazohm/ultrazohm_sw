@@ -318,7 +318,11 @@ class CommandRegistry:
         values = _coerce_args(state, cmd, args)
         if echo:
             state.console.command(format_call(cmd, values))
-        message = cmd.handler(state, values)
+        if getattr(state, 'async_exports', False) and name in ('export_data', 'fft_export', 'hist_export'):
+            from .exports import submit
+            message = submit(state, cmd.handler, values)
+        else:
+            message = cmd.handler(state, values)
         if message:
             state.console.ok(message)
         return message
@@ -771,7 +775,7 @@ def register_builtins(reg: CommandRegistry) -> None:
     def run_script(state, a):
         from .session import run_script as _run
         n = _run(state, a[0])
-        return f"Ran {n} command(s) from {a[0]}"
+        return "Automation started" if n is None else f"Ran {n} command(s) from {a[0]}"
 
     reg.add("run_script", [Param("path", "str")], run_script, "Replay commands from a .uzscript file.")
 

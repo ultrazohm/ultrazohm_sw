@@ -26,12 +26,6 @@ sys.modules[spec.name] = server_module
 spec.loader.exec_module(server_module)
 
 
-def port():
-    with socket.socket() as s:
-        s.bind(("127.0.0.1", 0))
-        return s.getsockname()[1]
-
-
 def wait_for(fn, seconds=10):
     end = time.monotonic() + seconds
     while time.monotonic() < end:
@@ -138,8 +132,13 @@ class IntegrationTest(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
-        self.endpoint = f"127.0.0.1:{port()}"
-        self.device_port = port()
+        # Keep both sockets bound until both ports are chosen. Releasing the
+        # first before choosing the second allows the OS to return it again.
+        with socket.socket() as service, socket.socket() as device:
+            service.bind(("127.0.0.1", 0))
+            device.bind(("127.0.0.1", 0))
+            self.endpoint = f"127.0.0.1:{service.getsockname()[1]}"
+            self.device_port = device.getsockname()[1]
         self.processes = []
         self.addCleanup(self.cleanup_processes)
 
@@ -154,9 +153,22 @@ class IntegrationTest(unittest.TestCase):
                 p.wait()
 
     def spawn(self, args):
-        p = subprocess.Popen([str(x) for x in args], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        output = tempfile.TemporaryFile(mode="w+t", encoding="utf-8")
+        self.addCleanup(output.close)
+        p = subprocess.Popen([str(x) for x in args], stdout=output, stderr=output)
+        p.test_output = output
         self.processes.append(p)
         return p
+
+    def wait_for_process(self, process, condition, output):
+        def ready():
+            self.assertIsNone(process.poll(), 'Child exited before becoming ready')
+            return condition()
+        try:
+            return wait_for(ready)
+        except AssertionError as error:
+            output.seek(0)
+            self.fail(f'{error}\nCommand: {process.args}\nOutput:\n{output.read()}')
 
     def cli(self, *args):
         p = subprocess.run([str(BIN), "--endpoint", self.endpoint, *args], text=True, capture_output=True, timeout=8)
@@ -181,7 +193,7 @@ class IntegrationTest(unittest.TestCase):
         def ready():
             with socket.create_connection(("127.0.0.1", self.device_port), timeout=.1):
                 return True
-        wait_for(ready)
+        self.wait_for_process(self.server, ready, self.server.test_output)
         self.run_dir = Path(self.tmp.name)/"run"
         args = [BIN,"--endpoint",self.endpoint,"serve","--device",f"127.0.0.1:{self.device_port}",
                 "--output",self.run_dir,"--format",format,"--ack",ack]
@@ -210,7 +222,8 @@ class IntegrationTest(unittest.TestCase):
             self.addCleanup(self.service.stdin.close)
         else:
             self.service = self.spawn(args)
-        wait_for(lambda:self.cli("status"))
+        self.wait_for_process(self.service, lambda: self.cli("status"),
+                              self.interactive_stderr if interactive else self.service.test_output)
         if logging:
             if not legacy:
                 self.cli("set-observable", "lifecheck", "1")

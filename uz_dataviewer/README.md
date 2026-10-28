@@ -598,3 +598,17 @@ PowerShell equivalent. Build scripts synchronize locked dependencies before
 installing that wheel. CI builds both OS wheels, packages folder distributions,
 and tests frozen workers against the JavaScope simulator. Integration-branch
 releases are prereleases; main releases are stable. Browser builds remain separate.
+
+The standalone distribution bundles repository Tcl scripts and Vitis launch
+presets. Its CLI workers always use those scripts, with the selected repository
+passed separately as the workspace root. Source/venv execution uses the
+checkout's Tcl scripts. JSON generation only needs the firmware headers and does
+not require Tcl or Vitis. Default runtime profile settings come from the CLI,
+not a `uz_cli` directory in the selected checkout.
+
+Firmware operations still require Vitis 2022.2/XSCT, its compilers and utilities,
+JTAG drivers/server and hardware access, plus project firmware sources, linker
+scripts and hardware export (XSA/bitstream). Flash builds the existing Vitis
+workspace before programming; generate it first if absent. The hardware-specific
+`psu_init.tcl` comes from that hardware export; vendor `fsbl.tcl` and
+`zynqmp_utils.tcl` come from Vitis. They are not generic application resources.

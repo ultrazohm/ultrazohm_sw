@@ -21,6 +21,9 @@ class VitisCommandTest(unittest.TestCase):
         self.repo = self.base / "checkout with spaces"
         (self.repo / "tcl_scripts").mkdir(parents=True)
         (self.repo / "vitis/software").mkdir(parents=True)
+        header = self.repo / 'vitis/software/Baremetal/src/include/javascope.h'
+        header.parent.mkdir(parents=True, exist_ok=True)
+        header.touch()
         self.script = self.repo / "tcl_scripts/vitis_headless.tcl"
         self.script.write_text("# Fixture, never executed\n")
         self.bin = self.base / "tools with spaces"
@@ -87,3 +90,16 @@ class VitisCommandTest(unittest.TestCase):
         result = self.cli("flash", "--repo", str(self.repo), "--profile", "Debug_UltraZohm")
         self.assertNotEqual(result.returncode, 0)
         self.assertFalse(self.result.exists())
+
+    def test_external_script_bundle_uses_selected_workspace(self):
+        bundle = self.base / 'application bundle' / 'tcl_scripts'
+        bundle.mkdir(parents=True)
+        script = bundle/'vitis_headless.tcl'
+        script.write_text('# bundled entry point')
+        self.script.unlink()
+        self.env['UZ_CLI_TCL_DIR'] = str(bundle)
+        result = self.cli('flash', '--repo', str(self.repo))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        call = json.loads(self.result.read_text())
+        self.assertEqual(Path(call['args'][1]).resolve(), script.resolve())
+        self.assertEqual(Path(call['cwd']).resolve(), self.repo.resolve())

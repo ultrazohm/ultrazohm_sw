@@ -1,6 +1,10 @@
 # Batch entry point for Vitis 2022.2. Pass arguments as argv, not Tcl source text.
 set script_dir [file dirname [file normalize [info script]]]
-set workspace [file normalize [file join $script_dir ../vitis/workspace]]
+if {[info exists ::env(UZ_WORKSPACE_ROOT)]} {
+    set workspace [file normalize [file join $::env(UZ_WORKSPACE_ROOT) vitis/workspace]]
+} else {
+    set workspace [file normalize [file join $script_dir ../vitis/workspace]]
+}
 
 # Keep this at global scope: the existing launch wrappers use global variables.
 if {[catch {

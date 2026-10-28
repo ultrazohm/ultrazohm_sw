@@ -130,7 +130,7 @@ class LivePlotsPanel(PlotsPanel):
 
 
 class LiveWorkspace:
-    def __init__(self, controller=None):
+    def __init__(self, controller=None, repo=None):
         self.controller = controller or LiveController()
         self.state = AppState()
         self.state.async_exports = True
@@ -139,9 +139,9 @@ class LiveWorkspace:
         self.endpoint = '127.0.0.1:19740'
         self.ip = '192.168.1.233'
         self.port = 1000
-        self.output = new_output_directory()
+        self.output = new_output_directory(repo)
         self.mapping = ''
-        self.repo = None
+        self.repo = str(repo) if repo is not None else None
         self.cli_busy = lambda: False
         self.flash_available = xsct_available()
         self._flash_config = None

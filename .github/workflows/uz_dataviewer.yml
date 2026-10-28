@@ -8,6 +8,7 @@ on:
       - 'uz_cli/**'
       - 'javascope/test_server.py'
       - 'vitis/software/**'
+      - 'tcl_scripts/**'
       - '.github/workflows/uz_dataviewer.yml'
       - 'docs/source/guide/gui/uz_dataviewer/uz_dataviewer_commands.csv'
   pull_request:
@@ -16,6 +17,7 @@ on:
       - 'uz_cli/**'
       - 'javascope/test_server.py'
       - 'vitis/software/**'
+      - 'tcl_scripts/**'
       - '.github/workflows/uz_dataviewer.yml'
       - 'docs/source/guide/gui/uz_dataviewer/uz_dataviewer_commands.csv'
   workflow_dispatch:

@@ -69,7 +69,7 @@ class DataViewerApp:
         self.state.console.cli_handler = self._run_cli_command
         if use_live and not runtime.IS_WEB:
             from .panels.live import LiveWorkspace
-            self.live = LiveWorkspace()
+            self.live = LiveWorkspace(repo=workspace)
             self.live.mapping = live_mapping
             if workspace is not None:
                 from .live import new_output_directory

@@ -20,7 +20,14 @@ SRC = os.path.abspath(os.path.join(SPECPATH, "..", "src"))
 if SRC not in sys.path:
     sys.path.insert(0, SRC)
 
-datas, binaries, hiddenimports = [], [], []
+from pathlib import Path
+script_root = Path(SPECPATH).resolve().parents[1] / 'tcl_scripts'
+datas = [(str(path), str(Path('tcl_scripts') / path.parent.relative_to(script_root)))
+         for path in script_root.rglob('*.tcl')]
+datas += [(str(script_root.parent / 'vitis/software' / name), 'tcl_scripts/launch')
+          for name in ('Debug_UltraZohm.launch', 'Run_UltraZohm.launch',
+                       'Debug_UltraZohm_fast_restart_PL_reset.launch')]
+binaries, hiddenimports = [], []
 for pkg in ("imgui_bundle", "pyarrow", "polars", "_polars_runtime_32", "ultrazohm"):
     d, b, h = collect_all(pkg)
     datas += d

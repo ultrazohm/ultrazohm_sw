@@ -39,9 +39,6 @@ class HeaderMappingTest(unittest.TestCase):
                     "#define JAVASCOPE_PLATFORM_ERROR UINT32_C(0xC0000000)\n")
             else:
                 shutil.copyfile(ROOT / name, target)
-        scripts = self.repo / "tcl_scripts"
-        scripts.mkdir()
-        (scripts / "vitis_headless.tcl").touch()
         self.output = self.repo / "artifacts/channel_mappings/javascope.json"
 
     def run_cli(self, *args, cwd=None, input=None, env=None):

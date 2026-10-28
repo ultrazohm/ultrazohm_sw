@@ -9,7 +9,8 @@ use std::{
 const SCRIPT: &str = "tcl_scripts/vitis_headless.tcl";
 
 fn is_repository(path: &Path) -> bool {
-    path.join(SCRIPT).is_file() && path.join("vitis/software").is_dir()
+    path.join("vitis/software/Baremetal/src/include/javascope.h")
+        .is_file()
 }
 
 pub fn repository(explicit: Option<&Path>) -> Result<PathBuf> {
@@ -18,7 +19,7 @@ pub fn repository(explicit: Option<&Path>) -> Result<PathBuf> {
             .with_context(|| format!("cannot access repository {}", path.display()))?;
         ensure!(
             is_repository(&root),
-            "{} is not an UltraZohm repository with {SCRIPT} and vitis/software",
+            "{} is not an UltraZohm repository with vitis/software/Baremetal/src/include/javascope.h",
             root.display()
         );
         return Ok(root);
@@ -56,13 +57,23 @@ fn xsct() -> Result<PathBuf> {
 
 pub fn run(action: &str, repo: Option<&Path>, profile: Option<&str>) -> Result<()> {
     let root = repository(repo)?;
+    let script = env::var_os("UZ_CLI_TCL_DIR")
+        .map(|dir| PathBuf::from(dir).join("vitis_headless.tcl"))
+        .unwrap_or_else(|| root.join(SCRIPT));
+    let script = std::path::absolute(script)?;
+    ensure!(
+        script.is_file(),
+        "Vitis entry script not found: {}",
+        script.display()
+    );
     let executable = xsct()?;
     eprintln!("Vitis {action}: repository {}", root.display());
     let mut command = Command::new(&executable);
     command
         .current_dir(&root)
         .arg("-nodisp")
-        .arg(root.join(SCRIPT))
+        .env("UZ_WORKSPACE_ROOT", &root)
+        .arg(script)
         .arg(action);
     if let Some(profile) = profile {
         command.arg(profile);

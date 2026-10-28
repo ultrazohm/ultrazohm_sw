@@ -2,6 +2,8 @@
 import json
 from pathlib import Path
 import socket
+import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -34,8 +36,42 @@ def main():
                 try:
                     with socket.create_connection(('127.0.0.1', device_port), timeout=.1): break
                 except OSError: time.sleep(.05)
+            # A firmware-only workspace must work without application code/Tcl.
+            firmware = directory/'firmware checkout'
+            for relative in ('vitis/software/Baremetal/src/include/javascope.h',
+                             'vitis/software/Baremetal/src/include/javascope_status.h',
+                             'vitis/software/shared/APU_RPU_shared.h',
+                             'vitis/software/FreeRTOS/main.h', 'vitis/software/FreeRTOS/defines.h'):
+                source = root/relative
+                if source.exists():
+                    target = firmware/relative
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copyfile(source, target)
             mapping = directory/'mapping.json'
-            cli('create-json-from-javascope-h', '--repo', root, '--output', mapping)
+            cli('create-json-from-javascope-h', '--repo', firmware, '--output', mapping)
+            # Validate packaged flash dispatch without running any vendor/hardware commands.
+            tools = directory/'fake-tools'
+            tools.mkdir()
+            report = directory/'xsct.json'
+            stub = tools/'xsct_stub.py'
+            stub.write_text('import json, os, sys\nfrom pathlib import Path\n'
+                "Path(os.environ['UZ_TEST_REPORT']).write_text(json.dumps({'args': sys.argv[1:], 'root': os.environ['UZ_WORKSPACE_ROOT']}))\n")
+            if os.name == 'nt':
+                launcher = tools/'xsct.cmd'
+                launcher.write_text(f'@echo off\n"{sys.executable}" "{stub}" %*\n')
+            else:
+                import shlex
+                launcher = tools/'xsct'
+                launcher.write_text('#!/bin/sh\nexec ' + shlex.quote(sys.executable) + ' ' + shlex.quote(str(stub)) + ' "$@"\n')
+                launcher.chmod(0o755)
+            subprocess.run([executable, '--internal-worker', 'cli', 'flash', '--repo', str(firmware)],
+                check=True, timeout=30, env={**os.environ, 'PATH': str(tools), 'UZ_TEST_REPORT': str(report)})
+            invocation = json.loads(report.read_text())
+            assert Path(invocation['root']) == firmware
+            bundled_script = Path(invocation['args'][1])
+            assert bundled_script.is_file() and 'tcl_scripts' in bundled_script.parts
+            assert bundled_script.is_relative_to(Path(executable).parent)
+            assert not (firmware/'tcl_scripts').exists()
             with (directory/'service.log').open('w') as log:
                 service = subprocess.Popen([executable, '--internal-worker', 'cli', '--endpoint', endpoint,
                     'serve', '--device', f'127.0.0.1:{device_port}', '--channel-mapping', str(mapping),

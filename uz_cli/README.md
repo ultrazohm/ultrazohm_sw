@@ -975,9 +975,10 @@ before automatic downloads can work. Existing local wheels work before that.
 `uz.status()["state"]["platform_state"]` (also in CLI `status`) reports `idle`,
 `running` (system enabled), `control` (control enabled), or `error` from status
 bits 31:30. The decoder reads the mask, shift, and names from the active channel
-mapping's required `platform_state` object (shown below), rather than hard-coding
-the names in Rust. Existing custom mapping files must add this object.
-It is `None`/JSON null before reception and after disconnection.
+mapping's `platform_state` object (shown below) for modern firmware.
+It is `None`/JSON null before reception, after disconnection, and throughout
+legacy sessions (`legacy_javascope_header: true`). Legacy mappings have no
+platform-state decoder; zero bits are not interpreted as idle.
 
 ```json
 "platform_state": {
@@ -1041,3 +1042,17 @@ identifies the convention. Use the `time` column for timestamps, not position
 multiplied by sample period. Slow-data wide exports reset forward-filled values
 after a pause gap and wait for fresh updates before emitting fully populated rows.
 No pause/resume GUI buttons are provided; existing Stop logging still works.
+
+### Legacy JavaScope headers
+
+When `javascope_status.h` is absent, mapping generation sets
+`"legacy_javascope_header": true` and `"platform_state": null`. Commands,
+streaming, and logging remain available; service status returns
+`state.platform_state: null`, shown as **unavailable** by the Data Viewer.
+The raw status word is retained. An existing but invalid status header is an
+error, not a legacy fallback. Modern mappings set the marker to `false` and
+include the state mask and codes. Existing modern JSON without the marker
+continues to load (the marker defaults to `false`).
+
+This describes the headers used to generate the mapping, not detected firmware
+capabilities. Always generate from headers matching the programmed firmware.

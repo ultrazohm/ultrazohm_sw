@@ -138,13 +138,11 @@ Slow IDs rotate once per sample from zero through 16. Sparse measurements are
 not simultaneous values; the logger preserves one ID/value pair per sample.
 
 Status bits 0..3: Ready, Running, Error, User LEDs. Bits 4..11 carry custom
-button feedback; bit 12 is the external logging trigger. The default firmware
-explicitly clears bits 4..12 in `ipc_Control_func()`. To enable a hook, replace
-its `false` assignment with the application condition and assign the return
-value of `uz_javascope_set_status_bit()` back to `js_status_BareToRTOS`. Do not
-leave a later default assignment that clears the same bit.
+button feedback; bit 12 is the external logging trigger. Develop firmware leaves
+optional feedback hooks to application code. The separate firmware-status feature
+uses `uz_javascope_set_status_bit()` helpers and explicit default clearing.
 ParameterID GUI extensions inspect bits 13..19 that current firmware does not set.
-Bits 31:30 encode the explicit platform state: `00` idle, `01` running (system
+With firmware from `feature/baremetal_encode_uz_status`, bits 31:30 encode the explicit platform state: `00` idle, `01` running (system
 enabled), `10` control (control enabled), `11` error. There is no validity flag.
 Baremetal samples the state when copying status into the outgoing JavaScope data;
 LED bits retain their existing behavior, including Ready blinking. JavaScope reads
@@ -155,7 +153,8 @@ or `error`, alongside the raw `state.status`. The active channel mapping supplie
 these labels through `platform_state.values`, indexed by `(status & mask) >> shift`
 using `platform_state.mask` and `platform_state.shift`. The default mask is
 3221225472 (`0xC0000000`), the shift is 30, and codes 0..3 name the four states. It is null before the first frame
-and after disconnection; while connected it describes the latest received frame,
+and after disconnection, and always null for legacy header mappings. For modern
+firmware while connected it describes the latest received frame,
 not a command acknowledgment or proof of fresh data.
 Status is sampled only once per frame and must not be treated as per-sample
 transition timing.
@@ -242,7 +241,8 @@ successful socket writes for accepted selections update it, never rejected reque
 `--profile` loads runtime `schema_version: 1`, name, configured sample period, and
 `initial_channels` (1-based channel keys to observable names). `--channel-mapping`
 loads firmware `api_version: 1`, mapping name, repository name/commit, channel count,
-samples per packet, numeric ID maps, and the required `platform_state` object.
+samples per packet, numeric ID maps, `legacy_javascope_header`, and a
+`platform_state` object (null for legacy mappings).
 Its mask must select two adjacent bits at shift 0..30, and its `values` object
 must name all four codes (`"0"` through `"3"`) with nonempty strings. Older custom
 mappings must add this object; invalid mappings are rejected before device access. Both flags also exist as Python constructor
@@ -379,3 +379,17 @@ anchored at the first accepted acquisition position). Live ranges address
 acquisition samples. Data info and durable recording info include `position_basis`
 (`recorded_samples` or `acquisition_samples`); old durable handles without this
 field default to `acquisition_samples`. Timestamps retain omitted intervals.
+
+### Legacy JavaScope headers
+
+When `javascope_status.h` is absent, mapping generation sets
+`"legacy_javascope_header": true` and `"platform_state": null`. Commands,
+streaming, and logging remain available; service status returns
+`state.platform_state: null`, shown as **unavailable** by the Data Viewer.
+The raw status word is retained. An existing but invalid status header is an
+error, not a legacy fallback. Modern mappings set the marker to `false` and
+include the state mask and codes. Existing modern JSON without the marker
+continues to load (the marker defaults to `false`).
+
+This describes the headers used to generate the mapping, not detected firmware
+capabilities. Always generate from headers matching the programmed firmware.

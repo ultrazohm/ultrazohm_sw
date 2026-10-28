@@ -255,23 +255,9 @@ Setup
 
 #. Add the following code to the ``ipc_ARM.c`` file.
 
-   Keep the existing ``javascope_status.h`` include. Define these application-specific masks at file scope:
-
-   .. code-block:: c
-
-      #define PARAID_STATUS_IDENT_LQ UINT32_C(0x00002000)
-      #define PARAID_STATUS_IDENT_R UINT32_C(0x00004000)
-      #define PARAID_STATUS_START_FLUX_MAP UINT32_C(0x00008000)
-      #define PARAID_STATUS_CURRENT_CONTROL UINT32_C(0x00010000)
-      #define PARAID_STATUS_SPEED_CONTROL UINT32_C(0x00020000)
-      #define PARAID_STATUS_NO_CONTROL UINT32_C(0x00040000)
-      #define PARAID_STATUS_ACTIVE UINT32_C(0x00080000)
-
-   Add the feedback assignments below after the existing LED/button/logging feedback.
-   Bits 13 through 19 retain their ParameterID meanings; bits 30 and 31 are reserved for the platform state and are encoded by ``JavaScope_update()``.
-
    .. code-block:: C
         :linenos:
+        :emphasize-lines: 16,29,329,333,385
         :caption: Changes to the ``ipc_ARM.c`` file. (Breaks in the code are marked with ``....``).
     
         // slowData Naming Convention: Use JSSD_FLOAT_ as prefix
@@ -607,36 +593,57 @@ Setup
             }
 
             ....
-            // ParameterID feedback in bits 13 through 19.
-            js_status_BareToRTOS = uz_javascope_set_status_bit(
-                js_status_BareToRTOS, PARAID_STATUS_IDENT_LQ,
-                ParaID_Data.ElectricalID_Config.identLq == true);
+            //Replace Bit 13-19 with the following
+            /* Bit 13 - Ident_Lq */
+            if (ParaID_Data.ElectricalID_Config.identLq == true) {
+                js_status_BareToRTOS |= (1 << 13);
+            } else {
+                js_status_BareToRTOS &= ~(1 << 13);
+            }
 
-            js_status_BareToRTOS = uz_javascope_set_status_bit(
-                js_status_BareToRTOS, PARAID_STATUS_IDENT_R,
-                ParaID_Data.FluxMapID_Config.identR == true);
+            /* Bit 14 - FluxMapID R-Online */
+            if (ParaID_Data.FluxMapID_Config.identR == true) {
+                js_status_BareToRTOS |= (1 << 14);
+            } else {
+                js_status_BareToRTOS &= ~(1 << 14);
+            }
 
-            js_status_BareToRTOS = uz_javascope_set_status_bit(
-                js_status_BareToRTOS, PARAID_STATUS_START_FLUX_MAP,
-                ParaID_Data.FluxMapID_Config.start_FM_ID == true);
+            /* Bit 15 - FluxMapID start */
+            if (ParaID_Data.FluxMapID_Config.start_FM_ID == true) {
+                js_status_BareToRTOS |= (1 << 15);
+            } else {
+                js_status_BareToRTOS &= ~(1 << 15);
+            }
 
-            js_status_BareToRTOS = uz_javascope_set_status_bit(
-                js_status_BareToRTOS, PARAID_STATUS_CURRENT_CONTROL,
-                ParaID_Data.ParaID_Control_Selection == Current_Control);
+            /* Bit 16 - ParaID_FOC_CC */
+            if (ParaID_Data.ParaID_Control_Selection == Current_Control) {
+                js_status_BareToRTOS |= (1 << 16);
+            } else {
+                js_status_BareToRTOS &= ~(1 << 16);
+            }
 
-            js_status_BareToRTOS = uz_javascope_set_status_bit(
-                js_status_BareToRTOS, PARAID_STATUS_SPEED_CONTROL,
-                ParaID_Data.ParaID_Control_Selection == Speed_Control);
+            /* Bit 17 - ParaID_FOC_SC */
+            if (ParaID_Data.ParaID_Control_Selection == Speed_Control) {
+                js_status_BareToRTOS |= (1 << 17);
+            } else {
+                js_status_BareToRTOS &= ~(1 << 17);
+            }
 
-            js_status_BareToRTOS = uz_javascope_set_status_bit(
-                js_status_BareToRTOS, PARAID_STATUS_NO_CONTROL,
-                ParaID_Data.ParaID_Control_Selection == No_Control);
+            /* Bit 18 -ParaID_FOC_no_control */
+            if (ParaID_Data.ParaID_Control_Selection == No_Control) {
+                js_status_BareToRTOS |= (1 << 18);
+            } else {
+                js_status_BareToRTOS &= ~(1 << 18);
+            }
 
-            js_status_BareToRTOS = uz_javascope_set_status_bit(
-                js_status_BareToRTOS, PARAID_STATUS_ACTIVE,
-                ParaID_Data.GlobalConfig.enableParameterID == true);
-
-            ultrazohm_state_machine_set_userLED(ParaID_Data.GlobalConfig.enableParameterID == true);
+            /* Bit 19 -ParameterID active */
+            if (ParaID_Data.GlobalConfig.enableParameterID == true) {
+                ultrazohm_state_machine_set_userLED(true);
+                js_status_BareToRTOS |= (1 << 19);
+            } else {
+                js_status_BareToRTOS &= ~(1 << 19);
+                ultrazohm_state_machine_set_userLED(false);
+            }
             ....
         }
 

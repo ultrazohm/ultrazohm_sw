@@ -58,7 +58,6 @@ Current implementation on R5
 ----------------------------
 
 Inside ``javascope.c``, ``JavaScope_update`` writes the current sample to OCM bank 3 at ``MEM_SHARED_START_OCM_BANK_3_JAVASCOPE``.
-The outgoing status preserves LED and application feedback in bits 0 through 29 and encodes the current platform state in bits 31:30.
 The function also reads the response message from the A53 and forwards it to ``ipc_Control_func``.
 
 The R5-side sequence is:
@@ -76,7 +75,6 @@ If the accelerator mode is disabled, the R5 still reads the A53 response message
 
    #include "xil_cache.h"
    #include "APU_RPU_shared.h"
-   #include "../include/javascope_status.h"
 
    void JavaScope_update(DS_Data* data){
       struct javascope_data_t volatile * const javascope_data =
@@ -88,7 +86,7 @@ If the accelerator mode is disabled, the R5 still reads the A53 response message
       }
       javascope_data->slowDataID      = js_cnt_slowData;
       javascope_data->slowDataContent = *js_slowDataArray[js_cnt_slowData];
-      javascope_data->status = uz_javascope_set_platform_state(js_status_BareToRTOS, ultrazohm_state_machine_get_state());
+      javascope_data->status          = js_status_BareToRTOS;
 
       Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE);
       status = XIpiPsu_TriggerIpi(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);

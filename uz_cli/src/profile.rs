@@ -68,6 +68,17 @@ impl PlatformStateMapping {
     }
 }
 
+fn validate_state_mapping(legacy: bool, state: &Option<PlatformStateMapping>) -> Result<()> {
+    ensure!(
+        legacy == state.is_none(),
+        "legacy mappings must omit platform_state; modern mappings require it"
+    );
+    if let Some(state) = state {
+        state.validate()?;
+    }
+    Ok(())
+}
+
 /// Firmware wire geometry, names and IDs. Provenance is descriptive, not device readback.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -81,7 +92,9 @@ pub struct ChannelMapping {
     pub slow_signals: BTreeMap<String, u32>,
     pub variables: BTreeMap<String, u32>,
     pub commands: BTreeMap<String, u32>,
-    pub platform_state: PlatformStateMapping,
+    #[serde(default)]
+    pub legacy_javascope_header: bool,
+    pub platform_state: Option<PlatformStateMapping>,
 }
 impl ChannelMapping {
     pub fn load(path: Option<&Path>) -> Result<Self> {
@@ -95,7 +108,7 @@ impl ChannelMapping {
             .with_context(|| format!("reading channel mapping {}", path.display()))?;
         let mapping: Self =
             serde_json::from_str(&text).context("invalid firmware channel mapping")?;
-        mapping.platform_state.validate()?;
+        validate_state_mapping(mapping.legacy_javascope_header, &mapping.platform_state)?;
         Ok(mapping)
     }
 }
@@ -116,7 +129,9 @@ pub struct Profile {
     pub slow_signals: BTreeMap<String, u32>,
     pub variables: BTreeMap<String, u32>,
     pub commands: BTreeMap<String, u32>,
-    pub platform_state: PlatformStateMapping,
+    #[serde(default)]
+    pub legacy_javascope_header: bool,
+    pub platform_state: Option<PlatformStateMapping>,
 }
 impl Profile {
     pub fn load(path: Option<&Path>) -> Result<Self> {
@@ -141,13 +156,14 @@ impl Profile {
             slow_signals: mapping.slow_signals,
             variables: mapping.variables,
             commands: mapping.commands,
+            legacy_javascope_header: mapping.legacy_javascope_header,
             platform_state: mapping.platform_state,
         };
         p.validate()?;
         Ok(p)
     }
     pub fn validate(&self) -> Result<()> {
-        self.platform_state.validate()?;
+        validate_state_mapping(self.legacy_javascope_header, &self.platform_state)?;
         ensure!(
             self.api_version == 1 && self.channels == 20,
             "requires v1 profile and 20-channel firmware"
@@ -215,9 +231,27 @@ impl Profile {
 mod tests {
     use super::*;
 
+    fn state_mapping() -> PlatformStateMapping {
+        PlatformStateMapping {
+            mask: 0xC0000000,
+            shift: 30,
+            values: [(0, "idle"), (1, "running"), (2, "control"), (3, "error")]
+                .into_iter()
+                .map(|(k, v)| (k, v.into()))
+                .collect(),
+        }
+    }
+
+    #[test]
+    fn legacy_mapping_requires_explicit_marker() {
+        assert!(validate_state_mapping(true, &None).is_ok());
+        assert!(validate_state_mapping(false, &None).is_err());
+        assert!(validate_state_mapping(true, &Some(state_mapping())).is_err());
+    }
+
     #[test]
     fn platform_state_uses_mapping_and_preserves_feedback() {
-        let mut mapping = ChannelMapping::load(None).unwrap().platform_state;
+        let mut mapping = state_mapping();
         for (code, name) in [(0, "idle"), (1, "running"), (2, "control"), (3, "error")] {
             for feedback in [0, 1, 15, 0x3FFF_FFFF] {
                 assert_eq!(mapping.decode((code << 30) | feedback), Some(name));
@@ -233,7 +267,7 @@ mod tests {
 
     #[test]
     fn rejects_invalid_state_mappings() {
-        let original = ChannelMapping::load(None).unwrap().platform_state;
+        let original = state_mapping();
         let mut mapping = original.clone();
         mapping.shift = 32;
         assert!(mapping.validate().is_err());

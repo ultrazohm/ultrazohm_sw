@@ -74,7 +74,7 @@ def test_real_cli_generates_mapping_from_headers(tmp_path):
     pytest.importorskip('ultrazohm')
     import shutil
     root = Path(__file__).resolve().parents[2]
-    for name in (str(live_mapping.HEADER), 'vitis/software/Baremetal/src/include/javascope_status.h',
+    for name in (str(live_mapping.HEADER),
                  'vitis/software/shared/APU_RPU_shared.h', 'vitis/software/FreeRTOS/main.h',
                  'vitis/software/FreeRTOS/defines.h', 'tcl_scripts/vitis_headless.tcl'):
         target = tmp_path/name
@@ -84,6 +84,8 @@ def test_real_cli_generates_mapping_from_headers(tmp_path):
     mapping = json.loads(path.read_text())
     assert mapping['observables']['JSO_lifecheck'] == 3
     assert mapping['channels'] == 20
+    assert mapping['legacy_javascope_header'] is True
+    assert mapping['platform_state'] is None
     assert mapping['repository']['commit'] in path.name
 
 

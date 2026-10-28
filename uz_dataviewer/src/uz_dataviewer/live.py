@@ -305,7 +305,7 @@ class LiveController:
                 try:
                     expected = json.loads(Path(mapping).expanduser().read_text(encoding='utf-8'))
                     fields = ('api_version', 'channels', 'samples_per_packet', 'observables',
-                              'slow_signals', 'variables', 'commands', 'platform_state')
+                              'slow_signals', 'variables', 'commands', 'platform_state', 'legacy_javascope_header')
                     if any(expected.get(key) != self._catalog.get(key) for key in fields):
                         self._notice += (f'. The service uses a different channel mapping than {mapping}. '
                                          'Restart the service to apply the selected mapping.')

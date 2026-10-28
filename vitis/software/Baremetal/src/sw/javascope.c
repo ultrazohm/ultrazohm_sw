@@ -17,7 +17,6 @@
 #include "../defines.h"
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
-#include "../include/javascope_status.h"
 #include "xil_cache.h"
 
 // maximum number of while loops in the polling function for the acknowledge flag
@@ -41,9 +40,10 @@ static float System_UpTime_ms;
 uint32_t pollErrorCnt = 0U;
 
 uint32_t i_fetchDataLifeCheck=0;
-// LED and optional feedback flags maintained by ipc_Control_func().
-// JavaScope_update() adds the current platform state in bits 31:30 when sending.
-uint32_t js_status_BareToRTOS = 0U;
+uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status of the four "UltraZohm LEDs" (cf. ipc_ARM.c):
+												//  Bits 3-0: User (3), Error (2), Running (1) and Ready (0)
+												//  This is probably it?
+												// Is sent to APU (and PC) by means of javascope_data->status in JavaScope_update (below)
 
 //Initialize the Interrupt structure
 extern XIpiPsu IPI_instance;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -138,7 +138,7 @@ void JavaScope_update(DS_Data* data){
 	}
 	javascope_data->slowDataID 		= js_cnt_slowData;
 	javascope_data->slowDataContent = *js_slowDataArray[js_cnt_slowData];
-	javascope_data->status = uz_javascope_set_platform_state(js_status_BareToRTOS, ultrazohm_state_machine_get_state());
+	javascope_data->status 			= js_status_BareToRTOS;
 
 	// flush data cache of shared memory region to make sure shared memory is updated
 	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE);

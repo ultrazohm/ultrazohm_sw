@@ -799,7 +799,8 @@ impl ConnectionContext {
                         s.status = frame.status;
                         s.platform_state = profile
                             .platform_state
-                            .decode(frame.status)
+                            .as_ref()
+                            .and_then(|mapping| mapping.decode(frame.status))
                             .map(str::to_owned);
                     }
                     let frame = Arc::new(frame);

@@ -386,7 +386,7 @@ class LiveWorkspace:
         if imgui.collapsing_header('Connection details'):
             imgui.text_unformatted('Service: ' + ('attached' if self.update.attached else 'detached'))
             imgui.text_unformatted('Device: ' + ('connected' if state.get('connected') else 'disconnected'))
-            imgui.text_unformatted('Platform: ' + str(state.get('platform_state') or 'unknown'))
+            imgui.text_unformatted('Platform: ' + str(state.get('platform_state') or 'unavailable'))
             if self.update.received_at:
                 age = time.monotonic() - self.update.received_at
                 imgui.text_unformatted(f'Last data: {age:.1f}s ago' + (' — STALE' if age > 1 else ''))
@@ -466,7 +466,7 @@ class LiveWorkspace:
 
     def render_control(self):
         state = self.update.status.get('state', {})
-        imgui.text_unformatted('Platform: ' + str(state.get('platform_state') or 'unknown'))
+        imgui.text_unformatted('Platform: ' + str(state.get('platform_state') or 'unavailable'))
         imgui.begin_disabled(self.controller.flashing or
                              (not self.scripts.busy and (not self.update.attached or not state.get('connected'))))
         for label, operation in [('Enable System', 'enable_system'), ('Enable Control', 'enable_control'), ('Stop', 'stop')]:

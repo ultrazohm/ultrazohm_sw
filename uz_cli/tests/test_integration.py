@@ -45,6 +45,14 @@ def wait_for(fn, seconds=10):
     raise AssertionError("timed out waiting for condition")
 
 
+def modern_mapping():
+    mapping = generated_mapping()
+    mapping['legacy_javascope_header'] = False
+    mapping['platform_state'] = {'mask': 0xC0000000, 'shift': 30,
+        'values': {'0': 'idle', '1': 'running', '2': 'control', '3': 'error'}}
+    return mapping
+
+
 def generated_mapping():
     result = subprocess.run([str(BIN), "channel-mapping"], cwd=ROOT,
                             capture_output=True, text=True, check=True, timeout=15)
@@ -55,7 +63,6 @@ def repository_fixture(root):
     for name in (
         'tcl_scripts/vitis_headless.tcl',
         'vitis/software/Baremetal/src/include/javascope.h',
-        'vitis/software/Baremetal/src/include/javascope_status.h',
         'vitis/software/shared/APU_RPU_shared.h',
         'vitis/software/FreeRTOS/main.h',
         'vitis/software/FreeRTOS/defines.h',
@@ -610,8 +617,23 @@ class IntegrationTest(unittest.TestCase):
         self.cli('shutdown');self.assertEqual(service.wait(timeout=10),0)
         self.assertTrue((self.run_dir/'data.parquet').exists())
         self.assertIn('JSO_lifecheck',(self.run_dir/'data.csv').read_text().splitlines()[0])
+    def test_legacy_firmware_state_unavailable_with_control_and_logging(self):
+        mapping = generated_mapping()
+        mapping['legacy_javascope_header'] = True
+        mapping['platform_state'] = None
+        self.start(mapping=mapping, logging=False)
+        self.cli('enable-system')
+        self.cli('enable-control')
+        self.cli('start-logging')
+        wait_for(lambda: self.cli('status')['state']['samples'] > 100)
+        self.assertIsNone(self.cli('status')['state']['platform_state'])
+        self.cli('stop')
+        self.cli('stop-logging')
+        wait_for(lambda: self.cli('status')['logging']['fast']['phase'] == 'complete')
+        self.assertTrue((self.run_dir/'data.parquet').exists())
+
     def test_explicit_platform_state_feedback(self):
-        self.start()
+        self.start(mapping=modern_mapping())
         wait_for(lambda: self.cli("status")["state"]["platform_state"] == "idle")
         self.cli("enable-system")
         wait_for(lambda: self.cli("status")["state"]["platform_state"] == "running")
@@ -623,7 +645,7 @@ class IntegrationTest(unittest.TestCase):
         wait_for(lambda: self.cli("status")["state"]["platform_state"] == "idle")
 
     def test_platform_state_names_from_channel_mapping(self):
-        mapping = generated_mapping()
+        mapping = modern_mapping()
         mapping["platform_state"]["values"] = {
             "0": "waiting", "1": "enabled", "2": "regulating", "3": "fault"
         }
@@ -1162,7 +1184,7 @@ class IntegrationTest(unittest.TestCase):
         wait_for(ready)
         run_dir=Path(self.tmp.name)/"embedded"
         profile_path=self.config_file("python-profile.json", self.runtime_profile({"5":"JSO_PYTHON_SIGNAL"}))
-        mapping=generated_mapping()
+        mapping=modern_mapping()
         mapping["observables"]["JSO_PYTHON_SIGNAL"] = 29
         mapping["platform_state"]["values"]["0"] = "waiting"
         mapping_path=self.config_file("python-mapping.json",mapping)

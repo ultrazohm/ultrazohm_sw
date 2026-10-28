@@ -31,7 +31,14 @@ class HeaderMappingTest(unittest.TestCase):
         for name in HEADERS:
             target = self.repo / name
             target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(ROOT / name, target)
+            if name == HEADERS[1]:
+                target.write_text("#define JAVASCOPE_PLATFORM_STATE_MASK UINT32_C(0xC0000000)\n"
+                    "#define JAVASCOPE_PLATFORM_IDLE 0\n"
+                    "#define JAVASCOPE_PLATFORM_RUNNING UINT32_C(0x40000000)\n"
+                    "#define JAVASCOPE_PLATFORM_CONTROL UINT32_C(0x80000000)\n"
+                    "#define JAVASCOPE_PLATFORM_ERROR UINT32_C(0xC0000000)\n")
+            else:
+                shutil.copyfile(ROOT / name, target)
         scripts = self.repo / "tcl_scripts"
         scripts.mkdir()
         (scripts / "vitis_headless.tcl").touch()
@@ -104,11 +111,22 @@ class HeaderMappingTest(unittest.TestCase):
                 self.assertNotEqual(result.returncode, 0)
                 self.assertEqual(self.output.read_text(), "keep existing")
         header.write_text(original)
-        (self.repo / HEADERS[1]).unlink()
+        (self.repo / HEADERS[1]).write_text("// malformed existing header")
         result = self.run_cli("create-json-from-javascope-h")
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("javascope_status.h", result.stderr)
         self.assertEqual(self.output.read_text(), "keep existing")
+
+    def test_missing_status_header_generates_legacy_mapping(self):
+        (self.repo / HEADERS[1]).unlink()
+        result = self.run_cli('create-json-from-javascope-h')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        mapping = json.loads(self.output.read_text())
+        self.assertTrue(mapping['legacy_javascope_header'])
+        self.assertIsNone(mapping['platform_state'])
+        result = self.run_cli('--endpoint', self.endpoint, 'serve', '--interactive',
+                              '--channel-mapping', self.output, '--output', self.repo / 'legacy-session',
+                              input='status\nshutdown\n')
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_interactive_command(self):
         result = self.run_cli("--endpoint", self.endpoint, "serve", "--interactive",

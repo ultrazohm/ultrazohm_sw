@@ -207,17 +207,18 @@ The logging panel is used to set up the data logger of the GUI.
    This logging rate counts for the fast and slow data. Choose the desired value from the dropdown menu above.
 #. The button ``allow ext. logging`` enables the start and stop of the logging via a status-bit of the R5.
    If this functionality is enabled, the text of the button is highlighted and the button ``Logging ON/OFF`` is disabled/overwritten. 
-   To control status bit 12, replace the default ``false`` assignment for ``JAVASCOPE_STATUS_LOGGING_TRIGGER`` in ``ipc_ARM.c`` with your Boolean logging condition.
-   Replace the existing assignment rather than adding code before it, otherwise the default would clear the trigger again.
-   ``javascope_status.h`` is already included; assign the helper's returned status word as shown below.
+   To activate this status bit, comment in the status-bit 12 in the ``ipc_ARM.c`` file and replace the variable for the condition with your own.
 
    .. code-block:: c
      :linenos:
-     :caption: Replace the default logging-trigger assignment in ``ipc_ARM.c``. ``logging_requested`` represents your application's Boolean condition.
+     :caption: Status bit in ``ipc_ARM.c`` to transmit the external data logger signal from the R5 to the GUI. Has to be commented in
 
       /* Bit 12 - trigger ext. logging */
-      js_status_BareToRTOS = uz_javascope_set_status_bit(
-         js_status_BareToRTOS, JAVASCOPE_STATUS_LOGGING_TRIGGER, logging_requested);
+       // if (your condition == true) {
+       //   js_status_BareToRTOS |= (1 << 12);
+       // } else {
+       //   js_status_BareToRTOS &= ~(1 << 12);
+       // }
 
 #. Status indicator to display if the logging is active.
    It is highlighted green and displays ``Log ON`` if either the logging through the GUI-button press or via the external signal is active. 

@@ -171,9 +171,15 @@ fn git(root: &Path, args: &[&str]) -> Option<String> {
 pub fn generate(root: &Path) -> Result<ChannelMapping> {
     let texts = HEADERS
         .iter()
-        .map(|path| fs::read_to_string(root.join(path)).with_context(|| format!("reading {path}")))
+        .map(|path| match fs::read_to_string(root.join(path)) {
+            Ok(text) => Ok(Some(text)),
+            Err(error) if *path == HEADERS[1] && error.kind() == std::io::ErrorKind::NotFound => {
+                Ok(None)
+            }
+            Err(error) => Err(error).with_context(|| format!("reading {path}")),
+        })
         .collect::<Result<Vec<_>>>()?;
-    let header = &texts[0];
+    let header = texts[0].as_deref().unwrap();
     let observables = enum_table(header, "JSO_ZEROVALUE=0", "JSO_ENDMARKER")?;
     let slow_signals = enum_table(header, "JSSD_ZEROVALUE=0", "JSSD_ENDMARKER")?;
     let commands = enum_table(header, "GUI_BTN_ZEROVALUE=0", "GUI_BTN_ENDMARKER")?;
@@ -194,39 +200,45 @@ pub fn generate(root: &Path) -> Result<ChannelMapping> {
             "empty or duplicate send-field label {name:?}; variable names must be unique"
         );
     }
-    let status_defines = defines(&texts[1])?;
-    let mask = number("JAVASCOPE_PLATFORM_STATE_MASK", &status_defines, 0)?;
-    let shift = mask.trailing_zeros();
-    ensure!(
-        shift <= 30 && mask == (3_u32 << shift),
-        "platform-state mask must select two adjacent bits"
-    );
-    let mut values = BTreeMap::new();
-    for name in status_defines.keys().filter(|name| {
-        name.starts_with("JAVASCOPE_PLATFORM_") && name.as_str() != "JAVASCOPE_PLATFORM_STATE_MASK"
-    }) {
-        let bits = number(name, &status_defines, 0)?;
+    let platform_state = if let Some(status_header) = &texts[1] {
+        let status_defines = defines(status_header)?;
+        let mask = number("JAVASCOPE_PLATFORM_STATE_MASK", &status_defines, 0)?;
+        let shift = mask.trailing_zeros();
         ensure!(
-            bits & !mask == 0,
-            "{name} sets bits outside the platform-state mask"
+            shift <= 30 && mask == (3_u32 << shift),
+            "platform-state mask must select two adjacent bits"
         );
-        let label = name
-            .trim_start_matches("JAVASCOPE_PLATFORM_")
-            .to_ascii_lowercase();
-        ensure!(
-            values.insert(bits >> shift, label).is_none(),
-            "duplicate platform-state code in {name}"
-        );
-    }
-    let platform_state = PlatformStateMapping {
-        mask,
-        shift,
-        values,
+        let mut values = BTreeMap::new();
+        for name in status_defines.keys().filter(|name| {
+            name.starts_with("JAVASCOPE_PLATFORM_")
+                && name.as_str() != "JAVASCOPE_PLATFORM_STATE_MASK"
+        }) {
+            let bits = number(name, &status_defines, 0)?;
+            ensure!(
+                bits & !mask == 0,
+                "{name} sets bits outside the platform-state mask"
+            );
+            let label = name
+                .trim_start_matches("JAVASCOPE_PLATFORM_")
+                .to_ascii_lowercase();
+            ensure!(
+                values.insert(bits >> shift, label).is_none(),
+                "duplicate platform-state code in {name}"
+            );
+        }
+        let platform_state = PlatformStateMapping {
+            mask,
+            shift,
+            values,
+        };
+        platform_state.validate()?;
+        Some(platform_state)
+    } else {
+        None
     };
-    platform_state.validate()?;
     let mut geometry = BTreeMap::new();
     for text in &texts[2..] {
-        for (name, value) in defines(text)? {
+        for (name, value) in defines(text.as_deref().unwrap())? {
             ensure!(
                 geometry.insert(name.clone(), value).is_none(),
                 "duplicate definition {name}"
@@ -252,6 +264,7 @@ pub fn generate(root: &Path) -> Result<ChannelMapping> {
         slow_signals,
         variables,
         commands,
+        legacy_javascope_header: platform_state.is_none(),
         platform_state,
     };
     // Validate against the CLI's supported wire contract, without depending on

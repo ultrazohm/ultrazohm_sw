@@ -21,10 +21,8 @@ def workflow(tmp_path, monkeypatch):
     header = root/live_mapping.HEADER
     header.parent.mkdir(parents=True)
     header.touch()
-    standard = root/'uz_cli/profiles/standard.json'
-    standard.parent.mkdir(parents=True)
-    standard.write_text(json.dumps({'name': 'standard', 'sample_period_us': 100.,
-                                   'initial_channels': {'1': 'JSO_keep'}}))
+    monkeypatch.setattr(flashing, 'default_profile', lambda: {
+        'name': 'standard', 'sample_period_us': 100., 'initial_channels': {'1': 'JSO_keep'}})
     events, starts = [], []
     mapping = {'api_version': 1, 'channels': 20, 'samples_per_packet': 15,
                'observables': {'JSO_ZEROVALUE': 0, 'JSO_keep': 1, 'JSO_added': 3},

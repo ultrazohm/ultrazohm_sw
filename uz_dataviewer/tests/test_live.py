@@ -855,3 +855,12 @@ def test_disconnect_button_requests_shutdown_and_keeps_viewer_open(gui_frame, ap
         assert not controller.stop_event.is_set()
     finally:
         workspace.close()
+
+
+def test_unused_controller_closes_without_optional_cli_wheel(monkeypatch):
+    import sys
+    monkeypatch.setitem(sys.modules, 'ultrazohm', None)
+    controller = LiveController()
+    controller.close()
+    controller.close()
+    assert controller.stop_event.is_set()

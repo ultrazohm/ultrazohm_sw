@@ -530,6 +530,8 @@ class LiveController:
             connected = self.attached and self._status.get('state', {}).get('connected', False)
             owned_endpoint = self._owned_endpoint
             owned_running = self.process is not None and self.process.poll() is None
+            if not connected and not (owned_running and owned_endpoint):
+                return  # Unused live panels need no optional CLI backend to close.
             factory = self.client_factory
             if factory is None:
                 from ultrazohm import Client

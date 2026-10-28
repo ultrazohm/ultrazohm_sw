@@ -611,20 +611,27 @@ pub fn serve_with_ready(
         let _ = writer.lock().unwrap().shutdown(Shutdown::Both);
     }
     if let Err(e) = recordings.finish() {
+        // Acquisition may observe the closed logger channel before the writer
+        // publishes its actual IO error. Preserve that cause after joining it.
+        let detail = format!("{e:#}");
+        let mut state = state.lock().unwrap();
+        match &mut state.error {
+            Some(existing) if existing != &detail => {
+                existing.push_str("; ");
+                existing.push_str(&detail);
+            }
+            None => state.error = Some(detail),
+            _ => {}
+        }
+    }
+    if let Some(audit) = events
+        && let Err(error) = audit.finish()
+    {
         state
             .lock()
             .unwrap()
             .error
-            .get_or_insert_with(|| format!("{e:#}"));
-    }
-    if let Some(audit) = events {
-        if let Err(error) = audit.finish() {
-            state
-                .lock()
-                .unwrap()
-                .error
-                .get_or_insert_with(|| format!("{error:#}"));
-        }
+            .get_or_insert_with(|| format!("{error:#}"));
     }
     let s = state.lock().unwrap();
     if let Some(dir) = config.output {

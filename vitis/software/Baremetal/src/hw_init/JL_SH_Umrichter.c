@@ -8,6 +8,7 @@ conv_status_signals_t conv_status_signals = {
     .pwr_en = false,
     .board_en = false,
     .board_rst = false,
-    .board_ready = false,   
-    .igbt_desat = false
+    .board_ready = false,
+    .igbt_desat = false,
+    .ocp_fault = 0U
 };

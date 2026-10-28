@@ -1,0 +1,545 @@
+{
+  "CodeGenStatus": {
+    "clockReportDatt": {
+      "modelBaseRate": 5E-5,
+      "dutBaseRate": 5E-5,
+      "overSampleRequest": 1,
+      "clockData": {
+        "name": "ce_out",
+        "sampleTime": 5E-5,
+        "ratio": 1,
+        "domain": -1
+      },
+      "inData": [
+        {
+          "signalName": "FLT_1",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "FLT_2",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "FLT_3",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "FLT_4",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "FLT_PS",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "In_HB1_Top",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "In_HB2_Top",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "In_HB3_Top",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "In_HB1_Low",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "In_HB2_Low",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "In_HB3_Low",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "In_Board_EN",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "In_PWR_EN",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "In_CLK_DSC",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "In_RST_Inv",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "FLT_RST",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "use_flt_dis",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        }
+      ],
+      "outData": [
+        {
+          "signalName": "FLT_ps_1",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "Out_HB1_Top",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "Out_HB2_Top",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "Out_HB3_Top",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "Out_HB1_Low",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "Out_HB2_Low",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "Out_HB3_Low",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "Out_Board_EN",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "Out_PWR_EN",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "Out_Clk_DSC",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        },
+        {
+          "signalName": "Out_RST_Inv",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-5,
+          "domain": -1
+        }
+      ],
+      "clockEnableData": []
+    }
+  },
+  "CriticalPathDelay": 4.5740000000000007,
+  "GenFileList": [
+    "uz_JL_flt_ip_src_uz_JL_flt_dis_pkg.vhd",
+    "uz_JL_flt_ip_src_S_R_Flip_Flop.vhd",
+    "uz_JL_flt_ip_src_S_R_Flip_Flop_block.vhd",
+    "uz_JL_flt_ip_src_S_R_Flip_Flop_block1.vhd",
+    "uz_JL_flt_ip_src_S_R_Flip_Flop_block2.vhd",
+    "uz_JL_flt_ip_src_S_R_Flip_Flop_block3.vhd",
+    "uz_JL_flt_ip_src_For_Each_Subsystem.vhd",
+    "uz_JL_flt_ip_src_uz_JL_flt_dis.vhd"
+  ],
+  "Latency": 0,
+  "ModelGenStatus": {
+    "Version": {
+      "Name": "HDL Coder",
+      "Version": "25.1",
+      "Release": "(R2025a)",
+      "Date": "21-Nov-2024"
+    },
+    "ModelStructuralChecksum": {
+      "Value": [
+        3180663766,
+        162103459,
+        1615726379,
+        1770320903
+      ],
+      "MarkedUnique": false
+    },
+    "CLI": "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\nAll HDL code generation parameters\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\nAXIInterface512BitDataPortFeatureControl                : 'off'\nAXIStreamingTransformFeatureControl                     : 'off'\nAcquireDesignDelaysForEMLOptimizations                  : 'off'\nAdaptivePipelining                                      : 'off'\nAddInputRegister                                        : 'on'\nAddOutputRegister                                       : 'on'\nAddPipelineRegisters                                    : 'off'\nAddRatePort                                             : 'off'\nAdderSharingMinimumBitwidth                             : 0\nAllowDelayDistribution                                  : 'on'\nAlteraBackwardIncompatibleSinCosPipeline                : 'off'\nAlteraWorkflow                                          : 'off'\nAsyncResetPort                                          : 'off'\nAutoPlace                                               : 'on'\nAutoRoute                                               : 'on'\nBackannotation                                          : 'off'\nBalanceClockRateOutputPorts                             : 'off'\nBalanceDelays                                           : 'on'\nBalanceDelaysControlsFeedbackLoops                      : 'on'\nBalanceDelaysForTestpoints                              : 'on'\nBalanceDelaysForTunableParam                            : 'on'\nBlockGenerateLabel                                      : '_gen'\nBlocksWithNoCharacterizationFile                        : 'highlightCriticalPathEstimationOffendingBlocks'\nBooleanVectorDownTo                                     : 'on'\nBuildToProtectModel                                     : 'off'\nCPAnnotationFile                                        : ''\nCPGuidanceFile                                          : ''\nCRPDelayBalancingIterLimit                              : 20\nCRPWithoutFlattening                                    : 'on'\nCastBeforeSum                                           : 'on'\nCheckHDL                                                : 'off'\nClearHighlightingFile                                   : 'clearhighlighting'\nClockEdge                                               : 'Rising'\nClockEnableInputPort                                    : 'clk_enable'\nClockEnableOutputPort                                   : 'ce_out'\nClockHighTime                                           : 5\nClockInputPort                                          : 'clk'\nClockInputs                                             : 'Single'\nClockLowTime                                            : 5\nClockProcessPostfix                                     : '_process'\nClockRatePipelineOutputPorts                            : 'off'\nClockRatePipelining                                     : 'on'\nCoSimLibPostfix                                         : '_cosim'\nCoSimModelSetup                                         : 'CosimBlockAndDut'\nCodeGenerationOutput                                    : 'GenerateHDLCode'\nCoeffMultipliers                                        : 'Multiplier'\nCoeffPrefix                                             : 'coeff'\nCoefficientMemory                                       : 'Registers'\nCoefficientSource                                       : 'Internal'\nCompactSwitch                                           : 'off'\nCompileStrategy                                         : 'CompileAll'\nComplexImagPostfix                                      : '_im'\nComplexMulElaboration                                   : 'MultiplyAddBlock'\nComplexRealPostfix                                      : '_re'\nConcatenateDelays                                       : 'on'\nConcatenateHDLModules                                   : 'off'\nConditionalizePipeline                                  : 'off'\nCriticalPathEstimation                                  : 'on'\nCriticalPathEstimationFile                              : 'criticalPathEstimated'\nCustomDotPath                                           : ''\nCustomFileFooterComment                                 : ''\nCustomFileHeaderComment                                 : ''\nDALUTPartition                                          : -1\nDARadix                                                 : 2\nDateComment                                             : 'on'\nDelayAbsorption                                         : 'on'\nDelayElaborationLimit                                   : 20\nDelaySizeThreshold                                      : 10000\nDeleteUnusedBlocks                                      : 'on'\nDeleteUnusedPorts                                       : 'on'\nDetectBlackBoxNameCollision                             : 'Warning'\nDistributedPipelining                                   : 'off'\nDistributedPipeliningBarriers                           : 'on'\nDistributedPipeliningBarriersFile                       : 'highlightDistributedPipeliningBarriers'\nDistributedPipeliningPrecision                          : -1\nDistributedPipeliningPriority                           : 'Numerical Integrity'\nDownToArrayIndexing                                     : 'off'\nDvMaxProcessTime                                        : 300\nEDAScriptGeneration                                     : 'on'\nEnableComments                                          : 'on'\nEnableFPGAWorkflow                                      : 'off'\nEnablePrefix                                            : 'enb'\nEnableTestpoints                                        : 'off'\nEntityConflictPostfix                                   : '_block'\nEnumEncodingScheme                                      : 'default'\nErrorCheckReport                                        : 'on'\nErrorMargin                                             : 4\nExtraEffortMargin                                       : 1\nFIRAdderStyle                                           : 'linear'\nFPGAWorkflowParameters                                  : []\nFPToleranceStrategy                                     : 'DEFAULT'\nFPToleranceValue                                        : 1e-07\nFamilyDevicePackageSpeed                                : {}\nFloatingPointTargetConfiguration                        : []\nFoldDelaysToConstant                                    : 'on'\nFoldingFactor                                           : 1\nForceClock                                              : 'on'\nForceClockEnable                                        : 'on'\nForceReset                                              : 'on'\nFracDelayPort                                           : 'filter_fd'\nFrameToSampleConversion                                 : 'off'\nFunctionallyEquivalentRetiming                          : 'on'\nGainMultipliers                                         : 'Multiplier'\nGatewayoutWithDTC                                       : 'off'\nGenDUTPortForTunableParam                               : 'on'\nGenerateAIEngineCode                                    : 'off'\nGenerateCoSimBlock                                      : 'off'\nGenerateCoSimModel                                      : 'None'\nGenerateCodeInfo                                        : 'off'\nGenerateFILBlock                                        : 'off'\nGenerateHDLCode                                         : 'on'\nGenerateHDLTestBench                                    : 'on'\nGenerateModel                                           : 'on'\nGenerateRTLLintReport                                   : 'off'\nGenerateRecordType                                      : 'off'\nGenerateSVDPITestBench                                  : 'None'\nGenerateTB                                              : 'off'\nGenerateTargetComps                                     : 'on'\nGenerateValidSignalInterface                            : 'off'\nGenerateValidationModel                                 : 'off'\nGeneratedModelName                                      : ''\nGeneratedModelNamePrefix                                : 'gm_'\nGuidedRetiming                                          : 'off'\nHDLCodeCoverage                                         : 'off'\nHDLCodingStandard                                       : 'None'\nHDLCodingStandardCustomizations                         : []\nHDLCompileFilePostfix                                   : '_compile.do'\nHDLCompileInit                                          : 'vlib %s\\n'\nHDLCompileTerm                                          : ''\nHDLCompileVHDLCmd                                       : 'vcom %s %s\\n'\nHDLCompileVerilogCmd                                    : 'vlog %s %s\\n'\nHDLDTO                                                  : 'off'\nHDLGenerateWebview                                      : 'off'\nHDLLintCmd                                              : ''\nHDLLintInit                                             : ''\nHDLLintTerm                                             : ''\nHDLLintTool                                             : 'None'\nHDLMapFilePostfix                                       : '_map.txt'\nHDLMapSeparator                                         : ''\nHDLOptLoopBudgetCheckRuntimeFeatureControl              : 'on'\nHDLSimCmd                                               : 'vsim -voptargs=+acc %s.%s\\n'\nHDLSimFilePostfix                                       : '_sim.do'\nHDLSimInit                                              : 'onbreak resume\\nonerror resume\\n'\nHDLSimProjectCmd                                        : 'project addfile %s\\n'\nHDLSimProjectFilePostfix                                : '_init.do'\nHDLSimProjectInit                                       : 'project new . %s work\\n'\nHDLSimProjectTerm                                       : 'project compileall\\n'\nHDLSimTerm                                              : 'run -all\\n'\nHDLSimViewWaveCmd                                       : 'add wave sim:%s\\n'\nHDLSubsystem                                            : 'uz_JL_flt_stop/uz_JL_flt_dis'\nHDLSynthCmd                                             : ''\nHDLSynthFilePostfix                                     : ''\nHDLSynthInit                                            : ''\nHDLSynthLibCmd                                          : ''\nHDLSynthLibSpec                                         : ''\nHDLSynthTerm                                            : ''\nHDLSynthTool                                            : 'None'\nHDLWFSmartbuild                                         : 'on'\nHardwarePipeliningCharacterizationFile                  : ''\nHardwarePipeliningParamWarning                          : 0\nHierarchicalDistPipelining                              : 'off'\nHighlightAncestors                                      : 'on'\nHighlightClockRatePipeliningDiagnostic                  : 'on'\nHighlightClockRatePipeliningFile                        : 'highlightClockRatePipelining'\nHighlightColor                                          : 'cyan'\nHighlightDelayAbsorptionDiagnostic                      : 'on'\nHighlightDelayAbsorptionDiagnosticFile                  : 'highlightDelayAbsorption'\nHighlightFeedbackLoops                                  : 'on'\nHighlightFeedbackLoopsFile                              : 'highlightFeedbackLoop'\nHighlightLUTPipeliningDiagnostic                        : 'on'\nHighlightLUTPipeliningDiagnosticFile                    : 'highlightLUTPipeliningDiagnostic'\nHighlightRemovedDeadBlocks                              : 'on'\nHoldInputDataBetweenSamples                             : 'on'\nHoldTime                                                : 2\nIOThreshold                                             : 5000\nIPCoreReport                                            : 'on'\nIPCores                                                 : \nIgnoreDataChecking                                      : 0\nIncrementalCodeGenForTopModel                           : 'on'\nInferControlPorts                                       : 'off'\nInitializeBlockRAM                                      : 'on'\nInitializeRealPort                                      : 'off'\nInitializeTestBenchInputs                               : 'off'\nInlineConfigurations                                    : 'on'\nInlineHDLCode                                           : 'off'\nInlineMATLABBlockCode                                   : 'off'\nInlineSubsystems                                        : 'on'\nInlineTBConstantIOData                                  : 'on'\nInputComplex                                            : 'off'\nInputDataInterval                                       : 0\nInputDataType                                           : []\nInputFIFOSize                                           : 10\nInputPort                                               : 'filter_in'\nInputProcessingOrder                                    : 'RowMajor'\nInputType                                               : 'std_logic_vector'\nInstanceGenerateLabel                                   : '_gen'\nInstancePostfix                                         : ''\nInstancePrefix                                          : 'u_'\nInterBlkHorzScale                                       : 1.7\nInterBlkVertScale                                       : 1.2\nLUTMapToRAM                                             : 'on'\nLatencyConstraint                                       : 0\nLayoutStyle                                             : 'AutoArrange'\nLintTool                                                : 'No lint tool specified'\nLoopUnrolling                                           : 'off'\nML2PIR                                                  : 'off'\nMapPipelineDelaysToRAM                                  : 'off'\nMapVectorPortToStream                                   : 'off'\nMaskParameterAsGeneric                                  : 'off'\nMaxComputationLatency                                   : 1\nMaxOversampling                                         : Inf\nMergeDelaysOnFanouts                                    : 'on'\nMinDelaysRequiredAtLocalMultirateOutput                 : 1\nMinimizeClockEnables                                    : 'off'\nMinimizeGlobalResets                                    : 'off'\nMinimizeIntermediateSignals                             : 'off'\nModelName                                               : ''\nModulePrefix                                            : 'uz_JL_flt_ip_src_'\nMulticyclePathConstraints                               : 'off'\nMulticyclePathInfo                                      : 'off'\nMultifileTestBench                                      : 'off'\nMultiplierInputPipeline                                 : 0\nMultiplierOutputPipeline                                : 0\nMultiplierPartitioningThreshold                         : Inf\nMultiplierPromotionThreshold                            : 0\nMultiplierSharingMinimumBitwidth                        : 0\nMultiplyAddSharingMinimumBitwidth                       : 0\nName                                                    : 'filter'\nNativeFloatingPoint                                     : 'off'\nNoResetInitScript                                       : 'noresetinitscript.tcl'\nNoResetInitializationMode                               : 'InsideModule'\nNumCriticalPathsEstimated                               : 1\nNumMultipliers                                          : -1\nObfuscateGeneratedHDLCode                               : 'off'\nOptimBetweenMATLABAndSimulink                           : 'off'\nOptimizationData                                        : ''\nOptimizationReport                                      : 'on'\nOptimizeBusDelayBalancing                               : 'on'\nOptimizeConstants                                       : 'on'\nOptimizeFixedPointConstants                             : 'off'\nOptimizeForHDL                                          : 'off'\nOptimizeHDLIP                                           : 'off'\nOptimizeMdlGen                                          : 'on'\nOptimizeTimingController                                : 'on'\nOutputFIFOSize                                          : 10\nOutputGenerateLabel                                     : 'outputgen'\nOutputPort                                              : 'filter_out'\nOutputType                                              : 'Same as input type'\nOversampling                                            : 1\nPackagePostfix                                          : '_pkg'\nPipelineDistributionPriority                            : 'Numerical Integrity'\nPipelinePostfix                                         : '_pipe'\nPreserveDesignDelays                                    : 'off'\nProductOfElementsStyle                                  : 'linear'\nProjectFolder                                           : 'C:\\Users\\jonat\\Documents\\MA_JL_CB\\ip_cores\\uz_JL_flt_dis\\hdl_prj'\nRAMArchitecture                                         : 'WithClockEnable'\nRAMMappingThreshold                                     : 256\nRAMStyleAttributeName                                   : ''\nRecommendations                                         : 'off'\nReduceMatchingDelays                                    : 'on'\nReferenceDesign                                         : ''\nReferenceDesignParameter                                : {}\nReferenceDesignPath                                     : ''\nRemoveRedundantCounters                                 : 'on'\nRemoveResetFrom                                         : 'None'\nReplaceUnitDelayWithIntegerDelay                        : 'on'\nRequirementComments                                     : 'on'\nReservedWordPostfix                                     : '_rsvd'\nResetAssertedLevel                                      : 'Active-high'\nResetInputPort                                          : 'reset'\nResetLength                                             : 2\nResetType                                               : 'Synchronous'\nResourceReport                                          : 'on'\nRetimingCP                                              : 'off'\nRetimingCPFile                                          : 'highlightRetimingCP'\nRetimingDetails                                         : 'on'\nReuseAccum                                              : 'off'\nReuseCommonOperations                                   : 'off'\nRoutingFudgeFactor                                      : 0.5\nRuntimeReport                                           : 'off'\nSLPABackEdgeFile                                        : 'staticLatLoopBackEdge'\nSLPAFile                                                : 'staticLatPathAnalysis'\nSLPAGMMapMATFile                                        : 'staticLatGMMap'\nSLPALoopsFile                                           : 'staticLatLoops'\nSafeZeroConcat                                          : 'on'\nSamplesPerCycle                                         : 1\nScalarizePorts                                          : 'off'\nScalarizedPortIndexing                                  : 'Zero-based'\nScaleWarnBits                                           : 3\nScheduleZeroProtection                                  : 'on'\nSerialPartition                                         : -1\nSerializerRatioThreshold                                : 8192\nSetLUTPipeliningOffScriptFile                           : 'setLUTPipelineOffScript'\nShareAdders                                             : 'off'\nShareAtomicSubsystems                                   : 'on'\nShareCounterSerDes                                      : 'off'\nShareFloatingPointIPs                                   : 'on'\nShareMATLABBlocks                                       : 'on'\nShareMultipliers                                        : 'on'\nShareMultiplyAdds                                       : 'on'\nShowCodeGenPIR                                          : 'off'\nSignalNamesMangling                                     : 'off'\nSimIndexCheck                                           : 'off'\nSimulationLibPath                                       : ''\nSimulationTool                                          : 'Mentor Graphics ModelSim'\nSimulatorFlags                                          : ''\nSplitArchFilePostfix                                    : '_arch'\nSplitEntityArch                                         : 'off'\nSplitEntityFilePostfix                                  : '_entity'\nSplitMooreChartStateUpdate                              : 'on'\nStabilizeInputsForAperiodicRate                         : 'on'\nStaticLatencyPathAnalysis                               : 'off'\nStringTypeSupport                                       : 'off'\nSubsystemReuse                                          : 'Atomic only'\nSumOfElementsStyle                                      : 'linear'\nSynthesisAttributes                                     : {}\nSynthesisOffDirective                                   : ''\nSynthesisOnDirective                                    : ''\nSynthesisProjectAdditionalFiles                         : ''\nSynthesisTool                                           : 'Xilinx Vivado'\nSynthesisToolChipFamily                                 : 'Zynq UltraScale+'\nSynthesisToolDeviceName                                 : 'xczu9eg-ffvb1156-2-i'\nSynthesisToolPackageName                                : ''\nSynthesisToolSpeedValue                                 : ''\nSystemVerilogFileExtension                              : '.sv'\nTCCounterLimitCompOp                                    : '>='\nTapDelayNoElab                                          : 'on'\nTargetDirectory                                         : 'C:\\Users\\jonat\\Documents\\MA_JL_CB\\ip_cores\\uz_JL_flt_dis\\hdl_prj\\hdlsrc'\nTargetFrequency                                         : 100\nTargetLanguage                                          : 'VHDL'\nTargetPlatform                                          : 'Generic Xilinx Platform'\nTargetSubdirectory                                      : 'Model'\nTestBenchClockEnableDelay                               : 1\nTestBenchCoeffStimulus                                  : []\nTestBenchDataPostfix                                    : '_data'\nTestBenchFracDelayStimulus                              : []\nTestBenchInitializeInputs                               : 'off'\nTestBenchPostfix                                        : '_tb'\nTestBenchRateStimulus                                   : []\nTestBenchReferencePostFix                               : '_ref'\nTestBenchStimulus                                       : []\nTestBenchStimulusSource                                 : 'TestbenchAroundDUT'\nTestBenchUserStimulus                                   : []\nTimescale                                               : '`timescale 1 ns / 1 ns'\nTimingControllerArch                                    : 'default'\nTimingControllerPostfix                                 : '_tc'\nTimingDatabaseDirectory                                 : ''\nToolName                                                : ''\nTraceability                                            : 'off'\nTraceabilityProcessing                                  : 'off'\nTraceabilityStyle                                       : 'Line Level'\nTransformDelaysWithControlLogic                         : 'on'\nTransformNonZeroInitValDelay                            : 'on'\nTreatBalanceDelaysOffAs                                 : 'Warning'\nTreatDelayBalancingFailureAs                            : 'Error'\nTreatIOThresholdAs                                      : 'None'\nTreatRatesAsHardwareRates                               : 'off'\nTreatRealsInGeneratedCodeAs                             : 'Error'\nTriggerAsClock                                          : 'off'\nTriggerAsClockWithoutSyncRegisters                      : 'on'\nTurnkeyWorkflow                                         : 'off'\nUniqueGlobalSchedulingCounters                          : 'on'\nUseAggregatesForConst                                   : 'off'\nUseArrangeSystem                                        : 'off'\nUseDotLayout                                            : 'off'\nUseFileIOInTestBench                                    : 'on'\nUseFloatingPoint                                        : 'off'\nUseMatrixTypesInEML                                     : 'on'\nUsePipelinedToolboxFunctions                            : 'on'\nUseRisingEdge                                           : 'off'\nUseSingleLibrary                                        : 'off'\nUseSynthesisEstimatesForDistributedPipelining           : 'off'\nUseVerilogTimescale                                     : 'on'\nUserComment                                             : ''\nVHDLArchitectureName                                    : 'rtl'\nVHDLFileExtension                                       : '.vhd'\nVHDLLibraryName                                         : 'work'\nValidationModelNameSuffix                               : '_vnl'\nVectorPrefix                                            : 'vector_of_'\nVerbosity                                               : 1\nVerilogFileExtension                                    : '.v'\nWorkflow                                                : 'IP Core Generation'\nXilinxSimulatorLibPath                                  : ''\nnfpDenormals                                            : 'DEFAULT'\nnfpLatency                                              : 'DEFAULT'\nsavepirtoscript                                         : 'off'\nsharedmulsign                                           : 'Signed'\nshareequalwl                                            : 'on'\nsschdlMatrixProductSumCustomLatency                     : -1\n\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\nNon default settings\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\nCriticalPathEstimation                                  : 'on'\nHDLSubsystem                                            : 'uz_JL_flt_stop/uz_JL_flt_dis'\nModulePrefix                                            : 'uz_JL_flt_ip_src_'\nProjectFolder                                           : 'C:\\Users\\jonat\\Documents\\MA_JL_CB\\ip_cores\\uz_JL_flt_dis\\hdl_prj'\nResetType                                               : 'Synchronous'\nSynthesisTool                                           : 'Xilinx Vivado'\nSynthesisToolChipFamily                                 : 'Zynq UltraScale+'\nSynthesisToolDeviceName                                 : 'xczu9eg-ffvb1156-2-i'\nTargetDirectory                                         : 'C:\\Users\\jonat\\Documents\\MA_JL_CB\\ip_cores\\uz_JL_flt_dis\\hdl_prj\\hdlsrc'\nTargetFrequency                                         : 100\nTargetPlatform                                          : 'Generic Xilinx Platform'\nTreatIOThresholdAs                                      : 'None'\nWorkflow                                                : 'IP Core Generation'\n",
+    "ModelTopLevelHDLParams": [
+      "built-in/SubSystem",
+      "ProcessorFPGASynchronization",
+      "Free running"
+    ],
+    "TopModelNonStructuralData": {
+      "SimulationMode": "normal",
+      "StartTime": "0.0",
+      "StopTime": "inf",
+      "SolverType": "Fixed-step",
+      "Solver": "FixedStepDiscrete"
+    },
+    "DelayData": {
+      "m_sampleTime": 0,
+      "m_delays": 0,
+      "m_valid": true
+    },
+    "TopNetworkPortInfo": {
+      "inputPorts": [
+        {
+          "Name": "FLT_1",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 0,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "FLT_2",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 1,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "FLT_3",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 2,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "FLT_4",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 3,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "FLT_PS",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 4,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "In_HB1_Top",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 5,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "In_HB2_Top",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 6,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "In_HB3_Top",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 7,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "In_HB1_Low",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 8,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "In_HB2_Low",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 9,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "In_HB3_Low",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 10,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "In_Board EN",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 11,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "In_PWR EN",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 12,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "In_CLK_DSC",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 13,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "In_RST_Inv",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 14,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "FLT_RST",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 15,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "use_flt_dis",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 16,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        }
+      ],
+      "outputPorts": [
+        {
+          "Name": "FLT_ps",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 0,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "Out_HB1_Top",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 1,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "Out_HB2_Top",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 2,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "Out_HB3_Top",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 3,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "Out_HB1_Low",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 4,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "Out_HB2_Low",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 5,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "Out_HB3_Low",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 6,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "Out_Board_EN",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 7,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "Out_PWR_EN",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 8,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "Out_Clk_DSC",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 9,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "Out_RST_Inv",
+          "Rate": 5E-5,
+          "Kind": "data",
+          "PortIndex": 10,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        }
+      ]
+    }
+  },
+  "PhaseCycles": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "ResourceSummary": {
+    "multipliers": 0,
+    "addersSubtractors": 4,
+    "registers": 6,
+    "oneBitRegisters": 16,
+    "rams": 0,
+    "multiplexers": 18,
+    "IOBits": 42,
+    "staticShiftOperators": 0,
+    "dynamicShiftOperators": 0
+  }
+}

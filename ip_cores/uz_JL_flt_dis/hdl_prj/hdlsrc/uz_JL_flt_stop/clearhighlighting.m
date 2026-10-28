@@ -1,0 +1,10 @@
+SLStudio.Utils.RemoveHighlighting(get_param('uz_JL_flt_stop', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_uz_JL_flt_stop', 'handle'));
+annotate_port('gm_uz_JL_flt_stop/uz_JL_flt_dis/Delay', 1, 1, '');
+annotate_port('gm_uz_JL_flt_stop/uz_JL_flt_dis/Add_stage2', 0, 1, '');
+annotate_port('gm_uz_JL_flt_stop/uz_JL_flt_dis/Add_stage3', 0, 1, '');
+annotate_port('gm_uz_JL_flt_stop/uz_JL_flt_dis/Add_stage4', 0, 1, '');
+annotate_port('gm_uz_JL_flt_stop/uz_JL_flt_dis/Add_stage5', 0, 1, '');
+annotate_port('gm_uz_JL_flt_stop/uz_JL_flt_dis/Logical Operator1', 0, 1, '');
+annotate_port('gm_uz_JL_flt_stop/uz_JL_flt_dis/Switch', 0, 1, '');
+annotate_port('gm_uz_JL_flt_stop/uz_JL_flt_dis/Switch1', 0, 1, '');

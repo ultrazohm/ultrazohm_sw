@@ -25,6 +25,15 @@ void uz_JL_SigmaDelta_Interface_hw_write_use_clk_ext(uint32_t base_address, bool
 void uz_JL_SigmaDelta_Interface_hw_reset_data_valid_cnt(uint32_t base_address);
 uint8_t uz_JL_SigmaDelta_Interface_hw_read_data_valid_cnt(uint32_t base_address);
 void uz_JL_SigmaDelta_Interface_hw_write_sel_pwm_trigger(uint32_t base_address, bool sel_pwm_trigger);
+void uz_JL_SigmaDelta_Interface_hw_write_i_ph_max(uint32_t base_address, int32_t i_ph_max);
+void uz_JL_SigmaDelta_Interface_hw_write_i_ph_min(uint32_t base_address, int32_t i_ph_min);
+void uz_JL_SigmaDelta_Interface_hw_write_u_dc_max(uint32_t base_address, int32_t u_dc_max);
+void uz_JL_SigmaDelta_Interface_hw_write_u_dc_min(uint32_t base_address, int32_t u_dc_min);
+void uz_JL_SigmaDelta_Interface_hw_write_en_udc(uint32_t base_address, bool en_udc);
+void uz_JL_SigmaDelta_Interface_hw_write_en_ph4(uint32_t base_address, bool en_ph4);
+void uz_JL_SigmaDelta_Interface_hw_write_en_ocp(uint32_t base_address, bool en_ocp);
+void uz_JL_SigmaDelta_Interface_hw_reset_flt(uint32_t base_address);
+uint32_t uz_JL_SigmaDelta_Interface_hw_read_flt_ps(uint32_t base_address);
 
 
 #endif // UZ_JL_SigmaDelta_Interface_HW_H

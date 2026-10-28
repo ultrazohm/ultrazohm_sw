@@ -1,4 +1,3 @@
-
 #ifdef TEST
 
 #include "unity.h"
@@ -158,6 +157,77 @@ void test_uz_JL_SigmaDelta_Interface_hw_read_data_valid_cnt(void)
     uz_axi_read_uint32_ExpectAndReturn(BASE_ADDRESS + data_valid_cnt_Data_uz_JL_SigmaDelta_Interface, expect_val);
     uint8_t val_read = uz_JL_SigmaDelta_Interface_hw_read_data_valid_cnt(BASE_ADDRESS);
     TEST_ASSERT_EQUAL_UINT8((uint8_t)expect_val, val_read);
+}
+
+void test_uz_JL_SigmaDelta_Interface_hw_write_sel_pwm_trigger(void)
+{
+    bool test_val = true;
+    uz_axi_write_bool_Expect(BASE_ADDRESS + sel_pwm_trigger_Data_uz_JL_SigmaDelta_Interface, test_val);
+    uz_JL_SigmaDelta_Interface_hw_write_sel_pwm_trigger(BASE_ADDRESS, test_val);
+}
+
+void test_uz_JL_SigmaDelta_Interface_hw_write_i_ph_max(void)
+{
+    int32_t test_val = 1000;
+    uz_axi_write_int32_Expect(BASE_ADDRESS + I_ph_max_Data_uz_JL_SigmaDelta_Interface, test_val);
+    uz_JL_SigmaDelta_Interface_hw_write_i_ph_max(BASE_ADDRESS, test_val);
+}
+
+void test_uz_JL_SigmaDelta_Interface_hw_write_i_ph_min(void)
+{
+    int32_t test_val = -1000;
+    uz_axi_write_int32_Expect(BASE_ADDRESS + I_ph_min_Data_uz_JL_SigmaDelta_Interface, test_val);
+    uz_JL_SigmaDelta_Interface_hw_write_i_ph_min(BASE_ADDRESS, test_val);
+}
+
+void test_uz_JL_SigmaDelta_Interface_hw_write_u_dc_max(void)
+{
+    int32_t test_val = 5000;
+    uz_axi_write_int32_Expect(BASE_ADDRESS + U_dc_max_Data_uz_JL_SigmaDelta_Interface, test_val);
+    uz_JL_SigmaDelta_Interface_hw_write_u_dc_max(BASE_ADDRESS, test_val);
+}
+
+void test_uz_JL_SigmaDelta_Interface_hw_write_u_dc_min(void)
+{
+    int32_t test_val = -500;
+    uz_axi_write_int32_Expect(BASE_ADDRESS + U_dc_min_Data_uz_JL_SigmaDelta_Interface, test_val);
+    uz_JL_SigmaDelta_Interface_hw_write_u_dc_min(BASE_ADDRESS, test_val);
+}
+
+void test_uz_JL_SigmaDelta_Interface_hw_write_en_udc(void)
+{
+    bool test_val = true;
+    uz_axi_write_bool_Expect(BASE_ADDRESS + EN_Udc_Data_uz_JL_SigmaDelta_Interface, test_val);
+    uz_JL_SigmaDelta_Interface_hw_write_en_udc(BASE_ADDRESS, test_val);
+}
+
+void test_uz_JL_SigmaDelta_Interface_hw_write_en_ph4(void)
+{
+    bool test_val = true;
+    uz_axi_write_bool_Expect(BASE_ADDRESS + EN_PH4_Data_uz_JL_SigmaDelta_Interface, test_val);
+    uz_JL_SigmaDelta_Interface_hw_write_en_ph4(BASE_ADDRESS, test_val);
+}
+
+void test_uz_JL_SigmaDelta_Interface_hw_write_en_ocp(void)
+{
+    bool test_val = true;
+    uz_axi_write_bool_Expect(BASE_ADDRESS + EN_OCP_Data_uz_JL_SigmaDelta_Interface, test_val);
+    uz_JL_SigmaDelta_Interface_hw_write_en_ocp(BASE_ADDRESS, test_val);
+}
+
+void test_uz_JL_SigmaDelta_Interface_hw_reset_flt(void)
+{
+    uz_axi_write_bool_Expect(BASE_ADDRESS + FLT_Reset_Data_uz_JL_SigmaDelta_Interface, true);
+    uz_axi_write_bool_Expect(BASE_ADDRESS + FLT_Reset_Data_uz_JL_SigmaDelta_Interface, false);
+    uz_JL_SigmaDelta_Interface_hw_reset_flt(BASE_ADDRESS);
+}
+
+void test_uz_JL_SigmaDelta_Interface_hw_read_flt_ps(void)
+{
+    uint32_t expect_val = 0x3U; // FAULT_UDC | FAULT_PH1
+    uz_axi_read_uint32_ExpectAndReturn(BASE_ADDRESS + FLT_ps_Data_uz_JL_SigmaDelta_Interface, expect_val);
+    uint32_t val_read = uz_JL_SigmaDelta_Interface_hw_read_flt_ps(BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_UINT32(expect_val, val_read);
 }
 
 #endif // TEST

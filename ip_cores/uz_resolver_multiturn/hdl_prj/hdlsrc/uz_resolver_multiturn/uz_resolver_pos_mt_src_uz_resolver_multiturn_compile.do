@@ -1,0 +1,3 @@
+vlib work
+vcom  uz_resolver_pos_mt_src_MATLAB_Function.vhd
+vcom  uz_resolver_pos_mt_src_uz_resolver_multiturn.vhd

@@ -83,6 +83,30 @@ static void sinc3_read_measurements(void)
 	}
 }
 
+/* Liest den FLT_ps-Fehlerstatus der FPGA-OCP-Instanz und loest bei einem Fehler einen
+ * gelatchten error_state aus (PWM aus). Inaktiv (NULL-Guard), solange die OCP-Instanz
+ * keine Basisadresse hat (Sinc3_Filter_OCP == NULL). Ergaenzt - nicht ersetzt - die
+ * SW-seitige 18A-Abschaltung. Das FPGA-Latch wird hier NICHT quittiert (reset_fault
+ * erfolgt spaeter ueber einen Bedienbefehl). */
+static void sinc3_check_ocp_fault(void)
+{
+	if (Global_Data.objects.Sinc3_Filter_OCP == NULL)
+	{
+		return;
+	}
+	enum uz_JL_SigmaDelta_Interface_fault flt = uz_JL_SigmaDelta_Interface_get_fault(Global_Data.objects.Sinc3_Filter_OCP);
+	conv_status_signals.ocp_fault = (uint32_t)flt;
+	if (flt != FAULT_NONE)
+	{
+		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+		Global_Data.rasv.ctrl_state = ctrl_state_none;
+		uz_JL_flt_dis_set_FLT_PS(Global_Data.objects.flt_dis, true);
+		ultrazohm_state_machine_set_error(true);
+	}
+}
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -148,6 +172,7 @@ void ISR_Control(void *data)
                 else
                 {
 					sinc3_read_measurements();
+					sinc3_check_ocp_fault();	// FPGA-OCP: loest bei Fehler error_state aus (No-op solange OCP-Instanz NULL)
 
 					if((fabsf(Global_Data.av.Sinc3_Filter_P.data_PH1_A) >= 18.0f) || (fabsf(Global_Data.av.Sinc3_Filter_P.data_PH2_A) >= 18.0f) || (fabsf(Global_Data.av.Sinc3_Filter_P.data_PH3_A) >= 18.0f))
 					{
@@ -165,6 +190,7 @@ void ISR_Control(void *data)
 				Global_Data.objects.platform_state_old = control_state;
 
 					sinc3_read_measurements();
+					sinc3_check_ocp_fault();	// FPGA-OCP: loest bei Fehler error_state aus (No-op solange OCP-Instanz NULL)
 
 					if((fabsf(Global_Data.av.Sinc3_Filter_P.data_PH1_A) >= 18.0f) || (fabsf(Global_Data.av.Sinc3_Filter_P.data_PH2_A) >= 18.0f) || (fabsf(Global_Data.av.Sinc3_Filter_P.data_PH3_A) >= 18.0f))
 					{

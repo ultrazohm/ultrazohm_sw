@@ -53,6 +53,13 @@ static void write_config_to_pl(uz_JL_SigmaDelta_Interface_t *self)
     uz_JL_SigmaDelta_Interface_hw_write_sinc_sample_periods(self->config.base_address, self->config.sinc_sample_periods);
     uz_JL_SigmaDelta_Interface_hw_write_use_clk_ext(self->config.base_address, self->config.use_clk_ext);
     uz_JL_SigmaDelta_Interface_hw_write_sel_pwm_trigger(self->config.base_address, self->config.sel_pwm_trigger);
+    uz_JL_SigmaDelta_Interface_hw_write_i_ph_max(self->config.base_address, self->config.i_ph_max);
+    uz_JL_SigmaDelta_Interface_hw_write_i_ph_min(self->config.base_address, self->config.i_ph_min);
+    uz_JL_SigmaDelta_Interface_hw_write_u_dc_max(self->config.base_address, self->config.u_dc_max);
+    uz_JL_SigmaDelta_Interface_hw_write_u_dc_min(self->config.base_address, self->config.u_dc_min);
+    uz_JL_SigmaDelta_Interface_hw_write_en_udc(self->config.base_address, self->config.en_udc);
+    uz_JL_SigmaDelta_Interface_hw_write_en_ph4(self->config.base_address, self->config.en_ph4);
+    uz_JL_SigmaDelta_Interface_hw_write_en_ocp(self->config.base_address, self->config.en_ocp);
 }
 
 void uz_JL_SigmaDelta_Interface_set_data_delay(uz_JL_SigmaDelta_Interface_t *self, uint8_t filt_input_delay)
@@ -130,6 +137,20 @@ uint8_t uz_JL_SigmaDelta_Interface_get_data_valid_cnt(uz_JL_SigmaDelta_Interface
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return uz_JL_SigmaDelta_Interface_hw_read_data_valid_cnt(self->config.base_address);
+}
+
+void uz_JL_SigmaDelta_Interface_reset_fault(uz_JL_SigmaDelta_Interface_t *self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_JL_SigmaDelta_Interface_hw_reset_flt(self->config.base_address);
+}
+
+enum uz_JL_SigmaDelta_Interface_fault uz_JL_SigmaDelta_Interface_get_fault(uz_JL_SigmaDelta_Interface_t *self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return (enum uz_JL_SigmaDelta_Interface_fault)uz_JL_SigmaDelta_Interface_hw_read_flt_ps(self->config.base_address);
 }
 
 struct uz_JL_SigmaDelta_Interface_output_t uz_JL_SigmaDelta_Interface_get_outputs(uz_JL_SigmaDelta_Interface_t *self)

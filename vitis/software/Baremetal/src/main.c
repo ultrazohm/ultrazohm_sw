@@ -66,6 +66,12 @@ struct uz_axi_gpio_config_t gpio_out_config={
             .direction_of_pins=UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
 };
 
+struct uz_JL_flt_dis_config_t flt_dis_config = {
+            .base_address = XPAR_UZ_JL_FLT_IP_0_BASEADDR,
+            .ip_core_frequency_Hz = 100000000U,
+            .use_flt_dis = true,
+};
+
 uz_codegen regelung;
 
 int main(void)
@@ -120,6 +126,8 @@ int main(void)
             Global_Data.objects.output_gpio = uz_axi_gpio_init(gpio_out_config);
 			Global_Data.objects.Sinc3_Filter_P = SigmaDeltaWandler_init(SDW_FILTER_P);
 			Global_Data.objects.Sinc3_Filter_I = SigmaDeltaWandler_init(SDW_FILTER_I); // liefert NULL, solange SDW_SECOND_FILTER_HW_AVAILABLE == 0
+			Global_Data.objects.Sinc3_Filter_OCP = SigmaDeltaWandler_init(SDW_FILTER_OCP); // NULL, bis XPAR_...INT_2 / base_address gesetzt ist
+			Global_Data.objects.flt_dis = uz_JL_flt_dis_init(flt_dis_config);
             initialization_chain = print_msg;
             break;
         case print_msg:

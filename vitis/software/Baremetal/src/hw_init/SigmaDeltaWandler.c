@@ -25,7 +25,7 @@ Modul ist angepasst für SH-Strommessplatine
 /* Initilalisieurng der IP Cores (s. Treiber). Jede Filterinstanz hat eine eigene, unabhaengige Config. */
 struct uz_JL_SigmaDelta_Interface_config_t filter_config[SDW_FILTER_ENDMARKER] = {
 	[SDW_FILTER_P] = {
-		.base_address = XPAR_UZ_USER_UZ_JL_SIGMADELTA_INT_0_BASEADDR,
+		.base_address = XPAR_UZ_USER_SIGMADELTA_P_BASEADDR,
 		.ip_clk_frequency_Hz = 100000000.0f,
 		.dezimation = 100,	// Dezimierungsfaktor für ZK-Spannungsmessung
 		.clk_ratio = 10, 		// Taktrate des Sigma-Delta-Modulators (5 Mhz untere Grenze AMC1204)
@@ -38,12 +38,15 @@ struct uz_JL_SigmaDelta_Interface_config_t filter_config[SDW_FILTER_ENDMARKER] =
 		.sinc_sample_periods = 4,	// TODO: bislang nur fest vorgegeben, Wert nicht experimentell validiert
 		.use_clk_ext = false,	// TODO: neues Inport-Signal aus IP-Core-Regenerierung, Bedeutung/gewünschter Wert noch nicht validiert
 		.sel_pwm_trigger = false,
+		.en_ocp = false,	// OCP-Schutz laeuft auf SDW_FILTER_OCP; hier konfiguriert aber deaktiviert
+		.en_udc = false,
+		.en_ph4 = false,
 	},
 	[SDW_FILTER_I] = {
 		// TODO: eigenstaendige Config fuer den zweiten Filter (z.B. andere Dezimation/Sinc-Sample-Periods
 		// fuer eine staerkere/schwaechere Filterung). base_address = 0 bis die zweite HW-Instanz existiert;
 		// SigmaDeltaWandler_init() initialisiert diese Instanz erst, wenn SDW_SECOND_FILTER_HW_AVAILABLE == 1 ist.
-		.base_address = XPAR_UZ_USER_UZ_JL_SIGMADELTA_INT_1_BASEADDR,	// TODO: XPAR_UZ_USER_UZ_JL_SIGMADELTA_INT_1_BASEADDR nach HW-Erweiterung eintragen
+		.base_address = XPAR_UZ_USER_SIGMADELTA_I_BASEADDR,	// TODO: XPAR_UZ_USER_UZ_JL_SIGMADELTA_INT_1_BASEADDR nach HW-Erweiterung eintragen
 		.ip_clk_frequency_Hz = 100000000.0f,
 		.dezimation = 2000,
 		.clk_ratio = 10,
@@ -56,6 +59,30 @@ struct uz_JL_SigmaDelta_Interface_config_t filter_config[SDW_FILTER_ENDMARKER] =
 		.sinc_sample_periods = 2,
 		.use_clk_ext = true,
 		.sel_pwm_trigger = true,
+		.en_ocp = false,	// OCP-Schutz laeuft auf SDW_FILTER_OCP; hier konfiguriert aber deaktiviert
+		.en_udc = false,
+		.en_ph4 = false,
+	},
+	[SDW_FILTER_OCP] = {
+		// Dritte Filterinstanz fuer den FPGA-Ueberstromschutz (OCP). Existiert im FPGA-Design,
+		// ist aber noch nicht in der SW verfuegbar: solange base_address == 0 liefert
+		// SigmaDeltaWandler_init() NULL (Gate), die Instanz wird also noch nicht initialisiert.
+		.base_address = XPAR_UZ_USER_SIGMADELTA_OCP_BASEADDR,	// TODO: XPAR_UZ_USER_UZ_JL_SIGMADELTA_INT_2_BASEADDR nach HW-Export eintragen
+		.ip_clk_frequency_Hz = 100000000.0f,
+		.dezimation = 8,	// TODO: reale Parameter der OCP-Instanz (Platzhalter analog SDW_FILTER_P)
+		.clk_ratio = 10,
+		.switch_edge = 0,
+		.switch_cont_disc = false,
+		.filt_input_delay = 3,
+		.clk_dutycycle = 0.8,
+		.start_time_us = 32.0f,
+		.delay_data_valid = 0,
+		.sinc_sample_periods = 4,
+		.use_clk_ext = true,
+		.sel_pwm_trigger = false,
+		.en_ocp = true,	// Ueberstromschutz fuer diese Instanz aktiv (i_ph_max/min werden in init berechnet)
+		.en_udc = false,
+		.en_ph4 = false,
 	},
 };
 
@@ -92,6 +119,13 @@ static struct SigmaDeltaWandler_calibration_t calibration[SDW_FILTER_ENDMARKER][
 		[SDW_CH_PH3] = {.k_manual =  70.0f, .offset_manual = -0.0005f},
 	// SDW_FILTER_1: Kalibrierwerte noch offen (TODO), solange die zweite HW-Instanz nicht existiert.
 	},
+	[SDW_FILTER_OCP] = {
+		// k_manual wie P/I (70), damit die counts-Umrechnung der OCP-Grenzen einen gueltigen
+		// Divisor hat. offset_manual fuer OCP irrelevant (offset-freie, symmetrische Schwelle).
+		[SDW_CH_PH1] = {.k_manual =  70.0f, .offset_manual = 0.0f},	// TODO: reale Kalibrierung
+		[SDW_CH_PH2] = {.k_manual =  70.0f, .offset_manual = 0.0f},
+		[SDW_CH_PH3] = {.k_manual =  70.0f, .offset_manual = 0.0f},
+	},
 };
 
 static bool is_initialized[SDW_FILTER_ENDMARKER] = {false};
@@ -110,6 +144,28 @@ uz_JL_SigmaDelta_Interface_t *SigmaDeltaWandler_init(enum SigmaDeltaWandler_filt
 {
 	uz_assert(filter < SDW_FILTER_ENDMARKER);
 
+	// Instanz (noch) nicht in HW verfuegbar (keine Basisadresse exportiert) -> ueberspringen.
+	// Dadurch kann main.c SigmaDeltaWandler_init auch fuer SDW_FILTER_OCP gefahrlos aufrufen,
+	// solange XPAR_...INT_2 / base_address noch nicht gesetzt ist (Pointer bleibt NULL).
+	if (filter_config[filter].base_address == 0U) {
+		return NULL;
+	}
+
+	// DC-Gain (OSR^3) je Kanal: PH1..PH4 nutzen dezimation_I, U nutzt dezimation_U.
+	// Wird fuer die OCP-Grenzen UND die Kalibrierung gebraucht, daher vor dem IP-Core-init.
+	float osr = (float)filter_config[filter].dezimation;
+	float osr_cubed = osr * osr * osr;
+
+	// OCP-Stromgrenzen aus den globalen A-Vorgaben in Rohwert-counts umrechnen und in die
+	// Config schreiben, bevor der IP-Core initialisiert wird (write_config_to_pl schreibt sie
+	// dann mit). counts = I_A * OSR^3 / k_manual (offset-frei); PH1..PH3 haben identisches k_manual.
+	if (filter_config[filter].en_ocp) {
+		float k = calibration[filter][SDW_CH_PH1].k_manual;
+		uz_assert_not_zero(k);
+		filter_config[filter].i_ph_max = (int32_t)roundf(SDW_OCP_I_MAX_A * osr_cubed / k);
+		filter_config[filter].i_ph_min = (int32_t)roundf(SDW_OCP_I_MIN_A * osr_cubed / k);
+	}
+
 	/* Initialisierung des IP Cores*/
 	uz_JL_SigmaDelta_Interface_t *filter_instance = uz_JL_SigmaDelta_Interface_init(filter_config[filter]);
 
@@ -121,11 +177,6 @@ uz_JL_SigmaDelta_Interface_t *SigmaDeltaWandler_init(enum SigmaDeltaWandler_filt
 		raw_average_filter[filter][ch] = uz_movingAverageFilter_init(avg_config, buffer);
 	}
 #endif
-
-	// DC-Gain (OSR^3) je Kanal: PH1..PH4 nutzen dezimation_I, U nutzt dezimation_U.
-	float osr = (float)filter_config[filter].dezimation;
-	float osr_cubed = osr * osr * osr;
-
 
 	/* Initialisierung der Kalibrierwerte */
 	for (uint32_t ch = 0U; ch < SDW_CH_ENDMARKER; ch++) {

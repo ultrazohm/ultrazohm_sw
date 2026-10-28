@@ -79,7 +79,8 @@ void uz_JL_SigmaDelta_Interface_hw_trigger_output_strobe(uint32_t base_address)
     // Strobe-Bit; strobe_sw wird automatisch 0, sobald die Strobe-Adresse nicht mehr
     // beschrieben wird -> ein einzelner Write mit Bit0=1 genuegt, der zweite (false-)Write
     // ist redundant und spart eine AXI-Transaktion pro Aufruf (ISR-Pfad).
-    uz_axi_write_uint32(base_address + data_out_ps_Strobe_uz_JL_SigmaDelta_Interface, 1U);
+    uz_axi_write_bool(base_address + data_out_ps_Strobe_uz_JL_SigmaDelta_Interface, true);
+    uz_axi_write_bool(base_address + data_out_ps_Strobe_uz_JL_SigmaDelta_Interface, false);
 }
 
 void uz_JL_SigmaDelta_Interface_hw_write_start_time_us(uint32_t base_address, float start_time_us)
@@ -130,4 +131,59 @@ void uz_JL_SigmaDelta_Interface_hw_write_sel_pwm_trigger(uint32_t base_address, 
 {
     uz_assert_not_zero(base_address);
     uz_axi_write_bool(base_address + sel_pwm_trigger_Data_uz_JL_SigmaDelta_Interface, sel_pwm_trigger);
+}
+
+void uz_JL_SigmaDelta_Interface_hw_write_i_ph_max(uint32_t base_address, int32_t i_ph_max)
+{
+    uz_assert_not_zero(base_address);
+    uz_axi_write_int32(base_address + I_ph_max_Data_uz_JL_SigmaDelta_Interface, i_ph_max);
+}
+
+void uz_JL_SigmaDelta_Interface_hw_write_i_ph_min(uint32_t base_address, int32_t i_ph_min)
+{
+    uz_assert_not_zero(base_address);
+    uz_axi_write_int32(base_address + I_ph_min_Data_uz_JL_SigmaDelta_Interface, i_ph_min);
+}
+
+void uz_JL_SigmaDelta_Interface_hw_write_u_dc_max(uint32_t base_address, int32_t u_dc_max)
+{
+    uz_assert_not_zero(base_address);
+    uz_axi_write_int32(base_address + U_dc_max_Data_uz_JL_SigmaDelta_Interface, u_dc_max);
+}
+
+void uz_JL_SigmaDelta_Interface_hw_write_u_dc_min(uint32_t base_address, int32_t u_dc_min)
+{
+    uz_assert_not_zero(base_address);
+    uz_axi_write_int32(base_address + U_dc_min_Data_uz_JL_SigmaDelta_Interface, u_dc_min);
+}
+
+void uz_JL_SigmaDelta_Interface_hw_write_en_udc(uint32_t base_address, bool en_udc)
+{
+    uz_assert_not_zero(base_address);
+    uz_axi_write_bool(base_address + EN_Udc_Data_uz_JL_SigmaDelta_Interface, en_udc);
+}
+
+void uz_JL_SigmaDelta_Interface_hw_write_en_ph4(uint32_t base_address, bool en_ph4)
+{
+    uz_assert_not_zero(base_address);
+    uz_axi_write_bool(base_address + EN_PH4_Data_uz_JL_SigmaDelta_Interface, en_ph4);
+}
+
+void uz_JL_SigmaDelta_Interface_hw_write_en_ocp(uint32_t base_address, bool en_ocp)
+{
+    uz_assert_not_zero(base_address);
+    uz_axi_write_bool(base_address + EN_OCP_Data_uz_JL_SigmaDelta_Interface, en_ocp);
+}
+
+void uz_JL_SigmaDelta_Interface_hw_reset_flt(uint32_t base_address)
+{
+    uz_assert_not_zero(base_address);
+    uz_axi_write_bool(base_address + FLT_Reset_Data_uz_JL_SigmaDelta_Interface, true);
+    uz_axi_write_bool(base_address + FLT_Reset_Data_uz_JL_SigmaDelta_Interface, false);
+}
+
+uint32_t uz_JL_SigmaDelta_Interface_hw_read_flt_ps(uint32_t base_address)
+{
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_uint32(base_address + FLT_ps_Data_uz_JL_SigmaDelta_Interface);
 }

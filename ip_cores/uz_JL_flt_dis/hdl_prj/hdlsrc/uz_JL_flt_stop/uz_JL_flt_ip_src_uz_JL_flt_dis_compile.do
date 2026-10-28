@@ -1,0 +1,9 @@
+vlib work
+vcom  uz_JL_flt_ip_src_uz_JL_flt_dis_pkg.vhd
+vcom  uz_JL_flt_ip_src_S_R_Flip_Flop.vhd
+vcom  uz_JL_flt_ip_src_S_R_Flip_Flop_block.vhd
+vcom  uz_JL_flt_ip_src_S_R_Flip_Flop_block1.vhd
+vcom  uz_JL_flt_ip_src_S_R_Flip_Flop_block2.vhd
+vcom  uz_JL_flt_ip_src_S_R_Flip_Flop_block3.vhd
+vcom  uz_JL_flt_ip_src_For_Each_Subsystem.vhd
+vcom  uz_JL_flt_ip_src_uz_JL_flt_dis.vhd

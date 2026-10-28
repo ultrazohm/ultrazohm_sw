@@ -1,0 +1,10 @@
+open_system('uz_resolver_multiturn');
+open_system('gm_uz_resolver_multiturn');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'gray';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_uz_resolver_multiturn/uz_resolver_multiturn/MATLAB Function', 'user2');
+annotate_port('gm_uz_resolver_multiturn/uz_resolver_multiturn/MATLAB Function', 1, 1, 'Block not characterized');
+hilite_system('uz_resolver_multiturn/uz_resolver_multiturn/MATLAB Function', 'user2');
+annotate_port('uz_resolver_multiturn/uz_resolver_multiturn/MATLAB Function', 1, 1, 'Block not characterized');

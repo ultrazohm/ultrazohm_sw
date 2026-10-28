@@ -11,8 +11,22 @@
 typedef struct uz_JL_SigmaDelta_Interface_t uz_JL_SigmaDelta_Interface_t;
 
 /**
+ * @brief Fault cause reported by the FLT_ps output. The values are bit flags, so multiple
+ * causes can be active at once (e.g. PH1|PH2). Single faults match directly via ==,
+ * combined faults can be checked with a bitwise AND.
+ */
+enum uz_JL_SigmaDelta_Interface_fault {
+    FAULT_NONE = 0,
+    FAULT_UDC  = 1,   // Udc-Fehler
+    FAULT_PH1  = 2,
+    FAULT_PH2  = 4,
+    FAULT_PH3  = 8,
+    FAULT_PH4  = 16,
+};
+
+/**
  * @brief Configuration Struct
- * 
+ *
  */
 struct uz_JL_SigmaDelta_Interface_config_t{
     uint32_t base_address;
@@ -28,6 +42,13 @@ struct uz_JL_SigmaDelta_Interface_config_t{
     uint8_t sinc_sample_periods;
     bool use_clk_ext;
     bool sel_pwm_trigger;
+    int32_t i_ph_max;   // obere Strom-Grenze in counts
+    int32_t i_ph_min;   // untere Strom-Grenze in counts
+    int32_t u_dc_max;   // obere ZK-Spannungs-Grenze in counts
+    int32_t u_dc_min;   // untere ZK-Spannungs-Grenze in counts
+    bool    en_udc;     // Spannungsueberwachung aktiv
+    bool    en_ph4;     // Phase 4 aktiv
+    bool    en_ocp;     // Ueberstromschutz aktiv
 };
 
 /**
@@ -152,6 +173,26 @@ void uz_JL_SigmaDelta_Interface_reset_data_valid_cnt(uz_JL_SigmaDelta_Interface_
  * @return uint8_t Current counter value
  */
 uint8_t uz_JL_SigmaDelta_Interface_get_data_valid_cnt(uz_JL_SigmaDelta_Interface_t *self);
+
+/**
+ * @brief Reset (acknowledge) the latched fault state of the IP core.
+ *
+ * Pulses the FLT_Reset input (true then false), analogous to the data_valid counter reset.
+ *
+ * @param self Pointer to driver instance
+ */
+void uz_JL_SigmaDelta_Interface_reset_fault(uz_JL_SigmaDelta_Interface_t *self);
+
+/**
+ * @brief Read the current fault cause from the FLT_ps output.
+ *
+ * The returned value is a bit mask (see enum uz_JL_SigmaDelta_Interface_fault); multiple
+ * causes can be combined. FAULT_NONE (0) means no fault is active.
+ *
+ * @param self Pointer to driver instance
+ * @return enum uz_JL_SigmaDelta_Interface_fault Active fault cause(s)
+ */
+enum uz_JL_SigmaDelta_Interface_fault uz_JL_SigmaDelta_Interface_get_fault(uz_JL_SigmaDelta_Interface_t *self);
 
 
 #endif // UZ_JL_SigmaDelta_Interface_H

@@ -38,6 +38,8 @@
 #include "../include/SigmaDeltaWandler.h"
 #include "../uz/uz_wavegen/uz_wavegen.h"
 #include "../include/JL_SH_Umrichter.h"
+#include "../IP_Cores/uz_JL_flt_dis/uz_JL_flt_dis.h"
+
 
 //Defines for the Interrupt fixed by hand from Vivado Block Design. 
 //signals are concatenated in this order forming an 8 bit interrupt vector. 

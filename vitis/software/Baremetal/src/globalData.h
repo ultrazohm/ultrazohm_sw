@@ -10,6 +10,7 @@
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 #include "IP_Cores/uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Interface.h"
+#include "IP_Cores/uz_JL_flt_dis/uz_JL_flt_dis.h"
 #include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 #include "include/JL_SH_Umrichter.h"
 #include "include/uz_platform_state_machine.h"
@@ -90,6 +91,8 @@ typedef struct{
 	uz_mux_axi_t* mux_axi;
 	uz_JL_SigmaDelta_Interface_t* Sinc3_Filter_P;
 	uz_JL_SigmaDelta_Interface_t* Sinc3_Filter_I;
+	uz_JL_SigmaDelta_Interface_t* Sinc3_Filter_OCP;
+	uz_JL_flt_dis_t* flt_dis;
 	uz_axi_gpio_t* input_gpio;
 	uz_axi_gpio_t* output_gpio;
 	platform_state_t platform_state_old;

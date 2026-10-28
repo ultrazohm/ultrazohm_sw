@@ -1,7 +1,9 @@
 #include "../include/resolver.h"
 #include "../uz/uz_HAL.h"
 #include "../uz/uz_global_configuration.h"
+#include "../uz/uz_math_constants.h"
 #include "xparameters.h"
+#include <math.h>
 
 
 
@@ -43,4 +45,61 @@ uz_resolverIP_t* initialize_resolver(void) {
 uz_resolver_pl_interface_t* initialize_resolver_pl_interface(void) {
 	return (uz_resolver_pl_interface_init(resolver_pl_config,
 			resolver_pl_outputs));
+}
+
+
+struct uz_resolver_pos_mt_config_t resolver_pos_mt_config = {
+		.base_address = XPAR_UZ_RESOLVER_POS_MT_0_BASEADDR,
+		.ip_clk_frequency_Hz = 100000000U,
+};
+
+uz_resolver_pos_mt_t* initialize_resolver_pos_mt(void) {
+	return (uz_resolver_pos_mt_init(resolver_pos_mt_config));
+}
+
+// Counts per mechanical revolution derived from the resolver_pl_interface configuration.
+// position_intmax is the largest representable value (2^16 - 1 = 65535); one full revolution
+// spans position_intmax + 1 = 65536 counts (wrap at 2^16, cf. bitshift(.,16) in multiturn_counter.m).
+static double counts_per_rev(void) {
+	return ((double)(resolver_pl_config.position_intmax + 1));
+}
+
+static double counts_to_rad(int64_t counts) {
+	return (((double)counts) * (2.0 * UZ_PId) / counts_per_rev());
+}
+
+static double counts_to_deg(int64_t counts) {
+	return (((double)counts) * 360.0 / counts_per_rev());
+}
+
+static int64_t rad_to_counts(double rad) {
+	return ((int64_t)llround(rad * counts_per_rev() / (2.0 * UZ_PId)));
+}
+
+static int64_t deg_to_counts(double deg) {
+	return ((int64_t)llround(deg * counts_per_rev() / 360.0));
+}
+
+struct resolver_pos_mt_reading_t resolver_pos_mt_read_position(uz_resolver_pos_mt_t *self) {
+	struct uz_resolver_pos_mt_outputs_t outputs = uz_resolver_pos_mt_get_outputs(self);
+	struct resolver_pos_mt_reading_t reading = { 0 };
+	reading.multiturn_position_counts = outputs.multiturn_position;
+	reading.multiturn_position_rad = counts_to_rad(outputs.multiturn_position);
+	reading.multiturn_position_deg = counts_to_deg(outputs.multiturn_position);
+	reading.turns = outputs.turns;
+	reading.singleturn_counts = outputs.singleturn_raw;
+	reading.valid = outputs.pos_mt_valid;
+	return (reading);
+}
+
+void resolver_pos_mt_write_preset_counts(uz_resolver_pos_mt_t *self, int64_t counts) {
+	uz_resolver_pos_mt_load_preset(self, counts);
+}
+
+void resolver_pos_mt_write_preset_rad(uz_resolver_pos_mt_t *self, double rad) {
+	uz_resolver_pos_mt_load_preset(self, rad_to_counts(rad));
+}
+
+void resolver_pos_mt_write_preset_deg(uz_resolver_pos_mt_t *self, double deg) {
+	uz_resolver_pos_mt_load_preset(self, deg_to_counts(deg));
 }

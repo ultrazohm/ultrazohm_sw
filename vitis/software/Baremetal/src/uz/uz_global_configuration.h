@@ -71,6 +71,7 @@
 #define UZ_RESOLVERIP_MAX_INSTANCES                     3U
 #define UZ_SYSMON_PS_MAX_INSTANCES                      0U // Can only be 1 or 0!
 #define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          3U
+#define UZ_RESOLVER_POS_MT_MAX_INSTANCES                1U
 #define UZ_AXI_GPIO_MAX_INSTANCES                       2U
 #define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               0U
 #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      0U
@@ -94,7 +95,8 @@
 #define UZ_SSI_INTERFACE_MAX_INSTANCES					0U
 #define UZ_JL_PMSMMODEL_MAX_INSTANCES                   2U
 #define UZ_JL_INVMODEL_IDEAL_MAX_INSTANCES              1U
-#define UZ_JL_SigmaDelta_Interface_MAX_INSTANCES        2U
+#define UZ_JL_SigmaDelta_Interface_MAX_INSTANCES        3U
+#define UZ_JL_FLT_DIS_MAX_INSTANCES                     1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -137,6 +139,7 @@
     #define UZ_RESOLVERIP_MAX_INSTANCES                     40U
     #define UZ_SYSMON_PS_MAX_INSTANCES                      10U 
     #define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          30U
+    #define UZ_RESOLVER_POS_MT_MAX_INSTANCES                30U
     #define UZ_AXI_GPIO_MAX_INSTANCES                       10U
     #define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
     #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      10U
@@ -159,4 +162,5 @@
     #define UZ_ENDAT_INTERFACE_MAX_INSTANCES		    	30U
     #define UZ_SSI_INTERFACE_MAX_INSTANCES		    		30U
     #define UZ_JL_SigmaDelta_Interface_MAX_INSTANCES        30U
+    #define UZ_JL_FLT_DIS_MAX_INSTANCES                     30U
 #endif

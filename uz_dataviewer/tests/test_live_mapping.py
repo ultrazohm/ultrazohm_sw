@@ -20,6 +20,8 @@ def repo(tmp_path):
 
 
 def test_generate_mapping_calls_cli_and_publishes_timestamp_commit_cache(repo, monkeypatch):
+    now = live_mapping.datetime.now(live_mapping.timezone.utc)
+    monkeypatch.setattr(live_mapping, 'datetime', SimpleNamespace(now=lambda tz: now))
     calls = []
     mapping = {'repository': {'commit': 'a'*40+'-dirty'}, 'observables': {'JSO_custom': 29}}
     def run(args, **kwargs):
@@ -31,7 +33,7 @@ def test_generate_mapping_calls_cli_and_publishes_timestamp_commit_cache(repo, m
     second = live_mapping.generate_mapping(repo)
     assert first != second
     assert first.parent == repo/'artifacts'/'channel_mappings'
-    assert re.fullmatch(r'javascope_\d{8}T\d{6}\.\d{6}Z_a{40}-dirty\.json', first.name)
+    assert re.fullmatch(r'javascope_\d{8}T\d{6}\.\d{6}Z_a{40}-dirty_[0-9a-f]{32}\.json', first.name)
     assert json.loads(first.read_text()) == mapping
     assert calls[0][:8] == [sys.executable, '-u', '-m', 'uz_dataviewer.process_launcher', 'cli', 'create-json-from-javascope-h', '--repo', str(repo)]
     assert sorted(first.parent.iterdir()) == sorted([first, second])

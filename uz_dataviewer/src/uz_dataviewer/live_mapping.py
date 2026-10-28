@@ -5,6 +5,7 @@ from pathlib import Path
 import re
 import subprocess
 import tempfile
+import uuid
 
 HEADER = Path('vitis/software/Baremetal/src/include/javascope.h')
 
@@ -39,7 +40,8 @@ def generate_mapping(repo=None, *, overwrite=False):
         if not isinstance(commit, str) or not re.fullmatch(r'[A-Za-z0-9_-]+', commit):
             raise ValueError('Generated channel mapping has an invalid repository commit')
         timestamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S.%fZ')
-        name = f'javascope_{commit}.json' if overwrite else f'javascope_{timestamp}_{commit}.json'
+        # Clock resolution can give successive generations identical timestamps.
+        name = f'javascope_{commit}.json' if overwrite else f'javascope_{timestamp}_{commit}_{uuid.uuid4().hex}.json'
         destination = cache / name
         generated.replace(destination)
     print(f'Live channel mapping: {destination}', flush=True)

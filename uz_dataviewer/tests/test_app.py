@@ -96,18 +96,18 @@ def test_open_mode_menu_uses_real_imgui_binding(monkeypatch, gui_frame):
         app._shutdown()
 
 
-def test_selected_workspace_owns_generated_artifacts(tmp_path, monkeypatch):
+def test_selected_workspace_owns_user_data(tmp_path, monkeypatch):
     from uz_dataviewer.live import new_output_directory
     monkeypatch.delenv('UZ_DATAVIEWER_CACHE', raising=False)
-    mapping = tmp_path/'workspace'/'artifacts'/'channel_mappings'/'mapping.json'
+    mapping = tmp_path/'workspace'/'artifacts'/'_user'/'mapping.json'
     monkeypatch.setattr('uz_dataviewer.plugins.load_plugins', lambda **kwargs: None)
     app = DataViewerApp(use_live=True, live_mapping=str(mapping))
     try:
         assert app.live.repo == str(tmp_path/'workspace')
-        assert app.artifacts == tmp_path/'workspace'/'artifacts'
+        assert app.artifacts == tmp_path/'workspace'/'artifacts'/'_user'
         assert app.state.cache_dir == str(app.artifacts/'viewer_cache')
-        assert app.live.output.startswith(str(app.artifacts/'live_logs'))
-        assert new_output_directory(app.live.repo).startswith(str(app.artifacts/'live_logs'))
+        assert app.live.output.startswith(str(app.artifacts/'logs'))
+        assert new_output_directory(app.live.repo).startswith(str(app.artifacts/'logs'))
     finally:
         app._shutdown()
 

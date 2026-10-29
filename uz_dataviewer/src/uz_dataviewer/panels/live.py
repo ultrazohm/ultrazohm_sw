@@ -14,7 +14,7 @@ from ..model import Signal
 from ..sources import SourceColumn, shift_time
 from ..state import AppState
 from ..scripting import ScriptRunner, TEMPLATES
-from ..flashing import xsct_available
+from ..flashing import xsct_available, restore_xsct, select_xsct
 from .plots import PlotsPanel
 
 try:
@@ -142,6 +142,12 @@ class LiveWorkspace:
         self.output = new_output_directory(repo)
         self.mapping = ''
         self.repo = str(repo) if repo is not None else None
+        self._xsct_dialog = None
+        self.tool_error = ''
+        try:
+            restore_xsct(repo)
+        except (OSError, ValueError, KeyError) as exc:
+            self.tool_error = str(exc)
         self.cli_busy = lambda: False
         self.flash_available = xsct_available()
         self._flash_config = None
@@ -213,7 +219,7 @@ class LiveWorkspace:
                 self._pending_completion = self.controller.latest().completed_commands + 1
             self.controller.submit(operation, **kwargs)
             if operation == 'shutdown':
-                self.output = str(Path(self.output).expanduser().resolve().parent / Path(new_output_directory()).name)
+                self.output = new_output_directory(parent=Path(self.output).expanduser().resolve().parent)
             self.error = ''
         except Exception as exc:
             self.error = str(exc)
@@ -226,6 +232,16 @@ class LiveWorkspace:
         update = self.controller.latest()
         self.update = update
         self._poll_script_dialog()
+        if self._xsct_dialog is not None and self._xsct_dialog.ready():
+            selected = self._xsct_dialog.result()
+            self._xsct_dialog = None
+            if selected:
+                try:
+                    select_xsct(selected[0], self.repo)
+                    self.flash_available = xsct_available()
+                    self.tool_error = ''
+                except (OSError, ValueError) as exc:
+                    self.tool_error = str(exc)
         if update.flash_config is not None and update.flash_config != self._flash_config:
             self.mapping, self.output = update.flash_config
             self._flash_config = update.flash_config
@@ -301,6 +317,7 @@ class LiveWorkspace:
             imgui.end_disabled()
 
     def _render_data(self, main_state):
+        from ..user_paths import data_directory
         if not self.available:
             imgui.text_wrapped('Live acquisition requires the ultrazohm backend. Restart with start.sh --use-live (start.ps1 on Windows). Use --live-wheel PATH to select an exact wheel.')
             return
@@ -331,7 +348,7 @@ class LiveWorkspace:
                 self.send('shutdown')
             else:
                 self.send('connect', endpoint=self.endpoint, ip=self.ip, port=self.port,
-                          output=self.output, mapping=self.mapping)
+                          output=self.output, mapping=self.mapping, user_directory=str(data_directory(self.repo)))
         if imgui.is_item_hovered(imgui.HoveredFlags_.allow_when_disabled):
             imgui.set_tooltip(
                 'Send device Stop, finalize recordings, and shut down the service. Keep the viewer open.'
@@ -352,10 +369,17 @@ class LiveWorkspace:
         imgui.end_disabled()
         if imgui.is_item_hovered(imgui.HoveredFlags_.allow_when_disabled):
             imgui.set_tooltip(
-                'Vitis XSCT (xsct) is not on PATH. Load the Vitis environment and restart the viewer.'
+                'Select the Vitis XSCT launcher with Browse for XSCT, or start the viewer from a Vitis command prompt.'
                 if not self.flash_available else
                 'Ask for confirmation, then send device Stop, finalize logging, shut down the service, regenerate the mapping, flash, and reconnect.')
         imgui.end_disabled()
+        imgui.begin_disabled(pfd is None or self._xsct_dialog is not None or bool(activity))
+        if imgui.button('Browse for XSCT'):
+            self._xsct_dialog = pfd.open_file('Select Vitis XSCT launcher', '',
+                                             ['XSCT launcher', 'xsct xsct.exe xsct.cmd xsct.bat'])
+        imgui.end_disabled()
+        if self.tool_error:
+            imgui.text_wrapped(self.tool_error)
         if imgui.collapsing_header('Existing service'):
             imgui.begin_disabled(bool(activity))
             if imgui.button('Attach'):
@@ -379,6 +403,8 @@ class LiveWorkspace:
         if imgui.collapsing_header('Service settings (used when launching)'):
             _, self.output = imgui.input_text('New session directory', self.output)
             _, self.mapping = imgui.input_text('Channel mapping JSON (optional)', self.mapping)
+            if self.mapping:
+                imgui.text_wrapped('Runtime settings: ' + str(data_directory(self.repo) / 'settings.json'))
             imgui.text_wrapped('Connect launches a new service with these settings. Use Existing service to attach to a running service.')
         state = self.update.status.get('state', {})
         profile = self.update.catalog
@@ -758,6 +784,9 @@ class LiveWorkspace:
 
     def close(self):
         self.controller.cancel_pending_commands()
+        if self._xsct_dialog is not None:
+            self._xsct_dialog.kill()
+            self._xsct_dialog = None
         if self._script_dialog is not None:
             self._script_dialog[0].kill()
             self._script_dialog = None

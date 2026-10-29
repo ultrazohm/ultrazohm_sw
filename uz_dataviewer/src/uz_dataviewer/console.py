@@ -3,7 +3,8 @@
 Supported actions are echoed here as a command (level ``CMD``, rendered
 ``> add_signal(plot_1, run_1, ia)``), and the input box at the bottom runs the
 same commands -- so the console is a log of replayable commands, not a complete GUI snapshot.
-Lines beginning with the exact token ``uz`` instead launch debug CLI commands;
+On supported platforms (currently excluding Windows), lines beginning with the
+exact token ``uz`` instead launch debug CLI commands;
 these are separate from the viewer's replayable command language.
 The input offers name completion (matching commands listed below the box, Tab to
 fill) and an Up/Down history.
@@ -12,6 +13,7 @@ fill) and an Up/Down history.
 from __future__ import annotations
 
 import time
+import sys
 from collections import deque
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
@@ -21,6 +23,7 @@ if TYPE_CHECKING:  # pragma: no cover - typing only
     from .state import AppState
 
 _MAX_COMPLETIONS = 6
+CLI_SUPPORTED = sys.platform != 'win32'
 
 
 @dataclass
@@ -43,6 +46,7 @@ class Console:
         self._hist_idx = 0  # index into _history; == len means "current draft"
         self._focus_input = False
         self.cli_handler = None
+        self.cli_supported = CLI_SUPPORTED
 
     # -- logging API --------------------------------------------------------
     def _log(self, level: str, message: str) -> None:
@@ -90,7 +94,10 @@ class Console:
         if imgui.button("Clear"):
             self.clear()
         imgui.same_line()
-        imgui.text_disabled("select to copy  |  help: viewer commands  |  uz --help: CLI")
+        hint = 'select to copy  |  help: viewer commands'
+        if self.cli_supported:
+            hint += '  |  uz --help: CLI'
+        imgui.text_disabled(hint)
         imgui.separator()
 
         # Reserve space for the input row (+ its completion hints) at the bottom.
@@ -174,7 +181,9 @@ class Console:
             parts = text.split(maxsplit=1)
             if parts[0] == 'uz':
                 self.command(text)
-                if self.cli_handler is None:
+                if not self.cli_supported:
+                    self.error('uz console commands are unavailable on Windows. Use the Python panel for automation.')
+                elif self.cli_handler is None:
                     self.error('Live is not activated.')
                 else:
                     try:

@@ -47,8 +47,32 @@ def main():
                     target = firmware/relative
                     target.parent.mkdir(parents=True, exist_ok=True)
                     shutil.copyfile(source, target)
-            mapping = directory/'mapping.json'
-            cli('create-json-from-javascope-h', '--repo', firmware, '--output', mapping)
+            # Exercise the same nested frozen workers used after selecting a
+            # workspace, including defaults that reference absent observables.
+            setup = directory/'prepare_workspace.py'
+            prepared = directory/'prepared.json'
+            setup.write_text(
+                'import json\nfrom pathlib import Path\n'
+                'from uz_dataviewer.live_mapping import generate_mapping\n'
+                'from uz_dataviewer.flashing import initialize_user_settings, prepare_profile\n'
+                f'mapping = generate_mapping(Path({str(firmware)!r}))\n'
+                'settings = initialize_user_settings(mapping)\n'
+                'original = json.loads(settings.read_text())\n'
+                'original["name"] = "edited-smoke-profile"\n'
+                'original["initial_channels"]["4"] = "JSO_missing_smoke_observable"\n'
+                'settings.write_text(json.dumps(original))\n'
+                'before = settings.read_bytes()\n'
+                'initialize_user_settings(mapping)\n'
+                'profile, removed = prepare_profile(mapping, mapping.parent / "smoke.profile.json")\n'
+                'assert settings.read_bytes() == before\n'
+                'assert "JSO_missing_smoke_observable" in removed\n'
+                'assert (mapping.parent / "tools.json").is_file()\n'
+                f'Path({str(prepared)!r}).write_text(json.dumps({{"mapping": str(mapping), "profile": str(profile)}}))\n')
+            subprocess.run([executable, '--internal-worker', 'script', str(setup)],
+                           cwd=tmp, check=True, timeout=60)
+            configuration = json.loads(prepared.read_text())
+            mapping, profile = Path(configuration['mapping']), Path(configuration['profile'])
+            assert mapping.parent == firmware/'artifacts'/'_user_standalone'
             # Validate packaged flash dispatch without running any vendor/hardware commands.
             tools = directory/'fake-tools'
             tools.mkdir()
@@ -75,6 +99,7 @@ def main():
             with (directory/'service.log').open('w') as log:
                 service = subprocess.Popen([executable, '--internal-worker', 'cli', '--endpoint', endpoint,
                     'serve', '--device', f'127.0.0.1:{device_port}', '--channel-mapping', str(mapping),
+                    '--profile', str(profile),
                     '--output', str(directory/'recording')], cwd=tmp, stdout=log, stderr=log)
                 processes.append(service)
                 for _ in range(100):

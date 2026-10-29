@@ -32,7 +32,7 @@ def test_generate_mapping_calls_cli_and_publishes_timestamp_commit_cache(repo, m
     first = live_mapping.generate_mapping(repo)
     second = live_mapping.generate_mapping(repo)
     assert first != second
-    assert first.parent == repo/'artifacts'/'channel_mappings'
+    assert first.parent == repo/'artifacts'/'_user'
     assert re.fullmatch(r'javascope_\d{8}T\d{6}\.\d{6}Z_a{40}-dirty_[0-9a-f]{32}\.json', first.name)
     assert json.loads(first.read_text()) == mapping
     assert calls[0][:8] == [sys.executable, '-u', '-m', 'uz_dataviewer.process_launcher', 'cli', 'create-json-from-javascope-h', '--repo', str(repo)]
@@ -40,7 +40,7 @@ def test_generate_mapping_calls_cli_and_publishes_timestamp_commit_cache(repo, m
 
 
 def test_generation_failure_keeps_old_cache_but_never_reuses_it(repo, monkeypatch):
-    cache = repo/'artifacts'/'channel_mappings'
+    cache = repo/'artifacts'/'_user'
     cache.mkdir(parents=True)
     old = cache/'old.json'
     old.write_text('old mapping')

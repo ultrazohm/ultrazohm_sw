@@ -277,8 +277,9 @@ retain their saved domain as unavailable placeholders until repaired.
 
 ### Debug CLI in the Console
 
-With live mode enabled, enter `uz` followed by CLI arguments in the existing
-Console:
+On Linux, with live mode enabled, enter `uz` followed by CLI arguments in the
+existing Console. Windows disables this interface; use the Python panel for
+automation. Viewer commands remain available on both platforms:
 
 ```text
 uz --help
@@ -409,7 +410,8 @@ recording arguments keep their original working directory.
 
 Each live startup then calls the installed CLI's `create-json-from-javascope-h`
 command against the checkout's current JavaScope headers. It stores a fresh JSON
-in `<repo>/artifacts/channel_mappings/`, named
+in the selected workspace under `artifacts/_user/` for source runs or
+`artifacts/_user_standalone/` for standalone runs, named
 `javascope_<UTC timestamp>_<repository commit>.json`. The commit is taken from the
 generated metadata and includes `-dirty` when the relevant headers have local
 changes. These cache files are ignored by Git. Header parsing failures stop startup
@@ -455,7 +457,7 @@ startup state. Cancel makes no changes. If no service is running, programming ca
 start directly. A Python script or active debug CLI jobs disable the flash button;
 the workflow locks device controls, script execution, and debug CLI submissions.
 
-Managed flashing uses `artifacts/channel_mappings/javascope_<commit>.json`, including
+Managed flashing uses `javascope_<commit>.json` in the applicable user directory, including
 `-dirty` when applicable, and regenerates/replaces that cache on every attempt.
 Startup's timestamped caches remain available. The prototype assumes headers stay
 unchanged during build/programming, as agreed; no checksum check is performed.
@@ -586,11 +588,48 @@ client. Source scripts use the venv's modules; packaged scripts use bundled
 modules. Additional dependencies can be used in an external venv with a matching
 CLI wheel attached to the service. Such scripts are not terminated by GUI Stop.
 
-Default recording directories and GUI layout settings are stored under
-the selected workspace’s `artifacts` directory: `live_logs/` for recordings,
-`viewer.ini` for layout settings and `viewer_cache/` for optional data caches.
-Generated mapping JSON files are in `artifacts/channel_mappings/`. Explicit
-output paths and `UZ_DATAVIEWER_CACHE` still override their respective defaults.
+Writable data belongs to the selected firmware workspace in both modes:
+
+- Source/developer mode: `<workspace>/artifacts/_user/`.
+- Standalone mode: `<workspace>/artifacts/_user_standalone/`.
+
+Each directory contains `logs/` for recordings and service logs, `viewer.ini`
+for layout settings, and `viewer_cache/` for optional data caches. Generated
+`javascope_*.json` mappings and editable `settings.json` and `tools.json`
+preferences live directly in the applicable user directory. Application packages,
+Tcl scripts, assets and built-in defaults remain bundled in the standalone
+application; workspace preferences are never written into `_internal/`.
+
+After workspace selection and successful header parsing, startup creates missing
+runtime settings from the bundled CLI defaults, filtered for that workspace's
+observables. It also creates missing tool preferences with no XSCT selection
+and creates the logs directory. Existing preferences are preserved byte for byte.
+Layout settings are managed by the GUI framework when the viewer runs.
+Connect and Flash filter effective channel assignments into separate session
+profile snapshots without rewriting `settings.json`. Edit `sample_period_us`
+and `initial_channels` before the next Connect; an empty `initial_channels`
+object sends no initial selections. Browsing for XSCT explicitly updates
+`tools.json`. Derived header mappings are regenerated at each live launch.
+
+The two modes can use the same checkout without sharing preferences, caches,
+layout or default logs. Firmware sources and the Vitis workspace remain shared.
+An already running acquisition service owns its configuration: use
+Existing service > Attach from the other viewer rather than starting another
+service at the same endpoint. Do not flash/build the shared Vitis workspace
+concurrently from the two viewers.
+Explicit output paths and `UZ_DATAVIEWER_CACHE` still override their defaults.
+Existing files in older locations are left in place; copy settings or recordings
+into the applicable user directory if needed.
+
+For flashing, XSCT is detected on PATH. If it is absent, use **Browse for XSCT**
+and select the vendor launcher, such as `Vitis/2022.2/bin/xsct.bat` on Windows
+or `bin/xsct` on Linux. Select XSCT rather than the Vitis GUI executable.
+The viewer remembers the path in `tools.json` in its user directory and prepends its directory
+to PATH for itself and its child processes on subsequent starts. The system
+PATH is unchanged. On Windows, `uz ...` commands in the viewer Console
+are disabled; use the Python panel for automation. Viewer commands such as
+`help` remain available. Starting the viewer from a Vitis command prompt (or after
+sourcing `settings64.sh`) also works.
 
 To build the combined application, set `UZ_CLI_WHEEL` to the absolute path of a
 wheel built from the same commit, then run `build/build_native.sh` or its

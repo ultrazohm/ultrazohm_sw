@@ -12,6 +12,13 @@ from uz_dataviewer.cli_console import CliConsole, arguments
 from uz_dataviewer.console import Console
 
 
+@pytest.fixture(autouse=True)
+def supported_console_platform(monkeypatch):
+    # These routing tests exercise platforms that expose the feature. Windows
+    # exclusion is tested separately in test_user_settings.py.
+    monkeypatch.setattr('uz_dataviewer.console.CLI_SUPPORTED', True)
+
+
 def submit(state, text):
     state.console._input = text
     state.console._submit(state)

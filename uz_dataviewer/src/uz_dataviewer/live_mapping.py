@@ -26,7 +26,8 @@ def repository(explicit=None):
 def generate_mapping(repo=None, *, overwrite=False):
     from .process_launcher import command
     root = repository(repo)
-    cache = root / 'artifacts' / 'channel_mappings'
+    from .user_paths import data_directory
+    cache = data_directory(root)
     cache.mkdir(parents=True, exist_ok=True)
     # Only publish successful output; a parser error must never reuse stale data.
     with tempfile.TemporaryDirectory(prefix='.generate-', dir=cache) as temporary:

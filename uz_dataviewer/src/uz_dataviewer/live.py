@@ -219,7 +219,7 @@ class LiveController:
                 self.client = self.client_factory(endpoint)
             self.endpoint = endpoint
 
-    def _start_service(self, output, mapping, profile=None, data_options=None, ack=False):
+    def _start_service(self, output, mapping, profile=None, data_options=None, ack=False, user_directory=None):
         self._progress('Starting local acquisition service…')
         if self.process is not None and self.process.poll() is None:
             raise RuntimeError('The launched service is still running; check its endpoint and service.log')
@@ -234,6 +234,11 @@ class LiveController:
                 '--endpoint', self.endpoint, 'serve', '--output', str(output), '--format', 'parquet')
         if mapping:
             args += ['--channel-mapping', str(Path(mapping).expanduser().resolve())]
+            if not profile:
+                from .flashing import prepare_profile
+                profile, removed = prepare_profile(mapping, output.with_name(output.name + '.profile.json'), user_directory)
+                if removed:
+                    self._message('warn', 'Removed initial channels absent from the mapping: ' + ', '.join(removed))
         if profile:
             args += ['--profile', str(profile)]
         if ack:
@@ -271,7 +276,8 @@ class LiveController:
                 if operation != 'connect':
                     raise
                 self._start_service(kwargs['output'], kwargs.get('mapping', ''),
-                                    kwargs.get('profile'), kwargs.get('data_options'), kwargs.get('ack', False))
+                                    kwargs.get('profile'), kwargs.get('data_options'), kwargs.get('ack', False),
+                                    user_directory=kwargs.get('user_directory'))
             else:
                 if operation == 'connect' and not (
                         self._owned_endpoint == self.endpoint and self.process is not None
@@ -352,7 +358,8 @@ class LiveController:
         raise RuntimeError(f'Timed out waiting for {description}')
 
     def _flash(self, kwargs):
-        from .flashing import connection_refused, profile_for_mapping, run_flash_cli, xsct_available
+        from .flashing import connection_refused, initialize_user_settings, profile_for_mapping, read_runtime_settings, run_flash_cli, xsct_available
+        from .user_paths import write_json
         from .live_mapping import generate_mapping, repository
         if not xsct_available():
             raise RuntimeError('Vitis XSCT (xsct) is not on PATH. Load the Vitis environment and restart the viewer.')
@@ -417,13 +424,16 @@ class LiveController:
         mapping_path = generate_mapping(root, overwrite=True)
         self._message('info', f'Channel mapping regenerated: {mapping_path}')
         mapping = json.loads(mapping_path.read_text(encoding='utf-8'))
+        settings_path = initialize_user_settings(mapping_path)
+        if previous is None:
+            previous = read_runtime_settings(settings_path)
         profile, removed = profile_for_mapping(root, mapping, previous, assignments)
         if removed:
             self._message('warn', 'Removed channel assignments absent from the new mapping: '+', '.join(removed))
-        output = Path(kwargs['output']).expanduser().resolve().parent / Path(new_output_directory()).name
+        output = Path(new_output_directory(parent=Path(kwargs['output']).expanduser().resolve().parent))
         output.parent.mkdir(parents=True, exist_ok=True)
         profile_path = output.with_name(output.name+'.profile.json')
-        profile_path.write_text(json.dumps(profile, indent=2), encoding='utf-8')
+        write_json(profile_path, profile)
         self._flash_config = (str(mapping_path), str(output))
         self._progress('Flashing UltraZohm; see Console for progress…')
         if not run_flash_cli(root, self.endpoint, self.stop_event, self._message):
@@ -557,7 +567,8 @@ class LiveController:
                     print(f'Owned service cleanup failed: {exc}', file=sys.stderr)
 
 
-def new_output_directory(repo=None):
+def new_output_directory(repo=None, *, parent=None):
     from .user_paths import data_directory
-    return str(data_directory(repo) / 'live_logs' /
+    root = Path(parent) if parent is not None else data_directory(repo) / 'logs'
+    return str(root /
                (time.strftime('%Y%m%d-%H%M%S') + '-' + uuid.uuid4().hex[:6]))

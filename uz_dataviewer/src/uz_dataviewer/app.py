@@ -37,14 +37,17 @@ LOG_DOCK = "LogBrowserSpace"
 
 
 class DataViewerApp:
-    def __init__(self, initial_files: list[str] | None = None, loading_mode: str | None = None, backend: str | None = None, disk_cache: bool = False, use_live: bool = False, live_mapping: str = '') -> None:
+    def __init__(self, initial_files: list[str] | None = None, loading_mode: str | None = None, backend: str | None = None, disk_cache: bool = False, use_live: bool = False, live_mapping: str = '', live_repo: str | None = None) -> None:
         from .user_paths import data_directory
         mapping_path = Path(live_mapping).expanduser().resolve() if live_mapping else None
-        workspace = None
-        if mapping_path and mapping_path.parent.name == 'channel_mappings' and mapping_path.parent.parent.name == 'artifacts':
-            workspace = mapping_path.parents[2]
-        elif mapping_path and mapping_path.parent.name == 'uz_cli_channel_mappings':
-            workspace = mapping_path.parents[1]
+        workspace = Path(live_repo).expanduser().resolve() if live_repo else None
+        if workspace is None and mapping_path:
+            if mapping_path.parent.name in ('_user', '_user_standalone'):
+                workspace = mapping_path.parents[2] if mapping_path.parents[1].name == 'artifacts' else mapping_path.parents[1]
+            elif mapping_path.parent.name == 'channel_mappings' and mapping_path.parent.parent.name == 'artifacts':
+                workspace = mapping_path.parents[2]
+            elif mapping_path.parent.name == 'uz_cli_channel_mappings':
+                workspace = mapping_path.parents[1]
         self.artifacts = data_directory(workspace) if not runtime.IS_WEB else None
         self.state = AppState()
         if self.artifacts is not None:
@@ -66,7 +69,8 @@ class DataViewerApp:
         self.live = None
         self._cli_console = None
         self._select_initial_tabs = True
-        self.state.console.cli_handler = self._run_cli_command
+        if self.state.console.cli_supported:
+            self.state.console.cli_handler = self._run_cli_command
         if use_live and not runtime.IS_WEB:
             from .panels.live import LiveWorkspace
             self.live = LiveWorkspace(repo=workspace)
@@ -465,10 +469,12 @@ def main(argv: list[str] | None = None) -> int:
         from .live_mapping import generate_mapping
         try:
             live_mapping = str(generate_mapping(args.live_repo))
+            from .flashing import initialize_user_settings
+            initialize_user_settings(live_mapping)
         except (OSError, ValueError, RuntimeError) as exc:
             parser.error(str(exc))
     app = DataViewerApp(initial_files=args.files, loading_mode=args.loading_mode, backend=args.backend,
-                        disk_cache=args.disk_cache, use_live=args.use_live, live_mapping=live_mapping)
+                        disk_cache=args.disk_cache, use_live=args.use_live, live_mapping=live_mapping, live_repo=args.live_repo)
     app.run()
     return 0
 

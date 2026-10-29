@@ -178,6 +178,8 @@ def test_cli_defaults_and_explicit_overrides(monkeypatch):
         mapping_calls.append(repo)
         return 'cached-mapping.json'
     monkeypatch.setattr('uz_dataviewer.live_mapping.generate_mapping', generate)
+    settings_calls = []
+    monkeypatch.setattr('uz_dataviewer.flashing.initialize_user_settings', settings_calls.append)
     monkeypatch.setattr(runtime, 'IS_WEB', False)
     app.main([])
     assert captured[-1]['disk_cache'] is False
@@ -193,6 +195,7 @@ def test_cli_defaults_and_explicit_overrides(monkeypatch):
     assert captured[-1]['use_live'] is True
     assert captured[-1]['live_mapping'] == 'cached-mapping.json'
     assert mapping_calls == ['/selected/workspace']
+    assert settings_calls == ['cached-mapping.json']
     app.main(['--use-live', '--live-repo', '/example/repository'])
     assert mapping_calls[-1] == '/example/repository'
     monkeypatch.setattr(runtime, 'IS_WEB', True)

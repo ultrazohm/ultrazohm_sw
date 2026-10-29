@@ -130,6 +130,18 @@ def test_no_running_service_can_flash_and_start_acquisition(workflow):
     assert w.controller.attached
 
 
+def test_flash_preserves_saved_user_settings(workflow):
+    w = workflow
+    saved = w.root/'settings.json'
+    original = '{"schema_version":1,"name":"preferences","sample_period_us":75,"initial_channels":{}}\n'
+    saved.write_text(original)
+    before = saved.stat().st_mtime_ns
+    w.controller._command('flash', w.request)
+    assert saved.read_text() == original
+    assert saved.stat().st_mtime_ns == before
+    assert w.client.profile['sample_period_us'] == 50.  # Effective reconnect preserves the live service.
+
+
 @pytest.mark.parametrize('stage', ['stop', 'finalize', 'mapping', 'flash'])
 def test_failures_abort_later_stages(workflow, monkeypatch, stage):
     w = workflow

@@ -1,0 +1,35 @@
+name: Build and test CLI wheel
+description: Build a locked release wheel and test its installed console entry point.
+inputs:
+  target:
+    description: Rust target triple
+    required: true
+  manylinux:
+    description: Maturin manylinux policy
+    required: true
+  interpreter:
+    description: Optional interpreter selection
+    default: ''
+  sccache:
+    description: Enable compiler cache
+    default: 'false'
+  docker-options:
+    description: Extra container options for release version propagation
+    default: ''
+runs:
+  using: composite
+  steps:
+    - uses: PyO3/maturin-action@v1
+      with:
+        command: build
+        rust-toolchain: '1.90.0'
+        target: ${{ inputs.target }}
+        manylinux: ${{ inputs.manylinux }}
+        sccache: ${{ inputs.sccache }}
+        docker-options: ${{ inputs.docker-options }}
+        args: --manifest-path uz_cli/Cargo.toml --release --locked --out dist ${{ inputs.interpreter }}
+    - name: Install and test matching wheel
+      shell: bash
+      run: |
+        python uz_cli/release_ci.py install dist
+        python -c "import os, shutil, subprocess, sys; command = shutil.which('ultrazohm'); assert command, 'console entry point missing'; os.environ['UZ_CLI_BIN'] = command; subprocess.run([sys.executable, '-m', 'unittest', 'discover', '-s', 'uz_cli/tests', '-v'], check=True)"

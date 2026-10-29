@@ -127,3 +127,41 @@ select Analysis or Live tabs once without closing other windows. Source launcher
 worker code; bundled scripts can import bundled dependencies, while source
 scripts can also use packages installed in the developer environment. Vitis is
 external and remains required for build/flash.
+
+Workspace data and process ownership
+------------------------------------
+
+Developer execution stores viewer-owned data in
+``<workspace>/artifacts/_user``. Standalone execution uses
+``<workspace>/artifacts/_user_standalone``. Selecting the same firmware checkout
+in both modes therefore preserves independent preferences, layouts, caches and
+recordings. The standalone executable and ``_internal`` contain application
+resources; they are not the destination for mutable workspace preferences.
+
+``settings.json`` contains runtime preferences. Missing preferences are seeded
+from the CLI's bundled standard profile, restricted to the selected firmware's
+available observables. Existing preferences are preserved. Connecting or
+flashing prepares an effective session profile when assignments need filtering;
+it does not rewrite the saved preferences. Header-generated mapping JSON is
+derived data and is regenerated for the selected firmware checkout.
+
+``tools.json`` remembers the selected XSCT launcher. Its directory is added to
+the application's process environment for child processes, without changing the
+system PATH. ``viewer.ini`` holds the window layout, ``viewer_cache`` holds
+optional analysis caches (unless overridden by ``UZ_DATAVIEWER_CACHE``), and
+``logs`` holds default session output. Explicit export, script, session and
+recording destinations remain user-selected. Script and CLI output capture also
+uses temporary directories; active detached CLI jobs retain their output files.
+
+The live controller tracks its launched service separately from the service to
+which it is currently attached. Closing the viewer finalizes its owned service;
+for an attached external service it sends device Stop without shutting that
+service down. Script Stop invalidates queued manual commands and uses a control
+path independent of display reads. Flashing retains its ordered Stop,
+finalization, shutdown, programming and reconnect sequence.
+
+The Bash and PowerShell developer launchers bootstrap ``uv`` and delegate to
+``launch.py`` for shared argument parsing and setup. Standalone execution uses
+its bundled worker entry point and requires no separately installed Python or
+Rust. The viewer command console and Python automation remain available on
+Windows; the GUI ``uz ...`` shortcut is enabled only on non-Windows platforms.

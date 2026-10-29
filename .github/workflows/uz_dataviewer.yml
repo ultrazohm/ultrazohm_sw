@@ -6,6 +6,7 @@ on:
     paths:
       - 'uz_dataviewer/**'
       - 'uz_cli/**'
+      - '.github/actions/test-cli-wheel/**'
       - 'javascope/test_server.py'
       - 'vitis/software/**'
       - 'tcl_scripts/**'
@@ -15,6 +16,7 @@ on:
     paths:
       - 'uz_dataviewer/**'
       - 'uz_cli/**'
+      - '.github/actions/test-cli-wheel/**'
       - 'javascope/test_server.py'
       - 'vitis/software/**'
       - 'tcl_scripts/**'
@@ -51,17 +53,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - uses: PyO3/maturin-action@v1
+      - uses: ./.github/actions/test-cli-wheel
         with:
-          command: build
-          rust-toolchain: '1.90.0'
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux }}
-          args: --manifest-path uz_cli/Cargo.toml --release --locked --out dist
-      - name: Install and test matching CLI wheel
-        run: |
-          python uz_cli/release_ci.py install dist
-          python -c "import os, shutil, subprocess, sys; os.environ['UZ_CLI_BIN'] = shutil.which('ultrazohm'); subprocess.run([sys.executable, '-m', 'unittest', 'discover', '-s', 'uz_cli/tests', '-v'], check=True)"
       - uses: actions/upload-artifact@v4
         with:
           name: bundled-cli-${{ matrix.os }}

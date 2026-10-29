@@ -2,9 +2,9 @@ name: UltraZohm CLI
 on:
   workflow_dispatch:
   push:
-    paths: ['uz_cli/**', 'javascope/test_server.py', '.github/workflows/ultrazohm-cli.yml']
+    paths: ['uz_cli/**', '.github/actions/test-cli-wheel/**', 'javascope/test_server.py', '.github/workflows/ultrazohm-cli.yml']
   pull_request:
-    paths: ['uz_cli/**', 'javascope/test_server.py', '.github/workflows/ultrazohm-cli.yml']
+    paths: ['uz_cli/**', '.github/actions/test-cli-wheel/**', 'javascope/test_server.py', '.github/workflows/ultrazohm-cli.yml']
 permissions:
   contents: read
 jobs:
@@ -95,20 +95,13 @@ jobs:
       - name: Set unique wheel version
         shell: bash
         run: python uz_cli/release_ci.py version "$RELEASE_VERSION"
-      - uses: PyO3/maturin-action@v1
+      - uses: ./.github/actions/test-cli-wheel
         with:
-          command: build
-          rust-toolchain: '1.90.0'
-          sccache: true
-          docker-options: -e ULTRAZOHM_RELEASE_VERSION
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux }}
-          args: --manifest-path uz_cli/Cargo.toml --release --locked --out dist --interpreter ${{ matrix.interpreter }}
-      - name: Install the release wheel
-        run: python uz_cli/release_ci.py install dist
-      - name: Test the release wheel
-        run: >-
-          python -c "import os, shutil, subprocess, sys; command = shutil.which('ultrazohm'); assert command; os.environ['UZ_CLI_BIN'] = command; subprocess.run([sys.executable, '-m', 'unittest', 'discover', '-s', 'uz_cli/tests', '-v'], check=True)"
+          interpreter: --interpreter ${{ matrix.interpreter }}
+          sccache: 'true'
+          docker-options: -e ULTRAZOHM_RELEASE_VERSION
       - uses: actions/upload-artifact@v4
         with:
           name: cli-wheel-${{ matrix.target }}

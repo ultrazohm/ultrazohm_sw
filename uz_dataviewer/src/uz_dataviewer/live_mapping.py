@@ -7,7 +7,7 @@ import subprocess
 import tempfile
 import uuid
 
-HEADER = Path('vitis/software/Baremetal/src/include/javascope.h')
+from .user_paths import HEADER, find_repository
 
 
 def repository(explicit=None):
@@ -17,9 +17,8 @@ def repository(explicit=None):
             raise ValueError(f'JavaScope header not found under {root}')
         return root
     for start in (Path.cwd(), Path(__file__).resolve().parent):
-        for root in (start, *start.parents):
-            if (root / HEADER).is_file():
-                return root
+        if root := find_repository(start):
+            return root
     raise ValueError('UltraZohm repository not found; pass --live-repo PATH to generate its channel mapping')
 
 

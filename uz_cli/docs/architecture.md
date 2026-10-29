@@ -218,12 +218,12 @@ cursor and a captured available/persisted range. Live schema changes invalidate
 old cursors; a recording's schema and identity remain fixed. Python returns Polars
 DataFrames or a DataPage containing both rows and cursor. CLI previews use the
 same Arrow IPC operation. Requests stay bounded to 128 MiB; callers page history.
-GUI integration, subscription transports and cloud authentication/upload remain
+Subscription transports and cloud authentication/upload remain
 separate implementation stages. Current pending data can be lost on process failure.
 
 ## Deferred platform work
 
-No `uz_dataviewer` integration is added. A bounded request/reply live snapshot API
+The native `uz_dataviewer` integrates through the same service API. A bounded request/reply live snapshot API
 is available to Python and CLI clients over the existing loopback TCP endpoint:
 small JSON metadata followed by binary Arrow IPC stream bytes. Python exposes
 Polars DataFrames; the CLI prints a limited table preview. NNG/WebSocket live

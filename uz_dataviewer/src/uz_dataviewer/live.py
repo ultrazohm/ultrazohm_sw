@@ -1,8 +1,8 @@
 """Native live acquisition adapter. Device IO stays in the independent CLI service.
 
 The worker publishes immutable, bounded snapshots. The GUI never performs network
-IO and closing it never shuts down the service. History is deliberately RAM-only
-in this prototype; the same Client can later page a selected recording.
+IO. Closing the viewer finalizes its owned service and sends Stop to an attached
+external device. The displayed history is bounded by the service RAM buffer.
 """
 from __future__ import annotations
 
@@ -235,7 +235,7 @@ class LiveController:
         if mapping:
             args += ['--channel-mapping', str(Path(mapping).expanduser().resolve())]
             if not profile:
-                from .flashing import prepare_profile
+                from .settings import prepare_profile
                 profile, removed = prepare_profile(mapping, output.with_name(output.name + '.profile.json'), user_directory)
                 if removed:
                     self._message('warn', 'Removed initial channels absent from the mapping: ' + ', '.join(removed))
@@ -358,7 +358,8 @@ class LiveController:
         raise RuntimeError(f'Timed out waiting for {description}')
 
     def _flash(self, kwargs):
-        from .flashing import connection_refused, initialize_user_settings, profile_for_mapping, read_runtime_settings, run_flash_cli, xsct_available
+        from .flashing import connection_refused, run_flash_cli, xsct_available
+        from .settings import initialize_user_settings, profile_for_mapping, read_runtime_settings
         from .user_paths import write_json
         from .live_mapping import generate_mapping, repository
         if not xsct_available():
@@ -427,7 +428,7 @@ class LiveController:
         settings_path = initialize_user_settings(mapping_path)
         if previous is None:
             previous = read_runtime_settings(settings_path)
-        profile, removed = profile_for_mapping(root, mapping, previous, assignments)
+        profile, removed = profile_for_mapping(mapping, previous, assignments)
         if removed:
             self._message('warn', 'Removed channel assignments absent from the new mapping: '+', '.join(removed))
         output = Path(new_output_directory(parent=Path(kwargs['output']).expanduser().resolve().parent))

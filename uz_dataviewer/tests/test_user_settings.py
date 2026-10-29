@@ -1,4 +1,5 @@
 """Standalone storage, runtime profiles, and remembered XSCT launchers."""
+from uz_dataviewer import settings as runtime_settings
 import json
 import os
 from pathlib import Path
@@ -62,18 +63,18 @@ def test_modes_isolate_data_in_the_same_workspace(tmp_path, monkeypatch):
 def test_normal_connect_filters_bundled_defaults_and_loads_editable_settings(tmp_path, monkeypatch):
     path = tmp_path/'mapping.json'
     path.write_text(json.dumps({'channels': 20, 'observables': {'JSO_lifecheck': 3}}))
-    monkeypatch.setattr(flashing, 'default_profile', lambda: {
+    monkeypatch.setattr(runtime_settings, 'default_profile', lambda: {
         'name': 'standard', 'sample_period_us': 100,
         'initial_channels': {'3': 'JSO_lifecheck', '4': 'JSO_theta_mech'}})
-    settings_path, removed = flashing.prepare_profile(path)
+    settings_path, removed = runtime_settings.prepare_profile(path)
     assert removed == []  # Missing firmware names were filtered when seeding defaults.
     settings = json.loads(settings_path.read_text())
     assert settings['initial_channels'] == {'3': 'JSO_lifecheck'}
     settings['sample_period_us'] = 50
     settings['initial_channels'] = {}
     settings_path.write_text(json.dumps(settings))
-    monkeypatch.setattr(flashing, 'default_profile', lambda: pytest.fail('Must use saved settings'))
-    same_path, removed = flashing.prepare_profile(path)
+    monkeypatch.setattr(runtime_settings, 'default_profile', lambda: pytest.fail('Must use saved settings'))
+    same_path, removed = runtime_settings.prepare_profile(path)
     assert same_path == settings_path
     assert not removed
     assert json.loads(same_path.read_text()) == settings
@@ -85,7 +86,7 @@ def test_invalid_settings_fail_without_overwriting(tmp_path):
     settings = tmp_path/'settings.json'
     settings.write_text('{bad json')
     with pytest.raises(ValueError):
-        flashing.prepare_profile(path)
+        runtime_settings.prepare_profile(path)
     assert settings.read_text() == '{bad json'
 
 
@@ -114,7 +115,7 @@ def test_service_launch_passes_filtered_settings_profile(tmp_path, monkeypatch):
     from uz_dataviewer.live import LiveController
     mapping = tmp_path/'mapping.json'
     mapping.write_text(json.dumps({'channels': 20, 'observables': {'JSO_lifecheck': 3}}))
-    monkeypatch.setattr(flashing, 'default_profile', lambda: {
+    monkeypatch.setattr(runtime_settings, 'default_profile', lambda: {
         'name': 'standard', 'sample_period_us': 100,
         'initial_channels': {'3': 'JSO_lifecheck', '4': 'JSO_theta_mech'}})
     calls = []
@@ -158,9 +159,9 @@ def test_initialize_and_connect_preserve_existing_preferences(tmp_path, monkeypa
     tools = tmp_path/'tools.json'
     tools.write_text('{"xsct":null,"custom":"keep me"}\n')
     before = {path: (path.read_bytes(), path.stat().st_mtime_ns) for path in (settings, tools)}
-    monkeypatch.setattr(flashing, 'default_profile', lambda: pytest.fail('Must preserve existing settings'))
-    assert flashing.initialize_user_settings(mapping) == settings
-    effective, removed = flashing.prepare_profile(mapping, tmp_path/'session.profile.json')
+    monkeypatch.setattr(runtime_settings, 'default_profile', lambda: pytest.fail('Must preserve existing settings'))
+    assert runtime_settings.initialize_user_settings(mapping) == settings
+    effective, removed = runtime_settings.prepare_profile(mapping, tmp_path/'session.profile.json')
     assert removed == ['JSO_theta_mech']
     assert json.loads(effective.read_text())['initial_channels'] == {'3': 'JSO_lifecheck'}
     assert {path: (path.read_bytes(), path.stat().st_mtime_ns) for path in (settings, tools)} == before
@@ -178,7 +179,7 @@ def test_workspace_startup_initializes_missing_preferences_once(tmp_path, monkey
     mapping = user_dir/'mapping.json'
     mapping.write_text(json.dumps({'channels': 20, 'observables': {'JSO_lifecheck': 3}}))
     monkeypatch.setattr(live_mapping, 'generate_mapping', lambda repo: mapping)
-    monkeypatch.setattr(flashing, 'default_profile', lambda: {
+    monkeypatch.setattr(runtime_settings, 'default_profile', lambda: {
         'name': 'standard', 'sample_period_us': 100,
         'initial_channels': {'3': 'JSO_lifecheck', '4': 'JSO_theta_mech'}})
     class Viewer:
@@ -194,7 +195,7 @@ def test_workspace_startup_initializes_missing_preferences_once(tmp_path, monkey
     saved = user_dir/'settings.json'
     original = '{"schema_version":1,"name":"edited","sample_period_us":75,"initial_channels":{}}\n'
     saved.write_text(original)
-    monkeypatch.setattr(flashing, 'default_profile', lambda: pytest.fail('Must not reapply defaults'))
+    monkeypatch.setattr(runtime_settings, 'default_profile', lambda: pytest.fail('Must not reapply defaults'))
     assert app.main(args) == 0
     assert saved.read_text() == original
 
@@ -223,7 +224,7 @@ def test_invalid_runtime_preferences_are_rejected_without_rewriting(tmp_path, ch
     original = json.dumps(value)
     path.write_text(original)
     with pytest.raises(ValueError, match='Invalid runtime settings'):
-        flashing.prepare_profile(mapping)
+        runtime_settings.prepare_profile(mapping)
     assert path.read_text() == original
 
 
@@ -247,9 +248,9 @@ def test_external_mapping_keeps_preferences_in_selected_workspace(tmp_path, monk
     mapping = external/'mapping.json'
     mapping.write_text(json.dumps({'channels': 20, 'observables': {'JSO_lifecheck': 3}}))
     user_dir = data_directory(tmp_path/'workspace')
-    monkeypatch.setattr(flashing, 'default_profile', lambda: {
+    monkeypatch.setattr(runtime_settings, 'default_profile', lambda: {
         'name': 'standard', 'sample_period_us': 100, 'initial_channels': {'3': 'JSO_lifecheck'}})
-    effective, _ = flashing.prepare_profile(mapping, user_directory=user_dir)
+    effective, _ = runtime_settings.prepare_profile(mapping, user_directory=user_dir)
     assert effective == user_dir/'settings.json'
     assert list(external.iterdir()) == [mapping]
     assert (user_dir/'tools.json').is_file()
@@ -259,6 +260,6 @@ def test_default_profile_worker_failure_has_actionable_error(monkeypatch):
     import subprocess
     def fail(*args, **kwargs):
         raise subprocess.CalledProcessError(1, ['profile'], stderr='native profile error')
-    monkeypatch.setattr(flashing.subprocess, 'run', fail)
+    monkeypatch.setattr(runtime_settings.subprocess, 'run', fail)
     with pytest.raises(RuntimeError, match='native profile error'):
-        flashing.default_profile()
+        runtime_settings.default_profile()

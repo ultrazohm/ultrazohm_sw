@@ -10,17 +10,16 @@ import tempfile
 import time
 
 
-def port():
-    with socket.socket() as sock:
-        sock.bind(('127.0.0.1', 0))
-        return sock.getsockname()[1]
-
 
 def main():
     executable = str(Path(sys.argv[1]).resolve(strict=True))
     root = Path(__file__).resolve().parents[2]
-    endpoint = f'127.0.0.1:{port()}'
-    device_port = port()
+    # Reserve both simultaneously so the OS cannot choose the same port twice.
+    with socket.socket() as service_socket, socket.socket() as device_socket:
+        service_socket.bind(('127.0.0.1', 0))
+        device_socket.bind(('127.0.0.1', 0))
+        endpoint = f'127.0.0.1:{service_socket.getsockname()[1]}'
+        device_port = device_socket.getsockname()[1]
     processes = []
     with tempfile.TemporaryDirectory() as tmp:
         # Windows temp paths can contain 8.3 aliases (RUNNER~1), while workers
@@ -56,7 +55,7 @@ def main():
             setup.write_text(
                 'import json\nfrom pathlib import Path\n'
                 'from uz_dataviewer.live_mapping import generate_mapping\n'
-                'from uz_dataviewer.flashing import initialize_user_settings, prepare_profile\n'
+                'from uz_dataviewer.settings import initialize_user_settings, prepare_profile\n'
                 f'mapping = generate_mapping(Path({str(firmware)!r}))\n'
                 'settings = initialize_user_settings(mapping)\n'
                 'original = json.loads(settings.read_text())\n'

@@ -1,4 +1,5 @@
 """Managed flashing sequence and confirmation, without programming real hardware."""
+from uz_dataviewer import settings as runtime_settings
 from copy import deepcopy
 import json
 from pathlib import Path
@@ -21,7 +22,7 @@ def workflow(tmp_path, monkeypatch):
     header = root/live_mapping.HEADER
     header.parent.mkdir(parents=True)
     header.touch()
-    monkeypatch.setattr(flashing, 'default_profile', lambda: {
+    monkeypatch.setattr(runtime_settings, 'default_profile', lambda: {
         'name': 'standard', 'sample_period_us': 100., 'initial_channels': {'1': 'JSO_keep'}})
     events, starts = [], []
     mapping = {'api_version': 1, 'channels': 20, 'samples_per_packet': 15,

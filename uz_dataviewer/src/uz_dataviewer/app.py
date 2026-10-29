@@ -469,7 +469,7 @@ def main(argv: list[str] | None = None) -> int:
         from .live_mapping import generate_mapping
         try:
             live_mapping = str(generate_mapping(args.live_repo))
-            from .flashing import initialize_user_settings
+            from .settings import initialize_user_settings
             initialize_user_settings(live_mapping)
         except (OSError, ValueError, RuntimeError) as exc:
             parser.error(str(exc))

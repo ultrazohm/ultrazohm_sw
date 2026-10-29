@@ -179,7 +179,7 @@ def test_cli_defaults_and_explicit_overrides(monkeypatch):
         return 'cached-mapping.json'
     monkeypatch.setattr('uz_dataviewer.live_mapping.generate_mapping', generate)
     settings_calls = []
-    monkeypatch.setattr('uz_dataviewer.flashing.initialize_user_settings', settings_calls.append)
+    monkeypatch.setattr('uz_dataviewer.settings.initialize_user_settings', settings_calls.append)
     monkeypatch.setattr(runtime, 'IS_WEB', False)
     app.main([])
     assert captured[-1]['disk_cache'] is False

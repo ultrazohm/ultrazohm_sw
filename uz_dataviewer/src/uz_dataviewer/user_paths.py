@@ -6,16 +6,22 @@ import sys
 import tempfile
 
 
+HEADER = Path("vitis/software/Baremetal/src/include/javascope.h")
+
+
+def find_repository(start):
+    """Find a firmware checkout above a path without creating directories."""
+    start = Path(start).expanduser().resolve()
+    return next((root for root in (start, *start.parents)
+                 if (root / HEADER).is_file()), None)
+
+
 def data_directory(repo=None):
     if repo is not None:
         root = Path(repo).expanduser().resolve()
     else:
         # Source startup from a repository subdirectory, or standalone analysis.
-        root = Path.cwd()
-        for candidate in (root, *root.parents):
-            if (candidate / 'vitis/software/Baremetal/src/include/javascope.h').is_file():
-                root = candidate
-                break
+        root = find_repository(Path.cwd()) or Path.cwd()
     directory = '_user_standalone' if getattr(sys, 'frozen', False) else '_user'
     path = root / 'artifacts' / directory
     path.mkdir(parents=True, exist_ok=True)

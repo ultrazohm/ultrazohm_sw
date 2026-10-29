@@ -9,10 +9,10 @@ Build
 In the following, the build process of ``uz_dataviewer`` is described.
 Usage of the :ref:`vscode_remote_container` is assumed.
 
-Native single-file executables (PyInstaller)
+Native standalone executables (PyInstaller)
 ============================================
 
-The build collects ``imgui_bundle``, ``pyarrow``, and the Polars Rust runtime into one self-contained binary.
+The build collects ``imgui_bundle``, ``pyarrow``, and the Polars Rust runtime into a self-contained directory containing the executable and ``_internal``.
 The frozen smoke test exercises both backends in memory and lazy modes.
 Install ``uv`` before invoking either build script.
 Both scripts install Python 3.12 and the dependencies from ``uv.lock`` into ``.venv-build``, then invoke PyInstaller.

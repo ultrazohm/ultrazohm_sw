@@ -85,7 +85,7 @@ jobs:
       - name: Install locked test dependencies
         run: uv sync --locked --extra dev --python 3.12 --no-build-package imgui-bundle
       - name: Check Python sources
-        run: uv run --no-sync ruff check src tests build examples
+        run: uv run --no-sync ruff check src tests build examples launch.py
       - name: Test
         run: uv run --no-sync python -m pytest -q
 

@@ -35,9 +35,14 @@ try {
         }
     }
 
-    $env:PATH = (Split-Path -Parent $uvExecutable) + [IO.Path]::PathSeparator + $env:PATH
-    & $uvExecutable run --no-project --python 3.12 (Join-Path $PSScriptRoot 'launch.py') @args
-    exit $LASTEXITCODE
+    $viewerOriginalPath = $env:PATH
+    try {
+        $env:PATH = (Split-Path -Parent $uvExecutable) + [IO.Path]::PathSeparator + $env:PATH
+        & $uvExecutable run --no-project --python '3.12' (Join-Path $PSScriptRoot 'launch.py') @args
+        exit $LASTEXITCODE
+    } finally {
+        $env:PATH = $viewerOriginalPath
+    }
 } catch {
     [Console]::Error.WriteLine($_.Exception.Message)
     exit 1

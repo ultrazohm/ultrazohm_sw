@@ -155,7 +155,10 @@ def test_powershell_wrapper_forwards_arguments_and_exit_code(tmp_path, exit_code
                     f'exit {exit_code}\n')
     bootstrap = project / 'test.ps1'
     bootstrap.write_text('function Get-Command { [pscustomobject]@{ Source = $env:TEST_UV } }\n'
-                         '& $env:TEST_START @args\nexit $LASTEXITCODE\n')
+                         '$viewerBefore = $env:PATH\n& $env:TEST_START @args\n'
+                         '$viewerExit = $LASTEXITCODE\n'
+                         'if ($env:PATH -ne $viewerBefore) { throw "Caller PATH changed" }\n'
+                         'exit $viewerExit\n')
     args = ['--use-live', '--live-wheel', 'a wheel.whl', 'a recording.csv']
     result = subprocess.run([shell, '-NoProfile', '-File', str(bootstrap), *args],
         env={**os.environ, 'TEST_UV': str(stub), 'TEST_START': str(project / 'start.ps1'),
@@ -163,3 +166,34 @@ def test_powershell_wrapper_forwards_arguments_and_exit_code(tmp_path, exit_code
     assert result.returncode == exit_code, result.stderr
     assert json.loads(report.read_text(encoding='utf-8-sig')) == [
         'run', '--no-project', '--python', '3.12', str(project / 'launch.py'), *args]
+
+
+@pytest.mark.parametrize('platform', ['nt', 'posix'])
+@pytest.mark.parametrize('launch', ['gui', 'shell'])
+def test_shared_launcher_platform_handoff(tmp_path, monkeypatch, platform, launch):
+    import importlib.util
+    spec = importlib.util.spec_from_file_location('viewer_launch', Path(__file__).parents[1] / 'launch.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    project = tmp_path / 'checkout with spaces' / 'uz_dataviewer'
+    monkeypatch.setattr(module, '__file__', str(project / 'launch.py'))
+    monkeypatch.setattr(module, 'os', SimpleNamespace(name=platform))
+    monkeypatch.setattr(module.shutil, 'which', lambda name: 'uv')
+    calls = []
+    monkeypatch.setattr(module.subprocess, 'run', lambda args, **kwargs: calls.append(args))
+    def start(args):
+        calls.append(args)
+        return 7
+    monkeypatch.setattr(module.subprocess, 'call', start)
+    assert module.main(['--use-live', '--launch', launch, '--live-channel', 'testing']) == 7
+    scripts = project / '.venv' / ('Scripts' if platform == 'nt' else 'bin')
+    python = str(scripts / ('python.exe' if platform == 'nt' else 'python'))
+    assert calls[0][0:2] == ['uv', 'sync']
+    assert calls[1][1] == str(project.parent / 'uz_cli' / 'setup_uv.py')
+    assert calls[1][-2:] == ['--channel', 'testing']
+    assert calls[2] == [python, '-m', 'uz_dataviewer.check_live']
+    if launch == 'shell':
+        assert calls[3] == [python, '-m', 'uz_dataviewer.env_shell']
+    else:
+        executable = str(scripts / ('uz-dataviewer.exe' if platform == 'nt' else 'uz-dataviewer'))
+        assert calls[3] == [executable, '--use-live', '--live-repo', str(project.parent)]

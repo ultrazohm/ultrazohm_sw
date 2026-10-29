@@ -247,397 +247,450 @@ pub fn serve_with_ready(
     // Claim the control endpoint before touching the device (new device clients replace old ones).
     let listener = TcpListener::bind(local_address(&config.endpoint)?)?;
     listener.set_nonblocking(true)?;
-    if let Some(dir) = &config.output {
-        ensure!(
-            !dir.exists(),
-            "run directory already exists: {}",
-            dir.display()
-        );
-    }
-    let state = Arc::new(Mutex::new(State::default()));
-    let ack = Arc::new(AtomicBool::new(config.ack));
-    let run_id = format!("{}-{}", now_ns(), std::process::id());
-    let mut events: Option<Audit> = None;
-    if let Some(dir) = &config.output {
-        fs::create_dir(dir)?;
-        fs::write(
-            dir.join("run.json"),
-            serde_json::to_vec_pretty(&json!({
-                "schema_version":4,"run_id":run_id,"started_unix_ns":now_ns(),"device":config.device,
-                "profile":config.profile,"format":config.format,"data_options":config.data,
-                "time_basis":"seconds from acquisition start; configured sample period; gaps unknown",
-                "storage_layout":"explicit_independent_recordings","source":"ultrazohm",
-                "software_version":env!("CARGO_PKG_VERSION")
-            }))?,
-        )?;
-        events = Some(Audit::new(
-            OpenOptions::new()
-                .create_new(true)
-                .append(true)
-                .open(dir.join("commands.jsonl"))?,
-            state.clone(),
-            shutdown.clone(),
-        ));
-    }
-    let mut recordings = Recordings::new(
-        config.output.clone(),
-        config.profile.clone(),
-        config.format,
-        config.data.clone(),
-    );
-    let ring = Arc::new(Mutex::new(LiveBuffer::new(
-        config
-            .data
-            .buffer_samples
-            .expect("buffer capacity resolved"),
-    )));
-    let routes = recordings.routes.clone();
-    let context = ConnectionContext {
-        profile: config.profile.clone(),
-        shutdown: shutdown.clone(),
-        state: state.clone(),
-        ack: ack.clone(),
-        routes,
-        ring: ring.clone(),
-    };
-    let mut connection = None;
-    let mut selections = json!({});
-    if let Some(device) = &config.device {
-        let (opened, initial) = context.connect(device, &mut events)?;
-        connection = Some(opened);
-        selections = initial;
-    }
-    eprintln!("UltraZohm service listening on {}", config.endpoint);
+    let service = Service::new(config, shutdown)?;
+    eprintln!("UltraZohm service listening on {}", service.config.endpoint);
     ready();
-    let mut query_workers: Vec<thread::JoinHandle<()>> = Vec::new();
-    let mut shutdown_stop_sent = false;
-    while !shutdown.load(Ordering::SeqCst) {
-        query_workers.retain(|worker| !worker.is_finished());
-        if let Some(error) = recordings.error() {
-            state.lock().unwrap().error.get_or_insert(error);
-            shutdown.store(true, Ordering::SeqCst);
+    service.run(listener)
+}
+
+/// All mutable session ownership stays on the control thread. The connection
+/// context shares only the synchronized state needed by acquisition workers.
+struct Service {
+    config: Config,
+    context: ConnectionContext,
+    run_id: String,
+    events: Option<Audit>,
+    recordings: Recordings,
+    connection: Option<Connection>,
+    selections: Value,
+    query_workers: Vec<thread::JoinHandle<()>>,
+    shutdown_stop_sent: bool,
+}
+
+enum Reply {
+    Json(Value),
+    Data(Box<DataView>, Query),
+}
+
+impl Service {
+    fn new(config: Config, shutdown: Arc<AtomicBool>) -> Result<Self> {
+        if let Some(dir) = &config.output {
+            ensure!(
+                !dir.exists(),
+                "run directory already exists: {}",
+                dir.display()
+            );
         }
-        if connection
-            .as_ref()
-            .is_some_and(|c| c.acquisition.is_finished())
-        {
-            shutdown.store(true, Ordering::SeqCst);
-            break;
+        let state = Arc::new(Mutex::new(State::default()));
+        let ack = Arc::new(AtomicBool::new(config.ack));
+        let run_id = format!("{}-{}", now_ns(), std::process::id());
+        let mut events: Option<Audit> = None;
+        if let Some(dir) = &config.output {
+            fs::create_dir(dir)?;
+            fs::write(
+                dir.join("run.json"),
+                serde_json::to_vec_pretty(&json!({
+                    "schema_version":4,"run_id":run_id,"started_unix_ns":now_ns(),"device":config.device,
+                    "profile":config.profile,"format":config.format,"data_options":config.data,
+                    "time_basis":"seconds from acquisition start; configured sample period; gaps unknown",
+                    "storage_layout":"explicit_independent_recordings","source":"ultrazohm",
+                    "software_version":env!("CARGO_PKG_VERSION")
+                }))?,
+            )?;
+            events = Some(Audit::new(
+                OpenOptions::new()
+                    .create_new(true)
+                    .append(true)
+                    .open(dir.join("commands.jsonl"))?,
+                state.clone(),
+                shutdown.clone(),
+            ));
         }
-        match listener.accept() {
-            Ok((mut socket, _)) => {
-                let mut query_job = None;
-                let result: Result<Value> = (|| {
-                    // Windows accepted sockets inherit the nonblocking listener mode.
-                    // Requests and replies below use blocking I/O with bounded timeouts.
-                    socket.set_nonblocking(false)?;
-                    socket.set_read_timeout(Some(Duration::from_secs(1)))?;
-                    socket.set_write_timeout(Some(Duration::from_secs(5)))?;
-                    let req: Request =
-                        serde_json::from_slice(&read_line(&mut socket, Duration::from_secs(2))?)?;
-                    ensure!(req.api_version == 1, "unsupported API version");
-                    let mut wire = None;
-                    match &req.command {
-                        Operation::ReadData { query } => {
-                            ensure!(
-                                query_workers.len() < 4,
-                                "too many concurrent data queries; retry after a current query finishes"
-                            );
-                            let view = data_view(
-                                &run_id,
-                                &query.source,
-                                &ring,
-                                &recordings,
-                                &config.profile,
-                                &selections,
-                                connection.is_some(),
-                                Some(&query.selection),
-                            )?;
-                            query_job = Some((view, query.clone()));
-                            return Ok(json!({}));
-                        }
-                        Operation::DataInfo { source } => {
-                            let view = data_view(
-                                &run_id,
-                                source,
-                                &ring,
-                                &recordings,
-                                &config.profile,
-                                &selections,
-                                connection.is_some(),
-                                None,
-                            )?;
-                            return Ok(json!({"api_version":1,"ok":true,"info":view.info}));
-                        }
-                        Operation::Recordings => {
-                            let mut infos = Vec::new();
-                            for source in recordings.sources() {
-                                infos.push(
-                                    data_view(
-                                        &run_id,
-                                        &source,
-                                        &ring,
-                                        &recordings,
-                                        &config.profile,
-                                        &selections,
-                                        connection.is_some(),
-                                        None,
-                                    )?
-                                    .info,
-                                );
-                            }
-                            return Ok(json!({"api_version":1,"ok":true,"recordings":infos}));
-                        }
-                        Operation::Connect { ip, port } => {
-                            ensure!(connection.is_none(), "already connected");
-                            ensure!(*port != 0, "port must be 1..65535");
-                            let address = SocketAddr::new(
-                                ip.parse()
-                                    .context("device IP must be a numeric IPv4 or IPv6 address")?,
-                                *port,
-                            );
-                            let (opened, initial) =
-                                context.connect(&address.to_string(), &mut events)?;
-                            connection = Some(opened);
-                            selections = initial;
-                        }
-                        Operation::Status => {
-                            return Ok(
-                                json!({"api_version":1,"ok":true,"state":*state.lock().unwrap(),"send_ack":ack.load(Ordering::SeqCst),"logging":recordings.status(),
-                                    "data_options":config.data,"buffer_available_samples":ring.lock().unwrap().available()}),
-                            );
-                        }
-                        Operation::Catalog => {
-                            return Ok(json!({"api_version":1,"ok":true,
-                                "profile":config.profile,
-                                "device_readback":false}));
-                        }
-                        Operation::Observables => {
-                            let channels: Vec<Value> = (1..=config.profile.channels).map(|channel| {
-                                let requested = selections[channel.to_string()].as_str();
-                                let entry = requested.and_then(|name| {
-                                    config.profile.observables.get_key_value(name).or_else(||
-                                        config.profile.observables.get_key_value(&format!("JSO_{name}")))
-                                });
-                                json!({"channel":channel,
-                                    "name":entry.map(|(name, _)| name),
-                                    "id":entry.map(|(_, id)| id),
-                                    "state":if entry.is_some() {"sent_unconfirmed"} else {"unknown"}})
-                            }).collect();
-                            return Ok(json!({"api_version":1,"ok":true,
-                                "source":"service_requested_assignments",
-                                "device_readback":false,"channels":channels}));
-                        }
-                        Operation::StartLogging => {
-                            ensure!(connection.is_some(), "not connected; use connect first");
-                            recordings.start(false, &selections)?;
-                        }
-                        Operation::StopLogging => recordings.stop(false)?,
-                        Operation::PauseLogging => recordings.pause(false, true)?,
-                        Operation::ResumeLogging => recordings.pause(false, false)?,
-                        Operation::StartLoggingSlowData => {
-                            ensure!(connection.is_some(), "not connected; use connect first");
-                            recordings.start(true, &selections)?;
-                        }
-                        Operation::StopLoggingSlowData => recordings.stop(true)?,
-                        Operation::PauseLoggingSlowData => recordings.pause(true, true)?,
-                        Operation::ResumeLoggingSlowData => recordings.pause(true, false)?,
-                        Operation::Shutdown => {
-                            shutdown.store(true, Ordering::SeqCst);
-                            if connection.is_some() {
-                                wire = Some((config.profile.command("Stop")?, 0.0));
-                            }
-                        }
-                        Operation::SendAck { enabled } => {
-                            // An immediate zero wakes a paused legacy peer when re-enabling.
-                            if *enabled
-                                && !ack.load(Ordering::SeqCst)
-                                && let Some(c) = &connection
-                                && let Err(e) = send(&c.writer, 0, 0.0)
-                            {
-                                state.lock().unwrap().error =
-                                    Some(format!("ACK write failed; outcome unknown: {e}"));
-                                shutdown.store(true, Ordering::SeqCst);
-                                return Err(e);
-                            }
-                            ack.store(*enabled, Ordering::SeqCst);
-                        }
-                        Operation::SetVariable { name, value } => {
-                            wire = Some((config.profile.variable(name)?, *value))
-                        }
-                        Operation::SetObservable { name, channel } => {
-                            ensure!(
-                                !recordings.active(),
-                                "setting observable is not possible when logging is active; stop fast and slow logging first"
-                            );
-                            wire = Some(config.profile.observable(name, *channel)?)
-                        }
-                        Operation::Button { number } => {
-                            ensure!((1..=8).contains(number), "button must be 1..8");
-                            wire = Some((
-                                config.profile.command(&format!("My_Button_{number}"))?,
-                                0.0,
-                            ));
-                        }
-                        Operation::Stop => wire = Some((config.profile.command("Stop")?, 0.0)),
-                        Operation::EnableSystem => {
-                            wire = Some((config.profile.command("Enable_System")?, 0.0))
-                        }
-                        Operation::EnableControl => {
-                            wire = Some((config.profile.command("Enable_Control")?, 0.0))
-                        }
-                        Operation::ErrorReset => bail!(
-                            "Error_Reset is a no-op in this firmware; use stop to leave error state"
-                        ),
-                    }
-                    if let Some((id, value)) = wire {
-                        let connected = connection
-                            .as_ref()
-                            .context("not connected; use connect first")?;
-                        encode_command(id, value)?; // Validation errors must not terminate acquisition.
-                        if let Err(e) = send(&connected.writer, id, value) {
-                            state.lock().unwrap().error =
-                                Some(format!("command write failed; outcome unknown: {e}"));
-                            shutdown.store(true, Ordering::SeqCst);
-                            return Err(e);
-                        }
-                        state.lock().unwrap().commands_sent += 1;
-                        if matches!(req.command, Operation::Shutdown) {
-                            shutdown_stop_sent = true;
-                        }
-                        if let Operation::SetObservable { name, channel } = &req.command {
-                            selections[channel.to_string()] = json!(name);
-                            // Previously retained samples must not acquire the new column labels.
-                            ring.lock().unwrap().clear();
-                        }
-                    }
-                    if let Some(audit) = events.as_ref()
-                        && let Err(e) = audit.send(json!({"host_unix_ns":now_ns(),"request":req,"wire":wire,"outcome":if wire.is_some(){"sent_unconfirmed"}else{"applied_locally"}}))
-                    {
-                        state.lock().unwrap().error =
-                            Some(format!("command audit failed after send: {e}"));
-                        shutdown.store(true, Ordering::SeqCst);
-                        return Err(e);
-                    }
-                    Ok(
-                        json!({"api_version":1,"ok":true,"outcome":if wire.is_some(){"sent_unconfirmed"}else{"applied_locally"},"logging":recordings.status()}),
-                    )
-                })();
-                if let Some((view, query)) = query_job {
-                    query_workers
-                        .push(thread::spawn(move || serve_data_query(socket, view, query)));
-                    continue;
-                }
-                let response = match result {
-                    Ok(v) => v,
-                    Err(e) => json!({"api_version":1,"ok":false,"error":format!("{e:#}")}),
-                };
-                if serde_json::to_writer(&mut socket, &response).is_ok() {
-                    let _ = socket.write_all(b"\n");
-                }
-            }
-            Err(e) if e.kind() == std::io::ErrorKind::WouldBlock => {
-                thread::sleep(Duration::from_millis(5))
-            }
-            Err(e) => {
-                state.lock().unwrap().error = Some(e.to_string());
-                shutdown.store(true, Ordering::SeqCst);
-            }
+        let recordings = Recordings::new(
+            config.output.clone(),
+            config.profile.clone(),
+            config.format,
+            config.data.clone(),
+        );
+        let ring = Arc::new(Mutex::new(LiveBuffer::new(
+            config
+                .data
+                .buffer_samples
+                .expect("buffer capacity resolved"),
+        )));
+        let context = ConnectionContext {
+            profile: config.profile.clone(),
+            shutdown,
+            state,
+            ack,
+            routes: recordings.routes.clone(),
+            ring,
+        };
+        let mut service = Self {
+            config,
+            context,
+            run_id,
+            events,
+            recordings,
+            connection: None,
+            selections: json!({}),
+            query_workers: Vec::new(),
+            shutdown_stop_sent: false,
+        };
+        if let Some(device) = service.config.device.clone() {
+            service.connect(&device)?;
         }
+        Ok(service)
     }
-    // All exit paths (shutdown command, Ctrl-C, EOF, embedded close, or failure)
-    // stop the device before waiting for data queries and recording finalization.
-    if !shutdown_stop_sent && let Some(c) = &connection {
-        match config
-            .profile
-            .command("Stop")
-            .and_then(|id| send(&c.writer, id, 0.0))
-        {
-            Ok(()) => state.lock().unwrap().commands_sent += 1,
-            Err(error) => {
-                eprintln!("Shutdown device Stop failed: {error:#}");
-                state
+
+    fn connect(&mut self, device: &str) -> Result<()> {
+        let (connection, selections) = self.context.connect(device, &mut self.events)?;
+        self.connection = Some(connection);
+        self.selections = selections;
+        Ok(())
+    }
+
+    fn run(mut self, listener: TcpListener) -> Result<()> {
+        while !self.context.shutdown.load(Ordering::SeqCst) {
+            self.query_workers.retain(|worker| !worker.is_finished());
+            if let Some(error) = self.recordings.error() {
+                self.context
+                    .state
                     .lock()
                     .unwrap()
                     .error
-                    .get_or_insert_with(|| format!("shutdown device Stop failed: {error:#}"));
+                    .get_or_insert(error);
+                self.context.shutdown.store(true, Ordering::SeqCst);
+            }
+            if self
+                .connection
+                .as_ref()
+                .is_some_and(|c| c.acquisition.is_finished())
+            {
+                self.context.shutdown.store(true, Ordering::SeqCst);
+                break;
+            }
+            match listener.accept() {
+                Ok((socket, _)) => self.respond(socket),
+                Err(e) if e.kind() == std::io::ErrorKind::WouldBlock => {
+                    thread::sleep(Duration::from_millis(5))
+                }
+                Err(e) => {
+                    self.context.state.lock().unwrap().error = Some(e.to_string());
+                    self.context.shutdown.store(true, Ordering::SeqCst);
+                }
             }
         }
+        self.finish()
     }
-    for worker in query_workers {
-        let _ = worker.join();
-    }
-    if let Some(Connection {
-        writer,
-        acquisition,
-    }) = connection
-    {
-        if acquisition.join().is_err() {
-            state.lock().unwrap().error = Some("acquisition thread panicked".into());
-        }
-        let _ = writer.lock().unwrap().shutdown(Shutdown::Both);
-    }
-    if let Err(e) = recordings.finish() {
-        // Acquisition may observe the closed logger channel before the writer
-        // publishes its actual IO error. Preserve that cause after joining it.
-        let detail = format!("{e:#}");
-        let mut state = state.lock().unwrap();
-        match &mut state.error {
-            Some(existing) if existing != &detail => {
-                existing.push_str("; ");
-                existing.push_str(&detail);
+
+    fn respond(&mut self, mut socket: TcpStream) {
+        let result = read_request(&mut socket).and_then(|req| self.handle(req));
+        let response = match result {
+            Ok(Reply::Data(view, query)) => {
+                self.query_workers.push(thread::spawn(move || {
+                    serve_data_query(socket, *view, query)
+                }));
+                return;
             }
-            None => state.error = Some(detail),
-            _ => {}
+            Ok(Reply::Json(value)) => value,
+            Err(error) => json!({"api_version":1,"ok":false,"error":format!("{error:#}")}),
+        };
+        if serde_json::to_writer(&mut socket, &response).is_ok() {
+            let _ = socket.write_all(b"\n");
         }
     }
-    if let Some(audit) = events
-        && let Err(error) = audit.finish()
-    {
-        state
-            .lock()
-            .unwrap()
-            .error
-            .get_or_insert_with(|| format!("{error:#}"));
+
+    fn handle(&mut self, req: Request) -> Result<Reply> {
+        let mut wire = None;
+        match &req.command {
+            Operation::ReadData { query } => {
+                ensure!(
+                    self.query_workers.len() < 4,
+                    "too many concurrent data queries; retry after a current query finishes"
+                );
+                let view = self.view(&query.source, Some(&query.selection))?;
+                return Ok(Reply::Data(Box::new(view), query.clone()));
+            }
+            Operation::DataInfo { source } => {
+                let view = self.view(source, None)?;
+                return Ok(Reply::Json(
+                    json!({"api_version":1,"ok":true,"info":view.info}),
+                ));
+            }
+            Operation::Recordings => {
+                let mut infos = Vec::new();
+                for source in self.recordings.sources() {
+                    infos.push(self.view(&source, None)?.info);
+                }
+                return Ok(Reply::Json(
+                    json!({"api_version":1,"ok":true,"recordings":infos}),
+                ));
+            }
+            Operation::Connect { ip, port } => {
+                ensure!(self.connection.is_none(), "already connected");
+                ensure!(*port != 0, "port must be 1..65535");
+                let address = SocketAddr::new(
+                    ip.parse()
+                        .context("device IP must be a numeric IPv4 or IPv6 address")?,
+                    *port,
+                );
+                self.connect(&address.to_string())?;
+            }
+            Operation::Status => {
+                return Ok(Reply::Json(
+                    json!({"api_version":1,"ok":true,"state":*self.context.state.lock().unwrap(),"send_ack":self.context.ack.load(Ordering::SeqCst),"logging":self.recordings.status(),
+                        "data_options":self.config.data,"buffer_available_samples":self.context.ring.lock().unwrap().available()}),
+                ));
+            }
+            Operation::Catalog => {
+                return Ok(Reply::Json(json!({"api_version":1,"ok":true,
+                    "profile":self.config.profile,
+                    "device_readback":false})));
+            }
+            Operation::Observables => {
+                let channels: Vec<Value> = (1..=self.config.profile.channels)
+                    .map(|channel| {
+                        let requested = self.selections[channel.to_string()].as_str();
+                        let entry = requested.and_then(|name| {
+                            self.config
+                                .profile
+                                .observables
+                                .get_key_value(name)
+                                .or_else(|| {
+                                    self.config
+                                        .profile
+                                        .observables
+                                        .get_key_value(&format!("JSO_{name}"))
+                                })
+                        });
+                        json!({"channel":channel,
+                        "name":entry.map(|(name, _)| name),
+                        "id":entry.map(|(_, id)| id),
+                        "state":if entry.is_some() {"sent_unconfirmed"} else {"unknown"}})
+                    })
+                    .collect();
+                return Ok(Reply::Json(json!({"api_version":1,"ok":true,
+                    "source":"service_requested_assignments",
+                    "device_readback":false,"channels":channels})));
+            }
+            Operation::StartLogging => {
+                ensure!(
+                    self.connection.is_some(),
+                    "not connected; use connect first"
+                );
+                self.recordings.start(false, &self.selections)?;
+            }
+            Operation::StopLogging => self.recordings.stop(false)?,
+            Operation::PauseLogging => self.recordings.pause(false, true)?,
+            Operation::ResumeLogging => self.recordings.pause(false, false)?,
+            Operation::StartLoggingSlowData => {
+                ensure!(
+                    self.connection.is_some(),
+                    "not connected; use connect first"
+                );
+                self.recordings.start(true, &self.selections)?;
+            }
+            Operation::StopLoggingSlowData => self.recordings.stop(true)?,
+            Operation::PauseLoggingSlowData => self.recordings.pause(true, true)?,
+            Operation::ResumeLoggingSlowData => self.recordings.pause(true, false)?,
+            Operation::Shutdown => {
+                self.context.shutdown.store(true, Ordering::SeqCst);
+                if self.connection.is_some() {
+                    wire = Some((self.config.profile.command("Stop")?, 0.0));
+                }
+            }
+            Operation::SendAck { enabled } => {
+                // An immediate zero wakes a paused legacy peer when re-enabling.
+                if *enabled
+                    && !self.context.ack.load(Ordering::SeqCst)
+                    && let Some(c) = &self.connection
+                    && let Err(e) = send(&c.writer, 0, 0.0)
+                {
+                    self.context.state.lock().unwrap().error =
+                        Some(format!("ACK write failed; outcome unknown: {e}"));
+                    self.context.shutdown.store(true, Ordering::SeqCst);
+                    return Err(e);
+                }
+                self.context.ack.store(*enabled, Ordering::SeqCst);
+            }
+            Operation::SetVariable { name, value } => {
+                wire = Some((self.config.profile.variable(name)?, *value))
+            }
+            Operation::SetObservable { name, channel } => {
+                ensure!(
+                    !self.recordings.active(),
+                    "setting observable is not possible when logging is active; stop fast and slow logging first"
+                );
+                wire = Some(self.config.profile.observable(name, *channel)?)
+            }
+            Operation::Button { number } => {
+                ensure!((1..=8).contains(number), "button must be 1..8");
+                wire = Some((
+                    self.config
+                        .profile
+                        .command(&format!("My_Button_{number}"))?,
+                    0.0,
+                ));
+            }
+            Operation::Stop => wire = Some((self.config.profile.command("Stop")?, 0.0)),
+            Operation::EnableSystem => {
+                wire = Some((self.config.profile.command("Enable_System")?, 0.0))
+            }
+            Operation::EnableControl => {
+                wire = Some((self.config.profile.command("Enable_Control")?, 0.0))
+            }
+            Operation::ErrorReset => {
+                bail!("Error_Reset is a no-op in this firmware; use stop to leave error state")
+            }
+        }
+        if let Some((id, value)) = wire {
+            let connected = self
+                .connection
+                .as_ref()
+                .context("not connected; use connect first")?;
+            encode_command(id, value)?; // Validation errors must not terminate acquisition.
+            if let Err(e) = send(&connected.writer, id, value) {
+                self.context.state.lock().unwrap().error =
+                    Some(format!("command write failed; outcome unknown: {e}"));
+                self.context.shutdown.store(true, Ordering::SeqCst);
+                return Err(e);
+            }
+            self.context.state.lock().unwrap().commands_sent += 1;
+            if matches!(req.command, Operation::Shutdown) {
+                self.shutdown_stop_sent = true;
+            }
+            if let Operation::SetObservable { name, channel } = &req.command {
+                self.selections[channel.to_string()] = json!(name);
+                // Previously retained samples must not acquire the new column labels.
+                self.context.ring.lock().unwrap().clear();
+            }
+        }
+        if let Some(audit) = self.events.as_ref()
+            && let Err(e) = audit.send(json!({"host_unix_ns":now_ns(),"request":req,"wire":wire,"outcome":if wire.is_some(){"sent_unconfirmed"}else{"applied_locally"}}))
+        {
+            self.context.state.lock().unwrap().error =
+                Some(format!("command audit failed after send: {e}"));
+            self.context.shutdown.store(true, Ordering::SeqCst);
+            return Err(e);
+        }
+        Ok(Reply::Json(
+            json!({"api_version":1,"ok":true,"outcome":if wire.is_some(){"sent_unconfirmed"}else{"applied_locally"},"logging":self.recordings.status()}),
+        ))
     }
-    let s = state.lock().unwrap();
-    if let Some(dir) = config.output {
-        fs::write(
-            dir.join("end.json"),
-            serde_json::to_vec_pretty(
-                &json!({"ended_unix_ns":now_ns(),"state":*s,"complete":s.error.is_none()}),
-            )?,
-        )?;
+
+    fn view(&self, source: &Source, selection: Option<&Selection>) -> Result<DataView> {
+        if let Some(n) = source.recording {
+            DataView::recorded(
+                &self.run_id,
+                source,
+                self.recordings.history(&source.stream, n)?.as_ref(),
+                &self.config.profile,
+                selection,
+            )
+        } else {
+            ensure!(
+                self.connection.is_some(),
+                "not connected; use connect first"
+            );
+            DataView::live(
+                &self.run_id,
+                source,
+                &self.context.ring,
+                &self.config.profile,
+                &self.selections,
+                selection,
+            )
+        }
     }
-    if let Some(e) = &s.error {
-        bail!("{e}");
+
+    fn finish(mut self) -> Result<()> {
+        // All exit paths (shutdown command, Ctrl-C, EOF, embedded close, or failure)
+        // stop the device before waiting for data queries and recording finalization.
+        if !self.shutdown_stop_sent
+            && let Some(c) = &self.connection
+        {
+            match self
+                .config
+                .profile
+                .command("Stop")
+                .and_then(|id| send(&c.writer, id, 0.0))
+            {
+                Ok(()) => self.context.state.lock().unwrap().commands_sent += 1,
+                Err(error) => {
+                    eprintln!("Shutdown device Stop failed: {error:#}");
+                    self.context
+                        .state
+                        .lock()
+                        .unwrap()
+                        .error
+                        .get_or_insert_with(|| format!("shutdown device Stop failed: {error:#}"));
+                }
+            }
+        }
+        for worker in self.query_workers {
+            let _ = worker.join();
+        }
+        if let Some(Connection {
+            writer,
+            acquisition,
+        }) = self.connection
+        {
+            if acquisition.join().is_err() {
+                self.context.state.lock().unwrap().error =
+                    Some("acquisition thread panicked".into());
+            }
+            let _ = writer.lock().unwrap().shutdown(Shutdown::Both);
+        }
+        if let Err(e) = self.recordings.finish() {
+            // Acquisition may observe the closed logger channel before the writer
+            // publishes its actual IO error. Preserve that cause after joining it.
+            let detail = format!("{e:#}");
+            let mut state = self.context.state.lock().unwrap();
+            match &mut state.error {
+                Some(existing) if existing != &detail => {
+                    existing.push_str("; ");
+                    existing.push_str(&detail);
+                }
+                None => state.error = Some(detail),
+                _ => {}
+            }
+        }
+        if let Some(audit) = self.events
+            && let Err(error) = audit.finish()
+        {
+            self.context
+                .state
+                .lock()
+                .unwrap()
+                .error
+                .get_or_insert_with(|| format!("{error:#}"));
+        }
+        let s = self.context.state.lock().unwrap();
+        if let Some(dir) = self.config.output {
+            fs::write(
+                dir.join("end.json"),
+                serde_json::to_vec_pretty(
+                    &json!({"ended_unix_ns":now_ns(),"state":*s,"complete":s.error.is_none()}),
+                )?,
+            )?;
+        }
+        if let Some(e) = &s.error {
+            bail!("{e}");
+        }
+        Ok(())
     }
-    Ok(())
 }
 
-#[allow(clippy::too_many_arguments)] // Immutable service context plus the requested source/window.
-fn data_view(
-    run_id: &str,
-    source: &Source,
-    ring: &Mutex<LiveBuffer>,
-    recordings: &Recordings,
-    profile: &Profile,
-    selections: &Value,
-    connected: bool,
-    selection: Option<&Selection>,
-) -> Result<DataView> {
-    if let Some(n) = source.recording {
-        DataView::recorded(
-            run_id,
-            source,
-            recordings.history(&source.stream, n)?.as_ref(),
-            profile,
-            selection,
-        )
-    } else {
-        ensure!(connected, "not connected; use connect first");
-        DataView::live(run_id, source, ring, profile, selections, selection)
-    }
+fn read_request(socket: &mut TcpStream) -> Result<Request> {
+    // Windows accepted sockets inherit the nonblocking listener mode.
+    // Requests and replies use blocking I/O with bounded timeouts.
+    socket.set_nonblocking(false)?;
+    socket.set_read_timeout(Some(Duration::from_secs(1)))?;
+    socket.set_write_timeout(Some(Duration::from_secs(5)))?;
+    let req: Request = serde_json::from_slice(&read_line(socket, Duration::from_secs(2))?)?;
+    ensure!(req.api_version == 1, "unsupported API version");
+    Ok(req)
 }
 
 fn serve_data_query(mut socket: TcpStream, view: DataView, query: Query) {

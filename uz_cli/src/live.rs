@@ -158,26 +158,7 @@ impl LiveBuffer {
 
 /// Canonical names in channel order, deduplicated by observable ID like recording columns.
 pub fn selected_columns(profile: &Profile, selections: &Value) -> Result<Vec<(usize, String)>> {
-    let mut columns = Vec::new();
-    let mut seen = std::collections::BTreeSet::new();
-    for channel in 1..=profile.channels {
-        if let Some(requested) = selections[channel.to_string()].as_str() {
-            let (_, value) = profile.observable(requested, channel as u32)?;
-            let id = value as u32;
-            let canonical = if profile.observables.contains_key(requested) {
-                requested.to_owned()
-            } else {
-                format!("JSO_{requested}")
-            };
-            ensure!(
-                canonical != "time" && canonical != "status",
-                "observable name {canonical} conflicts with a reserved log column"
-            );
-            if seen.insert(id) {
-                columns.push((channel - 1, canonical));
-            }
-        }
-    }
+    let columns = profile.selected_columns(selections)?;
     ensure!(
         !columns.is_empty(),
         "select at least one observable before requesting live data"
@@ -187,27 +168,7 @@ pub fn selected_columns(profile: &Profile, selections: &Value) -> Result<Vec<(us
 
 impl Snapshot {
     pub fn dataframe(&self, period_us: f64, columns: &[(usize, String)]) -> Result<DataFrame> {
-        let mut time = Vec::with_capacity(self.rows);
-        let mut status = Vec::with_capacity(self.rows);
-        let mut values = vec![Vec::with_capacity(self.rows); columns.len()];
-        for (frame_number, (first, frame)) in self.frames.iter().enumerate() {
-            let skip = if frame_number == 0 { self.skip } else { 0 };
-            for row in skip..frame.slow_raw.len() {
-                time.push((first + row as u64) as f64 * period_us * 1e-6);
-                status.push(frame.status);
-                for ((channel, _), dest) in columns.iter().zip(&mut values) {
-                    dest.push(frame.channels[*channel][row]);
-                }
-            }
-        }
-        let mut result = vec![
-            Column::new("time".into(), time),
-            Column::new("status".into(), status),
-        ];
-        for ((_, name), values) in columns.iter().zip(values) {
-            result.push(Column::new(name.clone().into(), values));
-        }
-        Ok(DataFrame::new(result)?)
+        crate::storage::fast_dataframe(&self.frames, period_us, columns, self.skip, self.rows)
     }
 }
 

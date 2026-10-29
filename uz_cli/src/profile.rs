@@ -204,6 +204,42 @@ impl Profile {
         }
         Ok(())
     }
+    /// Resolve columns once for live queries and recording; callers decide whether empty is allowed.
+    pub(crate) fn selected_columns(
+        &self,
+        selections: &serde_json::Value,
+    ) -> Result<Vec<(usize, String)>> {
+        let mut columns = Vec::new();
+        let mut seen = std::collections::BTreeSet::new();
+        for channel in 1..=self.channels {
+            if let Some(requested) = selections[channel.to_string()].as_str() {
+                let (_, value) = self.observable(requested, channel as u32)?;
+                let id = value as u32;
+                let canonical = if self.observables.contains_key(requested) {
+                    requested.to_owned()
+                } else {
+                    format!("JSO_{requested}")
+                };
+                ensure!(
+                    canonical != "time" && canonical != "status",
+                    "observable name {canonical} conflicts with a reserved log column"
+                );
+                if seen.insert(id) {
+                    columns.push((channel - 1, canonical));
+                }
+            }
+        }
+        Ok(columns)
+    }
+
+    pub(crate) fn slow_names(&self) -> Vec<String> {
+        let mut names = vec![String::new(); self.slow_signals.len()];
+        for (name, &id) in &self.slow_signals {
+            names[id as usize] = name.clone();
+        }
+        names
+    }
+
     pub fn command(&self, name: &str) -> Result<u32> {
         self.commands
             .get(name)

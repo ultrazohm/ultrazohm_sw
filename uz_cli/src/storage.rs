@@ -39,7 +39,6 @@ pub struct LogWriter {
     next_index: Option<u64>,
     next_acquisition_index: Option<u64>,
     rows: usize,
-    part: u64,
     written_rows: usize,
 }
 impl LogWriter {
@@ -92,39 +91,17 @@ impl LogWriter {
         selections: &serde_json::Value,
         factory: impl FnOnce(&Path, &str, bool, f64, &DataFrame) -> Result<Box<dyn RecordingBackend>>,
     ) -> Result<Self> {
-        let mut fast_columns = Vec::new();
-        let mut seen = std::collections::BTreeSet::new();
-        for channel in 1..=profile.channels {
-            if let Some(requested) = selections[channel.to_string()].as_str() {
-                let (name, id) = profile
-                    .observables
-                    .get_key_value(requested)
-                    .or_else(|| {
-                        profile
-                            .observables
-                            .get_key_value(&format!("JSO_{requested}"))
-                    })
-                    .with_context(|| format!("unknown selected observable {requested}"))?;
-                if seen.insert(*id) {
-                    ensure!(
-                        name != "time" && name != "status",
-                        "observable name {name} conflicts with a reserved log column"
-                    );
-                    fast_columns.push((channel - 1, name.clone()));
-                }
-            }
-        }
+        let fast_columns = profile.selected_columns(selections)?;
         ensure!(
             slow || !fast_columns.is_empty(),
             "select at least one observable before starting fast logging"
         );
-        let mut slow_names = vec![String::new(); profile.slow_signals.len()];
-        for (name, &id) in &profile.slow_signals {
+        let slow_names = profile.slow_names();
+        for name in &slow_names {
             ensure!(
                 !slow || (name != "time" && name != "status"),
                 "slow observable name {name} conflicts with a reserved log column"
             );
-            slow_names[id as usize] = name.clone();
         }
         ensure!(dir.is_dir(), "recording directory does not exist");
         ensure!(
@@ -148,7 +125,6 @@ impl LogWriter {
             next_index: None,
             next_acquisition_index: None,
             rows: 0,
-            part: 0,
             written_rows: 0,
         })
     }
@@ -205,7 +181,6 @@ impl LogWriter {
             start: self.first_index.unwrap() + self.written_rows as u64,
             data: self.dataframe()?,
         })?;
-        self.part += 1;
         self.written_rows += self.rows;
         self.rows = 0;
         self.batch.clear();
@@ -356,6 +331,39 @@ impl LogWriter {
     }
 }
 
+/// Shared fast-column conversion, including the public snapshot compatibility API.
+pub(crate) fn fast_dataframe(
+    frames: &[(u64, Arc<Frame>)],
+    period_us: f64,
+    columns: &[(usize, String)],
+    skip: usize,
+    rows: usize,
+) -> Result<DataFrame> {
+    let mut time = Vec::with_capacity(rows);
+    let mut status = Vec::with_capacity(rows);
+    let mut values = vec![Vec::with_capacity(rows); columns.len()];
+    for (first, frame, row) in frames
+        .iter()
+        .flat_map(|(first, frame)| (0..frame.slow_raw.len()).map(move |row| (*first, frame, row)))
+        .skip(skip)
+        .take(rows)
+    {
+        time.push((first + row as u64) as f64 * period_us * 1e-6);
+        status.push(frame.status);
+        for ((channel, _), dest) in columns.iter().zip(&mut values) {
+            dest.push(frame.channels[*channel][row]);
+        }
+    }
+    let mut result = vec![
+        Column::new("time".into(), time),
+        Column::new("status".into(), status),
+    ];
+    for ((_, name), values) in columns.iter().zip(values) {
+        result.push(Column::new(name.clone().into(), values));
+    }
+    Ok(DataFrame::new(result)?)
+}
+
 pub(crate) fn frames_dataframe(
     frames: &[(u64, Arc<Frame>)],
     rows: usize,
@@ -364,48 +372,35 @@ pub(crate) fn frames_dataframe(
     slow_names: &[String],
     slow: bool,
 ) -> Result<DataFrame> {
+    if !slow {
+        return fast_dataframe(frames, profile.sample_period_us, fast_columns, 0, rows);
+    }
     let mut time = Vec::with_capacity(rows);
     let mut status = Vec::with_capacity(rows);
     let mut slow_id = Vec::with_capacity(rows);
     let mut slow_name = Vec::with_capacity(rows);
     let mut slow_raw = Vec::with_capacity(rows);
     let mut slow_value = Vec::with_capacity(rows);
-    let mut channels: Vec<Vec<f32>> = (0..20).map(|_| Vec::with_capacity(rows)).collect();
     for (first, f) in frames {
         for i in 0..f.slow_raw.len() {
             time.push((first + i as u64) as f64 * profile.sample_period_us * 1e-6);
             status.push(f.status);
-            if slow {
-                slow_id.push(f.slow_ids[i]);
-                slow_name.push(slow_names[f.slow_ids[i] as usize].as_str());
-                slow_raw.push(f.slow_raw[i]);
-                slow_value.push(f32::from_bits(f.slow_raw[i]));
-            } else {
-                for (dest, source) in channels.iter_mut().zip(&f.channels) {
-                    dest.push(source[i]);
-                }
-            }
+            slow_id.push(f.slow_ids[i]);
+            slow_name.push(slow_names[f.slow_ids[i] as usize].as_str());
+            slow_raw.push(f.slow_raw[i]);
+            slow_value.push(f32::from_bits(f.slow_raw[i]));
         }
     }
     let mut cols = vec![
         Column::new("time".into(), time),
         Column::new("status".into(), status),
     ];
-    if slow {
-        cols.extend([
-            Column::new("observable".into(), slow_name),
-            Column::new("slow_id".into(), slow_id),
-            Column::new("slow_raw".into(), slow_raw),
-            Column::new("slow_value".into(), slow_value),
-        ]);
-    } else {
-        for (index, name) in fast_columns {
-            cols.push(Column::new(
-                name.clone().into(),
-                std::mem::take(&mut channels[*index]),
-            ));
-        }
-    }
+    cols.extend([
+        Column::new("observable".into(), slow_name),
+        Column::new("slow_id".into(), slow_id),
+        Column::new("slow_raw".into(), slow_raw),
+        Column::new("slow_value".into(), slow_value),
+    ]);
     Ok(DataFrame::new(cols)?)
 }
 

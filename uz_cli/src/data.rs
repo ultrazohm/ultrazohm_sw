@@ -159,13 +159,6 @@ pub struct DataView {
     reader: Option<Arc<dyn RecordingReader>>,
     profile: Profile,
 }
-fn slow_names(profile: &Profile) -> Vec<String> {
-    let mut names = vec![String::new(); profile.slow_signals.len()];
-    for (name, &id) in &profile.slow_signals {
-        names[id as usize] = name.clone();
-    }
-    names
-}
 fn from_frames(
     frames: &[(u64, u64, Arc<Frame>)],
     start: u64,
@@ -202,7 +195,7 @@ fn from_frames(
         rows,
         profile,
         columns,
-        &slow_names(profile),
+        &profile.slow_names(),
         slow,
     )?;
     let offset = selected.first().map_or(0, |(first, _, _)| start - first);

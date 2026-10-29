@@ -1,35 +1,27 @@
 """Measurement scripts use real process isolation and the same service API."""
 from pathlib import Path
 from types import SimpleNamespace
-import socket
 import subprocess
 import sys
 import time
 
 import pytest
+from functools import partial
+from live_support import ports, wait_for as wait_for_condition
+
+wait_for = partial(wait_for_condition, seconds=8)
 
 from uz_dataviewer.live import LiveController
 from uz_dataviewer.panels.live import LiveWorkspace
 from uz_dataviewer.scripting import ScriptRunner, TEMPLATES
 
 
-def wait_for(fn, seconds=8):
-    deadline = time.monotonic() + seconds
-    while time.monotonic() < deadline:
-        if value := fn():
-            return value
-        time.sleep(.01)
-    raise AssertionError('condition timed out')
 
 
 @pytest.fixture
 def service(tmp_path):
     native = pytest.importorskip('ultrazohm')
-    def port():
-        with socket.socket() as sock:
-            sock.bind(('127.0.0.1', 0))
-            return sock.getsockname()[1]
-    device_port, service_port = port(), port()
+    device_port, service_port = ports()
     root = Path(__file__).resolve().parents[2]
     simulator = subprocess.Popen([sys.executable, str(root/'javascope/test_server.py'),
         '--port', str(device_port), '--sample-rate', '1000'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)

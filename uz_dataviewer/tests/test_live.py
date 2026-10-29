@@ -7,6 +7,8 @@ import numpy as np
 import polars as pl
 import pytest
 
+from live_support import ports, wait_for
+
 from uz_dataviewer.live import LiveController, LiveSource, LiveUpdate, fuzzy_names
 from uz_dataviewer.panels.live import LiveWorkspace
 from uz_dataviewer.sources import TimeShift, shift_time
@@ -18,14 +20,6 @@ def frame(start, stop):
                          'a': np.sin(t).astype(np.float32), 'b': np.cos(t).astype(np.float32)})
 
 
-def wait_for(function, seconds=4):
-    deadline = time.monotonic() + seconds
-    while time.monotonic() < deadline:
-        result = function()
-        if result:
-            return result
-        time.sleep(.01)
-    raise AssertionError('condition timed out')
 
 
 class FakeClient:
@@ -367,11 +361,7 @@ def test_viewer_owned_service_finalizes_and_exits_on_close(tmp_path, disconnect_
     import sys
     native = pytest.importorskip('ultrazohm')
     root = Path(__file__).resolve().parents[2]
-    def free_port():
-        with socket.socket() as sock:
-            sock.bind(('127.0.0.1', 0))
-            return sock.getsockname()[1]
-    device_port, service_port = free_port(), free_port()
+    device_port, service_port = ports()
     simulator = subprocess.Popen([sys.executable, str(root/'javascope/test_server.py'),
         '--host', '127.0.0.1', '--port', str(device_port), '--sample-rate', '10000'],
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)

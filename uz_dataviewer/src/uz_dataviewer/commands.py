@@ -349,9 +349,16 @@ class CommandRegistry:
 
 # -- built-in commands --------------------------------------------------------
 def register_builtins(reg: CommandRegistry) -> None:
+    _register_data_and_plot_commands(reg)
+    _register_analysis_commands(reg)
+    _register_node_commands(reg)
+    _register_session_commands(reg)
+
+
+def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
     # Imported lazily inside handlers to avoid a GUI/state import cycle.
     from .state import PlotType, XyStyle
-    from .validation import axis_limits, coordinates, spy_rectangle, histogram_bins, display_budget, cache_budget_mb
+    from .validation import coordinates, spy_rectangle, display_budget, cache_budget_mb
 
     def _cell(state, plot_n):
         return state.cells[plot_n - 1]
@@ -633,6 +640,10 @@ def register_builtins(reg: CommandRegistry) -> None:
     reg.add("set_export_relative", [Param("plot", "plot"), Param("on", "bool")], set_export_relative,
             "Toggle 'start time at 0' for a subplot's CSV export.")
 
+
+def _register_analysis_commands(reg: CommandRegistry) -> None:
+    from .validation import axis_limits, histogram_bins
+
     # -- analysis windows (FFT, Histogram) --------------------------------
     # The two windows share a control surface, so their common commands are
     # registered from one factory; the transform-specific options (DC/Hann/log,
@@ -754,10 +765,8 @@ def register_builtins(reg: CommandRegistry) -> None:
 
     reg.add("hist_export", [Param("path", "str")], hist_export, "Export the histogram bins to CSV.")
 
-    # -- node graph (dataflow transforms -> derived signals) --------------
-    _register_node_commands(reg)
 
-    # -- session ----------------------------------------------------------
+def _register_session_commands(reg: CommandRegistry) -> None:
     def save_state(state, a):
         from .session import save_state as _save
         _save(state, a[0])

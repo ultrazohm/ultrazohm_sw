@@ -635,8 +635,8 @@
             "components": {
               "A1_ADC_LTC2311": {
                 "vlnv": "UltraZohm:user:ADC_LTC2311:3.0",
-                "xci_name": "zusys_A1_ADC_LTC2311_2",
-                "xci_path": "ip/zusys_A1_ADC_LTC2311_2/zusys_A1_ADC_LTC2311_2.xci",
+                "xci_name": "zusys_A1_ADC_LTC2311_3",
+                "xci_path": "ip/zusys_A1_ADC_LTC2311_3/zusys_A1_ADC_LTC2311_3.xci",
                 "inst_hier_path": "uz_analog_adapter/A1_adapter/A1_ADC_LTC2311",
                 "parameters": {
                   "CHANNELS_PER_MASTER": {
@@ -667,8 +667,8 @@
               },
               "A1_iobufds_inst": {
                 "vlnv": "xilinx.com:module_ref:iobufds_inst:1.0",
-                "xci_name": "zusys_A1_iobufds_inst_2",
-                "xci_path": "ip/zusys_A1_iobufds_inst_2/zusys_A1_iobufds_inst_2.xci",
+                "xci_name": "zusys_A1_iobufds_inst_3",
+                "xci_path": "ip/zusys_A1_iobufds_inst_3/zusys_A1_iobufds_inst_3.xci",
                 "inst_hier_path": "uz_analog_adapter/A1_adapter/A1_iobufds_inst",
                 "parameters": {
                   "CHANNELS_PER_MASTER": {
@@ -713,8 +713,8 @@
               },
               "A1_inv_input": {
                 "vlnv": "xilinx.com:ip:xlconstant:1.1",
-                "xci_name": "zusys_A1_inv_input_2",
-                "xci_path": "ip/zusys_A1_inv_input_2/zusys_A1_inv_input_2.xci",
+                "xci_name": "zusys_A1_inv_input_3",
+                "xci_path": "ip/zusys_A1_inv_input_3/zusys_A1_inv_input_3.xci",
                 "inst_hier_path": "uz_analog_adapter/A1_adapter/A1_inv_input",
                 "parameters": {
                   "CONST_VAL": {
@@ -727,8 +727,8 @@
               },
               "axi_smartconnect": {
                 "vlnv": "xilinx.com:ip:smartconnect:1.0",
-                "xci_name": "zusys_axi_smartconnect_18",
-                "xci_path": "ip/zusys_axi_smartconnect_18/zusys_axi_smartconnect_18.xci",
+                "xci_name": "zusys_axi_smartconnect_27",
+                "xci_path": "ip/zusys_axi_smartconnect_27/zusys_axi_smartconnect_27.xci",
                 "inst_hier_path": "uz_analog_adapter/A1_adapter/axi_smartconnect",
                 "parameters": {
                   "NUM_MI": {
@@ -790,7 +790,7 @@
               }
             },
             "interface_nets": {
-              "S00_AXI_2": {
+              "S00_AXI_1": {
                 "interface_ports": [
                   "S00_AXI",
                   "axi_smartconnect/S00_AXI"
@@ -939,8 +939,8 @@
             "components": {
               "A2_ADC_LTC2311": {
                 "vlnv": "UltraZohm:user:ADC_LTC2311:3.0",
-                "xci_name": "zusys_A2_ADC_LTC2311_1",
-                "xci_path": "ip/zusys_A2_ADC_LTC2311_1/zusys_A2_ADC_LTC2311_1.xci",
+                "xci_name": "zusys_A2_ADC_LTC2311_2",
+                "xci_path": "ip/zusys_A2_ADC_LTC2311_2/zusys_A2_ADC_LTC2311_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A2_adapter/A2_ADC_LTC2311",
                 "parameters": {
                   "CHANNELS_PER_MASTER": {
@@ -971,8 +971,8 @@
               },
               "A2_iobufds_inst": {
                 "vlnv": "xilinx.com:module_ref:iobufds_inst:1.0",
-                "xci_name": "zusys_A2_iobufds_inst_1",
-                "xci_path": "ip/zusys_A2_iobufds_inst_1/zusys_A2_iobufds_inst_1.xci",
+                "xci_name": "zusys_A2_iobufds_inst_2",
+                "xci_path": "ip/zusys_A2_iobufds_inst_2/zusys_A2_iobufds_inst_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A2_adapter/A2_iobufds_inst",
                 "parameters": {
                   "CHANNELS_PER_MASTER": {
@@ -1017,8 +1017,8 @@
               },
               "A2_inv_input": {
                 "vlnv": "xilinx.com:ip:xlconstant:1.1",
-                "xci_name": "zusys_A2_inv_input_1",
-                "xci_path": "ip/zusys_A2_inv_input_1/zusys_A2_inv_input_1.xci",
+                "xci_name": "zusys_A2_inv_input_2",
+                "xci_path": "ip/zusys_A2_inv_input_2/zusys_A2_inv_input_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A2_adapter/A2_inv_input",
                 "parameters": {
                   "CONST_VAL": {
@@ -1031,8 +1031,8 @@
               },
               "axi_smartconnect": {
                 "vlnv": "xilinx.com:ip:smartconnect:1.0",
-                "xci_name": "zusys_axi_smartconnect_19",
-                "xci_path": "ip/zusys_axi_smartconnect_19/zusys_axi_smartconnect_19.xci",
+                "xci_name": "zusys_axi_smartconnect_28",
+                "xci_path": "ip/zusys_axi_smartconnect_28/zusys_axi_smartconnect_28.xci",
                 "inst_hier_path": "uz_analog_adapter/A2_adapter/axi_smartconnect",
                 "parameters": {
                   "NUM_MI": {
@@ -1094,7 +1094,7 @@
               }
             },
             "interface_nets": {
-              "S00_AXI_2": {
+              "S00_AXI_1": {
                 "interface_ports": [
                   "S00_AXI",
                   "axi_smartconnect/S00_AXI"
@@ -1243,8 +1243,8 @@
             "components": {
               "A3_ADC_LTC2311": {
                 "vlnv": "UltraZohm:user:ADC_LTC2311:3.0",
-                "xci_name": "zusys_A3_ADC_LTC2311_1",
-                "xci_path": "ip/zusys_A3_ADC_LTC2311_1/zusys_A3_ADC_LTC2311_1.xci",
+                "xci_name": "zusys_A3_ADC_LTC2311_2",
+                "xci_path": "ip/zusys_A3_ADC_LTC2311_2/zusys_A3_ADC_LTC2311_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A3_adapter/A3_ADC_LTC2311",
                 "parameters": {
                   "CHANNELS_PER_MASTER": {
@@ -1275,8 +1275,8 @@
               },
               "A3_iobufds_inst": {
                 "vlnv": "xilinx.com:module_ref:iobufds_inst:1.0",
-                "xci_name": "zusys_A3_iobufds_inst_1",
-                "xci_path": "ip/zusys_A3_iobufds_inst_1/zusys_A3_iobufds_inst_1.xci",
+                "xci_name": "zusys_A3_iobufds_inst_2",
+                "xci_path": "ip/zusys_A3_iobufds_inst_2/zusys_A3_iobufds_inst_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A3_adapter/A3_iobufds_inst",
                 "parameters": {
                   "CHANNELS_PER_MASTER": {
@@ -1321,8 +1321,8 @@
               },
               "A3_inv_input": {
                 "vlnv": "xilinx.com:ip:xlconstant:1.1",
-                "xci_name": "zusys_A3_inv_input_1",
-                "xci_path": "ip/zusys_A3_inv_input_1/zusys_A3_inv_input_1.xci",
+                "xci_name": "zusys_A3_inv_input_2",
+                "xci_path": "ip/zusys_A3_inv_input_2/zusys_A3_inv_input_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A3_adapter/A3_inv_input",
                 "parameters": {
                   "CONST_VAL": {
@@ -1335,8 +1335,8 @@
               },
               "axi_smartconnect": {
                 "vlnv": "xilinx.com:ip:smartconnect:1.0",
-                "xci_name": "zusys_axi_smartconnect_20",
-                "xci_path": "ip/zusys_axi_smartconnect_20/zusys_axi_smartconnect_20.xci",
+                "xci_name": "zusys_axi_smartconnect_29",
+                "xci_path": "ip/zusys_axi_smartconnect_29/zusys_axi_smartconnect_29.xci",
                 "inst_hier_path": "uz_analog_adapter/A3_adapter/axi_smartconnect",
                 "parameters": {
                   "NUM_MI": {
@@ -1398,7 +1398,7 @@
               }
             },
             "interface_nets": {
-              "S00_AXI_2": {
+              "S00_AXI_1": {
                 "interface_ports": [
                   "S00_AXI",
                   "axi_smartconnect/S00_AXI"
@@ -1612,7 +1612,7 @@
               "A3_adapter/TRIGGER_CNV"
             ]
           },
-          "aclk_4": {
+          "aclk_3": {
             "ports": [
               "aclk",
               "A1_adapter/aclk",
@@ -1623,7 +1623,7 @@
               "A3_adapter/peripheral_clk"
             ]
           },
-          "aresetn_4": {
+          "aresetn_3": {
             "ports": [
               "aresetn",
               "A1_adapter/aresetn",
@@ -2192,14 +2192,14 @@
             "components": {
               "uz_d_inverter_adapter_d1": {
                 "vlnv": "xilinx.com:ip:uz_d_inverter_adapter:1.1",
-                "xci_name": "zusys_uz_d_inverter_adapter_d1_0",
-                "xci_path": "ip/zusys_uz_d_inverter_adapter_d1_0/zusys_uz_d_inverter_adapter_d1_0.xci",
+                "xci_name": "zusys_uz_d_inverter_adapter_d1_1",
+                "xci_path": "ip/zusys_uz_d_inverter_adapter_d1_1/zusys_uz_d_inverter_adapter_d1_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D1_adapter/uz_d_inverter_adapter_d1"
               },
               "D1_pwm_h1_slice": {
                 "vlnv": "xilinx.com:ip:xlslice:1.0",
-                "xci_name": "zusys_D1_pwm_h1_slice_0",
-                "xci_path": "ip/zusys_D1_pwm_h1_slice_0/zusys_D1_pwm_h1_slice_0.xci",
+                "xci_name": "zusys_D1_pwm_h1_slice_1",
+                "xci_path": "ip/zusys_D1_pwm_h1_slice_1/zusys_D1_pwm_h1_slice_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D1_adapter/D1_pwm_h1_slice",
                 "parameters": {
                   "DIN_FROM": {
@@ -2218,8 +2218,8 @@
               },
               "D1_pwm_l1_slice": {
                 "vlnv": "xilinx.com:ip:xlslice:1.0",
-                "xci_name": "zusys_D1_pwm_l1_slice_0",
-                "xci_path": "ip/zusys_D1_pwm_l1_slice_0/zusys_D1_pwm_l1_slice_0.xci",
+                "xci_name": "zusys_D1_pwm_l1_slice_1",
+                "xci_path": "ip/zusys_D1_pwm_l1_slice_1/zusys_D1_pwm_l1_slice_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D1_adapter/D1_pwm_l1_slice",
                 "parameters": {
                   "DIN_FROM": {
@@ -2238,8 +2238,8 @@
               },
               "D1_pwm_h2_slice": {
                 "vlnv": "xilinx.com:ip:xlslice:1.0",
-                "xci_name": "zusys_D1_pwm_h2_slice_0",
-                "xci_path": "ip/zusys_D1_pwm_h2_slice_0/zusys_D1_pwm_h2_slice_0.xci",
+                "xci_name": "zusys_D1_pwm_h2_slice_1",
+                "xci_path": "ip/zusys_D1_pwm_h2_slice_1/zusys_D1_pwm_h2_slice_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D1_adapter/D1_pwm_h2_slice",
                 "parameters": {
                   "DIN_FROM": {
@@ -2258,8 +2258,8 @@
               },
               "D1_pwm_l2_slice": {
                 "vlnv": "xilinx.com:ip:xlslice:1.0",
-                "xci_name": "zusys_D1_pwm_l2_slice_0",
-                "xci_path": "ip/zusys_D1_pwm_l2_slice_0/zusys_D1_pwm_l2_slice_0.xci",
+                "xci_name": "zusys_D1_pwm_l2_slice_1",
+                "xci_path": "ip/zusys_D1_pwm_l2_slice_1/zusys_D1_pwm_l2_slice_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D1_adapter/D1_pwm_l2_slice",
                 "parameters": {
                   "DIN_FROM": {
@@ -2278,8 +2278,8 @@
               },
               "D1_pwm_h3_slice": {
                 "vlnv": "xilinx.com:ip:xlslice:1.0",
-                "xci_name": "zusys_D1_pwm_h3_slice_0",
-                "xci_path": "ip/zusys_D1_pwm_h3_slice_0/zusys_D1_pwm_h3_slice_0.xci",
+                "xci_name": "zusys_D1_pwm_h3_slice_1",
+                "xci_path": "ip/zusys_D1_pwm_h3_slice_1/zusys_D1_pwm_h3_slice_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D1_adapter/D1_pwm_h3_slice",
                 "parameters": {
                   "DIN_FROM": {
@@ -2298,8 +2298,8 @@
               },
               "D1_pwm_l3_slice": {
                 "vlnv": "xilinx.com:ip:xlslice:1.0",
-                "xci_name": "zusys_D1_pwm_l3_slice_0",
-                "xci_path": "ip/zusys_D1_pwm_l3_slice_0/zusys_D1_pwm_l3_slice_0.xci",
+                "xci_name": "zusys_D1_pwm_l3_slice_1",
+                "xci_path": "ip/zusys_D1_pwm_l3_slice_1/zusys_D1_pwm_l3_slice_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D1_adapter/D1_pwm_l3_slice",
                 "parameters": {
                   "DIN_FROM": {
@@ -2318,8 +2318,8 @@
               },
               "D1_i_diag_concat": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_D1_i_diag_concat_0",
-                "xci_path": "ip/zusys_D1_i_diag_concat_0/zusys_D1_i_diag_concat_0.xci",
+                "xci_name": "zusys_D1_i_diag_concat_1",
+                "xci_path": "ip/zusys_D1_i_diag_concat_1/zusys_D1_i_diag_concat_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D1_adapter/D1_i_diag_concat",
                 "parameters": {
                   "NUM_PORTS": {
@@ -2329,8 +2329,8 @@
               },
               "D1_temp_concat": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_D1_temp_concat_0",
-                "xci_path": "ip/zusys_D1_temp_concat_0/zusys_D1_temp_concat_0.xci",
+                "xci_name": "zusys_D1_temp_concat_1",
+                "xci_path": "ip/zusys_D1_temp_concat_1/zusys_D1_temp_concat_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D1_adapter/D1_temp_concat",
                 "parameters": {
                   "NUM_PORTS": {
@@ -2340,8 +2340,8 @@
               },
               "D1_oc_concat": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_D1_oc_concat_0",
-                "xci_path": "ip/zusys_D1_oc_concat_0/zusys_D1_oc_concat_0.xci",
+                "xci_name": "zusys_D1_oc_concat_1",
+                "xci_path": "ip/zusys_D1_oc_concat_1/zusys_D1_oc_concat_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D1_adapter/D1_oc_concat",
                 "parameters": {
                   "NUM_PORTS": {
@@ -2351,8 +2351,8 @@
               },
               "D1_fault_concat": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_D1_fault_concat_0",
-                "xci_path": "ip/zusys_D1_fault_concat_0/zusys_D1_fault_concat_0.xci",
+                "xci_name": "zusys_D1_fault_concat_1",
+                "xci_path": "ip/zusys_D1_fault_concat_1/zusys_D1_fault_concat_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D1_adapter/D1_fault_concat",
                 "parameters": {
                   "NUM_PORTS": {
@@ -2362,8 +2362,8 @@
               },
               "axi_smartconnect": {
                 "vlnv": "xilinx.com:ip:smartconnect:1.0",
-                "xci_name": "zusys_axi_smartconnect_21",
-                "xci_path": "ip/zusys_axi_smartconnect_21/zusys_axi_smartconnect_21.xci",
+                "xci_name": "zusys_axi_smartconnect_30",
+                "xci_path": "ip/zusys_axi_smartconnect_30/zusys_axi_smartconnect_30.xci",
                 "inst_hier_path": "uz_digital_adapter/D1_adapter/axi_smartconnect",
                 "parameters": {
                   "NUM_MI": {
@@ -2425,7 +2425,7 @@
               }
             },
             "interface_nets": {
-              "S00_AXI_2": {
+              "S00_AXI_1": {
                 "interface_ports": [
                   "S00_AXI",
                   "axi_smartconnect/S00_AXI"
@@ -2806,14 +2806,14 @@
             "components": {
               "uz_d_inverter_adapter_d2": {
                 "vlnv": "xilinx.com:ip:uz_d_inverter_adapter:1.1",
-                "xci_name": "zusys_uz_d_inverter_adapter_d2_0",
-                "xci_path": "ip/zusys_uz_d_inverter_adapter_d2_0/zusys_uz_d_inverter_adapter_d2_0.xci",
+                "xci_name": "zusys_uz_d_inverter_adapter_d2_1",
+                "xci_path": "ip/zusys_uz_d_inverter_adapter_d2_1/zusys_uz_d_inverter_adapter_d2_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D2_adapter/uz_d_inverter_adapter_d2"
               },
               "D2_pwm_h1_slice": {
                 "vlnv": "xilinx.com:ip:xlslice:1.0",
-                "xci_name": "zusys_D2_pwm_h1_slice_0",
-                "xci_path": "ip/zusys_D2_pwm_h1_slice_0/zusys_D2_pwm_h1_slice_0.xci",
+                "xci_name": "zusys_D2_pwm_h1_slice_1",
+                "xci_path": "ip/zusys_D2_pwm_h1_slice_1/zusys_D2_pwm_h1_slice_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D2_adapter/D2_pwm_h1_slice",
                 "parameters": {
                   "DIN_FROM": {
@@ -2832,8 +2832,8 @@
               },
               "D2_pwm_l1_slice": {
                 "vlnv": "xilinx.com:ip:xlslice:1.0",
-                "xci_name": "zusys_D2_pwm_l1_slice_0",
-                "xci_path": "ip/zusys_D2_pwm_l1_slice_0/zusys_D2_pwm_l1_slice_0.xci",
+                "xci_name": "zusys_D2_pwm_l1_slice_1",
+                "xci_path": "ip/zusys_D2_pwm_l1_slice_1/zusys_D2_pwm_l1_slice_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D2_adapter/D2_pwm_l1_slice",
                 "parameters": {
                   "DIN_FROM": {
@@ -2852,8 +2852,8 @@
               },
               "D2_pwm_h2_slice": {
                 "vlnv": "xilinx.com:ip:xlslice:1.0",
-                "xci_name": "zusys_D2_pwm_h2_slice_0",
-                "xci_path": "ip/zusys_D2_pwm_h2_slice_0/zusys_D2_pwm_h2_slice_0.xci",
+                "xci_name": "zusys_D2_pwm_h2_slice_1",
+                "xci_path": "ip/zusys_D2_pwm_h2_slice_1/zusys_D2_pwm_h2_slice_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D2_adapter/D2_pwm_h2_slice",
                 "parameters": {
                   "DIN_FROM": {
@@ -2872,8 +2872,8 @@
               },
               "D2_pwm_l2_slice": {
                 "vlnv": "xilinx.com:ip:xlslice:1.0",
-                "xci_name": "zusys_D2_pwm_l2_slice_0",
-                "xci_path": "ip/zusys_D2_pwm_l2_slice_0/zusys_D2_pwm_l2_slice_0.xci",
+                "xci_name": "zusys_D2_pwm_l2_slice_1",
+                "xci_path": "ip/zusys_D2_pwm_l2_slice_1/zusys_D2_pwm_l2_slice_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D2_adapter/D2_pwm_l2_slice",
                 "parameters": {
                   "DIN_FROM": {
@@ -2892,8 +2892,8 @@
               },
               "D2_pwm_h3_slice": {
                 "vlnv": "xilinx.com:ip:xlslice:1.0",
-                "xci_name": "zusys_D2_pwm_h3_slice_0",
-                "xci_path": "ip/zusys_D2_pwm_h3_slice_0/zusys_D2_pwm_h3_slice_0.xci",
+                "xci_name": "zusys_D2_pwm_h3_slice_1",
+                "xci_path": "ip/zusys_D2_pwm_h3_slice_1/zusys_D2_pwm_h3_slice_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D2_adapter/D2_pwm_h3_slice",
                 "parameters": {
                   "DIN_FROM": {
@@ -2912,8 +2912,8 @@
               },
               "D2_pwm_l3_slice": {
                 "vlnv": "xilinx.com:ip:xlslice:1.0",
-                "xci_name": "zusys_D2_pwm_l3_slice_0",
-                "xci_path": "ip/zusys_D2_pwm_l3_slice_0/zusys_D2_pwm_l3_slice_0.xci",
+                "xci_name": "zusys_D2_pwm_l3_slice_1",
+                "xci_path": "ip/zusys_D2_pwm_l3_slice_1/zusys_D2_pwm_l3_slice_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D2_adapter/D2_pwm_l3_slice",
                 "parameters": {
                   "DIN_FROM": {
@@ -2932,8 +2932,8 @@
               },
               "D2_i_diag_concat": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_D2_i_diag_concat_0",
-                "xci_path": "ip/zusys_D2_i_diag_concat_0/zusys_D2_i_diag_concat_0.xci",
+                "xci_name": "zusys_D2_i_diag_concat_1",
+                "xci_path": "ip/zusys_D2_i_diag_concat_1/zusys_D2_i_diag_concat_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D2_adapter/D2_i_diag_concat",
                 "parameters": {
                   "NUM_PORTS": {
@@ -2943,8 +2943,8 @@
               },
               "D2_temp_concat": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_D2_temp_concat_0",
-                "xci_path": "ip/zusys_D2_temp_concat_0/zusys_D2_temp_concat_0.xci",
+                "xci_name": "zusys_D2_temp_concat_1",
+                "xci_path": "ip/zusys_D2_temp_concat_1/zusys_D2_temp_concat_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D2_adapter/D2_temp_concat",
                 "parameters": {
                   "NUM_PORTS": {
@@ -2954,8 +2954,8 @@
               },
               "D2_oc_concat": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_D2_oc_concat_0",
-                "xci_path": "ip/zusys_D2_oc_concat_0/zusys_D2_oc_concat_0.xci",
+                "xci_name": "zusys_D2_oc_concat_1",
+                "xci_path": "ip/zusys_D2_oc_concat_1/zusys_D2_oc_concat_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D2_adapter/D2_oc_concat",
                 "parameters": {
                   "NUM_PORTS": {
@@ -2965,8 +2965,8 @@
               },
               "D2_fault_concat": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_D2_fault_concat_0",
-                "xci_path": "ip/zusys_D2_fault_concat_0/zusys_D2_fault_concat_0.xci",
+                "xci_name": "zusys_D2_fault_concat_1",
+                "xci_path": "ip/zusys_D2_fault_concat_1/zusys_D2_fault_concat_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D2_adapter/D2_fault_concat",
                 "parameters": {
                   "NUM_PORTS": {
@@ -2976,8 +2976,8 @@
               },
               "axi_smartconnect": {
                 "vlnv": "xilinx.com:ip:smartconnect:1.0",
-                "xci_name": "zusys_axi_smartconnect_22",
-                "xci_path": "ip/zusys_axi_smartconnect_22/zusys_axi_smartconnect_22.xci",
+                "xci_name": "zusys_axi_smartconnect_31",
+                "xci_path": "ip/zusys_axi_smartconnect_31/zusys_axi_smartconnect_31.xci",
                 "inst_hier_path": "uz_digital_adapter/D2_adapter/axi_smartconnect",
                 "parameters": {
                   "NUM_MI": {
@@ -3039,7 +3039,7 @@
               }
             },
             "interface_nets": {
-              "S00_AXI_2": {
+              "S00_AXI_1": {
                 "interface_ports": [
                   "S00_AXI",
                   "axi_smartconnect/S00_AXI"
@@ -3439,32 +3439,32 @@
             "components": {
               "resolver_ip_d5_1": {
                 "vlnv": "ki_power:user:Resolver_Interface_v1_0:1.0",
-                "xci_name": "zusys_resolver_ip_d5_1_0",
-                "xci_path": "ip/zusys_resolver_ip_d5_1_0/zusys_resolver_ip_d5_1_0.xci",
+                "xci_name": "zusys_resolver_ip_d5_1_1",
+                "xci_path": "ip/zusys_resolver_ip_d5_1_1/zusys_resolver_ip_d5_1_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D5_adapter/resolver_ip_d5_1"
               },
               "resolver_pl_interface_d5_1": {
                 "vlnv": "xilinx.com:ip:uz_resolver_pl_interface:1.0",
-                "xci_name": "zusys_resolver_pl_interface_d5_1_0",
-                "xci_path": "ip/zusys_resolver_pl_interface_d5_1_0/zusys_resolver_pl_interface_d5_1_0.xci",
+                "xci_name": "zusys_resolver_pl_interface_d5_1_1",
+                "xci_path": "ip/zusys_resolver_pl_interface_d5_1_1/zusys_resolver_pl_interface_d5_1_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D5_adapter/resolver_pl_interface_d5_1"
               },
               "resolver_ip_d5_2": {
                 "vlnv": "ki_power:user:Resolver_Interface_v1_0:1.0",
-                "xci_name": "zusys_resolver_ip_d5_2_0",
-                "xci_path": "ip/zusys_resolver_ip_d5_2_0/zusys_resolver_ip_d5_2_0.xci",
+                "xci_name": "zusys_resolver_ip_d5_2_1",
+                "xci_path": "ip/zusys_resolver_ip_d5_2_1/zusys_resolver_ip_d5_2_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D5_adapter/resolver_ip_d5_2"
               },
               "resolver_pl_interface_d5_2": {
                 "vlnv": "xilinx.com:ip:uz_resolver_pl_interface:1.0",
-                "xci_name": "zusys_resolver_pl_interface_d5_2_0",
-                "xci_path": "ip/zusys_resolver_pl_interface_d5_2_0/zusys_resolver_pl_interface_d5_2_0.xci",
+                "xci_name": "zusys_resolver_pl_interface_d5_2_1",
+                "xci_path": "ip/zusys_resolver_pl_interface_d5_2_1/zusys_resolver_pl_interface_d5_2_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D5_adapter/resolver_pl_interface_d5_2"
               },
               "axi_smartconnect": {
                 "vlnv": "xilinx.com:ip:smartconnect:1.0",
-                "xci_name": "zusys_axi_smartconnect_24",
-                "xci_path": "ip/zusys_axi_smartconnect_24/zusys_axi_smartconnect_24.xci",
+                "xci_name": "zusys_axi_smartconnect_33",
+                "xci_path": "ip/zusys_axi_smartconnect_33/zusys_axi_smartconnect_33.xci",
                 "inst_hier_path": "uz_digital_adapter/D5_adapter/axi_smartconnect",
                 "parameters": {
                   "NUM_MI": {
@@ -3622,7 +3622,7 @@
               }
             },
             "interface_nets": {
-              "S00_AXI_2": {
+              "S00_AXI_1": {
                 "interface_ports": [
                   "S00_AXI",
                   "axi_smartconnect/S00_AXI"
@@ -3933,6 +3933,14 @@
               "resetn": {
                 "direction": "I"
               },
+              "peripheral_clk": {
+                "type": "clk",
+                "direction": "I"
+              },
+              "peripheral_aresetn": {
+                "type": "rst",
+                "direction": "I"
+              },
               "ssi_clk_d4_ch1": {
                 "direction": "O"
               },
@@ -3998,27 +4006,19 @@
               },
               "trigger_ssi_read_d4_ch1": {
                 "direction": "I"
-              },
-              "peripheral_clk": {
-                "type": "clk",
-                "direction": "I"
-              },
-              "peripheral_aresetn": {
-                "type": "rst",
-                "direction": "I"
               }
             },
             "components": {
               "uz_ssi_interface_d4_channel_1": {
                 "vlnv": "xilinx.com:ip:uz_ssi_interface:1.0",
-                "xci_name": "zusys_uz_ssi_interface_d4_channel_1_0",
-                "xci_path": "ip/zusys_uz_ssi_interface_d4_channel_1_0/zusys_uz_ssi_interface_d4_channel_1_0.xci",
+                "xci_name": "zusys_uz_ssi_interface_d4_channel_1_1",
+                "xci_path": "ip/zusys_uz_ssi_interface_d4_channel_1_1/zusys_uz_ssi_interface_d4_channel_1_1.xci",
                 "inst_hier_path": "uz_digital_adapter/D4_adapter/uz_ssi_interface_d4_channel_1"
               },
               "axi_smartconnect": {
                 "vlnv": "xilinx.com:ip:smartconnect:1.0",
-                "xci_name": "zusys_axi_smartconnect_23",
-                "xci_path": "ip/zusys_axi_smartconnect_23/zusys_axi_smartconnect_23.xci",
+                "xci_name": "zusys_axi_smartconnect_32",
+                "xci_path": "ip/zusys_axi_smartconnect_32/zusys_axi_smartconnect_32.xci",
                 "inst_hier_path": "uz_digital_adapter/D4_adapter/axi_smartconnect",
                 "parameters": {
                   "NUM_MI": {
@@ -4080,7 +4080,7 @@
               }
             },
             "interface_nets": {
-              "S00_AXI_1": {
+              "S00_AXI_2": {
                 "interface_ports": [
                   "S00_AXI",
                   "axi_smartconnect/S00_AXI"
@@ -4894,7 +4894,7 @@
               "D5_adapter/D5_resolver_sample_trigger_2"
             ]
           },
-          "aclk_4": {
+          "aclk_5": {
             "ports": [
               "aclk",
               "D1_adapter/clk",
@@ -4906,7 +4906,7 @@
               "D4_adapter/clk"
             ]
           },
-          "aresetn_4": {
+          "aresetn_5": {
             "ports": [
               "aresetn",
               "D1_adapter/resetn",
@@ -5054,8 +5054,8 @@
             "components": {
               "axi_smartconnect": {
                 "vlnv": "xilinx.com:ip:smartconnect:1.0",
-                "xci_name": "zusys_axi_smartconnect_16",
-                "xci_path": "ip/zusys_axi_smartconnect_16/zusys_axi_smartconnect_16.xci",
+                "xci_name": "zusys_axi_smartconnect_25",
+                "xci_path": "ip/zusys_axi_smartconnect_25/zusys_axi_smartconnect_25.xci",
                 "inst_hier_path": "uz_pwm/pwm_2L/axi_smartconnect",
                 "parameters": {
                   "NUM_MI": {
@@ -5341,8 +5341,8 @@
               },
               "zero_modulation": {
                 "vlnv": "xilinx.com:ip:xlconstant:1.1",
-                "xci_name": "zusys_zero_modulation_2",
-                "xci_path": "ip/zusys_zero_modulation_2/zusys_zero_modulation_2.xci",
+                "xci_name": "zusys_zero_modulation_3",
+                "xci_path": "ip/zusys_zero_modulation_3/zusys_zero_modulation_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_2L/zero_modulation",
                 "parameters": {
                   "CONST_VAL": {
@@ -5355,8 +5355,8 @@
               },
               "zero_counter_reset": {
                 "vlnv": "xilinx.com:ip:xlconstant:1.1",
-                "xci_name": "zusys_zero_counter_reset_2",
-                "xci_path": "ip/zusys_zero_counter_reset_2/zusys_zero_counter_reset_2.xci",
+                "xci_name": "zusys_zero_counter_reset_3",
+                "xci_path": "ip/zusys_zero_counter_reset_3/zusys_zero_counter_reset_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_2L/zero_counter_reset",
                 "parameters": {
                   "CONST_VAL": {
@@ -5369,8 +5369,8 @@
               },
               "Carrier_triangular_max_min_or": {
                 "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
-                "xci_name": "zusys_Carrier_triangular_max_min_or_2",
-                "xci_path": "ip/zusys_Carrier_triangular_max_min_or_2/zusys_Carrier_triangular_max_min_or_2.xci",
+                "xci_name": "zusys_Carrier_triangular_max_min_or_3",
+                "xci_path": "ip/zusys_Carrier_triangular_max_min_or_3/zusys_Carrier_triangular_max_min_or_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_2L/Carrier_triangular_max_min_or",
                 "parameters": {
                   "C_OPERATION": {
@@ -5383,8 +5383,8 @@
               },
               "vio_Gates_2L": {
                 "vlnv": "xilinx.com:ip:vio:3.0",
-                "xci_name": "zusys_vio_Gates_2L_2",
-                "xci_path": "ip/zusys_vio_Gates_2L_2/zusys_vio_Gates_2L_2.xci",
+                "xci_name": "zusys_vio_Gates_2L_3",
+                "xci_path": "ip/zusys_vio_Gates_2L_3/zusys_vio_Gates_2L_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_2L/vio_Gates_2L",
                 "parameters": {
                   "C_NUM_PROBE_IN": {
@@ -5469,20 +5469,20 @@
               },
               "PWM_and_SS_control_V_0": {
                 "vlnv": "xilinx.com:ip:PWM_and_SS_control_V4_ip:4.4",
-                "xci_name": "zusys_PWM_and_SS_control_V_0_2",
-                "xci_path": "ip/zusys_PWM_and_SS_control_V_0_2/zusys_PWM_and_SS_control_V_0_2.xci",
+                "xci_name": "zusys_PWM_and_SS_control_V_0_3",
+                "xci_path": "ip/zusys_PWM_and_SS_control_V_0_3/zusys_PWM_and_SS_control_V_0_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_2L/PWM_and_SS_control_V_0"
               },
               "uz_interlockDeadtime_0": {
                 "vlnv": "user.org:ip:uz_interlockDeadtime2L:1.0",
-                "xci_name": "zusys_uz_interlockDeadtime_0_2",
-                "xci_path": "ip/zusys_uz_interlockDeadtime_0_2/zusys_uz_interlockDeadtime_0_2.xci",
+                "xci_name": "zusys_uz_interlockDeadtime_0_3",
+                "xci_path": "ip/zusys_uz_interlockDeadtime_0_3/zusys_uz_interlockDeadtime_0_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_2L/uz_interlockDeadtime_0"
               },
               "gate_concat_0": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_gate_concat_0_2",
-                "xci_path": "ip/zusys_gate_concat_0_2/zusys_gate_concat_0_2.xci",
+                "xci_name": "zusys_gate_concat_0_3",
+                "xci_path": "ip/zusys_gate_concat_0_3/zusys_gate_concat_0_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_2L/gate_concat_0",
                 "parameters": {
                   "NUM_PORTS": {
@@ -5492,20 +5492,20 @@
               },
               "PWM_and_SS_control_V_1": {
                 "vlnv": "xilinx.com:ip:PWM_and_SS_control_V4_ip:4.4",
-                "xci_name": "zusys_PWM_and_SS_control_V_1_2",
-                "xci_path": "ip/zusys_PWM_and_SS_control_V_1_2/zusys_PWM_and_SS_control_V_1_2.xci",
+                "xci_name": "zusys_PWM_and_SS_control_V_1_3",
+                "xci_path": "ip/zusys_PWM_and_SS_control_V_1_3/zusys_PWM_and_SS_control_V_1_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_2L/PWM_and_SS_control_V_1"
               },
               "uz_interlockDeadtime_1": {
                 "vlnv": "user.org:ip:uz_interlockDeadtime2L:1.0",
-                "xci_name": "zusys_uz_interlockDeadtime_1_2",
-                "xci_path": "ip/zusys_uz_interlockDeadtime_1_2/zusys_uz_interlockDeadtime_1_2.xci",
+                "xci_name": "zusys_uz_interlockDeadtime_1_3",
+                "xci_path": "ip/zusys_uz_interlockDeadtime_1_3/zusys_uz_interlockDeadtime_1_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_2L/uz_interlockDeadtime_1"
               },
               "gate_concat_1": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_gate_concat_1_2",
-                "xci_path": "ip/zusys_gate_concat_1_2/zusys_gate_concat_1_2.xci",
+                "xci_name": "zusys_gate_concat_1_3",
+                "xci_path": "ip/zusys_gate_concat_1_3/zusys_gate_concat_1_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_2L/gate_concat_1",
                 "parameters": {
                   "NUM_PORTS": {
@@ -5515,20 +5515,20 @@
               },
               "PWM_and_SS_control_V_2": {
                 "vlnv": "xilinx.com:ip:PWM_and_SS_control_V4_ip:4.4",
-                "xci_name": "zusys_PWM_and_SS_control_V_2_2",
-                "xci_path": "ip/zusys_PWM_and_SS_control_V_2_2/zusys_PWM_and_SS_control_V_2_2.xci",
+                "xci_name": "zusys_PWM_and_SS_control_V_2_3",
+                "xci_path": "ip/zusys_PWM_and_SS_control_V_2_3/zusys_PWM_and_SS_control_V_2_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_2L/PWM_and_SS_control_V_2"
               },
               "uz_interlockDeadtime_2": {
                 "vlnv": "user.org:ip:uz_interlockDeadtime2L:1.0",
-                "xci_name": "zusys_uz_interlockDeadtime_2_2",
-                "xci_path": "ip/zusys_uz_interlockDeadtime_2_2/zusys_uz_interlockDeadtime_2_2.xci",
+                "xci_name": "zusys_uz_interlockDeadtime_2_3",
+                "xci_path": "ip/zusys_uz_interlockDeadtime_2_3/zusys_uz_interlockDeadtime_2_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_2L/uz_interlockDeadtime_2"
               },
               "gate_concat_2": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_gate_concat_2_2",
-                "xci_path": "ip/zusys_gate_concat_2_2/zusys_gate_concat_2_2.xci",
+                "xci_name": "zusys_gate_concat_2_3",
+                "xci_path": "ip/zusys_gate_concat_2_3/zusys_gate_concat_2_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_2L/gate_concat_2",
                 "parameters": {
                   "NUM_PORTS": {
@@ -5538,20 +5538,20 @@
               },
               "PWM_and_SS_control_V_3": {
                 "vlnv": "xilinx.com:ip:PWM_and_SS_control_V4_ip:4.4",
-                "xci_name": "zusys_PWM_and_SS_control_V_3_2",
-                "xci_path": "ip/zusys_PWM_and_SS_control_V_3_2/zusys_PWM_and_SS_control_V_3_2.xci",
+                "xci_name": "zusys_PWM_and_SS_control_V_3_3",
+                "xci_path": "ip/zusys_PWM_and_SS_control_V_3_3/zusys_PWM_and_SS_control_V_3_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_2L/PWM_and_SS_control_V_3"
               },
               "uz_interlockDeadtime_3": {
                 "vlnv": "user.org:ip:uz_interlockDeadtime2L:1.0",
-                "xci_name": "zusys_uz_interlockDeadtime_3_2",
-                "xci_path": "ip/zusys_uz_interlockDeadtime_3_2/zusys_uz_interlockDeadtime_3_2.xci",
+                "xci_name": "zusys_uz_interlockDeadtime_3_3",
+                "xci_path": "ip/zusys_uz_interlockDeadtime_3_3/zusys_uz_interlockDeadtime_3_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_2L/uz_interlockDeadtime_3"
               },
               "gate_concat_3": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_gate_concat_3_2",
-                "xci_path": "ip/zusys_gate_concat_3_2/zusys_gate_concat_3_2.xci",
+                "xci_name": "zusys_gate_concat_3_3",
+                "xci_path": "ip/zusys_gate_concat_3_3/zusys_gate_concat_3_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_2L/gate_concat_3",
                 "parameters": {
                   "NUM_PORTS": {
@@ -6213,8 +6213,8 @@
             "components": {
               "axi_smartconnect": {
                 "vlnv": "xilinx.com:ip:smartconnect:1.0",
-                "xci_name": "zusys_axi_smartconnect_17",
-                "xci_path": "ip/zusys_axi_smartconnect_17/zusys_axi_smartconnect_17.xci",
+                "xci_name": "zusys_axi_smartconnect_26",
+                "xci_path": "ip/zusys_axi_smartconnect_26/zusys_axi_smartconnect_26.xci",
                 "inst_hier_path": "uz_pwm/pwm_3L/axi_smartconnect",
                 "parameters": {
                   "NUM_MI": {
@@ -6276,14 +6276,14 @@
               },
               "PWM_SS_3L_ip_0": {
                 "vlnv": "mwn.de:ip:PWM_SS_3L_ip:1.4",
-                "xci_name": "zusys_PWM_SS_3L_ip_0_2",
-                "xci_path": "ip/zusys_PWM_SS_3L_ip_0_2/zusys_PWM_SS_3L_ip_0_2.xci",
+                "xci_name": "zusys_PWM_SS_3L_ip_0_3",
+                "xci_path": "ip/zusys_PWM_SS_3L_ip_0_3/zusys_PWM_SS_3L_ip_0_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_3L/PWM_SS_3L_ip_0"
               },
               "Gates_Vector": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_Gates_Vector_2",
-                "xci_path": "ip/zusys_Gates_Vector_2/zusys_Gates_Vector_2.xci",
+                "xci_name": "zusys_Gates_Vector_3",
+                "xci_path": "ip/zusys_Gates_Vector_3/zusys_Gates_Vector_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_3L/Gates_Vector",
                 "parameters": {
                   "NUM_PORTS": {
@@ -6293,8 +6293,8 @@
               },
               "xlconcat_0": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_xlconcat_0_4",
-                "xci_path": "ip/zusys_xlconcat_0_4/zusys_xlconcat_0_4.xci",
+                "xci_name": "zusys_xlconcat_0_6",
+                "xci_path": "ip/zusys_xlconcat_0_6/zusys_xlconcat_0_6.xci",
                 "inst_hier_path": "uz_pwm/pwm_3L/xlconcat_0",
                 "parameters": {
                   "NUM_PORTS": {
@@ -6304,8 +6304,8 @@
               },
               "Interrupt_Start_Center_or": {
                 "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
-                "xci_name": "zusys_Interrupt_Start_Center_or_2",
-                "xci_path": "ip/zusys_Interrupt_Start_Center_or_2/zusys_Interrupt_Start_Center_or_2.xci",
+                "xci_name": "zusys_Interrupt_Start_Center_or_3",
+                "xci_path": "ip/zusys_Interrupt_Start_Center_or_3/zusys_Interrupt_Start_Center_or_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_3L/Interrupt_Start_Center_or",
                 "parameters": {
                   "C_OPERATION": {
@@ -6318,8 +6318,8 @@
               },
               "Set_Deadtime_3L": {
                 "vlnv": "xilinx.com:ip:vio:3.0",
-                "xci_name": "zusys_Set_Deadtime_3L_2",
-                "xci_path": "ip/zusys_Set_Deadtime_3L_2/zusys_Set_Deadtime_3L_2.xci",
+                "xci_name": "zusys_Set_Deadtime_3L_3",
+                "xci_path": "ip/zusys_Set_Deadtime_3L_3/zusys_Set_Deadtime_3L_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_3L/Set_Deadtime_3L",
                 "parameters": {
                   "C_NUM_PROBE_IN": {
@@ -6335,8 +6335,8 @@
               },
               "vio_Gates_3L": {
                 "vlnv": "xilinx.com:ip:vio:3.0",
-                "xci_name": "zusys_vio_Gates_3L_2",
-                "xci_path": "ip/zusys_vio_Gates_3L_2/zusys_vio_Gates_3L_2.xci",
+                "xci_name": "zusys_vio_Gates_3L_3",
+                "xci_path": "ip/zusys_vio_Gates_3L_3/zusys_vio_Gates_3L_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_3L/vio_Gates_3L",
                 "parameters": {
                   "C_NUM_PROBE_IN": {
@@ -6367,8 +6367,8 @@
               },
               "top_npc_state_machine_0": {
                 "vlnv": "xilinx.com:module_ref:top_npc_state_machine:1.0",
-                "xci_name": "zusys_top_npc_state_machine_0_2",
-                "xci_path": "ip/zusys_top_npc_state_machine_0_2/zusys_top_npc_state_machine_0_2.xci",
+                "xci_name": "zusys_top_npc_state_machine_0_3",
+                "xci_path": "ip/zusys_top_npc_state_machine_0_3/zusys_top_npc_state_machine_0_3.xci",
                 "inst_hier_path": "uz_pwm/pwm_3L/top_npc_state_machine_0",
                 "reference_info": {
                   "ref_type": "hdl",
@@ -6746,31 +6746,31 @@
               "Carrier_triangular_min"
             ]
           },
-          "pwm_2L_Gate_Signals_2L_0": {
+          "pwm_2L_Gate_Signals_2L_4": {
             "ports": [
               "pwm_2L/Gate_Signals_2L_0",
               "Gate_Signals_2L_0"
             ]
           },
-          "pwm_2L_Gate_Signals_2L_1": {
+          "pwm_2L_Gate_Signals_2L_5": {
             "ports": [
               "pwm_2L/Gate_Signals_2L_1",
               "Gate_Signals_2L_1"
             ]
           },
-          "pwm_2L_Gate_Signals_2L_2": {
+          "pwm_2L_Gate_Signals_2L_6": {
             "ports": [
               "pwm_2L/Gate_Signals_2L_2",
               "Gate_Signals_2L_2"
             ]
           },
-          "pwm_2L_Gate_Signals_2L_3": {
+          "pwm_2L_Gate_Signals_2L_7": {
             "ports": [
               "pwm_2L/Gate_Signals_2L_3",
               "Gate_Signals_2L_3"
             ]
           },
-          "pwm_3L_Gate_Signals_3L_0": {
+          "pwm_3L_Gate_Signals_3L_1": {
             "ports": [
               "pwm_3L/Gate_Signals_3L_0",
               "Gate_Signals_3L_0"
@@ -7071,8 +7071,8 @@
               },
               "xlconcat_0": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_xlconcat_0_5",
-                "xci_path": "ip/zusys_xlconcat_0_5/zusys_xlconcat_0_5.xci",
+                "xci_name": "zusys_xlconcat_0_7",
+                "xci_path": "ip/zusys_xlconcat_0_7/zusys_xlconcat_0_7.xci",
                 "inst_hier_path": "uz_system/DataMover/xlconcat_0",
                 "parameters": {
                   "NUM_PORTS": {
@@ -7090,19 +7090,19 @@
               }
             },
             "nets": {
-              "ADC_A1_1": {
+              "ADC_A1_2": {
                 "ports": [
                   "ADC_A1",
                   "xlconcat_0/In0"
                 ]
               },
-              "ADC_A2_2": {
+              "ADC_A2_1": {
                 "ports": [
                   "ADC_A2",
                   "xlconcat_0/In1"
                 ]
               },
-              "ADC_A3_1": {
+              "ADC_A3_2": {
                 "ports": [
                   "ADC_A3",
                   "xlconcat_0/In2"
@@ -8258,19 +8258,19 @@
           }
         },
         "nets": {
-          "ADC_A1_1": {
+          "ADC_A1_2": {
             "ports": [
               "ADC_A1",
               "DataMover/ADC_A1"
             ]
           },
-          "ADC_A2_2": {
+          "ADC_A2_1": {
             "ports": [
               "ADC_A2",
               "DataMover/ADC_A2"
             ]
           },
-          "ADC_A3_1": {
+          "ADC_A3_2": {
             "ports": [
               "ADC_A3",
               "DataMover/ADC_A3"
@@ -11661,295 +11661,295 @@
       }
     },
     "nets": {
-      "A1_IN_1": {
+      "A1_IN_2": {
         "ports": [
           "A1_IN",
           "uz_analog_adapter/A1_IN"
         ]
       },
-      "A2_IN_2": {
+      "A2_IN_1": {
         "ports": [
           "A2_IN",
           "uz_analog_adapter/A2_IN"
         ]
       },
-      "A3_IN_2": {
+      "A3_IN_1": {
         "ports": [
           "A3_IN",
           "uz_analog_adapter/A3_IN"
         ]
       },
-      "D1_h1_fault_1": {
+      "D1_h1_fault_2": {
         "ports": [
           "Dig_17_Ch1",
           "uz_digital_adapter/D1_h1_fault"
         ]
       },
-      "D1_h1_oc_1": {
+      "D1_h1_oc_2": {
         "ports": [
           "Dig_15_Ch1",
           "uz_digital_adapter/D1_h1_oc"
         ]
       },
-      "D1_h1_temp_1": {
+      "D1_h1_temp_2": {
         "ports": [
           "Dig_07_Ch1",
           "uz_digital_adapter/D1_h1_temp"
         ]
       },
-      "D1_h2_fault_1": {
+      "D1_h2_fault_2": {
         "ports": [
           "Dig_29_Ch1",
           "uz_digital_adapter/D1_h2_fault"
         ]
       },
-      "D1_h2_oc_1": {
+      "D1_h2_oc_2": {
         "ports": [
           "Dig_27_Ch1",
           "uz_digital_adapter/D1_h2_oc"
         ]
       },
-      "D1_h2_temp_1": {
+      "D1_h2_temp_2": {
         "ports": [
           "Dig_19_Ch1",
           "uz_digital_adapter/D1_h2_temp"
         ]
       },
-      "D1_h3_fault_1": {
+      "D1_h3_fault_2": {
         "ports": [
           "Dig_28_Ch1",
           "uz_digital_adapter/D1_h3_fault"
         ]
       },
-      "D1_h3_oc_1": {
+      "D1_h3_oc_2": {
         "ports": [
           "Dig_26_Ch1",
           "uz_digital_adapter/D1_h3_oc"
         ]
       },
-      "D1_h3_temp_1": {
+      "D1_h3_temp_2": {
         "ports": [
           "Dig_18_Ch1",
           "uz_digital_adapter/D1_h3_temp"
         ]
       },
-      "D1_i1_diag_1": {
+      "D1_i1_diag_2": {
         "ports": [
           "Dig_06_Ch1",
           "uz_digital_adapter/D1_i1_diag"
         ]
       },
-      "D1_i2_diag_1": {
+      "D1_i2_diag_2": {
         "ports": [
           "Dig_08_Ch1",
           "uz_digital_adapter/D1_i2_diag"
         ]
       },
-      "D1_i3_diag_1": {
+      "D1_i3_diag_2": {
         "ports": [
           "Dig_10_Ch1",
           "uz_digital_adapter/D1_i3_diag"
         ]
       },
-      "D1_i_diag_1": {
+      "D1_i_diag_2": {
         "ports": [
           "Dig_12_Ch1",
           "uz_digital_adapter/D1_i_diag"
         ]
       },
-      "D1_l1_fault_1": {
+      "D1_l1_fault_2": {
         "ports": [
           "Dig_13_Ch1",
           "uz_digital_adapter/D1_l1_fault"
         ]
       },
-      "D1_l1_oc_1": {
+      "D1_l1_oc_2": {
         "ports": [
           "Dig_11_Ch1",
           "uz_digital_adapter/D1_l1_oc"
         ]
       },
-      "D1_l1_temp_1": {
+      "D1_l1_temp_2": {
         "ports": [
           "Dig_09_Ch1",
           "uz_digital_adapter/D1_l1_temp"
         ]
       },
-      "D1_l2_fault_1": {
+      "D1_l2_fault_2": {
         "ports": [
           "Dig_25_Ch1",
           "uz_digital_adapter/D1_l2_fault"
         ]
       },
-      "D1_l2_oc_1": {
+      "D1_l2_oc_2": {
         "ports": [
           "Dig_23_Ch1",
           "uz_digital_adapter/D1_l2_oc"
         ]
       },
-      "D1_l2_temp_1": {
+      "D1_l2_temp_2": {
         "ports": [
           "Dig_21_Ch1",
           "uz_digital_adapter/D1_l2_temp"
         ]
       },
-      "D1_l3_fault_1": {
+      "D1_l3_fault_2": {
         "ports": [
           "Dig_24_Ch1",
           "uz_digital_adapter/D1_l3_fault"
         ]
       },
-      "D1_l3_oc_1": {
+      "D1_l3_oc_2": {
         "ports": [
           "Dig_22_Ch1",
           "uz_digital_adapter/D1_l3_oc"
         ]
       },
-      "D1_l3_temp_1": {
+      "D1_l3_temp_2": {
         "ports": [
           "Dig_20_Ch1",
           "uz_digital_adapter/D1_l3_temp"
         ]
       },
-      "D2_h1_fault_1": {
+      "D2_h1_fault_2": {
         "ports": [
           "Dig_17_Ch2",
           "uz_digital_adapter/D2_h1_fault"
         ]
       },
-      "D2_h1_oc_1": {
+      "D2_h1_oc_2": {
         "ports": [
           "Dig_15_Ch2",
           "uz_digital_adapter/D2_h1_oc"
         ]
       },
-      "D2_h1_temp_1": {
+      "D2_h1_temp_2": {
         "ports": [
           "Dig_07_Ch2",
           "uz_digital_adapter/D2_h1_temp"
         ]
       },
-      "D2_h2_fault_1": {
+      "D2_h2_fault_2": {
         "ports": [
           "Dig_29_Ch2",
           "uz_digital_adapter/D2_h2_fault"
         ]
       },
-      "D2_h2_oc_1": {
+      "D2_h2_oc_2": {
         "ports": [
           "Dig_27_Ch2",
           "uz_digital_adapter/D2_h2_oc"
         ]
       },
-      "D2_h2_temp_1": {
+      "D2_h2_temp_2": {
         "ports": [
           "Dig_19_Ch2",
           "uz_digital_adapter/D2_h2_temp"
         ]
       },
-      "D2_h3_fault_1": {
+      "D2_h3_fault_2": {
         "ports": [
           "Dig_28_Ch2",
           "uz_digital_adapter/D2_h3_fault"
         ]
       },
-      "D2_h3_oc_1": {
+      "D2_h3_oc_2": {
         "ports": [
           "Dig_26_Ch2",
           "uz_digital_adapter/D2_h3_oc"
         ]
       },
-      "D2_h3_temp_1": {
+      "D2_h3_temp_2": {
         "ports": [
           "Dig_18_Ch2",
           "uz_digital_adapter/D2_h3_temp"
         ]
       },
-      "D2_i1_diag_1": {
+      "D2_i1_diag_2": {
         "ports": [
           "Dig_06_Ch2",
           "uz_digital_adapter/D2_i1_diag"
         ]
       },
-      "D2_i2_diag_1": {
+      "D2_i2_diag_2": {
         "ports": [
           "Dig_08_Ch2",
           "uz_digital_adapter/D2_i2_diag"
         ]
       },
-      "D2_i3_diag_1": {
+      "D2_i3_diag_2": {
         "ports": [
           "Dig_10_Ch2",
           "uz_digital_adapter/D2_i3_diag"
         ]
       },
-      "D2_i_diag_1": {
+      "D2_i_diag_2": {
         "ports": [
           "Dig_12_Ch2",
           "uz_digital_adapter/D2_i_diag"
         ]
       },
-      "D2_l1_fault_1": {
+      "D2_l1_fault_2": {
         "ports": [
           "Dig_13_Ch2",
           "uz_digital_adapter/D2_l1_fault"
         ]
       },
-      "D2_l1_oc_1": {
+      "D2_l1_oc_2": {
         "ports": [
           "Dig_11_Ch2",
           "uz_digital_adapter/D2_l1_oc"
         ]
       },
-      "D2_l1_temp_1": {
+      "D2_l1_temp_2": {
         "ports": [
           "Dig_09_Ch2",
           "uz_digital_adapter/D2_l1_temp"
         ]
       },
-      "D2_l2_fault_1": {
+      "D2_l2_fault_2": {
         "ports": [
           "Dig_25_Ch2",
           "uz_digital_adapter/D2_l2_fault"
         ]
       },
-      "D2_l2_oc_1": {
+      "D2_l2_oc_2": {
         "ports": [
           "Dig_23_Ch2",
           "uz_digital_adapter/D2_l2_oc"
         ]
       },
-      "D2_l2_temp_1": {
+      "D2_l2_temp_2": {
         "ports": [
           "Dig_21_Ch2",
           "uz_digital_adapter/D2_l2_temp"
         ]
       },
-      "D2_l3_fault_1": {
+      "D2_l3_fault_2": {
         "ports": [
           "Dig_24_Ch2",
           "uz_digital_adapter/D2_l3_fault"
         ]
       },
-      "D2_l3_oc_1": {
+      "D2_l3_oc_2": {
         "ports": [
           "Dig_22_Ch2",
           "uz_digital_adapter/D2_l3_oc"
         ]
       },
-      "D2_l3_temp_1": {
+      "D2_l3_temp_2": {
         "ports": [
           "Dig_20_Ch2",
           "uz_digital_adapter/D2_l3_temp"
         ]
       },
-      "D5_resolver_1_sdi_1": {
+      "D5_resolver_1_sdi_2": {
         "ports": [
           "Dig_14_Ch5",
           "uz_digital_adapter/D5_resolver_1_sdi"
         ]
       },
-      "D5_resolver_2_sdi_1": {
+      "D5_resolver_2_sdi_2": {
         "ports": [
           "Dig_23_Ch5",
           "uz_digital_adapter/D5_resolver_2_sdi"
@@ -11964,311 +11964,316 @@
           "uz_user/aresetn"
         ]
       },
-      "ssi_data_in_d4_ch1_1": {
+      "ssi_data_in_d4_ch1_2": {
         "ports": [
           "Dig_07_Ch4",
           "uz_digital_adapter/ssi_data_in_d4_ch1"
         ]
       },
-      "uz_analog_adapter_A1_OUT_CLK1": {
+      "uz_analog_adapter_A1_OUT_CLK": {
         "ports": [
           "uz_analog_adapter/A1_OUT_CLK",
           "A1_OUT_CLK"
         ]
       },
-      "uz_analog_adapter_A1_OUT_CNV_2": {
+      "uz_analog_adapter_A1_OUT_CNV_1": {
         "ports": [
           "uz_analog_adapter/A1_OUT_CNV_1",
           "A1_OUT_CNV_0",
           "A1_OUT_CNV_1"
         ]
       },
-      "uz_analog_adapter_A1_RAW_Valid1": {
+      "uz_analog_adapter_A1_RAW_Valid": {
         "ports": [
           "uz_analog_adapter/A1_RAW_Valid",
           "uz_system/Trigger_AXI2TCM"
         ]
       },
-      "uz_analog_adapter_A1_RAW_Value1": {
+      "uz_analog_adapter_A1_RAW_Value": {
         "ports": [
           "uz_analog_adapter/A1_RAW_Value",
           "uz_system/ADC_A1"
         ]
       },
-      "uz_analog_adapter_A2_OUT_CLK1": {
+      "uz_analog_adapter_A2_OUT_CLK": {
         "ports": [
           "uz_analog_adapter/A2_OUT_CLK",
           "A2_OUT_CLK"
         ]
       },
-      "uz_analog_adapter_A2_OUT_CNV_2": {
+      "uz_analog_adapter_A2_OUT_CNV_1": {
         "ports": [
           "uz_analog_adapter/A2_OUT_CNV_1",
           "A2_OUT_CNV_0",
           "A2_OUT_CNV_1"
         ]
       },
-      "uz_analog_adapter_A2_RAW_Value1": {
+      "uz_analog_adapter_A2_RAW_Value": {
         "ports": [
           "uz_analog_adapter/A2_RAW_Value",
           "uz_system/ADC_A2"
         ]
       },
-      "uz_analog_adapter_A3_OUT_CLK1": {
+      "uz_analog_adapter_A3_OUT_CLK": {
         "ports": [
           "uz_analog_adapter/A3_OUT_CLK",
           "A3_OUT_CLK"
         ]
       },
-      "uz_analog_adapter_A3_OUT_CNV_2": {
+      "uz_analog_adapter_A3_OUT_CNV_1": {
         "ports": [
           "uz_analog_adapter/A3_OUT_CNV_1",
           "A3_OUT_CNV_0",
           "A3_OUT_CNV_1"
         ]
       },
-      "uz_analog_adapter_A3_RAW_Value1": {
+      "uz_analog_adapter_A3_RAW_Value": {
         "ports": [
           "uz_analog_adapter/A3_RAW_Value",
           "uz_system/ADC_A3"
         ]
       },
-      "uz_digital_adapter_D1_pwm_en": {
+      "uz_digital_adapter_D1_pwm_en1": {
         "ports": [
           "uz_digital_adapter/D1_pwm_en",
           "Dig_14_Ch1"
         ]
       },
-      "uz_digital_adapter_D1_pwm_h1": {
+      "uz_digital_adapter_D1_pwm_h4": {
         "ports": [
           "uz_digital_adapter/D1_pwm_h1",
           "Dig_00_Ch1"
         ]
       },
-      "uz_digital_adapter_D1_pwm_h2": {
+      "uz_digital_adapter_D1_pwm_h5": {
         "ports": [
           "uz_digital_adapter/D1_pwm_h2",
           "Dig_02_Ch1"
         ]
       },
-      "uz_digital_adapter_D1_pwm_h3": {
+      "uz_digital_adapter_D1_pwm_h6": {
         "ports": [
           "uz_digital_adapter/D1_pwm_h3",
           "Dig_04_Ch1"
         ]
       },
-      "uz_digital_adapter_D1_pwm_l1": {
+      "uz_digital_adapter_D1_pwm_l4": {
         "ports": [
           "uz_digital_adapter/D1_pwm_l1",
           "Dig_01_Ch1"
         ]
       },
-      "uz_digital_adapter_D1_pwm_l2": {
+      "uz_digital_adapter_D1_pwm_l5": {
         "ports": [
           "uz_digital_adapter/D1_pwm_l2",
           "Dig_03_Ch1"
         ]
       },
-      "uz_digital_adapter_D1_pwm_l3": {
+      "uz_digital_adapter_D1_pwm_l6": {
         "ports": [
           "uz_digital_adapter/D1_pwm_l3",
           "Dig_05_Ch1"
         ]
       },
-      "uz_digital_adapter_D2_pwm_en": {
+      "uz_digital_adapter_D2_pwm_en1": {
         "ports": [
           "uz_digital_adapter/D2_pwm_en",
           "Dig_14_Ch2"
         ]
       },
-      "uz_digital_adapter_D2_pwm_h1": {
+      "uz_digital_adapter_D2_pwm_h4": {
         "ports": [
           "uz_digital_adapter/D2_pwm_h1",
           "Dig_00_Ch2"
         ]
       },
-      "uz_digital_adapter_D2_pwm_h2": {
+      "uz_digital_adapter_D2_pwm_h5": {
         "ports": [
           "uz_digital_adapter/D2_pwm_h2",
           "Dig_02_Ch2"
         ]
       },
-      "uz_digital_adapter_D2_pwm_h3": {
+      "uz_digital_adapter_D2_pwm_h6": {
         "ports": [
           "uz_digital_adapter/D2_pwm_h3",
           "Dig_04_Ch2"
         ]
       },
-      "uz_digital_adapter_D2_pwm_l1": {
+      "uz_digital_adapter_D2_pwm_l4": {
         "ports": [
           "uz_digital_adapter/D2_pwm_l1",
           "Dig_01_Ch2"
         ]
       },
-      "uz_digital_adapter_D2_pwm_l2": {
+      "uz_digital_adapter_D2_pwm_l5": {
         "ports": [
           "uz_digital_adapter/D2_pwm_l2",
           "Dig_03_Ch2"
         ]
       },
-      "uz_digital_adapter_D2_pwm_l3": {
+      "uz_digital_adapter_D2_pwm_l6": {
         "ports": [
           "uz_digital_adapter/D2_pwm_l3",
           "Dig_05_Ch2"
         ]
       },
-      "uz_digital_adapter_D5_resolver_1_a0": {
-        "ports": [
-          "uz_digital_adapter/D5_resolver_1_a0",
-          "Dig_12_Ch5"
-        ]
-      },
-      "uz_digital_adapter_D5_resolver_1_a1": {
+      "uz_digital_adapter_D5_resolver_1_a2": {
         "ports": [
           "uz_digital_adapter/D5_resolver_1_a1",
           "Dig_11_Ch5"
         ]
       },
-      "uz_digital_adapter_D5_resolver_1_cs": {
+      "uz_digital_adapter_D5_resolver_1_a3": {
+        "ports": [
+          "uz_digital_adapter/D5_resolver_1_a0",
+          "Dig_12_Ch5"
+        ]
+      },
+      "uz_digital_adapter_D5_resolver_1_cs1": {
         "ports": [
           "uz_digital_adapter/D5_resolver_1_cs",
           "Dig_13_Ch5"
         ]
       },
-      "uz_digital_adapter_D5_resolver_1_n_fsync": {
+      "uz_digital_adapter_D5_resolver_1_n_fsync1": {
         "ports": [
           "uz_digital_adapter/D5_resolver_1_n_fsync",
           "Dig_08_Ch5"
         ]
       },
-      "uz_digital_adapter_D5_resolver_1_n_reset": {
+      "uz_digital_adapter_D5_resolver_1_n_reset1": {
         "ports": [
           "uz_digital_adapter/D5_resolver_1_n_reset",
           "Dig_10_Ch5"
         ]
       },
-      "uz_digital_adapter_D5_resolver_1_n_sample": {
+      "uz_digital_adapter_D5_resolver_1_n_sample1": {
         "ports": [
           "uz_digital_adapter/D5_resolver_1_n_sample",
           "Dig_06_Ch5"
         ]
       },
-      "uz_digital_adapter_D5_resolver_1_sclk": {
+      "uz_digital_adapter_D5_resolver_1_sclk1": {
         "ports": [
           "uz_digital_adapter/D5_resolver_1_sclk",
           "Dig_09_Ch5"
         ]
       },
-      "uz_digital_adapter_D5_resolver_1_sdo": {
+      "uz_digital_adapter_D5_resolver_1_sdo1": {
         "ports": [
           "uz_digital_adapter/D5_resolver_1_sdo",
           "Dig_07_Ch5"
         ]
       },
-      "uz_digital_adapter_D5_resolver_2_a0": {
-        "ports": [
-          "uz_digital_adapter/D5_resolver_2_a0",
-          "Dig_21_Ch5"
-        ]
-      },
-      "uz_digital_adapter_D5_resolver_2_a1": {
+      "uz_digital_adapter_D5_resolver_2_a2": {
         "ports": [
           "uz_digital_adapter/D5_resolver_2_a1",
           "Dig_20_Ch5"
         ]
       },
-      "uz_digital_adapter_D5_resolver_2_cs": {
+      "uz_digital_adapter_D5_resolver_2_a3": {
+        "ports": [
+          "uz_digital_adapter/D5_resolver_2_a0",
+          "Dig_21_Ch5"
+        ]
+      },
+      "uz_digital_adapter_D5_resolver_2_cs1": {
         "ports": [
           "uz_digital_adapter/D5_resolver_2_cs",
           "Dig_22_Ch5"
         ]
       },
-      "uz_digital_adapter_D5_resolver_2_n_fsync": {
+      "uz_digital_adapter_D5_resolver_2_n_fsync1": {
         "ports": [
           "uz_digital_adapter/D5_resolver_2_n_fsync",
           "Dig_17_Ch5"
         ]
       },
-      "uz_digital_adapter_D5_resolver_2_n_reset": {
+      "uz_digital_adapter_D5_resolver_2_n_reset1": {
         "ports": [
           "uz_digital_adapter/D5_resolver_2_n_reset",
           "Dig_19_Ch5"
         ]
       },
-      "uz_digital_adapter_D5_resolver_2_n_sample": {
+      "uz_digital_adapter_D5_resolver_2_n_sample1": {
         "ports": [
           "uz_digital_adapter/D5_resolver_2_n_sample",
           "Dig_15_Ch5"
         ]
       },
-      "uz_digital_adapter_D5_resolver_2_sclk": {
+      "uz_digital_adapter_D5_resolver_2_sclk1": {
         "ports": [
           "uz_digital_adapter/D5_resolver_2_sclk",
           "Dig_18_Ch5"
         ]
       },
-      "uz_digital_adapter_D5_resolver_2_sdo": {
+      "uz_digital_adapter_D5_resolver_2_sdo1": {
         "ports": [
           "uz_digital_adapter/D5_resolver_2_sdo",
           "Dig_16_Ch5"
         ]
       },
-      "uz_digital_adapter_RW_clk_d4_ch1": {
+      "uz_digital_adapter_RW_clk_d4_ch2": {
         "ports": [
           "uz_digital_adapter/RW_clk_d4_ch1",
           "Dig_17_Ch4"
         ]
       },
-      "uz_digital_adapter_RW_data_d4_ch1": {
+      "uz_digital_adapter_RW_data_d4_ch2": {
         "ports": [
           "uz_digital_adapter/RW_data_d4_ch1",
           "Dig_11_Ch4"
         ]
       },
-      "uz_digital_adapter_ssi_clk_d4_ch1": {
+      "uz_digital_adapter_ssi_clk_d4_ch2": {
         "ports": [
           "uz_digital_adapter/ssi_clk_d4_ch1",
           "Dig_15_Ch4"
         ]
       },
-      "uz_pwm_Carrier_triangular_max": {
+      "uz_pwm_Carrier_triangular_max1": {
         "ports": [
           "uz_pwm/Carrier_triangular_max",
           "uz_system/Interrupt2"
         ]
       },
-      "uz_pwm_Carrier_triangular_max_min": {
+      "uz_pwm_Carrier_triangular_max_min1": {
         "ports": [
           "uz_pwm/Carrier_triangular_max_min",
           "uz_system/Interrupt0"
         ]
       },
-      "uz_pwm_Carrier_triangular_min": {
+      "uz_pwm_Carrier_triangular_min1": {
         "ports": [
           "uz_pwm/Carrier_triangular_min",
           "uz_system/Interrupt1"
         ]
       },
-      "uz_pwm_Gate_Signals_2L_4": {
+      "uz_pwm_Gate_Signals_2L_0": {
         "ports": [
           "uz_pwm/Gate_Signals_2L_0",
-          "uz_digital_adapter/D1_Gate_Signals_2L_source",
+          "uz_digital_adapter/D1_Gate_Signals_2L_source"
+        ]
+      },
+      "uz_pwm_Gate_Signals_2L_1": {
+        "ports": [
+          "uz_pwm/Gate_Signals_2L_1",
           "uz_digital_adapter/D2_Gate_Signals_2L_source"
         ]
       },
-      "uz_pwm_Interrupt_Center": {
+      "uz_pwm_Interrupt_Center1": {
         "ports": [
           "uz_pwm/Interrupt_Center",
           "uz_system/Interrupt5"
         ]
       },
-      "uz_pwm_Interrupt_Start": {
+      "uz_pwm_Interrupt_Start1": {
         "ports": [
           "uz_pwm/Interrupt_Start",
           "uz_system/Interrupt4"
         ]
       },
-      "uz_pwm_Interrupt_Start_Center": {
+      "uz_pwm_Interrupt_Start_Center1": {
         "ports": [
           "uz_pwm/Interrupt_Start_Center",
           "uz_system/Interrupt3"

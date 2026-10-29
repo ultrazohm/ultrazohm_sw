@@ -11,7 +11,7 @@ import tempfile
 def main():
     venv = Path(sys.prefix)
     if sys.prefix == sys.base_prefix:
-        raise RuntimeError('Launch this module using the DataViewer virtual environment')
+        raise RuntimeError('Launch this module using the target virtual environment')
     scripts = venv / ('Scripts' if os.name == 'nt' else 'bin')
     rc_path = None
     if os.name == 'nt':
@@ -32,7 +32,7 @@ def main():
     # Activation sets PATH itself, allowing deactivate to restore the original.
     env = os.environ.copy()
     env.pop('VIRTUAL_ENV', None)
-    print('Opening DataViewer environment shell. Use deactivate to deactivate; exit to return.', flush=True)
+    print('Opening activated environment shell. Use deactivate to deactivate; exit to return.', flush=True)
     try:
         child = subprocess.Popen(command, env=env)
         while True:

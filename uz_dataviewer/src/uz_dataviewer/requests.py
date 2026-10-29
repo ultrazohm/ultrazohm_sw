@@ -82,25 +82,22 @@ class Requests:
         with self.condition:
             for slot in list(self.wanted):
                 if slot not in slots:
-                    self.wanted.pop(slot, None)
-                    self.results.pop(slot, None)
-                    self.errors.pop(slot, None)
-                    job = self.jobs.pop(slot, None)
-                    if job:
-                        job.cancel.set()
-                    if self.active and self.active[0] == slot:
-                        self.active[1].cancel.set()
+                    self._forget(slot)
 
     def forget(self, slot):
         with self.condition:
-            self.wanted.pop(slot, None)
-            self.results.pop(slot, None)
-            self.errors.pop(slot, None)
-            job = self.jobs.pop(slot, None)
-            if job:
-                job.cancel.set()
-            if self.active and self.active[0] == slot:
-                self.active[1].cancel.set()
+            self._forget(slot)
+
+    def _forget(self, slot):
+        """Remove a consumer while the caller holds the condition lock."""
+        self.wanted.pop(slot, None)
+        self.results.pop(slot, None)
+        self.errors.pop(slot, None)
+        job = self.jobs.pop(slot, None)
+        if job:
+            job.cancel.set()
+        if self.active and self.active[0] == slot:
+            self.active[1].cancel.set()
 
     def _work(self):
         while True:

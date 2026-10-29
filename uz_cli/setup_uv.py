@@ -9,13 +9,20 @@ With no compatible local wheels, download automatically.
 """
 import argparse
 import os
-from pathlib import Path
+import shlex
 import shutil
 import subprocess
 import sys
-import shlex
-import tempfile
-from wheel_releases import compatible_wheels, choose_local, detect_channel, download_latest, local_cli_wheels, validate_cli_wheel
+from pathlib import Path
+
+from wheel_releases import (
+    choose_local,
+    compatible_wheels,
+    detect_channel,
+    download_latest,
+    local_cli_wheels,
+    validate_cli_wheel,
+)
 
 
 def main():
@@ -107,23 +114,11 @@ def main():
     subprocess.run([str(command), "--version"], check=True, env=install_env)
     if args.launch and args.launch != "none":
         extra = args.command[1:] if args.command[:1] == ["--"] else args.command
-        rc_path = None
         if args.launch == "shell":
-            if sys.platform == "win32":
-                shell = shutil.which("pwsh") or shutil.which("powershell")
-                if not shell:
-                    parser.error("PowerShell is required to open the environment shell")
-                activate = str(scripts / "Activate.ps1").replace("'", "''")
-                launch = [shell, "-NoExit", "-Command", f". '{activate}'"]
-            else:
-                shell = shutil.which("bash")
-                if not shell:
-                    parser.error("Bash is required to open the environment shell")
-                with tempfile.NamedTemporaryFile(mode="w", suffix=".bashrc", delete=False) as rc:
-                    rc.write('if [ -f "$HOME/.bashrc" ]; then . "$HOME/.bashrc"; fi\n')
-                    rc.write("source " + shlex.quote(str(scripts / "activate")) + "\n")
-                    rc_path = Path(rc.name)
-                launch = [shell, "--noprofile", "--rcfile", str(rc_path), "-i"]
+            # This stdlib-only entry point is also used by the offline viewer.
+            # Execute it with the destination environment's Python, without importing GUI code.
+            shell_script = root.parent / "uz_dataviewer/src/uz_dataviewer/env_shell.py"
+            launch = [str(python), str(shell_script)]
         elif args.launch == "example":
             if extra:
                 parser.error("the Python example does not take CLI arguments")
@@ -136,17 +131,12 @@ def main():
             launch_env["PATH"] = str(scripts) + os.pathsep + launch_env.get("PATH", "")
         print({"shell": "Opening activated environment shell; use deactivate to deactivate, or exit to return.",
                "example": "Starting Python example", "cli": "Starting UltraZohm CLI"}[args.launch], flush=True)
-        try:
-            child = subprocess.Popen(launch, env=launch_env)
-            while True:
-                try:
-                    raise SystemExit(child.wait())
-                except KeyboardInterrupt:
-                    # Let the child handle console signals and finish its work.
-                    continue
-        finally:
-            if rc_path is not None:
-                rc_path.unlink(missing_ok=True)
+        child = subprocess.Popen(launch, env=launch_env)
+        while True:
+            try:
+                raise SystemExit(child.wait())
+            except KeyboardInterrupt:
+                continue  # Let the child handle console signals and finish its work.
     if args.launch == "none":
         print(f"Backend setup complete: {venv}", flush=True)
         return

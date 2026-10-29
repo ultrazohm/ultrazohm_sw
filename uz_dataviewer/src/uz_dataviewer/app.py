@@ -38,16 +38,11 @@ LOG_DOCK = "LogBrowserSpace"
 
 class DataViewerApp:
     def __init__(self, initial_files: list[str] | None = None, loading_mode: str | None = None, backend: str | None = None, disk_cache: bool = False, use_live: bool = False, live_mapping: str = '', live_repo: str | None = None) -> None:
-        from .user_paths import data_directory
+        from .user_paths import data_directory, find_repository
         mapping_path = Path(live_mapping).expanduser().resolve() if live_mapping else None
         workspace = Path(live_repo).expanduser().resolve() if live_repo else None
         if workspace is None and mapping_path:
-            if mapping_path.parent.name in ('_user', '_user_standalone'):
-                workspace = mapping_path.parents[2] if mapping_path.parents[1].name == 'artifacts' else mapping_path.parents[1]
-            elif mapping_path.parent.name == 'channel_mappings' and mapping_path.parent.parent.name == 'artifacts':
-                workspace = mapping_path.parents[2]
-            elif mapping_path.parent.name == 'uz_cli_channel_mappings':
-                workspace = mapping_path.parents[1]
+            workspace = find_repository(mapping_path.parent)
         self.artifacts = data_directory(workspace) if not runtime.IS_WEB else None
         self.state = AppState()
         if self.artifacts is not None:
@@ -75,10 +70,6 @@ class DataViewerApp:
             from .panels.live import LiveWorkspace
             self.live = LiveWorkspace(repo=workspace)
             self.live.mapping = live_mapping
-            if workspace is not None:
-                from .live import new_output_directory
-                self.live.repo = str(workspace)
-                self.live.output = new_output_directory(workspace)
             self.live.cli_busy = lambda: self._cli_console is not None and bool(self._cli_console.jobs)
         # Pending Session-menu file dialogs: (dialog, command_name, is_multi).
         self._session_dialog: tuple = ()
@@ -469,8 +460,8 @@ def main(argv: list[str] | None = None) -> int:
         from .live_mapping import generate_mapping
         try:
             live_mapping = str(generate_mapping(args.live_repo))
-            from .settings import initialize_user_settings
-            initialize_user_settings(live_mapping)
+            from .settings import load_workspace_settings
+            load_workspace_settings(live_mapping)
         except (OSError, ValueError, RuntimeError) as exc:
             parser.error(str(exc))
     app = DataViewerApp(initial_files=args.files, loading_mode=args.loading_mode, backend=args.backend,

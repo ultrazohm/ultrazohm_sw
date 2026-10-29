@@ -160,7 +160,7 @@ def test_initialize_and_connect_preserve_existing_preferences(tmp_path, monkeypa
     tools.write_text('{"xsct":null,"custom":"keep me"}\n')
     before = {path: (path.read_bytes(), path.stat().st_mtime_ns) for path in (settings, tools)}
     monkeypatch.setattr(runtime_settings, 'default_profile', lambda: pytest.fail('Must preserve existing settings'))
-    assert runtime_settings.initialize_user_settings(mapping) == settings
+    assert runtime_settings.load_workspace_settings(mapping).path == settings
     effective, removed = runtime_settings.prepare_profile(mapping, tmp_path/'session.profile.json')
     assert removed == ['JSO_theta_mech']
     assert json.loads(effective.read_text())['initial_channels'] == {'3': 'JSO_lifecheck'}

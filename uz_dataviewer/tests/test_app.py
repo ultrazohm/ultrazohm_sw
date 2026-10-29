@@ -98,7 +98,11 @@ def test_open_mode_menu_uses_real_imgui_binding(monkeypatch, gui_frame):
 
 def test_selected_workspace_owns_user_data(tmp_path, monkeypatch):
     from uz_dataviewer.live import new_output_directory
+    from uz_dataviewer.user_paths import HEADER
     monkeypatch.delenv('UZ_DATAVIEWER_CACHE', raising=False)
+    header = tmp_path/'workspace'/HEADER
+    header.parent.mkdir(parents=True)
+    header.touch()
     mapping = tmp_path/'workspace'/'artifacts'/'_user'/'mapping.json'
     monkeypatch.setattr('uz_dataviewer.plugins.load_plugins', lambda **kwargs: None)
     app = DataViewerApp(use_live=True, live_mapping=str(mapping))

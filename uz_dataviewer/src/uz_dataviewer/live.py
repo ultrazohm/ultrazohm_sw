@@ -380,7 +380,7 @@ class LiveController:
 
     def _flash(self, kwargs):
         from .flashing import connection_refused, run_flash_cli, xsct_available
-        from .settings import initialize_user_settings, profile_for_mapping, read_runtime_settings
+        from .settings import load_workspace_settings, profile_for_mapping
         from .user_paths import write_json
         from .live_mapping import generate_mapping, repository
         if not xsct_available():
@@ -445,11 +445,10 @@ class LiveController:
         self._progress('Generating channel mapping…')
         mapping_path = generate_mapping(root, overwrite=True)
         self._message('info', f'Channel mapping regenerated: {mapping_path}')
-        mapping = json.loads(mapping_path.read_text(encoding='utf-8'))
-        settings_path = initialize_user_settings(mapping_path)
+        workspace = load_workspace_settings(mapping_path)
         if previous is None:
-            previous = read_runtime_settings(settings_path)
-        profile, removed = profile_for_mapping(mapping, previous, assignments)
+            previous = workspace.profile
+        profile, removed = profile_for_mapping(workspace.mapping, previous, assignments)
         if removed:
             self._message('warn', 'Removed channel assignments absent from the new mapping: '+', '.join(removed))
         output = Path(new_output_directory(parent=Path(kwargs['output']).expanduser().resolve().parent))

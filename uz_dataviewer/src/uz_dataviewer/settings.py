@@ -1,4 +1,5 @@
 """Workspace runtime preferences and effective session profiles."""
+from dataclasses import dataclass
 import json
 import math
 import subprocess
@@ -38,32 +39,36 @@ def read_runtime_settings(path):
     return settings
 
 
-def initialize_user_settings(mapping_path, user_directory=None):
-    """Seed workspace preferences once, preserving existing files byte for byte."""
+@dataclass(frozen=True)
+class WorkspaceSettings:
+    path: Path
+    mapping: dict
+    profile: dict
+
+
+def load_workspace_settings(mapping_path, user_directory=None):
+    """Read workspace configuration, seeding only missing preferences."""
     mapping_path = Path(mapping_path).expanduser().resolve()
+    mapping = json.loads(mapping_path.read_text(encoding='utf-8'))
     directory = Path(user_directory).expanduser().resolve() if user_directory else mapping_path.parent
     directory.mkdir(parents=True, exist_ok=True)
     settings_path = directory / 'settings.json'
     if not settings_path.exists():
-        mapping = json.loads(mapping_path.read_text(encoding='utf-8'))
         defaults, _ = profile_for_mapping(mapping, default_profile(), None)
         write_json(settings_path, defaults, overwrite=False)
-    read_runtime_settings(settings_path)
+    settings = read_runtime_settings(settings_path)
     write_json(directory / 'tools.json', {'xsct': None}, overwrite=False)
     (directory / 'logs').mkdir(exist_ok=True)
-    return settings_path
+    return WorkspaceSettings(settings_path, mapping, settings)
 
 
 def prepare_profile(mapping_path, output_profile=None, user_directory=None):
     """Filter a service's effective profile without rewriting user preferences."""
-    mapping_path = Path(mapping_path).expanduser().resolve()
-    settings_path = initialize_user_settings(mapping_path, user_directory)
-    settings = read_runtime_settings(settings_path)
-    mapping = json.loads(mapping_path.read_text(encoding='utf-8'))
-    profile, removed = profile_for_mapping(mapping, settings, None)
-    if output_profile is None and profile == settings:
-        return settings_path, removed
-    effective_path = Path(output_profile) if output_profile else settings_path.parent / 'runtime.profile.json'
+    workspace = load_workspace_settings(mapping_path, user_directory)
+    profile, removed = profile_for_mapping(workspace.mapping, workspace.profile, None)
+    if output_profile is None and profile == workspace.profile:
+        return workspace.path, removed
+    effective_path = Path(output_profile) if output_profile else workspace.path.parent / 'runtime.profile.json'
     write_json(effective_path, profile)
     return effective_path, removed
 

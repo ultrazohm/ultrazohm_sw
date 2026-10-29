@@ -7,13 +7,14 @@ import time
 from pathlib import Path
 from queue import Empty
 
-from imgui_bundle import imgui, implot, imgui_color_text_edit
+from imgui_bundle import imgui, implot
 
 from ..live import LiveController, fuzzy_names, new_output_directory, action_block_reason
 from ..model import Signal
 from ..sources import SourceColumn, shift_time
 from ..state import AppState
-from ..scripting import ScriptRunner, TEMPLATES
+from ..scripting import ScriptRunner
+from .script_editor import ScriptEditor
 from ..flashing import xsct_available, restore_xsct, select_xsct
 from .plots import PlotsPanel
 
@@ -169,37 +170,7 @@ class LiveWorkspace:
         self._last_feedback = None
         self.available = importlib.util.find_spec('ultrazohm') is not None
         self.scripts = ScriptRunner(send_stop=self.controller.send_stop)
-        self.script_path = ''
-        self._script_dialog = None
-        self.script_editor = None
-        self.script_code = TEMPLATES['Blank']
-        self.script_error = ''
-
-    @property
-    def script_code(self):
-        return self.script_editor.get_text() if self.script_editor is not None else self._script_code
-
-    @script_code.setter
-    def script_code(self, code):
-        self._script_code = code
-        if self.script_editor is not None:
-            self.script_editor.set_text(code)
-
-    def _python_editor(self):
-        # Create only in a GUI context. Do not reset text each frame: that would
-        # discard the cursor, selection, and undo history while the user types.
-        if self.script_editor is None:
-            editor = imgui_color_text_edit.TextEditor()
-            editor.set_language(imgui_color_text_edit.TextEditor.Language.python())
-            editor.set_palette(editor.get_dark_palette())
-            editor.set_tab_size(4)
-            editor.set_insert_spaces_on_tabs(True)
-            editor.set_auto_indent_enabled(True)
-            editor.set_show_line_numbers_enabled(True)
-            editor.set_show_matching_brackets(True)
-            editor.set_text(self._script_code)
-            self.script_editor = editor
-        return self.script_editor
+        self.document = ScriptEditor(lambda: self.scripts.busy, lambda: self.controller.endpoint, self._start_script)
 
     def block_reason(self, action='manual'):
         return action_block_reason(action, flashing=self.controller.flashing, script_busy=self.scripts.busy)
@@ -232,7 +203,7 @@ class LiveWorkspace:
         self.scripts.poll()
         update = self.controller.latest()
         self.update = update
-        self._poll_script_dialog()
+        self.document.poll()
         if self._xsct_dialog is not None and self._xsct_dialog.ready():
             selected = self._xsct_dialog.result()
             self._xsct_dialog = None
@@ -494,16 +465,15 @@ class LiveWorkspace:
     def render_control(self):
         state = self.update.status.get('state', {})
         imgui.text_unformatted('Platform: ' + str(state.get('platform_state') or 'unavailable'))
-        imgui.begin_disabled(self.controller.flashing or
-                             (not self.scripts.busy and (not self.update.attached or not state.get('connected'))))
+        imgui.begin_disabled(not self.scripts.busy and (not self.update.attached or not state.get('connected')))
         for label, operation in [('Enable System', 'enable_system'), ('Enable Control', 'enable_control'), ('Stop', 'stop')]:
-            imgui.begin_disabled(self.scripts.busy and operation != 'stop')
+            imgui.begin_disabled(bool(self.block_reason(operation)))
             if imgui.button(label):
                 self.send(operation)
             imgui.end_disabled()
             imgui.same_line()
         imgui.new_line()
-        imgui.begin_disabled(self.scripts.busy)
+        imgui.begin_disabled(bool(self.block_reason()))
         for number in range(1, 9):
             if imgui.button(f'User {number}'):
                 self.send('button', number=number)
@@ -565,33 +535,8 @@ class LiveWorkspace:
             imgui.end_table()
 
     def render_python(self):
-        imgui.text_wrapped('Run executes this file with --endpoint HOST:PORT in this Python environment. '
-                           'Use a template for argument parsing and Client setup; imports and __main__ work normally.')
-        imgui.text_unformatted(Path(self.script_path).name if self.script_path else 'Unsaved script')
-        imgui.begin_disabled(self.scripts.busy or self._script_dialog is not None)
-        if imgui.button('Open Python file...'):
-            self._open_script_dialog('open')
-        imgui.same_line()
-        if imgui.button('Save'):
-            self._request_script_save()
-        imgui.same_line()
-        if imgui.button('Save as...'):
-            self._open_script_dialog('save')
-        imgui.same_line()
-        if imgui.begin_combo('Template', 'Choose template'):
-            for name in TEMPLATES:
-                if imgui.selectable(name, False)[0]:
-                    self._choose_script_template(name)
-            imgui.end_combo()
-        editor = self._python_editor()
-        editor.set_read_only_enabled(self.scripts.busy or self._script_dialog is not None)
-        editor.render('##python-code', imgui.ImVec2(max(100., imgui.get_content_region_avail().x), 260.))
         connected = self.available and self.update.attached and self.update.status.get('state', {}).get('connected')
-        imgui.begin_disabled(not connected or self.controller.flashing)
-        if imgui.button('Run'):
-            self._request_script_save(run_after=True)
-        imgui.end_disabled()
-        imgui.end_disabled()
+        self.document.render(connected and not self.block_reason('script'))
         imgui.same_line()
         imgui.begin_disabled(not self.scripts.busy)
         if imgui.button('Stop script + device'):
@@ -601,73 +546,10 @@ class LiveWorkspace:
         imgui.text_wrapped('Run saves the file, asking for a filename for unsaved scripts. '
                            'Stop terminates Python and sends device Stop; logging stays enabled. '
                            'Completion or errors leave the device and logging in their resulting state.')
-        if self.script_error:
-            imgui.text_wrapped(self.script_error)
+        if self.document.error:
+            imgui.text_wrapped(self.document.error)
         imgui.separator()
         imgui.text_unformatted(self.scripts.output)
-
-    def _choose_script_template(self, name):
-        self.script_code = TEMPLATES[name]
-        self.script_path = ''
-        self.script_error = ''
-
-    def _open_script_dialog(self, action, default_path=None, endpoint=None):
-        if self.scripts.busy or self._script_dialog is not None:
-            return
-        try:
-            if pfd is None:
-                raise RuntimeError('Native file dialogs are unavailable in this build')
-            filters = ['Python files (*.py)', '*.py']
-            default_path = default_path or self.script_path or 'measurement.py'
-            dialog = (pfd.open_file('Open Python file', default_path, filters) if action == 'open' else
-                      pfd.save_file('Save Python file', default_path, filters))
-            self._script_dialog = (dialog, action, endpoint or self.controller.endpoint)
-            self.script_error = ''
-        except Exception as exc:
-            self.script_error = str(exc)
-
-    def _poll_script_dialog(self):
-        if self._script_dialog is None:
-            return
-        dialog, action, endpoint = self._script_dialog
-        if not dialog.ready(0):
-            return
-        self._script_dialog = None
-        try:
-            result = dialog.result()
-            selected = (result[0] if result else '') if action == 'open' else result
-            if not selected:
-                return
-            path = Path(selected).expanduser().resolve()
-            if action == 'open':
-                if path.suffix.lower() != '.py':
-                    raise ValueError('Choose a .py file')
-                self.script_code = path.read_text(encoding='utf-8')
-                self.script_path = str(path)
-                self.script_error = ''
-                return
-            if not path.suffix:
-                path = path.with_suffix('.py')
-                if path.exists():
-                    # Reopen on the actual destination so the native dialog
-                    # confirms replacement after we supply the .py extension.
-                    self._open_script_dialog(action, str(path), endpoint)
-                    return
-            saved = self._save_script(path)
-            if saved is not None and action == 'run':
-                self._start_script(saved, endpoint)
-        except Exception as exc:
-            self.script_error = str(exc)
-
-    def _request_script_save(self, run_after=False):
-        if self.scripts.busy or self._script_dialog is not None:
-            return
-        if not self.script_path:
-            self._open_script_dialog('run' if run_after else 'save')
-            return
-        path = self._save_script()
-        if path is not None and run_after:
-            self._start_script(path, self.controller.endpoint)
 
     def _start_script(self, path, endpoint):
         try:
@@ -681,7 +563,7 @@ class LiveWorkspace:
                 raise RuntimeError('A device command is still running; wait for it to finish and press Run again')
             self.scripts.start(path, endpoint)
         except Exception as exc:
-            self.script_error = str(exc)
+            self.document.error = str(exc)
 
     def _render_flash_confirmation(self):
         opened, _ = imgui.begin_popup_modal('Flash UltraZohm?', flags=imgui.WindowFlags_.always_auto_resize)
@@ -703,20 +585,6 @@ class LiveWorkspace:
         if imgui.button('Cancel'):
             imgui.close_current_popup()
         imgui.end_popup()
-
-    def _save_script(self, destination=None):
-        try:
-            path = Path(destination or self.script_path).expanduser().resolve()
-            if path.suffix.lower() != '.py':
-                raise ValueError('Choose a .py file')
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(self.script_code, encoding='utf-8')
-            self.script_path = str(path)
-            self.script_error = ''
-            return path
-        except Exception as exc:
-            self.script_error = str(exc)
-            return None
 
     def maximum_depth(self):
         capacity = self.update.status.get('data_options', {}).get('buffer_samples', 300_000)
@@ -788,9 +656,7 @@ class LiveWorkspace:
         if self._xsct_dialog is not None:
             self._xsct_dialog.kill()
             self._xsct_dialog = None
-        if self._script_dialog is not None:
-            self._script_dialog[0].kill()
-            self._script_dialog = None
+        self.document.close()
         self.scripts.close()
         self.controller.close()
         self.state.shutdown()

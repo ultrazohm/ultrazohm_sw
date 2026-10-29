@@ -112,7 +112,7 @@ def test_editor_and_manual_controls_lock(gui_frame, app_state, tmp_path):
         workspace.update = SimpleNamespace(status={'state': {'connected': True}}, attached=True,
                                            catalog={}, error='')
         gui_frame(SimpleNamespace(render=lambda _: workspace.render_python()), app_state)
-        editor = workspace.script_editor
+        editor = workspace.document.editor
         assert editor.get_language_name().lower() == 'python'
         assert editor.is_show_line_numbers_enabled()
         assert editor.is_auto_indent_enabled()
@@ -120,23 +120,23 @@ def test_editor_and_manual_controls_lock(gui_frame, app_state, tmp_path):
         assert editor.get_tab_size() == 4
         assert editor.is_read_only_enabled()
         gui_frame(SimpleNamespace(render=lambda _: workspace.render_control()), app_state)
-        workspace.script_path = str(tmp_path/'saved.py')
-        workspace.script_code = TEMPLATES['Timed recording']
+        workspace.document.path = str(tmp_path/'saved.py')
+        workspace.document.code = TEMPLATES['Timed recording']
         assert editor.get_text() == TEMPLATES['Timed recording']
-        assert workspace._save_script().read_text() == workspace.script_code
+        assert workspace.document.save().read_text() == workspace.document.code
         runner.busy = False
         gui_frame(SimpleNamespace(render=lambda _: workspace.render_python()), app_state)
         assert not editor.is_read_only_enabled()
-        original = workspace.script_code
+        original = workspace.document.code
         editor.set_cursor(editor.DocPos(0, 0))
         editor.replace_text_in_current_cursor('# edited in the code editor\n')
         assert editor.can_undo()
         gui_frame(SimpleNamespace(render=lambda _: workspace.render_python()), app_state)
-        assert workspace.script_editor is editor
+        assert workspace.document.editor is editor
         assert editor.can_undo()  # Rendering must preserve text, cursor, and undo history.
-        assert workspace._save_script().read_text().startswith('# edited in the code editor\n')
+        assert workspace.document.save().read_text().startswith('# edited in the code editor\n')
         editor.undo()
-        assert workspace.script_code == original
+        assert workspace.document.code == original
     finally:
         workspace.close()
 

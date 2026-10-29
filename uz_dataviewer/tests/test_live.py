@@ -319,7 +319,7 @@ def test_script_start_cancels_queue_and_rejects_inflight_command(monkeypatch, tm
         with controller._command_lock:
             workspace._start_script(tmp_path/'script.py', 'fake')
             assert not started
-            assert 'still running' in workspace.script_error
+            assert 'still running' in workspace.document.error
             assert controller.commands.empty()
         workspace._start_script(tmp_path/'script.py', 'fake')
         assert len(started) == 1

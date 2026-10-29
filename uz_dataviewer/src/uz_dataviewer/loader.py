@@ -305,29 +305,39 @@ def parse_csv(path: str, cancel=None) -> ParsedRun:
         return collect_csv_batches(path, columns, batches(), cancel)
 
 
-def _parse_parquet_streaming(pf: pq.ParquetFile, path: str, n_rows: int, cancel=None) -> ParsedRun:
-    """Stream a large Parquet into preallocated arrays (peak ~= resident + a batch)."""
-    time_col, data_columns = _split_time_columns(pf.schema_arrow.names)
-    ordered = [time_col, *data_columns]
+def collect_parquet_batches(path, columns, n_rows, batches, cancel=None, *, backend="pyarrow", strict_rows=False):
+    """Fill contiguous arrays from numeric batches, retaining backend row-count policy."""
+    _, data_columns = _split_time_columns(columns)
     time = np.empty(n_rows, dtype=np.float64)
     arrays = {raw: np.empty(n_rows, dtype=np.float32) for raw in data_columns}
-
     off = 0
-    for batch in pf.iter_batches(columns=ordered):
+    for t, values in batches:
         check(cancel)
-        m = batch.num_rows
-        for j, name in enumerate(ordered):
-            values = batch.column(j).to_numpy(zero_copy_only=False)
-            target = time if name == time_col else arrays[name]
-            target[off : off + m] = values
-        off += m
-    if off != n_rows:  # metadata disagreed with the data; trim to what we read
+        end = off + len(t)
+        time[off:end] = t
+        for name in data_columns:
+            arrays[name][off:end] = values[name]
+        off = end
+    if off != n_rows:
+        if strict_rows:
+            raise ValueError('Parquet row count changed during loading')
         time = time[:off]
         arrays = {k: v[:off] for k, v in arrays.items()}
-
     validate_time_axis(time, path)
-    signals, units = _named_signals(data_columns, lambda raw: arrays[raw])
-    return ParsedRun(os.path.basename(path), path, time, signals, units, timestamp_resolution=timestamp_resolution(data_columns))
+    signals, units = _named_signals(data_columns, arrays.__getitem__)
+    return ParsedRun(os.path.basename(path), path, time, signals, units,
+                     backend=backend, timestamp_resolution=timestamp_resolution(data_columns))
+
+
+def _parse_parquet_streaming(pf: pq.ParquetFile, path: str, n_rows: int, cancel=None) -> ParsedRun:
+    time_col, columns = _split_time_columns(pf.schema_arrow.names)
+    def batches():
+        for batch in pf.iter_batches(columns=[time_col, *columns]):
+            check(cancel)
+            yield batch.column(0).to_numpy(zero_copy_only=False), {
+                name: batch.column(i + 1).to_numpy(zero_copy_only=False)
+                for i, name in enumerate(columns)}
+    return collect_parquet_batches(path, [time_col, *columns], n_rows, batches(), cancel)
 
 
 def parse_parquet(path: str, cancel=None) -> ParsedRun:

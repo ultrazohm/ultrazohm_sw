@@ -264,3 +264,15 @@ def test_registry_rejects_invalid_array_shapes_before_registration(time, values)
     assert len(registry) == 0
     run = registry.add_run('good', 'good', np.arange(8.), {'a': np.ones(8)}, {})
     assert run.id == 1
+
+
+def test_parquet_collectors_preserve_row_count_policy():
+    from uz_dataviewer.loader import collect_parquet_batches
+    import pytest
+    batches = [(np.array([0., 1.]), {'a': np.array([2., 3.], dtype=np.float32)})]
+    result = collect_parquet_batches('recording.parquet', ['time', 'a'], 3, batches)
+    np.testing.assert_array_equal(result.time, [0., 1.])
+    np.testing.assert_array_equal(result.signals['a'], [2., 3.])
+    with pytest.raises(ValueError, match='row count changed'):
+        collect_parquet_batches('recording.parquet', ['time', 'a'], 3, batches,
+                                backend='polars', strict_rows=True)

@@ -23,11 +23,15 @@ def launcher(tmp_path):
     for directory in (project, cli, tools):
         directory.mkdir(parents=True)
     shutil.copyfile(Path(__file__).parents[1]/'start.sh', project/'start.sh')
+    shutil.copyfile(Path(__file__).parents[1]/'launch.py', project/'launch.py')
     log = tmp_path/'calls.jsonl'
     stub = '#!' + sys.executable + '\n' + r'''
 import json, os, sys
 from pathlib import Path
 name = Path(sys.argv[0]).name
+if name == 'uv' and '--no-project' in sys.argv:
+    i = sys.argv.index('--python') + 2
+    os.execv(sys.executable, [sys.executable, *sys.argv[i:]])
 with open(os.environ['LAUNCH_LOG'], 'a') as log:
     log.write(json.dumps({'name': name, 'args': sys.argv[1:], 'cwd': os.getcwd()})+'\n')
 if name == 'uv' and sys.argv[1] == 'sync':
@@ -38,12 +42,12 @@ if name == 'uv' and sys.argv[1] == 'sync':
         target = scripts/child
         target.write_text(Path(sys.argv[0]).read_text())
         target.chmod(0o755)
-if name == 'run.sh':
+if name == 'setup_uv.py':
     raise SystemExit(int(os.environ.get('FAIL_BACKEND', '0')))
 if name == 'python':
     raise SystemExit(int(os.environ.get('FAIL_CHECK', '0')))
 '''
-    for executable in (tools/'uv', cli/'run.sh'):
+    for executable in (tools/'uv', cli/'setup_uv.py'):
         executable.write_text(stub)
         executable.chmod(0o755)
     environment = {**os.environ, 'PATH': str(tools)+os.pathsep+os.environ['PATH'], 'LAUNCH_LOG': str(log)}
@@ -65,13 +69,13 @@ def test_offline_launch_does_not_setup_cli(launcher):
 def test_use_live_installs_cli_in_viewer_env_before_launch(launcher):
     result, calls = launcher.run('--use-live', '--live-channel', 'testing', 'a recording.csv')
     assert result.returncode == 0, result.stderr
-    assert [c['name'] for c in calls] == ['uv', 'run.sh', 'python', 'uz-dataviewer']
+    assert [c['name'] for c in calls] == ['uv', 'setup_uv.py', 'python', 'uz-dataviewer']
     assert calls[0]['args'][0] == 'sync'
     assert '--inexact' in calls[0]['args']
-    assert calls[1]['args'] == ['--venv', str(launcher.project/'.venv'), '--launch', 'none',
+    assert calls[1]['args'] == ['--python', '3.12', '--venv', str(launcher.project/'.venv'), '--launch', 'none',
                                '--no-examples', '--channel', 'testing']
     assert calls[2]['args'] == ['-m', 'uz_dataviewer.check_live']
-    assert calls[3]['args'] == ['--use-live', '--live-repo', str(launcher.project/'..'), 'a recording.csv']
+    assert calls[3]['args'] == ['--use-live', '--live-repo', str(launcher.root), 'a recording.csv']
     assert len({c['cwd'] for c in calls}) == 1
 
 
@@ -80,13 +84,13 @@ def test_explicit_live_wheel_uses_same_setup_flow(launcher):
     wheel.touch()
     result, calls = launcher.run('--live-wheel', str(wheel), '--help')
     assert result.returncode == 0, result.stderr
-    assert calls[1]['name'] == 'run.sh'
+    assert calls[1]['name'] == 'setup_uv.py'
     assert calls[1]['args'][-2:] == ['--wheel', str(wheel)]
-    assert calls[-1]['args'] == ['--use-live', '--live-repo', str(launcher.project/'..'), '--help']
+    assert calls[-1]['args'] == ['--use-live', '--live-repo', str(launcher.root), '--help']
 
 
-@pytest.mark.parametrize('variable,expected', [('FAIL_BACKEND', ['uv', 'run.sh']),
-                                              ('FAIL_CHECK', ['uv', 'run.sh', 'python'])])
+@pytest.mark.parametrize('variable,expected', [('FAIL_BACKEND', ['uv', 'setup_uv.py']),
+                                              ('FAIL_CHECK', ['uv', 'setup_uv.py', 'python'])])
 def test_failed_live_setup_never_opens_viewer(launcher, variable, expected):
     result, calls = launcher.run('--use-live', **{variable: '7'})
     assert result.returncode != 0
@@ -126,7 +130,7 @@ def test_shell_launch_sets_up_environment_without_starting_gui(launcher, live):
     assert calls[-1]['args'] == ['-m', 'uz_dataviewer.env_shell']
     assert all(c['name'] != 'uz-dataviewer' for c in calls)
     assert '--inexact' in calls[0]['args']  # Preserve an already installed CLI wheel.
-    assert any(c['name'] == 'run.sh' for c in calls) == live
+    assert any(c['name'] == 'setup_uv.py' for c in calls) == live
 
 
 @pytest.mark.parametrize('args', [('--launch',), ('--launch', 'wrong'),
@@ -135,3 +139,27 @@ def test_invalid_shell_arguments_do_not_setup_environment(launcher, args):
     result, calls = launcher.run(*args)
     assert result.returncode != 0
     assert calls == []
+
+
+@pytest.mark.parametrize('exit_code', [0, 7])
+def test_powershell_wrapper_forwards_arguments_and_exit_code(tmp_path, exit_code):
+    shell = shutil.which('pwsh') or shutil.which('powershell')
+    if shell is None:
+        pytest.skip('PowerShell is unavailable on this host')
+    project = tmp_path / 'checkout with spaces'
+    project.mkdir()
+    shutil.copyfile(Path(__file__).parents[1] / 'start.ps1', project / 'start.ps1')
+    report = tmp_path / 'arguments.json'
+    stub = project / 'uv.ps1'
+    stub.write_text('$args | ConvertTo-Json -Compress | Set-Content -LiteralPath $env:LAUNCH_LOG\n'
+                    f'exit {exit_code}\n')
+    bootstrap = project / 'test.ps1'
+    bootstrap.write_text('function Get-Command { [pscustomobject]@{ Source = $env:TEST_UV } }\n'
+                         '& $env:TEST_START @args\nexit $LASTEXITCODE\n')
+    args = ['--use-live', '--live-wheel', 'a wheel.whl', 'a recording.csv']
+    result = subprocess.run([shell, '-NoProfile', '-File', str(bootstrap), *args],
+        env={**os.environ, 'TEST_UV': str(stub), 'TEST_START': str(project / 'start.ps1'),
+             'LAUNCH_LOG': str(report)}, capture_output=True, text=True)
+    assert result.returncode == exit_code, result.stderr
+    assert json.loads(report.read_text(encoding='utf-8-sig')) == [
+        'run', '--no-project', '--python', '3.12', str(project / 'launch.py'), *args]

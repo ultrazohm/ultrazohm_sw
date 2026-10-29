@@ -258,12 +258,12 @@ def test_managed_flash_restarts_real_service_and_preserves_recordings(service, t
             client.shutdown()
         except (OSError, RuntimeError):
             pass
-        if controller.process is not None:
+        if controller.owned.process is not None:
             try:
-                controller.process.wait(timeout=10)
+                controller.owned.process.wait(timeout=10)
             except subprocess.TimeoutExpired:
-                controller.process.kill()
-                controller.process.wait()
+                controller.owned.process.kill()
+                controller.owned.process.wait()
 
 
 def test_script_main_and_arguments_match_terminal_execution(tmp_path):

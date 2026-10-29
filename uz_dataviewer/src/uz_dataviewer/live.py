@@ -84,6 +84,30 @@ class LiveUpdate:
     flash_config: tuple | None = None
 
 
+@dataclass
+class OwnedService:
+    """The launched process remains owned even when the viewer attaches elsewhere."""
+    process: object = None
+    endpoint: str | None = None
+    shutdown_requested: bool = False
+
+    @property
+    def running(self):
+        return self.process is not None and self.process.poll() is None
+
+    def owns(self, endpoint):
+        return self.endpoint == endpoint and self.running
+
+
+def action_block_reason(action, *, flashing=False, script_busy=False):
+    """Shared interaction policy; connection and execution checks stay with their owners."""
+    if flashing:
+        return 'Flash UZ is running'
+    if script_busy and action not in ('stop', 'cli'):
+        return 'Manual controls are locked while the script runs'
+    return ''
+
+
 class LiveController:
     """Single IO worker, bounded command queue, latest snapshot publication."""
     def __init__(self, client_factory=None, hz=30):
@@ -97,9 +121,7 @@ class LiveController:
         self.update = LiveUpdate()
         self.stop_event = threading.Event()
         self.thread = None
-        self.process = None
-        self._owned_endpoint = None
-        self._owned_shutdown_requested = False
+        self.owned = OwnedService()
         self.client = None
         self.endpoint = None
         self.cursor = None
@@ -221,7 +243,7 @@ class LiveController:
 
     def _start_service(self, output, mapping, profile=None, data_options=None, ack=False, user_directory=None):
         self._progress('Starting local acquisition service…')
-        if self.process is not None and self.process.poll() is None:
+        if self.owned.running:
             raise RuntimeError('The launched service is still running; check its endpoint and service.log')
         output = Path(output).expanduser().resolve()
         # One output directory per service lifetime, never reuse an existing run.
@@ -250,12 +272,12 @@ class LiveController:
             'stdin': subprocess.DEVNULL,
             'creationflags': subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP}
         with log_path.open('ab') as log:
-            self.process = subprocess.Popen(args, stdout=log, stderr=log, **options)
-            self._owned_endpoint = self.endpoint
-            self._owned_shutdown_requested = False
+            self.owned.process = subprocess.Popen(args, stdout=log, stderr=log, **options)
+            self.owned.endpoint = self.endpoint
+            self.owned.shutdown_requested = False
         deadline = time.monotonic() + 8
         while not self.stop_event.is_set() and time.monotonic() < deadline:
-            if self.process.poll() is not None:
+            if self.owned.process.poll() is not None:
                 raise RuntimeError(f'Service failed; see {log_path}')
             try:
                 self.client.status()
@@ -280,8 +302,7 @@ class LiveController:
                                     user_directory=kwargs.get('user_directory'))
             else:
                 if operation == 'connect' and not (
-                        self._owned_endpoint == self.endpoint and self.process is not None
-                        and self.process.poll() is None):
+                        self.owned.owns(self.endpoint)):
                     raise RuntimeError('A service is already running at this endpoint. Use Existing service > Attach.')
             self._progress('Reading service configuration…')
             status = self.client.status()
@@ -329,14 +350,14 @@ class LiveController:
             if operation == 'set_observable':
                 self._reset()
             if operation == 'shutdown':
-                if self.endpoint == self._owned_endpoint:
-                    self._owned_shutdown_requested = True
+                if self.endpoint == self.owned.endpoint:
+                    self.owned.shutdown_requested = True
                 self.attached = False
                 self._reset()
                 self._status, self._catalog, self._assignments = {}, {}, ()
                 self._progress('Stopping device and finalizing recordings…')
-                if self.endpoint == self._owned_endpoint and self.process is not None:
-                    code = self.process.wait()
+                if self.endpoint == self.owned.endpoint and self.owned.process is not None:
+                    code = self.owned.process.wait()
                     if code:
                         raise RuntimeError(f'Service shutdown failed (exit {code}); check service.log')
                     self._notice = 'Service shut down; recordings finalized'
@@ -414,8 +435,8 @@ class LiveController:
                     return connection_refused(exc)
                 return False
             self._wait_for(stopped, 15, 'the acquisition service to stop')
-            if self.process is not None:
-                self.process.wait(timeout=5)
+            if self.owned.process is not None:
+                self.owned.process.wait(timeout=5)
         self.attached = False
         self._reset()
         self._status, self._catalog, self._assignments = {}, {}, ()
@@ -539,8 +560,8 @@ class LiveController:
             self.thread.join(timeout=1)
         with self._command_lock:
             connected = self.attached and self._status.get('state', {}).get('connected', False)
-            owned_endpoint = self._owned_endpoint
-            owned_running = self.process is not None and self.process.poll() is None
+            owned_endpoint = self.owned.endpoint
+            owned_running = self.owned.running
             if not connected and not (owned_running and owned_endpoint):
                 return  # Unused live panels need no optional CLI backend to close.
             factory = self.client_factory
@@ -557,10 +578,10 @@ class LiveController:
                     print(f'Device Stop on viewer close failed: {exc}', file=sys.stderr)
             if owned_running and owned_endpoint:
                 try:
-                    if not self._owned_shutdown_requested:
+                    if not self.owned.shutdown_requested:
                         factory(owned_endpoint).shutdown()
-                        self._owned_shutdown_requested = True
-                    code = self.process.wait()
+                        self.owned.shutdown_requested = True
+                    code = self.owned.process.wait()
                     if code:
                         raise RuntimeError(f'Acquisition service exited with code {code}; check service.log')
                 except Exception as exc:

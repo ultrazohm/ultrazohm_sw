@@ -109,8 +109,8 @@ class DataViewerApp:
         if self.live is None or not self.live.available:
             self.state.console.error('Live is not activated.')
             return
-        if self.live.controller.flashing:
-            self.state.console.error('Flash UZ is running; wait for it to finish')
+        if reason := self.live.block_reason('cli'):
+            self.state.console.error(reason + '; wait for it to finish')
             return
         if self._cli_console is None:
             from .cli_console import CliConsole

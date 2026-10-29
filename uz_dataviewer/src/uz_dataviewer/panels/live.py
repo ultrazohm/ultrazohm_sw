@@ -9,7 +9,7 @@ from queue import Empty
 
 from imgui_bundle import imgui, implot, imgui_color_text_edit
 
-from ..live import LiveController, fuzzy_names, new_output_directory
+from ..live import LiveController, fuzzy_names, new_output_directory, action_block_reason
 from ..model import Signal
 from ..sources import SourceColumn, shift_time
 from ..state import AppState
@@ -201,10 +201,13 @@ class LiveWorkspace:
             self.script_editor = editor
         return self.script_editor
 
+    def block_reason(self, action='manual'):
+        return action_block_reason(action, flashing=self.controller.flashing, script_busy=self.scripts.busy)
+
     def send(self, operation, **kwargs):
         try:
-            if self.controller.flashing:
-                raise RuntimeError('Flash UZ is running')
+            if reason := self.block_reason(operation):
+                raise RuntimeError(reason)
             if operation == 'stop':
                 self.controller.cancel_pending_commands()
                 if not self.scripts.busy:
@@ -212,8 +215,6 @@ class LiveWorkspace:
                 self.scripts.stop()
                 self.error = ''
                 return
-            if self.scripts.busy:
-                raise RuntimeError('Manual controls are locked while the script runs')
             if operation in ('connect', 'attach'):
                 self.pending_message = 'Connecting…' if operation == 'connect' else 'Attaching to service…'
                 self._pending_completion = self.controller.latest().completed_commands + 1
@@ -310,7 +311,7 @@ class LiveWorkspace:
         target.console.info(f'Frozen {len(t):,} live samples for analysis (not saved to disk)')
 
     def render_data(self, main_state):
-        imgui.begin_disabled(self.scripts.busy or self.controller.flashing)
+        imgui.begin_disabled(bool(self.block_reason()))
         try:
             self._render_data(main_state)
         finally:
@@ -670,8 +671,8 @@ class LiveWorkspace:
 
     def _start_script(self, path, endpoint):
         try:
-            if self.controller.flashing:
-                raise RuntimeError('Flash UZ is running')
+            if reason := self.block_reason('script'):
+                raise RuntimeError(reason)
             if (endpoint != self.controller.endpoint or not self.update.attached or
                     not self.update.status.get('state', {}).get('connected')):
                 raise RuntimeError('Service connection changed; connect and press Run again')

@@ -226,8 +226,8 @@ def test_connect_verifies_existing_device(device, ip, port, matches):
             return value
     controller = LiveController(lambda _: Client())
     try:
-        controller._owned_endpoint = 'fake'
-        controller.process = SimpleNamespace(poll=lambda: None, wait=lambda: 0)
+        controller.owned.endpoint = 'fake'
+        controller.owned.process = SimpleNamespace(poll=lambda: None, wait=lambda: 0)
         request = {'endpoint': 'fake', 'ip': ip, 'port': port}
         if matches:
             controller._command('connect', request)
@@ -408,11 +408,11 @@ def test_viewer_owned_service_finalizes_and_exits_on_close(tmp_path, disconnect_
         wait_for(lambda: client.status()['state']['samples'] > before + 1500)
         if disconnect_first:
             controller.submit('shutdown')
-            wait_for(lambda: controller.process.poll() == 0 and not controller.latest().activity)
+            wait_for(lambda: controller.owned.process.poll() == 0 and not controller.latest().activity)
             assert not controller.stop_event.is_set()
         else:
             controller.close()
-        assert controller.process.poll() == 0
+        assert controller.owned.process.poll() == 0
         import json
         end = json.loads((tmp_path/'recording/end.json').read_text())
         assert end['complete']
@@ -429,16 +429,16 @@ def test_viewer_owned_service_finalizes_and_exits_on_close(tmp_path, disconnect_
                               output=str(tmp_path/'second-recording'))
             wait_for(lambda: controller.latest().attached and controller.latest().source, seconds=12)
             controller.close()
-            assert controller.process.poll() == 0
+            assert controller.owned.process.poll() == 0
     finally:
         controller.close()
-        if controller.process is not None:
+        if controller.owned.process is not None:
             try:
                 client.shutdown()
-                controller.process.wait(timeout=15)
+                controller.owned.process.wait(timeout=15)
             except (OSError, RuntimeError, subprocess.TimeoutExpired):
-                controller.process.terminate()
-                controller.process.wait(timeout=5)
+                controller.owned.process.terminate()
+                controller.owned.process.wait(timeout=5)
         simulator.terminate()
         simulator.wait(timeout=5)
 
@@ -473,8 +473,8 @@ def test_connect_click_reports_progress_and_completion(gui_frame, app_state, mon
             gate.wait(timeout=3)
             return super().catalog()
     controller = LiveController(lambda endpoint: SlowClient())
-    controller._owned_endpoint = '127.0.0.1:19740'
-    controller.process = SimpleNamespace(poll=lambda: None, wait=lambda: 0)
+    controller.owned.endpoint = '127.0.0.1:19740'
+    controller.owned.process = SimpleNamespace(poll=lambda: None, wait=lambda: 0)
     workspace = LiveWorkspace(controller)
     workspace.available = True
     try:
@@ -507,8 +507,8 @@ def test_connect_failure_clears_busy_and_reports_error(gui_frame, app_state):
         def catalog(self):
             raise RuntimeError('incompatible service version')
     workspace = LiveWorkspace(LiveController(lambda endpoint: BrokenClient()))
-    workspace.controller._owned_endpoint = workspace.endpoint
-    workspace.controller.process = SimpleNamespace(poll=lambda: None, wait=lambda: 0)
+    workspace.controller.owned.endpoint = workspace.endpoint
+    workspace.controller.owned.process = SimpleNamespace(poll=lambda: None, wait=lambda: 0)
     workspace.available = True
     try:
         workspace.send('connect', endpoint=workspace.endpoint, ip=workspace.ip,
@@ -793,8 +793,8 @@ def test_close_shuts_down_owned_service_even_when_detached(attached):
             calls.append('wait')
             return 0
     controller = LiveController(lambda endpoint: Client())
-    controller.process = Process()
-    controller.endpoint = controller._owned_endpoint = '127.0.0.1:19740'
+    controller.owned.process = Process()
+    controller.endpoint = controller.owned.endpoint = '127.0.0.1:19740'
     controller.attached = attached
     controller._status = {'state': {'connected': True}}
     controller.close()
@@ -830,8 +830,8 @@ def test_close_handles_both_services_independently(fail_stop):
             return 1
     controller = LiveController(Client)
     controller.endpoint = 'external'
-    controller._owned_endpoint = 'owned'
-    controller.process = Process()
+    controller.owned.endpoint = 'owned'
+    controller.owned.process = Process()
     controller.attached = True
     controller._status = {'state': {'connected': True}}
     controller.close()

@@ -23,7 +23,9 @@ def main():
     device_port = port()
     processes = []
     with tempfile.TemporaryDirectory() as tmp:
-        directory = Path(tmp)
+        # Windows temp paths can contain 8.3 aliases (RUNNER~1), while workers
+        # resolve them to long paths. Compare filesystem identities below.
+        directory = Path(tmp).resolve()
         def cli(*args):
             result = subprocess.run([executable, '--internal-worker', 'cli', '--endpoint', endpoint, *map(str, args)],
                                     capture_output=True, text=True, cwd=tmp, timeout=30)
@@ -72,7 +74,7 @@ def main():
                            cwd=tmp, check=True, timeout=60)
             configuration = json.loads(prepared.read_text())
             mapping, profile = Path(configuration['mapping']), Path(configuration['profile'])
-            assert mapping.parent == firmware/'artifacts'/'_user_standalone'
+            assert mapping.parent.samefile(firmware/'artifacts'/'_user_standalone'), mapping
             # Validate packaged flash dispatch without running any vendor/hardware commands.
             tools = directory/'fake-tools'
             tools.mkdir()
@@ -91,7 +93,7 @@ def main():
             subprocess.run([executable, '--internal-worker', 'cli', 'flash', '--repo', str(firmware)],
                 check=True, timeout=30, env={**os.environ, 'PATH': str(tools), 'UZ_TEST_REPORT': str(report)})
             invocation = json.loads(report.read_text())
-            assert Path(invocation['root']) == firmware
+            assert Path(invocation['root']).samefile(firmware), invocation
             bundled_script = Path(invocation['args'][1])
             assert bundled_script.is_file() and 'tcl_scripts' in bundled_script.parts
             assert bundled_script.is_relative_to(Path(executable).parent)

@@ -25,18 +25,6 @@ fn request(py: Python<'_>, endpoint: String, command_json: String) -> PyResult<S
         serde_json::to_string(&result).map_err(error)
     })
 }
-#[pyfunction]
-fn live_data(
-    py: Python<'_>,
-    endpoint: String,
-    last_n_samples: usize,
-) -> PyResult<Bound<'_, PyBytes>> {
-    let bytes = py
-        .detach(move || service::get_live_data(&endpoint, last_n_samples))
-        .map_err(error)?;
-    Ok(PyBytes::new(py, &bytes))
-}
-
 /// Query metadata and Arrow payload together so cursors describe exactly these rows.
 #[pyfunction]
 fn data_query<'py>(
@@ -126,7 +114,7 @@ struct Acquisition {
 impl Acquisition {
     #[new]
     #[allow(clippy::too_many_arguments)] // Python keyword options plus the GIL token.
-    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="both".to_string(), ack=false, channel_mapping=None, *, buffer_samples=None, segment_rows=1_000_000, flush_interval_ms=60_000, recording_backend="parquet"))]
+    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="csv".to_string(), ack=false, channel_mapping=None, *, buffer_samples=None, segment_rows=1_000_000, flush_interval_ms=60_000, recording_backend="parquet"))]
     fn new(
         py: Python<'_>,
         device: Option<String>,
@@ -159,8 +147,7 @@ impl Acquisition {
         let format = match format.as_str() {
             "csv" => Format::Csv,
             "parquet" => Format::Parquet,
-            "both" => Format::Both,
-            _ => return Err(error("format must be csv, parquet or both")),
+            _ => return Err(error("format must be csv or parquet")),
         };
         let output = service::session_output(output.map(PathBuf::from)).map_err(error)?;
         let worker_output = output.clone();
@@ -295,7 +282,6 @@ impl Drop for Acquisition {
 #[pymodule]
 fn _native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(request, m)?)?;
-    m.add_function(wrap_pyfunction!(live_data, m)?)?;
     m.add_function(wrap_pyfunction!(data_query, m)?)?;
     m.add_function(wrap_pyfunction!(recording_info, m)?)?;
     m.add_function(wrap_pyfunction!(recording_data, m)?)?;

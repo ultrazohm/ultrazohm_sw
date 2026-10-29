@@ -121,7 +121,7 @@ or `--latest`. `--wheel` validates and uses that exact file. Pass CLI arguments
 after `--`:
 
 ```sh
-./uz_cli/run.sh --wheel /path/to/ultrazohm-VERSION-TAGS.whl --launch cli -- serve --interactive --device 192.168.1.233:1000 --output measurement-008 --format both
+./uz_cli/run.sh --wheel /path/to/ultrazohm-VERSION-TAGS.whl --launch cli -- serve --interactive --device 192.168.1.233:1000 --output measurement-008 --format csv
 ```
 
 PowerShell accepts the same selection, channel, `--venv`, and launch arguments.
@@ -179,7 +179,7 @@ Activate on the Linux host:
 
 ```sh
 source uz_cli/.venv-host/bin/activate
-ultrazohm serve --interactive --device 192.168.1.233:1000 --output measurement-001 --format both
+ultrazohm serve --interactive --device 192.168.1.233:1000 --output measurement-001 --format csv
 # Equivalently: python -m ultrazohm serve --interactive ...
 ```
 
@@ -187,7 +187,7 @@ Activate in Windows PowerShell:
 
 ```powershell
 .\uz_cli\.venv-host\Scripts\Activate.ps1
-ultrazohm serve --interactive --device 192.168.1.233:1000 --output measurement-001 --format both
+ultrazohm serve --interactive --device 192.168.1.233:1000 --output measurement-001 --format csv
 ```
 
 Within the activated environment, `uv run --no-project --active ultrazohm ...`
@@ -212,12 +212,12 @@ Build separately for each target platform. The setup script has no build step.
 Start one acquisition process and leave it running:
 
 ```sh
-ultrazohm serve --device 192.168.1.233:1000 --output measurement-001 --format both
+ultrazohm serve --device 192.168.1.233:1000 --output measurement-001 --format csv
 ```
 
 The output directory must be new; its parent must exist. `serve --output` reserves
 a session directory but **does not start logging**. Format is `parquet` (default),
-`csv`, or `both`. Start fast and slow recording explicitly and independently.
+or `csv`. Start fast and slow recording explicitly and independently.
 Each enabled recording uses Parquet segments, merges on stop, and optionally
 converts its completed Parquet to CSV. Omit `--output` for control/monitoring only;
 start-logging commands then return a clear error.
@@ -242,7 +242,7 @@ ultrazohm shutdown
 Alternatively, use a command prompt in the same terminal (Linux and Windows):
 
 ```sh
-ultrazohm serve --interactive --device 192.168.1.233:1000 --output measurement-001 --format both
+ultrazohm serve --interactive --device 192.168.1.233:1000 --output measurement-001 --format csv
 ```
 
 At `ultrazohm>`, type commands without the executable prefix:
@@ -531,10 +531,10 @@ Python returns independent Polars DataFrames; the CLI prints the first 20 rows
 and the total returned row count:
 
 ```sh
-ultrazohm get-live-data --last-n-samples 500
+ultrazohm tail 500
 ```
 
-The same command works at the interactive prompt (`get_live_data` is an alias).
+The same command works at the interactive prompt.
 Snapshots use the acquisition's nominal `time`, packet `status`, and canonical
 observable names in channel order. Duplicate selected observables appear once.
 They contain the fast channels, not the rotating slow-data updates. Float32
@@ -553,7 +553,7 @@ try:
     import time
     while uz.status()["buffer_available_samples"] < 500:
         time.sleep(0.05)
-    df = uz.get_live_data(last_n_samples=500)
+    df = uz.tail(500)
     uz.start_logging()
     time.sleep(1)  # Perform the measurement here.
 finally:
@@ -566,7 +566,7 @@ recorded = acquisition.read_recording()  # stream="fast", recording=1
 # second = acquisition.read_recording(recording=2)
 ```
 
-`get_live_data` requires a connection, a positive sample count, and enough
+`tail` requires a connection, a positive sample count, and enough
 retained samples. Requests exceeding current availability fail with the available
 count; they never silently truncate. An individual response is limited to 128 MiB,
 including Arrow metadata. Old snapshots remain unchanged as acquisition continues.
@@ -632,8 +632,8 @@ measurement-001/
     data.json               # Requested channel assignments, rows, completion
     data_slow_data.parquet   # Slow: time, status, JSSD_ZEROVALUE, JSSD_FLOAT_..., ...
     data_slow_data.json
-    data.csv                # Only for --format csv or --format both
-    data_slow_data.csv       # Only for --format csv or --format both
+    data.csv                # Only for --format csv
+    data_slow_data.csv       # Only for --format csv
     end.json                # Created when the service exits
 ```
 
@@ -788,7 +788,7 @@ Manual test server:
 
 ```sh
 python javascope/test_server.py --host 127.0.0.1 --port 1000
-ultrazohm serve --device 127.0.0.1:1000 --output test-run --format both
+ultrazohm serve --device 127.0.0.1:1000 --output test-run --format csv
 ```
 
 The simulator now streams independently of commands, accumulates fragmented

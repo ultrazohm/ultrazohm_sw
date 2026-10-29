@@ -20,8 +20,6 @@ pub enum Format {
     Csv,
     /// Record Parquet and retain a final Parquet file for each stream.
     Parquet,
-    /// Same behavior as csv (retained for compatibility).
-    Both,
 }
 
 pub struct LogWriter {
@@ -331,7 +329,7 @@ impl LogWriter {
     }
 }
 
-/// Shared fast-column conversion, including the public snapshot compatibility API.
+/// Shared fast-column conversion, used by live and recorded queries.
 pub(crate) fn fast_dataframe(
     frames: &[(u64, Arc<Frame>)],
     period_us: f64,
@@ -509,7 +507,7 @@ mod tests {
 
     #[test]
     fn segments_merge_and_csv_is_exported_from_final_parquet() -> Result<()> {
-        for format in [Format::Parquet, Format::Csv, Format::Both] {
+        for format in [Format::Parquet, Format::Csv] {
             let run = Run::new();
             let mut log = LogWriter::new(
                 run.0.clone(),
@@ -626,7 +624,7 @@ mod tests {
             let mut log = LogWriter::new(
                 run.0.clone(),
                 profile.clone(),
-                Format::Both,
+                Format::Csv,
                 stem.into(),
                 slow,
                 &serde_json::to_value(&profile.initial_channels)?,
@@ -677,7 +675,7 @@ mod tests {
             let mut log = LogWriter::new(
                 run.0.clone(),
                 profile.clone(),
-                Format::Both,
+                Format::Csv,
                 stem.into(),
                 true,
                 &serde_json::json!({}),
@@ -731,7 +729,7 @@ mod tests {
         let mut incomplete = LogWriter::new(
             run.0.clone(),
             profile.clone(),
-            Format::Both,
+            Format::Csv,
             "incomplete".into(),
             true,
             &serde_json::json!({}),
@@ -751,7 +749,7 @@ mod tests {
             LogWriter::new(
                 run.0.clone(),
                 profile,
-                Format::Both,
+                Format::Csv,
                 "invalid".into(),
                 true,
                 &serde_json::json!({})

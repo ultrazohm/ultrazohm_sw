@@ -186,7 +186,7 @@ class IntegrationTest(unittest.TestCase):
         data["initial_channels"] = initial_channels
         return data
 
-    def start(self, legacy=False, ack="off", format="both", interactive=False, logging=True,
+    def start(self, legacy=False, ack="off", format="csv", interactive=False, logging=True,
               profile=None, mapping=None, data_options=None):
         self.server = self.spawn([sys.executable, ROOT/"javascope/test_server.py", "--port", self.device_port,
                                  "--sample-rate", 1000, *(["--legacy-ack"] if legacy else [])])
@@ -281,7 +281,7 @@ class IntegrationTest(unittest.TestCase):
         self.start(logging=False, data_options=("--buffer-samples", "960"))
         client = Client(self.endpoint)
         wait_for(lambda: client.status()["buffer_available_samples"] == 960)
-        first = client.get_live_data(953)  # Exercise non-frame-aligned reads and >64 KiB responses.
+        first = client.tail(953)  # Exercise non-frame-aligned reads and >64 KiB responses.
         saved = first.clone()
         self.assertEqual(first.height, 953)
         self.assertEqual(first.columns[:3], ["time", "status", "JSO_ISR_ExecTime_us"])
@@ -289,17 +289,16 @@ class IntegrationTest(unittest.TestCase):
         self.assertEqual(first.schema["JSO_lifecheck"], pl.Float32)
         self.assertTrue(first["time"].is_sorted())
         wait_for(lambda: client.status()["state"]["samples"] > 1500)
-        second = client.get_live_data(953)
+        second = client.tail(953)
         self.assertGreater(second["time"][-1], first["time"][-1])
         self.assertTrue(first.equals(saved))
         self.assertFalse(list(self.run_dir.glob("*.parquet")))
         with self.assertRaisesRegex(RuntimeError, "only 960 available"):
-            client.get_live_data(961)
+            client.tail(961)
         for count in (0, -1, True, 1.5):
             with self.assertRaises(ValueError):
-                client.get_live_data(count)
-        result = subprocess.run([str(BIN), "--endpoint", self.endpoint, "get-live-data",
-                                 "--last-n-samples", "30"], capture_output=True, text=True, timeout=10)
+                client.tail(count)
+        result = subprocess.run([str(BIN), "--endpoint", self.endpoint, "tail", "30"], capture_output=True, text=True, timeout=10)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("30 rows", result.stdout)
         self.assertIn("JSO_lifecheck", result.stdout)
@@ -307,7 +306,7 @@ class IntegrationTest(unittest.TestCase):
         # Old buffered channels are discarded when requested assignments change.
         client.set_observable("lifecheck", 1)
         wait_for(lambda: client.status()["buffer_available_samples"] >= 15)
-        remapped = client.get_live_data(15)
+        remapped = client.tail(15)
         self.assertEqual(remapped.columns[2], "JSO_lifecheck")
         self.assertEqual(remapped.columns.count("JSO_lifecheck"), 1)
 
@@ -329,9 +328,9 @@ class IntegrationTest(unittest.TestCase):
         client = Client(self.endpoint)
         try:
             wait_for(lambda: client.status()["buffer_available_samples"] == 17)
-            self.assertEqual(client.get_live_data(17).height, 17)
+            self.assertEqual(client.tail(17).height, 17)
             with self.assertRaisesRegex(RuntimeError, "only 17 available"):
-                client.get_live_data(18)
+                client.tail(18)
             with self.assertRaisesRegex(RuntimeError, "close"):
                 a.read_recording()
             client.start_logging()
@@ -437,7 +436,7 @@ class IntegrationTest(unittest.TestCase):
             self.assertEqual(Client(self.endpoint).status()["data_options"],
                              {"recording_backend": "parquet", "buffer_samples": 300_000, "segment_rows": 1_000_000, "flush_interval_ms": 60_000})
             with self.assertRaisesRegex(RuntimeError, "not connected"):
-                Client(self.endpoint).get_live_data(1)
+                Client(self.endpoint).tail(1)
         finally:
             a.close()
         with self.assertRaises(RuntimeError):
@@ -472,7 +471,7 @@ class IntegrationTest(unittest.TestCase):
     def test_history_pages_cross_persisted_pending_and_finalized_ranges(self):
         import polars as pl
         from ultrazohm import Client, Recording
-        self.start(logging=False, format="both", data_options=(
+        self.start(logging=False, format="csv", data_options=(
             "--buffer-samples", "17", "--segment-rows", "300", "--flush-interval-ms", "60000"))
         client = Client(self.endpoint)
         client.start_logging()
@@ -605,7 +604,7 @@ class IntegrationTest(unittest.TestCase):
 
     def test_offline_retry_connect_and_log(self):
         self.run_dir=Path(self.tmp.name)/'offline'
-        service=self.spawn([BIN,'--endpoint',self.endpoint,'serve','--output',self.run_dir,'--format','both'])
+        service=self.spawn([BIN,'--endpoint',self.endpoint,'serve','--output',self.run_dir,'--format','csv'])
         status=wait_for(lambda:self.cli('status'))
         self.assertFalse(status['state']['connected'])
         self.assertIsNone(status['state']['device'])
@@ -693,7 +692,7 @@ class IntegrationTest(unittest.TestCase):
         self.assertEqual(len(directories), 1)
         self.assertRegex(directories[0].name, r"^\d{8}-\d{6}-\d{9}Z$")
         metadata = json.loads((directories[0]/"run.json").read_text())
-        self.assertEqual(metadata["format"], "both")
+        self.assertEqual(metadata["format"], "csv")
         self.assertIsNone(metadata["device"])
         self.assertFalse(list(directories[0].glob("*.parquet")))
         self.assertFalse(list(directories[0].glob("*.csv")))
@@ -809,7 +808,7 @@ class IntegrationTest(unittest.TestCase):
     def _pause_resume_scenario(self, segment_rows):
         import polars as pl
         from ultrazohm import Client, Recording
-        self.start(logging=False, format="both", data_options=("--segment-rows", str(segment_rows), "--flush-interval-ms", "60000"))
+        self.start(logging=False, format="csv", data_options=("--segment-rows", str(segment_rows), "--flush-interval-ms", "60000"))
         client = Client(self.endpoint)
         with self.assertRaises(RuntimeError): client.pause_logging()
         with self.assertRaises(RuntimeError): client.resume_logging()

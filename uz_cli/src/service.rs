@@ -91,7 +91,6 @@ pub enum Operation {
     Status,
     Catalog,
     Observables,
-    GetLiveData { last_n_samples: usize },
     DataInfo { source: Source },
     ReadData { query: Query },
     Recordings,
@@ -176,20 +175,11 @@ fn read_line(stream: &mut TcpStream, timeout: Duration) -> Result<Vec<u8>> {
 }
 pub fn request(endpoint: &str, command: Operation) -> Result<Value> {
     ensure!(
-        !matches!(
-            command,
-            Operation::GetLiveData { .. } | Operation::ReadData { .. }
-        ),
-        "use get_live_data for binary sample responses"
+        !matches!(command, Operation::ReadData { .. }),
+        "use read_data for binary sample responses"
     );
     let (reply, _) = exchange(endpoint, command, false)?;
     Ok(reply)
-}
-
-/// Control metadata followed by Arrow IPC stream bytes; samples are never JSON numbers.
-pub fn get_live_data(endpoint: &str, last_n_samples: usize) -> Result<Vec<u8>> {
-    let (_, bytes) = exchange(endpoint, Operation::GetLiveData { last_n_samples }, true)?;
-    Ok(bytes)
 }
 
 pub(crate) fn exchange(
@@ -397,29 +387,6 @@ pub fn serve_with_ready(
                                 );
                             }
                             return Ok(json!({"api_version":1,"ok":true,"recordings":infos}));
-                        }
-                        Operation::GetLiveData { last_n_samples } => {
-                            ensure!(connection.is_some(), "not connected; use connect first");
-                            ensure!(query_workers.len() < 4, "too many concurrent data queries");
-                            let query = Query {
-                                source: Default::default(),
-                                selection: crate::data::Selection::Tail {
-                                    count: *last_n_samples,
-                                },
-                                channels: None,
-                            };
-                            let view = data_view(
-                                &run_id,
-                                &query.source,
-                                &ring,
-                                &recordings,
-                                &config.profile,
-                                &selections,
-                                true,
-                                Some(&query.selection),
-                            )?;
-                            query_job = Some((view, query));
-                            return Ok(json!({}));
                         }
                         Operation::Connect { ip, port } => {
                             ensure!(connection.is_none(), "already connected");

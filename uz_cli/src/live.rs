@@ -1,7 +1,6 @@
 //! Bounded sample history and independent, columnar snapshots.
 use crate::{profile::Profile, protocol::Frame};
 use anyhow::{Result, ensure};
-use polars::prelude::*;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::{collections::VecDeque, sync::Arc};
@@ -67,13 +66,6 @@ impl DataOptions {
     }
 }
 
-#[derive(Clone)]
-pub struct Snapshot {
-    frames: Vec<(u64, Arc<Frame>)>,
-    skip: usize,
-    pub rows: usize,
-}
-
 pub struct LiveBuffer {
     capacity: usize,
     frames: VecDeque<(u64, Arc<Frame>)>,
@@ -129,31 +121,6 @@ impl LiveBuffer {
             .cloned()
             .collect()
     }
-    pub fn snapshot(&self, count: usize) -> Result<Snapshot> {
-        ensure!(count > 0, "last_n_samples must be positive");
-        ensure!(
-            count <= self.available(),
-            "requested {count} samples, but only {} available (buffer capacity {})",
-            self.available(),
-            self.capacity
-        );
-        let mut remaining = count;
-        let mut frames = Vec::new();
-        for (index, frame) in self.frames.iter().rev() {
-            frames.push((*index, frame.clone()));
-            if frame.slow_raw.len() >= remaining {
-                let skip = frame.slow_raw.len() - remaining;
-                frames.reverse();
-                return Ok(Snapshot {
-                    frames,
-                    skip,
-                    rows: count,
-                });
-            }
-            remaining -= frame.slow_raw.len();
-        }
-        unreachable!("available rows must be retained")
-    }
 }
 
 /// Canonical names in channel order, deduplicated by observable ID like recording columns.
@@ -166,15 +133,37 @@ pub fn selected_columns(profile: &Profile, selections: &Value) -> Result<Vec<(us
     Ok(columns)
 }
 
-impl Snapshot {
-    pub fn dataframe(&self, period_us: f64, columns: &[(usize, String)]) -> Result<DataFrame> {
-        crate::storage::fast_dataframe(&self.frames, period_us, columns, self.skip, self.rows)
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::data::{DataView, Query, Selection};
+    use polars::prelude::*;
+    use std::sync::Mutex;
+
+    fn snapshot(ring: &LiveBuffer, count: usize, name: &str) -> Result<(DataView, Query)> {
+        let mut profile = Profile::load(None)?;
+        profile.observables.insert(name.into(), 0);
+        let query = Query {
+            source: Default::default(),
+            selection: Selection::Tail { count },
+            channels: None,
+        };
+        // Copy the ring references so the test can mutate the original after capturing a view.
+        let mut copy = LiveBuffer::new(ring.capacity);
+        for (index, frame) in &ring.frames {
+            copy.push(*index, frame.clone());
+        }
+        let view = DataView::live(
+            "test",
+            &query.source,
+            &Mutex::new(copy),
+            &profile,
+            &serde_json::json!({"1": name}),
+            Some(&query.selection),
+        )?;
+        Ok((view, query))
+    }
+
     fn frame(first: usize, rows: usize) -> Frame {
         Frame {
             status: 7,
@@ -193,12 +182,12 @@ mod tests {
         ring.push(15, frame(15, 15));
         ring.push(30, frame(30, 15));
         assert_eq!(ring.available(), 17);
-        assert!(ring.snapshot(18).is_err());
-        assert!(ring.snapshot(0).is_err());
-        let snapshot = ring.snapshot(17)?;
+        assert!(snapshot(&ring, 18, "signal").is_err());
+        assert!(snapshot(&ring, 0, "signal").is_err());
+        let (view, query) = snapshot(&ring, 17, "signal")?;
         ring.clear();
         ring.push(45, frame(45, 15));
-        let df = snapshot.dataframe(100., &[(0, "signal".into())])?;
+        let (df, _, _, _) = view.read(&query)?;
         assert_eq!(df.height(), 17);
         assert_eq!(df.column("signal")?.f32()?.get(0), Some(28.));
         assert_eq!(df.column("signal")?.f32()?.get(16), Some(44.));
@@ -213,7 +202,8 @@ mod tests {
         ring.push(15, frame(15, 15));
         assert_eq!(ring.available(), 1);
         assert_eq!(ring.frames.len(), 1);
-        let df = ring.snapshot(1)?.dataframe(100., &[(19, "last".into())])?;
+        let (view, query) = snapshot(&ring, 1, "last")?;
+        let (df, _, _, _) = view.read(&query)?;
         assert_eq!(df.column("last")?.f32()?.get(0), Some(29.));
         Ok(())
     }
@@ -225,7 +215,8 @@ mod tests {
         f.status = u32::MAX;
         let mut ring = LiveBuffer::new(3);
         ring.push(0, f);
-        let mut df = ring.snapshot(3)?.dataframe(100., &[(0, "signal".into())])?;
+        let (view, query) = snapshot(&ring, 3, "signal")?;
+        let (mut df, _, _, _) = view.read(&query)?;
         let mut bytes = Vec::new();
         IpcStreamWriter::new(&mut bytes).finish(&mut df)?;
         let read = IpcStreamReader::new(std::io::Cursor::new(bytes)).finish()?;

@@ -68,7 +68,7 @@ enum Command {
         /// Logging stays off until start-logging commands.
         #[arg(long)]
         output: Option<PathBuf>,
-        /// parquet: final Parquet only; csv/both: also convert the final Parquet to CSV.
+        /// parquet: final Parquet only; csv: also convert the final Parquet to CSV.
         #[arg(long, value_enum, default_value = "parquet")]
         format: Format,
         #[arg(long,default_value="off",value_parser=["on","off"])]
@@ -112,12 +112,6 @@ enum Command {
     /// List all channel assignments requested in this service session (not device readback).
     #[command(aliases = ["get-observables", "get_observables"])]
     Observables,
-    /// Print a preview of an independent snapshot from the live RAM buffer.
-    #[command(alias = "get_live_data")]
-    GetLiveData {
-        #[arg(long)]
-        last_n_samples: usize,
-    },
     /// List recordings created in this acquisition, including older recording numbers.
     Recordings,
     /// Report the available sample range and durable write boundary.
@@ -241,7 +235,7 @@ fn dispatch(args: Args) -> Result<()> {
         profile: None,
         channel_mapping: None,
         output: None,
-        format: Format::Both,
+        format: Format::Csv,
         ack: "off".into(),
         interactive: true,
     });
@@ -458,34 +452,6 @@ fn prompt(endpoint: &str, shutdown: &AtomicBool) -> Result<()> {
 
 fn execute(command: Command, endpoint: &str) -> Result<()> {
     let op = match command {
-        Command::GetLiveData { last_n_samples } => {
-            use polars::prelude::*;
-            let bytes = service::get_live_data(endpoint, last_n_samples)?;
-            let df = IpcStreamReader::new(std::io::Cursor::new(bytes)).finish()?;
-            println!(
-                "{} rows × {} columns (showing first {})",
-                df.height(),
-                df.width(),
-                df.height().min(20)
-            );
-            println!(
-                "{}",
-                df.get_column_names()
-                    .iter()
-                    .map(|n| n.as_str())
-                    .collect::<Vec<_>>()
-                    .join("\t")
-            );
-            for row in 0..df.height().min(20) {
-                let cells = df
-                    .get_columns()
-                    .iter()
-                    .map(|c| c.get(row).map(|v| v.to_string()))
-                    .collect::<std::result::Result<Vec<_>, _>>()?;
-                println!("{}", cells.join("\t"));
-            }
-            return Ok(());
-        }
         Command::Recordings => Operation::Recordings,
         Command::DataInfo { stream, recording } => Operation::DataInfo {
             source: Source { stream, recording },

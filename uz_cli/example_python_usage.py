@@ -58,7 +58,7 @@ uz.stop()
 time.sleep(1)
 print("Reported platform state:", uz.status()["state"]["platform_state"])
 time.sleep(9)
-latest = uz.get_live_data(last_n_samples=20)  # Independent Polars DataFrame from RAM.
+latest = uz.tail(n=20)  # Independent Polars DataFrame from RAM.
 print("Latest 20 samples:")
 with pl.Config(tbl_rows=20, tbl_cols=-1):
     print(latest)

@@ -2,7 +2,7 @@
 import json
 from dataclasses import dataclass
 from io import BytesIO
-from ._native import (request as _request, live_data as _live_data, Acquisition as _Acquisition,
+from ._native import (request as _request, Acquisition as _Acquisition,
                       data_query as _data_query, recording_info as _recording_info,
                       recording_data as _recording_data)
 
@@ -106,13 +106,6 @@ class Client:
     def catalog(self):
         """Return the service's firmware mapping and runtime profile, not device readback."""
         return self._call("catalog")
-    def get_live_data(self, last_n_samples):
-        """Return an independent Polars snapshot of the last N retained fast samples."""
-        import polars as pl
-        if isinstance(last_n_samples, bool) or not isinstance(last_n_samples, int) or last_n_samples <= 0:
-            raise ValueError("last_n_samples must be a positive integer")
-        return pl.read_ipc_stream(BytesIO(_live_data(self.endpoint, last_n_samples)))
-
     def recordings(self):
         return self._call("recordings")["recordings"]
 

@@ -1,8 +1,44 @@
 import threading
 import time
 import numpy as np
+import pytest
 from uz_dataviewer.state import AppState
 from uz_dataviewer import session
+
+
+@pytest.mark.parametrize('command', ['export_data', 'hist_export', 'fft_export'])
+def test_queued_export_keeps_window_when_unlinked_plot_moves(app_state, tmp_path, command):
+    state = app_state
+    state.async_exports = True
+    state.link_x = False
+    t = np.arange(100.) / 10
+    run = state.registry.add_run('run', '', t, {'a': t.copy()}, {})
+    state.cells[0].add((run.id, 'a'))
+    state.cells[0].x_lim = state.plot_x_ranges[1] = (2., 4.)
+    state.fft.sources = state.histogram.sources = [(run.id, 'a')]
+    state.fft.follow_plot = state.histogram.follow_plot = 1
+    # An ongoing file load can keep the shared IO executor busy after Export.
+    entered, release = threading.Event(), threading.Event()
+    def load(cancel):
+        entered.set()
+        assert release.wait(5)
+    state.services.executor.submit(load)
+    assert entered.wait(2)
+    target = tmp_path / 'queued.csv'
+    expected = tmp_path / 'expected.csv'
+    handler = {'export_data': lambda path: session.export_data(state, 0, str(path)),
+               'hist_export': lambda path: session.export_histogram(state, str(path)),
+               'fft_export': lambda path: session.export_fft(state, str(path))}[command]
+    handler(expected)
+    try:
+        args = [1, str(target)] if command == 'export_data' else [str(target)]
+        state.commands.execute(state, command, args)
+        state.cells[0].x_lim = state.plot_x_ranges[1] = (6., 8.)
+        release.set()
+        state.services.exports[0][0].result(timeout=5)
+        assert target.read_bytes() == expected.read_bytes()
+    finally:
+        release.set()
 
 
 def test_export_captures_settings_and_does_not_block_controls(tmp_path, monkeypatch):

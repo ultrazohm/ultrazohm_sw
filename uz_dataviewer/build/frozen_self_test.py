@@ -12,6 +12,56 @@ from uz_dataviewer.loader import open_file, convert_csv_to_parquet
 from uz_dataviewer.model import DataRegistry
 
 
+def check_plot_input():
+    """Exercise packaged ImPlot mouse input on both platforms without a GPU."""
+    from uz_dataviewer.panels.plots import PlotsPanel
+    from uz_dataviewer.state import AppState
+    io = imgui.get_io()
+    io.set_ini_filename(None)
+    io.display_size = imgui.ImVec2(1200, 1000)
+    io.delta_time = 1 / 60
+    io.backend_flags |= imgui.BackendFlags_.renderer_has_textures
+    state = AppState()
+    state.services.display.synchronous = True
+    state.set_grid(2, 1)
+    t = np.linspace(0., 10., 1000)
+    run = state.registry.add_run('smoke', '', t, {'signal': np.sin(t)}, {})
+    for cell in state.cells:
+        cell.add((run.id, 'signal'))
+    state.set_plot_x_limits(1, 0., 10.)
+    geometry = {}
+    class Panel(PlotsPanel):
+        def _time_series_input(self, state, index, cell, lo, hi):
+            geometry[index] = (implot.get_plot_pos(), implot.get_plot_size())
+    panel = Panel()
+    def frame():
+        imgui.new_frame()
+        imgui.set_next_window_pos(imgui.ImVec2(0, 0))
+        imgui.set_next_window_size(imgui.ImVec2(1000, 900))
+        imgui.begin('Frozen plot input test')
+        panel.render(state)
+        imgui.end()
+        imgui.render()
+    try:
+        for _ in range(3):
+            frame()
+        for target in (1, 0):
+            before = state.cells[target].x_lim
+            pos, size = geometry[target]
+            io.add_mouse_pos_event(pos.x + size.x * .5, pos.y + size.y + 8)
+            frame()
+            io.add_mouse_wheel_event(0., 1.)
+            frame()
+            frame()
+            window = state.cells[target].x_lim
+            assert window[1] - window[0] < before[1] - before[0]
+            for i, cell in enumerate(state.cells, 1):
+                np.testing.assert_allclose(cell.x_lim, window)
+                np.testing.assert_allclose(state.plot_time_range(i), window)
+    finally:
+        state.shutdown()
+
+
 def run(report_path):
     with TemporaryDirectory() as directory:
         root = Path(directory)
@@ -41,6 +91,9 @@ def run(report_path):
         assert converted.exists()
         context = imgui.create_context()
         plot_context = implot.create_context()
-        implot.destroy_context(plot_context)
-        imgui.destroy_context(context)
+        try:
+            check_plot_input()
+        finally:
+            implot.destroy_context(plot_context)
+            imgui.destroy_context(context)
     Path(report_path).write_text(json.dumps({"ok": True}), encoding="utf-8")

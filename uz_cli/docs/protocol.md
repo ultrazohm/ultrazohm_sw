@@ -204,6 +204,22 @@ start_logging_slow_data, stop_logging_slow_data, pause_logging, resume_logging,
 pause_logging_slow_data, resume_logging_slow_data, shutdown.
 Unknown operations/fields and unsupported versions fail without sending bytes.
 
+Connections read requests and write replies independently; commands execute
+sequentially on the service owner. There are at most 64 active client workers
+and four data queries. Excess connections are closed immediately. Incomplete
+requests time out without holding up other clients.
+
+A complete, validated `stop` request cancels all requests still in the service
+queue and becomes the next command to execute. Canceled callers receive
+`ok:false` with `request canceled by Stop before execution` (Python raises
+`RuntimeError`). An already executing command finishes first. Requests completed
+after Stop enter the queue normally, including requests whose connections were
+opened earlier. Stop is therefore a cancellation boundary, not a persistent
+interlock against new enable commands. Do not automatically retry canceled
+commands. The GUI also cancels its own pending commands and terminates its managed
+measurement script before sending Stop; independently launched scripts remain
+responsible for handling cancellation.
+
 `stop` affects the device; `shutdown` requests acquisition shutdown; the logger drains, merges Parquet segments
 and optionally exports CSV before the service exits.
 Shutdown sends device Stop before finalization. Loss of the client connection is not an

@@ -10,6 +10,9 @@ def submit(state, handler, values):
         raise ValueError('An export is already running; wait for it to finish')
     snapshot = copy(state)
     snapshot.cells = deepcopy(state.cells)
+    # Rendering mutates this dictionary in place. Keep the windows from the
+    # click, even if this job waits behind a load and the user keeps zooming.
+    snapshot.plot_x_ranges = dict(state.plot_x_ranges)
     snapshot.fft = deepcopy(state.fft)
     snapshot.histogram = deepcopy(state.histogram)
     snapshot.registry = copy(state.registry)

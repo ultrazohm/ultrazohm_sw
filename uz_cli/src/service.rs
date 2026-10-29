@@ -22,6 +22,8 @@ use std::{
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 
+mod control;
+
 // Bounded audit IO: slow storage must never hold up device Stop.
 struct Audit {
     tx: std::sync::mpsc::SyncSender<Value>,
@@ -263,7 +265,6 @@ struct Service {
     recordings: Recordings,
     connection: Option<Connection>,
     selections: Value,
-    query_workers: Vec<thread::JoinHandle<()>>,
     shutdown_stop_sent: bool,
 }
 
@@ -334,7 +335,6 @@ impl Service {
             recordings,
             connection: None,
             selections: json!({}),
-            query_workers: Vec::new(),
             shutdown_stop_sent: false,
         };
         if let Some(device) = service.config.device.clone() {
@@ -351,8 +351,21 @@ impl Service {
     }
 
     fn run(mut self, listener: TcpListener) -> Result<()> {
+        let control = match control::ControlServer::new(
+            listener,
+            self.context.shutdown.clone(),
+            self.context.state.clone(),
+        ) {
+            Ok(control) => control,
+            Err(error) => {
+                self.context.state.lock().unwrap().error =
+                    Some(format!("control transport: {error:#}"));
+                self.context.shutdown.store(true, Ordering::SeqCst);
+                let _ = self.finish();
+                return Err(error);
+            }
+        };
         while !self.context.shutdown.load(Ordering::SeqCst) {
-            self.query_workers.retain(|worker| !worker.is_finished());
             if let Some(error) = self.recordings.error() {
                 self.context
                     .state
@@ -361,6 +374,7 @@ impl Service {
                     .error
                     .get_or_insert(error);
                 self.context.shutdown.store(true, Ordering::SeqCst);
+                break;
             }
             if self
                 .connection
@@ -370,45 +384,23 @@ impl Service {
                 self.context.shutdown.store(true, Ordering::SeqCst);
                 break;
             }
-            match listener.accept() {
-                Ok((socket, _)) => self.respond(socket),
-                Err(e) if e.kind() == std::io::ErrorKind::WouldBlock => {
-                    thread::sleep(Duration::from_millis(5))
-                }
-                Err(e) => {
-                    self.context.state.lock().unwrap().error = Some(e.to_string());
-                    self.context.shutdown.store(true, Ordering::SeqCst);
-                }
+            if let Some(pending) = control.next() {
+                let response = self.handle(pending.request);
+                let _ = pending.reply.send(response);
+            } else {
+                thread::sleep(Duration::from_millis(5));
             }
         }
-        self.finish()
-    }
-
-    fn respond(&mut self, mut socket: TcpStream) {
-        let result = read_request(&mut socket).and_then(|req| self.handle(req));
-        let response = match result {
-            Ok(Reply::Data(view, query)) => {
-                self.query_workers.push(thread::spawn(move || {
-                    serve_data_query(socket, *view, query)
-                }));
-                return;
-            }
-            Ok(Reply::Json(value)) => value,
-            Err(error) => json!({"api_version":1,"ok":false,"error":format!("{error:#}")}),
-        };
-        if serde_json::to_writer(&mut socket, &response).is_ok() {
-            let _ = socket.write_all(b"\n");
-        }
+        // Stop the device before waiting for any slow client or disk worker.
+        let result = self.finish();
+        let connections = control.finish();
+        result.and(connections)
     }
 
     fn handle(&mut self, req: Request) -> Result<Reply> {
         let mut wire = None;
         match &req.command {
             Operation::ReadData { query } => {
-                ensure!(
-                    self.query_workers.len() < 4,
-                    "too many concurrent data queries; retry after a current query finishes"
-                );
                 let view = self.view(&query.source, Some(&query.selection))?;
                 return Ok(Reply::Data(Box::new(view), query.clone()));
             }
@@ -627,9 +619,6 @@ impl Service {
                         .get_or_insert_with(|| format!("shutdown device Stop failed: {error:#}"));
                 }
             }
-        }
-        for worker in self.query_workers {
-            let _ = worker.join();
         }
         if let Some(Connection {
             writer,

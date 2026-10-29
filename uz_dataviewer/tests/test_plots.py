@@ -208,6 +208,92 @@ def test_link_enable_syncs_driver(app_state, gui_frame):
     assert s.plot_time_range(1) == s.cells[0].x_lim
 
 
+@pytest.mark.parametrize('target', [0, 1])
+@pytest.mark.parametrize('axis_only', [False, True])
+def test_linked_mouse_zoom_and_pan_keep_analysis_and_export_in_sync(
+        app_state, gui_frame, tmp_path, target, axis_only):
+    from imgui_bundle import imgui, implot
+    state = app_state
+    state.services.display.synchronous = True
+    state.set_grid(2, 1)
+    t = np.arange(1001.) / 100
+    run = state.registry.add_run('run', '', t, {'a': np.sin(t)}, {})
+    for cell in state.cells:
+        cell.add((run.id, 'a'))
+    state.set_plot_x_limits(1, 2., 8.)
+    panel = PlotsPanel()
+    geometry = {}
+    def capture(state, index, cell, lo, hi):
+        geometry[index] = (implot.get_plot_pos(), implot.get_plot_size())
+    panel._time_series_input = capture
+    io = imgui.get_io()
+    io.display_size = imgui.ImVec2(1400, 1100)
+    def frame():
+        gui_frame(panel, state)
+    for _ in range(3):
+        frame()
+    # Establish the other plot as driver, then move straight to the target axis.
+    pos, size = geometry[1 - target]
+    io.add_mouse_pos_event(pos.x + size.x * .5, pos.y + size.y * .5)
+    frame()
+    pos, size = geometry[target]
+    x = pos.x + size.x * .5
+    y = pos.y + size.y + 8 if axis_only else pos.y + size.y * .5
+    io.add_mouse_pos_event(x, y)
+    frame()
+    io.add_mouse_wheel_event(0., 1.)
+    frame()
+    frame()  # Earlier cells adopt the later cell's changed range next frame.
+    zoomed = state.cells[target].x_lim
+    assert zoomed[1] - zoomed[0] < 6.
+    assert state.cells[1 - target].x_lim == pytest.approx(zoomed)
+    # Axis-only panning must also update the shared effective window.
+    button = implot.get_input_map().pan
+    io.add_mouse_button_event(button, True)
+    frame()
+    io.add_mouse_pos_event(x + 40, y)
+    frame()
+    io.add_mouse_button_event(button, False)
+    frame()
+    frame()
+    window = state.cells[target].x_lim
+    assert window != pytest.approx(zoomed)
+    assert window[1] - window[0] == pytest.approx(zoomed[1] - zoomed[0])
+    # Native box selection must survive the next shared-axis update as well.
+    pos, size = geometry[target]
+    io.add_mouse_pos_event(pos.x + size.x * .2, pos.y + size.y * .2)
+    frame()
+    io.add_mouse_button_event(implot.get_input_map().select, True)
+    frame()
+    io.add_mouse_pos_event(pos.x + size.x * .6, pos.y + size.y * .7)
+    frame()
+    io.add_mouse_button_event(implot.get_input_map().select, False)
+    frame()
+    frame()
+    boxed = state.cells[target].x_lim
+    assert boxed[1] - boxed[0] < window[1] - window[0]
+    # EndPlot applies double-click fitting after get_plot_limits was captured.
+    # That fitted range must not snap back on the following frame.
+    for _ in range(30):
+        frame()
+    for down in (True, False, True):
+        io.add_mouse_button_event(implot.get_input_map().fit, down)
+        frame()
+    window = state.cells[target].x_lim
+    assert window != pytest.approx(boxed)
+    io.add_mouse_button_event(implot.get_input_map().fit, False)
+    frame()
+    frame()
+    for i, cell in enumerate(state.cells, 1):
+        assert cell.x_lim == pytest.approx(window)
+        assert state.plot_time_range(i) == pytest.approx(window)
+        assert state.resolve_x_window(i, (0, 0), [(run.id, 'a')]) == pytest.approx(window)
+    path = tmp_path / 'zoom.csv'
+    session.export_data(state, target, str(path))
+    actual = np.genfromtxt(path, delimiter=',', skip_header=1)[:, 0]
+    np.testing.assert_allclose(actual, t[(t >= window[0]) & (t <= window[1])])
+
+
 def test_frequency_outputs_keep_independent_axes(app_state, gui_frame, tmp_path):
     s = app_state
     s.services.display.synchronous = True

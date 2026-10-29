@@ -56,7 +56,8 @@ class LivePlotsPanel(PlotsPanel):
 
     def _setup_shared_x(self, state, index, cell):
         if not getattr(state, 'following_live', False):
-            super()._setup_shared_x(state, index, cell)
+            return super()._setup_shared_x(state, index, cell)
+        return False
 
     def _time_series_input(self, state, index, cell, lo, hi):
         if self.workspace is None or not state.is_time_plot(cell):

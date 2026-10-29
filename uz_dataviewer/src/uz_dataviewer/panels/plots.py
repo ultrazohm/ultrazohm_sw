@@ -71,7 +71,8 @@ def _abbrev(n: int) -> str:
 class PlotsPanel(SessionPanel):
     def __init__(self, signal_payload_type=SIGNAL_DND_TYPE) -> None:
         self.signal_payload_type = signal_payload_type
-        self._driver: int = -1  # cell index that currently drives linked X axes
+        self._driver: int = -1  # last interacted cell (also used by live inspect)
+        self._shared_axis_links = (implot.BoxedValue(0.), implot.BoxedValue(1.))
         self._last_points: dict[int, int] = {}  # cell index -> samples drawn last frame
         self._last_raw: dict[int, int] = {}  # cell index -> raw samples in view last frame
         self._last_logged_x: dict[int, tuple[float, float]] = {}  # for zoom echo
@@ -333,7 +334,7 @@ class PlotsPanel(SessionPanel):
                 implot.setup_axis(implot.ImAxis_.y2, "", implot.AxisFlags_.aux_default)
 
             did_fit = self._apply_pending_limits(state, cell, data_min, data_max)
-            self._setup_shared_x(state, index, cell)
+            linked = self._setup_shared_x(state, index, cell)
 
             limits = implot.get_plot_limits()
             raw_lo, raw_hi = float(limits.x.min), float(limits.x.max)
@@ -359,7 +360,7 @@ class PlotsPanel(SessionPanel):
 
             self._accept_drop(state, index, cell)
 
-            if implot.is_plot_hovered():
+            if implot.is_plot_hovered() or implot.is_axis_hovered(implot.ImAxis_.x1):
                 lo, hi = float(limits.x.min), float(limits.x.max)
                 if _is_finite_range(lo, hi):
                     self._driver = index
@@ -371,13 +372,26 @@ class PlotsPanel(SessionPanel):
                 self._spy_rect(state, index, cell)
 
             implot.end_plot()
+            if linked:
+                # Native fitting (double-click) finalizes limits in EndPlot.
+                # Publish those too, rather than reseeding the pre-fit window.
+                window = tuple(value.value for value in self._shared_axis_links)
+                if _is_finite_range(*window):
+                    state.shared_x = cell.x_lim = window
+                    state.plot_x_ranges[index + 1] = window
 
         if cell.spy and cell.spy_rect is not None:
             self._render_spy_inset(state, index, cell, width, inset_h)
 
     def _setup_shared_x(self, state, index, cell):
-        if state.link_x and state.is_time_plot(cell) and state.shared_x is not None and index != self._driver:
-            implot.setup_axis_limits(implot.ImAxis_.x1, *state.shared_x, implot.Cond_.always)
+        if state.link_x and state.is_time_plot(cell) and state.shared_x is not None:
+            # Seed the shared window without locking input. Cond_.always made
+            # every non-driver axis ignore gestures, especially axis-only zoom.
+            lo, hi = self._shared_axis_links
+            lo.value, hi.value = state.shared_x
+            implot.setup_axis_links(implot.ImAxis_.x1, lo, hi)
+            return True
+        return False
 
     def _time_series_input(self, state, index, cell, lo, hi):
         """Optional source-specific interaction handling after ImPlot processes input."""

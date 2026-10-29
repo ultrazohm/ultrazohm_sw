@@ -15,7 +15,7 @@ def main():
             cwd=directory, check=True, timeout=120,
         )
         assert json.loads(report.read_text(encoding="utf-8")) == {"ok": True}
-    print("Frozen executable: native imports, Parquet reads and downsampling passed.")
+    print("Frozen executable: native imports, Parquet reads, downsampling and linked-axis input passed.")
 
 
 if __name__ == "__main__":

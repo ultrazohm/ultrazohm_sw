@@ -1134,6 +1134,25 @@ class IntegrationTest(unittest.TestCase):
         self.cli("shutdown")
         self.assertEqual(self.service.wait(timeout=8),0)
 
+    def test_stop_is_not_blocked_by_idle_or_partial_control_requests(self):
+        self.start(logging=False)
+        clients = []
+        try:
+            address = ('127.0.0.1', int(self.endpoint.split(':')[1]))
+            for i in range(6):
+                client = socket.create_connection(address)
+                clients.append(client)
+                if i % 2:
+                    client.sendall(b'{"api_version":1,"command":')
+            time.sleep(.05)  # Let the service accept the stalled connections.
+            started = time.monotonic()
+            self.assertTrue(self.cli('stop')['ok'])
+            self.assertLess(time.monotonic() - started, 1.)
+            self.assertTrue(self.cli('status')['state']['connected'])
+        finally:
+            for client in clients:
+                client.close()
+
     def test_control_validation_and_exclusive_run(self):
         self.start()
         with socket.create_connection(tuple(["127.0.0.1", int(self.endpoint.split(":")[1])])) as sock:

@@ -101,6 +101,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_i_q_pmsm_cil] = &project_wizard_visualization_data.viz_iq_pmsm_cil;
 	js_ch_observable[JSO_torque_pmsm_cil] = &project_wizard_visualization_data.viz_torque_pmsm_cil;
 	js_ch_observable[JSO_omega_mech_1_s_pmsm_cil] = &project_wizard_visualization_data.viz_omega_mech_1_s_cil;
+	js_ch_observable[JSO_dut_violation] = &data->av.dut_violation_code;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -128,6 +129,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_INVERTER_ADAPTER_D2_OC] = &project_wizard_visualization_data.viz_inverter_adapter_d2_oc;
 	js_slowDataArray[JSSD_FLOAT_INVERTER_ADAPTER_D2_FAULT] = &project_wizard_visualization_data.viz_inverter_adapter_d2_fault;
 /* Project Wizard END: javascope_slowdata_pointers */
+	js_slowDataArray[JSSD_FLOAT_dut_violation] = &data->av.dut_violation_code;
 
 	return Status;
 }
@@ -158,6 +160,7 @@ void JavaScope_update(DS_Data* data){
 	ISR_period_us			= uz_SystemTime_GetIsrPeriodInUs();
 	System_UpTime_seconds   = uz_SystemTime_GetUptimeInSec();
 	System_UpTime_ms		= uz_SystemTime_GetUptimeInMs();
+	data->av.dut_violation_code = (float)data->av.dut_violation;
 
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){

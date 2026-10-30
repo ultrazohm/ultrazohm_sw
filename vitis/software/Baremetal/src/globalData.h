@@ -7,6 +7,7 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_pmsmmodel/uz_pmsmModel.h"
+#include "uz/uz_pmsm_control/uz_pmsm_control.h"
 #include "../src/uz/uz_signals/uz_signals.h"
 // Project Wizard adapter slot headers
 #include "include/a1_adapter_init.h"
@@ -26,6 +27,9 @@ typedef struct _actualValues_ {
 	uint32_t slowDataCounter;
 	struct uz_pmsmModel_inputs_t pmsm_cil_inputs;
 	struct uz_pmsmModel_outputs_t pmsm_cil_outputs;
+	struct uz_pmsm_measurement_values dut_measurements;
+	enum uz_pmsm_control_safe_operating_region_violation dut_violation;
+	float dut_violation_code; /* JavaScope transports floats, not enum storage. */
 	/* Project Wizard BEGIN: actualValues */
 	float adc_ltc2311_a1_ch0;
 	float adc_ltc2311_a1_ch1;
@@ -95,12 +99,16 @@ typedef struct _referenceAndSetValues_ {
 	float pwm_3L_0_halfBridgeDutyCycle_3;
 /* Project Wizard END: referenceAndSetValues */
 	float speed_ref_rpm_prime_mover;
+	uz_3ph_dq_t dut_current_reference_A;
+	float pmsm_cil_dc_link_voltage_V;
+	bool dut_acknowledge_error; /* One-shot request; accepted only outside control_state. */
 	float ramped_speed_ref_rpm_prime_mover;
 } referenceAndSetValues;
 
 typedef struct{
 	uz_mux_axi_t* mux_axi;
 	uz_pmsmModel_t *pmsm_cil;
+	uz_pmsm_control_t *dut;
 	uz_ramp_t *speed_ref_ramp_prime_mover;
 	/* Project Wizard BEGIN: objects */
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0;

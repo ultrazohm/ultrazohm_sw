@@ -52,6 +52,7 @@ enum JS_OberservableData {
 	JSO_i_q_pmsm_cil,
 	JSO_torque_pmsm_cil,
 	JSO_omega_mech_1_s_pmsm_cil,
+	JSO_dut_violation,
 	JSO_ENDMARKER
 };
 
@@ -82,6 +83,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_INVERTER_ADAPTER_D2_OC,
 	JSSD_FLOAT_INVERTER_ADAPTER_D2_FAULT,
 /* Project Wizard END: javascope_slowdata */
+	JSSD_FLOAT_dut_violation,
 	JSSD_ENDMARKER
 };
 
@@ -137,8 +139,8 @@ enum gui_button_mapping {
 
 	SND_FLD_ZEROVALUE=0,
 	speed_ref_prime_mover,
-	send_field_2,
-	send_field_3,
+	id_ref_dut,
+	iq_ref_dut,
 	send_field_4,
 	send_field_5,
 	send_field_6,
@@ -164,8 +166,8 @@ enum gui_button_mapping {
 
 	SND_LABELS_ZEROVALUE=0,
 	rpm,
-	-,
-	-,
+	A,
+	A,
 	-,
 	-,
 	-,
@@ -194,7 +196,7 @@ enum gui_button_mapping {
 	ISR_ExecTime,
 	ISR_PeriodTime,
 	MillisecondsTimer,
-	receive_field_5,
+	dut_violation,
 	receive_field_6,
 	receive_field_7,
 	receive_field_8,
@@ -264,7 +266,7 @@ enum gui_button_mapping {
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
 	JSSD_FLOAT_Milliseconds,
-	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_dut_violation,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,

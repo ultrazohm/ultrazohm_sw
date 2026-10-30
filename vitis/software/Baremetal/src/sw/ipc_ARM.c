@@ -192,10 +192,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_2):
 		data->av.snd_fld[2] = value;
+		data->rasv.dut_current_reference_A.d = value;
 			break;
 
 		case (Set_Send_Field_3):
 		data->av.snd_fld[3] = value;
+		data->rasv.dut_current_reference_A.q = value;
 			break;
 
 		case (Set_Send_Field_4):
@@ -299,7 +301,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Error_Reset):
-
+			data->rasv.dut_acknowledge_error = true;
 			break;
 
 		case (0xFFFF):

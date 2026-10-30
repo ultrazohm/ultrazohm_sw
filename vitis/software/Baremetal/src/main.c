@@ -19,6 +19,7 @@
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
+        .pmsm_cil_dc_link_voltage_V = 48.0f,
 /* Project Wizard BEGIN: rasv_initializer */
         .pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f,
         .pwm_2L_0_halfBridgeDutyCycle_2 = 0.0f,
@@ -95,6 +96,7 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
             Global_Data.objects.speed_ref_ramp_prime_mover = initialize_speed_ref_ramp_prime_mover();
+            Global_Data.objects.dut = initialize_dut(Global_Data.av.isr_samplerate_s);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

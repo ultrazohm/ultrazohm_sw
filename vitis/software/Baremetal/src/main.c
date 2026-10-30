@@ -94,6 +94,7 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            Global_Data.objects.speed_ref_ramp_prime_mover = initialize_speed_ref_ramp_prime_mover();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -114,12 +115,16 @@ int main(void)
 			Global_Data.objects.adc_ltc2311_a1 = initialize_adc_ltc2311_a1();
 			Global_Data.objects.adc_ltc2311_a2 = initialize_adc_ltc2311_a2();
 			Global_Data.objects.adc_ltc2311_a3 = initialize_adc_ltc2311_a3();
-			Global_Data.objects.axi_gpio_d1 = initialize_axi_gpio_d1();
-			Global_Data.objects.axi_gpio_d2 = initialize_axi_gpio_d2();
-			Global_Data.objects.incremental_encoder_d5_1 = initialize_incremental_encoder_d5_1();
-			Global_Data.objects.incremental_encoder_d5_2 = initialize_incremental_encoder_d5_2();
-			Global_Data.objects.incremental_encoder_d5_3 = initialize_incremental_encoder_d5_3();
+			Global_Data.objects.inverter_adapter_d1 = initialize_inverter_adapter_d1();
+			Global_Data.objects.inverter_adapter_d2 = initialize_inverter_adapter_d2();
+			Global_Data.objects.ssi_encoder_d4_1 = initialize_ssi_encoder_d4_1();
+			uz_ssi_interface_enable_ip(Global_Data.objects.ssi_encoder_d4_1, true);
+			Global_Data.objects.resolver_ip_d5_1 = initialize_resolver_ip_d5_1();
+			Global_Data.objects.resolver_pl_interface_d5_1 = initialize_resolver_pl_interface_d5_1();
+			Global_Data.objects.resolver_ip_d5_2 = initialize_resolver_ip_d5_2();
+			Global_Data.objects.resolver_pl_interface_d5_2 = initialize_resolver_pl_interface_d5_2();
 /* Project Wizard END: init_ip_cores */
+			Global_Data.objects.pmsm_cil = initialize_uz_pmsm_cil();
             initialization_chain = print_msg;
             break;
         case print_msg:

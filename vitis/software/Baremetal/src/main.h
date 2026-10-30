@@ -51,6 +51,8 @@
 
 #include "include/pwm_init.h"
 
+#include "include/pmsm_cil.h"
+
 // Project Wizard adapter slot init headers
 #include "include/a1_adapter_init.h"
 #include "include/a2_adapter_init.h"

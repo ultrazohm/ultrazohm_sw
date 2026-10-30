@@ -51,28 +51,7 @@ static void update_adapter_d3(void);
 static void update_adapter_d4(void);
 static void update_adapter_d5(void);
 
-
-/* Project Wizard USER BEGIN: D1 axi_gpio_outputs */
-static void update_axi_gpio_d1_outputs(void)
-{
-    uz_axi_gpio_set_output_pin_to(Global_Data.objects.axi_gpio_d1, DIG_24, HIGH);
-    uz_axi_gpio_set_output_pin_to(Global_Data.objects.axi_gpio_d1, DIG_25, LOW);
-    uz_axi_gpio_set_output_pin_to(Global_Data.objects.axi_gpio_d1, DIG_26, HIGH);
-    uz_axi_gpio_set_output_pin_to(Global_Data.objects.axi_gpio_d1, DIG_27, LOW);
-    uz_axi_gpio_set_output_pin_to(Global_Data.objects.axi_gpio_d1, DIG_28, HIGH);
-    uz_axi_gpio_set_output_pin_to(Global_Data.objects.axi_gpio_d1, DIG_29, LOW);
-}
-/* Project Wizard USER END: D1 axi_gpio_outputs */
-
-/* Project Wizard USER BEGIN: D2 axi_gpio_outputs */
-static void update_axi_gpio_d2_outputs(void)
-{
-    uz_axi_gpio_set_output_pin_to(Global_Data.objects.axi_gpio_d2, DIG_12, HIGH);
-    uz_axi_gpio_set_output_pin_to(Global_Data.objects.axi_gpio_d2, DIG_13, HIGH);
-    uz_axi_gpio_set_output_pin_to(Global_Data.objects.axi_gpio_d2, DIG_14, LOW);
-    uz_axi_gpio_set_output_pin_to(Global_Data.objects.axi_gpio_d2, DIG_15, HIGH);
-}
-/* Project Wizard USER END: D2 axi_gpio_outputs */
+#define RPM_TO_RAD_PER_S (UZ_PIf/30.0f)
 
 
 //==============================================================================================================================================================
@@ -84,6 +63,15 @@ static void update_axi_gpio_d2_outputs(void)
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
+
+/* Readout measurements of pmsm_cil */
+    uz_pmsmModel_trigger_input_strobe(Global_Data.objects.pmsm_cil);
+    uz_pmsmModel_trigger_output_strobe(Global_Data.objects.pmsm_cil);
+    Global_Data.av.pmsm_cil_outputs = uz_pmsmModel_get_outputs(Global_Data.objects.pmsm_cil);
+
+    Global_Data.rasv.ramped_speed_ref_rpm_prime_mover = uz_ramp_step(Global_Data.objects.speed_ref_ramp_prime_mover, Global_Data.rasv.speed_ref_rpm_prime_mover);
+    Global_Data.av.pmsm_cil_inputs.omega_mech_1_s = -1.0f * RPM_TO_RAD_PER_S * Global_Data.rasv.ramped_speed_ref_rpm_prime_mover;
+
 /* Project Wizard BEGIN: adc_readout */
     analog_adc_data = uz_dataMover_update_buffer_and_get_data();
 /* Project Wizard END: adc_readout */
@@ -116,7 +104,10 @@ void ISR_Control(void *data)
         Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_2 = 0.5f;
         Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_3 = 0.5f;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_3, true, true, true);
-/* Project Wizard END: idle_state isr_actions */
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1, false);
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
+        /* Project Wizard END: idle_state isr_actions */
+        uz_ramp_reset(Global_Data.objects.speed_ref_ramp_prime_mover);
     }
     else if (current_state == running_state)
     {
@@ -125,13 +116,18 @@ void ISR_Control(void *data)
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, false, false, false);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_2, false, false, false);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_3, false, false, false);
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1, true);
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, true);
 /* Project Wizard END: running_state isr_actions */
     }
     else if (current_state == control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-        /* Project Wizard BEGIN: control_state isr_actions */
-/* Project Wizard END: control_state isr_actions */
+
+    	/* Project Wizard BEGIN: control_state isr_actions */
+    	/* Project Wizard END: control_state isr_actions */
+
+
     }
     else if (current_state == error_state)
     {
@@ -152,9 +148,15 @@ void ISR_Control(void *data)
         Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_2 = 0.5f;
         Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_3 = 0.5f;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_3, true, true, true);
-/* Project Wizard END: error_state isr_actions */
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1, false);
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
+        /* Project Wizard END: error_state isr_actions */
+        uz_ramp_reset(Global_Data.objects.speed_ref_ramp_prime_mover);
     }
     
+    /* write new outputs to pmsm_cil */
+    uz_pmsmModel_set_inputs(Global_Data.objects.pmsm_cil, Global_Data.av.pmsm_cil_inputs);
+
     /* Project Wizard BEGIN: pwm_runtime */
     project_wizard_update_pwm_outputs(&Global_Data);
 /* Project Wizard END: pwm_runtime */
@@ -211,9 +213,7 @@ static void update_adapter_a3(void)
 static void update_adapter_d1(void)
 {
     /* Project Wizard BEGIN: D1 isr_control */
-    Global_Data.av.io_card_d1_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_d1);
-    update_axi_gpio_d1_outputs();
-    uz_axi_gpio_flush_outputs(Global_Data.objects.axi_gpio_d1);
+    update_inverter_adapter_d1_outputs(&Global_Data);
 /* Project Wizard END: D1 isr_control */
 
 }
@@ -221,23 +221,7 @@ static void update_adapter_d1(void)
 static void update_adapter_d2(void)
 {
     /* Project Wizard BEGIN: D2 isr_control */
-    Global_Data.av.io_card_d2_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_d2);
-    Global_Data.av.io_card_d2_dig_16 = (Global_Data.av.io_card_d2_state >> DIG_16) & 0x1U;
-    Global_Data.av.io_card_d2_dig_17 = (Global_Data.av.io_card_d2_state >> DIG_17) & 0x1U;
-    Global_Data.av.io_card_d2_dig_18 = (Global_Data.av.io_card_d2_state >> DIG_18) & 0x1U;
-    Global_Data.av.io_card_d2_dig_19 = (Global_Data.av.io_card_d2_state >> DIG_19) & 0x1U;
-    Global_Data.av.io_card_d2_dig_20 = (Global_Data.av.io_card_d2_state >> DIG_20) & 0x1U;
-    Global_Data.av.io_card_d2_dig_21 = (Global_Data.av.io_card_d2_state >> DIG_21) & 0x1U;
-    Global_Data.av.io_card_d2_dig_22 = (Global_Data.av.io_card_d2_state >> DIG_22) & 0x1U;
-    Global_Data.av.io_card_d2_dig_23 = (Global_Data.av.io_card_d2_state >> DIG_23) & 0x1U;
-    Global_Data.av.io_card_d2_dig_24 = (Global_Data.av.io_card_d2_state >> DIG_24) & 0x1U;
-    Global_Data.av.io_card_d2_dig_25 = (Global_Data.av.io_card_d2_state >> DIG_25) & 0x1U;
-    Global_Data.av.io_card_d2_dig_26 = (Global_Data.av.io_card_d2_state >> DIG_26) & 0x1U;
-    Global_Data.av.io_card_d2_dig_27 = (Global_Data.av.io_card_d2_state >> DIG_27) & 0x1U;
-    Global_Data.av.io_card_d2_dig_28 = (Global_Data.av.io_card_d2_state >> DIG_28) & 0x1U;
-    Global_Data.av.io_card_d2_dig_29 = (Global_Data.av.io_card_d2_state >> DIG_29) & 0x1U;
-    update_axi_gpio_d2_outputs();
-    uz_axi_gpio_flush_outputs(Global_Data.objects.axi_gpio_d2);
+    update_inverter_adapter_d2_outputs(&Global_Data);
 /* Project Wizard END: D2 isr_control */
 }
 
@@ -250,30 +234,34 @@ static void update_adapter_d3(void)
 static void update_adapter_d4(void)
 {
     /* Project Wizard BEGIN: D4 isr_control */
+    Global_Data.av.ssi_encoder_d4_1_position_raw_single_turn = uz_ssi_interface_get_position_raw_single_turn(Global_Data.objects.ssi_encoder_d4_1);
+    Global_Data.av.ssi_encoder_d4_1_position_raw_multi_turn = uz_ssi_interface_get_position_raw_multi_turn(Global_Data.objects.ssi_encoder_d4_1);
+    Global_Data.av.ssi_encoder_d4_1_position_multi_turn = uz_ssi_interface_get_position_multi_turn(Global_Data.objects.ssi_encoder_d4_1);
+    Global_Data.av.ssi_encoder_d4_1_position_mech_si_single_turn = uz_ssi_interface_get_position_mech_si_single_turn(Global_Data.objects.ssi_encoder_d4_1);
+    Global_Data.av.ssi_encoder_d4_1_position_el_si_single_turn = uz_ssi_interface_get_position_el_si_single_turn(Global_Data.objects.ssi_encoder_d4_1);
+    Global_Data.av.ssi_encoder_d4_1_speed_mech_si = uz_ssi_interface_get_speed_mech_si(Global_Data.objects.ssi_encoder_d4_1);
+    Global_Data.av.ssi_encoder_d4_1_speed_el_si = uz_ssi_interface_get_speed_el_si(Global_Data.objects.ssi_encoder_d4_1);
+    Global_Data.av.ssi_encoder_d4_1_speed_mech_rpm = uz_ssi_interface_get_speed_mech_rpm(Global_Data.objects.ssi_encoder_d4_1);
 /* Project Wizard END: D4 isr_control */
 }
 
 static void update_adapter_d5(void)
 {
     /* Project Wizard BEGIN: D5 isr_control */
-    Global_Data.av.incremental_encoder_d5_1_theta_el = uz_incrementalEncoder_get_theta_el(Global_Data.objects.incremental_encoder_d5_1);
-    Global_Data.av.incremental_encoder_d5_1_omega_mech = uz_incrementalEncoder_get_omega_mech(Global_Data.objects.incremental_encoder_d5_1);
-    Global_Data.av.incremental_encoder_d5_1_omega_mech_ma_n4 = uz_incrementalEncoder_get_omega_mech_MA_N4(Global_Data.objects.incremental_encoder_d5_1);
-    Global_Data.av.incremental_encoder_d5_1_position = uz_incrementalEncoder_get_position(Global_Data.objects.incremental_encoder_d5_1);
-    Global_Data.av.incremental_encoder_d5_1_position_w_offset = uz_incrementalEncoder_get_position_wOffset(Global_Data.objects.incremental_encoder_d5_1);
-    Global_Data.av.incremental_encoder_d5_1_index_found = uz_incrementalEncoder_get_Index_Found(Global_Data.objects.incremental_encoder_d5_1);
-    Global_Data.av.incremental_encoder_d5_2_theta_el = uz_incrementalEncoder_get_theta_el(Global_Data.objects.incremental_encoder_d5_2);
-    Global_Data.av.incremental_encoder_d5_2_omega_mech = uz_incrementalEncoder_get_omega_mech(Global_Data.objects.incremental_encoder_d5_2);
-    Global_Data.av.incremental_encoder_d5_2_omega_mech_ma_n4 = uz_incrementalEncoder_get_omega_mech_MA_N4(Global_Data.objects.incremental_encoder_d5_2);
-    Global_Data.av.incremental_encoder_d5_2_position = uz_incrementalEncoder_get_position(Global_Data.objects.incremental_encoder_d5_2);
-    Global_Data.av.incremental_encoder_d5_2_position_w_offset = uz_incrementalEncoder_get_position_wOffset(Global_Data.objects.incremental_encoder_d5_2);
-    Global_Data.av.incremental_encoder_d5_2_index_found = uz_incrementalEncoder_get_Index_Found(Global_Data.objects.incremental_encoder_d5_2);
-    Global_Data.av.incremental_encoder_d5_3_theta_el = uz_incrementalEncoder_get_theta_el(Global_Data.objects.incremental_encoder_d5_3);
-    Global_Data.av.incremental_encoder_d5_3_omega_mech = uz_incrementalEncoder_get_omega_mech(Global_Data.objects.incremental_encoder_d5_3);
-    Global_Data.av.incremental_encoder_d5_3_omega_mech_ma_n4 = uz_incrementalEncoder_get_omega_mech_MA_N4(Global_Data.objects.incremental_encoder_d5_3);
-    Global_Data.av.incremental_encoder_d5_3_position = uz_incrementalEncoder_get_position(Global_Data.objects.incremental_encoder_d5_3);
-    Global_Data.av.incremental_encoder_d5_3_position_w_offset = uz_incrementalEncoder_get_position_wOffset(Global_Data.objects.incremental_encoder_d5_3);
-    Global_Data.av.incremental_encoder_d5_3_index_found = uz_incrementalEncoder_get_Index_Found(Global_Data.objects.incremental_encoder_d5_3);
+    struct uz_resolver_pl_interface_outputs_t resolver_pl_interface_d5_1_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_d5_1);
+    Global_Data.av.resolver_pl_interface_d5_1_revolution_counter = resolver_pl_interface_d5_1_outputs.revolution_counter;
+    Global_Data.av.resolver_pl_interface_d5_1_position_mech_2pi = resolver_pl_interface_d5_1_outputs.position_mech_2pi;
+    Global_Data.av.resolver_pl_interface_d5_1_position_el_2pi = resolver_pl_interface_d5_1_outputs.position_el_2pi;
+    Global_Data.av.resolver_pl_interface_d5_1_omega_mech_rad_s = resolver_pl_interface_d5_1_outputs.omega_mech_rad_s;
+    Global_Data.av.resolver_pl_interface_d5_1_n_mech_rpm = resolver_pl_interface_d5_1_outputs.n_mech_rpm;
+    Global_Data.av.resolver_pl_interface_d5_1_omega_el_rad_s = resolver_pl_interface_d5_1_outputs.omega_mech_rad_s * uz_resolverIP_getMachinePolePairs(Global_Data.objects.resolver_ip_d5_1);
+    struct uz_resolver_pl_interface_outputs_t resolver_pl_interface_d5_2_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_d5_2);
+    Global_Data.av.resolver_pl_interface_d5_2_revolution_counter = resolver_pl_interface_d5_2_outputs.revolution_counter;
+    Global_Data.av.resolver_pl_interface_d5_2_position_mech_2pi = resolver_pl_interface_d5_2_outputs.position_mech_2pi;
+    Global_Data.av.resolver_pl_interface_d5_2_position_el_2pi = resolver_pl_interface_d5_2_outputs.position_el_2pi;
+    Global_Data.av.resolver_pl_interface_d5_2_omega_mech_rad_s = resolver_pl_interface_d5_2_outputs.omega_mech_rad_s;
+    Global_Data.av.resolver_pl_interface_d5_2_n_mech_rpm = resolver_pl_interface_d5_2_outputs.n_mech_rpm;
+    Global_Data.av.resolver_pl_interface_d5_2_omega_el_rad_s = resolver_pl_interface_d5_2_outputs.omega_mech_rad_s * uz_resolverIP_getMachinePolePairs(Global_Data.objects.resolver_ip_d5_2);
 /* Project Wizard END: D5 isr_control */
 }
 

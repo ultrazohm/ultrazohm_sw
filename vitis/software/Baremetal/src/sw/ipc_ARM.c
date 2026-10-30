@@ -187,6 +187,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 		data->av.snd_fld[1] = value;
+		data->rasv.speed_ref_rpm_prime_mover = value;
 			break;
 
 		case (Set_Send_Field_2):

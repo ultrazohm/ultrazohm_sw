@@ -6,6 +6,8 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
+#include "IP_Cores/uz_pmsmmodel/uz_pmsmModel.h"
+#include "../src/uz/uz_signals/uz_signals.h"
 // Project Wizard adapter slot headers
 #include "include/a1_adapter_init.h"
 #include "include/a2_adapter_init.h"
@@ -22,6 +24,8 @@ typedef struct _actualValues_ {
 	uint32_t  heartbeatframe_content;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
+	struct uz_pmsmModel_inputs_t pmsm_cil_inputs;
+	struct uz_pmsmModel_outputs_t pmsm_cil_outputs;
 	/* Project Wizard BEGIN: actualValues */
 	float adc_ltc2311_a1_ch0;
 	float adc_ltc2311_a1_ch1;
@@ -47,40 +51,28 @@ typedef struct _actualValues_ {
 	float adc_ltc2311_a3_ch5;
 	float adc_ltc2311_a3_ch6;
 	float adc_ltc2311_a3_ch7;
-	uint32_t io_card_d1_state;
-	uint32_t io_card_d2_state;
-	uint32_t io_card_d2_dig_16;
-	uint32_t io_card_d2_dig_17;
-	uint32_t io_card_d2_dig_18;
-	uint32_t io_card_d2_dig_19;
-	uint32_t io_card_d2_dig_20;
-	uint32_t io_card_d2_dig_21;
-	uint32_t io_card_d2_dig_22;
-	uint32_t io_card_d2_dig_23;
-	uint32_t io_card_d2_dig_24;
-	uint32_t io_card_d2_dig_25;
-	uint32_t io_card_d2_dig_26;
-	uint32_t io_card_d2_dig_27;
-	uint32_t io_card_d2_dig_28;
-	uint32_t io_card_d2_dig_29;
-	float incremental_encoder_d5_1_theta_el;
-	float incremental_encoder_d5_1_omega_mech;
-	float incremental_encoder_d5_1_omega_mech_ma_n4;
-	uint32_t incremental_encoder_d5_1_position;
-	uint32_t incremental_encoder_d5_1_position_w_offset;
-	uint32_t incremental_encoder_d5_1_index_found;
-	float incremental_encoder_d5_2_theta_el;
-	float incremental_encoder_d5_2_omega_mech;
-	float incremental_encoder_d5_2_omega_mech_ma_n4;
-	uint32_t incremental_encoder_d5_2_position;
-	uint32_t incremental_encoder_d5_2_position_w_offset;
-	uint32_t incremental_encoder_d5_2_index_found;
-	float incremental_encoder_d5_3_theta_el;
-	float incremental_encoder_d5_3_omega_mech;
-	float incremental_encoder_d5_3_omega_mech_ma_n4;
-	uint32_t incremental_encoder_d5_3_position;
-	uint32_t incremental_encoder_d5_3_position_w_offset;
-	uint32_t incremental_encoder_d5_3_index_found;
+	struct uz_inverter_adapter_outputs_t inverter_adapter_d1;
+	struct uz_inverter_adapter_outputs_t inverter_adapter_d2;
+	uint32_t ssi_encoder_d4_1_position_raw_single_turn;
+	uint32_t ssi_encoder_d4_1_position_raw_multi_turn;
+	uint32_t ssi_encoder_d4_1_position_multi_turn;
+	float ssi_encoder_d4_1_position_mech_si_single_turn;
+	float ssi_encoder_d4_1_position_el_si_single_turn;
+	float ssi_encoder_d4_1_speed_mech_si;
+	float ssi_encoder_d4_1_speed_el_si;
+	float ssi_encoder_d4_1_speed_mech_rpm;
+	int32_t resolver_pl_interface_d5_1_revolution_counter;
+	float resolver_pl_interface_d5_1_position_mech_2pi;
+	float resolver_pl_interface_d5_1_position_el_2pi;
+	float resolver_pl_interface_d5_1_omega_mech_rad_s;
+	float resolver_pl_interface_d5_1_n_mech_rpm;
+	float resolver_pl_interface_d5_1_omega_el_rad_s;
+	int32_t resolver_pl_interface_d5_2_revolution_counter;
+	float resolver_pl_interface_d5_2_position_mech_2pi;
+	float resolver_pl_interface_d5_2_position_el_2pi;
+	float resolver_pl_interface_d5_2_omega_mech_rad_s;
+	float resolver_pl_interface_d5_2_n_mech_rpm;
+	float resolver_pl_interface_d5_2_omega_el_rad_s;
 /* Project Wizard END: actualValues */
 } actualValues;
 
@@ -102,10 +94,14 @@ typedef struct _referenceAndSetValues_ {
 	float pwm_3L_0_halfBridgeDutyCycle_2;
 	float pwm_3L_0_halfBridgeDutyCycle_3;
 /* Project Wizard END: referenceAndSetValues */
+	float speed_ref_rpm_prime_mover;
+	float ramped_speed_ref_rpm_prime_mover;
 } referenceAndSetValues;
 
 typedef struct{
 	uz_mux_axi_t* mux_axi;
+	uz_pmsmModel_t *pmsm_cil;
+	uz_ramp_t *speed_ref_ramp_prime_mover;
 	/* Project Wizard BEGIN: objects */
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_0;
@@ -118,11 +114,13 @@ typedef struct{
 	uz_adcLtc2311_t* adc_ltc2311_a1;
 	uz_adcLtc2311_t* adc_ltc2311_a2;
 	uz_adcLtc2311_t* adc_ltc2311_a3;
-	uz_axi_gpio_t* axi_gpio_d1;
-	uz_axi_gpio_t* axi_gpio_d2;
-	uz_incrementalEncoder_t* incremental_encoder_d5_1;
-	uz_incrementalEncoder_t* incremental_encoder_d5_2;
-	uz_incrementalEncoder_t* incremental_encoder_d5_3;
+	uz_inverter_adapter_t* inverter_adapter_d1;
+	uz_inverter_adapter_t* inverter_adapter_d2;
+	uz_ssi_interface_t* ssi_encoder_d4_1;
+	uz_resolverIP_t* resolver_ip_d5_1;
+	uz_resolver_pl_interface_t* resolver_pl_interface_d5_1;
+	uz_resolverIP_t* resolver_ip_d5_2;
+	uz_resolver_pl_interface_t* resolver_pl_interface_d5_2;
 /* Project Wizard END: objects */
 }object_pointers_t;
 

@@ -230,7 +230,21 @@ def test_managed_flash_restarts_real_service_and_preserves_recordings(service, t
         wait_for(lambda: controller.latest().attached)
         controller.submit('flash', endpoint=endpoint, ip='127.0.0.1', port=1,
                           repo=str(Path(__file__).resolve().parents[2]), output=str(tmp_path/'initial'))
-        wait_for(lambda: 'Flash completed' in controller.latest().notice, seconds=20)
+        def flash_completed():
+            update = controller.latest()
+            if update.error:
+                raise AssertionError(f'Managed flash failed: {update.error}')
+            return 'Flash completed' in update.notice
+        try:
+            wait_for(flash_completed, seconds=20)
+        except AssertionError as exc:
+            update = controller.latest()
+            logs = '\n'.join(f'{path.name}:\n{path.read_text(encoding="utf-8", errors="replace")}'
+                             for path in tmp_path.glob('*.service.log'))
+            raise AssertionError(
+                f'{exc}\nActivity: {update.activity}\nNotice: {update.notice}'
+                f'\nController error: {update.error}\nService logs:\n{logs}'
+            ) from exc
         assert not controller.flashing
         status = client.status()
         assert status['state']['connected']

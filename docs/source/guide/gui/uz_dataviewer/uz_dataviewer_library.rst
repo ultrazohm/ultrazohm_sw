@@ -11,7 +11,8 @@ The library can load logs, compute FFTs, and run the node transforms from a Pyth
 
    **Importing the package does not import the imgui GUI stack.**
    ``import uz_dataviewer`` (and ``uz_dataviewer.api`` / ``.analysis`` / ``.nodes``) only requires numpy/pandas/pyarrow.
-   The GUI (``DataViewerApp`` / ``main``) is loaded lazily, only when you actually access it.
+   Reads, conversions, and analysis also avoid GUI imports. GUI entry points
+   must be imported explicitly from ``uz_dataviewer.app``.
    The core is therefore usable on a headless server and ``import`` stays fast.
 
 Quick start

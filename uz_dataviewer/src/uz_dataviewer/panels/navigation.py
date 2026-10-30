@@ -8,10 +8,13 @@ is :data:`SIGNAL_DND_TYPE`; the dragged :data:`SignalRef` is stashed on the
 
 from __future__ import annotations
 
+from .. import runtime
+
 from imgui_bundle import imgui
 
 from .. import webbridge
 from ..state import AppState
+from .base import SessionPanel
 
 try:  # portable_file_dialogs opens an OS dialog -- unavailable in the browser
     from imgui_bundle import portable_file_dialogs as pfd
@@ -19,20 +22,17 @@ except Exception:  # pragma: no cover
     pfd = None
 
 SIGNAL_DND_TYPE = "UZ_SIGNAL"
+LOG_DND_TYPE = "UZ_LOG_FILE"
 
 
-class NavigationPanel:
+class NavigationPanel(SessionPanel):
     def __init__(self) -> None:
         self._open_dialog = None
         self._norm_target: dict[int, float] = {}  # per-run desired start time
 
-    def _emit(self, state: AppState, name: str, *args) -> None:
-        try:
-            state.commands.execute(state, name, list(args))
-        except Exception as exc:  # noqa: BLE001 - surfaced to the console
-            state.console.error(str(exc))
-
     def _normalize_menu(self, state: AppState, run) -> None:
+        if run.axis_domain != "time":
+            return
         """Per-log time-normalisation controls (in the run's context popup)."""
         on = run.time_origin is not None
         changed, on_new = imgui.checkbox("Normalize start time", on)
@@ -61,11 +61,30 @@ class NavigationPanel:
             state.request_load(path)
         self._open_dialog = None
 
+    def _accept_log_drop(self, state: AppState) -> None:
+        position = imgui.get_window_pos()
+        size = imgui.get_window_size()
+        bounds = imgui.internal.ImRect(
+            position, imgui.ImVec2(position.x + size.x, position.y + size.y)
+        )
+        if imgui.internal.begin_drag_drop_target_custom(bounds, imgui.get_id("log_drop")):
+            if imgui.accept_drag_drop_payload_py_id(LOG_DND_TYPE) is not None:
+                if state.dragged_log_path is not None:
+                    state.request_load(state.dragged_log_path)
+                    state.dragged_log_path = None
+            imgui.end_drag_drop_target()
+
     def render(self, state: AppState) -> None:
+        self._sync_session(state)
+        self._render_contents(state)
+        # Cover the whole Navigation window, including empty space below runs.
+        self._accept_log_drop(state)
+
+    def _render_contents(self, state: AppState) -> None:
         self._poll_open_dialog(state)
 
         if imgui.button("Open file(s)..."):
-            if webbridge.IS_WEB:
+            if runtime.IS_WEB:
                 # Browser: click the hidden HTML <input type="file">.
                 webbridge.trigger_file_dialog()
             elif pfd is not None and self._open_dialog is None:
@@ -107,7 +126,9 @@ class NavigationPanel:
             opened = imgui.tree_node_ex(f"{run.label}", node_flags)
             if imgui.begin_popup_context_item("run_ctx"):
                 imgui.text_disabled(run.path)
-                imgui.text_disabled(f"{run.n_rows:,} rows  |  {run.duration:.3f} s")
+                imgui.text_disabled(f"Backend: {run.backend}")
+                unit = "s" if run.axis_domain == "time" else "Hz"
+                imgui.text_disabled(f"{run.n_rows:,} rows  |  {run.duration:.3f} {unit}")
                 imgui.separator()
                 self._normalize_menu(state, run)
                 imgui.separator()

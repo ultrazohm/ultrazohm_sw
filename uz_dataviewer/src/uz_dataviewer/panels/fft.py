@@ -11,10 +11,9 @@ from __future__ import annotations
 import numpy as np
 from imgui_bundle import imgui, implot
 
-from ..analysis import compute_fft
-from ..downsample import PYRAMID_MIN_POINTS, Pyramid
+from ..analysis import AnalysisInput, FftRequest
 from ..state import AppState
-from .analysis import AnalysisPanel, follow_combo  # noqa: F401 - re-exported for callers
+from .analysis import AnalysisPanel
 
 
 class FftPanel(AnalysisPanel):
@@ -25,8 +24,8 @@ class FftPanel(AnalysisPanel):
 
     def __init__(self) -> None:
         super().__init__()
-        # (label, freqs, mag, pyramid-or-None) -- pyramid decimates a huge spectrum.
-        self._results: list[tuple[str, np.ndarray, np.ndarray, object]] = []
+        # (signal reference, freqs, mag, source) -- source decimates a huge spectrum.
+        self._results: list[tuple[tuple[int, str], np.ndarray, np.ndarray, object]] = []
 
     def config(self, state: AppState):
         return state.fft
@@ -61,28 +60,13 @@ class FftPanel(AnalysisPanel):
             implot.ImAxis_.y1, implot.Scale_.log10 if cfg.log_y else implot.Scale_.linear
         )
 
-    def _compute(self, state: AppState, cfg, x_min: float, x_max: float) -> None:
-        results = []
-        info = ""
-        for ref in cfg.sources:
-            run = state.registry.get(ref[0])
-            signal = state.registry.get_signal(ref[0], ref[1])
-            if run is None or signal is None:
-                continue
-            result = compute_fft(
-                run.time, signal.y, x_min, x_max,
-                remove_dc=cfg.remove_dc, window=cfg.window,
-            )
-            if result.ok:
-                pyramid = Pyramid.build(result.mag) if result.mag.size > PYRAMID_MIN_POINTS else None
-                results.append((state.signal_label(ref), result.freqs, result.mag, pyramid))
-            info = result.info
-        self._results = results
-        self._info = info or "Drag signals here to analyse them."
+    def _make_request(self, state: AppState, cfg, x_min: float, x_max: float) -> FftRequest:
+        return FftRequest(AnalysisInput.capture(state.registry, cfg.sources),
+                          (x_min, x_max), cfg.remove_dc, cfg.window, state.registry.cache)
 
     def _draw(self, state: AppState) -> None:
-        for label, freqs, mag, pyramid in self._results:
-            self._plot_decimated(state, label, freqs, mag, pyramid)
+        for ref, freqs, mag, source in self._results:
+            self._plot_decimated(state, state.signal_label(ref), freqs, mag, source)
 
-    def _result_labels(self) -> list[str]:
-        return [label for label, _, _, _ in self._results]
+    def _result_refs(self) -> list[tuple[int, str]]:
+        return [ref for ref, _, _, _ in self._results]

@@ -13,6 +13,8 @@ from __future__ import annotations
 
 import numpy as np
 
+from .sampling import regular_sample_interval, require_matching_time
+
 # -- math node ----------------------------------------------------------------
 MATH_UNARY = ("scale", "offset", "derivative", "integral", "reciprocal")
 MATH_BINARY = ("add", "sub", "mul", "div")
@@ -20,28 +22,15 @@ MATH_OPS = MATH_UNARY + MATH_BINARY
 
 
 def _require_increasing_time(time: np.ndarray, op: str) -> None:
-    """``op`` differentiates/integrates/filters against ``time``; it needs a finite,
+    """``op`` differentiates/integrates against ``time``; it needs a finite,
     strictly increasing axis. A zero or negative step divides by zero in
-    ``np.gradient`` / ``1/median(dt)`` or integrates backwards. Loaded logs already
+    ``np.gradient`` or integrates backwards. Loaded logs already
     satisfy this (the loader validates monotonicity), so this only catches hand-built
     or duplicate-timestamp axes."""
     if not np.isfinite(time).all():
         raise ValueError(f"{op} needs a finite time axis (NaN/Inf present)")
     if time.shape[0] > 1 and np.any(np.diff(time) <= 0):
         raise ValueError(f"{op} needs a strictly increasing time axis")
-
-
-def _binary_time_note(t1: np.ndarray, t2: np.ndarray) -> str:
-    """Binary math index-aligns its two inputs (v1 does not resample). If they come
-    from different time bases the result is still index-aligned, but the shared axis
-    (``t1``) no longer describes B -- flag it in the node info so the result isn't read
-    as time-aligned. O(1) endpoint check, cheap on multi-million-sample signals."""
-    if t1.shape != t2.shape or t1.shape[0] == 0:
-        return ""
-    span = abs(float(t1[-1] - t1[0])) or 1.0
-    if abs(float(t1[0] - t2[0])) > 1e-6 * span or abs(float(t1[-1] - t2[-1])) > 1e-6 * span:
-        return " (index-aligned; time bases differ)"
-    return ""
 
 
 def math_node(inputs: list[tuple[np.ndarray, np.ndarray]], params: dict
@@ -73,7 +62,7 @@ def math_node(inputs: list[tuple[np.ndarray, np.ndarray]], params: dict
             return time, np.gradient(y, time), "derivative d/dt"
         if op == "reciprocal":
             with np.errstate(divide="ignore", invalid="ignore"):
-                out = np.where(y != 0.0, 1.0 / y, 0.0)
+                out = np.where(y != 0.0, 1.0 / y, np.nan)
             return time, out, "1 / A"
         # integral: cumulative trapezoid, starting at 0
         _require_increasing_time(time, "integral")
@@ -89,20 +78,19 @@ def math_node(inputs: list[tuple[np.ndarray, np.ndarray]], params: dict
     y2 = np.asarray(y2, dtype=np.float64)
     if y1.shape != y2.shape:
         raise ValueError(
-            f"binary math needs equal-length inputs ({y1.shape[0]} vs {y2.shape[0]}); "
-            "v1 does not resample"
+            f"binary math needs equal-length inputs ({y1.shape[0]} vs {y2.shape[0]})"
         )
     time = np.asarray(t1, dtype=np.float64)
-    note = _binary_time_note(time, np.asarray(t2, dtype=np.float64))
+    require_matching_time(time, np.asarray(t2, dtype=np.float64))
     if op == "add":
-        return time, y1 + y2, "A + B" + note
+        return time, y1 + y2, "A + B"
     if op == "sub":
-        return time, y1 - y2, "A - B" + note
+        return time, y1 - y2, "A - B"
     if op == "mul":
-        return time, y1 * y2, "A * B" + note
+        return time, y1 * y2, "A * B"
     with np.errstate(divide="ignore", invalid="ignore"):
-        out = np.where(y2 != 0.0, y1 / y2, 0.0)
-    return time, out, "A / B" + note
+        out = np.where(y2 != 0.0, y1 / y2, np.nan)
+    return time, out, "A / B"
 
 
 # -- filter node --------------------------------------------------------------
@@ -118,16 +106,14 @@ def _fir_lowpass(fc_norm: float, taps: int) -> np.ndarray:
     return h / h.sum()
 
 
-def filter_node(time: np.ndarray, y: np.ndarray, params: dict
+def filter_node(time: np.ndarray, y: np.ndarray, params: dict, *, timestamp_resolution=0.0
                 ) -> tuple[np.ndarray, np.ndarray, str]:
     """Linear-phase windowed-sinc FIR filter (low/high/band-pass).
 
     ``cutoff`` (and ``cutoff2`` for band) are in Hz; the sample rate is inferred
-    from the median time step. ``taps`` sets the kernel length (more = sharper).
+    from a validated uniform time step. ``taps`` sets the kernel length (more = sharper).
     """
     ftype = str(params.get("type", "low")).lower()
-    if ftype in ("lowpass", "bandpass", "highpass"):
-        ftype = ftype.replace("pass", "")
     if ftype not in FILTER_TYPES:
         raise ValueError(f"Unknown filter type {ftype!r}; one of {', '.join(FILTER_TYPES)}")
 
@@ -135,12 +121,12 @@ def filter_node(time: np.ndarray, y: np.ndarray, params: dict
     y = np.asarray(y, dtype=np.float64)
     if time.shape[0] < 2:
         raise ValueError("filter needs at least 2 samples")
-    _require_increasing_time(time, "filter")
-    fs = 1.0 / float(np.median(np.diff(time)))
-    taps = max(3, int(float(params.get("taps", 101))))
+    fs = 1.0 / regular_sample_interval(time, "filter", timestamp_resolution=timestamp_resolution)
+    from .validation import bounded_int
+    taps = bounded_int(params.get("taps", 101), 3, 100_001, "Filter taps")
     fc = float(params.get("cutoff", 0.0))
-    if fc <= 0.0:
-        raise ValueError("filter 'cutoff' must be > 0 Hz")
+    if not np.isfinite(fc) or fc <= 0.0:
+        raise ValueError("filter 'cutoff' must be finite and > 0 Hz")
     nyq = fs / 2.0
     fcn = min(fc / fs, 0.5 - 1e-6)
     lp = _fir_lowpass(fcn, taps)
@@ -153,12 +139,16 @@ def filter_node(time: np.ndarray, y: np.ndarray, params: dict
         info = f"high-pass {fc:g} Hz"
     else:  # band: low-pass(f2) - low-pass(f1)
         fc2 = float(params.get("cutoff2", 0.0))
-        if fc2 <= fc:
-            raise ValueError("band-pass needs cutoff2 > cutoff")
+        if not np.isfinite(fc2) or fc2 <= fc:
+            raise ValueError("band-pass needs finite cutoff2 > cutoff")
         h = _fir_lowpass(min(fc2 / fs, 0.5 - 1e-6), taps) - lp
         info = f"band-pass {fc:g}-{fc2:g} Hz"
 
-    if fc >= nyq:
+    if fc >= nyq or (ftype == "band" and fc2 >= nyq):
         info += f" (clamped; Nyquist {nyq:g} Hz)"
-    out = np.convolve(y, h, mode="same")
+    # Full convolution plus a centered crop preserves the input length even
+    # when the FIR kernel is longer than the signal.
+    full = np.convolve(y, h, mode="full")
+    offset = (len(h) - 1) // 2
+    out = full[offset:offset + len(y)]
     return time, out, f"{info}, {len(h)} taps"

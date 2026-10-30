@@ -10,7 +10,16 @@ from __future__ import annotations
 
 import sys
 
-from uz_dataviewer.app import main
 
 if __name__ == "__main__":
-    sys.exit(main())
+    import multiprocessing
+    multiprocessing.freeze_support()
+    if len(sys.argv) > 1 and sys.argv[1] == '--internal-worker':
+        from uz_dataviewer.process_launcher import main
+        sys.exit(main(sys.argv[2:]))
+    if len(sys.argv) == 3 and sys.argv[1] == "--self-test":
+        from frozen_self_test import run
+        run(sys.argv[2])
+    else:
+        from uz_dataviewer.app import main
+        sys.exit(main())

@@ -1,19 +1,21 @@
-#!/usr/bin/env python3
-"""Convenience launcher that works from a source checkout without installing.
+import time
 
-Usage::
 
-    python run.py [file1.csv file2.parquet ...]
-"""
+def main(uz):
+    # Adapt the variable and value to your firmware before running.
+    uz.set_variable("send_field_1", 0.0)
+    uz.enable_system()
+    time.sleep(1)
+    uz.enable_control()
+    print("Control enable sent; check the streamed platform state")
 
-from __future__ import annotations
-
-import os
-import sys
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
-
-from uz_dataviewer.app import main  # noqa: E402
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    import argparse
+    from ultrazohm import Client
+
+    parser = argparse.ArgumentParser(description="UltraZohm measurement")
+    parser.add_argument("--endpoint", default="127.0.0.1:19740",
+                        help="Acquisition service host:port")
+    args = parser.parse_args()
+    main(Client(args.endpoint))

@@ -1,15 +1,16 @@
 """Unified command layer shared by the GUI and the console.
 
-Every discrete user action -- changing the grid, dropping a signal, picking a
-plot type, zooming -- is expressed as a *command*. Running a command mutates the
+Data and analysis controls, plot settings and supported gestures are expressed
+as commands. Some view-only gestures are not recorded. Running a command mutates the
 :class:`~uz_dataviewer.state.AppState` **and** echoes its canonical call (e.g.
 ``add_signal(plot_1, run_1, ia)``) to the console. The console therefore doubles
-as a live, replayable log of the session: the same calls can be typed into the
+as a log of replayable operations: the same calls can be typed into the
 console input or replayed from a saved ``.uzscript`` file.
 
 A command has a name, a typed parameter list and a handler. Parameters of kind
 ``plot``/``run`` accept the friendly ``plot_1`` / ``run_2`` forms (or bare
-integers); ``run`` also resolves a run *label* (file name) so scripts written
+integers); ``node_output_N`` resolves the evaluated output of a node.
+``run`` also resolves a run *label* (file name) so scripts written
 against ``load("Log.csv")`` keep working. The grammar is a single function call::
 
     name(arg1, arg2, ...)        # or just  name   for a no-arg command
@@ -21,7 +22,10 @@ from headless tests.
 
 from __future__ import annotations
 
+from .validation import finite_float
+
 import re
+import json
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Callable
 
@@ -65,24 +69,47 @@ _BARE_STR_RE = re.compile(r"^[\w./+\-:]+$")
 
 def _split_args(argstr: str) -> list[str]:
     """Split a comma-separated argument string, honouring quotes."""
-    args: list[str] = []
-    cur: list[str] = []
-    quote: str | None = None
+    args, cur = [], []
+    quote = None
+    escaped = False
     for ch in argstr:
         if quote is not None:
-            if ch == quote:
+            cur.append(ch)
+            if escaped:
+                escaped = False
+            elif ch == "\\":
+                escaped = True
+            elif ch == quote:
                 quote = None
-            else:
-                cur.append(ch)
         elif ch in ("'", '"'):
             quote = ch
+            cur.append(ch)
         elif ch == ",":
             args.append("".join(cur).strip())
             cur = []
         else:
             cur.append(ch)
+    if quote is not None:
+        raise CommandError("Unterminated quoted argument")
     args.append("".join(cur).strip())
-    return [a for a in args if a != ""]
+    decoded = []
+    for arg in args:
+        if not arg:
+            raise CommandError("Empty argument; use an explicit quoted string")
+        if arg.startswith('"'):
+            try:
+                decoded.append(json.loads(arg))
+            except (ValueError, TypeError) as exc:
+                raise CommandError(f"Invalid quoted argument: {arg}") from exc
+        elif arg.startswith("'"):
+            import ast
+            try:
+                decoded.append(ast.literal_eval(arg))
+            except (ValueError, SyntaxError) as exc:
+                raise CommandError(f"Invalid quoted argument: {arg}") from exc
+        else:
+            decoded.append(arg)
+    return decoded
 
 
 def parse_call(text: str) -> tuple[str, list[str]]:
@@ -97,19 +124,12 @@ def parse_call(text: str) -> tuple[str, list[str]]:
 
 
 # -- coercion -----------------------------------------------------------------
-_TRUE = {"1", "true", "on", "yes"}
-_FALSE = {"0", "false", "off", "no"}
-
-
 def _parse_bool(raw) -> bool:
-    if isinstance(raw, bool):
-        return raw
-    s = str(raw).strip().lower()
-    if s in _TRUE:
-        return True
-    if s in _FALSE:
-        return False
-    raise CommandError(f"Expected a boolean (on/off), got {raw!r}")
+    from .validation import parse_bool
+    try:
+        return parse_bool(raw)
+    except ValueError as exc:
+        raise CommandError(str(exc)) from exc
 
 
 def _parse_fwindow(raw) -> int:
@@ -162,6 +182,12 @@ def _resolve_node(state: "AppState", raw) -> int:
 
 
 def _resolve_run(state: "AppState", raw) -> int:
+    if isinstance(raw, str) and raw.startswith("node_output_"):
+        node_id = _resolve_node(state, raw[len("node_output_"):])
+        run_id = state.nodes.get(node_id).out_run_id
+        if run_id is None or state.registry.get(run_id) is None:
+            raise CommandError(f"node_{node_id} has no evaluated output")
+        return run_id
     if isinstance(raw, int):
         run_id = raw
     else:
@@ -171,9 +197,11 @@ def _resolve_run(state: "AppState", raw) -> int:
         if s.lstrip("-").isdigit():
             run_id = int(s)
         else:
-            for run in state.registry.runs:
-                if run.label == s:
-                    return run.id
+            matches = [run.id for run in state.registry.runs if run.label == s]
+            if len(matches) > 1:
+                raise CommandError(f"Ambiguous run name {s!r}; use a run_N identifier")
+            if matches:
+                return matches[0]
             raise CommandError(f"No loaded run named {s!r}")
     if state.registry.get(run_id) is None:
         raise CommandError(f"run_{run_id} is not loaded")
@@ -185,7 +213,7 @@ def _coerce_one(state: "AppState", param: Param, raw):
     if kind == "int":
         return int(str(raw).strip())
     if kind == "float":
-        return float(str(raw).strip())
+        return finite_float(raw)
     if kind == "bool":
         return _parse_bool(raw)
     if kind == "str":
@@ -200,7 +228,10 @@ def _coerce_one(state: "AppState", param: Param, raw):
     if kind == "node":
         return _resolve_node(state, raw)
     if kind == "fwindow":
-        return _parse_fwindow(raw)
+        try:
+            return state.validate_follow_plot(_parse_fwindow(raw))
+        except ValueError as exc:
+            raise CommandError(str(exc)) from exc
     raise CommandError(f"Unknown parameter kind: {kind}")
 
 
@@ -221,11 +252,11 @@ def _coerce_args(state: "AppState", cmd: Command, args: list) -> list:
 
 # -- canonical formatting (for the echo / script export) ----------------------
 def _fmt_float(v: float) -> str:
-    return f"{float(v):.6g}"
+    return repr(float(v))
 
 
 def _fmt_str(s: str) -> str:
-    return s if _BARE_STR_RE.match(s) else '"' + s.replace('"', '\\"') + '"'
+    return s if _BARE_STR_RE.fullmatch(s) else json.dumps(s, ensure_ascii=False)
 
 
 def format_call(cmd: Command, values: list) -> str:
@@ -287,7 +318,11 @@ class CommandRegistry:
         values = _coerce_args(state, cmd, args)
         if echo:
             state.console.command(format_call(cmd, values))
-        message = cmd.handler(state, values)
+        if getattr(state, 'async_exports', False) and name in ('export_data', 'fft_export', 'hist_export'):
+            from .exports import submit
+            message = submit(state, cmd.handler, values)
+        else:
+            message = cmd.handler(state, values)
         if message:
             state.console.ok(message)
         return message
@@ -314,8 +349,16 @@ class CommandRegistry:
 
 # -- built-in commands --------------------------------------------------------
 def register_builtins(reg: CommandRegistry) -> None:
+    _register_data_and_plot_commands(reg)
+    _register_analysis_commands(reg)
+    _register_node_commands(reg)
+    _register_session_commands(reg)
+
+
+def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
     # Imported lazily inside handlers to avoid a GUI/state import cycle.
     from .state import PlotType, XyStyle
+    from .validation import coordinates, spy_rectangle, display_budget, cache_budget_mb
 
     def _cell(state, plot_n):
         return state.cells[plot_n - 1]
@@ -326,11 +369,18 @@ def register_builtins(reg: CommandRegistry) -> None:
                 return t
         raise CommandError(f"Unknown plot type {token!r}; one of {PlotType.labels()}")
 
+    def reset_session(state, args):
+        from .session import clear_session
+        clear_session(state)
+    reg.add("clear_session", [], reset_session, "Clear runs, plots and analysis before restoring a session.")
+
     # -- data / layout ----------------------------------------------------
     def load(state, a):
         path, start = a
         run = state.load_sync(path)
-        if run is not None and start is not None:
+        if run is None:
+            raise CommandError(f"Failed to load {path}")
+        if start is not None:
             run.set_time_origin(float(start))
 
     reg.add("load", [Param("path", "str"), Param("start", "float", optional=True)], load,
@@ -340,12 +390,12 @@ def register_builtins(reg: CommandRegistry) -> None:
         from .loader import convert_csv_to_parquet
 
         src, dst = a
-        out = convert_csv_to_parquet(src, dst)
+        out = convert_csv_to_parquet(src, dst, backend=state.backend)
         state.console.info(f"converted {src} -> {out}")
 
     reg.add("convert", [Param("src", "str"), Param("dst", "str", optional=True)], convert,
-            "Stream-convert a large CSV to Parquet (loads with a ~1.5x memory peak); "
-            "dst defaults to src with a .parquet extension.")
+            "Stream-convert CSV to Parquet using the selected backend; "
+            "dst defaults to src with a .parquet extension. Existing destinations and empty inputs are rejected.")
 
     def normalize_time(state, a):
         run_id, start = a
@@ -367,18 +417,45 @@ def register_builtins(reg: CommandRegistry) -> None:
             "Restore a run's original (un-normalised) timestamps.")
 
     def set_grid(state, a):
-        state.set_grid(max(1, a[0]), max(1, a[1]))
+        state.set_grid(a[0], a[1])
 
     reg.add("set_grid", [Param("rows", "int"), Param("cols", "int")], set_grid,
             "Set the subplot grid to rows x cols.")
 
     def link_x(state, a):
-        state.link_x = a[0]
+        state.set_link_x(a[0])
 
     reg.add("link_x", [Param("on", "bool")], link_x, "Link/unlink the X axes across subplots.")
 
+    def backend(state, a):
+        from .loader import validate_backend
+        try:
+            validate_backend(a[0])
+        except ValueError as exc:
+            raise CommandError(str(exc)) from exc
+        state.backend = a[0]
+    reg.add("backend", [Param("name", "str")], backend,
+            "IO backend for subsequent opens, exports and CSV conversion: pyarrow or polars (desktop only).")
+
+    def loading_mode(state, a):
+        if a[0] not in ("memory", "lazy"):
+            raise CommandError("Expected memory or lazy")
+        state.loading_mode = a[0]
+    reg.add("loading_mode", [Param("mode", "str")], loading_mode,
+            "Storage policy for subsequent opens: memory or lazy.")
+
+    reg.add("disk_cache", [Param("on", "bool")],
+            lambda state, a: setattr(state, "disk_cache", a[0]),
+            "Persist indexes, summaries and CSV conversions for subsequent opens (default: false).")
+
+    def cache_budget(state, a):
+        state.registry.cache.limit = cache_budget_mb(a[0]) * 1024**2
+        state.registry.cache.trim()
+    reg.add("cache_budget", [Param("mib", "int")], cache_budget,
+            "Shared timestamp/summary RAM cache budget in MiB.")
+
     def set_max_points(state, a):
-        state.max_points = max(100, a[0])
+        state.max_points = display_budget(a[0])
 
     reg.add("set_max_points", [Param("n", "int")], set_max_points,
             "Max points drawn per signal (downsample budget).")
@@ -401,7 +478,15 @@ def register_builtins(reg: CommandRegistry) -> None:
         plot_n, run_id, name = a
         if state.registry.get_signal(run_id, name) is None:
             raise CommandError(f"run_{run_id} has no signal {name!r}")
-        _cell(state, plot_n).add((run_id, name))
+        cell = _cell(state, plot_n)
+        refs = cell.active_refs
+        domain = state.registry.get(run_id).axis_domain
+        if refs and any(state.registry.get(ref[0]).axis_domain != domain for ref in refs):
+            raise CommandError("Cannot combine time and frequency axes in one plot")
+        if not cell.signals:
+            cell.pending_x_lim = cell.x_lim = None
+            state.plot_x_ranges.pop(plot_n, None)
+        cell.add((run_id, name))
 
     reg.add("add_signal", [Param("plot", "plot"), Param("run", "run"), Param("signal", "str")],
             add_signal, "Add a signal to a subplot.")
@@ -414,12 +499,23 @@ def register_builtins(reg: CommandRegistry) -> None:
             remove_signal, "Remove a signal from a subplot.")
 
     def clear_plot(state, a):
-        _cell(state, a[0]).signals.clear()
+        _cell(state, a[0]).clear()
 
     reg.add("clear_plot", [Param("plot", "plot")], clear_plot, "Remove all signals from a subplot.")
 
     def set_plot_type(state, a):
-        _cell(state, a[0]).plot_type = _resolve_plot_type(a[1])
+        cell = _cell(state, a[0])
+        kind = _resolve_plot_type(a[1])
+        if kind is PlotType.XY and cell.xy_source:
+            domain = state.registry.get(cell.xy_source[0]).axis_domain
+            if any(state.registry.get(ref[0]).axis_domain != domain for ref in cell.signals):
+                cell.xy_source = None
+        if cell.plot_type != kind:
+            cell.plot_type = kind
+            cell.x_lim = cell.y_lim = None
+            cell.pending_x_lim = cell.pending_y_lim = None
+            cell.fit_pending = True
+            state.plot_x_ranges.pop(a[0], None)
 
     reg.add("set_plot_type", [Param("plot", "plot"), Param("type", "str")], set_plot_type,
             "Set a subplot's type (line/scatter/stairs/xy).")
@@ -437,23 +533,20 @@ def register_builtins(reg: CommandRegistry) -> None:
 
     def set_x_lim(state, a):
         plot_n, lo, hi = a
-        cell = _cell(state, plot_n)
-        cell.pending_x_lim = (lo, hi)
-        if state.link_x:
-            state.shared_x = (lo, hi)
+        state.set_plot_x_limits(plot_n, lo, hi)
 
     reg.add("set_x_lim", [Param("plot", "plot"), Param("min", "float"), Param("max", "float")],
             set_x_lim, "Set a subplot's X-axis limits.")
 
     def set_y_lim(state, a):
         plot_n, lo, hi = a
-        _cell(state, plot_n).pending_y_lim = (lo, hi)
+        _cell(state, plot_n).set_limits("y", lo, hi)
 
     reg.add("set_y_lim", [Param("plot", "plot"), Param("min", "float"), Param("max", "float")],
             set_y_lim, "Set a subplot's Y-axis limits.")
 
     def reset_view(state, a):
-        _cell(state, a[0]).fit_pending = True
+        state.reset_plot_view(a[0])
 
     reg.add("reset_view", [Param("plot", "plot")], reset_view, "Auto-fit a subplot to its data extent.")
 
@@ -475,8 +568,9 @@ def register_builtins(reg: CommandRegistry) -> None:
     def set_spy_rect(state, a):
         plot_n, xmin, ymin, xmax, ymax = a
         cell = _cell(state, plot_n)
+        rectangle = spy_rectangle((xmin, ymin, xmax, ymax))
         cell.spy = True
-        cell.spy_rect = (xmin, ymin, xmax, ymax)
+        cell.spy_rect = rectangle
 
     reg.add("set_spy_rect",
             [Param("plot", "plot"), Param("xmin", "float"), Param("ymin", "float"),
@@ -488,8 +582,11 @@ def register_builtins(reg: CommandRegistry) -> None:
         if state.registry.get_signal(run_id, name) is None:
             raise CommandError(f"run_{run_id} has no signal {name!r}")
         cell = _cell(state, plot_n)
+        domain = state.registry.get(run_id).axis_domain
+        if any(state.registry.get(ref[0]).axis_domain != domain for ref in cell.signals):
+            raise CommandError("XY signals must have the same axis domain")
+        set_plot_type(state, [plot_n, 'XY'])
         cell.xy_source = (run_id, name)
-        cell.plot_type = PlotType.XY
         cell.fit_pending = True
 
     reg.add("set_xy", [Param("plot", "plot"), Param("run", "run"), Param("signal", "str")],
@@ -508,7 +605,7 @@ def register_builtins(reg: CommandRegistry) -> None:
         plot_n, x1, x2 = a
         cell = _cell(state, plot_n)
         cell.cursors = True
-        cell.cursor_x = (x1, x2)
+        cell.cursor_x = coordinates((x1, x2), 2)
 
     reg.add("set_cursors", [Param("plot", "plot"), Param("x1", "float"), Param("x2", "float")],
             set_cursors, "Place the two cursors at x1 and x2 (enables cursors).")
@@ -517,18 +614,13 @@ def register_builtins(reg: CommandRegistry) -> None:
         plot_n, run_id, name, side = a
         ref = (run_id, name)
         cell = _cell(state, plot_n)
-        if ref not in cell.signals:
-            raise CommandError(f"{name!r} is not in plot_{plot_n}")
         side = str(side).lower()
-        if side in ("right", "y2", "secondary"):
-            if ref not in cell.y2_signals:
-                cell.y2_signals.append(ref)
-        elif side in ("left", "y1", "primary"):
-            if ref in cell.y2_signals:
-                cell.y2_signals.remove(ref)
-        else:
+        if side not in ("right", "y2", "secondary", "left", "y1", "primary"):
             raise CommandError("side must be 'left' or 'right'")
-        cell.fit_pending = True
+        try:
+            cell.set_secondary(ref, side in ("right", "y2", "secondary"))
+        except ValueError as exc:
+            raise CommandError(str(exc)) from exc
 
     reg.add("set_axis", [Param("plot", "plot"), Param("run", "run"), Param("signal", "str"), Param("side", "str")],
             set_axis, "Assign a signal to the left or right Y axis of a subplot.")
@@ -548,6 +640,10 @@ def register_builtins(reg: CommandRegistry) -> None:
     reg.add("set_export_relative", [Param("plot", "plot"), Param("on", "bool")], set_export_relative,
             "Toggle 'start time at 0' for a subplot's CSV export.")
 
+
+def _register_analysis_commands(reg: CommandRegistry) -> None:
+    from .validation import axis_limits, histogram_bins
+
     # -- analysis windows (FFT, Histogram) --------------------------------
     # The two windows share a control surface, so their common commands are
     # registered from one factory; the transform-specific options (DC/Hann/log,
@@ -560,6 +656,8 @@ def register_builtins(reg: CommandRegistry) -> None:
             run_id, name = a
             if state.registry.get_signal(run_id, name) is None:
                 raise CommandError(f"run_{run_id} has no signal {name!r}")
+            if state.registry.get(run_id).axis_domain != "time":
+                raise CommandError("Analysis windows require a time-domain recording")
             cfg = _cfg(state)
             ref = (run_id, name)
             if ref not in cfg.sources:
@@ -604,7 +702,8 @@ def register_builtins(reg: CommandRegistry) -> None:
                 f"Set the {noun} custom time window.")
 
         def xlim(state, a):
-            _cfg(state).pending_x_lim = (a[0], a[1])
+            cfg = _cfg(state)
+            cfg.x_lim = cfg.pending_x_lim = axis_limits(*a)
 
         reg.add(f"{prefix}_xlim", [Param("min", "float"), Param("max", "float")], xlim,
                 f"Set the {noun} plot's X-axis view limits.")
@@ -654,10 +753,10 @@ def register_builtins(reg: CommandRegistry) -> None:
     reg.add("histogram", [], histogram, "Recompute and focus the Histogram window.")
 
     def hist_bins(state, a):
-        state.histogram.bins = max(1, a[0])
+        state.histogram.bins = histogram_bins(a[0])
         state.histogram.compute_requested = True
 
-    reg.add("hist_bins", [Param("n", "int")], hist_bins, "Set the Histogram bin count.")
+    reg.add("hist_bins", [Param("n", "int")], hist_bins, "Set the Histogram bin count (1..100000).")
 
     def hist_export(state, a):
         from .session import export_histogram
@@ -666,10 +765,8 @@ def register_builtins(reg: CommandRegistry) -> None:
 
     reg.add("hist_export", [Param("path", "str")], hist_export, "Export the histogram bins to CSV.")
 
-    # -- node graph (dataflow transforms -> derived signals) --------------
-    _register_node_commands(reg)
 
-    # -- session ----------------------------------------------------------
+def _register_session_commands(reg: CommandRegistry) -> None:
     def save_state(state, a):
         from .session import save_state as _save
         _save(state, a[0])
@@ -684,18 +781,10 @@ def register_builtins(reg: CommandRegistry) -> None:
 
     reg.add("load_state", [Param("path", "str")], load_state, "Restore the GUI state from a JSON file.")
 
-    def export_script(state, a):
-        from .session import export_script as _export
-        _export(state, a[0])
-        return f"Exported session script to {a[0]}"
-
-    reg.add("export_script", [Param("path", "str")], export_script,
-            "Write the session as a replayable .uzscript.")
-
     def run_script(state, a):
         from .session import run_script as _run
         n = _run(state, a[0])
-        return f"Ran {n} command(s) from {a[0]}"
+        return "Automation started" if n is None else f"Ran {n} command(s) from {a[0]}"
 
     reg.add("run_script", [Param("path", "str")], run_script, "Replay commands from a .uzscript file.")
 
@@ -730,6 +819,8 @@ def _register_node_commands(reg: CommandRegistry) -> None:
         run_id, name = a
         if state.registry.get_signal(run_id, name) is None:
             raise CommandError(f"run_{run_id} has no signal {name!r}")
+        if state.registry.get(run_id).derived:
+            raise CommandError("Derived signals must be connected with node_link, not source nodes")
         node = state.nodes.add("source", ref=(run_id, name))
         return f"Added {node.name} (source: {name})"
 
@@ -749,22 +840,24 @@ def _register_node_commands(reg: CommandRegistry) -> None:
 
     def node_set(state, a):
         node = state.nodes.get(a[0])
+        from .nodes import validate_parameter
+        validate_parameter(node.kind, str(a[1]), str(a[2]))
         node.params[str(a[1])] = str(a[2])
 
     reg.add("node_set", [Param("node", "node"), Param("key", "str"), Param("value", "str")],
             node_set, "Set a transform node parameter (e.g. node_set(node_2, cutoff, 1000)).")
 
     def node_link(state, a):
-        state.nodes.link(a[0], a[1])
+        state.nodes.link(a[0], a[1], a[2])
 
-    reg.add("node_link", [Param("src", "node"), Param("dst", "node")], node_link,
-            "Connect a node's output to another node's input.")
+    reg.add("node_link", [Param("src", "node"), Param("dst", "node"), Param("slot", "int", optional=True)], node_link,
+            "Connect to a zero-based input slot (default: first free slot).")
 
     def node_unlink(state, a):
-        state.nodes.unlink(a[0], a[1])
+        state.nodes.unlink(a[0], a[1], a[2])
 
-    reg.add("node_unlink", [Param("src", "node"), Param("dst", "node")], node_unlink,
-            "Disconnect a node link.")
+    reg.add("node_unlink", [Param("src", "node"), Param("dst", "node"), Param("slot", "int", optional=True)], node_unlink,
+            "Disconnect a node link at a zero-based slot (default: all matching slots).")
 
     def node_remove(state, a):
         node = state.nodes.get(a[0])

@@ -37,7 +37,63 @@ Loading data
 - **Navigation ▸ Open file(s)…** loads ``.csv`` (JavaScope ``;``-separated **or** standard ``,``-separated — the delimiter is auto-detected) and ``.parquet``, multiple at once. On the desktop you can also drag ``.csv``/``.parquet`` files onto the window.
 - Expand a run to see its channels. The checkbox (de)activates a run; right-click ▸ **Remove run** drops it.
 - **Per-log time normalization:** right-click a run ▸ tick **Normalize start time** and enter a start (default ``0``), then **Apply**. This shifts that log's time axis without touching the samples; untick to restore. (Also ``load("Log.csv", 0)``.)
-- **Large logs:** channels load compactly and large Parquet files stream in, so a multi-million-sample log opens at roughly its in-memory size. A **very large CSV is refused** (parsing it whole would risk running out of memory) with a message pointing you to convert it once: ``convert("Log.csv")`` in the console, or ``uz-dataviewer convert Log.csv`` from a shell — both write a ``.parquet`` beside the source that loads leanly. (Native; the browser build is bounded by its ~4 GB limit — see :doc:`uz_dataviewer_native_vs_web`.)
+- **Large logs:** desktop lazy loading reads raw windows without retaining the complete recording. In-memory CSV loading enforces a numeric-data budget. Convert CSV to Parquet for faster repeated access, using ``convert("Log.csv")`` or ``uz-dataviewer convert Log.csv``. Browser limits are described in :doc:`uz_dataviewer_native_vs_web`.
+
+Backend and loading mode
+------------------------
+
+The **Backend** selector on the bottom status bar chooses **PyArrow** or **Polars** for subsequently opened recordings.
+The independent **Loading** selector chooses **In memory** or **Lazy**.
+Changing either setting leaves already loaded recordings unchanged.
+Desktop CSV selections larger than 1 GiB show a conversion recommendation for drag-and-drop, the Log Browser and the file picker.
+**Open CSV** reads the original directly without automatic cached conversion.
+**Convert to Parquet** writes a sibling file with the same stem and a ``.parquet`` extension in the background, then opens it using the selected backend and loading mode.
+Existing Parquet files are protected from overwriting; the dialog offers **Open existing Parquet** instead.
+**Cancel** skips the selected file, and multi-file selections are prompted individually.
+
+The shared timestamp and summary cache defaults to **1,024 MiB** and remains configurable with **Cache (MiB)** on the bottom status bar.
+This is a retained-cache budget, not a limit on total application RAM.
+The status bar shows retained RAM cache usage next to FPS.
+An amber **cache limit hit** indication appears for five seconds after an entry is evicted or a result exceeds the cache capacity.
+Hover over it to see eviction and oversized-result counts since the last cache clear.
+Auto loading and the obsolete memory-budget controls have been removed; recreate old sessions with explicit loading settings.
+The desktop application defaults to **Polars + Lazy**.
+The online version defaults to **PyArrow + In memory** and supports PyArrow only.
+The Log Browser's **Open lazy** and **Open in-memory** actions use the selected backend.
+A loaded run's context menu shows its backend.
+CSV conversion and CSV exports use the currently selected backend.
+JSON sessions retain the backend and storage mode for each file.
+Opening a Polars JSON session in the browser falls back to PyArrow with a console warning.
+
+.. code-block:: bash
+
+   ./uz_dataviewer/start.sh --backend polars --loading-mode lazy
+   ./uz_dataviewer/start.sh --backend pyarrow --loading-mode memory
+   ./uz_dataviewer/start.sh convert --backend polars path/to/log.csv
+
+The console equivalent is ``backend(polars)`` followed by ``loading_mode(lazy)`` and ``load("path/to/log.parquet")``.
+The headless library accepts ``uz.read(path, backend="polars")``; its dataframe conversion returns a Polars DataFrame when that backend is selected.
+The default library backend preserves the existing pandas DataFrame interface.
+Polars uses its native streaming reader and writer; CSV conversion can use more RAM than PyArrow.
+Disk caching is disabled by default; indexes and summaries stay in RAM, and lazy CSV files are scanned directly.
+Enable **Disk cache** on the bottom status bar, ``--disk-cache`` or ``disk_cache(true)`` to reuse disk summaries and converted CSVs across restarts.
+The setting affects newly opened files; reopen existing files to apply it.
+When enabled, the application cache is stored in the selected workspace under ``artifacts/_user/viewer_cache`` for source runs or ``artifacts/_user_standalone/viewer_cache`` for standalone runs, unless overridden by ``UZ_DATAVIEWER_CACHE``.
+Polars stores its disk caches in a separate ``polars/`` subdirectory, and the engines have distinct in-memory cache identities.
+
+Local log browser
+-----------------
+
+The desktop **Log Browser** window is docked below Navigation in the default layout.
+It starts at the checkout's ``javascope/`` directory when available, otherwise at ``javascope/`` beneath the working directory.
+Use **Open directory...** to choose another root directory and **Refresh** to rescan it.
+The flat list includes only ``.csv`` and ``.parquet`` files from that directory and its subdirectories, with relative paths to distinguish duplicate filenames.
+Right-click a row and choose **Open lazy** or **Open in-memory** to select the mode for that file without changing the default loading mode.
+Alternatively, drag a row anywhere inside the **Navigation** pane to open it.
+The selected loading mode applies just as it does when opening a file through the dialog.
+Scanning runs in the background and does not load measurement data.
+The directory selection lasts for the current application session.
+Existing saved window layouts are preserved; the Log Browser can be moved and docked like the Console.
 
 Window types
 ============
@@ -61,7 +117,7 @@ Plot window
 - **Max points** (toolbar, with a quick-pick presets dropdown): the per-signal drawing budget — the visible window is drawn with about this many points and stays ~constant as you zoom. "downsampling: **active**" means the view is decimated; it switches to "**off (all samples)**" once the visible window holds fewer **raw samples** than Max points. The cell header shows ``~N pts shown (M in view)`` so you see both the drawn budget and the raw samples in the window.
 - **Reset view** auto-fits the cell to its data; **Clear** empties it.
 - **Right axis:** right-click a signal in the legend ▸ **Right axis** to put it on its own (secondary Y) scale.
-- **samples** — a marker at every sample. **spy** — drag a rectangle on the plot; the inset below shows just that region (its line colours match the main plot). **cursors** — two draggable vertical lines with a Δx / frequency / Δy readout. Enabling **cursors**/**spy** places them at 25 % / 75 % of the *current* view, so they always start on-screen.
+- **samples** — a marker at every sample. **spy** — drag a rectangle on the plot; the inset below shows that region for primary (left) Y-axis signals only (its line colours match the main plot). Right-axis signals are excluded. **cursors** — two draggable vertical lines with a Δx / frequency / Δy readout. Enabling **cursors**/**spy** places them at 25 % / 75 % of the *current* view, so they always start on-screen.
 - **Export** writes the cell's signals over its current X window to CSV; tick **start at 0** to rebase the time column. (The export is comma-separated and re-imports cleanly. On a log already time-normalized to 0, the start is 0 either way.)
 
 For all plots: the mouse wheel zooms, right-click and drag draws a zoom rectangle, hold **Shift** to zoom only X, hold **Alt** to zoom only Y. Right-click an axis for more options.
@@ -75,7 +131,7 @@ FFT window
 #. **Window** selector — choose the time window:
 
    - ``plot_N`` — follow that subplot's current X range (computes immediately),
-   - ``Full`` — the whole record,
+   - ``Full`` — the complete time extent of all selected recordings,
    - ``Custom`` — type ``t min`` / ``t max``.
 
    Switching to ``Full`` / ``Custom`` does **not** auto-compute (the window may be huge).
@@ -117,7 +173,10 @@ Everything here is a command (``node_*``), so a graph is fully scriptable and sa
 Console & scripting
 ===================
 
-Every action is echoed to the **Console** as a canonical command (``> add_signal(plot_1, run_1, ia)``, and ``> set_x_lim(plot_1, 1.2, 1.8)`` when you zoom).
+On Windows, ``uz ...`` CLI commands are disabled in the viewer Console.
+Use the Python panel for device automation; viewer commands remain available.
+
+Commands and supported gestures are echoed to the **Console** as a canonical command (``> add_signal(plot_1, run_1, ia)``, and ``> set_x_lim(plot_1, 1.2, 1.8)`` when you zoom).
 The input box runs the same commands:
 
 - type a command name for **completion** (matches listed below the box; **Tab** fills the first; **Up/Down** cycle history),
@@ -143,7 +202,7 @@ Save / restore a session
 ------------------------
 
 - **Session ▸ Save state… / Load state…** — exact JSON snapshot (grid, assignments, plot types, cursors/spy, secondary axes, FFT/Histogram config, time normalization, file list); restore reloads the files and rebuilds the view.
-- **Session ▸ Export script… / Run script…** — an editable ``.uzscript`` of commands that reproduces the session when replayed.
+- **Session ▸ Run script…** — execute an editable ``.uzscript`` of automation commands against the current state. Scripts stop at the first error; earlier commands remain applied. Use ``load_state("session.json")`` to restore a session within automation.
 
 Command reference
 =================
@@ -160,3 +219,28 @@ file label; ``fwindow`` = ``custom`` / ``full`` / ``plot_N``; ``bool`` = ``on``/
 
 This table is generated from the live command registry (``python -m uz_dataviewer.command_doc``),
 and ``help`` prints the same list in the console, so both stay current.
+
+Session compatibility and analysis windows
+------------------------------------------
+
+Failed restoration preserves the current session. Streamed browser recordings must be exported as data before saving a reloadable session.
+Transforms must be chained through node links, not by creating source nodes from derived outputs.
+
+Automation commands can reference derived outputs as ``node_output_N``, independently of which other nodes have been evaluated.
+
+Saved sessions use schema version 5 and preserve separate instances of logs with identical filenames or paths.
+Restoring a session replaces the currently loaded session.
+Version 1/2/3/4 snapshots and all generated session scripts must be recreated as JSON sessions. Generated script export has been removed.
+Histogram, FFT, export and node crop ranges include only samples inside the selected time window.
+FFT and FIR filters require strictly increasing, uniformly spaced timestamps (100 ppm tolerance plus floating-point roundoff).
+Binary math requires matching time axes throughout both inputs. Unsupported sampling is rejected without interpolation.
+FFT export rejects an invalid selected channel with its name and reason before writing any output.
+Applied primary and secondary Y limits, including mouse zoom, survive saving and restoring. Recomputing node outputs preserves their time normalization.
+Shrinking the grid switches analysis windows following removed plots to Full.
+
+XY alignment and invalid results
+--------------------------------
+
+XY inputs must have equal lengths and matching displayed timestamps, including any per-run normalization. Mismatches are rejected instead of pairing unrelated samples. XY zoom and explicit X/Y limits survive JSON round trips; XY coordinates never drive linked time axes.
+
+Changed source files must be reopened, including CSV files opened through a disk-cached Parquet conversion. Stale or failed node outputs keep their signal assignments, including across JSON restoration, but are unavailable to plots, analysis and exports until successful reevaluation. Fix the graph and evaluate it to repopulate the existing assignments.

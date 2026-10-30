@@ -12,3 +12,6 @@ NodeEditor.json
 *.spec.bak
 web/
 testdata/
+
+.venv-build/
+packages/

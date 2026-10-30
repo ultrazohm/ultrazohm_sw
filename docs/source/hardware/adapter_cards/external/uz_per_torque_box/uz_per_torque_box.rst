@@ -13,7 +13,7 @@ Torque Box PCB
 Source
 ******
 
-- `Torque box PCB repository <https://bitbucket.org/ultrazohm/uz_per_torque_box/>`_
+- `Torque box PCB repository <https://github.com/ultrazohm/uz_per_torque_box/>`_
 
 General description
 *******************

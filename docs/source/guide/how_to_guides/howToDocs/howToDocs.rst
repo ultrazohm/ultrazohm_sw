@@ -8,7 +8,7 @@ The documentation for the UltraZohm uses `<https://www.sphinx-doc.org>`_.
 Sphinx creates the documentation pages in HTML based on text files.
 These text files use `reStructuredText <https://rest-sphinx-memo.readthedocs.io/en/latest/ReST.html>`_ (RST) as a markup language.
 Sphinx takes the different RST files and builds them into the docs pages.
-The documentation is hosted on a web server, and the build and deployment are handled by the :ref:`build pipeline <CI bitbucketPipeline>`.
+The documentation is hosted on a web server, and the build and deployment are handled by the :ref:`build pipeline <ci>`.
 
 .. note:: The online version on docs.ultrazohm.com is always the documentation of the **main** branch.
            If you build the documentation locally, you build the documentation of the specific branch that you have checked out!
@@ -47,7 +47,7 @@ To build and edit the documentation on your native system, you need to:
   :alt: Alternative text
 
 
-.. note:: If ``make html`` or ``make livehtml`` do not work due to missing package errors, run ``pip install -r requirements.txt`` again. If this does not solve the problem please open an `issue <https://bitbucket.org/ultrazohm/ultrazohm_sw/issues>`_.
+.. note:: If ``make html`` or ``make livehtml`` do not work due to missing package errors, run ``pip install -r requirements.txt`` again. If this does not solve the problem please open an `issue <https://github.com/ultrazohm/ultrazohm_sw/issues>`_.
 
 Makefile reference
 ******************
@@ -76,6 +76,7 @@ Please note that the installation steps for ``breathe`` (i.e., Doxygen) are not 
 .. youtube:: dxAlD-VzE0c
 
 This video shows how to change something in the documentation, add a new page, commit the changes and create a pull request in Bitbucket.
+Note that the repository is now hosted by Github.
 
 .. youtube:: pcG1XMzVDc8
 

@@ -148,7 +148,7 @@ References/Source
 .. _dig_3v3_5v_rev02_references:
 
 * :download:`Schematic Rev03 <digital_voltage_3v3_5v/SCH_UZ_D_Voltage_3V3_5V_Default_Rev03.pdf>`
-* `Digital Voltage 3V3/5V repository <https://bitbucket.org/ultrazohm/uz_d_voltage_3v3_5v>`_
+* `Digital Voltage 3V3/5V repository <https://github.com/ultrazohm/uz_d_voltage_3v3_5v>`_
 
 Compatibility
 =============
@@ -158,7 +158,7 @@ Slots D1 to D5 can be used without limitations.
 See also
 ========
 
-* `CPLD software git <https://bitbucket.org/ultrazohm/cpld_lattice/>`_
+* `CPLD software git <https://github.com/ultrazohm/cpld_lattice/>`_
 * :ref:`label_cpld_programming`
 
 Designer

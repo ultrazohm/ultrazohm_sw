@@ -1,0 +1,52 @@
+name: GitLab mirror
+
+on:
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Serialize both branches; each run fetches the latest source refs.
+concurrency:
+  group: gitlab-mirror
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    env:
+      GIT_LFS_SKIP_SMUDGE: '1'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Fetch all branches and LFS data
+        shell: bash
+        run: |
+          git fetch --prune origin '+refs/heads/*:refs/mirror/heads/*' '+refs/tags/*:refs/tags/*'
+          git lfs install --local
+          git lfs fetch --all origin
+
+      - name: Mirror to GitLab
+        shell: bash
+        env:
+          GITLAB_SSH_PRIVATE_KEY: ${{ secrets.GITLAB_SSH_PRIVATE_KEY }}
+        run: |
+          : "${GITLAB_SSH_PRIVATE_KEY:?Set the GITLAB_SSH_PRIVATE_KEY repository secret}"
+          mirror_ssh_dir=$(mktemp -d "$RUNNER_TEMP/gitlab-mirror-ssh.XXXXXX")
+          trap 'rm -rf "$mirror_ssh_dir"' EXIT
+          chmod 700 "$mirror_ssh_dir"
+          printf '%s\n' "$GITLAB_SSH_PRIVATE_KEY" > "$mirror_ssh_dir/key"
+          chmod 600 "$mirror_ssh_dir/key"
+          # Published at https://docs.gitlab.com/user/gitlab_com/#ssh-known_hosts-entries
+          printf '%s\n' 'gitlab.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLp1Btn/nOeHHE5UOzRdf' > "$mirror_ssh_dir/known_hosts"
+          export GIT_SSH_COMMAND="ssh -i '$mirror_ssh_dir/key' -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile='$mirror_ssh_dir/known_hosts'"
+          git remote add gitlab git@gitlab.com:zohm-control/ultrazohm_sw_public_mirror.git
+          # Explicit refs include feature branches and historical LFS objects.
+          mapfile -t mirror_refs < <(git for-each-ref --format='%(refname)' refs/mirror/heads/ refs/tags/)
+          git lfs push --all gitlab "${mirror_refs[@]}"
+          git push --atomic gitlab 'refs/mirror/heads/*:refs/heads/*'

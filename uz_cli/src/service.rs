@@ -189,7 +189,11 @@ pub(crate) fn exchange(
     command: Operation,
     binary: bool,
 ) -> Result<(Value, Vec<u8>)> {
-    let mut socket = TcpStream::connect_timeout(&local_address(endpoint)?, Duration::from_secs(2))?;
+    // Windows retries refused loopback connections for about two seconds.
+    // A two-second deadline can mask ConnectionRefused as TimedOut, preventing
+    // callers from recognizing a stopped service during managed flashing.
+    let connect_timeout = Duration::from_secs(if cfg!(windows) { 5 } else { 2 });
+    let mut socket = TcpStream::connect_timeout(&local_address(endpoint)?, connect_timeout)?;
     let timeout = Duration::from_secs(if binary || matches!(command, Operation::Connect { .. }) {
         30
     } else {
@@ -855,6 +859,25 @@ impl ConnectionContext {
             },
             selections,
         ))
+    }
+}
+
+#[cfg(test)]
+mod transport_tests {
+    use super::*;
+
+    #[test]
+    fn stopped_service_reports_connection_refused() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let endpoint = listener.local_addr().unwrap().to_string();
+        drop(listener);
+
+        let error = request(&endpoint, Operation::Status).unwrap_err();
+        assert_eq!(
+            error.downcast_ref::<std::io::Error>().map(|e| e.kind()),
+            Some(std::io::ErrorKind::ConnectionRefused),
+            "a stopped service must report refusal, not a timeout: {error:#}"
+        );
     }
 }
 

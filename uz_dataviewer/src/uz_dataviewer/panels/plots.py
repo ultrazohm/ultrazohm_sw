@@ -779,6 +779,28 @@ class PlotsPanel(SessionPanel):
         return expanded_range(lo, hi)
 
     # -- panel --------------------------------------------------------------
+    def _fit_linked_x(self, state: AppState) -> None:
+        """Fit linked plots together before rendering any cell.
+
+        A cell-local fit is otherwise overwritten by the previous shared range,
+        hiding newly assigned recordings with different timestamps.
+        """
+        if not state.link_x or getattr(state, 'following_live', False):
+            return
+        cells = [(i, cell) for i, cell in enumerate(state.cells, 1)
+                 if state.is_time_plot(cell)]
+        # Explicit/restored windows take precedence over automatic fitting.
+        if any(cell.pending_x_lim is not None for _, cell in cells):
+            return
+        if not any(cell.fit_pending and self._cell_x_extent(state, cell)[0] is not None
+                   for _, cell in cells):
+            return
+        extents = [self._cell_x_extent(state, cell) for _, cell in cells]
+        extents = [(lo, hi) for lo, hi in extents if lo is not None]
+        if extents:
+            state.set_plot_x_limits(cells[0][0], min(lo for lo, _ in extents),
+                                    max(hi for _, hi in extents))
+
     def render(self, state: AppState) -> None:
         self._sync_session(state)
         live_cells = {id(cell) for cell in state.cells}
@@ -794,6 +816,7 @@ class PlotsPanel(SessionPanel):
         self._validated_sources.clear()
         self._poll_export(state)
         self._toolbar(state)
+        self._fit_linked_x(state)
         if state.services.display.pending:
             imgui.same_line()
             imgui.text_disabled("Updating plots...")

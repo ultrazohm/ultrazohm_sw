@@ -137,3 +137,34 @@ def test_mode_only_focuses_targets_and_preserves_other_windows(monkeypatch):
         assert not next(w for w in windows if w.label == 'FFT').is_visible
     finally:
         app._shutdown()
+
+
+@pytest.mark.parametrize('frozen', [False, True])
+@pytest.mark.parametrize('via_mapping', [False, True])
+def test_log_browser_uses_selected_workspace(tmp_path, monkeypatch, frozen, via_mapping):
+    import sys
+    from pathlib import Path
+    from uz_dataviewer.user_paths import HEADER
+    workspace = tmp_path / 'selected'
+    header = workspace / HEADER
+    header.parent.mkdir(parents=True)
+    header.touch()
+    log = workspace / 'artifacts' / '_user_standalone' / 'logs' / 'run.csv'
+    log.parent.mkdir(parents=True)
+    log.touch()
+    elsewhere = tmp_path / 'elsewhere'
+    elsewhere.mkdir()
+    monkeypatch.chdir(elsewhere)
+    monkeypatch.setattr(sys, 'frozen', frozen, raising=False)
+    monkeypatch.setattr('uz_dataviewer.plugins.load_plugins', lambda **kwargs: None)
+    kwargs = ({'live_mapping': str(workspace / 'artifacts' / 'mapping.json')} if via_mapping
+              else {'live_repo': str(workspace)})
+    app = DataViewerApp(**kwargs)
+    try:
+        assert app.log_browser.directory == workspace
+        app.log_browser.refresh()
+        files, errors = app.log_browser._future.result(timeout=5)
+        assert files == [Path('artifacts/_user_standalone/logs/run.csv')]
+        assert not errors
+    finally:
+        app._shutdown()

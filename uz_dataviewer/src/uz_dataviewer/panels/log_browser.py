@@ -45,8 +45,8 @@ def scan_logs(directory: Path, cancel: Event) -> tuple[list[Path], list[str]]:
 
 
 class LogBrowserPanel:
-    def __init__(self):
-        self.directory = default_log_directory()
+    def __init__(self, directory: Path | None = None):
+        self.directory = directory.expanduser().resolve() if directory is not None else default_log_directory()
         self.files: list[Path] = []
         self.errors: list[str] = []
         self._dialog = None

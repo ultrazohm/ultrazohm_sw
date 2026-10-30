@@ -55,7 +55,7 @@ class DataViewerApp:
             self.state.backend = backend
         validate_backend(self.state.backend)
         self.navigation = NavigationPanel()
-        self.log_browser = LogBrowserPanel()
+        self.log_browser = LogBrowserPanel(workspace)
         self.plots = PlotsPanel()
         self.status = StatusPanel()
         self.fft = FftPanel()

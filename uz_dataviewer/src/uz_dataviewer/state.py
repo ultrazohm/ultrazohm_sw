@@ -365,7 +365,9 @@ class AppState(SessionData):
         if cell.plot_type is PlotType.XY:
             return
         self.plot_x_ranges.pop(plot_n, None)
-        runs = [self.registry.get(ref[0]) for ref in cell.signals]
+        fit_cells = ([linked for linked in self.cells if self.is_time_plot(linked)]
+                     if self.link_x and self.is_time_plot(cell) else [cell])
+        runs = [self.registry.get(ref[0]) for linked in fit_cells for ref in linked.signals]
         runs = [run for run in runs if run is not None and run.active and run.n_rows]
         if runs:
             lo = min(float(run.time[0]) for run in runs)

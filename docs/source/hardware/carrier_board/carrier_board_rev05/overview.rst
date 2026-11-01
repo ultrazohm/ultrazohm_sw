@@ -112,7 +112,7 @@ Summary of new Features and Changes
 * Support for identification of adapter cards (in line with the :ref:`corresponding retrofit for Rev04 <carrier_retrofits_cardid>`)
 * Integrated identification EEPROM used by the :ref:`UZ platform framework <uzpA53>` with associated circuitry (in line with the :ref:`carrier_retrofits_i2cssds2c`)
 * Additional periphery (e.g., GTR clocks, EEPROMs, RTC supply) to use Linux on the APU (with an either volatile, RAMDisk-only or persistent, SSD-based rootfs; further storage via SD card and/or QSPI flash, and, optionally, PCIe)
-* The SD card slot now is at the northwestern edge of the carrier board (and has a working `card detect <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/128/#comment-66486138>`_, which still requires a PS configuration change)
+* The SD card slot now is at the northwestern edge of the carrier board (and has a working `card detect <https://github.com/ultrazohm/uz_carrierboard/issues/128/#comment-66486138>`_, which still requires a PS configuration change)
 * Various bug fixes (e.g., :ref:`Ethernet resets <carrier_known_issues_ethrst>`)
 
 

@@ -6,7 +6,7 @@ MOSFET 48V Inverter (Digital adapter slot)
 
 Source
 ------
-* `uz_d_inverter Repository with Altium project <https://bitbucket.org/ultrazohm/uz_d_inverter>`_
+* `uz_d_inverter Repository with Altium project <https://github.com/ultrazohm/uz_d_inverter>`_
 
 Functionality
 -------------

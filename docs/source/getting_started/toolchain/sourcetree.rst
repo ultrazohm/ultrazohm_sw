@@ -19,12 +19,11 @@ If you are not familiar with Sourcetree please refer to the following resources:
 Sourcetree installation
 ***********************
 
-The following details the installation of Sourcetree.
-We use Bitbucket Cloud-hosted, so click ``Bitbucket`` (right).
+The following details the installation of Sourcetree, we use Github Cloud-hosted.
 
 .. image:: ./images_git/sourcetree_anmeldung.png
 
-You will be asked to log in to your Bitbucket account. If you do not have one, please `create one <https://www.bitbucket.com>`_ since it is required to access the software of the UltraZohm.
+You will be asked to log in to your Github account. If you do not have one, please `create one <https://www.github.com>`_ since it is required to access the software of the UltraZohm.
 
 .. image:: ./images_git/sourcetree_login.png
 

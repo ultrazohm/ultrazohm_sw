@@ -7,7 +7,7 @@ Digital Incremental Encoder
 Source
 ------
 
-- `Incremental encoder repository <https://bitbucket.org/ultrazohm/uz_d_incr_encoder>`_
+- `Incremental encoder repository <https://github.com/ultrazohm/uz_d_incr_encoder>`_
 
 ..  toctree::
     :maxdepth: 1

@@ -11,7 +11,7 @@ Digital Encoder 1v00
 Source
 ------
 
-* `uz_d_encoder Repository with Altium project <https://bitbucket.org/ultrazohm/uz_d_encoder>`_
+* `uz_d_encoder Repository with Altium project <https://github.com/ultrazohm/uz_d_encoder>`_
 
 
 Functionality

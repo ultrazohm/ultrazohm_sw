@@ -70,7 +70,7 @@ The performance of using the remote container in VS Code on Windows is relativel
 
    .. code-block:: console
 
-      git clone https://bitbucket.org/ultrazohm/ultrazohm_sw.git
+      git clone https://github.com/ultrazohm/ultrazohm_sw.git
 
    .. note::
       The repositories inside the Ubuntu subsystem and on Windows are two different local repositories. They do not sync automatically. You can only sync them via the ``push, pull`` etc. commands.
@@ -79,7 +79,7 @@ The performance of using the remote container in VS Code on Windows is relativel
 
    .. image:: docker_setup_ubuntu.png
 
-#. Add your git credentials from your **Bitbucket Account** in the Ubuntu shell
+#. Add your git credentials from your **Github Account** in the Ubuntu shell
 
    .. code-block:: console
 
@@ -203,19 +203,3 @@ Using the remote container with Docker might lead to unwanted problems with file
 
 .. note::
    It might be possible to use Podman with WSL2 on Windows, yet this is not tested. See https://www.redhat.com/sysadmin/podman-windows-wsl2
-
-.. _Gitpod_chapter:
-
-Cloud solution: Gitpod
-----------------------
-
-`Gitpod <https://gitpod.io>`_ can be used to start a VS Code workspace in the browser without any local installations required.
-
-- `Open UltraZohm workspace in Gitpod <https://gitpod.io/#https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/>`_
-- Login with your Bitbucket account
-- The complete development environment as outlined in this document is automatically loaded (sphinx, ceedling)
-- Just click the link and start development
-
-.. figure:: gitpod_preview.gif
-
-  Open repository in Gitpod workspace.

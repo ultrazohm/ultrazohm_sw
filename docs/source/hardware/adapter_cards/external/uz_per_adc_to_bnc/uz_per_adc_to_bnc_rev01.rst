@@ -9,7 +9,7 @@ BNC to ADC Adapter
 Source
 ------
 
-- `BNC to ADC repository <https://bitbucket.org/ultrazohm/uz_per_adc_to_bnc/>`
+- `BNC to ADC repository <https://github.com/ultrazohm/uz_per_adc_to_bnc/>`
 
 Functionality
 -------------

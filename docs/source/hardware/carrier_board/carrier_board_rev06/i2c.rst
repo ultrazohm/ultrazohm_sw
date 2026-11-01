@@ -1,5 +1,5 @@
 ===================
-I²C bus assignments
+I²C Bus Assignments
 ===================
 
 The per-(sub-)bus identifiers for(/on/of) Linux-enabled UltraZohm systems are listed like **[so]**.
@@ -7,7 +7,7 @@ The per-(sub-)bus identifiers for(/on/of) Linux-enabled UltraZohm systems are li
 
 .. _carrier_board_i2c_rev05ff:
 
-I²C on ≥Rev05 carriers
+I²C on ≥Rev05 Carriers
 ----------------------
 
 * I²C0 (``PS_I2C0``) **[0]**: "User bus" (``I2C_USR``) with eight-channel I²C switch
@@ -34,7 +34,7 @@ I²C on ≥Rev05 carriers
 
 .. _carrier_board_i2c_rev01-4:
 
-I²C on ≤Rev04 carriers
+I²C on ≤Rev04 Carriers
 ----------------------
 
 [for reference only, please see :ref:`carrier_board_rev04_mios` et al. and their schematics for details]

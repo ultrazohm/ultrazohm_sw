@@ -12,14 +12,15 @@ static struct uz_adcLtc2311_config_t config_adc_ltc2311_a2 = {
     .base_address = XPAR_UZ_ANALOG_ADAPTER_A2_ADAPTER_A2_ADC_LTC2311_S00_AXI_BASEADDR,
     .ip_clk_frequency_Hz = 100000000U,
     .software_raw_to_physical_value_factor = {
-        10.0f,
-        10.0f,
-        10.0f,
-        10.0f,
-        10.0f,
-        10.0f,
-        10.0f,
-        10.0f},
+        // D2 inverter A/B -> A2 ADC A/B. Factors include the ADC's 10 V span.
+        120.0f, // ch0: DC-link voltage [V]
+        125.0f, // ch1: phase c current [A]
+        125.0f, // ch2: phase b current [A]
+        125.0f, // ch3: phase a current [A]
+        125.0f, // ch4: DC-link current [A]
+        120.0f, // ch5: phase c voltage [V]
+        120.0f, // ch6: phase b voltage [V]
+        120.0f}, // ch7: phase a voltage [V]
     .ip_core_channel_config = {
         .conversion_factor = 1.0f,
         .conversion_factor_definition = {

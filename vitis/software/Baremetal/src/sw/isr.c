@@ -30,6 +30,7 @@
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../include/pwm_init.h"
 #include "../include/project_wizard_visualization.h"
+#include "../include/deskbench.h"
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -51,7 +52,7 @@ static void update_adapter_d3(void);
 static void update_adapter_d4(void);
 static void update_adapter_d5(void);
 
-#define RPM_TO_RAD_PER_S (UZ_PIf/30.0f)
+
 
 
 //==============================================================================================================================================================
@@ -65,41 +66,6 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
 
     platform_state_t current_state = ultrazohm_state_machine_get_state();
-    bool cil_active = (current_state == control_state) &&
-        (uz_pmsm_control_get_safe_operating_area_violation(Global_Data.objects.dut) == uz_pmsm_control_no_violation);
-    /* Reset once at startup and when leaving active CIL operation (STOP/error
-     * or a DUT trip). This resets the simulated plant, not the DUT fault latch.
-     * The driver writes/strobes zero inputs before resetting its integrators.
-     * Keep this plant reset specific to the CIL backend.
-     */
-    static bool cil_was_active = true;
-    static platform_state_t previous_state = idle_state;
-    bool entered_stop_state = (current_state != previous_state) &&
-        (current_state == idle_state || current_state == error_state);
-    if ((!cil_active && cil_was_active) || entered_stop_state)
-    {
-        Global_Data.rasv.speed_ref_rpm_prime_mover = 0.0f;
-        Global_Data.rasv.dut_current_reference_A = (uz_3ph_dq_t){0};
-        Global_Data.av.snd_fld[1] = 0.0f;
-        Global_Data.av.snd_fld[2] = 0.0f;
-        Global_Data.av.snd_fld[3] = 0.0f;
-    }
-    if (!cil_active && cil_was_active)
-    {
-        Global_Data.av.pmsm_cil_inputs = (struct uz_pmsmModel_inputs_t){0};
-        uz_pmsmModel_reset(Global_Data.objects.pmsm_cil);
-    }
-    cil_was_active = cil_active;
-    previous_state = current_state;
-
-/* Readout measurements of pmsm_cil */
-    uz_pmsmModel_trigger_input_strobe(Global_Data.objects.pmsm_cil);
-    uz_pmsmModel_trigger_output_strobe(Global_Data.objects.pmsm_cil);
-    Global_Data.av.pmsm_cil_outputs = uz_pmsmModel_get_outputs(Global_Data.objects.pmsm_cil);
-    Global_Data.av.dut_measurements = pmsm_cil_get_control_measurements(
-        Global_Data.av.pmsm_cil_outputs, Global_Data.av.pmsm_cil_inputs,
-        Global_Data.rasv.pmsm_cil_dc_link_voltage_V);
-
 /* Project Wizard BEGIN: adc_readout */
     analog_adc_data = uz_dataMover_update_buffer_and_get_data();
 /* Project Wizard END: adc_readout */
@@ -138,12 +104,12 @@ void ISR_Control(void *data)
     else if (current_state == running_state)
     {
         /* Project Wizard BEGIN: running_state isr_actions */
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, false, false, false);
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, false, false, false);
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_2, false, false, false);
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_3, false, false, false);
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1, true);
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, true);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, true, true, true);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_2, true, true, true);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_3, true, true, true);
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1, false);
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
 /* Project Wizard END: running_state isr_actions */
     }
     else if (current_state == control_state)
@@ -179,48 +145,7 @@ void ISR_Control(void *data)
         /* Project Wizard END: error_state isr_actions */
     }
     
-    /* DUT control is independent of the selected measurement/output backend.
-     * Disabled sampling resets the PI states and writes zero voltage to CIL.
-     * Faults remain latched until explicitly acknowledged outside control_state.
-     */
-    uz_pmsm_control_enable(Global_Data.objects.dut, current_state == control_state);
-    if (Global_Data.rasv.dut_acknowledge_error)
-    {
-        if (current_state != control_state)
-        {
-            uz_pmsm_control_acknowledge_and_reset_error(
-                Global_Data.objects.dut, Global_Data.av.dut_measurements);
-        }
-        Global_Data.rasv.dut_acknowledge_error = false;
-    }
-    /* JavaScope send fields 2 (id) and 3 (iq) update this reference in amperes
-     * through ipc_ARM. The controller applies its configured current limits.
-     */
-    uz_3ph_dq_t dut_voltage_reference_V = uz_pmsm_control_sample_dq(
-        Global_Data.objects.dut, Global_Data.av.dut_measurements, 0.0f,
-        Global_Data.rasv.dut_current_reference_A, 0.0f);
-    Global_Data.av.dut_violation =
-        uz_pmsm_control_get_safe_operating_area_violation(Global_Data.objects.dut);
-    /* Only drive the simulated prime mover while current control is active
-     * and healthy. Include fresh trips.
-     */
-    if (current_state == control_state && Global_Data.av.dut_violation == uz_pmsm_control_no_violation)
-    {
-        Global_Data.rasv.ramped_speed_ref_rpm_prime_mover = uz_ramp_step(
-            Global_Data.objects.speed_ref_ramp_prime_mover, Global_Data.rasv.speed_ref_rpm_prime_mover);
-    }
-    else
-    {
-        uz_ramp_reset(Global_Data.objects.speed_ref_ramp_prime_mover);
-        Global_Data.rasv.ramped_speed_ref_rpm_prime_mover = 0.0f;
-    }
-    Global_Data.av.pmsm_cil_inputs.omega_mech_1_s =
-        -RPM_TO_RAD_PER_S * Global_Data.rasv.ramped_speed_ref_rpm_prime_mover;
-    Global_Data.av.pmsm_cil_inputs.v_d_V = dut_voltage_reference_V.d;
-    Global_Data.av.pmsm_cil_inputs.v_q_V = dut_voltage_reference_V.q;
-
-    /* write new outputs to pmsm_cil; latched at the next ISR input strobe */
-    uz_pmsmModel_set_inputs(Global_Data.objects.pmsm_cil, Global_Data.av.pmsm_cil_inputs);
+    deskbench_step(&Global_Data, current_state);
 
     /* Project Wizard BEGIN: pwm_runtime */
     project_wizard_update_pwm_outputs(&Global_Data);

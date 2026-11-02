@@ -14,6 +14,7 @@
  ******************************************************************************/
 
 #include <string.h>
+#include <math.h>
 #include "../main.h"
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
@@ -201,15 +202,29 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.snd_fld[4] = value;
+			if (ultrazohm_state_machine_get_state() == idle_state && (value == 0.0f || value == 1.0f))
+			{
+				data->rasv.requested_dut_backend = (enum dut_backend)(int)value;
+				data->av.snd_fld[4] = value;
+			}
 			break;
 
 		case (Set_Send_Field_5):
-		data->av.snd_fld[5] = value;
+			// Parallel speed PI: Kp in Nm/(rad/s). Keep the previous gain on invalid input.
+			if (isfinite(value) && value >= 0.0f)
+			{
+				uz_pmsm_control_speed_control_set_Kp_speed(data->objects.prime_mover, value);
+				data->av.snd_fld[5] = value;
+			}
 			break;
 
 		case (Set_Send_Field_6):
-		data->av.snd_fld[6] = value;
+			// Ki in Nm/rad; the controller applies the sample time internally.
+			if (isfinite(value) && value >= 0.0f)
+			{
+				uz_pmsm_control_speed_control_set_Ki_speed(data->objects.prime_mover, value);
+				data->av.snd_fld[6] = value;
+			}
 			break;
 
 		case (Set_Send_Field_7):

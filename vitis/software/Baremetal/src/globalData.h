@@ -19,6 +19,8 @@
 #include "include/d4_adapter_init.h"
 #include "include/d5_adapter_init.h"
 
+enum dut_backend { DUT_BACKEND_CIL = 0, DUT_BACKEND_DESKBENCH = 1 };
+
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
@@ -28,6 +30,18 @@ typedef struct _actualValues_ {
 	struct uz_pmsmModel_inputs_t pmsm_cil_inputs;
 	struct uz_pmsmModel_outputs_t pmsm_cil_outputs;
 	struct uz_pmsm_measurement_values dut_measurements;
+	uz_3ph_dq_t dut_measured_currents_dq_A; /* Controller feedback from the active DUT backend. */
+	uz_3ph_dq_t prime_mover_measured_currents_dq_A; /* A2 currents transformed using D5_2 feedback. */
+	uz_3ph_dq_t prime_mover_reference_currents_dq_A; /* Internal current-loop setpoints after limiting. */
+	float dut_speed_rpm;
+	float prime_mover_speed_rpm;
+	struct uz_pmsm_measurement_values prime_mover_measurements;
+	enum dut_backend dut_backend;
+	float dut_backend_code;
+	bool deskbench_inputs_ready;
+	float deskbench_inputs_ready_code;
+	enum uz_pmsm_control_safe_operating_region_violation prime_mover_violation;
+	float prime_mover_violation_code;
 	enum uz_pmsm_control_safe_operating_region_violation dut_violation;
 	float dut_violation_code; /* JavaScope transports floats, not enum storage. */
 	/* Project Wizard BEGIN: actualValues */
@@ -99,9 +113,11 @@ typedef struct _referenceAndSetValues_ {
 	float pwm_3L_0_halfBridgeDutyCycle_3;
 /* Project Wizard END: referenceAndSetValues */
 	float speed_ref_rpm_prime_mover;
+	enum dut_backend requested_dut_backend;
+
 	uz_3ph_dq_t dut_current_reference_A;
 	float pmsm_cil_dc_link_voltage_V;
-	bool dut_acknowledge_error; /* One-shot request; accepted only outside control_state. */
+	bool dut_acknowledge_error; /* One-shot acknowledgement for both controllers, outside control_state. */
 	float ramped_speed_ref_rpm_prime_mover;
 } referenceAndSetValues;
 
@@ -109,6 +125,7 @@ typedef struct{
 	uz_mux_axi_t* mux_axi;
 	uz_pmsmModel_t *pmsm_cil;
 	uz_pmsm_control_t *dut;
+	uz_pmsm_control_t *prime_mover;
 	uz_ramp_t *speed_ref_ramp_prime_mover;
 	/* Project Wizard BEGIN: objects */
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0;

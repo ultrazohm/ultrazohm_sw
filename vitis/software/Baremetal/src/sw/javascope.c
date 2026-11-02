@@ -97,11 +97,41 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_RESOLVER_PL_D5_CH2_POS_MECH_2PI] = &project_wizard_visualization_data.viz_resolver_pl_interface_d5_2_position_mech_2pi;
 	js_ch_observable[JSO_RESOLVER_PL_D5_CH2_POS_EL_2PI] = &project_wizard_visualization_data.viz_resolver_pl_interface_d5_2_position_el_2pi;
 /* Project Wizard END: javascope_observable_pointers */
-	js_ch_observable[JSO_i_d_pmsm_cil] = &project_wizard_visualization_data.viz_id_pmsm_cil;
-	js_ch_observable[JSO_i_q_pmsm_cil] = &project_wizard_visualization_data.viz_iq_pmsm_cil;
+	js_ch_observable[JSO_id_dut] = &data->av.dut_measured_currents_dq_A.d;
+	js_ch_observable[JSO_dut_speed_rpm] = &data->av.dut_speed_rpm;
+	js_ch_observable[JSO_prime_mover_speed_rpm] = &data->av.prime_mover_speed_rpm;
+	js_ch_observable[JSO_iq_dut] = &data->av.dut_measured_currents_dq_A.q;
+	js_ch_observable[JSO_id_prime_mover] = &data->av.prime_mover_measured_currents_dq_A.d;
+	js_ch_observable[JSO_iq_prime_mover] = &data->av.prime_mover_measured_currents_dq_A.q;
+	js_ch_observable[JSO_id_ref_prime_mover] = &data->av.prime_mover_reference_currents_dq_A.d;
+	js_ch_observable[JSO_iq_ref_prime_mover] = &data->av.prime_mover_reference_currents_dq_A.q;
 	js_ch_observable[JSO_torque_pmsm_cil] = &project_wizard_visualization_data.viz_torque_pmsm_cil;
 	js_ch_observable[JSO_omega_mech_1_s_pmsm_cil] = &project_wizard_visualization_data.viz_omega_mech_1_s_cil;
 	js_ch_observable[JSO_dut_violation] = &data->av.dut_violation_code;
+	js_ch_observable[JSO_dut_i_a_A] = &data->av.dut_measurements.i_abc_in_A.a;
+	js_ch_observable[JSO_dut_i_b_A] = &data->av.dut_measurements.i_abc_in_A.b;
+	js_ch_observable[JSO_dut_i_c_A] = &data->av.dut_measurements.i_abc_in_A.c;
+	js_ch_observable[JSO_dut_v_a_V] = &data->av.dut_measurements.v_abc_in_V.a;
+	js_ch_observable[JSO_dut_v_b_V] = &data->av.dut_measurements.v_abc_in_V.b;
+	js_ch_observable[JSO_dut_v_c_V] = &data->av.dut_measurements.v_abc_in_V.c;
+	js_ch_observable[JSO_dut_v_dc_V] = &data->av.dut_measurements.v_dc_in_V;
+	js_ch_observable[JSO_dut_i_dc_A] = &data->av.dut_measurements.i_dc_in_A;
+	js_ch_observable[JSO_dut_omega_mech_rad_per_sec] = &data->av.dut_measurements.omega_mech_rad_per_sec;
+	js_ch_observable[JSO_dut_theta_mech_rad] = &data->av.dut_measurements.theta_mech;
+
+	js_ch_observable[JSO_prime_mover_i_a_A] = &data->av.prime_mover_measurements.i_abc_in_A.a;
+	js_ch_observable[JSO_prime_mover_i_b_A] = &data->av.prime_mover_measurements.i_abc_in_A.b;
+	js_ch_observable[JSO_prime_mover_i_c_A] = &data->av.prime_mover_measurements.i_abc_in_A.c;
+	js_ch_observable[JSO_prime_mover_v_a_V] = &data->av.prime_mover_measurements.v_abc_in_V.a;
+	js_ch_observable[JSO_prime_mover_v_b_V] = &data->av.prime_mover_measurements.v_abc_in_V.b;
+	js_ch_observable[JSO_prime_mover_v_c_V] = &data->av.prime_mover_measurements.v_abc_in_V.c;
+	js_ch_observable[JSO_prime_mover_v_dc_V] = &data->av.prime_mover_measurements.v_dc_in_V;
+	js_ch_observable[JSO_prime_mover_i_dc_A] = &data->av.prime_mover_measurements.i_dc_in_A;
+	js_ch_observable[JSO_prime_mover_omega_mech_rad_per_sec] = &data->av.prime_mover_measurements.omega_mech_rad_per_sec;
+	js_ch_observable[JSO_prime_mover_theta_mech_rad] = &data->av.prime_mover_measurements.theta_mech;
+	js_ch_observable[JSO_prime_mover_violation] = &data->av.prime_mover_violation_code;
+	js_ch_observable[JSO_dut_backend] = &data->av.dut_backend_code;
+	js_ch_observable[JSO_deskbench_inputs_ready] = &data->av.deskbench_inputs_ready_code;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -130,6 +160,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_INVERTER_ADAPTER_D2_FAULT] = &project_wizard_visualization_data.viz_inverter_adapter_d2_fault;
 /* Project Wizard END: javascope_slowdata_pointers */
 	js_slowDataArray[JSSD_FLOAT_dut_violation] = &data->av.dut_violation_code;
+	js_slowDataArray[JSSD_FLOAT_prime_mover_violation] = &data->av.prime_mover_violation_code;
+	js_slowDataArray[JSSD_FLOAT_dut_backend] = &data->av.dut_backend_code;
+	js_slowDataArray[JSSD_FLOAT_deskbench_inputs_ready] = &data->av.deskbench_inputs_ready_code;
 
 	return Status;
 }
@@ -161,6 +194,9 @@ void JavaScope_update(DS_Data* data){
 	System_UpTime_seconds   = uz_SystemTime_GetUptimeInSec();
 	System_UpTime_ms		= uz_SystemTime_GetUptimeInMs();
 	data->av.dut_violation_code = (float)data->av.dut_violation;
+	data->av.prime_mover_violation_code = (float)data->av.prime_mover_violation;
+	data->av.dut_backend_code = (float)data->av.dut_backend;
+	data->av.deskbench_inputs_ready_code = data->av.deskbench_inputs_ready ? 1.0f : 0.0f;
 
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){

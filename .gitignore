@@ -7,7 +7,7 @@ ip_cores/vv_index.xml
 
 javascope/build/
 
-
+vitis/SimulinkCodegen/config_Ctrl.mat
 vitis/software/Baremetal/src/slprj/
 vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/buildInfo.mat
 vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/codedescriptor.dmr
@@ -20,7 +20,7 @@ vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/rtwtypeschksum.mat
 vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/uz_codegen0.mk
 vitis/software/Baremetal/src/Codegen/slprj/
 vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/html/
-
+vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/
 .vscode/settings.json
 control_algorithms/uz_FOC.slxc
 

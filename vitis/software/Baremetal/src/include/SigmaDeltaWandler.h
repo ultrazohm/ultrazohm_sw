@@ -7,6 +7,7 @@ Jonathan Link 2026
 
 #include <stdint.h>
 #include "../IP_Cores/uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Interface.h"
+#include "../IP_Cores/uz_JL_SDC_OCP/uz_JL_SDC_OCP.h"
 
 // Kanaele des SD-Demodulators (Auswahl der Kalibrierwerte/OSR)
 enum SigmaDeltaWandler_channel {
@@ -30,8 +31,8 @@ enum SigmaDeltaWandler_filter_instance {
 
 // OCP-Stromgrenzen in Ampere (global fuer alle Phasen). Umrechnung in counts in
 // SigmaDeltaWandler_init via counts = I_A * OSR^3 / k_manual.
-#define SDW_OCP_I_MAX_A  ( 100.0f)   // TODO: realen Wert festlegen
-#define SDW_OCP_I_MIN_A  (-100.0f)   // TODO: realen Wert festlegen
+#define SDW_OCP_I_MAX_A  ( 13.0f)   // TODO: realen Wert festlegen
+#define SDW_OCP_I_MIN_A  (-13.0f)   // TODO: realen Wert festlegen
 
 // TODO: auf 1 setzen, sobald eine zweite Hardware-Instanz des IP-Cores existiert
 // (XPAR_UZ_USER_UZ_JL_SIGMADELTA_INT_1_BASEADDR nach Erweiterung des Vivado Block Designs
@@ -44,7 +45,7 @@ enum SigmaDeltaWandler_filter_instance {
 
 // Schaltet die Trennung von P-/I-Anteil in der Regelung (struct_Ctrl_Config.sel_act_I) ein/aus.
 // Nur sinnvoll aktivierbar, wenn SDW_SECOND_FILTER_HW_AVAILABLE == 1 (sonst bleibt der I-Zweig auf 0).
-#define SDW_ACT_I_SEPARATE_CALC_ENABLED 1U
+#define SDW_ACT_I_SEPARATE_CALC_ENABLED 0U
 
 // Aktiviert die Berechnung des gleitenden Fenster-Mittelwerts der rohen FPGA-Werte
 // (nur Inbetriebnahme-Hilfsmittel zur Bestimmung von offset_counts, siehe
@@ -63,6 +64,19 @@ enum SigmaDeltaWandler_filter_instance {
  * (SDW_SECOND_FILTER_HW_AVAILABLE == 0).
  */
 uz_JL_SigmaDelta_Interface_t *SigmaDeltaWandler_init(enum SigmaDeltaWandler_filter_instance filter);
+
+/**
+ * @brief Initialisiert den zur Filterinstanz gehoerenden uz_JL_SDC_OCP-Ueberstromerkennungs-Core.
+ *
+ * Rechnet die Stromgrenzen (SDW_OCP_I_MAX_A/MIN_A) in Rohwert-counts der jeweiligen Filterinstanz
+ * um (counts = I_A * OSR^3 / k_manual) und schreibt sie zusammen mit den Enables in den Core.
+ * Nur SDW_FILTER_P und SDW_FILTER_OCP besitzen eine OCP-Instanz; fuer andere Filter (z.B.
+ * SDW_FILTER_I) wird NULL zurueckgegeben.
+ *
+ * @param filter Filterinstanz, deren OCP-Core initialisiert werden soll.
+ * @return uz_JL_SDC_OCP_t* Initialisierte OCP-Instanz, oder NULL falls kein OCP-Core existiert.
+ */
+uz_JL_SDC_OCP_t *SigmaDeltaWandler_init_ocp(enum SigmaDeltaWandler_filter_instance filter);
 
 /**
  * @brief ISR-optimierte Variante: liest die Sinc3-Ausgangsregister (Strobe + Registerreads)

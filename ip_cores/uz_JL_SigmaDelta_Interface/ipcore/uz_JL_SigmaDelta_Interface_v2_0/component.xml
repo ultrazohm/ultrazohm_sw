@@ -413,7 +413,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>d63d684e</spirit:value>
+            <spirit:value>909a21ec</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -429,7 +429,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>d63d684e</spirit:value>
+            <spirit:value>909a21ec</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -570,19 +570,6 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>clk_ext</spirit:name>
-        <spirit:wire>
-          <spirit:direction>in</spirit:direction>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
         <spirit:name>pwm_max_trigger</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
@@ -596,7 +583,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>board_ready</spirit:name>
+        <spirit:name>clk_ext</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -1207,12 +1194,16 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>FLT_pl</spirit:name>
+        <spirit:name>data_out_pl</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">159</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
-              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
               <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
               <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
             </spirit:wireTypeDef>
@@ -1432,7 +1423,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block4.vhd</spirit:name>
+        <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1476,30 +1467,6 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block1.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block2.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block3.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_Ueberstromerkennung.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_uz_JL_SigmaDelta_Inferface.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -1510,7 +1477,7 @@
       <spirit:file>
         <spirit:name>hdl/uz_JL_SigmaDelta_Interface.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_0673c295</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_313b4214</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1571,7 +1538,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block4.vhd</spirit:name>
+        <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1626,36 +1593,6 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block1.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block2.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block3.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_Ueberstromerkennung.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/uz_JL_SigmaDelta_Interface_src_uz_JL_SigmaDelta_Inferface.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
@@ -1682,6 +1619,14 @@
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_productguide_view_fileset</spirit:name>
+      <spirit:file>
+        <spirit:name>doc/InBitPacking.jpg</spirit:name>
+        <spirit:userFileType>image</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>doc/OutBitPacking.jpg</spirit:name>
+        <spirit:userFileType>image</spirit:userFileType>
+      </spirit:file>
       <spirit:file>
         <spirit:name>doc/doc_arch_axi4.jpg</spirit:name>
         <spirit:userFileType>image</spirit:userFileType>
@@ -1728,15 +1673,15 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_JL_SigmaDelta_Interface</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2114846100</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2026-10-26T12:00:31Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2114855317</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2026-11-01T21:37:38Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="5ee91a3c"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="be4c39c2"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="7f988d35"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="696b1f70"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="cd5e21cf"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="73d000d1"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="c550b243"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

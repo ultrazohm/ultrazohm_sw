@@ -37,11 +37,11 @@ struct uz_resolver_pos_mt_outputs_t uz_resolver_pos_mt_get_outputs(uz_resolver_p
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     struct uz_resolver_pos_mt_outputs_t outputs = { 0 };
-    outputs.multiturn_position = uz_resolver_pos_mt_hw_read_multiturn_position(self->config.base_address);
+    outputs.multiturn_position_raw = uz_resolver_pos_mt_hw_read_multiturn_position(self->config.base_address);
     outputs.turns_cnt = uz_resolver_pos_mt_hw_read_turns_cnt(self->config.base_address);
     outputs.pos_mt_valid = uz_resolver_pos_mt_hw_read_pos_mt_valid(self->config.base_address);
-    outputs.turns = (int32_t)(outputs.multiturn_position >> 16);
-    outputs.singleturn_raw = (uint16_t)((uint64_t)outputs.multiturn_position & 0xFFFFU);
+    outputs.turns = (int32_t)(outputs.multiturn_position_raw >> 16);
+    outputs.singleturn_raw = (uint16_t)((uint64_t)outputs.multiturn_position_raw & 0xFFFFU);
     return (outputs);
 }
 

@@ -18,8 +18,6 @@
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
-#include "../IP_Cores/uz_JL_invModel_ideal/uz_JL_invModel_ideal.h"
-#include "../IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel.h"
 #include "../Codegen/uz_codegen0_ert_rtw/uz_codegen0.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
 #include "../globalData.h"
@@ -49,6 +47,8 @@ static float conv_board_rst_f;
 static float conv_board_ready_f;
 static float conv_igbt_desat_f;
 static float dpt_state_f;
+static float mult_pos_valid_f;
+static float ocp_fault_f;
 
 uint32_t pollErrorCnt = 0U;
 
@@ -98,9 +98,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_SD_PH1]				= &Global_Data.av.Sinc3_Filter_P.data_PH1_A;
 	js_ch_observable[JSO_SD_PH2]				= &Global_Data.av.Sinc3_Filter_P.data_PH2_A;
 	js_ch_observable[JSO_SD_PH3]				= &Global_Data.av.Sinc3_Filter_P.data_PH3_A;
-	js_ch_observable[JSO_SD2_PH1]				= &Global_Data.av.Sinc3_Filter_I.data_PH1_A;
-	js_ch_observable[JSO_SD2_PH2]				= &Global_Data.av.Sinc3_Filter_I.data_PH2_A;
-	js_ch_observable[JSO_SD2_PH3]				= &Global_Data.av.Sinc3_Filter_I.data_PH3_A;
+	// js_ch_observable[JSO_SD2_PH1]				= &Global_Data.av.Sinc3_Filter_I.data_PH1_A;
+	// js_ch_observable[JSO_SD2_PH2]				= &Global_Data.av.Sinc3_Filter_I.data_PH2_A;
+	// js_ch_observable[JSO_SD2_PH3]				= &Global_Data.av.Sinc3_Filter_I.data_PH3_A;
 	js_ch_observable[JSO_theta_el]				= &Global_Data.av.theta_el;
 	js_ch_observable[JSO_theta_mech]			= &Global_Data.av.mechanicalPosition;
 	js_ch_observable[JSO_n_rpm]					= &Global_Data.av.resolver_pl_outputs.n_mech_rpm;
@@ -119,21 +119,35 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_conv_board_rst]		= &conv_board_rst_f;
 	js_ch_observable[JSO_conv_board_ready]		= &conv_board_ready_f;
 	js_ch_observable[JSO_conv_igbt_desat]		= &conv_igbt_desat_f;
+	js_ch_observable[JSO_mult_pos_grad]			= &Global_Data.av.mult_pos_grad;
+	js_ch_observable[JSO_mult_pos_valid]		= &mult_pos_valid_f;
+	js_ch_observable[JSO_CB_phi_ist]			= &regelung.output.phi_ist_safety;
+	js_ch_observable[JSO_CB_phi_max]			= &regelung.output.phi_max;
+	js_ch_observable[JSO_CB_v_max]				= &regelung.output.Soll_v_max;
+	js_ch_observable[JSO_CB_Grenze_aktiv]		= &regelung.output.Grenze_aktiv;
+ 	js_ch_observable[JSO_CB_Soll_Beschl]		= &regelung.output.Bus_Ctrl_Out_j.Soll_Beschleunigung_CB_Grads2;
+	js_ch_observable[JSO_CB_Soll_Geschw]		= &regelung.output.Bus_Ctrl_Out_j.Soll_Drehzahl_CB_Grads;
+	js_ch_observable[JSO_CB_Soll_Winkel]		= &regelung.output.Bus_Ctrl_Out_j.Soll_Winkel_CB_Grad;
+	js_ch_observable[JSO_CB_omega_grads]		= &Global_Data.av.CB_omega_grads;
+	// js_ch_observable[JSO_SD_OCP_PH1]			= &Global_Data.av.Sinc3_Filter_OCP.data_PH1_A;
+	// js_ch_observable[JSO_SD_OCP_PH2]			= &Global_Data.av.Sinc3_Filter_OCP.data_PH2_A;
+	// js_ch_observable[JSO_SD_OCP_PH3]			= &Global_Data.av.Sinc3_Filter_OCP.data_PH3_A;
+	js_ch_observable[JSO_ocp_fault]				= &ocp_fault_f;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_resolver_counter] 		= &(Global_Data.av.resolver_pl_outputs.revolution_counter);
+	js_slowDataArray[JSSD_FLOAT_resolver_counter] 		= &(Global_Data.av.mult_pos_turns);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.resolver_pl_outputs.n_mech_rpm);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-	// js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH1]			= SigmaDeltaWandler_get_raw_average(SDW_FILTER_0, SDW_CH_PH1);
+	js_slowDataArray[JSSD_FLOAT_timestamp]			    = &(Global_Data.av.debug_timestamp_s);
 	// js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH2]			= SigmaDeltaWandler_get_raw_average(SDW_FILTER_0, SDW_CH_PH2);
 	// js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH3]			= SigmaDeltaWandler_get_raw_average(SDW_FILTER_0, SDW_CH_PH3);
-	// js_slowDataArray[JSSD_FLOAT_Soll_Drehzahl]				= &regelung.input.Bus_ZM_In_j.Soll_Drehzahl_Umin;
+	// js_slowDataArray[JSSD_FLOAT_Soll_Drehzahl]				= &regelung.input.Bus_ZM_In_a.Soll_Drehzahl_Umin;
 	return Status;
 }
 
@@ -168,6 +182,8 @@ void JavaScope_update(DS_Data* data){
 	conv_board_rst_f		= (float)conv_status_signals.board_rst;
 	conv_board_ready_f		= (float)conv_status_signals.board_ready;
 	conv_igbt_desat_f		= (float)conv_status_signals.igbt_desat;
+	mult_pos_valid_f		= (float)Global_Data.av.mult_pos_valid;
+	ocp_fault_f				= (float)conv_status_signals.ocp_fault;
 
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){

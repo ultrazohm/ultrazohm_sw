@@ -7,7 +7,7 @@ Generated logfile:
     ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 
 source vivado_ip_package.tcl -notrace
-create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:07 . Memory (MB): peak = 378.902 ; gain = 47.336
+create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 378.602 ; gain = 46.574
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/jonat/Documents/MA_JL_CB/ip_cores/uz_JL_SigmaDelta_Interface/ipcore'.
 WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/Users/jonat/Documents/MA_JL_CB/ip_cores/uz_JL_SigmaDelta_Interface/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/Users/jonat/Documents/MA_JL_CB/ip_cores/uz_JL_SigmaDelta_Interface/ipcore/uz_JL_SigmaDelta_Interface_v2_0/prj_ip'.)
@@ -42,22 +42,10 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_CLk1.v
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_CLk1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_Subsystem1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_Subsystem1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block2.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block2.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block3.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block3.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_Ueberstromerkennung.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_Ueberstromerkennung.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_gen_slow_clk.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_gen_slow_clk.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block4.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_sync_clk_pwm.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_sync_clk_pwm.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_Integratoren.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
@@ -92,6 +80,6 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_axi4.vhd" 
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_axi4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Mon Oct 26 13:00:32 2026...
+INFO: [Common 17-206] Exiting Vivado at Sun Nov  1 22:37:39 2026...
 
-Elapsed time is 23.2836 seconds.
+Elapsed time is 20.9149 seconds.

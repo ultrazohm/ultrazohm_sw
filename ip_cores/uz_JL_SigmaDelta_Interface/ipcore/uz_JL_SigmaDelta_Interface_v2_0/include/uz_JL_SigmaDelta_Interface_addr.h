@@ -1,7 +1,7 @@
 /*
  * File Name:         C:\Users\jonat\Documents\MA_JL_CB\ip_cores\uz_JL_SigmaDelta_Interface\ipcore\uz_JL_SigmaDelta_Interface_v2_0\include\uz_JL_SigmaDelta_Interface_addr.h
  * Description:       C Header File
- * Created:           2026-10-26 13:00:08
+ * Created:           2026-11-01 22:37:17
 */
 
 #ifndef UZ_JL_SIGMADELTA_INTERFACE_H_
@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_uz_JL_SigmaDelta_Interface               0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_uz_JL_SigmaDelta_Interface              0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_uz_JL_SigmaDelta_Interface           0x8  //contains unique IP timestamp (yymmddHHMM): 2610261300
+#define  IPCore_Timestamp_uz_JL_SigmaDelta_Interface           0x8  //contains unique IP timestamp (yymmddHHMM): 2611012237
 #define  clk_ratio_Data_uz_JL_SigmaDelta_Interface             0x100  //data register for Inport clk_ratio
 #define  switch_edge_Data_uz_JL_SigmaDelta_Interface           0x104  //data register for Inport switch_edge
 #define  Dezimation_Data_uz_JL_SigmaDelta_Interface            0x108  //data register for Inport Dezimation
@@ -25,15 +25,6 @@
 #define  use_clk_ext_Data_uz_JL_SigmaDelta_Interface           0x14C  //data register for Inport use_clk_ext
 #define  rst_data_valid_cnt_Data_uz_JL_SigmaDelta_Interface    0x150  //data register for Inport rst_data_valid_cnt
 #define  data_valid_cnt_Data_uz_JL_SigmaDelta_Interface        0x154  //data register for Outport data_valid_cnt
-#define  I_ph_max_Data_uz_JL_SigmaDelta_Interface              0x158  //data register for Inport I_ph_max
-#define  U_dc_max_Data_uz_JL_SigmaDelta_Interface              0x15C  //data register for Inport U_dc_max
-#define  U_dc_min_Data_uz_JL_SigmaDelta_Interface              0x160  //data register for Inport U_dc_min
-#define  FLT_Reset_Data_uz_JL_SigmaDelta_Interface             0x164  //data register for Inport FLT_Reset
-#define  EN_Udc_Data_uz_JL_SigmaDelta_Interface                0x168  //data register for Inport EN_Udc
-#define  EN_PH4_Data_uz_JL_SigmaDelta_Interface                0x16C  //data register for Inport EN_PH4
-#define  I_ph_min_Data_uz_JL_SigmaDelta_Interface              0x170  //data register for Inport I_ph_min
-#define  FLT_ps_Data_uz_JL_SigmaDelta_Interface                0x174  //data register for Outport FLT_ps
 #define  sel_pwm_trigger_Data_uz_JL_SigmaDelta_Interface       0x178  //data register for Inport sel_pwm_trigger
-#define  EN_OCP_Data_uz_JL_SigmaDelta_Interface                0x17C  //data register for Inport EN_OCP
 
 #endif /* UZ_JL_SIGMADELTA_INTERFACE_H_ */

@@ -14,17 +14,24 @@ typedef struct uz_JL_flt_dis_t uz_JL_flt_dis_t;
 /**
  * @brief Fault cause reported by the FLT_ps output. The values are bit flags, so multiple
  * causes can be active at once. Single faults match directly via ==, combined faults can be
- * checked with a bitwise AND.
+ * checked with a bitwise AND. UZ_JL_FLT_DIS_FAULT_NONE (0) means no fault is active.
  *
- * NOTE: The concrete bit meanings are placeholders and must be matched to the actual HDL
- * encoding of the uz_JL_flt_ip core. Only the bit positions / data type are fixed here.
+ * Bit encoding per HDL (uz_JL_flt_ip_src_uz_JL_flt_dis.vhd): FLT_ps is a ufix11 output built
+ * from the sum of five latched fault flags (five S-R flip-flops), i.e. bits 0..4 are meaningful:
+ *   bit0..bit3 = FLT_1..FLT_4 (PL-wired hardware fault inputs of the power stage),
+ *   bit4       = FLT_PS       (AXI-written aggregated fault set via uz_JL_flt_dis_set_FLT_PS,
+ *                              e.g. forwarded from the OCP path).
+ *
+ * TODO: the exact physical meaning of FLT_1..FLT_4 (which gate driver / signal) follows from the
+ * Vivado block-design wiring; refine the comments once confirmed. The bit positions are fixed.
  */
 enum uz_JL_flt_dis_fault {
-    UZ_JL_FLT_DIS_FAULT_NONE = 0,
-    UZ_JL_FLT_DIS_FAULT_BIT0 = 1,
-    UZ_JL_FLT_DIS_FAULT_BIT1 = 2,
-    UZ_JL_FLT_DIS_FAULT_BIT2 = 4,
-    UZ_JL_FLT_DIS_FAULT_BIT3 = 8,
+    UZ_JL_FLT_DIS_FAULT_NONE   = 0,
+    UZ_JL_FLT_DIS_FAULT_FLT_1  = 1,   // PL-HW-Fehlereingang FLT_1 (Endstufe)
+    UZ_JL_FLT_DIS_FAULT_FLT_2  = 2,   // PL-HW-Fehlereingang FLT_2
+    UZ_JL_FLT_DIS_FAULT_FLT_3  = 4,   // PL-HW-Fehlereingang FLT_3
+    UZ_JL_FLT_DIS_FAULT_FLT_4  = 8,   // PL-HW-Fehlereingang FLT_4
+    UZ_JL_FLT_DIS_FAULT_FLT_PS = 16,  // per set_FLT_PS gesetzter aggregierter Fehler (z. B. OCP)
 };
 
 /**

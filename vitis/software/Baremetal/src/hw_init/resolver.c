@@ -83,9 +83,9 @@ static int64_t deg_to_counts(double deg) {
 struct resolver_pos_mt_reading_t resolver_pos_mt_read_position(uz_resolver_pos_mt_t *self) {
 	struct uz_resolver_pos_mt_outputs_t outputs = uz_resolver_pos_mt_get_outputs(self);
 	struct resolver_pos_mt_reading_t reading = { 0 };
-	reading.multiturn_position_counts = outputs.multiturn_position;
-	reading.multiturn_position_rad = counts_to_rad(outputs.multiturn_position);
-	reading.multiturn_position_deg = counts_to_deg(outputs.multiturn_position);
+	reading.multiturn_position_counts = outputs.multiturn_position_raw;
+	reading.multiturn_position_rad = counts_to_rad(outputs.multiturn_position_raw);
+	reading.multiturn_position_deg = counts_to_deg(outputs.multiturn_position_raw);
 	reading.turns = outputs.turns;
 	reading.singleturn_counts = outputs.singleturn_raw;
 	reading.valid = outputs.pos_mt_valid;

@@ -32,6 +32,11 @@ elems(i) = Simulink.BusElement;
 elems(i).Name = 'pmsm_m_mot_Nm';
 elems(i).DataType = 'single';
 
+i = i + 1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'pmsm_mult_pos_grad';
+elems(i).DataType = 'single';
+
 Bus_PMSM_Out = Simulink.Bus;
 Bus_PMSM_Out.Elements = elems;
 
@@ -45,7 +50,8 @@ data.pmsm_Omega_mech_rad_s = 0; % DC link voltage
 data.pmsm_Omega_el_rad_s = 0;
 data.pmsm_theta_mech_rad = 0; % Gain for PT1
 data.pmsm_theta_el_rad = 0;
-data.pmsm_m_mot_Nm = 0; % Time constant for PT1
+data.pmsm_m_mot_Nm = 0; 
+data.pmsm_mult_pos_grad  =0;
 
 struct_PMSM_Out = Simulink.Parameter;
 struct_PMSM_Out.Value = data;

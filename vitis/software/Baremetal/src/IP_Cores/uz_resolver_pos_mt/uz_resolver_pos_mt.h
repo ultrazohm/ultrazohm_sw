@@ -25,7 +25,7 @@ struct uz_resolver_pos_mt_config_t {
  * turns and singleturn_raw are the decomposition of that value.
  */
 struct uz_resolver_pos_mt_outputs_t {
-    int64_t multiturn_position; /**< Raw multiturn position (turns*65536 + singleturn_raw) */
+    int64_t multiturn_position_raw; /**< Raw multiturn position (turns*65536 + singleturn_raw) */
     int32_t turns_cnt; /**< Revolution counter read from the IP-Core */
     bool pos_mt_valid; /**< true once the multiturn position has a valid reference */
     int32_t turns; /**< turns decomposed from multiturn_position (multiturn_position >> 16) */

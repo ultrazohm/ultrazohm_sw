@@ -18,26 +18,25 @@
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
-#include "../IP_Cores/uz_JL_invModel_ideal/uz_JL_invModel_ideal.h"
-#include "../IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel.h"
 #include "../Codegen/uz_codegen0_ert_rtw/uz_codegen0.h"
 #include "../IP_Cores/uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Interface.h"
+#include "../IP_Cores/uz_JL_SDC_OCP/uz_JL_SDC_OCP.h"
+#include "../IP_Cores/uz_JL_flt_dis/uz_JL_flt_dis.h"
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
+extern conv_status_signals_t conv_status_signals;
 extern uint32_t js_status_BareToRTOS;
 extern bool input_bit;
 extern bool output_bit;
 extern uint32_t output_port;
 extern uint32_t input_port;
-extern uz_JL_pmsmModel_t *pmsm_ideal;
 extern float DC_LINK_MAX_VOLTS;
 extern Bus_Ctrl_Config struct_Ctrl_Config;
 extern float DutC;
 
 extern Bus_ZM_In struct_ZM_In;
-extern struct uz_JL_pmsmModel_inputs_t pmsm_ideal_in;
 extern uz_JL_SigmaDelta_Interface_t *Sinc3_Filter;
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -48,28 +47,40 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		switch (msgId)
 		{
 
-		case (My_Button_4): // switch to current_control
+		case (My_Button_1): // switch to manual_duty_cycle (set via Set_Send_Field_1..3)
+			data->rasv.ctrl_state = manual_duty_cycle;
+			break;
+
+		case (My_Button_2):
 			data->rasv.ctrl_state = current_control;
 			break;
 
-		case (My_Button_5): // switch to rpm_control
+		case (My_Button_3): 
 			data->rasv.ctrl_state = rpm_control;
 			break;
 
-		case (My_Button_6): // switch to test_sine
+		case (My_Button_4): // switch to current_control
+			data->rasv.ctrl_state = position_control;
 			break;
 
-		case (My_Button_7): // switch back to ctrl_state_none
+		case (My_Button_5): // switch to rpm_control
 			data->rasv.ctrl_state = ctrl_state_none;
 			break;
 
-		case (My_Button_8): // switch to test_square
+		case (My_Button_6): // switch to position_control
+			resolver_pos_mt_write_preset_deg(data->objects.resolver_pos_mt, 0);
 			break;
 
-		case (My_Button_9): // start DPT (Doppelpulstest), parameters via Set_Send_Field_12..16
-		{
+		case (My_Button_7): // Auf 0 Position fahren (Home-Position)
+			data->rasv.Modus_Position_sel = 2;
+			break;
 
-		}
+		case (My_Button_8): // Trapez aktivieren
+			data->rasv.Modus_Position_sel = 1;
+			break;
+
+		case (My_Button_9): // Manuelle Position
+			data->rasv.Modus_Position_sel = 3;
 			break;
 
 		case (Stop): // Stop
@@ -259,69 +270,69 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		struct_Ctrl_Config.KIi = value;
 			break;
 
-		case (Set_Send_Field_7):
-		data->av.snd_fld[7] = value;
-			break;
-
-		case (Set_Send_Field_8): // Soll_id
+		case (Set_Send_Field_7): // Soll_id
 		data->rasv.Soll_id = value;
 			break;
 
-		case (Set_Send_Field_9): // Soll_iq
+		case (Set_Send_Field_8): // Soll_iq
 		data->rasv.Soll_iq = value;
 			break;
 
-		case (Set_Send_Field_10): // Soll_Square_DutyCycle
+		case (Set_Send_Field_9): // Referenzier-Winkel (Wellenwinkel Motorseite) in Grad fuer My_Button_8
+		data->rasv.Ref_Winkel_grad = value;
 			break;
 
-		case (Set_Send_Field_11): // Soll_Square_Frequency_Hz
+		case (Set_Send_Field_10): // position_control: Positionssollwert in Grad
+		data->rasv.Soll_Winkel_grad = value;
 			break;
 
-		case (Set_Send_Field_12): // Soll_DPT_Current_A
+		case (Set_Send_Field_11): // position_control: Geschwindigkeitssollwert in Grad/s
+		data->rasv.Soll_Geschwindigkeit_grads = value;
 			break;
 
-		case (Set_Send_Field_13): // Soll_DPT_MaxCurrent_A
+		case (Set_Send_Field_12): // position_control: Beschleunigungssollwert in Grad/s^2
+		data->rasv.Soll_Beschleunigung_grads2 = value;
 			break;
 
-		case (Set_Send_Field_14): // Soll_DPT_ChargeTimeout_ms
+		case (Set_Send_Field_13): // position_control: Untermodus (0=Warten,1=Trapez,2=Home,3=Single_Position)
 			break;
 
-		case (Set_Send_Field_15): // Soll_DPT_Deadtime_us
+		case (Set_Send_Field_14): // frei/ungenutzt
 			break;
 
-		case (Set_Send_Field_16): // Soll_DPT_Pulse2_us
+		case (Set_Send_Field_15): // frei/ungenutzt
 			break;
 
-		case (Set_Send_Field_17):
-		data->av.snd_fld[17] = value;
+		case (Set_Send_Field_16): // frei/ungenutzt
 			break;
 
-		case (Set_Send_Field_18):
-		data->av.snd_fld[18] = value;
+		case (Set_Send_Field_17): // frei/ungenutzt
 			break;
 
-		case (Set_Send_Field_19):
-		data->av.snd_fld[19] = value;
+		case (Set_Send_Field_18): // frei/ungenutzt
 			break;
 
-		case (Set_Send_Field_20):
-		data->av.snd_fld[20] = value;
+		case (Set_Send_Field_19): // frei/ungenutzt
 			break;
 
-		case (My_Button_1): // switch to manual_duty_cycle (set via Set_Send_Field_1..3)
-			data->rasv.ctrl_state = manual_duty_cycle;
+		case (Set_Send_Field_20): // frei/ungenutzt
 			break;
 
-		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
-			break;
+		
 
-		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
-			break;
-
-		case (Error_Reset):
-
+		case (Error_Reset): // OCP-Fehler quittieren und Wiederanlauf vorbereiten
+			if (data->objects.sdc_ocp_P != NULL)
+			{
+				uz_JL_SDC_OCP_reset_fault(data->objects.sdc_ocp_P);     // FPGA-OCP-Latch (P-Pfad) loeschen
+			}
+			if (data->objects.sdc_ocp_OCP != NULL)
+			{
+				uz_JL_SDC_OCP_reset_fault(data->objects.sdc_ocp_OCP);   // FPGA-OCP-Latch (OCP-Pfad) loeschen
+			}
+			uz_JL_flt_dis_set_FLT_PS(data->objects.flt_dis, false);  // Abschaltanforderung zuruecknehmen
+			uz_JL_flt_dis_reset_fault(data->objects.flt_dis);        // flt_dis-Latch loeschen (FLT_RST-Puls)
+			conv_status_signals.ocp_fault = 0U;
+			ultrazohm_state_machine_set_stop(true);                  // error_state -> idle_state
 			break;
 
 		case (0xFFFF):

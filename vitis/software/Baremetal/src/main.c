@@ -122,11 +122,16 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
             Global_Data.objects.resolver = initialize_resolver();
 			Global_Data.objects.resolver_pl_interface = initialize_resolver_pl_interface();
+			Global_Data.objects.resolver_pos_mt = initialize_resolver_pos_mt();
             Global_Data.objects.input_gpio = uz_axi_gpio_init(input_config);
             Global_Data.objects.output_gpio = uz_axi_gpio_init(gpio_out_config);
 			Global_Data.objects.Sinc3_Filter_P = SigmaDeltaWandler_init(SDW_FILTER_P);
 			Global_Data.objects.Sinc3_Filter_I = SigmaDeltaWandler_init(SDW_FILTER_I); // liefert NULL, solange SDW_SECOND_FILTER_HW_AVAILABLE == 0
 			Global_Data.objects.Sinc3_Filter_OCP = SigmaDeltaWandler_init(SDW_FILTER_OCP); // NULL, bis XPAR_...INT_2 / base_address gesetzt ist
+			// Ueberstromerkennung (uz_JL_SDC_OCP): je eine Instanz fuer den P- und den OCP-Mess-Pfad.
+			// Nach den SigmaDelta-Inits, da die Count-Grenzen die OSR/Kalibrierung der Filterinstanz nutzen.
+			Global_Data.objects.sdc_ocp_P = SigmaDeltaWandler_init_ocp(SDW_FILTER_P);
+			Global_Data.objects.sdc_ocp_OCP = SigmaDeltaWandler_init_ocp(SDW_FILTER_OCP);
 			Global_Data.objects.flt_dis = uz_JL_flt_dis_init(flt_dis_config);
             initialization_chain = print_msg;
             break;

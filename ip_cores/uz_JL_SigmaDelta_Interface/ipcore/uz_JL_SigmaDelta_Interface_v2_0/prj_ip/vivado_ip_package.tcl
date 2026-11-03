@@ -8,14 +8,8 @@ add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_trigger_sec_edge.vhd
 add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_Subsystem.vhd}
 add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_CLk1.vhd}
 add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_Subsystem1.vhd}
-add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd}
-add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block.vhd}
-add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block1.vhd}
-add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block2.vhd}
-add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block3.vhd}
-add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_Ueberstromerkennung.vhd}
 add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_gen_slow_clk.vhd}
-add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block4.vhd}
+add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd}
 add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_sync_clk_pwm.vhd}
 add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_Integratoren.vhd}
 add_files -norecurse {../hdl/uz_JL_SigmaDelta_Interface_src_Differentierer.vhd}
@@ -52,7 +46,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2114846100 [ipx::current_core]
+set_property core_revision 2114855317 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_uz_JL_SigmaDelta_Inferface_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -79,38 +73,14 @@ ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_Subsystem1.vhd} [ipx::get_file
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_Subsystem1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_Subsystem1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_Subsystem1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block3.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block3.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_Ueberstromerkennung.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_Ueberstromerkennung.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_Ueberstromerkennung.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_Ueberstromerkennung.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_gen_slow_clk.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_gen_slow_clk.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_gen_slow_clk.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_gen_slow_clk.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block4.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block4.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block4.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block4.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_sync_clk_pwm.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_SigmaDelta_Interface_src_sync_clk_pwm.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_SigmaDelta_Interface_src_sync_clk_pwm.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -299,6 +269,10 @@ set_property value {ACTIVE_LOW} [ipx::get_bus_parameters POLARITY -of_objects [i
 
 # Add report files
 ipx::add_file_group -type {product_guide} {} [ipx::current_core]
+ipx::add_file {doc/InBitPacking.jpg} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
+set_property type {{image}} [ipx::get_files {doc/InBitPacking.jpg} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
+ipx::add_file {doc/OutBitPacking.jpg} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
+set_property type {{image}} [ipx::get_files {doc/OutBitPacking.jpg} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
 ipx::add_file {doc/doc_arch_axi4.jpg} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
 set_property type {{image}} [ipx::get_files {doc/doc_arch_axi4.jpg} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
 ipx::add_file {doc/doc_arch_axi4_Pipeline_Register.jpg} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]

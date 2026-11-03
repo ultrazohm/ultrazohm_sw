@@ -54,10 +54,10 @@ data.mot_psi_pm_Vs = 0.13;   % Flussverkettung Permanentmagente in Vs
 data.mot_Ld_H = 7.2e-3;       % d-Induktivität in Henry
 data.mot_Lq_H = 7.2e-3;       % q-Induktivität in Henry
 data.mot_p = 4;             % Polpaarzahl
-data.mot_J_kgmsqr = 8.75e-4;       % Motorträgheit in kg*m^2
+data.mot_J_kgmsqr = 9.41e-4;       % Motorträgheit in kg*m^2
 data.mot_n_N_Umin = 5700;        % Nenndrehzahl in U/min
-data.mot_M_N_Nm = 4.3;         % Nenndrehmoment in Nm
-data.mot_I_max_A = 20.9;      %Maximaler Phasenstrom in A
+data.mot_M_N_Nm = 5.0 ;         % 4.3 Nenndrehmoment in Nm
+data.mot_I_max_A = 13;      %Maximaler Phasenstrom in A
 data.Coulomb_Reibung = 0.1;
 data.Reibungskoeffizient = 0.001;
 

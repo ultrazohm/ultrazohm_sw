@@ -24,13 +24,6 @@ struct uz_JL_SigmaDelta_Interface_config_t config = {
     .sinc_sample_periods = 3,
     .use_clk_ext = false,
     .sel_pwm_trigger = false,
-    .i_ph_max = 1000,
-    .i_ph_min = -1000,
-    .u_dc_max = 5000,
-    .u_dc_min = -500,
-    .en_udc = true,
-    .en_ph4 = true,
-    .en_ocp = true,
 };
 
 void setUp(void)
@@ -48,13 +41,6 @@ void setUp(void)
     config.sinc_sample_periods = 3;
     config.use_clk_ext = false;
     config.sel_pwm_trigger = false;
-    config.i_ph_max = 1000;
-    config.i_ph_min = -1000;
-    config.u_dc_max = 5000;
-    config.u_dc_min = -500;
-    config.en_udc = true;
-    config.en_ph4 = true;
-    config.en_ocp = true;
 }
 
 void tearDown(void)
@@ -74,13 +60,6 @@ static void expect_write_config_to_pl(struct uz_JL_SigmaDelta_Interface_config_t
     uz_JL_SigmaDelta_Interface_hw_write_sinc_sample_periods_Expect(BASE_ADDRESS, cfg->sinc_sample_periods);
     uz_JL_SigmaDelta_Interface_hw_write_use_clk_ext_Expect(BASE_ADDRESS, cfg->use_clk_ext);
     uz_JL_SigmaDelta_Interface_hw_write_sel_pwm_trigger_Expect(BASE_ADDRESS, cfg->sel_pwm_trigger);
-    uz_JL_SigmaDelta_Interface_hw_write_i_ph_max_Expect(BASE_ADDRESS, cfg->i_ph_max);
-    uz_JL_SigmaDelta_Interface_hw_write_i_ph_min_Expect(BASE_ADDRESS, cfg->i_ph_min);
-    uz_JL_SigmaDelta_Interface_hw_write_u_dc_max_Expect(BASE_ADDRESS, cfg->u_dc_max);
-    uz_JL_SigmaDelta_Interface_hw_write_u_dc_min_Expect(BASE_ADDRESS, cfg->u_dc_min);
-    uz_JL_SigmaDelta_Interface_hw_write_en_udc_Expect(BASE_ADDRESS, cfg->en_udc);
-    uz_JL_SigmaDelta_Interface_hw_write_en_ph4_Expect(BASE_ADDRESS, cfg->en_ph4);
-    uz_JL_SigmaDelta_Interface_hw_write_en_ocp_Expect(BASE_ADDRESS, cfg->en_ocp);
 }
 
 void test_uz_JL_SigmaDelta_Interface_correct_init(void)
@@ -249,49 +228,6 @@ void test_uz_JL_SigmaDelta_Interface_set_sel_pwm_trigger(void)
     bool input = true;
     uz_JL_SigmaDelta_Interface_hw_write_sel_pwm_trigger_Expect(BASE_ADDRESS, input);
     uz_JL_SigmaDelta_Interface_set_sel_pwm_trigger(instance, input);
-}
-
-void test_uz_JL_SigmaDelta_Interface_reset_fault(void)
-{
-    expect_write_config_to_pl(&config);
-    uz_JL_SigmaDelta_Interface_t *instance = uz_JL_SigmaDelta_Interface_init(config);
-
-    uz_JL_SigmaDelta_Interface_hw_reset_flt_Expect(BASE_ADDRESS);
-    uz_JL_SigmaDelta_Interface_reset_fault(instance);
-}
-
-void test_uz_JL_SigmaDelta_Interface_get_fault_none(void)
-{
-    expect_write_config_to_pl(&config);
-    uz_JL_SigmaDelta_Interface_t *instance = uz_JL_SigmaDelta_Interface_init(config);
-
-    uz_JL_SigmaDelta_Interface_hw_read_flt_ps_ExpectAndReturn(BASE_ADDRESS, FAULT_NONE);
-    TEST_ASSERT_EQUAL(FAULT_NONE, uz_JL_SigmaDelta_Interface_get_fault(instance));
-}
-
-void test_uz_JL_SigmaDelta_Interface_get_fault_single_cause(void)
-{
-    expect_write_config_to_pl(&config);
-    uz_JL_SigmaDelta_Interface_t *instance = uz_JL_SigmaDelta_Interface_init(config);
-
-    uz_JL_SigmaDelta_Interface_hw_read_flt_ps_ExpectAndReturn(BASE_ADDRESS, FAULT_PH2);
-    TEST_ASSERT_EQUAL(FAULT_PH2, uz_JL_SigmaDelta_Interface_get_fault(instance));
-}
-
-void test_uz_JL_SigmaDelta_Interface_get_fault_combined_causes(void)
-{
-    expect_write_config_to_pl(&config);
-    uz_JL_SigmaDelta_Interface_t *instance = uz_JL_SigmaDelta_Interface_init(config);
-
-    // FLT_ps is a bit mask, so multiple causes can be active at once.
-    uint32_t combined = (uint32_t)FAULT_UDC | (uint32_t)FAULT_PH1 | (uint32_t)FAULT_PH4;
-    uz_JL_SigmaDelta_Interface_hw_read_flt_ps_ExpectAndReturn(BASE_ADDRESS, combined);
-    enum uz_JL_SigmaDelta_Interface_fault fault = uz_JL_SigmaDelta_Interface_get_fault(instance);
-    TEST_ASSERT_EQUAL(combined, (uint32_t)fault);
-    TEST_ASSERT_TRUE(((uint32_t)fault & (uint32_t)FAULT_UDC) != 0U);
-    TEST_ASSERT_TRUE(((uint32_t)fault & (uint32_t)FAULT_PH1) != 0U);
-    TEST_ASSERT_TRUE(((uint32_t)fault & (uint32_t)FAULT_PH4) != 0U);
-    TEST_ASSERT_TRUE(((uint32_t)fault & (uint32_t)FAULT_PH2) == 0U);
 }
 
 #endif // TEST

@@ -1,6 +1,6 @@
 {
   "CodeGenStatus": [],
-  "CriticalPathDelay": 8.379999999999999,
+  "CriticalPathDelay": 7.244,
   "GenFileList": [
     "uz_JL_SigmaDelta_Interface_src_uz_JL_SigmaDelta_Inferface_pkg.vhd",
     "uz_JL_SigmaDelta_Interface_src_CLk.vhd",
@@ -8,14 +8,8 @@
     "uz_JL_SigmaDelta_Interface_src_Subsystem.vhd",
     "uz_JL_SigmaDelta_Interface_src_CLk1.vhd",
     "uz_JL_SigmaDelta_Interface_src_Subsystem1.vhd",
-    "uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd",
-    "uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block.vhd",
-    "uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block1.vhd",
-    "uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block2.vhd",
-    "uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block3.vhd",
-    "uz_JL_SigmaDelta_Interface_src_Ueberstromerkennung.vhd",
     "uz_JL_SigmaDelta_Interface_src_gen_slow_clk.vhd",
-    "uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop_block4.vhd",
+    "uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd",
     "uz_JL_SigmaDelta_Interface_src_sync_clk_pwm.vhd",
     "uz_JL_SigmaDelta_Interface_src_Integratoren.vhd",
     "uz_JL_SigmaDelta_Interface_src_Differentierer.vhd",
@@ -32,10 +26,10 @@
     },
     "ModelStructuralChecksum": {
       "Value": [
-        2487629894,
-        841043934,
-        1084364772,
-        3272590702
+        1308296756,
+        2502139754,
+        1295323101,
+        2032073558
       ],
       "MarkedUnique": false
     },
@@ -52,7 +46,7 @@
     "TopModelNonStructuralData": {
       "SimulationMode": "accelerator",
       "StartTime": "0.0",
-      "StopTime": "0.01",
+      "StopTime": "0.02",
       "SolverType": "Fixed-step",
       "Solver": "FixedStepDiscrete"
     },
@@ -65,7 +59,7 @@
       "inputPorts": [
         {
           "Name": "in_data_U",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 0,
           "IsComplex": false,
@@ -75,7 +69,7 @@
         },
         {
           "Name": "clk_ratio",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 1,
           "IsComplex": false,
@@ -85,7 +79,7 @@
         },
         {
           "Name": "switch_edge",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 2,
           "IsComplex": false,
@@ -95,7 +89,7 @@
         },
         {
           "Name": "Dezimation",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 3,
           "IsComplex": false,
@@ -105,7 +99,7 @@
         },
         {
           "Name": "in_data_PH1",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 4,
           "IsComplex": false,
@@ -115,7 +109,7 @@
         },
         {
           "Name": "in_data_PH2",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 5,
           "IsComplex": false,
@@ -125,7 +119,7 @@
         },
         {
           "Name": "in_data_PH3",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 6,
           "IsComplex": false,
@@ -135,7 +129,7 @@
         },
         {
           "Name": "in_data_PH4",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 7,
           "IsComplex": false,
@@ -145,7 +139,7 @@
         },
         {
           "Name": "filt_input_delay",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 8,
           "IsComplex": false,
@@ -155,7 +149,7 @@
         },
         {
           "Name": "clk_dutycycle",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 9,
           "IsComplex": false,
@@ -165,7 +159,7 @@
         },
         {
           "Name": "pwm_min_trigger",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 10,
           "IsComplex": false,
@@ -174,8 +168,8 @@
           "Latency": -1
         },
         {
-          "Name": "start_time_us",
-          "Rate": 1E-8,
+          "Name": "pwm_max_trigger",
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 11,
           "IsComplex": false,
@@ -184,8 +178,8 @@
           "Latency": -1
         },
         {
-          "Name": "delay_data_valid",
-          "Rate": 1E-8,
+          "Name": "start_time_us",
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 12,
           "IsComplex": false,
@@ -194,8 +188,8 @@
           "Latency": -1
         },
         {
-          "Name": "sinc_sample_periods",
-          "Rate": 1E-8,
+          "Name": "delay_data_valid",
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 13,
           "IsComplex": false,
@@ -204,8 +198,8 @@
           "Latency": -1
         },
         {
-          "Name": "switch_cont_disc",
-          "Rate": 1E-8,
+          "Name": "sinc_sample_periods",
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 14,
           "IsComplex": false,
@@ -214,8 +208,8 @@
           "Latency": -1
         },
         {
-          "Name": "clk_ext",
-          "Rate": 1E-8,
+          "Name": "switch_cont_disc",
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 15,
           "IsComplex": false,
@@ -224,8 +218,8 @@
           "Latency": -1
         },
         {
-          "Name": "use_clk_ext",
-          "Rate": 1E-8,
+          "Name": "clk_ext",
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 16,
           "IsComplex": false,
@@ -234,8 +228,8 @@
           "Latency": -1
         },
         {
-          "Name": "rst_data_valid_cnt",
-          "Rate": 1E-8,
+          "Name": "use_clk_ext",
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 17,
           "IsComplex": false,
@@ -244,8 +238,8 @@
           "Latency": -1
         },
         {
-          "Name": "pwm_max_trigger",
-          "Rate": 1E-8,
+          "Name": "rst_data_valid_cnt",
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 18,
           "IsComplex": false,
@@ -255,99 +249,9 @@
         },
         {
           "Name": "sel_pwm_trigger",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 19,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "I_ph_max",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 20,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "U_dc_max",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 21,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "U_dc_min",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 22,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "FLT_Reset",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 23,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "board_ready",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 24,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "EN_Udc",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 25,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "EN_PH4",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 26,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "I_ph_min",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 27,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "EN_OCP",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 28,
           "IsComplex": false,
           "Testpoint": false,
           "TunableName": "",
@@ -356,8 +260,8 @@
       ],
       "outputPorts": [
         {
-          "Name": "data_out_ps",
-          "Rate": 1E-8,
+          "Name": "out_clk_ads",
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 0,
           "IsComplex": false,
@@ -366,8 +270,8 @@
           "Latency": -1
         },
         {
-          "Name": "out_clk_ads",
-          "Rate": 1E-8,
+          "Name": "data_out_ps",
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 1,
           "IsComplex": false,
@@ -377,7 +281,7 @@
         },
         {
           "Name": "data_raw_U",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 2,
           "IsComplex": false,
@@ -387,7 +291,7 @@
         },
         {
           "Name": "data_raw_PH1",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 3,
           "IsComplex": false,
@@ -397,7 +301,7 @@
         },
         {
           "Name": "data_raw_PH2",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 4,
           "IsComplex": false,
@@ -407,7 +311,7 @@
         },
         {
           "Name": "data_raw_PH3",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 5,
           "IsComplex": false,
@@ -417,7 +321,7 @@
         },
         {
           "Name": "data_raw_PH4",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 6,
           "IsComplex": false,
@@ -427,7 +331,7 @@
         },
         {
           "Name": "fast_clk_filt",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 7,
           "IsComplex": false,
@@ -437,7 +341,7 @@
         },
         {
           "Name": "Data_valid",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 8,
           "IsComplex": false,
@@ -447,7 +351,7 @@
         },
         {
           "Name": "reset",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 9,
           "IsComplex": false,
@@ -457,7 +361,7 @@
         },
         {
           "Name": "data_valid_pl",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 10,
           "IsComplex": false,
@@ -467,7 +371,7 @@
         },
         {
           "Name": "filt_slow_clk",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 11,
           "IsComplex": false,
@@ -477,7 +381,7 @@
         },
         {
           "Name": "data_valid_cnt",
-          "Rate": 1E-8,
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 12,
           "IsComplex": false,
@@ -486,20 +390,10 @@
           "Latency": -1
         },
         {
-          "Name": "FLT_pl",
-          "Rate": 1E-8,
+          "Name": "data_out_pl",
+          "Rate": 1.0000000000000001E-7,
           "Kind": "data",
           "PortIndex": 13,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "FLT_ps",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 14,
           "IsComplex": false,
           "Testpoint": false,
           "TunableName": "",
@@ -522,17 +416,16 @@
     0,
     0,
     0,
-    0,
     0
   ],
   "ResourceSummary": {
     "multipliers": 1,
-    "addersSubtractors": 41,
-    "registers": 711,
-    "oneBitRegisters": 3097,
+    "addersSubtractors": 36,
+    "registers": 715,
+    "oneBitRegisters": 3391,
     "rams": 0,
-    "multiplexers": 722,
-    "IOBits": 436,
+    "multiplexers": 715,
+    "IOBits": 451,
     "staticShiftOperators": 0,
     "dynamicShiftOperators": 0
   }

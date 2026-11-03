@@ -30,9 +30,9 @@ clear elems;
 
 % --- Parameter-Definition (Die Werte) ---
 clear data;
-data.Last_M_Nm = 0.5; % DC link voltage
-data.Last_J_kgmsqr = 0; % Gain for PT1
-data.Bremse = 0; % Time constant for PT1
+data.Last_M_Nm = 0.0;
+data.Last_J_kgmsqr = 0;%9.41e-4;
+data.Bremse = false; 
 data.Udq_V = [0 0];
 data.switchUabc_dq = false; 
 struct_PMSM_In = Simulink.Parameter;

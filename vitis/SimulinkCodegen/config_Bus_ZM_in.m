@@ -18,11 +18,6 @@ elems(i).DataType = 'single';
 i = i + 1;
 
 elems(i) = Simulink.BusElement;
-elems(i).Name = 'Start_Traj';
-elems(i).DataType = 'boolean';
-i = i + 1;
-
-elems(i) = Simulink.BusElement;
 elems(i).Name = 'Fehlermeldung';
 elems(i).DataType = 'boolean';
 i = i + 1;
@@ -52,6 +47,33 @@ elems(i).Name = 'IGBT_desat';
 elems(i).DataType = 'boolean';
 i = i + 1;
 
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'Soll_Drehzahl_CB_Grads';
+elems(i).DataType = 'single';
+i = i + 1;
+
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'Soll_Winkel_CB_Grad';
+elems(i).DataType = 'single';
+i = i + 1;
+
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'Soll_Beschleunigung_CB_Grads2';
+elems(i).DataType = 'single';
+i = i + 1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'Soll_Drehzahl_Home_Grads';
+elems(i).DataType = 'single';
+i = i + 1;
+
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'Modus_Position';
+elems(i).DataType = 'Enum: Modus_Position';
+i = i + 1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'Strom_gesperrt_rst';
+elems(i).DataType = 'boolean';
+
 Bus_ZM_In = Simulink.Bus;
 Bus_ZM_In.Elements = elems;
 clear i;
@@ -62,13 +84,18 @@ clear data;
 data.Soll_Drehzahl_Umin = 0; 
 data.Soll_id_A = 0; 
 data.Soll_iq_A = 0; 
-data.Start_Traj = 0; 
 data.Fehlermeldung = 0; 
 data.Soll_Status = Status_Ctrl.Ready; 
 data.Soll_Regelungsart = Soll_Regelungsart_en.Drehzahl; 
 data.Inv_Ready = false;
 data.UZ_Platform_State = platform_state_t.idle_state;
 data.IGBT_desat = false;
+data.Soll_Drehzahl_CB_Grads = 0;
+data.Soll_Winkel_CB_Grad = 0;
+data.Soll_Beschleunigung_CB_Grads2 = 0;
+data.Soll_Drehzahl_Home_Grads = 0;
+data.Modus_Position = Modus_Position.Warten;
+data.Strom_gesperrt_rst = false;
 
 
 struct_ZM_In = Simulink.Parameter;

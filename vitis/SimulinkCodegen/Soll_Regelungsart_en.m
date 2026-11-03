@@ -1,8 +1,8 @@
 classdef Soll_Regelungsart_en < Simulink.IntEnumType
     enumeration
-        Error(99)
         Drehzahl(0)
-        Trajektorie(1)
-        Strom(2)
+        Strom(1)
+        Position(2)
+        Error(99)
     end
 end

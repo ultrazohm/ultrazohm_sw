@@ -59,7 +59,7 @@ void test_uz_resolver_pos_mt_get_outputs_decomposition(void)
     uz_resolver_pos_mt_hw_read_pos_mt_valid_ExpectAndReturn(TEST_BASE_ADDRESS, true);
 
     struct uz_resolver_pos_mt_outputs_t outputs = uz_resolver_pos_mt_get_outputs(instance);
-    TEST_ASSERT_EQUAL_INT64(multiturn, outputs.multiturn_position);
+    TEST_ASSERT_EQUAL_INT64(multiturn, outputs.multiturn_position_raw);
     TEST_ASSERT_EQUAL_INT32(-1, outputs.turns_cnt);
     TEST_ASSERT_TRUE(outputs.pos_mt_valid);
     TEST_ASSERT_EQUAL_INT32(-1, outputs.turns);

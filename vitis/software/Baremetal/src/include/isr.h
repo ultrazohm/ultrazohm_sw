@@ -30,15 +30,15 @@
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
 #include "../include/uz_platform_state_machine.h"
-//#include "../Codegen/uz_codegen.h"
+#include "../Codegen/uz_codegen0_ert_rtw/uz_codegen0.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
-#include "../IP_Cores/uz_JL_invModel_ideal/uz_JL_invModel_ideal.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
 #include "../include/SigmaDeltaWandler.h"
 #include "../uz/uz_wavegen/uz_wavegen.h"
 #include "../include/JL_SH_Umrichter.h"
 #include "../IP_Cores/uz_JL_flt_dis/uz_JL_flt_dis.h"
+#include "../IP_Cores/uz_JL_SDC_OCP/uz_JL_SDC_OCP.h"
 
 
 //Defines for the Interrupt fixed by hand from Vivado Block Design. 

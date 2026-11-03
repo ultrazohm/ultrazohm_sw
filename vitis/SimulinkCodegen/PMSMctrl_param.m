@@ -1,3 +1,4 @@
+%% 
 model_conf;
 PMSM_Config;  % Laden PMSM Parameter
 conf_PMSM_Bus_In;
@@ -54,4 +55,12 @@ DIVIDE_TWO_BY_TWO_THIRDS.Value = 2/(2/3);
 DIVIDE_TWO_BY_TWO_THIRDS.DataType = 'single';
 DIVIDE_TWO_BY_TWO_THIRDS.StorageClass = 'Define';
 
+GAIN_RAD_TO_DEGREE = Simulink.Parameter;
+GAIN_RAD_TO_DEGREE.Value = 180/pi;
+GAIN_RAD_TO_DEGREE.DataType = 'single';
+GAIN_RAD_TO_DEGREE.StorageClass = 'Define';
 
+GAIN_DEGREE_TO_RAD = Simulink.Parameter;
+GAIN_DEGREE_TO_RAD.Value = pi / 180;
+GAIN_DEGREE_TO_RAD.DataType = 'single';
+GAIN_DEGREE_TO_RAD.StorageClass = 'Define';

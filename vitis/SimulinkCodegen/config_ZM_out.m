@@ -1,44 +1,67 @@
 % Definition Motorparamter für Bus_Config_PMSM
 clear elems;
-elems(1) = Simulink.BusElement;
-elems(1).Name = 'En_Traj';
-elems(1).DataType = 'boolean';
+i=1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'Pulsfreigabe';
+elems(i).DataType = 'boolean';
+i = i + 1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'Ist_Status';
+elems(i).DataType = 'Enum: Status_Ctrl';
+i = i + 1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'Ist_Regelungsart';
+elems(i).DataType = 'Enum: Soll_Regelungsart_en';
+i = i + 1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'Soll_Drehzahl_Umin';
+elems(i).DataType = 'single';
+i = i + 1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'Soll_id_A';
+elems(i).DataType = 'single';
+i = i + 1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'Soll_iq_A';
+elems(i).DataType = 'single';
+i = i + 1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'pwr_en';
+elems(i).DataType = 'boolean';
+i = i + 1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'board_en';
+elems(i).DataType = 'boolean';
+i = i + 1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'reset';
+elems(i).DataType = 'boolean';
+i = i +1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'Soll_Drehzahl_CB_Grads';
+elems(i).DataType = 'single';
+i = i + 1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'Soll_Winkel_CB_Grad';
+elems(i).DataType = 'single';
+i = i + 1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'Soll_Beschleunigung_CB_Grads2';
+elems(i).DataType = 'single';
 
-elems(2) = Simulink.BusElement;
-elems(2).Name = 'Pulsfreigabe';
-elems(2).DataType = 'boolean';
+i = i + 1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'Trapez_Phase';
+elems(i).DataType = 'single';
+i = i + 1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'Modus_Position';
+elems(i).DataType = 'Enum: Modus_Position';
+i = i + 1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'Strom_gesperrt';
+elems(i).DataType = 'boolean';
 
-elems(3) = Simulink.BusElement;
-elems(3).Name = 'Ist_Status';
-elems(3).DataType = 'Enum: Status_Ctrl';
-
-elems(4) = Simulink.BusElement;
-elems(4).Name = 'Ist_Regelungsart';
-elems(4).DataType = 'Enum: Soll_Regelungsart_en';
-
-elems(5) = Simulink.BusElement;
-elems(5).Name = 'Soll_Drehzahl_Umin';
-elems(5).DataType = 'single';
-
-elems(6) = Simulink.BusElement;
-elems(6).Name = 'Soll_id_A';
-elems(6).DataType = 'single';
-
-elems(7) = Simulink.BusElement;
-elems(7).Name = 'Soll_iq_A';
-elems(7).DataType = 'single';
-
-elems(8) = Simulink.BusElement;
-elems(8).Name = 'pwr_en';
-elems(8).DataType = 'boolean';
-
-elems(9) = Simulink.BusElement;
-elems(9).Name = 'board_en';
-elems(9).DataType = 'boolean';
-
-elems(10) = Simulink.BusElement;
-elems(10).Name = 'reset';
-elems(10).DataType = 'boolean';
 
 Bus_ZM_Out = Simulink.Bus;
 Bus_ZM_Out.Elements = elems;
@@ -47,7 +70,6 @@ clear elems;
 
 % --- Parameter-Definition (Die Werte) ---
 clear data;
-data.En_Traj = false; % Standard Inverter Modell ist PT1-Übertragungsglied
 data.Pulsfreigabe = false; % DC link voltage
 data.Ist_Status = Status_Ctrl.Ready; % Gain for PT1
 data.Ist_Regelungsart = Soll_Regelungsart_en.Drehzahl; % Time constant for PT1
@@ -57,6 +79,12 @@ data.Soll_iq_A = 0;
 data.pwr_en = false;
 ddata.board_en = false;
 data.reset = false;
+data.Soll_Drehzahl_CB_Grads = 0;
+data.Soll_Winkel_CB_Grad = 0;
+data.Soll_Beschleunigung_CB_Grads2 = 0;
+data.Trapez_Phase = 0;
+data.Modus_Position = Modus_Position.Warten;
+data.Strom_gesperrt = false;
 
 struct_ZM_Out = Simulink.Parameter;
 struct_ZM_Out.Value = data;

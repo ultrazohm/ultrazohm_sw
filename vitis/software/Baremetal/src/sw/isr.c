@@ -15,9 +15,10 @@
 
 #include "../include/isr.h"
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+#include "../uz/uz_SystemTime/uz_AxiTimer64Bit.h"
 
-#define SDW_DATA_VALID_MAX_POLLS 256U  // Obergrenze Busy-Wait auf Sinc3 Data_valid pro ISR-Zyklus
-#define SDW_DATA_VALID_MAX_FAILS 2U    // so viele ISR-Zyklen ohne gueltigen Wert -> Stop (idle_state)
+#define SDW_DATA_VALID_MAX_POLLS 5U  // Obergrenze Busy-Wait auf Sinc3 Data_valid pro ISR-Zyklus
+#define SDW_DATA_VALID_MAX_FAILS 10U    // so viele ISR-Zyklen ohne gueltigen Wert -> Stop (idle_state)
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -45,16 +46,16 @@ float theta_el_unwrapped = 0.0f;
  * running_state und control_state. */
 static void sinc3_read_measurements(void)
 {
-	if (uz_JL_SigmaDelta_Interface_get_data_valid_cnt(Global_Data.objects.Sinc3_Filter_I) >= SDW_FILTER2_DATA_VALID_CNT_THRESHOLD)
-	{
-		SigmaDeltaWandler_read_and_process(Global_Data.objects.Sinc3_Filter_I, SDW_FILTER_I, &Global_Data.av.Sinc3_Filter_I);
-		uz_JL_SigmaDelta_Interface_reset_data_valid_cnt(Global_Data.objects.Sinc3_Filter_I);
-		Sinc3_Filter_I_data_ready = true;
-	}
-	else
-	{
-		Sinc3_Filter_I_data_ready = false;
-	}
+	// if (uz_JL_SigmaDelta_Interface_get_data_valid_cnt(Global_Data.objects.Sinc3_Filter_I) >= SDW_FILTER2_DATA_VALID_CNT_THRESHOLD)
+	// {
+	// 	SigmaDeltaWandler_read_and_process(Global_Data.objects.Sinc3_Filter_I, SDW_FILTER_I, &Global_Data.av.Sinc3_Filter_I);
+	// 	uz_JL_SigmaDelta_Interface_reset_data_valid_cnt(Global_Data.objects.Sinc3_Filter_I);
+	// 	Sinc3_Filter_I_data_ready = true;
+	// }
+	// else
+	// {
+	// 	Sinc3_Filter_I_data_ready = false;
+	// }
 
 	bool sinc3_P_data_valid = false;
 	for (uint32_t data_valid_poll = 0U; data_valid_poll < SDW_DATA_VALID_MAX_POLLS; data_valid_poll++)
@@ -83,20 +84,32 @@ static void sinc3_read_measurements(void)
 	}
 }
 
-/* Liest den FLT_ps-Fehlerstatus der FPGA-OCP-Instanz und loest bei einem Fehler einen
- * gelatchten error_state aus (PWM aus). Inaktiv (NULL-Guard), solange die OCP-Instanz
- * keine Basisadresse hat (Sinc3_Filter_OCP == NULL). Ergaenzt - nicht ersetzt - die
- * SW-seitige 18A-Abschaltung. Das FPGA-Latch wird hier NICHT quittiert (reset_fault
- * erfolgt spaeter ueber einen Bedienbefehl). */
+/* Liest den FLT_ps-Fehlerstatus der FPGA-Ueberstromerkennung (uz_JL_SDC_OCP) fuer beide Pfade
+ * (P- und OCP-Mess-Pfad) und loest bei einem Fehler einen gelatchten error_state aus (PWM aus).
+ * Je Instanz NULL-geschuetzt. Ergaenzt - nicht ersetzt - die SW-seitige 18A-Abschaltung. Die
+ * FPGA-Latches werden hier NICHT quittiert (reset_fault erfolgt spaeter ueber einen Bedienbefehl). */
 static void sinc3_check_ocp_fault(void)
 {
-	if (Global_Data.objects.Sinc3_Filter_OCP == NULL)
+	// Kalibrierte OCP-Phasenstroeme einlesen, damit sie im JavaScope beobachtbar sind
+	// (reine Visualisierung; die Abschaltentscheidung trifft die FPGA-Ueberstromerkennung).
+	if (Global_Data.objects.Sinc3_Filter_OCP != NULL)
 	{
-		return;
+		SigmaDeltaWandler_read_and_process(Global_Data.objects.Sinc3_Filter_OCP, SDW_FILTER_OCP, &Global_Data.av.Sinc3_Filter_OCP);
 	}
-	enum uz_JL_SigmaDelta_Interface_fault flt = uz_JL_SigmaDelta_Interface_get_fault(Global_Data.objects.Sinc3_Filter_OCP);
-	conv_status_signals.ocp_fault = (uint32_t)flt;
-	if (flt != FAULT_NONE)
+
+	// Fehlercode beider Ueberstromerkennungs-Cores lesen und per ODER verknuepfen, damit auch ein
+	// Ueberstrom im P-Mess-Pfad abschaltet.
+	uint32_t flt = (uint32_t)UZ_JL_SDC_OCP_FAULT_NONE;
+	if (Global_Data.objects.sdc_ocp_P != NULL)
+	{
+		flt |= (uint32_t)uz_JL_SDC_OCP_get_fault(Global_Data.objects.sdc_ocp_P);
+	}
+	if (Global_Data.objects.sdc_ocp_OCP != NULL)
+	{
+		flt |= (uint32_t)uz_JL_SDC_OCP_get_fault(Global_Data.objects.sdc_ocp_OCP);
+	}
+	conv_status_signals.ocp_fault = flt;
+	if (flt != (uint32_t)UZ_JL_SDC_OCP_FAULT_NONE)
 	{
 		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
@@ -117,7 +130,7 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     //ReadAllADC();            // Nur bei Benutzung von ADC Karten
-
+    uint64_t t0 = uz_AxiTimer64Bit_ReadValue64Bit();
     /* Read status signal READY of the converter*/
     conv_status_signals.board_ready = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.input_gpio, BOARD_READY_BIT);
     struct_ZM_In.Inv_Ready = conv_status_signals.board_ready;
@@ -131,6 +144,19 @@ void ISR_Control(void *data)
 	Global_Data.av.theta_el = uz_signals_wrap(theta_el_unwrapped, 2.0f*UZ_PIf);
 	Global_Data.av.mechanicalPosition = Global_Data.av.resolver_pl_outputs.position_mech_2pi;
 	Global_Data.av.omega_el = Global_Data.av.resolver_pl_outputs.omega_mech_rad_s*4.0f;
+    regelung.input.Bus_PMSM_Out_c.pmsm_theta_mech_rad = Global_Data.av.mechanicalPosition;
+    regelung.input.Bus_PMSM_Out_c.pmsm_Omega_mech_rad_s = Global_Data.av.resolver_pl_outputs.omega_mech_rad_s;
+    regelung.input.Bus_PMSM_Out_c.pmsm_theta_el_rad = Global_Data.av.theta_el;
+    regelung.input.Bus_PMSM_Out_c.pmsm_Omega_el_rad_s = Global_Data.av.omega_el;
+    Global_Data.av.CB_omega_grads = Global_Data.av.resolver_pl_outputs.omega_mech_rad_s * (180.0f / UZ_PIf)/struct_Ctrl_Config.Getriebeuebersetzung;
+
+	/* Multiturn-Positionsistwert (in Grad) aus uz_resolver_pos_mt lesen und als
+	 * Istwert fuer die Positionsregelung im Codegen bereitstellen. */
+	struct resolver_pos_mt_reading_t pos_mt = resolver_pos_mt_read_position(Global_Data.objects.resolver_pos_mt);
+	Global_Data.av.mult_pos_grad = (float)pos_mt.multiturn_position_deg;
+    Global_Data.av.mult_pos_turns = (float)pos_mt.turns;
+	Global_Data.av.mult_pos_valid = pos_mt.valid;
+	regelung.input.Bus_PMSM_Out_c.pmsm_mult_pos_grad = Global_Data.av.mult_pos_grad;
 
 	/* Read UZ state for control state machine*/
     platform_state_t current_state=ultrazohm_state_machine_get_state();
@@ -146,14 +172,18 @@ void ISR_Control(void *data)
                     struct_ZM_In.Soll_id_A = 0;
                     struct_ZM_In.Soll_iq_A = 0;
                     struct_ZM_In.Fehlermeldung = false;
-                    struct_ZM_In.Start_Traj = false;
+                    struct_ZM_In.Modus_Position = Warten;
+                    struct_ZM_In.Soll_Winkel_CB_Grad = 0.0f;
+                    struct_ZM_In.Soll_Drehzahl_CB_Grads = 0.0f;
+                    struct_ZM_In.Soll_Beschleunigung_CB_Grads2 = 0.0f;
+                    struct_ZM_In.Soll_Drehzahl_Home_Grads = 0.0f;
                     Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
                     Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
                     Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
                     uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, false);
                     uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
                 }
-                regelung.input.Bus_ZM_In_j = struct_ZM_In;
+                regelung.input.Bus_ZM_In_p = struct_ZM_In;
 				uz_codegen_step(&regelung);
     			break;
     		case running_state:
@@ -168,13 +198,16 @@ void ISR_Control(void *data)
                     struct_ZM_In.Soll_Drehzahl_Umin = 0;
     			    struct_ZM_In.Soll_id_A = 0;
     			    struct_ZM_In.Soll_iq_A = 0;
+                    struct_ZM_In.Modus_Position = Warten;
                 }
                 else
                 {
+                    uint64_t t1 = uz_AxiTimer64Bit_ReadValue64Bit();
+                    Global_Data.av.debug_timestamp_s = (float)(t1 - t0) / (UZ_AXI_TIMER_CLOCK_FREQ * 1e-6f);
 					sinc3_read_measurements();
-					sinc3_check_ocp_fault();	// FPGA-OCP: loest bei Fehler error_state aus (No-op solange OCP-Instanz NULL)
+					// sinc3_check_ocp_fault();	// FPGA-OCP: loest bei Fehler error_state aus (No-op solange OCP-Instanz NULL)
 
-					if((fabsf(Global_Data.av.Sinc3_Filter_P.data_PH1_A) >= 18.0f) || (fabsf(Global_Data.av.Sinc3_Filter_P.data_PH2_A) >= 18.0f) || (fabsf(Global_Data.av.Sinc3_Filter_P.data_PH3_A) >= 18.0f))
+					if((fabsf(Global_Data.av.Sinc3_Filter_OCP.data_PH1_A) >= SDW_OCP_I_MAX_A) || (fabsf(Global_Data.av.Sinc3_Filter_OCP.data_PH2_A) >= SDW_OCP_I_MAX_A) || (fabsf(Global_Data.av.Sinc3_Filter_OCP.data_PH3_A) >= SDW_OCP_I_MAX_A))
 					{
 								Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 								Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
@@ -182,7 +215,7 @@ void ISR_Control(void *data)
 								Global_Data.rasv.ctrl_state = ctrl_state_none;
                                 ultrazohm_state_machine_set_stop(true);
 					}
-                    regelung.input.Bus_ZM_In_j = struct_ZM_In;
+                    regelung.input.Bus_ZM_In_p = struct_ZM_In;
 	                uz_codegen_step(&regelung);
                 }
     			break;
@@ -190,9 +223,9 @@ void ISR_Control(void *data)
 				Global_Data.objects.platform_state_old = control_state;
 
 					sinc3_read_measurements();
-					sinc3_check_ocp_fault();	// FPGA-OCP: loest bei Fehler error_state aus (No-op solange OCP-Instanz NULL)
+//					sinc3_check_ocp_fault();	// FPGA-OCP: loest bei Fehler error_state aus (No-op solange OCP-Instanz NULL)
 
-					if((fabsf(Global_Data.av.Sinc3_Filter_P.data_PH1_A) >= 18.0f) || (fabsf(Global_Data.av.Sinc3_Filter_P.data_PH2_A) >= 18.0f) || (fabsf(Global_Data.av.Sinc3_Filter_P.data_PH3_A) >= 18.0f))
+					if((fabsf(Global_Data.av.Sinc3_Filter_OCP.data_PH1_A) >= SDW_OCP_I_MAX_A) || (fabsf(Global_Data.av.Sinc3_Filter_OCP.data_PH2_A) >= SDW_OCP_I_MAX_A) || (fabsf(Global_Data.av.Sinc3_Filter_OCP.data_PH3_A) >= SDW_OCP_I_MAX_A))
 					{
 								Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 								Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
@@ -209,25 +242,23 @@ void ISR_Control(void *data)
                         struct_ZM_In.Soll_id_A = Global_Data.rasv.Soll_id;
                         struct_ZM_In.Soll_Drehzahl_Umin = 0;
                         struct_ZM_In.Soll_Regelungsart = Strom;
-                        regelung.input.Bus_ZM_In_j = struct_ZM_In;
-                        regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_P_A[0] = Global_Data.av.Sinc3_Filter_P.data_PH1_A;
-                        regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_P_A[1] = Global_Data.av.Sinc3_Filter_P.data_PH2_A;
-                        regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_P_A[2] = Global_Data.av.Sinc3_Filter_P.data_PH3_A;
-                        regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_I_A[0] = Global_Data.av.Sinc3_Filter_I.data_PH1_A;
-                        regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_I_A[1] = Global_Data.av.Sinc3_Filter_I.data_PH2_A;
-                        regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_I_A[2] = Global_Data.av.Sinc3_Filter_I.data_PH3_A;
+                        regelung.input.Bus_ZM_In_p = struct_ZM_In;
+                        struct_ZM_In.Modus_Position = Warten;
+                        regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw_P_A[0] = Global_Data.av.Sinc3_Filter_P.data_PH1_A;
+                        regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw_P_A[1] = Global_Data.av.Sinc3_Filter_P.data_PH2_A;
+                        regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw_P_A[2] = Global_Data.av.Sinc3_Filter_P.data_PH3_A;
+                        regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw_I_A[0] = Global_Data.av.Sinc3_Filter_I.data_PH1_A;
+                        regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw_I_A[1] = Global_Data.av.Sinc3_Filter_I.data_PH2_A;
+                        regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw_I_A[2] = Global_Data.av.Sinc3_Filter_I.data_PH3_A;
                         regelung.input.trigger_actI_I_calc = SDW_ACT_I_SEPARATE_CALC_ENABLED && Sinc3_Filter_I_data_ready;
-                        regelung.input.Bus_PMSM_Out_f.pmsm_theta_mech_rad = Global_Data.av.mechanicalPosition;
-						regelung.input.Bus_PMSM_Out_f.pmsm_Omega_mech_rad_s = Global_Data.av.resolver_pl_outputs.omega_mech_rad_s;
-						regelung.input.Bus_PMSM_Out_f.pmsm_theta_el_rad = Global_Data.av.theta_el;
-						regelung.input.Bus_PMSM_Out_f.pmsm_Omega_el_rad_s = Global_Data.av.omega_el;
+                        
                         uz_codegen_step(&regelung);
-                        if(regelung.output.Bus_Ctrl_Out_f.act_pwm == true && conv_status_signals.board_ready == true)
+                        if(regelung.output.Bus_Ctrl_Out_j.act_pwm == true && conv_status_signals.board_ready == true)
                             {
 
-                                Global_Data.rasv.halfBridge1DutyCycle =  regelung.output.Bus_Ctrl_Out_f.Dutycycle[0];
-                                Global_Data.rasv.halfBridge2DutyCycle =  regelung.output.Bus_Ctrl_Out_f.Dutycycle[1];
-                                Global_Data.rasv.halfBridge3DutyCycle =  regelung.output.Bus_Ctrl_Out_f.Dutycycle[2];
+                                Global_Data.rasv.halfBridge1DutyCycle =  regelung.output.Bus_Ctrl_Out_j.Dutycycle[0];
+                                Global_Data.rasv.halfBridge2DutyCycle =  regelung.output.Bus_Ctrl_Out_j.Dutycycle[1];
+                                Global_Data.rasv.halfBridge3DutyCycle =  regelung.output.Bus_Ctrl_Out_j.Dutycycle[2];
                             }
                         break;
 
@@ -235,29 +266,61 @@ void ISR_Control(void *data)
                         case rpm_control:
                             struct_ZM_In.Soll_Drehzahl_Umin = Global_Data.rasv.Soll_Drehzahl;
                             struct_ZM_In.Soll_Regelungsart = Drehzahl;
-                            regelung.input.Bus_ZM_In_j = struct_ZM_In;
-                            regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_P_A[0] = Global_Data.av.Sinc3_Filter_P.data_PH1_A;
-                            regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_P_A[1] = Global_Data.av.Sinc3_Filter_P.data_PH2_A;
-                            regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_P_A[2] = Global_Data.av.Sinc3_Filter_P.data_PH3_A;
-                            regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_I_A[0] = Global_Data.av.Sinc3_Filter_I.data_PH1_A;
-                            regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_I_A[1] = Global_Data.av.Sinc3_Filter_I.data_PH2_A;
-                            regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_I_A[2] = Global_Data.av.Sinc3_Filter_I.data_PH3_A;
+                            regelung.input.Bus_ZM_In_p = struct_ZM_In;
+                            struct_ZM_In.Modus_Position = Warten;
+                            regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw_P_A[0] = Global_Data.av.Sinc3_Filter_P.data_PH1_A;
+                            regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw_P_A[1] = Global_Data.av.Sinc3_Filter_P.data_PH2_A;
+                            regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw_P_A[2] = Global_Data.av.Sinc3_Filter_P.data_PH3_A;
+                            regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw_I_A[0] = Global_Data.av.Sinc3_Filter_I.data_PH1_A;
+                            regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw_I_A[1] = Global_Data.av.Sinc3_Filter_I.data_PH2_A;
+                            regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw_I_A[2] = Global_Data.av.Sinc3_Filter_I.data_PH3_A;
                             regelung.input.trigger_actI_I_calc = SDW_ACT_I_SEPARATE_CALC_ENABLED && Sinc3_Filter_I_data_ready;
-                            regelung.input.Bus_PMSM_Out_f.pmsm_theta_mech_rad = Global_Data.av.mechanicalPosition;
-                            regelung.input.Bus_PMSM_Out_f.pmsm_Omega_mech_rad_s = Global_Data.av.resolver_pl_outputs.omega_mech_rad_s;
-                            regelung.input.Bus_PMSM_Out_f.pmsm_theta_el_rad = Global_Data.av.theta_el;
-                            regelung.input.Bus_PMSM_Out_f.pmsm_Omega_el_rad_s = Global_Data.av.omega_el;
 	                        uz_codegen_step(&regelung);
-                            if( regelung.output.Bus_Ctrl_Out_f.act_pwm == true && conv_status_signals.board_ready == true)
+                            if( regelung.output.Bus_Ctrl_Out_j.act_pwm == true && conv_status_signals.board_ready == true)
                                 {
 
-                                    Global_Data.rasv.halfBridge1DutyCycle = regelung.output.Bus_Ctrl_Out_f.Dutycycle[0];
-                                    Global_Data.rasv.halfBridge2DutyCycle =  regelung.output.Bus_Ctrl_Out_f.Dutycycle[1];
-                                    Global_Data.rasv.halfBridge3DutyCycle =  regelung.output.Bus_Ctrl_Out_f.Dutycycle[2];
+                                    Global_Data.rasv.halfBridge1DutyCycle = regelung.output.Bus_Ctrl_Out_j.Dutycycle[0];
+                                    Global_Data.rasv.halfBridge2DutyCycle =  regelung.output.Bus_Ctrl_Out_j.Dutycycle[1];
+                                    Global_Data.rasv.halfBridge3DutyCycle =  regelung.output.Bus_Ctrl_Out_j.Dutycycle[2];
                                 }
                             break;
        
         
+
+                        case position_control:
+                            struct_ZM_In.Soll_iq_A = 0;
+                            struct_ZM_In.Soll_id_A = 0;
+                            struct_ZM_In.Soll_Drehzahl_Umin = 0;
+                            struct_ZM_In.Soll_Regelungsart = Position;
+                            // Sicherheits-Interlock: ohne gueltige Multiturn-Referenz keine Fahrt freigeben
+                            // (Modus Warten -> Positionsregler haelt, es wird keine Trajektorie gestartet)
+                            if (Global_Data.av.mult_pos_valid)
+                            {
+                                struct_ZM_In.Modus_Position = (Modus_Position)Global_Data.rasv.Modus_Position_sel;
+                            }
+                            else
+                            {
+                                struct_ZM_In.Modus_Position = Warten;
+                            }
+                            struct_ZM_In.Soll_Winkel_CB_Grad = Global_Data.rasv.Soll_Winkel_grad;
+                            struct_ZM_In.Soll_Drehzahl_CB_Grads = Global_Data.rasv.Soll_Geschwindigkeit_grads;
+                            struct_ZM_In.Soll_Beschleunigung_CB_Grads2 = Global_Data.rasv.Soll_Beschleunigung_grads2;
+                            regelung.input.Bus_ZM_In_p = struct_ZM_In;
+                            regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw_P_A[0] = Global_Data.av.Sinc3_Filter_P.data_PH1_A;
+                            regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw_P_A[1] = Global_Data.av.Sinc3_Filter_P.data_PH2_A;
+                            regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw_P_A[2] = Global_Data.av.Sinc3_Filter_P.data_PH3_A;
+                            regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw_I_A[0] = Global_Data.av.Sinc3_Filter_I.data_PH1_A;
+                            regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw_I_A[1] = Global_Data.av.Sinc3_Filter_I.data_PH2_A;
+                            regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw_I_A[2] = Global_Data.av.Sinc3_Filter_I.data_PH3_A;
+                            regelung.input.trigger_actI_I_calc = SDW_ACT_I_SEPARATE_CALC_ENABLED && Sinc3_Filter_I_data_ready;
+                            uz_codegen_step(&regelung);
+                            if( regelung.output.Bus_Ctrl_Out_j.act_pwm == true && conv_status_signals.board_ready == true)
+                                {
+                                    Global_Data.rasv.halfBridge1DutyCycle = regelung.output.Bus_Ctrl_Out_j.Dutycycle[0];
+                                    Global_Data.rasv.halfBridge2DutyCycle = regelung.output.Bus_Ctrl_Out_j.Dutycycle[1];
+                                    Global_Data.rasv.halfBridge3DutyCycle = regelung.output.Bus_Ctrl_Out_j.Dutycycle[2];
+                                }
+                            break;
 
                         case manual_duty_cycle:
                             struct_ZM_In.Soll_iq_A = 0;
@@ -288,18 +351,17 @@ void ISR_Control(void *data)
                     struct_ZM_In.Soll_id_A = 0;
                     struct_ZM_In.Soll_iq_A = 0;
                     struct_ZM_In.Fehlermeldung = true;
-                    struct_ZM_In.Start_Traj = false;
                     Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
                     Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
                     Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
                     uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, false);
                     uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
-                    regelung.input.Bus_ZM_In_j = struct_ZM_In;
+                    regelung.input.Bus_ZM_In_p = struct_ZM_In;
 	                uz_codegen_step(&regelung);
                 }
                 else
                 {
-                	regelung.input.Bus_ZM_In_j = struct_ZM_In;
+                	regelung.input.Bus_ZM_In_p = struct_ZM_In;
 					uz_codegen_step(&regelung);
                 }
     			break;
@@ -307,9 +369,9 @@ void ISR_Control(void *data)
     			break;
     	}
     
-    conv_status_signals.pwr_en = (bool)regelung.output.Bus_Ctrl_Out_f.pwr_en;
-    conv_status_signals.board_en =  (bool)regelung.output.Bus_Ctrl_Out_f.board_en;
-    conv_status_signals.board_rst =  !(bool)regelung.output.Bus_Ctrl_Out_f.reset;
+    conv_status_signals.pwr_en = (bool)regelung.output.Bus_Ctrl_Out_j.pwr_en;
+    conv_status_signals.board_en =  (bool)regelung.output.Bus_Ctrl_Out_j.board_en;
+    conv_status_signals.board_rst =  !(bool)regelung.output.Bus_Ctrl_Out_j.reset;
     // Combine the three status bits into a single read + write instead of three
     // separate read-modify-write AXI transactions (one per bit) to shorten ISR runtime.
     uint32_t output_bitmask_local = uz_axi_gpio_read_bitmask(Global_Data.objects.output_gpio);

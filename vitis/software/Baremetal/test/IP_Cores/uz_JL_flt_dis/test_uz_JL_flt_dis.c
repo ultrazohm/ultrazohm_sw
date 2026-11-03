@@ -82,10 +82,10 @@ void test_uz_JL_flt_dis_get_fault(void)
     uz_JL_flt_dis_hw_write_use_flt_dis_Expect(BASE_ADDRESS, config.use_flt_dis);
     uz_JL_flt_dis_t *instance = uz_JL_flt_dis_init(config);
 
-    uint32_t raw_fault = (uint32_t)UZ_JL_FLT_DIS_FAULT_BIT0;
+    uint32_t raw_fault = (uint32_t)UZ_JL_FLT_DIS_FAULT_FLT_1;
     uz_JL_flt_dis_hw_read_FLT_ps_ExpectAndReturn(BASE_ADDRESS, raw_fault);
     enum uz_JL_flt_dis_fault fault = uz_JL_flt_dis_get_fault(instance);
-    TEST_ASSERT_EQUAL(UZ_JL_FLT_DIS_FAULT_BIT0, fault);
+    TEST_ASSERT_EQUAL(UZ_JL_FLT_DIS_FAULT_FLT_1, fault);
 }
 
 #endif // TEST

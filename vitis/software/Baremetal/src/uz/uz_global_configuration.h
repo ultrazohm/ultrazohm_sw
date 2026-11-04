@@ -94,7 +94,7 @@
 #define UZ_PRNG_XOSHIRO_MAX_INSTANCES                   0U
 #define UZ_PRNG_HALTON_MAX_INSTANCES                    0U
 #define UZ_PRNG_MAX_INSTANCES                           0U
-#define UZ_POS_TO_SPEED_PLL_MAX_INSTANCES               0U
+#define UZ_POS_TO_SPEED_PLL_MAX_INSTANCES               2U
 #define UZ_PMSM_SWMODEL_MAX_INSTANCES                   0U
 #define UZ_LUT_1D_MAX_INSTANCES                         0U
 #define UZ_LUT_2D_MAX_INSTANCES                         0U

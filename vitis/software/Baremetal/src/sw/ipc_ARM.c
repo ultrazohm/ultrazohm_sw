@@ -201,31 +201,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->rasv.dut_current_reference_A.q = value;
 			break;
 
-		case (Set_Send_Field_4):
-			if (ultrazohm_state_machine_get_state() == idle_state && (value == 0.0f || value == 1.0f))
-			{
-				data->rasv.requested_dut_backend = (enum dut_backend)(int)value;
-				data->av.snd_fld[4] = value;
-			}
-			break;
+        case (Set_Send_Field_4):
+            data->av.snd_fld[4] = value;
+            break;
 
-		case (Set_Send_Field_5):
-			// Parallel speed PI: Kp in Nm/(rad/s). Keep the previous gain on invalid input.
-			if (isfinite(value) && value >= 0.0f)
-			{
-				uz_pmsm_control_speed_control_set_Kp_speed(data->objects.prime_mover, value);
-				data->av.snd_fld[5] = value;
-			}
-			break;
-
-		case (Set_Send_Field_6):
-			// Ki in Nm/rad; the controller applies the sample time internally.
-			if (isfinite(value) && value >= 0.0f)
-			{
-				uz_pmsm_control_speed_control_set_Ki_speed(data->objects.prime_mover, value);
-				data->av.snd_fld[6] = value;
-			}
-			break;
+        case (Set_Send_Field_5):
+            data->av.snd_fld[5] = value;
+            break;
+        case (Set_Send_Field_6):
+            if (dut_set_Kp_iq(data->objects.dut, value)) {
+                data->av.snd_fld[6] = value;
+            }
+            break;
 
 		case (Set_Send_Field_7):
 		data->av.snd_fld[7] = value;
@@ -284,11 +271,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+            if (ultrazohm_state_machine_get_state() == idle_state)
+                data->rasv.requested_dut_backend = DUT_BACKEND_CIL;
 			break;
 
 		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
+            if (ultrazohm_state_machine_get_state() == idle_state)
+                data->rasv.requested_dut_backend = DUT_BACKEND_DESKBENCH;
 			break;
 
 		case (My_Button_3):
@@ -300,7 +289,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_5):
-
 			break;
 
 		case (My_Button_6):
@@ -359,15 +347,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			js_status_BareToRTOS &= ~(1 << 3);
 		}
 
-	/* Bit 4 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 4);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 4);
-	// }
-
-	/* Bit 5 - My_Button_2 */
-	// js_status_BareToRTOS &= ~(1 << 5);
+	// Bits 4/5: active DUT backend, refreshed in JavaScope_update after deskbench_step.
 
 	/* Bit 6 - My_Button_3 */
 	// js_status_BareToRTOS &= ~(1 << 6);

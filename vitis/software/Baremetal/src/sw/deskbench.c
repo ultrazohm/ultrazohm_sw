@@ -1,4 +1,5 @@
 #include "../include/deskbench.h"
+#include "../include/dut.h"
 #include "../include/pmsm_cil.h"
 static void clear_references(DS_Data* data)
 {
@@ -11,6 +12,12 @@ static void clear_references(DS_Data* data)
 
 static bool deskbench_read_measurements(DS_Data* data)
 {
+    // Run continuously in every state/backend so STOP does not discard PLL lock.
+    // Physical controllers use PLL velocity; CIL retains simulated feedback.
+    uz_pos_to_speed_pll_step(data->objects.dut_speed_pll,
+        data->av.resolver_pl_interface_d5_1_position_mech_2pi);
+    uz_pos_to_speed_pll_step(data->objects.prime_mover_speed_pll,
+        data->av.resolver_pl_interface_d5_2_position_mech_2pi);
     /* D1 inverter A/B -> A1 ADC A/B; D2 inverter A/B -> A2 ADC A/B.
      * A1, A2 and D5 readout precede this call. PMSM control needs mechanical rad and rad/s;
      * it applies the machine pole-pair count internally.
@@ -30,7 +37,7 @@ static bool deskbench_read_measurements(DS_Data* data)
         .v_dc_in_V = data->av.adc_ltc2311_a2_ch0,
         .i_dc_in_A = data->av.adc_ltc2311_a2_ch4,
         .theta_mech = data->av.resolver_pl_interface_d5_2_position_mech_2pi,
-        .omega_mech_rad_per_sec = data->av.resolver_pl_interface_d5_2_omega_mech_rad_s
+        .omega_mech_rad_per_sec = uz_pos_to_speed_pll_get_omega_mech_si(data->objects.prime_mover_speed_pll)
     };
     if (data->av.dut_backend == DUT_BACKEND_DESKBENCH)
     {
@@ -49,7 +56,7 @@ static bool deskbench_read_measurements(DS_Data* data)
             .v_dc_in_V = data->av.adc_ltc2311_a1_ch0,
             .i_dc_in_A = data->av.adc_ltc2311_a1_ch4,
             .theta_mech = data->av.resolver_pl_interface_d5_1_position_mech_2pi,
-            .omega_mech_rad_per_sec = data->av.resolver_pl_interface_d5_1_omega_mech_rad_s
+            .omega_mech_rad_per_sec = uz_pos_to_speed_pll_get_omega_mech_si(data->objects.dut_speed_pll)
         };
     }
     // Both machines have assigned feedback. Controller protection checks its limits.
@@ -95,7 +102,6 @@ void deskbench_step(DS_Data* data, platform_state_t state)
     }
     // Reject requests made outside idle rather than deferring a surprise switch.
     data->rasv.requested_dut_backend = data->av.dut_backend;
-    data->av.snd_fld[4] = (float)data->av.dut_backend;
     bool cil = data->av.dut_backend == DUT_BACKEND_CIL;
     data->av.deskbench_inputs_ready = deskbench_read_measurements(data);
     bool healthy = uz_pmsm_control_get_safe_operating_area_violation(data->objects.dut) == uz_pmsm_control_no_violation;
@@ -158,9 +164,8 @@ void deskbench_step(DS_Data* data, platform_state_t state)
         data->objects.prime_mover, data->av.prime_mover_measurements,
         data->rasv.ramped_speed_ref_rpm_prime_mover, (uz_3ph_dq_t){0}, 0.0f);
     data->av.dut_measured_currents_dq_A = uz_pmsm_control_get_actual_data(data->objects.dut)->i_dq_in_A;
-    data->av.prime_mover_measured_currents_dq_A = uz_pmsm_control_get_actual_data(data->objects.prime_mover)->i_dq_in_A;
+    data->av.dut_torque_Nm = dut_estimate_torque_Nm(data->av.dut_measured_currents_dq_A);
     data->av.dut_speed_rpm = uz_pmsm_control_get_actual_data(data->objects.dut)->speed_in_rpm;
-    data->av.prime_mover_speed_rpm = uz_pmsm_control_get_actual_data(data->objects.prime_mover)->speed_in_rpm;
     data->av.dut_violation = uz_pmsm_control_get_safe_operating_area_violation(data->objects.dut);
     data->av.prime_mover_violation = uz_pmsm_control_get_safe_operating_area_violation(data->objects.prime_mover);
     bool tripped = data->av.dut_violation != uz_pmsm_control_no_violation ||
@@ -173,10 +178,11 @@ void deskbench_step(DS_Data* data, platform_state_t state)
         uz_pmsm_control_reset(data->objects.dut);
         uz_pmsm_control_reset(data->objects.prime_mover);
     }
-    // Reset retains the last internal current setpoints; display zero when inactive.
-    data->av.prime_mover_reference_currents_dq_A = active && !cil && !tripped
-        ? uz_pmsm_control_get_reference_values(data->objects.prime_mover)->i_dq_in_A
-        : (uz_3ph_dq_t){0};
+    // Scope references are the controller's limited commands; clear when disabled.
+    const struct uz_pmsm_reference_values *dut_ref = uz_pmsm_control_get_reference_values(data->objects.dut);
+    data->av.dut_reference_currents_dq_A = dut_active && !tripped ? dut_ref->i_dq_in_A : (uz_3ph_dq_t){0};
+    data->av.dut_reference_voltages_dq_V = dut_active && !tripped ? dut_ref->v_dq_in_V : (uz_3ph_dq_t){0};
+    data->av.dut_theta_el_rad = uz_pmsm_control_get_actual_data(data->objects.dut)->theta_el;
     if (cil)
     {
         data->av.pmsm_cil_inputs.v_d_V = voltage.d;

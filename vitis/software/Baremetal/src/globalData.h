@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include "uz/uz_pos_to_speed_pll/uz_pos_to_speed_pll.h"
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
@@ -31,17 +32,17 @@ typedef struct _actualValues_ {
 	struct uz_pmsmModel_outputs_t pmsm_cil_outputs;
 	struct uz_pmsm_measurement_values dut_measurements;
 	uz_3ph_dq_t dut_measured_currents_dq_A; /* Controller feedback from the active DUT backend. */
-	uz_3ph_dq_t prime_mover_measured_currents_dq_A; /* A2 currents transformed using D5_2 feedback. */
-	uz_3ph_dq_t prime_mover_reference_currents_dq_A; /* Internal current-loop setpoints after limiting. */
 	float dut_speed_rpm;
-	float prime_mover_speed_rpm;
+	float dut_torque_Nm; /* Estimated electromagnetic torque, not a shaft-sensor reading. */
+	uz_3ph_dq_t dut_reference_currents_dq_A;
+	uz_3ph_dq_t dut_reference_voltages_dq_V;
+	float dut_theta_el_rad;
 	struct uz_pmsm_measurement_values prime_mover_measurements;
 	enum dut_backend dut_backend;
 	float dut_backend_code;
 	bool deskbench_inputs_ready;
 	float deskbench_inputs_ready_code;
 	enum uz_pmsm_control_safe_operating_region_violation prime_mover_violation;
-	float prime_mover_violation_code;
 	enum uz_pmsm_control_safe_operating_region_violation dut_violation;
 	float dut_violation_code; /* JavaScope transports floats, not enum storage. */
 	/* Project Wizard BEGIN: actualValues */
@@ -127,6 +128,8 @@ typedef struct{
 	uz_pmsm_control_t *dut;
 	uz_pmsm_control_t *prime_mover;
 	uz_ramp_t *speed_ref_ramp_prime_mover;
+	uz_pos_to_speed_pll_t *dut_speed_pll;
+	uz_pos_to_speed_pll_t *prime_mover_speed_pll;
 	/* Project Wizard BEGIN: objects */
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_0;

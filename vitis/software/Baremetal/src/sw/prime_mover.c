@@ -18,9 +18,10 @@ uz_pmsm_control_t* initialize_prime_mover(float sample_time_s)
     struct uz_pmsm_control_configuration_t config = {
         .sample_time = sample_time_s,
         .enable_speed_control = true,
-        // Provisional speed PI gains in Nm/(rad/s) and Nm/rad; tune with real feedback.
-        .speed_controller_kp = 0.001f,
-        .speed_controller_ki = 0.01f,
+        // Selected PLL-feedback gains after frequency-response and load-step evaluation.
+        // Units: Nm/(rad/s) and Nm/rad.
+        .speed_controller_kp = 0.06f,
+        .speed_controller_ki = 1.5f,
         .setpoint_limits = {
             .speed_controller_torque_in_Nm = {.lower_bound = -2.5f, .upper_bound = 2.5f},
             .i_d_in_A = {.lower_bound = -12.0f, .upper_bound = 12.0f},

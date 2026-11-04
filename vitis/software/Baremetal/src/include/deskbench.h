@@ -7,8 +7,10 @@
  * DUT current control uses A1 + D5_1 and drives D1 (half bridges 1..3).
  * Prime-mover speed control uses A2 + D5_2 and drives D2 (half bridges 4..6).
  * Inputs ready indicates assigned feedback; controller protection checks limits.
- * JavaScope send field 4: 0 = CIL (default), 1 = deskbench.
- * Receive fields 6/7/8: prime-mover fault / active backend / inputs ready.
+ * JavaScope MyButton1 selects CIL; MyButton2 selects real DUT, only in idle.
+ * ACT indicators show the active backend. Send field 4 is unassigned.
+ * Receive fields 1..4: DUT speed, id, iq and estimated electromagnetic torque.
+ * Receive fields 7/8: active backend / inputs ready.
  * STOP disables both inverters and clears references; physical shaft speed
  * is not reset. A controlled mechanical stop requires a later application policy.
  */

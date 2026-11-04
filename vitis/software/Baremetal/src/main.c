@@ -100,6 +100,8 @@ int main(void)
             Global_Data.objects.speed_ref_ramp_prime_mover = initialize_speed_ref_ramp_prime_mover();
             Global_Data.objects.dut = initialize_dut(Global_Data.av.isr_samplerate_s);
             Global_Data.objects.prime_mover = initialize_prime_mover(Global_Data.av.isr_samplerate_s);
+            Global_Data.objects.dut_speed_pll = initialize_dut_speed_pll(Global_Data.av.isr_samplerate_s);
+            Global_Data.objects.prime_mover_speed_pll = initialize_prime_mover_speed_pll(Global_Data.av.isr_samplerate_s);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

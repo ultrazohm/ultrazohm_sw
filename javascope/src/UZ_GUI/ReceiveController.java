@@ -3164,12 +3164,12 @@ public class ReceiveController implements TransmitterListener, ActionListener, W
                 JavascopeHeaderParser.ParseMode.COMPACT_TEXT
             );
             reportHeaderMarkerIssue("MYBUTTONS_LABELS", startMarker, endMarker, section);
-            ArrayList<String> list = ensureSectionEntryCount(section.getEntries(), 11, "MYBUTTONS_LABELS", "MyButton");
+            ArrayList<String> list = ensureSectionEntryCount(section.getEntries(), 12, "MYBUTTONS_LABELS", "MyButton");
 
             javax.swing.JButton[] buttons = new javax.swing.JButton[] {
                 viewSCOPE.getMyBtn_1(), viewSCOPE.getMyBtn_2(), viewSCOPE.getMyBtn_3(), viewSCOPE.getMyBtn_4(),
                 viewSCOPE.getMyBtn_5(), viewSCOPE.getMyBtn_6(), viewSCOPE.getMyBtn_7(), viewSCOPE.getMyBtn_8(),
-                viewSCOPE.getMyBtn_9(), viewSCOPE.getMyBtn_10()
+                viewSCOPE.getMyBtn_9(), viewSCOPE.getMyBtn_10(), viewSCOPE.getMyBtn_11()
             };
             for (int index = 0; index < buttons.length; index++) {
                 buttons[index].setText(list.get(index + 1));

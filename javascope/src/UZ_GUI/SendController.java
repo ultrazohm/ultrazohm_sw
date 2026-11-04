@@ -121,6 +121,7 @@ public class SendController implements ActionListener
         viewSCOPE.getMyBtn_8().addActionListener(this);
         viewSCOPE.getMyBtn_9().addActionListener(this);
         viewSCOPE.getMyBtn_10().addActionListener(this);
+        viewSCOPE.getMyBtn_11().addActionListener(this);
         wireSendFieldEnterToSetButtons();
              
     }
@@ -476,6 +477,14 @@ public class SendController implements ActionListener
         {
             long cmd;
             cmd = ButtonNames.indexOf("My_Button_10");
+            transmitter.setCommand(cmd);
+        }
+
+        //My Button 11
+        else if(quelle == viewSCOPE.getMyBtn_11())
+        {
+            long cmd;
+            cmd = ButtonNames.indexOf("My_Button_11");
             transmitter.setCommand(cmd);
         }
 

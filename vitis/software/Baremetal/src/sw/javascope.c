@@ -49,6 +49,7 @@ static float conv_igbt_desat_f;
 static float dpt_state_f;
 static float mult_pos_valid_f;
 static float ocp_fault_f;
+static float flt_fault_f;
 
 uint32_t pollErrorCnt = 0U;
 
@@ -132,7 +133,6 @@ int JavaScope_initialize(DS_Data* data)
 	 js_ch_observable[JSO_SD_OCP_PH1]			= &Global_Data.av.Sinc3_Filter_OCP.data_PH1_A;
 	 js_ch_observable[JSO_SD_OCP_PH2]			= &Global_Data.av.Sinc3_Filter_OCP.data_PH2_A;
 	 js_ch_observable[JSO_SD_OCP_PH3]			= &Global_Data.av.Sinc3_Filter_OCP.data_PH3_A;
-	js_ch_observable[JSO_ocp_fault]				= &ocp_fault_f;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -145,6 +145,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 	js_slowDataArray[JSSD_FLOAT_timestamp]			    = &(Global_Data.av.debug_timestamp_s);
+	js_slowDataArray[JSSD_FLOAT_flt_fault]			    = &flt_fault_f;
+	js_slowDataArray[JSSD_FLOAT_ocp_fault]			    = &ocp_fault_f;
+	js_slowDataArray[JSSD_FLOAT_phi_ist]			    = &regelung.output.phi_ist_safety;
 	// js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH2]			= SigmaDeltaWandler_get_raw_average(SDW_FILTER_0, SDW_CH_PH2);
 	// js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH3]			= SigmaDeltaWandler_get_raw_average(SDW_FILTER_0, SDW_CH_PH3);
 	// js_slowDataArray[JSSD_FLOAT_Soll_Drehzahl]				= &regelung.input.Bus_ZM_In_a.Soll_Drehzahl_Umin;
@@ -184,6 +187,9 @@ void JavaScope_update(DS_Data* data){
 	conv_igbt_desat_f		= (float)conv_status_signals.igbt_desat;
 	mult_pos_valid_f		= (float)Global_Data.av.mult_pos_valid;
 	ocp_fault_f				= (float)conv_status_signals.ocp_fault;
+	flt_fault_f				= (data->objects.flt_dis != NULL)
+								  ? (float)uz_JL_flt_dis_get_fault(data->objects.flt_dis)
+								  : 0.0f;
 
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){

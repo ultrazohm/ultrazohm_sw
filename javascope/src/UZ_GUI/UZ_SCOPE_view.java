@@ -897,6 +897,13 @@ public class UZ_SCOPE_view extends javax.swing.JInternalFrame {
     }
 
     /**
+     * @return the myBtn_11
+     */
+    public javax.swing.JButton getMyBtn_11() {
+        return myBtn_11;
+    }
+
+    /**
      * @return the txtBtn1
      */
     public javax.swing.JTextField getTxtBtn1() {
@@ -2512,6 +2519,7 @@ public class UZ_SCOPE_view extends javax.swing.JInternalFrame {
         myBtn_8 = new javax.swing.JButton();
         myBtn_9 = new javax.swing.JButton();
         myBtn_10 = new javax.swing.JButton();
+        myBtn_11 = new javax.swing.JButton();
         txtBtn1 = new javax.swing.JTextField();
         txtBtn2 = new javax.swing.JTextField();
         txtBtn3 = new javax.swing.JTextField();
@@ -4552,6 +4560,17 @@ public class UZ_SCOPE_view extends javax.swing.JInternalFrame {
         gridBagConstraints.gridy = 9;
         myButtons.add(myBtn_10, gridBagConstraints);
 
+        myBtn_11.setText("MyButton11");
+        myBtn_11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                myBtn_11ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 10;
+        myButtons.add(myBtn_11, gridBagConstraints);
+
         txtBtn1.setForeground(txtBtn1.getBackground());
         txtBtn1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtBtn1.setText("ACT");
@@ -6083,6 +6102,10 @@ public class UZ_SCOPE_view extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_myBtn_10ActionPerformed
 
+    private void myBtn_11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myBtn_11ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_myBtn_11ActionPerformed
+
     private void txtBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBtn1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtBtn1ActionPerformed
@@ -6595,6 +6618,7 @@ public class UZ_SCOPE_view extends javax.swing.JInternalFrame {
     private javax.swing.JButton myBtn_8;
     private javax.swing.JButton myBtn_9;
     private javax.swing.JButton myBtn_10;
+    private javax.swing.JButton myBtn_11;
     private javax.swing.JPanel myButtons;
     private javax.swing.JPanel receive_field_1;
     private javax.swing.JPanel receive_field_10;

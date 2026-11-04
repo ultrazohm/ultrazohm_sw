@@ -24,9 +24,9 @@ enum JS_OberservableData {
 	JSO_SD_PH1,
 	JSO_SD_PH2,
 	JSO_SD_PH3,
-	// JSO_SD2_PH1,
-	// JSO_SD2_PH2,
-	// JSO_SD2_PH3,
+	JSO_SD2_PH1,
+	JSO_SD2_PH2,
+	JSO_SD2_PH3,
 	JSO_theta_el,
 	JSO_omega_mech,
 	JSO_theta_mech,
@@ -58,7 +58,6 @@ enum JS_OberservableData {
 	 JSO_SD_OCP_PH1,
 	 JSO_SD_OCP_PH2,
 	 JSO_SD_OCP_PH3,
-	JSO_ocp_fault,     // Error-Signal der OCP-Instanz (FLT_ps-Bitmaske als float)
 	JSO_ENDMARKER
 };
 
@@ -75,6 +74,9 @@ enum JS_SlowData {
 	JSSD_FLOAT_ADCconvFactorReadback,
 	JSSD_FLOAT_speed,
 	JSSD_FLOAT_timestamp,
+	JSSD_FLOAT_flt_fault,  // 1: SDC_P, 2: SDC_OCP, 3: IGBT Desat, 4: unbenutzt
+	JSSD_FLOAT_ocp_fault,  // FLT_ps-Bitmaske der OCP-Instanz (1:Udc, 2:PH1, 4:PH2, 8:PH3, 16:PH4)
+	JSSD_FLOAT_phi_ist,
 	JSSD_ENDMARKER
 };
 
@@ -118,6 +120,7 @@ enum gui_button_mapping {
 	My_Button_8,
 	My_Button_9,
 	My_Button_10,
+	My_Button_11,
 	Error_Reset,
 	GUI_BTN_ENDMARKER
 };
@@ -143,7 +146,7 @@ enum gui_button_mapping {
 	Soll_Winkel,
 	Soll_Geschwindigkeit,
 	Soll_Beschleunigung,
-	send_field_13,
+	Pos_Preset_Abtrieb,
 	send_field_14,
 	send_field_15,
 	send_field_16,
@@ -170,7 +173,7 @@ enum gui_button_mapping {
 	Grad,
 	Grad/s,
 	Grad/s^2,
-	-,
+	Grad,
 	-,
 	-,
 	-,
@@ -248,6 +251,7 @@ enum gui_button_mapping {
 	CB_Trapez,
 	CB_Manuell,
 	CB_Warten,
+	Pos_Laden,
 	MYBUTTONS_LABELS_ENDMARKER
 
 

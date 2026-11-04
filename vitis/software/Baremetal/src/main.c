@@ -69,7 +69,7 @@ struct uz_axi_gpio_config_t gpio_out_config={
 struct uz_JL_flt_dis_config_t flt_dis_config = {
             .base_address = XPAR_UZ_JL_FLT_IP_0_BASEADDR,
             .ip_core_frequency_Hz = 100000000U,
-            .use_flt_dis = false,
+            .use_flt_dis = true,
             .isr_frequency_Hz = UZ_PWM_FREQUENCY,            // ISR = PWM frequency (UZ_PWM_FREQUENCY) with ADC-to-ISR ratio 1
             .watchdog_timeout_ISR_periods = 10U,   // N: ~10 ISR periods (= 100000 cnts, fits 20 bit) until fault
             .disable_watchdog = true,             // watchdog armed
@@ -115,7 +115,7 @@ int main(void)
             JavaScope_initialize(&Global_Data);
             uz_codegen_init(&regelung);
             uz_codegen0_initialize(regelung.PtrToModelData); 
-            regelung.input.act_safety = false;   // AKtivierem / Deaktivieren Positions - und Geschwindigkeitsbegrenzung am C-Bogen
+            regelung.input.act_safety = true;   // AKtivierem / Deaktivieren Positions - und Geschwindigkeitsbegrenzung am C-Bogen
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

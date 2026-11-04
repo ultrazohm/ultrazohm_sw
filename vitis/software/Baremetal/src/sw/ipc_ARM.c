@@ -86,6 +86,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			data->rasv.Modus_Position_sel = 0;
 			break;
 
+		case (My_Button_11): // Multiturn-Position laden: Sendfeld 13 (Abtriebs-Grad) -> Motor-Grad
+			if (ultrazohm_state_machine_get_state() != control_state)   // nur wenn Regelung inaktiv
+			{
+				double motor_deg = (double)data->av.snd_fld[13] * (double)struct_Ctrl_Config.Getriebeuebersetzung;
+				resolver_pos_mt_write_preset_deg(data->objects.resolver_pos_mt, motor_deg);
+			}
+			break;
+
 		case (Stop): // Stop
 			ultrazohm_state_machine_set_stop(true);
 			break;
@@ -297,7 +305,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->rasv.Soll_Beschleunigung_grads2 = value;
 			break;
 
-		case (Set_Send_Field_13): // position_control: Untermodus (0=Warten,1=Trapez,2=Home,3=Single_Position)
+		case (Set_Send_Field_13): // Preset-Position Abtriebsseite in Grad (fuer My_Button_11)
+			data->av.snd_fld[13] = value;
 			break;
 
 		case (Set_Send_Field_14): // frei/ungenutzt

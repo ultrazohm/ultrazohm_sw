@@ -126,8 +126,8 @@ void deskbench_step(DS_Data* data, platform_state_t state)
 
     if (cil)
     {
-        uz_pmsmModel_trigger_input_strobe(data->objects.pmsm_cil);
         uz_pmsmModel_trigger_output_strobe(data->objects.pmsm_cil);
+        uz_pmsmModel_trigger_input_strobe(data->objects.pmsm_cil);
         data->av.pmsm_cil_outputs = uz_pmsmModel_get_outputs(data->objects.pmsm_cil);
         data->av.dut_measurements = pmsm_cil_get_control_measurements(
             data->av.pmsm_cil_outputs, data->av.pmsm_cil_inputs,

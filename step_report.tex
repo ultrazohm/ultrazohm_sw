@@ -1,0 +1,104 @@
+% Source template: analyze_iq_steps.py copies this file into the output directory.
+% Compile the generated copy there: pdflatex -interaction=nonstopmode -halt-on-error step_report.tex
+\documentclass[a4paper,11pt]{article}
+\usepackage[margin=20mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,booktabs,pgfplots,pgfplotstable,siunitx}
+\usepackage[hidelinks]{hyperref}
+\pgfplotsset{compat=1.18}
+\definecolor{uzblue}{HTML}{1F77B4}
+\definecolor{uzorange}{HTML}{FF7F0E}
+\definecolor{uzgreen}{HTML}{2CA02C}
+\definecolor{uzred}{HTML}{D62728}
+\definecolor{uzpurple}{HTML}{9467BD}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\hypersetup{pdftitle={Experimental Evaluation of PMSM q-Axis Current Control}}
+\begin{document}
+\begin{center}
+{\Large\bfseries Experimental Evaluation of PMSM\\q-Axis Current Control}\par
+\smallskip
+{\large Influence of Proportional Gain on Transient Response}
+\end{center}
+
+\section*{1. Objective and experimental setup}
+A PMSM in controller-in-the-loop (CIL) operation is controlled by a parallel PI
+q-axis current controller. Only $K_p$ is varied; $K_i$ remains constant. The nominal
+design point is $K_p=8.8\,\mathrm{V/A}$ with an approximate design bandwidth of
+$800\,\mathrm{Hz}$; this is not an experimentally measured bandwidth. The numerical
+value of $K_i$ is not recorded. The experiment is executed automatically on
+UltraZohm and logged using JavaScope. CIL operation and the nominal design are
+specified by the experiment description.
+
+% GENERATED_SETUP
+
+\section*{2. Experimental results}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+width=0.97\linewidth,height=9.5cm,
+% GENERATED_AXIS
+xlabel={Time relative to reference step / ms},
+ylabel={q-axis current / A},
+grid=major,grid style={gray!20},
+unbounded coords=jump,enlarge y limits=0.12,
+tick label style={font=\small},
+legend style={font=\small,draw=none,at={(0.5,-0.17)},anchor=north},
+legend columns=3,
+]
+% GENERATED_PLOTS
+\addplot[black!65,dashed,thin,const plot] table[x=time_ms,y=iq_ref,col sep=comma]{step_plot_data.csv};
+\addlegendentry{Reference}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\vspace{3mm}
+{\small\textbf{Figure 1.} Measured q-axis current responses for different proportional
+gains. All curves are aligned to the reference step at $t=0$.}
+
+\newpage
+\section*{3. Quantitative evaluation}
+\begin{center}
+\pgfplotstabletypeset[
+col sep=comma,
+columns={kp_v_per_a,rise_time_ms,overshoot_percent,settling_time_ms,iae_a_ms},
+columns/kp_v_per_a/.style={column name={$K_p$ / (V/A)},fixed,precision=1},
+columns/rise_time_ms/.style={column name={$t_r$ / ms},fixed,fixed zerofill,precision=3},
+columns/overshoot_percent/.style={column name={Overshoot / \%},fixed,fixed zerofill,precision=2},
+columns/settling_time_ms/.style={column name={$t_s$ / ms},fixed,fixed zerofill,precision=2},
+columns/iae_a_ms/.style={column name={IAE / ($\mathrm{A}\cdot\mathrm{ms}$)},fixed,fixed zerofill,precision=2},
+every head row/.style={before row=\toprule,after row=\midrule},
+every last row/.style={after row=\bottomrule},
+]{step_metrics.csv}
+\end{center}
+
+Rise time $t_r$ uses the first 10--90\% crossings of the commanded step amplitude,
+with linear interpolation between raw samples. Settling time $t_s$ is the first
+sample after the last excursion outside the $\pm2\%$ band around the final
+reference, maintained through the remainder of HOLD. IAE is the trapezoidal
+integral of $|i_q^\star-i_q|$ from the reference edge to the last HOLD sample.
+Metrics use unfiltered data and recorded timestamps; NaN denotes an unavailable
+metric rather than zero.
+
+\smallskip
+\textbf{Voltage utilization.}
+% GENERATED_VOLTAGE
+
+\section*{4. Discussion}
+% GENERATED_DISCUSSION
+
+\section*{5. Reproducibility}
+\textbf{Measurement type:} CIL (experiment description).\\
+\textbf{Original JavaScope recording:}
+% GENERATED_SOURCE
+
+Operating conditions and logging rate are summarized in Section~1; the DC-link
+source is identified with the voltage-utilization assessment. The table reads
+\texttt{step\_metrics.csv}; PGFPlots reads \texttt{step\_plot\_data.csv}.
+Only the figure is resampled by linear interpolation within contiguous recorded
+intervals; missing coverage is omitted. The reference retains its discrete step.
+Numerical metrics use the original complete HOLD intervals. Incomplete or invalid
+measurements are excluded with analysis warnings; logged DUT violations are
+flagged in the discussion.
+\end{document}

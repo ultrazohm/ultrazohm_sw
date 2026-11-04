@@ -53,6 +53,7 @@
 
 #include "include/pmsm_cil.h"
 #include "include/dut.h"
+#include "include/experiment_manager.h"
 #include "include/prime_mover.h"
 #include "include/dut_speed_pll.h"
 #include "include/prime_mover_speed_pll.h"

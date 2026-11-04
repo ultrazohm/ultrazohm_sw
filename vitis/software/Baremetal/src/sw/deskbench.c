@@ -1,5 +1,6 @@
 #include "../include/deskbench.h"
 #include "../include/dut.h"
+#include "../include/experiment_manager.h"
 #include "../include/pmsm_cil.h"
 static void clear_references(DS_Data* data)
 {
@@ -150,6 +151,13 @@ void deskbench_step(DS_Data* data, platform_state_t state)
         uz_ramp_reset(data->objects.speed_ref_ramp_prime_mover);
         data->rasv.ramped_speed_ref_rpm_prime_mover = 0.0f;
     }
+    // One experiment update per control ISR, before either DUT backend consumes iq.
+    bool experiment_owned_iq = experiment_manager_owns_iq();
+    experiment_manager_update(dut_active, (unsigned)data->av.dut_backend,
+        &data->rasv.dut_current_reference_A.q);
+    if (experiment_owned_iq || experiment_manager_owns_iq())
+        data->av.snd_fld[3] = data->rasv.dut_current_reference_A.q;
+
     uz_pmsm_control_enable(data->objects.dut, dut_active);
     uz_pmsm_control_enable(data->objects.prime_mover, active && !cil);
     struct uz_DutyCycle_t dut_duty = {0};
@@ -172,6 +180,7 @@ void deskbench_step(DS_Data* data, platform_state_t state)
         (!cil && data->av.prime_mover_violation != uz_pmsm_control_no_violation);
     if (tripped)
     {
+        experiment_manager_abort(&data->rasv.dut_current_reference_A.q);
         clear_references(data);
         uz_pmsm_control_enable(data->objects.dut, false);
         uz_pmsm_control_enable(data->objects.prime_mover, false);

@@ -113,6 +113,16 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_dut_backend] = &data->av.dut_backend_code;
 	js_ch_observable[JSO_deskbench_inputs_ready] = &data->av.deskbench_inputs_ready_code;
 
+    experiment_scope_t *experiment = experiment_manager_get_scope();
+    js_ch_observable[JSO_experiment_active] = &experiment->experiment_active;
+    js_ch_observable[JSO_experiment_status] = &experiment->experiment_status;
+    js_ch_observable[JSO_experiment_id] = &experiment->experiment_id;
+    js_ch_observable[JSO_iq_step_state] = &experiment->iq_step_state;
+    js_ch_observable[JSO_iq_step_measurement_id] = &experiment->iq_step_measurement_id;
+    js_ch_observable[JSO_iq_step_kp_active] = &experiment->iq_step_kp_active;
+    js_ch_observable[JSO_iq_step_reference] = &experiment->iq_step_reference;
+    js_ch_observable[JSO_experiment_sample] = &experiment->experiment_sample;
+
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
@@ -173,6 +183,9 @@ void JavaScope_update(DS_Data* data){
 	data->av.dut_violation_code = (float)data->av.dut_violation;
 	data->av.dut_backend_code = (float)data->av.dut_backend;
 	data->av.deskbench_inputs_ready_code = data->av.deskbench_inputs_ready ? 1.0f : 0.0f;
+
+    js_status_BareToRTOS &= ~(1U << 6);
+    if (experiment_manager_is_running()) js_status_BareToRTOS |= (1U << 6);
 
     // ACT indicators represent the backend actually applied by deskbench_step.
     js_status_BareToRTOS &= ~((1U << 4) | (1U << 5));

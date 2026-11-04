@@ -27,6 +27,14 @@ extern uint32_t js_status_BareToRTOS;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
+    // The command ID is a pulse, not the float payload. Sample every IPC poll
+    // so a held/replayed button command cannot restart a completed sequence.
+    bool experiment_allowed = ultrazohm_state_machine_get_state() == control_state &&
+        data->av.dut_violation == uz_pmsm_control_no_violation &&
+        (data->av.dut_backend == DUT_BACKEND_CIL ||
+         (data->av.deskbench_inputs_ready && data->av.prime_mover_violation == uz_pmsm_control_no_violation));
+    experiment_manager_button3(msgId == My_Button_3, experiment_allowed);
+
 	// HANDLE RECEIVED MESSAGE
 	if (msgId != 0)
 	{
@@ -35,6 +43,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		{
 
 		case (Stop): // Stop
+            experiment_manager_abort(&data->rasv.dut_current_reference_A.q);
 			ultrazohm_state_machine_set_stop(true);
 			break;
 		case (201): // SELECT_DATA_CH1_bits
@@ -197,8 +206,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.snd_fld[3] = value;
-		data->rasv.dut_current_reference_A.q = value;
+        if (!experiment_manager_owns_iq()) {
+            data->av.snd_fld[3] = value;
+            data->rasv.dut_current_reference_A.q = value;
+        }
 			break;
 
         case (Set_Send_Field_4):
@@ -209,7 +220,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
             data->av.snd_fld[5] = value;
             break;
         case (Set_Send_Field_6):
-            if (dut_set_Kp_iq(data->objects.dut, value)) {
+            if (!experiment_manager_owns_iq() && dut_set_Kp_iq(data->objects.dut, value)) {
                 data->av.snd_fld[6] = value;
             }
             break;
@@ -281,7 +292,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
+            // Request/edge handling is above the command switch.
 			break;
 
 		case (My_Button_4):

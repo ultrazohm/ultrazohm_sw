@@ -61,6 +61,14 @@ enum JS_OberservableData {
 	JSO_vd_ref_dut,
 	JSO_vq_ref_dut,
 	JSO_dut_theta_el_rad,
+	JSO_experiment_active,
+	JSO_experiment_status,
+	JSO_experiment_id,
+	JSO_iq_step_state,
+	JSO_iq_step_measurement_id,
+	JSO_iq_step_kp_active,
+	JSO_iq_step_reference,
+	JSO_experiment_sample,
 	JSO_ENDMARKER
 };
 
@@ -254,7 +262,7 @@ enum gui_button_mapping {
 	MYBUTTONS_LABELS_ZEROVALUE=0,
 	DUT = CIL,
 	DUT = REAL,
-	MyButton3,
+	iq step response,
 	MyButton4,
 	MyButton5,
 	MyButton6,

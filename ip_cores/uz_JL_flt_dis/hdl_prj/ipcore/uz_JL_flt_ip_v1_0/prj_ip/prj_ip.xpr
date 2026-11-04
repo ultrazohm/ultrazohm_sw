@@ -6,7 +6,7 @@
 <Project Version="7" Minor="61" Path="C:/Users/jonat/Documents/MA_JL_CB/ip_cores/uz_JL_flt_dis/hdl_prj/ipcore/uz_JL_flt_ip_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="1dfb16ad3a5b4ad18f62b56b7d87a901"/>
+    <Option Name="Id" Val="f12f1e375f124e9690e291d29ce5e342"/>
     <Option Name="Part" Val="xczu9eg-ffvb1156-2-i"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -125,12 +125,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/uz_JL_flt_ip_src_S_R_Flip_Flop.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -150,6 +144,24 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block3.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block4.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/uz_JL_flt_ip_src_S_R_Flip_Flop.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/uz_JL_flt_ip_src_ISR_Watchdog.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

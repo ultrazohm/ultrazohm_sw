@@ -31,8 +31,8 @@ enum SigmaDeltaWandler_filter_instance {
 
 // OCP-Stromgrenzen in Ampere (global fuer alle Phasen). Umrechnung in counts in
 // SigmaDeltaWandler_init via counts = I_A * OSR^3 / k_manual.
-#define SDW_OCP_I_MAX_A  ( 13.0f)   // TODO: realen Wert festlegen
-#define SDW_OCP_I_MIN_A  (-13.0f)   // TODO: realen Wert festlegen
+#define SDW_OCP_I_MAX_A  ( 5.0f)   // TODO: realen Wert festlegen
+#define SDW_OCP_I_MIN_A  (-5.0f)   // TODO: realen Wert festlegen
 
 // TODO: auf 1 setzen, sobald eine zweite Hardware-Instanz des IP-Cores existiert
 // (XPAR_UZ_USER_UZ_JL_SIGMADELTA_INT_1_BASEADDR nach Erweiterung des Vivado Block Designs

@@ -82,6 +82,9 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (My_Button_9): // Manuelle Position
 			data->rasv.Modus_Position_sel = 3;
 			break;
+		case (My_Button_10): // Warten
+			data->rasv.Modus_Position_sel = 0;
+			break;
 
 		case (Stop): // Stop
 			ultrazohm_state_machine_set_stop(true);

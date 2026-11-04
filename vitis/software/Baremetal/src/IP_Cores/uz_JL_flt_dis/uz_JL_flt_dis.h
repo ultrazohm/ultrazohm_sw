@@ -40,9 +40,12 @@ enum uz_JL_flt_dis_fault {
  */
 struct uz_JL_flt_dis_config_t
 {
-    uint32_t base_address;          /**< Base address of IP-Core instance */
-    uint32_t ip_core_frequency_Hz;  /**< Clock frequency of IP-Core */
-    bool use_flt_dis;               /**< Initial state of the use_flt_dis input (enable fault-disable logic) */
+    uint32_t base_address;                  /**< Base address of IP-Core instance */
+    uint32_t ip_core_frequency_Hz;          /**< Clock frequency of IP-Core (FPGA clock, e.g. 100 MHz) */
+    bool use_flt_dis;                       /**< Initial state of the use_flt_dis input (enable fault-disable logic) */
+    uint32_t isr_frequency_Hz;              /**< ISR / control-loop frequency in Hz, used to size the watchdog timeout */
+    uint32_t watchdog_timeout_ISR_periods;  /**< N: number of ISR periods without a watchdog trigger before the watchdog fault latches */
+    bool disable_watchdog;                  /**< true -> Watchdog_Rst is held high at init: the ISR watchdog stays disabled */
 };
 
 /**
@@ -88,5 +91,30 @@ void uz_JL_flt_dis_reset_fault(uz_JL_flt_dis_t *self);
  * @return enum uz_JL_flt_dis_fault Active fault cause(s)
  */
 enum uz_JL_flt_dis_fault uz_JL_flt_dis_get_fault(uz_JL_flt_dis_t *self);
+
+/**
+ * @brief Feed ("kick") the ISR watchdog.
+ *
+ * The IP core resets its watchdog counter on every edge (rising or falling) of the Watchdog_trig
+ * input. This function toggles the internally tracked trigger state and writes it, thereby creating
+ * one edge per call. Call it periodically (e.g. once per ISR) to keep the watchdog from latching a
+ * fault. If more than the configured number of ISR periods pass without a call, the watchdog fault
+ * latches (visible via uz_JL_flt_dis_get_fault / FLT_ps).
+ *
+ * @param self Pointer to driver instance
+ */
+void uz_JL_flt_dis_watchdog_trigger(uz_JL_flt_dis_t *self);
+
+/**
+ * @brief Clear a latched watchdog fault (standard reset).
+ *
+ * Pulses the Watchdog_Rst input high and then returns it to its configured resting state
+ * (see disable_watchdog). For an active watchdog this is a true->false pulse; for a watchdog that
+ * was disabled via config (disable_watchdog = true) Watchdog_Rst is left high so the watchdog is
+ * not accidentally re-armed.
+ *
+ * @param self Pointer to driver instance
+ */
+void uz_JL_flt_dis_watchdog_reset(uz_JL_flt_dis_t *self);
 
 #endif // UZ_JL_FLT_DIS_H

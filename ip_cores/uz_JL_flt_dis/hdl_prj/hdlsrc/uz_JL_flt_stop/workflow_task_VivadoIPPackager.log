@@ -7,7 +7,7 @@ Generated logfile:
     ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 
 source vivado_ip_package.tcl -notrace
-create_project: Time (s): cpu = 00:00:10 ; elapsed = 00:00:16 . Memory (MB): peak = 377.746 ; gain = 69.566
+create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:07 . Memory (MB): peak = 377.602 ; gain = 45.316
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/jonat/Documents/MA_JL_CB/ip_cores/uz_JL_flt_dis/hdl_prj/ipcore'.
 WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/Users/jonat/Documents/MA_JL_CB/ip_cores/uz_JL_flt_dis/hdl_prj/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/Users/jonat/Documents/MA_JL_CB/ip_cores/uz_JL_flt_dis/hdl_prj/ipcore/uz_JL_flt_ip_v1_0/prj_ip'.)
@@ -29,6 +29,8 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_src_uz_JL_flt_dis_pkg.vh
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_src_uz_JL_flt_dis_pkg.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_src_S_R_Flip_Flop.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_src_S_R_Flip_Flop.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_src_ISR_Watchdog.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_src_ISR_Watchdog.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
@@ -37,6 +39,8 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block2
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block2.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block3.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block3.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block4.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_src_For_Each_Subsystem.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_src_For_Each_Subsystem.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_src_uz_JL_flt_dis.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
@@ -55,6 +59,6 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_axi_lite.vhd" already ex
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_flt_ip.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Tue Oct 27 01:47:40 2026...
+INFO: [Common 17-206] Exiting Vivado at Wed Nov  4 10:21:31 2026...
 
-Elapsed time is 45.9643 seconds.
+Elapsed time is 19.9492 seconds.

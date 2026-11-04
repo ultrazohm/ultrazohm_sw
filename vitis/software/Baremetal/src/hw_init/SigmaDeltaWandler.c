@@ -30,12 +30,12 @@ struct uz_JL_SigmaDelta_Interface_config_t filter_config[SDW_FILTER_ENDMARKER] =
 		.dezimation = 125,	// Dezimierungsfaktor für ZK-Spannungsmessung
 		.clk_ratio = 10, 		// Taktrate des Sigma-Delta-Modulators (5 Mhz untere Grenze AMC1204), Taktrate = ip_clk_frequency_Hz/clk_ratio
 		.switch_edge = 0,	    //0 = every falling edge, 1 = every second even falling edge, 2 = every second odd falling edge; anpassbar für verschiedene Sigma-Delta-Wandler
-		.switch_cont_disc = true, // false = kontinuierlich, true = diskontinuierlich; 
+		.switch_cont_disc = true, // false = kontinuierlich, true = diskontinuierlich;
 		.filt_input_delay = 3,	// Verzögerung des Abtastzeitpunkts, um Gruppenlaufzeit zu kompensieren, in 10 ns Schritten; 9 f�r 5 Mhz, 3 f�r 10 Mhz
 		.clk_dutycycle = 0.8,  // Clock Dutycycle, anpassbar zur kompensation von , durch LWL; 5MHz 0,65, 10Mhz 0,8 -> nur 10% Schritte,
-		.start_time_us = 31.25f, // ISR Trigger - 1.5*OSR/10MHz+(sinc_sample_periods-3)*OSR/10Mhz 
-		.delay_data_valid = 1,
-		.sinc_sample_periods = 3,	// Anzahl an Dezimierungsstufen im Filter mit reset. S. Simulinkmodell
+		.start_time_us = 25.0f, // ISR Trigger - 1.5*OSR/10MHz+(sinc_sample_periods-3)*OSR/10Mhz
+		.delay_data_valid = 0,
+		.sinc_sample_periods = 4,	// Anzahl an Dezimierungsstufen im Filter mit reset. S. Simulinkmodell
 		.use_clk_ext = false,	
 		.sel_pwm_trigger = false, // false = pwm min; true = pwm max
 	},
@@ -58,13 +58,13 @@ struct uz_JL_SigmaDelta_Interface_config_t filter_config[SDW_FILTER_ENDMARKER] =
 		// Dritte Filterinstanz fuer den FPGA-Ueberstromschutz (OCP). Existiert im FPGA-Design,
 		.base_address = XPAR_UZ_USER_SIGMADELTA_OCP_BASEADDR,	
 		.ip_clk_frequency_Hz = 100000000.0f,
-		.dezimation = 8,	
+		.dezimation = 32,
 		.clk_ratio = 10,
 		.switch_edge = 0,
 		.switch_cont_disc = false,
 		.filt_input_delay = 3,
 		.clk_dutycycle = 0.8,
-		.start_time_us = 32.0f,
+		.start_time_us = 0.0f,
 		.delay_data_valid = 0,
 		.sinc_sample_periods = 3,
 		.use_clk_ext = true,

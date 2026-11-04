@@ -55,9 +55,9 @@ enum JS_OberservableData {
 	JSO_CB_Soll_Geschw,
 	JSO_CB_Soll_Winkel,
 	JSO_CB_omega_grads,
-	// JSO_SD_OCP_PH1,
-	// JSO_SD_OCP_PH2,
-	// JSO_SD_OCP_PH3,
+	 JSO_SD_OCP_PH1,
+	 JSO_SD_OCP_PH2,
+	 JSO_SD_OCP_PH3,
 	JSO_ocp_fault,     // Error-Signal der OCP-Instanz (FLT_ps-Bitmaske als float)
 	JSO_ENDMARKER
 };
@@ -117,6 +117,7 @@ enum gui_button_mapping {
 	My_Button_7,
 	My_Button_8,
 	My_Button_9,
+	My_Button_10,
 	Error_Reset,
 	GUI_BTN_ENDMARKER
 };
@@ -246,6 +247,7 @@ enum gui_button_mapping {
 	CN_Home,
 	CB_Trapez,
 	CB_Manuell,
+	CB_Warten,
 	MYBUTTONS_LABELS_ENDMARKER
 
 

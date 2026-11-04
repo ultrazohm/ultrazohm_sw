@@ -129,9 +129,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_CB_Soll_Geschw]		= &regelung.output.Bus_Ctrl_Out_j.Soll_Drehzahl_CB_Grads;
 	js_ch_observable[JSO_CB_Soll_Winkel]		= &regelung.output.Bus_Ctrl_Out_j.Soll_Winkel_CB_Grad;
 	js_ch_observable[JSO_CB_omega_grads]		= &Global_Data.av.CB_omega_grads;
-	// js_ch_observable[JSO_SD_OCP_PH1]			= &Global_Data.av.Sinc3_Filter_OCP.data_PH1_A;
-	// js_ch_observable[JSO_SD_OCP_PH2]			= &Global_Data.av.Sinc3_Filter_OCP.data_PH2_A;
-	// js_ch_observable[JSO_SD_OCP_PH3]			= &Global_Data.av.Sinc3_Filter_OCP.data_PH3_A;
+	 js_ch_observable[JSO_SD_OCP_PH1]			= &Global_Data.av.Sinc3_Filter_OCP.data_PH1_A;
+	 js_ch_observable[JSO_SD_OCP_PH2]			= &Global_Data.av.Sinc3_Filter_OCP.data_PH2_A;
+	 js_ch_observable[JSO_SD_OCP_PH3]			= &Global_Data.av.Sinc3_Filter_OCP.data_PH3_A;
 	js_ch_observable[JSO_ocp_fault]				= &ocp_fault_f;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

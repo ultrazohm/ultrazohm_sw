@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 10.23
+ * Model version                  : 10.27
  * Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
- * C/C++ source code generated on : Tue Nov  3 22:17:56 2026
+ * C/C++ source code generated on : Wed Nov  4 10:51:47 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -347,9 +347,10 @@ typedef struct {
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  Bus_PMSM_Out Bus_PMSM_Out_c;         /* '<Root>/Bus_Live_Out_PMSM' */
-  Bus_ZM_In Bus_ZM_In_p;               /* '<Root>/Bus_ZM_In' */
+  Bus_PMSM_Out Bus_PMSM_Out_a;         /* '<Root>/Bus_Live_Out_PMSM' */
+  Bus_ZM_In Bus_ZM_In_c;               /* '<Root>/Bus_ZM_In' */
   bool trigger_actI_I_calc;            /* '<Root>/trigger_actI_I_calc' */
+  bool act_safety;                     /* '<Root>/act_safety' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with default storage) */

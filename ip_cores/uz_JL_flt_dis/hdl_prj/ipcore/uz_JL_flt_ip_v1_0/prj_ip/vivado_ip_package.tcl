@@ -4,10 +4,12 @@ set_property ip_repo_paths {../../} [current_fileset]
 # Add HDL source files to project
 add_files -norecurse {../hdl/uz_JL_flt_ip_src_uz_JL_flt_dis_pkg.vhd}
 add_files -norecurse {../hdl/uz_JL_flt_ip_src_S_R_Flip_Flop.vhd}
+add_files -norecurse {../hdl/uz_JL_flt_ip_src_ISR_Watchdog.vhd}
 add_files -norecurse {../hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block.vhd}
 add_files -norecurse {../hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block1.vhd}
 add_files -norecurse {../hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block2.vhd}
 add_files -norecurse {../hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block3.vhd}
+add_files -norecurse {../hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block4.vhd}
 add_files -norecurse {../hdl/uz_JL_flt_ip_src_For_Each_Subsystem.vhd}
 add_files -norecurse {../hdl/uz_JL_flt_ip_src_uz_JL_flt_dis.vhd}
 add_files -norecurse {../hdl/uz_JL_flt_ip_pkg.vhd}
@@ -36,7 +38,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2114846866 [ipx::current_core]
+set_property core_revision 2114858901 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/uz_JL_flt_ip_src_uz_JL_flt_dis_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -47,6 +49,10 @@ ipx::add_file {hdl/uz_JL_flt_ip_src_S_R_Flip_Flop.vhd} [ipx::get_file_groups xil
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_flt_ip_src_S_R_Flip_Flop.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_flt_ip_src_S_R_Flip_Flop.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_flt_ip_src_S_R_Flip_Flop.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_JL_flt_ip_src_ISR_Watchdog.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_flt_ip_src_ISR_Watchdog.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_JL_flt_ip_src_ISR_Watchdog.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_flt_ip_src_ISR_Watchdog.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -63,6 +69,10 @@ ipx::add_file {hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block3.vhd} [ipx::get_file_gro
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block3.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block4.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block4.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block4.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_flt_ip_src_S_R_Flip_Flop_block4.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_flt_ip_src_For_Each_Subsystem.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_flt_ip_src_For_Each_Subsystem.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_flt_ip_src_For_Each_Subsystem.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

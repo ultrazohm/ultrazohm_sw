@@ -883,6 +883,20 @@ public class UZ_SCOPE_view extends javax.swing.JInternalFrame {
     }
 
     /**
+     * @return the myBtn_9
+     */
+    public javax.swing.JButton getMyBtn_9() {
+        return myBtn_9;
+    }
+
+    /**
+     * @return the myBtn_10
+     */
+    public javax.swing.JButton getMyBtn_10() {
+        return myBtn_10;
+    }
+
+    /**
      * @return the txtBtn1
      */
     public javax.swing.JTextField getTxtBtn1() {
@@ -2496,6 +2510,8 @@ public class UZ_SCOPE_view extends javax.swing.JInternalFrame {
         myBtn_6 = new javax.swing.JButton();
         myBtn_7 = new javax.swing.JButton();
         myBtn_8 = new javax.swing.JButton();
+        myBtn_9 = new javax.swing.JButton();
+        myBtn_10 = new javax.swing.JButton();
         txtBtn1 = new javax.swing.JTextField();
         txtBtn2 = new javax.swing.JTextField();
         txtBtn3 = new javax.swing.JTextField();
@@ -4420,7 +4436,7 @@ public class UZ_SCOPE_view extends javax.swing.JInternalFrame {
         Controlpanel.add(field_6, gridBagConstraints);
 
         myButtons.setBorder(javax.swing.BorderFactory.createTitledBorder("my buttons"));
-        myButtons.setMinimumSize(new java.awt.Dimension(220, 250));
+        myButtons.setMinimumSize(new java.awt.Dimension(220, 310));
         myButtons.setName(""); // NOI18N
         myButtons.setPreferredSize(new java.awt.Dimension(220, 70));
         myButtons.setRequestFocusEnabled(false);
@@ -4513,6 +4529,28 @@ public class UZ_SCOPE_view extends javax.swing.JInternalFrame {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 7;
         myButtons.add(myBtn_8, gridBagConstraints);
+
+        myBtn_9.setText("MyButton9");
+        myBtn_9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                myBtn_9ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
+        myButtons.add(myBtn_9, gridBagConstraints);
+
+        myBtn_10.setText("MyButton10");
+        myBtn_10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                myBtn_10ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 9;
+        myButtons.add(myBtn_10, gridBagConstraints);
 
         txtBtn1.setForeground(txtBtn1.getBackground());
         txtBtn1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -6037,6 +6075,14 @@ public class UZ_SCOPE_view extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_myBtn_8ActionPerformed
 
+    private void myBtn_9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myBtn_9ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_myBtn_9ActionPerformed
+
+    private void myBtn_10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myBtn_10ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_myBtn_10ActionPerformed
+
     private void txtBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBtn1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtBtn1ActionPerformed
@@ -6547,6 +6593,8 @@ public class UZ_SCOPE_view extends javax.swing.JInternalFrame {
     private javax.swing.JButton myBtn_6;
     private javax.swing.JButton myBtn_7;
     private javax.swing.JButton myBtn_8;
+    private javax.swing.JButton myBtn_9;
+    private javax.swing.JButton myBtn_10;
     private javax.swing.JPanel myButtons;
     private javax.swing.JPanel receive_field_1;
     private javax.swing.JPanel receive_field_10;

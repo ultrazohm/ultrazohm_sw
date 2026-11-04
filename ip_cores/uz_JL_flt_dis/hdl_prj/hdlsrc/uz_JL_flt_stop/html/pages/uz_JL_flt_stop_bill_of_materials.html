@@ -5,7 +5,7 @@ High-level Resource Utilization Report for uz_JL_flt_stop
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Adder_1_1');hdlTableShrink(this, 'Adder_1_2');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Multiplexer_2_1');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Adder_1_1');hdlTableShrink(this, 'Adder_1_2');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Multiplexer_2_1');hdlTableShrink(this, 'Adder_3_1');hdlTableShrink(this, 'Register_3_1');hdlTableShrink(this, 'Register_3_2');hdlTableShrink(this, 'Multiplexer_3_1');hdlTableShrink(this, 'Multiplexer_3_2');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -161,7 +161,7 @@ Multipliers
 Adders/Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-4
+5
 </td>
 
 </tr>
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-6
+14
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-16
+43
 </td>
 
 </tr>
@@ -197,7 +197,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-18
+23
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-42
+65
 </td>
 
 </tr>
@@ -257,13 +257,13 @@ Adders/Subtractors (4)
 <span name="Adder_1_1" id="Adder_1_1">
 <ul>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'gm_uz_JL_flt_stop:121\')'})"  name="code2model" class="code2model">
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'gm_uz_JL_flt_stop:140\')'})"  name="code2model" class="code2model">
 Add_stage2
 </a>
 
 </li>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'gm_uz_JL_flt_stop:123\')'})"  name="code2model" class="code2model">
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'gm_uz_JL_flt_stop:142\')'})"  name="code2model" class="code2model">
 Add_stage4
 </a>
 
@@ -287,7 +287,7 @@ Add_stage5
 <span name="Adder_1_2" id="Adder_1_2">
 <ul>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'gm_uz_JL_flt_stop:122\')'})"  name="code2model" class="code2model">
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'gm_uz_JL_flt_stop:141\')'})"  name="code2model" class="code2model">
 Add_stage3
 </a>
 
@@ -390,21 +390,21 @@ Switch6
 
 </span>
 <br /><h5>
-Number of I/O Bits (42)
+Number of I/O Bits (65)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Input Bits: 20
+Number of Input Bits: 42
 </span>
 <span name="Input_Port" id="Input_Port">
-<ul class="SystemdefinedCollapse" id="876a264e-5c5b-4319-ab17-0c27cbe52cb5" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="1309eaaf-192f-4940-b985-1cfd0b649e33" dataCollapse="off">
 <li>
 clk: 1 bit
 </li>
 <li>
-reset: 1 bit
+reset_x: 1 bit
 </li>
 <li>
 clk_enable: 1 bit
@@ -511,9 +511,27 @@ use_flt_dis
 </a>
 : 1 bit
 </li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_flt_stop:122\')'})"  name="code2model" class="code2model">
+Watchdog_Rst
+</a>
+: 1 bit
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_flt_stop:123\')'})"  name="code2model" class="code2model">
+Watchdog_trig
+</a>
+: 1 bit
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_flt_stop:130\')'})"  name="code2model" class="code2model">
+Watchdog_Periods_Max_cnts
+</a>
+: 20 bits
+</li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '876a264e-5c5b-4319-ab17-0c27cbe52cb5')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '1309eaaf-192f-4940-b985-1cfd0b649e33')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -522,10 +540,10 @@ use_flt_dis
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Output Bits: 22
+Number of Output Bits: 23
 </span>
 <span name="Output_Port" id="Output_Port">
-<ul class="SystemdefinedCollapse" id="8d380aaf-fa7f-4129-9bbd-bed9fd4e310d" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="06e0ccbf-f514-4c3f-94d4-a09b632f7458" dataCollapse="off">
 <li>
 ce_out: 1 bit
 </li>
@@ -595,9 +613,15 @@ Out_RST_Inv
 </a>
 : 1 bit
 </li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_flt_stop:140\')'})"  name="code2model" class="code2model">
+Watchdog_FLT
+</a>
+: 1 bit
+</li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '8d380aaf-fa7f-4129-9bbd-bed9fd4e310d')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '06e0ccbf-f514-4c3f-94d4-a09b632f7458')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -623,6 +647,148 @@ Multiplexers (10)
 <li>
 <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_flt_stop:58\')'})"  name="code2model" class="code2model">
 Switch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_flt_stop:119\')'})"  name="code2model" class="code2model">
+ISR_Watchdog
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_3_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Adder 							: 1
+</span>
+<span name="Adder_3_1" id="Adder_3_1">
+<ul>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_flt_stop:134\')'})"  name="code2model" class="code2model">
+adder
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (8)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_3_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 7
+</span>
+<span name="Register_3_1" id="Register_3_1">
+<ul>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_flt_stop:126\')'})"  name="code2model" class="code2model">
+Unit Delay
+</a>
+
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_flt_stop:127\')'})"  name="code2model" class="code2model">
+Unit Delay1
+</a>
+
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_flt_stop:128\')'})"  name="code2model" class="code2model">
+Unit Delay2
+</a>
+
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_flt_stop:138\')'})"  name="code2model" class="code2model">
+Unit Delay3
+</a>
+
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_flt_stop:139\')'})"  name="code2model" class="code2model">
+Unit Delay4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_3_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20-bit Register 							: 1
+</span>
+<span name="Register_3_2" id="Register_3_2">
+<ul>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_flt_stop:134\')'})"  name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (5)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_3_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_3_1" id="Multiplexer_3_1">
+<ul>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_flt_stop:134\')'})"  name="code2model" class="code2model">
+compare
+</a>
+
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_flt_stop:132\')'})"  name="code2model" class="code2model">
+Relational
+Operator
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_3_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20-bit 2-to-1 Multiplexer 							: 3
+</span>
+<span name="Multiplexer_3_2" id="Multiplexer_3_2">
+<ul>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_flt_stop:134\')'})"  name="code2model" class="code2model">
+switch
+</a>
+
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_flt_stop:134\')'})"  name="code2model" class="code2model">
+switchReset
 </a>
 
 </li>

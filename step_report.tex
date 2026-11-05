@@ -7,15 +7,96 @@
 \usepackage{amsmath,booktabs,pgfplots,pgfplotstable,siunitx}
 \usepackage[hidelinks]{hyperref}
 \pgfplotsset{compat=1.18}
+\usepgfplotslibrary{groupplots}
 \definecolor{uzblue}{HTML}{1F77B4}
 \definecolor{uzorange}{HTML}{FF7F0E}
 \definecolor{uzgreen}{HTML}{2CA02C}
 \definecolor{uzred}{HTML}{D62728}
 \definecolor{uzpurple}{HTML}{9467BD}
 \setlength{\parindent}{0pt}
+\setlength{\emergencystretch}{1em}
 \setlength{\parskip}{5pt}
 \hypersetup{pdftitle={Experimental Evaluation of PMSM q-Axis Current Control}}
+\newif\ifcomparison
+% COMPARISON_MODE
 \begin{document}
+\ifcomparison
+\begin{center}
+{\Large\bfseries Experimental Validation of PMSM\\q-Axis Current Control}\par
+\smallskip
+{\large Comparison of Controller-in-the-Loop and Physical Deskbench Measurements}
+\end{center}
+\section*{1. Setup and raw responses}
+The parallel PI q-axis current controller is compared in CIL and on the physical
+Deskbench. Only $K_p$ varies; $K_i$ is constant within each sequence, but equality
+between datasets is not verified. The nominal design point is $K_p=8.8$ V/A
+at approximately 800 Hz, not a measured bandwidth. UltraZohm executes the
+automated sequences; JavaScope records the responses.
+% COMP_SETUP
+
+\begin{center}
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=1 by 2,vertical sep=1.1cm},
+width=.97\linewidth,height=6.6cm,
+% COMP_AXIS
+ylabel={q-axis current / A},grid=major,grid style={gray!20},
+unbounded coords=jump,enlarge y limits=false,
+legend style={font=\small,draw=none,at={(.5,-.33)},anchor=north},legend columns=3,
+title style={font=\normalsize},tick label style={font=\small}]
+\nextgroupplot[title={Controller-in-the-Loop (CIL)},xticklabels=\empty]
+% COMP_CIL_PLOTS
+\addplot[gray,dashed,thin,const plot] table[x=time_ms,y=iq_ref,col sep=comma]{step_comparison_data.csv};
+\nextgroupplot[title={Physical Deskbench},xlabel={Time relative to reference step / ms}]
+% COMP_DESK_PLOTS
+\addplot[gray,dashed,thin,const plot] table[x=time_ms,y=iq_ref,col sep=comma]{step_comparison_data.csv};
+\addlegendentry{Reference}
+\end{groupplot}
+\end{tikzpicture}
+\end{center}
+\smallskip
+{\small\textbf{Figure 1.} Comparison of q-axis current step responses for five
+proportional gains. Both diagrams use identical axis scales; raw measured currents
+are aligned to the reference step.}
+
+\newpage
+\section*{2. Quantitative comparison}
+C = CIL; D = Deskbench. Rise time $t_r$, overshoot $M_p$ and IAE use raw samples.
+\begin{center}
+\setlength{\tabcolsep}{4pt}
+\pgfplotstabletypeset[col sep=comma,
+columns={kp_v_per_a,cil_rise_time_ms,deskbench_rise_time_ms,cil_overshoot_percent,deskbench_overshoot_percent,cil_iae_a_ms,deskbench_iae_a_ms},
+columns/kp_v_per_a/.style={column name={$K_p$/ (V/A)},fixed,precision=1},
+columns/cil_rise_time_ms/.style={column name={$t_{r,C}$/ms},fixed,fixed zerofill,precision=3},
+columns/deskbench_rise_time_ms/.style={column name={$t_{r,D}$/ms},fixed,fixed zerofill,precision=3},
+columns/cil_overshoot_percent/.style={column name={$M_{p,C}$/\%},fixed,fixed zerofill,precision=2},
+columns/deskbench_overshoot_percent/.style={column name={$M_{p,D}$/\%},fixed,fixed zerofill,precision=2},
+columns/cil_iae_a_ms/.style={column name={IAE$_C$/(A ms)},fixed,fixed zerofill,precision=2},
+columns/deskbench_iae_a_ms/.style={column name={IAE$_D$/(A ms)},fixed,fixed zerofill,precision=2},
+every head row/.style={before row=\toprule,after row=\midrule},
+every last row/.style={after row=\bottomrule}]{step_comparison_metrics.csv}
+
+\end{center}
+\textbf{Stationary variation and settling.}
+% COMP_METHOD
+
+\par\textbf{Voltage utilization.}
+% COMP_VOLTAGE
+
+
+\section*{3. Interpretation}
+% COMP_DISCUSSION
+
+\section*{4. Reproducibility}
+% COMP_SOURCES
+
+Metrics use full HOLD windows: raw 10--90\% crossings, peak overshoot, raw
+$\pm2\%$ settling and trapezoidal IAE. CSV includes original IDs, differences and
+stationary statistics. The table reads \path{step_comparison_metrics.csv};
+PGFPlots reads \path{step_comparison_data.csv}. Input roles are assigned by
+the invocation, not inferred from waveform appearance. Missing pairs are reported;
+no missing samples are extrapolated.
+
+\else
 \begin{center}
 {\Large\bfseries Experimental Evaluation of PMSM\\q-Axis Current Control}\par
 \smallskip
@@ -23,13 +104,13 @@
 \end{center}
 
 \section*{1. Objective and experimental setup}
-A PMSM in controller-in-the-loop (CIL) operation is controlled by a parallel PI
+The recorded PMSM is controlled by a parallel PI
 q-axis current controller. Only $K_p$ is varied; $K_i$ remains constant. The nominal
 design point is $K_p=8.8\,\mathrm{V/A}$ with an approximate design bandwidth of
 $800\,\mathrm{Hz}$; this is not an experimentally measured bandwidth. The numerical
 value of $K_i$ is not recorded. The experiment is executed automatically on
-UltraZohm and logged using JavaScope. CIL operation and the nominal design are
-specified by the experiment description.
+UltraZohm and logged using JavaScope. The nominal design is supplied by the experiment description; the recording
+does not identify whether the DUT is simulated or physical.
 
 % GENERATED_SETUP
 
@@ -89,7 +170,7 @@ metric rather than zero.
 % GENERATED_DISCUSSION
 
 \section*{5. Reproducibility}
-\textbf{Measurement type:} CIL (experiment description).\\
+\textbf{Measurement type:} unspecified in the recording.\\
 \textbf{Original JavaScope recording:}
 % GENERATED_SOURCE
 
@@ -101,4 +182,5 @@ intervals; missing coverage is omitted. The reference retains its discrete step.
 Numerical metrics use the original complete HOLD intervals. Incomplete or invalid
 measurements are excluded with analysis warnings; logged DUT violations are
 flagged in the discussion.
+\fi
 \end{document}

@@ -7,15 +7,109 @@
 \usepackage{amsmath,booktabs,pgfplots,pgfplotstable,siunitx}
 \usepackage[hidelinks]{hyperref}
 \pgfplotsset{compat=1.18}
+\usepgfplotslibrary{groupplots}
 \definecolor{uzblue}{HTML}{1F77B4}
 \definecolor{uzorange}{HTML}{FF7F0E}
 \definecolor{uzgreen}{HTML}{2CA02C}
 \definecolor{uzred}{HTML}{D62728}
 \definecolor{uzpurple}{HTML}{9467BD}
 \setlength{\parindent}{0pt}
+\setlength{\emergencystretch}{1em}
 \setlength{\parskip}{5pt}
-\hypersetup{pdftitle={Experimental Evaluation of PMSM q-Axis Current Control}}
+\hypersetup{pdftitle={Experimental Validation of PMSM q-Axis Current Control}}
+\newif\ifcomparison
+\comparisontrue
 \begin{document}
+\ifcomparison
+\begin{center}
+{\Large\bfseries Experimental Validation of PMSM\\q-Axis Current Control}\par
+\smallskip
+{\large Comparison of Controller-in-the-Loop and Physical Deskbench Measurements}
+\end{center}
+\section*{1. Setup and raw responses}
+The parallel PI q-axis current controller is compared in CIL and on the physical
+Deskbench. Only $K_p$ varies; $K_i$ is constant within each sequence, but equality
+between datasets is not verified. The nominal design point is $K_p=8.8$ V/A
+at approximately 800 Hz, not a measured bandwidth. UltraZohm executes the
+automated sequences; JavaScope records the responses.
+5 gains were matched by recorded $K_p$: 2, 5, 8.8, 12, 15 V/A. The reference changes from 0 to 1 A. CIL mean HOLD speeds: 200.0\,rpm. CIL logging: 10\,kHz. Deskbench mean HOLD speeds: 214.2--215.5\,rpm. Deskbench logging: 10\,kHz. Operating conditions are similar but not identical; speed differences may influence the comparison.
+
+\begin{center}
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=1 by 2,vertical sep=1.1cm},
+width=.97\linewidth,height=6.6cm,
+xmin=-1,xmax=10,ymin=-0.24788265,ymax=1.9548831,ytick={0,0.5,1,1.5},
+ylabel={q-axis current / A},grid=major,grid style={gray!20},
+unbounded coords=jump,enlarge y limits=false,
+legend style={font=\small,draw=none,at={(.5,-.33)},anchor=north},legend columns=3,
+title style={font=\normalsize},tick label style={font=\small}]
+\nextgroupplot[title={Controller-in-the-Loop (CIL)},xticklabels=\empty]
+\addplot[thick,solid,uzblue] table[x=time_ms,y=iq_cil_kp_2,col sep=comma]{step_comparison_data.csv};
+\addplot[thick,solid,uzorange] table[x=time_ms,y=iq_cil_kp_5,col sep=comma]{step_comparison_data.csv};
+\addplot[thick,solid,uzgreen] table[x=time_ms,y=iq_cil_kp_8p8,col sep=comma]{step_comparison_data.csv};
+\addplot[thick,solid,uzred] table[x=time_ms,y=iq_cil_kp_12,col sep=comma]{step_comparison_data.csv};
+\addplot[thick,solid,uzpurple] table[x=time_ms,y=iq_cil_kp_15,col sep=comma]{step_comparison_data.csv};
+\addplot[gray,dashed,thin,const plot] table[x=time_ms,y=iq_ref,col sep=comma]{step_comparison_data.csv};
+\nextgroupplot[title={Physical Deskbench},xlabel={Time relative to reference step / ms}]
+\addplot[thick,solid,uzblue] table[x=time_ms,y=iq_deskbench_kp_2,col sep=comma]{step_comparison_data.csv};
+\addlegendentry{$K_p=2$ V/A}
+\addplot[thick,solid,uzorange] table[x=time_ms,y=iq_deskbench_kp_5,col sep=comma]{step_comparison_data.csv};
+\addlegendentry{$K_p=5$ V/A}
+\addplot[thick,solid,uzgreen] table[x=time_ms,y=iq_deskbench_kp_8p8,col sep=comma]{step_comparison_data.csv};
+\addlegendentry{$K_p=8.8$ V/A}
+\addplot[thick,solid,uzred] table[x=time_ms,y=iq_deskbench_kp_12,col sep=comma]{step_comparison_data.csv};
+\addlegendentry{$K_p=12$ V/A}
+\addplot[thick,solid,uzpurple] table[x=time_ms,y=iq_deskbench_kp_15,col sep=comma]{step_comparison_data.csv};
+\addlegendentry{$K_p=15$ V/A}
+\addplot[gray,dashed,thin,const plot] table[x=time_ms,y=iq_ref,col sep=comma]{step_comparison_data.csv};
+\addlegendentry{Reference}
+\end{groupplot}
+\end{tikzpicture}
+\end{center}
+\smallskip
+{\small\textbf{Figure 1.} Comparison of q-axis current step responses for five
+proportional gains. Both diagrams use identical axis scales; raw measured currents
+are aligned to the reference step.}
+
+\newpage
+\section*{2. Quantitative comparison}
+C = CIL; D = Deskbench. Rise time $t_r$, overshoot $M_p$ and IAE use raw samples.
+\begin{center}
+\setlength{\tabcolsep}{4pt}
+\pgfplotstabletypeset[col sep=comma,
+columns={kp_v_per_a,cil_rise_time_ms,deskbench_rise_time_ms,cil_overshoot_percent,deskbench_overshoot_percent,cil_iae_a_ms,deskbench_iae_a_ms},
+columns/kp_v_per_a/.style={column name={$K_p$/ (V/A)},fixed,precision=1},
+columns/cil_rise_time_ms/.style={column name={$t_{r,C}$/ms},fixed,fixed zerofill,precision=3},
+columns/deskbench_rise_time_ms/.style={column name={$t_{r,D}$/ms},fixed,fixed zerofill,precision=3},
+columns/cil_overshoot_percent/.style={column name={$M_{p,C}$/\%},fixed,fixed zerofill,precision=2},
+columns/deskbench_overshoot_percent/.style={column name={$M_{p,D}$/\%},fixed,fixed zerofill,precision=2},
+columns/cil_iae_a_ms/.style={column name={IAE$_C$/(A ms)},fixed,fixed zerofill,precision=2},
+columns/deskbench_iae_a_ms/.style={column name={IAE$_D$/(A ms)},fixed,fixed zerofill,precision=2},
+every head row/.style={before row=\toprule,after row=\midrule},
+every last row/.style={after row=\bottomrule}]{step_comparison_metrics.csv}
+
+\end{center}
+\textbf{Stationary variation and settling.}
+Stationary current standard deviation: CIL approximately zero (below 0.01 mA); Deskbench 41--58\,mA, evaluated over the final 20\,ms of HOLD. This variation may include sensor noise, current ripple and control-induced oscillations; its contributions are not independently identified. Conventional $\pm2\%$ settling time is not reported for the physical Deskbench because stationary current variation exceeds the corresponding tolerance band. Raw and filtered settling metrics remain in the CSV for traceability.
+
+\par\textbf{Voltage utilization.}
+Maximum commanded voltage-vector utilization was 67.7\,\% in CIL and 72.4\,\% on the Deskbench, relative to the nominal linear-SVPWM limit of 27.71\,V at an externally supplied DC-link voltage of 48\,V. These are commands, not measured terminal voltages; other limiting mechanisms are not excluded.
+
+
+\section*{3. Interpretation}
+Absolute rise-time differences span 0.004--0.107\,ms. Deskbench-minus-CIL overshoot differences span -12.39--9.27 percentage points. Deskbench IAE is lowest at $K_p=5$ V/A; overshoot is lowest at $K_p=8.8$ V/A. The direction of the overshoot deviation changes with gain. Both datasets show increasing overshoot above the nominal gain. Deskbench stationary variation is greater throughout. Thus CIL captures aspects of the transient response but not the full physical waveform. The speed mismatch may influence differences; these data do not isolate parameter, inverter or sensor causes. No universal optimum or measured closed-loop bandwidth follows from this test.
+
+\section*{4. Reproducibility}
+CIL: \texttt{Log\_2026-11-04\_20-03-07.csv}.\\ Deskbench: \texttt{Log\_2026-11-05\_11-33-43.csv}.
+
+Metrics use full HOLD windows: raw 10--90\% crossings, peak overshoot, raw
+$\pm2\%$ settling and trapezoidal IAE. CSV includes original IDs, differences and
+stationary statistics. The table reads \path{step_comparison_metrics.csv};
+PGFPlots reads \path{step_comparison_data.csv}. Input roles are assigned by
+the invocation, not inferred from waveform appearance. Missing pairs are reported;
+no missing samples are extrapolated.
+
+\else
 \begin{center}
 {\Large\bfseries Experimental Evaluation of PMSM\\q-Axis Current Control}\par
 \smallskip
@@ -23,22 +117,22 @@
 \end{center}
 
 \section*{1. Objective and experimental setup}
-A PMSM in controller-in-the-loop (CIL) operation is controlled by a parallel PI
+The recorded PMSM is controlled by a parallel PI
 q-axis current controller. Only $K_p$ is varied; $K_i$ remains constant. The nominal
 design point is $K_p=8.8\,\mathrm{V/A}$ with an approximate design bandwidth of
 $800\,\mathrm{Hz}$; this is not an experimentally measured bandwidth. The numerical
 value of $K_i$ is not recorded. The experiment is executed automatically on
-UltraZohm and logged using JavaScope. CIL operation and the nominal design are
-specified by the experiment description.
+UltraZohm and logged using JavaScope. The nominal design is supplied by the experiment description; the recording
+does not identify whether the DUT is simulated or physical.
 
-The recorded reference changes from 0 to 1\,A (amplitude 1\,A). The 5 evaluated gains are 2, 5, 8.8, 12, 15\,V/A. The recorded motor speed was approximately 200\,rpm. Timestamp spacing is 0.1\,ms, corresponding to a logging rate of 10000\,Hz.
+% GENERATED_SETUP
 
 \section*{2. Experimental results}
 \begin{center}
 \begin{tikzpicture}
 \begin{axis}[
 width=0.97\linewidth,height=9.5cm,
-xmin=-2, xmax=15,
+% GENERATED_AXIS
 xlabel={Time relative to reference step / ms},
 ylabel={q-axis current / A},
 grid=major,grid style={gray!20},
@@ -47,16 +141,7 @@ tick label style={font=\small},
 legend style={font=\small,draw=none,at={(0.5,-0.17)},anchor=north},
 legend columns=3,
 ]
-\addplot[very thick,solid,uzblue] table[x=time_ms,y=iq_kp_2,col sep=comma]{step_plot_data.csv};
-\addlegendentry{$K_p=2$\,V/A}
-\addplot[very thick,solid,uzorange] table[x=time_ms,y=iq_kp_5,col sep=comma]{step_plot_data.csv};
-\addlegendentry{$K_p=5$\,V/A}
-\addplot[very thick,solid,uzgreen] table[x=time_ms,y=iq_kp_8p8,col sep=comma]{step_plot_data.csv};
-\addlegendentry{$K_p=8.8$\,V/A}
-\addplot[very thick,solid,uzred] table[x=time_ms,y=iq_kp_12,col sep=comma]{step_plot_data.csv};
-\addlegendentry{$K_p=12$\,V/A}
-\addplot[very thick,solid,uzpurple] table[x=time_ms,y=iq_kp_15,col sep=comma]{step_plot_data.csv};
-\addlegendentry{$K_p=15$\,V/A}
+% GENERATED_PLOTS
 \addplot[black!65,dashed,thin,const plot] table[x=time_ms,y=iq_ref,col sep=comma]{step_plot_data.csv};
 \addlegendentry{Reference}
 \end{axis}
@@ -92,15 +177,15 @@ metric rather than zero.
 
 \smallskip
 \textbf{Voltage utilization.}
-Maximum recorded $|u_q^\star|$ during HOLD is 18.77\,V. The maximum command-vector magnitude $\sqrt{(u_d^\star)^2+(u_q^\star)^2}$ is 18.77\,V. Using externally supplied $U_{\mathrm{dc}}=48$\,V (not recorded), the nominal linear-SVPWM bound is 27.71\,V. Maximum vector utilization is 67.7\,\%. The recorded command magnitude remains below this bound. This compares voltage commands, not measured terminal voltage.
+% GENERATED_VOLTAGE
 
 \section*{4. Discussion}
-The smallest overshoot is 7.29\,\% at $K_p=5$\,V/A. The shortest settling time is 1.10\,ms at $K_p=8.8$\,V/A. The lowest IAE is 0.29\,A\,ms at $K_p=8.8$\,V/A. The slowest rise occurs at $K_p=2$\,V/A (0.741\,ms). Every tested gain above the nominal value reduces rise time but increases overshoot. Alternating post-rise excursions beyond the $\pm2\%$ band indicate ringing; the largest count is 13 side changes at $K_p=15$\,V/A. These trade-offs apply to the tested operating point, not a universal optimum. Neither rise time nor the nominal 800 Hz design target establishes a measured closed-loop bandwidth. The waveform alone does not identify the cause of ringing.
+% GENERATED_DISCUSSION
 
 \section*{5. Reproducibility}
-\textbf{Measurement type:} CIL (experiment description).\\
+\textbf{Measurement type:} unspecified in the recording.\\
 \textbf{Original JavaScope recording:}
-\texttt{Log\_2026-11-04\_20-03-07.csv}
+% GENERATED_SOURCE
 
 Operating conditions and logging rate are summarized in Section~1; the DC-link
 source is identified with the voltage-utilization assessment. The table reads
@@ -110,4 +195,5 @@ intervals; missing coverage is omitted. The reference retains its discrete step.
 Numerical metrics use the original complete HOLD intervals. Incomplete or invalid
 measurements are excluded with analysis warnings; logged DUT violations are
 flagged in the discussion.
+\fi
 \end{document}

@@ -20,6 +20,12 @@ import matplotlib.pyplot as plt
 DEFAULT_LOG_FILE = Path(__file__).resolve().parent / "javascope/Log_2026-11-04_20-03-07.csv"
 
 PLOT_START_MS, PLOT_END_MS = -2.0, 15.0
+NOISE_WINDOW_MS = 20.0
+FILTER_WINDOW_MS = 0.5
+FILTER_TRANSIENT_GUARD_MS = 10.0
+SETTLING_CONFIRM_MS = 2.0
+COMPARISON_START_MS, COMPARISON_END_MS = -1.0, 10.0
+
 EXPECTED_MEASUREMENTS = 5  # Diagnostic only; gains and reference levels come from data.
 REQUIRED = ["time", "iq_ref_dut", "iq_dut", "experiment_active", "experiment_id",
             "iq_step_state", "iq_step_measurement_id", "iq_step_kp_active"]
@@ -197,19 +203,22 @@ def plot_responses(steps, output_dir):
 
 
 
-def export_plot_data(steps, output_dir):
+def export_plot_data(steps, output_dir, start_ms=PLOT_START_MS, end_ms=PLOT_END_MS,
+                     filename="step_plot_data.csv", column_names=None):
     """Plot-only resampling; never bridge acquisition gaps or phase boundaries."""
     periods = [np.median(np.diff(s["block"]["time"]))*1000 for s in steps]
     spacing = float(np.round(np.median(periods), 9))
     if spacing <= 0:
         raise ValueError("Cannot derive a positive plot sampling interval.")
-    grid = np.arange(np.ceil(PLOT_START_MS/spacing), np.floor(PLOT_END_MS/spacing)+1)*spacing
+    grid = np.arange(np.ceil(start_ms/spacing), np.floor(end_ms/spacing)+1)*spacing
     grid = np.round(grid, 9)  # Include an exact zero for the reference discontinuity.
     if not all(np.isclose(s["initial"], steps[0]["initial"]) and
                np.isclose(s["final"], steps[0]["final"]) for s in steps):
         raise ValueError("A shared reference column requires identical reference levels across steps.")
     stems = ["iq_kp_" + f"{s['kp']:g}".replace(".", "p").replace("-", "m").replace("+", "") for s in steps]
     names = [n + f"_id_{s['id']}" if stems.count(n)>1 else n for n, s in zip(stems, steps)]
+    if column_names is not None:
+        names = column_names
     curves = []
     for step in steps:
         block = step["block"]
@@ -230,7 +239,7 @@ def export_plot_data(steps, output_dir):
     # The reference is a level change, not a linearly interpolated ramp.
     reference = np.where(grid < 0, steps[0]["initial"], steps[0]["final"])
     reference[np.all(np.isnan(curves), axis=0)] = np.nan
-    np.savetxt(output_dir / "step_plot_data.csv", np.column_stack([grid, *curves, reference]),
+    np.savetxt(output_dir / filename, np.column_stack([grid, *curves, reference]),
                delimiter=",", header=",".join(["time_ms", *names, "iq_ref"]), comments="", fmt="%.12g")
     return names, spacing
 
@@ -358,11 +367,231 @@ def write_report(steps, metrics, names, spacing, source, output_dir, data=None, 
     (output_dir / "step_report.tex").write_text(template, encoding="utf-8")
 
 
+
+def stationary_and_settling(step, raw):
+    """Additional diagnostics only; original raw metrics are never replaced."""
+    hold = step["hold"]
+    t = (hold["time"]-step["t0"])*1000
+    y, target = hold["iq_dut"], step["final"]
+    dt = float(np.median(np.diff(t)))
+    if t[-1]-t[0] < NOISE_WINDOW_MS:
+        raise ValueError(f"ID {step['id']}: HOLD too short for stationary window.")
+    tail = y[t > t[-1]-NOISE_WINDOW_MS+dt*.01]
+    width = max(1, int(round(FILTER_WINDOW_MS/dt)))
+    if width % 2 == 0:
+        width += 1
+    block = step["block"]
+    use = block["iq_step_state"] <= 2  # Exclude falling reference/recovery.
+    bt = (block["time"][use]-step["t0"])*1000
+    by = block["iq_dut"][use]
+    half = width//2
+    filtered = np.convolve(by, np.ones(width)/width, mode="valid")
+    ft = bt[half:len(bt)-half] if half else bt
+    valid = ft >= 0
+    ft, filtered = ft[valid], filtered[valid]
+    band = .02*(target-step["initial"])
+    outside = np.flatnonzero(abs(filtered-target)>band)
+    candidate = ft[outside[-1]+1] if len(outside) and outside[-1]<len(ft)-1 else (0. if not len(outside) else np.nan)
+    # Protect early ringing against moving-average attenuation.
+    early_bad = np.flatnonzero((t <= FILTER_TRANSIENT_GUARD_MS) & (abs(y-target)>band))
+    if np.isfinite(candidate) and len(early_bad):
+        candidate = max(candidate, t[min(early_bad[-1]+1,len(t)-1)])
+    if np.isfinite(candidate) and ft[-1]-candidate < SETTLING_CONFIRM_MS:
+        candidate = np.nan
+    raw_supported = bool(np.isfinite(raw["settling_time_ms"]) and
+                         t[-1]-raw["settling_time_ms"] >= SETTLING_CONFIRM_MS)
+    raw_peak = np.max(y[t<=FILTER_TRANSIENT_GUARD_MS])-target
+    filtered_peak = np.max(filtered[ft<=FILTER_TRANSIENT_GUARD_MS])-target
+    attenuation = 100*(1-filtered_peak/raw_peak) if raw_peak>band else np.nan
+    result = dict(stationary_mean_a=float(np.mean(tail)), stationary_std_a=float(np.std(tail)),
+                  stationary_rms_error_a=float(np.sqrt(np.mean((tail-target)**2))),
+                  filtered_settling_time_ms=float(candidate), raw_settling_supported=raw_supported,
+                  filter_samples=width, effective_filter_ms=width*dt, filtered_observation_end_ms=float(ft[-1]),
+                  unguarded_peak_attenuation_percent=float(attenuation))
+    return result, ft, filtered
+
+
+def match_gains(cil, desk):
+    pairs, used = [], set()
+    for c in cil:
+        matches = [d for d in desk if np.isclose(c['kp'],d['kp'],rtol=1e-5,atol=1e-5)]
+        if len(matches)>1 or any(np.isclose(c['kp'],p[0]['kp'],rtol=1e-5,atol=1e-5) for p in pairs):
+            raise ValueError("Duplicate gains make matching ambiguous; use one measurement per gain.")
+        if not matches:
+            warn(f"No Deskbench match for CIL gain {c['kp']:g} (ID {c['id']}).")
+            continue
+        d=matches[0]
+        if not np.allclose([c['initial'],c['final']],[d['initial'],d['final']],rtol=1e-5,atol=1e-5):
+            raise ValueError(f"Incompatible reference levels at Kp={c['kp']:g}; cannot use a shared reference.")
+        used.add(d['id']);pairs.append((c,d))
+    for d in desk:
+        if d['id'] not in used:warn(f"No CIL match for Deskbench gain {d['kp']:g} (ID {d['id']}).")
+    if not pairs:raise ValueError("No matched gains.")
+    return pairs
+
+
+def compare_recordings(cdata, csteps, cmetrics, cpath, dpath, output, vdc):
+    ddata=load_log(dpath);dsteps=detect_steps(ddata)
+    dmetrics=[calculate_metrics(step) for step in dsteps]
+    pairs=match_gains(csteps,dsteps)
+    rows, flattened, columns = [], [], []
+    diagnostic_fig, dax=plt.subplots(len(pairs),1,figsize=(9,2.2*len(pairs)),squeeze=False,layout="constrained")
+    for i,(c,d) in enumerate(pairs):
+        row={'kp_v_per_a':c['kp']}
+        for label,step,metrics in [('cil',c,cmetrics),('deskbench',d,dmetrics)]:
+            raw=next(m for m in metrics if m['measurement_id']==step['id'])
+            diag,ft,fy=stationary_and_settling(step,raw)
+            row.update({label+'_'+key:value for key,value in {**raw,**diag}.items()})
+            name='iq_'+label+'_kp_'+f"{c['kp']:g}".replace('.','p')
+            columns.append(name);flattened.append(step)
+            t=(step['hold']['time']-step['t0'])*1000
+            dax[i,0].plot(t,step['hold']['iq_dut'],alpha=.55,label=label+' raw')
+            dax[i,0].plot(ft,fy,ls='--',label=label+' centered average')
+        row['rise_time_abs_difference_ms']=abs(row['deskbench_rise_time_ms']-row['cil_rise_time_ms'])
+        row['overshoot_difference_pp']=row['deskbench_overshoot_percent']-row['cil_overshoot_percent']
+        row['iae_abs_difference_a_ms']=abs(row['deskbench_iae_a_ms']-row['cil_iae_a_ms'])
+        rows.append(row)
+        dax[i,0].set(xlim=(0,10),ylabel='Current / A',title=f"Kp = {c['kp']:g} V/A")
+        dax[i,0].grid(alpha=.2)
+    dax[0,0].legend(ncol=2,fontsize=8);dax[-1,0].set_xlabel('Time from reference step / ms')
+    diagnostic_fig.savefig(output/'filter_diagnostic.png',dpi=160);plt.close(diagnostic_fig)
+    with (output/'step_comparison_metrics.csv').open('w',newline='') as stream:
+        writer=csv.DictWriter(stream,fieldnames=rows[0]);writer.writeheader();writer.writerows(rows)
+    export_plot_data(flattened,output,COMPARISON_START_MS,COMPARISON_END_MS,
+                     'step_comparison_data.csv',columns)
+    fig,ax=plt.subplots(figsize=(9,5),layout='constrained')
+    colors=['uzblue','uzorange','uzgreen','uzred','uzpurple'];plots=[]
+    for i,(c,d) in enumerate(pairs):
+        for j,(step,style) in enumerate([(c,'-'),(d,'--')]):
+            block=step['block'];t=(block['time']-step['t0'])*1000
+            keep=(t>=COMPARISON_START_MS)&(t<=COMPARISON_END_MS)&(block['iq_step_state']<=2)
+            ax.plot(t[keep],block['iq_dut'][keep],color=f'C{i%10}',ls=style,lw=1.2,
+                    label=f"Kp = {c['kp']:g} V/A" if j==0 else '_nolegend_')
+            plots.append(r'\addplot[thick,'+colors[i%5]+(','+'solid' if j==0 else ',dashed')+
+                         ('' if j==0 else ',forget plot')+r'] table[x=time_ms,y='+columns[2*i+j]+
+                         r',col sep=comma]{step_comparison_data.csv};')
+            if j==0:plots.append(rf"\addlegendentry{{$K_p={c['kp']:g}$ V/A}}")
+    ref=[pairs[0][0]['initial'],pairs[0][0]['initial'],pairs[0][0]['final'],pairs[0][0]['final']]
+    ax.plot([COMPARISON_START_MS,0,0,COMPARISON_END_MS],ref,color='0.3',lw=.8,label='Reference')
+    ax.set(xlim=(COMPARISON_START_MS,COMPARISON_END_MS),xlabel='Time from reference step / ms',
+           ylabel='q-axis current / A',title='CIL (solid) and Deskbench (dashed)')
+    ax.grid(alpha=.2);ax.legend(ncol=3,fontsize=9);ax.margins(y=.1)
+    for extension in ['pdf','png']:fig.savefig(output/f'step_comparison.{extension}',dpi=300)
+    plt.close(fig)
+    write_comparison_report(pairs,rows,plots,cdata,ddata,cpath,dpath,output,vdc)
+    for r in rows:
+        print(f"Kp={r['kp_v_per_a']:g}: rise CIL/Desk {r['cil_rise_time_ms']:.3f}/{r['deskbench_rise_time_ms']:.3f} ms; "
+              f"overshoot {r['cil_overshoot_percent']:.2f}/{r['deskbench_overshoot_percent']:.2f}%; "
+              f"filtered settling {r['cil_filtered_settling_time_ms']:.2f}/{r['deskbench_filtered_settling_time_ms']:.2f} ms; "
+              f"Desk stationary SD {r['deskbench_stationary_std_a']*1000:.1f} mA")
+    print(f"{len(pairs)} gain-matched pairs. Results: {output.resolve()}")
+
+
+def write_comparison_report(pairs,rows,plots,cdata,ddata,cpath,dpath,output,vdc):
+    def escape(s):
+        return ''.join({'_':r'\_','%':r'\%','&':r'\&','#':r'\#','$':r'\$'}.get(c,c) for c in s)
+    setup=rf"{len(pairs)} gains were matched by recorded $K_p$: "+', '.join(f"{c['kp']:g}" for c,d in pairs)+r" V/A. "
+    setup+=rf"The reference changes from {pairs[0][0]['initial']:g} to {pairs[0][0]['final']:g} A. "
+    for label,steps in [('CIL',[c for c,d in pairs]),('Deskbench',[d for c,d in pairs])]:
+        speeds=[np.mean(s['hold']['dut_speed_rpm']) for s in steps if 'dut_speed_rpm' in s['hold']]
+        if speeds:
+            value=f'{np.mean(speeds):.1f}' if np.ptp(speeds)<.1 else f'{min(speeds):.1f}--{max(speeds):.1f}'
+            setup+=rf"{label} mean HOLD speeds: {value}\,rpm. "
+        dt=np.concatenate([np.diff(s['block']['time']) for s in steps])
+        if np.allclose(dt,np.median(dt),rtol=.001,atol=1e-9):setup+=rf"{label} logging: {1/np.median(dt)/1000:g}\,kHz. "
+    setup+='Operating conditions are similar but not identical; speed differences may influence the comparison.'
+    diffs=[r['rise_time_abs_difference_ms'] for r in rows]
+    discussion=rf"Absolute rise-time differences span {min(diffs):.3f}--{max(diffs):.3f}\,ms. "
+    over=[r['overshoot_difference_pp'] for r in rows]
+    discussion+=rf"Deskbench-minus-CIL overshoot differences span {min(over):.2f}--{max(over):.2f} percentage points. "
+    best=min(rows,key=lambda r:r['deskbench_iae_a_ms'])
+    best_over=min(rows,key=lambda r:r['deskbench_overshoot_percent'])
+    discussion+=rf"Deskbench IAE is lowest at $K_p={best['kp_v_per_a']:g}$ V/A; overshoot is lowest at $K_p={best_over['kp_v_per_a']:g}$ V/A. "
+    if min(over)<0<max(over):
+        discussion+='The direction of the overshoot deviation changes with gain. '
+    high=sorted([r for r in rows if r['kp_v_per_a']>=8.79],key=lambda r:r['kp_v_per_a'])
+    if len(high)>=3 and all(np.all(np.diff([r[label+'_overshoot_percent'] for r in high])>0)
+                           for label in ['cil','deskbench']):
+        discussion+='Both datasets show increasing overshoot above the nominal gain. '
+    # Describe ringing only when repeated raw excursions exceed the stationary variation.
+    ringing=[]
+    for c,d in pairs:
+        for label,step in [('cil',c),('deskbench',d)]:
+            row=next(r for r in rows if np.isclose(r['kp_v_per_a'],c['kp']))
+            y=step['hold']['iq_dut'];t=(step['hold']['time']-step['t0'])*1000
+            error=y[t<=5]-step['final']
+            threshold=max(.02*(step['final']-step['initial']),3*row[label+'_stationary_std_a'])
+            signs=np.sign(error[abs(error)>threshold])
+            if np.count_nonzero(np.diff(signs))>=3:ringing.append(label)
+    if 'cil' in ringing and 'deskbench' in ringing:
+        discussion+='Repeated early excursions confirm ringing in both datasets. '
+    sd=[r['deskbench_stationary_std_a']*1000 for r in rows]
+    csd=[r['cil_stationary_std_a']*1000 for r in rows]
+    if min(sd)>max(csd):discussion+='Deskbench stationary variation is greater throughout. '
+    discussion+=('Thus CIL captures aspects of the transient response but not the full physical waveform. '
+                 'The speed mismatch may influence differences; these data do not isolate parameter, inverter or sensor causes. '
+                 'No universal optimum or measured closed-loop bandwidth follows from this test.')
+    if any(c['violation'] or d['violation'] for c,d in pairs):
+        discussion+=r' \textbf{Logged DUT violations affect this comparison.}'
+    cil_sd='approximately zero (below 0.01 mA)' if max(csd)<.01 else f'{min(csd):.2g}--{max(csd):.2g} mA'
+    desk_sd=f'{np.mean(sd):.0f}' if round(min(sd))==round(max(sd)) else f'{min(sd):.0f}--{max(sd):.0f}'
+    method=rf"Stationary current standard deviation: CIL {cil_sd}; Deskbench {desk_sd}\,mA, evaluated over the final {NOISE_WINDOW_MS:g}\,ms of HOLD. "
+    method+='This variation may include sensor noise, current ripple and control-induced oscillations; its contributions are not independently identified.'
+    exceeds=[r['deskbench_stationary_std_a'] > .02*r['deskbench_step_amplitude_a'] for r in rows]
+    if all(exceeds):
+        method+=r' Conventional $\pm2\%$ settling time is not reported for the physical Deskbench because stationary current variation exceeds the corresponding tolerance band.'
+    elif any(exceeds):
+        gains=', '.join(f"{r['kp_v_per_a']:g}" for r,e in zip(rows,exceeds) if e)
+        method+=rf' Stationary variation exceeds the $\pm2\%$ band at $K_p={gains}$ V/A; settling comparisons require caution.'
+    method+=' Raw and filtered settling metrics remain in the CSV for traceability.'
+    # Reuse the existing voltage assessment and condense its presentation only.
+    assessments=[report_voltage([p[i] for p in pairs],data,vdc) for i,data in enumerate([cdata,ddata])]
+    utilization=[re.search(r'Maximum (vector|q-axis) utilization is ([0-9.]+)',v) for v in assessments]
+    if all(utilization):
+        kind='voltage-vector' if all(m[1]=='vector' for m in utilization) else 'available voltage-command'
+        voltage=rf"Maximum commanded {kind} utilization was {utilization[0][2]}\,\% in CIL and {utilization[1][2]}\,\% on the Deskbench"
+        if all('not recorded' in v for v in assessments):
+            voltage+=rf", relative to the nominal linear-SVPWM limit of {vdc/np.sqrt(3):.2f}\,V at an externally supplied DC-link voltage of {vdc:g}\,V. "
+        else:
+            voltage+=r', using each recording\textquotesingle s recorded or explicitly supplied $U_{\mathrm{dc}}/\sqrt{3}$. '
+        voltage+='These are commands, not measured terminal voltages; other limiting mechanisms are not excluded.'
+        if any(float(m[2])>=99.9 for m in utilization):voltage+=' The nominal bound is reached in at least one recording.'
+        if kind!='voltage-vector':voltage+=' Where only the q-axis component is available, utilization is an indicator rather than a full-vector assessment.'
+    else:
+        voltage=' '.join(label+': '+v for label,v in zip(['CIL','Deskbench'],assessments))
+    # Shared limits are based on both raw datasets over the requested plot window.
+    values=[np.array([pairs[0][0]['initial'],pairs[0][0]['final']])]
+    panels=[[],[]];colors=['uzblue','uzorange','uzgreen','uzred','uzpurple']
+    for i,(c,d) in enumerate(pairs):
+        for j,step in enumerate((c,d)):
+            block=step['block'];t=(block['time']-step['t0'])*1000
+            use=(t>=COMPARISON_START_MS)&(t<=COMPARISON_END_MS)&(block['iq_step_state']<=2)
+            values.append(block['iq_dut'][use])
+            column='iq_'+('cil' if j==0 else 'deskbench')+'_kp_'+f"{c['kp']:g}".replace('.','p')
+            panels[j].append(r'\addplot[thick,solid,'+colors[i%5]+r'] table[x=time_ms,y='+column+r',col sep=comma]{step_comparison_data.csv};')
+            if j==1:panels[j].append(rf"\addlegendentry{{$K_p={c['kp']:g}$ V/A}}")
+    values=np.concatenate(values);lo,hi=np.nanmin(values),np.nanmax(values)
+    margin=max((hi-lo)*.08,.01);lo-=margin;hi+=margin
+    from matplotlib.ticker import MaxNLocator
+    ticks=MaxNLocator(nbins=5).tick_values(lo,hi)
+    yticks=','.join(f'{v:g}' for v in ticks if lo<=v<=hi)
+    template=Path(__file__).with_name('step_report.tex').read_text()
+    replacements={'% COMPARISON_MODE':r'\comparisontrue','% COMP_SETUP':setup,'% COMP_CIL_PLOTS':'\n'.join(panels[0]),'% COMP_DESK_PLOTS':'\n'.join(panels[1]),
+                  '% COMP_AXIS':f'xmin={COMPARISON_START_MS:g},xmax={COMPARISON_END_MS:g},ymin={lo:.8g},ymax={hi:.8g},ytick={{{yticks}}},',
+                  '% COMP_DISCUSSION':discussion,'% COMP_METHOD':method,'% COMP_VOLTAGE':voltage,
+                  '% COMP_SOURCES':r'CIL: \texttt{'+escape(cpath.name)+r'}.\\ Deskbench: \texttt{'+escape(dpath.name)+'}.'}
+    for k,v in replacements.items():template=template.replace(k,v)
+    template=template.replace('pdftitle={Experimental Evaluation of PMSM q-Axis Current Control}',
+                              'pdftitle={Experimental Validation of PMSM q-Axis Current Control}')
+    (output/'step_report.tex').write_text(template)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("log", type=Path, nargs="?", default=DEFAULT_LOG_FILE,
                         help="JavaScope CSV; overrides DEFAULT_LOG_FILE near the top of this script")
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--deskbench", type=Path, help="Compare this physical Deskbench log with the positional CIL log")
     parser.add_argument("--vdc", type=float, help="Externally supplied DC-link voltage in V; recorded voltage takes precedence")
     args = parser.parse_args()
     try:
@@ -373,6 +602,9 @@ def main():
         metrics = [calculate_metrics(s) for s in steps]
         output = args.output or args.log.parent / (args.log.stem + "_results")
         output.mkdir(parents=True, exist_ok=True)
+        if args.deskbench:
+            compare_recordings(data, steps, metrics, args.log, args.deskbench, output, args.vdc)
+            return
         with (output / "step_metrics.csv").open("w", newline="") as stream:
             writer = csv.DictWriter(stream, fieldnames=list(metrics[0]))
             writer.writeheader()

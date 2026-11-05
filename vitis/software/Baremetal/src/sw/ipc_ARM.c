@@ -34,6 +34,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
         (data->av.dut_backend == DUT_BACKEND_CIL ||
          (data->av.deskbench_inputs_ready && data->av.prime_mover_violation == uz_pmsm_control_no_violation));
     experiment_manager_button3(msgId == My_Button_3, experiment_allowed);
+    experiment_manager_button4(msgId == My_Button_4, experiment_allowed);
 
 	// HANDLE RECEIVED MESSAGE
 	if (msgId != 0)

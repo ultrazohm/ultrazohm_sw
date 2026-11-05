@@ -69,6 +69,12 @@ enum JS_OberservableData {
 	JSO_iq_step_kp_active,
 	JSO_iq_step_reference,
 	JSO_experiment_sample,
+	JSO_iq_sweep_state,
+	JSO_iq_sweep_frequency_id,
+	JSO_iq_sweep_frequency_hz,
+	JSO_iq_sweep_reference,
+	JSO_iq_sweep_phase_rad,
+	JSO_iq_sweep_measurement_active,
 	JSO_ENDMARKER
 };
 
@@ -263,7 +269,7 @@ enum gui_button_mapping {
 	DUT = CIL,
 	DUT = REAL,
 	iq step response,
-	MyButton4,
+	iq frequency sweep,
 	MyButton5,
 	MyButton6,
 	MyButton7,

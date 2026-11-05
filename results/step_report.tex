@@ -32,13 +32,13 @@ Deskbench. Only $K_p$ varies; $K_i$ is constant within each sequence, but equali
 between datasets is not verified. The nominal design point is $K_p=8.8$ V/A
 at approximately 800 Hz, not a measured bandwidth. UltraZohm executes the
 automated sequences; JavaScope records the responses.
-5 gains were matched by recorded $K_p$: 2, 5, 8.8, 12, 15 V/A. The reference changes from 0 to 1 A. CIL mean HOLD speeds: 200.0\,rpm. CIL logging: 10\,kHz. Deskbench mean HOLD speeds: 214.2--215.5\,rpm. Deskbench logging: 10\,kHz. Operating conditions are similar but not identical; speed differences may influence the comparison.
+5 gains were matched by recorded $K_p$: 2, 5, 8.8, 12, 15 V/A. The reference changes from 0 to 1 A. CIL mean HOLD speeds: 200.0\,rpm. CIL logging: 10\,kHz. Deskbench mean HOLD speeds: 213.6--215.5\,rpm. Deskbench logging: 10\,kHz. Operating conditions are similar but not identical; speed differences may influence the comparison.
 
 \begin{center}
 \begin{tikzpicture}
 \begin{groupplot}[group style={group size=1 by 2,vertical sep=1.1cm},
 width=.97\linewidth,height=6.6cm,
-xmin=-1,xmax=10,ymin=-0.24788265,ymax=1.9548831,ytick={0,0.5,1,1.5},
+xmin=-1,xmax=10,ymin=-0.25825733,ymax=1.9556516,ytick={0,0.5,1,1.5},
 ylabel={q-axis current / A},grid=major,grid style={gray!20},
 unbounded coords=jump,enlarge y limits=false,
 legend style={font=\small,draw=none,at={(.5,-.33)},anchor=north},legend columns=3,
@@ -90,17 +90,17 @@ every last row/.style={after row=\bottomrule}]{step_comparison_metrics.csv}
 
 \end{center}
 \textbf{Stationary variation and settling.}
-Stationary current standard deviation: CIL approximately zero (below 0.01 mA); Deskbench 41--58\,mA, evaluated over the final 20\,ms of HOLD. This variation may include sensor noise, current ripple and control-induced oscillations; its contributions are not independently identified. Conventional $\pm2\%$ settling time is not reported for the physical Deskbench because stationary current variation exceeds the corresponding tolerance band. Raw and filtered settling metrics remain in the CSV for traceability.
+Stationary current standard deviation: CIL approximately zero (below 0.01 mA); Deskbench 50--71\,mA, evaluated over the final 20\,ms of HOLD. This variation may include sensor noise, current ripple and control-induced oscillations; its contributions are not independently identified. Conventional $\pm2\%$ settling time is not reported for the physical Deskbench because stationary current variation exceeds the corresponding tolerance band. Raw and filtered settling metrics remain in the CSV for traceability.
 
 \par\textbf{Voltage utilization.}
-Maximum commanded voltage-vector utilization was 67.7\,\% in CIL and 72.4\,\% on the Deskbench, relative to the nominal linear-SVPWM limit of 27.71\,V at an externally supplied DC-link voltage of 48\,V. These are commands, not measured terminal voltages; other limiting mechanisms are not excluded.
+Maximum commanded voltage-vector utilization was 67.7\,\% in CIL and 69.4\,\% on the Deskbench, relative to the nominal linear-SVPWM limit of 27.71\,V at an externally supplied DC-link voltage of 48\,V. These are commands, not measured terminal voltages; other limiting mechanisms are not excluded.
 
 
 \section*{3. Interpretation}
-Absolute rise-time differences span 0.004--0.107\,ms. Deskbench-minus-CIL overshoot differences span -12.39--9.27 percentage points. Deskbench IAE is lowest at $K_p=5$ V/A; overshoot is lowest at $K_p=8.8$ V/A. The direction of the overshoot deviation changes with gain. Both datasets show increasing overshoot above the nominal gain. Deskbench stationary variation is greater throughout. Thus CIL captures aspects of the transient response but not the full physical waveform. The speed mismatch may influence differences; these data do not isolate parameter, inverter or sensor causes. No universal optimum or measured closed-loop bandwidth follows from this test.
+Absolute rise-time differences span 0.006--0.171\,ms. Deskbench-minus-CIL overshoot differences span -21.30--8.82 percentage points. Deskbench IAE is lowest at $K_p=5$ V/A; overshoot is lowest at $K_p=5$ V/A. The direction of the overshoot deviation changes with gain. Both datasets show increasing overshoot above the nominal gain. Deskbench stationary variation is greater throughout. Thus CIL captures aspects of the transient response but not the full physical waveform. The speed mismatch may influence differences; these data do not isolate parameter, inverter or sensor causes. No universal optimum or measured closed-loop bandwidth follows from this test.
 
 \section*{4. Reproducibility}
-CIL: \texttt{Log\_2026-11-04\_20-03-07.csv}.\\ Deskbench: \texttt{Log\_2026-11-05\_11-33-43.csv}.
+CIL: \texttt{cil.csv}.\\ Deskbench: \texttt{deskbench.csv}.
 
 Metrics use full HOLD windows: raw 10--90\% crossings, peak overshoot, raw
 $\pm2\%$ settling and trapezoidal IAE. CSV includes original IDs, differences and

@@ -122,6 +122,13 @@ int JavaScope_initialize(DS_Data* data)
     js_ch_observable[JSO_iq_step_kp_active] = &experiment->iq_step_kp_active;
     js_ch_observable[JSO_iq_step_reference] = &experiment->iq_step_reference;
     js_ch_observable[JSO_experiment_sample] = &experiment->experiment_sample;
+    js_ch_observable[JSO_iq_sweep_state] = &experiment->iq_sweep_state;
+    js_ch_observable[JSO_iq_sweep_frequency_id] = &experiment->iq_sweep_frequency_id;
+    js_ch_observable[JSO_iq_sweep_frequency_hz] = &experiment->iq_sweep_frequency_hz;
+    js_ch_observable[JSO_iq_sweep_reference] = &experiment->iq_sweep_reference;
+    js_ch_observable[JSO_iq_sweep_phase_rad] = &experiment->iq_sweep_phase_rad;
+    js_ch_observable[JSO_iq_sweep_measurement_active] = &experiment->iq_sweep_measurement_active;
+
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -184,8 +191,11 @@ void JavaScope_update(DS_Data* data){
 	data->av.dut_backend_code = (float)data->av.dut_backend;
 	data->av.deskbench_inputs_ready_code = data->av.deskbench_inputs_ready ? 1.0f : 0.0f;
 
-    js_status_BareToRTOS &= ~(1U << 6);
-    if (experiment_manager_is_running()) js_status_BareToRTOS |= (1U << 6);
+    js_status_BareToRTOS &= ~((1U << 6) | (1U << 7));
+    if (experiment_manager_is_running()) {
+        unsigned bit = experiment_manager_get_scope()->experiment_id == (float)EXPERIMENT_IQ_SWEEP ? 7U : 6U;
+        js_status_BareToRTOS |= (1U << bit);
+    }
 
     // ACT indicators represent the backend actually applied by deskbench_step.
     js_status_BareToRTOS &= ~((1U << 4) | (1U << 5));

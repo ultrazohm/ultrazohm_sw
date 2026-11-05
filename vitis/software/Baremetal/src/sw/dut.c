@@ -24,7 +24,7 @@ uz_pmsm_control_t* initialize_dut(float sample_time_s)
         .setpoint_limits = {
             .speed_controller_torque_in_Nm = {.lower_bound = -2.5f, .upper_bound = 2.5f},
             .i_d_in_A = {.lower_bound = -12.0f, .upper_bound = 12.0f},
-            .i_q_in_A = {.lower_bound = -12.0f, .upper_bound = 12.0f},
+            .i_q_in_A = {.lower_bound = DUT_IQ_REFERENCE_MIN_A, .upper_bound = DUT_IQ_REFERENCE_MAX_A},
             .speed_in_rpm = {.lower_bound = -1100.0f, .upper_bound = 1100.0f},
             .disturbance_input_in_Nm = {.lower_bound = -2.5f, .upper_bound = 2.5f}
         },

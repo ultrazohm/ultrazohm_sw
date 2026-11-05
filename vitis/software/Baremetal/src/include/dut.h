@@ -1,6 +1,9 @@
 #pragma once
 #include "../uz/uz_pmsm_control/uz_pmsm_control.h"
 
+#define DUT_IQ_REFERENCE_MIN_A (-12.0f)
+#define DUT_IQ_REFERENCE_MAX_A (12.0f)
+
 /* Independent of the measurement source and output hardware. */
 uz_pmsm_control_t* initialize_dut(float sample_time_s);
 

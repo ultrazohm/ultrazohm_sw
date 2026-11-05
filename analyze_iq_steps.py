@@ -14,10 +14,13 @@ import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+# For comparing CIL and Deskbench measurement use:
+# python analyze_iq_steps.py javascope/cil.csv --deskbench javascope/deskbench.csv --output results --vdc 48
+
 
 # Select the log here when running without a command-line filename.
 # Paths are relative to this script, independent of the working directory.
-DEFAULT_LOG_FILE = Path(__file__).resolve().parent / "javascope/Log_2026-11-04_20-03-07.csv"
+DEFAULT_LOG_FILE = Path(__file__).resolve().parent / "javascope/Log_2026-11-05_17-22-32.csv" #Log_2026-11-04_20-03-07.csv" -> CIL
 
 PLOT_START_MS, PLOT_END_MS = -2.0, 15.0
 NOISE_WINDOW_MS = 20.0

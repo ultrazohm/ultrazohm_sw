@@ -25,6 +25,7 @@
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
+extern DS_Data Global_Data;
 
 extern conv_status_signals_t conv_status_signals;
 extern uint32_t js_status_BareToRTOS;
@@ -341,9 +342,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			{
 				uz_JL_SDC_OCP_reset_fault(data->objects.sdc_ocp_OCP);   // FPGA-OCP-Latch (OCP-Pfad) loeschen
 			}
+			struct_ZM_In.Strom_gesperrt_rst = true;
 			uz_JL_flt_dis_set_FLT_PS(data->objects.flt_dis, false);  // Abschaltanforderung zuruecknehmen
-			uz_JL_flt_dis_reset_fault(data->objects.flt_dis);        // flt_dis-Latch loeschen (FLT_RST-Puls)
+			uz_JL_flt_dis_reset_fault(data->objects.flt_dis);        // FLT_1..4/FLT_PS-Latch loeschen (FLT_RST-Puls)
+			uz_JL_flt_dis_watchdog_reset(data->objects.flt_dis);     // Watchdog-Latch loeschen (Watchdog_Rst-Puls); FLT_RST klaert ihn NICHT
 			conv_status_signals.ocp_fault = 0U;
+			uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio, BOARD_RST_BIT, true);
 			ultrazohm_state_machine_set_stop(true);                  // error_state -> idle_state
 			break;
 

@@ -121,8 +121,11 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_0_4/zusys_ila_0_4.xci">
-          <Proxy FileSetName="zusys_ila_0_4"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_delay_trigger_0_0_1/zusys_delay_trigger_0_0.xci">
+          <Proxy FileSetName="zusys_delay_trigger_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_3_0/zusys_ila_3_0.xci">
+          <Proxy FileSetName="zusys_ila_3_0"/>
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_resolver_pos_mt_0_0/zusys_uz_resolver_pos_mt_0_0.xci">
           <Proxy FileSetName="zusys_uz_resolver_pos_mt_0_0"/>
@@ -130,32 +133,29 @@
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_JL_SigmaDelta_Int_2_0/zusys_uz_JL_SigmaDelta_Int_2_0.xci">
           <Proxy FileSetName="zusys_uz_JL_SigmaDelta_Int_2_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_JL_flt_ip_0_0/zusys_uz_JL_flt_ip_0_0.xci">
-          <Proxy FileSetName="zusys_uz_JL_flt_ip_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_JL_SigmaDelta_Int_0_0/zusys_uz_JL_SigmaDelta_Int_0_0.xci">
-          <Proxy FileSetName="zusys_uz_JL_SigmaDelta_Int_0_0"/>
-        </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_JL_SDC_OCP_P_0/zusys_uz_JL_SDC_OCP_P_0.xci">
           <Proxy FileSetName="zusys_uz_JL_SDC_OCP_P_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_JL_SDC_OCP_0_0/zusys_uz_JL_SDC_OCP_0_0.xci">
-          <Proxy FileSetName="zusys_uz_JL_SDC_OCP_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_0_5/zusys_ila_0_5.xci">
-          <Proxy FileSetName="zusys_ila_0_5"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_JL_SigmaDelta_Int_1_0/zusys_uz_JL_SigmaDelta_Int_1_0.xci">
-          <Proxy FileSetName="zusys_uz_JL_SigmaDelta_Int_1_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_JL_flt_ip_0_0/zusys_uz_JL_flt_ip_0_0.xci">
+          <Proxy FileSetName="zusys_uz_JL_flt_ip_0_0"/>
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_1_0/zusys_ila_1_0.xci">
           <Proxy FileSetName="zusys_ila_1_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_3_0/zusys_ila_3_0.xci">
-          <Proxy FileSetName="zusys_ila_3_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_JL_SigmaDelta_Int_1_0/zusys_uz_JL_SigmaDelta_Int_1_0.xci">
+          <Proxy FileSetName="zusys_uz_JL_SigmaDelta_Int_1_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_delay_trigger_0_0_1/zusys_delay_trigger_0_0.xci">
-          <Proxy FileSetName="zusys_delay_trigger_0_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_JL_SDC_OCP_0_0/zusys_uz_JL_SDC_OCP_0_0.xci">
+          <Proxy FileSetName="zusys_uz_JL_SDC_OCP_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_JL_SigmaDelta_Int_0_0/zusys_uz_JL_SigmaDelta_Int_0_0.xci">
+          <Proxy FileSetName="zusys_uz_JL_SigmaDelta_Int_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_0_4/zusys_ila_0_4.xci">
+          <Proxy FileSetName="zusys_ila_0_4"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_0_5/zusys_ila_0_5.xci">
+          <Proxy FileSetName="zusys_ila_0_5"/>
         </CompFileExtendedInfo>
       </File>
       <File Path="$PPRDIR/zusys/hdl/zusys_wrapper.vhd">

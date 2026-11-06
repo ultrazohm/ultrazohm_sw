@@ -26,7 +26,7 @@ struct uz_resolver_pl_interface_config_t resolver_pl_config = {
                .machine_polepairs = 4,
                .position_intmax = 65535,
                .resolver_polepairs = 1,
-               .theta_m_offset_rad = -0.3841f //-0.3959959
+               .theta_m_offset_rad = -0.3841f //--0.3841f fuer standalone, 0.3982658 CB
 };
 
 struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs = {

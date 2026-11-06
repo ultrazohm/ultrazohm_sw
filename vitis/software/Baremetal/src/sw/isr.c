@@ -136,8 +136,8 @@ void ISR_Control(void *data)
     struct_ZM_In.Inv_Ready = conv_status_signals.board_ready;
 
     /* Read IGBT desaturation fault signal */
-    conv_status_signals.igbt_desat = ~uz_axi_gpio_read_pin_zero_based(Global_Data.objects.input_gpio, IGBT_Desat_BIT);
-    struct_ZM_In.IGBT_desat = conv_status_signals.igbt_desat;
+//    conv_status_signals.igbt_desat = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.input_gpio, IGBT_Desat_BIT);
+//    struct_ZM_In.IGBT_desat = conv_status_signals.igbt_desat;
 
 	Global_Data.av.resolver_pl_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface);
 	theta_el_unwrapped = Global_Data.av.resolver_pl_outputs.position_el_2pi - Global_Data.av.theta_el_offset;
@@ -166,6 +166,7 @@ void ISR_Control(void *data)
     		case idle_state:
                 if (Global_Data.objects.platform_state_old != idle_state)
                 {
+
                     Global_Data.objects.platform_state_old = idle_state;
                     Global_Data.rasv.ctrl_state = ctrl_state_none;
                     struct_ZM_In.Soll_Drehzahl_Umin = 0;
@@ -189,11 +190,27 @@ void ISR_Control(void *data)
     		case running_state:
                 if (Global_Data.objects.platform_state_old != running_state)
                 {
+                	 if (Global_Data.objects.sdc_ocp_OCP != NULL)
+					{
+						// OCP im running_state entschaerfen (board_ready kommt gerade erst hoch -> kein
+						// Fehlauslosen). Der Latch wird NICHT hier quittiert: FLT_Reset wirkt nur bei
+						// EN_OCP=true & board_ready=true. Das Loeschen erfolgt im control_state-Eintritt.
+						uz_JL_SDC_OCP_set_en_ocp(Global_Data.objects.sdc_ocp_OCP, true);
+						uz_JL_SDC_OCP_reset_fault(Global_Data.objects.sdc_ocp_OCP);
+						uz_JL_SDC_OCP_set_en_ocp(Global_Data.objects.sdc_ocp_OCP, false);
+
+					}
                     Global_Data.objects.platform_state_old = running_state;
+                    // Watchdog-Latch klaeren und scharfschalten, sobald die ISR laeuft und zyklisch
+                    // triggert. Das vermeidet einen beim Hochlauf (vor dem ersten Trigger) entstandenen
+                    // Watchdog-Fault, der sonst nur per Reboot loesbar waere.
+                    uz_JL_flt_dis_watchdog_reset(Global_Data.objects.flt_dis);
+
                     uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
                     uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
                     Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 				    Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+                    struct_ZM_In.Strom_gesperrt_rst = false;
 				    Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
                     struct_ZM_In.Soll_Drehzahl_Umin = 0;
     			    struct_ZM_In.Soll_id_A = 0;
@@ -205,7 +222,7 @@ void ISR_Control(void *data)
                     uint64_t t1 = uz_AxiTimer64Bit_ReadValue64Bit();
                     Global_Data.av.debug_timestamp_s = (float)(t1 - t0) / (UZ_AXI_TIMER_CLOCK_FREQ * 1e-6f);
 					sinc3_read_measurements();
-					// sinc3_check_ocp_fault();	// FPGA-OCP: loest bei Fehler error_state aus (No-op solange OCP-Instanz NULL)
+					 sinc3_check_ocp_fault();	// FPGA-OCP: loest bei Fehler error_state aus (No-op solange OCP-Instanz NULL)
 
 					if((fabsf(Global_Data.av.Sinc3_Filter_OCP.data_PH1_A) >= SDW_OCP_I_MAX_A) || (fabsf(Global_Data.av.Sinc3_Filter_OCP.data_PH2_A) >= SDW_OCP_I_MAX_A) || (fabsf(Global_Data.av.Sinc3_Filter_OCP.data_PH3_A) >= SDW_OCP_I_MAX_A))
 					{
@@ -219,7 +236,21 @@ void ISR_Control(void *data)
                 }
     			break;
     		case control_state:
-				Global_Data.objects.platform_state_old = control_state;
+    			if (Global_Data.objects.platform_state_old != control_state)
+    			                {
+						Global_Data.objects.platform_state_old = control_state;
+						// OCP erst scharfschalten, DANN quittieren: der FLT_Reset wirkt in der PL nur,
+				                    // wenn EN_OCP=true UND board_ready=true sind (SR-FF ist mit enb_gated getaktet).
+				                    // Reihenfolge reset_fault->set_en_ocp waere wirkungslos. board_ready steht hier,
+				                    // der Sinc-Filter ist eingeschwungen -> kein Einschwing-Transient.
+				                    if (Global_Data.objects.sdc_ocp_OCP != NULL)
+				                    {
+				                        uz_JL_SDC_OCP_set_en_ocp(Global_Data.objects.sdc_ocp_OCP, true);
+				                        uz_JL_SDC_OCP_reset_fault(Global_Data.objects.sdc_ocp_OCP);
+				                    }
+						}
+						  else
+						  {
 
 					sinc3_read_measurements();
 					sinc3_check_ocp_fault();	// FPGA-OCP: loest bei Fehler error_state aus (No-op solange OCP-Instanz NULL)
@@ -250,7 +281,6 @@ void ISR_Control(void *data)
                         regelung.input.Bus_PMSM_Out_a.pmsm_Iuvw_I_A[1] = Global_Data.av.Sinc3_Filter_I.data_PH2_A;
                         regelung.input.Bus_PMSM_Out_a.pmsm_Iuvw_I_A[2] = Global_Data.av.Sinc3_Filter_I.data_PH3_A;
                         regelung.input.trigger_actI_I_calc = SDW_ACT_I_SEPARATE_CALC_ENABLED && Sinc3_Filter_I_data_ready;
-                        
                         uz_codegen_step(&regelung);
                         if(regelung.output.Bus_Ctrl_Out_j.act_pwm == true && conv_status_signals.board_ready == true)
                             {
@@ -339,7 +369,8 @@ void ISR_Control(void *data)
 							Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
 							Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
                             break;
-                    }    
+                    }
+						  }
 
 
     		   break;

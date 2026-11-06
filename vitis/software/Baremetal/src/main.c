@@ -72,7 +72,7 @@ struct uz_JL_flt_dis_config_t flt_dis_config = {
             .use_flt_dis = true,
             .isr_frequency_Hz = UZ_PWM_FREQUENCY,            // ISR = PWM frequency (UZ_PWM_FREQUENCY) with ADC-to-ISR ratio 1
             .watchdog_timeout_ISR_periods = 10U,   // N: ~10 ISR periods (= 100000 cnts, fits 20 bit) until fault
-            .disable_watchdog = true,             // watchdog armed
+            .disable_watchdog = false,             // watchdog armed
 };
 
 uz_codegen regelung;

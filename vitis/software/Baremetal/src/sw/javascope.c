@@ -50,6 +50,8 @@ static float dpt_state_f;
 static float mult_pos_valid_f;
 static float ocp_fault_f;
 static float flt_fault_f;
+static float i_max;
+static float i_min;
 
 uint32_t pollErrorCnt = 0U;
 
@@ -99,6 +101,13 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_SD_PH1]				= &Global_Data.av.Sinc3_Filter_P.data_PH1_A;
 	js_ch_observable[JSO_SD_PH2]				= &Global_Data.av.Sinc3_Filter_P.data_PH2_A;
 	js_ch_observable[JSO_SD_PH3]				= &Global_Data.av.Sinc3_Filter_P.data_PH3_A;
+	 js_ch_observable[JSO_SD_OCP_PH1]			= &Global_Data.av.Sinc3_Filter_OCP.data_PH1_A;
+	 js_ch_observable[JSO_SD_OCP_PH2]			= &Global_Data.av.Sinc3_Filter_OCP.data_PH2_A;
+	 js_ch_observable[JSO_SD_OCP_PH3]			= &Global_Data.av.Sinc3_Filter_OCP.data_PH3_A;
+	 js_ch_observable[JSO_FLOAT_flt_fault]			    = &flt_fault_f;
+	 js_ch_observable[JSO_FLOAT_ocp_fault]			    = &ocp_fault_f;
+	 js_ch_observable[JSO_I_MAX]				= &i_max;
+	 js_ch_observable[JSO_I_MIN]				= &i_min;
 	// js_ch_observable[JSO_SD2_PH1]				= &Global_Data.av.Sinc3_Filter_I.data_PH1_A;
 	// js_ch_observable[JSO_SD2_PH2]				= &Global_Data.av.Sinc3_Filter_I.data_PH2_A;
 	// js_ch_observable[JSO_SD2_PH3]				= &Global_Data.av.Sinc3_Filter_I.data_PH3_A;
@@ -130,9 +139,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_CB_Soll_Geschw]		= &regelung.output.Bus_Ctrl_Out_j.Soll_Drehzahl_CB_Grads;
 	js_ch_observable[JSO_CB_Soll_Winkel]		= &regelung.output.Bus_Ctrl_Out_j.Soll_Winkel_CB_Grad;
 	js_ch_observable[JSO_CB_omega_grads]		= &Global_Data.av.CB_omega_grads;
-	 js_ch_observable[JSO_SD_OCP_PH1]			= &Global_Data.av.Sinc3_Filter_OCP.data_PH1_A;
-	 js_ch_observable[JSO_SD_OCP_PH2]			= &Global_Data.av.Sinc3_Filter_OCP.data_PH2_A;
-	 js_ch_observable[JSO_SD_OCP_PH3]			= &Global_Data.av.Sinc3_Filter_OCP.data_PH3_A;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -187,6 +193,8 @@ void JavaScope_update(DS_Data* data){
 	conv_igbt_desat_f		= (float)conv_status_signals.igbt_desat;
 	mult_pos_valid_f		= (float)Global_Data.av.mult_pos_valid;
 	ocp_fault_f				= (float)conv_status_signals.ocp_fault;
+	i_max					= SDW_OCP_I_MAX_A;
+	i_min					= SDW_OCP_I_MIN_A;
 	flt_fault_f				= (data->objects.flt_dis != NULL)
 								  ? (float)uz_JL_flt_dis_get_fault(data->objects.flt_dis)
 								  : 0.0f;

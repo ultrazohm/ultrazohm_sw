@@ -192,7 +192,9 @@ ocp_hw[SDW_FILTER_ENDMARKER] = {
 		.i_min_A = SDW_OCP_I_MIN_A,
 		.en_udc = false,
 		.en_ph4 = false,
-		.en_ocp = false,
+		.en_ocp = false,   // NICHT im Init scharfschalten: erst im running_state-Eintritt (isr.c),
+		                   // wenn board_ready steht und der Sinc-Filter eingeschwungen ist. Sonst
+		                   // latcht ein Einschwing-/Startup-Transient den FLT faelschlich.
 	},
 };
 

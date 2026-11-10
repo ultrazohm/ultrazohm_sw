@@ -12,7 +12,7 @@ the graph directly -- so the canvas, the console and ``.uzscript`` stay in lock-
 
 from __future__ import annotations
 
-from imgui_bundle import imgui
+from imgui_bundle import em_size, imgui
 from imgui_bundle import imgui_node_editor as ed
 
 from ..nodes import REGISTRY, is_stale, transform_kinds
@@ -168,7 +168,7 @@ class NodesPanel(SessionPanel):
         if self._rename_focus:
             imgui.set_keyboard_focus_here()
             self._rename_focus = False
-        imgui.set_next_item_width(150)
+        imgui.set_next_item_width(em_size(9.375))
         changed, self._rename_buf = imgui.input_text(
             "##rename", self._rename_buf, imgui.InputTextFlags_.enter_returns_true
         )
@@ -193,7 +193,7 @@ class NodesPanel(SessionPanel):
             self._rename_focus = True
 
     def _params(self, state: AppState, node) -> None:
-        imgui.push_item_width(120)
+        imgui.push_item_width(em_size(7.5))
         if node.kind == "source":
             self._source_window(state, node)
         elif node.kind in REGISTRY:

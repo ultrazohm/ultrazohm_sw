@@ -1,6 +1,6 @@
 """Python document editing and nonblocking file dialogs, independent of acquisition state."""
 from pathlib import Path
-from imgui_bundle import imgui, imgui_color_text_edit
+from imgui_bundle import em_size, imgui, imgui_color_text_edit
 from ..scripting import TEMPLATES
 try:
     from imgui_bundle import portable_file_dialogs as pfd
@@ -66,7 +66,7 @@ class ScriptEditor:
             imgui.end_combo()
         editor = self.widget()
         editor.set_read_only_enabled(self.busy() or self.dialog is not None)
-        editor.render('##python-code', imgui.ImVec2(max(100., imgui.get_content_region_avail().x), 260.))
+        editor.render('##python-code', imgui.ImVec2(max(em_size(6.25), imgui.get_content_region_avail().x), em_size(16.25)))
         imgui.begin_disabled(not can_run)
         if imgui.button('Run'):
             self.request_save(run_after=True)

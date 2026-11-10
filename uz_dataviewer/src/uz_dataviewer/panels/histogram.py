@@ -8,7 +8,7 @@ control is routed through commands (``hist_*``).
 from __future__ import annotations
 
 import numpy as np
-from imgui_bundle import imgui, implot
+from imgui_bundle import em_size, imgui, implot
 
 from ..analysis import AnalysisInput, HistogramRequest
 from ..state import AppState
@@ -34,7 +34,7 @@ class HistogramPanel(AnalysisPanel):
 
     def _extra_controls(self, state: AppState, cfg) -> None:
         imgui.same_line()
-        imgui.set_next_item_width(120)
+        imgui.set_next_item_width(em_size(7.5))
         changed, n = imgui.input_int("bins", cfg.bins, 1, 10)
         if changed:
             self._emit(state, "hist_bins", max(1, n))

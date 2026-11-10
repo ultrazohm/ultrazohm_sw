@@ -7,7 +7,7 @@ import time
 from pathlib import Path
 from queue import Empty
 
-from imgui_bundle import imgui, implot
+from imgui_bundle import em_size, imgui, implot
 
 from ..live import LiveController, fuzzy_names, new_output_directory, action_block_reason
 from ..model import Signal
@@ -502,7 +502,7 @@ class LiveWorkspace:
             names = [name for name in names if name in matches]
         flags = (imgui.TableFlags_.row_bg | imgui.TableFlags_.borders_inner_v |
                  imgui.TableFlags_.resizable | imgui.TableFlags_.scroll_y)
-        height = max(120., min(420., imgui.get_content_region_avail().y - 80.))
+        height = max(em_size(7.5), min(em_size(26.25), imgui.get_content_region_avail().y - em_size(5)))
         if imgui.begin_table('##variables', 2, flags, imgui.ImVec2(0., height)):
             imgui.table_setup_column('Variable')
             imgui.table_setup_column('Value (Enter to send)')
@@ -633,7 +633,7 @@ class LiveWorkspace:
         imgui.end_disabled()
         imgui.same_line()
         maximum = self.maximum_depth()
-        imgui.set_next_item_width(180.)
+        imgui.set_next_item_width(em_size(11.25))
         changed, seconds = imgui.slider_float('Time depth (s)', min(self.window_seconds, maximum),
                                        .001, maximum, '%.3f s')
         self.window_seconds = max(.001, min(maximum, seconds))

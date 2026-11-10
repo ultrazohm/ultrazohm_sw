@@ -22,7 +22,7 @@ import math
 import numpy as np
 
 from ..sources import shift_time
-from imgui_bundle import imgui, implot
+from imgui_bundle import em_size, imgui, imgui_ctx, implot
 
 from .. import webbridge
 from ..session import ensure_extension
@@ -153,103 +153,100 @@ class PlotsPanel(SessionPanel):
             idx = GRID_PRESETS.index(current)
         except ValueError:
             idx = 0
-        imgui.text("Layout")
-        imgui.same_line()
-        imgui.set_next_item_width(80)
-        changed, idx = imgui.combo("##layout", idx, preset_labels)
-        if changed:
-            r, c = GRID_PRESETS[idx]
-            self._emit(state, "set_grid", r, c)
+        with imgui_ctx.begin_horizontal("layout_controls"):
+            imgui.text("Layout")
+            imgui.set_next_item_width(em_size(5))
+            changed, idx = imgui.combo("##layout", idx, preset_labels)
+            if changed:
+                r, c = GRID_PRESETS[idx]
+                self._emit(state, "set_grid", r, c)
 
-        imgui.same_line()
-        changed, link = imgui.checkbox("Link X axes", state.link_x)
-        if changed:
-            self._emit(state, "link_x", link)
+            changed, link = imgui.checkbox("Link X axes", state.link_x)
+            if changed:
+                self._emit(state, "link_x", link)
 
-        imgui.same_line()
-        imgui.text("Max points")
-        imgui.same_line()
-        imgui.set_next_item_width(90)
-        changed, value = imgui.input_int("##maxpoints", state.max_points, 100, 1000)
-        if changed:
-            self._emit(state, "set_max_points", max(100, value))
+        if imgui.get_content_region_avail().x - imgui.get_item_rect_size().x > em_size(25):
+            imgui.same_line()
+        with imgui_ctx.begin_horizontal("sampling_controls"):
+            imgui.text("Max points")
+            imgui.set_next_item_width(em_size(6))
+            changed, value = imgui.input_int("##maxpoints", state.max_points, 100, 1000)
+            if changed:
+                self._emit(state, "set_max_points", max(100, value))
 
-        imgui.same_line()
-        imgui.set_next_item_width(80)
-        if imgui.begin_combo("##maxpoints_presets", "presets"):
-            for preset in (2000, 5000, 10000, 20000):
-                if imgui.selectable(f"{preset:,}", state.max_points == preset)[0]:
-                    self._emit(state, "set_max_points", preset)
-            imgui.end_combo()
+            imgui.set_next_item_width(em_size(5))
+            if imgui.begin_combo("##maxpoints_presets", "presets"):
+                for preset in (2000, 5000, 10000, 20000):
+                    if imgui.selectable(f"{preset:,}", state.max_points == preset)[0]:
+                        self._emit(state, "set_max_points", preset)
+                imgui.end_combo()
 
-        imgui.same_line()
-        if state.downsampling_active:
-            imgui.text_colored((0.95, 0.75, 0.25, 1.0), "downsampling: active")
-        else:
-            imgui.text_colored((0.45, 0.85, 0.50, 1.0), "downsampling: off (all samples)")
-        if imgui.is_item_hovered():
-            imgui.set_tooltip(
-                "Min/max envelope at ~Max points per signal.\n"
-                "Turns off (raw samples) once the visible window holds\n"
-                "fewer raw samples than Max points."
-            )
+        with imgui_ctx.begin_horizontal("plot_status"):
+            if state.downsampling_active:
+                imgui.text_colored((0.95, 0.75, 0.25, 1.0), "downsampling: active")
+            else:
+                imgui.text_colored((0.45, 0.85, 0.50, 1.0), "downsampling: off (all samples)")
+            if imgui.is_item_hovered():
+                imgui.set_tooltip(
+                    "Min/max envelope at ~Max points per signal.\n"
+                    "Turns off (raw samples) once the visible window holds\n"
+                    "fewer raw samples than Max points."
+                )
 
-        imgui.same_line()
-        imgui.text_disabled(f"({len(state.registry)} run(s) loaded)")
+            imgui.text_disabled(f"({len(state.registry)} run(s) loaded)")
 
     # -- per-cell header ----------------------------------------------------
-    def _cell_header(self, state: AppState, index: int, cell: SubplotCell) -> None:
+    def _cell_header(self, state: AppState, index: int, cell: SubplotCell, width: float) -> None:
         plot_n = index + 1
-        imgui.set_next_item_width(95)
-        type_labels = PlotType.labels()
-        type_idx = type_labels.index(cell.plot_type.value)
-        changed, type_idx = imgui.combo("##type", type_idx, type_labels)
-        if changed:
-            self._emit(state, "set_plot_type", plot_n, list(PlotType)[type_idx].value)
+        wide = width >= em_size(60)
+        with imgui_ctx.begin_horizontal("view_controls"):
+            imgui.set_next_item_width(em_size(6))
+            type_labels = PlotType.labels()
+            type_idx = type_labels.index(cell.plot_type.value)
+            changed, type_idx = imgui.combo("##type", type_idx, type_labels)
+            if changed:
+                self._emit(state, "set_plot_type", plot_n, list(PlotType)[type_idx].value)
 
-        imgui.same_line()
-        if imgui.small_button("Reset view") and cell.signals:
-            self._emit(state, "reset_view", plot_n)
-        imgui.same_line()
-        if imgui.small_button("Clear"):
-            self._emit(state, "clear_plot", plot_n)
+            if imgui.small_button("Reset view") and cell.signals:
+                self._emit(state, "reset_view", plot_n)
+            if imgui.small_button("Clear"):
+                self._emit(state, "clear_plot", plot_n)
 
-        # Line-plot toggles sit right next to Clear.
         if cell.plot_type in _TIME_SERIES:
-            imgui.same_line()
-            changed, samples = imgui.checkbox("samples", cell.show_samples)
-            if changed:
-                self._emit(state, "show_samples", plot_n, samples)
-            imgui.same_line()
-            changed, spy = imgui.checkbox("spy", cell.spy)
-            if imgui.is_item_hovered():
-                imgui.set_tooltip("Zoom primary (left) Y-axis signals; right-axis signals are excluded.")
-            if changed:
-                self._emit(state, "spy", plot_n, spy)
-            imgui.same_line()
-            changed, cursors = imgui.checkbox("cursors", cell.cursors)
-            if changed:
-                self._emit(state, "cursors", plot_n, cursors)
+            if wide:
+                imgui.same_line()
+            with imgui_ctx.begin_horizontal("display_controls"):
+                changed, samples = imgui.checkbox("samples", cell.show_samples)
+                if changed:
+                    self._emit(state, "show_samples", plot_n, samples)
+                changed, spy = imgui.checkbox("spy", cell.spy)
+                if imgui.is_item_hovered():
+                    imgui.set_tooltip("Zoom primary (left) Y-axis signals; right-axis signals are excluded.")
+                if changed:
+                    self._emit(state, "spy", plot_n, spy)
+                changed, cursors = imgui.checkbox("cursors", cell.cursors)
+                if changed:
+                    self._emit(state, "cursors", plot_n, cursors)
 
-        imgui.same_line()
-        if imgui.small_button("Export") and cell.signals:
-            name = f"plot_{plot_n}.csv"
-            if pfd is not None and self._export_dialog is None:
-                self._export_dialog = (
-                    pfd.save_file("Export plot data", name, ["CSV (*.csv)", "*.csv"]),
-                    cell,
-                )
-            elif runtime.IS_WEB:  # no OS dialog in a tab -> write to FS + download
-                webbridge.save_and_download(
-                    state, name,
-                    lambda path: self._emit(state, "export_data", plot_n, path, cell.export_relative),
-                )
-        imgui.same_line()
-        changed, rel = imgui.checkbox("start at 0", cell.export_relative)
-        if changed:
-            self._emit(state, "set_export_relative", plot_n, rel)
+        if wide:
+            imgui.same_line()
+        with imgui_ctx.begin_horizontal("export_controls"):
+            if imgui.small_button("Export") and cell.signals:
+                name = f"plot_{plot_n}.csv"
+                if pfd is not None and self._export_dialog is None:
+                    self._export_dialog = (
+                        pfd.save_file("Export plot data", name, ["CSV (*.csv)", "*.csv"]),
+                        cell,
+                    )
+                elif runtime.IS_WEB:  # no OS dialog in a tab -> write to FS + download
+                    webbridge.save_and_download(
+                        state, name,
+                        lambda path: self._emit(state, "export_data", plot_n, path, cell.export_relative),
+                    )
+            changed, rel = imgui.checkbox("start at 0", cell.export_relative)
+            if changed:
+                self._emit(state, "set_export_relative", plot_n, rel)
 
-        imgui.same_line()
         shown = self._last_points.get(index)
         raw = self._last_raw.get(index)
         if shown:
@@ -260,7 +257,7 @@ class PlotsPanel(SessionPanel):
             suffix = ""
         imgui.text_disabled(f"{len(cell.signals)} signal(s){suffix}")
 
-        # Second row: cursor readout / XY source.
+        # Additional row: cursor readout / XY source.
         if cell.plot_type in _TIME_SERIES:
             if cell.cursors and self._cursor_text.get(index):
                 imgui.text_colored((0.95, 0.85, 0.25, 1.0), self._cursor_text[index])
@@ -274,7 +271,7 @@ class PlotsPanel(SessionPanel):
         cur_idx = labels.index(cell.xy_style.value)
         imgui.text("style:")
         imgui.same_line()
-        imgui.set_next_item_width(95)
+        imgui.set_next_item_width(em_size(6))
         changed, cur_idx = imgui.combo("##xystyle", cur_idx, labels)
         if changed:
             self._emit(state, "set_xy_style", index + 1, list(XyStyle)[cur_idx].value)
@@ -296,7 +293,7 @@ class PlotsPanel(SessionPanel):
         cur_idx = refs.index(cur) if cur in refs else 0
         imgui.text("X:")
         imgui.same_line()
-        imgui.set_next_item_width(180)
+        imgui.set_next_item_width(em_size(11.25))
         changed, cur_idx = imgui.combo("##xysrc", cur_idx, labels)
         if changed or cell.xy_source is None:
             ref = refs[cur_idx]
@@ -306,10 +303,10 @@ class PlotsPanel(SessionPanel):
     def _render_cell(self, state: AppState, index: int, cell: SubplotCell, size: imgui.ImVec2) -> None:
         imgui.push_id(index)
         y0 = imgui.get_cursor_screen_pos().y
-        self._cell_header(state, index, cell)
+        self._cell_header(state, index, cell, size.x)
         header_h = imgui.get_cursor_screen_pos().y - y0
 
-        plot_h = max(size.y - header_h - 4.0, 60.0)
+        plot_h = max(size.y - header_h - imgui.get_style().item_spacing.y, em_size(3.75))
 
         if cell.plot_type in _TIME_SERIES:
             self._render_time_series(state, index, cell, size.x, plot_h)
@@ -323,7 +320,7 @@ class PlotsPanel(SessionPanel):
         self, state: AppState, index: int, cell: SubplotCell, width: float, plot_h: float
     ) -> None:
         inset_h = plot_h * 0.38 if cell.spy else 0.0
-        main_h = plot_h - inset_h - (4.0 if cell.spy else 0.0)
+        main_h = plot_h - inset_h - (imgui.get_style().item_spacing.y if cell.spy else 0.0)
         plot_size = imgui.ImVec2(width, main_h)
 
         data_min, data_max = self._cell_x_extent(state, cell)
@@ -615,7 +612,7 @@ class PlotsPanel(SessionPanel):
         self, state: AppState, index: int, cell: SubplotCell, width: float, height: float
     ) -> None:
         x1, y1, x2, y2 = cell.spy_rect
-        if implot.begin_plot(f"##spy{index}", imgui.ImVec2(width, max(height, 50.0)), implot.Flags_.canvas_only):
+        if implot.begin_plot(f"##spy{index}", imgui.ImVec2(width, max(height, em_size(3))), implot.Flags_.canvas_only):
             implot.setup_axes_limits(x1, x2, y1, y2, imgui.Cond_.always)
             for i, ref in enumerate(list(cell.signals)):
                 if ref in cell.y2_signals:
@@ -824,7 +821,7 @@ class PlotsPanel(SessionPanel):
         state.downsampling_active = False
 
         region = imgui.get_content_region_avail()
-        spacing = 4.0
+        spacing = imgui.get_style().item_spacing.x
         cell_w = (region.x - spacing * (state.cols - 1)) / state.cols
         cell_h = (region.y - spacing * (state.rows - 1)) / state.rows
 

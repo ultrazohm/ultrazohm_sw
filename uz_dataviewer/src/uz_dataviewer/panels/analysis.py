@@ -18,7 +18,7 @@ from .. import runtime
 from typing import TYPE_CHECKING
 
 import numpy as np
-from imgui_bundle import imgui, implot
+from imgui_bundle import em_size, imgui, implot
 
 from .. import webbridge
 from ..downsample import decimate_range, visible_slice
@@ -50,7 +50,7 @@ def follow_combo(label: str, follow_plot: int, n_plots: int) -> tuple[bool, int]
         idx = follow_plot + 1
     else:
         idx = 0
-    imgui.set_next_item_width(110)
+    imgui.set_next_item_width(em_size(6.875))
     changed, idx = imgui.combo(label, idx, labels)
     value = 0 if idx == 0 else (-1 if idx == 1 else idx - 1)
     return changed, value
@@ -195,10 +195,10 @@ class AnalysisPanel(SessionPanel):
             self._emit(state, self.follow_command, value)
         if cfg.follow_plot == 0:
             imgui.same_line()
-            imgui.set_next_item_width(110)
+            imgui.set_next_item_width(em_size(6.875))
             c1, new_min = imgui.input_float("t min", cfg.x_min)
             imgui.same_line()
-            imgui.set_next_item_width(110)
+            imgui.set_next_item_width(em_size(6.875))
             c2, new_max = imgui.input_float("t max", cfg.x_max)
             if c1 or c2:
                 self._emit(state, self.range_command, new_min, new_max)

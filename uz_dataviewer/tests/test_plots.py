@@ -335,3 +335,58 @@ def test_frequency_outputs_keep_independent_axes(app_state, gui_frame, tmp_path)
     s.nodes.link(fft.id, filter_node.id)
     assert nodes.evaluate(s) == 0
     assert "time-domain" in filter_node.error
+
+
+@pytest.mark.parametrize('cols', [1, 2])
+@pytest.mark.parametrize('font_scale', [1., 2.])
+def test_subplot_controls_fit_and_keep_independent_ids(app_state, gui_frame, monkeypatch, cols, font_scale):
+    """Enlarging text must not put one subplot's controls over its neighbour."""
+    from imgui_bundle import imgui
+
+    state = app_state
+    state.set_grid(2, cols)
+    panel = PlotsPanel()
+    imgui.get_style().font_scale_main = font_scale
+    bounds = {}
+    controls = {}
+    current = None
+    original_header = panel._cell_header
+
+    def header(state, index, cell, width):
+        nonlocal current
+        current = index
+        left = imgui.get_cursor_screen_pos().x
+        bounds[index] = (left, left + width)
+        try:
+            original_header(state, index, cell, width)
+        finally:
+            current = None
+
+    def record_widget(original):
+        def draw(label, *args, **kwargs):
+            result = original(label, *args, **kwargs)
+            if current is not None:
+                lo, hi = imgui.get_item_rect_min(), imgui.get_item_rect_max()
+                controls[current, label] = (lo.x, lo.y, hi.x, hi.y)
+            return result
+        return draw
+
+    monkeypatch.setattr(panel, '_cell_header', header)
+    for name in ('small_button', 'checkbox', 'combo'):
+        monkeypatch.setattr(imgui, name, record_widget(getattr(imgui, name)))
+    for _ in range(4):
+        gui_frame(panel, state)
+    for (index, label), (x1, _, x2, _) in controls.items():
+        left, right = bounds[index]
+        assert left <= x1 <= x2 <= right, (index, label, x1, x2, bounds[index])
+
+    x1, y1, x2, y2 = controls[0, 'samples']
+    io = imgui.get_io()
+    io.add_mouse_pos_event((x1 + x2) / 2, (y1 + y2) / 2)
+    gui_frame(panel, state)
+    io.add_mouse_button_event(0, True)
+    gui_frame(panel, state)
+    io.add_mouse_button_event(0, False)
+    gui_frame(panel, state)
+    assert state.cells[0].show_samples
+    assert not any(cell.show_samples for cell in state.cells[1:])

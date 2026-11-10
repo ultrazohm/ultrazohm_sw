@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from .. import runtime
 
-from imgui_bundle import imgui
+from imgui_bundle import em_size, imgui
 
 from .. import webbridge
 from ..state import AppState
@@ -37,7 +37,7 @@ class NavigationPanel(SessionPanel):
         on = run.time_origin is not None
         changed, on_new = imgui.checkbox("Normalize start time", on)
         target = self._norm_target.get(run.id, run.time_origin if on else 0.0)
-        imgui.set_next_item_width(110)
+        imgui.set_next_item_width(em_size(6.875))
         _, target = imgui.input_float("start at", target)
         self._norm_target[run.id] = target
         imgui.same_line()
@@ -118,7 +118,7 @@ class NavigationPanel(SessionPanel):
                 "##color",
                 run.color,
                 imgui.ColorEditFlags_.no_tooltip | imgui.ColorEditFlags_.no_picker,
-                imgui.ImVec2(12, 12),
+                imgui.ImVec2(em_size(0.75), em_size(0.75)),
             )
             imgui.same_line()
 

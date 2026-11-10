@@ -21,7 +21,7 @@ from .loader import ParsedRun, open_file
 from .requests import Requests
 from .model import DataRegistry, Run, Signal
 from .nodes import NodeGraph
-from .validation import axis_limits, bounded_int
+from .validation import axis_limits, bounded_int, finite_float
 
 # Identifies a signal across runs: (run_id, signal_name).
 LARGE_CSV_BYTES = 1024**3
@@ -158,10 +158,6 @@ class SubplotCell:
             self.y2_signals.remove(ref)
 
 
-# Grid presets offered in the toolbar, as (rows, cols).
-GRID_PRESETS: list[tuple[int, int]] = [(1, 1), (1, 2), (2, 1), (2, 2), (1, 3), (3, 1)]
-
-
 @dataclass
 class AnalysisConfig:
     """Shared state for an analysis window (FFT, histogram, ...).
@@ -218,6 +214,8 @@ class SessionData:
     disk_cache: bool = False
     rows: int = 1
     cols: int = 1
+    row_ratios: list[float] = field(default_factory=lambda: [1.])
+    col_ratios: list[float] = field(default_factory=lambda: [1.])
     cells: list[SubplotCell] = field(default_factory=lambda: [SubplotCell()])
     link_x: bool = True
     shared_x: tuple[float, float] | None = None
@@ -294,6 +292,10 @@ class AppState(SessionData):
         new_cells = [SubplotCell() for _ in range(rows * cols)]
         for i in range(min(len(new_cells), len(self.cells))):
             new_cells[i] = self.cells[i]
+        if rows != self.rows:
+            self.row_ratios = [1. / rows] * rows
+        if cols != self.cols:
+            self.col_ratios = [1. / cols] * cols
         self.rows, self.cols, self.cells = rows, cols, new_cells
         self.plot_x_ranges = {i: limits for i, limits in self.plot_x_ranges.items()
                               if 1 <= i <= len(new_cells)}
@@ -301,6 +303,27 @@ class AppState(SessionData):
             if cfg.follow_plot > len(new_cells):
                 cfg.follow_plot = -1  # removed plot: use the full recording
                 cfg.compute_requested = bool(cfg.sources)
+
+    def set_grid_ratios(self, rows, cols) -> None:
+        """Validate and normalize splitter sizes before passing them to ImPlot."""
+        def normalized(values, count):
+            if not isinstance(values, (list, tuple)) or len(values) != count:
+                raise ValueError("Grid sizes must match the number of rows and columns")
+            values = [finite_float(v) for v in values]
+            if any(v <= 0 for v in values):
+                raise ValueError("Grid sizes must be positive")
+            # Scale first to avoid overflow while summing large valid weights.
+            largest = max(values)
+            scaled = [v / largest for v in values]
+            total = sum(scaled)
+            result = [v / total for v in scaled]
+            if min(result) < 1e-6:
+                raise ValueError("Grid sizes are too small to display")
+            return result
+
+        row_ratios = normalized(rows, self.rows)
+        col_ratios = normalized(cols, self.cols)
+        self.row_ratios, self.col_ratios = row_ratios, col_ratios
 
     def validate_follow_plot(self, target: int) -> int:
         if target > 0 and target <= self.cell_count and self.plot_domain(self.cells[target - 1]) != "time":

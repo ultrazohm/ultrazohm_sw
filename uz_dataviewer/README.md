@@ -8,14 +8,16 @@ downsampling for multi-gigabyte logs, and a **scriptable command console** for a
 
 ```
 +------------------------------------------------------------------+
-|  Navigation  |      Plots / FFT / Histogram  (docked tabs)       |
-|   (left)     |   Plots: runtime grid of subplots (1x1 ... 2x2)   |
-|  runs &      |   FFT / Histogram: dedicated analysis windows     |
-|  signals     |                                                   |
-|--------------+---------------------------------------------------|
-|                       Console  (bottom)                          |
+|  Navigation  |      Plots / FFT / Histogram  (docked tabs)         |
+|  runs &      |   Plots: runtime grid of subplots (1x1 ... 5x5)    |
+|  signals     |   FFT / Histogram: dedicated analysis windows     |
+|--------------|                                                   |
+| Log Browser  |                                                   |
+| / Console    |                                                   |
 +------------------------------------------------------------------+
 ```
+
+Log Browser and Console share the lower-left dock; Log Browser is selected at startup.
 
 ## Features at a glance
 
@@ -24,9 +26,12 @@ downsampling for multi-gigabyte logs, and a **scriptable command console** for a
   (desktop).
 - **Matlab-style navigation** — runs → channels, (de)activate/remove, **per-log time
   normalization**.
-- **Subplot grid** — drag-and-drop signals, runtime layout, types line/scatter/stairs/**XY**,
-  **linked X axes**, **secondary Y axis**, **cursors**, **spy** zoom inset, **show samples**,
-  per-cell **CSV export**.
+- **Subplot grid** — independent **Rows** and **Columns** sliders (1–5), draggable
+  dividers, drag-and-drop signals, types line/scatter/stairs/**XY**, **linked X axes**
+  and **secondary Y axis**. Right-click a plot for Reset view, Clear, **cursors**,
+  **show samples**, **CSV export** and **spy** (a separate zoom window).
+  The popup's **Grid layout** menu also offers the sliders and **Equal sizes**.
+  Divider sizes are saved with JSON sessions; older sessions start with equal sizes.
 - **Range-aware downsampling** — a min/max pyramid (pure NumPy) for time series; multi-GB logs
   pan at full fps and zoom reveals detail. (XY plots decimate by plain stride.)
 - **FFT & Histogram windows** — overlay several signals, pick the time window

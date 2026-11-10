@@ -1,7 +1,7 @@
 """Application entry point and docking layout.
 
-Default layout: Navigation above Log Browser on the left, plots and analysis
-in the center, and Console below the plots.
+Default layout: Navigation above the Log Browser / Console tabs on the left,
+with plots and analysis in the center. Log Browser is selected at startup.
 """
 
 from __future__ import annotations
@@ -32,7 +32,6 @@ except Exception:  # pragma: no cover
 
 MAIN_DOCK = "MainDockSpace"
 LEFT_DOCK = "LeftSpace"
-BOTTOM_DOCK = "BottomSpace"
 LOG_DOCK = "LogBrowserSpace"
 
 
@@ -116,19 +115,13 @@ class DataViewerApp:
         left.direction = imgui.Dir_.left
         left.ratio = 0.22
 
-        bottom = hello_imgui.DockingSplit()
-        bottom.initial_dock = MAIN_DOCK
-        bottom.new_dock = BOTTOM_DOCK
-        bottom.direction = imgui.Dir_.down
-        bottom.ratio = 0.25
-
         logs = hello_imgui.DockingSplit()
         logs.initial_dock = LEFT_DOCK
         logs.new_dock = LOG_DOCK
         logs.direction = imgui.Dir_.down
         logs.ratio = 0.4
 
-        return [left, bottom, logs]
+        return [left, logs]
 
     def _dockable_windows(self) -> list[hello_imgui.DockableWindow]:
         nav = hello_imgui.DockableWindow()
@@ -158,7 +151,7 @@ class DataViewerApp:
 
         console = hello_imgui.DockableWindow()
         console.label = "Console"
-        console.dock_space_name = BOTTOM_DOCK
+        console.dock_space_name = LOG_DOCK
         console.gui_function = lambda: self.state.console.render(self.state)
 
         logs = hello_imgui.DockableWindow()

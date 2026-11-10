@@ -34,6 +34,7 @@ class FftPanel(AnalysisPanel):
         return (cfg.remove_dc, cfg.window)  # log axes are view-only -> not stale
 
     def _extra_controls(self, state: AppState, cfg) -> None:
+        imgui.same_line()
         changed, on = imgui.checkbox("Remove DC", cfg.remove_dc)
         if changed:
             self._emit(state, "fft_remove_dc", on)

@@ -339,50 +339,55 @@ def test_frequency_outputs_keep_independent_axes(app_state, gui_frame, tmp_path)
 
 @pytest.mark.parametrize('cols', [1, 2])
 @pytest.mark.parametrize('font_scale', [1., 2.])
-def test_subplot_controls_fit_and_keep_independent_ids(app_state, gui_frame, monkeypatch, cols, font_scale):
-    """Enlarging text must not put one subplot's controls over its neighbour."""
-    from imgui_bundle import imgui
+def test_subplot_popup_keeps_independent_controls(app_state, gui_frame, monkeypatch, cols, font_scale):
+    """Right-click opens viewer controls alongside ImPlot's native menus."""
+    from imgui_bundle import imgui, implot
 
     state = app_state
     state.set_grid(2, cols)
     panel = PlotsPanel()
     imgui.get_style().font_scale_main = font_scale
-    bounds = {}
+    geometry = {}
     controls = {}
     current = None
-    original_header = panel._cell_header
+    original_controls = panel._cell_controls
 
-    def header(state, index, cell, width):
+    def capture_geometry(state, index, cell, lo, hi):
+        geometry[index] = (implot.get_plot_pos(), implot.get_plot_size())
+
+    def cell_controls(state, index, cell):
         nonlocal current
         current = index
-        left = imgui.get_cursor_screen_pos().x
-        bounds[index] = (left, left + width)
         try:
-            original_header(state, index, cell, width)
+            original_controls(state, index, cell)
         finally:
             current = None
 
-    def record_widget(original):
-        def draw(label, *args, **kwargs):
-            result = original(label, *args, **kwargs)
-            if current is not None:
-                lo, hi = imgui.get_item_rect_min(), imgui.get_item_rect_max()
-                controls[current, label] = (lo.x, lo.y, hi.x, hi.y)
-            return result
-        return draw
+    original_checkbox = imgui.checkbox
+    def checkbox(label, *args):
+        result = original_checkbox(label, *args)
+        if current is not None:
+            lo, hi = imgui.get_item_rect_min(), imgui.get_item_rect_max()
+            controls[current, label] = ((lo.x + hi.x) / 2, (lo.y + hi.y) / 2)
+        return result
 
-    monkeypatch.setattr(panel, '_cell_header', header)
-    for name in ('small_button', 'checkbox', 'combo'):
-        monkeypatch.setattr(imgui, name, record_widget(getattr(imgui, name)))
+    monkeypatch.setattr(panel, '_time_series_input', capture_geometry)
+    monkeypatch.setattr(panel, '_cell_controls', cell_controls)
+    monkeypatch.setattr(imgui, 'checkbox', checkbox)
     for _ in range(4):
         gui_frame(panel, state)
-    for (index, label), (x1, _, x2, _) in controls.items():
-        left, right = bounds[index]
-        assert left <= x1 <= x2 <= right, (index, label, x1, x2, bounds[index])
-
-    x1, y1, x2, y2 = controls[0, 'samples']
+    assert len(geometry) == state.cell_count
+    pos, size = geometry[0]
     io = imgui.get_io()
-    io.add_mouse_pos_event((x1 + x2) / 2, (y1 + y2) / 2)
+    io.add_mouse_pos_event(pos.x + size.x * .6, pos.y + size.y * .4)
+    gui_frame(panel, state)
+    io.add_mouse_button_event(implot.get_input_map().menu, True)
+    gui_frame(panel, state)
+    io.add_mouse_button_event(implot.get_input_map().menu, False)
+    for _ in range(4):
+        gui_frame(panel, state)
+    assert (0, 'samples') in controls
+    io.add_mouse_pos_event(*controls[0, 'samples'])
     gui_frame(panel, state)
     io.add_mouse_button_event(0, True)
     gui_frame(panel, state)
@@ -390,3 +395,167 @@ def test_subplot_controls_fit_and_keep_independent_ids(app_state, gui_frame, mon
     gui_frame(panel, state)
     assert state.cells[0].show_samples
     assert not any(cell.show_samples for cell in state.cells[1:])
+
+
+@pytest.mark.parametrize('axis', ['rows', 'columns'])
+def test_native_subplot_splitters_resize_and_restore(app_state, gui_frame, monkeypatch, axis):
+    from imgui_bundle import imgui, implot
+    from uz_dataviewer.session import apply_dict, to_dict
+
+    state = app_state
+    state.set_grid(2, 2)
+    panel = PlotsPanel()
+    frames = {}
+    def geometry(state, index, cell, lo, hi):
+        rect = implot.internal.get_current_plot().frame_rect
+        frames[index] = (rect.min.x, rect.min.y, rect.max.x, rect.max.y)
+    monkeypatch.setattr(panel, '_time_series_input', geometry)
+    for _ in range(4):
+        gui_frame(panel, state)
+    a = frames[0]
+    if axis == 'rows':
+        b = frames[2]
+        x, y = (a[0] + a[2]) / 2, (a[3] + b[1]) / 2
+        dx, dy = 0, 70
+    else:
+        b = frames[1]
+        x, y = (a[2] + b[0]) / 2, (a[1] + a[3]) / 2
+        dx, dy = 70, 0
+    io = imgui.get_io()
+    io.add_mouse_pos_event(x, y)
+    for _ in range(6):
+        gui_frame(panel, state)
+    io.add_mouse_button_event(0, True)
+    gui_frame(panel, state)
+    io.add_mouse_pos_event(x + dx, y + dy)
+    gui_frame(panel, state)
+    io.add_mouse_button_event(0, False)
+    gui_frame(panel, state)
+    ratios = state.row_ratios if axis == 'rows' else state.col_ratios
+    assert ratios[0] > .5
+    assert sum(ratios) == pytest.approx(1.)
+    saved = to_dict(state)
+    apply_dict(state, saved)
+    gui_frame(panel, state)
+    assert state.row_ratios == pytest.approx(saved['row_ratios'])
+    assert state.col_ratios == pytest.approx(saved['col_ratios'])
+
+
+@pytest.mark.parametrize('rows,cols', [(1, 5), (5, 1), (5, 5)])
+def test_native_grid_renders_every_cell_and_spy_stays_outside(app_state, gui_frame, monkeypatch, rows, cols):
+    from imgui_bundle import implot
+    state = app_state
+    state.set_grid(rows, cols)
+    panel = PlotsPanel()
+    state.cells[0].spy = True
+    seen = []
+    def geometry(state, index, cell, lo, hi):
+        seen.append(index)
+        assert implot.get_plot_size().x > 0
+        assert implot.get_plot_size().y > 0
+    monkeypatch.setattr(panel, '_time_series_input', geometry)
+    for _ in range(4):
+        seen.clear()
+        gui_frame(panel, state)
+        assert seen == list(range(rows * cols))
+    assert state.cells[0].spy_rect is not None
+
+
+@pytest.mark.parametrize('linked', [False, True])
+def test_toolbar_reset_fits_all_subplots(app_state, gui_frame, monkeypatch, linked):
+    from imgui_bundle import imgui
+    state = app_state
+    state.set_grid(2, 1)
+    state.link_x = linked
+    for index, cell in enumerate(state.cells):
+        t = np.arange(10.) + 10 * index
+        y = np.arange(10.) + 100 * index
+        run = state.registry.add_run(str(index), str(index), t, {'a': y}, {})
+        cell.add((run.id, 'a'))
+        cell.set_limits('x', 3, 4)
+        cell.set_limits('y', 500, 600)
+    state.shared_x = (3., 4.) if linked else None
+    panel = PlotsPanel()
+    button_pos = None
+    original = imgui.button
+    def button(label, *args, **kwargs):
+        nonlocal button_pos
+        clicked = original(label, *args, **kwargs)
+        if label == 'Reset view':
+            lo, hi = imgui.get_item_rect_min(), imgui.get_item_rect_max()
+            button_pos = ((lo.x + hi.x) / 2, (lo.y + hi.y) / 2)
+        return clicked
+    monkeypatch.setattr(imgui, 'button', button)
+    for _ in range(3):
+        gui_frame(panel, state)
+    assert all(cell.y_lim == (500., 600.) for cell in state.cells)
+    io = imgui.get_io()
+    io.add_mouse_pos_event(*button_pos)
+    gui_frame(panel, state)
+    io.add_mouse_button_event(0, True)
+    gui_frame(panel, state)
+    io.add_mouse_button_event(0, False)
+    for _ in range(4):
+        gui_frame(panel, state)
+    for index, cell in enumerate(state.cells):
+        assert cell.x_lim == pytest.approx((0, 19) if linked else (index * 10, index * 10 + 9))
+        assert cell.y_lim[0] <= index * 100
+        assert index * 100 + 9 <= cell.y_lim[1] < 500
+
+
+@pytest.mark.parametrize('linked', [False, True])
+@pytest.mark.parametrize('target', [0, 1])
+def test_popup_reset_fits_x_without_old_frame_overwriting_it(app_state, gui_frame, monkeypatch, linked, target):
+    from imgui_bundle import imgui, implot
+    state = app_state
+    state.set_grid(2, 1)
+    state.link_x = linked
+    for index, cell in enumerate(state.cells):
+        t = np.arange(10.) + 10 * index
+        run = state.registry.add_run(str(index), str(index), t, {'a': np.arange(10.)}, {})
+        cell.add((run.id, 'a'))
+        cell.set_limits('x', 3, 4)
+        cell.set_limits('y', 500, 600)
+    state.shared_x = (3., 4.) if linked else None
+    panel = PlotsPanel()
+    geometry = {}
+    reset_pos = None
+    def capture(state, index, cell, lo, hi):
+        geometry[index] = (implot.get_plot_pos(), implot.get_plot_size())
+    original = imgui.small_button
+    def button(label):
+        nonlocal reset_pos
+        clicked = original(label)
+        if label == 'Reset view':
+            lo, hi = imgui.get_item_rect_min(), imgui.get_item_rect_max()
+            reset_pos = ((lo.x + hi.x) / 2, (lo.y + hi.y) / 2)
+        return clicked
+    monkeypatch.setattr(panel, '_time_series_input', capture)
+    monkeypatch.setattr(imgui, 'small_button', button)
+    for _ in range(4):
+        gui_frame(panel, state)
+    pos, size = geometry[target]
+    io = imgui.get_io()
+    io.add_mouse_pos_event(pos.x + size.x * .6, pos.y + size.y * .4)
+    gui_frame(panel, state)
+    io.add_mouse_button_event(implot.get_input_map().menu, True)
+    gui_frame(panel, state)
+    io.add_mouse_button_event(implot.get_input_map().menu, False)
+    for _ in range(4):
+        gui_frame(panel, state)
+    assert reset_pos is not None
+    io.add_mouse_pos_event(*reset_pos)
+    gui_frame(panel, state)
+    io.add_mouse_button_event(0, True)
+    gui_frame(panel, state)
+    io.add_mouse_button_event(0, False)
+    for _ in range(5):
+        gui_frame(panel, state)
+    expected = (0, 19) if linked else (target * 10, target * 10 + 9)
+    assert state.cells[target].x_lim == pytest.approx(expected)
+    assert state.plot_time_range(target + 1) == pytest.approx(expected)
+    assert state.cells[target].y_lim[0] <= 0
+    assert 9 <= state.cells[target].y_lim[1] < 500
+    other = state.cells[1 - target]
+    assert other.x_lim == pytest.approx(expected if linked else (3, 4))
+    assert other.y_lim == (500., 600.)

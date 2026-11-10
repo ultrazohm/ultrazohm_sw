@@ -26,7 +26,7 @@ from imgui_bundle import em_size, imgui, imgui_ctx, implot
 
 from .. import webbridge
 from ..session import ensure_extension
-from ..state import GRID_PRESETS, AppState, PlotType, SignalRef, SubplotCell, XyStyle
+from ..state import AppState, PlotType, SignalRef, SubplotCell, XyStyle
 from .base import SessionPanel
 from .navigation import SIGNAL_DND_TYPE
 
@@ -71,6 +71,9 @@ def _abbrev(n: int) -> str:
 class PlotsPanel(SessionPanel):
     def __init__(self, signal_payload_type=SIGNAL_DND_TYPE) -> None:
         self.signal_payload_type = signal_payload_type
+        self._requested_grid = None
+        self._requested_resets: set[int] = set()
+        self._equal_sizes = False
         self._driver: int = -1  # last interacted cell (also used by live inspect)
         self._shared_axis_links = (implot.BoxedValue(0.), implot.BoxedValue(1.))
         self._last_points: dict[int, int] = {}  # cell index -> samples drawn last frame
@@ -147,25 +150,24 @@ class PlotsPanel(SessionPanel):
 
     # -- toolbar ------------------------------------------------------------
     def _toolbar(self, state: AppState) -> None:
-        current = (state.rows, state.cols)
-        preset_labels = [f"{r}x{c}" for r, c in GRID_PRESETS]
-        try:
-            idx = GRID_PRESETS.index(current)
-        except ValueError:
-            idx = 0
+        status = "downsampling: active" if state.downsampling_active else "downsampling: off (all samples)"
+        runs_label = f"({len(state.registry)} run(s) loaded)"
         with imgui_ctx.begin_horizontal("layout_controls"):
-            imgui.text("Layout")
-            imgui.set_next_item_width(em_size(5))
-            changed, idx = imgui.combo("##layout", idx, preset_labels)
-            if changed:
-                r, c = GRID_PRESETS[idx]
-                self._emit(state, "set_grid", r, c)
+            if imgui.button("Reset view"):
+                for plot_n in range(1, state.cell_count + 1):
+                    self._emit(state, "reset_view", plot_n)
+            if imgui.is_item_hovered():
+                imgui.set_tooltip("Reset the view of all subplots to their data extents.")
+            self._grid_sliders(state)
 
             changed, link = imgui.checkbox("Link X axes", state.link_x)
             if changed:
                 self._emit(state, "link_x", link)
 
-        if imgui.get_content_region_avail().x - imgui.get_item_rect_size().x > em_size(25):
+        sampling_width = (em_size(11) + sum(imgui.calc_text_size(text).x
+                          for text in ("Max points", status, runs_label))
+                          + imgui.get_style().item_spacing.x * 5)
+        if imgui.get_content_region_avail().x - imgui.get_item_rect_size().x > sampling_width:
             imgui.same_line()
         with imgui_ctx.begin_horizontal("sampling_controls"):
             imgui.text("Max points")
@@ -181,11 +183,10 @@ class PlotsPanel(SessionPanel):
                         self._emit(state, "set_max_points", preset)
                 imgui.end_combo()
 
-        with imgui_ctx.begin_horizontal("plot_status"):
             if state.downsampling_active:
-                imgui.text_colored((0.95, 0.75, 0.25, 1.0), "downsampling: active")
+                imgui.text_colored((0.95, 0.75, 0.25, 1.0), status)
             else:
-                imgui.text_colored((0.45, 0.85, 0.50, 1.0), "downsampling: off (all samples)")
+                imgui.text_colored((0.45, 0.85, 0.50, 1.0), status)
             if imgui.is_item_hovered():
                 imgui.set_tooltip(
                     "Min/max envelope at ~Max points per signal.\n"
@@ -193,12 +194,41 @@ class PlotsPanel(SessionPanel):
                     "fewer raw samples than Max points."
                 )
 
-            imgui.text_disabled(f"({len(state.registry)} run(s) loaded)")
+            imgui.text_disabled(runs_label)
 
-    # -- per-cell header ----------------------------------------------------
-    def _cell_header(self, state: AppState, index: int, cell: SubplotCell, width: float) -> None:
+    def _grid_sliders(self, state):
+        rows, cols = self._requested_grid or (state.rows, state.cols)
+        imgui.set_next_item_width(em_size(7))
+        changed_rows, rows = imgui.slider_int("Rows", rows, 1, 5, flags=imgui.SliderFlags_.always_clamp)
+        imgui.set_next_item_width(em_size(7))
+        changed_cols, cols = imgui.slider_int("Columns", cols, 1, 5, flags=imgui.SliderFlags_.always_clamp)
+        if changed_rows or changed_cols:
+            # A popup can run while BeginSubplots still owns the old grid.
+            self._requested_grid = (rows, cols)
+
+    def _plot_popup(self, state, index, cell):
+        # ImPlot scopes items under plot.ID - 1, but opens its context menu
+        # under plot.ID in EndPlot. Match that scope to extend the existing
+        # menu; the native axis/legend entries are appended by EndPlot.
+        imgui.internal.push_override_id(implot.internal.get_current_plot().id_)
+        try:
+            if imgui.begin_popup("##PlotContext"):
+                imgui.text(f"Plot {index + 1}")
+                imgui.separator()
+                self._cell_controls(state, index, cell)
+                if imgui.begin_menu("Grid layout"):
+                    self._grid_sliders(state)
+                    if imgui.button("Equal sizes"):
+                        self._equal_sizes = True
+                    imgui.end_menu()
+                imgui.separator()
+                imgui.end_popup()
+        finally:
+            imgui.pop_id()
+
+    # -- per-plot popup controls ----------------------------------------------------
+    def _cell_controls(self, state: AppState, index: int, cell: SubplotCell) -> None:
         plot_n = index + 1
-        wide = width >= em_size(60)
         with imgui_ctx.begin_horizontal("view_controls"):
             imgui.set_next_item_width(em_size(6))
             type_labels = PlotType.labels()
@@ -208,13 +238,13 @@ class PlotsPanel(SessionPanel):
                 self._emit(state, "set_plot_type", plot_n, list(PlotType)[type_idx].value)
 
             if imgui.small_button("Reset view") and cell.signals:
-                self._emit(state, "reset_view", plot_n)
+                # EndPlot still publishes the current frame's linked X limits.
+                # Apply the reset before rendering any plots on the next frame.
+                self._requested_resets.add(plot_n)
             if imgui.small_button("Clear"):
                 self._emit(state, "clear_plot", plot_n)
 
         if cell.plot_type in _TIME_SERIES:
-            if wide:
-                imgui.same_line()
             with imgui_ctx.begin_horizontal("display_controls"):
                 changed, samples = imgui.checkbox("samples", cell.show_samples)
                 if changed:
@@ -228,8 +258,6 @@ class PlotsPanel(SessionPanel):
                 if changed:
                     self._emit(state, "cursors", plot_n, cursors)
 
-        if wide:
-            imgui.same_line()
         with imgui_ctx.begin_horizontal("export_controls"):
             if imgui.small_button("Export") and cell.signals:
                 name = f"plot_{plot_n}.csv"
@@ -276,7 +304,8 @@ class PlotsPanel(SessionPanel):
         if changed:
             self._emit(state, "set_xy_style", index + 1, list(XyStyle)[cur_idx].value)
 
-    def _xy_source_combo(self, state: AppState, index: int, cell: SubplotCell) -> None:
+    @staticmethod
+    def _xy_source_options(state: AppState, cell: SubplotCell):
         refs: list[SignalRef] = []
         labels: list[str] = []
         domain = state.plot_domain(cell) if cell.signals else None
@@ -286,6 +315,10 @@ class PlotsPanel(SessionPanel):
             for name in run.signals:
                 refs.append((run.id, name))
                 labels.append(state.signal_label((run.id, name)))
+        return refs, labels
+
+    def _xy_source_combo(self, state: AppState, index: int, cell: SubplotCell) -> None:
+        refs, labels = self._xy_source_options(state, cell)
         if not labels:
             imgui.text_disabled("(load data for X source)")
             return
@@ -302,16 +335,10 @@ class PlotsPanel(SessionPanel):
     # -- a single cell ------------------------------------------------------
     def _render_cell(self, state: AppState, index: int, cell: SubplotCell, size: imgui.ImVec2) -> None:
         imgui.push_id(index)
-        y0 = imgui.get_cursor_screen_pos().y
-        self._cell_header(state, index, cell, size.x)
-        header_h = imgui.get_cursor_screen_pos().y - y0
-
-        plot_h = max(size.y - header_h - imgui.get_style().item_spacing.y, em_size(3.75))
-
         if cell.plot_type in _TIME_SERIES:
-            self._render_time_series(state, index, cell, size.x, plot_h)
+            self._render_time_series(state, index, cell, size.x, size.y)
         elif cell.plot_type is PlotType.XY:
-            self._render_xy(state, index, cell, size.x, plot_h)
+            self._render_xy(state, index, cell, size.x, size.y)
 
         imgui.pop_id()
 
@@ -319,13 +346,11 @@ class PlotsPanel(SessionPanel):
     def _render_time_series(
         self, state: AppState, index: int, cell: SubplotCell, width: float, plot_h: float
     ) -> None:
-        inset_h = plot_h * 0.38 if cell.spy else 0.0
-        main_h = plot_h - inset_h - (imgui.get_style().item_spacing.y if cell.spy else 0.0)
-        plot_size = imgui.ImVec2(width, main_h)
+        plot_size = imgui.ImVec2(width, plot_h)
 
         data_min, data_max = self._cell_x_extent(state, cell)
 
-        if implot.begin_plot(f"##plot{index}", plot_size):
+        if implot.begin_plot(f"Plot {index + 1}##plot{index}", plot_size):
             implot.setup_axes("time (s)" if state.plot_domain(cell) == "time" else "frequency (Hz)", "")
             if cell.y2_signals:
                 implot.setup_axis(implot.ImAxis_.y2, "", implot.AxisFlags_.aux_default)
@@ -368,6 +393,7 @@ class PlotsPanel(SessionPanel):
             if cell.spy:
                 self._spy_rect(state, index, cell)
 
+            self._plot_popup(state, index, cell)
             implot.end_plot()
             if linked:
                 # Native fitting (double-click) finalizes limits in EndPlot.
@@ -376,9 +402,6 @@ class PlotsPanel(SessionPanel):
                 if _is_finite_range(*window):
                     state.shared_x = cell.x_lim = window
                     state.plot_x_ranges[index + 1] = window
-
-        if cell.spy and cell.spy_rect is not None:
-            self._render_spy_inset(state, index, cell, width, inset_h)
 
     def _setup_shared_x(self, state, index, cell):
         if state.link_x and state.is_time_plot(cell) and state.shared_x is not None:
@@ -437,6 +460,10 @@ class PlotsPanel(SessionPanel):
     def _render_xy(
         self, state: AppState, index: int, cell: SubplotCell, width: float, plot_h: float
     ) -> None:
+        if cell.xy_source is None:
+            refs, _ = self._xy_source_options(state, cell)
+            if refs:
+                self._emit(state, "set_xy", index + 1, *refs[0])
         x_run = state.registry.get(cell.xy_source[0]) if cell.xy_source else None
         x_sig = (
             state.registry.get_signal(cell.xy_source[0], cell.xy_source[1])
@@ -450,7 +477,7 @@ class PlotsPanel(SessionPanel):
         if id(cell) in self._pending_fit:
             implot.set_next_axes_to_fit()  # must precede begin_plot
             cell.fit_pending = False
-        if implot.begin_plot(f"##plot{index}", imgui.ImVec2(width, plot_h)):
+        if implot.begin_plot(f"Plot {index + 1}##plot{index}", imgui.ImVec2(width, plot_h)):
             implot.setup_axes(x_label, "")
             self._apply_explicit_limits(cell, consume=False)
             all_ready = False
@@ -493,6 +520,7 @@ class PlotsPanel(SessionPanel):
             if all_ready:
                 cell.pending_x_lim = cell.pending_y_lim = None
             self._accept_drop(state, index, cell)
+            self._plot_popup(state, index, cell)
             implot.end_plot()
         self._last_points[index] = 0
         self._last_raw[index] = 0
@@ -554,6 +582,18 @@ class PlotsPanel(SessionPanel):
                                    [src for _, src, _, _ in sources], compute)
         if value is not None:
             self._cursor_text[index] = value
+            # Keep the readout visible while dragging, even with settings closed.
+            pos, size = implot.get_plot_pos(), implot.get_plot_size()
+            padding = imgui.get_style().frame_padding
+            origin = imgui.ImVec2(pos.x + padding.x,
+                                 pos.y + size.y - imgui.get_text_line_height() - padding.y)
+            implot.push_plot_clip_rect()
+            draw = implot.get_plot_draw_list()
+            text_size = imgui.calc_text_size(value)
+            draw.add_rect_filled(origin, imgui.ImVec2(origin.x + text_size.x, origin.y + text_size.y),
+                                 imgui.get_color_u32(imgui.Col_.window_bg))
+            draw.add_text(origin, imgui.get_color_u32(col), value)
+            implot.pop_plot_clip_rect()
         else:
             self._cursor_text.pop(index, None)
         self._maybe_echo_cursors(state, index, x1, x2)
@@ -629,6 +669,20 @@ class PlotsPanel(SessionPanel):
                 # Same colour index as the main plot so the inset matches.
                 implot.plot_line(state.signal_label(ref), xs, ys, _colored_spec(i, marker=False))
             implot.end_plot()
+
+    def _spy_windows(self, state):
+        for index, cell in enumerate(state.cells):
+            if not cell.spy or cell.spy_rect is None or cell.plot_type not in _TIME_SERIES:
+                continue
+            imgui.set_next_window_size(imgui.ImVec2(em_size(30), em_size(18)), imgui.Cond_.first_use_ever)
+            visible, opened = imgui.begin(
+                f"Spy: Plot {index + 1}##{self.signal_payload_type}_spy_{index}", True)
+            if visible:
+                size = imgui.get_content_region_avail()
+                self._render_spy_inset(state, index, cell, size.x, size.y)
+            imgui.end()
+            if not opened:
+                self._emit(state, "spy", index + 1, False)
 
     # -- shared bits --------------------------------------------------------
     @staticmethod
@@ -800,6 +854,16 @@ class PlotsPanel(SessionPanel):
 
     def render(self, state: AppState) -> None:
         self._sync_session(state)
+        if self._requested_grid is not None:
+            self._emit(state, "set_grid", *self._requested_grid)
+            self._requested_grid = None
+        for plot_n in sorted(self._requested_resets):
+            if plot_n <= state.cell_count:
+                self._emit(state, "reset_view", plot_n)
+        self._requested_resets.clear()
+        if self._equal_sizes:
+            state.set_grid_ratios([1.] * state.rows, [1.] * state.cols)
+            self._equal_sizes = False
         live_cells = {id(cell) for cell in state.cells}
         self._pending_fit = {key: axes for key, axes in self._pending_fit.items() if key in live_cells}
         if self._driver >= state.cell_count:
@@ -820,21 +884,20 @@ class PlotsPanel(SessionPanel):
         imgui.separator()
         state.downsampling_active = False
 
-        region = imgui.get_content_region_avail()
-        spacing = imgui.get_style().item_spacing.x
-        cell_w = (region.x - spacing * (state.cols - 1)) / state.cols
-        cell_h = (region.y - spacing * (state.rows - 1)) / state.rows
-
-        for r in range(state.rows):
-            for c in range(state.cols):
-                index = r * state.cols + c
-                if index >= len(state.cells):
-                    continue
-                imgui.begin_group()
-                self._render_cell(state, index, state.cells[index], imgui.ImVec2(cell_w, cell_h))
-                imgui.end_group()
-                if c < state.cols - 1:
-                    imgui.same_line(0.0, spacing)
+        ratios = implot.SubplotsRowColRatios(state.row_ratios, state.col_ratios)
+        # Keep per-plot legends and the viewer's domain-aware axis linking.
+        # Native grid menus expose competing sharing/link flags, so layout
+        # settings live in our popup while the native splitters stay enabled.
+        if implot.begin_subplots("##grid", state.rows, state.cols, imgui.ImVec2(-1, -1),
+                                 implot.SubplotFlags_.no_menus, ratios):
+            try:
+                for index, cell in enumerate(state.cells):
+                    self._render_cell(state, index, cell, imgui.ImVec2(-1, -1))
+            finally:
+                implot.end_subplots()
+            state.row_ratios = list(ratios.row_ratios)
+            state.col_ratios = list(ratios.col_ratios)
+        self._spy_windows(state)
 
         state.services.display.retain(self._used_slots)
 

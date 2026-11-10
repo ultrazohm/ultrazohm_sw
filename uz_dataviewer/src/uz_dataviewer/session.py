@@ -105,6 +105,8 @@ def to_dict(state: "AppState") -> dict:
     return {
         "version": SCHEMA_VERSION,
         "grid": [state.rows, state.cols],
+        "row_ratios": list(state.row_ratios),
+        "col_ratios": list(state.col_ratios),
         "link_x": state.link_x,
         "shared_x": state.shared_x,
         "max_points": state.max_points,
@@ -215,6 +217,8 @@ def _apply_dict(state: "AppState", data: dict) -> None:
 
     rows, cols = data.get("grid", [state.rows, state.cols])
     state.set_grid(rows, cols)
+    state.set_grid_ratios(data.get("row_ratios", [1.] * state.rows),
+                          data.get("col_ratios", [1.] * state.cols))
     state.link_x = boolean(data.get("link_x", state.link_x))
     state.shared_x = axis_limits(*data["shared_x"]) if data.get("shared_x") is not None else None
     state.max_points = display_budget(data.get("max_points", state.max_points))

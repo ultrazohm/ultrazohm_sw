@@ -822,3 +822,29 @@ def test_old_session_without_domain_contract_is_rejected_atomically(app_state):
     with pytest.raises(ValueError, match='Unsupported session version'):
         apply_dict(app_state, data)
     assert app_state.session_token is token
+
+
+def test_grid_sizes_preserved_and_old_sessions_default_to_equal(app_state):
+    app_state.set_grid(3, 2)
+    app_state.set_grid_ratios([2, 1, 1], [1, 3])
+    saved = to_dict(app_state)
+    apply_dict(app_state, saved)
+    assert app_state.row_ratios == [0.5, 0.25, 0.25]
+    assert app_state.col_ratios == [0.25, 0.75]
+    saved.pop('row_ratios')
+    saved.pop('col_ratios')
+    apply_dict(app_state, saved)
+    assert app_state.row_ratios == pytest.approx([1 / 3] * 3)
+    assert app_state.col_ratios == [0.5, 0.5]
+
+
+@pytest.mark.parametrize('sizes', [[], [1], [0, 1], [-1, 2], [float('nan'), 1],
+                                   [float('inf'), 1], [1e-100, 1], 'bad'])
+def test_invalid_grid_sizes_leave_session_intact(app_state, sizes):
+    app_state.set_grid(2, 1)
+    saved = to_dict(app_state)
+    saved['row_ratios'] = sizes
+    token = app_state.session_token
+    with pytest.raises(ValueError):
+        apply_dict(app_state, saved)
+    assert app_state.session_token is token

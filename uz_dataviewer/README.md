@@ -18,6 +18,9 @@ downsampling for multi-gigabyte logs, and a **scriptable command console** for a
 ```
 
 Log Browser and Console share the lower-left dock; Log Browser is selected at startup.
+On Windows and Linux sessions identified as X11 (`XDG_SESSION_TYPE=x11`),
+drag a panel's tab outside the main window to detach it into a desktop window.
+Drag it back to redock. Other environments keep panels inside the main window.
 
 ## Features at a glance
 

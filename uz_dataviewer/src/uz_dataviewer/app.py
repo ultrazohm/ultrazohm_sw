@@ -375,6 +375,12 @@ class DataViewerApp:
         params.imgui_window_params.default_imgui_window_type = (
             hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
         )
+        # DISPLAY can also be set under Wayland (XWayland), so require an
+        # explicit X11 session before allowing detached windows on Linux.
+        params.imgui_window_params.enable_viewports = not runtime.IS_WEB and (
+            sys.platform == "win32"
+            or (sys.platform == "linux" and os.environ.get("XDG_SESSION_TYPE") == "x11")
+        )
         params.imgui_window_params.show_status_bar = True
         params.imgui_window_params.show_status_fps = False  # FPS and cache share our status item.
         params.imgui_window_params.remember_status_bar_settings = False

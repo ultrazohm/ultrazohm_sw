@@ -676,7 +676,7 @@ class PlotsPanel(SessionPanel):
                 continue
             imgui.set_next_window_size(imgui.ImVec2(em_size(30), em_size(18)), imgui.Cond_.first_use_ever)
             visible, opened = imgui.begin(
-                f"Spy: Plot {index + 1}##{self.signal_payload_type}_spy_{index}", True)
+                f"Spy: Plot {index + 1}##{self.signal_payload_type}_spy_{getattr(state, 'plot_window_id', 0)}_{index}", True)
             if visible:
                 size = imgui.get_content_region_avail()
                 self._render_spy_inset(state, index, cell, size.x, size.y)

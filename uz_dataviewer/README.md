@@ -21,6 +21,12 @@ Log Browser and Console share the lower-left dock; Log Browser is selected at st
 On Windows and Linux sessions identified as X11 (`XDG_SESSION_TYPE=x11`),
 drag a panel's tab outside the main window to detach it into a desktop window.
 Drag it back to redock. Other environments keep panels inside the main window.
+**View → New plot window** opens an additional empty grid. Its signal assignments,
+axis ranges, cursors and downsampling settings are independent; recordings and
+their data cache are shared. Hide and reopen these windows using View.
+Additional plot windows last for the current session: loading a session closes
+them, and saved sessions and console scripts still describe the original Plots
+window. Their actions appear as labelled informational messages in the console.
 
 ## Features at a glance
 

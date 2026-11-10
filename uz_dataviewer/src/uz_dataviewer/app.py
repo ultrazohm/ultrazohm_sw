@@ -56,6 +56,9 @@ class DataViewerApp:
         self.navigation = NavigationPanel()
         self.log_browser = LogBrowserPanel(workspace)
         self.plots = PlotsPanel()
+        self._plot_windows = {}
+        self._next_plot_window_id = 2
+        self._plot_windows_session = self.state.session_token
         self.status = StatusPanel()
         self.fft = FftPanel()
         self.histogram = HistogramPanel()
@@ -191,6 +194,13 @@ class DataViewerApp:
             docking.focus_dockable_window(label)
 
     def _show_menus(self) -> None:
+        # Append to Hello ImGui's existing menu, including its hidden ID
+        # (docking_details.cpp::ShowViewMenu), rather than drawing a second View.
+        if imgui.begin_menu("View##kdsflmkdflm"):
+            imgui.separator()
+            if imgui.menu_item("New plot window", "", False)[0]:
+                self._new_plot_window()
+            imgui.end_menu()
         if imgui.begin_menu("Mode"):
             if imgui.menu_item("Analysis", "", False)[0]:
                 self._apply_window_mode(False)
@@ -205,6 +215,27 @@ class DataViewerApp:
         else:
             self._native_session_menu()
         imgui.end_menu()
+
+    def _new_plot_window(self):
+        from .plot_window import PlotWindowState
+        window_id = self._next_plot_window_id
+        self._next_plot_window_id += 1
+        state = PlotWindowState(self.state, window_id)
+        panel = PlotsPanel()
+        window = hello_imgui.DockableWindow()
+        window.label = f"Plots {window_id}"
+        window.dock_space_name = MAIN_DOCK
+        window.remember_is_visible = False
+        window.is_visible = True
+
+        def render():
+            state.sync(self.state)
+            panel.render(state)
+
+        window.gui_function = render
+        self._plot_windows[window_id] = (state, panel, window)
+        hello_imgui.add_dockable_window(window, True)
+        return state
 
     def _native_session_menu(self) -> None:
         disabled = pfd is None or bool(self._session_dialog)
@@ -305,6 +336,16 @@ class DataViewerApp:
             self.live.pump(self.state)
         self.state.poll_pending_loads()
         self._poll_session_dialog()
+        if self._plot_windows_session is not self.state.session_token:
+            for state, _, window in self._plot_windows.values():
+                hello_imgui.remove_dockable_window(window.label)
+                state.shutdown()
+            self._plot_windows.clear()
+            self._plot_windows_session = self.state.session_token
+        # Hidden windows still need to publish completed exports and prune
+        # assignments when a recording is removed from the shared registry.
+        for state, _, _ in self._plot_windows.values():
+            state.sync(self.state)
         if self.state.focus_fft:
             hello_imgui.get_runner_params().docking_params.focus_dockable_window("FFT")
             self.state.focus_fft = False
@@ -318,6 +359,9 @@ class DataViewerApp:
         if self.live is not None:
             self.live.close()
         self.log_browser.shutdown()
+        for state, _, _ in self._plot_windows.values():
+            state.shutdown()
+        self._plot_windows.clear()
         self.state.shutdown()
 
     def _show_load_dialog(self) -> None:

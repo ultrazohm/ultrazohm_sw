@@ -1,11 +1,9 @@
 """Generate a fresh firmware contract with the installed CLI, without device IO."""
-from datetime import datetime, timezone
 import json
 from pathlib import Path
 import re
 import subprocess
 import tempfile
-import uuid
 
 from .user_paths import HEADER, find_repository
 
@@ -22,7 +20,8 @@ def repository(explicit=None):
     raise ValueError('UltraZohm repository not found; pass --live-repo PATH to generate its channel mapping')
 
 
-def generate_mapping(repo=None, *, overwrite=False):
+def generate_mapping(repo=None):
+    """Regenerate ``javascope_<commit>.json``; one cache file per checkout commit."""
     from .process_launcher import command
     root = repository(repo)
     from .user_paths import data_directory
@@ -39,10 +38,7 @@ def generate_mapping(repo=None, *, overwrite=False):
         commit = mapping['repository']['commit']
         if not isinstance(commit, str) or not re.fullmatch(r'[A-Za-z0-9_-]+', commit):
             raise ValueError('Generated channel mapping has an invalid repository commit')
-        timestamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S.%fZ')
-        # Clock resolution can give successive generations identical timestamps.
-        name = f'javascope_{commit}.json' if overwrite else f'javascope_{timestamp}_{commit}_{uuid.uuid4().hex}.json'
-        destination = cache / name
+        destination = cache / f'javascope_{commit}.json'
         generated.replace(destination)
     print(f'Live channel mapping: {destination}', flush=True)
     return destination

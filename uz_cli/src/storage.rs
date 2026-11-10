@@ -106,7 +106,14 @@ impl LogWriter {
             !dir.join(format!("{stem}.parquet")).exists(),
             "recording already exists"
         );
-        let empty = frames_dataframe(&[], 0, &profile, &fast_columns, &slow_names, slow)?;
+        let empty = frames_dataframe(
+            &[],
+            0,
+            profile.sample_period_us,
+            &fast_columns,
+            &slow_names,
+            slow,
+        )?;
         let backend = factory(&dir, &stem, slow, profile.sample_period_us, &empty)?;
         Ok(Self {
             backend,
@@ -164,7 +171,7 @@ impl LogWriter {
         frames_dataframe(
             &self.batch,
             self.rows,
-            &self.profile,
+            self.profile.sample_period_us,
             &self.fast_columns,
             &self.slow_names,
             self.slow,
@@ -329,7 +336,8 @@ impl LogWriter {
     }
 }
 
-/// Shared fast-column conversion, used by live and recorded queries.
+/// Shared fast-column conversion, used by live and recorded queries. `skip` and
+/// `rows` select a window of the concatenated frames without building the rest.
 pub(crate) fn fast_dataframe(
     frames: &[(u64, Arc<Frame>)],
     period_us: f64,
@@ -362,16 +370,36 @@ pub(crate) fn fast_dataframe(
     Ok(DataFrame::new(result)?)
 }
 
+/// Schema of [`frames_dataframe`] without building columns.
+pub(crate) fn frame_fields(fast_columns: &[(usize, String)], slow: bool) -> Vec<backend::Field> {
+    let field = |name: &str, dtype: &str| backend::Field {
+        name: name.into(),
+        dtype: dtype.into(),
+    };
+    let mut fields = vec![field("time", "f64"), field("status", "u32")];
+    if slow {
+        fields.extend([
+            field("observable", "str"),
+            field("slow_id", "u32"),
+            field("slow_raw", "u32"),
+            field("slow_value", "f32"),
+        ]);
+    } else {
+        fields.extend(fast_columns.iter().map(|(_, name)| field(name, "f32")));
+    }
+    fields
+}
+
 pub(crate) fn frames_dataframe(
     frames: &[(u64, Arc<Frame>)],
     rows: usize,
-    profile: &Profile,
+    period_us: f64,
     fast_columns: &[(usize, String)],
     slow_names: &[String],
     slow: bool,
 ) -> Result<DataFrame> {
     if !slow {
-        return fast_dataframe(frames, profile.sample_period_us, fast_columns, 0, rows);
+        return fast_dataframe(frames, period_us, fast_columns, 0, rows);
     }
     let mut time = Vec::with_capacity(rows);
     let mut status = Vec::with_capacity(rows);
@@ -381,7 +409,7 @@ pub(crate) fn frames_dataframe(
     let mut slow_value = Vec::with_capacity(rows);
     for (first, f) in frames {
         for i in 0..f.slow_raw.len() {
-            time.push((first + i as u64) as f64 * profile.sample_period_us * 1e-6);
+            time.push((first + i as u64) as f64 * period_us * 1e-6);
             status.push(f.status);
             slow_id.push(f.slow_ids[i]);
             slow_name.push(slow_names[f.slow_ids[i] as usize].as_str());

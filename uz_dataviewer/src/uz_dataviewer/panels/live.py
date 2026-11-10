@@ -144,6 +144,7 @@ class LiveWorkspace:
         self.output = new_output_directory(repo)
         self.mapping = ''
         self.repo = str(repo) if repo is not None else None
+        self._user_directory = None
         self._xsct_dialog = None
         self.tool_error = ''
         try:
@@ -289,8 +290,13 @@ class LiveWorkspace:
         finally:
             imgui.end_disabled()
 
+    def user_directory(self):
+        if self._user_directory is None:
+            from ..user_paths import data_directory
+            self._user_directory = data_directory(self.repo)
+        return self._user_directory
+
     def _render_data(self, main_state):
-        from ..user_paths import data_directory
         if not self.available:
             imgui.text_wrapped('Live acquisition requires the ultrazohm backend. Restart with start.sh --use-live (start.ps1 on Windows). Use --live-wheel PATH to select an exact wheel.')
             return
@@ -321,7 +327,7 @@ class LiveWorkspace:
                 self.send('shutdown')
             else:
                 self.send('connect', endpoint=self.endpoint, ip=self.ip, port=self.port,
-                          output=self.output, mapping=self.mapping, user_directory=str(data_directory(self.repo)))
+                          output=self.output, mapping=self.mapping, user_directory=str(self.user_directory()))
         if imgui.is_item_hovered(imgui.HoveredFlags_.allow_when_disabled):
             imgui.set_tooltip(
                 'Send device Stop, finalize recordings, and shut down the service. Keep the viewer open.'
@@ -377,7 +383,7 @@ class LiveWorkspace:
             _, self.output = imgui.input_text('New session directory', self.output)
             _, self.mapping = imgui.input_text('Channel mapping JSON (optional)', self.mapping)
             if self.mapping:
-                imgui.text_wrapped('Runtime settings: ' + str(data_directory(self.repo) / 'settings.json'))
+                imgui.text_wrapped('Runtime settings: ' + str(self.user_directory() / 'settings.json'))
             imgui.text_wrapped('Connect launches a new service with these settings. Use Existing service to attach to a running service.')
         state = self.update.status.get('state', {})
         profile = self.update.catalog

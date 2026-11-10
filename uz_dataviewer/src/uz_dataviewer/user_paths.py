@@ -42,7 +42,12 @@ def write_json(path, value, *, overwrite=True):
             os.replace(temporary, path)
         else:
             try:
-                os.link(temporary, path)
+                if sys.platform == 'win32':
+                    # Windows rename refuses an existing destination and works
+                    # on FAT/shares without hard-link support.
+                    os.rename(temporary, path)
+                else:
+                    os.link(temporary, path)
             except FileExistsError:
                 pass
     finally:

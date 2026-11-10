@@ -1,10 +1,13 @@
-"""Named API v1; all device IO and logging execute in Rust."""
+"""Named API v2; all device IO and logging execute in Rust.
+
+Service errors raise RuntimeError with a ``code`` attribute (for example
+``cursor_expired``, ``canceled_by_stop``, ``not_connected``, ``busy``).
+"""
 import json
 from dataclasses import dataclass
 from io import BytesIO
-from ._native import (request as _request, Acquisition as _Acquisition,
-                      data_query as _data_query, recording_info as _recording_info,
-                      recording_data as _recording_data)
+from ._native import (Connection as _Connection, Acquisition as _Acquisition,
+                      recording_info as _recording_info, recording_data as _recording_data)
 
 
 def _position(value, name, *, positive=False):
@@ -77,29 +80,39 @@ class Acquisition(_Acquisition):
         return Recording(self.recording_handle_path(stream, recording))
 
 class Client:
-    """Control an existing external or embedded acquisition service."""
+    """Control an existing external or embedded acquisition service.
+
+    One persistent connection carries all requests of this client in order. A
+    Client may be shared between threads; calls are serialized. Use separate
+    Clients when a command (such as Stop) must not wait behind a long read.
+    """
     def __init__(self, endpoint="127.0.0.1:19740"):
         self.endpoint = endpoint
+        self._connection = _Connection(endpoint)
+
+    def close(self):
+        """Close the connection; a later call reconnects."""
+        self._connection.close()
 
     def _call(self, op, **fields):
-        return json.loads(_request(self.endpoint, json.dumps({"op": op, **fields}, allow_nan=False)))
+        return json.loads(self._connection.request(json.dumps({"op": op, **fields}, allow_nan=False)))
 
     def connect(self, ip="192.168.1.233", port=1000):
         """Connect an offline service and apply its initial observables."""
         return self._call("connect", ip=ip, port=port)
 
-    def start_logging(self): return self._call("start_logging")
-    def stop_logging(self): return self._call("stop_logging")
-    def pause_logging(self):
-        """Suspend fast recording; keep acquisition/RAM and the recording open."""
-        return self._call("pause_logging")
-    def resume_logging(self):
-        """Resume the same fast recording; timestamps retain the pause gap."""
-        return self._call("resume_logging")
-    def start_logging_slow_data(self): return self._call("start_logging_slow_data")
-    def stop_logging_slow_data(self): return self._call("stop_logging_slow_data")
-    def pause_logging_slow_data(self): return self._call("pause_logging_slow_data")
-    def resume_logging_slow_data(self): return self._call("resume_logging_slow_data")
+    def start_logging(self, stream="fast"): return self._call("start_logging", stream=stream)
+    def stop_logging(self, stream="fast"): return self._call("stop_logging", stream=stream)
+    def pause_logging(self, stream="fast"):
+        """Suspend a recording; keep acquisition/RAM and the recording open."""
+        return self._call("pause_logging", stream=stream)
+    def resume_logging(self, stream="fast"):
+        """Resume the same recording; timestamps retain the pause gap."""
+        return self._call("resume_logging", stream=stream)
+    def start_logging_slow_data(self): return self.start_logging("slow")
+    def stop_logging_slow_data(self): return self.stop_logging("slow")
+    def pause_logging_slow_data(self): return self.pause_logging("slow")
+    def resume_logging_slow_data(self): return self.resume_logging("slow")
     def observables(self):
         """Return all channel assignments requested in this session; no device readback."""
         return self._call("observables")
@@ -117,7 +130,7 @@ class Client:
         import polars as pl
         command = {"op": "read_data", "query": {"source": _source(stream, recording),
                    "selection": selection, "channels": channels}}
-        header, payload = _data_query(self.endpoint, json.dumps(command, allow_nan=False))
+        header, payload = self._connection.data_query(json.dumps(command, allow_nan=False))
         metadata = json.loads(header)
         return DataPage(pl.read_ipc_stream(BytesIO(payload)), metadata["cursor"],
                         metadata["start"], metadata["stop"], metadata["info"])
@@ -154,7 +167,8 @@ class Client:
     def stop(self): return self._call("stop")
     def enable_system(self): return self._call("enable_system")
     def enable_control(self): return self._call("enable_control")
-    def error_reset(self): return self._call("error_reset")
+    def error_reset(self):
+        raise RuntimeError("Error_Reset is a no-op in this firmware; use stop to leave error state")
     def set_variable(self, name, value): return self._call("set_variable", name=name, value=value)
     def set_observable(self, name, channel): return self._call("set_observable", name=name, channel=channel)
     def button(self, number): return self._call("button", number=number)

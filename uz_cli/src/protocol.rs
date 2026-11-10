@@ -1,8 +1,10 @@
 //! The unchanged JavaScope little-endian wire adapter. No TCP packet assumptions.
 use anyhow::{Result, ensure};
-use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+/// Streaming channels in the firmware's shared-memory struct; not negotiable on the wire.
+pub const CHANNELS: usize = 20;
+
+#[derive(Clone, Debug)]
 pub struct Frame {
     pub status: u32,
     pub slow_raw: Vec<u32>,
@@ -25,7 +27,7 @@ pub fn decode_frame(
     slow_count: u32,
 ) -> Result<Frame> {
     ensure!(
-        channels == 20 && (1..=4096).contains(&samples),
+        channels == CHANNELS && (1..=4096).contains(&samples),
         "unsupported frame geometry"
     );
     ensure!(

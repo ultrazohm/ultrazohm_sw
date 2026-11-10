@@ -300,7 +300,7 @@ impl Profile {
     pub fn validate(&self) -> Result<()> {
         validate_state_mapping(self.legacy_javascope_header, &self.platform_state)?;
         ensure!(
-            self.api_version == 1 && self.channels == 20,
+            self.api_version == 1 && self.channels == crate::protocol::CHANNELS,
             "requires v1 profile and 20-channel firmware"
         );
         ensure!(
@@ -388,7 +388,11 @@ impl Profile {
             .with_context(|| format!("unknown writable variable: {name}"))
     }
     pub fn observable(&self, name: &str, channel: u32) -> Result<(u32, f32)> {
-        ensure!((1..=20).contains(&channel), "channel must be 1..20");
+        ensure!(
+            (1..=crate::protocol::CHANNELS as u32).contains(&channel),
+            "channel must be 1..{}",
+            crate::protocol::CHANNELS
+        );
         let id = self
             .observables
             .get(name)

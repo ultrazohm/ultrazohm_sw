@@ -263,7 +263,7 @@ class IntegrationTest(unittest.TestCase):
             # Let accept run before sending, then split the JSON and newline.
             # Windows inherits nonblocking mode from the listener unless reset.
             time.sleep(.1)
-            sock.sendall(b'{"api_version":1,"command":')
+            sock.sendall(b'{"api_version":2,"command":')
             time.sleep(.1)
             sock.sendall(b'{"op":"status"}}')
             time.sleep(.1)
@@ -1143,7 +1143,7 @@ class IntegrationTest(unittest.TestCase):
                 client = socket.create_connection(address)
                 clients.append(client)
                 if i % 2:
-                    client.sendall(b'{"api_version":1,"command":')
+                    client.sendall(b'{"api_version":2,"command":')
             time.sleep(.05)  # Let the service accept the stalled connections.
             started = time.monotonic()
             self.assertTrue(self.cli('stop')['ok'])
@@ -1156,7 +1156,7 @@ class IntegrationTest(unittest.TestCase):
     def test_control_validation_and_exclusive_run(self):
         self.start()
         with socket.create_connection(tuple(["127.0.0.1", int(self.endpoint.split(":")[1])])) as sock:
-            sock.sendall(b'{"api_version":2,"command":{"op":"stop"}}\n')
+            sock.sendall(b'{"api_version":1,"command":{"op":"stop"}}\n')
             reply=json.loads(sock.makefile("rb").readline())
             self.assertFalse(reply["ok"])
         # Duplicate owner must fail before replacing the device connection.
@@ -1206,14 +1206,149 @@ class IntegrationTest(unittest.TestCase):
         self.assertIn("invalid slow ID",end["state"]["error"])
         self.assertEqual(end["state"]["samples"],45)
 
-    def test_disk_error_is_reported(self):
+    def test_disk_error_fails_recording_but_not_acquisition(self):
         self.start()
         # A directory where a temporary file should go forces a portable write failure.
         (self.run_dir/"data-part-00000000.parquet.partial").mkdir()
+        wait_for(lambda: self.cli("status")["logging"]["fast"]["phase"] == "failed")
+        status = self.cli("status")
+        self.assertIn("logging", status["logging"]["fast"]["error"])
+        frames = status["state"]["frames"]
+        wait_for(lambda: self.cli("status")["state"]["frames"] > frames)  # acquisition continues
+        self.assertTrue(self.cli("stop")["ok"])  # device control remains available
+        self.cli("shutdown")
         self.assertNotEqual(self.service.wait(timeout=8),0)
         end=json.loads((self.run_dir/"end.json").read_text())
         self.assertFalse(end["complete"])
         self.assertIn("logging",end["state"]["error"])
+
+    def check_failed_recording_recovery(self, blocker):
+        self.start(logging=False, format="parquet")
+        (self.run_dir / blocker).mkdir()
+        self.cli("start-logging")
+        wait_for(lambda: self.cli("status")["logging"]["fast"]["phase"] == "failed")
+        failure = self.cli("status")["logging"]["fast"]["error"]
+        # Even initialization failures remain discoverable with their real error.
+        first = self.cli("recordings")["recordings"][0]
+        self.assertEqual(first["recording"], 1)
+        self.assertEqual(first["error"], failure)
+        self.assertFalse(first["complete"])
+        self.assertEqual(self.cli("data-info", "--recording", "1")["info"]["error"], failure)
+        if blocker == "data.recording.json":
+            with self.assertRaisesRegex(RuntimeError, "logging:"):
+                self.cli("read-range", "0", "0", "--recording", "1")
+        # The next recording works, without hiding the first one's failure.
+        self.cli("start-logging")
+        wait_for(lambda: self.cli("data-info", "--recording", "2")["info"]["stop"] is not None)
+        self.cli("stop-logging")
+        wait_for(lambda: self.cli("status")["logging"]["fast"]["phase"] == "complete")
+        recordings = self.cli("recordings")["recordings"]
+        self.assertEqual(len(recordings), 2)
+        self.assertEqual(recordings[0]["error"], failure)
+        self.assertTrue(recordings[1]["complete"])
+        self.assertIsNone(recordings[1].get("error"))
+        self.cli("shutdown")
+        self.assertNotEqual(self.service.wait(timeout=8), 0)
+        end = json.loads((self.run_dir / "end.json").read_text())
+        self.assertFalse(end["complete"])
+        self.assertIn("fast recording 1", end["state"]["error"])
+        self.assertIn(failure, end["state"]["error"])
+
+    def test_failed_write_survives_successful_recording_restart(self):
+        self.check_failed_recording_recovery("data-part-00000000.parquet.partial")
+
+    def test_failed_initialization_does_not_block_recording_listing(self):
+        self.check_failed_recording_recovery("data.recording.json")
+
+    def check_paused_recording_failure_releases_assignments(self, stream):
+        self.start(logging=False, format="parquet",
+                   data_options=("--segment-rows", "4096", "--flush-interval-ms", "2000"))
+        suffix = "-slow-data" if stream == "slow" else ""
+        stem = "data_slow_data" if stream == "slow" else "data"
+        (self.run_dir / f"{stem}-part-00000000.parquet.partial").mkdir()
+        self.cli("start-logging" + suffix)
+        wait_for(lambda: self.cli("data-info", "--stream", stream, "--recording", "1")["info"]["stop"] is not None)
+        paused = self.cli("pause-logging" + suffix)
+        self.assertEqual(paused["logging"][stream]["phase"], "paused")
+        wait_for(lambda: self.cli("status")["logging"][stream]["phase"] == "failed")
+        failed = self.cli("status")
+        # Acquisition keeps running and must discard the failed route even though
+        # it was paused. No stop/resume/restart of logging should be necessary.
+        wait_for(lambda: self.cli("status")["state"]["frames"] > failed["state"]["frames"] + 2)
+        self.assertTrue(self.cli("set-observable", "lifecheck", "1")["ok"])
+        self.assertEqual(self.cli("status")["logging"][stream]["error"],
+                         failed["logging"][stream]["error"])
+        self.cli("shutdown")
+        self.assertNotEqual(self.service.wait(timeout=8), 0)
+
+    def test_paused_fast_recording_failure_releases_assignments(self):
+        self.check_paused_recording_failure_releases_assignments("fast")
+
+    def test_paused_slow_recording_failure_releases_assignments(self):
+        self.check_paused_recording_failure_releases_assignments("slow")
+
+    def test_continuous_request_fragments_cannot_bypass_deadline(self):
+        self.start(logging=False)
+        address = ("127.0.0.1", int(self.endpoint.split(":")[1]))
+        with socket.create_connection(address, timeout=4) as sock:
+            stop = threading.Event()
+            def fragments():
+                try:
+                    sock.sendall(b'{')
+                    while not stop.wait(.01):
+                        sock.sendall(b' ')
+                except OSError:
+                    pass  # The service closes a request that exceeds its deadline.
+            sender = threading.Thread(target=fragments, daemon=True)
+            sender.start()
+            try:
+                with sock.makefile("rb") as replies:
+                    reply = json.loads(replies.readline())
+                self.assertFalse(reply["ok"])
+                self.assertIn("deadline exceeded", reply["error"])
+            finally:
+                stop.set()
+                sender.join(timeout=2)
+        self.assertTrue(self.cli("status")["ok"])
+
+    def test_shutdown_completes_while_a_client_polls_continuously(self):
+        self.start(logging=False)
+        address = ("127.0.0.1", int(self.endpoint.split(":")[1]))
+        stop = threading.Event()
+        def poll():
+            # Faster than the server's idle read timeout, on one connection.
+            with socket.create_connection(address, timeout=3) as sock:
+                replies = sock.makefile("rb")
+                while not stop.is_set():
+                    sock.sendall(b'{"api_version":2,"command":{"op":"status"}}\n')
+                    if not replies.readline():
+                        return
+                    time.sleep(.02)
+        poller = threading.Thread(target=poll, daemon=True)
+        poller.start()
+        try:
+            time.sleep(.2)
+            self.cli("shutdown")
+            self.assertEqual(self.service.wait(timeout=8), 0)
+        finally:
+            stop.set()
+            poller.join(3)
+
+    def test_persistent_connection_serves_sequential_requests_and_coded_errors(self):
+        self.start(logging=False)
+        with socket.create_connection(("127.0.0.1", int(self.endpoint.split(":")[1])), timeout=3) as sock:
+            replies = sock.makefile("rb")
+            for _ in range(3):
+                sock.sendall(b'{"api_version":2,"command":{"op":"status"}}\n')
+                self.assertTrue(json.loads(replies.readline())["ok"])
+            sock.sendall(b'{"api_version":2,"command":{"op":"read_data","query":{"source":{"stream":"fast",'
+                         b'"recording":null},"selection":{"kind":"since","cursor":{"run_id":"other",'
+                         b'"stream":"fast","recording":null,"generation":0,"next_sample":0},"limit":5}}}}\n')
+            reply = json.loads(replies.readline())
+            self.assertFalse(reply["ok"])
+            self.assertEqual(reply["code"], "cursor_expired")
+            sock.sendall(b'{"api_version":2,"command":{"op":"status"}}\n')
+            self.assertTrue(json.loads(replies.readline())["ok"])
 
     @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for embedded API test")
     def test_embedded_python_acquisition(self):

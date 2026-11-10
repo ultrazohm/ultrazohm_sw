@@ -70,8 +70,8 @@ def workflow(tmp_path, monkeypatch):
     client = Client()
     controller = LiveController(lambda _: client)
     path = root/'cached.json'
-    def generate(repo, *, overwrite=False):
-        assert repo == root and overwrite
+    def generate(repo):
+        assert repo == root
         events.append('mapping')
         path.write_text(json.dumps(mapping))
         return path

@@ -448,3 +448,33 @@ def test_invalid_summary_metadata_rebuilds(recording, tmp_path, count):
     result = source.read_plot('a', t[0], t[-1], 100)
     assert np.nanmin(result.values) == np.nanmin(y)
     assert np.nanmax(result.values) == np.nanmax(y)
+
+
+def test_request_worker_survives_system_exit_and_immediate_jobs_release_lock():
+    import threading
+    from uz_dataviewer.requests import Requests
+    requests = Requests()
+    try:
+        def explode(cancel):
+            raise SystemExit('plugin exit')
+        requests.request('a', 1, 'id', explode)
+        for _ in range(200):
+            if requests.error('a'):
+                break
+            threading.Event().wait(.01)
+        assert 'plugin exit' in requests.error('a')
+        requests.request('b', 1, 'id', lambda cancel: 42)
+        for _ in range(200):
+            if requests.ready('b', 1):
+                break
+            threading.Event().wait(.01)
+        assert requests.ready('b', 1)
+        lock_free = []
+        def immediate(cancel):
+            lock_free.append(requests.condition.acquire(blocking=False))
+            requests.condition.release()
+            return 7
+        assert requests.request('c', 1, 'id', immediate, immediate=True) == 7
+        assert lock_free == [True]
+    finally:
+        requests.close()

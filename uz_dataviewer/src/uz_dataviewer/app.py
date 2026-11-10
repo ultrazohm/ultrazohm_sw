@@ -176,8 +176,6 @@ class DataViewerApp:
             ):
                 window = hello_imgui.DockableWindow()
                 window.label = label
-                window.is_visible = False
-                window.remember_is_visible = False
                 window.dock_space_name = dock
                 window.gui_function = render
                 windows.append(window)

@@ -1,5 +1,5 @@
 use crate::{
-    data::{DataView, Query, Selection, Source},
+    data::{DataView, Query, Selection, Source, Stream},
     live::{DataOptions, LiveBuffer, MAX_SNAPSHOT_BYTES},
     profile::Profile,
     protocol::{decode_frame, encode_command},
@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::{
     fs::{self, OpenOptions},
-    io::{Read, Write},
+    io::{BufRead, BufReader, Read, Write},
     net::{Shutdown, SocketAddr, TcpListener, TcpStream, ToSocketAddrs},
     path::PathBuf,
     sync::{
@@ -86,33 +86,125 @@ pub fn session_output(output: Option<PathBuf>) -> Result<PathBuf> {
 }
 
 const MAX_MESSAGE: usize = 65536;
+/// Local API version. v2: persistent connections and coded errors.
+pub const API_VERSION: u32 = 2;
+
+/// An error with a stable machine-readable `code`, carried in JSON error replies.
+#[derive(Debug)]
+pub struct ApiError {
+    pub code: String,
+    pub message: String,
+}
+impl std::fmt::Display for ApiError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&self.message)
+    }
+}
+impl std::error::Error for ApiError {}
+
+pub(crate) fn coded(code: &str, message: impl Into<String>) -> anyhow::Error {
+    ApiError {
+        code: code.into(),
+        message: message.into(),
+    }
+    .into()
+}
+
+/// The error code of the first coded error in an error chain, if any.
+pub fn error_code(error: &anyhow::Error) -> Option<&str> {
+    error
+        .chain()
+        .find_map(|e| e.downcast_ref::<ApiError>())
+        .map(|e| e.code.as_str())
+}
+
+fn ok_reply(mut fields: Value) -> Value {
+    fields["api_version"] = json!(API_VERSION);
+    fields["ok"] = json!(true);
+    fields
+}
+
+fn error_reply(error: &anyhow::Error) -> Value {
+    json!({"api_version":API_VERSION,"ok":false,"error":format!("{error:#}"),"code":error_code(error)})
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(tag = "op", rename_all = "snake_case", deny_unknown_fields)]
 pub enum Operation {
-    Connect { ip: String, port: u16 },
+    Connect {
+        ip: String,
+        port: u16,
+    },
     Status,
     Catalog,
     Observables,
-    DataInfo { source: Source },
-    ReadData { query: Query },
+    DataInfo {
+        source: Source,
+    },
+    ReadData {
+        query: Query,
+    },
     Recordings,
     Stop,
     EnableSystem,
     EnableControl,
-    ErrorReset,
-    SetVariable { name: String, value: f32 },
-    SetObservable { name: String, channel: u32 },
-    Button { number: u32 },
-    SendAck { enabled: bool },
-    StartLogging,
-    StopLogging,
-    PauseLogging,
-    ResumeLogging,
-    StartLoggingSlowData,
-    StopLoggingSlowData,
-    PauseLoggingSlowData,
-    ResumeLoggingSlowData,
+    SetVariable {
+        name: String,
+        value: f32,
+    },
+    SetObservable {
+        name: String,
+        channel: u32,
+    },
+    Button {
+        number: u32,
+    },
+    SendAck {
+        enabled: bool,
+    },
+    StartLogging {
+        #[serde(default)]
+        stream: Stream,
+    },
+    StopLogging {
+        #[serde(default)]
+        stream: Stream,
+    },
+    PauseLogging {
+        #[serde(default)]
+        stream: Stream,
+    },
+    ResumeLogging {
+        #[serde(default)]
+        stream: Stream,
+    },
     Shutdown,
+}
+impl Operation {
+    /// Reads have no device or recording side effects and may be retried.
+    pub fn read_only(&self) -> bool {
+        matches!(
+            self,
+            Self::Status
+                | Self::Catalog
+                | Self::Observables
+                | Self::DataInfo { .. }
+                | Self::ReadData { .. }
+                | Self::Recordings
+        )
+    }
+    /// Device commands that a later Stop supersedes while still queued.
+    pub fn superseded_by_stop(&self) -> bool {
+        matches!(
+            self,
+            Self::Stop
+                | Self::EnableSystem
+                | Self::EnableControl
+                | Self::SetVariable { .. }
+                | Self::SetObservable { .. }
+                | Self::Button { .. }
+        )
+    }
 }
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -155,32 +247,84 @@ fn local_address(s: &str) -> Result<SocketAddr> {
     ensure!(addr.ip().is_loopback(), "control endpoint must be loopback");
     Ok(addr)
 }
-fn read_line(stream: &mut TcpStream, timeout: Duration) -> Result<Vec<u8>> {
+/// Read one newline-terminated message through a buffer; the binary body of a
+/// data reply stays in the same reader. `Ok(None)` is EOF before a message, or
+/// `idle_stop` becoming set, including during a partial request.
+fn read_message(
+    reader: &mut impl BufRead,
+    deadline: Duration,
+    idle_stop: Option<&AtomicBool>,
+) -> Result<Option<Vec<u8>>> {
     let mut data = Vec::new();
-    let mut b = [0u8];
-    let started = Instant::now();
-    while data.len() < MAX_MESSAGE {
-        ensure!(
-            started.elapsed() < timeout,
-            "control message deadline exceeded"
-        );
-        ensure!(
-            stream.read(&mut b)? != 0,
-            "connection closed before newline"
-        );
-        if b[0] == b'\n' {
-            return Ok(data);
+    let mut started: Option<Instant> = None;
+    loop {
+        if idle_stop.is_some_and(|stop| stop.load(Ordering::SeqCst)) {
+            return Ok(None);
         }
-        data.push(b[0]);
+        if let Some(started) = started {
+            ensure!(
+                started.elapsed() < deadline,
+                "control message deadline exceeded"
+            );
+        }
+        let available = match reader.fill_buf() {
+            Ok(bytes) => bytes,
+            Err(e) if e.kind() == std::io::ErrorKind::Interrupted => continue,
+            Err(e)
+                if matches!(
+                    e.kind(),
+                    std::io::ErrorKind::WouldBlock | std::io::ErrorKind::TimedOut
+                ) =>
+            {
+                match (started, idle_stop) {
+                    (Some(t), _) => {
+                        ensure!(t.elapsed() < deadline, "control message deadline exceeded")
+                    }
+                    (None, Some(stop)) if stop.load(Ordering::SeqCst) => return Ok(None),
+                    (None, Some(_)) => {}
+                    (None, None) => bail!("timed out waiting for a reply"),
+                }
+                continue;
+            }
+            Err(e) => return Err(e.into()),
+        };
+        // Check successful reads too: a peer can otherwise evade the deadline
+        // by continuously sending fragments faster than the socket timeout.
+        if let Some(started) = started {
+            ensure!(
+                started.elapsed() < deadline,
+                "control message deadline exceeded"
+            );
+        }
+        if idle_stop.is_some_and(|stop| stop.load(Ordering::SeqCst)) {
+            return Ok(None);
+        }
+        if available.is_empty() {
+            ensure!(data.is_empty(), "connection closed before newline");
+            return Ok(None);
+        }
+        started.get_or_insert_with(Instant::now);
+        let newline = available.iter().position(|&b| b == b'\n');
+        let take = newline.unwrap_or(available.len());
+        data.extend_from_slice(&available[..take]);
+        reader.consume(take + usize::from(newline.is_some()));
+        ensure!(
+            data.len() <= MAX_MESSAGE,
+            "control message exceeds {MAX_MESSAGE} bytes"
+        );
+        if newline.is_some() {
+            return Ok(Some(data));
+        }
     }
-    bail!("control message exceeds {MAX_MESSAGE} bytes")
 }
+
+/// One request on a fresh connection, for short-lived CLI invocations.
 pub fn request(endpoint: &str, command: Operation) -> Result<Value> {
     ensure!(
         !matches!(command, Operation::ReadData { .. }),
         "use read_data for binary sample responses"
     );
-    let (reply, _) = exchange(endpoint, command, false)?;
+    let (reply, _) = Connection::new(endpoint).exchange(command, false)?;
     Ok(reply)
 }
 
@@ -189,45 +333,134 @@ pub(crate) fn exchange(
     command: Operation,
     binary: bool,
 ) -> Result<(Value, Vec<u8>)> {
-    // Windows retries refused loopback connections for about two seconds.
-    // A two-second deadline can mask ConnectionRefused as TimedOut, preventing
-    // callers from recognizing a stopped service during managed flashing.
-    let connect_timeout = Duration::from_secs(if cfg!(windows) { 5 } else { 2 });
-    let mut socket = TcpStream::connect_timeout(&local_address(endpoint)?, connect_timeout)?;
-    let timeout = Duration::from_secs(if binary || matches!(command, Operation::Connect { .. }) {
-        30
-    } else {
-        5
-    });
-    socket.set_read_timeout(Some(timeout))?;
-    socket.set_write_timeout(Some(Duration::from_secs(2)))?;
-    serde_json::to_writer(
-        &mut socket,
-        &Request {
-            api_version: 1,
-            command,
-        },
-    )?;
-    socket.write_all(b"\n")?;
-    let reply: Value = serde_json::from_slice(&read_line(&mut socket, timeout)?)?;
-    ensure!(
-        reply["api_version"] == 1,
-        "unsupported response API version"
-    );
-    ensure!(reply["ok"] == true, "{}", reply["error"]);
-    let mut bytes = Vec::new();
-    if binary {
-        let len = reply["arrow_bytes"]
-            .as_u64()
-            .context("missing Arrow response length")?;
-        ensure!(
-            len <= MAX_SNAPSHOT_BYTES as u64,
-            "snapshot exceeds response limit"
-        );
-        bytes.resize(len as usize, 0);
-        socket.read_exact(&mut bytes)?;
+    Connection::new(endpoint).exchange(command, binary)
+}
+
+/// A persistent client connection. Requests are sent sequentially on one socket;
+/// a broken socket is dropped and reopened. Only read-only operations are
+/// retried automatically, because a device command must never be replayed.
+pub struct Connection {
+    endpoint: String,
+    socket: Option<(BufReader<TcpStream>, TcpStream)>,
+}
+impl Connection {
+    pub fn new(endpoint: &str) -> Self {
+        Self {
+            endpoint: endpoint.into(),
+            socket: None,
+        }
     }
-    Ok((reply, bytes))
+
+    /// Drop the socket; the next exchange reconnects.
+    pub fn reset(&mut self) {
+        self.socket = None;
+    }
+
+    fn open(&mut self) -> Result<&mut (BufReader<TcpStream>, TcpStream)> {
+        // A service that closed an idle connection (restart, shutdown) leaves a
+        // readable EOF; detect it before sending rather than after.
+        if let Some((reader, _)) = &mut self.socket {
+            let stale = reader.buffer().is_empty() && {
+                let socket = reader.get_ref();
+                socket.set_nonblocking(true)?;
+                let mut probe = [0u8];
+                let state = socket.peek(&mut probe);
+                socket.set_nonblocking(false)?;
+                !matches!(&state, Err(e) if e.kind() == std::io::ErrorKind::WouldBlock)
+            };
+            if stale {
+                self.socket = None;
+            }
+        }
+        if self.socket.is_none() {
+            // Windows retries refused loopback connections for about two seconds.
+            // A two-second deadline can mask ConnectionRefused as TimedOut, preventing
+            // callers from recognizing a stopped service during managed flashing.
+            let connect_timeout = Duration::from_secs(if cfg!(windows) { 5 } else { 2 });
+            let socket =
+                TcpStream::connect_timeout(&local_address(&self.endpoint)?, connect_timeout)?;
+            socket.set_nodelay(true)?;
+            socket.set_write_timeout(Some(Duration::from_secs(2)))?;
+            self.socket = Some((BufReader::new(socket.try_clone()?), socket));
+        }
+        Ok(self.socket.as_mut().expect("socket opened above"))
+    }
+
+    pub fn exchange(&mut self, command: Operation, binary: bool) -> Result<(Value, Vec<u8>)> {
+        let retry = command.read_only();
+        let timeout =
+            Duration::from_secs(if binary || matches!(command, Operation::Connect { .. }) {
+                30
+            } else {
+                5
+            });
+        let request = serde_json::to_vec(&Request {
+            api_version: API_VERSION,
+            command,
+        })?;
+        let result = self.send(&request, binary, timeout);
+        if let Err(error) = &result
+            && retry
+            && error.downcast_ref::<std::io::Error>().is_some()
+        {
+            self.socket = None;
+            return self.send(&request, binary, timeout);
+        }
+        result
+    }
+
+    fn send(
+        &mut self,
+        request: &[u8],
+        binary: bool,
+        timeout: Duration,
+    ) -> Result<(Value, Vec<u8>)> {
+        let result = (|| -> Result<(Value, Vec<u8>)> {
+            let (reader, socket) = self.open()?;
+            socket.set_read_timeout(Some(timeout))?;
+            socket.write_all(request)?;
+            socket.write_all(b"\n")?;
+            let line = read_message(reader, timeout, None)?.ok_or_else(|| {
+                std::io::Error::new(
+                    std::io::ErrorKind::UnexpectedEof,
+                    "service closed the connection",
+                )
+            })?;
+            let reply: Value = serde_json::from_slice(&line)?;
+            ensure!(
+                reply["api_version"] == API_VERSION,
+                "unsupported response API version {}; client and service versions differ",
+                reply["api_version"]
+            );
+            if reply["ok"] != true {
+                return Err(ApiError {
+                    code: reply["code"].as_str().unwrap_or("error").into(),
+                    message: reply["error"].as_str().unwrap_or("request failed").into(),
+                }
+                .into());
+            }
+            let mut bytes = Vec::new();
+            if binary {
+                let len = reply["arrow_bytes"]
+                    .as_u64()
+                    .context("missing Arrow response length")?;
+                ensure!(
+                    len <= MAX_SNAPSHOT_BYTES as u64,
+                    "snapshot exceeds response limit"
+                );
+                bytes.resize(len as usize, 0);
+                reader.read_exact(&mut bytes)?;
+            }
+            Ok((reply, bytes))
+        })();
+        // A reply error leaves the stream in sync; any other failure may not.
+        if let Err(error) = &result
+            && error.downcast_ref::<ApiError>().is_none()
+        {
+            self.socket = None;
+        }
+        result
+    }
 }
 fn send(writer: &Mutex<TcpStream>, id: u32, value: f32) -> Result<()> {
     writer
@@ -267,7 +500,7 @@ struct Service {
     run_id: String,
     events: Option<Audit>,
     recordings: Recordings,
-    connection: Option<Connection>,
+    connection: Option<DeviceConnection>,
     selections: Value,
     shutdown_stop_sent: bool,
 }
@@ -347,8 +580,14 @@ impl Service {
         Ok(service)
     }
 
+    /// Record the first terminal error (later errors never mask the root cause)
+    /// and end acquisition.
+    fn fail(&self, message: String) {
+        self.context.fail(message);
+    }
+
     fn connect(&mut self, device: &str) -> Result<()> {
-        let (connection, selections) = self.context.connect(device, &mut self.events)?;
+        let (connection, selections) = self.context.connect(device, &self.events)?;
         self.connection = Some(connection);
         self.selections = selections;
         Ok(())
@@ -362,24 +601,16 @@ impl Service {
         ) {
             Ok(control) => control,
             Err(error) => {
-                self.context.state.lock().unwrap().error =
-                    Some(format!("control transport: {error:#}"));
-                self.context.shutdown.store(true, Ordering::SeqCst);
-                let _ = self.finish();
+                self.fail(format!("control transport: {error:#}"));
+                if let Err(finish) = self.finish() {
+                    eprintln!("Service finalization: {finish:#}");
+                }
                 return Err(error);
             }
         };
         while !self.context.shutdown.load(Ordering::SeqCst) {
-            if let Some(error) = self.recordings.error() {
-                self.context
-                    .state
-                    .lock()
-                    .unwrap()
-                    .error
-                    .get_or_insert(error);
-                self.context.shutdown.store(true, Ordering::SeqCst);
-                break;
-            }
+            // A failed recording is reported in its status and at exit; it never
+            // ends acquisition or device control (optional exports included).
             if self
                 .connection
                 .as_ref()
@@ -388,11 +619,11 @@ impl Service {
                 self.context.shutdown.store(true, Ordering::SeqCst);
                 break;
             }
-            if let Some(pending) = control.next() {
+            // Wake on the next request; time out to recheck acquisition state.
+            if let Some(pending) = control.next(Duration::from_millis(50)) {
                 let response = self.handle(pending.request);
+                // A client that disconnected meanwhile no longer needs the reply.
                 let _ = pending.reply.send(response);
-            } else {
-                thread::sleep(Duration::from_millis(5));
             }
         }
         // Stop the device before waiting for any slow client or disk worker.
@@ -410,18 +641,14 @@ impl Service {
             }
             Operation::DataInfo { source } => {
                 let view = self.view(source, None)?;
-                return Ok(Reply::Json(
-                    json!({"api_version":1,"ok":true,"info":view.info}),
-                ));
+                return Ok(Reply::Json(ok_reply(json!({"info":view.info}))));
             }
             Operation::Recordings => {
                 let mut infos = Vec::new();
                 for source in self.recordings.sources() {
                     infos.push(self.view(&source, None)?.info);
                 }
-                return Ok(Reply::Json(
-                    json!({"api_version":1,"ok":true,"recordings":infos}),
-                ));
+                return Ok(Reply::Json(ok_reply(json!({"recordings":infos}))));
             }
             Operation::Connect { ip, port } => {
                 ensure!(self.connection.is_none(), "already connected");
@@ -434,15 +661,16 @@ impl Service {
                 self.connect(&address.to_string())?;
             }
             Operation::Status => {
-                return Ok(Reply::Json(
-                    json!({"api_version":1,"ok":true,"state":*self.context.state.lock().unwrap(),"send_ack":self.context.ack.load(Ordering::SeqCst),"logging":self.recordings.status(),
-                        "data_options":self.config.data,"buffer_available_samples":self.context.ring.lock().unwrap().available()}),
-                ));
+                let available = self.context.ring.lock().unwrap().available();
+                let state = serde_json::to_value(&*self.context.state.lock().unwrap())?;
+                return Ok(Reply::Json(ok_reply(json!({
+                    "state":state,"send_ack":self.context.ack.load(Ordering::SeqCst),
+                    "logging":self.recordings.status(),"data_options":self.config.data,
+                    "buffer_available_samples":available}))));
             }
             Operation::Catalog => {
-                return Ok(Reply::Json(json!({"api_version":1,"ok":true,
-                    "profile":self.config.profile,
-                    "device_readback":false})));
+                return Ok(Reply::Json(ok_reply(json!({
+                    "profile":self.config.profile,"device_readback":false}))));
             }
             Operation::Observables => {
                 let channels: Vec<Value> = (1..=self.config.profile.channels)
@@ -466,30 +694,24 @@ impl Service {
                         "state":if entry.is_some() {"sent_unconfirmed"} else {"unknown"}})
                     })
                     .collect();
-                return Ok(Reply::Json(json!({"api_version":1,"ok":true,
+                return Ok(Reply::Json(ok_reply(json!({
                     "source":"service_requested_assignments",
-                    "device_readback":false,"channels":channels})));
+                    "device_readback":false,"channels":channels}))));
             }
-            Operation::StartLogging => {
-                ensure!(
-                    self.connection.is_some(),
-                    "not connected; use connect first"
-                );
-                self.recordings.start(false, &self.selections)?;
+            Operation::StartLogging { stream } => {
+                if self.connection.is_none() {
+                    return Err(coded("not_connected", "not connected; use connect first"));
+                }
+                self.recordings
+                    .start(*stream == Stream::Slow, &self.selections)?;
             }
-            Operation::StopLogging => self.recordings.stop(false)?,
-            Operation::PauseLogging => self.recordings.pause(false, true)?,
-            Operation::ResumeLogging => self.recordings.pause(false, false)?,
-            Operation::StartLoggingSlowData => {
-                ensure!(
-                    self.connection.is_some(),
-                    "not connected; use connect first"
-                );
-                self.recordings.start(true, &self.selections)?;
+            Operation::StopLogging { stream } => self.recordings.stop(*stream == Stream::Slow)?,
+            Operation::PauseLogging { stream } => {
+                self.recordings.pause(*stream == Stream::Slow, true)?
             }
-            Operation::StopLoggingSlowData => self.recordings.stop(true)?,
-            Operation::PauseLoggingSlowData => self.recordings.pause(true, true)?,
-            Operation::ResumeLoggingSlowData => self.recordings.pause(true, false)?,
+            Operation::ResumeLogging { stream } => {
+                self.recordings.pause(*stream == Stream::Slow, false)?
+            }
             Operation::Shutdown => {
                 self.context.shutdown.store(true, Ordering::SeqCst);
                 if self.connection.is_some() {
@@ -503,9 +725,7 @@ impl Service {
                     && let Some(c) = &self.connection
                     && let Err(e) = send(&c.writer, 0, 0.0)
                 {
-                    self.context.state.lock().unwrap().error =
-                        Some(format!("ACK write failed; outcome unknown: {e}"));
-                    self.context.shutdown.store(true, Ordering::SeqCst);
+                    self.fail(format!("ACK write failed; outcome unknown: {e}"));
                     return Err(e);
                 }
                 self.context.ack.store(*enabled, Ordering::SeqCst);
@@ -536,20 +756,14 @@ impl Service {
             Operation::EnableControl => {
                 wire = Some((self.config.profile.command("Enable_Control")?, 0.0))
             }
-            Operation::ErrorReset => {
-                bail!("Error_Reset is a no-op in this firmware; use stop to leave error state")
-            }
         }
         if let Some((id, value)) = wire {
-            let connected = self
-                .connection
-                .as_ref()
-                .context("not connected; use connect first")?;
+            let Some(connected) = self.connection.as_ref() else {
+                return Err(coded("not_connected", "not connected; use connect first"));
+            };
             encode_command(id, value)?; // Validation errors must not terminate acquisition.
             if let Err(e) = send(&connected.writer, id, value) {
-                self.context.state.lock().unwrap().error =
-                    Some(format!("command write failed; outcome unknown: {e}"));
-                self.context.shutdown.store(true, Ordering::SeqCst);
+                self.fail(format!("command write failed; outcome unknown: {e}"));
                 return Err(e);
             }
             self.context.state.lock().unwrap().commands_sent += 1;
@@ -565,14 +779,12 @@ impl Service {
         if let Some(audit) = self.events.as_ref()
             && let Err(e) = audit.send(json!({"host_unix_ns":now_ns(),"request":req,"wire":wire,"outcome":if wire.is_some(){"sent_unconfirmed"}else{"applied_locally"}}))
         {
-            self.context.state.lock().unwrap().error =
-                Some(format!("command audit failed after send: {e}"));
-            self.context.shutdown.store(true, Ordering::SeqCst);
+            self.fail(format!("command audit failed after send: {e}"));
             return Err(e);
         }
-        Ok(Reply::Json(
-            json!({"api_version":1,"ok":true,"outcome":if wire.is_some(){"sent_unconfirmed"}else{"applied_locally"},"logging":self.recordings.status()}),
-        ))
+        Ok(Reply::Json(ok_reply(
+            json!({"outcome":if wire.is_some(){"sent_unconfirmed"}else{"applied_locally"},"logging":self.recordings.status()}),
+        )))
     }
 
     fn view(&self, source: &Source, selection: Option<&Selection>) -> Result<DataView> {
@@ -585,10 +797,9 @@ impl Service {
                 selection,
             )
         } else {
-            ensure!(
-                self.connection.is_some(),
-                "not connected; use connect first"
-            );
+            if self.connection.is_none() {
+                return Err(coded("not_connected", "not connected; use connect first"));
+            }
             DataView::live(
                 &self.run_id,
                 source,
@@ -615,24 +826,19 @@ impl Service {
                 Ok(()) => self.context.state.lock().unwrap().commands_sent += 1,
                 Err(error) => {
                     eprintln!("Shutdown device Stop failed: {error:#}");
-                    self.context
-                        .state
-                        .lock()
-                        .unwrap()
-                        .error
-                        .get_or_insert_with(|| format!("shutdown device Stop failed: {error:#}"));
+                    self.fail(format!("shutdown device Stop failed: {error:#}"));
                 }
             }
         }
-        if let Some(Connection {
+        if let Some(DeviceConnection {
             writer,
             acquisition,
         }) = self.connection
         {
             if acquisition.join().is_err() {
-                self.context.state.lock().unwrap().error =
-                    Some("acquisition thread panicked".into());
+                self.context.fail("acquisition thread panicked".into());
             }
+            // The device socket may already be closed by the peer.
             let _ = writer.lock().unwrap().shutdown(Shutdown::Both);
         }
         if let Err(e) = self.recordings.finish() {
@@ -652,12 +858,7 @@ impl Service {
         if let Some(audit) = self.events
             && let Err(error) = audit.finish()
         {
-            self.context
-                .state
-                .lock()
-                .unwrap()
-                .error
-                .get_or_insert_with(|| format!("{error:#}"));
+            self.context.fail(format!("{error:#}"));
         }
         let s = self.context.state.lock().unwrap();
         if let Some(dir) = self.config.output {
@@ -675,18 +876,28 @@ impl Service {
     }
 }
 
-fn read_request(socket: &mut TcpStream) -> Result<Request> {
-    // Windows accepted sockets inherit the nonblocking listener mode.
-    // Requests and replies use blocking I/O with bounded timeouts.
-    socket.set_nonblocking(false)?;
-    socket.set_read_timeout(Some(Duration::from_secs(1)))?;
-    socket.set_write_timeout(Some(Duration::from_secs(5)))?;
-    let req: Request = serde_json::from_slice(&read_line(socket, Duration::from_secs(2))?)?;
-    ensure!(req.api_version == 1, "unsupported API version");
-    Ok(req)
+/// Read the next request on a persistent connection. Idle connections wait
+/// until `stop` is set; a started request must complete within two seconds.
+fn read_request(reader: &mut impl BufRead, stop: &AtomicBool) -> Result<Option<Request>> {
+    let Some(line) = read_message(reader, Duration::from_secs(2), Some(stop))? else {
+        return Ok(None);
+    };
+    let req: Request = serde_json::from_slice(&line)?;
+    ensure!(
+        req.api_version == API_VERSION,
+        "unsupported API version {}; this service speaks {API_VERSION}",
+        req.api_version
+    );
+    Ok(Some(req))
 }
 
-fn serve_data_query(mut socket: TcpStream, view: DataView, query: Query) {
+fn write_reply(socket: &mut TcpStream, reply: &Value) -> std::io::Result<()> {
+    let mut line = serde_json::to_vec(reply)?;
+    line.push(b'\n');
+    socket.write_all(&line)
+}
+
+fn serve_data_query(socket: &mut TcpStream, view: DataView, query: Query) -> std::io::Result<()> {
     use polars::prelude::*;
     let result = (|| -> Result<(Value, Vec<u8>)> {
         let (mut df, cursor, start, stop) = view.read(&query)?;
@@ -697,24 +908,22 @@ fn serve_data_query(mut socket: TcpStream, view: DataView, query: Query) {
             "snapshot exceeds response limit; request a smaller range"
         );
         Ok((
-            json!({"api_version":1,"ok":true,"info":view.info,"cursor":cursor,"start":start,"stop":stop,
+            ok_reply(
+                json!({"info":view.info,"cursor":cursor,"start":start,"stop":stop,
             "rows":df.height(),"arrow_bytes":bytes.len(),"mapping_confirmed":false}),
+            ),
             bytes,
         ))
     })();
     let (header, body) = match result {
         Ok(value) => value,
-        Err(error) => (
-            json!({"api_version":1,"ok":false,"error":format!("{error:#}")}),
-            Vec::new(),
-        ),
+        Err(error) => (error_reply(&error), Vec::new()),
     };
-    if serde_json::to_writer(&mut socket, &header).is_ok() && socket.write_all(b"\n").is_ok() {
-        let _ = socket.write_all(&body);
-    }
+    write_reply(socket, &header)?;
+    socket.write_all(&body)
 }
 
-struct Connection {
+struct DeviceConnection {
     writer: Arc<Mutex<TcpStream>>,
     acquisition: thread::JoinHandle<Result<()>>,
 }
@@ -727,7 +936,12 @@ struct ConnectionContext {
     ring: Arc<Mutex<LiveBuffer>>,
 }
 impl ConnectionContext {
-    fn connect(&self, device: &str, events: &mut Option<Audit>) -> Result<(Connection, Value)> {
+    fn fail(&self, message: String) {
+        self.state.lock().unwrap().error.get_or_insert(message);
+        self.shutdown.store(true, Ordering::SeqCst);
+    }
+
+    fn connect(&self, device: &str, events: &Option<Audit>) -> Result<(DeviceConnection, Value)> {
         let addr = device
             .to_socket_addrs()?
             .next()
@@ -751,7 +965,7 @@ impl ConnectionContext {
             if let Some(audit) = events.as_ref() {
                 audit.send(json!({
                         "host_unix_ns":now_ns(),"source":"initial_channels",
-                        "request":{"api_version":1,"command":{"op":"set_observable","name":name,"channel":channel}},
+                        "request":{"api_version":API_VERSION,"command":{"op":"set_observable","name":name,"channel":channel}},
                         "wire":[id,value],"outcome":"sent_unconfirmed"
                     }))?;
             }
@@ -828,9 +1042,16 @@ impl ConnectionContext {
                         ring.lock().unwrap().push(index, frame.clone());
                     }
                     {
-                        let destinations = routes.lock().unwrap();
-                        for tx in destinations.iter().flatten() {
-                            tx.send(index, frame.clone())?;
+                        let mut destinations = routes.lock().unwrap();
+                        for slot in destinations.iter_mut() {
+                            let open = match slot {
+                                Some(route) => route.send(index, frame.clone())?,
+                                None => true,
+                            };
+                            if !open {
+                                // Its writer failed and published the error; keep acquiring.
+                                *slot = None;
+                            }
                         }
                     }
                     index += profile.samples_per_packet as u64;
@@ -853,7 +1074,7 @@ impl ConnectionContext {
             result
         });
         Ok((
-            Connection {
+            DeviceConnection {
                 writer,
                 acquisition,
             },
@@ -865,6 +1086,38 @@ impl ConnectionContext {
 #[cfg(test)]
 mod transport_tests {
     use super::*;
+
+    #[test]
+    fn message_deadline_includes_successful_fragment_reads() {
+        struct Fragments(usize);
+        impl Read for Fragments {
+            fn read(&mut self, buffer: &mut [u8]) -> std::io::Result<usize> {
+                if self.0 != 0 {
+                    thread::sleep(Duration::from_millis(20));
+                }
+                buffer[0] = if self.0 == 0 { b'x' } else { b'\n' };
+                self.0 += 1;
+                Ok(1)
+            }
+        }
+        let mut reader = BufReader::with_capacity(1, Fragments(0));
+        let error = read_message(&mut reader, Duration::from_millis(10), None).unwrap_err();
+        assert!(error.to_string().contains("deadline exceeded"));
+    }
+
+    #[test]
+    fn shutdown_does_not_admit_buffered_requests() {
+        let mut reader = std::io::Cursor::new(b"request\n");
+        assert!(
+            read_message(
+                &mut reader,
+                Duration::from_secs(2),
+                Some(&AtomicBool::new(true)),
+            )
+            .unwrap()
+            .is_none()
+        );
+    }
 
     #[test]
     fn stopped_service_reports_connection_refused() {

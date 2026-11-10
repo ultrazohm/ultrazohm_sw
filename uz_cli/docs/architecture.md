@@ -90,9 +90,12 @@ The ring can retain one partial extra frame but exposes its exact sample limit.
 Header validation caps samples/frame at 4096.
 
 Recording initialization and audit writes use workers too. The audit queue is
-bounded; full/failed queues and recording I/O failures are terminal errors,
-never silent losses. Recording queries may report initialization in progress
-until their backend reader becomes available.
+bounded. A full recording queue ends acquisition (samples are never silently
+dropped); a recording whose writer or export fails becomes `failed` while
+acquisition, device control and the other stream continue. Both are reported
+in status and at service exit, never silent losses. Each recording's history retains
+its error across later recording starts. Metadata and recording listings remain
+available even if backend initialization fails; sample queries require a backend reader.
 
 Every service exit path attempts device Stop before waiting for data queries,
 receiver completion, recording finalizers and audit draining. A Stop failure is

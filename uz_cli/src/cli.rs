@@ -131,7 +131,7 @@ enum Command {
         #[arg(long, value_delimiter = ',')]
         channels: Option<Vec<String>>,
     },
-    /// Preview an absolute acquisition sample range [start, stop).
+    /// Preview a sample range [start, stop): acquisition positions for RAM, recorded-row positions with --recording.
     ReadRange {
         start: u64,
         stop: u64,
@@ -160,6 +160,7 @@ enum Command {
     EnableSystem,
     #[command(alias = "enable_control")]
     EnableControl,
+    /// Explain why Error_Reset is unavailable (its firmware case is empty).
     #[command(alias = "error_reset")]
     ErrorReset,
     #[command(alias = "set_variable")]
@@ -542,14 +543,30 @@ fn execute(command: Command, endpoint: &str) -> Result<()> {
             );
             return Ok(());
         }
-        Command::StartLogging => Operation::StartLogging,
-        Command::StopLogging => Operation::StopLogging,
-        Command::PauseLogging => Operation::PauseLogging,
-        Command::ResumeLogging => Operation::ResumeLogging,
-        Command::StartLoggingSlowData => Operation::StartLoggingSlowData,
-        Command::StopLoggingSlowData => Operation::StopLoggingSlowData,
-        Command::PauseLoggingSlowData => Operation::PauseLoggingSlowData,
-        Command::ResumeLoggingSlowData => Operation::ResumeLoggingSlowData,
+        Command::StartLogging => Operation::StartLogging {
+            stream: Stream::Fast,
+        },
+        Command::StopLogging => Operation::StopLogging {
+            stream: Stream::Fast,
+        },
+        Command::PauseLogging => Operation::PauseLogging {
+            stream: Stream::Fast,
+        },
+        Command::ResumeLogging => Operation::ResumeLogging {
+            stream: Stream::Fast,
+        },
+        Command::StartLoggingSlowData => Operation::StartLogging {
+            stream: Stream::Slow,
+        },
+        Command::StopLoggingSlowData => Operation::StopLogging {
+            stream: Stream::Slow,
+        },
+        Command::PauseLoggingSlowData => Operation::PauseLogging {
+            stream: Stream::Slow,
+        },
+        Command::ResumeLoggingSlowData => Operation::ResumeLogging {
+            stream: Stream::Slow,
+        },
         Command::Connect { ip, port } => Operation::Connect { ip, port },
         Command::Status => Operation::Status,
         Command::Observables => Operation::Observables,
@@ -557,7 +574,9 @@ fn execute(command: Command, endpoint: &str) -> Result<()> {
         Command::Stop => Operation::Stop,
         Command::EnableSystem => Operation::EnableSystem,
         Command::EnableControl => Operation::EnableControl,
-        Command::ErrorReset => Operation::ErrorReset,
+        Command::ErrorReset => {
+            bail!("Error_Reset is a no-op in this firmware; use stop to leave error state")
+        }
         Command::Shutdown => Operation::Shutdown,
         Command::SetVariable { name, value } => Operation::SetVariable { name, value },
         Command::SetObservable { name, channel } => Operation::SetObservable { name, channel },

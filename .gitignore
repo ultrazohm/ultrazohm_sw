@@ -34,3 +34,8 @@ vitis/Packages/*
 /artifacts/
 *.ini
 /uz_cli_channel_mappings/
+
+# Python/test tooling caches
+.pytest_cache/
+*.egg-info/
+uz_dataviewer/build/native/

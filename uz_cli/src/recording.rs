@@ -14,7 +14,7 @@ use std::{
     path::PathBuf,
     sync::{
         Arc, Mutex,
-        mpsc::{self, SyncSender},
+        mpsc::{self, SyncSender, TrySendError},
     },
     thread,
     time::{Duration, Instant},
@@ -27,21 +27,35 @@ pub struct Route {
     history: Arc<Mutex<History>>,
 }
 impl Route {
-    pub fn send(&self, index: u64, frame: Arc<Frame>) -> Result<()> {
-        if self.paused {
-            return Ok(());
-        }
+    /// Queue a frame. `Ok(false)` means the writer already failed (its error is in
+    /// the recording state) and the route should be removed; a full queue is an
+    /// error because accepting the frame later would silently lose samples.
+    pub fn send(&self, index: u64, frame: Arc<Frame>) -> Result<bool> {
         let mut history = self.history.lock().unwrap();
+        // Pending samples can fail to flush while paused. Retire that route
+        // before the pause shortcut so it no longer locks channel assignments.
+        if history.error.is_some() {
+            return Ok(false);
+        }
+        if self.paused {
+            return Ok(true);
+        }
         // Positions remain contiguous for paging; timestamps retain acquisition time.
         let position = history.stop.unwrap_or(index);
         ensure!(
             history.pending_samples + frame.slow_raw.len() <= history.max_pending_samples,
             "pending recording memory limit exceeded"
         );
-        self.tx.try_send((position, index, frame.clone())).context(
-            "logger queue full or failed; acquisition stopped, samples not silently discarded",
-        )?;
-        history.accepted(position, index, frame)
+        match self.tx.try_send((position, index, frame.clone())) {
+            Ok(()) => {
+                history.accepted(position, index, frame)?;
+                Ok(true)
+            }
+            Err(TrySendError::Disconnected(_)) => Ok(false),
+            Err(TrySendError::Full(_)) => anyhow::bail!(
+                "logger queue full; acquisition stopped, samples not silently discarded"
+            ),
+        }
     }
 }
 pub type Routes = Arc<Mutex<[Option<Route>; 2]>>;
@@ -123,11 +137,17 @@ impl Recordings {
         self.routes.lock().unwrap().iter().any(Option::is_some)
     }
     pub fn error(&self) -> Option<String> {
-        self.states
-            .lock()
-            .unwrap()
+        let errors: Vec<_> = self
+            .histories
             .iter()
-            .find_map(|s| s.error.clone())
+            .filter_map(|((slow, number), history)| {
+                history.lock().unwrap().error.as_ref().map(|error| {
+                    let stream = if *slow { "slow" } else { "fast" };
+                    format!("{stream} recording {number}: {error}")
+                })
+            })
+            .collect();
+        (!errors.is_empty()).then(|| errors.join("; "))
     }
     pub fn start(&mut self, slow: bool, selections: &Value) -> Result<()> {
         let slot = usize::from(slow);
@@ -174,6 +194,7 @@ impl Recordings {
         let (tx, rx) = mpsc::sync_channel::<Batch>(LOGGER_QUEUE_FRAMES);
         let history = Arc::new(Mutex::new(History {
             reader: None,
+            error: None,
             start: None,
             stop: None,
             persisted_stop: None,
@@ -251,6 +272,7 @@ impl Recordings {
             if let Err(e) = fs::write(metadata_path, serde_json::to_vec_pretty(&summary).unwrap()) {
                 error.get_or_insert_with(|| format!("recording metadata: {e}"));
             }
+            writer_history.lock().unwrap().error = error.clone();
             let mut s = states.lock().unwrap();
             s[slot].phase = if error.is_some() {
                 "failed"

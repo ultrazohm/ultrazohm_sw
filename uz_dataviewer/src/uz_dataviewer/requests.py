@@ -34,6 +34,7 @@ class Requests:
             return bool(self.jobs or self.active)
 
     def request(self, slot, key, identity, function, immediate=False):
+        run_now = None
         with self.condition:
             if self.closed:
                 return None
@@ -47,16 +48,28 @@ class Requests:
                 self.errors.pop(slot, None)
                 job = Job(key, identity, function, threading.Event())
                 if self.synchronous or immediate:
-                    try:
-                        self.results[slot] = (key, identity, function(job.cancel))
-                    except Exception as exc:
-                        self.errors[slot] = str(exc)
+                    run_now = job
                 else:
                     self.jobs[slot] = job
-                    if self.thread is None:
+                    # A worker killed by a BaseException must not stall all later requests.
+                    if self.thread is None or not self.thread.is_alive():
                         self.thread = threading.Thread(target=self._work, name='uz-data', daemon=True)
                         self.thread.start()
                     self.condition.notify()
+            if run_now is None:
+                result = self.results.get(slot)
+                return result[2] if result and result[1] == identity else None
+        # Immediate work runs without the lock so the worker can publish meanwhile.
+        try:
+            value, error = function(run_now.cancel), None
+        except Exception as exc:
+            value, error = None, str(exc)
+        with self.condition:
+            if self.wanted.get(slot) == key:
+                if error is None:
+                    self.results[slot] = (key, identity, value)
+                else:
+                    self.errors[slot] = error
             result = self.results.get(slot)
             return result[2] if result and result[1] == identity else None
 
@@ -117,7 +130,7 @@ class Requests:
                         self.results[slot] = (job.key, job.identity, result)
             except Cancelled:
                 pass
-            except Exception as exc:
+            except BaseException as exc:  # plugin code may raise SystemExit; keep serving
                 with self.condition:
                     if self.wanted.get(slot) == job.key:
                         self.errors[slot] = str(exc)

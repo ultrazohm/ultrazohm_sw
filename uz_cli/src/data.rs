@@ -4,7 +4,8 @@ use crate::{
     live::{LiveBuffer, MAX_SNAPSHOT_BYTES, selected_columns},
     profile::Profile,
     protocol::Frame,
-    storage::frames_dataframe,
+    service::coded,
+    storage::{fast_dataframe, frame_fields, frames_dataframe},
 };
 use anyhow::{Context, Result, ensure};
 use polars::prelude::*;
@@ -20,6 +21,8 @@ pub type Frames = Vec<(u64, u64, Arc<Frame>)>;
 /// Pending samples are bounded by one writer batch plus its bounded queue.
 pub struct History {
     pub reader: Option<Arc<dyn RecordingReader>>,
+    /// Kept for this recording even when its stream starts a new recording.
+    pub error: Option<String>,
     pub start: Option<u64>,
     pub stop: Option<u64>,
     pub persisted_stop: Option<u64>,
@@ -126,6 +129,8 @@ pub struct DataInfo {
     pub stop: Option<u64>,
     pub persisted_stop: Option<u64>,
     pub complete: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub error: Option<String>,
     pub fields: Vec<Field>,
     pub layout: String,
     pub sample_period_us: f64,
@@ -142,10 +147,12 @@ impl DataInfo {
         }
     }
     fn validate_cursor(&self, cursor: &Cursor) -> Result<()> {
-        ensure!(
-            *cursor == self.cursor(cursor.next_sample),
-            "cursor belongs to a different run, stream, recording, or observable generation"
-        );
+        if *cursor != self.cursor(cursor.next_sample) {
+            return Err(coded(
+                "cursor_expired",
+                "cursor belongs to a different run, stream, recording, or observable generation",
+            ));
+        }
         Ok(())
     }
 }
@@ -157,49 +164,77 @@ pub struct DataView {
     frames: Frames,
     columns: Vec<(usize, String)>,
     reader: Option<Arc<dyn RecordingReader>>,
-    profile: Profile,
+    slow_names: Vec<String>,
+    /// Upper bound for one serialized slow observable name, for response sizing.
+    name_bytes: usize,
 }
+
+fn overlaps(first: u64, frame: &Frame, start: u64, stop: u64) -> bool {
+    first < stop && first + frame.slow_raw.len() as u64 > start
+}
+
+/// Build exactly rows [start, stop) from contiguous frames; fast columns skip
+/// the leading partial frame instead of slicing a larger frame afterwards.
 fn from_frames(
     frames: &[(u64, u64, Arc<Frame>)],
     start: u64,
     stop: u64,
-    profile: &Profile,
+    period_us: f64,
     columns: &[(usize, String)],
+    slow_names: &[String],
     slow: bool,
 ) -> Result<DataFrame> {
-    let selected: Frames = frames
+    let selected: Vec<(u64, Arc<Frame>)> = frames
         .iter()
-        .filter(|(first, _, f)| *first < stop && first + f.slow_raw.len() as u64 > start)
-        .cloned()
+        .filter(|(first, _, f)| overlaps(*first, f, start, stop))
+        .map(|(_, acquisition, frame)| (*acquisition, frame.clone()))
         .collect();
-    let mut next = selected.first().map_or(start, |(first, _, _)| *first);
-    for (first, _, frame) in &selected {
-        ensure!(*first == next, "sample history contains a gap");
+    let first = frames
+        .iter()
+        .find(|(first, _, f)| overlaps(*first, f, start, stop))
+        .map(|(first, _, _)| *first);
+    let mut next = first.unwrap_or(start);
+    for (position, _, frame) in frames
+        .iter()
+        .filter(|(first, _, f)| overlaps(*first, f, start, stop))
+    {
+        ensure!(*position == next, "sample history contains a gap");
         next += frame.slow_raw.len() as u64;
     }
     ensure!(
-        start <= stop
-            && (start == stop
-                || selected
-                    .first()
-                    .is_some_and(|(first, _, _)| *first <= start)
-                    && next >= stop),
+        start <= stop && (start == stop || first.is_some_and(|f| f <= start) && next >= stop),
         "requested RAM samples are unavailable"
     );
-    let rows = selected.iter().map(|(_, _, f)| f.slow_raw.len()).sum();
-    let df = frames_dataframe(
-        &selected
-            .iter()
-            .map(|(_, acquisition, frame)| (*acquisition, frame.clone()))
-            .collect::<Vec<_>>(),
-        rows,
-        profile,
-        columns,
-        &profile.slow_names(),
-        slow,
-    )?;
-    let offset = selected.first().map_or(0, |(first, _, _)| start - first);
-    Ok(df.slice(offset as i64, (stop - start) as usize))
+    let skip = first.map_or(0, |f| (start - f) as usize);
+    let rows = (stop - start) as usize;
+    if !slow {
+        return fast_dataframe(&selected, period_us, columns, skip, rows);
+    }
+    let total = selected.iter().map(|(_, f)| f.slow_raw.len()).sum();
+    let df = frames_dataframe(&selected, total, period_us, columns, slow_names, true)?;
+    Ok(df.slice(skip as i64, rows))
+}
+
+/// Largest row count whose transient columns stay within the response limit.
+pub(crate) fn max_rows(fields: &[Field], name_bytes: usize) -> u64 {
+    let per_row: usize = fields
+        .iter()
+        .map(|f| match f.dtype.as_str() {
+            "f64" => 8,
+            "str" => name_bytes,
+            _ => 4,
+        })
+        .sum();
+    ((MAX_SNAPSHOT_BYTES - 65536) / per_row.max(1)) as u64
+}
+
+fn name_bytes(profile: &Profile) -> usize {
+    profile
+        .slow_signals
+        .keys()
+        .map(|s| s.len() + 16)
+        .max()
+        .unwrap_or(16)
 }
 impl DataView {
     pub fn live(
@@ -210,14 +245,15 @@ impl DataView {
         selections: &serde_json::Value,
         selection: Option<&Selection>,
     ) -> Result<Self> {
-        let columns = if source.stream == Stream::Fast {
-            selected_columns(profile, selections)?
-        } else {
+        let slow = source.stream == Stream::Slow;
+        let columns = if slow {
             Vec::new()
+        } else {
+            selected_columns(profile, selections)?
         };
+        let fields = frame_fields(&columns, slow);
         let ring = ring.lock().unwrap();
         let (start, stop) = ring.range();
-        let empty = from_frames(&[], 0, 0, profile, &columns, source.stream == Stream::Slow)?;
         let mut view = Self {
             info: DataInfo {
                 run_id: run_id.into(),
@@ -229,14 +265,8 @@ impl DataView {
                 stop,
                 persisted_stop: None,
                 complete: false,
-                fields: empty
-                    .get_columns()
-                    .iter()
-                    .map(|c| Field {
-                        name: c.name().to_string(),
-                        dtype: c.dtype().to_string(),
-                    })
-                    .collect(),
+                error: None,
+                fields,
                 layout: if source.stream == Stream::Slow {
                     "slow_updates"
                 } else {
@@ -248,7 +278,12 @@ impl DataView {
             frames: Vec::new(),
             columns,
             reader: None,
-            profile: profile.clone(),
+            slow_names: if slow {
+                profile.slow_names()
+            } else {
+                Vec::new()
+            },
+            name_bytes: name_bytes(profile),
         };
         if let Some(selection) = selection {
             let (start, stop) = view.bounds(selection)?;
@@ -268,20 +303,26 @@ impl DataView {
         selection: Option<&Selection>,
     ) -> Result<Self> {
         let h = history.lock().unwrap();
-        let reader = h.reader.as_ref().context("recording is initializing")?;
-        let persisted = reader.info()?;
+        // Listing and metadata remain available even if backend initialization
+        // failed before a reader could be published.
+        let persisted = h.reader.as_ref().map(|reader| reader.info()).transpose()?;
         let mut view = Self {
             info: DataInfo {
                 run_id: run_id.into(),
                 stream: source.stream.clone(),
                 recording: source.recording,
-                position_basis: persisted.position_basis,
+                position_basis: persisted.as_ref().map_or_else(
+                    || "recorded_samples".into(),
+                    |info| info.position_basis.clone(),
+                ),
                 generation: 0,
                 start: h.start,
                 stop: h.stop,
                 persisted_stop: h.persisted_stop,
-                complete: persisted.complete,
-                fields: persisted.fields,
+                complete: persisted.as_ref().is_some_and(|info| info.complete),
+                error: h.error.clone(),
+                fields: persisted
+                    .map_or_else(|| frame_fields(&h.columns, h.slow), |info| info.fields),
                 layout: if h.slow {
                     "slow_updates"
                 } else {
@@ -292,16 +333,27 @@ impl DataView {
             },
             frames: Vec::new(),
             columns: h.columns.clone(),
-            reader: Some(reader.clone()),
-            profile: profile.clone(),
+            reader: h.reader.clone(),
+            slow_names: if h.slow {
+                profile.slow_names()
+            } else {
+                Vec::new()
+            },
+            name_bytes: name_bytes(profile),
         };
         if let Some(selection) = selection {
+            if h.reader.is_none() {
+                anyhow::bail!(
+                    "{}",
+                    h.error.as_deref().unwrap_or("recording is initializing")
+                );
+            }
             let (start, stop) = view.bounds(selection)?;
             let start = start.max(h.persisted_stop.unwrap_or(start));
             view.frames = h
                 .pending
                 .iter()
-                .filter(|(first, _, f)| *first < stop && first + f.slow_raw.len() as u64 > start)
+                .filter(|(first, _, f)| overlaps(*first, f, start, stop))
                 .cloned()
                 .collect();
         }
@@ -326,32 +378,22 @@ impl DataView {
                     self.info.validate_cursor(cursor)?;
                 }
                 let start = cursor.as_ref().and_then(|c| c.next_sample).unwrap_or(first);
+                if cursor.is_some() && (start < first || start > end) {
+                    return Err(coded(
+                        "cursor_expired",
+                        format!("cursor position {start} unavailable; available [{first}, {end})"),
+                    ));
+                }
                 (start, start.saturating_add(*limit as u64).min(end))
             }
         };
         ensure!(
             start <= stop && start >= first && stop <= end,
-            "range [{start}, {stop}) unavailable; available [{first}, {end}); cursor may have expired"
+            "range [{start}, {stop}) unavailable; available [{first}, {end})"
         );
         // Bound transient allocation before constructing any columns, including slow names.
-        let per_row: usize = self
-            .info
-            .fields
-            .iter()
-            .map(|f| match f.dtype.as_str() {
-                "f64" => 8,
-                "str" => self
-                    .profile
-                    .slow_signals
-                    .keys()
-                    .map(|s| s.len() + 16)
-                    .max()
-                    .unwrap_or(16),
-                _ => 4,
-            })
-            .sum();
         ensure!(
-            stop - start <= ((MAX_SNAPSHOT_BYTES - 65536) / per_row.max(1)) as u64,
+            stop - start <= max_rows(&self.info.fields, self.name_bytes),
             "snapshot exceeds response limit; request a smaller range"
         );
         Ok((start, stop))
@@ -371,8 +413,9 @@ impl DataView {
                 &self.frames,
                 start,
                 stop,
-                &self.profile,
+                self.info.sample_period_us,
                 &self.columns,
+                &self.slow_names,
                 slow,
             )?;
             Ok(match &projection {

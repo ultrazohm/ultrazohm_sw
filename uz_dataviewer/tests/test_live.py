@@ -44,7 +44,9 @@ class FakeClient:
     def read_since(self, cursor=None, limit=100):
         first = max(0, self.end - 100)
         if cursor and (cursor['generation'] != self.generation or cursor['next_sample'] < first):
-            raise RuntimeError('expired cursor')
+            error = RuntimeError('expired cursor')
+            error.code = 'cursor_expired'
+            raise error
         start = cursor['next_sample'] if cursor else first
         stop = min(start + limit, self.end)
         return SimpleNamespace(data=frame(start, stop),
@@ -779,7 +781,7 @@ def test_close_shuts_down_owned_service_even_when_detached(attached):
         def shutdown(self): calls.append('shutdown')
     class Process:
         def poll(self): return None
-        def wait(self):
+        def wait(self, timeout=None):
             calls.append('wait')
             return 0
     controller = LiveController(lambda endpoint: Client())
@@ -815,7 +817,7 @@ def test_close_handles_both_services_independently(fail_stop):
         def shutdown(self): calls.append((self.endpoint, 'shutdown'))
     class Process:
         def poll(self): return None
-        def wait(self):
+        def wait(self, timeout=None):
             calls.append(('owned', 'wait'))
             return 1
     controller = LiveController(Client)
@@ -854,3 +856,31 @@ def test_unused_controller_closes_without_optional_cli_wheel(monkeypatch):
     controller.close()
     controller.close()
     assert controller.stop_event.is_set()
+
+
+def test_startup_timeout_terminates_unresponsive_service(tmp_path, monkeypatch):
+    import subprocess
+    from uz_dataviewer import live
+    class Hung:
+        def __init__(self, *args, **kwargs):
+            self.code, self.events = None, []
+        def poll(self):
+            return self.code
+        def terminate(self):
+            self.events.append('terminate')
+            self.code = -15
+        def wait(self, timeout=None):
+            return self.code
+    started = []
+    monkeypatch.setattr(subprocess, 'Popen', lambda *a, **k: started.append(Hung()) or started[-1])
+    clock = iter(range(0, 1000, 5))
+    monkeypatch.setattr(live.time, 'monotonic', lambda: next(clock))
+    class Unreachable:
+        def status(self):
+            raise OSError('refused')
+    controller = LiveController(client_factory=lambda endpoint: Unreachable())
+    controller._make_client('127.0.0.1:1')
+    with pytest.raises(RuntimeError, match='timed out'):
+        controller._start_service(tmp_path / 'session', '')
+    assert started[0].events == ['terminate']
+    assert not controller.owned.running

@@ -23,6 +23,9 @@ import numpy as np
 
 from .sources import MemorySource, PlotData, check, envelope
 
+# Closing waits this long for a viewer-owned service to finalize large recordings.
+CLOSE_FINALIZE_TIMEOUT = 600
+
 
 def fuzzy_names(names, query):
     """Rank substring matches first, then ordered-subsequence matches."""
@@ -42,11 +45,72 @@ def fuzzy_names(names, query):
     return [name for _, name in sorted(matches)]
 
 
+class LiveRing:
+    """Bounded columnar history with amortised O(page) appends.
+
+    Columns live in buffers of twice the capacity. Appends write past every
+    published snapshot; when a buffer is full, the retained tail moves into newly
+    allocated buffers, so snapshots (including a frozen Inspect view) stay valid.
+    """
+    def __init__(self, capacity):
+        self.capacity = max(1, int(capacity))
+        self.reset()
+
+    def reset(self):
+        self.columns, self.end, self.length = None, 0, 0
+
+    def append(self, page):
+        names = list(page.columns)
+        n = page.height
+        if not n:
+            return
+        arrays = {name: page[name].to_numpy() for name in names}
+        if self.columns is None or list(self.columns) != names:
+            self.reset()
+            self._allocate(arrays)
+        if n >= self.capacity:
+            self._allocate(arrays)
+            for name, values in arrays.items():
+                self.columns[name][:self.capacity] = values[-self.capacity:]
+            self.end = self.length = self.capacity
+            return
+        if self.end + n > len(next(iter(self.columns.values()))):
+            keep = min(self.length, self.capacity - n)
+            old, start = self.columns, self.end - keep
+            self._allocate(arrays)
+            for name, values in old.items():
+                self.columns[name][:keep] = values[start:self.end]
+            self.end = self.length = keep
+        for name, values in arrays.items():
+            self.columns[name][self.end:self.end + n] = values
+        self.end += n
+        self.length = min(self.length + n, self.capacity)
+
+    def _allocate(self, arrays):
+        self.columns = {name: np.empty(2 * self.capacity, dtype=values.dtype)
+                        for name, values in arrays.items()}
+
+    def snapshot(self):
+        """Views of the retained rows; later appends never modify them."""
+        if self.columns is None or not self.length:
+            return None
+        return {name: values[self.end - self.length:self.end] for name, values in self.columns.items()}
+
+
+def _column(frame, name):
+    column = frame[name]
+    return column.to_numpy() if hasattr(column, 'to_numpy') else column
+
+
 class LiveSource(MemorySource):
-    """An immutable display snapshot; decimate only the visible window."""
+    """An immutable display snapshot; decimate only the visible window.
+
+    Accepts a Polars frame or a mapping of NumPy columns (a :class:`LiveRing` snapshot).
+    """
     def __init__(self, frame):
-        t = frame['time'].to_numpy()
-        channels = {n: frame[n].to_numpy() for n in frame.columns if n not in ('time', 'status')}
+        names = frame.columns if hasattr(frame, 'columns') else list(frame)
+        t = _column(frame, 'time')
+        channels = {n: _column(frame, n) for n in names if n not in ('time', 'status')}
         super().__init__(t, channels)
         self.units = dict.fromkeys(channels, '')
         self.timestamp_resolution = 0.
@@ -99,6 +163,12 @@ class OwnedService:
         return self.endpoint == endpoint and self.running
 
 
+def cursor_invalid(exc):
+    """Whether a read failed because its cursor no longer addresses retained data."""
+    return getattr(exc, 'code', None) == 'cursor_expired'
+
+
+
 def action_block_reason(action, *, flashing=False, script_busy=False):
     """Shared interaction policy; connection and execution checks stay with their owners."""
     if flashing:
@@ -125,7 +195,7 @@ class LiveController:
         self.client = None
         self.endpoint = None
         self.cursor = None
-        self.frame = None
+        self.ring = None
         self.attached = False
         self.revision = 0
         self._status_at = 0.
@@ -225,7 +295,9 @@ class LiveController:
         self._publish()
 
     def _reset(self):
-        self.cursor = self.frame = self._last_source = self._epoch = None
+        self.cursor = self._last_source = self._epoch = None
+        if self.ring is not None:
+            self.ring.reset()
         self._received_at = 0.
 
     def _make_client(self, endpoint):
@@ -284,7 +356,29 @@ class LiveController:
                 return
             except (OSError, RuntimeError):
                 self.stop_event.wait(.1)
+        # A service that never answered must not block later Connect attempts.
+        self._terminate_owned()
         raise RuntimeError(f'Service startup timed out; see {log_path}')
+
+    def _terminate_owned(self):
+        process = self.owned.process
+        if process is None or process.poll() is not None:
+            return
+        process.terminate()
+        try:
+            process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait()
+
+    def _wait_owned(self, description):
+        """Wait for the owned service without blocking viewer shutdown."""
+        while self.owned.process.poll() is None:
+            if self.stop_event.is_set():
+                return None  # close() takes over waiting for finalization
+            self._progress(description)
+            self.stop_event.wait(.2)
+        return self.owned.process.returncode
 
     def _command(self, operation, kwargs):
         if operation == 'flash':
@@ -357,7 +451,7 @@ class LiveController:
                 self._status, self._catalog, self._assignments = {}, {}, ()
                 self._progress('Stopping device and finalizing recordings…')
                 if self.endpoint == self.owned.endpoint and self.owned.process is not None:
-                    code = self.owned.process.wait()
+                    code = self._wait_owned('Stopping device and finalizing recordings…')
                     if code:
                         raise RuntimeError(f'Service shutdown failed (exit {code}); check service.log')
                     self._notice = 'Service shut down; recordings finalized'
@@ -443,7 +537,7 @@ class LiveController:
         if self.stop_event.is_set():
             return
         self._progress('Generating channel mapping…')
-        mapping_path = generate_mapping(root, overwrite=True)
+        mapping_path = generate_mapping(root)
         self._message('info', f'Channel mapping regenerated: {mapping_path}')
         workspace = load_workspace_settings(mapping_path)
         if previous is None:
@@ -491,24 +585,27 @@ class LiveController:
         if not self._status.get('state', {}).get('connected'):
             return
         capacity = self._status['data_options']['buffer_samples']
+        if self.ring is None or self.ring.capacity != capacity:
+            self.ring = LiveRing(capacity)
         try:
             page = self.client.read_since(self.cursor, limit=min(capacity, 100_000))
-        except RuntimeError:
-            # An expired RAM cursor, reconnect, or changed mapping requires a new
-            # bounded snapshot. A second failure is surfaced, never silently looped.
+        except RuntimeError as exc:
+            # Only an invalid cursor (expired RAM window, reconnect, changed mapping)
+            # requires a new snapshot. Transient errors, including requests canceled
+            # by Stop, keep the displayed history and are reported by the caller.
+            if self.cursor is None or not cursor_invalid(exc):
+                raise
             self._reset()
             page = self.client.read_since(limit=min(capacity, 100_000))
             self._notice = 'Live buffer resynchronized; earlier samples are unavailable in this view'
         epoch = (page.info['run_id'], page.info['generation'])
         if epoch != self._epoch:
-            self.frame = None
+            self.ring.reset()
             self._epoch = epoch
         self.cursor = page.cursor
         if page.data.height:
-            import polars as pl
-            self.frame = (page.data if self.frame is None else
-                          pl.concat([self.frame, page.data], rechunk=False)).tail(capacity).rechunk()
-            self._last_source = LiveSource(self.frame)
+            self.ring.append(page.data)
+            self._last_source = LiveSource(self.ring.snapshot())
             self._received_at = time.monotonic()
 
     def _work(self):
@@ -557,7 +654,9 @@ class LiveController:
         self.cancel_pending_commands()
         if self.thread is not None:
             self.thread.join(timeout=1)
-        with self._command_lock:
+        # Commands observe stop_event; bound the wait so a stuck command cannot hang exit.
+        locked = self._command_lock.acquire(timeout=35)
+        try:
             connected = self.attached and self._status.get('state', {}).get('connected', False)
             owned_endpoint = self.owned.endpoint
             owned_running = self.owned.running
@@ -580,12 +679,20 @@ class LiveController:
                     if not self.owned.shutdown_requested:
                         factory(owned_endpoint).shutdown()
                         self.owned.shutdown_requested = True
-                    code = self.owned.process.wait()
+                    try:
+                        code = self.owned.process.wait(timeout=CLOSE_FINALIZE_TIMEOUT)
+                    except subprocess.TimeoutExpired:
+                        # The service runs in its own session and keeps finalizing.
+                        raise RuntimeError('Service is still finalizing recordings; it continues in the '
+                                           'background, check its service.log') from None
                     if code:
                         raise RuntimeError(f'Acquisition service exited with code {code}; check service.log')
                 except Exception as exc:
                     self._message('error', f'Owned service cleanup failed: {exc}')
                     print(f'Owned service cleanup failed: {exc}', file=sys.stderr)
+        finally:
+            if locked:
+                self._command_lock.release()
 
 
 def new_output_directory(repo=None, *, parent=None):

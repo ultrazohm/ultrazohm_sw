@@ -409,10 +409,10 @@ opens afterward and **Connect** starts acquisition; **Existing service → Attac
 recording arguments keep their original working directory.
 
 Each live startup then calls the installed CLI's `create-json-from-javascope-h`
-command against the checkout's current JavaScope headers. It stores a fresh JSON
+command against the checkout's current JavaScope headers. It regenerates the JSON
 in the selected workspace under `artifacts/_user/` for source runs or
 `artifacts/_user_standalone/` for standalone runs, named
-`javascope_<UTC timestamp>_<repository commit>.json`. The commit is taken from the
+`javascope_<repository commit>.json` (replaced on every start). The commit is taken from the
 generated metadata and includes `-dirty` when the relevant headers have local
 changes. These cache files are ignored by Git. Header parsing failures stop startup
 with an error. Offline startup does not generate a mapping.
@@ -458,8 +458,8 @@ start directly. A Python script or active debug CLI jobs disable the flash butto
 the workflow locks device controls, script execution, and debug CLI submissions.
 
 Managed flashing uses `javascope_<commit>.json` in the applicable user directory, including
-`-dirty` when applicable, and regenerates/replaces that cache on every attempt.
-Startup's timestamped caches remain available. The prototype assumes headers stay
+`-dirty` when applicable, and regenerates/replaces that cache on every attempt,
+like startup. The prototype assumes headers stay
 unchanged during build/programming, as agreed; no checksum check is performed.
 The restarted service loads the new JSON, keeps existing channel assignments
 whose names remain available, and reports removed names. Sampling period, buffer,

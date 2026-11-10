@@ -217,7 +217,7 @@ def test_malformed_tool_preferences_report_a_validation_error(tmp_path, monkeypa
 ])
 def test_invalid_runtime_preferences_are_rejected_without_rewriting(tmp_path, change):
     mapping = tmp_path/'mapping.json'
-    mapping.write_text('{}')
+    mapping.write_text(json.dumps({'channels': 20, 'observables': {}}))
     value = {'schema_version': 1, 'name': 'user', 'sample_period_us': 100, 'initial_channels': {}}
     value.update(change)
     path = tmp_path/'settings.json'
@@ -242,6 +242,59 @@ def test_json_publication_preserves_existing_file_on_failure(tmp_path, monkeypat
     assert list(tmp_path.iterdir()) == [path]
 
 
+def test_failed_settings_seed_leaves_no_partial_destination(tmp_path, monkeypatch):
+    from uz_dataviewer import user_paths
+    path = tmp_path / 'settings.json'
+    fdopen = user_paths.os.fdopen
+    class FailingWriter:
+        def __init__(self, *args, **kwargs):
+            self.output = fdopen(*args, **kwargs)
+        def __enter__(self):
+            return self
+        def __exit__(self, *args):
+            self.output.close()
+        def write(self, data):
+            self.output.write(data[:3])
+            raise OSError('disk full')
+    with monkeypatch.context() as patch:
+        patch.setattr(user_paths.os, 'fdopen', FailingWriter)
+        with pytest.raises(OSError, match='disk full'):
+            user_paths.write_json(path, {'schema_version': 1}, overwrite=False)
+    assert not path.exists()
+    assert list(tmp_path.iterdir()) == []
+    user_paths.write_json(path, {'schema_version': 1}, overwrite=False)
+    assert json.loads(path.read_text()) == {'schema_version': 1}
+
+
+@pytest.mark.parametrize('windows', [False, True])
+@pytest.mark.parametrize('concurrent_writer', [False, True])
+def test_settings_seed_publishes_complete_json_without_replacing_winner(
+        tmp_path, monkeypatch, windows, concurrent_writer):
+    from uz_dataviewer import user_paths
+    path = tmp_path / 'settings.json'
+    defaults, winner = {'schema_version': 1}, {'user': 'preferences'}
+    link = user_paths.os.link
+    def publish(temporary, destination):
+        assert not path.exists()  # No reader can observe an unfinished seed.
+        assert json.loads(Path(temporary).read_text()) == defaults
+        if concurrent_writer:
+            path.write_text(json.dumps(winner))
+        # link has the same no-replace semantics as rename on Windows.
+        link(temporary, destination)
+    if windows:
+        monkeypatch.setattr(user_paths.sys, 'platform', 'win32')
+        monkeypatch.setattr(user_paths.os, 'rename', publish)
+        def no_links(*args):
+            raise OSError('hard links unsupported')
+        monkeypatch.setattr(user_paths.os, 'link', no_links)
+    else:
+        monkeypatch.setattr(user_paths.sys, 'platform', 'linux')
+        monkeypatch.setattr(user_paths.os, 'link', publish)
+    user_paths.write_json(path, defaults, overwrite=False)
+    assert json.loads(path.read_text()) == (winner if concurrent_writer else defaults)
+    assert list(tmp_path.iterdir()) == [path]
+
+
 def test_external_mapping_keeps_preferences_in_selected_workspace(tmp_path, monkeypatch):
     external = tmp_path/'external'
     external.mkdir()
@@ -263,3 +316,10 @@ def test_default_profile_worker_failure_has_actionable_error(monkeypatch):
     monkeypatch.setattr(runtime_settings.subprocess, 'run', fail)
     with pytest.raises(RuntimeError, match='native profile error'):
         runtime_settings.default_profile()
+
+
+def test_malformed_mapping_is_rejected_clearly(tmp_path):
+    mapping = tmp_path/'mapping.json'
+    mapping.write_text('{}')
+    with pytest.raises(ValueError, match='Invalid channel mapping'):
+        runtime_settings.load_workspace_settings(mapping)

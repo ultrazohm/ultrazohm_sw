@@ -8,7 +8,7 @@ use pyo3::{exceptions::PyRuntimeError, prelude::*, types::PyBytes};
 use std::{
     path::PathBuf,
     sync::{
-        Arc,
+        Arc, Mutex,
         atomic::{AtomicBool, Ordering},
         mpsc,
     },
@@ -17,32 +17,58 @@ use std::{
 fn error(e: impl std::fmt::Display) -> PyErr {
     PyRuntimeError::new_err(e.to_string())
 }
-#[pyfunction]
-fn request(py: Python<'_>, endpoint: String, command_json: String) -> PyResult<String> {
-    py.detach(move || {
-        let op: Operation = serde_json::from_str(&command_json).map_err(error)?;
-        let result = service::request(&endpoint, op).map_err(error)?;
-        serde_json::to_string(&result).map_err(error)
-    })
+/// RuntimeError carrying the service's stable error `code` (None when uncoded).
+fn api_error(py: Python<'_>, e: anyhow::Error) -> PyErr {
+    let err = PyRuntimeError::new_err(format!("{e:#}"));
+    let _ = err.value(py).setattr("code", service::error_code(&e));
+    err
 }
-/// Query metadata and Arrow payload together so cursors describe exactly these rows.
-#[pyfunction]
-fn data_query<'py>(
-    py: Python<'py>,
-    endpoint: String,
-    command_json: String,
-) -> PyResult<(String, Bound<'py, PyBytes>)> {
-    let (reply, bytes) = py.detach(move || -> PyResult<_> {
+
+/// One persistent connection to an acquisition service; requests are sequential.
+#[pyclass]
+struct Connection(Mutex<service::Connection>);
+
+#[pymethods]
+impl Connection {
+    #[new]
+    fn new(endpoint: String) -> Self {
+        Self(Mutex::new(service::Connection::new(&endpoint)))
+    }
+
+    fn request(&self, py: Python<'_>, command_json: String) -> PyResult<String> {
+        let op: Operation = serde_json::from_str(&command_json).map_err(error)?;
+        if matches!(op, Operation::ReadData { .. }) {
+            return Err(error("use data_query for binary sample responses"));
+        }
+        let reply = py
+            .detach(|| self.0.lock().unwrap().exchange(op, false))
+            .map_err(|e| api_error(py, e))?;
+        serde_json::to_string(&reply.0).map_err(error)
+    }
+
+    /// Query metadata and Arrow payload together so cursors describe exactly these rows.
+    fn data_query<'py>(
+        &self,
+        py: Python<'py>,
+        command_json: String,
+    ) -> PyResult<(String, Bound<'py, PyBytes>)> {
         let op: Operation = serde_json::from_str(&command_json).map_err(error)?;
         if !matches!(op, Operation::ReadData { .. }) {
             return Err(error("expected read_data operation"));
         }
-        service::exchange(&endpoint, op, true).map_err(error)
-    })?;
-    Ok((
-        serde_json::to_string(&reply).map_err(error)?,
-        PyBytes::new(py, &bytes),
-    ))
+        let (reply, bytes) = py
+            .detach(|| self.0.lock().unwrap().exchange(op, true))
+            .map_err(|e| api_error(py, e))?;
+        Ok((
+            serde_json::to_string(&reply).map_err(error)?,
+            PyBytes::new(py, &bytes),
+        ))
+    }
+
+    /// Drop the socket; the next request reconnects.
+    fn close(&self) {
+        self.0.lock().unwrap().reset();
+    }
 }
 #[pyfunction]
 fn recording_info(py: Python<'_>, path: String) -> PyResult<String> {
@@ -66,18 +92,7 @@ fn recording_data(
         let info = reader.info().map_err(error)?;
         let projection =
             crate::backend::query_projection(&info.fields, channels.as_deref()).map_err(error)?;
-        let per_row: usize = info
-            .fields
-            .iter()
-            .map(|f| match f.dtype.as_str() {
-                "f64" => 8,
-                "str" => 256,
-                _ => 4,
-            })
-            .sum();
-        if start > stop
-            || stop - start > ((crate::live::MAX_SNAPSHOT_BYTES - 65536) / per_row) as u64
-        {
+        if start > stop || stop - start > crate::data::max_rows(&info.fields, 256) {
             return Err(error(
                 "range is invalid or exceeds response limit; use iter_batches",
             ));
@@ -281,8 +296,7 @@ impl Drop for Acquisition {
 }
 #[pymodule]
 fn _native(m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(request, m)?)?;
-    m.add_function(wrap_pyfunction!(data_query, m)?)?;
+    m.add_class::<Connection>()?;
     m.add_function(wrap_pyfunction!(recording_info, m)?)?;
     m.add_function(wrap_pyfunction!(recording_data, m)?)?;
     m.add_function(wrap_pyfunction!(cli_main, m)?)?;

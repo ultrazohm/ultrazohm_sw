@@ -1,7 +1,6 @@
 """Fresh header mappings, cache provenance, and startup failure behavior."""
 import json
 from pathlib import Path
-import re
 import sys
 from types import SimpleNamespace
 
@@ -19,9 +18,7 @@ def repo(tmp_path):
     return root
 
 
-def test_generate_mapping_calls_cli_and_publishes_timestamp_commit_cache(repo, monkeypatch):
-    now = live_mapping.datetime.now(live_mapping.timezone.utc)
-    monkeypatch.setattr(live_mapping, 'datetime', SimpleNamespace(now=lambda tz: now))
+def test_generate_mapping_calls_cli_and_publishes_one_cache_per_commit(repo, monkeypatch):
     calls = []
     mapping = {'repository': {'commit': 'a'*40+'-dirty'}, 'observables': {'JSO_custom': 29}}
     def run(args, **kwargs):
@@ -31,12 +28,12 @@ def test_generate_mapping_calls_cli_and_publishes_timestamp_commit_cache(repo, m
     monkeypatch.setattr(live_mapping.subprocess, 'run', run)
     first = live_mapping.generate_mapping(repo)
     second = live_mapping.generate_mapping(repo)
-    assert first != second
+    assert first == second
     assert first.parent == repo/'artifacts'/'_user'
-    assert re.fullmatch(r'javascope_\d{8}T\d{6}\.\d{6}Z_a{40}-dirty_[0-9a-f]{32}\.json', first.name)
+    assert first.name == 'javascope_' + 'a'*40 + '-dirty.json'
     assert json.loads(first.read_text()) == mapping
     assert calls[0][:8] == [sys.executable, '-u', '-m', 'uz_dataviewer.process_launcher', 'cli', 'create-json-from-javascope-h', '--repo', str(repo)]
-    assert sorted(first.parent.iterdir()) == sorted([first, second])
+    assert list(first.parent.iterdir()) == [first]
 
 
 def test_generation_failure_keeps_old_cache_but_never_reuses_it(repo, monkeypatch):
@@ -98,9 +95,9 @@ def test_commit_cache_is_overwritten_with_fresh_headers(repo, monkeypatch):
         Path(args[args.index('--output')+1]).write_text(json.dumps(mapping))
         return SimpleNamespace(returncode=0)
     monkeypatch.setattr(live_mapping.subprocess, 'run', run)
-    first = live_mapping.generate_mapping(repo, overwrite=True)
+    first = live_mapping.generate_mapping(repo)
     version[0] = 2
-    second = live_mapping.generate_mapping(repo, overwrite=True)
+    second = live_mapping.generate_mapping(repo)
     assert first == second
     assert first.name == 'javascope_abc123-dirty.json'
     assert json.loads(second.read_text())['observables']['changed'] == 2

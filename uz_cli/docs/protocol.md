@@ -1,4 +1,4 @@
-# Current JavaScope protocol and API v1
+# Current JavaScope protocol and local API v2
 
 ## Evidence and scope
 
@@ -179,49 +179,75 @@ service, survives CLI exit and lasts until shutdown. Default: off for this firmw
 
 ## Versioned local API
 
-CLI and native Python bindings call the same Rust control client. Current local
-control is one bounded JSON request/response per loopback TCP connection, newline
-terminated, maximum 64 KiB. Requests and responses carry `api_version: 1`.
-The live-snapshot and range-query operations additionally return a length-delimited binary Arrow
-body after its JSON response header, as specified below.
-This is a small local command transport, not a decision on future viewer IPC.
+CLI and native Python bindings call the same Rust control client. The local
+transport is newline-terminated JSON over persistent loopback TCP connections:
+a client may send any number of requests on one connection, strictly one at a
+time, and receives each reply before sending the next. Each message is at most
+64 KiB. Requests and replies carry `api_version: 2`; any other version is
+rejected with an error and the connection is closed. Version 1 (one request per
+connection) is no longer accepted. `read_data` replies additionally carry a
+length-delimited binary Arrow body after the JSON header line, as specified below.
 The endpoint is restricted to numeric loopback addresses and has no multi-user
 authentication. Local users with access to it can control the attached device;
 remote/cloud control requires a separate authenticated boundary.
 
 ```json
-{"api_version":1,"command":{"op":"set_variable","name":"send_field_1","value":12.5}}
+{"api_version":2,"command":{"op":"set_variable","name":"send_field_1","value":12.5}}
 ```
 
-Success: `{"api_version":1,"ok":true,"outcome":"sent_unconfirmed"}` for wire
-commands, or `applied_locally` for ACK policy/shutdown. Errors have `ok:false`
-and an `error` string; CLI exits nonzero and Python raises RuntimeError.
+Success: `{"api_version":2,"ok":true,"outcome":"sent_unconfirmed","logging":{...}}`
+for wire commands (`shutdown` while connected included, since it sends device
+Stop), or `applied_locally` for local operations such as `connect`, ACK policy
+and logging control. Errors have `ok:false`, an `error` message and a stable
+`code` (`null` when uncoded); the CLI exits nonzero and Python raises
+`RuntimeError` with the same `code` attribute. Codes:
+
+| Code | Meaning |
+|---|---|
+| `cursor_expired` | A `since` cursor belongs to another run/source/generation or its position left the retained range; restart without a cursor |
+| `canceled_by_stop` | A queued device command was superseded by Stop before execution |
+| `not_connected` | The operation needs a device connection |
+| `busy` | Too many concurrent data queries or clients; retry later |
+| `shutting_down` | The service is shutting down |
+
 Status returns counters, last status word, ACK policy, terminal error and
 `logging.fast` / `logging.slow` with phase, Parquet path and recording error.
-Operations: connect, status, observables, stop, enable_system, enable_control, error_reset,
-set_variable, set_observable, button, send_ack, start_logging, stop_logging,
-start_logging_slow_data, stop_logging_slow_data, pause_logging, resume_logging,
-pause_logging_slow_data, resume_logging_slow_data, shutdown.
+Operations: connect, status, catalog, observables, recordings, data_info,
+read_data, stop, enable_system, enable_control, set_variable, set_observable,
+button, send_ack, start_logging, stop_logging, pause_logging, resume_logging,
+shutdown. The four logging operations take an optional `stream` field
+(`"fast"`, the default, or `"slow"`). Error_Reset is not an operation because
+its firmware case is empty; the CLI `error-reset` command explains this locally.
 Unknown operations/fields and unsupported versions fail without sending bytes.
 
-Connections read requests and write replies independently; commands execute
-sequentially on the service owner. There are at most 64 active client workers
-and four data queries. Excess connections are closed immediately. Incomplete
-requests time out without holding up other clients.
+Each connection is served by its own worker; commands from all connections
+execute sequentially on the service owner, which wakes as soon as a request is
+queued. There are at most 64 connected clients (an excess connection receives a
+`busy` error and is closed) and four concurrent data queries. Idle connections
+stay open until the client or service closes them; a request that has started
+must complete within two seconds. Clients drop a connection after any transport
+error and reconnect on the next request; only read-only operations (status,
+catalog, observables, recordings, data_info, read_data) are retried
+automatically, never device commands.
 
-A complete, validated `stop` request cancels all requests still in the service
-queue and becomes the next command to execute. Canceled callers receive
-`ok:false` with `request canceled by Stop before execution` (Python raises
-`RuntimeError`). An already executing command finishes first. Requests completed
-after Stop enter the queue normally, including requests whose connections were
-opened earlier. Stop is therefore a cancellation boundary, not a persistent
-interlock against new enable commands. Do not automatically retry canceled
-commands. The GUI also cancels its own pending commands and terminates its managed
-measurement script before sending Stop; independently launched scripts remain
+A complete, validated `stop` request cancels the device commands still queued
+(enable_system, enable_control, set_variable, set_observable, button and earlier
+stop) and becomes the next command to execute, ahead of everything still queued.
+Queued reads, logging control and shutdown keep their order behind it. Canceled callers receive `ok:false` with
+code `canceled_by_stop`. An already executing command finishes first. Requests
+completed after Stop enter the queue normally. Stop is therefore a cancellation
+boundary for device commands, not a persistent interlock against new enable
+commands. Do not automatically retry canceled commands. The GUI also cancels
+its own pending commands and terminates its managed measurement script before
+sending Stop on a separate connection; independently launched scripts remain
 responsible for handling cancellation.
 
 `stop` affects the device; `shutdown` requests acquisition shutdown; the logger drains, merges Parquet segments
-and optionally exports CSV before the service exits.
+and optionally exports CSV before the service exits. A recording whose writer or
+export fails enters phase `failed` with its error; acquisition, device control and
+the other stream continue. Errors remain attached to each recording even after
+logging restarts, and any failed recording makes the service exit unsuccessfully
+with `end.json` reporting the failure.
 Shutdown sends device Stop before finalization. Loss of the client connection is not an
 emergency stop. No automatic reconnect/replay occurs; a new service run starts
 new metadata and new log files.
@@ -229,7 +255,7 @@ new metadata and new log files.
 ## Explicit recording control
 
 Connection alone does not log. `start_logging` starts fast data;
-`start_logging_slow_data` starts slow data. Each requires the session output directory
+`{"op":"start_logging","stream":"slow"}` starts slow data. Each requires the session output directory
 configured at startup. Matching stop operations detach their stream and finalize
 in the background. Replies include current logging states. Wait for `complete`;
 `shutdown` / Python `close()` waits for all finalizers. Files are numbered on each
@@ -242,7 +268,7 @@ Stopping the device is independent of stopping acquisition or either logger.
 
 ## Channel assignment query
 
-`{"api_version":1,"command":{"op":"observables"}}` returns `channels`, an ordered
+`{"api_version":2,"command":{"op":"observables"}}` returns `channels`, an ordered
 array of 20 objects with `channel` (1..20), `name`, `id`, and `state`. Known entries
 use the canonical name and ID from the active channel mapping with state
 `sent_unconfirmed`. Untouched channels have null name/ID and state `unknown`.
@@ -278,7 +304,7 @@ Repository provenance is user-supplied mapping metadata, not device discovery.
 ## Connection lifecycle
 
 Without `serve --device IP:PORT`, the control endpoint starts offline. The request
-`{"api_version":1,"command":{"op":"connect","ip":"192.168.1.233","port":1000}}`
+`{"api_version":2,"command":{"op":"connect","ip":"192.168.1.233","port":1000}}`
 opens the device connection and applies configured initial observables. CLI and
 Python helpers supply these defaults; the JSON operation requires both fields.
 IP must be numeric IPv4/IPv6 and port must be 1..65535. A failed attempt returns an
@@ -360,17 +386,20 @@ not been extended to publish or use it. Generation requires no device connection
 The local API adds `recordings`, `data_info` and `read_data`. `data_info` takes
 `source: {"stream":"fast"|"slow", "recording":null|positive_integer}`. Null selects
 the recent RAM ring; a number selects a recording, including pending data and
-older indexed chunks. `recordings` lists all sources in this service run.
+older indexed chunks. `recordings` lists all sources in this service run, including
+recordings whose initialization failed. Their metadata includes an `error` string;
+one failed recording does not prevent listing or reading the others.
 
 ```json
-{"api_version":1,"command":{"op":"read_data","query":{"source":{"stream":"fast","recording":1},"selection":{"kind":"range","start":100,"stop":200},"channels":["JSO_lifecheck"]}}}
+{"api_version":2,"command":{"op":"read_data","query":{"source":{"stream":"fast","recording":1},"selection":{"kind":"range","start":100,"stop":200},"channels":["JSO_lifecheck"]}}}
 ```
 
 Selection alternatives are `{"kind":"tail","count":500}` and
 `{"kind":"since","cursor":null,"limit":10000}`. Range positions are absolute
 sample positions, half-open (acquisition positions for live data, contiguous recorded-row positions for recordings). A since response returns an opaque cursor
 containing run/source/generation identity and the next position. Supply that
-object unchanged on the next since call. Expired or mismatched cursors fail.
+object unchanged on the next since call. Expired or mismatched cursors fail
+with code `cursor_expired`.
 A source with no samples returns an empty page and an unset cursor position.
 
 Success returns a JSON line with `info`, `cursor`, actual `start`/`stop`, `rows`,
@@ -379,6 +408,10 @@ of Arrow IPC. The 128 MiB body cap and ordinary JSON-only errors apply. `info`
 contains available accepted range, `persisted_stop`, `complete`, schema/layout,
 and nominal sample period. Pending data is part of a recording's available range
 before flush. Read failures return an error without terminating acquisition.
+Recording metadata remains available before backend initialization completes;
+sample queries require an initialized backend. `error`, when present, retains
+the recording's failure. `complete` describes backend completion; an export can
+fail after the backend has completed, in which case the metadata also has `error`.
 
 Slow range queries preserve one original slow ID/value update per received sample;
 wide slow Parquet/CSV exports are a distinct derived representation. Durable
@@ -405,8 +438,8 @@ sequence. A Stop transmission failure is recorded; logging still finalizes.
 
 ### Paused recordings
 
-`pause_logging` and `resume_logging` transition fast logging between `recording`
-and `paused`. The corresponding `_slow_data` operations affect only slow logging.
+`pause_logging` and `resume_logging` transition a stream (default fast) between
+`recording` and `paused`; `"stream":"slow"` affects only slow logging.
 Invalid transitions return an error. Pausing keeps the recording handle open and
 skips future frames at a frame boundary; accepted frames still drain normally.
 Stop/shutdown also finalize paused recordings. The schema cannot change while

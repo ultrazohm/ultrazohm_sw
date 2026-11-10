@@ -92,6 +92,9 @@ pub struct ChannelMapping {
     pub slow_signals: BTreeMap<String, u32>,
     pub variables: BTreeMap<String, u32>,
     pub commands: BTreeMap<String, u32>,
+    /// Header presentation metadata. Not yet exposed through the service profile/catalog.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub javascope: Option<JavascopeMetadata>,
     #[serde(default)]
     pub legacy_javascope_header: bool,
     pub platform_state: Option<PlatformStateMapping>,
@@ -109,7 +112,138 @@ impl ChannelMapping {
         let mapping: Self =
             serde_json::from_str(&text).context("invalid firmware channel mapping")?;
         validate_state_mapping(mapping.legacy_javascope_header, &mapping.platform_state)?;
+        mapping.validate_javascope()?;
         Ok(mapping)
+    }
+
+    fn validate_javascope(&self) -> Result<()> {
+        if let Some(metadata) = &self.javascope {
+            metadata.validate(&self.commands, &self.variables, &self.slow_signals)?;
+        }
+        Ok(())
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SlowSignalType {
+    Float32,
+    Uint32,
+}
+
+impl SlowSignalType {
+    pub fn from_identifier(name: &str) -> Self {
+        // JavaScope interprets FLOAT_ entries as float bits; all others as unsigned words.
+        if name.contains("FLOAT_") {
+            Self::Float32
+        } else {
+            Self::Uint32
+        }
+    }
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SendField {
+    pub slot: u32,
+    pub command: String,
+    pub label: String,
+    pub unit: Option<String>,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct UserButton {
+    pub slot: u32,
+    pub command: String,
+    pub label: Option<String>,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ReceiveField {
+    pub slot: u32,
+    pub label: Option<String>,
+    pub unit: Option<String>,
+    pub signal: Option<String>,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct JavascopeMetadata {
+    pub send_fields: Vec<SendField>,
+    pub buttons: Vec<UserButton>,
+    pub receive_fields: Vec<ReceiveField>,
+    /// JavaScope ignores a historical 21st display entry; retain it without creating a field.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub unused_slow_data_display: Vec<String>,
+    pub slow_signal_types: BTreeMap<String, SlowSignalType>,
+}
+
+impl JavascopeMetadata {
+    fn validate(
+        &self,
+        commands: &BTreeMap<String, u32>,
+        variables: &BTreeMap<String, u32>,
+        slow_signals: &BTreeMap<String, u32>,
+    ) -> Result<()> {
+        ensure!(
+            self.send_fields.len() == 20
+                && self.receive_fields.len() == 20
+                && self.buttons.len() == 8,
+            "javascope requires 20 send/receive fields and 8 buttons"
+        );
+        for (i, field) in self.send_fields.iter().enumerate() {
+            ensure!(
+                field.slot == i as u32 + 1
+                    && field.command == format!("Set_Send_Field_{}", field.slot),
+                "invalid javascope send-field slot/command"
+            );
+            ensure!(
+                commands.contains_key(&field.command)
+                    && commands.get(&field.command) == variables.get(&field.label),
+                "javascope send-field label {:?} does not match variables",
+                field.label
+            );
+        }
+        for (i, button) in self.buttons.iter().enumerate() {
+            ensure!(
+                button.slot == i as u32 + 1
+                    && button.command == format!("My_Button_{}", button.slot)
+                    && commands.contains_key(&button.command),
+                "invalid javascope button slot/command"
+            );
+        }
+        for (i, field) in self.receive_fields.iter().enumerate() {
+            ensure!(
+                field.slot == i as u32 + 1,
+                "invalid javascope receive-field slot"
+            );
+        }
+        ensure!(
+            self.unused_slow_data_display.len() <= 1,
+            "at most one unused slow display entry is supported"
+        );
+        for signal in self
+            .receive_fields
+            .iter()
+            .filter_map(|field| field.signal.as_ref())
+            .chain(self.unused_slow_data_display.iter())
+        {
+            ensure!(
+                slow_signals.contains_key(signal),
+                "unknown javascope receive signal {signal}"
+            );
+        }
+        ensure!(
+            self.slow_signal_types.len() == slow_signals.len()
+                && slow_signals
+                    .keys()
+                    .all(|name| self.slow_signal_types.get(name)
+                        == Some(&SlowSignalType::from_identifier(name))),
+            "javascope slow_signal_types must match slow_signals and JavaScope type conventions"
+        );
+        Ok(())
     }
 }
 
@@ -143,6 +277,7 @@ impl Profile {
         Self::from_mapping(settings, mapping)
     }
     pub fn from_mapping(settings: ProfileSettings, mapping: ChannelMapping) -> Result<Self> {
+        mapping.validate_javascope()?;
         let p = Self {
             api_version: mapping.api_version,
             name: settings.name,

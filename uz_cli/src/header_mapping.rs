@@ -1,5 +1,8 @@
 //! Read the repository's JavaScope header contract without a C compiler or Vitis.
-use crate::profile::{ChannelMapping, PlatformStateMapping, Profile, ProfileSettings, Repository};
+use crate::profile::{
+    ChannelMapping, JavascopeMetadata, PlatformStateMapping, Profile, ProfileSettings,
+    ReceiveField, Repository, SendField, SlowSignalType, UserButton,
+};
 use anyhow::{Context, Result, ensure};
 use std::{
     collections::BTreeMap,
@@ -60,6 +63,107 @@ fn section(text: &str, start: &str, end: &str) -> Result<Vec<String>> {
         .filter(|s| !s.is_empty())
         .cloned()
         .collect())
+}
+
+/// Omitted display sections are allowed; a present section must be unambiguous and complete.
+fn display_section(
+    text: &str,
+    prefix: &str,
+    counts: std::ops::RangeInclusive<usize>,
+    identifiers: bool,
+) -> Result<Option<Vec<String>>> {
+    let start = format!("{prefix}_ZEROVALUE=0");
+    let end = format!("{prefix}_ENDMARKER");
+    if !text
+        .lines()
+        .map(clean_line)
+        .any(|line| line == start || line == end)
+    {
+        return Ok(None);
+    }
+    let entries = section(text, &start, &end)?;
+    ensure!(
+        counts.contains(&(entries.len() - 1)),
+        "{prefix} expected {}..={} entries after the zero marker, found {}",
+        counts.start(),
+        counts.end(),
+        entries.len() - 1
+    );
+    Ok(Some(
+        entries
+            .into_iter()
+            .skip(1)
+            .map(|entry| {
+                if identifiers {
+                    entry.split('=').next().unwrap().to_owned()
+                } else {
+                    entry.replace("=0", "") // JavaScope COMPACT_TEXT behavior.
+                }
+            })
+            .collect(),
+    ))
+}
+
+fn slow_display_name(name: &str) -> String {
+    name.replace("JSSD_", "")
+        .replace("FLOAT_", "")
+        .replace("INT_", "")
+}
+
+fn javascope_metadata(
+    header: &str,
+    labels: &[String],
+    slow_signals: &BTreeMap<String, u32>,
+) -> Result<JavascopeMetadata> {
+    let send_units = display_section(header, "SND_LABELS", 20..=20, false)?;
+    let button_labels = display_section(header, "MYBUTTONS_LABELS", 8..=8, false)?;
+    let receive_labels = display_section(header, "RCV_FLD", 20..=20, false)?;
+    let receive_units = display_section(header, "RCV_LABELS", 20..=20, false)?;
+    let display = display_section(header, "SLOWDAT_DISPLAY", 20..=21, true)?;
+    let display = display.map(|entries| entries.iter().enumerate().map(|(index, entry)| {
+        let normalized = slow_display_name(entry);
+        let matches: Vec<_> = slow_signals.keys()
+            .filter(|name| slow_display_name(name) == normalized).collect();
+        ensure!(matches.len() == 1,
+            "SLOWDAT_DISPLAY slot {}: signal {entry:?} has {} matches in JS_SlowData (expected one)",
+            index + 1, matches.len());
+        Ok((*matches[0]).clone())
+    }).collect::<Result<Vec<_>>>()).transpose()?;
+    let at =
+        |entries: &Option<Vec<String>>, i: usize| entries.as_ref().and_then(|v| v.get(i)).cloned();
+    Ok(JavascopeMetadata {
+        send_fields: labels
+            .iter()
+            .skip(1)
+            .enumerate()
+            .map(|(i, label)| SendField {
+                slot: i as u32 + 1,
+                command: format!("Set_Send_Field_{}", i + 1),
+                label: label.replace("=0", ""),
+                unit: at(&send_units, i),
+            })
+            .collect(),
+        buttons: (0..8)
+            .map(|i| UserButton {
+                slot: i as u32 + 1,
+                command: format!("My_Button_{}", i + 1),
+                label: at(&button_labels, i),
+            })
+            .collect(),
+        receive_fields: (0..20)
+            .map(|i| ReceiveField {
+                slot: i as u32 + 1,
+                label: at(&receive_labels, i),
+                unit: at(&receive_units, i),
+                signal: at(&display, i),
+            })
+            .collect(),
+        unused_slow_data_display: display.unwrap_or_default().into_iter().skip(20).collect(),
+        slow_signal_types: slow_signals
+            .keys()
+            .map(|name| (name.clone(), SlowSignalType::from_identifier(name)))
+            .collect(),
+    })
 }
 
 fn identifier(name: &str) -> bool {
@@ -200,6 +304,7 @@ pub fn generate(root: &Path) -> Result<ChannelMapping> {
             "empty or duplicate send-field label {name:?}; variable names must be unique"
         );
     }
+    let javascope = Some(javascope_metadata(header, &labels, &slow_signals)?);
     let platform_state = if let Some(status_header) = &texts[1] {
         let status_defines = defines(status_header)?;
         let mask = number("JAVASCOPE_PLATFORM_STATE_MASK", &status_defines, 0)?;
@@ -264,6 +369,7 @@ pub fn generate(root: &Path) -> Result<ChannelMapping> {
         slow_signals,
         variables,
         commands,
+        javascope,
         legacy_javascope_header: platform_state.is_none(),
         platform_state,
     };
@@ -292,6 +398,160 @@ pub fn run(repo: Option<&Path>, output: Option<&Path>) -> Result<PathBuf> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    const HEADER: &str = include_str!("../../vitis/software/Baremetal/src/include/javascope.h");
+
+    fn metadata(header: &str) -> Result<JavascopeMetadata> {
+        javascope_metadata(
+            header,
+            &section(header, "SND_FLD_ZEROVALUE=0", "SND_FLD_ENDMARKER")?,
+            &enum_table(header, "JSSD_ZEROVALUE=0", "JSSD_ENDMARKER")?,
+        )
+    }
+
+    fn without_section(header: &str, prefix: &str) -> String {
+        let start = header.find(&format!("{prefix}_ZEROVALUE=0")).unwrap();
+        let end_marker = format!("{prefix}_ENDMARKER");
+        let end = header[start..].find(&end_marker).unwrap() + start + end_marker.len();
+        format!("{}{}", &header[..start], &header[end..])
+    }
+
+    #[test]
+    fn all_visualization_sections_and_legacy_zero_alias_are_preserved() {
+        let data = metadata(HEADER).unwrap();
+        assert_eq!(data.send_fields.len(), 20);
+        assert_eq!(data.send_fields[0].label, "send_field_1");
+        assert_eq!(data.send_fields[0].unit.as_deref(), Some("RPM"));
+        assert_eq!(data.send_fields[19].command, "Set_Send_Field_20");
+        assert_eq!(data.buttons[7].label.as_deref(), Some("MyButton8"));
+        assert_eq!(data.buttons[7].command, "My_Button_8");
+        assert_eq!(
+            data.receive_fields[0].label.as_deref(),
+            Some("receive_field_1")
+        );
+        assert_eq!(data.receive_fields[0].unit.as_deref(), Some("RPM"));
+        assert_eq!(
+            data.receive_fields[3].signal.as_deref(),
+            Some("JSSD_FLOAT_i_q")
+        );
+        assert_eq!(
+            data.receive_fields[5].signal.as_deref(),
+            Some("JSSD_ZEROVALUE")
+        );
+        assert_eq!(data.unused_slow_data_display, ["JSSD_FLOAT_Error_Code"]);
+        assert_eq!(
+            data.slow_signal_types["JSSD_ZEROVALUE"],
+            SlowSignalType::Uint32
+        );
+        assert_eq!(
+            data.slow_signal_types["JSSD_FLOAT_i_q"],
+            SlowSignalType::Float32
+        );
+    }
+
+    #[test]
+    fn custom_text_types_and_display_order_match_javascope() {
+        let header = HEADER
+            .replace("send_field_1,", "speed reference /* caption */, // note")
+            .replace("MyButton1,", "Calibrate motor,")
+            .replace("receive_field_1,", "Actual speed,")
+            .replace("RPM,", "rad / s,")
+            .replace("JSSD_FLOAT_i_q", "JSSD_INT_counter");
+        let data = metadata(&header).unwrap();
+        assert_eq!(data.send_fields[0].label, "speedreference");
+        assert_eq!(data.send_fields[0].unit.as_deref(), Some("rad/s"));
+        assert_eq!(data.buttons[0].label.as_deref(), Some("Calibratemotor"));
+        assert_eq!(data.receive_fields[0].label.as_deref(), Some("Actualspeed"));
+        assert_eq!(
+            data.receive_fields[3].signal.as_deref(),
+            Some("JSSD_INT_counter")
+        );
+        assert_eq!(
+            data.slow_signal_types["JSSD_INT_counter"],
+            SlowSignalType::Uint32
+        );
+    }
+
+    #[test]
+    fn missing_optional_sections_remain_unspecified() {
+        let mut header = HEADER.to_owned();
+        for prefix in [
+            "SND_LABELS",
+            "MYBUTTONS_LABELS",
+            "RCV_FLD",
+            "RCV_LABELS",
+            "SLOWDAT_DISPLAY",
+        ] {
+            header = without_section(&header, prefix);
+        }
+        let data = metadata(&header).unwrap();
+        assert!(data.send_fields.iter().all(|f| f.unit.is_none()));
+        assert!(data.buttons.iter().all(|b| b.label.is_none()));
+        assert!(
+            data.receive_fields
+                .iter()
+                .all(|f| f.label.is_none() && f.unit.is_none() && f.signal.is_none())
+        );
+        assert!(data.unused_slow_data_display.is_empty());
+    }
+
+    #[test]
+    fn bad_display_sections_and_references_are_errors() {
+        for (from, to) in [
+            ("MyButton8,", ""),
+            ("MYBUTTONS_LABELS_ENDMARKER", ""),
+            (
+                "MYBUTTONS_LABELS_ENDMARKER",
+                "MYBUTTONS_LABELS_ENDMARKER\nMYBUTTONS_LABELS_ENDMARKER",
+            ),
+            (
+                "MYBUTTONS_LABELS_ZEROVALUE=0,",
+                "MYBUTTONS_LABELS_ZEROVALUE=0,\nMYBUTTONS_LABELS_ZEROVALUE=0,",
+            ),
+            ("JSSD_FLOAT_ZEROVALUE,", "JSSD_FLOAT_missing,"),
+            (
+                "SLOWDAT_DISPLAY_ENDMARKER",
+                "JSSD_ZEROVALUE,\nSLOWDAT_DISPLAY_ENDMARKER",
+            ),
+        ] {
+            assert!(
+                metadata(&HEADER.replace(from, to)).is_err(),
+                "accepted {from} -> {to}"
+            );
+        }
+        let ambiguous = HEADER.replace("JSSD_ENDMARKER", "JSSD_INT_i_q,\nJSSD_ENDMARKER");
+        assert!(
+            metadata(&ambiguous)
+                .unwrap_err()
+                .to_string()
+                .contains("2 matches")
+        );
+    }
+
+    #[test]
+    fn new_mapping_roundtrips_and_old_mapping_loads_without_catalog_changes() {
+        let mapping = generate(Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap()).unwrap();
+        let json = serde_json::to_value(&mapping).unwrap();
+        let decoded: ChannelMapping = serde_json::from_value(json.clone()).unwrap();
+        assert_eq!(serde_json::to_value(decoded).unwrap(), json);
+        let mut old_json = json.clone();
+        old_json.as_object_mut().unwrap().remove("javascope");
+        let old: ChannelMapping = serde_json::from_value(old_json.clone()).unwrap();
+        assert!(old.javascope.is_none());
+        assert_eq!(serde_json::to_value(&old).unwrap(), old_json);
+        let mut settings = ProfileSettings::load(None).unwrap();
+        settings.initial_channels.clear();
+        let old_profile = Profile::from_mapping(settings.clone(), old).unwrap();
+        let new_profile = Profile::from_mapping(settings.clone(), mapping).unwrap();
+        assert_eq!(
+            serde_json::to_value(old_profile).unwrap(),
+            serde_json::to_value(new_profile).unwrap()
+        );
+        let mut bad = json;
+        bad["javascope"]["receive_fields"][0]["signal"] = "JSSD_missing".into();
+        let bad: ChannelMapping = serde_json::from_value(bad).unwrap();
+        assert!(Profile::from_mapping(settings, bad).is_err());
+    }
+
     #[test]
     fn sections_match_javascope_comments_and_whitespace() {
         let text = "// start\nSTART = 0, // comment\n name /* units */ ,\nEND;\n";

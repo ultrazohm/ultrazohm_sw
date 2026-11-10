@@ -1,12 +1,12 @@
 """Generate real mapping JSON from repository-shaped header fixtures."""
 import json
 import os
-from pathlib import Path
 import shutil
 import socket
 import subprocess
 import tempfile
 import unittest
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 BIN = Path(os.environ.get("UZ_CLI_BIN", ROOT / "uz_cli/target/debug" / ("ultrazohm.exe" if os.name == "nt" else "ultrazohm")))
@@ -42,7 +42,7 @@ class HeaderMappingTest(unittest.TestCase):
         self.output = self.repo / "artifacts/channel_mappings/javascope.json"
 
     def run_cli(self, *args, cwd=None, input=None, env=None):
-        return subprocess.run([str(BIN), *map(str, args)], cwd=cwd or self.repo,
+        return subprocess.run([str(BIN), *map(str, args)], check=False, cwd=cwd or self.repo,
                               input=input, env=env, capture_output=True, text=True, timeout=15)
 
     def test_default_paths_and_mapping_equivalence_without_tools(self):
@@ -61,6 +61,9 @@ class HeaderMappingTest(unittest.TestCase):
         header = self.repo / HEADERS[0]
         text = header.read_text().replace("\tJSO_ENDMARKER", "\tJSO_custom = 100U, // new signal\n\tJSO_next,\n\tJSO_ENDMARKER")
         text = text.replace("\tsend_field_1,", "\t speed_reference, /* new label */")
+        text = text.replace("\tMyButton1,", "\tCalibrate motor, // caption")
+        text = text.replace("\treceive_field_1,", "\tElapsed time,")
+        text = text.replace("\tRPM,", "\tseconds,")
         header.write_text(text)
         geometry = self.repo / HEADERS[4]
         geometry.write_text(geometry.read_text().replace("JS_SAMPLES_PER_PACKET 15", "JS_SAMPLES_PER_PACKET 7"))
@@ -74,6 +77,15 @@ class HeaderMappingTest(unittest.TestCase):
         self.assertEqual(mapping["observables"]["JSO_custom"], 100)
         self.assertEqual(mapping["observables"]["JSO_next"], 101)
         self.assertEqual(mapping["variables"]["speed_reference"], 4)
+        metadata = mapping['javascope']
+        self.assertEqual(metadata['send_fields'][0], {
+            'slot': 1, 'command': 'Set_Send_Field_1', 'label': 'speed_reference', 'unit': 'seconds'})
+        self.assertEqual(metadata['buttons'][0], {
+            'slot': 1, 'command': 'My_Button_1', 'label': 'Calibratemotor'})
+        self.assertEqual(metadata['receive_fields'][0], {
+            'slot': 1, 'label': 'Elapsedtime', 'unit': 'seconds', 'signal': 'JSSD_FLOAT_SecondsSinceSystemStart'})
+        self.assertEqual(metadata['slow_signal_types']['JSSD_FLOAT_Error_Code'], 'float32')
+        self.assertEqual(metadata['slow_signal_types']['JSSD_ZEROVALUE'], 'uint32')
         self.assertEqual(mapping["samples_per_packet"], 7)
         self.assertEqual(mapping["platform_state"]["values"]["1"], "enabled")
         # Default loading regenerates from this checkout, including local edits.
@@ -84,6 +96,17 @@ class HeaderMappingTest(unittest.TestCase):
         result = self.run_cli("--endpoint", self.endpoint, "serve", "--interactive",
                               "--channel-mapping", destination, "--output", self.repo / "session",
                               input="status\nshutdown\n")
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_old_mapping_without_presentation_metadata_still_loads(self):
+        result = self.run_cli('create-json-from-javascope-h')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        mapping = json.loads(self.output.read_text())
+        mapping.pop('javascope')
+        self.output.write_text(json.dumps(mapping))
+        result = self.run_cli('--endpoint', self.endpoint, 'serve', '--interactive',
+                              '--channel-mapping', self.output, '--output', self.repo / 'session',
+                              input='status\nshutdown\n')
         self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_missing_checkout_has_no_bundled_fallback(self):
@@ -100,6 +123,8 @@ class HeaderMappingTest(unittest.TestCase):
             original.replace("JSO_ISR_ExecTime_us,", "JSO_ISR_ExecTime_us = (1 << 2),"),
             original.replace("JSO_ENDMARKER", "JSO_MISSING_END"),
             original.replace("send_field_2,", "send_field_1,"),
+            original.replace("JSSD_FLOAT_ZEROVALUE,", "JSSD_FLOAT_unknown,"),
+            original.replace("MyButton8,", ""),
             original + "\nJSO_ZEROVALUE=0,\nJSO_ENDMARKER\n",
         ):
             with self.subTest(text=text[-50:]):

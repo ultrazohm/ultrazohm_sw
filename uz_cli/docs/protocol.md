@@ -298,13 +298,62 @@ starts with acquisition, excluding time spent waiting offline.
 ## Generating a mapping from firmware headers
 
 `create-json-from-javascope-h` reads the repository's `javascope.h` enum sections
-and commented send-field names, `javascope_status.h` platform-state masks/codes,
+and commented visualization configuration, `javascope_status.h` platform-state masks/codes,
 and the shared/FreeRTOS packet-size constants. It emits the same channel-mapping
 schema consumed by `--channel-mapping` and Python `channel_mapping`.
 By default the output is `artifacts/channel_mappings/javascope.json` beneath the
 repository root; `--repo` and `--output` override discovery and destination.
 Unsupported expressions and ambiguous names are errors. Existing output is not
 touched on parse/validation failure. See the README for supported header syntax.
+
+### JavaScope presentation metadata in mapping JSON
+
+Generated mappings also contain an optional `javascope` object. Existing
+`observables`, `slow_signals`, `commands`, and `variables` retain their names and
+numeric IDs. Presentation metadata references those identifiers, not command
+numbers copied into labels:
+
+| Member | Header source | Representation |
+| --- | --- | --- |
+| `send_fields` | `SND_FLD_*`, `SND_LABELS_*` | 20 ordered objects: `slot` (1–20), `command` (`Set_Send_Field_N`), `label`, `unit` |
+| `buttons` | `MYBUTTONS_LABELS_*` | 8 ordered objects: `slot` (1–8), `command` (`My_Button_N`), `label` |
+| `receive_fields` | `RCV_FLD_*`, `RCV_LABELS_*`, `SLOWDAT_DISPLAY_*` | 20 ordered objects: `slot` (1–20), `label`, `unit`, `signal` (canonical `JSSD_*` identifier) |
+| `unused_slow_data_display` | Historical 21st `SLOWDAT_DISPLAY_*` entry | Optional array retaining the extra signal that JavaScope ignores |
+| `slow_signal_types` | `JSSD_*` identifiers | Map from each identifier to `float32` or `uint32` |
+
+For example, a receive field can be represented as:
+
+```json
+{"slot": 1, "label": "MotorSpeed", "unit": "RPM", "signal": "JSSD_FLOAT_speed"}
+```
+
+The zero/end section markers are excluded from display slots. Text follows
+JavaScope's `COMPACT_TEXT` rules: inline comments and whitespace are removed,
+as are trailing commas/semicolons and `=0`. Duplicate display captions are allowed;
+send-field names still must be unique because they are also variable names.
+Units such as `-` are preserved verbatim after normalization.
+
+Slow display references are resolved using JavaScope's normalization (removing
+`JSSD_`, `FLOAT_`, and `INT_`). This resolves the historical
+`JSSD_FLOAT_ZEROVALUE` display entry to `JSSD_ZEROVALUE`. Unknown or ambiguous
+references are errors. Identifiers containing `FLOAT_` select float32 bit
+interpretation; other slow values are unsigned 32-bit words, matching JavaScope.
+These are interpretation hints only; this metadata does not change acquisition
+or the existing slow-data API's value representation.
+
+Entirely absent optional display sections yield `null` captions, units, or
+signal assignments. `SND_FLD_*` remains required for the variable mapping.
+Present sections require unique, correctly ordered markers and the documented
+entry count. The slow display section accepts 20 or the historical 21 entries.
+Unlike JavaScope's UI fallbacks for malformed sections, generation fails rather
+than silently substituting labels or signals.
+
+Older mappings without `javascope` remain loadable; no presentation metadata is
+invented when loading them. Updated readers validate metadata against the
+command/variable/slow-signal tables. Older CLI versions that reject unknown JSON
+fields cannot consume the new object. At this stage this object is retained in
+the mapping JSON only: the runtime profile/service catalog and viewer UI have
+not been extended to publish or use it. Generation requires no device connection.
 
 ## Range queries and recording backend handles
 

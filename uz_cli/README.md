@@ -237,13 +237,17 @@ ultrazohm create-json-from-javascope-h --repo /path/to/ultrazohm_sw --output my-
 
 The default destination is `<repo>/artifacts/channel_mappings/javascope.json`;
 re-running replaces it only after parsing and validation. The command reads
-JavaScope enums/send-field names, status definitions, channel count and packet
+JavaScope enums and visualization sections (field names, units, button captions,
+receive-field assignments), status definitions, channel count and packet
 size from the checkout's headers. No Vitis, C compiler or Python parser is needed.
 Git is optional; provenance is `unknown` without it and marks modified headers
 with `-dirty`. This parser is not a C preprocessor: unsupported expressions,
 duplicate names and unsupported geometry fail explicitly. See the
 [header contract](docs/protocol.md#generating-a-mapping-from-firmware-headers).
 Generating a file does not reconfigure a running service.
+The optional `javascope` JSON object also records slow-signal float/integer types.
+This metadata is currently mapping-only; service catalog and viewer integration
+are separate steps. Existing mappings without it remain supported.
 
 ## Python
 

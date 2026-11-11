@@ -119,10 +119,10 @@
         "isr_watchdog": "",
         "SDC_OCP_OCP": "",
         "SDC_OCP_P": "",
+        "ila_1": "",
         "SDC_Interface_P": "",
         "SDC_Interface_I": "",
-        "SDC_Interface_OCP": "",
-        "ila_1": ""
+        "SDC_Interface_OCP": ""
       },
       "zynq_ultra_ps_e_0": "",
       "ila_0": "",
@@ -5720,6 +5720,23 @@
             "xci_path": "ip\\zusys_SDC_OCP_0_1\\zusys_SDC_OCP_0_1.xci",
             "inst_hier_path": "uz_user/SDC_OCP_P"
           },
+          "ila_1": {
+            "vlnv": "xilinx.com:ip:ila:6.2",
+            "xci_name": "zusys_ila_0_6",
+            "xci_path": "ip\\zusys_ila_0_6\\zusys_ila_0_6.xci",
+            "inst_hier_path": "uz_user/ila_1",
+            "parameters": {
+              "C_DATA_DEPTH": {
+                "value": "65536"
+              },
+              "C_MONITOR_TYPE": {
+                "value": "Native"
+              },
+              "C_NUM_OF_PROBES": {
+                "value": "11"
+              }
+            }
+          },
           "SDC_Interface_P": {
             "vlnv": "xilinx.com:ip:SDC_Interface:1.0",
             "xci_name": "zusys_SDC_Interface_0_0",
@@ -5737,23 +5754,6 @@
             "xci_name": "zusys_SDC_Interface_0_2",
             "xci_path": "ip\\zusys_SDC_Interface_0_2\\zusys_SDC_Interface_0_2.xci",
             "inst_hier_path": "uz_user/SDC_Interface_OCP"
-          },
-          "ila_1": {
-            "vlnv": "xilinx.com:ip:ila:6.2",
-            "xci_name": "zusys_ila_0_6",
-            "xci_path": "ip\\zusys_ila_0_6\\zusys_ila_0_6.xci",
-            "inst_hier_path": "uz_user/ila_1",
-            "parameters": {
-              "C_DATA_DEPTH": {
-                "value": "65536"
-              },
-              "C_MONITOR_TYPE": {
-                "value": "Native"
-              },
-              "C_NUM_OF_PROBES": {
-                "value": "11"
-              }
-            }
           }
         },
         "interface_nets": {
@@ -6161,13 +6161,13 @@
               "SDC_OCP_OCP/AXI4_ACLK",
               "SDC_OCP_P/IPCORE_CLK",
               "SDC_OCP_P/AXI4_ACLK",
+              "ila_1/clk",
               "SDC_Interface_P/IPCORE_CLK",
               "SDC_Interface_P/AXI4_ACLK",
               "SDC_Interface_I/IPCORE_CLK",
               "SDC_Interface_I/AXI4_ACLK",
               "SDC_Interface_OCP/IPCORE_CLK",
-              "SDC_Interface_OCP/AXI4_ACLK",
-              "ila_1/clk"
+              "SDC_Interface_OCP/AXI4_ACLK"
             ]
           }
         }

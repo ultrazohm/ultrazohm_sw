@@ -12,6 +12,7 @@ Modul ist angepasst für SH-Strommessplatine
 
 #include "../include/SigmaDeltaWandler.h"
 #include "../uz/uz_HAL.h"
+#include "../uz/uz_global_configuration.h"   // UZ_PWM_FREQUENCY (gemeinsame PWM-Frequenz)
 #include "../IP_Cores/SDC_Interface/SDC_Interface.h"
 #include "../uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
 #include "../uz/uz_array/uz_array.h"
@@ -20,8 +21,6 @@ Modul ist angepasst für SH-Strommessplatine
 #include <math.h>
 
 #define SDW_OFFSET_AVG_WINDOW_LENGTH 10000U // Fensterlänge zum ermitteln des DC Offsets
-#define SDW_SINC3_OSR 100U // Dezimierungsfaktor (OSR) des SINC³-Filters, Basis für start_time_us Berechnung
-// data valid reset �berpr�fen
 /* Initilalisieurng der IP Cores (s. Treiber). Jede Filterinstanz hat eine eigene, unabhaengige Config. */
 struct SDC_Interface_config_t filter_config[SDW_FILTER_ENDMARKER] = {
 	[SDW_FILTER_P] = {
@@ -33,9 +32,10 @@ struct SDC_Interface_config_t filter_config[SDW_FILTER_ENDMARKER] = {
 		.switch_cont_disc = true, // false = kontinuierlich, true = diskontinuierlich;
 		.filt_input_delay = 3,	// Verzögerung des Abtastzeitpunkts, um Gruppenlaufzeit zu kompensieren, in 10 ns Schritten; 9 f�r 5 Mhz, 3 f�r 10 Mhz
 		.clk_dutycycle = 0.8,  // Clock Dutycycle, anpassbar zur kompensation von , durch LWL; 5MHz 0,65, 10Mhz 0,8 -> nur 10% Schritte,
-		.start_time_us = 25.0f, // ISR Trigger - 1.5*OSR/10MHz+(sinc_sample_periods-3)*OSR/10Mhz
+		.pwm_frequency_Hz = UZ_PWM_FREQUENCY, // bestimmt die Fensterlage S (synchroner Betrieb)
+		.window_offset_modcnt = 2, // S_offset, Sprungtest: S=312 -> 49,75 us, +2 -> ~49,95 us
 		.delay_data_valid = 0,
-		.sinc_sample_periods = 4,	// Anzahl an Dezimierungsstufen im Filter mit reset. S. Simulinkmodell
+		.sinc_sample_periods = 3,	// Anzahl Dezimationstakte nach tick 0 (neue Fensterlogik). S. Simulinkmodell
 		.use_clk_ext = false,	
 		.sel_pwm_trigger = false, // false = pwm min; true = pwm max
 	},
@@ -48,7 +48,8 @@ struct SDC_Interface_config_t filter_config[SDW_FILTER_ENDMARKER] = {
 		.switch_cont_disc = false,
 		.filt_input_delay = 3,
 		.clk_dutycycle = 0.8,
-		.start_time_us = 0.0f,
+		.pwm_frequency_Hz = UZ_PWM_FREQUENCY, // kontinuierlich: ohne Bedeutung (Fenster nicht gerastert)
+		.window_offset_modcnt = 0, // kontinuierlich: ohne Bedeutung
 		.delay_data_valid = 0,
 		.sinc_sample_periods = 3,
 		.use_clk_ext = true,
@@ -64,7 +65,8 @@ struct SDC_Interface_config_t filter_config[SDW_FILTER_ENDMARKER] = {
 		.switch_cont_disc = false,
 		.filt_input_delay = 3,
 		.clk_dutycycle = 0.8,
-		.start_time_us = 0.0f,
+		.pwm_frequency_Hz = UZ_PWM_FREQUENCY, // kontinuierlich: ohne Bedeutung (Fenster nicht gerastert)
+		.window_offset_modcnt = 0, // kontinuierlich: ohne Bedeutung
 		.delay_data_valid = 0,
 		.sinc_sample_periods = 3,
 		.use_clk_ext = true,
@@ -80,7 +82,7 @@ struct SDC_Interface_config_t filter_config[SDW_FILTER_ENDMARKER] = {
  *
  * k_manual/offset_manual: manuell einzutragende Kalibrierwerte
  * k_per_count/offset_counts: NICHT von Hand setzen - werden in SigmaDeltaWandler_init aus
- * k_manual/offset_manual und derosr_160_iosr_1000 aktuellen OSR berechnet (k_per_count = k_manual / OSR^3,
+ * k_manual/offset_manual und dem aktuellen OSR berechnet (k_per_count = k_manual / OSR^3,
  * offset_counts = offset_manual * OSR^3).
  */
 struct SigmaDeltaWandler_calibration_t {
@@ -225,7 +227,7 @@ SDC_OCP_t *SigmaDeltaWandler_init_ocp(enum SigmaDeltaWandler_filter_instance fil
 
 	// Strom-/Spannungsgrenzen aus A/V in Rohwert-counts der zugehoerigen Filterinstanz umrechnen:
 	// counts = Wert * OSR^3 / k (offset-frei). OSR/k MUESSEN zur SigmaDelta-Instanz passen, deren
-	// Datenvektor (In1) der OCP-Core vergleicht (P: OSR=100, OCP: OSR=8).
+	// Datenvektor (In1) der OCP-Core vergleicht (P: OSR=125, OCP: OSR=32).
 	float osr = (float)filter_config[filter].dezimation;
 	float osr_cubed = osr * osr * osr;
 	float k = calibration[filter][SDW_CH_PH1].k_manual;

@@ -66,13 +66,18 @@ struct uz_axi_gpio_config_t gpio_out_config={
             .direction_of_pins=UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
 };
 
-struct uz_JL_flt_dis_config_t flt_dis_config = {
-            .base_address = XPAR_UZ_JL_FLT_IP_0_BASEADDR,
+struct io_fault_shutdown_config_t flt_dis_config = {
+            .base_address = XPAR_IO_FAULT_SHUTDOWN_0_BASEADDR,
             .ip_core_frequency_Hz = 100000000U,
             .use_flt_dis = true,
+};
+
+struct ctrl_loop_watchdog_config_t ctrl_loop_watchdog_config = {
+            .base_address = XPAR_CTRL_LOOP_WATCHDOG_0_BASEADDR,
+            .ip_core_frequency_Hz = 100000000U,
             .isr_frequency_Hz = UZ_PWM_FREQUENCY,            // ISR = PWM frequency (UZ_PWM_FREQUENCY) with ADC-to-ISR ratio 1
-            .watchdog_timeout_ISR_periods = 10U,   // N: ~10 ISR periods (= 100000 cnts, fits 20 bit) until fault
-            .disable_watchdog = false,             // watchdog armed
+            .watchdog_timeout_ISR_periods = 10U,   // ISR periods until watchdog timeout
+            .enable = true,                        // watchdog enable
 };
 
 uz_codegen regelung;
@@ -131,11 +136,12 @@ int main(void)
 			Global_Data.objects.Sinc3_Filter_P = SigmaDeltaWandler_init(SDW_FILTER_P);
 			Global_Data.objects.Sinc3_Filter_I = SigmaDeltaWandler_init(SDW_FILTER_I); // liefert NULL, solange SDW_SECOND_FILTER_HW_AVAILABLE == 0
 			Global_Data.objects.Sinc3_Filter_OCP = SigmaDeltaWandler_init(SDW_FILTER_OCP); // NULL, bis XPAR_...INT_2 / base_address gesetzt ist
-			// Ueberstromerkennung (uz_JL_SDC_OCP): je eine Instanz fuer den P- und den OCP-Mess-Pfad.
+			// Ueberstromerkennung (SDC_OCP): je eine Instanz fuer den P- und den OCP-Mess-Pfad.
 			// Nach den SigmaDelta-Inits, da die Count-Grenzen die OSR/Kalibrierung der Filterinstanz nutzen.
 			Global_Data.objects.sdc_ocp_P = SigmaDeltaWandler_init_ocp(SDW_FILTER_P);
 			Global_Data.objects.sdc_ocp_OCP = SigmaDeltaWandler_init_ocp(SDW_FILTER_OCP);
-			Global_Data.objects.flt_dis = uz_JL_flt_dis_init(flt_dis_config);
+			Global_Data.objects.flt_dis = io_fault_shutdown_init(flt_dis_config);
+			Global_Data.objects.ctrl_loop_watchdog = ctrl_loop_watchdog_init(ctrl_loop_watchdog_config);
             initialization_chain = print_msg;
             break;
         case print_msg:

@@ -6,8 +6,8 @@ Jonathan Link 2026
 #define INCLUDE_SIGMADELTAWANDLER_H_
 
 #include <stdint.h>
-#include "../IP_Cores/uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Interface.h"
-#include "../IP_Cores/uz_JL_SDC_OCP/uz_JL_SDC_OCP.h"
+#include "../IP_Cores/SDC_Interface/SDC_Interface.h"
+#include "../IP_Cores/SDC_OCP/SDC_OCP.h"
 
 // Kanaele des SD-Demodulators (Auswahl der Kalibrierwerte/OSR)
 enum SigmaDeltaWandler_channel {
@@ -59,14 +59,14 @@ enum SigmaDeltaWandler_filter_instance {
  * Muss in main.c (init_ip_cores) vor dem ersten Aufruf von
  * SigmaDeltaWandler_process fuer diese Filterinstanz ausgefuehrt werden.
  * @param filter Zu initialisierende Filterinstanz (SDW_FILTER_0 oder SDW_FILTER_1).
- * @return uz_JL_SigmaDelta_Interface_t* Initialisierte Filter-Instanz (siehe Sinc3_Filter/Sinc3_Filter_2 in main.c),
+ * @return SDC_Interface_t* Initialisierte Filter-Instanz (siehe Sinc3_Filter/Sinc3_Filter_2 in main.c),
  * oder NULL falls filter == SDW_FILTER_1 und die zweite Hardware-Instanz noch nicht verfuegbar ist
  * (SDW_SECOND_FILTER_HW_AVAILABLE == 0).
  */
-uz_JL_SigmaDelta_Interface_t *SigmaDeltaWandler_init(enum SigmaDeltaWandler_filter_instance filter);
+SDC_Interface_t *SigmaDeltaWandler_init(enum SigmaDeltaWandler_filter_instance filter);
 
 /**
- * @brief Initialisiert den zur Filterinstanz gehoerenden uz_JL_SDC_OCP-Ueberstromerkennungs-Core.
+ * @brief Initialisiert den zur Filterinstanz gehoerenden SDC_OCP-Ueberstromerkennungs-Core.
  *
  * Rechnet die Stromgrenzen (SDW_OCP_I_MAX_A/MIN_A) in Rohwert-counts der jeweiligen Filterinstanz
  * um (counts = I_A * OSR^3 / k_manual) und schreibt sie zusammen mit den Enables in den Core.
@@ -74,14 +74,14 @@ uz_JL_SigmaDelta_Interface_t *SigmaDeltaWandler_init(enum SigmaDeltaWandler_filt
  * SDW_FILTER_I) wird NULL zurueckgegeben.
  *
  * @param filter Filterinstanz, deren OCP-Core initialisiert werden soll.
- * @return uz_JL_SDC_OCP_t* Initialisierte OCP-Instanz, oder NULL falls kein OCP-Core existiert.
+ * @return SDC_OCP_t* Initialisierte OCP-Instanz, oder NULL falls kein OCP-Core existiert.
  */
-uz_JL_SDC_OCP_t *SigmaDeltaWandler_init_ocp(enum SigmaDeltaWandler_filter_instance filter);
+SDC_OCP_t *SigmaDeltaWandler_init_ocp(enum SigmaDeltaWandler_filter_instance filter);
 
 /**
  * @brief ISR-optimierte Variante: liest die Sinc3-Ausgangsregister (Strobe + Registerreads)
  * und schreibt die kalibrierten physikalischen Werte direkt nach *result. Ersetzt die
- * Aufrufkette uz_JL_SigmaDelta_Interface_get_outputs() + SigmaDeltaWandler_process() im
+ * Aufrufkette SDC_Interface_get_outputs() + SigmaDeltaWandler_process() im
  * ISR-Pfad und vermeidet dabei die 20-Byte-Struct-Kopien und die pro-Kanal-Funktionsaufrufe.
  * Die Datengueltigkeit (Data_valid) muss der Aufrufer weiterhin selbst sicherstellen.
  *
@@ -89,7 +89,7 @@ uz_JL_SDC_OCP_t *SigmaDeltaWandler_init_ocp(enum SigmaDeltaWandler_filter_instan
  * @param filter Filterinstanz, deren Kalibrierung/OSR fuer die Umrechnung verwendet wird.
  * @param result Ausgabe: kalibrierte Werte (data_U_V in Volt, data_PH1_A..PH4_A in Ampere).
  */
-void SigmaDeltaWandler_read_and_process(uz_JL_SigmaDelta_Interface_t *instance, enum SigmaDeltaWandler_filter_instance filter, struct uz_JL_SigmaDelta_Interface_output_t_float *result);
+void SigmaDeltaWandler_read_and_process(SDC_Interface_t *instance, enum SigmaDeltaWandler_filter_instance filter, struct SDC_Interface_output_t_float *result);
 
 /**
  * @brief Liefert einen Pointer auf den gleitenden Fenster-Mittelwert (uz_movingAverageFilter,

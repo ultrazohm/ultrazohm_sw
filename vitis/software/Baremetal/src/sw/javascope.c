@@ -50,6 +50,7 @@ static float dpt_state_f;
 static float mult_pos_valid_f;
 static float ocp_fault_f;
 static float flt_fault_f;
+static float watchdog_fault_f;
 static float i_max;
 static float i_min;
 
@@ -67,7 +68,7 @@ extern uint32_t output_bitmask;
 extern float input_bit_float;
 extern Bus_ZM_In struct_ZM_In;
 extern uz_codegen regelung;
-extern struct uz_JL_SigmaDelta_Interface_output_t Sinc3_Filter_out;
+extern struct SDC_Interface_output_t Sinc3_Filter_out;
 extern bool input_bit;
 extern float Sinc3_Filter_out_f;
 extern int32_t fault;
@@ -106,6 +107,7 @@ int JavaScope_initialize(DS_Data* data)
 	 js_ch_observable[JSO_SD_OCP_PH3]			= &Global_Data.av.Sinc3_Filter_OCP.data_PH3_A;
 	 js_ch_observable[JSO_FLOAT_flt_fault]			    = &flt_fault_f;
 	 js_ch_observable[JSO_FLOAT_ocp_fault]			    = &ocp_fault_f;
+	 js_ch_observable[JSO_FLOAT_watchdog_fault]		    = &watchdog_fault_f;
 	 js_ch_observable[JSO_I_MAX]				= &i_max;
 	 js_ch_observable[JSO_I_MIN]				= &i_min;
 	// js_ch_observable[JSO_SD2_PH1]				= &Global_Data.av.Sinc3_Filter_I.data_PH1_A;
@@ -133,11 +135,11 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_mult_pos_valid]		= &mult_pos_valid_f;
 	js_ch_observable[JSO_CB_phi_ist]			= &regelung.output.phi_ist_safety;
 	js_ch_observable[JSO_CB_phi_max]			= &regelung.output.phi_max;
-	js_ch_observable[JSO_CB_v_max]				= &regelung.output.Soll_v_max;
+	js_ch_observable[JSO_CB_v_max]				= &regelung.output.Soll_v_max_grads;
 	js_ch_observable[JSO_CB_Grenze_aktiv]		= &regelung.output.Grenze_aktiv;
- 	js_ch_observable[JSO_CB_Soll_Beschl]		= &regelung.output.Bus_Ctrl_Out_j.Soll_Beschleunigung_CB_Grads2;
-	js_ch_observable[JSO_CB_Soll_Geschw]		= &regelung.output.Bus_Ctrl_Out_j.Soll_Drehzahl_CB_Grads;
-	js_ch_observable[JSO_CB_Soll_Winkel]		= &regelung.output.Bus_Ctrl_Out_j.Soll_Winkel_CB_Grad;
+ 	js_ch_observable[JSO_CB_Soll_Beschl]		= &regelung.output.Bus_Ctrl_Out_a.Soll_Beschleunigung_CB_Grads2;
+	js_ch_observable[JSO_CB_Soll_Geschw]		= &regelung.output.Bus_Ctrl_Out_a.Soll_Drehzahl_CB_Grads;
+	js_ch_observable[JSO_CB_Soll_Winkel]		= &regelung.output.Bus_Ctrl_Out_a.Soll_Winkel_CB_Grad;
 	js_ch_observable[JSO_CB_omega_grads]		= &Global_Data.av.CB_omega_grads;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
@@ -154,6 +156,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_flt_fault]			    = &flt_fault_f;
 	js_slowDataArray[JSSD_FLOAT_ocp_fault]			    = &ocp_fault_f;
 	js_slowDataArray[JSSD_FLOAT_phi_ist]			    = &regelung.output.phi_ist_safety;
+	js_slowDataArray[JSSD_FLOAT_watchdog_fault]		    = &watchdog_fault_f;
 	// js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH2]			= SigmaDeltaWandler_get_raw_average(SDW_FILTER_0, SDW_CH_PH2);
 	// js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH3]			= SigmaDeltaWandler_get_raw_average(SDW_FILTER_0, SDW_CH_PH3);
 	// js_slowDataArray[JSSD_FLOAT_Soll_Drehzahl]				= &regelung.input.Bus_ZM_In_a.Soll_Drehzahl_Umin;
@@ -196,7 +199,10 @@ void JavaScope_update(DS_Data* data){
 	i_max					= SDW_OCP_I_MAX_A;
 	i_min					= SDW_OCP_I_MIN_A;
 	flt_fault_f				= (data->objects.flt_dis != NULL)
-								  ? (float)uz_JL_flt_dis_get_fault(data->objects.flt_dis)
+								  ? (float)io_fault_shutdown_get_fault(data->objects.flt_dis)
+								  : 0.0f;
+	watchdog_fault_f		= (data->objects.ctrl_loop_watchdog != NULL)
+								  ? (float)ctrl_loop_watchdog_get_fault(data->objects.ctrl_loop_watchdog)
 								  : 0.0f;
 
 	// write data to shared memory

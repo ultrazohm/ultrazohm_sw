@@ -59,6 +59,7 @@ enum JS_OberservableData {
 	JSO_conv_pwr_en,
 	JSO_conv_board_rst,
 	JSO_conv_board_ready,
+	JSO_FLOAT_watchdog_fault,
 	//	JSO_SD2_PH1,
 	//	JSO_SD2_PH2,
 	//	JSO_SD2_PH3,
@@ -82,6 +83,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_flt_fault,  // 1: SDC_P, 2: SDC_OCP, 4: IGBT Desat, 4: unbenutzt
 	JSSD_FLOAT_ocp_fault,  // FLT_ps-Bitmaske der OCP-Instanz (1:Udc, 2:PH1, 4:PH2, 8:PH3, 16:PH4)
 	JSSD_FLOAT_phi_ist,
+	JSSD_FLOAT_watchdog_fault,  // Watchdog-Fault des ctrl_loop_watchdog-Cores (0: kein Fehler, !=0: Watchdog gelatcht)
 	JSSD_ENDMARKER
 };
 

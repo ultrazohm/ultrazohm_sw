@@ -19,9 +19,9 @@
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
 #include "../Codegen/uz_codegen0_ert_rtw/uz_codegen0.h"
-#include "../IP_Cores/uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Interface.h"
-#include "../IP_Cores/uz_JL_SDC_OCP/uz_JL_SDC_OCP.h"
-#include "../IP_Cores/uz_JL_flt_dis/uz_JL_flt_dis.h"
+#include "../IP_Cores/SDC_Interface/SDC_Interface.h"
+#include "../IP_Cores/SDC_OCP/SDC_OCP.h"
+#include "../IP_Cores/io_fault_shutdown/io_fault_shutdown.h"
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
@@ -38,7 +38,7 @@ extern Bus_Ctrl_Config struct_Ctrl_Config;
 extern float DutC;
 
 extern Bus_ZM_In struct_ZM_In;
-extern uz_JL_SigmaDelta_Interface_t *Sinc3_Filter;
+extern SDC_Interface_t *Sinc3_Filter;
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -73,18 +73,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_7): // Auf 0 Position fahren (Home-Position)
-			data->rasv.Modus_Position_sel = 2;
+			data->rasv.Modus_Position_sel = Pos_Home;
 			break;
 
 		case (My_Button_8): // Trapez aktivieren
-			data->rasv.Modus_Position_sel = 1;
+			data->rasv.Modus_Position_sel = Pos_Trapez;
 			break;
 
 		case (My_Button_9): // Manuelle Position
-			data->rasv.Modus_Position_sel = 3;
+			data->rasv.Modus_Position_sel = Pos_Manuell;
 			break;
 		case (My_Button_10): // Warten
-			data->rasv.Modus_Position_sel = 0;
+			data->rasv.Modus_Position_sel = Pos_Warten;
 			break;
 
 		case (My_Button_11): // Multiturn-Position laden: Sendfeld 13 (Abtriebs-Grad) -> Motor-Grad
@@ -333,22 +333,31 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		
 
-		case (Error_Reset): // OCP-Fehler quittieren und Wiederanlauf vorbereiten
+		case (Error_Reset): // Fehler quittieren und Wiederanlauf vorbereiten
+			// Reihenfolge wichtig: zuerst die Fehlerquellen, die io_fault_shutdown speisen
+			// (OCP ueber FLT_PS, Watchdog), erst danach io_fault_shutdown quittieren. Sonst wuerde
+			// dessen Latch sofort erneut gesetzt. Jeder Latch laesst sich nur quittieren, wenn der
+			// Fehler nicht mehr anliegt - sonst setzt die PL den Latch unmittelbar wieder.
 			if (data->objects.sdc_ocp_P != NULL)
 			{
-				uz_JL_SDC_OCP_reset_fault(data->objects.sdc_ocp_P);     // FPGA-OCP-Latch (P-Pfad) loeschen
+				SDC_OCP_acknowledge_fault(data->objects.sdc_ocp_P);     // P-Pfad: DC maskieren -> FLT_Reset -> EN_OCP aus
 			}
 			if (data->objects.sdc_ocp_OCP != NULL)
 			{
-				uz_JL_SDC_OCP_reset_fault(data->objects.sdc_ocp_OCP);   // FPGA-OCP-Latch (OCP-Pfad) loeschen
+				SDC_OCP_acknowledge_fault(data->objects.sdc_ocp_OCP);   // OCP-Pfad: DC maskieren -> FLT_Reset -> EN_OCP aus
 			}
 			struct_ZM_In.Strom_gesperrt_rst = true;
-			uz_JL_flt_dis_set_FLT_PS(data->objects.flt_dis, false);  // Abschaltanforderung zuruecknehmen
-			uz_JL_flt_dis_reset_fault(data->objects.flt_dis);        // FLT_1..4/FLT_PS-Latch loeschen (FLT_RST-Puls)
-			uz_JL_flt_dis_watchdog_reset(data->objects.flt_dis);     // Watchdog-Latch loeschen (Watchdog_Rst-Puls); FLT_RST klaert ihn NICHT
+			ctrl_loop_watchdog_reset_fault(data->objects.ctrl_loop_watchdog); // 1) Watchdog-Latch zuerst loeschen (speist io_fault_shutdown)
+			io_fault_shutdown_set_FLT_PS(data->objects.flt_dis, false);  // 2) aggregierte Abschaltanforderung (z.B. OCP) zuruecknehmen
+			io_fault_shutdown_reset_fault(data->objects.flt_dis);        // 3) io_fault_shutdown-Latch (FLT_1..4/FLT_PS) loeschen (FLT_RST-Puls)
 			conv_status_signals.ocp_fault = 0U;
 			uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio, BOARD_RST_BIT, true);
-			ultrazohm_state_machine_set_stop(true);                  // error_state -> idle_state
+			// Nur nach idle_state wechseln, wenn kein Fehler mehr anliegt (Latch nicht sofort neu gesetzt).
+			if (((data->objects.flt_dis == NULL) || (io_fault_shutdown_get_fault(data->objects.flt_dis) == IO_FAULT_SHUTDOWN_FAULT_NONE))
+				&& ((data->objects.ctrl_loop_watchdog == NULL) || (!ctrl_loop_watchdog_get_fault(data->objects.ctrl_loop_watchdog))))
+			{
+				ultrazohm_state_machine_set_stop(true);              // error_state -> idle_state
+			}
 			break;
 
 		case (0xFFFF):

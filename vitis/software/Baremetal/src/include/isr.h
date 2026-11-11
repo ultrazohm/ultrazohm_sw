@@ -37,8 +37,8 @@
 #include "../include/SigmaDeltaWandler.h"
 #include "../uz/uz_wavegen/uz_wavegen.h"
 #include "../include/JL_SH_Umrichter.h"
-#include "../IP_Cores/uz_JL_flt_dis/uz_JL_flt_dis.h"
-#include "../IP_Cores/uz_JL_SDC_OCP/uz_JL_SDC_OCP.h"
+#include "../IP_Cores/io_fault_shutdown/io_fault_shutdown.h"
+#include "../IP_Cores/SDC_OCP/SDC_OCP.h"
 
 
 //Defines for the Interrupt fixed by hand from Vivado Block Design. 

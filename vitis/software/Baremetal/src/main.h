@@ -54,7 +54,7 @@
 
 #include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 
-#include "IP_Cores/uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Interface.h"
+#include "IP_Cores/SDC_Interface/SDC_Interface.h"
 #include "include/SigmaDeltaWandler.h"
 #include "include/resolver.h"
 

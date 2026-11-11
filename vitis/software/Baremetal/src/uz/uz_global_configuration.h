@@ -95,9 +95,10 @@
 #define UZ_SSI_INTERFACE_MAX_INSTANCES					0U
 #define UZ_JL_PMSMMODEL_MAX_INSTANCES                   2U
 #define UZ_JL_INVMODEL_IDEAL_MAX_INSTANCES              1U
-#define UZ_JL_SigmaDelta_Interface_MAX_INSTANCES        3U
-#define UZ_JL_FLT_DIS_MAX_INSTANCES                     1U
-#define UZ_JL_SDC_OCP_MAX_INSTANCES                     2U
+#define SDC_Interface_MAX_INSTANCES        3U
+#define IO_FAULT_SHUTDOWN_MAX_INSTANCES                 1U
+#define SDC_OCP_MAX_INSTANCES                           2U
+#define CTRL_LOOP_WATCHDOG_MAX_INSTANCES                1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -162,7 +163,8 @@
     #define UZ_LUT_1D_MAX_INSTANCES                         20U
     #define UZ_ENDAT_INTERFACE_MAX_INSTANCES		    	30U
     #define UZ_SSI_INTERFACE_MAX_INSTANCES		    		30U
-    #define UZ_JL_SigmaDelta_Interface_MAX_INSTANCES        30U
-    #define UZ_JL_FLT_DIS_MAX_INSTANCES                     30U
-    #define UZ_JL_SDC_OCP_MAX_INSTANCES                     30U
+    #define SDC_Interface_MAX_INSTANCES        30U
+    #define IO_FAULT_SHUTDOWN_MAX_INSTANCES                 30U
+    #define SDC_OCP_MAX_INSTANCES                           30U
+    #define CTRL_LOOP_WATCHDOG_MAX_INSTANCES                30U
 #endif

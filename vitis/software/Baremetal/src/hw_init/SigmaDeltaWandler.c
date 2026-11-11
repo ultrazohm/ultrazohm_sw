@@ -12,7 +12,7 @@ Modul ist angepasst für SH-Strommessplatine
 
 #include "../include/SigmaDeltaWandler.h"
 #include "../uz/uz_HAL.h"
-#include "../IP_Cores/uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Interface.h"
+#include "../IP_Cores/SDC_Interface/SDC_Interface.h"
 #include "../uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
 #include "../uz/uz_array/uz_array.h"
 #include "xparameters.h"
@@ -23,9 +23,9 @@ Modul ist angepasst für SH-Strommessplatine
 #define SDW_SINC3_OSR 100U // Dezimierungsfaktor (OSR) des SINC³-Filters, Basis für start_time_us Berechnung
 // data valid reset �berpr�fen
 /* Initilalisieurng der IP Cores (s. Treiber). Jede Filterinstanz hat eine eigene, unabhaengige Config. */
-struct uz_JL_SigmaDelta_Interface_config_t filter_config[SDW_FILTER_ENDMARKER] = {
+struct SDC_Interface_config_t filter_config[SDW_FILTER_ENDMARKER] = {
 	[SDW_FILTER_P] = {
-		.base_address = XPAR_UZ_USER_SIGMADELTA_P_BASEADDR,
+		.base_address = XPAR_UZ_USER_SDC_INTERFACE_P_BASEADDR,
 		.ip_clk_frequency_Hz = 100000000.0f,
 		.dezimation = 125,	// Dezimierungsfaktor für ZK-Spannungsmessung
 		.clk_ratio = 10, 		// Taktrate des Sigma-Delta-Modulators (5 Mhz untere Grenze AMC1204), Taktrate = ip_clk_frequency_Hz/clk_ratio
@@ -40,7 +40,7 @@ struct uz_JL_SigmaDelta_Interface_config_t filter_config[SDW_FILTER_ENDMARKER] =
 		.sel_pwm_trigger = false, // false = pwm min; true = pwm max
 	},
 	[SDW_FILTER_I] = {
-		.base_address = XPAR_UZ_USER_SIGMADELTA_I_BASEADDR,	
+		.base_address = XPAR_UZ_USER_SDC_INTERFACE_I_BASEADDR,
 		.ip_clk_frequency_Hz = 100000000.0f,
 		.dezimation = 2000,
 		.clk_ratio = 10,
@@ -56,7 +56,7 @@ struct uz_JL_SigmaDelta_Interface_config_t filter_config[SDW_FILTER_ENDMARKER] =
 	},
 	[SDW_FILTER_OCP] = {
 		// Dritte Filterinstanz fuer den FPGA-Ueberstromschutz (OCP). Existiert im FPGA-Design,
-		.base_address = XPAR_UZ_USER_SIGMADELTA_OCP_BASEADDR,	
+		.base_address = XPAR_UZ_USER_SDC_INTERFACE_OCP_BASEADDR,
 		.ip_clk_frequency_Hz = 100000000.0f,
 		.dezimation = 32,
 		.clk_ratio = 10,
@@ -126,18 +126,18 @@ static float raw_average_buffer[SDW_FILTER_ENDMARKER][SDW_CH_ENDMARKER][SDW_OFFS
 #endif
 static float raw_average[SDW_FILTER_ENDMARKER][SDW_CH_ENDMARKER] = {0};
 
-uz_JL_SigmaDelta_Interface_t *SigmaDeltaWandler_init(enum SigmaDeltaWandler_filter_instance filter)
+SDC_Interface_t *SigmaDeltaWandler_init(enum SigmaDeltaWandler_filter_instance filter)
 {
 	uz_assert(filter < SDW_FILTER_ENDMARKER);
 
 	// DC-Gain (OSR^3) je Kanal: PH1..PH4 nutzen dezimation_I, U nutzt dezimation_U.
 	// Wird fuer die Kalibrierung gebraucht. Die OCP-Stromgrenzen werden separat in
-	// SigmaDeltaWandler_init_ocp (eigener uz_JL_SDC_OCP-Core) berechnet.
+	// SigmaDeltaWandler_init_ocp (eigener SDC_OCP-Core) berechnet.
 	float osr = (float)filter_config[filter].dezimation;
 	float osr_cubed = osr * osr * osr;
 
 	/* Initialisierung des IP Cores*/
-	uz_JL_SigmaDelta_Interface_t *filter_instance = uz_JL_SigmaDelta_Interface_init(filter_config[filter]);
+	SDC_Interface_t *filter_instance = SDC_Interface_init(filter_config[filter]);
 
 #if SDW_RAW_AVERAGE_ENABLED
 	/* Initialisierung des gleitenden Fenster-Mittelwerts für jeden Kanal */
@@ -160,80 +160,103 @@ uz_JL_SigmaDelta_Interface_t *SigmaDeltaWandler_init(enum SigmaDeltaWandler_filt
 	return filter_instance;
 }
 
-/* HW-Konfiguration der uz_JL_SDC_OCP-Ueberstromerkennungs-Cores, indiziert ueber die Filterinstanz,
+// TODO: echte ZK-Spannungs-Kalibrierung (counts pro Volt) fuer den OCP-Pfad bestimmen.
+// Platzhalter; unkritisch solange en_udc == false. Vor Aktivierung real kalibrieren.
+#define SDW_OCP_U_COUNTS_PER_VOLT 1.0f
+
+/* HW-Konfiguration der SDC_OCP-Ueberstromerkennungs-Cores, indiziert ueber die Filterinstanz,
  * deren Datenvektor (In1) der jeweilige OCP-Core in der PL vergleicht. base_address == 0 bedeutet:
- * fuer diese Filterinstanz existiert kein OCP-Core (-> SigmaDeltaWandler_init_ocp liefert NULL). */
+ * fuer diese Filterinstanz existiert kein OCP-Core (-> SigmaDeltaWandler_init_ocp liefert NULL).
+ * Physikalische Werte; Umrechnung in Rohwert-counts erfolgt in SigmaDeltaWandler_init_ocp. */
 static const struct {
 	uint32_t base_address;
-	float    i_max_A;    // obere Strom-Grenze in Ampere
-	float    i_min_A;    // untere Strom-Grenze in Ampere
-	int32_t  u_dc_max;   // obere ZK-Spannungs-Grenze in counts (TODO: realen Wert festlegen)
-	int32_t  u_dc_min;   // untere ZK-Spannungs-Grenze in counts (TODO: realen Wert festlegen)
-	bool     en_udc;     // Spannungsueberwachung aktiv
-	bool     en_ph4;     // Phase 4 ueberwachen
-	bool     en_ocp;     // Ueberstromschutz aktiv
-} 
+	float    i_max_A;               // obere Phasenstrom-Grenze in Ampere
+	float    i_ph_max_short_factor; // Kurzschluss-Schwelle = i_max_A * factor (Vielfaches)
+	float    i_dc_max_A;            // obere DC-Strom-Grenze in Ampere
+	float    i_dc_min_A;            // untere DC-Strom-Grenze in Ampere
+	float    u_dc_max_V;            // obere ZK-Spannungs-Grenze in Volt
+	float    u_dc_min_V;            // untere ZK-Spannungs-Grenze in Volt
+	uint32_t filt_periods_flt;      // Filterperioden bis zum Latchen eines Faults
+	bool     en_udc;                // ZK-Spannungsueberwachung aktiv
+	bool     en_i_dc;               // DC-Stromueberwachung aktiv
+	bool     en_ocp;                // Phasen-Ueberstromschutz aktiv
+}
 
 ocp_hw[SDW_FILTER_ENDMARKER] = {
 	[SDW_FILTER_P] = {
-		.base_address = XPAR_UZ_USER_UZ_JL_SDC_OCP_P_BASEADDR,
+		.base_address = XPAR_UZ_USER_SDC_OCP_P_BASEADDR,
 		.i_max_A = SDW_OCP_I_MAX_A,
-		.i_min_A = SDW_OCP_I_MIN_A,
+		.i_ph_max_short_factor = 1.5f,   // TODO: Faktor X nach Bedarf anpassen
+		.i_dc_max_A = 14.0f,
+		.i_dc_min_A = -1.0f,
+		.u_dc_max_V = 61.0f,
+		.u_dc_min_V = 24.0f,
+		.filt_periods_flt = 5U,
 		.en_udc = false,
-		.en_ph4 = false,
+		.en_i_dc = false,
 		.en_ocp = false,
 	},
 	[SDW_FILTER_I] = {
 		.base_address = 0U,   // keine OCP-Instanz fuer den I-Filter
 	},
 	[SDW_FILTER_OCP] = {
-		.base_address = XPAR_UZ_USER_UZ_JL_SDC_OCP_OCP_BASEADDR,
+		.base_address = XPAR_UZ_USER_SDC_OCP_OCP_BASEADDR,
 		.i_max_A = SDW_OCP_I_MAX_A,
-		.i_min_A = SDW_OCP_I_MIN_A,
+		.i_ph_max_short_factor = 1.5f,   // TODO: Faktor X nach Bedarf anpassen
+		.i_dc_max_A = 14.0f,
+		.i_dc_min_A = -1.0f,
+		.u_dc_max_V = 61.0f,
+		.u_dc_min_V = 24.0f,
+		.filt_periods_flt = 5U,
 		.en_udc = false,
-		.en_ph4 = false,
-		.en_ocp = false,   // NICHT im Init scharfschalten: erst im running_state-Eintritt (isr.c),
+		.en_i_dc = false,
+		.en_ocp = false,   // NICHT im Init scharfschalten: erst im control_state-Eintritt (isr.c),
 		                   // wenn board_ready steht und der Sinc-Filter eingeschwungen ist. Sonst
 		                   // latcht ein Einschwing-/Startup-Transient den FLT faelschlich.
 	},
 };
 
-uz_JL_SDC_OCP_t *SigmaDeltaWandler_init_ocp(enum SigmaDeltaWandler_filter_instance filter)
+SDC_OCP_t *SigmaDeltaWandler_init_ocp(enum SigmaDeltaWandler_filter_instance filter)
 {
 	uz_assert(filter < SDW_FILTER_ENDMARKER);
 	if (ocp_hw[filter].base_address == 0U) {
 		return NULL;   // keine OCP-Erkennungs-Instanz fuer diese Filterinstanz
 	}
 
-	// Stromgrenzen aus A in Rohwert-counts der zugehoerigen Filterinstanz umrechnen:
-	// counts = I_A * OSR^3 / k_manual (offset-frei). OSR/k_manual MUESSEN zur SigmaDelta-Instanz
-	// passen, deren Datenvektor (In1) der OCP-Core vergleicht (P: OSR=100, OCP: OSR=8).
+	// Strom-/Spannungsgrenzen aus A/V in Rohwert-counts der zugehoerigen Filterinstanz umrechnen:
+	// counts = Wert * OSR^3 / k (offset-frei). OSR/k MUESSEN zur SigmaDelta-Instanz passen, deren
+	// Datenvektor (In1) der OCP-Core vergleicht (P: OSR=100, OCP: OSR=8).
 	float osr = (float)filter_config[filter].dezimation;
 	float osr_cubed = osr * osr * osr;
 	float k = calibration[filter][SDW_CH_PH1].k_manual;
 	uz_assert_not_zero(k);
+	float scal_i = osr_cubed / k;   // Ampere -> counts
 
-	struct uz_JL_SDC_OCP_config_t config = {
+	struct SDC_OCP_config_t config = {
 		.base_address = ocp_hw[filter].base_address,
 		.ip_clk_frequency_Hz = (uint32_t)filter_config[filter].ip_clk_frequency_Hz,
-		.i_ph_max = (int32_t)roundf(ocp_hw[filter].i_max_A * osr_cubed / k),
-		.i_ph_min = (int32_t)roundf(ocp_hw[filter].i_min_A * osr_cubed / k),
-		.u_dc_max = ocp_hw[filter].u_dc_max,
-		.u_dc_min = ocp_hw[filter].u_dc_min,
-		.en_udc = ocp_hw[filter].en_udc,
-		.en_ph4 = ocp_hw[filter].en_ph4,
-		.en_ocp = ocp_hw[filter].en_ocp,
+		.i_ph_max       = (int32_t)roundf(ocp_hw[filter].i_max_A * scal_i),
+		.i_ph_max_short = (int32_t)roundf(ocp_hw[filter].i_max_A * ocp_hw[filter].i_ph_max_short_factor * scal_i),
+		.i_dc_max       = (int32_t)roundf(ocp_hw[filter].i_dc_max_A * scal_i),
+		.i_dc_min       = (int32_t)roundf(ocp_hw[filter].i_dc_min_A * scal_i),
+		// U_dc: Platzhalter-Skalierung (siehe SDW_OCP_U_COUNTS_PER_VOLT); nur gueltig solange en_udc=false.
+		.u_dc_max       = (int32_t)roundf(ocp_hw[filter].u_dc_max_V * SDW_OCP_U_COUNTS_PER_VOLT),
+		.u_dc_min       = (int32_t)roundf(ocp_hw[filter].u_dc_min_V * SDW_OCP_U_COUNTS_PER_VOLT),
+		.filt_periods_flt = ocp_hw[filter].filt_periods_flt,
+		.en_udc  = ocp_hw[filter].en_udc,
+		.en_i_dc = ocp_hw[filter].en_i_dc,
+		.en_ocp  = ocp_hw[filter].en_ocp,
 	};
-	return uz_JL_SDC_OCP_init(config);
+	return SDC_OCP_init(config);
 }
 
 /* ISR-Pfad: Strobe + Registerreads + Kalibrierung in einem Aufruf. */
-void SigmaDeltaWandler_read_and_process(uz_JL_SigmaDelta_Interface_t *instance, enum SigmaDeltaWandler_filter_instance filter, struct uz_JL_SigmaDelta_Interface_output_t_float *result)
+void SigmaDeltaWandler_read_and_process(SDC_Interface_t *instance, enum SigmaDeltaWandler_filter_instance filter, struct SDC_Interface_output_t_float *result)
 {
 	uz_assert(is_initialized[filter]);
 	uz_assert_not_NULL(result);
 
-	struct uz_JL_SigmaDelta_Interface_output_t raw = uz_JL_SigmaDelta_Interface_get_outputs(instance);
+	struct SDC_Interface_output_t raw = SDC_Interface_get_outputs(instance);
 	const struct SigmaDeltaWandler_calibration_t *cal = calibration[filter];
 
 	result->data_PH1_A = (float)(raw.data_PH1 - cal[SDW_CH_PH1].offset_counts) * cal[SDW_CH_PH1].k_per_count;

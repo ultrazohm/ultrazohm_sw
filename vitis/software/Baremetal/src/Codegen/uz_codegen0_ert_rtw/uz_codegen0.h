@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 10.27
+ * Model version                  : 10.31
  * Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
- * C/C++ source code generated on : Wed Nov  4 10:51:47 2026
+ * C/C++ source code generated on : Tue Nov 10 19:09:40 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -347,15 +347,15 @@ typedef struct {
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  Bus_PMSM_Out Bus_PMSM_Out_a;         /* '<Root>/Bus_Live_Out_PMSM' */
-  Bus_ZM_In Bus_ZM_In_c;               /* '<Root>/Bus_ZM_In' */
+  Bus_PMSM_Out Bus_PMSM_Out_g;         /* '<Root>/Bus_Live_Out_PMSM' */
+  Bus_ZM_In Bus_ZM_In_o;               /* '<Root>/Bus_ZM_In' */
   bool trigger_actI_I_calc;            /* '<Root>/trigger_actI_I_calc' */
   bool act_safety;                     /* '<Root>/act_safety' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  Bus_Ctrl_Out Bus_Ctrl_Out_j;         /* '<Root>/Bus_Ctrl_Out' */
+  Bus_Ctrl_Out Bus_Ctrl_Out_a;         /* '<Root>/Bus_Ctrl_Out' */
   float Soll_Moment;                   /* '<Root>/Soll_Moment' */
   float IQRef;                         /* '<Root>/IQRef' */
   float ctrl_omega;                    /* '<Root>/ctrl_omega' */
@@ -365,8 +365,8 @@ typedef struct {
   float act_iq_I;                      /* '<Root>/act_iq_I' */
   float act_id_P;                      /* '<Root>/act_id_P' */
   float ref_Id;                        /* '<Root>/ref_Id' */
-  float Soll_v_max;                    /* '<Root>/Soll_v_max' */
-  float Soll_v_min;                    /* '<Root>/Soll_v_min' */
+  float Soll_v_max_grads;              /* '<Root>/Soll_v_max_grads' */
+  float Soll_v_min_grads;              /* '<Root>/Soll_v_min_grads' */
   bool Grenze_aktiv;                   /* '<Root>/Grenze_aktiv' */
   float phi_ist_safety;                /* '<Root>/phi_ist_safety' */
   float phi_max;                       /* '<Root>/phi_max' */
@@ -395,6 +395,8 @@ extern const Bus_ZM_Out uz_codegen0_rtZBus_ZM_Out;/* Bus_ZM_Out ground */
 extern Bus_Ctrl_Config struct_Ctrl_Config;/* Variable: struct_Ctrl_Config
                                            * Referenced by:
                                            *   '<S1>/Constant'
+                                           *   '<S1>/Gain'
+                                           *   '<S1>/Gain1'
                                            *   '<S6>/Constant'
                                            *   '<S6>/Constant2'
                                            *   '<S6>/Switch1'

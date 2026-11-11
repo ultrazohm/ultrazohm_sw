@@ -137,9 +137,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_CB_phi_max]			= &regelung.output.phi_max;
 	js_ch_observable[JSO_CB_v_max]				= &regelung.output.Soll_v_max_grads;
 	js_ch_observable[JSO_CB_Grenze_aktiv]		= &regelung.output.Grenze_aktiv;
- 	js_ch_observable[JSO_CB_Soll_Beschl]		= &regelung.output.Bus_Ctrl_Out_a.Soll_Beschleunigung_CB_Grads2;
-	js_ch_observable[JSO_CB_Soll_Geschw]		= &regelung.output.Bus_Ctrl_Out_a.Soll_Drehzahl_CB_Grads;
-	js_ch_observable[JSO_CB_Soll_Winkel]		= &regelung.output.Bus_Ctrl_Out_a.Soll_Winkel_CB_Grad;
+ 	js_ch_observable[JSO_CB_Soll_Beschl]		= &regelung.output.Bus_Ctrl_Out_o.Soll_Beschleunigung_CB_Grads2;
+	js_ch_observable[JSO_CB_Soll_Geschw]		= &regelung.output.Bus_Ctrl_Out_o.Soll_Drehzahl_CB_Grads;
+	js_ch_observable[JSO_CB_Soll_Winkel]		= &regelung.output.Bus_Ctrl_Out_o.Soll_Winkel_CB_Grad;
 	js_ch_observable[JSO_CB_omega_grads]		= &Global_Data.av.CB_omega_grads;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

@@ -17,7 +17,7 @@
 #include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 #include "include/JL_SH_Umrichter.h"
 #include "include/uz_platform_state_machine.h"
-#include "COdegen/uz_codegen0_ert_rtw/uz_codegen0.h"
+#include "Codegen/uz_codegen0_ert_rtw/uz_codegen0.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/

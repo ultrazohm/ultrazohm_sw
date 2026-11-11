@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 10.31
+ * Model version                  : 10.33
  * Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
- * C/C++ source code generated on : Tue Nov 10 19:09:40 2026
+ * C/C++ source code generated on : Wed Nov 11 13:09:13 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -84,10 +84,12 @@ typedef struct tag_RTM RT_MODEL;
 #define DEFINED_TYPEDEF_FOR_Soll_Regelungsart_en_
 
 typedef enum {
-  Drehzahl = 0,                        /* Default value */
-  Strom = 1,
-  Position = 2,
-  Error = 99
+  Ctrl_Warten = 0,                     /* Default value */
+  Ctrl_Drehzahl = 1,
+  Ctrl_Strom = 2,
+  Ctrl_Position = 3,
+  Ctrl_Manuell = 4,
+  Ctrl_Error = 99
 } Soll_Regelungsart_en;
 
 #endif
@@ -153,17 +155,16 @@ typedef enum {
 #ifndef DEFINED_TYPEDEF_FOR_platform_state_t_
 #define DEFINED_TYPEDEF_FOR_platform_state_t_
 
-
 #endif
 
 #ifndef DEFINED_TYPEDEF_FOR_Modus_Position_
 #define DEFINED_TYPEDEF_FOR_Modus_Position_
 
 typedef enum {
-  Warten = 0,                          /* Default value */
-  Trapez,
-  Home,
-  Manuell
+  Pos_Warten = 0,                      /* Default value */
+  Pos_Trapez,
+  Pos_Home,
+  Pos_Manuell
 } Modus_Position;
 
 #endif
@@ -278,6 +279,11 @@ typedef struct {
 
 #endif
 
+/* Block signals and states (default storage) for system '<S1>/Raumzeigermodulation' */
+typedef struct {
+  bool Raumzeigermodulation_MODE;      /* '<S1>/Raumzeigermodulation' */
+} DW_Raumzeigermodulation;
+
 /* Block signals and states (default storage) for system '<S9>/Positionsregelung' */
 typedef struct {
   float w_cmd;                         /* '<S13>/MATLAB Function' */
@@ -290,23 +296,23 @@ typedef struct {
 
 /* Block signals and states (default storage) for system '<S4>/Drehzahlregelung' */
 typedef struct {
-  DW_Positionsregelung Positionsregelung_g;/* '<S9>/Positionsregelung' */
+  DW_Positionsregelung Positionsregelung_o;/* '<S9>/Positionsregelung' */
   float Soll_Drehzahl;                 /* '<S13>/MATLAB Function' */
   float UnitDelay_DSTATE;              /* '<S16>/Unit Delay' */
-  float UnitDelay_DSTATE_o;            /* '<S15>/Unit Delay' */
+  float UnitDelay_DSTATE_p;            /* '<S15>/Unit Delay' */
   bool Drehzahlregelung_MODE;          /* '<S4>/Drehzahlregelung' */
 } DW_Drehzahlregelung;
 
 /* Block signals and states (default storage) for system '<S4>/Stromregelung' */
 typedef struct {
   float UnitDelay_DSTATE;              /* '<S28>/Unit Delay' */
-  float UnitDelay_DSTATE_p;            /* '<S29>/Unit Delay' */
+  float UnitDelay_DSTATE_a;            /* '<S29>/Unit Delay' */
 } DW_Stromregelung;
 
 /* Block signals and states (default storage) for system '<S1>/Regelung' */
 typedef struct {
-  DW_Stromregelung Stromregelung_h;    /* '<S4>/Stromregelung' */
-  DW_Drehzahlregelung Drehzahlregelung_b;/* '<S4>/Drehzahlregelung' */
+  DW_Stromregelung Stromregelung_m;    /* '<S4>/Stromregelung' */
+  DW_Drehzahlregelung Drehzahlregelung_m;/* '<S4>/Drehzahlregelung' */
   bool Regelung_MODE;                  /* '<S1>/Regelung' */
 } DW_Regelung;
 
@@ -328,9 +334,10 @@ typedef struct {
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  DW_Zustandsmaschine Zustandsmaschine_o;/* '<S1>/Zustandsmaschine' */
-  DW_Regelung Regelung_h;              /* '<S1>/Regelung' */
-  Bus_ZM_Out Bus_ZM_Out_e;             /* '<S5>/state_chart' */
+  DW_Zustandsmaschine Zustandsmaschine_h;/* '<S1>/Zustandsmaschine' */
+  DW_Regelung Regelung_j;              /* '<S1>/Regelung' */
+  DW_Raumzeigermodulation Raumzeigermodulation_l;/* '<S1>/Raumzeigermodulation' */
+  Bus_ZM_Out Bus_ZM_Out_k;             /* '<S5>/state_chart' */
   float Switch;                        /* '<S10>/Switch' */
   float Switch1;                       /* '<S10>/Switch1' */
   float Done;                          /* '<S13>/MATLAB Function' */
@@ -338,7 +345,7 @@ typedef struct {
   float phi_max;
   float w_max;
   float a_brems;
-  bool Dis_d;                          /* '<S13>/MATLAB Function' */
+  bool Dis_b;                          /* '<S13>/MATLAB Function' */
   bool UnitDelay3_DSTATE;              /* '<S1>/Unit Delay3' */
   bool lim_pos;                        /* '<S1>/MATLAB Function' */
   bool lim_neg;                        /* '<S1>/MATLAB Function' */
@@ -347,15 +354,15 @@ typedef struct {
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  Bus_PMSM_Out Bus_PMSM_Out_g;         /* '<Root>/Bus_Live_Out_PMSM' */
-  Bus_ZM_In Bus_ZM_In_o;               /* '<Root>/Bus_ZM_In' */
+  Bus_PMSM_Out Bus_PMSM_Out_b;         /* '<Root>/Bus_Live_Out_PMSM' */
+  Bus_ZM_In Bus_ZM_In_e;               /* '<Root>/Bus_ZM_In' */
   bool trigger_actI_I_calc;            /* '<Root>/trigger_actI_I_calc' */
   bool act_safety;                     /* '<Root>/act_safety' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  Bus_Ctrl_Out Bus_Ctrl_Out_a;         /* '<Root>/Bus_Ctrl_Out' */
+  Bus_Ctrl_Out Bus_Ctrl_Out_o;         /* '<Root>/Bus_Ctrl_Out' */
   float Soll_Moment;                   /* '<Root>/Soll_Moment' */
   float IQRef;                         /* '<Root>/IQRef' */
   float ctrl_omega;                    /* '<Root>/ctrl_omega' */

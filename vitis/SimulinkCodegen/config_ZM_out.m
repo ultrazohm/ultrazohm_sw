@@ -70,10 +70,10 @@ clear elems;
 
 % --- Parameter-Definition (Die Werte) ---
 clear data;
-data.Pulsfreigabe = false; % DC link voltage
-data.Ist_Status = Status_Ctrl.Ready; % Gain for PT1
-data.Ist_Regelungsart = Soll_Regelungsart_en.Drehzahl; % Time constant for PT1
-data.Soll_Drehzahl_Umin = 0; % Reset value for PT1
+data.Pulsfreigabe = false; 
+data.Ist_Status = Status_Ctrl.Ready; %
+data.Ist_Regelungsart = Soll_Regelungsart_en.Ctrl_Drehzahl; 
+data.Soll_Drehzahl_Umin = 0; 
 data.Soll_id_A = 0;
 data.Soll_iq_A = 0;
 data.pwr_en = false;
@@ -83,7 +83,7 @@ data.Soll_Drehzahl_CB_Grads = 0;
 data.Soll_Winkel_CB_Grad = 0;
 data.Soll_Beschleunigung_CB_Grads2 = 0;
 data.Trapez_Phase = 0;
-data.Modus_Position = Modus_Position.Warten;
+data.Modus_Position = Modus_Position.Pos_Warten;
 data.Strom_gesperrt = false;
 
 struct_ZM_Out = Simulink.Parameter;

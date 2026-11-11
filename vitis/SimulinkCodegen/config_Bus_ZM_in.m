@@ -86,7 +86,7 @@ data.Soll_id_A = 0;
 data.Soll_iq_A = 0; 
 data.Fehlermeldung = 0; 
 data.Soll_Status = Status_Ctrl.Ready; 
-data.Soll_Regelungsart = Soll_Regelungsart_en.Drehzahl; 
+data.Soll_Regelungsart = Soll_Regelungsart_en.Ctrl_Warten; 
 data.Inv_Ready = false;
 data.UZ_Platform_State = platform_state_t.idle_state;
 data.IGBT_desat = false;
@@ -94,7 +94,7 @@ data.Soll_Drehzahl_CB_Grads = 0;
 data.Soll_Winkel_CB_Grad = 0;
 data.Soll_Beschleunigung_CB_Grads2 = 0;
 data.Soll_Drehzahl_Home_Grads = 0;
-data.Modus_Position = Modus_Position.Warten;
+data.Modus_Position = Modus_Position.Pos_Warten;
 data.Strom_gesperrt_rst = false;
 
 

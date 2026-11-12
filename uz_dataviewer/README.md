@@ -422,14 +422,14 @@ launcher does not start an interactive CLI or connect to hardware; the viewer
 opens afterward and **Connect** starts acquisition; **Existing service → Attach** reuses an existing service. Relative
 recording arguments keep their original working directory.
 
-Each live startup then calls the installed CLI's `create-json-from-javascope-h`
+Selecting **Live Data → Browse for ultrazohm_sw** (or starting with `--live-repo`) calls the installed CLI's `create-json-from-javascope-h`
 command against the checkout's current JavaScope headers. It regenerates the JSON
 in the selected workspace under `artifacts/_user/` for source runs or
 `artifacts/_user_standalone/` for standalone runs, named
 `javascope_<repository commit>.json` (replaced on every start). The commit is taken from the
 generated metadata and includes `-dirty` when the relevant headers have local
-changes. These cache files are ignored by Git. Header parsing failures stop startup
-with an error. Offline startup does not generate a mapping.
+changes. These cache files are ignored by Git. Preparation runs in the background; failures appear in Live Data and leave the viewer open.
+Connect and Flash UZ require successful preparation; attaching to an existing service does not. Offline startup does not generate a mapping.
 
 The cached path is prefilled in **Live Data → Service settings → Channel mapping
 JSON** and passed to services launched by the viewer. An existing service keeps
@@ -590,8 +590,8 @@ The CLI equivalent is `./uz_cli/run.sh --local-newest --launch shell`
 
 Extract the entire release archive and launch `uz_dataviewer/uz_dataviewer`
 (or `uz_dataviewer.exe` inside that folder on Windows). Keep `_internal` beside
-it. Python and uv are bundled; Vitis is not. Select the `ultrazohm_sw` workspace
-at startup, or pass `--live-repo PATH`. All available windows except Python open at startup; Navigation, Plots and Log
+it. Python and uv are bundled; Vitis is not. Select the **ultrazohm_sw root directory** with **Live Data → Browse for ultrazohm_sw**,
+next to **Browse for XSCT**, or pass `--live-repo PATH`. Offline viewing needs no selection. All available windows except Python open at startup; Navigation, Plots and Log
 Browser are selected. Mode selects Analysis or Live tabs without closing other
 windows. Use View to open Python or toggle individual windows. Source launchers retain
 `--use-live` for installing the CLI wheel; all available windows except Python start open, with Analysis tabs selected.
@@ -614,7 +614,7 @@ preferences live directly in the applicable user directory. Application packages
 Tcl scripts, assets and built-in defaults remain bundled in the standalone
 application; workspace preferences are never written into `_internal/`.
 
-After workspace selection and successful header parsing, startup creates missing
+After root-directory selection and successful header parsing, preparation creates missing
 runtime settings from the bundled CLI defaults, filtered for that workspace's
 observables. It also creates missing tool preferences with no XSCT selection
 and creates the logs directory. Existing preferences are preserved byte for byte.

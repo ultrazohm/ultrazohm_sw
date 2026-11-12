@@ -456,7 +456,7 @@ def test_follow_preserves_background_y_fit(gui_frame, app_state):
         workspace.close()
 
 
-def test_connect_click_reports_progress_and_completion(gui_frame, app_state, monkeypatch):
+def test_connect_click_reports_progress_and_completion(gui_frame, app_state, monkeypatch, tmp_path):
     import threading
     from imgui_bundle import imgui
     gate = threading.Event()
@@ -468,6 +468,7 @@ def test_connect_click_reports_progress_and_completion(gui_frame, app_state, mon
     controller.owned.endpoint = '127.0.0.1:19740'
     controller.owned.process = SimpleNamespace(poll=lambda: None, wait=lambda: 0)
     workspace = LiveWorkspace(controller)
+    workspace.repo, workspace.mapping = str(tmp_path), 'mapping.json'
     workspace.available = True
     try:
         # Exercise the actual panel's Connect handler, with slow startup IO.
@@ -494,11 +495,12 @@ def test_connect_click_reports_progress_and_completion(gui_frame, app_state, mon
         workspace.close()
 
 
-def test_connect_failure_clears_busy_and_reports_error(gui_frame, app_state):
+def test_connect_failure_clears_busy_and_reports_error(gui_frame, app_state, tmp_path):
     class BrokenClient(FakeClient):
         def catalog(self):
             raise RuntimeError('incompatible service version')
     workspace = LiveWorkspace(LiveController(lambda endpoint: BrokenClient()))
+    workspace.repo, workspace.mapping = str(tmp_path), 'mapping.json'
     workspace.controller.owned.endpoint = workspace.endpoint
     workspace.controller.owned.process = SimpleNamespace(poll=lambda: None, wait=lambda: 0)
     workspace.available = True

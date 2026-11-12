@@ -182,13 +182,20 @@ def test_workspace_startup_initializes_missing_preferences_once(tmp_path, monkey
     monkeypatch.setattr(runtime_settings, 'default_profile', lambda: {
         'name': 'standard', 'sample_period_us': 100,
         'initial_channels': {'3': 'JSO_lifecheck', '4': 'JSO_theta_mech'}})
-    class Viewer:
-        def __init__(self, **kwargs):
-            assert kwargs['live_repo'] == str(tmp_path)
-            assert (user_dir/'settings.json').is_file()
-            assert (user_dir/'tools.json').is_file()
-            assert (user_dir/'logs').is_dir()
-        def run(self): pass
+    header = tmp_path / live_mapping.HEADER
+    header.parent.mkdir(parents=True)
+    header.touch()
+    class Viewer(app.DataViewerApp):
+        def run(self):
+            try:
+                self.live._repo_future.result(timeout=3)
+                self.live.pump(self.state)
+                assert self.live.repository_ready
+                assert (user_dir/'settings.json').is_file()
+                assert (user_dir/'tools.json').is_file()
+                assert (user_dir/'logs').is_dir()
+            finally:
+                self._shutdown()
     monkeypatch.setattr(app, 'DataViewerApp', Viewer)
     args = ['--use-live', '--live-repo', str(tmp_path)]
     assert app.main(args) == 0

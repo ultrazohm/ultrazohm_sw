@@ -146,6 +146,12 @@ class LiveWorkspace:
         self.repo = str(repo) if repo is not None else None
         self._user_directory = None
         self._xsct_dialog = None
+        self._repo_dialog = None
+        self._repo_future = None
+        from ..workers import CancellableExecutor
+        self._repo_executor = CancellableExecutor(name='repository-setup')
+        self.repository_selected = lambda root, directory: None
+        self.repo_error = ''
         self.tool_error = ''
         try:
             restore_xsct(repo)
@@ -177,8 +183,56 @@ class LiveWorkspace:
     def block_reason(self, action='manual'):
         return action_block_reason(action, flashing=self.controller.flashing, script_busy=self.scripts.busy)
 
+    @property
+    def repository_ready(self):
+        return bool(self.repo and self.mapping and self._repo_future is None)
+
+    def prepare_repository(self, path):
+        if (self._repo_future is not None or self.update.attached or self.pending_message
+                or self.scripts.busy or self.cli_busy() or self.controller.flashing):
+            return
+        self.repo_error = ''
+
+        def prepare(cancel):
+            from ..live_mapping import repository, generate_mapping
+            from ..settings import load_workspace_settings
+            root = repository(path)
+            mapping = generate_mapping(root)
+            settings = load_workspace_settings(mapping)
+            return root, mapping, settings.path.parent
+
+        self._repo_future = self._repo_executor.submit(prepare)
+
+    def _poll_repository(self):
+        if self._repo_dialog is not None and self._repo_dialog.ready():
+            selected = self._repo_dialog.result()
+            self._repo_dialog = None
+            if selected:
+                self.prepare_repository(selected)
+        if self._repo_future is None or not self._repo_future.done():
+            return
+        future, self._repo_future = self._repo_future, None
+        try:
+            root, mapping, directory = future.result()
+            self.repository_selected(root, directory)
+            self.repo, self.mapping = str(root), str(mapping)
+            self._user_directory = directory
+            self.output = new_output_directory(root)
+            try:
+                restore_xsct(root)
+                self.flash_available = xsct_available()
+                self.tool_error = ''
+            except (OSError, ValueError, KeyError) as exc:
+                self.tool_error = str(exc)
+        except Exception as exc:
+            self.repo_error = f'Could not prepare ultrazohm_sw root directory: {exc}'
+
     def send(self, operation, **kwargs):
         try:
+            if operation == 'attach' and self._repo_future is not None:
+                raise RuntimeError('Wait for ultrazohm_sw root directory preparation to finish.')
+            if operation in ('connect', 'flash') and not self.repository_ready:
+                raise RuntimeError('Select and prepare the ultrazohm_sw root directory first.')
             if reason := self.block_reason(operation):
                 raise RuntimeError(reason)
             if operation == 'stop':
@@ -202,6 +256,7 @@ class LiveWorkspace:
     def pump(self, main_state=None):
         from ..exports import poll
         poll(self.state)
+        self._poll_repository()
         self.scripts.poll()
         update = self.controller.latest()
         self.update = update
@@ -300,7 +355,8 @@ class LiveWorkspace:
         if not self.available:
             imgui.text_wrapped('Live acquisition requires the ultrazohm backend. Restart with start.sh --use-live (start.ps1 on Windows). Use --live-wheel PATH to select an exact wheel.')
             return
-        activity = self.update.activity or self.pending_message
+        activity = self.update.activity or self.pending_message or (
+            'Preparing ultrazohm_sw root directory…' if self._repo_future is not None else '')
         error = self.error or self.update.error
         if error and not activity:
             imgui.text_colored((1., .35, .3, 1.), 'Connection / command failed')
@@ -322,12 +378,14 @@ class LiveWorkspace:
         self.port = max(1, min(65535, port))
         imgui.begin_disabled(bool(activity))
         connection_label = 'Disconnect' if self.update.attached else 'Connect'
+        imgui.begin_disabled(not self.update.attached and not self.repository_ready)
         if imgui.button(connection_label):
             if self.update.attached:
                 self.send('shutdown')
             else:
                 self.send('connect', endpoint=self.endpoint, ip=self.ip, port=self.port,
                           output=self.output, mapping=self.mapping, user_directory=str(self.user_directory()))
+        imgui.end_disabled()
         if imgui.is_item_hovered(imgui.HoveredFlags_.allow_when_disabled):
             imgui.set_tooltip(
                 'Send device Stop, finalize recordings, and shut down the service. Keep the viewer open.'
@@ -342,7 +400,7 @@ class LiveWorkspace:
                 imgui.same_line()
 
         next_button('Flash UZ')
-        imgui.begin_disabled(self.cli_busy() or not self.flash_available)
+        imgui.begin_disabled(self.cli_busy() or not self.flash_available or not self.repository_ready)
         if imgui.button('Flash UZ'):
             imgui.open_popup('Flash UltraZohm?')
         imgui.end_disabled()
@@ -357,6 +415,21 @@ class LiveWorkspace:
             self._xsct_dialog = pfd.open_file('Select Vitis XSCT launcher', '',
                                              ['XSCT launcher', 'xsct xsct.exe xsct.cmd xsct.bat'])
         imgui.end_disabled()
+        next_button('Browse for ultrazohm_sw')
+        imgui.begin_disabled(pfd is None or self._repo_dialog is not None
+                             or self._repo_future is not None or bool(activity)
+                             or self.update.attached or self.scripts.busy or self.cli_busy())
+        if imgui.button('Browse for ultrazohm_sw'):
+            self._repo_dialog = pfd.select_folder('Select ultrazohm_sw root directory', self.repo or str(Path.cwd()))
+        imgui.end_disabled()
+        if self._repo_future is not None:
+            imgui.text_wrapped('Preparing ultrazohm_sw root directory: generating mapping and loading settings…')
+        elif self.repository_ready:
+            imgui.text_wrapped('ultrazohm_sw root directory: ' + self.repo)
+        else:
+            imgui.text_wrapped('Select the ultrazohm_sw root directory to enable Connect and Flash UZ.')
+        if self.repo_error:
+            imgui.text_wrapped(self.repo_error)
         if self.tool_error:
             imgui.text_wrapped(self.tool_error)
         if imgui.collapsing_header('Existing service'):
@@ -381,7 +454,7 @@ class LiveWorkspace:
         self._render_flash_confirmation()
         if imgui.collapsing_header('Service settings (used when launching)'):
             _, self.output = imgui.input_text('New session directory', self.output)
-            _, self.mapping = imgui.input_text('Channel mapping JSON (optional)', self.mapping)
+            imgui.text_wrapped('Channel mapping JSON: ' + (self.mapping or 'not prepared'))
             if self.mapping:
                 imgui.text_wrapped('Runtime settings: ' + str(self.user_directory() / 'settings.json'))
             imgui.text_wrapped('Connect launches a new service with these settings. Use Existing service to attach to a running service.')
@@ -659,6 +732,10 @@ class LiveWorkspace:
         self.plots.render(self.state)
 
     def close(self):
+        if self._repo_dialog is not None:
+            self._repo_dialog.kill()
+            self._repo_dialog = None
+        self._repo_executor.shutdown()
         self.controller.cancel_pending_commands()
         if self._xsct_dialog is not None:
             self._xsct_dialog.kill()

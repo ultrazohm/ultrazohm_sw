@@ -246,12 +246,15 @@ def test_closed_viewer_does_not_start_a_new_flash(monkeypatch, tmp_path):
 
 
 @pytest.mark.parametrize('present', [False, True])
-def test_xsct_detection_and_disabled_flash_button(gui_frame, app_state, monkeypatch, present):
+@pytest.mark.parametrize('prepared', [False, True])
+def test_xsct_detection_and_disabled_flash_button(gui_frame, app_state, monkeypatch, present, prepared):
     monkeypatch.setattr(flashing.shutil, 'which', lambda name: '/tools/xsct' if present else None)
     assert flashing.xsct_available() is present
     workspace = LiveWorkspace(LiveController())
     workspace.available = True
     workspace.flash_available = present
+    if prepared:
+        workspace.repo, workspace.mapping = '/prepared', 'mapping.json'
     disabled = {}
     original = imgui.button
     def button(label, *args, **kwargs):
@@ -262,7 +265,7 @@ def test_xsct_detection_and_disabled_flash_button(gui_frame, app_state, monkeypa
     monkeypatch.setattr(imgui, 'button', button)
     try:
         gui_frame(SimpleNamespace(render=workspace.render_data), app_state)
-        assert disabled == {'Connect': False, 'Flash UZ': not present}
+        assert disabled == {'Connect': not prepared, 'Flash UZ': not (present and prepared)}
     finally:
         workspace.close()
 

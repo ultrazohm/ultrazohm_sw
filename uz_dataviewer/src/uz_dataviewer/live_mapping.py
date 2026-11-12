@@ -31,7 +31,7 @@ def generate_mapping(repo=None):
     with tempfile.TemporaryDirectory(prefix='.generate-', dir=cache) as temporary:
         generated = Path(temporary) / 'javascope.json'
         result = subprocess.run(command('cli', 'create-json-from-javascope-h', '--repo', str(root), '--output', str(generated)),
-            capture_output=True, text=True, encoding='utf-8', errors='replace')
+            capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=60)
         if result.returncode:
             raise RuntimeError('Channel mapping generation failed: ' + (result.stderr.strip() or result.stdout.strip()))
         mapping = json.loads(generated.read_text(encoding='utf-8'))

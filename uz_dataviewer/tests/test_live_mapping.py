@@ -58,15 +58,20 @@ def test_repository_discovery_and_explicit_path_validation(repo, monkeypatch):
         live_mapping.repository(child)
 
 
-def test_invalid_headers_abort_live_startup(monkeypatch):
-    from uz_dataviewer import app
+def test_invalid_headers_report_in_gui_without_aborting_startup(repo, monkeypatch):
+    from uz_dataviewer.app import DataViewerApp
     def fail(repo): raise ValueError('Broken header')
     monkeypatch.setattr(live_mapping, 'generate_mapping', fail)
-    monkeypatch.setattr(app.runtime, 'IS_WEB', False)
-    monkeypatch.setattr(app, 'DataViewerApp', lambda **kwargs: pytest.fail('Viewer must not open'))
-    with pytest.raises(SystemExit) as exc:
-        app.main(['--use-live', '--live-repo', '/unused'])
-    assert exc.value.code == 2
+    app = DataViewerApp(use_live=True, live_repo=str(repo))
+    try:
+        future = app.live._repo_future
+        with pytest.raises(ValueError, match='Broken header'):
+            future.result(timeout=3)
+        app.live.pump(app.state)
+        assert 'Broken header' in app.live.repo_error
+        assert not app.live.repository_ready
+    finally:
+        app._shutdown()
 
 
 def test_real_cli_generates_mapping_from_headers(tmp_path):

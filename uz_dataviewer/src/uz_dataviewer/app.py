@@ -72,6 +72,9 @@ class DataViewerApp:
             from .panels.live import LiveWorkspace
             self.live = LiveWorkspace(repo=workspace)
             self.live.mapping = live_mapping
+            self.live.repository_selected = self._repository_selected
+            if workspace is not None and not live_mapping:
+                self.live.prepare_repository(workspace)
             self.live.cli_busy = lambda: self._cli_console is not None and bool(self._cli_console.jobs)
         # Pending Session-menu file dialogs: (dialog, command_name, is_multi).
         self._session_dialog: tuple = ()
@@ -192,6 +195,13 @@ class DataViewerApp:
                 window.is_visible = True
         for label in active:
             docking.focus_dockable_window(label)
+
+    def _repository_selected(self, root, directory):
+        self.artifacts = directory
+        self.state.cache_dir = os.environ.get('UZ_DATAVIEWER_CACHE', str(directory / 'viewer_cache'))
+        self.log_browser.refresh(root)
+        if hasattr(self, '_runner_params'):
+            self._runner_params.ini_filename = str(directory / 'viewer.ini')
 
     def _show_menus(self) -> None:
         # Append to Hello ImGui's existing menu, including its hidden ID
@@ -490,23 +500,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--live-repo", help="UltraZohm repository whose headers generate the live channel mapping")
     parser.add_argument("files", nargs="*", help="CSV, Parquet, JSON sessions, or command scripts")
     args = parser.parse_args(argv)
-    live_mapping = ''
-    if args.use_live and not runtime.IS_WEB:
-        if not args.live_repo:
-            if pfd is None:
-                parser.error('Select an ultrazohm_sw workspace using --live-repo PATH')
-            args.live_repo = pfd.select_folder('Select ultrazohm_sw workspace', str(Path.cwd())).result()
-            if not args.live_repo:
-                return 0
-        from .live_mapping import generate_mapping
-        try:
-            live_mapping = str(generate_mapping(args.live_repo))
-            from .settings import load_workspace_settings
-            load_workspace_settings(live_mapping)
-        except (OSError, ValueError, RuntimeError) as exc:
-            parser.error(str(exc))
     app = DataViewerApp(initial_files=args.files, loading_mode=args.loading_mode, backend=args.backend,
-                        disk_cache=args.disk_cache, use_live=args.use_live, live_mapping=live_mapping, live_repo=args.live_repo)
+                        disk_cache=args.disk_cache, use_live=args.use_live, live_repo=args.live_repo)
     app.run()
     return 0
 

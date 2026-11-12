@@ -162,7 +162,7 @@ enum gui_button_mapping {
 	speed_ref_prime_mover,
 	id_ref_DUT,
 	iq_ref_DUT,
-	send_field_4,
+	PM_duty_cycle,
 	send_field_5,
 	Kp_iq_DUT,
 	send_field_7,
@@ -189,7 +189,7 @@ enum gui_button_mapping {
 	rpm,
 	A,
 	A,
-	-,
+	0..1,
 	-,
 	V/A,
 	-,
@@ -270,10 +270,10 @@ enum gui_button_mapping {
 	DUT = REAL,
 	iq step response,
 	iq frequency sweep,
-	MyButton5,
-	MyButton6,
-	MyButton7,
-	MyButton8,
+	Mode = DUTY,
+	PM phase A,
+	PM phase B,
+	PM phase C,
 	MYBUTTONS_LABELS_ENDMARKER
 
 

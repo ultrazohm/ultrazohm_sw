@@ -20,7 +20,10 @@
 #include "include/d4_adapter_init.h"
 #include "include/d5_adapter_init.h"
 
-enum dut_backend { DUT_BACKEND_CIL = 0, DUT_BACKEND_DESKBENCH = 1 };
+enum dut_backend { DUT_BACKEND_CIL = 0, DUT_BACKEND_DESKBENCH = 1, DUT_BACKEND_DUTY_CYCLE = 2 };
+enum prime_mover_duty_phase {
+    PRIME_MOVER_DUTY_NONE = 0, PRIME_MOVER_DUTY_A, PRIME_MOVER_DUTY_B, PRIME_MOVER_DUTY_C
+};
 
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
@@ -41,6 +44,7 @@ typedef struct _actualValues_ {
 	enum dut_backend dut_backend;
 	float dut_backend_code;
 	bool deskbench_inputs_ready;
+	bool prime_mover_duty_active;
 	float deskbench_inputs_ready_code;
 	enum uz_pmsm_control_safe_operating_region_violation prime_mover_violation;
 	enum uz_pmsm_control_safe_operating_region_violation dut_violation;
@@ -115,6 +119,9 @@ typedef struct _referenceAndSetValues_ {
 /* Project Wizard END: referenceAndSetValues */
 	float speed_ref_rpm_prime_mover;
 	enum dut_backend requested_dut_backend;
+	float prime_mover_duty_cycle_ref; /* Pending send-field 4 setting, in [0, 1]. */
+	float prime_mover_duty_cycle_applied; /* Snapshot taken by a phase-button press. */
+	enum prime_mover_duty_phase prime_mover_duty_phase;
 
 	uz_3ph_dq_t dut_current_reference_A;
 	float pmsm_cil_dc_link_voltage_V;

@@ -2,6 +2,42 @@
 #include "../include/dut.h"
 #include "../include/experiment_manager.h"
 #include "../include/pmsm_cil.h"
+#include <math.h>
+
+static bool valid_duty_cycle(float duty)
+{
+    return isfinite(duty) && duty >= 0.0f && duty <= 1.0f;
+}
+
+bool deskbench_set_prime_mover_duty_cycle(DS_Data* data, float duty)
+{
+    if (!valid_duty_cycle(duty)) return false;
+    data->rasv.prime_mover_duty_cycle_ref = duty;
+    data->av.snd_fld[4] = duty;
+    return true;
+}
+
+void deskbench_cancel_prime_mover_duty_cycle(DS_Data* data)
+{
+    data->rasv.prime_mover_duty_cycle_applied = 0.5f;
+    data->rasv.prime_mover_duty_phase = PRIME_MOVER_DUTY_NONE;
+    data->av.prime_mover_duty_active = false;
+}
+
+bool deskbench_apply_prime_mover_duty_cycle(DS_Data* data, platform_state_t state,
+    enum prime_mover_duty_phase phase)
+{
+    if (data->av.dut_backend != DUT_BACKEND_DUTY_CYCLE || state != control_state ||
+        !data->av.deskbench_inputs_ready ||
+        phase < PRIME_MOVER_DUTY_A || phase > PRIME_MOVER_DUTY_C ||
+        !valid_duty_cycle(data->rasv.prime_mover_duty_cycle_ref) ||
+        uz_pmsm_control_get_safe_operating_area_violation(data->objects.prime_mover) != uz_pmsm_control_no_violation)
+        return false;
+    data->rasv.prime_mover_duty_cycle_applied = data->rasv.prime_mover_duty_cycle_ref;
+    data->rasv.prime_mover_duty_phase = phase;
+    return true;
+}
+
 static void clear_references(DS_Data* data)
 {
     data->rasv.speed_ref_rpm_prime_mover = 0.0f;
@@ -9,6 +45,8 @@ static void clear_references(DS_Data* data)
     data->rasv.dut_current_reference_A = (uz_3ph_dq_t){0};
     for (unsigned i = 1; i <= 3; i++) data->av.snd_fld[i] = 0.0f;
     uz_ramp_reset(data->objects.speed_ref_ramp_prime_mover);
+    // Keep the pending field-4 value; a fresh phase-button press is required to apply it.
+    deskbench_cancel_prime_mover_duty_cycle(data);
 }
 
 static bool deskbench_read_measurements(DS_Data* data)
@@ -18,10 +56,11 @@ static bool deskbench_read_measurements(DS_Data* data)
     uz_pos_to_speed_pll_step(data->objects.dut_speed_pll,
         data->av.resolver_pl_interface_d5_1_position_mech_2pi);
     uz_pos_to_speed_pll_step(data->objects.prime_mover_speed_pll,
-        data->av.resolver_pl_interface_d5_2_position_mech_2pi);
+        data->av.ssi_encoder_d4_1_position_mech_si_single_turn);
     /* D1 inverter A/B -> A1 ADC A/B; D2 inverter A/B -> A2 ADC A/B.
-     * A1, A2 and D5 readout precede this call. PMSM control needs mechanical rad and rad/s;
-     * it applies the machine pole-pair count internally.
+     * A1, A2, D4 SSI and D5 resolver readout precede this call.
+     * PMSM control needs mechanical rad and rad/s and applies the machine pole-pair count internally.
+     * D4 SSI alignment is applied by the encoder driver; retain the prime-mover speed PLL.
      */
     data->av.prime_mover_measurements = (struct uz_pmsm_measurement_values){
         // A2 values are already in A/V; do not apply the inverter gains again.
@@ -37,10 +76,10 @@ static bool deskbench_read_measurements(DS_Data* data)
         },
         .v_dc_in_V = data->av.adc_ltc2311_a2_ch0,
         .i_dc_in_A = data->av.adc_ltc2311_a2_ch4,
-        .theta_mech = data->av.resolver_pl_interface_d5_2_position_mech_2pi,
+        .theta_mech = data->av.ssi_encoder_d4_1_position_mech_si_single_turn,
         .omega_mech_rad_per_sec = uz_pos_to_speed_pll_get_omega_mech_si(data->objects.prime_mover_speed_pll)
     };
-    if (data->av.dut_backend == DUT_BACKEND_DESKBENCH)
+    if (data->av.dut_backend == DUT_BACKEND_DESKBENCH || data->av.dut_backend == DUT_BACKEND_DUTY_CYCLE)
     {
         data->av.dut_measurements = (struct uz_pmsm_measurement_values){
             // A1 values are already in A/V, using the same channel order as A2.
@@ -96,7 +135,8 @@ void deskbench_step(DS_Data* data, platform_state_t state)
     bool mode_changed = false;
     if (state == idle_state &&
         (data->rasv.requested_dut_backend == DUT_BACKEND_CIL ||
-         data->rasv.requested_dut_backend == DUT_BACKEND_DESKBENCH))
+         data->rasv.requested_dut_backend == DUT_BACKEND_DESKBENCH ||
+         data->rasv.requested_dut_backend == DUT_BACKEND_DUTY_CYCLE))
     {
         mode_changed = data->av.dut_backend != data->rasv.requested_dut_backend;
         data->av.dut_backend = data->rasv.requested_dut_backend;
@@ -104,13 +144,15 @@ void deskbench_step(DS_Data* data, platform_state_t state)
     // Reject requests made outside idle rather than deferring a surprise switch.
     data->rasv.requested_dut_backend = data->av.dut_backend;
     bool cil = data->av.dut_backend == DUT_BACKEND_CIL;
+    bool manual_duty = data->av.dut_backend == DUT_BACKEND_DUTY_CYCLE;
     data->av.deskbench_inputs_ready = deskbench_read_measurements(data);
-    bool healthy = uz_pmsm_control_get_safe_operating_area_violation(data->objects.dut) == uz_pmsm_control_no_violation;
+    // The DUT remains disabled in manual mode; only prime-mover protection gates that output.
+    bool healthy = manual_duty || uz_pmsm_control_get_safe_operating_area_violation(data->objects.dut) == uz_pmsm_control_no_violation;
     if (!cil)
         healthy = healthy && uz_pmsm_control_get_safe_operating_area_violation(data->objects.prime_mover) == uz_pmsm_control_no_violation;
-    // DUT feedback: A1 + D5_1; prime-mover feedback: A2 + D5_2.
+    // DUT feedback: A1 + D5_1 resolver; prime-mover feedback: A2 + D4_1 SSI.
     bool active = state == control_state && healthy;
-    bool dut_active = active && (cil || data->av.deskbench_inputs_ready);
+    bool dut_active = !manual_duty && active && (cil || data->av.deskbench_inputs_ready);
     bool stopped = state != previous_state && (state == idle_state || state == error_state);
     if (mode_changed || (!active && was_active) || stopped)
     {
@@ -143,7 +185,7 @@ void deskbench_step(DS_Data* data, platform_state_t state)
         data->rasv.dut_acknowledge_error = false;
     }
 
-    if (active)
+    if (active && !manual_duty)
         data->rasv.ramped_speed_ref_rpm_prime_mover = uz_ramp_step(
             data->objects.speed_ref_ramp_prime_mover, data->rasv.speed_ref_rpm_prime_mover);
     else
@@ -159,7 +201,7 @@ void deskbench_step(DS_Data* data, platform_state_t state)
         data->av.snd_fld[3] = data->rasv.dut_current_reference_A.q;
 
     uz_pmsm_control_enable(data->objects.dut, dut_active);
-    uz_pmsm_control_enable(data->objects.prime_mover, active && !cil);
+    uz_pmsm_control_enable(data->objects.prime_mover, active && !cil && !manual_duty);
     struct uz_DutyCycle_t dut_duty = {0};
     uz_3ph_dq_t voltage = {0};
     if (cil)
@@ -176,7 +218,7 @@ void deskbench_step(DS_Data* data, platform_state_t state)
     data->av.dut_speed_rpm = uz_pmsm_control_get_actual_data(data->objects.dut)->speed_in_rpm;
     data->av.dut_violation = uz_pmsm_control_get_safe_operating_area_violation(data->objects.dut);
     data->av.prime_mover_violation = uz_pmsm_control_get_safe_operating_area_violation(data->objects.prime_mover);
-    bool tripped = data->av.dut_violation != uz_pmsm_control_no_violation ||
+    bool tripped = (!manual_duty && data->av.dut_violation != uz_pmsm_control_no_violation) ||
         (!cil && data->av.prime_mover_violation != uz_pmsm_control_no_violation);
     if (tripped)
     {
@@ -200,9 +242,31 @@ void deskbench_step(DS_Data* data, platform_state_t state)
             -(UZ_PIf / 30.0f) * data->rasv.ramped_speed_ref_rpm_prime_mover;
         uz_pmsmModel_set_inputs(data->objects.pmsm_cil, data->av.pmsm_cil_inputs);
     }
-    // STOP and either controller's trip disable BOTH physical inverters.
+    // Physical outputs require control_state and healthy feedback for the selected mode.
     // This is output shutdown, not a controlled mechanical deceleration.
-    bool closed_loop_enable = !cil && active && !tripped;
+    bool closed_loop_enable = !cil && !manual_duty && active && !tripped;
+    if (!manual_duty || !active || tripped)
+        deskbench_cancel_prime_mover_duty_cycle(data);
+    bool manual_enable = manual_duty && active && !tripped && data->av.deskbench_inputs_ready &&
+        valid_duty_cycle(data->rasv.prime_mover_duty_cycle_applied) &&
+        data->rasv.prime_mover_duty_phase >= PRIME_MOVER_DUTY_A &&
+        data->rasv.prime_mover_duty_phase <= PRIME_MOVER_DUTY_C;
+    if (manual_duty)
+    {
+        // Disabled controller sampling above still updates protection before any PWM is enabled.
+        prime_mover_duty = (struct uz_DutyCycle_t){.DutyCycle_A = 0.5f, .DutyCycle_B = 0.5f, .DutyCycle_C = 0.5f};
+        if (manual_enable)
+        {
+            switch (data->rasv.prime_mover_duty_phase)
+            {
+            case PRIME_MOVER_DUTY_A: prime_mover_duty.DutyCycle_A = data->rasv.prime_mover_duty_cycle_applied; break;
+            case PRIME_MOVER_DUTY_B: prime_mover_duty.DutyCycle_B = data->rasv.prime_mover_duty_cycle_applied; break;
+            case PRIME_MOVER_DUTY_C: prime_mover_duty.DutyCycle_C = data->rasv.prime_mover_duty_cycle_applied; break;
+            default: break;
+            }
+        }
+    }
+    data->av.prime_mover_duty_active = manual_enable;
     apply_outputs(data, dut_duty, prime_mover_duty,
-        closed_loop_enable && data->av.deskbench_inputs_ready, closed_loop_enable);
+        closed_loop_enable && data->av.deskbench_inputs_ready, closed_loop_enable || manual_enable);
 }

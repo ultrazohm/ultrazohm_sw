@@ -18,6 +18,7 @@
 #include "../main.h"
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
+#include "../include/deskbench.h"
 #include <stdbool.h>
 
 extern float *js_ch_observable[JSO_ENDMARKER];
@@ -27,12 +28,16 @@ extern uint32_t js_status_BareToRTOS;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
+    static uint32_t previous_msg_id;
+    bool fresh_command = msgId != previous_msg_id;
+    previous_msg_id = msgId;
     // The command ID is a pulse, not the float payload. Sample every IPC poll
     // so a held/replayed button command cannot restart a completed sequence.
     bool experiment_allowed = ultrazohm_state_machine_get_state() == control_state &&
         data->av.dut_violation == uz_pmsm_control_no_violation &&
         (data->av.dut_backend == DUT_BACKEND_CIL ||
-         (data->av.deskbench_inputs_ready && data->av.prime_mover_violation == uz_pmsm_control_no_violation));
+         (data->av.dut_backend == DUT_BACKEND_DESKBENCH && data->av.deskbench_inputs_ready &&
+          data->av.prime_mover_violation == uz_pmsm_control_no_violation));
     experiment_manager_button3(msgId == My_Button_3, experiment_allowed);
     experiment_manager_button4(msgId == My_Button_4, experiment_allowed);
 
@@ -45,6 +50,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Stop): // Stop
             experiment_manager_abort(&data->rasv.dut_current_reference_A.q);
+            deskbench_cancel_prime_mover_duty_cycle(data);
 			ultrazohm_state_machine_set_stop(true);
 			break;
 		case (201): // SELECT_DATA_CH1_bits
@@ -214,7 +220,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
         case (Set_Send_Field_4):
-            data->av.snd_fld[4] = value;
+            deskbench_set_prime_mover_duty_cycle(data, value);
             break;
 
         case (Set_Send_Field_5):
@@ -301,18 +307,23 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_5):
+            if (ultrazohm_state_machine_get_state() == idle_state)
+                data->rasv.requested_dut_backend = DUT_BACKEND_DUTY_CYCLE;
 			break;
 
 		case (My_Button_6):
-
+            if (fresh_command)
+                deskbench_apply_prime_mover_duty_cycle(data, ultrazohm_state_machine_get_state(), PRIME_MOVER_DUTY_A);
 			break;
 
 		case (My_Button_7):
-
+            if (fresh_command)
+                deskbench_apply_prime_mover_duty_cycle(data, ultrazohm_state_machine_get_state(), PRIME_MOVER_DUTY_B);
 			break;
 
 		case (My_Button_8):
-
+            if (fresh_command)
+                deskbench_apply_prime_mover_duty_cycle(data, ultrazohm_state_machine_get_state(), PRIME_MOVER_DUTY_C);
 			break;
 
 		case (Error_Reset):

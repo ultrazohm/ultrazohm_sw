@@ -20,6 +20,9 @@
 DS_Data Global_Data = {
     .rasv = {
         .requested_dut_backend = DUT_BACKEND_CIL,
+        .prime_mover_duty_cycle_ref = 0.5f,
+        .prime_mover_duty_cycle_applied = 0.5f,
+        .prime_mover_duty_phase = PRIME_MOVER_DUTY_NONE,
         .pmsm_cil_dc_link_voltage_V = 48.0f,
 
 /* Project Wizard BEGIN: rasv_initializer */
@@ -41,6 +44,7 @@ DS_Data Global_Data = {
 /* Project Wizard END: rasv_initializer */
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
+    .av.snd_fld = {[4] = 0.5f},
     .av.isr_samplerate_s = INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE / (UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor)};
 
 enum init_chain

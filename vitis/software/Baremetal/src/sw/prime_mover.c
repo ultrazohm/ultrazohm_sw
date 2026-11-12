@@ -1,16 +1,16 @@
 #include "../include/prime_mover.h"
 
-/* Separate prime-mover machine configuration: same machine type as the DUT. Limits are commissioning defaults;
- * validate them against the machine/inverter before using physical hardware.
+/* Separate prime-mover machine configuration. Update these parameters for the new deskbench machine.
+ * Limits are commissioning defaults; validate them against the machine/inverter before using physical hardware.
  */
 static const uz_PMSM_t prime_mover_machine_data = {
-    .R_ph_Ohm = 0.51f,
-    .Ld_Henry = 0.00175f,
-    .Lq_Henry = 0.00175f,
-    .Psi_PM_Vs = 0.042f,
+    .R_ph_Ohm = 0.20f,
+    .Ld_Henry = 0.00066f,
+    .Lq_Henry = 0.00066f,
+    .Psi_PM_Vs = 0.03704f,
     .polePairs = 4.0f,
-    .J_kg_m_squared = 0.000108f,
-    .I_max_Ampere = 12.0f
+    .J_kg_m_squared = 0.000198f,
+    .I_max_Ampere = 20.65f
 };
 
 uz_pmsm_control_t* initialize_prime_mover(float sample_time_s)
@@ -44,7 +44,7 @@ uz_pmsm_control_t* initialize_prime_mover(float sample_time_s)
         // One control period for the update delay plus half a period for the PWM hold.
         .theta_svm_delay_compensation = 1.5f,
         // Filters, controller angle offset and sampling compensation remain zero.
-        // Resolver alignment is configured separately in the D5 adapter initialization.
+        // SSI alignment is configured in D4_1 via position_mech_offset_si_single_turn [mechanical rad].
         .default_duty_cycle = {.DutyCycle_A = 0.5f, .DutyCycle_B = 0.5f, .DutyCycle_C = 0.5f}
     };
     uz_pmsm_control_t* prime_mover = uz_pmsm_control_init(config, prime_mover_machine_data);

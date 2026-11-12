@@ -198,11 +198,26 @@ void JavaScope_update(DS_Data* data){
     }
 
     // ACT indicators represent the backend actually applied by deskbench_step.
-    js_status_BareToRTOS &= ~((1U << 4) | (1U << 5));
+    js_status_BareToRTOS &= ~((1U << 4) | (1U << 5) | (1U << 8) |
+                             (1U << 9) | (1U << 10) | (1U << 11));
     if (data->av.dut_backend == DUT_BACKEND_CIL)
         js_status_BareToRTOS |= (1U << 4);
     else if (data->av.dut_backend == DUT_BACKEND_DESKBENCH)
         js_status_BareToRTOS |= (1U << 5);
+    else if (data->av.dut_backend == DUT_BACKEND_DUTY_CYCLE)
+    {
+        js_status_BareToRTOS |= (1U << 8);
+        if (data->av.prime_mover_duty_active)
+        {
+            switch (data->rasv.prime_mover_duty_phase)
+            {
+            case PRIME_MOVER_DUTY_A: js_status_BareToRTOS |= (1U << 9); break;
+            case PRIME_MOVER_DUTY_B: js_status_BareToRTOS |= (1U << 10); break;
+            case PRIME_MOVER_DUTY_C: js_status_BareToRTOS |= (1U << 11); break;
+            default: break;
+            }
+        }
+    }
 
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){

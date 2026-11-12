@@ -16,8 +16,7 @@
 #
 # Runtime requirements (fetched by the browser, not bundled): internet access to
 # the Pyodide CDN and the imgui_bundle WASM wheel. numpy/pandas/pyarrow come from
-# the Pyodide package index; tsdownsample has no WASM wheel, so downsampling uses
-# the pure-NumPy fallback in downsample.py.
+# the Pyodide package index; display sampling uses the shared NumPy source engine.
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

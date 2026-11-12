@@ -5,13 +5,13 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
-
 import numpy as np
+import pytest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-import uz_dataviewer as uz  # noqa: E402
-from uz_dataviewer import api  # noqa: E402
+
+from uz_dataviewer import api, nodes
+import uz_dataviewer as uz
 
 
 def _write_csv(tmp_path, fs=2000.0, n=4000, freq=50.0):
@@ -112,3 +112,72 @@ def test_import_is_gui_free():
     )
     assert out.returncode == 0, out.stderr
     assert "ok" in out.stdout
+
+
+def test_public_node_api_shares_validation(monkeypatch):
+    spec = nodes.TransformSpec('bad', lambda inputs, params: (np.arange(2.0), np.arange(3.0), ''))
+    monkeypatch.setitem(nodes.REGISTRY, 'bad', spec)
+    with pytest.raises(ValueError, match='needs 1 input'):
+        api.node('bad')
+    with pytest.raises(ValueError, match='equal-length'):
+        api.node('bad', (np.arange(4.0), np.arange(4.0)))
+
+
+@pytest.mark.parametrize('kind,params', [('math', {}), ('filter', {'cutoff': .1})])
+def test_convenience_wrappers_validate_output_shape(kind, params):
+    t, y = np.arange(8.), np.ones(7)
+    with pytest.raises(ValueError, match='equal-length'):
+        if kind == 'math':
+            api.math((t, y), **params)
+        else:
+            api.filter(t, y, **params)
+
+
+def test_headless_operations_do_not_import_gui(recording_csv):
+    code = '''
+import sys
+import uz_dataviewer as uz
+from uz_dataviewer.loader import convert_csv_to_parquet
+for backend in ('pyarrow', 'polars'):
+    data = uz.read(sys.argv[1], backend=backend)
+    data.to_dataframe()
+    uz.fft_frame(data.time, data['a'], backend=backend)
+convert_csv_to_parquet(sys.argv[1])
+assert 'imgui_bundle' not in sys.modules
+assert 'uz_dataviewer.webbridge' not in sys.modules
+'''
+    result = subprocess.run([sys.executable, '-c', code, str(recording_csv)],
+                            capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
+
+
+def test_fft_rejects_invalid_axis_before_selecting_window():
+    from uz_dataviewer.api import fft
+    for time in ([0, 1, 2, 3, 100, 4, 5, 6, 7],
+                 [0, 1, 2, 3, float('nan'), 4, 5, 6, 7],
+                 [0, 1, 2, 3, float('inf'), 4, 5, 6, 7]):
+        for limits in ({}, {'x_min': 0, 'x_max': 3}):
+            result = fft(time, list(range(len(time))), **limits)
+            assert not result.ok
+            assert 'time column' in result.info
+
+
+@pytest.mark.parametrize('values', [np.array([1., 2.]), np.ones((8, 1)), np.array(1.)])
+def test_integral_rejects_broadcastable_malformed_inputs(values):
+    with pytest.raises(ValueError, match='equal-length one-dimensional'):
+        api.math((np.arange(8.), values), op='integral')
+
+
+def test_state_import_does_not_load_gui():
+    import subprocess
+    import sys
+
+    subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "import sys; from uz_dataviewer.state import AppState; "
+            's=AppState(); s.shutdown(); assert "imgui_bundle" not in sys.modules',
+        ],
+        check=True,
+    )

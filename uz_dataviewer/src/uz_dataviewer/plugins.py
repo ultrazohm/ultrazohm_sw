@@ -14,7 +14,9 @@ Example plugin (``~/.uz_dataviewer/nodes/movavg.py``)::
     def moving_average(inputs, params):
         t, y = inputs[0]
         w = max(1, int(float(params["width"])))
-        return t, np.convolve(np.asarray(y, float), np.ones(w) / w, mode="same"), f"avg {w}"
+        out = np.convolve(np.asarray(y, float), np.ones(w) / w, mode="full")
+        start = (w - 1) // 2
+        return t, out[start:start + len(y)], f"avg {w}"
 
 Loading is **entirely optional and failure-tolerant**: with no plugin files and no
 plugin directory present, the app runs exactly as before (only the builtins). A
@@ -30,6 +32,7 @@ Both are scanned only if they exist; either may be absent.
 
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import os
 import sys
@@ -39,7 +42,7 @@ from .nodes import REGISTRY, ParamSpec, TransformSpec, register_transform
 __all__ = ["transform", "ParamSpec", "API_VERSION", "load_plugins", "plugin_dirs"]
 
 # Bump if the plugin contract changes; plugins may check it.
-API_VERSION = 1
+API_VERSION = 2
 
 ENV_VAR = "UZ_DATAVIEWER_PLUGINS"
 DEFAULT_DIR = os.path.join(os.path.expanduser("~"), ".uz_dataviewer", "nodes")
@@ -71,13 +74,25 @@ def plugin_dirs(extra: list[str] | None = None) -> list[str]:
 
 
 def _load_file(path: str):
-    name = "uz_plugin_" + os.path.splitext(os.path.basename(path))[0]
+    identity = hashlib.sha256(os.path.realpath(path).encode()).hexdigest()
+    name = "uz_plugin_" + identity
     spec = importlib.util.spec_from_file_location(name, path)
     if spec is None or spec.loader is None:
         raise ImportError(f"cannot import {path}")
     module = importlib.util.module_from_spec(spec)
+    previous_module = sys.modules.get(name)
+    previous_registry = dict(REGISTRY)
     sys.modules[name] = module
-    spec.loader.exec_module(module)  # runs the @transform registrations
+    try:
+        spec.loader.exec_module(module)  # runs the @transform registrations
+    except BaseException:
+        REGISTRY.clear()
+        REGISTRY.update(previous_registry)
+        if previous_module is None:
+            sys.modules.pop(name, None)
+        else:
+            sys.modules[name] = previous_module
+        raise
     return module
 
 

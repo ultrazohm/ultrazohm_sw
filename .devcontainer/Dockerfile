@@ -19,7 +19,10 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
                                                   git-lfs \
                                                   doxygen \
                                                   openjdk-21-jdk \
-                                                  ant
+                                                  ant \
+                                                  curl \
+                                                  pkg-config \
+                                                  libssl-dev
 
 # Ruby 3.3's RDoc parser currently fails while generating Ceedling's docs.
 RUN gem install --no-document ceedling && ln -sf /usr/local/bin/ceedling /usr/bin/ceedling
@@ -54,3 +57,12 @@ ENV PIP_USER=yes
 
 ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 ENV PATH="$JAVA_HOME/bin:$PATH"
+
+# Rust CLI and native Python package. Pin the same toolchain as uz_cli.
+ENV RUSTUP_HOME=/opt/rustup CARGO_HOME=/opt/cargo
+ENV PATH="/opt/cargo/bin:$PATH"
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o /tmp/rustup.sh \
+    && sh /tmp/rustup.sh -y --profile minimal --default-toolchain 1.90.0 --no-modify-path \
+    && rustup component add rustfmt clippy \
+    && rm /tmp/rustup.sh
+RUN PIP_USER=no pip install --no-cache-dir 'maturin>=1.9,<2' 'uv==0.13.1'

@@ -26,11 +26,14 @@ from __future__ import annotations
 
 import os
 import sys
+import json
+import runpy
 
 # Versions are pinned for ABI compatibility: the imgui_bundle WASM wheel is built
 # against one specific Pyodide/emscripten release.
 PYODIDE_VERSION = "v0.29.4"
 IMGUI_BUNDLE_WHEEL = "imgui_bundle-1.92.705-cp313-cp313-pyemscripten_2025_0_wasm32.whl"
+IMGUI_BUNDLE_WHEEL_SHA256 = "55a40423509820117babf3ac8a2f5e49fdf57a23518507958a38ee62a5fcfc8b"
 # Upstream host the wheel is fetched from at build time...
 IMGUI_BUNDLE_WHEEL_URL = f"https://imgui-bundle.pages.dev/local_wheels/{IMGUI_BUNDLE_WHEEL}"
 # ...then vendored here and installed via a same-origin relative path, so the
@@ -38,7 +41,7 @@ IMGUI_BUNDLE_WHEEL_URL = f"https://imgui-bundle.pages.dev/local_wheels/{IMGUI_BU
 # except the Pyodide CDN.
 IMGUI_BUNDLE_WHEEL_REL = f"local_wheels/{IMGUI_BUNDLE_WHEEL}"
 # Available in the Pyodide distribution. Downsampling is pure NumPy (the min/max
-# pyramid in downsample.py), so native and web run the same decimation code.
+# pyramid in sources.py), so native and web run the same decimation code.
 EXTRA_PACKAGES = ["numpy", "pandas", "pyarrow"]
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -77,6 +80,7 @@ _app.run()
 
 def build_html() -> str:
     sources = _collect_sources()
+    null_values = runpy.run_path(os.path.join(PKG_DIR, "csv_policy.py"))["NULL_VALUES"]
 
     src_tags = "\n".join(
         f'<script type="text/python" class="uz-pysource" data-path="{rel}">\n{text}\n</script>'
@@ -166,10 +170,20 @@ def build_html() -> str:
     pyodide.runPython("from uz_dataviewer.webbridge import _active_state as s\\n" + body);
   }}
 
+  let nextUploadId = 0;
   async function loadFull(file) {{
-    const path = "/uploads/" + file.name;
-    pyodide.FS.writeFile(path, new Uint8Array(await file.arrayBuffer()));
-    pyLoad(path, "");
+    const directory = "/uploads/" + (++nextUploadId);
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    pyodide.FS.mkdir(directory);
+    const path = directory + "/" + file.name;
+    try {{
+      pyodide.FS.writeFile(path, bytes);
+      pyLoad(path, "");
+    }} catch (error) {{
+      try {{ pyodide.FS.unlink(path); }} catch (_) {{}}
+      try {{ pyodide.FS.rmdir(directory); }} catch (_) {{}}
+      throw error;
+    }}
   }}
 
   // Stream-parse a large CSV directly into per-column typed arrays. The File blob
@@ -180,29 +194,35 @@ def build_html() -> str:
     const t0 = performance.now();
     const head = await file.slice(0, 256 * 1024).text();
     const headLines = Math.max(head.split("\\n").length - 1, 1);
-    const avgLineBytes = (256 * 1024) / headLines;
+    const avgLineBytes = Math.min(file.size, 256 * 1024) / headLines;
 
-    // The parsed numeric arrays must fit in Pyodide's 32-bit WASM heap (~4 GB, in
-    // practice less). Estimate the footprint from the header column count and a row
-    // estimate; if it would blow MEM_BUDGET, decimate 1:stride on the way in. Full
-    // resolution is physically impossible here for a multi-GB log -- the native app
-    // is the way to get it. Without this guard the oversize allocation aborts the
-    // whole WASM runtime silently ("loading does nothing").
+    // Preserve raw samples for analysis. Reject oversized recordings instead of
+    // silently aliasing them through load-time stride decimation.
     const MEM_BUDGET = 1.5 * 1024 * 1024 * 1024;
     const firstLine = (head.split("\\n").find(l => l.trim() !== "")) || "";
-    const nDataCols = Math.max(firstLine.split(";").filter(s => s.trim() !== "").length - 1, 1);
+    let commas = 0, semicolons = 0, quotedHeader = false;
+    for (const ch of firstLine) {{
+      if (ch === '"') quotedHeader = !quotedHeader;
+      else if (!quotedHeader && ch === ',') commas++;
+      else if (!quotedHeader && ch === ';') semicolons++;
+    }}
+    const delimiter = commas > semicolons ? "," : ";";
+    const nDataCols = parseRow(firstLine).filter(s => s.trim() !== "").length - 1;
+    if (nDataCols < 1) throw new Error("CSV must contain time and at least one signal column");
     const estRows = file.size / Math.max(avgLineBytes, 1);
-    const stride = Math.max(1, Math.ceil((estRows * (8 + 4 * nDataCols)) / MEM_BUDGET));
+    const bytesPerRow = 8 + 4 * nDataCols;
+    const maxRows = Math.floor(MEM_BUDGET / bytesPerRow);
+    const tooLarge = () => new Error("CSV exceeds the browser numeric-data budget; use the native app for full-resolution data.");
+    if (estRows > maxRows) throw tooLarge();
     pyRun("s and s.console.info(" + JSON.stringify(
-      "Parsing " + file.name + " in the browser" +
-      (stride > 1 ? " (decimating 1:" + stride + " to fit memory)" : "") + ", please wait...") + ")");
-    let seen = 0;
-    let cap = Math.max(1024, Math.floor(estRows / stride));
+      "Parsing " + file.name + " in the browser, please wait...") + ")");
+    let cap = Math.min(maxRows, Math.max(1024, Math.floor(estRows)));
 
     const reader = file.stream().getReader();
     const decoder = new TextDecoder();
     let remainder = "";
     let header = null;
+    let fieldCount = 0;
     let timeIdx = 0;
     let dataIdx = [];       // field indices of the data columns
     let dataNames = [];     // their raw header names
@@ -212,8 +232,9 @@ def build_html() -> str:
     let readBytes = 0;
 
     function grow(need) {{
+      if (need > maxRows) throw tooLarge();
       if (need <= cap) return;
-      const nc = Math.max(need, Math.ceil(cap * 1.5));
+      const nc = Math.min(maxRows, Math.max(need, Math.ceil(cap * 1.5)));
       const nt = new Float64Array(nc); nt.set(timeArr.subarray(0, n)); timeArr = nt;
       for (let c = 0; c < cols.length; c++) {{
         const a = new Float32Array(nc); a.set(cols[c].subarray(0, n)); cols[c] = a;
@@ -221,14 +242,48 @@ def build_html() -> str:
       cap = nc;
     }}
 
+    function parseRow(line) {{
+      const fields = [];
+      let field = "", quoted = false, closed = false;
+      for (let i = 0; i < line.length; i++) {{
+        const ch = line[i];
+        if (quoted) {{
+          if (ch === '"' && line[i + 1] === '"') {{ field += '"'; i++; }}
+          else if (ch === '"') {{ quoted = false; closed = true; }}
+          else field += ch;
+        }} else if (ch === delimiter) {{
+          fields.push(field); field = ""; closed = false;
+        }} else if (ch === '"' && !field && !closed) quoted = true;
+        else if (ch === '\\r' && i === line.length - 1) {{}}
+        else if (closed || ch === '"') throw new Error("Malformed CSV quoting");
+        else field += ch;
+      }}
+      if (quoted) throw new Error("Unclosed CSV quote (multiline fields are not supported by browser streaming)");
+      fields.push(field);
+      return fields;
+    }}
+
+    function numeric(field) {{
+      const text = field.trim();
+      if ({json.dumps(null_values)}.includes(text)) return NaN;
+      if (/^[+]?inf(inity)?$/i.test(text)) return Infinity;
+      if (/^-inf(inity)?$/i.test(text)) return -Infinity;
+      if (!/^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?$/.test(text))
+        throw new Error("Invalid numeric CSV value: " + text);
+      return Number(text);
+    }}
+
     function initHeader(line) {{
-      const fields = line.split(";");
+      const fields = parseRow(line);
+      fieldCount = fields.length;
       const kept = [];
       for (let i = 0; i < fields.length; i++) {{
-        const nm = fields[i].trim();
-        if (nm !== "") kept.push([i, nm]);
+        const nm = fields[i];
+        if (nm.trim() !== "") kept.push([i, nm]);
       }}
-      let tPos = kept.findIndex(k => k[1].toLowerCase() === "time");
+      if (kept.length < 2 || new Set(kept.map(k => k[1])).size !== kept.length)
+        throw new Error("CSV must contain distinct time and signal columns");
+      let tPos = kept.findIndex(k => k[1] === "time");
       if (tPos < 0) tPos = 0;
       timeIdx = kept.length ? kept[tPos][0] : 0;
       for (let k = 0; k < kept.length; k++) {{
@@ -241,42 +296,41 @@ def build_html() -> str:
     }}
 
     function pushRow(line) {{
-      if (line === "") return;
-      if ((seen++ % stride) !== 0) return;  // keep every stride-th row (memory fit)
-      const f = line.split(";");
+      if (line.trim() === "") return;
+      const f = parseRow(line);
+      if (f.length !== fieldCount) throw new Error("CSV row has incorrect field count");
       grow(n + 1);
-      timeArr[n] = parseFloat(f[timeIdx]);
-      for (let c = 0; c < dataIdx.length; c++) cols[c][n] = parseFloat(f[dataIdx[c]]);
+      timeArr[n] = numeric(f[timeIdx]);
+      for (let c = 0; c < dataIdx.length; c++) cols[c][n] = numeric(f[dataIdx[c]]);
       n++;
     }}
 
-    while (true) {{
-      const {{ done, value }} = await reader.read();
-      if (done) break;
-      readBytes += value.length;
-      const parts = (remainder + decoder.decode(value, {{ stream: true }})).split("\\n");
-      remainder = parts.pop();  // last (possibly partial) line
-      for (const line of parts) {{
-        if (header === null) {{ header = line; initHeader(line); continue; }}
-        pushRow(line);
+    try {{
+      while (true) {{
+        const {{ done, value }} = await reader.read();
+        if (done) break;
+        readBytes += value.length;
+        const parts = (remainder + decoder.decode(value, {{ stream: true }})).split("\\n");
+        remainder = parts.pop();  // last (possibly partial) line
+        for (const line of parts) {{
+          if (header === null) {{ header = line; initHeader(line); continue; }}
+          pushRow(line);
+        }}
+        console.log("Parsing " + file.name + ": " + (100 * readBytes / file.size).toFixed(0) + "%");
       }}
-      console.log("Parsing " + file.name + ": " + (100 * readBytes / file.size).toFixed(0) + "%");
+      if (header === null) initHeader(remainder); else pushRow(remainder.trim());
+    }} finally {{
+      await reader.cancel();
+      reader.releaseLock();
     }}
-    if (header === null) initHeader(remainder); else pushRow(remainder.trim());
 
     // Hand the compact typed arrays to Python (one copy into WASM; JS frees after).
-    const note = stride > 1
-      ? ("Loaded " + file.name + " decimated 1:" + stride + " (" + n.toLocaleString() +
-         " of ~" + Math.round(estRows).toLocaleString() + " rows): full resolution needs ~" +
-         (estRows * (8 + 4 * nDataCols) / 1073741824).toFixed(1) + " GB, over the browser's ~" +
-         (MEM_BUDGET / 1073741824).toFixed(1) + " GB limit. Use the native app for full detail.")
-      : "";
     const bridge = pyodide.pyimport("uz_dataviewer.webbridge");
-    bridge.load_columns(file.name, dataNames, cols.map(a => a.subarray(0, n)), timeArr.subarray(0, n), note);
+    bridge.load_columns(file.name, dataNames, cols.map(a => a.subarray(0, n)), timeArr.subarray(0, n));
     bridge.destroy();
     timeArr = null; cols = null;
     const secs = ((performance.now() - t0) / 1000).toFixed(1);
-    console.log("Loaded " + file.name + ": " + n.toLocaleString() + " rows (1:" + stride + ") in " + secs + "s");
+    console.log("Loaded " + file.name + ": " + n.toLocaleString() + " rows in " + secs + "s");
   }}
 
   function wireFileInput() {{
@@ -356,24 +410,46 @@ def build_html() -> str:
 """
 
 
+def _valid_wheel(path):
+    import hashlib
+    import zipfile
+    try:
+        with open(path, "rb") as stream:
+            if hashlib.file_digest(stream, "sha256").hexdigest() != IMGUI_BUNDLE_WHEEL_SHA256:
+                return False
+        with zipfile.ZipFile(path) as wheel:
+            return (wheel.testzip() is None and
+                    any(name.endswith(".dist-info/WHEEL") for name in wheel.namelist()) and
+                    any(name.startswith("imgui_bundle/") for name in wheel.namelist()))
+    except (OSError, zipfile.BadZipFile, EOFError):
+        return False
+
+
 def _vendor_wheel(out_dir: str) -> None:
-    """Download the imgui_bundle WASM wheel into web/local_wheels/ (idempotent)."""
+    """Validate cached wheels and atomically publish complete downloads."""
+    import shutil
+    import tempfile
     import urllib.request
 
     dest_dir = os.path.join(out_dir, "local_wheels")
     os.makedirs(dest_dir, exist_ok=True)
     dest = os.path.join(dest_dir, IMGUI_BUNDLE_WHEEL)
-    if os.path.exists(dest) and os.path.getsize(dest) > 0:
+    if _valid_wheel(dest):
         print(f"  wheel already vendored: {dest} ({os.path.getsize(dest):,} bytes)")
         return
-    print(f"  downloading wheel: {IMGUI_BUNDLE_WHEEL_URL}")
-    # Cloudflare (pages.dev) rejects the default Python-urllib User-Agent (403),
-    # so present a browser-like one.
     req = urllib.request.Request(
         IMGUI_BUNDLE_WHEEL_URL, headers={"User-Agent": "Mozilla/5.0 (build script)"}
     )
-    with urllib.request.urlopen(req) as resp, open(dest, "wb") as fh:
-        fh.write(resp.read())
+    fd, temporary = tempfile.mkstemp(prefix=".wheel-", dir=dest_dir)
+    try:
+        with os.fdopen(fd, "wb") as output, urllib.request.urlopen(req, timeout=60) as response:
+            shutil.copyfileobj(response, output, length=1024 * 1024)
+        if not _valid_wheel(temporary):
+            raise ValueError("Downloaded imgui_bundle wheel is incomplete or invalid")
+        os.replace(temporary, dest)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
     print(f"  vendored: {dest} ({os.path.getsize(dest):,} bytes)")
 
 

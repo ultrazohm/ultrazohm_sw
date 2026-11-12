@@ -7,20 +7,23 @@ name = "uz_dataviewer"
 version = "0.1.0"
 description = "UltraZohm log data viewer built with Dear ImGui (imgui_bundle / ImPlot)"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 license = { text = "BSD-3-Clause" }
 authors = [{ name = "UltraZohm" }]
+# Native versions validated by the lockfile and frozen builds. The browser build
+# embeds sources and uses its separately pinned Pyodide ABI/package index.
 dependencies = [
-    "imgui-bundle>=1.6",
-    "numpy>=1.24",
-    "pandas>=2.0",
-    "pyarrow>=12.0",
+    "imgui-bundle==1.93.0",
+    "numpy==2.5.4",
+    "pandas==3.1.0",
+    "pyarrow==26.0.0",
+    "polars==2.0.0; platform_system != 'Emscripten'",
     # Native-only window file drag-drop (GLFW backend); a no-op if absent.
-    "glfw>=2.5; platform_system != 'Emscripten'",
+    "glfw==2.11.0; platform_system != 'Emscripten'",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7", "pyinstaller>=6.0"]
+dev = ["pytest>=7", "pyinstaller>=6.0", "ruff==0.17.2"]
 
 [project.scripts]
 uz-dataviewer = "uz_dataviewer.app:main"
@@ -31,3 +34,6 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+
+[tool.ruff.lint]
+select = ["F"]

@@ -22,12 +22,12 @@ Features
 - Range-aware downsampling — multi-GB logs pan smoothly and zooming reveals detail
 - FFT & Histogram, optional locked time window to time plot, optional logarithmic axes, ``.csv`` export of FFT and histogram data
 - Nodes for applying transforms (FFT / math / filter / shift) to signals where the result becomes a new signal. Nodes can be extended with custom Python code for user-specific nodes (:doc:`uz_dataviewer_plugins`)
-- Command console and script support: every action in the GUI is a command. Save sessions save to JSON or a ``.uzscript``.
+- Command console and script support: commands automate data, analysis and plot settings. Save sessions to JSON; run automation commands from ``.uzscript`` files.
 
 Starting uz_dataviewer
 ======================
 
-The ``uz_dataviewer`` is located in ``ultrazohm_sw/dataviewer/`` and there are multiple options to run the application.
+The ``uz_dataviewer`` is located in ``ultrazohm_sw/uz_dataviewer/`` and there are multiple options to run the application.
 The ``uz_dataviewer`` is available as a local web version, a native application using the compiled binary, or as a native application running directly from source.
 See :ref:`uz_dataviewer_build` for instructions on how to build the binary.
 
@@ -35,9 +35,9 @@ See :ref:`uz_dataviewer_build` for instructions on how to build the binary.
 
     .. tab-item:: Native from binary
 
-       Starting ``uz_dataviewer`` from the binary, assuming the binary is located in ``ultrazohm_sw/dataviewer/dist``.
+       Starting ``uz_dataviewer`` from the binary, assuming the binary is located in ``ultrazohm_sw/uz_dataviewer/dist``.
        The application can be run in an arbitrary location.
-       When the binary is not located in ``ultrazohm_sw/dataviewer/dist``, see :ref:`uz_dataviewer_plugins`.
+       When the binary is not located in ``ultrazohm_sw/uz_dataviewer/dist``, see :ref:`uz_dataviewer_plugins`.
        
        .. code-block:: bash
        
@@ -59,11 +59,11 @@ See :ref:`uz_dataviewer_build` for instructions on how to build the binary.
            pip install -r requirements.txt      
            python run.py                        # or: python -m uz_dataviewer
            python run.py ../javascope/Log_2026-06-11_22-45-16.csv   # preload
-           python run.py session.uzscript       # replay a saved session
+           python run.py session.json           # restore a saved session
 
     .. tab-item:: Local Web version
 
-           Starting ``uz_dataviewer`` from the binary, assuming the binary is located in ``ultrazohm_sw/dataviewer/dist``.
+           Build the web assets using :ref:`uz_dataviewer_build_web`, then serve the generated directory.
            
            .. code-block:: bash
            

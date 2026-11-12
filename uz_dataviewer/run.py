@@ -3,7 +3,7 @@
 
 Usage::
 
-    python run.py [file1.csv file2.parquet ...]
+    python run.py [file1.csv file2.parquet session.json script.uzscript ...]
 """
 
 from __future__ import annotations

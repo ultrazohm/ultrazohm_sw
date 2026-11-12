@@ -6,15 +6,19 @@ headers + float arrays, with no Arrow text parse. No browser needed.
 
 from __future__ import annotations
 
-import os
-import sys
-
+from pathlib import Path
+import importlib.util
+import shutil
+import subprocess
 import numpy as np
+import pytest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from uz_dataviewer import webbridge  # noqa: E402
-from uz_dataviewer.state import AppState  # noqa: E402
+
+from uz_dataviewer import runtime
+from uz_dataviewer import webbridge
+from uz_dataviewer.session import save_state
+from uz_dataviewer.state import AppState
 
 
 def test_load_columns_builds_run_from_arrays():
@@ -45,23 +49,24 @@ def test_load_columns_no_state_is_noop():
 
 
 def test_save_and_download_runs_command_then_downloads(monkeypatch):
-    # Web export path: write /tmp/<name> via the emit callback, then hand it to download().
+    # Web exports use a fresh temporary directory, removed after download.
     state = AppState()
     webbridge.register_state(state)
     calls: dict = {}
-    monkeypatch.setattr(webbridge, "IS_WEB", True)
+    monkeypatch.setattr(runtime, "IS_WEB", True)
     monkeypatch.setattr(webbridge, "download", lambda path, name: calls.update(download=(path, name)))
 
     webbridge.save_and_download(state, "plot_1.csv", lambda path: calls.update(emit=path))
 
-    assert calls["emit"] == "/tmp/plot_1.csv"
-    assert calls["download"] == ("/tmp/plot_1.csv", "plot_1.csv")
+    assert Path(calls["emit"]).name == "plot_1.csv"
+    assert calls["download"] == (calls["emit"], "plot_1.csv")
+    assert not Path(calls["emit"]).parent.exists()
 
 
 def test_save_and_download_native_is_noop(monkeypatch):
     # On native the caller drives an OS save dialog; the helper must do nothing.
     state = AppState()
-    monkeypatch.setattr(webbridge, "IS_WEB", False)
+    monkeypatch.setattr(runtime, "IS_WEB", False)
     called: list = []
     webbridge.save_and_download(state, "x.csv", lambda path: called.append(path))
     assert called == []
@@ -71,7 +76,7 @@ def test_save_and_download_surfaces_errors(monkeypatch):
     # A failing command goes to the console, not up the call stack.
     state = AppState()
     webbridge.register_state(state)
-    monkeypatch.setattr(webbridge, "IS_WEB", True)
+    monkeypatch.setattr(runtime, "IS_WEB", True)
     monkeypatch.setattr(webbridge, "download", lambda *a: None)
 
     def boom(path):
@@ -80,3 +85,240 @@ def test_save_and_download_surfaces_errors(monkeypatch):
     webbridge.save_and_download(state, "x.csv", boom)  # must not raise
     errors = [e.message for e in state.console._entries if e.level == "ERROR"]
     assert any("export failed" in m for m in errors)
+
+
+def test_failed_panel_export_never_downloads_previous_data(app_state, monkeypatch):
+    from uz_dataviewer.panels.fft import FftPanel
+    state = app_state
+    state.backend = 'pyarrow'
+    state.add_run_from_arrays('input', 'input', np.arange(16)/16, {'a': np.sin(np.arange(16))}, {})
+    state.fft.sources = [(1, 'a')]
+    state.fft.follow_plot = -1
+    panel = FftPanel()
+    downloads, paths = [], []
+    monkeypatch.setattr(runtime, 'IS_WEB', True)
+    monkeypatch.setattr(webbridge, 'download', lambda path, name: downloads.append(Path(path).read_text()))
+
+    def export(path):
+        paths.append(path)
+        return panel._emit(state, 'fft_export', path)
+
+    webbridge.save_and_download(state, 'fft.csv', export)
+    assert len(downloads) == 1
+    state.fft.follow_plot = 0
+    state.fft.x_min, state.fft.x_max = 0, .01
+    webbridge.save_and_download(state, 'fft.csv', export)
+    assert len(downloads) == 1
+    assert paths[0] != paths[1]
+    assert all(not Path(path).exists() for path in paths)
+    assert any('input' in e.message and 'too short' in e.message for e in state.console._entries)
+
+
+def test_generated_uploads_keep_same_name_recordings_distinct(app_state, tmp_path):
+    import importlib.util
+    import json
+    import shutil
+    import subprocess
+    import pytest
+    from uz_dataviewer.session import to_dict, apply_dict
+    node = shutil.which('node')
+    if node is None:
+        pytest.skip('Node.js required for generated upload handler')
+    spec = importlib.util.spec_from_file_location('gen_web_upload', Path(__file__).parents[1] / 'build/gen_web.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    html = module.build_html()
+    start = html.index('  let nextUploadId')
+    end = html.index('  // Stream-parse', start)
+    harness = r'''
+const fs = require('node:fs');
+const root = process.argv[2];
+fs.mkdirSync(root + '/uploads');
+const paths = [];
+const pyodide = {FS: {
+  mkdir: path => fs.mkdirSync(root + path),
+  writeFile: (path, data) => fs.writeFileSync(root + path, data)
+}};
+function pyLoad(path) { paths.push(root + path); }
+(async () => {
+  for (const value of [10, 20]) {
+    const file = new Blob([`time;a\n0;${value}\n1;${value}\n`]);
+    file.name = 'same.csv';
+    await loadFull(file);
+  }
+  console.log(JSON.stringify(paths));
+})().catch(error => { console.error(error); process.exitCode = 1; });
+'''
+    script = tmp_path / 'upload.cjs'
+    script.write_text(html[start:end] + harness)
+    result = subprocess.run([node, str(script), str(tmp_path)], check=True, capture_output=True, text=True, timeout=15)
+    paths = json.loads(result.stdout)
+    assert len(set(paths)) == 2
+    state = app_state
+    state.backend, state.loading_mode = 'pyarrow', 'memory'
+    for path in paths:
+        state.load_sync(path)
+    assert [r.label for r in state.registry.runs] == ['same.csv', 'same.csv']
+    apply_dict(state, to_dict(state))
+    assert [r.signals['a'].y[0] for r in state.registry.runs] == [10, 20]
+
+
+def test_uploaded_files_use_the_same_loading_policy_as_commands(app_state, tmp_path, monkeypatch):
+    state = app_state
+    monkeypatch.setattr(runtime, 'IS_WEB', True)
+    monkeypatch.setattr(webbridge, '_active_state', state)
+    state.backend = 'pyarrow'
+    monkeypatch.setattr(webbridge, 'UPLOAD_ROOT', str(tmp_path))
+    for mode in ('memory', 'lazy'):
+        for disk_cache in (False, True):
+            path = tmp_path / f'{mode}-{disk_cache}.csv'
+            path.write_text('time;a\n0;10\n1;20\n')
+            state.commands.execute(state, 'loading_mode', [mode])
+            state.commands.execute(state, 'disk_cache', [disk_cache])
+            webbridge.load_uploaded(str(path))
+            uploaded = state.registry.runs[-1]
+            assert uploaded.storage_mode == mode
+            assert uploaded.backend == 'pyarrow'
+            assert getattr(uploaded.source, 'disk_cache', False) == (mode == 'lazy' and disk_cache)
+            assert not uploaded.reloadable
+            assert path.exists() == (mode == 'lazy')
+            t, values = uploaded.read_window(['a'], 0, 1)
+            np.testing.assert_array_equal(t, [0, 1])
+            np.testing.assert_array_equal(values['a'], [10, 20])
+            state.remove_run(uploaded.id)
+            assert not path.exists()
+
+
+def test_browser_stream_budget_rejects_without_losing_samples(tmp_path):
+    import importlib.util
+    import shutil
+    import subprocess
+    import pytest
+    node = shutil.which('node')
+    if node is None:
+        pytest.skip('Node.js required for generated browser parser')
+    spec = importlib.util.spec_from_file_location('gen_web_budget', Path(__file__).parents[1]/'build/gen_web.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    html = module.build_html()
+    start = html.index('  async function loadStreamingCsv(file)')
+    end = html.index('  function wireFileInput()', start)
+    # Exercise the real parser with a ten-row budget, without allocating GiB.
+    code = html[start:end].replace('1.5 * 1024 * 1024 * 1024', '120')
+    harness = r'''
+const assert = require('node:assert/strict');
+function pyRun() {}
+let loaded = [];
+const pyodide = {pyimport: () => ({
+ load_columns: (name,names,columns,time) => loaded.push(Array.from(time)), destroy: () => {}
+})};
+(async () => {
+ const small = new Blob(['time,a\n0,3\n1,4\n2,5\n']); small.name = 'small.csv';
+ await loadStreamingCsv(small);
+ assert.deepEqual(loaded, [[0,1,2]]);
+ const large = new Blob(['time,a\n' + Array.from({length:20},(_,i)=>`${i},${i}\n`).join('')]);
+ large.name = 'large.csv';
+ await assert.rejects(() => loadStreamingCsv(large), /numeric-data budget/);
+ // Deliberately underestimate from the header sample: the growth guard must
+ // still reject, and no partial recording may reach Python.
+ const underestimated = {name:'underestimated.csv', size:large.size,
+  slice:() => new Blob(['time,a\n0,' + ' '.repeat(1000) + '0\n']),
+  stream:() => large.stream()};
+ await assert.rejects(() => loadStreamingCsv(underestimated), /numeric-data budget/);
+ assert.deepEqual(loaded, [[0,1,2]]);
+})().catch(error => {console.error(error); process.exitCode = 1;});
+'''
+    script = tmp_path/'budget.cjs'
+    script.write_text(code+harness)
+    subprocess.run([node, str(script)], check=True, capture_output=True, text=True, timeout=15)
+
+
+def test_streamed_session_save_fails_without_truncating_file(states, tmp_path):
+    state = states()
+    webbridge.register_state(state)
+    try:
+        webbridge.load_columns('stream.csv', ['a'], [np.arange(8, dtype=np.float32)], np.arange(8.0))
+        path = tmp_path / 'state.json'
+        path.write_text('existing')
+        with pytest.raises(ValueError, match='backing file'):
+            save_state(state, str(path))
+        assert path.read_text() == 'existing'
+        assert len(state.registry) == 1
+    finally:
+        webbridge.register_state(None)
+
+
+def test_generated_browser_stream_parser(tmp_path):
+    node = shutil.which('node')
+    if node is None:
+        pytest.skip('Node.js required for generated browser parser')
+    path = Path(__file__).parents[1] / 'build/gen_web.py'
+    spec = importlib.util.spec_from_file_location('gen_web_review', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    html = module.build_html()
+    start = html.index('  async function loadStreamingCsv(file)')
+    end = html.index('  function wireFileInput()', start)
+    harness = r"""
+const assert=require('node:assert/strict');
+function pyRun(body){}
+let loaded;
+const pyodide={pyimport:()=>({load_columns:(name,names,columns,time)=>{
+ loaded={names,columns:columns.map(x=>Array.from(x)),time:Array.from(time)};
+},destroy:()=>{}})};
+(async()=>{
+ for(const d of [',',';']){
+  const file=new Blob([`time${d}"a"\r\n0${d}10\r\n1${d}20\r\n`]);file.name='test.csv';
+  await loadStreamingCsv(file);
+  assert.deepEqual(loaded,{names:['a'],columns:[[10,20]],time:[0,1]});
+ }
+ const whitespace=new Blob(['a, time\n0,100\n1,200\n']);whitespace.name='space.csv';
+ await loadStreamingCsv(whitespace);
+ assert.deepEqual(loaded,{names:[' time'],columns:[[100,200]],time:[0,1]});
+ for(const text of ['time\n0\n','time,a\n0,10oops\n','time,a,a\n0,1,2\n','time,a\n0\n']){
+  const file=new Blob([text]);file.name='bad.csv';await assert.rejects(()=>loadStreamingCsv(file));
+ }
+})().catch(error=>{console.error(error);process.exitCode=1;});
+"""
+    target = tmp_path / 'parser.cjs'
+    import json
+    from uz_dataviewer.csv_policy import NULL_VALUES
+    harness = harness.replace(" for(const d of", """
+ for (const token of TOKENS) {
+  const file=new Blob(['time,a\\n0,'+JSON.stringify(token)+'\\n']);file.name='null.csv';
+  await loadStreamingCsv(file);
+  assert(Number.isNaN(loaded.columns[0][0]), token);
+ }
+ for(const d of""")
+    target.write_text('const TOKENS=' + json.dumps(NULL_VALUES) + ';\n' + html[start:end] + harness)
+    subprocess.run([node, str(target)], check=True, capture_output=True, text=True, timeout=15)
+
+
+def test_browser_generator_embeds_shared_null_policy():
+    import json
+    from uz_dataviewer.csv_policy import NULL_VALUES
+    path = Path(__file__).parents[1] / 'build' / 'gen_web.py'
+    spec = importlib.util.spec_from_file_location('review_gen_web', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    html = module.build_html()
+    assert json.dumps(NULL_VALUES) + '.includes(text)' in html
+
+
+@pytest.mark.parametrize("closing", [False, True])
+def test_owned_upload_released_after_last_reference(app_state, tmp_path, closing):
+    path = tmp_path / "upload.csv"
+    path.write_text("time,a\n0,1\n1,2\n")
+    app_state.backend = "pyarrow"
+    app_state.loading_mode = "lazy"
+    first = app_state.load_sync(str(path))
+    second = app_state.load_sync(str(path))
+    first.owned_upload = True
+    first.reloadable = False
+    app_state.remove_run(first.id)
+    assert path.exists() and second.owned_upload and not second.reloadable
+    if closing:
+        app_state.shutdown()
+    else:
+        app_state.remove_run(second.id)
+    assert not path.exists()

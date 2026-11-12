@@ -10,12 +10,18 @@ set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$HERE"
 
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-python -m pip install "pyinstaller>=6.0"
+if ! command -v uv >/dev/null 2>&1; then
+    echo "uv is required: install it with python -m pip install uv" >&2
+    exit 1
+fi
+export UV_PROJECT_ENVIRONMENT="${UV_PROJECT_ENVIRONMENT:-$HERE/.venv-build}"
+uv sync --locked --extra dev --python 3.12 --no-build-package imgui-bundle
+
+: "${UZ_CLI_WHEEL:?Set UZ_CLI_WHEEL to the matching CLI wheel}"
+uv pip install --python "$UV_PROJECT_ENVIRONMENT/bin/python" --no-deps "$UZ_CLI_WHEEL"
 
 rm -rf build/native dist
-pyinstaller --clean --distpath dist --workpath build/native build/uz_dataviewer.spec
+uv run --no-sync python -m PyInstaller --noconfirm --clean --distpath dist --workpath build/native build/uz_dataviewer.spec
 
 echo
 echo "Built: $HERE/dist/uz_dataviewer"

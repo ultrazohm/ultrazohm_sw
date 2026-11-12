@@ -23,14 +23,18 @@ Plugins location
    export UZ_DATAVIEWER_PLUGINS=/path/to/my/plugins
    python run.py
 
-You can also load a folder at runtime from the console (no restart):
+You can also load new node kinds at runtime from the console:
 
 .. code-block:: text
 
    load_plugins("/path/to/my/plugins")     # or load_plugins() for the configured dirs
 
 A missing folder or file is silently skipped.
-A plugin that throws an error on import is logged to the console and skipped.
+A plugin that throws an error on import is logged to the console and skipped;
+its registrations and module entry are rolled back.
+Node kinds cannot replace an existing plugin or builtin registration. Restart the
+viewer to load changes to an already registered kind. This keeps cached node
+outputs consistent with the implementation that produced them.
 
 Plugin structure
 ================
@@ -52,7 +56,8 @@ The function takes ``inputs`` (a list of ``(time, y)`` NumPy arrays (one per con
    def moving_average(inputs, params):
        time, y = inputs[0]
        width = max(1, int(float(params.get("width", 51))))
-       out = np.convolve(np.asarray(y, float), np.ones(width) / width, mode="same")
+       start = (width - 1) // 2
+       out = np.convolve(np.asarray(y, float), np.ones(width) / width, mode="full")[start:start + len(y)] if len(y) else np.empty(0)
        return time, out, f"moving avg, {width} samples"   # info shows under the node
 
 A working example is located at ``ultrazohm_sw/uz_dataviewer/examples/plugins/moving_average.py``.
@@ -87,10 +92,24 @@ Each renders a widget that writes back to ``params[key]``; read it in your funct
 Rules & tips
 ============
 
-- Output an ``(out_time, out_y, info)`` tuple. ``out_time`` is the x-axis of the derived signal (for a spectrum-like node it can be frequency).
+- Output an ``(out_time, out_y, info)`` tuple. ``out_time`` is the independent axis of the derived signal and must preserve the input domain. Only the built-in FFT changes a time axis to frequency.
   Raise a normal exception with a clear message on bad input — it's caught, shown on the node, and the rest of the graph keeps working.
 - The result is materialized as a **derived run** named after the node, so it appears in Navigation and is draggable into plots / FFT / Histogram.
 - Keep transforms **pure NumPy** if you want them to also work in the web build. 
   Native plugins can import anything that's installed.
 - Scripting & sessions: a graph stores only the node *kind* and its params, never your code, so ``.uzscript``/JSON round-trip unchanged.
   Opening a session whose plugin isn't installed keeps the node as a greyed **"missing plugin"** placeholder (params + links preserved); install the plugin and re-evaluate to restore it.
+
+Transform ownership
+-------------------
+
+Plugin API version 2 makes inputs read-only array views. Allocate a separate working array before
+mutating samples. Returned arrays are validated, converted to float64 axes and
+float32 values, and copied into owned output buffers before publication. Invalid
+outputs fail only their node; independent graph branches continue evaluating.
+Plugins preserve the independent-axis domain of their inputs.
+Registration validates lowercase kind identifiers, callable implementations,
+input arity (0–1,024), unique parameter keys, declared widget types, nonempty
+unique enum choices, and typed defaults. Invalid declarations roll back the
+plugin import. Input arrays must be one-dimensional and paired with equal-length
+axes; output diagnostic text must be a string.

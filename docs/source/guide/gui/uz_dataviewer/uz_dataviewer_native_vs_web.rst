@@ -28,7 +28,7 @@ Otherwise the differences are in file access, loading speed, and the memory limi
      - Blocks the tab until the file is parsed
    * - **Very large logs**
      - Limited only by your machine's RAM
-     - Large **CSV** decimated on load to fit; **Parquet** must fit in memory (no auto-decimation)
+     - Large **CSV** rejected above the numeric-data budget; **Parquet** must fit in memory
    * - **Export / Save**
      - OS save dialog
      - Browser download (and a file picker to load sessions back)
@@ -48,12 +48,12 @@ File access
 On the desktop you open files via the OS dialog, or **drag** ``.csv`` / ``.parquet`` files onto the window.
 A browser tab has no OS dialog, so **Open file(s)…** opens an HTML file picker instead.
 Saving works the same way in reverse: native pops an OS save dialog, web triggers a **browser download**.
-The Session menu works on web too — **Save state* / *Export script** download a file, and **Load state* / *Run script** open a file picker to upload one back.
+The Session menu works on web too — **Save state** downloads JSON, and **Load state / Run script** opens a file picker for JSON sessions or command scripts.
 
 .. note::
 
    A restored JSON snapshot re-loads its data files by path, which won't exist in a fresh browser tab.
-   On web, re-open the logs alongside it, or use a ``.uzscript`` (it carries the ``load(...)`` lines).
+   On web, uploaded recordings cannot be saved as reloadable sessions: their temporary paths are reclaimed on removal or session close. Imported desktop sessions require separately provisioned files at their saved paths. JSON sessions saved on desktop use PyArrow in the browser when Polars is unavailable.
 
 Loading speed
 =============
@@ -66,13 +66,15 @@ The browser has no background threads, so a load blocks the tab until parsing fi
 Memory limit
 ============
 
-A browser tab can address only ~4 GB of memory, and the whole dataset must fit there.
-What counts is the numeric size after parsing (roughly ``rows x channels x 4`` bytes), not the raw text size — so a multi-gigabyte CSV is far smaller once loaded.
+A browser tab can address only ~4 GB of WASM memory. Uploaded backing files and any file caches occupy the tab's temporary filesystem within that budget.
+Memory loading also retains the parsed numeric arrays (roughly ``rows x channels x 4`` bytes plus timestamps); Lazy delays reading decoded channels.
+Small CSV uploads and Parquet files honor the same loading/cache settings as console loads. File caches disappear on page reload.
+Large streamed CSVs have no backing file and remain numeric arrays regardless of the loading setting.
 The browser keeps a margin below that ceiling for the runtime and the app itself, so a log loads at full resolution in the browser only while its numeric size stays under ~1.5 GB.
 
 How a larger log is handled depends on the file type:
 
-- A large CSV is decimated on load (a coarse overview) so it always opens, with a message in the console (e.g. *"Loaded … decimated 1:3 … use the native app for full detail"*).
-- A Parquet log (and any CSV that is not over the threshold) loads at full resolution and is not auto-decimated — if it does not fit in the browser's memory the load simply fails. Open fewer channels, ``convert`` a trimmed selection, or use the native app.
+- Streamed CSVs preserve every sample. Files exceeding the estimated or actual numeric-data budget (~1.5 GiB) are rejected with a message directing users to the native app.
+- All accepted recordings load at full resolution. The CSV numeric-data budget does not bound total browser memory, and Parquet files have no equivalent preflight guard. Use the native app for recordings that do not fit.
 
 For full resolution on multi-gigabyte logs, use the native app — it is limited only by your machine's RAM.

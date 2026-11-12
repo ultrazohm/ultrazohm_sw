@@ -2,15 +2,13 @@
 
 from __future__ import annotations
 
-import os
-import sys
-
 import numpy as np
 import pytest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from uz_dataviewer.transforms import filter_node, math_node  # noqa: E402
+
+from uz_dataviewer.transforms import filter_node, math_node
+from uz_dataviewer.analysis import compute_fft
 
 
 def _sine(f, n=4000, dur=1.0):
@@ -49,12 +47,18 @@ def test_math_binary_requires_equal_length():
         math_node([(t1, y1), (t2, y2)], {"op": "sub"})
 
 
-def test_math_binary_flags_time_base_mismatch():
+@pytest.mark.parametrize('interior_only', [False, True])
+def test_math_binary_rejects_time_base_mismatch(interior_only):
     t1, y1 = _sine(5, n=1000)
-    _, _, info = math_node([(t1, y1), (t1 + 10.0, y1)], {"op": "sub"})  # same rate, shifted origin
-    assert "time bases differ" in info
-    _, _, info2 = math_node([(t1, y1), (t1, y1)], {"op": "sub"})  # identical axis
-    assert "time bases differ" not in info2
+    t2 = t1.copy()
+    if interior_only:
+        t2[500] += .0001  # endpoints still match; index pairing is invalid
+    else:
+        t2 += 10.
+    with pytest.raises(ValueError, match="matching time axes"):
+        math_node([(t1, y1), (t2, y1)], {"op": "sub"})
+    _, result, _ = math_node([(t1, y1), (t1.copy(), y1)], {"op": "sub"})
+    np.testing.assert_array_equal(result, np.zeros(len(t1)))
 
 
 def test_derivative_rejects_non_increasing_time():
@@ -86,7 +90,7 @@ def test_math_reciprocal_guards_zero():
     t = np.linspace(0.0, 1.0, 5)
     y = np.array([2.0, 0.0, 4.0, 0.5, 0.0], dtype=np.float32)
     _, r, _ = math_node([(t, y)], {"op": "reciprocal"})
-    np.testing.assert_allclose(r, [0.5, 0.0, 0.25, 2.0, 0.0], rtol=1e-6)
+    np.testing.assert_allclose(r, [0.5, np.nan, 0.25, 2.0, np.nan], rtol=1e-6)
 
 
 def test_filter_lowpass_removes_high_freq():
@@ -113,3 +117,113 @@ def test_filter_requires_positive_cutoff():
     t, y = _sine(5)
     with pytest.raises(ValueError):
         filter_node(t, y, {"type": "low", "cutoff": "0"})
+
+
+@pytest.mark.parametrize('ftype', ['low', 'high', 'band'])
+def test_filter_rejects_irregular_sampling(ftype):
+    t = np.array([0., .001, .002, 1.003, 1.004, 1.005, 1.006, 1.007])
+    with pytest.raises(ValueError, match='uniformly spaced'):
+        filter_node(t, np.arange(8.), {'type': ftype, 'cutoff': 100, 'cutoff2': 200})
+
+
+@pytest.mark.parametrize('parameter', ['cutoff', 'cutoff2'])
+@pytest.mark.parametrize('value', [np.nan, np.inf])
+def test_filter_rejects_nonfinite_cutoffs(parameter, value):
+    t, y = _sine(5)
+    params = {'type': 'band', 'cutoff': 20, 'cutoff2': 40, parameter: value}
+    with pytest.raises(ValueError, match='finite'):
+        filter_node(t, y, params)
+
+
+def test_sampling_roundoff_and_block_boundary_validation():
+    # Timestamp roundoff at a large origin must not reject an otherwise regular grid.
+    t = 1e6 + np.arange(65540) * .001
+    y = np.sin(np.arange(len(t)))
+    _, filtered, _ = filter_node(t, y, {'cutoff': 100, 'taps': 3})
+    assert np.isfinite(filtered).all()
+    rounded = np.nextafter(t, np.inf)
+    _, difference, _ = math_node([(t, y), (rounded, y)], {'op': 'sub'})
+    assert not difference.any()
+    changed = t.copy()
+    changed[65536] += .0001
+    with pytest.raises(ValueError, match='matching time axes'):
+        math_node([(t, y), (changed, y)], {'op': 'sub'})
+    with pytest.raises(ValueError, match='uniformly spaced'):
+        filter_node(changed, y, {'cutoff': 100, 'taps': 3})
+
+
+def test_short_filter_keeps_length():
+    t = np.arange(10.)
+    out_t, out_y, _ = filter_node(t, t, {'type':'low', 'cutoff':.1})
+    assert out_t.shape == out_y.shape == (10,)
+
+
+@pytest.mark.parametrize('operation', ['div', 'reciprocal'])
+def test_undefined_math_stays_invalid_through_analysis(operation):
+    t = np.arange(8.)
+    y = np.ones(8)
+    y[2] = 0
+    inputs = [(t, y)] if operation == 'reciprocal' else [(t, np.ones(8)), (t, y)]
+    _, result, _ = math_node(inputs, {'op': operation})
+    assert np.isnan(result[2])
+    np.testing.assert_array_equal(result[np.arange(8) != 2], np.ones(7))
+    fft = compute_fft(t, result, 0, 7)
+    assert not fft.ok and 'non-finite' in fft.info
+
+
+def test_epoch_time_cannot_hide_misalignment_or_irregular_sampling():
+    from uz_dataviewer.sampling import require_matching_time, regular_sample_interval
+    t = 1.7e9 + np.arange(8) * 1e-6
+    irregular = t.copy()
+    irregular[4] += .7e-6
+    for origin in (0, t[0]):
+        with pytest.raises(ValueError, match='not time-aligned'):
+            require_matching_time(t - origin, t + 1e-6 - origin)
+        with pytest.raises(ValueError, match='precision|uniformly spaced'):
+            regular_sample_interval(irregular - origin, 'FFT')
+    require_matching_time(t, t.copy())
+
+
+def test_time_alignment_checks_spacing_across_block_boundary():
+    from uz_dataviewer.sampling import require_matching_time
+    t = 1.7e9 + np.arange(65537) * 1e-6
+    other = t.copy()
+    other[-1] += 1e-6
+    with pytest.raises(ValueError, match='not time-aligned'):
+        require_matching_time(t, other)
+
+
+def test_small_absolute_timestamps_are_not_treated_as_unit_scale():
+    from uz_dataviewer.sampling import regular_sample_interval, require_matching_time
+    t = np.arange(8.) * 1e-15
+    assert regular_sample_interval(t, 'FFT') == pytest.approx(1e-15, rel=1e-12, abs=0)
+    with pytest.raises(ValueError, match='not time-aligned'):
+        require_matching_time(t, t + 1e-16)
+
+
+@pytest.mark.parametrize('fs', [20000, 30000, 60000, 44100])
+@pytest.mark.parametrize('origin', [0., 12.3456789])
+def test_known_timestamp_quantization_fits_uniform_grid(fs, origin):
+    from uz_dataviewer.sampling import regular_sample_interval
+    t = np.rint((origin + np.arange(6001) / fs) * 1e8) / 1e8
+    for axis in (t, t - t[0]):
+        dt = regular_sample_interval(axis, 'FFT', timestamp_resolution=1e-8)
+        residual = axis - axis[0] - np.arange(len(axis)) * dt
+        assert np.ptp(residual) <= 1e-8 + 1e-12
+        assert dt == pytest.approx(1 / fs, rel=1e-6)
+
+
+@pytest.mark.parametrize('damage', ['missing', 'duplicate', 'backwards', 'jitter'])
+def test_quantization_does_not_hide_bad_sampling(damage):
+    from uz_dataviewer.sampling import regular_sample_interval
+    t = np.rint(np.arange(6001) / 30000 * 1e8) / 1e8
+    if damage == 'missing':
+        t = np.delete(t, 3000)
+    elif damage == 'duplicate':
+        t[3000] = t[2999]
+    elif damage == 'backwards':
+        t[3000] = t[2999] - 1e-5
+    else:
+        t[3000] += 1e-6
+    with pytest.raises(ValueError):
+        regular_sample_interval(t, 'FFT', timestamp_resolution=1e-8)

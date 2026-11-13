@@ -31,6 +31,10 @@ DS_Data Global_Data = {
         .pwm_3L_0_halfBridgeDutyCycle_2 = 0.0f,
         .pwm_3L_0_halfBridgeDutyCycle_3 = 0.0f,
 /* Project Wizard END: rasv_initializer */
+        .control_mode_select = CIL,
+        .dut_control_select = speed,
+        .dut_motor_select = Beckhoff,
+        .standalone = true,
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE / (UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor)};
@@ -128,6 +132,13 @@ int main(void)
 /* Project Wizard END: init_ip_cores */
 			Global_Data.objects.pmsm_cil_Beckhoff = init_pmsm_cil_Beckhoff();
 			Global_Data.objects.pmsm_cil_HM = init_pmsm_cil_HM();
+			if (!uz_testbench_hardware_init()) {
+			    uz_printf("Testbench hardware initialization failed\r\n");
+			    uz_assert(0);
+			}
+			Global_Data.objects.dhg_input_gpio = uz_testbench_get_gpio_for_inverter(UZ_INVERTER_DHG);
+			Global_Data.objects.dhg_reset_gpio = Global_Data.objects.dhg_input_gpio;
+			Global_Data.objects.ws_enable_gpio = uz_testbench_get_gpio_for_inverter(UZ_INVERTER_WS);
             initialization_chain = print_msg;
             break;
         case print_msg:

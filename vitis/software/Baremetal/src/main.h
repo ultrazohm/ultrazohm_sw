@@ -51,6 +51,7 @@
 
 #include "include/pwm_init.h"
 #include "include/control_init.h"
+#include "include/uz_testbench_config.h"
 
 #include "uz/uz_pmsm_control/uz_pmsm_control.h"
 

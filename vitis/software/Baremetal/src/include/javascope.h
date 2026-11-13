@@ -156,14 +156,18 @@ enum JS_OberservableData {
 // Do not change the first (zero) and last (end) entries.
 enum JS_SlowData {
 	JSSD_ZEROVALUE=0,
+	JSSD_FLOAT_CIL_REAL,
+	JSSD_FLOAT_standalone_mode,
+	JSSD_FLOAT_DUT_HM_BH,
+	JSSD_FLOAT_ctrl_n_i_duty,
+	JSSD_FLOAT_Error_Code_Beckhoff,
+	JSSD_FLOAT_Error_Code_HM,
 	JSSD_FLOAT_speed_n,
 	JSSD_FLOAT_id_Beckhoff,
 	JSSD_FLOAT_iq_Beckhoff,
 	JSSD_FLOAT_id_HM,
 	JSSD_FLOAT_iq_HM,
 	JSSD_FLOAT_Milliseconds,
-	JSSD_FLOAT_Error_Code,
-	JSSD_FLOAT_dut_select,
 /* Project Wizard BEGIN: javascope_slowdata */
 /* Project Wizard END: javascope_slowdata */
 	JSSD_ENDMARKER
@@ -220,7 +224,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	n_ref_DUT,
+	n_ref,
 	i_d_ref_HM,
 	i_q_ref_HM,
 	dutycycle_A_HM,
@@ -327,14 +331,14 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
-	RESET_DHG_INV,
-	CIL,
 	REAL,
-	speed,
-	current,
-	dutycycle,
+	STANDALONE,
+	DUT_HM,
+	speed_current_dutycycle,
+	reset_dhg_inv,
 	reset_error,
-	DUT,
+	MyButton_7,
+	MyButton_8,
 	MYBUTTONS_LABELS_ENDMARKER
 
 
@@ -352,18 +356,18 @@ enum gui_button_mapping {
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_id_Beckhoff,
 	JSSD_FLOAT_iq_Beckhoff,
+	JSSD_FLOAT_CIL_REAL,
+	JSSD_FLOAT_standalone_mode,
+	JSSD_FLOAT_DUT_HM_BH,
+	JSSD_FLOAT_ctrl_n_i_duty,
+	JSSD_FLOAT_Error_Code_Beckhoff,
+	JSSD_FLOAT_Error_Code_HM,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_Error_Code,
-	JSSD_FLOAT_dut_select,
 	SLOWDAT_DISPLAY_ENDMARKER
 */
 

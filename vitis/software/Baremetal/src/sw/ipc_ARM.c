@@ -189,11 +189,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-				if (data->rasv.dut_select == Beckhoff) {
-					data->rasv.speed_n_ref_rpm_Beckhoff = value;
-				} else {
-					data->rasv.speed_n_ref_rpm_HM = value;
-				}
+		data->rasv.speed_n_ref_rpm_Beckhoff = value;
+		data->rasv.speed_n_ref_rpm_HM = value;
 			break;
 
 		case (Set_Send_Field_2):
@@ -273,6 +270,72 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
+				if (ultrazohm_state_machine_get_state() == idle_state) {
+					switch (data->rasv.control_mode_select){
+					case CIL:
+						data->rasv.control_mode_select = REAL;
+						data->rasv.standalone = false;
+						data->rasv.dut_control_select = current;
+						break;
+					case REAL:
+						data->rasv.control_mode_select = CIL;
+						data->rasv.standalone = true;
+						data->rasv.dut_control_select = speed;
+						break;
+					default: break;
+					}
+				}
+			break;
+
+		case (My_Button_2):
+				if ((ultrazohm_state_machine_get_state() == idle_state) && (data->rasv.control_mode_select == REAL)) {
+					if (data->rasv.standalone == true) {
+						data->rasv.standalone = false;
+						data->rasv.dut_control_select = current;
+					} else {
+						data->rasv.standalone = true;
+						data->rasv.dut_control_select = speed;
+					}
+				}
+			break;
+
+		case (My_Button_3):
+				if (ultrazohm_state_machine_get_state() == idle_state) {
+					switch (data->rasv.dut_motor_select){
+					case HM:
+						data->rasv.dut_motor_select = Beckhoff;
+						break;
+					case Beckhoff:
+						data->rasv.dut_motor_select = HM;
+						break;
+					default: break;
+					}
+				}
+			break;
+
+		case (My_Button_4):
+				if ((ultrazohm_state_machine_get_state() == idle_state) && (data->rasv.standalone == true)) {
+					switch (data->rasv.dut_control_select) {
+					case speed:
+						data->rasv.dut_control_select = current;
+						break;
+					case current:
+						if (data->rasv.control_mode_select == REAL) {
+							data->rasv.dut_control_select = dutycycle;
+						} else {
+							data->rasv.dut_control_select = speed;
+						}
+						break;
+					case dutycycle:
+						data->rasv.dut_control_select = speed;
+						break;
+					default:
+						break;
+					}
+				}
+			break;
+
+		case (My_Button_5):
 				if ((ultrazohm_state_machine_get_state() == running_state) && (reset_button_inv == false)) {
 					reset_button_inv = true;
 				} else if ((ultrazohm_state_machine_get_state() == running_state) && (reset_button_inv == true)) {
@@ -280,50 +343,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 				}
 			break;
 
-		case (My_Button_2):
-				if (ultrazohm_state_machine_get_state() == idle_state) {
-					data->rasv.control_mode_select = CIL;
-				}
-			break;
-
-		case (My_Button_3):
-				if (ultrazohm_state_machine_get_state() == idle_state) {
-					data->rasv.control_mode_select = REAL;
-				}
-			break;
-
-		case (My_Button_4):
-				if (ultrazohm_state_machine_get_state() == idle_state) {
-					data->rasv.dut_control_select = speed;
-				}
-			break;
-
-		case (My_Button_5):
-				if (ultrazohm_state_machine_get_state() == idle_state) {
-					data->rasv.dut_control_select = current;
-				}
-			break;
-
 		case (My_Button_6):
-				if ((ultrazohm_state_machine_get_state() == idle_state) && (data->rasv.control_mode_select == REAL)) {
-					data->rasv.dut_control_select = dutycycle;
-				}
-			break;
-
-		case (My_Button_7):
 				if (ultrazohm_state_machine_get_state() == error_state) {
 					acknowledge_error = true;
 				}
 			break;
 
+		case (My_Button_7):
+
+			break;
+
 		case (My_Button_8):
-				if (ultrazohm_state_machine_get_state() == idle_state) {
-					if (data->rasv.dut_select == HM) {
-						data->rasv.dut_select = Beckhoff;
-					} else {
-						data->rasv.dut_select = HM;
-					}
-				}
 
 			break;
 
@@ -341,7 +371,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 	}
 
-	platform_state_t current_state = ultrazohm_state_machine_get_state();
 	// Feedback bits for controlling the status indicators in the GUI
 	/* Bit 0 - Ready LED */
 	if (ultrazohm_state_get_led_ready()) {
@@ -372,46 +401,38 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	 if (reset_button_inv == true) {
+	 if (data->rasv.control_mode_select == REAL) {
 		js_status_BareToRTOS |= (1 << 4);
 	 } else {
 		js_status_BareToRTOS &= ~(1 << 4);
 	 }
 
 	/* Bit 5 - My_Button_2 */
-	 if (data->rasv.control_mode_select == CIL) {
+	 if (data->rasv.standalone == true) {
 		js_status_BareToRTOS |= (1 << 5);
 	 } else {
 		js_status_BareToRTOS &= ~(1 << 5);
 	 }
 
 	/* Bit 6 - My_Button_3 */
-	 if (data->rasv.control_mode_select == REAL) {
+	 if (data->rasv.dut_motor_select == HM) {
 		js_status_BareToRTOS |= (1 << 6);
 	 } else {
 		js_status_BareToRTOS &= ~(1 << 6);
 	 }
 
 	/* Bit 7 - My_Button_4 */
-	 if (data->rasv.dut_control_select == speed) {
-		js_status_BareToRTOS |= (1 << 7);
-	 } else {
-		js_status_BareToRTOS &= ~(1 << 7);
-	 }
+	// js_status_BareToRTOS &= ~(1 << 7);
 
 	/* Bit 8 - My_Button_5 */
-	 if (data->rasv.dut_control_select == current) {
+	 if (reset_button_inv == true) {
 		js_status_BareToRTOS |= (1 << 8);
 	 } else {
 		js_status_BareToRTOS &= ~(1 << 8);
 	 }
 
 	/* Bit 9 - My_Button_6 */
-	 if (data->rasv.dut_control_select == dutycycle) {
-		js_status_BareToRTOS |= (1 << 9);
-	 } else {
-		js_status_BareToRTOS &= ~(1 << 9);
-	 }
+	// js_status_BareToRTOS &= ~(1 << 9);
 
 	/* Bit 10 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 10);

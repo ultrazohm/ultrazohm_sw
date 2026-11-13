@@ -20,8 +20,8 @@
 #include "include/d5_adapter_init.h"
 
 enum control_mode {
-	REAL = 0,
-	CIL
+	CIL =0,
+	REAL
 };
 
 enum dut_control {
@@ -42,7 +42,7 @@ typedef struct _actualValues_ {
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 	float d3_input_loopback_uint32;
-	enum uz_pmsm_control_safe_operating_region_violation status_safe_operating_area_violation;
+	enum uz_pmsm_control_safe_operating_region_violation status_safe_operating_area_violation_Beckhoff;
 	float i_a_Beckhoff;
 	float i_b_Beckhoff;
 	float i_c_Beckhoff;
@@ -57,6 +57,7 @@ typedef struct _actualValues_ {
 	float v_q_Beckhoff;
 	float speed_n_rpm_Beckhoff;
 	float theta_el_Beckhoff;
+	enum uz_pmsm_control_safe_operating_region_violation status_safe_operating_area_violation_HM;
 	float i_a_HM;
 	float i_b_HM;
 	float i_c_HM;
@@ -168,7 +169,8 @@ typedef struct _referenceAndSetValues_ {
 	float dutycycle_C_HM;
 	enum control_mode control_mode_select;
 	enum dut_control dut_control_select;
-	enum dut dut_select;
+	enum dut dut_motor_select;
+	bool standalone; // true: single machine mode, false: one dut, one load
 } referenceAndSetValues;
 
 typedef struct{
@@ -199,6 +201,7 @@ typedef struct{
 	uz_pmsm_control_t* pmsm_control_HM;
 	uz_axi_gpio_t* dhg_reset_gpio;
 	uz_axi_gpio_t* dhg_input_gpio;
+	uz_axi_gpio_t* ws_enable_gpio;
 	uz_pmsmModel_t* pmsm_cil_Beckhoff;
 	uz_pmsmModel_t* pmsm_cil_HM;
 }object_pointers_t;

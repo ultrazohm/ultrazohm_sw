@@ -37,7 +37,13 @@ static float ISR_execution_time_us;
 static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
-static float dut_select_js;
+
+static float js_slow_status_error_Beckhoff;
+static float js_slow_status_error_HM;
+static float js_slow_dut;
+static float js_slow_control_mode;
+static float js_slow_dut_control;
+static float js_slow_standalone;
 
 uint32_t pollErrorCnt = 0U;
 
@@ -210,7 +216,13 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_id_HM] 					= &data->hm_pmsm_actual_data->i_dq_in_A.d;
 	js_slowDataArray[JSSD_FLOAT_iq_HM] 					= &data->hm_pmsm_actual_data->i_dq_in_A.q;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-	js_slowDataArray[JSSD_FLOAT_dut_select]				= &dut_select_js;
+	js_slowDataArray[JSSD_FLOAT_Error_Code_Beckhoff]	= &js_slow_status_error_Beckhoff;
+	js_slowDataArray[JSSD_FLOAT_Error_Code_HM]			= &js_slow_status_error_HM;
+	js_slowDataArray[JSSD_FLOAT_DUT_HM_BH] 				= &js_slow_dut;
+	js_slowDataArray[JSSD_FLOAT_CIL_REAL] 				= &js_slow_control_mode;
+	js_slowDataArray[JSSD_FLOAT_ctrl_n_i_duty] 			= &js_slow_dut_control;
+	js_slowDataArray[JSSD_FLOAT_standalone_mode] 		= &js_slow_standalone;
+
 /* Project Wizard BEGIN: javascope_slowdata_pointers */
 /* Project Wizard END: javascope_slowdata_pointers */
 
@@ -228,7 +240,6 @@ void JavaScope_update(DS_Data* data){
 	struct APU_to_RPU_user_data_t volatile * const apu_to_rpu_user_data = (struct APU_to_RPU_user_data_t*)MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU;
 	static int js_cnt_slowData=0;
 	int status = XST_SUCCESS;
-	dut_select_js = (float)data->rasv.dut_select;
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// write data to a53 in shared memory and flush cache
@@ -249,6 +260,12 @@ void JavaScope_update(DS_Data* data){
 	for(int j=0; j<JS_CHANNELS; j++){
 		javascope_data->scope_ch[j] = *js_ch_selected[j];
 	}
+	js_slow_status_error_Beckhoff	= (float)data->av.status_safe_operating_area_violation_Beckhoff;
+	js_slow_status_error_HM			= (float)data->av.status_safe_operating_area_violation_HM;
+	js_slow_dut 					= (float)data->rasv.dut_motor_select;
+	js_slow_control_mode 			= (float)data->rasv.control_mode_select;
+	js_slow_dut_control 			= (float)data->rasv.dut_control_select;
+	js_slow_standalone 				= data->rasv.standalone ? 1.0f : 0.0f;
 	javascope_data->slowDataID 		= js_cnt_slowData;
 	javascope_data->slowDataContent = *js_slowDataArray[js_cnt_slowData];
 	javascope_data->status 			= js_status_BareToRTOS;

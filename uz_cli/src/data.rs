@@ -23,6 +23,8 @@ pub struct History {
     pub reader: Option<Arc<dyn RecordingReader>>,
     /// Kept for this recording even when its stream starts a new recording.
     pub error: Option<String>,
+    /// Set when the logger queue overflowed; the recording ended at that sample.
+    pub overflow: Option<String>,
     pub start: Option<u64>,
     pub stop: Option<u64>,
     pub persisted_stop: Option<u64>,
@@ -462,6 +464,7 @@ mod tests {
             let history = Mutex::new(History {
                 reader: None,
                 error: None,
+                overflow: None,
                 start: None,
                 stop: None,
                 persisted_stop: None,

@@ -24,17 +24,14 @@ use std::{
 
 mod control;
 
-// Bounded audit IO: slow storage must never hold up device Stop.
+// Bounded audit IO: slow storage must never hold up device Stop. Audit failure
+// is reported in status and end.json; it never ends acquisition or control.
 struct Audit {
     tx: std::sync::mpsc::SyncSender<Value>,
     worker: thread::JoinHandle<()>,
 }
 impl Audit {
-    fn new(
-        mut file: impl Write + Send + 'static,
-        state: Arc<Mutex<State>>,
-        shutdown: Arc<AtomicBool>,
-    ) -> Self {
+    fn new(mut file: impl Write + Send + 'static, state: Arc<Mutex<State>>) -> Self {
         let (tx, rx) = std::sync::mpsc::sync_channel::<Value>(2048);
         let worker = thread::spawn(move || {
             for event in rx {
@@ -45,12 +42,7 @@ impl Audit {
                     Ok(())
                 })();
                 if let Err(error) = result {
-                    state
-                        .lock()
-                        .unwrap()
-                        .error
-                        .get_or_insert_with(|| format!("command audit failed: {error:#}"));
-                    shutdown.store(true, Ordering::SeqCst);
+                    record_audit_error(&state, format!("command audit failed: {error:#}"));
                     break;
                 }
             }
@@ -62,6 +54,20 @@ impl Audit {
             .try_send(event)
             .context("command audit queue full or failed")
     }
+    /// Submit an event; a failure is recorded once and never fails the command.
+    fn record(&self, event: Value, state: &Mutex<State>) {
+        if let Err(error) = self.send(event) {
+            record_audit_error(state, format!("{error:#}; later commands are not audited"));
+        }
+    }
+}
+
+/// Keep the first audit failure; it marks the session incomplete without ending it.
+fn record_audit_error(state: &Mutex<State>, message: String) {
+    state.lock().unwrap().audit_error.get_or_insert(message);
+}
+
+impl Audit {
     fn finish(self) -> Result<()> {
         drop(self.tx);
         self.worker
@@ -233,6 +239,8 @@ struct State {
     commands_sent: u64,
     ack_sent: u64,
     error: Option<String>,
+    /// Command audit failure; acquisition, control and recordings continue.
+    audit_error: Option<String>,
 }
 fn now_ns() -> u64 {
     SystemTime::now()
@@ -541,7 +549,6 @@ impl Service {
                     .append(true)
                     .open(dir.join("commands.jsonl"))?,
                 state.clone(),
-                shutdown.clone(),
             ));
         }
         let recordings = Recordings::new(
@@ -780,11 +787,11 @@ impl Service {
                     .clear_channel(*channel as usize - 1);
             }
         }
-        if let Some(audit) = self.events.as_ref()
-            && let Err(e) = audit.send(json!({"host_unix_ns":now_ns(),"request":req,"wire":wire,"outcome":if wire.is_some(){"sent_unconfirmed"}else{"applied_locally"}}))
-        {
-            self.fail(format!("command audit failed after send: {e}"));
-            return Err(e);
+        if let Some(audit) = self.events.as_ref() {
+            audit.record(
+                json!({"host_unix_ns":now_ns(),"request":req,"wire":wire,"outcome":if wire.is_some(){"sent_unconfirmed"}else{"applied_locally"}}),
+                &self.context.state,
+            );
         }
         Ok(Reply::Json(ok_reply(
             json!({"outcome":if wire.is_some(){"sent_unconfirmed"}else{"applied_locally"},"logging":self.recordings.status()}),
@@ -862,21 +869,23 @@ impl Service {
         if let Some(audit) = self.events
             && let Err(error) = audit.finish()
         {
-            self.context.fail(format!("{error:#}"));
+            record_audit_error(&self.context.state, format!("{error:#}"));
         }
         let s = self.context.state.lock().unwrap();
+        let complete = s.error.is_none() && s.audit_error.is_none();
         if let Some(dir) = self.config.output {
             fs::write(
                 dir.join("end.json"),
                 serde_json::to_vec_pretty(
-                    &json!({"ended_unix_ns":now_ns(),"state":*s,"complete":s.error.is_none()}),
+                    &json!({"ended_unix_ns":now_ns(),"state":*s,"complete":complete}),
                 )?,
             )?;
         }
-        if let Some(e) = &s.error {
-            bail!("{e}");
+        match (&s.error, &s.audit_error) {
+            (Some(e), Some(a)) => bail!("{e}; {a}"),
+            (Some(e), None) | (None, Some(e)) => bail!("{e}"),
+            (None, None) => Ok(()),
         }
-        Ok(())
     }
 }
 
@@ -967,11 +976,14 @@ impl ConnectionContext {
             selections[channel.to_string()] = json!(name);
             self.state.lock().unwrap().commands_sent += 1;
             if let Some(audit) = events.as_ref() {
-                audit.send(json!({
+                audit.record(
+                    json!({
                         "host_unix_ns":now_ns(),"source":"initial_channels",
                         "request":{"api_version":API_VERSION,"command":{"op":"set_observable","name":name,"channel":channel}},
                         "wire":[id,value],"outcome":"sent_unconfirmed"
-                    }))?;
+                    }),
+                    &self.state,
+                );
             }
         }
         {
@@ -1163,13 +1175,13 @@ mod audit_tests {
     fn slow_audit_is_bounded_and_does_not_block_submission() {
         let (entered_tx, entered_rx) = mpsc::channel();
         let (release_tx, release_rx) = mpsc::channel();
+        let state = Arc::new(Mutex::new(State::default()));
         let audit = Audit::new(
             BlockedWriter {
                 entered: Some(entered_tx),
                 release: release_rx,
             },
-            Arc::new(Mutex::new(State::default())),
-            Arc::new(AtomicBool::new(false)),
+            state.clone(),
         );
         audit.send(json!({"first": true})).unwrap();
         entered_rx.recv_timeout(Duration::from_secs(2)).unwrap();
@@ -1177,7 +1189,35 @@ mod audit_tests {
             audit.send(json!({"queued": true})).unwrap();
         }
         assert!(audit.send(json!({"overflow": true})).is_err());
+        // Overflow is reported once and never becomes a session error.
+        audit.record(json!({"overflow": true}), &state);
+        audit.record(json!({"again": true}), &state);
+        {
+            let state = state.lock().unwrap();
+            assert!(state.error.is_none());
+            assert!(state.audit_error.as_deref().unwrap().contains("queue full"));
+        }
         release_tx.send(()).unwrap();
         audit.finish().unwrap();
+    }
+
+    struct FailingWriter;
+    impl Write for FailingWriter {
+        fn write(&mut self, _: &[u8]) -> std::io::Result<usize> {
+            Err(std::io::Error::other("disk full"))
+        }
+        fn flush(&mut self) -> std::io::Result<()> {
+            Ok(())
+        }
+    }
+    #[test]
+    fn failed_audit_write_is_reported_without_session_error() {
+        let state = Arc::new(Mutex::new(State::default()));
+        let audit = Audit::new(FailingWriter, state.clone());
+        audit.record(json!({"first": true}), &state);
+        audit.finish().unwrap();
+        let state = state.lock().unwrap();
+        assert!(state.error.is_none());
+        assert!(state.audit_error.as_deref().unwrap().contains("disk full"));
     }
 }

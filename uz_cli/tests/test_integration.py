@@ -395,16 +395,26 @@ class IntegrationTest(unittest.TestCase):
         self.cli("start-logging")
         wait_for(lambda: list(output.glob("data-part-*.parquet")))
         status = self.cli("status")
-        self.assertEqual(status["data_options"], {"recording_backend": "parquet", "buffer_samples": 25, "segment_rows": 1000000, "flush_interval_ms": 50})
+        self.assertEqual(status["data_options"], {"recording_backend": "parquet", "buffer_samples": 25, "segment_rows": 1000000, "flush_interval_ms": 50, "queue_seconds": 3.0})
         self.assertLessEqual(status["buffer_available_samples"], 25)
         self.cli("shutdown")
+
+    def test_queue_seconds_option_is_validated_and_reported(self):
+        for value in ("0", "-1", "601", "nan"):
+            result = subprocess.run([str(BIN), "--endpoint", self.endpoint, "serve", f"--queue-seconds={value}",
+                                     "--output", str(Path(self.tmp.name)/f"queue-{value}")],
+                                    capture_output=True, text=True, timeout=10)
+            self.assertNotEqual(result.returncode, 0, value)
+            self.assertIn("queue_seconds", result.stderr)
+        self.start(logging=False, data_options=("--queue-seconds", "7.5"))
+        self.assertEqual(self.cli("status")["data_options"]["queue_seconds"], 7.5)
 
     @unittest.skipUnless(importlib.util.find_spec("polars"), "install polars for segment reads")
     def test_default_recording_flushes_on_stop_before_interval(self):
         import polars as pl
         self.start(logging=False, format="parquet", data_options=())
         self.assertEqual(self.cli("status")["data_options"],
-                         {"recording_backend": "parquet", "buffer_samples": 300_000, "segment_rows": 1_000_000, "flush_interval_ms": 60_000})
+                         {"recording_backend": "parquet", "buffer_samples": 300_000, "segment_rows": 1_000_000, "flush_interval_ms": 60_000, "queue_seconds": 3.0})
         before = self.cli("status")["state"]["samples"]
         self.cli("start-logging")
         wait_for(lambda: self.cli("status")["state"]["samples"] >= before + 1500)
@@ -434,7 +444,7 @@ class IntegrationTest(unittest.TestCase):
         a = Acquisition(endpoint=self.endpoint, output=str(Path(self.tmp.name)/"offline-snapshot"))
         try:
             self.assertEqual(Client(self.endpoint).status()["data_options"],
-                             {"recording_backend": "parquet", "buffer_samples": 300_000, "segment_rows": 1_000_000, "flush_interval_ms": 60_000})
+                             {"recording_backend": "parquet", "buffer_samples": 300_000, "segment_rows": 1_000_000, "flush_interval_ms": 60_000, "queue_seconds": 3.0})
             with self.assertRaisesRegex(RuntimeError, "not connected"):
                 Client(self.endpoint).tail(1)
         finally:

@@ -25,16 +25,19 @@ pub struct Route {
     paused: bool,
     tx: SyncSender<Batch>,
     history: Arc<Mutex<History>>,
+    states: Arc<Mutex<[RecordingState; 2]>>,
+    slot: usize,
 }
 impl Route {
-    /// Queue a frame. `Ok(false)` means the writer already failed (its error is in
-    /// the recording state) and the route should be removed; a full queue is an
-    /// error because accepting the frame later would silently lose samples.
+    /// Queue a frame. `Ok(false)` means this recording ended (its writer failed or
+    /// its queue overflowed) and the route must be removed. Overflow ends only this
+    /// recording at a frame boundary: acquisition, device control and the other
+    /// stream continue, and samples are never silently skipped inside a recording.
     pub fn send(&self, index: u64, frame: Arc<Frame>) -> Result<bool> {
         let mut history = self.history.lock().unwrap();
         // Pending samples can fail to flush while paused. Retire that route
         // before the pause shortcut so it no longer locks channel assignments.
-        if history.error.is_some() {
+        if history.error.is_some() || history.overflow.is_some() {
             return Ok(false);
         }
         if self.paused {
@@ -42,27 +45,33 @@ impl Route {
         }
         // Positions remain contiguous for paging; timestamps retain acquisition time.
         let position = history.stop.unwrap_or(index);
-        ensure!(
-            history.pending_samples + frame.slow_raw.len() <= history.max_pending_samples,
-            "pending recording memory limit exceeded"
-        );
-        match self.tx.try_send((position, index, frame.clone())) {
-            Ok(()) => {
-                history.accepted(position, index, frame)?;
-                Ok(true)
-            }
-            Err(TrySendError::Disconnected(_)) => Ok(false),
-            Err(TrySendError::Full(_)) => anyhow::bail!(
-                "logger queue full; acquisition stopped, samples not silently discarded"
-            ),
+        let overflow =
+            if history.pending_samples + frame.slow_raw.len() > history.max_pending_samples {
+                "pending recording memory limit exceeded"
+            } else {
+                match self.tx.try_send((position, index, frame.clone())) {
+                    Ok(()) => {
+                        history.accepted(position, index, frame)?;
+                        return Ok(true);
+                    }
+                    Err(TrySendError::Disconnected(_)) => return Ok(false),
+                    Err(TrySendError::Full(_)) => "logger queue full",
+                }
+            };
+        history.overflow = Some(format!(
+            "{overflow} at acquisition sample {index} (disk too slow); recording ended \
+             there, accepted samples are kept, acquisition continues"
+        ));
+        drop(history);
+        // The writer drains accepted frames and finalizes as after a stop.
+        let mut states = self.states.lock().unwrap();
+        if matches!(states[self.slot].phase, "recording" | "paused") {
+            states[self.slot].phase = "finalizing";
         }
+        Ok(false)
     }
 }
 pub type Routes = Arc<Mutex<[Option<Route>; 2]>>;
-
-// Leave headroom while a large segment is encoded and synced. With 15 samples
-// per frame at 10 kHz this holds 3.072 seconds, independently of live history.
-const LOGGER_QUEUE_FRAMES: usize = 2048;
 
 #[derive(Clone, Serialize)]
 pub struct RecordingState {
@@ -191,10 +200,17 @@ impl Recordings {
             "slow_initial_values": if slow {Some("rows_omitted_until_all_observables_received")} else {None},
             "time_basis":"seconds from acquisition start, configured sample period; gaps unknown",
             "parquet":format!("{stem}.parquet"), "csv":!matches!(self.format, Format::Parquet)});
-        let (tx, rx) = mpsc::sync_channel::<Batch>(LOGGER_QUEUE_FRAMES);
+        // Headroom while a large segment is encoded and synced; independent of
+        // live history. See DataOptions::queue_seconds.
+        let queue_frames = self.options.queue_frames(
+            self.profile.sample_period_us,
+            self.profile.samples_per_packet,
+        );
+        let (tx, rx) = mpsc::sync_channel::<Batch>(queue_frames);
         let history = Arc::new(Mutex::new(History {
             reader: None,
             error: None,
+            overflow: None,
             start: None,
             stop: None,
             persisted_stop: None,
@@ -203,7 +219,7 @@ impl Recordings {
             max_pending_samples: self
                 .options
                 .segment_rows
-                .saturating_add((LOGGER_QUEUE_FRAMES + 2) * self.profile.samples_per_packet),
+                .saturating_add((queue_frames + 2) * self.profile.samples_per_packet),
             columns: if slow {
                 Vec::new()
             } else {
@@ -221,6 +237,7 @@ impl Recordings {
         };
         let writer_history = history.clone();
         let states = self.states.clone();
+        let route_states = self.states.clone();
         let flush_interval = Duration::from_millis(self.options.flush_interval_ms);
         self.workers[slot] = Some(thread::spawn(move || {
             let mut rows = 0u64;
@@ -266,7 +283,12 @@ impl Recordings {
                 writer_history.lock().unwrap().committed()?;
                 log.finish()
             })();
-            let mut error = result.err().map(|e| format!("logging: {e:#}"));
+            let overflow = writer_history.lock().unwrap().overflow.clone();
+            let writer_error = result.err().map(|e| format!("logging: {e:#}"));
+            let mut error = match (overflow, writer_error) {
+                (Some(overflow), Some(writer)) => Some(format!("{overflow}; {writer}")),
+                (overflow, writer) => overflow.or(writer),
+            };
             let summary =
                 json!({"recording":metadata,"rows":rows,"complete":error.is_none(),"error":error});
             if let Err(e) = fs::write(metadata_path, serde_json::to_vec_pretty(&summary).unwrap()) {
@@ -286,6 +308,8 @@ impl Recordings {
             tx,
             history,
             paused: false,
+            states: route_states,
+            slot,
         });
         self.counts[slot] = n;
         Ok(())
@@ -342,6 +366,85 @@ impl Recordings {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn frame() -> Arc<Frame> {
+        Arc::new(Frame {
+            status: 0,
+            slow_raw: vec![0; 15],
+            slow_ids: vec![0; 15],
+            channels: vec![vec![0.0; 15]; crate::protocol::CHANNELS],
+        })
+    }
+
+    fn route(capacity: usize, max_pending_samples: usize) -> (Route, mpsc::Receiver<Batch>) {
+        let (tx, rx) = mpsc::sync_channel(capacity);
+        let history = Arc::new(Mutex::new(History {
+            reader: None,
+            error: None,
+            overflow: None,
+            start: None,
+            stop: None,
+            persisted_stop: None,
+            pending: Default::default(),
+            pending_samples: 0,
+            max_pending_samples,
+            columns: Vec::new(),
+            slow: false,
+        }));
+        let states: Arc<Mutex<[RecordingState; 2]>> = Default::default();
+        states.lock().unwrap()[0].phase = "recording";
+        let route = Route {
+            paused: false,
+            tx,
+            history,
+            states,
+            slot: 0,
+        };
+        (route, rx)
+    }
+
+    #[test]
+    fn full_queue_ends_only_this_recording() -> Result<()> {
+        let (route, rx) = route(1, 1_000);
+        assert!(route.send(0, frame())?);
+        // The writer has not drained: the next frame overflows. No error is
+        // returned, so the receiver keeps acquiring and only drops this route.
+        assert!(!route.send(15, frame())?);
+        let history = route.history.lock().unwrap();
+        assert!(
+            history
+                .overflow
+                .as_deref()
+                .unwrap()
+                .contains("logger queue full at acquisition sample 15")
+        );
+        // Accepted samples stay; the rejected frame is not part of the recording.
+        assert_eq!((history.start, history.stop), (Some(0), Some(15)));
+        drop(history);
+        assert_eq!(route.states.lock().unwrap()[0].phase, "finalizing");
+        assert!(
+            !route.send(30, frame())?,
+            "an overflowed route stays retired"
+        );
+        assert_eq!(rx.try_iter().count(), 1);
+        Ok(())
+    }
+
+    #[test]
+    fn pending_memory_limit_ends_only_this_recording() -> Result<()> {
+        let (route, _rx) = route(16, 20);
+        assert!(route.send(0, frame())?);
+        assert!(!route.send(15, frame())?);
+        let history = route.history.lock().unwrap();
+        assert!(
+            history
+                .overflow
+                .as_deref()
+                .unwrap()
+                .contains("pending recording memory limit")
+        );
+        Ok(())
+    }
 
     #[test]
     fn pause_before_first_frame_and_finalize_without_resume() -> Result<()> {

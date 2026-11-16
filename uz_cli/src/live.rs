@@ -22,6 +22,20 @@ pub struct DataOptions {
     /// Maximum batch wait between flushes, excluding queue and disk delays.
     #[arg(long, default_value_t = 60_000)]
     pub flush_interval_ms: u64,
+    /// Seconds of acquisition each logger queue can buffer while its writer is busy
+    /// (never fewer than 2,048 frames). Overflow ends only that recording.
+    #[arg(long, default_value_t = DEFAULT_QUEUE_SECONDS)]
+    #[serde(default = "default_queue_seconds")]
+    pub queue_seconds: f64,
+}
+
+pub const DEFAULT_QUEUE_SECONDS: f64 = 3.0;
+/// Upper bound of `queue_seconds`; queued frames stay in RAM.
+pub const MAX_QUEUE_SECONDS: f64 = 600.0;
+/// Lower bound of the logger queue, matching the previous fixed capacity.
+pub const MIN_QUEUE_FRAMES: usize = 2048;
+fn default_queue_seconds() -> f64 {
+    DEFAULT_QUEUE_SECONDS
 }
 
 impl Default for DataOptions {
@@ -31,6 +45,7 @@ impl Default for DataOptions {
             buffer_samples: None,
             segment_rows: 1_000_000,
             flush_interval_ms: 60_000,
+            queue_seconds: DEFAULT_QUEUE_SECONDS,
         }
     }
 }
@@ -62,7 +77,24 @@ impl DataOptions {
             self.flush_interval_ms > 0,
             "flush_interval_ms must be positive"
         );
+        ensure!(
+            self.queue_seconds.is_finite()
+                && self.queue_seconds > 0.0
+                && self.queue_seconds <= MAX_QUEUE_SECONDS,
+            "queue_seconds must be greater than 0 and at most {MAX_QUEUE_SECONDS}"
+        );
         Ok(())
+    }
+
+    /// Logger queue capacity in frames for this sample period and frame size.
+    pub fn queue_frames(&self, sample_period_us: f64, samples_per_packet: usize) -> usize {
+        let frame_seconds = sample_period_us * 1e-6 * samples_per_packet.max(1) as f64;
+        let frames = (self.queue_seconds / frame_seconds).ceil();
+        if frames.is_finite() && frames < usize::MAX as f64 {
+            (frames as usize).max(MIN_QUEUE_FRAMES)
+        } else {
+            MIN_QUEUE_FRAMES
+        }
     }
 }
 
@@ -291,6 +323,27 @@ mod tests {
             assert!(DataOptions::default().resolve(period).is_err());
         }
         Ok(())
+    }
+
+    #[test]
+    fn logger_queue_is_sized_by_time_with_a_floor() {
+        let options = DataOptions::default();
+        // 10 kHz, 15 samples/frame: 3 s is 2,000 frames, so the floor applies.
+        assert_eq!(options.queue_frames(100.0, 15), 2048);
+        // 100 kHz: 3 s is 20,000 frames.
+        assert_eq!(options.queue_frames(10.0, 15), 20_000);
+        let longer = DataOptions {
+            queue_seconds: 10.0,
+            ..Default::default()
+        };
+        assert_eq!(longer.queue_frames(100.0, 15), 6_667);
+        for seconds in [0.0, -1.0, f64::NAN, f64::INFINITY, MAX_QUEUE_SECONDS + 1.0] {
+            let options = DataOptions {
+                queue_seconds: seconds,
+                ..Default::default()
+            };
+            assert!(options.validate().is_err(), "{seconds}");
+        }
     }
 
     #[test]

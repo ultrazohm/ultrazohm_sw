@@ -337,7 +337,7 @@ class LiveController:
             args += ['--profile', str(profile)]
         if ack:
             args += ['--ack', 'on']
-        for name in ('buffer_samples', 'segment_rows', 'flush_interval_ms', 'recording_backend'):
+        for name in ('buffer_samples', 'segment_rows', 'flush_interval_ms', 'queue_seconds', 'recording_backend'):
             if (value := (data_options or {}).get(name)) is not None:
                 args += ['--'+name.replace('_', '-'), str(value)]
         options = {'stdin': subprocess.DEVNULL, 'start_new_session': True} if os.name != 'nt' else {

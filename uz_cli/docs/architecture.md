@@ -81,19 +81,26 @@ first selected slot. Labels are unconfirmed requests because the firmware has
 no assignment acknowledgment. Changing live assignments clears retained history
 and invalidates old live cursors.
 
-Each logger has a 2,048-frame queue and defaults to a 1,000,000-row batch target
+Each logger has a bounded queue sized by `queue_seconds` (default 3 s, at most
+600 s, never fewer than 2,048 frames) and defaults to a 1,000,000-row batch target
 or a 60-second flush interval. Flush resets the timer and rounds to complete
-frames. At 10 kHz with 15 samples/frame, the queue is 3.072 seconds of headroom
-and interval flushing normally produces 600,000 rows. Disk delay can extend
+frames. At 10 kHz with 15 samples/frame the floor applies (2,048 frames, 3.072 s);
+at 100 kHz the default is 20,000 frames. Queued frames stay in RAM. Interval
+flushing normally produces 600,000 rows at 10 kHz. Disk delay can extend
 publication latency. These bounds are independent of the 30-second live ring.
 The ring can retain one partial extra frame but exposes its exact sample limit.
 Header validation caps samples/frame at 4096.
 
 Recording initialization and audit writes use workers too. The audit queue is
-bounded. A full recording queue ends acquisition (samples are never silently
-dropped); a recording whose writer or export fails becomes `failed` while
-acquisition, device control and the other stream continue. Both are reported
-in status and at service exit, never silent losses. Each recording's history retains
+bounded. A full recording queue (or exceeded pending-sample bound) ends only that
+recording at a complete frame boundary: accepted frames drain, finalize and
+export, and the recording becomes `failed` with the overflow position. Samples
+are never silently skipped inside a recording. A recording whose writer or
+export fails also becomes `failed`. In both cases acquisition, device control,
+the live ring and the other stream continue. An audit queue overflow or write
+failure is recorded once as `state.audit_error`; later commands are not audited,
+acquisition and control continue, and `end.json` reports `complete: false`.
+All are reported in status and at service exit, never silent losses. Each recording's history retains
 its error across later recording starts. Metadata and recording listings remain
 available even if backend initialization fails; sample queries require a backend reader.
 

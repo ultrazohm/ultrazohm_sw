@@ -374,20 +374,30 @@ raw update history remains available. Fast and slow row counts may differ.
 
 ### Buffering and failure behavior
 
-Defaults retain 30 seconds in RAM, flush at 1,000,000 rows or 60,000 ms, and use
-an independent bounded 2,048-frame queue per logger. Configure them with:
+Defaults retain 30 seconds in RAM, flush at 1,000,000 rows or 60,000 ms, and give
+each logger an independent queue of 3 seconds of acquisition (never fewer than
+2,048 frames) to absorb slow disk writes. Configure them with:
 
 ```sh
-ultrazohm serve --buffer-samples 100000 --segment-rows 50000 --flush-interval-ms 1000
+ultrazohm serve --buffer-samples 100000 --segment-rows 50000 --flush-interval-ms 1000 --queue-seconds 10
 ```
+
+`--queue-seconds` accepts values up to 600; queued frames are held in RAM.
+Python `Acquisition` accepts the same `queue_seconds` keyword.
 
 Settings are fixed for the service lifetime and reported in `status.data_options`.
 The ring retains at most one partial extra frame internally; queries respect its
 exact sample capacity. Observable changes clear live history and invalidate its
 cursors. Samples that leave RAM while logging is off cannot be recovered.
 
-Stopping flushes partial batches. Queue overflow, disk failure and export failure
-are explicit errors; committed chunks remain readable. Abrupt termination can lose
+Stopping flushes partial batches. If the disk cannot keep up and a logger queue
+overflows, only that recording ends: everything accepted so far is finalized and
+exported, its phase becomes `failed` with the overflow position, and acquisition,
+device control and the other stream continue. Start a new recording to continue
+logging. Disk and export failures are also explicit errors; committed chunks
+remain readable. If the command audit (`commands.jsonl`) cannot be written,
+`status.state.audit_error` reports it, later commands are not audited, and
+`end.json` marks the session incomplete; acquisition continues. Abrupt termination can lose
 uncommitted batches and pending writes. Incomplete indexed runs remain readable,
 but automatic repair/merge is not implemented. Optional export failure does not
 invalidate canonical data, though close/status still report the error.

@@ -129,7 +129,7 @@ struct Acquisition {
 impl Acquisition {
     #[new]
     #[allow(clippy::too_many_arguments)] // Python keyword options plus the GIL token.
-    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="csv".to_string(), ack=false, channel_mapping=None, *, buffer_samples=None, segment_rows=1_000_000, flush_interval_ms=60_000, recording_backend="parquet"))]
+    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="csv".to_string(), ack=false, channel_mapping=None, *, buffer_samples=None, segment_rows=1_000_000, flush_interval_ms=60_000, recording_backend="parquet", queue_seconds=crate::live::DEFAULT_QUEUE_SECONDS))]
     fn new(
         py: Python<'_>,
         device: Option<String>,
@@ -143,6 +143,7 @@ impl Acquisition {
         segment_rows: usize,
         flush_interval_ms: u64,
         recording_backend: &str,
+        queue_seconds: f64,
     ) -> PyResult<Self> {
         if recording_backend != "parquet" {
             return Err(error("unsupported recording backend"));
@@ -152,6 +153,7 @@ impl Acquisition {
             buffer_samples,
             segment_rows,
             flush_interval_ms,
+            queue_seconds,
         };
         data.validate().map_err(error)?;
         let profile = Profile::load_files(

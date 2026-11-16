@@ -130,7 +130,8 @@ def build_html() -> str:
 
 <script>
   const loaderEl = document.getElementById("loader");
-  const setStatus = m => {{ if (loaderEl) loaderEl.textContent = m; }};
+  const setStatus = m => {{ console.log(`[startup ${{(performance.now() / 1000).toFixed(1)}}s] ${{m}}`);
+                           if (loaderEl) loaderEl.textContent = m; }};
   const hideLoader = () => {{ if (loaderEl) loaderEl.remove(); }};
   const showError = e => {{ loaderEl.dataset.error = "true";
                             loaderEl.style.background = "#922";

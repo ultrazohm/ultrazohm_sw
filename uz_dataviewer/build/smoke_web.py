@@ -38,7 +38,8 @@ def main():
                 page.wait_for_function(
                     'document.getElementById("loader") === null || '
                     'document.getElementById("loader").dataset.error === "true"',
-                    timeout=180_000,
+                    # Allow cold CDN downloads on shared CI runners.
+                    timeout=300_000,
                 )
             except Exception:
                 print("Startup status:", page.locator("#loader").all_text_contents(), flush=True)

@@ -176,10 +176,14 @@ static uint8_t gCtoPendingCount = 0u;
  * (rewrite-until-acked; see ocm_xcp_fifo.c). */
 static uint32_t gInGenDone = 0u;
 
-/* Memory access gate for SHORT_UPLOAD/UPLOAD/DOWNLOAD/DAQ entries: without it
- * the engine memcpy()s ANY 32-bit address the master sends -> a stray address
- * (e.g. an A53 symbol) raises an R5 data abort inside ISR_Control and kills
- * the motor control. Allow only memory the R5 actually maps (cf. lscript.ld). */
+/* Memory access gate for SHORT_UPLOAD/UPLOAD/DOWNLOAD/BUILD_CHECKSUM/DAQ
+ * entries: without it the engine memcpy()s ANY 32-bit address the master
+ * sends -> a stray address (e.g. an A53 symbol) raises an R5 data abort inside
+ * ISR_Control and kills the motor control. Allow only memory the R5 actually
+ * maps (cf. lscript.ld). Called at SET_MTA (size 0), at START_STOP_SYNCH for
+ * every DAQ entry, and - XCP_ENABLE_MTA_RANGE_CHECK, xcplib_r5_cfg.h - on
+ * every XcpReadMta/XcpWriteMta access with its real size, so the MTA
+ * auto-increment cannot walk out of the allowed regions. */
 static uint8_t xcp_r5_check_memory(uint8_t ext, uint32_t addr, uint8_t size) {
     /* Only absolute addressing maps to R5 memory: ext 0 (ABS, the A2L's mode;
      * DAQ entries are checked with it at START_STOP_SYNCH) and 0xFE (PTR, what

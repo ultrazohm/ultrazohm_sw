@@ -531,6 +531,16 @@ uint8_t XcpWriteMta(uint8_t size, const uint8_t *data) {
         if (local.mta_ptr == NULL)
             return CRC_ACCESS_DENIED;
 
+#ifdef XCP_ENABLE_MTA_RANGE_CHECK
+        // UZ patch (not in upstream V2.3.4): SET_MTA validates only the start address and the MTA
+        // auto-increments across DOWNLOAD chains, so check every access with its actual size
+        {
+            uint8_t res = ApplXcpCheckMemory(XCP_ADDR_EXT_PTR, (uint32_t)(uintptr_t)local.mta_ptr, size);
+            if (res != CRC_CMD_OK)
+                return res;
+        }
+#endif
+
         // TEST
         // Test data consistency: slow bytewise write to increase probability for multithreading data consistency problems
         // while (size-->0) {
@@ -588,6 +598,15 @@ uint8_t XcpReadMta(uint8_t size, uint8_t *data) {
     if (local.mta_ext == XCP_ADDR_EXT_PTR) {
         if (local.mta_ptr == NULL)
             return CRC_ACCESS_DENIED;
+#ifdef XCP_ENABLE_MTA_RANGE_CHECK
+        // UZ patch (not in upstream V2.3.4): see XcpWriteMta - UPLOAD chains and BUILD_CHECKSUM
+        // walk the MTA far beyond the address SET_MTA validated
+        {
+            uint8_t res = ApplXcpCheckMemory(XCP_ADDR_EXT_PTR, (uint32_t)(uintptr_t)local.mta_ptr, size);
+            if (res != CRC_CMD_OK)
+                return res;
+        }
+#endif
         memcpy(data, local.mta_ptr, size);
         local_mut.mta_ptr += size;
         return 0; // Ok
@@ -735,7 +754,15 @@ static const uint16_t gXcpCRC16CCITTtab[256] = {
 #endif
 
 static uint8_t calcChecksum(uint32_t checksum_size, uint32_t *checksum_result) {
-    assert(checksum_size > 0);
+    // UZ patch (not in upstream V2.3.4): the size comes from the master (BUILD_CHECKSUM), so a
+    // zero must be an error response, not an assert(); a cap bounds the time one command can
+    // hold the caller (the R5 main-loop sweep) - every byte goes through XcpReadMta
+    if (checksum_size == 0)
+        return CRC_OUT_OF_RANGE;
+#ifdef XCP_CHECKSUM_MAX_SIZE
+    if (checksum_size > XCP_CHECKSUM_MAX_SIZE)
+        return CRC_OUT_OF_RANGE;
+#endif
     assert(checksum_result != NULL);
 
 #if (XCP_CHECKSUM_TYPE == XCP_CHECKSUM_TYPE_CRC16CCITT)

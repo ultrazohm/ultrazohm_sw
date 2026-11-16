@@ -110,7 +110,9 @@ Pick further variables that move, e.g. a `Global_Data.av.*` address
 - ❌ `CONNECTED` but reads time out → SHORT_UPLOAD path issue (address handling
   on the R5, or DTO/CRM framing). See Debugging.
 - ❌ `ERR_ACCESS_DENIED` (0x24) → the address is outside the R5 allow-list
-  (ATCM/BTCM/DDR/OCM, `xcp_r5_check_memory` in `xcptl_ocm.c`) — by design.
+  (ATCM/BTCM/DDR/OCM, `xcp_r5_check_memory` in `xcptl_ocm.c`; checked at
+  SET_MTA, per DAQ entry at DAQ start, and on every UPLOAD/DOWNLOAD/
+  BUILD_CHECKSUM access with its size) — by design.
 
 ## Test 3b — DAQ smoke test (streams like CANape, without CANape)
 

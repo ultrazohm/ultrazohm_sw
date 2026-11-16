@@ -12,6 +12,17 @@
 #undef  OPTION_QUEUE_64_FIX_SIZE
 #define OPTION_QUEUE_32
 #undef  OPTION_CAL_SEGMENTS         /* direct addressing: DOWNLOAD writes straight to R5 memory */
+/* Memory access gate on the MTA path (UZ patch in xcplite.c XcpReadMta /
+ * XcpWriteMta, not in upstream V2.3.4): SET_MTA only validates the start
+ * address, then UPLOAD/DOWNLOAD/BUILD_CHECKSUM auto-increment the MTA without
+ * limit. With this option every access re-checks pointer + size through
+ * ApplXcpCheckMemory -> xcp_r5_check_memory (xcptl_ocm.c), so a chained
+ * upload cannot walk from R5 DDR into A53 memory or PL space (data abort). */
+#define XCP_ENABLE_MTA_RANGE_CHECK
+/* Largest BUILD_CHECKSUM block (UZ patch in xcplite.c calcChecksum): the
+ * checksum loop runs inside the main-loop sweep, ~50 ns per byte with the
+ * range check -> 64 KB caps one command at ~3 ms; bigger -> ERR_OUT_OF_RANGE. */
+#define XCP_CHECKSUM_MAX_SIZE (64u * 1024u)
 #undef  OPTION_ENABLE_PERSISTENCE
 #undef  OPTION_ENABLE_A2L_GENERATOR
 #undef  OPTION_ENABLE_A2L_UPLOAD

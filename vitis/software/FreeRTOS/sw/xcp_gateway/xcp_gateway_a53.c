@@ -123,6 +123,7 @@ static volatile int gGwReady = 0;
 static struct sockaddr_in gMaster;           /* last master (CANape) endpoint   */
 static volatile int       gMasterValid = 0;
 static volatile uint32_t  gMasterGen = 0;    /* bumped on endpoint change       */
+static volatile TickType_t gMasterLastRxTick = 0; /* last valid datagram from the master */
 
 /* Diagnostics (inspect via debugger; hedrive validation-checklist counters):
  *   xcp_gw_ocm_skipped_writing IPI hit the R5 mid-write (odd seqlock)
@@ -152,6 +153,9 @@ static volatile uint32_t  gMasterGen = 0;    /* bumped on endpoint change       
  *                              source of them. Gaps with this at 0 mean the
  *                              loss is wire/PC-side. Must stay 0.
  *   xcp_gw_ipi_count          IPIs handled (A53-side liveness; ~= R5 sweeps)
+ *   xcp_gw_master_lost        sessions closed by the gateway because the
+ *                              master became unreachable (see
+ *                              xcp_gateway_a53.h, master supervision)
  *   All of the above are mirrored every IPI into the XCP_IN header spare
  *   words (ocm_xcp_fifo.h, OCM_XCP_IN_DIAG_ADDR) together with the DAQ queue
  *   fill level, so CANape (uz.A2L xcp_gw_*) and xcp_poll.py --stress can
@@ -169,6 +173,7 @@ volatile uint32_t xcp_gw_rx_malformed_drop = 0;
 volatile uint32_t xcp_gw_ipi_count = 0;
 volatile uint32_t xcp_gw_sendto_err = 0;
 volatile uint32_t xcp_gw_sendto_drop = 0;
+volatile uint32_t xcp_gw_master_lost = 0;
 
 /*--------------------------------------------------------------------------
  * IPI ISR — read phase (XCP_OUT -> queues), seqlock-guarded.
@@ -383,6 +388,7 @@ static void xcp_gw_write_in_phase(BaseType_t *woken) {
     ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_SENDTO_DROP, xcp_gw_sendto_drop);
     ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_IPI_COUNT, xcp_gw_ipi_count);
     ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_TXQ_LEVEL, (uint32_t)uxQueueMessagesWaitingFromISR(gTxQueue));
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_MASTER_LOST, xcp_gw_master_lost);
     ocm_xcp_in_gen_publish(gInGen);
     ocm_xcp_fifo_cache_flush_after_write(); /* chain first, then header */
 }
@@ -448,6 +454,7 @@ static void xcp_gw_rx_task(void *arg) {
             gCtoAdoptPending = 1;
             taskEXIT_CRITICAL();
         }
+        gMasterLastRxTick = xTaskGetTickCount(); /* master supervision: it is alive */
         f.len = (uint16_t)n;
         (void)xQueueSendToBack(gRxQueue, &f, 0); /* drop if full; master retries */
     }
@@ -485,11 +492,30 @@ static int xcp_gw_restamp_ctr(xcp_gw_frame_t *f) {
     return 1;
 }
 
+/* Master supervision (see xcp_gateway_a53.h): close the session from the
+ * gateway side. The R5 engine is told with a regular XCP DISCONNECT through
+ * the command path (generation handshake = guaranteed delivery); it stops
+ * DAQ and answers, and that answer is discarded here because the endpoint
+ * is forgotten first. Task context only (tx task). */
+static void xcp_gw_master_lost_disconnect(void) {
+    static const xcp_gw_frame_t disconnect = {
+        .len = XCP_TL_HEADER_LEN + 1,
+        .data = {0x01, 0x00, 0x00, 0x00, 0xFE}, /* [dlc=1][ctr=0][DISCONNECT] */
+    };
+    taskENTER_CRITICAL();
+    gMasterValid = 0; /* ISR drops staged DAQ, tx task sends nothing */
+    taskEXIT_CRITICAL();
+    xcp_gw_master_lost++;
+    (void)xQueueSendToBack(gRxQueue, &disconnect, pdMS_TO_TICKS(100));
+    xQueueReset(gTxQueue); /* the backlog has no receiver any more */
+}
+
 static void xcp_gw_tx_task(void *arg) {
     (void)arg;
     static xcp_gw_frame_t f;                       /* only this task uses them */
     static uint8_t batch[XCP_GW_BATCH_BUF_SIZE];
     uint32_t my_master_gen = 0;
+    uint32_t send_fail_run = 0;                    /* consecutive dropped datagrams */
 
     for (;;) {
         if (my_master_gen != gMasterGen) {
@@ -499,6 +525,7 @@ static void xcp_gw_tx_task(void *arg) {
             my_master_gen = gMasterGen;
             xQueueReset(gTxQueue);
             gTxCtr = 0;
+            send_fail_run = 0;
         }
 
         uint32_t fill = 0;
@@ -556,6 +583,21 @@ static void xcp_gw_tx_task(void *arg) {
         }
         if (sent < 0) {
             xcp_gw_sendto_drop++; /* stamped frames lost -> wire CTR gap */
+            send_fail_run++;
+        } else {
+            send_fail_run = 0;
+        }
+        /* Master supervision: nothing has been sendable for a while, or (if
+         * enabled) the master has been silent too long while we stream. */
+        int lost = (send_fail_run >= (uint32_t)XCP_GATEWAY_SEND_FAIL_LIMIT);
+#if XCP_GATEWAY_MASTER_TIMEOUT_MS > 0
+        if ((TickType_t)(xTaskGetTickCount() - gMasterLastRxTick) > pdMS_TO_TICKS(XCP_GATEWAY_MASTER_TIMEOUT_MS)) {
+            lost = 1;
+        }
+#endif
+        if (lost && gMasterValid) {
+            send_fail_run = 0;
+            xcp_gw_master_lost_disconnect();
         }
     }
 }

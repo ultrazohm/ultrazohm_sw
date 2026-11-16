@@ -1298,6 +1298,11 @@ DUAL: on falling and rising edge*/
       ECU_ADDRESS 0xFFFFC03C
     /end MEASUREMENT
 
+    /begin MEASUREMENT xcp_gw_master_lost "A53: sessions closed by the gateway because the master became unreachable (send failures or silence timeout) [fixed OCM address 0xFFFFC040, slot 14 of the XCP_IN header mirror]"
+      ULONG NO_COMPU_METHOD 0 0 0 4294967295
+      ECU_ADDRESS 0xFFFFC040
+    /end MEASUREMENT
+
     /begin MEASUREMENT xcp_r5_cto_dropped "R5: command response dropped, pending FIFO full (must stay 0 since the batch-resume fix; master sees a timeout)"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
       ECU_ADDRESS 0x400BB138

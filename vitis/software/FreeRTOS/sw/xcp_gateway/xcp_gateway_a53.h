@@ -17,6 +17,27 @@ extern "C" {
 #ifndef XCP_GATEWAY_UDP_PORT
 #define XCP_GATEWAY_UDP_PORT 5556
 #endif
+/* Master supervision. UDP has no connection: when CANape crashes or the
+ * cable is pulled during a measurement, the R5 keeps sampling and the A53
+ * keeps sending to a dead endpoint until the next power cycle. The gateway
+ * therefore closes the session itself (it injects an XCP DISCONNECT for the
+ * R5 engine, which stops DAQ, and forgets the master endpoint) when
+ *  a) XCP_GATEWAY_SEND_FAIL_LIMIT datagrams in a row could not be sent even
+ *     after the bounded retries (link down, no route) - always active, or
+ *  b) DAQ data is flowing but the master has sent nothing for
+ *     XCP_GATEWAY_MASTER_TIMEOUT_MS - OFF by default (0): the XCP standard
+ *     does not oblige a master to send anything during a pure DAQ
+ *     measurement, and xcp_poll.py --stress stays silent for the whole run.
+ *     Enable it only for a master known to poll (e.g. CANape with cyclic
+ *     GET_DAQ_CLOCK / status polling) and set it well above that period.
+ * A later CONNECT from any endpoint starts a normal new session. Counted in
+ * xcp_gw_master_lost (mirrored to the XCP master like the other counters). */
+#ifndef XCP_GATEWAY_MASTER_TIMEOUT_MS
+#define XCP_GATEWAY_MASTER_TIMEOUT_MS 0
+#endif
+#ifndef XCP_GATEWAY_SEND_FAIL_LIMIT
+#define XCP_GATEWAY_SEND_FAIL_LIMIT 20
+#endif
 /* Create the UDP socket, queues and rx/tx tasks. Call once the IP is up. */
 int  xcp_gateway_a53_init(uint32_t thread_stack, uint32_t thread_prio);
 /* Call from APU_IPI_ISR under the gateway mode (ISR context: OCM + queues). */

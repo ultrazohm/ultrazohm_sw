@@ -48,7 +48,7 @@
  * build. The slot table is mirrored in CANape/UZ_XCP/uz.A2L (xcp_gw_*),
  * tools/xcp_test/gen_a2l.py and tools/xcp_test/xcp_poll.py: keep in sync. */
 #define OCM_XCP_IN_DIAG_ADDR  0xFFFFC008u
-#define OCM_XCP_IN_DIAG_COUNT 14u
+#define OCM_XCP_IN_DIAG_COUNT 15u
 enum ocm_xcp_in_diag_slot {
     OCM_XCP_DIAG_GW_OCM_SKIPPED_WRITING = 0, /* IPI hit the R5 mid-write          */
     OCM_XCP_DIAG_GW_OCM_TORN,                /* XCP_OUT rewritten mid-read         */
@@ -64,6 +64,7 @@ enum ocm_xcp_in_diag_slot {
     OCM_XCP_DIAG_GW_SENDTO_DROP,             /* batch dropped after retries        */
     OCM_XCP_DIAG_GW_IPI_COUNT,               /* IPIs handled (A53 liveness)        */
     OCM_XCP_DIAG_GW_TXQ_LEVEL,               /* DAQ queue fill (gauge, not count)  */
+    OCM_XCP_DIAG_GW_MASTER_LOST,             /* sessions closed by the gateway     */
 };
 
 void ocm_xcp_fifo_init(void);

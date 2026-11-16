@@ -74,7 +74,7 @@ A53_DIAG_COUNTERS = [
     "xcp_gw_ocm_capped", "xcp_gw_txq_dropped", "xcp_gw_ctoq_dropped",
     "xcp_gw_in_batches_sent", "xcp_gw_in_retry_cycles", "xcp_gw_tx_malformed_drop",
     "xcp_gw_rx_malformed_drop", "xcp_gw_sendto_err", "xcp_gw_sendto_drop",
-    "xcp_gw_ipi_count", "xcp_gw_txq_level",
+    "xcp_gw_ipi_count", "xcp_gw_txq_level", "xcp_gw_master_lost",
 ]
 # R5-side loss/health counters (u32 globals in xcptl_ocm.c / ocm_xcp_fifo.c),
 # added with --diag.

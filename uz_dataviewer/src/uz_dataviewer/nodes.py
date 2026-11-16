@@ -190,7 +190,7 @@ register_transform(TransformSpec("fft", _fft_compute,
     (ParamSpec.bool("remove_dc", "remove DC"), ParamSpec.bool("window", "Hann"))))
 register_transform(TransformSpec("math", _math_compute,
     {"op": "scale", "k": "1.0"}, (1, 2),
-    (ParamSpec.enum("op", transforms.MATH_OPS), ParamSpec.float("k"))))
+    (ParamSpec.enum("op", transforms.MATH_OPS), ParamSpec.float("k", "##k"))))
 register_transform(TransformSpec("filter", _filter_compute,
     {"type": "low", "cutoff": "0", "cutoff2": "0", "taps": "101"}, (1, 1),
     (ParamSpec.enum("type", transforms.FILTER_TYPES), ParamSpec.float("cutoff", "cutoff Hz"),

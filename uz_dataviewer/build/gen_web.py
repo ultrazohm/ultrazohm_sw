@@ -132,7 +132,8 @@ def build_html() -> str:
   const loaderEl = document.getElementById("loader");
   const setStatus = m => {{ if (loaderEl) loaderEl.textContent = m; }};
   const hideLoader = () => {{ if (loaderEl) loaderEl.remove(); }};
-  const showError = e => {{ loaderEl.style.background = "#922";
+  const showError = e => {{ loaderEl.dataset.error = "true";
+                            loaderEl.style.background = "#922";
                             setStatus("Error: " + (e?.message || e)); console.error(e); }};
   let pyodide = null;
 

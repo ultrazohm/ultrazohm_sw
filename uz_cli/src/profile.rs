@@ -92,7 +92,7 @@ pub struct ChannelMapping {
     pub slow_signals: BTreeMap<String, u32>,
     pub variables: BTreeMap<String, u32>,
     pub commands: BTreeMap<String, u32>,
-    /// Header presentation metadata. Not yet exposed through the service profile/catalog.
+    /// Header presentation metadata, also exposed through the service profile/catalog.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub javascope: Option<JavascopeMetadata>,
     #[serde(default)]
@@ -263,6 +263,8 @@ pub struct Profile {
     pub slow_signals: BTreeMap<String, u32>,
     pub variables: BTreeMap<String, u32>,
     pub commands: BTreeMap<String, u32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub javascope: Option<JavascopeMetadata>,
     #[serde(default)]
     pub legacy_javascope_header: bool,
     pub platform_state: Option<PlatformStateMapping>,
@@ -291,6 +293,7 @@ impl Profile {
             slow_signals: mapping.slow_signals,
             variables: mapping.variables,
             commands: mapping.commands,
+            javascope: mapping.javascope,
             legacy_javascope_header: mapping.legacy_javascope_header,
             platform_state: mapping.platform_state,
         };
@@ -299,6 +302,9 @@ impl Profile {
     }
     pub fn validate(&self) -> Result<()> {
         validate_state_mapping(self.legacy_javascope_header, &self.platform_state)?;
+        if let Some(metadata) = &self.javascope {
+            metadata.validate(&self.commands, &self.variables, &self.slow_signals)?;
+        }
         ensure!(
             self.api_version == 1 && self.channels == crate::protocol::CHANNELS,
             "requires v1 profile and 20-channel firmware"

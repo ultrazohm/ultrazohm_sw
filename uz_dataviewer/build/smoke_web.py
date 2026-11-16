@@ -29,11 +29,21 @@ def main():
             page = browser.new_page()
             errors = []
             page.on("pageerror", lambda error: errors.append(str(error)))
+            page.on("console", lambda message: print(f"Browser {message.type}: {message.text}", flush=True))
+            page.on("requestfailed", lambda request: print(
+                f"Request failed: {request.url}: {request.failure}", flush=True
+            ))
             page.goto(f"http://127.0.0.1:{server.server_port}/")
-            page.wait_for_function(
-                'document.getElementById("loader") === null',
-                timeout=180_000,
-            )
+            try:
+                page.wait_for_function(
+                    'document.getElementById("loader") === null || '
+                    'document.getElementById("loader").dataset.error === "true"',
+                    timeout=180_000,
+                )
+            except Exception:
+                print("Startup status:", page.locator("#loader").all_text_contents(), flush=True)
+                raise
+            assert page.locator("#loader").count() == 0, page.locator("#loader").inner_text()
             page.locator("#uzFileInput").set_input_files(
                 {
                     "name": "smoke.csv",

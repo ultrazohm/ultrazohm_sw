@@ -528,7 +528,7 @@ mod tests {
     }
 
     #[test]
-    fn new_mapping_roundtrips_and_old_mapping_loads_without_catalog_changes() {
+    fn mapping_metadata_reaches_profile_and_old_profiles_still_load() {
         let mapping = generate(Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap()).unwrap();
         let json = serde_json::to_value(&mapping).unwrap();
         let decoded: ChannelMapping = serde_json::from_value(json.clone()).unwrap();
@@ -542,10 +542,15 @@ mod tests {
         settings.initial_channels.clear();
         let old_profile = Profile::from_mapping(settings.clone(), old).unwrap();
         let new_profile = Profile::from_mapping(settings.clone(), mapping).unwrap();
-        assert_eq!(
-            serde_json::to_value(old_profile).unwrap(),
-            serde_json::to_value(new_profile).unwrap()
-        );
+        let old_profile_json = serde_json::to_value(old_profile).unwrap();
+        let mut new_profile_json = serde_json::to_value(new_profile).unwrap();
+        assert_eq!(new_profile_json["javascope"], json["javascope"]);
+        let roundtrip: Profile = serde_json::from_value(new_profile_json.clone()).unwrap();
+        roundtrip.validate().unwrap();
+        new_profile_json.as_object_mut().unwrap().remove("javascope");
+        assert_eq!(old_profile_json, new_profile_json);
+        let legacy: Profile = serde_json::from_value(old_profile_json).unwrap();
+        assert!(legacy.javascope.is_none());
         let mut bad = json;
         bad["javascope"]["receive_fields"][0]["signal"] = "JSSD_missing".into();
         let bad: ChannelMapping = serde_json::from_value(bad).unwrap();

@@ -304,7 +304,7 @@ class LiveWorkspace:
                 (update.source is self._source and update.epoch == self._epoch)):
             return
         source = update.source
-        if self.run is None or self._epoch != update.epoch:
+        if self.run is None or self._epoch is None or self._epoch[0] != update.epoch[0]:
             if self.run is not None:
                 self.state.remove_run(self.run.id)
             self.run = self.state.registry.add_source('Live UltraZohm', '', source)
@@ -312,11 +312,27 @@ class LiveWorkspace:
             self._epoch = update.epoch
         else:
             run = self.run
+            previous = getattr(self, '_source_assignments', {})
+            current = {item['channel']: item['name'] for item in update.assignments}
+            replacements = {name: current.get(slot) for slot, name in previous.items()
+                            if name not in source.metadata.channels}
+            def remap(ref):
+                if ref[0] != run.id or ref[1] in source.metadata.channels:
+                    return ref
+                name = replacements.get(ref[1])
+                return (run.id, name) if name in source.metadata.channels else None
+            for cell in self.state.cells:
+                cell.signals = list(dict.fromkeys(mapped for ref in cell.signals if (mapped := remap(ref))))
+                cell.y2_signals = list(dict.fromkeys(mapped for ref in cell.y2_signals if (mapped := remap(ref))))
+                if cell.xy_source is not None:
+                    cell.xy_source = remap(cell.xy_source)
             run.source = source
             run.time = run.time_raw = SourceColumn(source)
             run.signals = {name: Signal(name, '', SourceColumn(source, name), run.id)
                            for name in source.metadata.channels}
             run.mark_time_changed()
+            self._epoch = update.epoch
+        self._source_assignments = {item['channel']: item['name'] for item in update.assignments}
         self._source = source
 
     def freeze(self, target):
@@ -554,11 +570,28 @@ class LiveWorkspace:
             imgui.same_line()
         imgui.new_line()
         imgui.begin_disabled(bool(self.block_reason()))
+        metadata = self.update.catalog.get('javascope') or {}
+        labels = {button['slot']: button.get('label') for button in metadata.get('buttons', [])}
+        button_labels = [labels.get(number) or f'User {number}' for number in range(1, 9)]
+        button_width = max(imgui.calc_text_size(label).x for label in button_labels) + em_size(2.)
+        feedback_available = (self.update.attached and state.get('connected') and
+                              state.get('frames', 0) > 0 and not self.update.error)
         for number in range(1, 9):
-            if imgui.button(f'User {number}'):
+            label = button_labels[number - 1]
+            if imgui.button(f'{label}###user_button_{number}', imgui.ImVec2(button_width, 0.)):
                 self.send('button', number=number)
-            if number % 4:
-                imgui.same_line()
+            imgui.same_line()
+            # JavaScope's fixed wire convention: user buttons 1..8 use bits 4..11.
+            active = bool(state.get('status', 0) & (1 << (number + 3)))
+            if not feedback_available:
+                imgui.text_disabled('?')
+            elif active:
+                imgui.text_colored((.3, .9, .5, 1.), 'ACT')
+            else:
+                imgui.text_disabled('—')
+            if imgui.is_item_hovered(imgui.HoveredFlags_.allow_when_disabled):
+                feedback = ('Active' if active else 'Inactive') if feedback_available else 'Unavailable'
+                imgui.set_tooltip(f'Device feedback: status bit {number + 3}. {feedback}')
         imgui.separator()
         self._render_variables()
         imgui.end_disabled()
@@ -575,7 +608,13 @@ class LiveWorkspace:
             names = [name for name in names if name in matches]
         flags = (imgui.TableFlags_.row_bg | imgui.TableFlags_.borders_inner_v |
                  imgui.TableFlags_.resizable | imgui.TableFlags_.scroll_y)
-        height = max(em_size(7.5), min(em_size(26.25), imgui.get_content_region_avail().y - em_size(5)))
+        available = imgui.get_content_region_avail()
+        error = self.error or self.update.error
+        footer_height = 0.
+        if error:
+            footer_height = (imgui.calc_text_size('Error: ' + error, wrap_width=max(em_size(1), available.x)).y
+                             + imgui.get_style().item_spacing.y)
+        height = max(imgui.get_frame_height(), available.y - footer_height)
         if imgui.begin_table('##variables', 2, flags, imgui.ImVec2(0., height)):
             imgui.table_setup_column('Variable')
             imgui.table_setup_column('Value (Enter to send)')

@@ -772,8 +772,8 @@ impl Service {
             }
             if let Operation::SetObservable { name, channel } = &req.command {
                 self.selections[channel.to_string()] = json!(name);
-                // Previously retained samples must not acquire the new column labels.
-                self.context.ring.lock().unwrap().clear();
+                // Retain other channels, but never relabel this channel's old samples.
+                self.context.ring.lock().unwrap().clear_channel(*channel as usize - 1);
             }
         }
         if let Some(audit) = self.events.as_ref()

@@ -246,8 +246,9 @@ duplicate names and unsupported geometry fail explicitly. See the
 [header contract](docs/protocol.md#generating-a-mapping-from-firmware-headers).
 Generating a file does not reconfigure a running service.
 The optional `javascope` JSON object also records slow-signal float/integer types.
-This metadata is currently mapping-only; service catalog and viewer integration
-are separate steps. Existing mappings without it remain supported.
+This metadata is included in the service profile/catalog. The data viewer uses
+its button captions in the Control pane, falling back to `User N` when a caption
+is absent. Existing mappings without this metadata remain supported.
 
 ## Python
 

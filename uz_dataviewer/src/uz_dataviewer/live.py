@@ -425,7 +425,8 @@ class LiveController:
                 try:
                     expected = json.loads(Path(mapping).expanduser().read_text(encoding='utf-8'))
                     fields = ('api_version', 'channels', 'samples_per_packet', 'observables',
-                              'slow_signals', 'variables', 'commands', 'platform_state', 'legacy_javascope_header')
+                              'slow_signals', 'variables', 'commands', 'platform_state', 'legacy_javascope_header',
+                              'javascope')
                     if any(expected.get(key) != self._catalog.get(key) for key in fields):
                         self._notice += (f'. The service uses a different channel mapping than {mapping}. '
                                          'Restart the service to apply the selected mapping.')
@@ -437,12 +438,24 @@ class LiveController:
         else:
             if not self.attached:
                 raise RuntimeError('Attach to a service first')
-            reply = getattr(self.client, operation)(**kwargs)
+            try:
+                reply = getattr(self.client, operation)(**kwargs)
+            except Exception as exc:
+                from .flashing import connection_refused
+                if operation != 'shutdown' or not connection_refused(exc):
+                    raise
+                # A dead service cannot acknowledge shutdown. Release the local
+                # attachment so the user can change repositories and reconnect.
+                self.attached = False
+                self._reset()
+                self._status, self._catalog, self._assignments = {}, {}, ()
+                self._poll_error = ''
+                self._status_at = 0.
+                self._notice = 'Detached: acquisition service unavailable; device Stop and recording finalization could not be confirmed. Check service.log.'
+                return
             if operation == 'set_variable':
                 self._variable_sends[kwargs['name']] = (time.monotonic(), kwargs['value'])
             self._notice = f'{operation}: request sent (device commands have no acknowledgment)'
-            if operation == 'set_observable':
-                self._reset()
             if operation == 'shutdown':
                 if self.endpoint == self.owned.endpoint:
                     self.owned.shutdown_requested = True
@@ -587,6 +600,7 @@ class LiveController:
         capacity = self._status['data_options']['buffer_samples']
         if self.ring is None or self.ring.capacity != capacity:
             self.ring = LiveRing(capacity)
+        pages = []
         try:
             page = self.client.read_since(self.cursor, limit=min(capacity, 100_000))
         except RuntimeError as exc:
@@ -595,16 +609,28 @@ class LiveController:
             # by Stop, keep the displayed history and are reported by the caller.
             if self.cursor is None or not cursor_invalid(exc):
                 raise
-            self._reset()
+            previous_stop = self.cursor.get('next_sample')
+            self.cursor = None
+            self.ring.reset()
             page = self.client.read_since(limit=min(capacity, 100_000))
-            self._notice = 'Live buffer resynchronized; earlier samples are unavailable in this view'
+            # Refresh through the previously displayed time before publishing;
+            # larger histories span multiple IPC pages and must not jump backward.
+            for _ in range((capacity + 99_999) // 100_000):
+                if (not page.data.height or previous_stop is None or
+                        page.cursor['next_sample'] >= previous_stop or self.stop_event.is_set()):
+                    break
+                pages.append(page)
+                page = self.client.read_since(page.cursor, limit=min(capacity, 100_000))
+            self._notice = 'Live buffer resynchronized'
+        pages.append(page)
         epoch = (page.info['run_id'], page.info['generation'])
         if epoch != self._epoch:
             self.ring.reset()
             self._epoch = epoch
         self.cursor = page.cursor
-        if page.data.height:
-            self.ring.append(page.data)
+        if any(part.data.height for part in pages):
+            for part in pages:
+                self.ring.append(part.data)
             self._last_source = LiveSource(self.ring.snapshot())
             self._received_at = time.monotonic()
 

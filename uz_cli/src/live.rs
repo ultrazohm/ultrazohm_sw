@@ -89,6 +89,15 @@ impl LiveBuffer {
         self.rows = 0;
     }
 
+    pub fn clear_channel(&mut self, channel: usize) {
+        // Invalidate cursors so clients refresh their schema and retained data.
+        // Copy shared frames before editing: existing query snapshots stay valid.
+        self.generation += 1;
+        for (_, frame) in &mut self.frames {
+            Arc::make_mut(frame).channels[channel].fill(f32::NAN);
+        }
+    }
+
     pub fn available(&self) -> usize {
         self.rows.min(self.capacity)
     }
@@ -173,6 +182,22 @@ mod tests {
                 .map(|_| (first..first + rows).map(|x| x as f32).collect())
                 .collect(),
         }
+    }
+
+    #[test]
+    fn clearing_one_channel_preserves_other_history_and_snapshots() {
+        let mut ring = LiveBuffer::new(17);
+        ring.push(0, frame(0, 10));
+        let snapshot = ring.frames(0, 10);
+        ring.clear_channel(1);
+        assert_eq!(ring.generation, 1);
+        assert_eq!(ring.range(), (Some(0), Some(10)));
+        let retained = ring.frames(0, 10);
+        assert!(retained[0].1.channels[1].iter().all(|value| value.is_nan()));
+        assert_eq!(retained[0].1.channels[0], snapshot[0].1.channels[0]);
+        assert_eq!(snapshot[0].1.channels[1], snapshot[0].1.channels[0]);
+        ring.push(10, frame(10, 5));
+        assert_eq!(ring.frames(10, 15)[0].1.channels[1], vec![10., 11., 12., 13., 14.]);
     }
 
     #[test]

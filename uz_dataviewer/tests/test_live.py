@@ -114,6 +114,44 @@ def test_worker_incremental_bound_recovery_and_persistent_command_error():
     assert not controller.thread.is_alive()
 
 
+@pytest.mark.parametrize('error', [ConnectionRefusedError(111, 'Connection refused'),
+                                 RuntimeError('Connection refused (os error 111)'),
+                                 RuntimeError('os error 10061')])
+def test_disconnect_after_service_exit_releases_attachment(error):
+    class ExitedClient(FakeClient):
+        def shutdown(self):
+            raise error
+
+    controller = LiveController(lambda endpoint: ExitedClient(), hz=100)
+    try:
+        controller.submit('attach', endpoint='127.0.0.1:19740')
+        wait_for(lambda: controller.latest().attached)
+        controller.submit('shutdown')
+        wait_for(lambda: not controller.latest().attached)
+        update = controller.latest()
+        assert not update.error
+        assert not update.status
+        assert 'could not be confirmed' in update.notice
+    finally:
+        controller.close()
+
+
+def test_disconnect_other_errors_preserve_attachment():
+    class FailingClient(FakeClient):
+        def shutdown(self):
+            raise RuntimeError('request timed out')
+
+    controller = LiveController(lambda endpoint: FailingClient(), hz=100)
+    try:
+        controller.submit('attach', endpoint='127.0.0.1:19740')
+        wait_for(lambda: controller.latest().attached)
+        controller.submit('shutdown')
+        wait_for(lambda: 'request timed out' in controller.latest().error)
+        assert controller.latest().attached
+    finally:
+        controller.close()
+
+
 def test_live_panels_follow_pause_freeze_and_generation(gui_frame, app_state):
     controller = LiveController(lambda endpoint: None)
     workspace = LiveWorkspace(controller)
@@ -153,6 +191,10 @@ def test_live_panels_follow_pause_freeze_and_generation(gui_frame, app_state):
         np.testing.assert_array_equal(frozen.time, old)
         controller.update = replace(controller.update, revision=4, epoch=('run', 1))
         workspace.pump()
+        assert workspace.run.id == run.id
+        assert workspace.state.cells[0].signals == [(run.id, 'a')]
+        controller.update = replace(controller.update, revision=5, epoch=('different-run', 0))
+        workspace.pump()
         assert workspace.run.id != run.id
         assert workspace.state.cells[0].signals == []
     finally:
@@ -164,6 +206,72 @@ def test_fuzzy_observable_names():
     assert fuzzy_names(names, 'isrper') == ['JSO_ISR_Period_us']
     assert fuzzy_names(names, 'LiFe') == ['JSO_lifecheck']
     assert fuzzy_names(names, 'xyz') == []
+
+
+def test_changed_observable_keeps_run_plots_and_unchanged_history():
+    controller = LiveController(lambda _: None)
+    workspace = LiveWorkspace(controller)
+    try:
+        original = frame(0, 30).with_columns(pl.col('a').alias('b'))
+        controller.update = LiveUpdate(1, source=LiveSource(original), epoch=('run', 0),
+            assignments=({'channel': 1, 'name': 'a'}, {'channel': 2, 'name': 'b'}))
+        workspace.pump()
+        run = workspace.run
+        cell = workspace.state.cells[0]
+        cell.add((run.id, 'a'))
+        cell.add((run.id, 'b'))
+        cell.set_limits('x', .005, .025)
+        changed = original.drop('a').with_columns(pl.lit(float('nan')).alias('c'))
+        controller.update = replace(controller.update, revision=2, source=LiveSource(changed),
+            epoch=('run', 1), assignments=({'channel': 1, 'name': 'c'}, {'channel': 2, 'name': 'b'}))
+        workspace.pump()
+        assert workspace.run is run
+        assert cell.signals == [(run.id, 'c'), (run.id, 'b')]
+        assert cell.x_lim == (.005, .025)
+        _, values = run.read_window(['b', 'c'], 0., .03)
+        np.testing.assert_array_equal(values['b'], original['b'].to_numpy())
+        assert np.isnan(values['c']).all()
+    finally:
+        workspace.close()
+
+
+def test_observable_refresh_catches_up_all_pages_before_publishing():
+    class PagedClient(FakeClient):
+        def status(self):
+            return {**super().status(), 'data_options': {'buffer_samples': 200_000}}
+
+        def read_since(self, cursor=None, limit=100):
+            if cursor and cursor['generation'] != self.generation:
+                error = RuntimeError('generation changed')
+                error.code = 'cursor_expired'
+                raise error
+            start = cursor['next_sample'] if cursor else 0
+            stop = min(start + limit, 150_000)
+            data = frame(start, stop)
+            if self.generation:
+                data = data.drop('a').with_columns(pl.lit(float('nan')).alias('c'))
+            return SimpleNamespace(data=data,
+                cursor={'next_sample': stop, 'generation': self.generation},
+                info={'run_id': 'fake', 'generation': self.generation})
+
+    client = PagedClient()
+    controller = LiveController(lambda _: client)
+    try:
+        controller._command('attach', {'endpoint': 'fake'})
+        controller._poll()
+        controller._poll()
+        original = controller.ring.snapshot()
+        assert len(original['time']) == 150_000
+        controller._command('set_observable', {'channel': 1, 'name': 'c'})
+        controller._poll()
+        updated = controller.ring.snapshot()
+        np.testing.assert_array_equal(updated['time'], original['time'])
+        np.testing.assert_array_equal(updated['b'], original['b'])
+        assert np.isnan(updated['c']).all()
+        assert 'a' not in updated
+        assert controller._epoch == ('fake', 1)
+    finally:
+        controller.close()
 
 
 def test_variable_send_feedback_only_follows_successful_command():
@@ -830,6 +938,75 @@ def test_close_handles_both_services_independently(fail_stop):
     controller._status = {'state': {'connected': True}}
     controller.close()
     assert calls == [('external', 'stop'), ('owned', 'shutdown'), ('owned', 'wait')]
+
+
+@pytest.mark.parametrize('metadata', [None, {}, {'buttons': [
+    {'slot': 2, 'label': 'Calibrate'}, {'slot': 1, 'label': 'Calibrate'},
+    {'slot': 3, 'label': None}, {'slot': 4, 'label': ''}]}])
+def test_control_button_labels_preserve_slot_commands(gui_frame, app_state, monkeypatch, metadata):
+    from imgui_bundle import imgui
+    controller = LiveController(lambda _: FakeClient())
+    workspace = LiveWorkspace(controller)
+    workspace.update = replace(workspace.update, attached=True,
+        status={'state': {'connected': True}}, catalog={'javascope': metadata})
+    labels, sent = [], []
+    def click(label, *args, **kwargs):
+        labels.append(label)
+        return '###user_button_' in label
+    monkeypatch.setattr(imgui, 'button', click)
+    monkeypatch.setattr(workspace, 'send', lambda operation, **kwargs: sent.append((operation, kwargs)))
+    try:
+        gui_frame(SimpleNamespace(render=lambda _: workspace.render_control()), app_state)
+        expected = ['Calibrate', 'Calibrate'] if metadata else ['User 1', 'User 2']
+        expected += [f'User {n}' for n in range(3, 9)]
+        assert labels[3:11] == [f'{label}###user_button_{n}' for n, label in enumerate(expected, 1)]
+        assert sent == [('button', {'number': n}) for n in range(1, 9)]
+    finally:
+        workspace.close()
+
+
+@pytest.mark.parametrize('status,frames,attached,error,expected', [
+    (1 << 4, 1, True, '', ['ACT'] + ['—'] * 7),
+    (1 << 11, 1, True, '', ['—'] * 7 + ['ACT']),
+    (0xF00F, 1, True, '', ['—'] * 8),
+    (0xFF0, 0, True, '', ['?'] * 8),
+    (0xFF0, 1, False, '', ['?'] * 8),
+    (0xFF0, 1, True, 'Connection refused', ['?'] * 8),
+])
+def test_user_button_feedback_and_vertical_layout(gui_frame, app_state, monkeypatch,
+                                                 status, frames, attached, error, expected):
+    from imgui_bundle import imgui
+    controller = LiveController(lambda _: FakeClient())
+    workspace = LiveWorkspace(controller)
+    workspace.update = replace(workspace.update, attached=attached, error=error,
+        status={'state': {'connected': True, 'status': status, 'frames': frames}})
+    indicators, positions = [], []
+    original_button = imgui.button
+    original_disabled = imgui.text_disabled
+    original_colored = imgui.text_colored
+    def button(label, *args, **kwargs):
+        if '###user_button_' in label:
+            pos = imgui.get_cursor_screen_pos()
+            positions.append((pos.x, pos.y))
+        return original_button(label, *args, **kwargs)
+    def disabled(text):
+        indicators.append(text)
+        original_disabled(text)
+    def colored(color, text):
+        if text == 'ACT':
+            indicators.append(text)
+        original_colored(color, text)
+    monkeypatch.setattr(imgui, 'button', button)
+    monkeypatch.setattr(imgui, 'text_disabled', disabled)
+    monkeypatch.setattr(imgui, 'text_colored', colored)
+    try:
+        gui_frame(SimpleNamespace(render=lambda _: workspace.render_control()), app_state)
+        assert indicators == expected
+        assert len(positions) == 8
+        assert len({x for x, _ in positions}) == 1
+        assert all(b[1] > a[1] for a, b in zip(positions, positions[1:]))
+    finally:
+        workspace.close()
 
 
 def test_disconnect_button_requests_shutdown_and_keeps_viewer_open(gui_frame, app_state, monkeypatch):

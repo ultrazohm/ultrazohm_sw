@@ -52,7 +52,10 @@ Viewer releases do not replace the repository's latest release designation.
 Build artifacts are retained for 30 days; published release downloads remain available independently.
 The existing documentation Pages workflow is unchanged.
 
-Linux binaries are built on Debian 12 and require x86_64, glibc 2.36 or newer, and desktop graphics libraries on the target system.
+Linux binaries are built and smoke-tested in Ubuntu 22.04 and require x86_64, glibc 2.35 or newer, and desktop graphics libraries on the target system.
+The build uses uv to install Python 3.12 inside this container.
+Keep the build container at the oldest supported system: PyInstaller bundles libraries such as ``libstdc++.so.6`` but uses the target system's glibc.
+Building on a newer distribution can therefore produce binaries that fail on Ubuntu 22.04, even when the Python dependency wheels support it.
 Windows binaries target x86_64 and must be extracted from the ZIP before launching.
 Each build runs a headless smoke test of the frozen executable, checking native imports, Parquet reading, and lazy downsampling.
 This check does not verify window creation or graphics drivers on the user's desktop.

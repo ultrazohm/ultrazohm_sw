@@ -116,8 +116,9 @@ jobs:
   build-linux:
     needs: [test, cli-wheels]
     runs-on: ubuntu-24.04
-    # Build against glibc 2.36, rather than the host runner's newer libc.
-    container: python:3.12-slim-bookworm
+    # Build and smoke-test on the oldest supported system (glibc 2.35).
+    # PyInstaller bundles libstdc++, whose libc requirements also matter.
+    container: ubuntu:22.04
     timeout-minutes: 30
     defaults:
       run:
@@ -129,7 +130,11 @@ jobs:
       - name: Install build and GUI runtime libraries
         run: |
           apt-get update -qq
-          apt-get install -y --no-install-recommends binutils libgl1 libx11-6 libxext6 libxau6 libxdmcp6 libxcb1 nodejs
+          apt-get install -y --no-install-recommends ca-certificates binutils libgl1 libx11-6 libxext6 libxau6 libxdmcp6 libxcb1
+      # Ubuntu 22.04's Node 12 is too old for the browser bridge tests.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: '0.13.1'
@@ -268,7 +273,7 @@ jobs:
           Branch: ${GITHUB_REF_NAME}
           Workflow: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
 
-          Linux: x86_64, glibc 2.36+ (Debian 12 / Ubuntu 24.04 or newer), with desktop graphics libraries.
+          Linux: x86_64, glibc 2.35+ (Ubuntu 22.04 / Debian 12 or newer), with desktop graphics libraries.
           Windows: x86_64. Extract the ZIP before running the executable.
           Python and uv are not required on the target computer.
           Verify downloads against the attached SHA256SUMS file.

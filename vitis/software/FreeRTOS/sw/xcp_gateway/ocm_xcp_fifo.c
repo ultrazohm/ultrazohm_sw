@@ -214,8 +214,7 @@ void ocm_xcp_fifo_prepare_write(void) {
     *(volatile uint32_t *)addr_w = 0u;
 }
 
-int ocm_xcp_fifo_write(uint8_t len, const uint8_t *data) {
-    uint8_t *dst_p = (uint8_t *)(addr_w);
+int ocm_xcp_fifo_write_fits(uint8_t len, const uint8_t *data) {
     size_t limit = addr_w_end;
 
     /* DAQ (DTO) frames must leave the CTO reserve free; CTO frames may use it.
@@ -225,7 +224,13 @@ int ocm_xcp_fifo_write(uint8_t len, const uint8_t *data) {
     }
 
     /* Need 4 (len) + len (payload) + 4 (terminator). */
-    if (((size_t)dst_p + 4u + (size_t)len + 4u) > limit) {
+    return (addr_w + 4u + (size_t)len + 4u) <= limit;
+}
+
+int ocm_xcp_fifo_write(uint8_t len, const uint8_t *data) {
+    uint8_t *dst_p = (uint8_t *)(addr_w);
+
+    if (!ocm_xcp_fifo_write_fits(len, data)) {
         ocm_xcp_w_dropped++;
         return 0;
     }

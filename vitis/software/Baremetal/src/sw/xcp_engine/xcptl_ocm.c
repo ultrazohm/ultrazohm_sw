@@ -32,7 +32,9 @@
 |   mailbox (never lost to a cycle rewrite); commands are executed once per
 |   A53-published generation (never lost to a missed cycle, never executed
 |   twice). DAQ frames stream through the per-cycle chain; a missed cycle is
-|   a counted measurement gap.
+|   a counted measurement gap. A sweep whose chain fills up holds the rest
+|   of the backlog in the queue (xcp_r5_tx_held) - backlog becomes latency,
+|   not loss, until the queue itself overflows (xcp_r5_queue_lost).
 |
 |   TL wire frame = [dlc:u16 LE][ctr:u16 LE][packet ...]  (XCPTL header = 4B),
 |   exactly the XCP-on-UDP datagram payload the A53 gateway forwards. The
@@ -138,6 +140,12 @@ static uint32_t gSliceCnt[XCP_R5_SLICE_COUNT] = {0u, 1u, 2u, 3u};
  *   xcp_r5_queue_lost       queue32 overflow between sweeps -> DAQ frames
  *                           lost at the source (raise QUEUE_SIZE or sweep
  *                           more often if this climbs)
+ *   xcp_r5_tx_held          sweeps that filled the XCP_OUT chain with
+ *                           backlog left over; the next segment stayed in
+ *                           the queue and went out first in the next sweep
+ *                           (backlog, not loss). Climbing steadily = DAQ
+ *                           production exceeds the ~6.4 KB per sweep the
+ *                           window can carry; expect xcp_r5_queue_lost next.
  *   xcp_r5_sweep_count      main-loop sweeps executed -> liveness probe
  *   xcp_r5_sweep_gap_max_us worst observed inter-sweep gap. THE main-loop
  *                           health number: ~SWEEP_PERIOD = loop plenty fast;
@@ -153,6 +161,7 @@ volatile uint32_t xcp_r5_cto_dropped = 0u;
 volatile uint32_t xcp_r5_cmd_oversize_drop = 0u;
 volatile uint32_t xcp_r5_in_generations = 0u;
 volatile uint32_t xcp_r5_queue_lost = 0u;
+volatile uint32_t xcp_r5_tx_held = 0u;
 volatile uint32_t xcp_r5_sweep_count = 0u;
 volatile uint32_t xcp_r5_sweep_gap_max_us = 0u;
 
@@ -247,9 +256,19 @@ static void xcp_r5_pump_cto(void) {
     gCtoPendingCount--;
 }
 
+/* Segment popped from the queue but not yet written: the XCP_OUT chain was
+ * full. It stays popped (queue32 advances its read index only on
+ * queueRelease, and the engine never clears the queue behind the transport)
+ * and goes out first in the next sweep. Only touched from the sweep context. */
+static tQueueBuffer gTxHeld;
+static int gTxHeldValid = 0;
+
 /* Drain the DAQ transmit queue into the XCP_OUT chain. Mirrors
- * XcpTlHandleTransmitQueue (queue32 path). A full chain drops the segment
- * (counted in ocm_xcp_w_dropped) — a DAQ gap, not a session risk.
+ * XcpTlHandleTransmitQueue (queue32 path). A full chain does NOT drop: the
+ * segment is held for the next sweep (xcp_r5_tx_held), so the 32 KB queue
+ * really bridges a slow main-loop iteration instead of converting backlog
+ * into loss. Loss happens only when the queue itself overflows
+ * (xcp_r5_queue_lost) or XCP_OUT is capped per sweep for good.
  * NO lock around the OCM memcpy/cache-flush: queuePop/queueRelease take
  * queue32's internal (short) critical sections; holding an IRQ-disabling
  * lock across the 252-byte copy would jitter the control ISR. */
@@ -258,25 +277,33 @@ void xcp_r5_tx_pump(void) {
         return; /* init failed or not run: engine disabled */
     }
     for (;;) {
-        uint32_t lost = 0u;
-        /* flush=true: hand out the current partially-filled segment too. With
-         * flush=false, queue32's queuePop never returns a lone open segment,
-         * so DAQ data would sit in the queue until a full segment accumulates. */
-        tQueueBuffer qb = queuePop(gQueue, true /*accumulate*/, true /*flush*/, &lost);
-        if (lost > 0u) {
-            xcp_r5_queue_lost += lost; /* ISR produced faster than the sweep drained */
+        if (!gTxHeldValid) {
+            uint32_t lost = 0u;
+            /* flush=true: hand out the current partially-filled segment too. With
+             * flush=false, queue32's queuePop never returns a lone open segment,
+             * so DAQ data would sit in the queue until a full segment accumulates. */
+            gTxHeld = queuePop(gQueue, true /*accumulate*/, true /*flush*/, &lost);
+            if (lost > 0u) {
+                xcp_r5_queue_lost += lost; /* ISR produced faster than the sweep drained */
+            }
+            if (gTxHeld.size == 0u) {
+                break; /* queue empty */
+            }
+            gTxHeldValid = 1;
         }
-        uint16_t l = qb.size;
-        if (l == 0u) {
-            break; /* queue empty */
-        }
+        uint16_t l = gTxHeld.size;
         if (l <= 0xFFu) {
-            (void)ocm_xcp_fifo_write((uint8_t)l, qb.buffer);
+            if (!ocm_xcp_fifo_write_fits((uint8_t)l, gTxHeld.buffer)) {
+                xcp_r5_tx_held++; /* chain full: keep the segment, retry next sweep */
+                break;
+            }
+            (void)ocm_xcp_fifo_write((uint8_t)l, gTxHeld.buffer); /* cannot fail now */
         } else {
             /* Impossible with XCPTL_MAX_SEGMENT_SIZE 252, but never truncate. */
             xcp_r5_tx_oversize_drop++;
         }
-        queueRelease(gQueue, &qb);
+        queueRelease(gQueue, &gTxHeld);
+        gTxHeldValid = 0;
     }
 }
 

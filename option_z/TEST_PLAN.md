@@ -198,7 +198,11 @@ Inspect these via the JTAG debugger (the R5 keeps stats):
   `xcp_r5_cto_dropped` (pending-FIFO overflow — must stay 0),
   `xcp_r5_in_generations` (command batches executed),
   `xcp_r5_cmd_oversize_drop` (command frame with dlc > 248 refused before
-  the engine — must stay 0, the gateway filters these too). A53
+  the engine — must stay 0, the gateway filters these too),
+  `xcp_r5_tx_held` (sweeps that filled XCP_OUT with backlog left over — the
+  next segment waited in the queue and went out first in the next sweep;
+  backlog, not loss, so `ocm_xcp_w_dropped` on the R5 now stays 0 and
+  steady growth here is the early warning before `xcp_r5_queue_lost`). A53
   (`xcp_gateway_a53.c`): `xcp_gw_ocm_torn` / `xcp_gw_ocm_skipped_writing`
   (seqlock collisions — occasional is fine, monotonic climb at idle is not),
   `xcp_gw_ocm_cycles_missed` (R5 cycles no IPI ever read = real DAQ gaps),

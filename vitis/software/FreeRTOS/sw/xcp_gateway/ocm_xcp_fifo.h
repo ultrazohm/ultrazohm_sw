@@ -44,6 +44,11 @@ void ocm_xcp_fifo_cache_flush_after_write(void);
  * Returns 1 if written, 0 if the region is full (caller drops/retries). */
 int ocm_xcp_fifo_write(uint8_t len, const uint8_t *data);
 
+/* Return 1 if ocm_xcp_fifo_write(len, data) would succeed right now. No side
+ * effects (ocm_xcp_w_dropped is not counted): lets a writer hold a message
+ * back for the next cycle instead of dropping it. */
+int ocm_xcp_fifo_write_fits(uint8_t len, const uint8_t *data);
+
 /* Return 1 and point *data_p at the next message (length in *len), or 0 at the
  * end of the chain / on a corrupt length / at the region end. */
 int ocm_xcp_fifo_read(uint8_t *len, uint8_t **data_p);

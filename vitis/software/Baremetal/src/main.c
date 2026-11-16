@@ -69,6 +69,7 @@ int main(void)
             initialization_chain = wait_for_apu_handshake;
             break;
         case wait_for_apu_handshake:
+            write_rpu_logging_path(); // checked by the APU before it starts its logging server
             write_rpu_version(0U);
             do
             {

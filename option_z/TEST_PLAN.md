@@ -47,9 +47,10 @@ stuck, the **fallback** (bottom) returns you to JavaScope.
 
 | Flag | File | Value | Meaning |
 |------|------|-------|---------|
-| `XCP_ENGINE_R5_ENABLE` | `Baremetal/src/defines.h` | **1** | R5 runs the XCPlite engine |
-| `LOGGING_PATH_XCP_R5_GATEWAY` | `FreeRTOS/defines.h` | **1** | A53 runs the UDP⇄OCM gateway |
-| `LOGGING_PATH_JAVASCOPE` | `FreeRTOS/defines.h` | 0 | (off) |
+| `UZ_LOGGING_PATH` | `shared/uz_logging_path.h` | **`UZ_LOGGING_PATH_XCP`** | the one switch for both cores |
+| `XCP_ENGINE_R5_ENABLE` | `Baremetal/src/defines.h` | derived: 1 | R5 runs the XCPlite engine |
+| `LOGGING_PATH_XCP_R5_GATEWAY` | `FreeRTOS/defines.h` | derived: 1 | A53 runs the UDP⇄OCM gateway |
+| `LOGGING_PATH_JAVASCOPE` | `FreeRTOS/defines.h` | derived: 0 | (off) |
 
 Data path: `CANape/xcp_poll ⇄ UDP:5556 ⇄ A53 rx/tx tasks ⇄ queues ⇄ APU_IPI_ISR
 ⇄ OCM FIFO ⇄ R5 XcpCommand/XcpEvent` (engine, identity addressing). OCM regions:
@@ -277,11 +278,13 @@ Inspect these via the JTAG debugger (the R5 keeps stats):
 
 ## Fallback to JavaScope
 
-If Option Z misbehaves and you want the hardware-proven logger back, set:
-- `Baremetal/src/defines.h`: `XCP_ENGINE_R5_ENABLE 0`
-- `FreeRTOS/defines.h`: `LOGGING_PATH_XCP_R5_GATEWAY 0`, `LOGGING_PATH_JAVASCOPE 1`
+If Option Z misbehaves and you want the hardware-proven logger back, set
+`UZ_LOGGING_PATH` to `UZ_LOGGING_PATH_JAVASCOPE` in
+`vitis/software/shared/uz_logging_path.h` (one define for both cores).
 
 Rebuild + reflash both apps → JavaScope (TCP) runs exactly as on `develop`.
+If only one app was rebuilt or flashed, the A53 prints
+`APU: Warning: logging path mismatch` on the serial console at network-up.
 These are independent compile-time modes; both build green. The earlier
 A53-hosted XCPlite server with the curated eight-signal MEAS image
 (`LOGGING_PATH_XCP_LITE`, "Phases 0/1/3") was removed on 2026-11-16; it is in

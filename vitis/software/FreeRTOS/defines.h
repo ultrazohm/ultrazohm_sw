@@ -33,20 +33,19 @@
 #define JS_SAMPLES_PER_PACKET 15
 
 //==============================================================================================================================================================
-// Logging path selector -- compile-time XOR: JavaScope (TCP) vs XCP (UDP).
+// Logging path -- compile-time XOR: JavaScope (TCP) vs XCP (UDP).
 //
-// Set exactly ONE to 1; the other must be 0.
-//   LOGGING_PATH_JAVASCOPE      -- JavaScope TCP logger (unchanged)
+// Selected for BOTH processors by UZ_LOGGING_PATH in
+// vitis/software/shared/uz_logging_path.h; do not edit the values here.
+//   LOGGING_PATH_JAVASCOPE      -- JavaScope TCP logger
 //   LOGGING_PATH_XCP_R5_GATEWAY -- Option Z: UDP<->OCM gateway to the XCPlite
 //                                  engine on the R5 (CANape-compatible)
-//
-// The R5 side must match: XCP_ENGINE_R5_ENABLE in Baremetal/src/defines.h is
-// 1 for the gateway and 0 for JavaScope. Rebuild both apps after a switch.
 // Both code paths compile in either mode; only the server start in main.c and
 // the APU_IPI_ISR branch in sw/isr.c change.
 //==============================================================================================================================================================
-#define LOGGING_PATH_JAVASCOPE      0
-#define LOGGING_PATH_XCP_R5_GATEWAY 1
+#include "uz_logging_path.h"
+#define LOGGING_PATH_JAVASCOPE      (UZ_LOGGING_PATH == UZ_LOGGING_PATH_JAVASCOPE)
+#define LOGGING_PATH_XCP_R5_GATEWAY (UZ_LOGGING_PATH == UZ_LOGGING_PATH_XCP)
 
 #if (LOGGING_PATH_JAVASCOPE + LOGGING_PATH_XCP_R5_GATEWAY) != 1
 #error "defines.h: exactly one LOGGING_PATH_* must be 1"

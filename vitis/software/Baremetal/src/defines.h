@@ -111,14 +111,13 @@
 #define   Q01toF		-Q1
 
 /*===========================================================================
- * Option Z — XCPlite protocol ENGINE on the R5 (arbitrary addressing).
- * 1 = run the XCPlite engine on the R5 (xcp_r5_event() in ISR_Control,
- *     xcp_r5_background() in the main loop); the A53 must then select
- *     LOGGING_PATH_XCP_R5_GATEWAY in vitis/software/FreeRTOS/defines.h.
- * 0 = JavaScope (JavaScope_update() in ISR_Control); the A53 must then
- *     select LOGGING_PATH_JAVASCOPE.
- * Change both defines together and rebuild both apps.
+ * Logging path of the R5. Selected for BOTH processors by UZ_LOGGING_PATH in
+ * vitis/software/shared/uz_logging_path.h; do not edit the value here.
+ * 1 = Option Z: XCPlite protocol engine on the R5 (xcp_r5_event() in
+ *     ISR_Control, xcp_r5_background() in the main loop), A53 = UDP gateway.
+ * 0 = JavaScope (JavaScope_update() in ISR_Control).
  *=========================================================================*/
-#define XCP_ENGINE_R5_ENABLE    1
+#include "uz_logging_path.h"
+#define XCP_ENGINE_R5_ENABLE    (UZ_LOGGING_PATH == UZ_LOGGING_PATH_XCP)
 
 #endif /* DEFINES_H_ */

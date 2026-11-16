@@ -39,6 +39,27 @@ struct RPU_to_APU_user_data_t
 
 // Used for communicating the ultrazohm revision between RPU default define and what APU reads from EEPROM is present
 #include "xil_cache.h"
+#include "uz_logging_path.h"
+
+// Logging path handshake: the R5 publishes the UZ_LOGGING_PATH it was built with
+// (magic in the upper 24 bits) at boot, the A53 compares it with its own build
+// before it starts the logging server and warns on the serial console when the
+// two applications disagree (one of them was not rebuilt or not flashed).
+// Lives in OCM bank 1 behind the user data, untouched by JavaScope and XCP.
+#define UZ_LOGGING_PATH_WORD_ADDR  (MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU + 0x100U)
+#define UZ_LOGGING_PATH_WORD_MAGIC (0x555A4C00U) /* "UZL" + path in the low byte */
+
+static inline void write_rpu_logging_path(void){
+    uint32_t volatile *word = (uint32_t *)(uintptr_t)UZ_LOGGING_PATH_WORD_ADDR;
+    *word = UZ_LOGGING_PATH_WORD_MAGIC | (uint32_t)UZ_LOGGING_PATH;
+    Xil_DCacheFlushRange((uintptr_t)word, sizeof(uint32_t));
+}
+
+static inline uint32_t read_rpu_logging_path(void){
+    uint32_t volatile *word = (uint32_t *)(uintptr_t)UZ_LOGGING_PATH_WORD_ADDR;
+    Xil_DCacheInvalidateRange((uintptr_t)word, sizeof(uint32_t));
+    return *word;
+}
 
 static inline uint32_t read_rpu_version(void){
     uint32_t volatile *rpu_version = (uint32_t *)((uint8_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE + 64U);

@@ -75,8 +75,30 @@ static BaseType_t js_is_active_client(const int clientfd)
 
 
 //==============================================================================================================================================================
+// Both applications take their logging path from vitis/software/shared/uz_logging_path.h.
+// They can still disagree when only one of them was rebuilt or flashed; the symptom is
+// plain silence on the PC side, so say it on the console.
+static const char *logging_path_name(uint32_t path)
+{
+    return (path == UZ_LOGGING_PATH_JAVASCOPE) ? "JavaScope" : ((path == UZ_LOGGING_PATH_XCP) ? "XCP" : "unknown");
+}
+
+static void warn_on_rpu_logging_path_mismatch(void)
+{
+    uint32_t word = read_rpu_logging_path();
+    if ((word & 0xFFFFFF00U) != UZ_LOGGING_PATH_WORD_MAGIC) {
+        uz_printf("APU: Warning: the RPU did not publish its logging path (old RPU build?)\r\n");
+    } else if ((word & 0xFFU) != (uint32_t)UZ_LOGGING_PATH) {
+        uz_printf("APU: Warning: logging path mismatch - APU built for %s, RPU built for %s.\r\n",
+                logging_path_name((uint32_t)UZ_LOGGING_PATH), logging_path_name(word & 0xFFU));
+        uz_printf("APU:          Rebuild and flash BOTH applications (shared/uz_logging_path.h).\r\n");
+    }
+}
+
+//==============================================================================================================================================================
 void print_javascope_app_header(ip_addr_t *ip)
 {
+    warn_on_rpu_logging_path_mismatch();
     uz_printf("\r\n");
     uz_printf("APU: Connect JavaScope GUI to %d.%d.%d.%d:%d\r\n",
             ip4_addr1(ip), ip4_addr2(ip), ip4_addr3(ip), ip4_addr4(ip), TCPPORT);
@@ -89,6 +111,7 @@ void print_javascope_app_header(ip_addr_t *ip)
 // banner above; XCP runs on UDP (see xcp_gateway_a53.c, default port 5556).
 void print_xcp_app_header(ip_addr_t *ip)
 {
+    warn_on_rpu_logging_path_mismatch();
     uz_printf("\r\n");
     uz_printf("APU: XCPlite slave (UDP) at %d.%d.%d.%d:%d\r\n",
             ip4_addr1(ip), ip4_addr2(ip), ip4_addr3(ip), ip4_addr4(ip), XCP_GATEWAY_UDP_PORT);

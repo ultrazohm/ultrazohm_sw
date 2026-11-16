@@ -14,6 +14,7 @@
 | See LICENSE file in the project root for details.
  ----------------------------------------------------------------------------*/
 
+#include <assert.h>  // for static_assert
 #include <stdbool.h> // for bool
 #include <stdint.h>  // for uint16_t, uint32_t, uint8_t
 
@@ -42,13 +43,13 @@ extern "C" {
 /* Protocol layer interface                                                 */
 /****************************************************************************/
 
-/// XcpInit mode flags
-#define XCP_MODE_DEACTIVATE 0     ///< Initialize XCP singleton without activating the protocol layer (passive/off)
-#define XCP_MODE_LOCAL 0x01       ///< Initialize and activate XCP, allocate state in static memory if libxcplite not compiled in SHM mode, otherwise allocate state in heap memory
-#define XCP_MODE_PERSISTENCE 0x02 ///< Load the binary persistence file, to keep deterministic order of events and calibration segments, and load persisted calibration data
-#define XCP_MODE_SHM 0x80         ///< Initialize and activate XCP, allocate state in POSIX shared memory
-#define XCP_MODE_SHM_AUTO 0x04    ///< Set this flag to automatically choose leader as XCP server
-#define XCP_MODE_SHM_SERVER 0x08  ///< Set this flag, to make this application the XCP server, regardless which application is started first
+// XcpInit mode flags
+#define XCP_MODE_DEACTIVATE 0     // Initialize XCP singleton without activating the protocol layer (passive/off)
+#define XCP_MODE_LOCAL 0x01       // Initialize and activate XCP, allocate state in static memory if libxcplite not compiled in SHM mode, otherwise allocate state in heap memory
+#define XCP_MODE_PERSISTENCE 0x02 // Load the binary persistence file, to keep deterministic order of events and calibration segments, and load persisted calibration data
+#define XCP_MODE_SHM 0x80         // Initialize and activate XCP, allocate state in POSIX shared memory
+#define XCP_MODE_SHM_AUTO 0x04    // Set this flag to automatically choose leader as XCP server
+#define XCP_MODE_SHM_SERVER 0x08  // Set this flag, to make this application the XCP server, regardless which application is started first
 
 // Manage the XCP driver singleton
 bool XcpInit(const char *name, const char *epk, uint8_t mode);
@@ -61,8 +62,8 @@ void XcpDeinit(void);
 const char *XcpGetProjectName(void);
 
 // EPK software version identifier
-const char *XcpGetEpk(void);
-const char *XcpGetEcuEpk(void); // Only in SHM mode different to XcpGetEpk(), which is for the application, while XcpGetEcuEpk() is for the overall ECU
+const char *XcpGetEcuEpk(void); // Only in SHM mode different to XcpGetLocalEpk(), which is for the application, while XcpGetEcuEpk() is for the overall ECU
+const char *XcpGetLocalEpk(void);
 
 // XCP command processor
 // Execute an XCP command
@@ -122,6 +123,55 @@ static_assert(sizeof(tXcpCto) == XCPTL_MAX_CTO_SIZE, "tXcpCto size should be XCP
 /* DAQ events                                                               */
 /****************************************************************************/
 
+// Event descriptor used by DaqCreateEvent() for section-based pre-registration.
+// Also defined in xcplib.h; this guard prevents redefinition when both headers are included.
+#ifndef __XCPLIB_H__ // Public API header guard
+
+typedef struct {
+    const char *name;
+    uint32_t cycle_time_ns;
+    uint8_t priority;
+    uint8_t res[16 - sizeof(char *) - 4 - 1];
+} tXcpEventDescriptor;
+static_assert(sizeof(tXcpEventDescriptor) == 16, "Size of tXcpEventDescriptor must be 16 bytes for correct section parsing in xcpclient tool");
+static_assert(sizeof(((tXcpEventDescriptor *)0)->res) > 0, "tXcpEventDescriptor res padding must not be zero; check pointer size vs struct layout");
+
+#ifdef OPTION_SECTION_REGISTRATION
+
+// Linker-synthesized section boundary symbols, resolved at link time
+#if defined(__ELF__)
+// Declared weak: if no object file contributes to the xcp_evts section the symbols resolve
+// to NULL rather than causing an undefined-reference linker error. Keeps Linux (production)
+// builds with zero section-registered events linkable and graceful.
+extern const tXcpEventDescriptor __start_xcp_evts[] __attribute__((weak));
+extern const tXcpEventDescriptor __stop_xcp_evts[] __attribute__((weak));
+#elif defined(__APPLE__)
+// Mach-O (ld64) boundary symbols. Not weak: if no descriptor is ever placed in the section
+// the link fails with an undefined-symbol error. That is acceptable here - macOS is a
+// development-only target and a build with zero events is a non-functional configuration.
+extern const tXcpEventDescriptor __start_xcp_evts[] __asm("section$start$__DATA$xcp_evts");
+extern const tXcpEventDescriptor __stop_xcp_evts[] __asm("section$end$__DATA$xcp_evts");
+#else
+#error "Unsupported platform for section based event pre-registration"
+#endif
+
+// Platform section attribute for tXcpEventDescriptor const static variables created by DaqCreateEvent().
+// Placing all descriptors in a named ELF/Mach-O section lets XcpInit() iterate them and
+// pre-register every event before the first trigger, without requiring the call site of the event creation to execute first.
+#if defined(__ELF__)
+#define XCP_EVENT_SECTION_ATTR __attribute__((section("xcp_evts"), used))
+#elif defined(__APPLE__)
+#define XCP_EVENT_SECTION_ATTR __attribute__((section("__DATA,xcp_evts"), used))
+#endif
+
+#else // OPTION_SECTION_REGISTRATION
+
+#define XCP_EVENT_SECTION_ATTR
+
+#endif // !OPTION_SECTION_REGISTRATION
+
+#endif // __XCPLIB_H__
+
 // XCP event identifier type
 typedef uint16_t tXcpEventId;
 #define XCP_UNDEFINED_EVENT_ID 0xFFFF
@@ -149,6 +199,9 @@ void XcpEventEnable(tXcpEventId event, bool enable);
 bool XcpCheckDaqLists(uint8_t daq_state, tXcpEventId event_id);
 
 #ifdef XCP_ENABLE_DAQ_EVENT_LIST
+
+// Dynamic event list
+//--------------------
 
 #ifndef XCP_MAX_EVENT_COUNT
 #error "Please define XCP_MAX_EVENT_COUNT!"
@@ -189,20 +242,13 @@ tXcpEventId XcpCreateIndexedEvent(const char *name, uint16_t index, uint32_t cyc
 
 // Add a measurement event to event list, return event number (0..MAX_EVENT-1)
 tXcpEventId XcpCreateEvent(const char *name, uint32_t cycle_time_ns /* ns */, uint8_t priority /* 0 = queued, >=1 flushing*/);
+
 // Add a measurement event to event list, return event number (0..MAX_EVENT-1), thread safe, if name exists, an instance id is appended to the name
 tXcpEventId XcpCreateEventInstance(const char *name, uint32_t cycle_time_ns /* ns */, uint8_t priority /* 0 = queued, >=1 flushing */);
 
-// Get the number of events in the XCP event list
-uint16_t XcpGetEventCount(void);
-
-// Get event id by name, returns XCP_UNDEFINED_EVENT_ID if not found
-// In SHM mode, only searches within the calling process's own events (scoped by app_id)
-tXcpEventId XcpFindEvent(const char *name);
-
-// Get event name by id, returns NULL if not found
-const char *XcpGetEventName(tXcpEventId event);
 // Get the event index (1..), return 0 if not found
 uint16_t XcpGetEventIndex(tXcpEventId event);
+
 // Get the event descriptor struct by id, returns NULL if not found
 const tXcpEvent *XcpGetEvent(tXcpEventId event);
 
@@ -211,7 +257,36 @@ const tXcpEvent *XcpGetEvent(tXcpEventId event);
 uint8_t XcpGetEventAppId(tXcpEventId event);
 #endif // SHM_MODE
 
-#endif // XCP_ENABLE_DAQ_EVENT_LIST
+#else
+
+// Section registered event descriptors
+//--------------------------------------
+
+#ifdef XCP_ENABLE_DAQ_PRESCALER
+#error "XCP_ENABLE_DAQ_PRESCALER requires XCP_ENABLE_DAQ_EVENT_LIST"
+#endif
+#ifdef OPTION_SHM_MODE
+#error "OPTION_SHM_MODE requires XCP_ENABLE_DAQ_EVENT_LIST"
+#endif
+
+// Get the event descriptor struct by id, returns NULL if not found
+const tXcpEventDescriptor *XcpGetEvent(tXcpEventId event);
+
+#endif // !XCP_ENABLE_DAQ_EVENT_LIST
+
+// Get event name by id, returns NULL if not found
+const char *XcpGetEventName(tXcpEventId event);
+// Get event cycle time by id, returns 0 if not found
+uint32_t XcpGetEventCycleTime(tXcpEventId event);
+// Get event priority by id, returns 0 if not found
+uint8_t XcpGetEventPriority(tXcpEventId event);
+
+// Get event id by name, returns XCP_UNDEFINED_EVENT_ID if not found
+// In SHM mode, only searches within the calling process's own events (scoped by app_id)
+tXcpEventId XcpFindEvent(const char *name);
+
+// Get the number of events
+uint16_t XcpGetEventCount(void);
 
 /****************************************************************************/
 /* DAQ tables                                                               */
@@ -263,6 +338,9 @@ typedef struct {
     uint16_t config_id;
 #endif
 #if !defined(XCP_ENABLE_DAQ_EVENT_LIST) && defined(XCP_MAX_EVENT_COUNT)
+#if (XCP_MAX_EVENT_COUNT == 0) || (XCP_MAX_EVENT_COUNT > 1024)
+#error "XCP_MAX_EVENT_COUNT must be > 0 and <= 1024, remove this if you are sure about the memory usage"
+#endif
     uint16_t daq_first[XCP_MAX_EVENT_COUNT]; // Event channel to DAQ list mapping when there is no event management
 #endif
 
@@ -413,10 +491,13 @@ typedef struct XcpLocalData {
 } tXcpLocalData;
 
 /****************************************************************************/
-/* Protocol layer external dependencies                                     */
+/* Protocol and transport layer external dependencies (in xcpappl.c)        */
 /****************************************************************************/
 
-/* Callbacks on connect, disconnect, measurement prepare, start and stop */
+// Transport layer callbacks
+void ApplXcpBackgroundTasks(void);
+
+// Protocol layer callbacks
 bool ApplXcpConnect(uint8_t mode);
 void ApplXcpDisconnect(void);
 #if XCP_PROTOCOL_LAYER_VERSION >= 0x0104
@@ -425,7 +506,7 @@ bool ApplXcpPrepareDaq(void);
 void ApplXcpStartDaq(void);
 void ApplXcpStopDaq(void);
 
-/* Address conversions from A2L address to pointer and vice versa in absolute addressing mode */
+// Protocol layer callbacks for adddress conversions from A2L address to pointer and vice versa in absolute addressing mode
 const uint8_t *ApplXcpGetBaseAddr(void);      // Get the base address for absolute addressing mode */
 void ApplXcpSetBaseAddr(const uint8_t *addr); // Set base address for absolute addressing mode, only needed for special cases where the default base addr is not suitable
 extern const uint8_t *gXcpBaseAddr;
@@ -434,16 +515,16 @@ uint32_t ApplXcpGetAddr(const uint8_t *p);   // Calculate the absolute XCP/A2L 3
 uint8_t ApplXcpGetAddrExt(const uint8_t *p); // Get the absolute XCP/A2L 8 bit address extension from a pointer
 const uint8_t *ApplXcpGetModuleAddr(void);   // Get the module base address, used as default base address for absolute addressing mode
 
-// Check memory access permissions
+// Protocol layer callbacks for check memory access permissions
 uint8_t ApplXcpCheckMemory(uint8_t ext, uint32_t addr, uint8_t size);
 
-/* Read and write memory for application addressing mode XCP_ADDR_EXT_APP */
+// Protocol layer callbacks for read and write memory for application addressing mode XCP_ADDR_EXT_APP */
 #ifdef XCP_ENABLE_APP_ADDRESSING
 uint8_t ApplXcpReadMemory(uint32_t src, uint8_t size, uint8_t *dst);
 uint8_t ApplXcpWriteMemory(uint32_t dst, uint8_t size, const uint8_t *src);
 #endif
 
-/* User command */
+// Protocol layer callbacks for user commands
 #ifdef XCP_ENABLE_USER_COMMAND
 uint8_t ApplXcpUserCommand(uint8_t cmd);
 #endif
@@ -470,17 +551,17 @@ uint8_t ApplXcpCalFreeze(void);
 #endif
 #endif
 
-// Clock (optionally provided by application via callback)
+// Clock
 uint64_t ApplXcpGetClock64(void);
 
-// DAQ clock state (optionally provided by application via callback)
+// DAQ clock state
 #define CLOCK_STATE_SYNCH_IN_PROGRESS (0)
 #define CLOCK_STATE_SYNCH (1)
 #define CLOCK_STATE_FREE_RUNNING (7)
 #define CLOCK_STATE_GRANDMASTER_STATE_SYNCH (1 << 3) // not used yet
 uint8_t ApplXcpGetClockState(void);
 
-// PTP grandmaster clock info (optionally provided by application via callback)
+// PTP grandmaster clock info
 #ifdef XCP_ENABLE_PTP
 #define CLOCK_STRATUM_LEVEL_UNKNOWN 255
 #define CLOCK_STRATUM_LEVEL_ARB 16
@@ -490,11 +571,6 @@ uint8_t ApplXcpGetClockState(void);
 #define CLOCK_EPOCH_ARB 2         // Arbitrary (epoch unknown)
 bool ApplXcpGetClockInfoGrandmaster(uint8_t *client_uuid, uint8_t *grandmaster_uuid, uint8_t *epoch, uint8_t *stratum);
 #endif
-
-// Register clock callbacks
-void ApplXcpRegisterGetClockCallback(uint64_t (*cb_get_clock)(void));
-void ApplXcpRegisterGetClockStateCallback(uint8_t (*cb_get_clock_state)(void));
-void ApplXcpRegisterGetClockInfoGrandmasterCallback(bool (*cb_get_clock_info_grandmaster)(uint8_t *client_uuid, uint8_t *grandmaster_uuid, uint8_t *epoch, uint8_t *stratum));
 
 /* DAQ resume */
 #ifdef XCP_ENABLE_DAQ_RESUME
@@ -513,7 +589,26 @@ uint32_t ApplXcpGetId(uint8_t id, uint8_t *buf, uint32_t bufLen);
 bool ApplXcpReadFile(uint8_t size, uint32_t offset, uint8_t *data);
 #endif
 
-// Register XCP callbacks
+#ifdef OPTION_ENABLE_A2L_GENERATOR
+// A2L generator hook called by ApplXcpConnect (a2l.c)
+// Finalizes the A2L file with A2L_MODE_FINALIZE_ON_CONNECT, returns false to refuse the connect while the A2L file is not finalized
+bool A2lCheckFinalizeOnConnect(uint8_t connect_mode);
+#endif
+
+// Set/get the ELF and A2L file name (for GET_ID)
+void XcpSetA2lName(const char *name);
+const char *XcpGetA2lName(void);
+void XcpSetElfName(const char *name);
+const char *XcpGetElfName(void);
+
+/****************************************************************************/
+/* Register user defined callback functions                                 */
+/****************************************************************************/
+
+// Register XCP transport layer callbacks
+void ApplXcpRegisterIdleCallback(void (*cb_idle)(void));
+
+// Register XCP protocol layer callbacks
 void ApplXcpRegisterConnectCallback(bool (*cb_connect)(uint8_t mode));
 void ApplXcpRegisterPrepareDaqCallback(uint8_t (*cb_prepare_daq)(void));
 void ApplXcpRegisterStartDaqCallback(uint8_t (*cb_start_daq)(void));
@@ -528,11 +623,10 @@ void ApplXcpRegisterReadCallback(uint8_t (*cb_read)(uint32_t src, uint8_t size, 
 void ApplXcpRegisterWriteCallback(uint8_t (*cb_write)(uint32_t dst, uint8_t size, const uint8_t *src, uint8_t delay));
 void ApplXcpRegisterFlushCallback(uint8_t (*cb_flush)(void));
 
-// Set/get the ELF and A2L file name (for GET_ID)
-void XcpSetA2lName(const char *name);
-const char *XcpGetA2lName(void);
-void XcpSetElfName(const char *name);
-const char *XcpGetElfName(void);
+// Register clock callbacks
+void ApplXcpRegisterGetClockCallback(uint64_t (*cb_get_clock)(void));
+void ApplXcpRegisterGetClockStateCallback(uint8_t (*cb_get_clock_state)(void));
+void ApplXcpRegisterGetClockInfoGrandmasterCallback(bool (*cb_get_clock_info_grandmaster)(uint8_t *client_uuid, uint8_t *grandmaster_uuid, uint8_t *epoch, uint8_t *stratum));
 
 #ifdef __cplusplus
 } // extern "C"
@@ -543,13 +637,10 @@ const char *XcpGetElfName(void);
 /****************************************************************************/
 
 // Some metrics collected by the XCP protocol layer for debugging and performance analysis
-#ifdef TEST_ENABLE_DBG_METRICS
+#ifdef TEST_ENABLE_TL_METRICS
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern uint32_t gXcpWritePendingCount;
-extern uint32_t gXcpCalSegPublishAllCount;
-extern uint32_t gXcpDaqEventCount;
 extern uint32_t gXcpTxPacketCount;
 extern uint32_t gXcpTxMessageCount;
 extern uint32_t gXcpTxIoVectorCount;
@@ -557,4 +648,15 @@ extern uint32_t gXcpRxPacketCount;
 #ifdef __cplusplus
 }
 #endif
-#endif // TEST_ENABLE_DBG_METRICS
+#endif // TEST_ENABLE_TL_METRICS
+
+#ifdef TEST_ENABLE_CAL_METRICS
+#ifdef __cplusplus
+extern "C" {
+#endif
+extern uint32_t gXcpWritePendingCount;
+extern uint32_t gXcpCalSegPublishAllCount;
+#ifdef __cplusplus
+}
+#endif
+#endif // TEST_ENABLE_CAL_METRICS

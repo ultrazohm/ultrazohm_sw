@@ -15,6 +15,7 @@
 |
  ----------------------------------------------------------------------------*/
 
+#include <assert.h>  // for static_assert
 #include <stdbool.h> // for bool
 #include <stdint.h>  // for uint16_t, uint32_t, uint8_t
 
@@ -85,7 +86,7 @@ void XcpShmInit(void); // Initialize the shared memory header
 
 uint8_t XcpShmGetAppId(void);              // Get this application process's id
 const char *XcpShmGetEcuProjectName(void); // Get the project name of the ECU
-const char *XcpShmGetEcuEpk(void);         // Get the EPK of the ECU, constructed from all registered applications EPKs
+const char *XcpShmGetEcuEpk(void);         // Update and get the EPK of the ECU, constructed from all registered applications EPKs
 
 bool XcpShmIsXcpServer(void); // true when this app process is the XCP server
 bool XcpShmIsLeader(void);    // true when this app process created the shared memory region

@@ -16,7 +16,8 @@
 #include <string.h>   // for strncpy
 
 #include "dbg_print.h"  // for DBG_PRINTF3, DBG_PRINT4, DBG_PRINTF4, DBG...
-#include "platform.h"   // for platform defines (WIN_, LINUX_, MACOS_) and specific implementation of sockets, clock, thread, mutex
+#include "platform.h"   // for clockGet, SNPRINTF, STRNLEN, platform defines
+#include "sockets.h"    // for socketGetLocalAddr
 #include "xcp.h"        // for CRC_XXX
 #include "xcp_cfg.h"    // for XCP_ENABLE_xxx
 #include "xcplib_cfg.h" // for OPTION_xxx
@@ -35,6 +36,7 @@ static bool __write_delayed = false;
 // Callbacks
 /**************************************************************************/
 
+static void (*__callback_idle)(void) = NULL;
 static bool (*__callback_connect)(uint8_t mode) = NULL;
 static uint8_t (*__callback_prepare_daq)(void) = NULL;
 static uint8_t (*__callback_start_daq)(void) = NULL;
@@ -49,6 +51,7 @@ static uint8_t (*__callback_read)(uint32_t src, uint8_t size, uint8_t *dst) = NU
 static uint8_t (*__callback_write)(uint32_t dst, uint8_t size, const uint8_t *src, uint8_t delay) = NULL;
 static uint8_t (*__callback_flush)(void) = NULL;
 
+void ApplXcpRegisterIdleCallback(void (*cb_idle)(void)) { __callback_idle = cb_idle; }
 void ApplXcpRegisterConnectCallback(bool (*cb_connect)(uint8_t mode)) { __callback_connect = cb_connect; }
 void ApplXcpRegisterPrepareDaqCallback(uint8_t (*cb_prepare_daq)(void)) { __callback_prepare_daq = cb_prepare_daq; }
 void ApplXcpRegisterStartDaqCallback(uint8_t (*cb_start_daq)(void)) { __callback_start_daq = cb_start_daq; }
@@ -71,6 +74,12 @@ bool ApplXcpConnect(uint8_t mode) {
     DBG_PRINTF4("ApplXcpConnect mode=%u\n", mode);
 #ifdef XCP_ENABLE_USER_COMMAND
     __write_delayed = false;
+#endif
+#ifdef OPTION_ENABLE_A2L_GENERATOR
+    // Finalize the A2L file on connect (A2L_MODE_FINALIZE_ON_CONNECT) or refuse the connect while it is not finalized
+    // Called before the application callback, which stays available for the application
+    if (!A2lCheckFinalizeOnConnect(mode))
+        return false;
 #endif
     if (__callback_connect != NULL)
         return __callback_connect(mode);
@@ -105,6 +114,15 @@ void ApplXcpStopDaq(void) {
 }
 
 /**************************************************************************/
+// General notifications from transport protocol layer
+/**************************************************************************/
+void ApplXcpBackgroundTasks(void) {
+    if (__callback_idle != NULL) {
+        __callback_idle();
+    }
+}
+
+/**************************************************************************/
 // Clock
 // Get clock for DAQ timestamps
 // Get information about clock synchronization state and grandmaster UUID
@@ -115,12 +133,12 @@ void ApplXcpRegisterGetClockCallback(uint64_t (*cb_get_clock)(void)) { __callbac
 
 uint64_t ApplXcpGetClock64(void) {
 
-    /* Return value is clock with
-        Clock timestamp resolution defined in xcp_cfg.h
-        Clock must be monotonic !!!
-    */
+    // Return value is a 64 bit high resolution free running monotonic clock
+    // Resolution defined in xcp_cfg.h
     if (__callback_get_clock != NULL)
         return __callback_get_clock();
+
+    // Default to the implementation of clockGet() in platform.c
     return clockGet();
 }
 
@@ -547,6 +565,13 @@ static uint32_t openFile(const char *filename) {
     fseek(gXcpFile, 0, SEEK_END);
     gXcpFileLength = (uint32_t)ftell(gXcpFile);
     fseek(gXcpFile, 0, SEEK_SET);
+    // @@@@ TODO: This assert aborts the whole XCP server process when the file is empty, which a
+    // remote XCP client can trigger with GET_ID A2L upload (a previous crashed run leaves a 0 byte
+    // A2L behind, and it is then reproduced on every subsequent start). An empty or unreadable file
+    // is a normal runtime condition, not a programming error: return 0 here and let the caller
+    // report it. In a release build (NDEBUG) the assert disappears and exactly that already happens
+    // - the client then reports "A2L file not available, GET_ID 4 returned size 0" - so this is a
+    // debug-only abort and a silent Debug/Release behaviour difference.
     assert(gXcpFileLength > 0);
     DBG_PRINTF4("File %s ready for upload, size=%u\n", filename, gXcpFileLength);
     return gXcpFileLength;
@@ -558,6 +583,13 @@ bool ApplXcpReadFile(uint8_t size, uint32_t addr, uint8_t *data) {
         DBG_PRINT_ERROR("File not open for reading!\n");
         return false;
     }
+    // @@@@ TODO: Two robustness issues here, neither with a confirmed failure today - A2L upload
+    // itself is verified working (use: xcpclient --upload-a2l --a2l <name>):
+    //  1) the diagnostic lumps "offset out of range" and "short read" into one misleading text.
+    //     A short read is reported as "exceeds file length", which sends debugging the wrong way.
+    //  2) the read is purely sequential and ignores addr: it relies on the FILE* position and
+    //     closes the file at EOF, so any retry, re-set MTA or non sequential block transfer would
+    //     fail. Seeking to addr before reading would make this robust regardless of client behaviour.
     if (addr + size > gXcpFileLength || size != fread(data, 1, (uint32_t)size, gXcpFile)) {
         closeFile();
         DBG_PRINTF_ERROR("ApplXcpReadFile addr=%u size=%u exceeds file length=%u\n", addr, size, gXcpFileLength);

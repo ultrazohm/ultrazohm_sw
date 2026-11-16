@@ -57,7 +57,7 @@ What remains is Vitis assembly + on-hardware bring-up (see "Integration").
 
 | Milestone | State |
 |-----------|-------|
-| Z1 engine on armr5 | ✅ engine (`xcplite/queue32/util/xcpappl`) compiles unchanged for armr5 + `_BAREMETAL` platform branch |
+| Z1 engine on armr5 | ✅ engine (`xcplite/queue32/util/xcpappl`) compiles unchanged for armr5 + `_BAREMETAL` platform branch — upstream **V2.3.4** since 2026-11-16 (was V2.1.0; see IMPROVEMENTS §4b, not yet hardware-tested) |
 | Z2 R5 transport | ✅ `xctpl_ocm.c` (engine TL + `xcp_r5_init/event/poll`) + `ocm_xcp_fifo.c` — R5 stack links to **only `uz_SystemTime`** (~36 KB) |
 | Z3 A53 gateway | ✅ `xcp_gateway_a53.c` (UDP ⇄ OCM, IPI-ISR + 2 tasks) — compiles against the A53 BSP, no unexpected unresolved syms |
 | Z1b Vitis wiring | ⏳ documented below (needs the board to bring up) |

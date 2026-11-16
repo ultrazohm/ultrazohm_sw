@@ -41,8 +41,8 @@ void XcpBinDelete(void);
 bool XcpBinFreezeCalSeg(tXcpCalSegIndex calseg);
 #endif
 
-/// Get the filename of the binary persistence file
-/// Buffer valid until the next call of this function
+// Get the filename of the binary persistence file
+// Buffer valid until the next call of this function
 const char *XcpBinGetFilename(void);
 
 #ifdef __cplusplus

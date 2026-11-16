@@ -15,25 +15,23 @@
   The values for XCP_xxx and XCPTL_xxx define constants (in xcp_cfg.h and xcptl_cfg.h) may depend on options
 */
 
-// XCPlite version, currently V2.1.0
+// XCPlite version, currently V2.3.x
+// Keep in sync with project(xcplite VERSION ...) in CMakeLists.txt, which is what
+// find_package(xcplite) reports to a consuming project.
 #define OPTION_VERSION_MAJOR 2
-#define OPTION_VERSION_MINOR 1
-#define OPTION_VERSION_PATCH 0
+#define OPTION_VERSION_MINOR 3
+#define OPTION_VERSION_PATCH 1
 
 // CANape version compatibility
 // Disable workarounds for CANape versions < 24SP2
 // (Disable COPY_CAL_PAGE bug workaround and enable .this references to shared calibration axis)
 #define OPTION_CANAPE_24
 
-//-------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------
-// Specific build settings of libxcplite
-
+// Legacy trap
+// @@@@ TODO: Remove this
 #if defined(XCPLIB_FOR_RUST) // Set by the Rust build script
-
-#include "xcplib_rust_cfg.h" // for Rust xcp-lite specific configuration
-
-#else
+#error "XCPLIB_FOR_RUST is deprecated, use configuration override instead"
+#endif
 
 //-------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------
@@ -73,21 +71,11 @@
 #endif
 
 //-------------------------------------------------------------------------------
-// XCP multi application mode
-// Multiple application processes may have shared transmit queue, calibration RCU and XCP state
-// One application is the XCP server, could be the first one running (XCP leader) or a dedicated application (XCP daemon)
-// Requires a POSIX-compliant platform (Linux / macOS / QNX).  Not supported on Windows.
-
-// Experimental, work in progress, not fully tested yet, may change or be removed without major version change, use with caution
-
-// #define OPTION_SHM_MODE
-
-//-------------------------------------------------------------------------------
 // XCP server options
 
 #define OPTION_ENABLE_TCP
 #define OPTION_ENABLE_UDP
-#define OPTION_MTU 8000                     // Ethernet packet size (MTU), must be %8 - Jumbo frames supported
+#define OPTION_MTU 1500                     // IP MTU; jumbo frames support depend on path MTU in your network
 #define OPTION_SERVER_FORCEFULL_TERMINATION // Don't wait for the rx and tx thread to finish, just terminate them
 
 //-------------------------------------------------------------------------------
@@ -103,6 +91,20 @@
 // Total memory pool size for all calibration segments (header + 4 pages each)
 // Must be large enough for all XcpCreateCalSeg() calls combined
 #define OPTION_CAL_MEM_SIZE (1024 * 5) // 5 KB default
+
+// RCU algorithm for calibration segment updates, see docs/CAL_RCU.md
+// Defined: Publishing does not depend on reader progress
+//  - Changes are visible with the next lock
+//  - The lock is lock-free (but not wait-free, retries when a publish happens concurrently)
+//  - Slightly more complex cache synchronisation
+//  - Not recommended for micro controller (FreeRTOS) use cases due to potential performance issues
+//  - Recommended for slow reader, configuration parameter use-cases, not typical calibration use-cases
+// Undefined (default): Publishing depends on the lock count returning to zero
+//  - Changes are visible with the first or second first level lock
+//  - The lock is wait-free
+// The reader API is identical, except XcpUnlockCalSeg() needs the page pointer returned by XcpLockCalSeg()
+// The C++ API is not affected, the C examples have not been adapted for the API change, the tests are adapted
+// #define OPTION_CAL_RCU_REFCOUNT
 
 // Single page mode
 // #define OPTION_CAL_SEGMENTS_SINGLE_PAGE
@@ -132,45 +134,85 @@
 //-------------------------------------------------------------------------------
 // DAQ settings
 
-#define OPTION_DAQ_MEM_SIZE (512 * 6) // Memory bytes used for XCP DAQ tables - 6 bytes per measurement signal/block needed
-#define OPTION_DAQ_EVENT_COUNT 32     // Maximum number of DAQ events (integer value, must be even)
-// #define OPTION_DAQ_ASYNC_EVENT         // Create an asynchronous, cyclic DAQ event for asynchronous data acquisition
+// Enable DAQ event management
+// Mandatory for some of the standard examples in XCPlite, rust xcp-lite has its own DAQ event management
+// Enables dynamic event creation and per thread event instances
+// Enables tXcpEvent, XcpCreateIndexedEvent, XcpCreateEvent, XcpCreateEventInstance, XcpGetEventCount, XcpFindEvent,XcpGetEventName,XcpGetEventIndex,XcpGetEvent
+#define OPTION_DAQ_EVENT_LIST
+
+// Maximum number of DAQ events (integer value, must be even)
+// Needs OPTION_DAQ_EVENT_COUNT*2 bytes of memory
+// If OPTION_DAQ_EVENT_LIST is off, event number is bound which is used for optimization
+#define OPTION_DAQ_EVENT_COUNT (16)
+
+// Memory bytes used for XCP DAQ tables
+// 6 bytes per measurement signal (ODT entry) needed
+#define OPTION_DAQ_MEM_SIZE (512 * 6)
+
+// Create an cyclic default DAQ event with event id=0 for asynchronous data acquisition
+// May be used as default_event for xcpclient, since xcpclient V4.x explicitly specified as commandline option
+// (Needs OPTION_DAQ_EVENT_LIST)
+// #define OPTION_DAQ_ASYNC_EVENT
 
 // Transport layer queue, vectored IO, lockless with variable queue entry size
-// Default:
-#define OPTION_QUEUE_64_VAR_SIZE
+// This is the default queue for 64 bit platforms
+#define OPTION_QUEUE_64_VAR_SIZE // (queue64v.c)
 
 // Transport layer queue, vectored IO, lockless with fixed queue entry size
-// For maximum performance with large DTO size, but less efficient memory usage with partially filled queue entries
+// For maximum performance, but less efficient memory usage with partially filled queue entries
 // Entry size is XCPTL_MAX_DTO_SIZE  + XCPTL_TRANSPORT_LAYER_HEADER_SIZE (4) + 4
-// Optimal overall queue size is required to be a multiple of the cache line size (so XCPTL_MAX_DTO_SIZE in xcptl_cfg.h currently set to 244)
+// Optimal overall queue size is required to be a multiple of the cache line size (so XCPTL_MAX_DTO_SIZE in xcptl_cfg.h currently set to 248)
 // Tune XCPTL_MAX_DTO_SIZE for best compromise between memory efficiency and performance
 // Larger DTO size may not payoff, rely on transport layer message accumulation
-// #define OPTION_QUEUE_64_FIX_SIZE
-// Optional benchmark switch for queue64f.c:
-// If undefined, slot reuse is published by a release-store to the fixed entry_header and tail is relaxed.
-// If defined, slot reuse is published by a release update to tail and producers acquire-load tail.
-// #define OPTION_QUEUE_64_FIX_SIZE_SYNC_TAIL
+// #define OPTION_QUEUE_64_FIX_SIZE // (queue64f.c)
 
-// Transport layer queue, with variable queue entry size, 32 bit not lockless with mutex synchronization
+// Transport layer queue, with variable queue entry size, 32 bit not lockless with mutex or critical_section synchronization
 // Mandatory for Windows and 32 bit platforms
-// #define OPTION_QUEUE_32
-#if defined(OPTION_ATOMIC_EMULATION) || defined(PLATFORM_32_BIT)
+// #define OPTION_QUEUE_32 // (queue32.c for Windows or queue32m.c optimized for FreeRTOS)
+#if defined(OPTION_ATOMIC_EMULATION) || defined(PLATFORM_32BIT)
 #undef OPTION_QUEUE_64_VAR_SIZE
 #undef OPTION_QUEUE_64_FIX_SIZE
 #define OPTION_QUEUE_32
 #endif
 
 //-------------------------------------------------------------------------------
-// A2L generation settings
+// Runtime A2L generation and upload
 
 #define OPTION_ENABLE_A2L_GENERATOR // Enable A2L generator
 #define OPTION_ENABLE_A2L_UPLOAD    // Enable A2L upload via XCP
-#define OPTION_ENABLE_ELF_UPLOAD    // Enable ELF upload via XCP
 
 // Enable socketGetLocalAddr for A2L file generation
 // Used for convenience to get an existing ip address in A2L, when bound to ANY 0.0.0.0
 // #define OPTION_ENABLE_GET_LOCAL_ADDR
+
+//-------------------------------------------------------------------------------
+// Buildtime A2L generation
+
+// Registration at compile and link time for events (data acquisition, section xcp_evts) and calibration segments (calibration, section xcp_cals).
+// On:
+// The event id and the segment number are the positions of the descriptors in the sections.
+// Stable for a build.
+// The offline A2L generator (xcpclient --elf) reads the sections.
+// Requires a platform with ELF or Mach-O sections (not MSVC), mandatory if OPTION_DAQ_EVENT_LIST is off (configurations no_a2l and rtos).
+// Event and calibration segment numbering independant of event creation order
+// Off:
+// Events and segments are created at runtime (DaqCreateEvent, CalSegCreate) in creation order.
+// The trigger macros look up the event by name once, so events may be created anywhere in the application.
+// Event and calibration segment numbering is dependant on event creation order (on each application start or once on initial creation order if persistence is enabled)
+
+// #define OPTION_SECTION_REGISTRATION // Default is Off
+
+// With section registration off, the macros for event and calibration segment creation still work, but events and segments are created at runtime at the call site, not at compile
+// and link time and in XcpInit This may lead to unstable event and calibration segment numbering across application runs, when OPTION_ENABLE_PERSISTENCE is not enabled. The C macros
+// still create static marker variables to help offline A2L generators
+// DaqCreateEvent and its variants:
+//   static const tXcpEventDescriptor evt__##event_name = <event_descriptor>; // at the call site of DaqCreateEvent
+// DaqTriggerEvent and its variants:
+//   static tXcpEventId trg__AAS__##event_name = <event_id>; // at the call site of DaqTriggerEvent
+// C and C++ CalSegCreate, CalSegDecl, C++ CalSegDeclRef:
+//   static const tXcpCalSegDescriptor cal__##calseg_name = <calseg_descriptor>;
+
+// #define OPTION_ENABLE_ELF_UPLOAD // User defined command: xcpclient can upload ELF via XCP
 
 //-------------------------------------------------------------------------------
 // Tests
@@ -180,7 +222,8 @@
 // #define TEST_CLOCK_GET_STATISTIC // Count number of calls to clockGet and clockGetLast, print results with clockPrintStatistic()
 // #define TEST_ACQUIRE_SPIN_COUNT // Get max spin count of the queue acquire operations
 // #define TEST_ACQUIRE_LOCK_TIMING // Create a queue acquire time histogram, prints results on queue deinit, significant performance impact, for testing only !!!!!!!!!!
-// #define TEST_ENABLE_DBG_METRICS // Enable debug metrics for XCP events and transport layer packets
+// #define TEST_ENABLE_TL_METRICS  // Enable debug metrics for XCP transport layer packets
+// #define TEST_ENABLE_CAL_METRICS // Enable debug metrics for XCP calibration
 // #define TEST_ENABLE_BUFFERCOUNT_HISTOGRAM // Enable histogram of the used buffer counts in the transport layer vectored io
 // #define TEST_MUTABLE_ACCESS_OWNERSHIP // Enable tracking of mutable access thread ownership to detect overseen potential memory safety problems
 // #define TEST_ENABLE_DBG_CHECKS // Enable timing checks in the XCP server
@@ -188,18 +231,29 @@
 
 #endif // !defined(NDEBUG)
 
+//-------------------------------------------------------------------------------
+// Overrides
+
 // Optional application-specific override — patches any of the above defaults.
-// Pass the filename of your override header via:
-//   cmake: target_compile_definitions(xcplite PRIVATE "XCPLIB_CFG_OVERRIDE=\"my_xcplib_overrides.h\"")
-// See xcplib_rtos_cfg.h and xcplib_no_a2l_cfg.h for example override files.
+// The header is selected at build time and must be seen identically by the library and the application:
+//   cmake: -DXCPLITE_CFG_OVERRIDE=/path/to/xcplib_app_cfg.h  (or set(XCPLITE_CFG_OVERRIDE ...) before
+//          add_subdirectory/FetchContent_MakeAvailable), which defines XCPLIB_CFG_OVERRIDE as a PUBLIC
+//          usage requirement of the xcplite target and adds the header's directory to the include path.
+// See xcplib_rtos_cfg.h and xcplib_no_a2l_cfg.h (shipped configurations) and
+// examples/fetchcontent_example/config/xcplib_app_cfg.h for example override files.
 #ifdef XCPLIB_CFG_OVERRIDE
 #include XCPLIB_CFG_OVERRIDE
 #endif
 
-// UltraZohm: always apply the UZ override so the FreeRTOS/lwIP/A53 build is correct
-// even when the Vitis project does not pass -DXCPLIB_CFG_OVERRIDE (command-line macro
-// quoting for an #include argument is fragile in the .cproject).  This undefines
-// OPTION_ENABLE_TCP, selects OPTION_QUEUE_32, the 1 us arbitrary-epoch clock, etc.
-#include "xcplib_r5_cfg.h"
+//-------------------------------------------------------------------------------
+// Configuration checks
 
+#if defined(OPTION_SECTION_REGISTRATION) && (defined(_MSC_VER) || defined(OPTION_SHM_MODE))
+#error "OPTION_SECTION_REGISTRATION (link time registration of events and calibration segments) is not supported"
 #endif
+
+// UltraZohm: always apply the UZ override so the R5 (Option Z) build is correct
+// even when the Vitis project does not pass -DXCPLIB_CFG_OVERRIDE (command-line macro
+// quoting for an #include argument is fragile in the .cproject). Selects the OCM FIFO
+// transport (no sockets), OPTION_QUEUE_32, the 1 us arbitrary-epoch clock, etc.
+#include "xcplib_r5_cfg.h"

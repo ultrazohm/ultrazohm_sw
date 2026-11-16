@@ -16,18 +16,18 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-/// Initialize the server singleton.
-/// @pre User has called XcpInit.
-/// @param address Address to bind to.
-/// @param port Port to bind to.
-/// @param use_tcp Use TCP if true, otherwise UDP.
-/// @param measurement_queue_size Measurement queue size in bytes. Includes the bytes occupied by the queue header and some space needed for alignment.
-/// @return true on success, otherwise false.
+// Initialize the server singleton.
+// @pre User has called XcpInit.
+// @param address Address to bind to.
+// @param port Port to bind to.
+// @param use_tcp Use TCP if true, otherwise UDP.
+// @param measurement_queue_size Measurement queue size in bytes. Includes the bytes occupied by the queue header and some space needed for alignment.
+// @return true on success, otherwise false.
 bool XcpEthServerInit(const uint8_t *address, uint16_t port, bool use_tcp, uint32_t measurement_queue_size);
 
-/// Shutdown the server.
+// Shutdown the server.
 bool XcpEthServerShutdown(void);
 
-/// Get the server status.
-/// @return true if the server is running, otherwise false.
+// Get the server status.
+// @return true if the server is running, otherwise false.
 bool XcpEthServerStatus(void);

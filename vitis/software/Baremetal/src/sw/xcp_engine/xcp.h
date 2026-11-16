@@ -30,8 +30,11 @@
 #define CC_GET_COMM_MODE_INFO 0xFB
 #define CC_GET_ID 0xFA
 #define CC_SET_REQUEST 0xF9
+
 #define CC_GET_SEED 0xF8
 #define CC_UNLOCK 0xF7
+
+// Read from target ECU memory (Upload)
 #define CC_SET_MTA 0xF6
 #define CC_UPLOAD 0xF5
 #define CC_SHORT_UPLOAD 0xF4
@@ -41,10 +44,10 @@
 #define CC_USER_CMD 0xF1
 
 /*-------------------------------------------------------------------------*/
-/* Calibration Commands*/
+/* Calibration Commands */
 
+// Write into target ECU memory (Download) and read from target ECU memory (Upload)
 #define CC_DOWNLOAD 0xF0
-
 #define CC_DOWNLOAD_NEXT 0xEF
 #define CC_DOWNLOAD_MAX 0xEE
 #define CC_SHORT_DOWNLOAD 0xED

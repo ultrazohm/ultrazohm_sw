@@ -1,6 +1,9 @@
 #ifndef XCPLIB_R5_CFG_H
 #define XCPLIB_R5_CFG_H
-/* UltraZohm R5 (bare-metal) XCPlite config: Option Z — engine on the control core. */
+/* UltraZohm R5 (bare-metal) XCPlite config: Option Z - engine on the control
+ * core. Applied at the END of xcplib_cfg.h (UZ patch there), i.e. after the
+ * upstream defaults, exactly like upstream's own xcplib_rtos_cfg.h override.
+ * Engine base: upstream XCPlite V2.3.4 (github vectorgrp/XCPlite, 2026-11-11). */
 #undef  OPTION_ENABLE_TCP      /* no sockets on R5; transport is the OCM FIFO  */
 #undef  OPTION_ENABLE_UDP
 #undef  OPTION_ENABLE_DBG_STDERR
@@ -41,7 +44,15 @@
 #undef  OPTION_ENABLE_PERSISTENCE
 #undef  OPTION_ENABLE_A2L_GENERATOR
 #undef  OPTION_ENABLE_A2L_UPLOAD
-#undef  OPTION_ENABLE_ELF_UPLOAD
+#undef  OPTION_SECTION_REGISTRATION /* events are created at run time by xcp_r5_init (XcpCreateEvent) */
+/* Run-time event list (upstream default since V2.2, stated explicitly: xcp_r5_init
+ * creates DAQ_R5 and the daq_* time slices with XcpCreateEvent). 32 event slots
+ * keeps the DAQ table layout of the V2.1.0 engine (upstream default is 16). */
+#ifndef OPTION_DAQ_EVENT_LIST
+#define OPTION_DAQ_EVENT_LIST
+#endif
+#undef  OPTION_DAQ_EVENT_COUNT
+#define OPTION_DAQ_EVENT_COUNT 32
 #undef  OPTION_DAQ_MEM_SIZE
 /* DAQ table memory (R5 .bss/DDR): 12 B per DAQ list + 8 B per ODT + 6 B per
  * measured signal. Sized for the five rasters DAQ_R5/1ms/10ms/100ms/1s
@@ -50,9 +61,12 @@
 #define OPTION_DAQ_MEM_SIZE (1024 * 6)
 /* OCM FIFO transport bound: a FIFO record is u8-length capped (<= 255 bytes
  * including the 4-byte TL header), and the A53 gateway frame cap is 256.
- * MTU 284 -> XCPTL_MAX_SEGMENT_SIZE 252 (= max record payload); DTO 248 so
- * CONNECT advertises MAX_CTO/MAX_DTO = 248/248 (matches gen_a2l.py). */
+ * Segment 252 = exactly one max message (4 + 248). Upstream derives the
+ * segment from OPTION_MTU rounded down to a multiple of 8, and 256 would not
+ * fit a record, so the segment size is set directly (xcptl_cfg.h honours the
+ * predefine, UZ patch). DTO 248 so CONNECT advertises MAX_CTO/MAX_DTO =
+ * 248/248 (matches gen_a2l.py and CANape/UZ_XCP/uz.A2L). */
 #undef  OPTION_MTU
-#define OPTION_MTU 284
-#define XCPTL_MAX_DTO_SIZE 248 /* xcptl_cfg.h honours this predefine */
+#define XCPTL_MAX_SEGMENT_SIZE 252
+#define XCPTL_MAX_DTO_SIZE 248
 #endif

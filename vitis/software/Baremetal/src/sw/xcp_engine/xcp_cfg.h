@@ -40,32 +40,45 @@
 /*----------------------------------------------------------------------------*/
 /* DAQ event management */
 
-// Enable event list (Default)
-#ifndef XCPLIB_FOR_RUST // Rust has its own event management
+// Maximum length of event name without the trailing 0
+#define XCP_MAX_EVENT_NAME 15
+
+// Enable event list (Always enable for XCPlite, disabled for Rust xcp-lite)
+#ifdef OPTION_DAQ_EVENT_LIST
+
 #define XCP_ENABLE_DAQ_EVENT_LIST
-#endif
-#ifdef XCP_ENABLE_DAQ_EVENT_LIST
 
 #if defined(OPTION_DAQ_EVENT_COUNT) && (OPTION_DAQ_EVENT_COUNT > 0)
 #define XCP_MAX_EVENT_COUNT OPTION_DAQ_EVENT_COUNT
 #else
 #error "Please define OPTION_DAQ_EVENT_COUNT"
 #endif
+#if OPTION_DAQ_EVENT_COUNT > 1000
+#error "OPTION_DAQ_EVENT_COUNT is large, would need >20KB memory"
+#endif
 
 // Enable XCP_GET_EVENT_INFO, if this is enabled, event information can be queried by the XCP client tool
 #define XCP_ENABLE_DAQ_EVENT_INFO
 
-// Maximum length of event name without the trailing 0
-#define XCP_MAX_EVENT_NAME 15
+#else // XCP_ENABLE_DAQ_EVENT_LIST
 
-#else                           // XCP_ENABLE_DAQ_EVENT_LIST
+#if defined(OPTION_DAQ_EVENT_COUNT) && (OPTION_DAQ_EVENT_COUNT > 0)
 
 // If XCP_MAX_EVENT_COUNT is defined and DAQ event management is not used, DAQ list to event association lookup will be optimized
 // Set the maximum number of DAQ events (the highest DAQ event number used), XCP_MAX_EVENT_COUNT must be even
 // Requires XCP_MAX_EVENT_COUNT * 2 bytes of memory
-#define XCP_MAX_EVENT_COUNT 256 // For available event numbers from 0 to 255
+#define XCP_MAX_EVENT_COUNT OPTION_DAQ_EVENT_COUNT
 
-#endif // !XCP_ENABLE_DAQ_EVENT_LIST
+// Enable XCP_GET_EVENT_INFO, if this is enabled, event information can be queried by the XCP client tool
+#define XCP_ENABLE_DAQ_EVENT_INFO
+
+#else
+
+#error "Please define OPTION_DAQ_EVENT_COUNT, remove this error if you want arbitrary event numbers without a maximum count"
+
+#endif
+
+#endif // !defined(OPTION_DAQ_EVENT_LIST)
 
 /*----------------------------------------------------------------------------*/
 // Enable calibration segments
@@ -245,7 +258,7 @@ XCPlite multi application absolute addressing: XCP_ADDRESS_MODE_XCPLITE__CXSDD (
 #else
 
 #define XCP_ADDR_EPK 0xFFFFFF00 // Absolute EPK address
-#define XcpAddrEncodeSegIndex(seg_index, offset) (0x80000000 + (((uint32_t)(seg_index)) << 16) + (offset))
+#define XcpAddrEncodeSegIndex(seg_index, offset) ((uint32_t)(0x80000000 + (((uint32_t)(seg_index)) << 16) + (offset)))
 
 #endif
 
@@ -357,12 +370,12 @@ XCPlite multi application absolute addressing: XCP_ADDRESS_MODE_XCPLITE__CXSDD (
 #define XCP_ENABLE_DAQ_ADDREXT
 
 // Static allocated memory for DAQ tables
-// Amount of memory for DAQ tables, each ODT entry (e.g. measurement variable) needs 5 bytes, each DAQ list 12 bytes and
+// Amount of memory for DAQ tables, each ODT entry (e.g. measurement variable) needs 6 bytes, each DAQ list 12 bytes and
 // each ODT 8 bytes
 #ifdef OPTION_DAQ_MEM_SIZE
 #define XCP_DAQ_MEM_SIZE OPTION_DAQ_MEM_SIZE
 #else
-#define XCP_DAQ_MEM_SIZE (1024 * 6) // Amount of memory for DAQ tables, each ODT entry (e.g. measurement variable or memory block) needs 5 bytes
+#define XCP_DAQ_MEM_SIZE (1024 * 6) // Amount of memory for DAQ tables, each ODT entry (e.g. measurement variable or memory block) needs 6 bytes
 #endif
 
 // Enable DAQ resume mode, requires XCP_ENABLE_DAQ_EVENT_LIST
@@ -386,8 +399,6 @@ XCPlite multi application absolute addressing: XCP_ADDRESS_MODE_XCPLITE__CXSDD (
 
 #ifdef XCP_ENABLE_CALSEG_LIST
 
-#define XCP_MAX_CALSEG_NAME 17 // Maximum length of calibration segment name
-
 // Enable lazy write mode for calibration segments
 // RCU updates of calibration segments are done in a cyclic manner in the background
 // Calibration write speed is then independent from the lock rate, but single calibration latencies are higher
@@ -398,21 +409,41 @@ XCPlite multi application absolute addressing: XCP_ADDRESS_MODE_XCPLITE__CXSDD (
 // Timeout for acquiring a free calibration segment page
 #define XCP_CALSEG_AQUIRE_FREE_PAGE_TIMEOUT 500 // 500 ms timeout
 
+// Number of RCU pages per calibration segment for OPTION_CAL_RCU_REFCOUNT (writer page, published page and reclamation candidates)
+// 3 is the structural minimum and needs the same memory as the lock count algorithm
+// Each additional page tolerates one more reader which never unlocks and improves the publish rate under a bursting writer, 6 is the maximum
+#ifndef XCP_CALSEG_RCU_PAGES
+#define XCP_CALSEG_RCU_PAGES 3
+#endif
+
 #endif // XCP_ENABLE_CALSEG_LIST
 
 //-------------------------------------------------------------------------------
 /* Clock */
 
 // Clock resolution
-#define XCP_DAQ_CLOCK_64BIT                       // Use 64 Bit time stamps for XCP V1.3
-#if CLOCK_TICKS_PER_S == 1000000                  // us
-#define XCP_TIMESTAMP_UNIT DAQ_TIMESTAMP_UNIT_1US // unit
-#define XCP_TIMESTAMP_TICKS 1                     // ticks per unit
-#elif CLOCK_TICKS_PER_S == 1000000000             // ns
-#define XCP_TIMESTAMP_UNIT DAQ_TIMESTAMP_UNIT_1NS // unit
-#define XCP_TIMESTAMP_TICKS 1                     // ticks per unit
+#define XCP_DAQ_CLOCK_64BIT // Use 64 Bit time stamps for XCP V1.3
+
+#if !defined(CLOCK_TICKS_PER_S)
+#error "Please define CLOCK_TICKS_PER_S in platform.h to the number of clock ticks per second for the DAQ clock, e.g. 1000000 for a microsecond resolution clock"
+#endif
+#if ((1000000000ULL / CLOCK_TICKS_PER_S) > 0xFFFF) // clock ticks per us must fit into a 16 bit value !
+#error "CLOCK_TICKS_PER_S is out of range"
+#endif
+#if ((1000000000ULL % CLOCK_TICKS_PER_S) != 0) // warn on rounding errors and switch to divide mode (CANape specific option)
+#error "CLOCK_TICKS_PER_S can not be represented without rounding errors, switched to divide mode"
+#if 0                                       // @@@@ TODO Does not work yet, unclear
+#if ((CLOCK_TICKS_PER_S % 1000000ULL) != 0) // error if can not be represented without rounding errors even in divide mode
+#error "CLOCK_TICKS_PER_S is out of range for both normal and divide mode"
+#endif
+#define XCP_TIMESTAMP_UNIT DAQ_TIMESTAMP_UNIT_1US            // timestamp unit
+#define XCP_TIMESTAMP_TICKS (CLOCK_TICKS_PER_S / 1000000ULL) // timestamp tick resolution given in ticks per unit
+#endif
+#define XCP_TIMESTAMP_UNIT DAQ_TIMESTAMP_UNIT_1NS               // timestamp unit
+#define XCP_TIMESTAMP_TICKS (1000000000ULL / CLOCK_TICKS_PER_S) // timestamp tick duration given in timestamp unit
 #else
-#error "Please define clock resolution"
+#define XCP_TIMESTAMP_UNIT DAQ_TIMESTAMP_UNIT_1NS               // timestamp unit
+#define XCP_TIMESTAMP_TICKS (1000000000ULL / CLOCK_TICKS_PER_S) // timestamp tick duration given in timestamp unit
 #endif
 
 // Enable PTP support in XCP
@@ -433,6 +464,6 @@ XCPlite multi application absolute addressing: XCP_ADDRESS_MODE_XCPLITE__CXSDD (
 //-------------------------------------------------------------------------------
 // Debug
 
-// Enable extended error checks and additional asserts in the protocol layer
-// Small performance penalty (base address count and NULL pointer checks) in the inner DAQ loop !
+// Enable extended error checks in xcplite.c and cal.c
+// Small DAQ performance penalty (base address count and NULL pointer checks) in the inner DAQ loop !
 #define XCP_ENABLE_TEST_CHECKS

@@ -16,15 +16,16 @@
 #include "platform.h"   // for platform defines (WIN_, LINUX_, MACOS_) and specific implementation of sockets, clock, thread, mutex, spinlock
 #include "xcplib_cfg.h" // for OPTION_xxx
 
-// Use queue32.c for 32 Bit platforms, on Windows or with atomic emulation
+// Use queue32.c for 32 Bit platforms, on Windows or with atomic emulation, but not FreeRTOS (which uses queue32m.c)
 // Explicitly force with OPTION_QUEUE_32
-#if defined(OPTION_QUEUE_32) || defined(PLATFORM_32BIT) || defined(_WIN) || defined(OPTION_ATOMIC_EMULATION)
+#if (defined(OPTION_QUEUE_32) || defined(PLATFORM_32BIT) || defined(_WIN) || defined(OPTION_ATOMIC_EMULATION)) && !defined(_FREE_RTOS)
 
 #include "queue.h"
 
 #include <assert.h>   // for assert
 #include <inttypes.h> // for PRIu64
 #include <stdbool.h>  // for bool
+#include <stddef.h>   // for offsetof
 #include <stdint.h>   // for uint32_t, uint64_t, uint8_t, int64_t
 #include <stdlib.h>   // for free, malloc
 #include <string.h>   // for memcpy, strcmp
@@ -60,13 +61,26 @@ typedef struct {
 } tXcpMessage;
 
 static_assert(sizeof(tXcpMessage) == XCPTL_TRANSPORT_LAYER_HEADER_SIZE, "tXcpMessage size must be equal to XCPTL_TRANSPORT_LAYER_HEADER_SIZE");
+// The accumulated messages carry a tXcpMessage header of two uint16_t fields, which is accessed
+// while walking a segment, so the message alignment must be a multiple of 2.
+#if (XCPTL_PACKET_ALIGNMENT % 2) != 0
+#error "XCPTL_PACKET_ALIGNMENT must be a multiple of 2 in this queue variant: the 16 bit message header fields require it"
+#endif
 
 typedef struct {
-    uint32_t magic;                             // Magic number to identify the segment buffer
-    uint16_t uncommitted;                       // Number of uncommitted messages in this segment
-    uint16_t size;                              // Number of overall bytes in this segment
+    uint32_t magic;       // Magic number to identify the segment buffer
+    uint16_t uncommitted; // Number of uncommitted messages in this segment
+    uint16_t size;        // Number of overall bytes in this segment
+#if QUEUE_SEGMENT_HEADER_SIZE > 0
+    // Space for the consumer to prepend a header to the whole segment without copying it,
+    // used by the raw Ethernet transport for the Ethernet/IPv4/UDP header. See queue.h.
+    uint8_t segment_header[QUEUE_SEGMENT_HEADER_SIZE];
+#endif
     uint8_t msg_buffer[XCPTL_MAX_SEGMENT_SIZE]; // Segment/UDP MTU - concatenated transport layer messages tXcpMessage
 } tXcpSegmentBuffer;
+
+// The segment payload must stay aligned, the accumulated tXcpMessage headers are read as words
+static_assert((offsetof(tXcpSegmentBuffer, msg_buffer) % XCPTL_PACKET_ALIGNMENT) == 0, "segment payload must stay aligned to XCPTL_PACKET_ALIGNMENT");
 
 typedef struct Queue {
 
@@ -183,6 +197,7 @@ void queueDeinit(tQueueHandle queue_handle) {
     queue->queue_buffer_size = 0;
     queue->queue_size = 0;
     mutexDestroy(&queue->Mutex_Queue);
+    free(queue);
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -210,11 +225,18 @@ tQueueBuffer queueAcquire(tQueueHandle queue_handle, uint16_t packet_size) {
         return ret;
     }
 
-#if XCPTL_PACKET_ALIGNMENT == 4
-    packet_size = (uint16_t)((packet_size + 3) & 0xFFFC); // Add fill %4
-#else
-    assert(false);
-#endif
+    // Round up to XCPTL_PACKET_ALIGNMENT, queue.h checks it to be a power of two.
+    //
+    // @@@@ TODO: The fill is included in the message dlc below, so LEN on the wire is larger than
+    // the actual XCP packet and the XCP client sees trailing filler bytes. The padding only exists
+    // so that the NEXT message in the segment starts aligned, so it is unnecessary for the last
+    // (or only) message in a datagram - a single message datagram is padded for no reason, which
+    // has surprised users. Trimming it would need the true unpadded length kept per message, it is
+    // not stored anywhere today. Note command responses are NOT padded (XcpTlSendCrm sets dlc
+    // directly), so the behaviour is asymmetric between DAQ and CRM.
+    // To be checked against ASAM XCP Part 3 (XCP on Ethernet): is a LEN larger than the packet
+    // content legal, and is any alignment required at all? See docs/TECHNICAL.md, Known Issues.
+    packet_size = (uint16_t)((packet_size + (XCPTL_PACKET_ALIGNMENT - 1)) & ~(XCPTL_PACKET_ALIGNMENT - 1));
 
     msg_size = (uint16_t)(packet_size + XCPTL_TRANSPORT_LAYER_HEADER_SIZE);
 

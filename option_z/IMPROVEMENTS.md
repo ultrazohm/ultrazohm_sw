@@ -118,21 +118,59 @@ If Option Z fails on hardware, note that the "validated" curated fallback
 hardware** — it is compile-validated only. The only hardware-proven fallback
 is `LOGGING_PATH_JAVASCOPE`.
 
-## 4b. Vendored XCPlite version (checked 2026-07-11)
+## 4b. Vendored XCPlite version (upgraded 2026-11-16)
 
-In-tree: **V2.1.0** (imported 2026-06-16) + one local fix (queue32.c
-`queuePop` reported `packets_lost` after zeroing it — upstream adopted the
-same fix later). Upstream: V2.1.5 (2026-06-18), **V2.1.6 (2026-07-08)**.
-Diffed V2.1.0→V2.1.6 for every file we vendor: no fix we are exposed to —
-the rest is refactoring (EPK API renames, xcp_evts event-registry rework,
-`ApplXcpRegisterIdleCallback`, atomic event counter for multithreaded
-producers, `queue32m.c` critical-section queue for FreeRTOS targets) that
-affects neither the single-context R5 engine nor the OCM transport. The
-harmless boot warning `No xcp_evts section found` is restructured upstream
-(we register events at runtime; the section legitimately doesn't exist).
-An upgrade to V2.1.6 is a backlog item (touches cfg headers +
-`platform_baremetal.c` against renamed APIs; the A53 fallback path would
-also need `queue32m.c`) — do it after the soak, not mid-bring-up.
+In-tree: upstream **V2.3.4** (github vectorgrp/XCPlite main, "Dev 2.3.4",
+2026-11-11), taken file-for-file from the local clone `..\xcp_lite` for every
+engine file we vendor (`xcplite.c/h`, `xcp*.h`, `queue32.c`, `queue.h`,
+`xcpappl.c`, `platform.h`, `util.c/h`, `dbg_print.h`, the inactive
+`cal/persistence/shm/a2l/xcpeth*` headers, new `sockets.h`). The R5 glue
+(`xcptl_ocm.c`, `platform_baremetal.c`, `ocm_xcp_fifo.c`) and the public API it
+uses (`XcpInit/XcpStart/XcpCreateEvent/XcpEvent/XcpCommand`, the
+`ApplXcp*` callbacks, `XcpTl*`) are unchanged by the upgrade. Everything R5
+specific lives in `xcplib_r5_cfg.h`, applied at the end of `xcplib_cfg.h`
+like upstream's own `xcplib_rtos_cfg.h` override.
+
+What the upgrade brought in (from upstream's CHANGELOG, V2.1.1 → V2.3.4):
+the remaining #126 DAQ-configuration robustness (allocation overflow and
+`WRITE_DAQ_MULTIPLE` errors invalidate the whole configuration, ODT sizes are
+validated before commit, `SET_DAQ_PTR` sequence check, selected lists are
+validated before `START_STOP_SYNCH` start), the `XcpSetDaqListMode` link-loop
+fix we had already cherry-picked, `XcpEventEnable` range checks, and the
+explicit `OPTION_DAQ_EVENT_LIST` / `OPTION_SECTION_REGISTRATION` split (we use
+the run-time event list, no linker sections). Behavioural change to note:
+`GET_DAQ_RESOLUTION_INFO` now reports the 1 µs clock as `UNIT_1NS` with 1000
+ticks per unit instead of `UNIT_1US` with 1 tick (same resolution; the A2L
+keeps `0x1 SIZE_DWORD UNIT_1US TIMESTAMP_FIXED`, which is what upstream's
+own A2L writer still emits).
+
+Local patches on top of upstream, every one marked `UZ` in the source and
+default-off where it touches engine behaviour (re-apply after the next
+upgrade — the list is also in the session memory of the coding agent):
+- `platform.h`: `ARMR5` → `_BAREMETAL` platform branch (atomics, IRQ
+  critical-section mutex, no threads).
+- `xcpappl.c`: `_BAREMETAL` accepted as platform, base address 0.
+- `xcptl_cfg.h`: `XCPTL_MAX_DTO_SIZE` and `XCPTL_MAX_SEGMENT_SIZE` may be
+  predefined (the OCM record cap is 255 B, upstream's MTU formula rounds the
+  segment to a multiple of 8 — 256 would not fit; we set 252 = 4 + 248).
+- `xcplib_cfg.h`: includes `xcplib_r5_cfg.h` at the end.
+- `xcp_cfg.h`: `OPTION_DISABLE_DYN_ADDRESSING` switch (R5 has no
+  `XcpEventExt` context to execute event-relative commands).
+- `xcplite.c`: `XCP_ENABLE_MTA_RANGE_CHECK` (size check on every
+  `XcpReadMta`/`XcpWriteMta`), `calcChecksum` size-0 error and
+  `XCP_CHECKSUM_MAX_SIZE` cap.
+- `queue32.c`: `packets_lost` read/reset under the queue lock.
+
+Not upgraded: the A53 **fallback** XCPlite server copy in
+`vitis/software/FreeRTOS/sw/xcp_lite/` (`LOGGING_PATH_XCPLITE_A53`, not the
+Option Z gateway) is still the untouched upstream V2.1.0. Upstream now uses
+`queue32m.c`, `sockets.c` and a split `platform.c` for FreeRTOS, so that
+copy needs its own port; it is not compiled into the Option Z data path.
+
+The upgrade is compile-validated only (armr5 syntax + object build, external
+symbols unchanged: libc, `Xil_DCacheFlushRange`, `uz_SystemTime`); it has
+**not** run on hardware yet — rerun TEST_PLAN.md §1–§3 (connect, DAQ, stress)
+before trusting it.
 
 ## 5. Small stuff
 

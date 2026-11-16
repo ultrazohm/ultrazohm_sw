@@ -77,6 +77,23 @@ def test_cancellation_before_publication_cleans_output(tmp_path, monkeypatch):
     assert not list(tmp_path.glob('.uz-convert-*'))
 
 
+def test_native_conversion_falls_back_to_rename_without_hard_links(tmp_path, monkeypatch):
+    from uz_dataviewer import user_paths
+    monkeypatch.setattr(user_paths.sys, 'platform', 'linux')
+
+    def unsupported(*args):
+        raise PermissionError('Operation not permitted')  # exFAT/FAT on Linux
+
+    monkeypatch.setattr(loader.os, 'link', unsupported)
+    source = tmp_path / 'input.csv'
+    source.write_text('time;a\n0;1\n1;2\n')
+    destination = loader.convert_csv_to_parquet(str(source))
+    assert loader.parse_parquet(destination).signals['a'].tolist() == [1, 2]
+    with pytest.raises(FileExistsError):
+        loader.convert_csv_to_parquet(str(source))
+    assert not list(tmp_path.glob('.uz-convert-*'))
+
+
 def test_browser_conversion_uses_rename_without_hard_links(tmp_path, monkeypatch):
     monkeypatch.setattr(runtime, 'IS_WEB', True)
 

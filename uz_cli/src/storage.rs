@@ -320,10 +320,11 @@ impl LogWriter {
         let mut slow_previous_time: Option<f64> = None;
         let mut merged_rows = 0usize;
         let mut output_rows = 0usize;
-        for offset in (0..self.written_rows).step_by(65536) {
+        let slice = backend::ROW_GROUP_ROWS;
+        for offset in (0..self.written_rows).step_by(slice) {
             let first = self.first_index.unwrap_or(0) + offset as u64;
             let stop =
-                self.first_index.unwrap_or(0) + (offset + 65536).min(self.written_rows) as u64;
+                self.first_index.unwrap_or(0) + (offset + slice).min(self.written_rows) as u64;
             let df = self.backend.reader().read_range(first, stop)?;
             ensure!(df.schema() == empty.schema(), "recording schema mismatch");
             let times = df.column("time")?.f64()?;
@@ -484,7 +485,8 @@ pub(crate) fn frames_dataframe(
     Ok(DataFrame::new(cols)?)
 }
 
-/// Convert the completed Parquet file in bounded slices; no CSV is written at ingest.
+/// Convert the completed Parquet file in bounded slices, one row group each
+/// (merge writes one per slice); no CSV is written at ingest.
 fn export_csv(parquet: &Path, target: &Path) -> Result<()> {
     ensure!(!target.exists(), "refusing to overwrite final CSV");
     let tmp = target.with_extension("csv.partial");
@@ -494,14 +496,15 @@ fn export_csv(parquet: &Path, target: &Path) -> Result<()> {
     let metadata = source.get_metadata()?.clone();
     drop(source);
     // Include an empty slice for a header-only recording. Metadata is reused.
-    for offset in (0..rows.max(1)).step_by(65536) {
+    let slice = backend::ROW_GROUP_ROWS;
+    for offset in (0..rows.max(1)).step_by(slice) {
         let mut reader = ParquetReader::new(File::open(parquet)?)
-            .with_slice(Some((offset, (rows - offset).min(65536))))
+            .with_slice(Some((offset, (rows - offset).min(slice))))
             .read_parallel(ParallelStrategy::None);
         reader.set_metadata(metadata.clone());
         let mut df = reader.finish()?;
         ensure!(
-            df.height() == (rows - offset).min(65536),
+            df.height() == (rows - offset).min(slice),
             "CSV source slice truncated"
         );
         CsvWriter::new(&mut output)
@@ -577,6 +580,12 @@ mod tests {
         )?);
         eprintln!("default-size segment flush: {:?}", started.elapsed());
         assert_eq!(read(log.segment(0))?.height(), segment_rows);
+        // Finalization reads parts in row-group-sized slices.
+        let groups = ParquetReader::new(File::open(log.segment(0))?)
+            .get_metadata()?
+            .row_groups
+            .len();
+        assert_eq!(groups, segment_rows.div_ceil(backend::ROW_GROUP_ROWS));
         assert!(!log.push(segment_rows as u64, frame(segment_rows, frame_rows))?);
         log.finish()?;
         let df = read(run.0.join("data.parquet"))?;

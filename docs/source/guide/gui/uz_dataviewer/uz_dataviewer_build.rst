@@ -153,8 +153,11 @@ recording destinations remain user-selected. Script and CLI output capture also
 uses temporary directories; active detached CLI jobs retain their output files.
 
 The live controller tracks its launched service separately from the service to
-which it is currently attached. Closing the viewer finalizes its owned service;
-for an attached external service it sends device Stop without shutting that
+which it is currently attached. Closing the viewer shuts down its owned service,
+which sends device Stop and finalizes recordings; the window waits up to ten
+seconds, after which the detached service completes finalization in the
+background (see its ``service.log`` and the ``end`` section of ``run.json``).
+For an attached external service it sends device Stop without shutting that
 service down. Script Stop invalidates queued manual commands and uses a control
 path independent of display reads. Flashing retains its ordered Stop,
 finalization, shutdown, programming and reconnect sequence.

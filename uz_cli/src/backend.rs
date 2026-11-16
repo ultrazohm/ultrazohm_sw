@@ -10,6 +10,10 @@ use std::{
     sync::{Arc, Mutex},
 };
 
+/// Rows per Parquet row group in parts, and per slice when finalization and
+/// CSV export read them back, so each row group is decoded about once.
+pub const ROW_GROUP_ROWS: usize = 65_536;
+
 #[derive(Clone, Copy, Debug, Default, Serialize, Deserialize, clap::ValueEnum)]
 #[serde(rename_all = "snake_case")]
 pub enum BackendKind {
@@ -171,8 +175,53 @@ fn publish(path: &Path, index: &Index) -> Result<()> {
     file.sync_all()?;
     drop(file);
     // Replace the previous index with one complete publication.
-    fs::rename(tmp, path)?;
+    replace_file(&tmp, path)?;
     Ok(())
+}
+
+/// Atomically replace `target` by `source`. Windows refuses the replacement
+/// while another process (a Python reader, a virus scanner, the indexer) has
+/// `target` open without delete sharing, so retry for up to one second.
+pub(crate) fn replace_file(source: &Path, target: &Path) -> std::io::Result<()> {
+    let attempts = if cfg!(windows) { 20 } else { 1 };
+    for attempt in 1..=attempts {
+        match fs::rename(source, target) {
+            Err(error) if attempt < attempts && error.kind() != std::io::ErrorKind::NotFound => {
+                std::thread::sleep(std::time::Duration::from_millis(50));
+            }
+            result => return result,
+        }
+    }
+    unreachable!("the last attempt returns")
+}
+
+/// Publish `source` as `target` only if `target` does not exist yet. Hard links
+/// make this atomic; file systems without them (FAT, exFAT, some network
+/// shares) fall back to a check followed by a rename.
+fn publish_new(source: &Path, target: &Path) -> std::io::Result<()> {
+    publish_new_with(source, target, |source, target| {
+        fs::hard_link(source, target)
+    })
+}
+
+fn publish_new_with(
+    source: &Path,
+    target: &Path,
+    link: impl Fn(&Path, &Path) -> std::io::Result<()>,
+) -> std::io::Result<()> {
+    match link(source, target) {
+        Ok(()) => Ok(()),
+        Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => Err(error),
+        Err(_) => {
+            if fs::symlink_metadata(target).is_ok() {
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::AlreadyExists,
+                    format!("{} already exists", target.display()),
+                ));
+            }
+            replace_file(source, target)
+        }
+    }
 }
 
 pub fn create(
@@ -236,7 +285,7 @@ impl ParquetBackend {
         };
         index.info.empty()?;
         // Reserve the handle exclusively; a failed append never overwrites a run.
-        // Write the first index aside and link it into place, so readers that
+        // Write the first index aside and publish it whole, so readers that
         // open the handle right after it appears never see a partial file.
         let tmp = path.with_extension("json.creating");
         let written = (|| -> Result<()> {
@@ -244,7 +293,7 @@ impl ParquetBackend {
             serde_json::to_writer_pretty(&file, &index)?;
             file.sync_all()?;
             drop(file);
-            fs::hard_link(&tmp, &path)?;
+            publish_new(&tmp, &path)?;
             Ok(())
         })();
         let _ = fs::remove_file(&tmp);
@@ -260,7 +309,7 @@ impl ParquetBackend {
     }
 }
 impl RecordingBackend for ParquetBackend {
-    fn append(&mut self, mut batch: SampleBatch) -> Result<()> {
+    fn append(&mut self, batch: SampleBatch) -> Result<()> {
         let mut next = self.reader.index.lock().unwrap().clone();
         ensure!(!next.info.complete, "recording is already complete");
         ensure!(batch.data.height() > 0, "cannot append an empty batch");
@@ -285,7 +334,22 @@ impl RecordingBackend for ParquetBackend {
         ensure!(!target.exists(), "refusing to overwrite log segment");
         let tmp = target.with_extension("parquet.partial");
         let mut file = File::create_new(&tmp)?;
-        ParquetWriter::new(&mut file).finish(&mut batch.data)?;
+        // Row groups start at multiples of ROW_GROUP_ROWS from the recording
+        // start, the slices in which finalization and `Recording` reads them.
+        let offset = batch.start - next.info.start.unwrap_or(batch.start);
+        let mut writer = ParquetWriter::new(&mut file).batched(batch.data.schema())?;
+        let mut first = 0;
+        let mut rows = ROW_GROUP_ROWS - (offset % ROW_GROUP_ROWS as u64) as usize;
+        while first < batch.data.height() {
+            // A single-chunk slice becomes exactly one row group.
+            let mut group = batch.data.slice(first as i64, rows);
+            group.as_single_chunk_par();
+            writer.write_batch(&group)?;
+            first += rows;
+            rows = ROW_GROUP_ROWS;
+        }
+        writer.finish()?;
+        drop(writer);
         file.sync_all()?;
         drop(file);
         fs::rename(tmp, target)?;
@@ -533,6 +597,32 @@ mod tests {
         })
     }
     #[test]
+    fn part_row_groups_align_to_the_recording_start() -> Result<()> {
+        let run = Run::new();
+        let mut backend = ParquetBackend::create(&run.0, "data", false, 100., &batch(0, 0)?.data)?;
+        backend.append(batch(100, 70_000)?)?;
+        backend.append(batch(70_100, 70_000)?)?;
+        let groups = |part: &str| -> Result<Vec<usize>> {
+            let mut reader = ParquetReader::new(File::open(run.0.join(part))?);
+            Ok(reader
+                .get_metadata()?
+                .row_groups
+                .iter()
+                .map(|group| group.num_rows())
+                .collect())
+        };
+        assert_eq!(groups("data-part-00000000.parquet")?, [65_536, 4_464]);
+        // 70,000 rows in: the next boundary is 131,072 rows after the start.
+        assert_eq!(groups("data-part-00000001.parquet")?, [61_072, 8_928]);
+        assert!(
+            backend
+                .reader()
+                .read_range(100, 140_100)?
+                .equals_missing(&batch(100, 140_000)?.data)
+        );
+        Ok(())
+    }
+    #[test]
     fn backend_ranges_survive_finalize_and_reopen() -> Result<()> {
         let run = Run::new();
         let mut backend = ParquetBackend::create(&run.0, "data", false, 100., &batch(0, 0)?.data)?;
@@ -554,6 +644,26 @@ mod tests {
         assert!(reader.read_range(99, 100).is_err());
         assert!(reader.read_range(120, 131).is_err());
         assert!(reader.read_range(120, 119).is_err());
+        Ok(())
+    }
+    #[test]
+    fn publication_without_hard_links_still_refuses_to_replace() -> Result<()> {
+        let run = Run::new();
+        let (source, target) = (run.0.join("source"), run.0.join("target"));
+        let unsupported = |_: &Path, _: &Path| -> std::io::Result<()> {
+            Err(std::io::Error::new(
+                std::io::ErrorKind::Unsupported,
+                "no hard links",
+            ))
+        };
+        fs::write(&source, "first")?;
+        publish_new_with(&source, &target, unsupported)?;
+        assert_eq!(fs::read_to_string(&target)?, "first");
+        assert!(!source.exists());
+        fs::write(&source, "second")?;
+        let error = publish_new_with(&source, &target, unsupported).unwrap_err();
+        assert_eq!(error.kind(), std::io::ErrorKind::AlreadyExists);
+        assert_eq!(fs::read_to_string(&target)?, "first");
         Ok(())
     }
     #[test]

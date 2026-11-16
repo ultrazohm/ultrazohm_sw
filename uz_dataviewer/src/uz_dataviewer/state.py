@@ -570,6 +570,8 @@ class AppState(SessionData):
             f"Loaded {run.label}: {run.n_rows:,} rows, "
             f"{len(run.signals)} signals, {run.duration:.3f} s span"
         )
+        if run.skipped_columns:
+            self.console.info(f"Skipped non-numeric columns in {run.label}: {', '.join(run.skipped_columns)}")
 
     def poll_pending_loads(self) -> None:
         """Finalise completed background loads; call once per frame.

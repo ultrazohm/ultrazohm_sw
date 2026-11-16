@@ -3,7 +3,10 @@
 Service errors raise RuntimeError with a ``code`` attribute (for example
 ``cursor_expired``, ``canceled_by_stop``, ``not_connected``, ``busy``).
 """
+import atexit
 import json
+import sys
+import weakref
 from dataclasses import dataclass
 from io import BytesIO
 from ._native import (Connection as _Connection, Acquisition as _Acquisition,
@@ -63,12 +66,38 @@ class Recording:
 
     def read(self, *, channels=None):
         import polars as pl
-        batches = list(self.iter_batches(channels=channels))
+        # Several stored row groups per request; well within the response limit.
+        batches = list(self.iter_batches(262_144, channels=channels))
         return pl.concat(batches) if batches else self.read_range(0, 0, channels=channels)
 
 
+def _close_at_exit(reference):
+    acquisition = reference()
+    if acquisition is not None and not acquisition.is_finished():
+        try:
+            acquisition.close()
+        except Exception as error:  # noqa: BLE001 - interpreter exit cannot raise
+            print(f"UltraZohm acquisition closed with an error: {error}", file=sys.stderr)
+
+
 class Acquisition(_Acquisition):
-    """Own an embedded acquisition; close it before reading finalized recordings."""
+    """Own an embedded acquisition; close it before reading finalized recordings.
+
+    Prefer ``with Acquisition(...) as acquisition:``. An acquisition that is
+    never closed is closed when it is garbage collected or the interpreter
+    exits, which also sends device Stop and finalizes its recordings.
+    """
+
+    def __init__(self, *args, **kwargs):
+        # The native constructor starts the service; only register its cleanup here.
+        atexit.register(_close_at_exit, weakref.ref(self))
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc_info):
+        self.close()
+        return False
 
     def read_recording(self, stream="fast", recording=1):
         """Return a completed recording as a Polars DataFrame after close()."""

@@ -55,11 +55,13 @@ class ParsedRun:
     units: dict[str, str]
     backend: str = "pyarrow"
     timestamp_resolution: float = 0.0
+    skipped_columns: tuple[str, ...] = ()
 
     def register(self, registry: DataRegistry) -> Run:
         run = registry.add_run(self.label, self.path, self.time, self.signals, self.units)
         run.backend = self.backend
         run.timestamp_resolution = self.timestamp_resolution
+        run.skipped_columns = self.skipped_columns
         return run
 
 _CHANNEL_PREFIX = re.compile(r"^CH\d+\s*=\s*\d+\s*\)\s*(.*)$")
@@ -105,6 +107,26 @@ def parse_channel_name(raw: str) -> tuple[str, str]:
         if candidate in _KNOWN_UNITS:
             unit = candidate
     return name, unit
+
+
+def numeric_columns(fields) -> tuple[list[str], tuple[str, ...]]:
+    """Split ``(name, is_numeric)`` pairs into plottable and skipped column names.
+
+    Signals are numeric samples; text or nested columns (for example the
+    observable names of a raw slow-data history) are skipped instead of
+    failing the whole file. A non-numeric ``time`` column is an error.
+    """
+    kept, skipped = [], []
+    for name, numeric in fields:
+        (kept if numeric or name.strip() == "" else skipped).append(name)
+    if "time" in skipped:
+        raise ValueError("time column is not numeric")
+    return kept, tuple(skipped)
+
+
+def arrow_numeric_columns(schema) -> tuple[list[str], tuple[str, ...]]:
+    return numeric_columns((field.name, pa.types.is_integer(field.type) or pa.types.is_floating(field.type)
+                            or pa.types.is_boolean(field.type)) for field in schema)
 
 
 def _split_time_columns(column_names: list[str]) -> tuple[str, list[str]]:
@@ -305,7 +327,8 @@ def parse_csv(path: str, cancel=None) -> ParsedRun:
         return collect_csv_batches(path, columns, batches(), cancel)
 
 
-def collect_parquet_batches(path, columns, n_rows, batches, cancel=None, *, backend="pyarrow", strict_rows=False):
+def collect_parquet_batches(path, columns, n_rows, batches, cancel=None, *, backend="pyarrow", strict_rows=False,
+                            skipped_columns=()):
     """Fill contiguous arrays from numeric batches, retaining backend row-count policy."""
     _, data_columns = _split_time_columns(columns)
     time = np.empty(n_rows, dtype=np.float64)
@@ -326,18 +349,21 @@ def collect_parquet_batches(path, columns, n_rows, batches, cancel=None, *, back
     validate_time_axis(time, path)
     signals, units = _named_signals(data_columns, arrays.__getitem__)
     return ParsedRun(os.path.basename(path), path, time, signals, units,
-                     backend=backend, timestamp_resolution=timestamp_resolution(data_columns))
+                     backend=backend, timestamp_resolution=timestamp_resolution(data_columns),
+                     skipped_columns=tuple(skipped_columns))
 
 
 def _parse_parquet_streaming(pf: pq.ParquetFile, path: str, n_rows: int, cancel=None) -> ParsedRun:
-    time_col, columns = _split_time_columns(pf.schema_arrow.names)
+    names, skipped = arrow_numeric_columns(pf.schema_arrow)
+    time_col, columns = _split_time_columns(names)
     def batches():
         for batch in pf.iter_batches(columns=[time_col, *columns]):
             check(cancel)
             yield batch.column(0).to_numpy(zero_copy_only=False), {
                 name: batch.column(i + 1).to_numpy(zero_copy_only=False)
                 for i, name in enumerate(columns)}
-    return collect_parquet_batches(path, [time_col, *columns], n_rows, batches(), cancel)
+    return collect_parquet_batches(path, [time_col, *columns], n_rows, batches(), cancel,
+                                   skipped_columns=skipped)
 
 
 def parse_parquet(path: str, cancel=None) -> ParsedRun:
@@ -388,7 +414,8 @@ def convert_csv_to_parquet(src: str, dst: str | None = None, *, backend="pyarrow
                 raise FileExistsError(f"Parquet file already exists: {dst}")
             os.rename(temporary, dst)
         else:
-            os.link(temporary, dst)
+            from .user_paths import publish_new
+            publish_new(temporary, dst)
     finally:
         if os.path.exists(temporary):
             os.unlink(temporary)
@@ -474,6 +501,18 @@ def parse_file(path: str, *, backend="pyarrow", cancel=None) -> ParsedRun:
     return parsed
 
 
+def mark_cache_directory(directory):
+    """Tag a cache (https://bford.info/cachedir/) so backups and the log browser skip it."""
+    tag = os.path.join(directory, "CACHEDIR.TAG")
+    if not os.path.exists(tag):
+        try:
+            with open(tag, "w", encoding="utf-8") as output:
+                output.write("Signature: 8a477f597d28d172789f06886806bc55\n"
+                             "# Converted logs and display caches of the UltraZohm Data Viewer.\n")
+        except OSError:
+            pass  # A read-only cache stays usable.
+
+
 @dataclass
 class OpenedSource:
     path: str
@@ -484,6 +523,7 @@ class OpenedSource:
         run = registry.add_source(os.path.basename(self.path), self.path, self.source)
         run.backend = self.backend
         run.timestamp_resolution = self.source.timestamp_resolution
+        run.skipped_columns = getattr(self.source, "skipped_columns", ())
         return run
 
 
@@ -523,6 +563,7 @@ def open_file(path, mode="memory", cache=None, cache_dir=None, *, backend="pyarr
         if backend == "polars":
             root = root / "polars"
         root.mkdir(parents=True, exist_ok=True)
+        mark_cache_directory(root)
         destination = root / (identity + ".parquet")
         if not destination.exists():
             with tempfile.TemporaryDirectory(dir=root) as directory:

@@ -13,7 +13,9 @@ class PolarsSource(IndexedFileSource):
             self.scan = _scan_csv(str(self.path))
         else:
             self.scan = pl.scan_parquet(self.path, glob=False)
-        self.time_col, columns = _split_time_columns(self.scan.collect_schema().names())
+        from .polars_io import numeric_scan_columns
+        names, self.skipped_columns = numeric_scan_columns(self.scan)
+        self.time_col, columns = _split_time_columns(names)
         named, self.units = _named_signals(columns, lambda c: np.empty(0, np.float32))
         self.timestamp_resolution = timestamp_resolution(columns)
         self.columns = dict(zip(named, columns))

@@ -333,3 +333,18 @@ def test_templates_are_standalone_scripts_with_endpoint(tmp_path, monkeypatch, n
         assert calls[1:] == [('start',), ('stop_logging',)]
     if name == 'Control sequence':
         assert calls[1:] == [('variable', 'send_field_1', 0.0), ('system',), ('control',)]
+
+
+def test_script_output_is_read_only_after_the_log_grows(tmp_path):
+    runner = ScriptRunner()
+    runner._log = tmp_path / 'output.log'
+    runner._log.write_bytes(b'first\n')
+    runner.poll()
+    assert runner.output == 'first\n'
+    runner.output = 'unchanged'  # A poll without new output must not re-read the file.
+    runner.poll()
+    assert runner.output == 'unchanged'
+    with runner._log.open('ab') as log:
+        log.write(b'x' * 70000 + b'\nlast\n')
+    runner.poll()
+    assert runner.output.endswith('last\n') and len(runner.output) == 65536

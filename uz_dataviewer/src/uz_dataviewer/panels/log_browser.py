@@ -25,15 +25,26 @@ def default_log_directory() -> Path:
     return Path.cwd() / "javascope"
 
 
+def browsable(directory: Path) -> bool:
+    """Skip hidden folders, Python environments and tagged caches (cargo target, viewer caches).
+
+    Starting at a repository root must not walk into build outputs or
+    dependency trees; their data files are not measurement logs.
+    """
+    return not (directory.name.startswith(".") or directory.name in ("__pycache__", "node_modules")
+                or (directory / "pyvenv.cfg").is_file() or (directory / "CACHEDIR.TAG").is_file())
+
+
 def scan_logs(directory: Path, cancel: Event) -> tuple[list[Path], list[str]]:
     files, errors = [], []
     if cancel.is_set():
         return [], []
     if not directory.is_dir():
         return [], [f"Directory not found: {directory}"]
-    for root, _, names in os.walk(directory, onerror=lambda error: errors.append(str(error))):
+    for root, folders, names in os.walk(directory, onerror=lambda error: errors.append(str(error))):
         if cancel.is_set():
             return [], []
+        folders[:] = [name for name in folders if browsable(Path(root) / name)]
         for name in names:
             if cancel.is_set():
                 return [], []

@@ -115,9 +115,8 @@ def main():
     if args.launch and args.launch != "none":
         extra = args.command[1:] if args.command[:1] == ["--"] else args.command
         if args.launch == "shell":
-            # This stdlib-only entry point is also used by the offline viewer.
-            # Execute it with the destination environment's Python, without importing GUI code.
-            shell_script = root.parent / "uz_dataviewer/src/uz_dataviewer/env_shell.py"
+            # Stdlib-only; run with the destination environment's Python.
+            shell_script = root / "env_shell.py"
             launch = [str(python), str(shell_script)]
         elif args.launch == "example":
             if extra:

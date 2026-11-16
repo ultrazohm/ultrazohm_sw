@@ -28,42 +28,43 @@ LOG_ROOT.mkdir(parents=True, exist_ok=True)
 OUTPUT = LOG_ROOT / ("lifecheck-" + datetime.now().strftime("%Y%m%d-%H%M%S-%f"))
 
 # Construction waits for the service and device connection; logging starts below.
-acquisition = ultrazohm.Acquisition(
+# Leaving the with block, also through an error or Ctrl-C, sends device Stop and
+# waits until data.parquet is complete.
+with ultrazohm.Acquisition(
     DEVICE, profile=str(PROFILE),
     output=str(OUTPUT), format="parquet"
-)
-uz = ultrazohm.Client()
+) as acquisition:
+    uz = ultrazohm.Client()
 
-# Startup applies PROFILE["initial_channels"]. Names come from the checkout headers.
-# Override a selection before starting any logging if desired.
-uz.set_observable("JSO_lifecheck", 1)
-# If implemented in your firmware and listed in your custom channel mapping:
-# uz.set_observable("JSO_MY_NEW_OBSERVABLE", 5)
-uz.start_logging()  # Fast channels only; slow logging is independently optional.
+    # Startup applies PROFILE["initial_channels"]. Names come from the checkout headers.
+    # Override a selection before starting any logging if desired.
+    uz.set_observable("JSO_lifecheck", 1)
+    # If implemented in your firmware and listed in your custom channel mapping:
+    # uz.set_observable("JSO_MY_NEW_OBSERVABLE", 5)
+    uz.start_logging()  # Fast channels only; slow logging is independently optional.
 
-print("Running for 10 seconds...")
-uz.enable_system()
-time.sleep(1)
-print("Reported platform state:", uz.status()["state"]["platform_state"])
-time.sleep(9)
+    print("Running for 10 seconds...")
+    uz.enable_system()
+    time.sleep(1)
+    print("Reported platform state:", uz.status()["state"]["platform_state"])
+    time.sleep(9)
 
-print("Control for 10 seconds...")
-uz.enable_control()
-time.sleep(1)
-print("Reported platform state:", uz.status()["state"]["platform_state"])
-time.sleep(10)
+    print("Control for 10 seconds...")
+    uz.enable_control()
+    time.sleep(1)
+    print("Reported platform state:", uz.status()["state"]["platform_state"])
+    time.sleep(10)
 
-print("Stopped for 10 seconds (still logging)...")
-uz.stop()
-time.sleep(1)
-print("Reported platform state:", uz.status()["state"]["platform_state"])
-time.sleep(9)
-latest = uz.tail(n=20)  # Independent Polars DataFrame from RAM.
-print("Latest 20 samples:")
-with pl.Config(tbl_rows=20, tbl_cols=-1):
-    print(latest)
-uz.stop_logging()  # Finalizes in the background; close() below waits for it.
-acquisition.close()  # Wait until data.parquet is complete.
+    print("Stopped for 10 seconds (still logging)...")
+    uz.stop()
+    time.sleep(1)
+    print("Reported platform state:", uz.status()["state"]["platform_state"])
+    time.sleep(9)
+    latest = uz.tail(n=20)  # Independent Polars DataFrame from RAM.
+    print("Latest 20 samples:")
+    with pl.Config(tbl_rows=20, tbl_cols=-1):
+        print(latest)
+    uz.stop_logging()  # Finalizes in the background; leaving the block waits for it.
 
 # Nominal sample time uses the profile sampling period (default: 100 microseconds).
 data = acquisition.read_recording()

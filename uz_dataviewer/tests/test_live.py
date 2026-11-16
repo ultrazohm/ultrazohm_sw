@@ -50,7 +50,7 @@ class FakeClient:
         start = cursor['next_sample'] if cursor else first
         stop = min(start + limit, self.end)
         return SimpleNamespace(data=frame(start, stop),
-            cursor={'next_sample': stop, 'generation': self.generation},
+            cursor={'next_sample': stop, 'generation': self.generation}, stop=stop,
             info={'run_id': 'fake', 'generation': self.generation})
 
     def shutdown(self):
@@ -251,7 +251,7 @@ def test_observable_refresh_catches_up_all_pages_before_publishing():
             if self.generation:
                 data = data.drop('a').with_columns(pl.lit(float('nan')).alias('c'))
             return SimpleNamespace(data=data,
-                cursor={'next_sample': stop, 'generation': self.generation},
+                cursor={'next_sample': stop, 'generation': self.generation}, stop=stop,
                 info={'run_id': 'fake', 'generation': self.generation})
 
     client = PagedClient()

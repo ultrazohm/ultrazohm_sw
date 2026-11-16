@@ -279,3 +279,24 @@ def test_missing_xsct_aborts_before_device_or_logging_changes(monkeypatch):
         assert controller.client is None
     finally:
         controller.close()
+
+
+def _coded(code, message):
+    error = RuntimeError(message)
+    error.code = code
+    return error
+
+
+@pytest.mark.parametrize('error, refused', [
+    (_coded('connection_refused', 'could not reach the service'), True),
+    # A coded error is decided by its code, never by its text.
+    (_coded('timeout', 'connection refused while waiting'), False),
+    (_coded('transport', 'service closed the connection'), False),
+    # Older CLI wheels report refusal only as text.
+    (_coded(None, 'Connection refused (os error 111)'), True),
+    (RuntimeError('No connection could be made because the target machine actively refused it'), True),
+    (ConnectionRefusedError(111, 'Connection refused'), True),
+    (RuntimeError('request timed out'), False),
+])
+def test_refused_connections_are_recognized_by_code(error, refused):
+    assert flashing.connection_refused(error) is refused

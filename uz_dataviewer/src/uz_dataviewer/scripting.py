@@ -59,6 +59,7 @@ class ScriptRunner:
         self.output = ''
         self._directory = None
         self._log = None
+        self._log_size = -1
         self._stop_thread = None
         self._stop_result = None
         self._lock = threading.Lock()
@@ -73,6 +74,7 @@ class ScriptRunner:
         self._cleanup()
         self._directory = tempfile.TemporaryDirectory(prefix='uz-script-')
         self._log = Path(self._directory.name) / 'output.log'
+        self._log_size = -1
         options = {'start_new_session': True} if os.name != 'nt' else {
             'creationflags': subprocess.CREATE_NEW_PROCESS_GROUP}
         env = os.environ.copy()
@@ -133,11 +135,12 @@ class ScriptRunner:
         self._stop_thread.start()
 
     def poll(self):
-        if self._log is not None:
+        # Called every frame: read the tail only after the log has grown.
+        if self._log is not None and (size := self._log.stat().st_size) != self._log_size:
             with self._log.open('rb') as output:
-                output.seek(0, 2)
-                output.seek(max(0, output.tell() - 65536))
-                self.output = output.read().decode('utf-8', errors='replace')
+                output.seek(max(0, size - 65536))
+                self.output = output.read(65536).decode('utf-8', errors='replace')
+            self._log_size = size
         if self._stop_thread is not None:
             with self._lock:
                 result = self._stop_result

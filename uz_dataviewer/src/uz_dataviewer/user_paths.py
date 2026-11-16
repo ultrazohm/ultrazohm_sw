@@ -28,6 +28,28 @@ def data_directory(repo=None):
     return path
 
 
+def publish_new(temporary, destination):
+    """Publish a complete file as ``destination`` without replacing an existing one.
+
+    Raises FileExistsError when ``destination`` exists. The caller removes
+    ``temporary`` afterwards if it still exists.
+    """
+    if sys.platform == 'win32':
+        # Windows rename refuses an existing destination and works on
+        # FAT/shares without hard-link support.
+        os.rename(temporary, destination)
+        return
+    try:
+        os.link(temporary, destination)
+    except FileExistsError:
+        raise
+    except OSError:
+        # FAT, exFAT and some network shares have no hard links: check, then rename.
+        if os.path.lexists(destination):
+            raise FileExistsError(f'{destination} already exists') from None
+        os.rename(temporary, destination)
+
+
 def write_json(path, value, *, overwrite=True):
     """Publish complete JSON; optionally leave an existing destination untouched."""
     path = Path(path)
@@ -42,12 +64,7 @@ def write_json(path, value, *, overwrite=True):
             os.replace(temporary, path)
         else:
             try:
-                if sys.platform == 'win32':
-                    # Windows rename refuses an existing destination and works
-                    # on FAT/shares without hard-link support.
-                    os.rename(temporary, path)
-                else:
-                    os.link(temporary, path)
+                publish_new(temporary, path)
             except FileExistsError:
                 pass
     finally:

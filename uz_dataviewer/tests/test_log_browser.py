@@ -24,6 +24,20 @@ def test_recursive_flat_listing(tmp_path):
     assert scan_logs(tmp_path / 'missing', Event())[1]
 
 
+def test_scan_skips_environments_caches_and_hidden_folders(tmp_path):
+    for name in ('logs/a.parquet', '.git/b.parquet', 'venv/lib/c.parquet', 'uz_cli/target/d.parquet',
+                 '__pycache__/e.csv', 'target/f.parquet'):
+        path = tmp_path / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.touch()
+    (tmp_path / 'venv/pyvenv.cfg').touch()
+    (tmp_path / 'uz_cli/target/CACHEDIR.TAG').touch()
+    paths, errors = scan_logs(tmp_path, Event())
+    # An untagged folder named target can hold measurements.
+    assert paths == [Path('logs/a.parquet'), Path('target/f.parquet')]
+    assert errors == []
+
+
 def test_switch_directory_and_render(tmp_path):
     first, second = tmp_path / 'first', tmp_path / 'second'
     first.mkdir()

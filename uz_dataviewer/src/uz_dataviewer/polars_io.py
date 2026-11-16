@@ -18,10 +18,18 @@ def _scan_csv(path):
                        glob=False, null_values=NULL_VALUES).select(columns)
 
 
+def numeric_scan_columns(scan):
+    """Plottable and skipped columns of a scan, as for the PyArrow loaders."""
+    from .loader import numeric_columns
+    return numeric_columns((name, dtype.is_numeric() or dtype == pl.Boolean)
+                           for name, dtype in scan.collect_schema().items())
+
+
 def _numeric_scan(scan):
-    time_col, columns = _split_time_columns(scan.collect_schema().names())
+    names, skipped = numeric_scan_columns(scan)
+    time_col, columns = _split_time_columns(names)
     return scan.select(pl.col(time_col).cast(pl.Float64),
-                       *[pl.col(c).cast(pl.Float32) for c in columns])
+                       *[pl.col(c).cast(pl.Float32) for c in columns]), skipped
 
 
 def parse_csv(path: str, cancel=None) -> ParsedRun:
@@ -40,7 +48,7 @@ def parse_csv(path: str, cancel=None) -> ParsedRun:
 
 
 def parse_parquet(path: str, cancel=None) -> ParsedRun:
-    scan = _numeric_scan(pl.scan_parquet(path, glob=False))
+    scan, skipped = _numeric_scan(pl.scan_parquet(path, glob=False))
     rows = scan.select(pl.len()).collect().item()
     time_col, columns = _split_time_columns(scan.collect_schema().names())
     reader = scan.collect_batches(chunk_size=65536, maintain_order=True, engine="streaming")
@@ -48,7 +56,7 @@ def parse_parquet(path: str, cancel=None) -> ParsedRun:
         batches = ((batch[time_col].to_numpy(), {c: batch[c].to_numpy() for c in columns})
                    for batch in reader)
         return collect_parquet_batches(path, [time_col, *columns], rows, batches, cancel,
-                                       backend="polars", strict_rows=True)
+                                       backend="polars", strict_rows=True, skipped_columns=skipped)
     finally:
         del reader
 

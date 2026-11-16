@@ -125,6 +125,37 @@ pub fn error_code(error: &anyhow::Error) -> Option<&str> {
         .map(|e| e.code.as_str())
 }
 
+/// A request that got no complete reply in time. Never sent to clients as a
+/// reply code; clients map it to `timeout` (see [`client_error_code`]).
+#[derive(Debug)]
+struct Timeout(&'static str);
+impl std::fmt::Display for Timeout {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.0)
+    }
+}
+impl std::error::Error for Timeout {}
+
+/// Error code of a failed client request: the service's code, or one of
+/// `connection_refused` (no service at the endpoint), `timeout` and `transport`
+/// for failures that never produced a reply. None for local validation errors.
+pub fn client_error_code(error: &anyhow::Error) -> Option<&str> {
+    if let Some(code) = error_code(error) {
+        return Some(code);
+    }
+    if error.chain().any(|e| e.downcast_ref::<Timeout>().is_some()) {
+        return Some("timeout");
+    }
+    let io = error
+        .chain()
+        .find_map(|e| e.downcast_ref::<std::io::Error>())?;
+    Some(match io.kind() {
+        std::io::ErrorKind::ConnectionRefused => "connection_refused",
+        std::io::ErrorKind::TimedOut | std::io::ErrorKind::WouldBlock => "timeout",
+        _ => "transport",
+    })
+}
+
 fn ok_reply(mut fields: Value) -> Value {
     fields["api_version"] = json!(API_VERSION);
     fields["ok"] = json!(true);
@@ -270,11 +301,10 @@ fn read_message(
         if idle_stop.is_some_and(|stop| stop.load(Ordering::SeqCst)) {
             return Ok(None);
         }
-        if let Some(started) = started {
-            ensure!(
-                started.elapsed() < deadline,
-                "control message deadline exceeded"
-            );
+        if let Some(started) = started
+            && started.elapsed() >= deadline
+        {
+            return Err(Timeout("control message deadline exceeded").into());
         }
         let available = match reader.fill_buf() {
             Ok(bytes) => bytes,
@@ -286,12 +316,13 @@ fn read_message(
                 ) =>
             {
                 match (started, idle_stop) {
-                    (Some(t), _) => {
-                        ensure!(t.elapsed() < deadline, "control message deadline exceeded")
+                    (Some(t), _) if t.elapsed() >= deadline => {
+                        return Err(Timeout("control message deadline exceeded").into());
                     }
+                    (Some(_), _) => {}
                     (None, Some(stop)) if stop.load(Ordering::SeqCst) => return Ok(None),
                     (None, Some(_)) => {}
-                    (None, None) => bail!("timed out waiting for a reply"),
+                    (None, None) => return Err(Timeout("timed out waiting for a reply").into()),
                 }
                 continue;
             }
@@ -299,11 +330,10 @@ fn read_message(
         };
         // Check successful reads too: a peer can otherwise evade the deadline
         // by continuously sending fragments faster than the socket timeout.
-        if let Some(started) = started {
-            ensure!(
-                started.elapsed() < deadline,
-                "control message deadline exceeded"
-            );
+        if let Some(started) = started
+            && started.elapsed() >= deadline
+        {
+            return Err(Timeout("control message deadline exceeded").into());
         }
         if idle_stop.is_some_and(|stop| stop.load(Ordering::SeqCst)) {
             return Ok(None);
@@ -539,7 +569,7 @@ impl Service {
             "profile":config.profile,"format":config.format,"data_options":config.data,
             "time_basis":"seconds from acquisition start; configured sample period; gaps unknown",
             "storage_layout":"consolidated_recordings","source":"ultrazohm",
-            "software_version":env!("CARGO_PKG_VERSION")
+            "software_version":crate::VERSION
         });
         if let Some(dir) = &config.output {
             fs::create_dir(dir)?;
@@ -678,7 +708,7 @@ impl Service {
                 return Ok(Reply::Json(ok_reply(json!({
                     "state":state,"send_ack":self.context.ack.load(Ordering::SeqCst),
                     "logging":self.recordings.status(),"data_options":self.config.data,
-                    "buffer_available_samples":available}))));
+                    "buffer_available_samples":available,"software_version":crate::VERSION}))));
             }
             Operation::Catalog => {
                 return Ok(Reply::Json(ok_reply(json!({
@@ -888,7 +918,7 @@ impl Service {
             serde_json::to_writer_pretty(&file, &run)?;
             file.sync_all()?;
             drop(file);
-            fs::rename(partial, target)?;
+            crate::backend::replace_file(&partial, &target)?;
         }
         match (&s.error, &s.audit_error) {
             (Some(e), Some(a)) => bail!("{e}; {a}"),
@@ -1156,6 +1186,37 @@ mod transport_tests {
             Some(std::io::ErrorKind::ConnectionRefused),
             "a stopped service must report refusal, not a timeout: {error:#}"
         );
+        assert_eq!(client_error_code(&error), Some("connection_refused"));
+    }
+
+    #[test]
+    fn client_error_codes_distinguish_transport_failures() {
+        let refused =
+            anyhow::Error::from(std::io::Error::from(std::io::ErrorKind::ConnectionRefused));
+        assert_eq!(client_error_code(&refused), Some("connection_refused"));
+        let closed = anyhow::Error::from(std::io::Error::from(std::io::ErrorKind::UnexpectedEof));
+        assert_eq!(client_error_code(&closed), Some("transport"));
+        let mut silent = BufReader::new(std::io::Cursor::new(Vec::new()));
+        // An empty reader is EOF, not a timeout; a WouldBlock reader times out.
+        assert!(
+            read_message(&mut silent, Duration::from_secs(1), None)
+                .unwrap()
+                .is_none()
+        );
+        struct Blocked;
+        impl Read for Blocked {
+            fn read(&mut self, _: &mut [u8]) -> std::io::Result<usize> {
+                Err(std::io::Error::from(std::io::ErrorKind::WouldBlock))
+            }
+        }
+        let timeout =
+            read_message(&mut BufReader::new(Blocked), Duration::from_secs(1), None).unwrap_err();
+        assert_eq!(client_error_code(&timeout), Some("timeout"));
+        assert_eq!(
+            client_error_code(&coded("busy", "too many clients")),
+            Some("busy")
+        );
+        assert_eq!(client_error_code(&anyhow::anyhow!("invalid value")), None);
     }
 }
 

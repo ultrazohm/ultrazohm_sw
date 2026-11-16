@@ -23,8 +23,10 @@ import numpy as np
 
 from .sources import MemorySource, PlotData, check, envelope
 
-# Closing waits this long for a viewer-owned service to finalize large recordings.
-CLOSE_FINALIZE_TIMEOUT = 600
+# Closing the window waits this long for a viewer-owned service to finalize.
+# The service runs detached, so longer finalizations complete in the background
+# without freezing the closing window.
+CLOSE_FINALIZE_TIMEOUT = 10
 
 
 def fuzzy_names(names, query):
@@ -326,6 +328,7 @@ class OwnedService:
     process: object = None
     endpoint: str | None = None
     shutdown_requested: bool = False
+    log: Path | None = None
 
     @property
     def running(self):
@@ -379,6 +382,8 @@ class LiveController:
         self._reset_generation = 0
         self._poll_reset_seen = 0
         self.cursor = None
+        # Sample position after the last displayed page; cursors stay opaque.
+        self.cursor_stop = None
         self.ring = None
         self.attached = False
         self.revision = 0
@@ -534,6 +539,7 @@ class LiveController:
             self.owned.process = subprocess.Popen(args, stdout=log, stderr=log, **options)
             self.owned.endpoint = self.endpoint
             self.owned.shutdown_requested = False
+            self.owned.log = log_path
         deadline = time.monotonic() + 8
         while not self.stop_event.is_set() and time.monotonic() < deadline:
             if self.owned.process.poll() is not None:
@@ -795,7 +801,7 @@ class LiveController:
         with self.lock:
             generation, endpoint = self._reset_generation, self.endpoint
         if generation != self._poll_reset_seen:
-            self.cursor = None
+            self.cursor = self.cursor_stop = None
             if self.ring is not None:
                 self.ring.reset()
             self._poll_reset_seen = generation
@@ -823,15 +829,15 @@ class LiveController:
             # by Stop, keep the displayed history and are reported by the caller.
             if self.cursor is None or not cursor_invalid(exc):
                 raise
-            previous_stop = self.cursor.get('next_sample')
-            self.cursor = None
+            previous_stop = self.cursor_stop
+            self.cursor = self.cursor_stop = None
             self.ring.reset()
             page = client.read_since(limit=min(capacity, 100_000))
             # Refresh through the previously displayed time before publishing;
             # larger histories span multiple IPC pages and must not jump backward.
             for _ in range((capacity + 99_999) // 100_000):
                 if (not page.data.height or previous_stop is None or
-                        page.cursor['next_sample'] >= previous_stop or self.stop_event.is_set()):
+                        page.stop >= previous_stop or self.stop_event.is_set()):
                     break
                 pages.append(page)
                 page = client.read_since(page.cursor, limit=min(capacity, 100_000))
@@ -840,7 +846,7 @@ class LiveController:
         epoch = (page.info['run_id'], page.info['generation'])
         if epoch != self._epoch:
             self.ring.reset()
-        self.cursor = page.cursor
+        self.cursor, self.cursor_stop = page.cursor, page.stop
         source = None
         if any(part.data.height for part in pages):
             for part in pages:
@@ -937,8 +943,10 @@ class LiveController:
                         code = self.owned.process.wait(timeout=CLOSE_FINALIZE_TIMEOUT)
                     except subprocess.TimeoutExpired:
                         # The service runs in its own session and keeps finalizing.
-                        raise RuntimeError('Service is still finalizing recordings; it continues in the '
-                                           'background, check its service.log') from None
+                        print('The acquisition service is still finalizing recordings in the background; '
+                              f'see {self.owned.log or "its service.log"} and the end section of run.json.',
+                              file=sys.stderr)
+                        return
                     if code:
                         raise RuntimeError(f'Acquisition service exited with code {code}; check service.log')
                 except Exception as exc:

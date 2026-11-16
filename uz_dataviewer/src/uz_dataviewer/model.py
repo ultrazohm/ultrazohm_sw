@@ -120,6 +120,9 @@ class Run:
     backend: str = "pyarrow"
     """IO backend selected when this recording was opened."""
 
+    skipped_columns: tuple = ()
+    """Non-numeric file columns that are not available as signals."""
+
     source: DisplaySource | None = field(default=None, repr=False, compare=False)
     _source_version: object = field(default=None, repr=False, compare=False)
     output_validator: object = field(default=None, repr=False, compare=False)

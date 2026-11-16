@@ -138,6 +138,15 @@ class PythonCLITest(unittest.TestCase):
         self.assertEqual(result.returncode,0,result.stderr)
         self.assertEqual(len(json.loads(result.stdout)["initial_channels"]),20)
 
+    def test_unavailable_service_has_a_stable_error_code(self):
+        from ultrazohm import Client
+        with socket.socket() as unused:
+            unused.bind(("127.0.0.1", 0))
+            endpoint = f"127.0.0.1:{unused.getsockname()[1]}"
+        with self.assertRaises(RuntimeError) as raised:
+            Client(endpoint).status()
+        self.assertEqual(raised.exception.code, "connection_refused")
+
     def test_help_returns_without_exiting_interpreter(self):
         code="from ultrazohm._native import cli_main; assert cli_main(['ultrazohm', '--help']) == 0; print('INTERPRETER_ALIVE')"
         result=subprocess.run([sys.executable,"-c",code],capture_output=True,text=True,timeout=10)
@@ -817,12 +826,18 @@ class IntegrationTest(unittest.TestCase):
         self.cli("enable-system")
         self.cli("enable-control")
         wait_for(lambda: self.cli("status")["state"]["samples"] >= 100)
+        # One version for --version, status and run.json.
+        version = subprocess.run([str(BIN), "--version"], capture_output=True, text=True,
+                                 check=True, timeout=8).stdout.split()[-1]
+        self.assertEqual(self.cli("status")["software_version"], version)
         self.cli("shutdown")
         self.assertEqual(self.service.wait(timeout=15), 0)
         events = [json.loads(line) for line in (self.run_dir/"commands.jsonl").read_text().splitlines()]
         shutdown = next(event for event in events if event.get("request", {}).get("command", {}).get("op") == "shutdown")
         self.assertEqual(shutdown["wire"], [generated_mapping()["commands"]["Stop"], 0.0])
-        self.assertTrue(json.loads((self.run_dir/"run.json").read_text())["end"]["complete"])
+        run = json.loads((self.run_dir/"run.json").read_text())
+        self.assertTrue(run["end"]["complete"])
+        self.assertEqual(run["software_version"], version)
         self.assertTrue((self.run_dir/"data.parquet").is_file())
 
     @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel")
@@ -1411,6 +1426,52 @@ class IntegrationTest(unittest.TestCase):
         self.assertTrue(json.loads((run_dir/"run.json").read_text())["end"]["complete"])
         self.assertEqual(set(p for p in run_dir.glob("*.parquet") if "-part-" not in p.name), {run_dir/"data.parquet", run_dir/"data_slow_data.parquet", run_dir/"data_slow_data.updates.parquet"})
         self.assertFalse(list(run_dir.glob("*.csv")))
+
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for embedded API test")
+    def test_unclosed_embedded_acquisition_stops_device_and_finalizes(self):
+        self.spawn([sys.executable, ROOT/"javascope/test_server.py", "--port", self.device_port])
+        def ready():
+            with socket.create_connection(("127.0.0.1", self.device_port), timeout=.1):
+                return True
+        wait_for(ready)
+        root = Path(self.tmp.name)
+        code = r'''import json, sys, time
+from pathlib import Path
+import ultrazohm
+endpoint, device, root = sys.argv[1], sys.argv[2], Path(sys.argv[3])
+def measure(output):
+    a = ultrazohm.Acquisition(device, endpoint=endpoint, output=str(output), format="parquet")
+    uz = ultrazohm.Client(endpoint)
+    uz.enable_system()
+    uz.start_logging()
+    deadline = time.monotonic() + 10
+    while uz.status()["state"]["samples"] < 30:
+        assert time.monotonic() < deadline
+        time.sleep(.03)
+    uz.close()
+    return a, uz.status()["state"]["commands_sent"]
+with ultrazohm.Acquisition(device, endpoint=endpoint, output=str(root/"with")) as a:
+    pass
+assert a.is_finished()
+# Garbage collection without close() stops the device and finalizes immediately.
+a, sent = measure(root/"collected")
+del a
+end = json.loads((root/"collected/run.json").read_text())["end"]
+assert end["complete"] and end["state"]["commands_sent"] == sent + 1, (end, sent)
+# Interpreter exit after an error does the same.
+a, sent = measure(root/"exit")
+print(json.dumps(sent), flush=True)
+raise SystemExit(3)
+'''
+        result = subprocess.run([sys.executable, "-c", code, self.endpoint, f"127.0.0.1:{self.device_port}", str(root)],
+                                capture_output=True, text=True, timeout=60)
+        self.assertEqual(result.returncode, 3, result.stderr)
+        sent = json.loads(result.stdout.splitlines()[-1])
+        end = json.loads((root/"exit/run.json").read_text())["end"]
+        self.assertTrue(end["complete"], end)
+        self.assertEqual(end["state"]["commands_sent"], sent + 1)  # The exit path sent device Stop.
+        self.assertTrue((root/"exit/data.parquet").is_file())
+        self.assertTrue(json.loads((root/"with/run.json").read_text())["end"]["complete"])
 
     @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for embedded API test")
     def test_embedded_python_connect_later(self):

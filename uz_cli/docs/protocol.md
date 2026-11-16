@@ -210,7 +210,17 @@ and logging control. Errors have `ok:false`, an `error` message and a stable
 | `busy` | Too many concurrent data queries or clients; retry later |
 | `shutting_down` | The service is shutting down |
 
-Status returns counters, last status word, ACK policy, terminal error and
+The Python client also sets a code for requests that got no reply, so callers
+never need to match error text:
+
+| Code | Meaning |
+|---|---|
+| `connection_refused` | No service listens at the endpoint (stopped or not yet started) |
+| `timeout` | The service did not reply in time |
+| `transport` | Any other socket failure, for example a connection closed mid-reply |
+
+Status returns counters, last status word, ACK policy, terminal error,
+`software_version` (also in `run.json` and `ultrazohm --version`) and
 `logging.fast` / `logging.slow` with phase, Parquet path and recording error.
 Operations: connect, status, catalog, observables, recordings, data_info,
 read_data, stop, enable_system, enable_control, set_variable, set_observable,

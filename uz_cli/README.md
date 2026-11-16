@@ -254,26 +254,29 @@ is absent. Existing mappings without this metadata remain supported.
 
 `Client` controls an existing service. `Acquisition` owns an embedded instance of
 the same Rust service and waits until startup is ready. Socket calls release the
-GIL; Python does not process incoming samples. Always close an embedded acquisition:
+GIL; Python does not process incoming samples. Use an embedded acquisition as a
+context manager; leaving the block, also through an exception, sends device Stop,
+finalizes recordings and raises runtime/storage errors:
 
 ```python
 import time
 from ultrazohm import Acquisition, Client
 
-acquisition = Acquisition(output="python-run", format="csv")
-uz = Client()
-try:
+with Acquisition(output="python-run", format="csv") as acquisition:
+    uz = Client()
     uz.connect()  # or pass device="192.168.1.233:1000" to Acquisition
     uz.set_observable("lifecheck", 1)
     uz.set_variable("send_field_1", 12.5)
     uz.start_logging()
     time.sleep(1)  # Perform the measurement here.
     print(uz.status())
-finally:
-    acquisition.close()  # Stop, finalize, and surface runtime/storage errors.
 
 recorded = acquisition.read_recording()  # First fast recording, as Polars.
 ```
+
+`acquisition.close()` does the same explicitly. An acquisition that is never
+closed is closed when it is garbage collected or the interpreter exits, which
+also sends device Stop; errors are then only printed to standard error.
 
 `Acquisition` also accepts `profile`, `channel_mapping`, `endpoint`,
 `buffer_samples`, `segment_rows`, `flush_interval_ms` and `recording_backend`.

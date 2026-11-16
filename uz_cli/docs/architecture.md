@@ -50,8 +50,11 @@ stalls; commands are never automatically replayed.
 The standalone CLI needs no Python runtime. `serve` owns acquisition independently
 of short-lived commands. Python `Client` releases the GIL during native socket
 calls. `Acquisition` runs the same service in a native thread and waits for startup
-readiness; its lifetime is bounded by Python. `close()` joins finalizers and
-surfaces errors. Use an external service when logging must outlive Python.
+readiness; its lifetime is bounded by Python. `close()` (or leaving a `with`
+block) joins finalizers and surfaces errors. An acquisition that is garbage
+collected or still open at interpreter exit is closed the same way, so device
+Stop is also sent when a script fails; its errors are then printed only. Use an
+external service when logging must outlive Python.
 
 The viewer uses the same API for source and frozen builds. Its controller owns
 background requests and a service process only when it launched that process;
@@ -119,12 +122,16 @@ backend tests the contract independently of storage files; backend choice is
 separate from the optional CSV export format.
 
 Chunks and their `*.recording.json` index are published atomically. The persisted
-boundary advances only after both succeed. Index/footer metadata grows with
+boundary advances only after both succeed. On Windows, replacing the index (and
+`run.json`) is retried for up to a second while another process holds it open;
+file systems without hard links publish a new index by rename. Index/footer metadata grows with
 chunk count; sample buffers stay bounded. At stop, the parts are merged into one
 file with the same rows and schema (`{stem}.parquet` for fast recordings,
 `{stem}.updates.parquet` for raw slow updates); after verifying row count and
 schema, the index is republished with that file as its only segment and the parts
-are deleted (best effort; an undeleted part is unreferenced). A reader whose index
+are deleted (best effort; an undeleted part is unreferenced). Until then the
+merged file needs about as much free disk space as the recording itself. Parts
+use 65,536-row row groups, the slice size of finalization and CSV export. A reader whose index
 still names a deleted part reloads the index once, so in-flight queries and open
 `Recording` handles continue. The wide slow export and CSV are derived files.
 The index also stores the recording's metadata (requested observables, row count,

@@ -59,9 +59,15 @@ def _read_tools(path):
 
 
 def connection_refused(error):
+    """Whether a request failed because no service listens at the endpoint."""
+    code = getattr(error, 'code', None)
+    if code is not None:
+        return code == 'connection_refused'
+    if isinstance(error, ConnectionRefusedError):
+        return True
+    # CLI wheels without transport error codes report refusal only as text.
     text = str(error).lower()
-    return (isinstance(error, ConnectionRefusedError) or 'connection refused' in text or
-            'os error 10061' in text or 'actively refused' in text)
+    return 'connection refused' in text or 'os error 10061' in text or 'actively refused' in text
 
 
 def run_flash_cli(repo, endpoint, stop_event, emit):

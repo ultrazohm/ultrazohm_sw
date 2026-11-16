@@ -17,10 +17,13 @@ use std::{
 fn error(e: impl std::fmt::Display) -> PyErr {
     PyRuntimeError::new_err(e.to_string())
 }
-/// RuntimeError carrying the service's stable error `code` (None when uncoded).
+/// RuntimeError carrying a stable error `code`: the service's code, or
+/// `connection_refused`, `timeout` or `transport` (None when uncoded).
 fn api_error(py: Python<'_>, e: anyhow::Error) -> PyErr {
     let err = PyRuntimeError::new_err(format!("{e:#}"));
-    let _ = err.value(py).setattr("code", service::error_code(&e));
+    let _ = err
+        .value(py)
+        .setattr("code", service::client_error_code(&e));
     err
 }
 
@@ -292,8 +295,20 @@ impl Acquisition {
     }
 }
 impl Drop for Acquisition {
+    /// An acquisition that is garbage collected without close() still sends
+    /// device Stop and finalizes its recordings before the object goes away;
+    /// the service thread never needs the GIL, so joining it cannot deadlock.
     fn drop(&mut self) {
         self.stop.store(true, Ordering::SeqCst);
+        if let Some(worker) = self.worker.take() {
+            match worker.join() {
+                Ok(Ok(())) => {}
+                Ok(Err(error)) => {
+                    eprintln!("UltraZohm acquisition closed with an error: {error:#}")
+                }
+                Err(_) => eprintln!("UltraZohm acquisition thread panicked"),
+            }
+        }
     }
 }
 #[pymodule]

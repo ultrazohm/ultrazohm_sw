@@ -257,7 +257,8 @@ jobs:
           windows_archive="uz_dataviewer-${GITHUB_SHA}-windows-x86_64.zip"
           test -s "$linux_archive"
           test -s "$windows_archive"
-          printf '{"source_commit":"%s","branch":"%s","service_api_version":1}\n' "$GITHUB_SHA" "$GITHUB_REF_NAME" > manifest.json
+          # The bundled CLI wheel defines the service API; the commit identifies both.
+          printf '{"source_commit":"%s","branch":"%s"}\n' "$GITHUB_SHA" "$GITHUB_REF_NAME" > manifest.json
           sha256sum "$linux_archive" "$windows_archive" *.whl manifest.json > SHA256SUMS
           prerelease=true
           if [[ "$GITHUB_REF_NAME" == main ]]; then prerelease=false; fi

@@ -76,8 +76,11 @@ extern uint64_t uz_SystemTime_GetUptimeInUs(void);
 #endif
 
 /* Pending CTO responses waiting for the OCM mailbox (one in-flight response
- * at a time, acknowledged by the A53). Request/response is serialized by the
- * master, so depth > 1 is only used by bursts XCPlite produces itself. */
+ * at a time, acknowledged by the A53, i.e. one response per sweep). A command
+ * batch (generation) may carry more frames than this - CANape block mode,
+ * a pipelining master - so xcp_r5_poll stops executing when the FIFO is full
+ * and resumes the SAME generation at the next frame in a later sweep; the
+ * depth only sets how far it runs ahead of the mailbox. */
 #define XCP_R5_CTO_PENDING_DEPTH 4u
 
 /* Control-ISR rate = the base DAQ raster. Same expression main.c uses for
@@ -137,6 +140,9 @@ static uint32_t gSliceCnt[XCP_R5_SLICE_COUNT] = {0u, 1u, 2u, 3u};
  *                           A53 gateway filters these too, so non-zero here
  *                           means a gateway bug or a hostile master.
  *   xcp_r5_in_generations   command batches executed (generation handshake)
+ *   xcp_r5_in_resumed       sweeps that suspended a command batch because the
+ *                           pending-CTO FIFO was full (resumed next sweep;
+ *                           no response is lost - only latency for bursts)
  *   xcp_r5_queue_lost       queue32 overflow between sweeps -> DAQ frames
  *                           lost at the source (raise QUEUE_SIZE or sweep
  *                           more often if this climbs)
@@ -160,6 +166,7 @@ volatile uint32_t xcp_r5_cto_sent = 0u;
 volatile uint32_t xcp_r5_cto_dropped = 0u;
 volatile uint32_t xcp_r5_cmd_oversize_drop = 0u;
 volatile uint32_t xcp_r5_in_generations = 0u;
+volatile uint32_t xcp_r5_in_resumed = 0u;
 volatile uint32_t xcp_r5_queue_lost = 0u;
 volatile uint32_t xcp_r5_tx_held = 0u;
 volatile uint32_t xcp_r5_sweep_count = 0u;
@@ -184,6 +191,14 @@ static uint8_t gCtoPendingCount = 0u;
  * exactly once, no matter how many IPI cycles the A53 keeps offering it
  * (rewrite-until-acked; see ocm_xcp_fifo.c). */
 static uint32_t gInGenDone = 0u;
+
+/* Resume cursor for a generation that could not be finished in one sweep
+ * (pending-CTO FIFO full): generation, record index and byte offset of the
+ * next frame to execute. Valid because the A53 re-offers identical bytes
+ * until the generation is acknowledged. */
+static uint32_t gInCurGen = 0u;
+static uint16_t gInCurRec = 0u;
+static uint16_t gInCurOff = 0u;
 
 /* Memory access gate for SHORT_UPLOAD/UPLOAD/DOWNLOAD/BUILD_CHECKSUM/DAQ
  * entries: without it the engine memcpy()s ANY 32-bit address the master
@@ -357,6 +372,13 @@ void xcp_r5_poll(void) {
      * pcap-proven session killer). */
     uint32_t in_gen = ocm_xcp_in_gen_read();
     if (in_gen != gInGenDone) {
+        if (in_gen != gInCurGen) {
+            gInCurGen = in_gen; /* new batch: start at its first frame */
+            gInCurRec = 0u;
+            gInCurOff = 0u;
+        }
+        int complete = 1;
+        uint16_t rec = 0u;
         ocm_xcp_fifo_prepare_read();
         uint8_t len;
         uint8_t *data;
@@ -365,11 +387,29 @@ void xcp_r5_poll(void) {
              * concatenated TL frames ([dlc][ctr][packet])+ (e.g. CANape
              * block-mode command bursts). */
             uint16_t off = 0u;
+            if (rec < gInCurRec) {
+                rec++;
+                continue; /* executed in an earlier sweep of this generation */
+            }
+            if (rec == gInCurRec) {
+                off = gInCurOff; /* resume inside the record */
+            }
             while ((uint16_t)(off + XCPTL_TRANSPORT_LAYER_HEADER_SIZE) <= (uint16_t)len) {
                 uint16_t dlc = (uint16_t)(data[off] | ((uint16_t)data[off + 1] << 8));
                 if (dlc == 0u ||
                     (uint16_t)(off + XCPTL_TRANSPORT_LAYER_HEADER_SIZE + dlc) > (uint16_t)len) {
                     break; /* padding or malformed frame: stop parsing this record */
+                }
+                if (gCtoPendingCount >= XCP_R5_CTO_PENDING_DEPTH) {
+                    /* No room for another response: suspend the batch here
+                     * and resume at this frame next sweep (one mailbox ack per
+                     * sweep frees one slot). Nothing is acknowledged yet, so
+                     * the A53 keeps offering the same bytes. */
+                    gInCurRec = rec;
+                    gInCurOff = off;
+                    complete = 0;
+                    xcp_r5_in_resumed++;
+                    break;
                 }
                 if (dlc > XCPTL_MAX_CTO_SIZE) {
                     /* Transport-layer contract (upstream xcpethtl.c does the
@@ -382,9 +422,15 @@ void xcp_r5_poll(void) {
                 }
                 off = (uint16_t)(off + XCPTL_TRANSPORT_LAYER_HEADER_SIZE + dlc);
             }
+            if (!complete) {
+                break;
+            }
+            rec++;
         }
-        gInGenDone = in_gen;
-        xcp_r5_in_generations++;
+        if (complete) {
+            gInGenDone = in_gen;
+            xcp_r5_in_generations++;
+        }
     }
     ocm_xcp_in_consumed_write(gInGenDone);
 

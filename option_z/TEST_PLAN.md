@@ -196,7 +196,9 @@ Inspect these via the JTAG debugger (the R5 keeps stats):
 - **Exchange-protocol counters (CP7, the hedrive validation set).** R5
   (`xcptl_ocm.c`): `xcp_r5_cto_sent` (responses handed to the mailbox),
   `xcp_r5_cto_dropped` (pending-FIFO overflow — must stay 0),
-  `xcp_r5_in_generations` (command batches executed),
+  `xcp_r5_in_generations` (command batches executed), `xcp_r5_in_resumed`
+  (batches suspended because the 4-deep response FIFO was full and resumed
+  next sweep — bursts cost latency, never a response),
   `xcp_r5_cmd_oversize_drop` (command frame with dlc > 248 refused before
   the engine — must stay 0, the gateway filters these too),
   `xcp_r5_tx_held` (sweeps that filled XCP_OUT with backlog left over — the

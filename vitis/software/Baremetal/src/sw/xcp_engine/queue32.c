@@ -316,18 +316,20 @@ tQueueBuffer queuePop(tQueueHandle queue_handle, bool accumulate, bool flush, ui
 
     tXcpSegmentBuffer *b = NULL;
 
+    // Check if there is a message segment ready in the transmit queue
+    mutexLock(&queue->Mutex_Queue);
+
     // Return the number of packets lost since the last call to queuePop
+    // UZ fix: read and reset under the queue lock. The producer (queueAcquire, the R5 control
+    // ISR) increments the count under the lock, so a loss between the unlocked read and the
+    // reset was never reported. Upstream V2.3.4 reports before resetting as well, but outside
+    // the lock.
     if (packets_lost != NULL) {
         if (queue->packets_lost > 0)
             DBG_PRINTF6("queuePop: packets_lost=%" PRIu32 "\n", queue->packets_lost);
-        // UZ fix: report BEFORE resetting (upstream zeroes first, so the caller
-        // always saw 0 and the transport-layer ctr never signalled overflow).
         *packets_lost = queue->packets_lost;
         queue->packets_lost = 0; // Reset lost packets count
     }
-
-    // Check if there is a message segment ready in the transmit queue
-    mutexLock(&queue->Mutex_Queue);
 
     if (queue->queue_len >= 1) {
 

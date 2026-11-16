@@ -1371,10 +1371,15 @@ static uint8_t XcpSetDaqListMode(uint16_t daq, uint16_t event_id, uint8_t mode, 
 #ifdef XCP_MAX_EVENT_COUNT
     uint16_t daq0 = DaqListFirst(event_id);
     uint16_t *daq0_next = &DaqListFirstMut(event_id);
+    // Ported from upstream V2.2.2 (#126): the V2.1.0 loop advanced daq0 before taking its address,
+    // so with one list already linked it wrote daq into daq_list[XCP_UNDEFINED_DAQ_LIST].next (out of
+    // bounds) and never linked the new list; a repeated SET_DAQ_LIST_MODE for the same list did the same.
     while (daq0 != XCP_UNDEFINED_DAQ_LIST) {
         assert(daq0 < shared.daq_lists.daq_count);
-        daq0 = DaqListNext(daq0);
+        if (daq0 == daq)
+            return CRC_CMD_OK; // Already linked; mode and priority have been updated above.
         daq0_next = &DaqListNextMut(daq0);
+        daq0 = DaqListNext(daq0);
     }
     *daq0_next = daq;
 #endif

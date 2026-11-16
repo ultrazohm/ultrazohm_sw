@@ -31,6 +31,9 @@ uz-dataviewer = "uz_dataviewer.app:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+uz_dataviewer = ["assets/*.svg", "assets/app_settings/*.png", "assets/app_settings/*.ico"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"

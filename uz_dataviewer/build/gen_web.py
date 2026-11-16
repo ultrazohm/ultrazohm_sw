@@ -28,6 +28,7 @@ import os
 import sys
 import json
 import runpy
+import base64
 
 # Versions are pinned for ABI compatibility: the imgui_bundle WASM wheel is built
 # against one specific Pyodide/emscripten release.
@@ -80,6 +81,8 @@ _app.run()
 
 def build_html() -> str:
     sources = _collect_sources()
+    with open(os.path.join(PKG_DIR, 'assets', 'favicon.svg'), 'rb') as icon:
+        favicon = base64.b64encode(icon.read()).decode('ascii')
     null_values = runpy.run_path(os.path.join(PKG_DIR, "csv_policy.py"))["NULL_VALUES"]
 
     src_tags = "\n".join(
@@ -104,6 +107,7 @@ def build_html() -> str:
 <head>
   <meta charset="utf-8">
   <title>UltraZohm Data Viewer</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,{favicon}">
   <script src="https://cdn.jsdelivr.net/pyodide/{PYODIDE_VERSION}/full/pyodide.js"></script>
   <style>
     html, body {{ width: 100%; height: 100%; margin: 0; font-family: sans-serif; }}

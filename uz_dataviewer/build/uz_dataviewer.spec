@@ -12,7 +12,7 @@
 import os
 import sys
 
-from PyInstaller.utils.hooks import collect_all, collect_submodules
+from PyInstaller.utils.hooks import collect_all, collect_data_files, collect_submodules
 
 # Resolve paths relative to this spec file (PyInstaller sets SPECPATH).
 SRC = os.path.abspath(os.path.join(SPECPATH, "..", "src"))
@@ -36,6 +36,7 @@ for pkg in ("imgui_bundle", "pyarrow", "polars", "_polars_runtime_32", "ultrazoh
 
 # Bundle our own package (entry point imports it absolutely).
 hiddenimports += collect_submodules("uz_dataviewer")
+datas += collect_data_files("uz_dataviewer")
 
 a = Analysis(
     [os.path.join(SPECPATH, "entrypoint.py")],
@@ -61,6 +62,7 @@ exe = EXE(
     strip=False,
     upx=True,
     console=False,  # GUI app: no console window on Windows
+    icon=os.path.join(SRC, 'uz_dataviewer', 'assets', 'app_settings', 'icon.ico') if sys.platform == 'win32' else None,
 )
 
 coll = COLLECT(exe, a.binaries, a.datas, strip=False, upx=False, name="uz_dataviewer")

@@ -878,9 +878,6 @@ class PlotsPanel(SessionPanel):
         self._poll_export(state)
         self._toolbar(state)
         self._fit_linked_x(state)
-        if state.services.display.pending:
-            imgui.same_line()
-            imgui.text_disabled("Updating plots...")
         imgui.separator()
         state.downsampling_active = False
 

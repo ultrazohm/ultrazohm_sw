@@ -421,6 +421,12 @@ class DataViewerApp:
 
     # -- runner -------------------------------------------------------------
     def run(self) -> None:
+        if not runtime.IS_WEB:
+            import imgui_bundle
+            # Our icon overrides the stock icon; retain bundled fonts and other
+            # framework assets instead of falling back to ImGui's bitmap font.
+            hello_imgui.add_assets_search_path(str(Path(imgui_bundle.__file__).parent / 'assets'))
+            hello_imgui.set_assets_folder(str(Path(__file__).parent / 'assets'))
         params = hello_imgui.RunnerParams()
         if not runtime.IS_WEB:
             params.ini_filename = str(self.artifacts / 'viewer.ini')

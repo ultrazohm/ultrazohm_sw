@@ -133,10 +133,9 @@ are `loading_mode(lazy)` and `cache_budget(1024)`.
 
 Plot preparation, first-use summaries, XY sampling, cursor reads, and GUI FFT /
 histogram computation run outside the desktop rendering thread. During an update,
-the last completed plot remains visible with an **Updating plots...** indicator.
-Up to four plot requests run concurrently, so a slow first-time summary of one
-channel does not hold back other subplots; concurrent requests can each hold
-their own decoded batches in memory.
+the last completed plot remains visible. Up to four plot requests run concurrently,
+so a slow first-time summary of one channel does not hold back other subplots;
+concurrent requests can each hold their own decoded batches in memory.
 Superseded display requests are cancelled or discarded. Main and spy plots reuse
 completed results, and finite display-point budgets account for pixel width and
 trace count. Gap markers may add points beyond the finite-point budget.

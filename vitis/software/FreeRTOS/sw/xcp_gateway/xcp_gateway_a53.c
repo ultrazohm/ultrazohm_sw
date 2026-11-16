@@ -146,7 +146,12 @@ static volatile uint32_t  gMasterGen = 0;    /* bumped on endpoint change       
  *                              the batch was already CTR-stamped, so each one
  *                              is a wire counter gap and the ONLY ECU-side
  *                              source of them. Gaps with this at 0 mean the
- *                              loss is wire/PC-side. Must stay 0. */
+ *                              loss is wire/PC-side. Must stay 0.
+ *   xcp_gw_ipi_count          IPIs handled (A53-side liveness; ~= R5 sweeps)
+ *   All of the above are mirrored every IPI into the XCP_IN header spare
+ *   words (ocm_xcp_fifo.h, OCM_XCP_IN_DIAG_ADDR) together with the DAQ queue
+ *   fill level, so CANape (uz.A2L xcp_gw_*) and xcp_poll.py --stress can
+ *   read them over XCP; the debugger is no longer the only way. */
 volatile uint32_t xcp_gw_ocm_skipped_writing = 0;
 volatile uint32_t xcp_gw_ocm_torn = 0;
 volatile uint32_t xcp_gw_ocm_cycles_missed = 0;
@@ -157,6 +162,7 @@ volatile uint32_t xcp_gw_in_batches_sent = 0;
 volatile uint32_t xcp_gw_in_retry_cycles = 0;
 volatile uint32_t xcp_gw_tx_malformed_drop = 0;
 volatile uint32_t xcp_gw_rx_malformed_drop = 0;
+volatile uint32_t xcp_gw_ipi_count = 0;
 volatile uint32_t xcp_gw_sendto_err = 0;
 volatile uint32_t xcp_gw_sendto_drop = 0;
 
@@ -347,6 +353,24 @@ static void xcp_gw_write_in_phase(BaseType_t *woken) {
             break; /* cannot happen (batch sized to the region); defensive */
         }
     }
+    /* Mirror the gateway counters into the XCP_IN header spare words so the
+     * XCP master can read them by absolute address (ocm_xcp_fifo.h). 14 plain
+     * stores per IPI; they ride the header flush below. */
+    xcp_gw_ipi_count++;
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_OCM_SKIPPED_WRITING, xcp_gw_ocm_skipped_writing);
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_OCM_TORN, xcp_gw_ocm_torn);
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_OCM_CYCLES_MISSED, xcp_gw_ocm_cycles_missed);
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_OCM_CAPPED, xcp_gw_ocm_capped);
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_TXQ_DROPPED, xcp_gw_txq_dropped);
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_CTOQ_DROPPED, xcp_gw_ctoq_dropped);
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_IN_BATCHES_SENT, xcp_gw_in_batches_sent);
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_IN_RETRY_CYCLES, xcp_gw_in_retry_cycles);
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_TX_MALFORMED_DROP, xcp_gw_tx_malformed_drop);
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_RX_MALFORMED_DROP, xcp_gw_rx_malformed_drop);
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_SENDTO_ERR, xcp_gw_sendto_err);
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_SENDTO_DROP, xcp_gw_sendto_drop);
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_IPI_COUNT, xcp_gw_ipi_count);
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_TXQ_LEVEL, (uint32_t)uxQueueMessagesWaitingFromISR(gTxQueue));
     ocm_xcp_in_gen_publish(gInGen);
     ocm_xcp_fifo_cache_flush_after_write(); /* chain first, then header */
 }

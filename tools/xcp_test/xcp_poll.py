@@ -374,6 +374,31 @@ R5_DIAG_COUNTERS = [
 ]
 
 
+# A53 gateway counters, mirrored every IPI into the XCP_IN header spare words at
+# fixed OCM addresses (ocm_xcp_fifo.h enum ocm_xcp_in_diag_slot; keep in sync).
+# Readable through the R5 engine by absolute address, no ELF needed.
+A53_DIAG_ADDR = 0xFFFFC008
+A53_DIAG_COUNTERS = [
+    "xcp_gw_ocm_skipped_writing", "xcp_gw_ocm_torn", "xcp_gw_ocm_cycles_missed",
+    "xcp_gw_ocm_capped", "xcp_gw_txq_dropped", "xcp_gw_ctoq_dropped",
+    "xcp_gw_in_batches_sent", "xcp_gw_in_retry_cycles", "xcp_gw_tx_malformed_drop",
+    "xcp_gw_rx_malformed_drop", "xcp_gw_sendto_err", "xcp_gw_sendto_drop",
+    "xcp_gw_ipi_count", "xcp_gw_txq_level",
+]
+A53_DIAG_GAUGES = ("xcp_gw_txq_level",)  # level, not a count: print the value, not a delta
+
+
+def read_a53_diag(xcp):
+    """Read the mirrored A53 gateway counters. Returns {name: value}."""
+    out = {}
+    for i, name in enumerate(A53_DIAG_COUNTERS):
+        try:
+            out[name] = struct.unpack("<I", xcp.short_upload(A53_DIAG_ADDR + 4 * i, 4))[0]
+        except (TimeoutError, RuntimeError):
+            break
+    return out
+
+
 def read_r5_diag(xcp, addrs):
     """Read the resolved diagnostic counters. Returns {name: value}."""
     out = {}
@@ -425,6 +450,7 @@ def run_stress(xcp, args, max_dto):
     pre = read_r5_diag(xcp, diag_addrs)
     if not pre:
         print("[!] R5 diag counters not resolvable (no Baremetal.elf?) -- skipping deltas")
+    pre_a53 = read_a53_diag(xcp)
 
     # A large kernel receive buffer so the flood is not dropped PC-side: at
     # 160 Mbit/s a ~100 ms Windows scheduling hiccup already costs 2 MB.
@@ -507,6 +533,7 @@ def run_stress(xcp, args, max_dto):
 
     wall_s = max(time.monotonic() - t0, 1e-6)
     post = read_r5_diag(xcp, diag_addrs)
+    post_a53 = read_a53_diag(xcp)
 
     print("\n[+] stress summary (%.2fs wall):" % wall_s)
     print("    datagrams        %10d   (%.0f/s, %.1f frames/datagram)" %
@@ -539,9 +566,24 @@ def run_stress(xcp, args, max_dto):
                                   "xcp_r5_cto_dropped", "xcp_r5_tx_oversize_drop"):
                     flag = "  <-- investigate"
                 print("      %-24s +%d%s" % (name, d, flag))
-    print("    (A53 gateway counters xcp_gw_* are JTAG-only: torn/cycles_missed/"
-          "txq_dropped/in_retry_cycles; on ctr gaps check xcp_gw_sendto_err: "
-          ">0 = lwIP dropped it, 0 = wire/PC-side)")
+    if pre_a53 and post_a53:
+        print("    A53 gateway counter deltas over the run (XCP_IN header mirror):")
+        for name in A53_DIAG_COUNTERS:
+            if name in pre_a53 and name in post_a53:
+                if name in A53_DIAG_GAUGES:
+                    print("      %-26s  %d (level now)" % (name, post_a53[name]))
+                    continue
+                d = (post_a53[name] - pre_a53[name]) & 0xFFFFFFFF
+                flag = ""
+                if d and name in ("xcp_gw_txq_dropped", "xcp_gw_ctoq_dropped",
+                                  "xcp_gw_tx_malformed_drop", "xcp_gw_rx_malformed_drop",
+                                  "xcp_gw_sendto_drop", "xcp_gw_ocm_cycles_missed"):
+                    flag = "  <-- investigate"
+                print("      %-26s +%d%s" % (name, d, flag))
+        print("    (on ctr gaps: xcp_gw_sendto_drop > 0 = ECU dropped it after retries, "
+              "0 = wire/PC-side loss)")
+    else:
+        print("    (A53 gateway counters not readable: gateway older than the XCP_IN mirror?)")
     if frames == 0:
         print("\n[x] no DTOs received -- stress FAILED")
         return 1

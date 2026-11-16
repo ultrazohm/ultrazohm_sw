@@ -205,7 +205,13 @@ Inspect these via the JTAG debugger (the R5 keeps stats):
   next segment waited in the queue and went out first in the next sweep;
   backlog, not loss, so `ocm_xcp_w_dropped` on the R5 now stays 0 and
   steady growth here is the early warning before `xcp_r5_queue_lost`). A53
-  (`xcp_gateway_a53.c`): `xcp_gw_ocm_torn` / `xcp_gw_ocm_skipped_writing`
+  (`xcp_gateway_a53.c`; since 2026-11-16 every A53 counter is mirrored each
+  IPI into the XCP_IN header spare words at `0xFFFFC008 + 4·slot` — slot
+  table in `ocm_xcp_fifo.h` — and readable over XCP: `xcp_gw_*`
+  MEASUREMENTs in `uz.A2L` at those fixed addresses, deltas printed by
+  `xcp_poll.py --stress`; plus `xcp_gw_ipi_count` (A53 liveness) and the
+  gauge `xcp_gw_txq_level` (DAQ backlog waiting for UDP)):
+  `xcp_gw_ocm_torn` / `xcp_gw_ocm_skipped_writing`
   (seqlock collisions — occasional is fine, monotonic climb at idle is not),
   `xcp_gw_ocm_cycles_missed` (R5 cycles no IPI ever read = real DAQ gaps),
   `xcp_gw_ocm_capped` (per-IPI drain cap hit), `xcp_gw_txq_dropped` (UDP

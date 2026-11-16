@@ -48,6 +48,9 @@
 |     +0    u32 cto_ack      last mailbox sequence consumed by the A53
 |     +4    u32 in_gen       command-batch generation, 0 = none;
 |                            published AFTER the chain bytes
+|     +8    u32 diag[14]     A53 gateway counter mirror (slot table in
+|                            ocm_xcp_fifo.h); rewritten every IPI, read by
+|                            the XCP master by absolute address
 |     +64   message chain
 |
 |   Message chain format (unchanged from the original FIFO):
@@ -98,6 +101,7 @@
 #define XCP_OUT_CTO_FRAME_ADDR (XCP_OUT_ADDR + XCP_OUT_HDR_CTRL_LEN)
 #define XCP_IN_CTO_ACK_P      ((volatile uint32_t *)(XCP_IN_ADDR + 0u))
 #define XCP_IN_GEN_P          ((volatile uint32_t *)(XCP_IN_ADDR + 4u))
+#define XCP_IN_DIAG_P(i)      ((volatile uint32_t *)(uintptr_t)(XCP_IN_ADDR + 8u + 4u * (i)))
 
 /* The mailbox slot address laundered through a volatile: memcpy() to/from a
  * literal address makes GCC treat it as a zero-size object (-Warray-bounds). */
@@ -105,6 +109,9 @@ static volatile size_t cto_frame_addr = XCP_OUT_CTO_FRAME_ADDR;
 
 #if (XCP_IN_LEN - XCP_IN_HDR_LEN) != OCM_XCP_IN_CHAIN_LEN
 #error "OCM_XCP_IN_CHAIN_LEN out of sync with the XCP_IN layout"
+#endif
+#if (OCM_XCP_IN_DIAG_ADDR != (XCP_IN_ADDR + 8u)) || ((8u + 4u * OCM_XCP_IN_DIAG_COUNT) > XCP_IN_HDR_LEN)
+#error "OCM_XCP_IN_DIAG_* out of sync with the XCP_IN header layout"
 #endif
 
 /* R5 write side reserves the tail of XCP_OUT for CTO frames (XCP PID >= 0xFC:
@@ -367,6 +374,14 @@ void ocm_xcp_cto_ack_write(uint32_t seq) {
  * the OCM before this word does (publish-after-payload). */
 void ocm_xcp_in_gen_publish(uint32_t gen) {
     *XCP_IN_GEN_P = gen;
+}
+
+/* Mirror one A53 gateway counter into the XCP_IN header spare words (slot
+ * table in ocm_xcp_fifo.h). Travels with the header flush, like in_gen. */
+void ocm_xcp_in_diag_write(uint32_t slot, uint32_t value) {
+    if (slot < OCM_XCP_IN_DIAG_COUNT) {
+        *XCP_IN_DIAG_P(slot) = value;
+    }
 }
 
 /* Last XCP_IN generation the R5 has processed. Lives in the XCP_OUT control

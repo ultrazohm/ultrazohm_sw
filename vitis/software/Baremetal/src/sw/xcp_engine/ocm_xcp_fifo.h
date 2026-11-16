@@ -34,6 +34,33 @@
  * its rewrite-until-acked command batch from this. */
 #define OCM_XCP_IN_CHAIN_LEN 960u
 
+/* A53 gateway diagnostics mirror: the 56 spare bytes of the XCP_IN header
+ * (bytes 8..63 = 14 x u32) carry the gateway's own counters, rewritten every
+ * IPI cycle and published with the header flush. They are not part of the
+ * handshake and the R5 never writes them, so the XCP master can read them by
+ * absolute address through the R5 engine (OCM is in the R5 allow-list) -
+ * before they were JTAG-only. Fixed OCM addresses = independent of any
+ * build. The slot table is mirrored in CANape/UZ_XCP/uz.A2L (xcp_gw_*),
+ * tools/xcp_test/gen_a2l.py and tools/xcp_test/xcp_poll.py: keep in sync. */
+#define OCM_XCP_IN_DIAG_ADDR  0xFFFFC008u
+#define OCM_XCP_IN_DIAG_COUNT 14u
+enum ocm_xcp_in_diag_slot {
+    OCM_XCP_DIAG_GW_OCM_SKIPPED_WRITING = 0, /* IPI hit the R5 mid-write          */
+    OCM_XCP_DIAG_GW_OCM_TORN,                /* XCP_OUT rewritten mid-read         */
+    OCM_XCP_DIAG_GW_OCM_CYCLES_MISSED,       /* R5 cycles no IPI read              */
+    OCM_XCP_DIAG_GW_OCM_CAPPED,              /* per-IPI drain cap hit              */
+    OCM_XCP_DIAG_GW_TXQ_DROPPED,             /* DAQ queue full -> record dropped   */
+    OCM_XCP_DIAG_GW_CTOQ_DROPPED,            /* CTO queue full -> frame dropped    */
+    OCM_XCP_DIAG_GW_IN_BATCHES_SENT,         /* command generations offered        */
+    OCM_XCP_DIAG_GW_IN_RETRY_CYCLES,         /* IPIs re-offering an unacked batch  */
+    OCM_XCP_DIAG_GW_TX_MALFORMED_DROP,       /* TL walk failed on TX               */
+    OCM_XCP_DIAG_GW_RX_MALFORMED_DROP,       /* TL walk failed on RX               */
+    OCM_XCP_DIAG_GW_SENDTO_ERR,              /* transient lwip_sendto failures     */
+    OCM_XCP_DIAG_GW_SENDTO_DROP,             /* batch dropped after retries        */
+    OCM_XCP_DIAG_GW_IPI_COUNT,               /* IPIs handled (A53 liveness)        */
+    OCM_XCP_DIAG_GW_TXQ_LEVEL,               /* DAQ queue fill (gauge, not count)  */
+};
+
 void ocm_xcp_fifo_init(void);
 void ocm_xcp_fifo_prepare_read(void);
 void ocm_xcp_fifo_prepare_write(void);
@@ -84,6 +111,11 @@ void ocm_xcp_cto_ack_write(uint32_t seq);
 /* Publish the command-batch generation (write phase; chain must already be
  * written — the flush order makes the chain visible first). */
 void ocm_xcp_in_gen_publish(uint32_t gen);
+
+/* A53 only: store one mirrored gateway counter (slot from enum
+ * ocm_xcp_in_diag_slot); published by the header flush of
+ * ocm_xcp_fifo_cache_flush_after_write(). */
+void ocm_xcp_in_diag_write(uint32_t slot, uint32_t value);
 /* Last command-batch generation processed by the R5. Only valid under a
  * passing out_seq_read()/out_seq_unchanged() pair. */
 uint32_t ocm_xcp_in_consumed_read(void);

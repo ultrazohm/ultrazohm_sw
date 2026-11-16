@@ -169,6 +169,26 @@ R5_EVENTS = [
 ]
 
 
+# A53 gateway counters, mirrored every IPI into the XCP_IN header spare words
+# (vitis/software/Baremetal/src/sw/xcp_engine/ocm_xcp_fifo.h, enum
+# ocm_xcp_in_diag_slot): fixed OCM addresses, independent of any build, read by
+# the master through the R5 engine. Keep in sync with that enum.
+A53_DIAG_ADDR = 0xFFFFC008
+A53_DIAG_COUNTERS = [
+    "xcp_gw_ocm_skipped_writing", "xcp_gw_ocm_torn", "xcp_gw_ocm_cycles_missed",
+    "xcp_gw_ocm_capped", "xcp_gw_txq_dropped", "xcp_gw_ctoq_dropped",
+    "xcp_gw_in_batches_sent", "xcp_gw_in_retry_cycles", "xcp_gw_tx_malformed_drop",
+    "xcp_gw_rx_malformed_drop", "xcp_gw_sendto_err", "xcp_gw_sendto_drop",
+    "xcp_gw_ipi_count", "xcp_gw_txq_level",
+]
+# R5-side loss/health counters (u32 globals in xcptl_ocm.c / ocm_xcp_fifo.c),
+# added to a --symbols A2L with --diag.
+R5_DIAG_SYMBOLS = [
+    "ocm_xcp_w_dropped", "ocm_xcp_r_overrun", "xcp_r5_cto_dropped", "xcp_r5_cto_sent",
+    "xcp_r5_queue_lost", "xcp_r5_tx_held", "xcp_r5_cmd_oversize_drop",
+    "xcp_r5_in_resumed", "xcp_r5_in_generations", "xcp_r5_tx_oversize_drop",
+    "xcp_r5_cycle_count", "xcp_r5_sweep_count", "xcp_r5_sweep_gap_max_us",
+]
 def build_symbols_a2l(items, ip, port):
     """items: [(name, addr, type)] -> a full A2L (Option Z, R5 ELF symbols)."""
     # Every symbol may be measured on any raster; default to the fast one.
@@ -180,6 +200,11 @@ def build_symbols_a2l(items, ip, port):
     for name, a, typ in items:
         dtype, lo, hi = SYM_TYPEMAP.get(typ, SYM_TYPEMAP["f32"])
         meas.append(measurement(name, dtype, a, "R5 %s" % name, lo, hi, daq_event))
+    # The A53 gateway counters are always worth having: fixed addresses, no ELF needed.
+    for i, name in enumerate(A53_DIAG_COUNTERS):
+        meas.append(measurement(name, "ULONG", A53_DIAG_ADDR + 4 * i,
+                                "A53 gateway counter (XCP_IN header mirror slot %d)" % i,
+                                "0", "4294967295", daq_event))
     block = "\n".join(meas)
     # Reuse build_a2l's document shell by string-substituting the meas block and title.
     doc = build_a2l({}, ip, port)  # empty -> shell with no measurements
@@ -210,6 +235,10 @@ def main():
                     help="Option Z: comma list of R5 symbols 'name:type' (type in "
                          "u8/u16/u32/i32/f32) resolved from --elf (Baremetal.elf). "
                          "Emits an A2L of arbitrary R5 variables instead of the demo.")
+    ap.add_argument("--diag", action="store_true",
+                    help="Option Z: also emit the R5 loss/health counters (R5_DIAG_SYMBOLS, u32) "
+                         "resolved from --elf; the A53 gateway counters are always emitted "
+                         "with --symbols (fixed OCM addresses).")
     args = ap.parse_args()
 
     if not os.path.isfile(args.elf):
@@ -217,11 +246,16 @@ def main():
     nm = args.nm if os.path.isfile(args.nm) else "nm"
     addrs = nm_addresses(args.elf, nm)
 
-    if args.symbols:
+    if args.symbols or args.diag:
         want = {}
-        for spec in args.symbols.split(","):
+        for spec in (args.symbols or "").split(","):
+            if not spec.strip():
+                continue
             name, _, typ = spec.strip().partition(":")
             want[name] = (typ or "f32").lower()
+        if args.diag:
+            for name in R5_DIAG_SYMBOLS:
+                want.setdefault(name, "u32")
         items = [(n, addrs[n], t) for n, t in want.items() if n in addrs]
         missing = [n for n in want if n not in addrs]
         if missing:

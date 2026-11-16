@@ -157,7 +157,13 @@ XCPlite multi application absolute addressing: XCP_ADDRESS_MODE_XCPLITE__CXSDD (
 #endif // !OPTION_SHM_MODE
 
 // --- Dynamic addressing mode is always enabled
+// UZ patch (not in upstream V2.3.4): unless the platform config sets OPTION_DISABLE_DYN_ADDRESSING.
+// The bare-metal R5 engine drives DAQ with the plain XcpEvent(), which never executes a pushed
+// event-relative (ext 2..15) command, so such a command would get no response and leave
+// cmd_pending set (every later one answered BUSY). Without DYN the extension is simply refused.
+#ifndef OPTION_DISABLE_DYN_ADDRESSING
 #define XCP_ENABLE_DYN_ADDRESSING
+#endif
 #define XCP_ADDR_EXT_DYN 0x02     // Address extensions from 0x02 to 0x0F are used for dynamic event based relative addressing with asynchronous access
 #define XCP_ADDR_EXT_DYN_COUNT 14 // Size of the base pointer array - 2
 #define XCP_ADDR_EXT_DYN_MAX (0x02 + XCP_ADDR_EXT_DYN_COUNT - 1) // Maximum value for dynamic address extensions

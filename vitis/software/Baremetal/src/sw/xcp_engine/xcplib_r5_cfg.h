@@ -23,6 +23,13 @@
  * checksum loop runs inside the main-loop sweep, ~50 ns per byte with the
  * range check -> 64 KB caps one command at ~3 ms; bigger -> ERR_OUT_OF_RANGE. */
 #define XCP_CHECKSUM_MAX_SIZE (64u * 1024u)
+/* No event-relative (DYN, ext 2..15) addressing (UZ patch in xcp_cfg.h): the
+ * R5 samples DAQ with the plain XcpEvent(), which never executes the commands
+ * the engine would park for an XcpEventExt() context. SET_MTA/SHORT_UPLOAD/
+ * DOWNLOAD/WRITE_DAQ with such an extension now get OUT_OF_RANGE /
+ * ACCESS_DENIED instead of silence (and a stuck cmd_pending -> BUSY). The A2L
+ * only ever uses ext 0. */
+#define OPTION_DISABLE_DYN_ADDRESSING
 #undef  OPTION_ENABLE_PERSISTENCE
 #undef  OPTION_ENABLE_A2L_GENERATOR
 #undef  OPTION_ENABLE_A2L_UPLOAD

@@ -342,10 +342,11 @@ impl RecordingBackend for ParquetBackend {
         }];
         publish(&self.index_path, &next)?;
         *self.reader.index.lock().unwrap() = next;
-        // Best effort: a reader holding a segment open (Windows) keeps it; such
-        // leftovers are no longer referenced and readers reload the index.
+        // Windows refuses to delete a file that another handle (a reader, a
+        // virus scanner or the indexer) has open, so retry briefly. A segment
+        // that still cannot be removed is no longer referenced by the index.
         for file in superseded {
-            let _ = fs::remove_file(self.reader.dir.join(file));
+            remove_with_retry(&self.reader.dir.join(file));
         }
         Ok(())
     }
@@ -370,12 +371,10 @@ impl RecordingReader for ParquetReaderHandle {
         let index = self.index.lock().unwrap().clone();
         match self.read_index_range(&index, start, stop, projection) {
             // Finalization may have replaced the segments by one merged file
-            // since this handle loaded its index: reload once and retry.
-            Err(error)
-                if error
-                    .downcast_ref::<std::io::Error>()
-                    .is_some_and(|e| e.kind() == std::io::ErrorKind::NotFound) =>
-            {
+            // since this handle loaded its index: reload once and retry. Any IO
+            // error qualifies: on Windows a segment pending deletion fails to
+            // open with "access denied" rather than "not found".
+            Err(error) if error.downcast_ref::<std::io::Error>().is_some() => {
                 let current = load_index(&self.path)?;
                 *self.index.lock().unwrap() = current.clone();
                 self.read_index_range(&current, start, stop, projection)
@@ -425,6 +424,20 @@ impl ParquetReaderHandle {
         ensure!(next == stop, "recording index contains a gap");
         result.as_single_chunk_par();
         Ok(result)
+    }
+}
+
+fn remove_with_retry(path: &Path) {
+    for attempt in 0..20 {
+        match fs::remove_file(path) {
+            Ok(()) => return,
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => return,
+            Err(_) if attempt < 19 => std::thread::sleep(std::time::Duration::from_millis(50)),
+            Err(error) => eprintln!(
+                "Could not remove merged segment {}: {error}",
+                path.display()
+            ),
+        }
     }
 }
 

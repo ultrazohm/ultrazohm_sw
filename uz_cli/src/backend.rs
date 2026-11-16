@@ -370,13 +370,16 @@ mod tests {
     struct Run(PathBuf);
     impl Run {
         fn new() -> Self {
+            // Parallel tests can observe the same clock tick, even in nanoseconds.
+            static NEXT_ID: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
             let path = std::env::temp_dir().join(format!(
-                "uz-backend-{}-{}",
+                "uz-backend-{}-{}-{}",
                 std::process::id(),
                 std::time::SystemTime::now()
                     .duration_since(std::time::UNIX_EPOCH)
                     .unwrap()
-                    .as_nanos()
+                    .as_nanos(),
+                NEXT_ID.fetch_add(1, std::sync::atomic::Ordering::Relaxed)
             ));
             fs::create_dir(&path).unwrap();
             Self(path)

@@ -35,6 +35,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
+#include "semphr.h"
 #include "lwip/sockets.h"
 #include "lwip/sys.h"   /* sys_thread_new */
 #include "ocm_xcp_fifo.h"
@@ -104,6 +105,14 @@ typedef struct {
 static QueueHandle_t gRxQueue    = NULL;     /* CANape -> R5 (commands)         */
 static QueueHandle_t gTxQueue    = NULL;     /* R5 -> CANape (DAQ)              */
 static QueueHandle_t gTxCtoQueue = NULL;     /* R5 -> CANape (responses/events) */
+/* "Frames queued" signal from the IPI ISR to the tx task. A binary semaphore
+ * is enough: the task drains both queues completely after every take, and a
+ * give that arrives while it is busy just makes the next take return at
+ * once. Without it the task could only block on the DAQ queue, so a command
+ * response arriving on an idle link waited out that timeout (up to two
+ * 100 Hz ticks = 10-20 ms per command, i.e. every command of a CANape DAQ
+ * setup). */
+static SemaphoreHandle_t gTxSignal = NULL;
 static int           gSock      = -1;
 
 /* The IPI ISR is registered by initialize_ipi_runtime() long before this
@@ -237,34 +246,41 @@ static void xcp_gw_read_out_phase(BaseType_t *woken) {
         have_cto = 0;
     }
 
+    int enqueued = 0;
     if (have_cto) {
         gCtoLastSeq = cto_seq; /* acked via the write phase this IPI */
         gStageCto.len = cto_len;
-        if (xQueueSendToBackFromISR(gTxCtoQueue, &gStageCto, woken) != pdTRUE) {
+        if (xQueueSendToBackFromISR(gTxCtoQueue, &gStageCto, woken) == pdTRUE) {
+            enqueued = 1;
+        } else {
             xcp_gw_ctoq_dropped++;
         }
     }
-
-    if (!gMasterValid) {
-        return; /* no consumer: drop staged DAQ (the CTO ack still advances) */
-    }
-
-    for (uint32_t i = 0; i < n_staged; i++) {
-        /* Defensive classify by XCP PID: CTO packets that travelled the chain
-         * (EV/SERV from the R5 queue) jump the DAQ backlog too. */
-        if (gStage[i].len > XCP_TL_HEADER_LEN &&
-            gStage[i].data[XCP_TL_HEADER_LEN] >= XCP_PID_CTO_MIN) {
-            if (xQueueSendToBackFromISR(gTxCtoQueue, &gStage[i], woken) != pdTRUE) {
-                xcp_gw_ctoq_dropped++;
+    if (gMasterValid) { /* no consumer yet: drop staged DAQ (the CTO ack still advances) */
+        for (uint32_t i = 0; i < n_staged; i++) {
+            /* Defensive classify by XCP PID: CTO packets that travelled the chain
+             * (EV/SERV from the R5 queue) jump the DAQ backlog too. */
+            if (gStage[i].len > XCP_TL_HEADER_LEN &&
+                gStage[i].data[XCP_TL_HEADER_LEN] >= XCP_PID_CTO_MIN) {
+                if (xQueueSendToBackFromISR(gTxCtoQueue, &gStage[i], woken) == pdTRUE) {
+                    enqueued = 1;
+                } else {
+                    xcp_gw_ctoq_dropped++;
+                }
+                continue;
             }
-            continue;
+            if (xQueueSendToBackFromISR(gTxQueue, &gStage[i], woken) == pdTRUE) {
+                enqueued = 1;
+            } else {
+                /* DAQ queue full: the UDP drain has stalled for longer than the
+                 * queue depth covers. Tail-drop and count. Never block, delay or
+                 * print here — ISR context (hedrive F1). */
+                xcp_gw_txq_dropped++;
+            }
         }
-        if (xQueueSendToBackFromISR(gTxQueue, &gStage[i], woken) != pdTRUE) {
-            /* DAQ queue full: the UDP drain has stalled for longer than the
-             * queue depth covers. Tail-drop and count. Never block, delay or
-             * print here — ISR context (hedrive F1). */
-            xcp_gw_txq_dropped++;
-        }
+    }
+    if (enqueued) {
+        (void)xSemaphoreGiveFromISR(gTxSignal, woken); /* wake the tx task (CTO or DAQ) */
     }
 }
 
@@ -451,13 +467,13 @@ static void xcp_gw_tx_task(void *arg) {
 
         uint32_t fill = 0;
 
-        /* Block until something is sendable: pending CTOs first, else wait
-         * briefly for DAQ so an idle connection still reacts to a CTO or a
-         * master change within ~20 ms. */
-        if (xQueueReceive(gTxCtoQueue, &f, 0) != pdTRUE) {
-            if (xQueueReceive(gTxQueue, &f, pdMS_TO_TICKS(20)) != pdTRUE) {
-                continue;
-            }
+        /* Take pending CTOs first (they jump the DAQ backlog). With both queues
+         * empty, block on the ISR's "frames queued" signal so a response on an
+         * idle link goes out at once; the 20 ms fallback only keeps the
+         * master-change check above alive. */
+        if (xQueueReceive(gTxCtoQueue, &f, 0) != pdTRUE && xQueueReceive(gTxQueue, &f, 0) != pdTRUE) {
+            (void)xSemaphoreTake(gTxSignal, pdMS_TO_TICKS(20));
+            continue;
         }
         if (xcp_gw_restamp_ctr(&f)) {
             memcpy(&batch[fill], f.data, f.len);
@@ -517,7 +533,8 @@ int xcp_gateway_a53_init(uint32_t thread_stack, uint32_t thread_prio) {
     gRxQueue = xQueueCreate(XCP_GW_RXQ_DEPTH, sizeof(xcp_gw_frame_t));
     gTxQueue = xQueueCreate(XCP_GW_TXQ_DEPTH, sizeof(xcp_gw_frame_t));
     gTxCtoQueue = xQueueCreate(XCP_GW_CTOQ_DEPTH, sizeof(xcp_gw_frame_t));
-    if (gRxQueue == NULL || gTxQueue == NULL || gTxCtoQueue == NULL) {
+    gTxSignal = xSemaphoreCreateBinary();
+    if (gRxQueue == NULL || gTxQueue == NULL || gTxCtoQueue == NULL || gTxSignal == NULL) {
         return -1;
     }
 

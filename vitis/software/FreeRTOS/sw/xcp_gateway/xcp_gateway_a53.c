@@ -124,8 +124,12 @@ static volatile uint32_t  gMasterGen = 0;    /* bumped on endpoint change       
 
 /* Diagnostics (inspect via debugger; hedrive validation-checklist counters):
  *   xcp_gw_ocm_skipped_writing IPI hit the R5 mid-write (odd seqlock)
- *   xcp_gw_ocm_torn            R5 rewrote XCP_OUT mid-read; cycle discarded
- *   xcp_gw_ocm_cycles_missed   R5 cycles never seen by any IPI read
+ *   xcp_gw_ocm_torn            R5 rewrote XCP_OUT mid-read; read discarded
+ *   xcp_gw_ocm_cycles_missed   R5 sweeps never seen by any IPI read
+ *                              (All three are IPI latency indicators only:
+ *                              the R5 keeps a DAQ chain in place until it
+ *                              is acknowledged - xcp_r5_out_held - so none
+ *                              of them loses data any more.)
  *   xcp_gw_ocm_capped          per-IPI drain cap hit with records left over
  *   xcp_gw_txq_dropped         DAQ queue full -> record tail-dropped
  *   xcp_gw_ctoq_dropped        CTO queue full -> frame dropped (must stay 0)
@@ -173,6 +177,7 @@ static xcp_gw_frame_t gStage[XCP_GW_DRAIN_MAX_PER_IPI];
 static xcp_gw_frame_t gStageCto;
 static uint32_t gCtoLastSeq = 0;         /* last mailbox seq forwarded (acked)  */
 static uint32_t gInConsumed = 0;         /* R5 batch ack, valid under seqlock   */
+static uint32_t gOutChainLast = 0;       /* last XCP_OUT chain_seq consumed     */
 static uint32_t gPrevSeq = 0;
 static int      gPrevSeqValid = 0;
 /* Set at init and on master change: adopt the current mailbox seq without
@@ -197,15 +202,18 @@ static void xcp_gw_read_out_phase(BaseType_t *woken) {
     /* Stage the CTO mailbox (persists across cycles until acked) and the
      * R5's command-batch ack; both live in the seqlock-guarded header. */
     uint32_t in_consumed_snap = ocm_xcp_in_consumed_read();
+    uint32_t chain_seq_snap = ocm_xcp_out_chain_seq_read();
     if (ocm_xcp_cto_read(&cto_len, gStageCto.data, &cto_seq)) {
         if (cto_seq != gCtoLastSeq) {
             have_cto = 1;
         }
     }
 
-    /* Stage the DAQ message chain. */
+    /* Stage the DAQ message chain - once per chain sequence: the R5 keeps a
+     * chain in place until we acknowledge it (consumption handshake), so the
+     * same content can be offered for several IPIs. */
     ocm_xcp_fifo_prepare_read();
-    for (;;) {
+    while (chain_seq_snap != gOutChainLast) {
         uint8_t len;
         uint8_t *data;
         if (n_staged >= XCP_GW_DRAIN_MAX_PER_IPI) {
@@ -231,6 +239,7 @@ static void xcp_gw_read_out_phase(BaseType_t *woken) {
 
     /* Committed: the staged data is a consistent snapshot of cycle seq_begin. */
     gInConsumed = in_consumed_snap;
+    gOutChainLast = chain_seq_snap; /* acknowledged to the R5 by the write phase */
     if (gPrevSeqValid) {
         uint32_t delta = seq_begin - gPrevSeq; /* wrap-safe */
         if (delta > 2u) {
@@ -306,6 +315,9 @@ static void xcp_gw_write_in_phase(BaseType_t *woken) {
     /* Publish the last consumed mailbox sequence every cycle (idempotent);
      * the R5 frees its CTO mailbox when this matches what it parked. */
     ocm_xcp_cto_ack_write(gCtoLastSeq);
+    /* Same for the DAQ chain: the R5 rewinds XCP_OUT only after it sees the
+     * sequence of the chain we consumed. */
+    ocm_xcp_out_ack_write(gOutChainLast);
 
     /* Current batch processed by the R5? Then it is done for good. */
     if (gInBatchN != 0u && gInConsumed == gInGen) {

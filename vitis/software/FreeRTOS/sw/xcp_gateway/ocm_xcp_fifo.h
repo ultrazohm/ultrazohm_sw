@@ -10,12 +10,16 @@
 |
 |   On top of the sweep model, three mechanisms from the hedrive hardware
 |   campaign (uz_sw_xcp_hedrive_andi, XCP_BOTTLENECK_ANALYSIS.md T8) make the
-|   flow-control-free exchange safe:
+|   exchange safe:
 |     1. a seqlock on XCP_OUT (A53 discards torn reads),
 |     2. a CTO mailbox with acknowledge (command responses survive cycle
 |        rewrites; a lost response kills the XCP session),
 |     3. a generation handshake on XCP_IN (commands are re-offered until the
-|        R5 acknowledges execution; a lost command kills the session too).
+|        R5 acknowledges execution; a lost command kills the session too),
+|   plus one of our own:
+|     4. a consumption handshake on the XCP_OUT chain (the R5 keeps a DAQ
+|        chain in place until the A53 acknowledges it, so a late, torn or
+|        skipped IPI read delays measurement data instead of losing it).
 |
 |   Adapted from uz_sw_xcp_hedrive_andi RPU_APU_exchange (Jens Wenzl, 2023),
 |   which is hardware-proven. UltraZohm.
@@ -29,13 +33,14 @@
  * + XCPTL_MAX_CTO_SIZE (248) payload, rounded to whole A53 cache lines. */
 #define OCM_XCP_CTO_SLOT_LEN 256u
 
-/* Usable command-chain bytes in XCP_IN (region minus its 64-byte header);
+/* Usable command-chain bytes in XCP_IN (region minus its 128-byte header);
  * consistency-checked against the layout in ocm_xcp_fifo.c. The A53 sizes
  * its rewrite-until-acked command batch from this. */
-#define OCM_XCP_IN_CHAIN_LEN 960u
+#define OCM_XCP_IN_CHAIN_LEN 896u
 
-/* A53 gateway diagnostics mirror: the 56 spare bytes of the XCP_IN header
- * (bytes 8..63 = 14 x u32) carry the gateway's own counters, rewritten every
+/* A53 gateway diagnostics mirror: spare words of the XCP_IN header (from
+ * byte 8, OCM_XCP_IN_DIAG_COUNT x u32; room up to byte 123) carry the
+ * gateway's own counters, rewritten every
  * IPI cycle and published with the header flush. They are not part of the
  * handshake and the R5 never writes them, so the XCP master can read them by
  * absolute address through the R5 engine (OCM is in the R5 allow-list) -
@@ -81,6 +86,18 @@ int ocm_xcp_fifo_write_fits(uint8_t len, const uint8_t *data);
 int ocm_xcp_fifo_read(uint8_t *len, uint8_t **data_p);
 
 #ifdef ARMR5
+/* --- R5 side: chain consumption handshake ---------------------------------- */
+/* 1 = the A53 has acknowledged the chain published by the last
+ * prepare_write() (fresh after cache_invalidate_before_read()). */
+int ocm_xcp_out_chain_acked(void);
+/* Open a cycle WITHOUT rewinding the chain: the previous, not yet
+ * acknowledged chain stays in place byte for byte and nothing can be
+ * appended (ocm_xcp_fifo_write() fails). Header words (mailbox, in_consumed)
+ * may still change; finish with cache_flush_after_write() as usual. */
+void ocm_xcp_fifo_prepare_write_keep(void);
+/* 1 = at least one message was written to the chain since prepare_write(). */
+int ocm_xcp_fifo_chain_nonempty(void);
+
 /* --- R5 side: CTO mailbox write + command generations --------------------- */
 /* 1 = the previously parked CTO has been acknowledged by the A53. Relies on
  * cache_invalidate_before_read() having refreshed XCP_IN this cycle. */
@@ -119,6 +136,13 @@ void ocm_xcp_in_diag_write(uint32_t slot, uint32_t value);
 /* Last command-batch generation processed by the R5. Only valid under a
  * passing out_seq_read()/out_seq_unchanged() pair. */
 uint32_t ocm_xcp_in_consumed_read(void);
+/* Sequence of the chain currently in XCP_OUT (changes whenever the R5
+ * rewinds the chain). Only valid under a passing seqlock pair. A chain whose
+ * sequence was already consumed must not be forwarded again. */
+uint32_t ocm_xcp_out_chain_seq_read(void);
+/* Publish the last consumed chain sequence (write phase); the R5 keeps a
+ * non-empty chain in place until it sees its sequence here. */
+void ocm_xcp_out_ack_write(uint32_t chain_seq);
 #endif
 
 #endif /* OCM_XCP_FIFO_H_ */

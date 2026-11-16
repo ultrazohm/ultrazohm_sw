@@ -5,11 +5,11 @@
 |   define. The OCM layout below is the protocol between the two cores:
 |   when it changes, rebuild BOTH applications.
 |
-|   The R5 rewrites XCP_OUT from scratch every control cycle and the A53 reads
-|   it from its IPI ISR — there is no flow control between the two. Whenever
-|   the A53 is late (IPI latency under network load), the R5 overwrites the
-|   region mid-read. Three mechanisms, ported from the hedrive hardware
-|   campaign (XCP_BOTTLENECK_ANALYSIS.md T8 + pcap addendum), make that safe:
+|   The R5 rewrites XCP_OUT every exchange sweep and the A53 reads it from
+|   its IPI ISR. Whenever the A53 is late (IPI latency under network load),
+|   the R5 touches the region mid-read. Three mechanisms, ported from the
+|   hedrive hardware campaign (XCP_BOTTLENECK_ANALYSIS.md T8 + pcap
+|   addendum), make that safe; a fourth (ours) makes the DAQ chain lossless:
 |
 |   1. A seqlock on XCP_OUT: the R5 increments cycle_seq to an ODD value
 |      (flushed) before touching the region and to an EVEN value (flushed
@@ -17,7 +17,6 @@
 |      The A53 samples the sequence before and after reading; a mismatch or an
 |      odd value means the read raced the writer and everything read this IPI
 |      is discarded. Torn frames can therefore never reach the network.
-|      Overwritten DAQ frames are acceptable (a gap in the measurement).
 |
 |   2. A CTO mailbox with an acknowledge: command responses (RES/ERR/EV/SERV)
 |      must NEVER be lost — a lost response kills the XCP session (master
@@ -36,11 +35,22 @@
 |      lost to a missed cycle (observed in hedrive as CANape "Timeout: Keine
 |      Response" with a perfectly clean wire capture) nor executed twice.
 |
+|   4. A consumption handshake on the XCP_OUT chain (DAQ, R5 -> A53): every
+|      time the R5 rewinds the chain it bumps chain_seq; the A53 forwards a
+|      chain only when its sequence is new and publishes the sequence it has
+|      consumed as out_ack in the XCP_IN header. The R5 keeps a NON-EMPTY
+|      chain in place (header words still update under the seqlock) until
+|      it is acknowledged, so an IPI read that came late, was torn or hit an
+|      odd seqlock is simply repeated one sweep later: the DAQ backlog waits
+|      in the R5 queue instead of being overwritten. The hold is bounded by
+|      the caller (xcptl_ocm.c) so a dead gateway cannot stall the R5.
+|
 |   XCP_OUT layout (R5 writes, A53 reads):
 |     +0    u32 cycle_seq    seqlock (odd = write in progress)
 |     +4    u32 cto_seq      mailbox sequence, 0 = never used
 |     +8    u32 cto_len      framed length of the mailbox message
 |     +12   u32 in_consumed  last XCP_IN generation processed by the R5
+|     +16   u32 chain_seq    sequence of the chain content (handshake 4)
 |     +64   u8  cto_frame[OCM_XCP_CTO_SLOT_LEN]   (own cache lines)
 |     +320  message chain (see below)
 |
@@ -48,10 +58,11 @@
 |     +0    u32 cto_ack      last mailbox sequence consumed by the A53
 |     +4    u32 in_gen       command-batch generation, 0 = none;
 |                            published AFTER the chain bytes
-|     +8    u32 diag[14]     A53 gateway counter mirror (slot table in
+|     +8    u32 diag[]       A53 gateway counter mirror (slot table in
 |                            ocm_xcp_fifo.h); rewritten every IPI, read by
 |                            the XCP master by absolute address
-|     +64   message chain
+|     +124  u32 out_ack      last XCP_OUT chain_seq consumed by the A53
+|     +128  message chain
 |
 |   Message chain format (unchanged from the original FIFO):
 |     [0..3]   message length (u32)
@@ -89,7 +100,7 @@
  * frames are up to 4+248 bytes) and occupies its own lines behind it. */
 #define XCP_OUT_HDR_CTRL_LEN 64u
 #define XCP_OUT_HDR_LEN      (XCP_OUT_HDR_CTRL_LEN + OCM_XCP_CTO_SLOT_LEN)
-#define XCP_IN_HDR_LEN       64u
+#define XCP_IN_HDR_LEN       128u
 
 #define XCP_OUT_CHAIN_ADDR (XCP_OUT_ADDR + XCP_OUT_HDR_LEN)
 #define XCP_IN_CHAIN_ADDR  (XCP_IN_ADDR + XCP_IN_HDR_LEN)
@@ -98,10 +109,12 @@
 #define XCP_OUT_CTO_SEQ_P     ((volatile uint32_t *)(XCP_OUT_ADDR + 4u))
 #define XCP_OUT_CTO_LEN_P     ((volatile uint32_t *)(XCP_OUT_ADDR + 8u))
 #define XCP_OUT_IN_CONSUMED_P ((volatile uint32_t *)(XCP_OUT_ADDR + 12u))
+#define XCP_OUT_CHAIN_SEQ_P   ((volatile uint32_t *)(XCP_OUT_ADDR + 16u))
 #define XCP_OUT_CTO_FRAME_ADDR (XCP_OUT_ADDR + XCP_OUT_HDR_CTRL_LEN)
 #define XCP_IN_CTO_ACK_P      ((volatile uint32_t *)(XCP_IN_ADDR + 0u))
 #define XCP_IN_GEN_P          ((volatile uint32_t *)(XCP_IN_ADDR + 4u))
 #define XCP_IN_DIAG_P(i)      ((volatile uint32_t *)(uintptr_t)(XCP_IN_ADDR + 8u + 4u * (i)))
+#define XCP_IN_OUT_ACK_P      ((volatile uint32_t *)(XCP_IN_ADDR + XCP_IN_HDR_LEN - 4u))
 
 /* The mailbox slot address laundered through a volatile: memcpy() to/from a
  * literal address makes GCC treat it as a zero-size object (-Warray-bounds). */
@@ -110,7 +123,7 @@ static volatile size_t cto_frame_addr = XCP_OUT_CTO_FRAME_ADDR;
 #if (XCP_IN_LEN - XCP_IN_HDR_LEN) != OCM_XCP_IN_CHAIN_LEN
 #error "OCM_XCP_IN_CHAIN_LEN out of sync with the XCP_IN layout"
 #endif
-#if (OCM_XCP_IN_DIAG_ADDR != (XCP_IN_ADDR + 8u)) || ((8u + 4u * OCM_XCP_IN_DIAG_COUNT) > XCP_IN_HDR_LEN)
+#if (OCM_XCP_IN_DIAG_ADDR != (XCP_IN_ADDR + 8u)) || ((8u + 4u * OCM_XCP_IN_DIAG_COUNT) > (XCP_IN_HDR_LEN - 4u))
 #error "OCM_XCP_IN_DIAG_* out of sync with the XCP_IN header layout"
 #endif
 
@@ -139,6 +152,7 @@ static volatile size_t addr_r_end = 0;
  * never needs to read them back from the OCM). */
 static uint32_t cycle_seq_shadow = 0;
 static uint32_t cto_seq_shadow = 0;
+static uint32_t chain_seq_shadow = 0;
 #endif
 
 volatile uint32_t ocm_xcp_w_dropped = 0;   /* write region full -> dropped     */
@@ -149,6 +163,7 @@ void ocm_xcp_fifo_init(void) {
 #ifdef OCM_XCP_RPU
     *XCP_IN_CTO_ACK_P = 0u;
     *XCP_IN_GEN_P = 0u;
+    *XCP_IN_OUT_ACK_P = 0u;
     *(volatile uint32_t *)XCP_IN_CHAIN_ADDR = 0u;
     Xil_DCacheFlushRange(XCP_IN_ADDR, XCP_IN_LEN);
 #else
@@ -156,6 +171,7 @@ void ocm_xcp_fifo_init(void) {
     *XCP_OUT_CTO_SEQ_P = 0u;
     *XCP_OUT_CTO_LEN_P = 0u;
     *XCP_OUT_IN_CONSUMED_P = 0u;
+    *XCP_OUT_CHAIN_SEQ_P = 0u;
     *(volatile uint32_t *)XCP_OUT_CHAIN_ADDR = 0u;
     Xil_DCacheFlushRange(XCP_OUT_ADDR, XCP_OUT_LEN);
 #endif
@@ -213,6 +229,13 @@ void ocm_xcp_fifo_prepare_write(void) {
     addr_w = XCP_OUT_CHAIN_ADDR;
     addr_w_start = XCP_OUT_CHAIN_ADDR; /* header is flushed separately (last) */
     addr_w_end = XCP_OUT_ADDR + XCP_OUT_LEN;
+    /* New chain content: new sequence (0 is reserved for "none yet"). The
+     * word travels with the header flush, i.e. after the chain bytes. */
+    chain_seq_shadow++;
+    if (chain_seq_shadow == 0u) {
+        chain_seq_shadow = 1u;
+    }
+    *XCP_OUT_CHAIN_SEQ_P = chain_seq_shadow;
 #else
     addr_w = XCP_IN_CHAIN_ADDR;
     addr_w_start = XCP_IN_CHAIN_ADDR;  /* header is flushed separately (last) */
@@ -220,6 +243,33 @@ void ocm_xcp_fifo_prepare_write(void) {
 #endif
     *(volatile uint32_t *)addr_w = 0u;
 }
+
+#ifdef OCM_XCP_RPU
+/* Open a cycle but keep the unacknowledged chain exactly as it is: only the
+ * seqlock goes odd. addr_w still points at the chain terminator; start and
+ * end are pulled onto it so nothing can be appended (an append could race
+ * the A53 between its read and its acknowledge and would be lost) and the
+ * closing chain flush shrinks to the terminator word. */
+void ocm_xcp_fifo_prepare_write_keep(void) {
+    if (addr_w == 0u) {
+        ocm_xcp_fifo_prepare_write(); /* no chain written yet: nothing to keep */
+        return;
+    }
+    cycle_seq_shadow++;
+    *XCP_OUT_CYCLE_SEQ_P = cycle_seq_shadow;
+    Xil_DCacheFlushRange(XCP_OUT_ADDR, 4u);
+    addr_w_start = addr_w;
+    addr_w_end = addr_w;
+}
+
+int ocm_xcp_fifo_chain_nonempty(void) {
+    return addr_w != addr_w_start;
+}
+
+int ocm_xcp_out_chain_acked(void) {
+    return (*XCP_IN_OUT_ACK_P == chain_seq_shadow);
+}
+#endif /* OCM_XCP_RPU */
 
 int ocm_xcp_fifo_write_fits(uint8_t len, const uint8_t *data) {
     size_t limit = addr_w_end;
@@ -230,7 +280,8 @@ int ocm_xcp_fifo_write_fits(uint8_t len, const uint8_t *data) {
         limit -= XCP_WRITE_CTO_RESERVE;
     }
 
-    /* Need 4 (len) + len (payload) + 4 (terminator). */
+    /* Need 4 (len) + len (payload) + 4 (terminator). In a keep cycle
+     * (prepare_write_keep) addr_w_end == addr_w, so this is always false. */
     return (addr_w + 4u + (size_t)len + 4u) <= limit;
 }
 
@@ -388,5 +439,16 @@ void ocm_xcp_in_diag_write(uint32_t slot, uint32_t value) {
  * line: only valid between out_seq_read() and a passing out_seq_unchanged(). */
 uint32_t ocm_xcp_in_consumed_read(void) {
     return *XCP_OUT_IN_CONSUMED_P;
+}
+
+/* Sequence of the chain content. Same control line, same validity rule. */
+uint32_t ocm_xcp_out_chain_seq_read(void) {
+    return *XCP_OUT_CHAIN_SEQ_P;
+}
+
+/* Publish the last consumed chain sequence. Written during the write phase;
+ * reaches the OCM with the header flush of cache_flush_after_write(). */
+void ocm_xcp_out_ack_write(uint32_t chain_seq) {
+    *XCP_IN_OUT_ACK_P = chain_seq;
 }
 #endif /* OCM_XCP_APU */

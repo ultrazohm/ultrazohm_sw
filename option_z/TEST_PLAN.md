@@ -212,7 +212,13 @@ Inspect these via the JTAG debugger (the R5 keeps stats):
   `xcp_r5_tx_held` (sweeps that filled XCP_OUT with backlog left over — the
   next segment waited in the queue and went out first in the next sweep;
   backlog, not loss, so `ocm_xcp_w_dropped` on the R5 now stays 0 and
-  steady growth here is the early warning before `xcp_r5_queue_lost`). A53
+  steady growth here is the early warning before `xcp_r5_queue_lost`),
+  `xcp_r5_out_held` (sweeps that kept the previous XCP_OUT chain in place
+  because the A53 had not acknowledged it yet — the consumption handshake
+  at work; latency, not loss) and `xcp_r5_out_overwritten` (chain given up
+  after 50 held sweeps = gateway not running; must stay 0 while connected).
+  With the handshake `xcp_r5_queue_lost` is THE ECU-side DAQ loss counter
+  in front of the A53 queues. A53
   (`xcp_gateway_a53.c`; since 2026-11-16 every A53 counter is mirrored each
   IPI into the XCP_IN header spare words at `0xFFFFC008 + 4·slot` — slot
   table in `ocm_xcp_fifo.h` — and readable over XCP: `xcp_gw_*`
@@ -221,7 +227,9 @@ Inspect these via the JTAG debugger (the R5 keeps stats):
   gauge `xcp_gw_txq_level` (DAQ backlog waiting for UDP)):
   `xcp_gw_ocm_torn` / `xcp_gw_ocm_skipped_writing`
   (seqlock collisions — occasional is fine, monotonic climb at idle is not),
-  `xcp_gw_ocm_cycles_missed` (R5 cycles no IPI ever read = real DAQ gaps),
+  `xcp_gw_ocm_cycles_missed` (R5 sweeps no IPI read; since the consumption
+  handshake these three are IPI-latency indicators, not DAQ gaps — the R5
+  re-offers the chain, see `xcp_r5_out_held`),
   `xcp_gw_ocm_capped` (per-IPI drain cap hit), `xcp_gw_txq_dropped` (UDP
   drain slower than DAQ production — plain overload), `xcp_gw_ctoq_dropped` +
   `xcp_gw_tx_malformed_drop` (both must stay 0), `xcp_gw_rx_malformed_drop`

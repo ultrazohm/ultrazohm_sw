@@ -326,6 +326,7 @@ R5_DIAG_COUNTERS = [
     "xcp_r5_cycle_count", "ocm_xcp_w_dropped", "ocm_xcp_r_overrun",
     "xcp_r5_cto_sent", "xcp_r5_cto_dropped", "xcp_r5_in_generations",
     "xcp_r5_in_resumed", "xcp_r5_tx_oversize_drop", "xcp_r5_tx_held",
+    "xcp_r5_out_held", "xcp_r5_out_overwritten",
     "xcp_r5_queue_lost", "xcp_r5_cmd_oversize_drop",
 ]
 
@@ -519,7 +520,8 @@ def run_stress(xcp, args, max_dto):
                 d = (post[name] - pre[name]) & 0xFFFFFFFF
                 flag = ""
                 if d and name in ("ocm_xcp_w_dropped", "ocm_xcp_r_overrun",
-                                  "xcp_r5_cto_dropped", "xcp_r5_tx_oversize_drop"):
+                                  "xcp_r5_cto_dropped", "xcp_r5_tx_oversize_drop",
+                                  "xcp_r5_out_overwritten", "xcp_r5_queue_lost"):
                     flag = "  <-- investigate"
                 print("      %-24s +%d%s" % (name, d, flag))
     if pre_a53 and post_a53:
@@ -533,7 +535,7 @@ def run_stress(xcp, args, max_dto):
                 flag = ""
                 if d and name in ("xcp_gw_txq_dropped", "xcp_gw_ctoq_dropped",
                                   "xcp_gw_tx_malformed_drop", "xcp_gw_rx_malformed_drop",
-                                  "xcp_gw_sendto_drop", "xcp_gw_ocm_cycles_missed"):
+                                  "xcp_gw_sendto_drop"):
                     flag = "  <-- investigate"
                 print("      %-26s +%d%s" % (name, d, flag))
         print("    (on ctr gaps: xcp_gw_sendto_drop > 0 = ECU dropped it after retries, "

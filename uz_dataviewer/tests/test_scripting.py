@@ -256,8 +256,8 @@ def test_managed_flash_restarts_real_service_and_preserves_recordings(service, t
         assert Path(output).is_dir()
         for info in recordings.values():
             assert Path(info['parquet']).is_file()
-            metadata = Path(info['parquet']).with_suffix('.json')
-            assert json.loads(metadata.read_text())['complete']
+            # The recording summary is stored with its index.
+            assert json.loads(Path(info['handle']).read_text())['metadata']['complete']
     finally:
         controller.close()
         try:

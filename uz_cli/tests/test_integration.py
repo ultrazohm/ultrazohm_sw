@@ -345,9 +345,9 @@ class IntegrationTest(unittest.TestCase):
                 wait_for(completed, seconds=30)
             except AssertionError as error:
                 self.fail(f'{error}\nLogging: {client.status()["logging"]}')
-            # Read after stopping so slow reads cannot grow the writer backlog.
-            for part in sorted(output.glob("data-part-*.parquet"))[:2]:
-                self.assertEqual(pl.read_parquet(part).height, 45)
+            # The merged file replaces the segments once the recording completes.
+            self.assertFalse(list(output.glob("data-part-*.parquet")))
+            self.assertGreaterEqual(pl.read_parquet(output/"data.parquet").height, 90)
             client.start_logging()
             wait_for(lambda: list(output.glob("data_0002-part-*.parquet")))
         finally:
@@ -360,7 +360,7 @@ class IntegrationTest(unittest.TestCase):
                 self.assertTrue(actual.equals(pl.read_parquet(output/filename)))
             else:
                 self.assertEqual(actual.columns,["time","status","observable","slow_id","slow_raw","slow_value"])
-                self.assertEqual(actual.height,json.loads((output/"data_slow_data.json").read_text())["rows"])
+                self.assertEqual(actual.height,json.loads((output/"data_slow_data.recording.json").read_text())["metadata"]["rows"])
         with self.assertRaises(RuntimeError):
             a.read_recording(recording=3)
         with self.assertRaisesRegex(ValueError, "stream"):
@@ -423,7 +423,7 @@ class IntegrationTest(unittest.TestCase):
         wait_for(lambda: self.cli("status")["logging"]["fast"]["phase"] == "complete")
         data = pl.read_parquet(self.run_dir/"data.parquet")
         self.assertGreater(data.height, 0)
-        self.assertEqual(data.height, json.loads((self.run_dir/"data.json").read_text())["rows"])
+        self.assertEqual(data.height, json.loads((self.run_dir/"data.recording.json").read_text())["metadata"]["rows"])
         self.assertTrue(self.cli("status")["state"]["connected"])
 
     @unittest.skipUnless(importlib.util.find_spec("polars"), "install polars for segment reads")
@@ -706,7 +706,7 @@ class IntegrationTest(unittest.TestCase):
         self.assertIsNone(metadata["device"])
         self.assertFalse(list(directories[0].glob("*.parquet")))
         self.assertFalse(list(directories[0].glob("*.csv")))
-        self.assertTrue(json.loads((directories[0]/"end.json").read_text())["complete"])
+        self.assertTrue(json.loads((directories[0]/"run.json").read_text())["end"]["complete"])
 
     def test_default_output_from_repository_subdirectory(self):
         root = Path(self.tmp.name)
@@ -757,7 +757,7 @@ class IntegrationTest(unittest.TestCase):
         self.assertTrue(any(event["wire"] == [4, -12.5] for event in events))
         self.assertTrue((self.run_dir/"data.parquet").is_file())
         self.assertTrue((self.run_dir/"data.csv").is_file())
-        self.assertTrue(json.loads((self.run_dir/"end.json").read_text())["complete"])
+        self.assertTrue(json.loads((self.run_dir/"run.json").read_text())["end"]["complete"])
 
     def test_interactive_eof_finalizes(self):
         self.start(interactive=True)
@@ -781,7 +781,7 @@ class IntegrationTest(unittest.TestCase):
         wait_for(lambda: self.cli("status")["state"]["samples"] >= 30)
         self.service.send_signal(signal.SIGINT)
         self.assertEqual(self.service.wait(timeout=15), 0)
-        self.assertTrue(json.loads((self.run_dir/"end.json").read_text())["complete"])
+        self.assertTrue(json.loads((self.run_dir/"run.json").read_text())["end"]["complete"])
         self.assertTrue((self.run_dir/"data.parquet").is_file())
         self.assertTrue((self.run_dir/"data.csv").is_file())
 
@@ -791,7 +791,7 @@ class IntegrationTest(unittest.TestCase):
         self.server.terminate()
         self.server.wait(timeout=5)
         self.assertNotEqual(self.service.wait(timeout=15), 0)
-        self.assertFalse(json.loads((self.run_dir/"end.json").read_text())["complete"])
+        self.assertFalse(json.loads((self.run_dir/"run.json").read_text())["end"]["complete"])
         self.assertTrue((self.run_dir/"data.parquet").is_file())
 
     def test_shutdown_sends_stop_and_finalizes_active_recording(self):
@@ -804,7 +804,7 @@ class IntegrationTest(unittest.TestCase):
         events = [json.loads(line) for line in (self.run_dir/"commands.jsonl").read_text().splitlines()]
         shutdown = next(event for event in events if event.get("request", {}).get("command", {}).get("op") == "shutdown")
         self.assertEqual(shutdown["wire"], [generated_mapping()["commands"]["Stop"], 0.0])
-        self.assertTrue(json.loads((self.run_dir/"end.json").read_text())["complete"])
+        self.assertTrue(json.loads((self.run_dir/"run.json").read_text())["end"]["complete"])
         self.assertTrue((self.run_dir/"data.parquet").is_file())
 
     @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel")
@@ -990,7 +990,7 @@ class IntegrationTest(unittest.TestCase):
         self.assertEqual(snapshot, (self.run_dir/"data.parquet").read_bytes())
         self.assertTrue((self.run_dir/"data_0002.parquet").exists())
         self.assertFalse((self.run_dir/"data_0002_slow_data.parquet").exists())
-        metadata=json.loads((self.run_dir/"data_0002.json").read_text())
+        metadata=json.loads((self.run_dir/"data_0002.recording.json").read_text())["metadata"]
         self.assertEqual(metadata["recording"]["requested_observables"]["1"], "ISR_Period_us")
         import csv
         with (self.run_dir/"data.csv").open() as f:
@@ -1060,20 +1060,20 @@ class IntegrationTest(unittest.TestCase):
             self.assertTrue(c.status()["send_ack"])
         self.cli("shutdown")
         self.assertEqual(self.service.wait(timeout=8),0)
-        self.assertEqual(set(p for p in self.run_dir.glob("*.parquet") if "-part-" not in p.name), {self.run_dir/"data.parquet", self.run_dir/"data_slow_data.parquet"})
+        self.assertEqual(set(p for p in self.run_dir.glob("*.parquet") if "-part-" not in p.name), {self.run_dir/"data.parquet", self.run_dir/"data_slow_data.parquet", self.run_dir/"data_slow_data.updates.parquet"})
         snapshot = (self.run_dir/"data.parquet").read_bytes()
         self.assertEqual(snapshot[:4],b"PAR1")
         self.assertEqual(snapshot[-4:],b"PAR1")
-        end=json.loads((self.run_dir/"end.json").read_text())
+        end=json.loads((self.run_dir/"run.json").read_text())["end"]
         self.assertTrue(end["complete"],end)
         self.assertFalse(list(self.run_dir.glob("*.partial")))
         self.assertEqual(set(self.run_dir.glob("*.csv")), {self.run_dir/"data.csv", self.run_dir/"data_slow_data.csv"})
-        self.assertTrue(list(self.run_dir.glob("*-part-*.parquet")))
+        self.assertFalse(list(self.run_dir.glob("*-part-*.parquet")))
         import csv
         rows=[]
         for p in [self.run_dir/"data.csv"]:
             with p.open() as f: rows.extend(csv.DictReader(f))
-        self.assertEqual(len(rows),json.loads((self.run_dir/"data.json").read_text())["rows"])
+        self.assertEqual(len(rows),json.loads((self.run_dir/"data.recording.json").read_text())["metadata"]["rows"])
         self.assertNotIn("sample_index", rows[0])
         self.assertNotIn("host_received_unix_ns", rows[0])
         self.assertIn("time", rows[0])
@@ -1102,7 +1102,7 @@ class IntegrationTest(unittest.TestCase):
                                    schema_overrides=slow.schema)
             from polars.testing import assert_frame_equal
             assert_frame_equal(csv_slow, slow)
-            metadata = json.loads((self.run_dir/"data_slow_data.json").read_text())["recording"]
+            metadata = json.loads((self.run_dir/"data_slow_data.recording.json").read_text())["metadata"]["recording"]
             self.assertEqual(metadata["slow_layout"], "wide_forward_filled")
 
 
@@ -1114,19 +1114,21 @@ class IntegrationTest(unittest.TestCase):
         self.assertEqual(self.service.wait(timeout=8),0)
         self.assertTrue((self.run_dir/"data.parquet").is_file())
         self.assertTrue((self.run_dir/"data.csv").is_file())
-        self.assertTrue(list(self.run_dir.glob("*-part-*.parquet")))
+        self.assertFalse(list(self.run_dir.glob("*-part-*.parquet")))
 
-    def test_csv_export_failure_retains_final_parquet_and_segments(self):
+    def test_csv_export_failure_retains_final_parquet(self):
         self.start(format="csv")
         wait_for(lambda:list(self.run_dir.glob("data-part-*.parquet")))
         (self.run_dir/"data.csv.partial").mkdir()
         self.cli("shutdown")
         self.assertNotEqual(self.service.wait(timeout=8),0)
-        end=json.loads((self.run_dir/"end.json").read_text())
+        end=json.loads((self.run_dir/"run.json").read_text())["end"]
         self.assertFalse(end["complete"])
         self.assertIn("CSV export failed",end["state"]["error"])
         self.assertTrue((self.run_dir/"data.parquet").is_file())
-        self.assertTrue(list(self.run_dir.glob("data-part-*.parquet")))
+        # The merged Parquet is the canonical recording; the CSV export is optional.
+        self.assertFalse(list(self.run_dir.glob("data-part-*.parquet")))
+        self.assertTrue(json.loads((self.run_dir/"data.recording.json").read_text())["info"]["complete"])
         self.assertFalse((self.run_dir/"data.csv").exists())
 
     def test_legacy_ack_toggle(self):
@@ -1212,7 +1214,7 @@ class IntegrationTest(unittest.TestCase):
         release.set()
         self.assertNotEqual(self.service.wait(timeout=8),0)
         worker.join(timeout=2)
-        end=json.loads((self.run_dir/"end.json").read_text())
+        end=json.loads((self.run_dir/"run.json").read_text())["end"]
         self.assertIn("invalid slow ID",end["state"]["error"])
         self.assertEqual(end["state"]["samples"],45)
 
@@ -1228,7 +1230,7 @@ class IntegrationTest(unittest.TestCase):
         self.assertTrue(self.cli("stop")["ok"])  # device control remains available
         self.cli("shutdown")
         self.assertNotEqual(self.service.wait(timeout=8),0)
-        end=json.loads((self.run_dir/"end.json").read_text())
+        end=json.loads((self.run_dir/"run.json").read_text())["end"]
         self.assertFalse(end["complete"])
         self.assertIn("logging",end["state"]["error"])
 
@@ -1259,7 +1261,7 @@ class IntegrationTest(unittest.TestCase):
         self.assertIsNone(recordings[1].get("error"))
         self.cli("shutdown")
         self.assertNotEqual(self.service.wait(timeout=8), 0)
-        end = json.loads((self.run_dir / "end.json").read_text())
+        end = json.loads((self.run_dir/"run.json").read_text())["end"]
         self.assertFalse(end["complete"])
         self.assertIn("fast recording 1", end["state"]["error"])
         self.assertIn(failure, end["state"]["error"])
@@ -1388,8 +1390,8 @@ class IntegrationTest(unittest.TestCase):
         finally:
             a.close()
         self.assertTrue(a.is_finished())
-        self.assertTrue(json.loads((run_dir/"end.json").read_text())["complete"])
-        self.assertEqual(set(p for p in run_dir.glob("*.parquet") if "-part-" not in p.name), {run_dir/"data.parquet", run_dir/"data_slow_data.parquet"})
+        self.assertTrue(json.loads((run_dir/"run.json").read_text())["end"]["complete"])
+        self.assertEqual(set(p for p in run_dir.glob("*.parquet") if "-part-" not in p.name), {run_dir/"data.parquet", run_dir/"data_slow_data.parquet", run_dir/"data_slow_data.updates.parquet"})
         self.assertFalse(list(run_dir.glob("*.csv")))
 
     @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for embedded API test")
@@ -1450,7 +1452,7 @@ output = Path(a.output)
 assert output.parent == Path.cwd().parent/"artifacts/live_logs", output
 assert (output/"data.csv").is_file()
 assert (output/"data.parquet").is_file()
-assert json.loads((output/"end.json").read_text())["complete"]
+assert json.loads((output/"run.json").read_text())["end"]["complete"]
 # Existing output directories must fail immediately too.
 try:
     ultrazohm.Acquisition(endpoint=endpoint, output=str(output))
@@ -1467,12 +1469,12 @@ else:
         wait_for(lambda:self.cli("status")["state"]["samples"]>=30)
         self.server.terminate(); self.server.wait(timeout=5)
         self.assertNotEqual(self.service.wait(timeout=8),0)
-        end=json.loads((self.run_dir/"end.json").read_text())
+        end=json.loads((self.run_dir/"run.json").read_text())["end"]
         self.assertFalse(end["complete"])
-        self.assertEqual(set(p for p in self.run_dir.glob("*.parquet") if "-part-" not in p.name), {self.run_dir/"data.parquet", self.run_dir/"data_slow_data.parquet"})
+        self.assertEqual(set(p for p in self.run_dir.glob("*.parquet") if "-part-" not in p.name), {self.run_dir/"data.parquet", self.run_dir/"data_slow_data.parquet", self.run_dir/"data_slow_data.updates.parquet"})
         if importlib.util.find_spec("polars"):
             import polars as pl
-            self.assertEqual(pl.read_parquet(self.run_dir/"data.parquet").height,json.loads((self.run_dir/"data.json").read_text())["rows"])
+            self.assertEqual(pl.read_parquet(self.run_dir/"data.parquet").height,json.loads((self.run_dir/"data.recording.json").read_text())["metadata"]["rows"])
 
 
 if __name__ == "__main__":

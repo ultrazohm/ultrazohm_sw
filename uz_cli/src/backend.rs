@@ -3,6 +3,7 @@
 use anyhow::{Context, Result, ensure};
 use polars::prelude::*;
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use std::{
     fs::{self, File},
     path::{Path, PathBuf},
@@ -126,6 +127,15 @@ pub trait RecordingBackend: Send {
     fn append(&mut self, batch: SampleBatch) -> Result<()>;
     fn reader(&self) -> Arc<dyn RecordingReader>;
     fn finish(&mut self) -> Result<()>;
+    /// After `finish`, replace the canonical segments by one merged file holding
+    /// exactly the same rows and schema, then remove the superseded segments.
+    fn consolidate(&mut self, _merged: &Path) -> Result<()> {
+        Ok(())
+    }
+    /// Store recording metadata (settings, row count, completion) with the index.
+    fn set_metadata(&mut self, _metadata: Value) -> Result<()> {
+        Ok(())
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -138,11 +148,15 @@ struct Segment {
 struct Index {
     info: RecordingInfo,
     segments: Vec<Segment>,
+    /// Recording settings and result, maintained by the recording writer.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    metadata: Option<Value>,
 }
 
 #[derive(Clone)]
 pub struct ParquetReaderHandle {
     dir: PathBuf,
+    path: PathBuf,
     index: Arc<Mutex<Index>>,
 }
 pub struct ParquetBackend {
@@ -218,6 +232,7 @@ impl ParquetBackend {
                 complete: false,
             },
             segments: Vec::new(),
+            metadata: None,
         };
         index.info.empty()?;
         // Reserve the handle exclusively; a failed append never overwrites a run.
@@ -227,6 +242,7 @@ impl ParquetBackend {
         Ok(Self {
             reader: ParquetReaderHandle {
                 dir: dir.into(),
+                path: path.clone(),
                 index: Arc::new(Mutex::new(index)),
             },
             index_path: path,
@@ -284,6 +300,62 @@ impl RecordingBackend for ParquetBackend {
         *self.reader.index.lock().unwrap() = next;
         Ok(())
     }
+    fn consolidate(&mut self, merged: &Path) -> Result<()> {
+        let mut next = self.reader.index.lock().unwrap().clone();
+        ensure!(
+            next.info.complete,
+            "only a finished recording can be consolidated"
+        );
+        let (Some(start), Some(stop)) = (next.info.start, next.info.stop) else {
+            return Ok(()); // An empty recording has no segments to replace.
+        };
+        ensure!(
+            merged.parent() == Some(self.reader.dir.as_path()),
+            "merged recording must be in the recording directory"
+        );
+        let name = merged
+            .file_name()
+            .and_then(|name| name.to_str())
+            .context("invalid merged recording name")?
+            .to_owned();
+        // Verify before the index refers to it: same rows, same schema.
+        let mut reader = ParquetReader::new(File::open(merged)?);
+        ensure!(
+            reader.num_rows()? as u64 == stop - start,
+            "merged recording row count mismatch"
+        );
+        let schema = reader.with_slice(Some((0, 0))).finish()?;
+        ensure!(
+            schema.schema() == next.info.empty()?.schema(),
+            "merged recording schema mismatch"
+        );
+        let superseded: Vec<String> = next
+            .segments
+            .iter()
+            .map(|segment| segment.file.clone())
+            .filter(|file| *file != name)
+            .collect();
+        next.segments = vec![Segment {
+            start,
+            stop,
+            file: name,
+        }];
+        publish(&self.index_path, &next)?;
+        *self.reader.index.lock().unwrap() = next;
+        // Best effort: a reader holding a segment open (Windows) keeps it; such
+        // leftovers are no longer referenced and readers reload the index.
+        for file in superseded {
+            let _ = fs::remove_file(self.reader.dir.join(file));
+        }
+        Ok(())
+    }
+    fn set_metadata(&mut self, metadata: Value) -> Result<()> {
+        let mut next = self.reader.index.lock().unwrap().clone();
+        next.metadata = Some(metadata);
+        publish(&self.index_path, &next)?;
+        *self.reader.index.lock().unwrap() = next;
+        Ok(())
+    }
 }
 impl RecordingReader for ParquetReaderHandle {
     fn info(&self) -> Result<RecordingInfo> {
@@ -296,6 +368,31 @@ impl RecordingReader for ParquetReaderHandle {
         projection: Option<&[String]>,
     ) -> Result<DataFrame> {
         let index = self.index.lock().unwrap().clone();
+        match self.read_index_range(&index, start, stop, projection) {
+            // Finalization may have replaced the segments by one merged file
+            // since this handle loaded its index: reload once and retry.
+            Err(error)
+                if error
+                    .downcast_ref::<std::io::Error>()
+                    .is_some_and(|e| e.kind() == std::io::ErrorKind::NotFound) =>
+            {
+                let current = load_index(&self.path)?;
+                *self.index.lock().unwrap() = current.clone();
+                self.read_index_range(&current, start, stop, projection)
+            }
+            result => result,
+        }
+    }
+}
+
+impl ParquetReaderHandle {
+    fn read_index_range(
+        &self,
+        index: &Index,
+        start: u64,
+        stop: u64,
+        projection: Option<&[String]>,
+    ) -> Result<DataFrame> {
         let mut result = index.info.empty_projected(projection)?;
         let first = index.info.start.unwrap_or(0);
         let end = index.info.stop.unwrap_or(0);
@@ -331,8 +428,25 @@ impl RecordingReader for ParquetReaderHandle {
     }
 }
 
+/// Recording metadata stored with the index (settings, rows, completion, error).
+pub fn read_metadata(path: &Path) -> Result<Option<Value>> {
+    Ok(load_index(path)?.metadata)
+}
+
 /// Open a durable handle without a running acquisition service.
 pub fn open(path: &Path) -> Result<Arc<dyn RecordingReader>> {
+    let index = load_index(path)?;
+    Ok(Arc::new(ParquetReaderHandle {
+        dir: path
+            .parent()
+            .context("index has no parent directory")?
+            .into(),
+        path: path.into(),
+        index: Arc::new(Mutex::new(index)),
+    }))
+}
+
+fn load_index(path: &Path) -> Result<Index> {
     let index: Index = serde_json::from_slice(&fs::read(path)?)?;
     ensure!(
         index.info.schema_version == 1 && index.info.backend == "parquet",
@@ -355,13 +469,7 @@ pub fn open(path: &Path) -> Result<Arc<dyn RecordingReader>> {
         stop = Some(segment.stop);
     }
     ensure!(stop == index.info.stop, "invalid recording end position");
-    Ok(Arc::new(ParquetReaderHandle {
-        dir: path
-            .parent()
-            .context("index has no parent directory")?
-            .into(),
-        index: Arc::new(Mutex::new(index)),
-    }))
+    Ok(index)
 }
 
 #[cfg(test)]

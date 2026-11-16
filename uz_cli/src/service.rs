@@ -25,7 +25,8 @@ use std::{
 mod control;
 
 // Bounded audit IO: slow storage must never hold up device Stop. Audit failure
-// is reported in status and end.json; it never ends acquisition or control.
+// is reported in status and in run.json's end section; it never ends
+// acquisition or control.
 struct Audit {
     tx: std::sync::mpsc::SyncSender<Value>,
     worker: thread::JoinHandle<()>,
@@ -511,6 +512,7 @@ struct Service {
     connection: Option<DeviceConnection>,
     selections: Value,
     shutdown_stop_sent: bool,
+    run_metadata: Value,
 }
 
 enum Reply {
@@ -531,17 +533,19 @@ impl Service {
         let ack = Arc::new(AtomicBool::new(config.ack));
         let run_id = format!("{}-{}", now_ns(), std::process::id());
         let mut events: Option<Audit> = None;
+        // Session description; the service adds an "end" section when it exits.
+        let run_metadata = json!({
+            "schema_version":5,"run_id":run_id,"started_unix_ns":now_ns(),"device":config.device,
+            "profile":config.profile,"format":config.format,"data_options":config.data,
+            "time_basis":"seconds from acquisition start; configured sample period; gaps unknown",
+            "storage_layout":"consolidated_recordings","source":"ultrazohm",
+            "software_version":env!("CARGO_PKG_VERSION")
+        });
         if let Some(dir) = &config.output {
             fs::create_dir(dir)?;
             fs::write(
                 dir.join("run.json"),
-                serde_json::to_vec_pretty(&json!({
-                    "schema_version":4,"run_id":run_id,"started_unix_ns":now_ns(),"device":config.device,
-                    "profile":config.profile,"format":config.format,"data_options":config.data,
-                    "time_basis":"seconds from acquisition start; configured sample period; gaps unknown",
-                    "storage_layout":"explicit_independent_recordings","source":"ultrazohm",
-                    "software_version":env!("CARGO_PKG_VERSION")
-                }))?,
+                serde_json::to_vec_pretty(&run_metadata)?,
             )?;
             events = Some(Audit::new(
                 OpenOptions::new()
@@ -580,6 +584,7 @@ impl Service {
             connection: None,
             selections: json!({}),
             shutdown_stop_sent: false,
+            run_metadata,
         };
         if let Some(device) = service.config.device.clone() {
             service.connect(&device)?;
@@ -874,12 +879,16 @@ impl Service {
         let s = self.context.state.lock().unwrap();
         let complete = s.error.is_none() && s.audit_error.is_none();
         if let Some(dir) = self.config.output {
-            fs::write(
-                dir.join("end.json"),
-                serde_json::to_vec_pretty(
-                    &json!({"ended_unix_ns":now_ns(),"state":*s,"complete":complete}),
-                )?,
-            )?;
+            // A missing end section means the service did not exit normally.
+            let mut run = self.run_metadata;
+            run["end"] = json!({"ended_unix_ns":now_ns(),"state":*s,"complete":complete});
+            let target = dir.join("run.json");
+            let partial = dir.join("run.json.partial");
+            let file = fs::File::create(&partial)?;
+            serde_json::to_writer_pretty(&file, &run)?;
+            file.sync_all()?;
+            drop(file);
+            fs::rename(partial, target)?;
         }
         match (&s.error, &s.audit_error) {
             (Some(e), Some(a)) => bail!("{e}; {a}"),

@@ -167,7 +167,7 @@ The CLI console and Python automation work on Linux and Windows; the viewer's
   Device controls and the live RAM buffer continue during pauses.
 - `shutdown`, Ctrl-C, interactive EOF and `Acquisition.close()` send device Stop
   before waiting for queries and recording finalization. Shutdown's reply confirms
-  acceptance; process exit and `end.json` report completion. EOF is Ctrl-D on Linux
+  acceptance; process exit and the `end` section of `run.json` report completion. EOF is Ctrl-D on Linux
   or Ctrl-Z then Enter on Windows. Unattended `serve` ignores stdin.
 
 Logging phases are `idle`, `recording`, `paused`, `finalizing`, `complete` and
@@ -338,23 +338,28 @@ Supply `--cursor '<previous cursor JSON>'` to continue. `tail` replaces the old
 
 ## Recording outputs
 
-Only explicitly started streams produce measurement files. Each recording keeps
-immutable Parquet parts and a `*.recording.json` index as canonical storage.
-Finalization adds merged Parquet and optionally CSV; parts remain available to
-concurrent/durable readers. Budget disk space for both. For the first recordings:
+Only explicitly started streams produce measurement files. While a recording
+runs, it writes immutable Parquet parts (`data-part-00000000.parquet`, ...) and a
+`*.recording.json` index, so committed data survives a crash and can be read
+during acquisition. When the recording stops, the parts are merged; the index is
+pointed at the merged file and the parts are deleted. Finished recordings
+therefore contain each sample once. For a finished session with one fast and one
+slow recording:
 
 ```text
 measurement-001/
-    run.json                       # Validated configuration and session metadata
-    commands.jsonl                 # Host command audit
-    data.recording.json            # Fast backend/range index
-    data-part-00000000.parquet      # Canonical fast segment (more as needed)
-    data.parquet                   # Merged fast export
-    data.json                      # Assignments, rows and completion
-    data.csv                       # Additional export for --format csv
-    data_slow_data.recording.json   # Slow index; corresponding parts/exports
-    end.json                       # Session health, written at service exit
+    run.json                          # Configuration; "end" section written at service exit
+    commands.jsonl                    # Host command audit
+    data.recording.json               # Fast index; "metadata": assignments, rows, completion
+    data.parquet                      # Fast recording (canonical and export)
+    data.csv                          # Additional export for --format csv
+    data_slow_data.recording.json     # Slow index and metadata
+    data_slow_data.updates.parquet    # Slow raw update history (canonical)
+    data_slow_data.parquet            # Slow wide forward-filled export
 ```
+
+`run.json` without an `end` section means the service did not exit normally.
+If merging fails, the parts and their index remain the canonical recording.
 
 Subsequent recordings use `data_0002...`, with independent counters for each
 stream. Existing files are not overwritten. Empty started recordings produce
@@ -397,7 +402,7 @@ device control and the other stream continue. Start a new recording to continue
 logging. Disk and export failures are also explicit errors; committed chunks
 remain readable. If the command audit (`commands.jsonl`) cannot be written,
 `status.state.audit_error` reports it, later commands are not audited, and
-`end.json` marks the session incomplete; acquisition continues. Abrupt termination can lose
+the `end` section of `run.json` marks the session incomplete; acquisition continues. Abrupt termination can lose
 uncommitted batches and pending writes. Incomplete indexed runs remain readable,
 but automatic repair/merge is not implemented. Optional export failure does not
 invalidate canonical data, though close/status still report the error.

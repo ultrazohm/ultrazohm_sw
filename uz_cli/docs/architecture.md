@@ -19,6 +19,7 @@ flowchart LR
     Service --> Queue[Independent recording queues]
     Queue --> Backend[Parquet backend]
     Backend --> Parts[Immutable parts and range index]
+    Parts --> Merged[Merged file replaces parts at stop]
     Parts --> Export[Merged Parquet and optional CSV]
 ```
 
@@ -99,7 +100,7 @@ are never silently skipped inside a recording. A recording whose writer or
 export fails also becomes `failed`. In both cases acquisition, device control,
 the live ring and the other stream continue. An audit queue overflow or write
 failure is recorded once as `state.audit_error`; later commands are not audited,
-acquisition and control continue, and `end.json` reports `complete: false`.
+acquisition and control continue, and the `end` section of `run.json` reports `complete: false`.
 All are reported in status and at service exit, never silent losses. Each recording's history retains
 its error across later recording starts. Metadata and recording listings remain
 available even if backend initialization fails; sample queries require a backend reader.
@@ -107,7 +108,7 @@ available even if backend initialization fails; sample queries require a backend
 Every service exit path attempts device Stop before waiting for data queries,
 receiver completion, recording finalizers and audit draining. A Stop failure is
 recorded while finalization continues. The shutdown reply acknowledges acceptance;
-process exit and `end.json` report completion and errors. This ordering applies
+process exit and the `end` section of `run.json` report completion and errors. This ordering applies
 to explicit shutdown, Ctrl-C, EOF, embedded close and acquisition failure.
 
 ## Canonical storage and queries
@@ -118,10 +119,16 @@ backend tests the contract independently of storage files; backend choice is
 separate from the optional CSV export format.
 
 Chunks and their `*.recording.json` index are published atomically. The persisted
-boundary advances only after both succeed. Canonical parts remain after export,
-so concurrent readers do not race deletion. Index/footer metadata grows with
-chunk count; sample buffers stay bounded. Merged Parquet and CSV are additional
-exports, not replacements for canonical history. Finalization reads one segment
+boundary advances only after both succeed. Index/footer metadata grows with
+chunk count; sample buffers stay bounded. At stop, the parts are merged into one
+file with the same rows and schema (`{stem}.parquet` for fast recordings,
+`{stem}.updates.parquet` for raw slow updates); after verifying row count and
+schema, the index is republished with that file as its only segment and the parts
+are deleted (best effort; an undeleted part is unreferenced). A reader whose index
+still names a deleted part reloads the index once, so in-flight queries and open
+`Recording` handles continue. The wide slow export and CSV are derived files.
+The index also stores the recording's metadata (requested observables, row count,
+completion, error). Finalization reads one segment
 at a time; CSV conversion reads at most 65,536 rows per slice.
 
 `DataView` captures a persisted prefix and pending suffix at one boundary, then

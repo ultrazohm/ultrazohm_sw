@@ -210,8 +210,21 @@ impl LogWriter {
         self.backend.finish()
     }
 
-    pub fn export(&self) -> Result<()> {
+    /// Merge into the final file(s), point the index at the merged canonical
+    /// rows and remove the segments, then write the optional CSV export.
+    /// Fast recordings: `{stem}.parquet` is both export and canonical history.
+    /// Slow recordings: `{stem}.updates.parquet` keeps the raw update history;
+    /// `{stem}.parquet` is the wide forward-filled export.
+    pub fn export(&mut self) -> Result<()> {
         self.merge()?;
+        let canonical = if self.slow {
+            updates_path(&self.dir, &self.stem)
+        } else {
+            self.dir.join(format!("{}.parquet", self.stem))
+        };
+        self.backend
+            .consolidate(&canonical)
+            .context("merged recording could not replace its segments; segments retained")?;
         if !matches!(self.format, Format::Parquet) {
             let stem = &self.stem;
             export_csv(
@@ -268,6 +281,11 @@ impl LogWriter {
         Ok(DataFrame::new(columns)?.drop_nulls::<String>(None)?)
     }
 
+    /// Store recording settings and results with the canonical index.
+    pub fn set_metadata(&mut self, metadata: serde_json::Value) -> Result<()> {
+        self.backend.set_metadata(metadata)
+    }
+
     fn merge(&self) -> Result<()> {
         let stem = &self.stem;
         let target = self.dir.join(format!("{stem}.parquet"));
@@ -282,6 +300,22 @@ impl LogWriter {
             empty.clone()
         };
         let mut writer = ParquetWriter::new(&mut file).batched(final_empty.schema())?;
+        // Slow recordings also merge their raw updates into one canonical file.
+        let updates_target = updates_path(&self.dir, stem);
+        let updates_tmp = self.dir.join(format!("{stem}.updates.parquet.partial"));
+        let mut updates_file = if self.slow {
+            ensure!(
+                !updates_target.exists(),
+                "refusing to overwrite final update history"
+            );
+            Some(File::create_new(&updates_tmp)?)
+        } else {
+            None
+        };
+        let mut updates = updates_file
+            .as_mut()
+            .map(|file| ParquetWriter::new(file).batched(empty.schema()))
+            .transpose()?;
         let mut previous_time: Option<f64> = None;
         let mut slow_previous_time: Option<f64> = None;
         let mut merged_rows = 0usize;
@@ -303,6 +337,9 @@ impl LogWriter {
             }
             merged_rows += df.height();
             let output = if self.slow {
+                if let Some(updates) = &mut updates {
+                    updates.write_batch(&df)?;
+                }
                 self.wide_slow(&df, &mut last, &mut slow_previous_time)?
             } else {
                 df
@@ -314,6 +351,18 @@ impl LogWriter {
             merged_rows == self.written_rows,
             "merged row count mismatch"
         );
+        if let Some(updates) = updates {
+            updates.finish()?;
+            drop(updates);
+            let file = updates_file.take().context("update history file")?;
+            file.sync_all()?;
+            drop(file);
+            ensure!(
+                ParquetReader::new(File::open(&updates_tmp)?).num_rows()? == self.written_rows,
+                "update history row count mismatch"
+            );
+            fs::rename(&updates_tmp, &updates_target)?;
+        }
         writer.finish()?;
         drop(writer);
         file.sync_all()?;
@@ -334,6 +383,11 @@ impl LogWriter {
         fs::rename(tmp, &target)?;
         Ok(())
     }
+}
+
+/// Merged raw update history of a slow recording (its canonical data after stop).
+pub(crate) fn updates_path(dir: &Path, stem: &str) -> PathBuf {
+    dir.join(format!("{stem}.updates.parquet"))
 }
 
 /// Shared fast-column conversion, used by live and recorded queries. `skip` and
@@ -855,15 +909,72 @@ mod tests {
             let canonical = backend::open(&backend::index_path(&run.0, stem))?;
             assert!(canonical.info()?.complete);
             assert_eq!(canonical.read_range(150, 165)?.height(), 15);
+            // A failed merge keeps the segments; once merged, the merged file
+            // replaces them even if the later CSV export fails.
+            let merged = blocked.ends_with("csv.partial");
             assert_eq!(
-                read(run.0.join(format!("{stem}-part-00000000.parquet")))?.height(),
-                15
+                run.0.join(format!("{stem}-part-00000000.parquet")).exists(),
+                !merged
             );
-            assert_eq!(
-                run.0.join(format!("{stem}.parquet")).exists(),
-                blocked.ends_with("csv.partial")
-            );
+            assert_eq!(run.0.join(format!("{stem}.parquet")).exists(), merged);
             assert!(!run.0.join(format!("{stem}.csv")).exists());
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn finished_recordings_replace_segments_by_merged_files() -> Result<()> {
+        for slow in [false, true] {
+            let run = Run::new();
+            let stem = if slow { "data_slow_data" } else { "data" };
+            let profile = Profile::load(None)?;
+            let mut log = LogWriter::new(
+                run.0.clone(),
+                profile.clone(),
+                Format::Parquet,
+                stem.into(),
+                slow,
+                &serde_json::to_value(&profile.initial_channels)?,
+            )?;
+            log.segment_rows = 15;
+            for i in 0..4 {
+                log.push(i * 15, frame(i as usize * 15, 15))?;
+            }
+            let index = backend::index_path(&run.0, stem);
+            // A handle opened while the recording still has segments.
+            let early = backend::open(&index)?;
+            assert!(log.segment(3).exists());
+            log.set_metadata(serde_json::json!({"rows": 60}))?;
+            log.finish()?;
+            let leftovers: Vec<_> = fs::read_dir(&run.0)?
+                .filter_map(|entry| entry.ok()?.file_name().into_string().ok())
+                .filter(|name| name.contains("-part-") || name.ends_with(".partial"))
+                .collect();
+            assert!(leftovers.is_empty(), "{leftovers:?}");
+            let canonical = if slow {
+                updates_path(&run.0, stem)
+            } else {
+                run.0.join(format!("{stem}.parquet"))
+            };
+            let merged = read(canonical)?;
+            assert_eq!(merged.height(), 60);
+            assert!(
+                backend::open(&index)?
+                    .read_range(0, 60)?
+                    .equals_missing(&merged)
+            );
+            // The earlier handle reloads the index instead of failing.
+            assert!(
+                early
+                    .read_range(10, 50)?
+                    .equals_missing(&merged.slice(10, 40))
+            );
+            assert_eq!(backend::read_metadata(&index)?.unwrap()["rows"], 60);
+            if slow {
+                // The wide export stays alongside the raw update history.
+                assert_eq!(read(run.0.join(format!("{stem}.parquet")))?.width(), 19);
+                assert_eq!(merged.width(), 6);
+            }
         }
         Ok(())
     }

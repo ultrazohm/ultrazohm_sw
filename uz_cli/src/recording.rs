@@ -10,7 +10,6 @@ use anyhow::{Context, Result, ensure};
 use serde::Serialize;
 use serde_json::{Value, json};
 use std::{
-    fs,
     path::PathBuf,
     sync::{
         Arc, Mutex,
@@ -192,14 +191,15 @@ impl Recordings {
         let format = self.format;
         let options = self.options.clone();
         let selections = selections.clone();
-        let metadata_path = dir.join(format!("{stem}.json"));
         let metadata = json!({"schema_version":5, "stream":if slow {"slow"} else {"fast"},
             "requested_observables":selections, "mapping_confirmed":false,
             "position_basis":"contiguous recorded samples; time retains acquisition gaps",
             "slow_layout": if slow {Some("wide_forward_filled")} else {None},
             "slow_initial_values": if slow {Some("rows_omitted_until_all_observables_received")} else {None},
             "time_basis":"seconds from acquisition start, configured sample period; gaps unknown",
-            "parquet":format!("{stem}.parquet"), "csv":!matches!(self.format, Format::Parquet)});
+            "parquet":format!("{stem}.parquet"),
+            "updates": if slow {Some(format!("{stem}.updates.parquet"))} else {None},
+            "csv":!matches!(self.format, Format::Parquet)});
         // Headroom while a large segment is encoded and synced; independent of
         // live history. See DataOptions::queue_seconds.
         let queue_frames = self.options.queue_frames(
@@ -241,10 +241,12 @@ impl Recordings {
         let flush_interval = Duration::from_millis(self.options.flush_interval_ms);
         self.workers[slot] = Some(thread::spawn(move || {
             let mut rows = 0u64;
+            // Kept outside the closure to store the final summary in the index.
+            let mut writer: Option<LogWriter> = None;
             let result: Result<()> = (|| {
                 // Disk initialization runs on the writer, never the control loop.
                 // Frames accepted meanwhile remain in the bounded recording queue.
-                let mut log = LogWriter::new_for_backend(
+                let log = writer.insert(LogWriter::new_for_backend(
                     dir,
                     profile,
                     format,
@@ -252,11 +254,12 @@ impl Recordings {
                     slow,
                     &selections,
                     options.recording_backend,
-                )?;
+                )?);
                 log.segment_rows = options.segment_rows;
                 writer_history.lock().unwrap().reader = Some(log.reader());
-                let file = fs::File::create_new(&metadata_path)?;
-                serde_json::to_writer_pretty(file, &metadata)?;
+                log.set_metadata(
+                    json!({"recording":metadata,"rows":0,"complete":false,"error":null}),
+                )?;
                 let mut last_flush = Instant::now();
                 loop {
                     match rx.recv_timeout(flush_interval.saturating_sub(last_flush.elapsed())) {
@@ -291,8 +294,10 @@ impl Recordings {
             };
             let summary =
                 json!({"recording":metadata,"rows":rows,"complete":error.is_none(),"error":error});
-            if let Err(e) = fs::write(metadata_path, serde_json::to_vec_pretty(&summary).unwrap()) {
-                error.get_or_insert_with(|| format!("recording metadata: {e}"));
+            if let Some(log) = writer.as_mut()
+                && let Err(e) = log.set_metadata(summary)
+            {
+                error.get_or_insert_with(|| format!("recording metadata: {e:#}"));
             }
             writer_history.lock().unwrap().error = error.clone();
             let mut s = states.lock().unwrap();
@@ -366,6 +371,7 @@ impl Recordings {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::fs;
 
     fn frame() -> Arc<Frame> {
         Arc::new(Frame {

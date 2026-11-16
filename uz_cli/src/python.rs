@@ -275,11 +275,11 @@ impl Acquisition {
         } else {
             base
         };
-        let sidecar: serde_json::Value = serde_json::from_slice(
-            &std::fs::read(self.output.join(format!("{stem}.json"))).map_err(error)?,
-        )
-        .map_err(error)?;
-        if sidecar["complete"] != true {
+        let summary =
+            crate::backend::read_metadata(&crate::backend::index_path(&self.output, &stem))
+                .map_err(error)?
+                .unwrap_or_default();
+        if summary["complete"] != true {
             return Err(error(
                 "recording is not complete; inspect its metadata for errors",
             ));

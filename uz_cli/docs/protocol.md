@@ -247,7 +247,7 @@ and optionally exports CSV before the service exits. A recording whose writer or
 export fails enters phase `failed` with its error; acquisition, device control and
 the other stream continue. Errors remain attached to each recording even after
 logging restarts, and any failed recording makes the service exit unsuccessfully
-with `end.json` reporting the failure.
+with the `end` section of `run.json` reporting the failure.
 Shutdown sends device Stop before finalization. Loss of the client connection is not an
 emergency stop. No automatic reconnect/replay occurs; a new service run starts
 new metadata and new log files.
@@ -318,7 +318,7 @@ is null until connected and then retains the device address. Before connecting,
 are rejected. ACK policy can be configured offline and takes effect on connection.
 The service reserves the output directory at startup, even offline. `run.json`
 contains the optional startup device; later connection requests are in
-`commands.jsonl`, and `end.json` includes the final device address. Sample time
+`commands.jsonl`, and the `end` section of `run.json` includes the final device address. Sample time
 starts with acquisition, excluding time spent waiting offline.
 
 ## Generating a mapping from firmware headers
@@ -416,7 +416,7 @@ fail after the backend has completed, in which case the metadata also has `error
 Slow range queries preserve one original slow ID/value update per received sample;
 wide slow Parquet/CSV exports are a distinct derived representation. Durable
 `*.recording.json` handles identify the backend, schema, ordered immutable chunks
-and successfully committed ranges. They remain readable independently of service
+(one merged file after a completed recording) and successfully committed ranges. They remain readable independently of service
 finalization and require no device connection.
 
 ### Service catalog
@@ -432,7 +432,7 @@ configuration, not firmware readback. Python: `Client.catalog()`; CLI: `ultrazoh
 
 `shutdown` sends device Stop when connected, then ends acquisition, finalizes all
 active recordings, and exits the service. The reply acknowledges acceptance, not
-completed finalization. Process exit and `end.json` report completion/failure.
+completed finalization. Process exit and the `end` section of `run.json` report completion/failure.
 Ctrl-C, interactive EOF, and embedded `Acquisition.close()` use the same cleanup
 sequence. A Stop transmission failure is recorded; logging still finalizes.
 

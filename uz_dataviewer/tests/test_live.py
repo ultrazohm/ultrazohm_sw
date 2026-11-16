@@ -549,7 +549,7 @@ def test_viewer_owned_service_finalizes_and_exits_on_close(tmp_path, disconnect_
             controller.close()
         assert controller.owned.process.poll() == 0
         import json
-        end = json.loads((tmp_path/'recording/end.json').read_text())
+        end = json.loads((tmp_path/'recording/run.json').read_text())['end']
         assert end['complete']
         recorded = pl.read_parquet(tmp_path/'recording/data.parquet')
         assert recorded.height > 1000

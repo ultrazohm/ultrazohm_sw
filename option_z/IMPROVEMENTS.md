@@ -93,17 +93,22 @@ would).
 
 ## 3. Safety scope — required before live calibration (Z5)
 
-### 3.1 `DOWNLOAD` can write anywhere in the allow-list — including code
+### 3.1 `DOWNLOAD` could write anywhere in the allow-list — including code
 R5 `.text` lives in DDR, and `ApplXcpCheckMemory` has no read/write
-distinction, so a stray CANape calibration write can patch running code over
-UDP. Options, in increasing effort:
-- **Measurement-only build**: drop `RM_CAL_PAG` from `CRM_CONNECT_RESOURCE`
-  (xcplite.c CONNECT handler) behind a UZ config switch.
-- **Write-specific check**: extend the check callback path with a read/write
-  flag (small xcplite.c touch) and deny writes to the `.text`/`.rodata`
-  ranges (readable from the ELF/linker map).
-- Full Z5 review: range checks per parameter, atomic adoption, rollback —
-  see the plan's Phase 4 notes.
+distinction, so a stray CANape calibration write could patch running code
+over UDP. **Done 2026-11-16:**
+- **Write gate** (`XCP_MTA_WRITE_CHECK`, an opt-in UZ patch in
+  `XcpWriteMta`; `xcp_r5_check_write()` in `xcptl_ocm.c`): every
+  DOWNLOAD / SHORT_DOWNLOAD must lie completely inside `.data`, `.sdata`,
+  `.sbss` or `.bss` (linker symbols). Code, constants, the ATCM vectors,
+  stacks, heap and the whole OCM answer `ERR_WRITE_PROTECTED`
+  (`xcp_r5_write_denied` counts them).
+- **Measurement-only build**: `XCP_R5_READ_ONLY 1` (`xcp_r5.h`) refuses
+  every write. CONNECT still advertises CAL/PAG, so CANape shows the
+  parameters and reports the refusal on the first write.
+
+Still open (full Z5 review): range checks per parameter, atomic adoption of
+multi-byte values against the control ISR, rollback.
 
 ### 3.2 Zero authentication
 `xcp_gw_rx_task` adopts whoever sends a datagram as master (`gMaster`), and

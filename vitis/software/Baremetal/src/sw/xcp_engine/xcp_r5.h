@@ -28,6 +28,17 @@
 #ifndef XCP_R5_H_
 #define XCP_R5_H_
 
+/* Measurement-only build. 0 (default): the master may calibrate, i.e. write
+ * R5 variables with DOWNLOAD / SHORT_DOWNLOAD, but only inside the data
+ * sections (.data/.sdata/.sbss/.bss) - code, constants, exception vectors,
+ * stacks, heap and the OCM exchange are write-protected in any case.
+ * 1: every write is refused with ERR_WRITE_PROTECTED; measuring is
+ * unaffected. Set it here or with -DXCP_R5_READ_ONLY=1.
+ * Refused writes are counted in xcp_r5_write_denied. */
+#ifndef XCP_R5_READ_ONLY
+#define XCP_R5_READ_ONLY 0
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -30,6 +30,17 @@
  * ApplXcpCheckMemory -> xcp_r5_check_memory (xcptl_ocm.c), so a chained
  * upload cannot walk from R5 DDR into A53 memory or PL space (data abort). */
 #define XCP_ENABLE_MTA_RANGE_CHECK
+/* Write gate (UZ patch in xcplite.c XcpWriteMta, not in upstream V2.3.4):
+ * the range check above treats reads and writes alike, and everything the
+ * R5 can read includes its own code (.text is in DDR), the exception
+ * vectors (ATCM) and the OCM exchange. Every DOWNLOAD / SHORT_DOWNLOAD is
+ * therefore passed through xcp_r5_check_write() (xcptl_ocm.c) as well:
+ * only initialised and zero-initialised data (.data/.sdata/.sbss/.bss) is
+ * writable, and nothing at all in a measurement-only build
+ * (XCP_R5_READ_ONLY, xcp_r5.h). */
+#include <stdint.h>
+extern uint8_t xcp_r5_check_write(uint32_t addr, uint8_t size);
+#define XCP_MTA_WRITE_CHECK(addr, size) xcp_r5_check_write((addr), (size))
 /* Largest BUILD_CHECKSUM block (UZ patch in xcplite.c calcChecksum): the
  * checksum loop runs inside the main-loop sweep, ~50 ns per byte with the
  * range check -> 64 KB caps one command at ~3 ms; bigger -> ERR_OUT_OF_RANGE. */

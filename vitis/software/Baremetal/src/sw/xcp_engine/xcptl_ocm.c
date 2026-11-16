@@ -55,6 +55,7 @@
 #include "xcptl_cfg.h"
 #include "xcp_cfg.h" /* XCP_ADDR_EXT_ABS / XCP_ADDR_EXT_PTR */
 #include "ocm_xcp_fifo.h"
+#include "xcp_r5.h" /* XCP_R5_READ_ONLY */
 #include "../../include/isr.h" /* UZ_PWM_FREQUENCY, Interrupt_ISR_freq_factor */
 #include <string.h>
 #include <stdint.h>
@@ -170,6 +171,10 @@ static uint32_t gSliceCnt[XCP_R5_SLICE_COUNT] = {0u, 1u, 2u, 3u};
  *                           XCP_R5_OUT_HOLD_MAX_SWEEPS (gateway not running
  *                           or stalled for milliseconds) -> DAQ data lost.
  *                           Must stay 0 while a master is connected.
+ *   xcp_r5_write_denied     DOWNLOAD/SHORT_DOWNLOAD refused by the write
+ *                           gate (target outside the data sections, or a
+ *                           measurement-only build); the master gets
+ *                           ERR_WRITE_PROTECTED
  *   xcp_r5_sweep_count      main-loop sweeps executed -> liveness probe
  *   xcp_r5_sweep_gap_max_us worst observed inter-sweep gap. THE main-loop
  *                           health number: ~SWEEP_PERIOD = loop plenty fast;
@@ -189,6 +194,7 @@ volatile uint32_t xcp_r5_queue_lost = 0u;
 volatile uint32_t xcp_r5_tx_held = 0u;
 volatile uint32_t xcp_r5_out_held = 0u;
 volatile uint32_t xcp_r5_out_overwritten = 0u;
+volatile uint32_t xcp_r5_write_denied = 0u;
 volatile uint32_t xcp_r5_sweep_count = 0u;
 volatile uint32_t xcp_r5_sweep_gap_max_us = 0u;
 
@@ -252,6 +258,48 @@ static uint8_t xcp_r5_check_memory(uint8_t ext, uint32_t addr, uint8_t size) {
     if (a >= 0x40000000u && end <= 0x47FF0000u) return CRC_CMD_OK;    /* DDR   */
     if (a >= 0xFFFC0000u && end <= 0x100000000ull) return CRC_CMD_OK; /* OCM   */
     return CRC_ACCESS_DENIED;
+}
+
+/* Write gate for DOWNLOAD / SHORT_DOWNLOAD (XCP_MTA_WRITE_CHECK,
+ * xcplib_r5_cfg.h): called by XcpWriteMta for every write, after the range
+ * check above has accepted the address. Readable is not writable: the R5's
+ * code and constants sit in the same DDR region as its variables, the
+ * exception vectors in the ATCM, and the OCM carries the exchange with the
+ * A53 - a calibration write with a stale A2L address into any of those takes
+ * down the control core. Only the data sections are writable (linker
+ * symbols from lscript.ld), which is where every calibratable global lives;
+ * stacks and heap are not. */
+extern uint8_t __data_start[], __data_end[];
+extern uint8_t __sdata_start[], __sdata_end[];
+extern uint8_t __sbss_start[], __sbss_end[];
+extern uint8_t __bss_start__[], __bss_end__[];
+
+uint8_t xcp_r5_check_write(uint32_t addr, uint8_t size) {
+#if XCP_R5_READ_ONLY
+    (void)addr;
+    (void)size;
+    xcp_r5_write_denied++;
+    return CRC_WRITE_PROTECTED;
+#else
+    static const struct {
+        const uint8_t *start;
+        const uint8_t *end;
+    } kWritable[] = {
+        {__data_start, __data_end},
+        {__sdata_start, __sdata_end},
+        {__sbss_start, __sbss_end},
+        {__bss_start__, __bss_end__},
+    };
+    const uintptr_t a = (uintptr_t)addr;
+    const uintptr_t e = a + size; /* no wrap: the range check passed first */
+    for (uint32_t i = 0u; i < (sizeof(kWritable) / sizeof(kWritable[0])); i++) {
+        if (a >= (uintptr_t)kWritable[i].start && e <= (uintptr_t)kWritable[i].end) {
+            return CRC_CMD_OK;
+        }
+    }
+    xcp_r5_write_denied++;
+    return CRC_WRITE_PROTECTED;
+#endif
 }
 
 /* --- engine-facing transport API ----------------------------------------- */

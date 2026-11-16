@@ -1309,6 +1309,12 @@ DUAL: on falling and rising edge*/
       SYMBOL_LINK "xcp_r5_cto_dropped" 0
     /end MEASUREMENT
 
+    /begin MEASUREMENT xcp_r5_write_denied "R5: calibration writes refused by the write gate (target outside the data sections, or measurement-only build)"
+      ULONG NO_COMPU_METHOD 0 0 0 4294967295
+      ECU_ADDRESS 0x0
+      SYMBOL_LINK "xcp_r5_write_denied" 0
+    /end MEASUREMENT
+
     /begin MEASUREMENT xcp_r5_out_held "R5: sweeps that kept the XCP_OUT chain in place waiting for the A53 acknowledge (latency, not loss)"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
       ECU_ADDRESS 0x0

@@ -527,6 +527,15 @@ uint8_t XcpWriteMta(uint8_t size, const uint8_t *data) {
                 return res;
         }
 #endif
+#ifdef XCP_MTA_WRITE_CHECK
+        // UZ patch (not in upstream V2.3.4): ApplXcpCheckMemory cannot tell a read from a write,
+        // so an optional write-only gate decides which of the readable memory may be modified
+        {
+            uint8_t res = XCP_MTA_WRITE_CHECK((uint32_t)(uintptr_t)local.mta_ptr, size);
+            if (res != CRC_CMD_OK)
+                return res;
+        }
+#endif
 
         // TEST
         // Test data consistency: slow bytewise write to increase probability for multithreading data consistency problems

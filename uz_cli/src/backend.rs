@@ -236,9 +236,19 @@ impl ParquetBackend {
         };
         index.info.empty()?;
         // Reserve the handle exclusively; a failed append never overwrites a run.
-        let file = File::create_new(&path)?;
-        serde_json::to_writer_pretty(&file, &index)?;
-        file.sync_all()?;
+        // Write the first index aside and link it into place, so readers that
+        // open the handle right after it appears never see a partial file.
+        let tmp = path.with_extension("json.creating");
+        let written = (|| -> Result<()> {
+            let file = File::create(&tmp)?;
+            serde_json::to_writer_pretty(&file, &index)?;
+            file.sync_all()?;
+            drop(file);
+            fs::hard_link(&tmp, &path)?;
+            Ok(())
+        })();
+        let _ = fs::remove_file(&tmp);
+        written?;
         Ok(Self {
             reader: ParquetReaderHandle {
                 dir: dir.into(),
@@ -544,6 +554,19 @@ mod tests {
         assert!(reader.read_range(99, 100).is_err());
         assert!(reader.read_range(120, 131).is_err());
         assert!(reader.read_range(120, 119).is_err());
+        Ok(())
+    }
+    #[test]
+    fn creation_publishes_a_complete_index_and_never_replaces_one() -> Result<()> {
+        let run = Run::new();
+        let mut backend = ParquetBackend::create(&run.0, "data", false, 100., &batch(0, 0)?.data)?;
+        let path = index_path(&run.0, "data");
+        assert!(!path.with_extension("json.creating").exists());
+        backend.append(batch(100, 15)?)?;
+        let published = fs::read(&path)?;
+        assert!(ParquetBackend::create(&run.0, "data", false, 100., &batch(0, 0)?.data).is_err());
+        assert_eq!(fs::read(&path)?, published);
+        assert!(!path.with_extension("json.creating").exists());
         Ok(())
     }
     #[test]

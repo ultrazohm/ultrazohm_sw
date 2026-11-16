@@ -39,6 +39,24 @@ def wait_for(fn, seconds=10):
     raise AssertionError("timed out waiting for condition")
 
 
+# Finalization merges, consolidates and exports; Windows runners are much slower at it.
+FINALIZE_SECONDS = 60 if sys.platform == "win32" else 20
+
+
+def wait_complete(status, *streams):
+    """Wait until the recordings of `streams` are complete; report their state on timeout."""
+    streams = streams or ("fast",)
+    try:
+        return wait_for(lambda: all(status()["logging"][s]["phase"] == "complete" for s in streams),
+                        FINALIZE_SECONDS)
+    except AssertionError:
+        try:
+            state = {s: status()["logging"][s] for s in streams}
+        except Exception as error:  # noqa: BLE001 - diagnostics only
+            state = f"status unavailable: {error!r}"
+        raise AssertionError(f"recordings did not finalize within {FINALIZE_SECONDS} s: {state}") from None
+
+
 def modern_mapping():
     mapping = generated_mapping()
     mapping['legacy_javascope_header'] = False
@@ -420,7 +438,7 @@ class IntegrationTest(unittest.TestCase):
         wait_for(lambda: self.cli("status")["state"]["samples"] >= before + 1500)
         self.assertFalse(list(self.run_dir.glob("*.parquet")))
         self.cli("stop-logging")
-        wait_for(lambda: self.cli("status")["logging"]["fast"]["phase"] == "complete")
+        wait_complete(lambda: self.cli("status"))
         data = pl.read_parquet(self.run_dir/"data.parquet")
         self.assertGreater(data.height, 0)
         self.assertEqual(data.height, json.loads((self.run_dir/"data.recording.json").read_text())["metadata"]["rows"])
@@ -473,7 +491,7 @@ class IntegrationTest(unittest.TestCase):
         handle = Recording(client.status()["logging"]["fast"]["handle"])
         self.assertIsNone(handle.info()["stop"])
         client.stop_logging()
-        wait_for(lambda: client.status()["logging"]["fast"]["phase"] == "complete")
+        wait_complete(client.status)
         self.assertTrue(handle.info()["complete"])
         self.assertTrue(handle.read_range(start, stop).equals(df))
 
@@ -500,7 +518,7 @@ class IntegrationTest(unittest.TestCase):
         slow_values = slow.data["slow_value"].to_list()
         client.stop_logging()
         client.stop_logging_slow_data()
-        wait_for(lambda: all(client.status()["logging"][s]["phase"] == "complete" for s in ("fast", "slow")))
+        wait_complete(client.status, "fast", "slow")
         final = client.data_info(recording=1)
         cursor, frames, expected = None, [], final["start"]
         while expected < final["stop"]:
@@ -524,7 +542,7 @@ class IntegrationTest(unittest.TestCase):
         client.start_logging()
         wait_for(lambda: client.data_info(recording=2)["stop"] is not None)
         client.stop_logging()
-        wait_for(lambda: client.status()["logging"]["fast"]["phase"] == "complete")
+        wait_complete(client.status)
         self.assertEqual(len(client.recordings()),3)
         client.shutdown()
         self.assertEqual(self.service.wait(timeout=8),0)
@@ -597,7 +615,7 @@ class IntegrationTest(unittest.TestCase):
                                          channels=slow_names[2:]).equals(slow_full.select(slow_names)))
         client.stop_logging()
         client.stop_logging_slow_data()
-        wait_for(lambda:all(client.status()["logging"][s]["phase"]=="complete" for s in ("fast","slow")))
+        wait_complete(client.status, "fast", "slow")
         handles={s:Recording(client.status()["logging"][s]["handle"]) for s in ("fast","slow")}
         self.assertTrue(handles["fast"].read_range(lo,hi,channels=channels).equals(full.select(names)))
         self.assertTrue(handles["slow"].read_range(slow_lo,slow_hi,channels=slow_names[2:]).equals(slow_full.select(slow_names)))
@@ -661,7 +679,7 @@ class IntegrationTest(unittest.TestCase):
         self.assertIsNone(self.cli('status')['state']['platform_state'])
         self.cli('stop')
         self.cli('stop-logging')
-        wait_for(lambda: self.cli('status')['logging']['fast']['phase'] == 'complete')
+        wait_complete(lambda: self.cli("status"))
         self.assertTrue((self.run_dir/'data.parquet').exists())
 
     def test_explicit_platform_state_feedback(self):
@@ -903,7 +921,7 @@ class IntegrationTest(unittest.TestCase):
         self.cli("start-logging")
         wait_for(lambda: list(self.run_dir.glob("data-part-*.parquet")))
         self.cli("stop-logging")
-        wait_for(lambda: self.cli("status")["logging"]["fast"]["phase"] == "complete")
+        wait_complete(lambda: self.cli("status"))
         import csv
         with (self.run_dir/"data.csv").open() as f:
             self.assertEqual(next(csv.reader(f)), ["time","status","JSO_MY_NEW_OBSERVABLE"])
@@ -972,21 +990,21 @@ class IntegrationTest(unittest.TestCase):
         self.cli("start-logging-slow-data")
         wait_for(lambda: list(self.run_dir.glob("data-part-*.parquet")))
         self.cli("stop-logging")
-        wait_for(lambda: self.cli("status")["logging"]["fast"]["phase"] == "complete")
+        wait_complete(lambda: self.cli("status"))
         self.assertTrue((self.run_dir/"data.csv").exists())
         self.assertEqual(self.cli("status")["logging"]["slow"]["phase"], "recording")
         with self.assertRaisesRegex(RuntimeError, "logging is active"):
             self.cli("set-observable", "ISR_Period_us", "1")
         snapshot = (self.run_dir/"data.parquet").read_bytes()
         self.cli("stop-logging-slow-data")
-        wait_for(lambda: self.cli("status")["logging"]["slow"]["phase"] == "complete")
+        wait_complete(lambda: self.cli("status"), "slow")
         with self.assertRaisesRegex(RuntimeError, "not active"):
             self.cli("stop-logging")
         self.cli("set-observable", "ISR_Period_us", "1")
         self.cli("start-logging")
         wait_for(lambda: list(self.run_dir.glob("data_0002-part-*.parquet")))
         self.cli("stop-logging")
-        wait_for(lambda: self.cli("status")["logging"]["fast"]["phase"] == "complete")
+        wait_complete(lambda: self.cli("status"))
         self.assertEqual(snapshot, (self.run_dir/"data.parquet").read_bytes())
         self.assertTrue((self.run_dir/"data_0002.parquet").exists())
         self.assertFalse((self.run_dir/"data_0002_slow_data.parquet").exists())
@@ -1013,7 +1031,7 @@ class IntegrationTest(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "logging is active"):
             self.cli("set-observable", "lifecheck", "1")
         self.cli("stop-logging-slow-data")
-        wait_for(lambda: self.cli("status")["logging"]["slow"]["phase"] == "complete")
+        wait_complete(lambda: self.cli("status"), "slow")
         self.assertFalse((self.run_dir/"data.parquet").exists())
         self.assertTrue((self.run_dir/"data_slow_data.csv").exists())
         self.cli("shutdown")
@@ -1253,7 +1271,7 @@ class IntegrationTest(unittest.TestCase):
         self.cli("start-logging")
         wait_for(lambda: self.cli("data-info", "--recording", "2")["info"]["stop"] is not None)
         self.cli("stop-logging")
-        wait_for(lambda: self.cli("status")["logging"]["fast"]["phase"] == "complete")
+        wait_complete(lambda: self.cli("status"))
         recordings = self.cli("recordings")["recordings"]
         self.assertEqual(len(recordings), 2)
         self.assertEqual(recordings[0]["error"], failure)

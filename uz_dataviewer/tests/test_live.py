@@ -345,7 +345,7 @@ def test_connect_verifies_existing_device(device, ip, port, matches):
 
 
 @pytest.mark.parametrize('script_busy', [False, True])
-def test_script_stop_discards_queued_commands_while_poll_is_blocked(script_busy):
+def test_commands_and_stop_run_while_poll_is_blocked(script_busy):
     import threading
     entered, release, stopped = threading.Event(), threading.Event(), threading.Event()
     class Client(FakeClient):
@@ -370,17 +370,52 @@ def test_script_stop_discards_queued_commands_while_poll_is_blocked(script_busy)
     try:
         controller.submit('attach', endpoint='fake')
         assert entered.wait(3)
+        # Polling is blocked in a data read; device commands are not.
         controller.submit('enable_control')
+        wait_for(lambda: ('enable_control',) in client.calls)
         workspace.send('stop')
         assert stopped.wait(2)
         assert not release.is_set()
         release.set()
-        wait_for(lambda: controller.latest().revision > 3)
-        assert client.calls == [('stop',)]
+        wait_for(lambda: controller.latest().source)
+        assert client.calls == [('enable_control',), ('stop',)]
         assert controller.commands.empty()
     finally:
         release.set()
         workspace.close()
+
+
+def test_reset_during_blocked_poll_never_publishes_previous_session():
+    import threading
+    entered, release = threading.Event(), threading.Event()
+    class Client(FakeClient):
+        block = True
+        def read_since(self, *args, **kwargs):
+            if self.block:
+                entered.set()
+                assert release.wait(5)
+            return super().read_since(*args, **kwargs)
+    client = Client()
+    controller = LiveController(lambda _: client, hz=100)
+    try:
+        controller.submit('attach', endpoint='fake')
+        assert entered.wait(3)
+        controller.submit('shutdown')
+        wait_for(lambda: ('shutdown',) in client.calls and not controller.latest().attached)
+        release.set()
+        time.sleep(.1)
+        latest = controller.latest()
+        assert latest.source is None and latest.epoch is None
+        # A later attach starts from an empty ring, not the discarded page.
+        client.block = False
+        controller.submit('attach', endpoint='fake')
+        source = wait_for(lambda: controller.latest().source)
+        assert source.metadata.rows == 30
+    finally:
+        release.set()
+        controller.close()
+    assert not controller.thread.is_alive()
+    assert not controller.poll_thread.is_alive()
 
 
 def test_stop_follows_inflight_control_and_cancels_next_command():

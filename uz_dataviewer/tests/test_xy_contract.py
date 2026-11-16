@@ -136,8 +136,9 @@ def test_async_xy_fits_and_releases_input_batches():
         assert limits[-1][0] <= 100 and limits[-1][1] > 190
         assert limits[-1][3] > 390
         # Alignment keeps one batch per input, plus a transient replacement
-        # batch while an iterator advances. Retention must stay bounded.
-        assert max(alive) <= 3
+        # batch while an iterator advances. Retention must stay bounded per
+        # job; the two XY series may be sampled by concurrent display workers.
+        assert max(alive) <= 3 * min(2, state.services.display.workers)
         assert not state.services.display.errors
     finally:
         implot.end_plot=original_end

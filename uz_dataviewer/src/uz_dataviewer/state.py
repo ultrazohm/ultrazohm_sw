@@ -236,7 +236,10 @@ class SessionData:
 class RuntimeServices:
     """Workers and pending IO owned by exactly one live AppState."""
 
-    display: Requests = field(default_factory=lambda: Requests(synchronous=runtime.IS_WEB))
+    # Several plot jobs run concurrently so one slow summary build does not block
+    # other subplots. Per-source summary locks and the shared cache are thread-safe.
+    display: Requests = field(default_factory=lambda: Requests(
+        synchronous=runtime.IS_WEB, workers=min(4, os.cpu_count() or 1)))
     analysis_jobs: Requests = field(default_factory=lambda: Requests(synchronous=runtime.IS_WEB))
     analysis_displays: dict[str, Requests] = field(default_factory=lambda: {
         name: Requests(synchronous=runtime.IS_WEB) for name in ("fft", "hist")})

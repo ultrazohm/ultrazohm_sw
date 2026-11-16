@@ -612,7 +612,7 @@ def test_session_transfer_preserves_service_ownership(app_state):
     try:
         state.replace_session(replacement)
         assert old_services.analysis_jobs.closed
-        assert not old_services.analysis_jobs.thread.is_alive()
+        assert not any(thread.is_alive() for thread in old_services.analysis_jobs.threads)
         assert state.services is new_services
         assert state.commands is commands and state.console is console
         assert state.application_marker is marker

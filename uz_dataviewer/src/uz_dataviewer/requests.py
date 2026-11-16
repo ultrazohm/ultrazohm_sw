@@ -16,17 +16,23 @@ class Job:
 
 
 class Requests:
-    """Coalescing scheduler using the shared cancellable daemon-worker lifecycle."""
-    def __init__(self, synchronous=False):
+    """Coalescing scheduler using the shared cancellable daemon-worker lifecycle.
+
+    Up to ``workers`` jobs run concurrently, so one slow job (for example a first
+    summary build) does not hold back other consumers. A slot never runs on two
+    workers at once: its replacement waits until the cancelled job has returned.
+    """
+    def __init__(self, synchronous=False, workers=1):
         self.synchronous = synchronous
+        self.workers = max(1, int(workers))
         self.condition = threading.Condition()
         self.jobs = OrderedDict()
         self.wanted = {}
         self.results = {}
         self.errors = {}
-        self.active = None
+        self.active = {}
         self.closed = False
-        self.thread = None
+        self.threads = []
 
     @property
     def pending(self):
@@ -43,18 +49,15 @@ class Requests:
                 previous = self.jobs.pop(slot, None)
                 if previous:
                     previous.cancel.set()
-                if self.active and self.active[0] == slot:
-                    self.active[1].cancel.set()
+                if slot in self.active:
+                    self.active[slot].cancel.set()
                 self.errors.pop(slot, None)
                 job = Job(key, identity, function, threading.Event())
                 if self.synchronous or immediate:
                     run_now = job
                 else:
                     self.jobs[slot] = job
-                    # A worker killed by a BaseException must not stall all later requests.
-                    if self.thread is None or not self.thread.is_alive():
-                        self.thread = threading.Thread(target=self._work, name='uz-data', daemon=True)
-                        self.thread.start()
+                    self._spawn()
                     self.condition.notify()
             if run_now is None:
                 result = self.results.get(slot)
@@ -72,6 +75,21 @@ class Requests:
                     self.errors[slot] = error
             result = self.results.get(slot)
             return result[2] if result and result[1] == identity else None
+
+    def _spawn(self):
+        """Start workers up to the limit; the caller holds the condition lock.
+
+        A worker killed by a BaseException must not stall all later requests.
+        """
+        self.threads = [thread for thread in self.threads if thread.is_alive()]
+        if len(self.threads) < min(self.workers, len(self.jobs) + len(self.active)):
+            thread = threading.Thread(target=self._work, name='uz-data', daemon=True)
+            self.threads.append(thread)
+            thread.start()
+
+    def _runnable(self):
+        """Oldest queued slot that is not still running a cancelled job."""
+        return next((slot for slot in self.jobs if slot not in self.active), None)
 
     def ready(self, slot, key):
         with self.condition:
@@ -109,17 +127,18 @@ class Requests:
         job = self.jobs.pop(slot, None)
         if job:
             job.cancel.set()
-        if self.active and self.active[0] == slot:
-            self.active[1].cancel.set()
+        if slot in self.active:
+            self.active[slot].cancel.set()
 
     def _work(self):
         while True:
             with self.condition:
-                self.condition.wait_for(lambda: self.jobs or self.closed)
+                self.condition.wait_for(lambda: self.closed or self._runnable() is not None)
                 if self.closed:
                     return
-                slot, job = self.jobs.popitem(last=False)
-                self.active = (slot, job)
+                slot = self._runnable()
+                job = self.jobs.pop(slot)
+                self.active[slot] = job
             result = None
             try:
                 check(job.cancel)
@@ -136,7 +155,10 @@ class Requests:
                         self.errors[slot] = str(exc)
             finally:
                 with self.condition:
-                    self.active = None
+                    if self.active.get(slot) is job:
+                        del self.active[slot]
+                    # A replacement for this slot may have been waiting for it.
+                    self.condition.notify_all()
                 # Do not pin the last source/analysis snapshot while the worker idles.
                 job = result = None
 
@@ -149,7 +171,9 @@ class Requests:
             self.results.clear()
             self.wanted.clear()
             self.errors.clear()
-            if self.active:
-                self.active[1].cancel.set()
+            for job in self.active.values():
+                job.cancel.set()
             self.condition.notify_all()
-        join_worker(self.thread)
+            threads = list(self.threads)
+        for thread in threads:
+            join_worker(thread)

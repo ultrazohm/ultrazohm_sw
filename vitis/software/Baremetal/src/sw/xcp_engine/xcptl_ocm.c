@@ -49,6 +49,7 @@
 #include "queue.h"
 #include "platform.h"
 #include "xcptl_cfg.h"
+#include "xcp_cfg.h" /* XCP_ADDR_EXT_ABS / XCP_ADDR_EXT_PTR */
 #include "ocm_xcp_fifo.h"
 #include "../../include/isr.h" /* UZ_PWM_FREQUENCY, Interrupt_ISR_freq_factor */
 #include <string.h>
@@ -128,6 +129,11 @@ static uint32_t gSliceCnt[XCP_R5_SLICE_COUNT] = {0u, 1u, 2u, 3u};
  *   xcp_r5_tx_oversize_drop popped segment > 255 B (must stay 0; cfg bounds it)
  *   xcp_r5_cto_sent         CTO responses handed to the OCM mailbox
  *   xcp_r5_cto_dropped      pending-CTO FIFO overflow -> response lost (bug!)
+ *   xcp_r5_cmd_oversize_drop TL frame with dlc > XCPTL_MAX_CTO_SIZE refused
+ *                           before XcpCommand (the engine asserts cmdLen <=
+ *                           MAX_CTO, i.e. abort() on the control core). The
+ *                           A53 gateway filters these too, so non-zero here
+ *                           means a gateway bug or a hostile master.
  *   xcp_r5_in_generations   command batches executed (generation handshake)
  *   xcp_r5_queue_lost       queue32 overflow between sweeps -> DAQ frames
  *                           lost at the source (raise QUEUE_SIZE or sweep
@@ -144,6 +150,7 @@ volatile uint32_t xcp_r5_cycle_count = 0u;
 volatile uint32_t xcp_r5_tx_oversize_drop = 0u;
 volatile uint32_t xcp_r5_cto_sent = 0u;
 volatile uint32_t xcp_r5_cto_dropped = 0u;
+volatile uint32_t xcp_r5_cmd_oversize_drop = 0u;
 volatile uint32_t xcp_r5_in_generations = 0u;
 volatile uint32_t xcp_r5_queue_lost = 0u;
 volatile uint32_t xcp_r5_sweep_count = 0u;
@@ -174,7 +181,16 @@ static uint32_t gInGenDone = 0u;
  * (e.g. an A53 symbol) raises an R5 data abort inside ISR_Control and kills
  * the motor control. Allow only memory the R5 actually maps (cf. lscript.ld). */
 static uint8_t xcp_r5_check_memory(uint8_t ext, uint32_t addr, uint8_t size) {
-    (void)ext; /* only ABS (0x00) reaches the engine's direct memory path */
+    /* Only absolute addressing maps to R5 memory: ext 0 (ABS, the A2L's mode;
+     * DAQ entries are checked with it at START_STOP_SYNCH) and 0xFE (PTR, what
+     * SET_MTA converts ABS into before the engine asks). Every other extension
+     * (APP 1, DYN 2..15) must be refused HERE for DAQ entries: the engine would
+     * otherwise start the list and index its 2-entry base-pointer array with
+     * the extension inside ISR_Control (out-of-bounds read -> garbage source
+     * pointer -> data abort in the control ISR). */
+    if (ext != XCP_ADDR_EXT_ABS && ext != XCP_ADDR_EXT_PTR) {
+        return CRC_ACCESS_DENIED;
+    }
     const uint64_t a = addr;
     const uint64_t end = a + size; /* u64: no wrap at the top of OCM */
     if (end <= 0x00010000u) return CRC_CMD_OK;                        /* ATCM  */
@@ -324,8 +340,15 @@ void xcp_r5_poll(void) {
                     (uint16_t)(off + XCPTL_TRANSPORT_LAYER_HEADER_SIZE + dlc) > (uint16_t)len) {
                     break; /* padding or malformed frame: stop parsing this record */
                 }
-                XcpCommand((const uint32_t *)(const void *)(data + off + XCPTL_TRANSPORT_LAYER_HEADER_SIZE),
-                           (uint8_t)dlc);
+                if (dlc > XCPTL_MAX_CTO_SIZE) {
+                    /* Transport-layer contract (upstream xcpethtl.c does the
+                     * same): the engine asserts cmdLen <= XCPTL_MAX_CTO_SIZE
+                     * and a bigger frame would abort() the control core. */
+                    xcp_r5_cmd_oversize_drop++;
+                } else {
+                    XcpCommand((const uint32_t *)(const void *)(data + off + XCPTL_TRANSPORT_LAYER_HEADER_SIZE),
+                               (uint8_t)dlc);
+                }
                 off = (uint16_t)(off + XCPTL_TRANSPORT_LAYER_HEADER_SIZE + dlc);
             }
         }

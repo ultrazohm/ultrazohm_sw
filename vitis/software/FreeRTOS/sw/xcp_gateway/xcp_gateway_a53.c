@@ -47,6 +47,10 @@
 #define XCP_GW_FRAME_MAX     256  /* FIFO records are uint8_t-len capped        */
 #define XCP_TL_HEADER_LEN    4    /* [dlc:u16][ctr:u16]                          */
 #define XCP_PID_CTO_MIN      0xFCu
+/* Largest XCP command the R5 engine accepts (XCPTL_MAX_CTO_SIZE, set by
+ * xcplib_r5_cfg.h). The engine asserts on anything bigger, so a datagram
+ * carrying such a frame is refused here already (see xcp_gw_rx_frames_valid). */
+#define XCP_GW_MAX_CTO_SIZE  248u
 
 /* DAQ (DTO) queue: deep on purpose — it is the burst absorber between the
  * 10–20 kHz OCM drain and the UDP send rate, and measurement gaps hurt more
@@ -121,6 +125,10 @@ static volatile uint32_t  gMasterGen = 0;    /* bumped on endpoint change       
  *   xcp_gw_in_batches_sent     command batches (generations) offered to the R5
  *   xcp_gw_in_retry_cycles     IPIs spent re-offering an unconsumed batch
  *   xcp_gw_tx_malformed_drop   record failed the TL-frame walk on TX (must stay 0)
+ *   xcp_gw_rx_malformed_drop   datagram failed the TL-frame walk on RX (bad
+ *                              dlc chain or a frame > XCP_GW_MAX_CTO_SIZE) and
+ *                              was not forwarded to the R5. CANape never sends
+ *                              these; non-zero = port scanner / broken client.
  *   xcp_gw_sendto_err          transient lwip_sendto() failures (pbuf/TX-BD
  *                              exhaustion under burst load; observed 74x in a
  *                              60 s 320 Mbit/s run). Retried, so err alone is
@@ -139,6 +147,7 @@ volatile uint32_t xcp_gw_ctoq_dropped = 0;
 volatile uint32_t xcp_gw_in_batches_sent = 0;
 volatile uint32_t xcp_gw_in_retry_cycles = 0;
 volatile uint32_t xcp_gw_tx_malformed_drop = 0;
+volatile uint32_t xcp_gw_rx_malformed_drop = 0;
 volatile uint32_t xcp_gw_sendto_err = 0;
 volatile uint32_t xcp_gw_sendto_drop = 0;
 
@@ -342,6 +351,23 @@ void xcp_gateway_a53_on_ipi(BaseType_t *pxHigherPriorityTaskWoken) {
  * RX task: receive XCP-on-UDP datagrams from CANape, remember the master
  * endpoint, and hand the frame to the IPI ISR via gRxQueue.
  *------------------------------------------------------------------------*/
+/* Walk the packed TL frames of a received datagram: every frame must have
+ * 1 <= dlc <= XCP_GW_MAX_CTO_SIZE and the chain must end exactly at the
+ * datagram end (the same strictness as the TX restamp walk). The R5 parser
+ * checks the bound again - this keeps junk from occupying a command
+ * generation and from hijacking the master endpoint. */
+static int xcp_gw_rx_frames_valid(const uint8_t *d, uint16_t n) {
+    uint16_t off = 0;
+    while ((uint16_t)(off + XCP_TL_HEADER_LEN) <= n) {
+        uint16_t dlc = (uint16_t)(d[off] | ((uint16_t)d[off + 1] << 8));
+        if (dlc == 0u || dlc > XCP_GW_MAX_CTO_SIZE || (uint32_t)off + XCP_TL_HEADER_LEN + dlc > n) {
+            return 0;
+        }
+        off = (uint16_t)(off + XCP_TL_HEADER_LEN + dlc);
+    }
+    return off == n;
+}
+
 static void xcp_gw_rx_task(void *arg) {
     (void)arg;
     static xcp_gw_frame_t f; /* only this task uses it */
@@ -352,6 +378,10 @@ static void xcp_gw_rx_task(void *arg) {
         int n = lwip_recvfrom(gSock, f.data, sizeof(f.data), 0, (struct sockaddr *)&src, &slen);
         if (n <= 0 || n > 255) {
             continue; /* FIFO records are u8-length capped; oversize would alias to len 0 */
+        }
+        if (!xcp_gw_rx_frames_valid(f.data, (uint16_t)n)) {
+            xcp_gw_rx_malformed_drop++; /* before master adoption: junk must not start a session */
+            continue;
         }
         if (!gMasterValid ||
             src.sin_addr.s_addr != gMaster.sin_addr.s_addr ||

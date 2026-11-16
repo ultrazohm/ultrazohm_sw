@@ -194,13 +194,18 @@ Inspect these via the JTAG debugger (the R5 keeps stats):
 - **Exchange-protocol counters (CP7, the hedrive validation set).** R5
   (`xcptl_ocm.c`): `xcp_r5_cto_sent` (responses handed to the mailbox),
   `xcp_r5_cto_dropped` (pending-FIFO overflow — must stay 0),
-  `xcp_r5_in_generations` (command batches executed). A53
+  `xcp_r5_in_generations` (command batches executed),
+  `xcp_r5_cmd_oversize_drop` (command frame with dlc > 248 refused before
+  the engine — must stay 0, the gateway filters these too). A53
   (`xcp_gateway_a53.c`): `xcp_gw_ocm_torn` / `xcp_gw_ocm_skipped_writing`
   (seqlock collisions — occasional is fine, monotonic climb at idle is not),
   `xcp_gw_ocm_cycles_missed` (R5 cycles no IPI ever read = real DAQ gaps),
   `xcp_gw_ocm_capped` (per-IPI drain cap hit), `xcp_gw_txq_dropped` (UDP
   drain slower than DAQ production — plain overload), `xcp_gw_ctoq_dropped` +
-  `xcp_gw_tx_malformed_drop` (both must stay 0), `xcp_gw_in_batches_sent` /
+  `xcp_gw_tx_malformed_drop` (both must stay 0), `xcp_gw_rx_malformed_drop`
+  (datagram with a broken TL-frame chain or a frame > 248 B dropped on
+  receive — CANape never sends these; non-zero = scanner / broken client),
+  `xcp_gw_in_batches_sent` /
   `xcp_gw_in_retry_cycles` (command handshake at work; retries > 0 are
   normal under load, they are exactly the cycles that would have LOST the
   command before CP7), `xcp_gw_sendto_err` (transient lwip_sendto failures —

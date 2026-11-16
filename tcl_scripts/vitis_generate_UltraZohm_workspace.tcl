@@ -223,9 +223,6 @@ proc vitis_main {} {
   # but in Vitis in the compiler settings, it is listed under miscellaneous instead of directories
   app config -name Baremetal compiler-misc -I"$SHARED_FOLDER"
   app config -name FreeRTOS compiler-misc -I"$SHARED_FOLDER"
-  # XCPlite vendored sources: make xcplib_uz_cfg.h and xcp_server_uz.h findable
-  # without path prefix from files that include them with a bare filename.
-  app config -name FreeRTOS compiler-misc -I"$filename_FreeRTOS/sw/xcp_lite"
 
   # set optimization level
   app config -name FreeRTOS -set compiler-optimization {Optimize most (-O3)}

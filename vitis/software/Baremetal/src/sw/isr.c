@@ -20,9 +20,6 @@
 #include <math.h>
 #include <xtmrctr.h>
 #include "../include/javascope.h"
-#if XCP_MEAS_IMAGE_ENABLE
-#include "xcp_meas_r5.h"
-#endif
 #if XCP_ENGINE_R5_ENABLE
 #include "xcp_engine/xcp_r5.h"
 #endif
@@ -83,12 +80,6 @@ void ISR_Control(void *data)
      * high control rates (100 kHz target). */
     xcp_r5_event();
 #else
-#if XCP_MEAS_IMAGE_ENABLE
-    /* Phase 3: write R5 measurements into the OCM MEAS image so the A53 can
-     * DAQ them via XCPlite.  Must run before JavaScope_update() because that
-     * call triggers the IPI which wakes the A53 IPI ISR. */
-    xcp_meas_r5_update(&Global_Data);
-#endif
     JavaScope_update(&Global_Data);
 #endif
     // Read the timer value at the very end of the ISR to minimize measurement error

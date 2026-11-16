@@ -111,12 +111,14 @@ XCP has no session security here. Acceptable on the isolated lab bench only.
 Mitigations if ever needed: bind gateway to a dedicated interface/subnet,
 pin the master IP after first CONNECT, or XCP seed&key.
 
-## 4. Fallback honesty
+## 4. Fallback
 
-If Option Z fails on hardware, note that the "validated" curated fallback
-(`LOGGING_PATH_XCP_LITE`, A53 XCPlite server + MEAS image) **also never ran on
-hardware** — it is compile-validated only. The only hardware-proven fallback
-is `LOGGING_PATH_JAVASCOPE`.
+The only fallback is `LOGGING_PATH_JAVASCOPE` (with `XCP_ENGINE_R5_ENABLE 0`),
+the hardware-proven logger. The A53-hosted XCPlite server with the curated
+eight-signal MEAS image (`LOGGING_PATH_XCP_LITE`) never ran on hardware and was
+removed on 2026-11-16 (last present at commit c51d06c): it carried a second,
+older copy of the engine (upstream V2.1.1) that would have needed its own port
+on every upgrade.
 
 ## 4b. Vendored XCPlite version (upgraded 2026-11-16)
 
@@ -161,11 +163,9 @@ upgrade — the list is also in the session memory of the coding agent):
   `XCP_CHECKSUM_MAX_SIZE` cap.
 - `queue32.c`: `packets_lost` read/reset under the queue lock.
 
-Not upgraded: the A53 **fallback** XCPlite server copy in
-`vitis/software/FreeRTOS/sw/xcp_lite/` (`LOGGING_PATH_XCPLITE_A53`, not the
-Option Z gateway) is still the untouched upstream V2.1.0. Upstream now uses
-`queue32m.c`, `sockets.c` and a split `platform.c` for FreeRTOS, so that
-copy needs its own port; it is not compiled into the Option Z data path.
+The A53 no longer carries an XCPlite copy of its own (the fallback server in
+`vitis/software/FreeRTOS/sw/xcp_lite/` was removed on 2026-11-16, see §4);
+the R5 engine is the only vendored XCPlite tree.
 
 The upgrade is compile-validated only (armr5 syntax + object build, external
 symbols unchanged: libc, `Xil_DCacheFlushRange`, `uz_SystemTime`); it has

@@ -3,7 +3,7 @@
 Option Z is **fully wired and both apps build green**, but it has **not run on
 hardware** — the integration was done "assume it works". Test it incrementally:
 each step isolates one layer so a failure points at a specific place. If you get
-stuck, the **fallback** (bottom) returns you to the validated curated path.
+stuck, the **fallback** (bottom) returns you to JavaScope.
 
 > **2026-07-04 hardening pass (pre-hardware audit).** A code audit of the whole
 > untested path found and fixed 8 defects before this test plan was ever run:
@@ -49,7 +49,7 @@ stuck, the **fallback** (bottom) returns you to the validated curated path.
 |------|------|-------|---------|
 | `XCP_ENGINE_R5_ENABLE` | `Baremetal/src/defines.h` | **1** | R5 runs the XCPlite engine |
 | `LOGGING_PATH_XCP_R5_GATEWAY` | `FreeRTOS/defines.h` | **1** | A53 runs the UDP⇄OCM gateway |
-| `LOGGING_PATH_XCP_LITE` / `_JAVASCOPE` | `FreeRTOS/defines.h` | 0 | (off) |
+| `LOGGING_PATH_JAVASCOPE` | `FreeRTOS/defines.h` | 0 | (off) |
 
 Data path: `CANape/xcp_poll ⇄ UDP:5556 ⇄ A53 rx/tx tasks ⇄ queues ⇄ APU_IPI_ISR
 ⇄ OCM FIFO ⇄ R5 XcpCommand/XcpEvent` (engine, identity addressing). OCM regions:
@@ -83,9 +83,8 @@ APU: XCPlite slave (UDP) at 192.168.1.233:5556
 ```
 python tools/xcp_test/xcp_poll.py --ip 192.168.1.233
 ```
-The default is now **connect-only**: CONNECT, print `MAX_CTO=248 MAX_DTO=248`,
-exit. (It no longer polls the A53 demo addresses — those are invalid on the R5
-slave and are behind `--demo` for the curated A53 build.)
+The default is **connect-only**: CONNECT, print `MAX_CTO=248 MAX_DTO=248`,
+exit.
 
 - ✅ `CONNECTED` → the whole path works: UDP → gateway → OCM → R5 engine →
   CONNECT response → OCM → gateway → UDP. This is the big one.
@@ -249,7 +248,7 @@ Inspect these via the JTAG debugger (the R5 keeps stats):
   fine, but verify `gMasterValid==1` after connecting.
 - **Cache coherency**: the FIFO uses `Xil_DCacheFlushRange`/`InvalidateRange`
   around the sweep. If reads look stale/torn, check the OCM region is mapped the
-  same way the curated MEAS image is (it works, so this should too).
+  same way the JavaScope bank (`MEM_SHARED_START_OCM_BANK_3_JAVASCOPE`) is.
 - **Endianness/framing**: a TL frame is `[dlc:u16 LE][ctr:u16 LE][packet]`; the
   FIFO prepends a `u32` length. The A53 forwards the TL frame verbatim as the UDP
   payload. If CANape rejects responses, dump the bytes.
@@ -276,12 +275,14 @@ Inspect these via the JTAG debugger (the R5 keeps stats):
   adapter had real connection boundaries; UDP does not). Harmless in
   practice — masters ignore unsolicited responses before a request.
 
-## Fallback to the validated curated path
+## Fallback to JavaScope
 
-If Option Z misbehaves and you want the known-good demo back, set:
+If Option Z misbehaves and you want the hardware-proven logger back, set:
 - `Baremetal/src/defines.h`: `XCP_ENGINE_R5_ENABLE 0`
-- `FreeRTOS/defines.h`: `LOGGING_PATH_XCP_R5_GATEWAY 0`, `LOGGING_PATH_XCP_LITE 1`
+- `FreeRTOS/defines.h`: `LOGGING_PATH_XCP_R5_GATEWAY 0`, `LOGGING_PATH_JAVASCOPE 1`
 
-Rebuild + reflash → the curated A53 path (Phases 0/1/3, the ISR-timing demo)
-runs exactly as before. These are independent compile-time modes; both build
-green.
+Rebuild + reflash both apps → JavaScope (TCP) runs exactly as on `develop`.
+These are independent compile-time modes; both build green. The earlier
+A53-hosted XCPlite server with the curated eight-signal MEAS image
+(`LOGGING_PATH_XCP_LITE`, "Phases 0/1/3") was removed on 2026-11-16; it is in
+git history up to commit c51d06c if ever needed.

@@ -29,9 +29,6 @@
 #include "defines.h"
 #include "include/isr.h"
 
-#if LOGGING_PATH_XCP_LITE
-#include "sw/xcp_lite/xcp_server_uz.h"
-#endif
 #if LOGGING_PATH_XCP_R5_GATEWAY
 #include "sw/xcp_gateway/xcp_gateway_a53.h"
 #endif
@@ -284,9 +281,6 @@ void network_bringup_thread(void *p)
     sys_thread_new("js_socket_manager", javascope_socket_manager_thread, 0,
 			THREAD_STACKSIZE,
 			THREAD_PRIO_JAVASCOPE_SOCKET_MANAGER);
-#elif LOGGING_PATH_XCP_LITE
-    print_xcp_app_header(&(server_netif.ip_addr));
-    xcp_server_uz_start();
 #elif LOGGING_PATH_XCP_R5_GATEWAY
     print_xcp_app_header(&(server_netif.ip_addr));
     {
@@ -465,9 +459,6 @@ int main_thread()
 	sys_thread_new("js_socket_manager", javascope_socket_manager_thread, 0,
 			THREAD_STACKSIZE,
 			THREAD_PRIO_JAVASCOPE_SOCKET_MANAGER);
-#elif LOGGING_PATH_XCP_LITE
-	print_xcp_app_header(&(server_netif.ip_addr));
-	xcp_server_uz_start();
 #elif LOGGING_PATH_XCP_R5_GATEWAY
 	print_xcp_app_header(&(server_netif.ip_addr));
 	{

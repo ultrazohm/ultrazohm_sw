@@ -40,7 +40,7 @@
 // (command-line macro quoting in the .cproject is fragile), so we hard-select
 // here based on ARMR5: the Baremetal R5 build passes -DARMR5 (=> Option Z
 // bare-metal engine), the A53 FreeRTOS build does not (=> _FREE_RTOS).
-// Only xcp_lite/xcp_engine sources include platform.h, so this does not affect
+// Only the xcp_engine sources include platform.h, so this does not affect
 // the rest of either app.
 #if defined(ARMR5)
 #ifndef _BAREMETAL

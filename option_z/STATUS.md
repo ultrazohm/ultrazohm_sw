@@ -3,10 +3,11 @@
 Goal: run XCPlite's **protocol engine on the R5** (the control core) with the A53
 as an Ethernet gateway — the `uz_sw_xcp_hedrive_andi` architecture, but with
 **MIT XCPlite** instead of the non-redistributable XCP Basic. This gives
-**arbitrary-address** measurement + calibration, which the A53-image approach
-(Phases 0/1/3, already working) cannot.
-
-See `XCPLITE_DEMO_PLAN.md` → "Option Z" for the rationale and milestones.
+**arbitrary-address** measurement + calibration, which the earlier A53-image
+approach (a curated eight-signal MEAS image served by an XCPlite copy on the
+A53) could not. That A53-hosted path and its plan document
+(`XCPLITE_DEMO_PLAN.md`, which also holds the Option Z rationale) were removed
+on 2026-11-16; both are in git history up to commit c51d06c.
 
 ## HARDWARE VALIDATED (2026-07-10/11)
 

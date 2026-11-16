@@ -1,42 +1,36 @@
 #!/usr/bin/env python3
 """
-xcp_poll.py - dead-simple XCP-over-UDP test client for the UltraZohm XCPlite slave.
+xcp_poll.py - dead-simple XCP-over-UDP test client for the UltraZohm Option Z
+slave (XCPlite engine on the R5, A53 UDP<->OCM gateway).
 
 Purpose
 -------
-Verify the XCPlite slave on the A53 works END TO END *without CANape and without
-an A2L file*.  It opens a UDP socket, sends an XCP CONNECT, then repeatedly reads
-the Phase-1 demo variables (a 1 kHz counter and a 1 Hz sine) straight out of the
-target's memory with the XCP SHORT_UPLOAD command, and prints them.
-
-If you see the counter climbing and the sine swinging between -1 and +1, the whole
-stack is proven: lwIP UDP + XCP transport + protocol engine + 1 us clock + memory
-access on the real Vitis toolchain.
+Verify the XCP path END TO END *without CANape and without an A2L file*: open a
+UDP socket, send an XCP CONNECT, then read any R5 variable by name (resolved
+from Baremetal.elf) with SHORT_UPLOAD, stream one through a real DAQ list, or
+run the DAQ throughput stress and print the ECU-side loss counters afterwards.
 
 Requirements
 ------------
 - Python 3.7+ (standard library only -- no pip installs).
-- The UltraZohm flashed with the FreeRTOS app built from THIS branch
-  (LOGGING_PATH_XCP_LITE = 1) and reachable over the network.
-- You need the board's IP address (see TESTING.md for how to find it).
+- Both apps flashed from this branch: Baremetal with XCP_ENGINE_R5_ENABLE 1 and
+  FreeRTOS with LOGGING_PATH_XCP_R5_GATEWAY 1, board reachable over the network.
+- The board's IP address: the A53 prints the XCP endpoint on the serial console
+  once the network is up (see option_z/TEST_PLAN.md).
 
 Usage
 -----
     python xcp_poll.py --ip 192.168.1.42                # connectivity: CONNECT only
     python xcp_poll.py --ip 192.168.1.42 --watch xcp_r5_cycle_count:u32
-    python xcp_poll.py --ip 192.168.1.42 --daq          # DAQ smoke test (Option Z)
+    python xcp_poll.py --ip 192.168.1.42 --daq          # DAQ smoke test
     python xcp_poll.py --ip 192.168.1.42 --stress       # DAQ throughput stress
     python xcp_poll.py --ip 192.168.1.42 --stress --stress-bytes 4000 --daq-seconds 60
-    python xcp_poll.py --ip 192.168.1.42 --demo         # A53 demo counter/sine poll
 
 With no mode flag it only CONNECTs and prints MAX_CTO/MAX_DTO -- that already
-proves UDP + gateway + OCM + engine round-trip. The old counter/sine poll is
-behind --demo because its A53 addresses are NOT valid on the Option Z R5 slave.
+proves the UDP + gateway + OCM + engine round trip.
 
-Variable addresses are resolved automatically from the freshly built ELF via the
-Vitis 'nm' tool.  If that lookup fails (e.g. you run this on a PC without Vitis),
-it falls back to the addresses baked in below -- which are only valid for the
-build that produced them, so rebuild => re-resolve.
+Symbol names are resolved from the freshly built R5 ELF with the Vitis 'nm'
+tool (--elf / --nm to override); an address can also be given as 0xADDR.
 """
 
 import argparse
@@ -62,30 +56,13 @@ PID_SERV = 0xFC  # service request packet (async, e.g. SERV_TEXT)
 R5_EVENT_NAMES = {0: "DAQ_R5", 1: "daq_1ms", 2: "daq_10ms",
                   3: "daq_100ms", 4: "daq_1s"}
 
-# --- Defaults baked in from the build that created this file ----------------
-# (FreeRTOS.elf, feature/xcp_lite). Override with --*-addr or let --elf resolve.
-DEFAULT_ADDR = {
-    "xcp_demo_counter": 0x002002B4,        # volatile uint32_t, 1 kHz up-counter
-    "xcp_demo_sine": 0x002002B8,           # volatile float, 1 Hz sine [-1, +1]
-    "xcp_meas_local_timestamp_us": 0x00200288,  # uint32_t (Phase 3 image ts)
-    "xcp_meas_local_signal": 0x00200290,   # float[8] (Phase 3 image signals)
-}
-
-# --- Phase 3 R5->A53 MEAS image in OCM (from APU_RPU_shared.h) ---------------
-# bank1 base 0xFFFD0000 + 0x100; struct = { u32 seq; u32 timestamp_us; f32 sig[8] }
-OCM_IMAGE_BASE = 0xFFFD0100
-OCM_SEQ_ADDR = OCM_IMAGE_BASE + 0x0
-OCM_TS_ADDR = OCM_IMAGE_BASE + 0x4
-OCM_SIG0_ADDR = OCM_IMAGE_BASE + 0x8
-
 # Repo-relative default locations (this file lives in <repo>/tools/xcp_test/).
 _REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-DEFAULT_ELF = os.path.join(
-    _REPO, "vitis", "workspace", "FreeRTOS", "Debug", "FreeRTOS.elf")
 DEFAULT_ELF_R5 = os.path.join(
     _REPO, "vitis", "workspace", "Baremetal", "Debug", "Baremetal.elf")
-DEFAULT_NM = r"C:\Xilinx\Vitis\2022.2\gnu\aarch64\nt\aarch64-none\bin\aarch64-none-elf-nm.exe"
+DEFAULT_ELF = DEFAULT_ELF_R5  # the Option Z slave is the R5: its ELF holds the symbols
 DEFAULT_NM_R5 = r"C:\Xilinx\Vitis\2022.2\gnu\armr5\nt\gcc-arm-none-eabi\bin\armr5-none-eabi-nm.exe"
+DEFAULT_NM = DEFAULT_NM_R5
 
 
 def iter_tl_frames(data):
@@ -98,27 +75,6 @@ def iter_tl_frames(data):
             break  # padding / malformed tail
         yield data[off + 4: off + 4 + dlc]
         off += 4 + dlc
-
-
-def resolve_addresses(elf_path, nm_path):
-    """Return {symbol: address} read from the ELF via nm, or {} on failure."""
-    if not (elf_path and os.path.isfile(elf_path)):
-        return {}
-    nm = nm_path if (nm_path and os.path.isfile(nm_path)) else "nm"
-    try:
-        out = subprocess.check_output([nm, elf_path], text=True, stderr=subprocess.DEVNULL)
-    except (OSError, subprocess.CalledProcessError):
-        return {}
-    found = {}
-    wanted = set(DEFAULT_ADDR)
-    for line in out.splitlines():
-        parts = line.split()
-        if len(parts) >= 3 and parts[2] in wanted:
-            try:
-                found[parts[2]] = int(parts[0], 16)
-            except ValueError:
-                pass
-    return found
 
 
 WATCH_TYPES = {  # name -> (struct fmt, size bytes)
@@ -364,8 +320,8 @@ def run_daq(xcp, item, seconds, event=0):
 
 
 # R5 diagnostic counters sampled before/after a stress run (all u32; resolved
-# from Baremetal.elf). The A53 gateway counters (xcp_gw_*) are NOT readable
-# through the R5 slave -- check those via JTAG.
+# from Baremetal.elf). The A53 gateway counters are read through their OCM
+# mirror (A53_DIAG_COUNTERS below).
 R5_DIAG_COUNTERS = [
     "xcp_r5_cycle_count", "ocm_xcp_w_dropped", "ocm_xcp_r_overrun",
     "xcp_r5_cto_sent", "xcp_r5_cto_dropped", "xcp_r5_in_generations",
@@ -599,17 +555,9 @@ def main():
     ap.add_argument("--ip", required=True, help="UltraZohm board IP address")
     ap.add_argument("--port", type=int, default=5556, help="XCP UDP port (default 5556)")
     ap.add_argument("--interval", type=float, default=0.2, help="poll period in seconds (default 0.2)")
-    ap.add_argument("--elf", default=DEFAULT_ELF, help="ELF to resolve symbol addresses from "
-                    "(unresolved --watch names also try Baremetal.elf automatically)")
-    ap.add_argument("--nm", default=DEFAULT_NM, help="path to nm (armr5 nm tried as fallback)")
-    ap.add_argument("--counter-addr", type=lambda x: int(x, 0), default=None)
-    ap.add_argument("--sine-addr", type=lambda x: int(x, 0), default=None)
-    ap.add_argument("--demo", action="store_true",
-                    help="poll the A53 Phase-1 demo counter/sine (LOGGING_PATH_XCP_LITE "
-                         "builds only -- these addresses are invalid on the R5 slave!)")
-    ap.add_argument("--diag", action="store_true",
-                    help="Phase 3 diagnostic: read the R5 MEAS image in OCM directly "
-                         "(seq/ts @ 0xFFFD0100) and the A53-local copy, side by side")
+    ap.add_argument("--elf", default=DEFAULT_ELF, help="ELF to resolve symbol names from "
+                    "(default: the workspace Baremetal.elf, the Option Z R5 slave)")
+    ap.add_argument("--nm", default=DEFAULT_NM, help="path to nm (default: the Vitis armr5 nm)")
     ap.add_argument("--watch", action="append", default=[], metavar="NAME|0xADDR[:TYPE]",
                     help="arbitrary read (repeatable). TYPE in u8/u16/u32/i32/f32/f64 "
                          "(default f32). NAME resolved from --elf, falling back to "
@@ -674,56 +622,6 @@ def main():
                     v = struct.unpack(fmt, xcp.short_upload(a, size))[0]
                     vals.append(("%-16.4f" if fmt in ("<f", "<d") else "%-16d") % v)
                 print("    " + "  ".join(vals))
-                time.sleep(args.interval)
-
-        if args.diag or args.demo:
-            # These modes read A53 (FreeRTOS.elf) demo addresses -- only valid
-            # against the A53 XCPlite server (LOGGING_PATH_XCP_LITE builds).
-            addr = dict(DEFAULT_ADDR)
-            resolved = resolve_addresses(args.elf, args.nm)
-            if resolved:
-                addr.update(resolved)
-                print("[i] addresses resolved from ELF: %s" % os.path.basename(args.elf))
-            else:
-                print("[!] could not resolve from ELF; using baked-in addresses "
-                      "(valid only for the matching build)")
-            if args.counter_addr is not None:
-                addr["xcp_demo_counter"] = args.counter_addr
-            if args.sine_addr is not None:
-                addr["xcp_demo_sine"] = args.sine_addr
-
-        if args.diag:
-            # Phase 3 fault localization. Read the R5 image in OCM directly, plus
-            # the A53-local copy the IPI handler maintains.
-            #   raw_seq/raw_ts advancing  -> R5 IS writing the OCM image
-            #   local_ts == raw_ts        -> A53 IPI handler copies it correctly
-            #   raw_seq == 0 (static)     -> R5 not writing (ISR_Control idle /
-            #                                stale R5 build / XCP_MEAS_IMAGE_ENABLE=0)
-            #   raw advancing but local_ts == 0 -> IPI not reaching A53 / copy path
-            print("    OCM image @ 0x%08X (seq/ts) + A53-local copy -- Ctrl+C to stop\n" % OCM_IMAGE_BASE)
-            print("    (sig0 = ISR exec time us, sig1 = ISR period us)\n")
-            print("    %-12s  %-12s  %-10s  %-10s  %-12s" %
-                  ("raw_seq", "raw_ts_us", "isr_exec", "isr_period", "local_ts_us"))
-            while True:
-                raw_seq = struct.unpack("<I", xcp.short_upload(OCM_SEQ_ADDR, 4))[0]
-                raw_ts = struct.unpack("<I", xcp.short_upload(OCM_TS_ADDR, 4))[0]
-                sig0 = struct.unpack("<f", xcp.short_upload(OCM_SIG0_ADDR, 4))[0]
-                sig1 = struct.unpack("<f", xcp.short_upload(OCM_SIG0_ADDR + 4, 4))[0]
-                local_ts = struct.unpack("<I", xcp.short_upload(addr["xcp_meas_local_timestamp_us"], 4))[0]
-                print("    %-12d  %-12d  %-10.3f  %-10.3f  %-12d" %
-                      (raw_seq, raw_ts, sig0, sig1, local_ts))
-                time.sleep(args.interval)
-
-        if args.demo:
-            print("[i] counter @ 0x%08X   sine @ 0x%08X" %
-                  (addr["xcp_demo_counter"], addr["xcp_demo_sine"]))
-            print("    polling -- Ctrl+C to stop\n")
-            print("    %-12s  %-12s  %-14s" % ("counter", "sine", "ts_us"))
-            while True:
-                counter = struct.unpack("<I", xcp.short_upload(addr["xcp_demo_counter"], 4))[0]
-                sine = struct.unpack("<f", xcp.short_upload(addr["xcp_demo_sine"], 4))[0]
-                ts = struct.unpack("<I", xcp.short_upload(addr["xcp_meas_local_timestamp_us"], 4))[0]
-                print("    %-12d  %-12.4f  %-14d" % (counter, sine, ts))
                 time.sleep(args.interval)
 
         # No mode flag: connectivity test only (already proved the full path:

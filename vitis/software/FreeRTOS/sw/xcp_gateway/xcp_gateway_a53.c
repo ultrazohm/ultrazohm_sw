@@ -38,13 +38,11 @@
 #include "semphr.h"
 #include "lwip/sockets.h"
 #include "lwip/sys.h"   /* sys_thread_new */
+#include "xcp_gateway_a53.h"
 #include "ocm_xcp_fifo.h"
 #include <string.h>
 #include <stdint.h>
 
-#ifndef XCP_GATEWAY_UDP_PORT
-#define XCP_GATEWAY_UDP_PORT 5556
-#endif
 #define XCP_GW_FRAME_MAX     256  /* FIFO records are uint8_t-len capped        */
 #define XCP_TL_HEADER_LEN    4    /* [dlc:u16][ctr:u16]                          */
 #define XCP_PID_CTO_MIN      0xFCu

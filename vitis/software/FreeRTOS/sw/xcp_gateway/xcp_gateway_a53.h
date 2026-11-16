@@ -12,6 +12,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+/* UDP port the gateway listens on (CANape / xcp_poll.py connect here; printed
+ * by print_xcp_app_header() in sw/ethernet.c). */
+#ifndef XCP_GATEWAY_UDP_PORT
+#define XCP_GATEWAY_UDP_PORT 5556
+#endif
 /* Create the UDP socket, queues and rx/tx tasks. Call once the IP is up. */
 int  xcp_gateway_a53_init(uint32_t thread_stack, uint32_t thread_prio);
 /* Call from APU_IPI_ISR under the gateway mode (ISR context: OCM + queues). */

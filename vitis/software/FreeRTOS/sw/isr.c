@@ -24,9 +24,6 @@
 #include "../defines.h"
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
-#if LOGGING_PATH_XCP_LITE
-#include "xcp_lite/xcp_meas_image_a53.h"
-#endif
 #if LOGGING_PATH_XCP_R5_GATEWAY
 #include "xcp_gateway/xcp_gateway_a53.h"
 #endif
@@ -150,13 +147,6 @@ void APU_IPI_ISR(void *data)
 		i_lifecheck_apu_ipi_isr =0;
 	}
 
-#if LOGGING_PATH_XCP_LITE
-	/* Phase 3: copy the R5 MEAS image into the A53-local buffer and wake
-	 * xcp_meas_event_task.  The IPI ACK is already sent above so R5 can
-	 * continue its next control cycle while we process the snapshot here. */
-	xcp_meas_image_a53_on_ipi(&xHigherPriorityTaskWoken);
-	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-#endif
 #endif /* LOGGING_PATH_XCP_R5_GATEWAY else */
 }
 

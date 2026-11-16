@@ -111,24 +111,13 @@
 #define   Q01toF		-Q1
 
 /*===========================================================================
- * XCPlite Phase 3 — R5 MEAS image writer
- *
- * Set to 1 to enable xcp_meas_r5_update() in ISR_Control.
- * Keep 0 until the A53 side (LOGGING_PATH_XCP_LITE) is also enabled and
- * the signal mapping in xcp_meas_r5.c has been adapted to the actual
- * control variables (currents, voltages, angle, …).
- *
- * BOTH defines must be changed in tandem:
- *   vitis/software/Baremetal/src/defines.h   → XCP_MEAS_IMAGE_ENABLE
- *   vitis/software/FreeRTOS/defines.h        → LOGGING_PATH_XCP_LITE
- *=========================================================================*/
-#define XCP_MEAS_IMAGE_ENABLE   1
-
-/*===========================================================================
  * Option Z — XCPlite protocol ENGINE on the R5 (arbitrary addressing).
- * 1 = run the XCPlite engine on the R5 (replaces the MEAS-image path in
- * ISR_Control); the A53 must then select LOGGING_PATH_XCP_R5_GATEWAY.
- * 0 = curated A53 path (use XCP_MEAS_IMAGE_ENABLE above).
+ * 1 = run the XCPlite engine on the R5 (xcp_r5_event() in ISR_Control,
+ *     xcp_r5_background() in the main loop); the A53 must then select
+ *     LOGGING_PATH_XCP_R5_GATEWAY in vitis/software/FreeRTOS/defines.h.
+ * 0 = JavaScope (JavaScope_update() in ISR_Control); the A53 must then
+ *     select LOGGING_PATH_JAVASCOPE.
+ * Change both defines together and rebuild both apps.
  *=========================================================================*/
 #define XCP_ENGINE_R5_ENABLE    1
 

@@ -1,0 +1,167 @@
+.. _xcp_usage:
+
+=========
+Using XCP
+=========
+
+This page shows how to switch the UltraZohm from the JavaScope to XCP, how to check the connection without CANape, and how to get an A2L file.
+The implementation is explained in :ref:`xcp_architecture`.
+
+.. _xcp_usage_select:
+
+Select JavaScope or XCP
+-----------------------
+
+JavaScope and XCP use the same Ethernet interface and the same interrupt between the processors.
+One of them is selected at compile time, for both processors at once, in ``vitis/software/shared/uz_logging_path.h``:
+
+.. code-block:: c
+
+    /* <<< select the logging path here >>> */
+    #define UZ_LOGGING_PATH UZ_LOGGING_PATH_XCP        // or UZ_LOGGING_PATH_JAVASCOPE
+
+.. mermaid::
+    :align: center
+    :caption: What the switch selects on each processor
+
+    flowchart TD
+      sw["UZ_LOGGING_PATH<br>shared/uz_logging_path.h"]
+      sw -- "UZ_LOGGING_PATH_JAVASCOPE" --> js
+      sw -- "UZ_LOGGING_PATH_XCP" --> xcp
+      subgraph js["JavaScope"]
+        js1["R5: JavaScope_update() in ISR_Control"]
+        js2["A53: JavaScope TCP server"]
+        js3["PC: JavaScope GUI"]
+        js1 --> js2 --> js3
+      end
+      subgraph xcp["XCP"]
+        x1["R5: XCPlite engine"]
+        x2["A53: UDP gateway, port 5556"]
+        x3["PC: CANape or xcp_poll.py"]
+        x1 --> x2 --> x3
+      end
+
+After changing the switch, **build and flash both applications** (Baremetal and FreeRTOS).
+If only one of them was rebuilt, the A53 prints a warning on the serial console as soon as the network is up:
+
+.. code-block:: text
+
+    APU: Warning: logging path mismatch - APU built for XCP, RPU built for JavaScope.
+    APU:          Rebuild and flash BOTH applications (shared/uz_logging_path.h).
+
+Everything else on this page assumes ``UZ_LOGGING_PATH_XCP``.
+
+Find the IP address
+-------------------
+
+The A53 prints the XCP endpoint on the serial console (USB-UART, 115200 baud) when the network is up:
+
+.. code-block:: text
+
+    APU: XCPlite slave (UDP) at 192.168.1.233:5556
+    APU:   test with  python tools/xcp_test/xcp_poll.py --ip 192.168.1.233
+
+Check the connection without CANape
+-----------------------------------
+
+``tools/xcp_test/xcp_poll.py`` is a small XCP master that only needs Python 3.
+It resolves variable names from ``vitis/workspace/Baremetal/Debug/Baremetal.elf``.
+
+.. code-block:: bash
+
+    # connect only: proves Ethernet, gateway, OCM exchange and engine
+    python tools/xcp_test/xcp_poll.py --ip 192.168.1.233
+
+    # read any R5 variable by name (type u8, u16, u32, i32, f32 or f64)
+    python tools/xcp_test/xcp_poll.py --ip 192.168.1.233 --watch xcp_r5_cycle_count:u32
+
+    # stream one variable with a real DAQ list, on raster 1 (daq_1ms)
+    python tools/xcp_test/xcp_poll.py --ip 192.168.1.233 --daq --daq-event 1
+
+    # throughput test: 2000 bytes per control cycle for 10 s, then the loss counters
+    python tools/xcp_test/xcp_poll.py --ip 192.168.1.233 --stress
+
+The stress test prints the data rate, the gaps in the transport counter and the change of every counter of :ref:`xcp_diagnostics` during the run.
+
+A2L file
+--------
+
+The XCP master needs an A2L file that describes the variables and their addresses.
+Addresses change with every build of the Baremetal application.
+
+The repository contains a CANape project in ``CANape/UZ_XCP`` with the database ``uz.A2L``.
+CANape updates the addresses in this file from ``Baremetal.elf`` of the Vitis workspace each time the project is loaded, so nothing has to be regenerated after a build.
+Creating such a project from scratch is described in :doc:`CANape`.
+
+Two points are specific to the UltraZohm:
+
+Complete structures
+    CANape cannot import the types of ``Global_Data`` on its own, because they contain unions with anonymous members and pointers.
+    ``uz.A2L`` therefore already contains structure descriptions for ``Global_Data`` and its members ``rasv``, ``av`` and ``aa``, which can be added to a measurement window as a whole.
+    For other structures, generate the description from the ELF file and paste it into the A2L file:
+
+    .. code-block:: bash
+
+        python tools/xcp_test/dwarf_structs.py --elf vitis/workspace/Baremetal/Debug/Baremetal.elf my_struct_variable
+
+Without CANape
+    ``tools/xcp_test/gen_a2l.py`` writes a complete stand-alone A2L file for other XCP masters:
+
+    .. code-block:: bash
+
+        python tools/xcp_test/gen_a2l.py --ip 192.168.1.233 --diag --struct Global_Data.av \
+               --symbols xcp_r5_cycle_count:u32
+
+Settings that an A2L file for the UltraZohm must contain:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 40 60
+
+   * - Setting
+     - Value
+   * - Transport
+     - XCP on UDP, port 5556
+   * - ``MAX_CTO`` / ``MAX_DTO``
+     - 248 / 248
+   * - Byte order
+     - little endian (``MSB_LAST``)
+   * - Largest ODT entry
+     - 240 bytes
+   * - Identification field
+     - ``RELATIVE_WORD_ALIGNED``
+   * - Time stamp
+     - 4 bytes, 1 µs
+   * - Events
+     - 0 ``DAQ_R5``, 1 ``daq_1ms``, 2 ``daq_10ms``, 3 ``daq_100ms``, 4 ``daq_1s``
+   * - Command timeout ``T1``
+     - 5000 ms
+
+Measure
+-------
+
+Assign every signal to the slowest raster that is sufficient.
+A measurement on ``DAQ_R5`` produces one sample per control cycle; 2000 bytes per cycle at 10 kHz are already 160 Mbit/s.
+
+On hardware the path was validated with 325 Mbit/s of measurement data for one hour.
+The practical limit is usually the receive path of the PC.
+
+Calibrate
+---------
+
+A variable is calibrated by writing to its address while the application runs.
+Writes are only accepted for global variables (see the memory access rules in :ref:`xcp_architecture`).
+
+.. warning::
+   A calibration write changes a variable of the running control application immediately. The value is not checked. Only calibrate variables whose effect on your test bench you understand.
+
+To build a firmware that can only be measured, set ``XCP_R5_READ_ONLY`` to ``1`` in ``vitis/software/Baremetal/src/sw/xcp_engine/xcp_r5.h``.
+Every write is then answered with ``ERR_WRITE_PROTECTED``.
+
+Limits
+------
+
+- One XCP master at a time. The gateway serves the endpoint that sent the last valid datagram.
+- No authentication. Use XCP in an isolated lab network only.
+- XCP and JavaScope cannot run at the same time.
+- Both applications must always be built from the same state of the repository and flashed together.

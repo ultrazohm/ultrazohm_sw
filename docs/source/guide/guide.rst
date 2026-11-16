@@ -199,5 +199,8 @@ Interfaces of Cabinet
    :caption: XCP Communication
 
    XCP/XCP_intro
+   XCP/XCP_usage
+   XCP/XCP_architecture
+   XCP/XCP_diagnostics
    XCP/CANape
 

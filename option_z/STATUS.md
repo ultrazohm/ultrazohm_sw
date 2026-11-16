@@ -9,6 +9,25 @@ A53) could not. That A53-hosted path and its plan document
 (`XCPLITE_DEMO_PLAN.md`, which also holds the Option Z rationale) were removed
 on 2026-11-16; both are in git history up to commit c51d06c.
 
+User documentation: `docs/source/guide/XCP/` (usage, architecture with block
+diagrams, diagnostics). This file and its neighbours are the development log.
+
+## Changes after the last hardware run (2026-11-16, NOT yet on hardware)
+
+Everything below was syntax-checked with the Vitis toolchains only. Rebuild
+and flash both applications, then rerun TEST_PLAN tests 1 to 4.
+
+- engine upgraded to upstream XCPlite V2.3.4, review fix series
+- A53-hosted XCPlite server removed; JavaScope and Option Z remain, selected
+  by one define in `vitis/software/shared/uz_logging_path.h` (mismatch warning
+  on the A53 console)
+- OCM layout changed: consumption handshake on the XCP_OUT chain (DAQ
+  survives a late IPI read), XCP_OUT now 32 KB at `0xFFFF4000`, XCP_IN header
+  128 bytes, gateway counters mirrored into the XCP_IN header
+- gateway closes the session when the master is unreachable
+- write gate for calibration (data sections only), `XCP_R5_READ_ONLY`
+- A2L: structures for `Global_Data`, ODT entry size 240, T1 5000 ms
+
 ## HARDWARE VALIDATED (2026-07-10/11)
 
 First hardware bring-up succeeded and the endurance soak is passed:
@@ -61,8 +80,8 @@ What remains is Vitis assembly + on-hardware bring-up (see "Integration").
 | Z1 engine on armr5 | ✅ engine (`xcplite/queue32/util/xcpappl`) compiles unchanged for armr5 + `_BAREMETAL` platform branch — upstream **V2.3.4** since 2026-11-16 (was V2.1.0; see IMPROVEMENTS §4b, not yet hardware-tested) |
 | Z2 R5 transport | ✅ `xctpl_ocm.c` (engine TL + `xcp_r5_init/event/poll`) + `ocm_xcp_fifo.c` — R5 stack links to **only `uz_SystemTime`** (~36 KB) |
 | Z3 A53 gateway | ✅ `xcp_gateway_a53.c` (UDP ⇄ OCM, IPI-ISR + 2 tasks) — compiles against the A53 BSP, no unexpected unresolved syms |
-| Z1b Vitis wiring | ⏳ documented below (needs the board to bring up) |
-| Z4 arbitrary A2L | ⏳ documented below |
+| Z1b Vitis wiring | ✅ integrated in-tree and brought up on hardware (2026-07-10), see "Integration" below |
+| Z4 arbitrary A2L | ✅ `gen_a2l.py`, `dwarf_structs.py`, `xcp_poll.py --watch/--daq`; CANape project in `CANape/UZ_XCP` |
 
 Verified with `armr5-none-eabi-gcc` / `aarch64-none-elf-gcc` 11.2.0.
 

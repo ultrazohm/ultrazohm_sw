@@ -8,6 +8,11 @@ CANape is a professional measurement, calibration, and diagnostic tool for embed
 
 Universities can obtain free licenses, while licenses for industrial use are subject to a fee. Please contact your local sales representative for further information.
 
+.. note::
+   The repository already contains a CANape project with a matching A2L file in ``CANape/UZ_XCP``.
+   It updates its addresses from ``vitis/workspace/Baremetal/Debug/Baremetal.elf`` and contains the measurement rasters, the diagnostic counters and structure descriptions for ``Global_Data``.
+   See :doc:`XCP_usage` for the settings an A2L file for the UltraZohm needs. The tutorial below shows how to create such a project from scratch.
+
 Use XCP with UltraZohm
 ----------------------
 

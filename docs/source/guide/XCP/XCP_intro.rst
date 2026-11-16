@@ -14,6 +14,13 @@ A key feature of XCP is the separation of the protocol layer from the transport 
 
 The UltraZohm integrates the open-source implementation **XCPlite** (reference: https://github.com/vectorgrp/XCPlite), which provides an XCP-over-Ethernet server for high-performance measurement and calibration. XCPlite enables external XCP master tools to access measurement variables, calibrate parameters, and exchange data with the running application.
 
+On the UltraZohm the XCPlite protocol engine runs on the R5, next to the control algorithm, and the A53 forwards the XCP frames to Ethernet (UDP). Every global variable of the R5 application can therefore be measured and calibrated by its address, without changing the code. XCP is an alternative to the JavaScope and is selected at compile time.
+
+- :doc:`XCP_usage` shows how to switch from the JavaScope to XCP, test the connection and get an A2L file.
+- :doc:`XCP_architecture` explains the implementation with block diagrams.
+- :doc:`XCP_diagnostics` lists the counters and typical problems.
+- :doc:`CANape` is a step-by-step tutorial for the A2L file and the CANape project.
+
 There are several XCP master tools available:
 
 - CANape (Vector) - industry standard

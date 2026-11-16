@@ -197,7 +197,10 @@ mod tests {
         assert_eq!(retained[0].1.channels[0], snapshot[0].1.channels[0]);
         assert_eq!(snapshot[0].1.channels[1], snapshot[0].1.channels[0]);
         ring.push(10, frame(10, 5));
-        assert_eq!(ring.frames(10, 15)[0].1.channels[1], vec![10., 11., 12., 13., 14.]);
+        assert_eq!(
+            ring.frames(10, 15)[0].1.channels[1],
+            vec![10., 11., 12., 13., 14.]
+        );
     }
 
     #[test]

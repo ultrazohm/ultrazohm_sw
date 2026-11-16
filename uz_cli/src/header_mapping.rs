@@ -547,7 +547,10 @@ mod tests {
         assert_eq!(new_profile_json["javascope"], json["javascope"]);
         let roundtrip: Profile = serde_json::from_value(new_profile_json.clone()).unwrap();
         roundtrip.validate().unwrap();
-        new_profile_json.as_object_mut().unwrap().remove("javascope");
+        new_profile_json
+            .as_object_mut()
+            .unwrap()
+            .remove("javascope");
         assert_eq!(old_profile_json, new_profile_json);
         let legacy: Profile = serde_json::from_value(old_profile_json).unwrap();
         assert!(legacy.javascope.is_none());

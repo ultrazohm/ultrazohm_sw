@@ -160,7 +160,7 @@ static uint32_t gSliceCnt[XCP_R5_SLICE_COUNT] = {0u, 1u, 2u, 3u};
  *                           backlog left over; the next segment stayed in
  *                           the queue and went out first in the next sweep
  *                           (backlog, not loss). Climbing steadily = DAQ
- *                           production exceeds the ~6.4 KB per sweep the
+ *                           production exceeds the ~31 KB per sweep the
  *                           window can carry; expect xcp_r5_queue_lost next.
  *   xcp_r5_out_held         sweeps that kept the previous XCP_OUT chain in
  *                           place because the A53 had not acknowledged it
@@ -174,7 +174,7 @@ static uint32_t gSliceCnt[XCP_R5_SLICE_COUNT] = {0u, 1u, 2u, 3u};
  *   xcp_r5_sweep_gap_max_us worst observed inter-sweep gap. THE main-loop
  *                           health number: ~SWEEP_PERIOD = loop plenty fast;
  *                           >> SWEEP_PERIOD = something in the main loop
- *                           blocks (throughput caps at ~6.8 KB per gap;
+ *                           blocks (throughput caps at ~31 KB per gap;
  *                           the 32 KB queue rides out gaps <= 0.8 ms at the
  *                           320 Mbit/s worst case). Reset via debugger. */
 volatile int32_t  xcp_r5_init_result = 0x7FFFFFFF; /* "init not run yet" */

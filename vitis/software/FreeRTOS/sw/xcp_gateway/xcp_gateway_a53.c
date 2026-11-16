@@ -69,8 +69,10 @@
 #define XCP_GW_RXQ_DEPTH     64
 
 /* Bound the IPI-ISR time: max records staged OCM -> queues per interrupt.
- * XCP_OUT holds ~28 max-size records; the cap only bites on many tiny ones. */
-#define XCP_GW_DRAIN_MAX_PER_IPI 32
+ * The 32 KB XCP_OUT window holds ~123 max-size records (the R5 queue hands
+ * out accumulated segments of up to 252 B); the cap only bites on many tiny
+ * ones. A full window is rare - it means the R5 is working off a backlog. */
+#define XCP_GW_DRAIN_MAX_PER_IPI 128
 
 /* Command batch offered to the R5 per generation (bounded by the XCP_IN
  * chain: 3 x (4 + 255) + terminator < OCM_XCP_IN_CHAIN_LEN). */

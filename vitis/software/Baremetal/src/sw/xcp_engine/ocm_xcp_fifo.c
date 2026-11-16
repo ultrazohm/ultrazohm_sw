@@ -85,13 +85,22 @@
 #define OCM_XCP_APU
 #endif
 
-/* OCM regions (bank 3 upper area — unused by JavaScope, which is off under XCP).
- * XCP_OUT (R5 -> A53): DAQ + command responses. XCP_IN (A53 -> R5): commands.
- * XCP_OUT ends at 0xFFFFFE00, deliberately below the 32-bit wrap. */
-#define XCP_OUT_ADDR 0xFFFFE000u
-#define XCP_OUT_LEN  7680u
+/* OCM regions in bank 3 (0xFFFF0000, 64 KB). JavaScope, which is off under
+ * XCP, only uses the first bytes of the bank (its data struct and the boot
+ * version words), so the rest is free:
+ *   0xFFFF4000  XCP_OUT (R5 -> A53): DAQ + command responses, 32 KB
+ *   0xFFFFC000  XCP_IN  (A53 -> R5): commands, 1 KB (address is fixed in the
+ *               A2L through the gateway counter mirror - do not move)
+ * XCP_OUT was 7.5 KB at 0xFFFFE000 until 2026-11: with the consumption
+ * handshake a held sweep leaves a backlog in the R5 queue, and the window
+ * size is what bounds how fast one sweep can work that backlog off. */
+#define XCP_OUT_ADDR 0xFFFF4000u
+#define XCP_OUT_LEN  0x8000u
 #define XCP_IN_ADDR  0xFFFFC000u
 #define XCP_IN_LEN   1024u
+#if (XCP_OUT_ADDR + XCP_OUT_LEN) > XCP_IN_ADDR
+#error "XCP_OUT overlaps XCP_IN"
+#endif
 
 /* Header in front of each message chain. The control words live in the first
  * 64 bytes (one A53 cache line), so they never share a line with chain bytes:
@@ -137,6 +146,10 @@ static volatile size_t cto_frame_addr = XCP_OUT_CTO_FRAME_ADDR;
 #else
 #define XCP_WRITE_CTO_RESERVE 0u
 #endif
+
+/* R5: largest piece of the chain flushed with interrupts masked (see
+ * ocm_xcp_fifo_cache_flush_after_write). A multiple of the 32-byte line. */
+#define XCP_OUT_FLUSH_CHUNK 1024u
 
 #define XCP_FRAME_PID_OFFSET 4u   /* [0..1] len, [2..3] ctr, [4] = XCP PID */
 #define XCP_FRAME_PID_CTO_MIN 0xFCu
@@ -194,8 +207,23 @@ void ocm_xcp_fifo_cache_flush_after_write(void) {
 #ifdef OCM_XCP_RPU
     /* Publish order matters: payload first, sequence word last. A reader that
      * sees the new (even) cycle_seq must also see the chain content it
-     * describes; flushing the header before the chain would break that. */
-    Xil_DCacheFlushRange(addr_w_start, (addr_w + 4u) - addr_w_start);
+     * describes; flushing the header before the chain would break that.
+     * The chain is flushed in 1 KB pieces: Xil_DCacheFlushRange() masks
+     * IRQ/FIQ for the whole range it is given, and this runs in the main
+     * loop underneath the control ISR - one 32 KB call would hold the ISR
+     * off for the entire window. */
+    {
+        size_t a = addr_w_start;
+        const size_t end = addr_w + 4u;
+        while (a < end) {
+            size_t n = end - a;
+            if (n > XCP_OUT_FLUSH_CHUNK) {
+                n = XCP_OUT_FLUSH_CHUNK;
+            }
+            Xil_DCacheFlushRange(a, n);
+            a += n;
+        }
+    }
     cycle_seq_shadow++; /* even: cycle content is complete */
     *XCP_OUT_CYCLE_SEQ_P = cycle_seq_shadow;
     Xil_DCacheFlushRange(XCP_OUT_ADDR, XCP_OUT_HDR_CTRL_LEN);

@@ -392,11 +392,12 @@ def run_stress(xcp, args, max_dto):
     R5-side drop counters. hedrive reference: 160 Mbit/s sustained."""
     sizes = stress_geometry(args.stress_bytes, max_dto)
     per_cycle = sum(sizes)
-    # OCM ceiling: XCP_OUT chain 7360 B minus 512 B CTO reserve, each 252 B
-    # segment costs 8 B framing -> ~6500 B of DTO payload per control cycle.
-    if per_cycle > 5000:
-        print("[!] %d B/cycle is near/above the OCM per-cycle ceiling (~6 KB): "
-              "expect ocm_xcp_w_dropped to climb" % per_cycle)
+    # OCM ceiling: the 32 KB XCP_OUT window carries ~30 KB of DTO payload per
+    # 100 us exchange sweep (chain minus 512 B CTO reserve, 8 B framing per
+    # 252 B segment). Above that the backlog stays in the R5 queue.
+    if per_cycle > 25000:
+        print("[!] %d B/cycle is near/above the OCM per-sweep ceiling (~30 KB): "
+              "expect xcp_r5_tx_held and then xcp_r5_queue_lost to climb" % per_cycle)
     print("[i] stress: %d B/cycle in %d ODTs @ base 0x%08X, event %d (%s), %gs" %
           (per_cycle, len(sizes), args.stress_base, args.daq_event,
            R5_EVENT_NAMES.get(args.daq_event, "?"), args.daq_seconds))
@@ -580,7 +581,8 @@ def main():
                          "R5 drop-counter deltas. hedrive reference: 160 Mbit/s.")
     ap.add_argument("--stress-bytes", type=int, default=2000,
                     help="target DAQ payload bytes per control cycle (default 2000 "
-                         "= 160 Mbit/s at 10 kHz; OCM ceiling ~6000)")
+                         "= 160 Mbit/s at 10 kHz; the OCM window carries ~30000 "
+                         "per 100 us sweep, so Ethernet is the practical limit)")
     ap.add_argument("--stress-base", type=lambda x: int(x, 0), default=0xFFFF0000,
                     help="measurement block base address (default 0xFFFF0000, the "
                          "unused-under-XCP JavaScope OCM bank, 64 KB, allow-listed)")

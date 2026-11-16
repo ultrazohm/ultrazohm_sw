@@ -54,7 +54,7 @@ stuck, the **fallback** (bottom) returns you to JavaScope.
 
 Data path: `CANape/xcp_poll ⇄ UDP:5556 ⇄ A53 rx/tx tasks ⇄ queues ⇄ APU_IPI_ISR
 ⇄ OCM FIFO ⇄ R5 XcpCommand/XcpEvent` (engine, identity addressing). OCM regions:
-`XCP_IN 0xFFFFC000` (A53→R5), `XCP_OUT 0xFFFFE000` (R5→A53).
+`XCP_IN 0xFFFFC000` (A53→R5, 1 KB), `XCP_OUT 0xFFFF4000` (R5→A53, 32 KB).
 
 ## Build & flash
 
@@ -147,7 +147,8 @@ python tools/xcp_test/xcp_poll.py --ip 192.168.1.233 --stress --daq-seconds 30
 Builds one wide DAQ list (default 2000 B/cycle in 9 ODTs, reading the unused
 JavaScope OCM bank at `0xFFFF0000`) on event 0 at the control rate — at 10 kHz
 that is **160 Mbit/s of DAQ payload**, the rate the hedrive rig sustains.
-Scale with `--stress-bytes` (OCM ceiling ~6000 B/cycle ≈ 480 Mbit/s) or thin
+Scale with `--stress-bytes` (the 32 KB OCM window carries ~30 KB per 100 µs
+sweep, so Ethernet and the A53 are the practical limit, not the OCM) or thin
 with `--prescaler`.
 
 The report verifies the CP7 mechanisms directly:

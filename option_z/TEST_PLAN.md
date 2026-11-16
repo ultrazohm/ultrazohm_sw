@@ -113,6 +113,14 @@ Pick further variables that move, e.g. a `Global_Data.av.*` address
   (ATCM/BTCM/DDR/OCM, `xcp_r5_check_memory` in `xcptl_ocm.c`; checked at
   SET_MTA, per DAQ entry at DAQ start, and on every UPLOAD/DOWNLOAD/
   BUILD_CHECKSUM access with its size) — by design.
+- ❌ A complete struct cannot be added to a window / CANape creates a one-byte
+  object for it → the A2L needs `TYPEDEF_STRUCTURE` + `INSTANCE` blocks for
+  that type (CANape's own ELF import gives up on the UltraZohm unions and
+  pointer members). `uz.A2L` carries them for `Global_Data` and its members;
+  for other structs generate with
+  `python tools/xcp_test/dwarf_structs.py --elf <Baremetal.elf> <symbol.path>`
+  and paste the blocks into the A2L (IMPROVEMENTS §4c). Also check that
+  `MAX_ODT_ENTRY_SIZE_DAQ` is 0xF0 (240) — 248 never fits an ODT.
 
 ## Test 3b — DAQ smoke test (streams like CANape, without CANape)
 

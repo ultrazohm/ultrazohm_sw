@@ -172,6 +172,52 @@ symbols unchanged: libc, `Xil_DCacheFlushRange`, `uz_SystemTime`); it has
 **not** run on hardware yet — rerun TEST_PLAN.md §1–§3 (connect, DAQ, stress)
 before trusting it.
 
+## 4c. CANape: complete structures in measurement windows (2026-11-16)
+
+Symptom: a struct such as `Global_Data.aa` cannot be added to a watch /
+measurement window as a whole; CANape's "create from ELF" had left a one-byte
+`MEASUREMENT Global_Data.aa UBYTE` behind in `uz.A2L` (the fingerprint of a
+failed structure creation), while single members like
+`Global_Data.aa.A1.me.ADC_array` worked.
+
+Two causes, both fixed in the repo:
+
+1. **The A2L had no structure types.** CANape measures a complete struct only
+   through ASAP2 1.7.1 `TYPEDEF_STRUCTURE` + `INSTANCE`, and its own ELF
+   import gives up on the UltraZohm types: `Measurements`/`ConversionFactors`
+   are unions with an *anonymous* inner struct (a struct view and an array
+   view of the same bytes), and `DS_Data.objects` holds only pointers.
+   `tools/xcp_test/dwarf_structs.py` now derives the layout from the ELF's
+   DWARF (through GNU objdump, no extra Python package) and writes the
+   typedefs in the syntax of upstream XCPlite's A2L generator: scalars,
+   arrays (`MATRIX_DIM`), nested structs; a union becomes a typedef of its
+   first alternative (named in the comment), anonymous members are hoisted,
+   pointers skipped. `uz.A2L` carries the result for `Global_Data` and its
+   members `rasv`, `av`, `aa` (INSTANCEs with `SYMBOL_LINK`, so CANape
+   refreshes their addresses from the ELF like the plain measurements). The
+   bogus UBYTE object is removed. Regenerate after a layout change:
+   `python tools/xcp_test/dwarf_structs.py --elf vitis\workspace\Baremetal\Debug\Baremetal.elf Global_Data.av ...`
+   or `gen_a2l.py --struct ... --struct-out blocks.a2l`.
+2. **ODT entry size 248 could never fit an ODT.** The engine accepted and
+   advertised `MAX_ODT_ENTRY_SIZE_DAQ` = 248 (= the whole 248-byte DTO), but an
+   ODT carries at most 240 bytes (4-byte ODT/DAQ header, 4-byte timestamp in
+   the first ODT). CANape merges the contiguous members of a structure into
+   one ODT entry up to the advertised maximum, so a merged entry of 241..248
+   bytes failed `WRITE_DAQ` with `DAQ_CONFIG` and the measurement would not
+   start — single scalars never hit this. `xcplib_r5_cfg.h` sets
+   `XCP_MAX_ODT_ENTRY_SIZE 240`, `uz.A2L` and `gen_a2l.py` say `0xF0`.
+   (`CANape.ini` still shows the learned 248; CANape re-learns it at connect.)
+
+Also corrected in `gen_a2l.py`: the DAQ identification field is
+`IDENTIFICATION_FIELD_TYPE_RELATIVE_WORD_ALIGNED` (the engine's 4-byte
+`[odt][fill][daq u16]` header, DAQ_HDR_ODT_FIL_DAQW), not `ABSOLUTE`.
+
+Not verified in CANape itself (no CANape on the build machine): the blocks
+follow upstream's CANape-validated test fixtures, the generated addresses
+match what CANape wrote into its own `~uz.A2L` refresh, and the A2L parses
+structurally. If CANape still refuses a structure, the message now points
+at a concrete type.
+
 ## 5. Small stuff
 
 - The checked-in A2L files (`tools/xcp_test/*.a2l`) go stale with every build

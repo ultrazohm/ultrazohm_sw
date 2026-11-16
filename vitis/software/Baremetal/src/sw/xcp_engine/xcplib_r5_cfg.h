@@ -69,4 +69,12 @@
 #undef  OPTION_MTU
 #define XCPTL_MAX_SEGMENT_SIZE 252
 #define XCPTL_MAX_DTO_SIZE 248
+/* Largest single ODT entry the engine accepts and advertises
+ * (GET_DAQ_RESOLUTION_INFO MAX_ODT_ENTRY_SIZE_DAQ; uz.A2L says 0xF0 too).
+ * Upstream's default 248 equals the whole DTO, but an ODT carries at most
+ * DTO - 4 (ODT/DAQ header) - 4 (timestamp in the first ODT) = 240 bytes, so a
+ * 248-byte entry - what CANape builds when it merges the contiguous members
+ * of a structure up to the advertised maximum - can never fit an ODT and
+ * WRITE_DAQ fails with DAQ_CONFIG. 240 is a multiple of 4 (copy granularity). */
+#define XCP_MAX_ODT_ENTRY_SIZE 240
 #endif

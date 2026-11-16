@@ -32,6 +32,9 @@ import os
 import subprocess
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # dwarf_structs.py lives next to this file
+import dwarf_structs  # noqa: E402
+
 _REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 DEFAULT_ELF = os.path.join(_REPO, "vitis", "workspace", "FreeRTOS", "Debug", "FreeRTOS.elf")
 DEFAULT_NM = r"C:\Xilinx\Vitis\2022.2\gnu\aarch64\nt\aarch64-none\bin\aarch64-none-elf-nm.exe"
@@ -126,9 +129,9 @@ def build_a2l(addrs, ip, port):
         DYNAMIC 0 1 0
         OPTIMISATION_TYPE_DEFAULT
         ADDRESS_EXTENSION_FREE
-        IDENTIFICATION_FIELD_TYPE_ABSOLUTE
+        IDENTIFICATION_FIELD_TYPE_RELATIVE_WORD_ALIGNED
         GRANULARITY_ODT_ENTRY_SIZE_DAQ_BYTE
-        0xF8
+        0xF0
         NO_OVERLOAD_INDICATION
         /begin TIMESTAMP_SUPPORTED
           0x1 SIZE_DWORD UNIT_1US TIMESTAMP_FIXED
@@ -239,6 +242,15 @@ def main():
                     help="Option Z: also emit the R5 loss/health counters (R5_DIAG_SYMBOLS, u32) "
                          "resolved from --elf; the A53 gateway counters are always emitted "
                          "with --symbols (fixed OCM addresses).")
+    ap.add_argument("--struct", default=None,
+                    help="Option Z: comma list of struct symbol paths (e.g. Global_Data.av,Global_Data.aa) "
+                         "to describe as TYPEDEF_STRUCTURE + INSTANCE from the ELF's DWARF, so CANape can "
+                         "measure the complete structure (tools/xcp_test/dwarf_structs.py).")
+    ap.add_argument("--struct-out", default=None,
+                    help="write only the --struct blocks to this file (for pasting into a "
+                         "CANape-managed A2L such as CANape/UZ_XCP/uz.A2L) and exit")
+    ap.add_argument("--objdump", default=dwarf_structs.DEFAULT_OBJDUMP_R5,
+                    help="GNU objdump matching --elf, used by --struct (default: Vitis armr5)")
     args = ap.parse_args()
 
     if not os.path.isfile(args.elf):
@@ -246,6 +258,17 @@ def main():
     nm = args.nm if os.path.isfile(args.nm) else "nm"
     addrs = nm_addresses(args.elf, nm)
 
+    struct_blocks = ""
+    if args.struct:
+        objdump = args.objdump if os.path.isfile(args.objdump) else "objdump"
+        struct_blocks = dwarf_structs.a2l_blocks(
+            args.elf, objdump, [p.strip() for p in args.struct.split(",") if p.strip()],
+            "complete structure, layout from the ELF DWARF (gen_a2l.py --struct)")
+        if args.struct_out:
+            with open(args.struct_out, "w", newline="\n") as f:
+                f.write(struct_blocks)
+            print("[+] wrote %s (TYPEDEF_STRUCTURE/INSTANCE blocks for %s)" % (args.struct_out, args.struct))
+            return 0
     if args.symbols or args.diag:
         want = {}
         for spec in (args.symbols or "").split(","):
@@ -262,9 +285,13 @@ def main():
             print("[!] not found in ELF: %s" % ", ".join(missing))
         if not items:
             print("[x] no requested symbols found in %s" % args.elf); return 1
+        doc = build_symbols_a2l(items, args.ip, args.port)
+        if struct_blocks:
+            doc = doc.replace("    /begin IF_DATA XCP", struct_blocks + "\n    /begin IF_DATA XCP", 1)
         with open(args.out, "w", newline="\n") as f:
-            f.write(build_symbols_a2l(items, args.ip, args.port))
-        print("[+] wrote %s (%d R5 symbols)" % (args.out, len(items)))
+            f.write(doc)
+        print("[+] wrote %s (%d R5 symbols%s)" % (args.out, len(items),
+                                                  ", structures: " + args.struct if args.struct else ""))
         for n, a, t in items:
             print("    %-28s @ 0x%08X  %s" % (n, a, t))
         return 0

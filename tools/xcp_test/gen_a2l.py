@@ -160,7 +160,7 @@ def build_a2l(items, ip, port, struct_blocks=""):
     /begin IF_DATA XCP
       /begin PROTOCOL_LAYER
         0x0100
-        1000 2000 0 0 0 0 0 0
+        5000 10000 0 0 0 0 0
         248 248
         BYTE_ORDER_MSB_LAST
         ADDRESS_GRANULARITY_BYTE

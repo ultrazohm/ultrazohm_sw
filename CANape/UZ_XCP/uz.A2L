@@ -971,7 +971,7 @@ DUAL: on falling and rising edge*/
     /begin IF_DATA XCP
       /begin PROTOCOL_LAYER
         0x0103
-        0x07D0
+        0x1388
         0x2710
         0x00
         0x00

@@ -4,6 +4,14 @@
 #undef  OPTION_ENABLE_TCP      /* no sockets on R5; transport is the OCM FIFO  */
 #undef  OPTION_ENABLE_UDP
 #undef  OPTION_ENABLE_DBG_STDERR
+/* Logging: fixed level 1 = errors only. The default runtime level 3 printed
+ * the CONNECT / "DAQ processing stop" info lines through the blocking UART
+ * printf inside the main-loop sweep (milliseconds of sweep gap per line),
+ * and the level-4 "DAQ queue overrun" trace sits in the ISR DAQ path, armed
+ * as soon as anyone raised gXcpLogLevel. Errors stay: rare and worth it. */
+#undef  OPTION_DEFAULT_DBG_LEVEL
+#undef  OPTION_MAX_DBG_LEVEL
+#define OPTION_FIXED_DBG_LEVEL 1
 #undef  OPTION_CLOCK_TICKS_1NS
 #define OPTION_CLOCK_TICKS_1US
 #undef  OPTION_CLOCK_EPOCH_PTP

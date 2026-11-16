@@ -342,7 +342,10 @@ impl DataView {
             name_bytes: name_bytes(profile),
         };
         if let Some(selection) = selection {
-            if h.reader.is_none() {
+            // Accepted frames are already readable from pending memory while
+            // the background writer initializes. Do not advertise a range in
+            // data_info and then reject that same range solely for lacking a reader.
+            if h.reader.is_none() && (h.error.is_some() || h.start.is_none()) {
                 anyhow::bail!(
                     "{}",
                     h.error.as_deref().unwrap_or("recording is initializing")
@@ -445,5 +448,91 @@ impl DataView {
             start,
             stop,
         ))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn accepted_history_is_readable_before_backend_initializes() -> Result<()> {
+        let profile = Profile::load(None)?;
+        for slow in [false, true] {
+            let history = Mutex::new(History {
+                reader: None,
+                error: None,
+                start: None,
+                stop: None,
+                persisted_stop: None,
+                pending: VecDeque::new(),
+                columns: vec![(0, "signal".into())],
+                slow,
+                max_pending_samples: 10,
+                pending_samples: 0,
+            });
+            let query = Query {
+                source: Source {
+                    stream: if slow { Stream::Slow } else { Stream::Fast },
+                    recording: Some(1),
+                },
+                selection: Selection::Range { start: 0, stop: 3 },
+                channels: None,
+            };
+            history.lock().unwrap().accepted(
+                0,
+                100,
+                Arc::new(Frame {
+                    status: 7,
+                    slow_raw: vec![2.5f32.to_bits(); 3],
+                    slow_ids: vec![0; 3],
+                    channels: vec![vec![1., 2., 3.]; 20],
+                }),
+            )?;
+            let info = DataView::recorded("test", &query.source, &history, &profile, None)?.info;
+            assert_eq!((info.start, info.stop), (Some(0), Some(3)));
+            assert!(info.persisted_stop.is_none());
+            let view = DataView::recorded(
+                "test",
+                &query.source,
+                &history,
+                &profile,
+                Some(&query.selection),
+            )?;
+            let (data, _, start, stop) = view.read(&query)?;
+            assert_eq!((start, stop, data.height()), (0, 3, 3));
+            let time: Vec<_> = data.column("time")?.f64()?.into_no_null_iter().collect();
+            assert_eq!(
+                time,
+                (100..103)
+                    .map(|i| i as f64 * profile.sample_period_us * 1e-6)
+                    .collect::<Vec<_>>()
+            );
+            if !slow {
+                assert_eq!(
+                    data.column("signal")?
+                        .f32()?
+                        .into_no_null_iter()
+                        .collect::<Vec<_>>(),
+                    vec![1., 2., 3.]
+                );
+            }
+            // Initialization failures must still be visible to readers.
+            history.lock().unwrap().error = Some("backend initialization failed".into());
+            assert!(
+                DataView::recorded(
+                    "test",
+                    &query.source,
+                    &history,
+                    &profile,
+                    Some(&query.selection)
+                )
+                .err()
+                .unwrap()
+                .to_string()
+                .contains("backend initialization failed")
+            );
+        }
+        Ok(())
     }
 }

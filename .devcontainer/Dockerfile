@@ -1,10 +1,46 @@
-# Debian trixie-based Python image used for the devcontainer.
-FROM docker.io/library/python:3.12-trixie
+# Two stages from one file:
+#   ci   CLI and data viewer toolchain. GitHub Actions runs the uz_cli and
+#        uz_dataviewer make targets in this stage (see .github/workflows/ci-image.yml).
+#   dev  The development container: the ci stage plus firmware, docs and Java tools.
+# Developers and CI therefore build and test with the same toolchain.
 
-# [Optional] Uncomment this section to install additional OS packages.
+# Debian trixie-based Python image.
+FROM docker.io/library/python:3.12-trixie AS ci
+
+# Build tools, GUI runtime libraries for headless ImGui tests, and Node.js for
+# the generated browser-bridge tests.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
      && apt-get -y install --no-install-recommends build-essential \
-                                                  cmake \
+                                                  make \
+                                                  git \
+                                                  curl \
+                                                  ca-certificates \
+                                                  pkg-config \
+                                                  libssl-dev \
+                                                  libgl1 \
+                                                  libx11-6 \
+                                                  libxext6 \
+                                                  libxau6 \
+                                                  libxdmcp6 \
+                                                  libxcb1 \
+                                                  nodejs \
+     && rm -rf /var/lib/apt/lists/*
+
+# Rust CLI and native Python package. Pin the same toolchain as uz_cli.
+ENV RUSTUP_HOME=/opt/rustup CARGO_HOME=/opt/cargo
+ENV PATH="/opt/cargo/bin:$PATH"
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o /tmp/rustup.sh \
+    && sh /tmp/rustup.sh -y --profile minimal --default-toolchain 1.90.0 --no-modify-path \
+    && rustup component add rustfmt clippy \
+    && rm /tmp/rustup.sh
+# ziglang lets maturin link portable manylinux_2_28 wheels without a Docker build.
+RUN pip install --no-cache-dir 'maturin[zig]>=1.9,<2' 'uv==0.13.1'
+
+
+FROM ci AS dev
+
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+     && apt-get -y install --no-install-recommends cmake \
                                                   gdb \
                                                   ruby \
                                                   texlive \
@@ -19,10 +55,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
                                                   git-lfs \
                                                   doxygen \
                                                   openjdk-21-jdk \
-                                                  ant \
-                                                  curl \
-                                                  pkg-config \
-                                                  libssl-dev
+                                                  ant
 
 # Ruby 3.3's RDoc parser currently fails while generating Ceedling's docs.
 RUN gem install --no-document ceedling && ln -sf /usr/local/bin/ceedling /usr/bin/ceedling
@@ -57,12 +90,3 @@ ENV PIP_USER=yes
 
 ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 ENV PATH="$JAVA_HOME/bin:$PATH"
-
-# Rust CLI and native Python package. Pin the same toolchain as uz_cli.
-ENV RUSTUP_HOME=/opt/rustup CARGO_HOME=/opt/cargo
-ENV PATH="/opt/cargo/bin:$PATH"
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o /tmp/rustup.sh \
-    && sh /tmp/rustup.sh -y --profile minimal --default-toolchain 1.90.0 --no-modify-path \
-    && rustup component add rustfmt clippy \
-    && rm /tmp/rustup.sh
-RUN PIP_USER=no pip install --no-cache-dir 'maturin>=1.9,<2' 'uv==0.13.1'

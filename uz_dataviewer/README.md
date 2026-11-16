@@ -265,10 +265,19 @@ Documentation lives in `../docs/source/guide/gui/uz_dataviewer/`.
 
 ## Tests
 
+Run the same checks as Linux CI, in the dev container:
+
 ```bash
-pip install pytest
-pytest
+make -C uz_dataviewer check        # ruff and the full pytest suite, with a CLI wheel from this checkout
+make -C uz_dataviewer web-smoke    # browser build in headless Chromium
+make -C uz_dataviewer bundle bundle-smoke   # PyInstaller bundle and its smoke tests
 ```
+
+The targets use `uz_dataviewer/.venv-ci`, separate from the launchers' `.venv`.
+`check` builds a debug CLI wheel from `../uz_cli` unless `CLI_WHEEL=PATH` is given,
+so the live tests run against the same commit. Linux CI runs these targets in the
+`ci` stage of `.devcontainer/Dockerfile`; only the published Linux bundle is built
+in Ubuntu 22.04, because PyInstaller copies the build system's libraries.
 
 The console transcript does not capture every GUI gesture (including analysis
 Reset view and some Y/XY gestures). Use JSON snapshots for supported view settings.

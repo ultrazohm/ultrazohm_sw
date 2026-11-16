@@ -439,14 +439,21 @@ commands do not generate SD-card BOOT.BIN images. Equivalent Make targets are
 
 ## Tests
 
-From the repository root:
+Run the same checks as Linux CI from the repository root, in the dev container:
 
 ```sh
-cargo test --manifest-path uz_cli/Cargo.toml --locked
-cargo build --manifest-path uz_cli/Cargo.toml --locked
-cargo clippy --manifest-path uz_cli/Cargo.toml --all-targets --features python --locked -- -D warnings
-python -m unittest discover -s uz_cli/tests -v
+make -C uz_cli check           # fmt, clippy, Rust tests, Python integration tests
+make -C uz_cli release-wheel   # portable manylinux_2_28 wheel in target/wheels-release
+make -C uz_cli release-check   # integration tests against that installed wheel
 ```
+
+`check` builds a debug wheel, installs it into `uz_cli/target/ci-venv` and runs
+the integration tests twice: against the cargo-built executable and against the
+wheel's `ultrazohm` command. `release-wheel` links against glibc 2.28 using zig,
+so it needs no Docker build. Linux CI runs these targets in the `ci` stage of
+`.devcontainer/Dockerfile` (published to GHCR by `.github/workflows/ci-image.yml`,
+tagged by the Dockerfile hash), so local and CI toolchains match. Windows CI
+runs the equivalent commands directly.
 
 Set `UZ_CLI_BIN` for another executable. Install the wheel and Polars to exercise
 Python bindings and independently read outputs. Tests use loopback simulators,

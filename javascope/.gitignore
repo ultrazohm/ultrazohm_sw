@@ -3,3 +3,4 @@
 *.mat
 dist/
 nbproject/private/
+__pycache__/

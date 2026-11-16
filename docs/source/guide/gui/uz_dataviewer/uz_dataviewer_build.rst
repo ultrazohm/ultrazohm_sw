@@ -53,7 +53,8 @@ Build artifacts are retained for 30 days; published release downloads remain ava
 The existing documentation Pages workflow is unchanged.
 
 Linux binaries are built and smoke-tested in Ubuntu 22.04 and require x86_64, glibc 2.35 or newer, and desktop graphics libraries on the target system.
-The build uses uv to install Python 3.12 inside this container.
+That job runs ``make bundle bundle-smoke`` with the CLI release wheel built in the same workflow; uv installs Python 3.12 inside the container.
+All other Linux jobs run the ``make`` targets below in the ``ci`` stage of ``.devcontainer/Dockerfile``, the same toolchain as the :ref:`vscode_remote_container`.
 Keep the build container at the oldest supported system: PyInstaller bundles libraries such as ``libstdc++.so.6`` but uses the target system's glibc.
 Building on a newer distribution can therefore produce binaries that fail on Ubuntu 22.04, even when the Python dependency wheels support it.
 Windows binaries target x86_64 and must be extracted from the ZIP before launching.
@@ -98,20 +99,15 @@ ABI-compatible imgui-bundle wheel. When updating that wheel, update both its
 filename and SHA-256 in ``build/gen_web.py``; incomplete or mismatched downloads
 are rejected before publication.
 
-Run the Python checks from ``uz_dataviewer/``::
+Run the same checks as Linux CI from the repository root in the development container::
 
-   uv sync --locked --extra dev --python 3.12
-   uv run --no-sync ruff check src tests build examples
-   uv run --no-sync python -m pytest
+   make -C uz_dataviewer check
+   make -C uz_dataviewer web-smoke
+   make -C uz_dataviewer bundle bundle-smoke
 
-The browser smoke test uses Playwright and Chromium::
-
-   python build/gen_web.py
-   uv venv .venv-web --python 3.12
-   uv pip install --python .venv-web/bin/python playwright==1.64.1
-   .venv-web/bin/python -m playwright install chromium
-   .venv-web/bin/python build/smoke_web.py
-
+``check`` runs ruff and the full pytest suite in ``.venv-ci`` with a CLI wheel built from the same checkout (or ``CLI_WHEEL=PATH``).
+``web-smoke`` generates the browser app and loads it in headless Chromium with Playwright; it installs Chromium's system libraries, which needs root as in the container (pass ``PLAYWRIGHT_DEPS=`` to skip).
+A bundle built in the development container works on that machine; only the CI build in Ubuntu 22.04 is portable.
 Set ``UZ_BROWSER_EXECUTABLE`` to use an existing Chromium/Chrome installation.
 CI runs the browser smoke test before publishing native release artifacts.
 

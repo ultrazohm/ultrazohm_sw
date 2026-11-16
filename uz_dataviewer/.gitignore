@@ -15,3 +15,5 @@ testdata/
 
 .venv-build/
 packages/
+.venv-ci/
+.venv-web/

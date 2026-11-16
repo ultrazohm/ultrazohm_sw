@@ -11,6 +11,8 @@ on:
       - 'vitis/software/**'
       - 'tcl_scripts/**'
       - '.github/workflows/uz_dataviewer.yml'
+      - '.github/workflows/ci-image.yml'
+      - '.devcontainer/Dockerfile'
       - 'docs/source/guide/gui/uz_dataviewer/uz_dataviewer_commands.csv'
   pull_request:
     paths:
@@ -21,11 +23,14 @@ on:
       - 'vitis/software/**'
       - 'tcl_scripts/**'
       - '.github/workflows/uz_dataviewer.yml'
+      - '.github/workflows/ci-image.yml'
+      - '.devcontainer/Dockerfile'
       - 'docs/source/guide/gui/uz_dataviewer/uz_dataviewer_commands.csv'
   workflow_dispatch:
 
 permissions:
   contents: read
+  packages: read
 
 concurrency:
   group: dataviewer-${{ github.event_name }}-${{ github.ref }}
@@ -37,17 +42,35 @@ env:
   OPENBLAS_NUM_THREADS: '2'
 
 jobs:
-  cli-wheels:
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-22.04
-            target: x86_64-unknown-linux-gnu
-            manylinux: '2_28'
-          - os: windows-2022
-            target: x86_64-pc-windows-msvc
-            manylinux: auto
-    runs-on: ${{ matrix.os }}
+  # Linux checks run the uz_dataviewer/uz_cli make targets in the dev container's
+  # ci stage, as in a local dev container. Only the portable bundle uses Ubuntu
+  # 22.04, because PyInstaller copies the build system's libraries.
+  image:
+    uses: ./.github/workflows/ci-image.yml
+    permissions:
+      contents: read
+      packages: write
+
+  cli-wheel-linux:
+    needs: image
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ needs.image.outputs.image }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - run: make -C uz_cli release-wheel release-check
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bundled-cli-linux
+          path: uz_cli/target/wheels-release/*.whl
+          if-no-files-found: error
+
+  cli-wheel-windows:
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -55,66 +78,51 @@ jobs:
           python-version: '3.12'
       - uses: ./.github/actions/test-cli-wheel
         with:
-          target: ${{ matrix.target }}
-          manylinux: ${{ matrix.manylinux }}
+          target: x86_64-pc-windows-msvc
+          manylinux: auto
       - uses: actions/upload-artifact@v4
         with:
-          name: bundled-cli-${{ matrix.os }}
+          name: bundled-cli-windows-2022
           path: dist/*.whl
 
   test:
-    runs-on: ubuntu-24.04
-    container: python:3.12-slim-bookworm
-    timeout-minutes: 15
-    defaults:
-      run:
-        working-directory: uz_dataviewer
+    needs: image
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ needs.image.outputs.image }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Install GUI runtime libraries
-        run: |
-          apt-get update -qq
-          apt-get install -y --no-install-recommends libgl1 libx11-6 libxext6 libxau6 libxdmcp6 libxcb1 nodejs
-      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - uses: Swatinem/rust-cache@v2
         with:
-          version: '0.13.1'
-          enable-cache: true
-          cache-dependency-glob: uz_dataviewer/uv.lock
-      - name: Install locked test dependencies
-        run: uv sync --locked --extra dev --python 3.12 --no-build-package imgui-bundle
-      - name: Check Python sources
-        run: uv run --no-sync ruff check src tests build examples launch.py
-      - name: Test
-        run: uv run --no-sync python -m pytest -q
+          workspaces: uz_cli
+          key: viewer-debug-wheel
+      # Lint and the full suite, including live tests against a CLI wheel from this commit.
+      - run: make -C uz_dataviewer check
 
   test-web:
-    needs: test
-    runs-on: ubuntu-24.04
+    needs: [image, test]
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ needs.image.outputs.image }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     timeout-minutes: 15
-    defaults:
-      run:
-        working-directory: uz_dataviewer
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
-        with:
-          version: '0.13.1'
-      - name: Generate browser app
-        run: python build/gen_web.py
-      - name: Install browser test runtime
-        run: |
-          uv venv .venv-web --python 3.12
-          uv pip install --python .venv-web/bin/python playwright==1.64.1
-          .venv-web/bin/python -m playwright install --with-deps chromium
-      - name: Smoke-test Pyodide in Chromium
-        run: .venv-web/bin/python build/smoke_web.py
+      - run: make -C uz_dataviewer web-smoke
 
   build-linux:
-    needs: [test, cli-wheels]
+    needs: [test, cli-wheel-linux]
     runs-on: ubuntu-24.04
     # Build and smoke-test on the oldest supported system (glibc 2.35).
     # PyInstaller bundles libstdc++, whose libc requirements also matter.
@@ -130,11 +138,7 @@ jobs:
       - name: Install build and GUI runtime libraries
         run: |
           apt-get update -qq
-          apt-get install -y --no-install-recommends ca-certificates binutils libgl1 libx11-6 libxext6 libxau6 libxdmcp6 libxcb1
-      # Ubuntu 22.04's Node 12 is too old for the browser bridge tests.
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
+          apt-get install -y --no-install-recommends make ca-certificates binutils libgl1 libx11-6 libxext6 libxau6 libxdmcp6 libxcb1
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: '0.13.1'
@@ -142,20 +146,11 @@ jobs:
           cache-dependency-glob: uz_dataviewer/uv.lock
       - uses: actions/download-artifact@v4
         with:
-          name: bundled-cli-ubuntu-22.04
+          name: bundled-cli-linux
           path: cli-wheels
-      - name: Select matching CLI wheel
-        run: echo "UZ_CLI_WHEEL=$(find "$GITHUB_WORKSPACE/cli-wheels" -name '*.whl')" >> "$GITHUB_ENV"
-      - name: Build executable
-        run: bash build/build_native.sh
-      - name: Test viewer with matching native backend
-        run: |
-          uv run --no-sync python -c "import ultrazohm; from ultrazohm import Client, Acquisition"
-          uv run --no-sync python -m pytest -q
-      - name: Smoke-test frozen executable
-        run: uv run --no-sync python build/smoke_binary.py dist/uz_dataviewer/uz_dataviewer
-      - name: Test packaged live workers
-        run: uv run --no-sync python build/smoke_live.py dist/uz_dataviewer/uz_dataviewer
+      # Same targets as locally; the matching release wheel was tested in cli-wheel-linux.
+      - name: Build and smoke-test executable
+        run: make bundle bundle-smoke CLI_WHEEL="$(find "$GITHUB_WORKSPACE/cli-wheels" -name '*.whl')"
       - name: Package Linux executable
         run: |
           mkdir -p packages
@@ -169,7 +164,7 @@ jobs:
           retention-days: 30
 
   build-windows:
-    needs: [test, cli-wheels]
+    needs: [test, cli-wheel-windows]
     runs-on: windows-2022
     timeout-minutes: 30
     defaults:

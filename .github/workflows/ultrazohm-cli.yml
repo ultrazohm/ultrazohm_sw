@@ -2,17 +2,47 @@ name: UltraZohm CLI
 on:
   workflow_dispatch:
   push:
-    paths: ['uz_cli/**', '.github/actions/test-cli-wheel/**', 'javascope/test_server.py', '.github/workflows/ultrazohm-cli.yml']
+    paths: ['uz_cli/**', '.github/actions/test-cli-wheel/**', 'javascope/test_server.py', '.github/workflows/ultrazohm-cli.yml',
+            '.devcontainer/Dockerfile', '.github/workflows/ci-image.yml']
   pull_request:
-    paths: ['uz_cli/**', '.github/actions/test-cli-wheel/**', 'javascope/test_server.py', '.github/workflows/ultrazohm-cli.yml']
+    paths: ['uz_cli/**', '.github/actions/test-cli-wheel/**', 'javascope/test_server.py', '.github/workflows/ultrazohm-cli.yml',
+            '.devcontainer/Dockerfile', '.github/workflows/ci-image.yml']
 permissions:
   contents: read
+  packages: read
 jobs:
-  test:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+  # Linux jobs run the uz_cli make targets in the dev container's ci stage,
+  # exactly as in a local dev container: make -C uz_cli check.
+  image:
+    uses: ./.github/workflows/ci-image.yml
+    permissions:
+      contents: read
+      packages: write
+
+  test-linux:
+    needs: image
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ needs.image.outputs.image }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      CARGO_BUILD_JOBS: 2
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      # Header provenance uses git; the checkout is owned by another user than the container's root.
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: uz_cli
+          key: checks-linux
+      - run: make -C uz_cli check
+
+  test-windows:
+    runs-on: windows-latest
     env:
       CARGO_BUILD_JOBS: 2
     steps:
@@ -29,7 +59,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: uz_cli
-          key: checks-${{ matrix.os }}
+          key: checks-windows-latest
       - run: cargo fmt --manifest-path uz_cli/Cargo.toml --check
       - run: cargo test --manifest-path uz_cli/Cargo.toml --locked
       - run: cargo clippy --manifest-path uz_cli/Cargo.toml --all-targets --features python --locked -- -D warnings
@@ -65,22 +95,37 @@ jobs:
       - id: metadata
         run: python uz_cli/release_ci.py metadata
 
-  release-wheels:
+  release-wheels-linux:
     # Build alongside checks; publish-cli remains gated on both jobs.
+    # make release-wheel links a manylinux_2_28 wheel with zig (no Docker build).
+    needs: [image, release-metadata]
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ needs.image.outputs.image }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      CARGO_BUILD_JOBS: 2
+      RELEASE_VERSION: ${{ needs.release-metadata.outputs.version }}
+      ULTRAZOHM_RELEASE_VERSION: ${{ needs.release-metadata.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: Set unique wheel version
+        run: python uz_cli/release_ci.py version "$RELEASE_VERSION"
+      - run: make -C uz_cli release-wheel release-check
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cli-wheel-x86_64-unknown-linux-gnu
+          path: uz_cli/target/wheels-release/*.whl
+          if-no-files-found: error
+
+  release-wheels-windows:
     needs: [release-metadata]
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-22.04
-            target: x86_64-unknown-linux-gnu
-            manylinux: '2_28'
-            interpreter: python3.12
-          - os: windows-2022
-            target: x86_64-pc-windows-msvc
-            manylinux: auto
-            interpreter: python
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-2022
     env:
       CARGO_BUILD_JOBS: 2
       RELEASE_VERSION: ${{ needs.release-metadata.outputs.version }}
@@ -97,19 +142,18 @@ jobs:
         run: python uz_cli/release_ci.py version "$RELEASE_VERSION"
       - uses: ./.github/actions/test-cli-wheel
         with:
-          target: ${{ matrix.target }}
-          manylinux: ${{ matrix.manylinux }}
-          interpreter: --interpreter ${{ matrix.interpreter }}
+          target: x86_64-pc-windows-msvc
+          manylinux: auto
+          interpreter: --interpreter python
           sccache: 'true'
-          docker-options: -e ULTRAZOHM_RELEASE_VERSION
       - uses: actions/upload-artifact@v4
         with:
-          name: cli-wheel-${{ matrix.target }}
+          name: cli-wheel-x86_64-pc-windows-msvc
           path: dist/*.whl
           if-no-files-found: error
 
   publish-cli:
-    needs: [test, release-metadata, release-wheels]
+    needs: [test-linux, test-windows, release-metadata, release-wheels-linux, release-wheels-windows]
     if: >-
       github.event_name != 'pull_request' &&
       (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature/uz_cli26')

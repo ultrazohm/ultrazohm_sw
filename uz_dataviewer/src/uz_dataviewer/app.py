@@ -72,6 +72,8 @@ class DataViewerApp:
             from .panels.live import LiveWorkspace
             self.live = LiveWorkspace(repo=workspace)
             self.live.mapping = live_mapping
+            if live_mapping:
+                self.live.load_live_settings()
             self.live.repository_selected = self._repository_selected
             if workspace is not None and not live_mapping:
                 self.live.prepare_repository(workspace)

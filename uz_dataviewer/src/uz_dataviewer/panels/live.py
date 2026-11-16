@@ -176,6 +176,8 @@ class LiveWorkspace:
         self.pending_message = ''
         self._pending_completion = 0
         self._last_feedback = None
+        self._pending_plot_setup = None
+        self.settings_notice = ''
         self.available = importlib.util.find_spec('ultrazohm') is not None
         self.scripts = ScriptRunner(send_stop=self.controller.send_stop)
         self.document = ScriptEditor(lambda: self.scripts.busy, lambda: self.controller.endpoint, self._start_script)
@@ -218,6 +220,7 @@ class LiveWorkspace:
             self.repo, self.mapping = str(root), str(mapping)
             self._user_directory = directory
             self.output = new_output_directory(root)
+            self.load_live_settings()
             try:
                 restore_xsct(root)
                 self.flash_available = xsct_available()
@@ -226,6 +229,31 @@ class LiveWorkspace:
                 self.tool_error = str(exc)
         except Exception as exc:
             self.repo_error = f'Could not prepare ultrazohm_sw root directory: {exc}'
+
+    def load_live_settings(self):
+        from ..live_settings import read_view
+        self.settings_notice = ''
+        self._pending_plot_setup = None
+        try:
+            saved = read_view(self.user_directory() / 'live_view.json')
+            if saved is not None:
+                for key in ('endpoint', 'ip', 'port', 'follow', 'window_seconds',
+                            'query', 'variable_query', 'variable_values'):
+                    setattr(self, key, saved[key])
+                self.paused = False
+                self._pending_plot_setup = saved['plots']
+                if saved.get('output_parent'):
+                    self.output = new_output_directory(parent=saved['output_parent'])
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            self.settings_notice = f'Could not load live settings: {exc}'
+
+    def save_live_settings(self):
+        from ..live_settings import save
+        try:
+            directory = save(self)
+            self.settings_notice = f'Live settings saved to {directory}'
+        except (OSError, ValueError, KeyError, TypeError, RuntimeError) as exc:
+            self.settings_notice = f'Could not save live settings: {exc}'
 
     def send(self, operation, **kwargs):
         try:
@@ -334,6 +362,11 @@ class LiveWorkspace:
             self._epoch = update.epoch
         self._source_assignments = {item['channel']: item['name'] for item in update.assignments}
         self._source = source
+        if self._pending_plot_setup is not None:
+            from ..live_settings import restore_plots
+            restore_plots(self.state, self._pending_plot_setup,
+                          lambda name: (self.run.id, name) if name in self.run.signals else None)
+            self._pending_plot_setup = None
 
     def freeze(self, target):
         """Copy the visible live window to the ordinary offline-analysis registry."""
@@ -438,6 +471,15 @@ class LiveWorkspace:
         if imgui.button('Browse for ultrazohm_sw'):
             self._repo_dialog = pfd.select_folder('Select ultrazohm_sw root directory', self.repo or str(Path.cwd()))
         imgui.end_disabled()
+        next_button('Save live settings')
+        imgui.begin_disabled(not self.repository_ready or bool(activity) or self.scripts.busy or self.cli_busy())
+        if imgui.button('Save live settings'):
+            self.save_live_settings()
+        imgui.end_disabled()
+        if imgui.is_item_hovered(imgui.HoveredFlags_.allow_when_disabled):
+            imgui.set_tooltip('Save startup channels and live plot preferences for this workspace. No device commands are sent.')
+        if self.settings_notice:
+            imgui.text_wrapped(self.settings_notice)
         if self._repo_future is not None:
             imgui.text_wrapped('Preparing ultrazohm_sw root directory: generating mapping and loading settings…')
         elif self.repository_ready:

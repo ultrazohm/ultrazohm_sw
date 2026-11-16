@@ -79,13 +79,12 @@ def _nodes_to_list(state: "AppState") -> list[dict]:
 
 
 # -- JSON snapshot ------------------------------------------------------------
-def to_dict(state: "AppState") -> dict:
-    _check_reloadable(state)
+def plot_cells_to_list(state, encode):
     cells = []
     for cell in state.cells:
         cells.append(
             {
-                "signals": [_ref_to_saved(state, r) for r in cell.signals],
+                "signals": [encode(r) for r in cell.signals],
                 "type": cell.plot_type.value,
                 "x_lim": (cell.pending_x_lim or cell.x_lim) if cell.plot_type is PlotType.XY
                          else state.plot_time_range(len(cells) + 1),
@@ -97,11 +96,47 @@ def to_dict(state: "AppState") -> dict:
                 "cursors": cell.cursors,
                 "cursor_x": list(cell.cursor_x) if cell.cursor_x else None,
                 "export_relative": cell.export_relative,
-                "xy_source": _ref_to_saved(state, cell.xy_source),
+                "xy_source": encode(cell.xy_source),
                 "xy_style": cell.xy_style.value,
-                "y2": [_ref_to_saved(state, r) for r in cell.y2_signals],
+                "y2": [encode(r) for r in cell.y2_signals],
             }
         )
+    return cells
+
+
+def restore_plot_cells(state, data, resolve):
+    for i, spec in enumerate(data.get("cells", [])):
+        if i >= len(state.cells):
+            break
+        cell = state.cells[i]
+        cell.signals = [r for r in (resolve(s) for s in spec.get("signals", [])) if r is not None]
+        cell.plot_type = PlotType(spec.get("type", PlotType.LINE.value))
+        cell.show_samples = boolean(spec.get("show_samples", False))
+        cell.spy = boolean(spec.get("spy", False))
+        cell.spy_rect = spy_rectangle(spec["spy_rect"]) if spec.get("spy_rect") is not None else None
+        cell.cursors = boolean(spec.get("cursors", False))
+        cell.cursor_x = coordinates(spec["cursor_x"], 2) if spec.get("cursor_x") is not None else None
+        cell.export_relative = boolean(spec.get("export_relative", False))
+        cell.xy_source = resolve(spec.get("xy_source"))
+        cell.xy_style = XyStyle(spec.get("xy_style", XyStyle.LINE.value))
+        for ref in (resolve(r) for r in spec.get("y2", [])):
+            if ref is not None:
+                cell.set_secondary(ref, True)
+        lost_axis = any(resolve(ref) is None for ref in spec.get("signals", [])) or (
+            spec.get("xy_source") is not None and cell.xy_source is None)
+        for axis in ('x', 'y', 'y2'):
+            limits = spec.get(f'{axis}_lim')
+            if limits is not None and not lost_axis:
+                cell.set_limits(axis, *limits)
+        if cell.pending_x_lim and cell.plot_type is not PlotType.XY:
+            state.plot_x_ranges[i + 1] = cell.pending_x_lim
+        state.plot_domain(cell)  # reject snapshots mixing incompatible axes
+        cell.fit_pending = True
+
+
+def to_dict(state: "AppState") -> dict:
+    _check_reloadable(state)
+    cells = plot_cells_to_list(state, lambda ref: _ref_to_saved(state, ref))
     return {
         "version": SCHEMA_VERSION,
         "grid": [state.rows, state.cols],
@@ -242,33 +277,7 @@ def _apply_dict(state: "AppState", data: dict) -> None:
     # assignments, so any references to a derived run (label == node name) resolve.
     changed_domains = _restore_nodes(state, data.get("nodes", []), _resolve)
 
-    for i, spec in enumerate(data.get("cells", [])):
-        if i >= len(state.cells):
-            break
-        cell = state.cells[i]
-        cell.signals = [r for r in (_resolve(s) for s in spec.get("signals", [])) if r is not None]
-        cell.plot_type = PlotType(spec.get("type", PlotType.LINE.value))
-        cell.show_samples = boolean(spec.get("show_samples", False))
-        cell.spy = boolean(spec.get("spy", False))
-        cell.spy_rect = spy_rectangle(spec["spy_rect"]) if spec.get("spy_rect") is not None else None
-        cell.cursors = boolean(spec.get("cursors", False))
-        cell.cursor_x = coordinates(spec["cursor_x"], 2) if spec.get("cursor_x") is not None else None
-        cell.export_relative = boolean(spec.get("export_relative", False))
-        cell.xy_source = _resolve(spec.get("xy_source"))
-        cell.xy_style = XyStyle(spec.get("xy_style", XyStyle.LINE.value))
-        for ref in (_resolve(r) for r in spec.get("y2", [])):
-            if ref is not None:
-                cell.set_secondary(ref, True)
-        lost_axis = any(_resolve(ref) is None for ref in spec.get("signals", [])) or (
-            spec.get("xy_source") is not None and cell.xy_source is None)
-        for axis in ('x', 'y', 'y2'):
-            limits = spec.get(f'{axis}_lim')
-            if limits is not None and not lost_axis:
-                cell.set_limits(axis, *limits)
-        if cell.pending_x_lim and cell.plot_type is not PlotType.XY:
-            state.plot_x_ranges[i + 1] = cell.pending_x_lim
-        state.plot_domain(cell)  # reject snapshots mixing incompatible axes
-        cell.fit_pending = True
+    restore_plot_cells(state, data, _resolve)
 
     fft = data.get("fft") or {}
     state.fft.sources = [r for r in (_resolve(s) for s in fft.get("sources", [])) if r is not None]

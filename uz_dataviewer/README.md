@@ -641,6 +641,16 @@ and `initial_channels` before the next Connect; an empty `initial_channels`
 object sends no initial selections. Browsing for XSCT explicitly updates
 `tools.json`. Derived header mappings are regenerated at each live launch.
 
+**Save live settings**, next to **Browse for ultrazohm_sw**, saves the current
+channel assignments as `initial_channels` in `settings.json`. It also writes
+`live_view.json` with connection fields, the recording parent directory, the live plot grid and signal names,
+axis settings, follow mode, time depth, filters, and variable input values.
+Selecting that workspace on a later launch restores the preferences; plot traces
+are restored when live data arrives. Saving while disconnected preserves the
+existing startup channel assignments. Restoring preferences does not connect,
+send variable values, or start logging. Acquisition data and an Inspect snapshot
+are not included; use recording or Freeze/export for those.
+
 The two modes can use the same checkout without sharing preferences, caches,
 layout or default logs. Firmware sources and the Vitis workspace remain shared.
 An already running acquisition service owns its configuration: use

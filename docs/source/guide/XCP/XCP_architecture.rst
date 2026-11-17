@@ -13,45 +13,25 @@ Overview
 The XCP slave of the UltraZohm is split over both processors of the Zynq UltraScale+:
 
 - The **R5** (bare metal, the control core) runs the XCP protocol engine. The engine is the open-source `XCPlite <https://github.com/vectorgrp/XCPlite>`_ from Vector (MIT license, upstream version 2.3.4). Because the engine runs on the R5, the XCP master addresses R5 memory directly: every variable of the R5 application with a fixed address, that is every global and every ``static`` variable, can be measured and calibrated by its address, without registering it anywhere in the code.
-- The **A53** (FreeRTOS, lwIP) is a gateway without XCP knowledge. It moves XCP frames between a UDP socket and the shared on-chip memory (OCM).
+- The **A53** (FreeRTOS, lwIP) is a gateway. It moves XCP frames between a UDP socket and the shared on-chip memory (OCM). It does not interpret XCP commands and only knows the framing of XCP on Ethernet, that is the length and the counter in front of each message.
 - The two processors exchange frames through two fixed regions of the OCM and one inter-processor interrupt (IPI).
 
 .. mermaid::
     :align: center
     :caption: XCP data path of the UltraZohm
 
-    flowchart LR
-      subgraph PC["PC"]
-        master["XCP master<br>CANape / xcp_poll.py"]
-      end
-      subgraph A53["A53: FreeRTOS"]
-        rx["rx task<br>UDP receive"]
-        tx["tx task<br>UDP send, CTR stamp"]
-        ipi["APU_IPI_ISR<br>OCM to queues"]
-        rx -- "command queue" --> ipi
-        ipi -- "DAQ queue<br>response queue" --> tx
-      end
-      subgraph OCM["OCM bank 3"]
-        xin["XCP_IN<br>0xFFFFC000, 1 KB"]
-        xout["XCP_OUT<br>0xFFFF4000, 32 KB"]
-      end
-      subgraph R5["R5: bare metal"]
-        sweep["main loop<br>xcp_r5_background()"]
-        isr["ISR_Control<br>xcp_r5_event()"]
-        q["DAQ queue<br>32 KB"]
-        vars[("R5 variables<br>Global_Data ...")]
-        isr -- "sample" --> q
-        q --> sweep
-        vars -. "read" .-> isr
-        sweep -. "read / write" .-> vars
-      end
-      master -- "UDP port 5556" --> rx
-      tx -- "UDP" --> master
-      ipi --> xin
-      xin --> sweep
-      sweep --> xout
-      xout --> ipi
-      sweep -. "IPI" .-> ipi
+    flowchart TB
+      pc["PC<br>XCP master: CANape or xcp_poll.py"]
+      a53["A53, FreeRTOS<br>UDP gateway"]
+      xin["XCP_IN in the OCM<br>0xFFFFC000, 1 KB"]
+      r5["R5, bare metal<br>XCPlite engine"]
+      xout["XCP_OUT in the OCM<br>0xFFFF4000, 32 KB"]
+      pc <-- "UDP, port 5556" --> a53
+      a53 -- "commands, acknowledges" --> xin
+      xin --> r5
+      r5 -- "responses, measurement data" --> xout
+      xout --> a53
+      r5 -. "IPI after every exchange" .-> a53
 
 The same Ethernet interface and the same IPI are used by the JavaScope.
 JavaScope and XCP are therefore alternatives that are selected at compile time, see :ref:`xcp_usage_select`.
@@ -61,26 +41,33 @@ What runs where on the R5
 
 Only the sampling of measurement data runs inside the control interrupt.
 Everything else runs in the main loop underneath it.
+The main loop performs one exchange with the A53 at most every 100 µs.
+This page calls one such exchange a sweep.
 
 .. mermaid::
     :align: center
     :caption: Split of the XCP work between interrupt and main loop on the R5
 
-    flowchart TD
-      subgraph ISR["ISR_Control, every control cycle"]
-        a["control algorithm"] --> b["xcp_r5_event()"]
+    flowchart TB
+      subgraph ISR["ISR_Control"]
+        direction TB
+        a["control algorithm"] --> b["xcp_r5_event()<br>every control cycle"]
         b --> c["copy the configured signals<br>into the DAQ queue"]
       end
-      subgraph ML["main loop, one sweep every 100 us"]
-        d["xcp_r5_background()"] --> e["read new commands from XCP_IN<br>and execute them"]
+      subgraph ML["main loop"]
+        direction TB
+        d["xcp_r5_background()<br>one sweep per 100 us"] --> e["read new commands from XCP_IN<br>and execute them"]
         e --> f["park the response in the mailbox"]
         f --> g["drain the DAQ queue into XCP_OUT"]
         g --> h["publish, trigger IPI to the A53"]
       end
       c -. "DAQ queue" .-> g
 
-``xcp_r5_event()`` costs well below one microsecond while no measurement is running and roughly 5 µs per kilobyte of measured data per cycle.
 Command execution, cache maintenance and the copy into the OCM never run in the interrupt.
+
+The run time of ``xcp_r5_event()`` in the interrupt has not been measured yet.
+The estimate is well below one microsecond while no measurement is running and about 5 µs per kilobyte of data that is measured per cycle.
+For comparison, the complete exchange inside the interrupt was measured with about 10 µs plus 10 µs per kilobyte, which is why it was moved to the main loop.
 
 DAQ rasters
 ***********
@@ -100,19 +87,48 @@ A signal that only changes slowly should be measured on a slow raster, because t
      - every call of ``ISR_Control``
    * - 1
      - ``daq_1ms``
-     - derived from the control rate, about every 1 ms
+     - every *n* control cycles, nominally 1 ms
    * - 2
      - ``daq_10ms``
-     - about every 10 ms
+     - every 10 *n* control cycles
    * - 3
      - ``daq_100ms``
-     - about every 100 ms
+     - every 100 *n* control cycles
    * - 4
      - ``daq_1s``
-     - about every second
+     - every 1000 *n* control cycles
 
-The slow rasters are counted down from the control rate.
-If the control rate is not a multiple of 1 kHz they drift slightly; the time stamp of every sample is always the true one.
+*n* is the control rate divided by 1 kHz, rounded down, and at least 1.
+The slow rasters are therefore exact only if the control rate is a multiple of 1 kHz.
+At 12.5 kHz, for example, ``daq_1ms`` fires every 12 control cycles, which is every 0.96 ms.
+The time stamp of every sample is always the true one.
+The slow rasters are offset against each other by one control cycle.
+
+The gateway on the A53
+----------------------
+
+The gateway consists of two tasks and a hook in the interrupt handler of the IPI.
+Only the hook touches the OCM, and only the tasks use the UDP socket.
+Three queues connect them.
+
+.. mermaid::
+    :align: center
+    :caption: Tasks, queues and interrupt hook of the gateway on the A53
+
+    flowchart TB
+      min["UDP datagram from the master"] --> rx["rx task<br>checks the framing, remembers the master"]
+      rx -- "command queue" --> isr["hook in APU_IPI_ISR<br>runs once per IPI from the R5"]
+      xout["XCP_OUT"] -- "read under the seqlock" --> isr
+      isr -- "commands, acknowledges" --> xin["XCP_IN"]
+      isr -- "response queue,<br>has priority" --> tx["tx task<br>packs datagrams, stamps the transport counter"]
+      isr -- "DAQ queue,<br>262144 records" --> tx
+      tx --> mout["UDP datagram to the master"]
+
+- The **rx task** receives the datagrams of the master. It forwards a datagram only if it consists of well-formed XCP frames, and it remembers the sender as the master.
+- The **hook in** ``APU_IPI_ISR`` runs once for every IPI of the R5, that is once per sweep. It reads ``XCP_OUT``, puts responses and measurement data into two separate queues and writes the next commands and its acknowledges into ``XCP_IN``.
+- The **tx task** packs queued frames into datagrams of up to 1400 bytes, stamps the XCP transport counter and sends them. Responses are sent before waiting measurement data.
+
+The DAQ queue is deep (262144 records, about 68 MB) to bridge stalls of the network stack.
 
 The OCM exchange
 ----------------
@@ -143,7 +159,10 @@ The file exists as two identical copies, one compiled for each processor (``Bare
    The OCM layout is the protocol between the two applications. After any change to ``ocm_xcp_fifo.c`` or ``ocm_xcp_fifo.h``, keep both copies identical and rebuild and flash **both** applications.
 
 Neither processor waits for the other one.
-Four mechanisms make sure that nothing is lost or corrupted when the A53 handles the interrupt late, which happens regularly under network load.
+Four mechanisms keep the exchange consistent when the A53 handles the interrupt late, which happens regularly under network load.
+A late interrupt cannot lose a command or a response.
+Measurement data is delayed by it and is only lost when a buffer overflows or the A53 does not answer for 5 ms.
+Every such loss is counted, see :ref:`xcp_diagnostics`.
 
 .. list-table::
    :header-rows: 1
@@ -163,7 +182,7 @@ Four mechanisms make sure that nothing is lost or corrupted when the A53 handles
      - The A53 rewrites the same batch of commands on every interrupt until the R5 confirms the generation number. The R5 executes each generation exactly once.
    * - Consumption handshake on the DAQ chain
      - measurement data
-     - The R5 leaves a chain of DAQ frames in place until the A53 confirms it. In the meantime new samples wait in the 32 KB queue of the R5.
+     - The R5 leaves a chain of DAQ frames in place until the A53 confirms it, for at most 50 sweeps (5 ms). In the meantime new samples wait in the 32 KB queue of the R5.
 
 Command and response
 ********************
@@ -172,21 +191,22 @@ Command and response
     :align: center
     :caption: Path of one XCP command and its response
 
+    %%{init: {"sequence": {"mirrorActors": false, "messageMargin": 28, "actorMargin": 30, "noteMargin": 8, "boxMargin": 6, "height": 44}}}%%
     sequenceDiagram
       participant M as XCP master
       participant A as A53 gateway
       participant O as OCM
       participant R as R5 engine
-      M->>A: UDP datagram with command
+      M->>A: UDP datagram<br>with command
       Note over A: rx task checks the frame,<br>remembers the master address
-      A->>O: IPI ISR writes batch to XCP_IN,<br>generation n
-      R->>O: sweep reads generation n
+      A->>O: IPI ISR writes batch<br>to XCP_IN, generation n
+      R->>O: sweep reads<br>generation n
       Note over R: XcpCommand() executes
-      R->>O: response into mailbox, sequence s,<br>consumed generation n
+      R->>O: response into mailbox,<br>sequence s, consumed n
       R-->>A: IPI
       A->>O: IPI ISR reads mailbox,<br>acknowledges sequence s
-      A->>M: UDP datagram with response
-      Note over A,R: until the acknowledges arrive, both sides<br>keep offering the same bytes
+      A->>M: UDP datagram<br>with response
+      Note over A,R: until the acknowledges arrive,<br>both sides keep offering the same bytes
 
 Measurement data
 ****************
@@ -195,28 +215,24 @@ Measurement data
     :align: center
     :caption: Path of measurement data with the consumption handshake
 
+    %%{init: {"sequence": {"mirrorActors": false, "messageMargin": 28, "actorMargin": 30, "noteMargin": 8, "boxMargin": 6, "height": 44}}}%%
     sequenceDiagram
       participant I as R5 ISR_Control
       participant R as R5 main loop
-      participant O as XCP_OUT
-      participant A as A53 IPI ISR
-      participant T as A53 tx task
-      I->>R: samples into DAQ queue
-      R->>O: sweep k writes chain, chain_seq c
+      participant O as OCM
+      participant A as A53 gateway
+      I->>R: samples into<br>the DAQ queue
+      R->>O: sweep k writes chain c<br>to XCP_OUT
       R-->>A: IPI
-      A->>O: read chain c under the seqlock
-      A->>T: frames into DAQ queue
-      A->>O: acknowledge c in XCP_IN
-      T->>T: pack frames into datagrams,<br>stamp the transport counter
-      R->>O: sweep k+1 sees the acknowledge,<br>writes the next chain
+      A->>O: IPI ISR reads chain c<br>under the seqlock
+      A->>O: acknowledges c<br>in XCP_IN
+      Note over A: tx task packs the frames<br>into datagrams and stamps<br>the transport counter
+      R->>O: sweep k+1 sees the acknowledge,<br>writes chain c+1
       Note over R,A: no acknowledge yet, for example a late IPI:<br>the R5 keeps chain c and tries again one sweep later
 
 The A53 stamps the XCP transport counter when it sends a datagram.
-The counter on the wire is therefore always gapless, and data that is lost inside the UltraZohm is **not** visible as a counter error in the master.
+Data that was lost before this point, in one of the buffers of the UltraZohm, is therefore **not** visible as a counter error in the master.
 Such losses are counted instead, see :ref:`xcp_diagnostics`.
-
-On the A53 the response frames use their own queue and overtake waiting measurement data.
-The DAQ queue of the A53 is deep (262144 frames) to bridge stalls of the network stack.
 
 Memory access rules
 -------------------
@@ -225,28 +241,29 @@ The XCP master sends plain addresses, so the R5 checks every access before it to
 
 .. list-table::
    :header-rows: 1
-   :widths: 30 35 35
+   :widths: 44 28 28
 
    * - Memory
      - Read (measure, upload)
      - Write (calibrate, download)
-   * - ``.data``, ``.sdata``, ``.sbss``, ``.bss`` (global and ``static`` variables)
+   * - ``.data``, ``.sdata``, ``.sbss``, ``.bss``: all global and ``static`` variables
      - yes
      - yes, unless ``XCP_R5_READ_ONLY`` is set
-   * - code and constants in DDR, heap, stacks
+   * - rest of the DDR memory of the R5 (``0x40000000`` to ``0x47FF0000``): code, constants, heap, stacks
      - yes
      - no
-   * - TCM (exception vectors)
+   * - TCM (``0x0`` and ``0x20000``, 64 KB each), contains the exception vectors
      - yes
      - no
-   * - OCM
+   * - OCM (``0xFFFC0000`` to ``0xFFFFFFFF``)
      - yes
      - no
    * - everything else, for example A53 memory or the PL address space
      - no
      - no
 
-A refused read is answered with ``ERR_ACCESS_DENIED``, a refused write with ``ERR_WRITE_PROTECTED``.
+A refused read is answered with ``ERR_ACCESS_DENIED``.
+A refused write is answered with ``ERR_WRITE_PROTECTED`` if the address is readable and with ``ERR_ACCESS_DENIED`` if it is not.
 Without the read check, a wrong address in the A2L file would raise a data abort on the control core.
 
 Local variables of a function live on the stack or in a register and have no fixed address.
@@ -254,17 +271,19 @@ They can neither be measured nor calibrated by name.
 Declare such a variable ``static`` to make it accessible.
 
 .. note::
-   The write check protects the application from stale addresses. It does not validate values: a calibration value is applied as it is sent, and a value wider than one machine word is not written atomically with respect to the control interrupt.
+   The write check protects the application from stale addresses. It does not validate values: a calibration value is applied as it is sent. A value of 1, 2 or 4 bytes is written with a single access. Larger values (``double``, arrays, structures) are not written atomically with respect to the control interrupt.
 
 Master supervision
 ------------------
 
 UDP has no connection that could break.
-The gateway therefore ends an XCP session itself when the master is no longer reachable: it sends a regular XCP ``DISCONNECT`` to the R5 engine, which stops the measurement, and it forgets the address of the master.
+The gateway therefore ends an XCP session itself when it concludes that the master is gone: it sends a regular XCP ``DISCONNECT`` to the R5 engine, which stops the measurement, and it forgets the address of the master.
 The next ``CONNECT`` starts a new session.
 
-- Always active: 20 datagrams in a row could not be sent, for example because the cable was unplugged. This takes about one second.
-- Optional: the master did not send anything for ``XCP_GATEWAY_MASTER_TIMEOUT_MS`` while measurement data was flowing. This is switched off by default, because the XCP standard does not oblige a master to send anything during a measurement.
+- Always active: 20 datagrams in a row could not be handed to the network, each after five retries. This is the case when the Ethernet link of the UltraZohm is down, and it takes one to two seconds. It does **not** detect a master that crashed or was unplugged behind a switch, because sending still succeeds then.
+- Optional: the master did not send anything for ``XCP_GATEWAY_MASTER_TIMEOUT_MS`` (``xcp_gateway_a53.h``) while the gateway was sending. This covers the second case. It is switched off by default (value 0), because the XCP standard does not oblige a master to send anything during a measurement.
+
+Neither of the two has been tested on hardware yet.
 
 Files
 -----
@@ -290,4 +309,4 @@ Files
    * - ``FreeRTOS/sw/xcp_gateway/xcp_gateway_a53.c``
      - UDP gateway: two tasks and the hook in ``APU_IPI_ISR``
 
-Changes to the upstream engine files are kept minimal, are switched on only through ``xcplib_r5_cfg.h`` and are marked with ``UZ patch`` in the source, so that a newer XCPlite release can be taken over file by file.
+Changes to the upstream engine files are kept minimal, are marked with ``UZ patch`` in the source and are activated through ``xcplib_r5_cfg.h``, so that a newer XCPlite release can be taken over file by file.

@@ -4,9 +4,9 @@
 XCP diagnostics
 ===============
 
-The XCP transport counter on the wire is stamped by the A53 when it sends a datagram.
-It is always gapless, so the XCP master cannot see data that was lost inside the UltraZohm.
-Both processors count such events instead, and all counters can be read over XCP itself.
+The A53 stamps the XCP transport counter when it sends a datagram.
+Data that was lost before this point, in one of the buffers of the UltraZohm, leaves no gap in the counter, so the XCP master cannot see such a loss.
+Both processors count these events instead, and all counters can be read over XCP itself.
 
 Where data can wait or get lost
 -------------------------------
@@ -15,26 +15,26 @@ Where data can wait or get lost
     :align: center
     :caption: Buffers on the way of the measurement data and the counter that belongs to each of them
 
-    flowchart LR
-      isr["R5 ISR_Control"] --> q1["R5 DAQ queue<br>32 KB"]
-      q1 --> out["XCP_OUT<br>32 KB"]
-      out --> q2["A53 DAQ queue<br>262144 frames"]
+    flowchart TB
+      isr["R5 ISR_Control"] --> q1["R5 DAQ queue, 32 KB"]
+      q1 --> out["XCP_OUT, 32 KB"]
+      out --> q2["A53 DAQ queue, 262144 records"]
       q2 --> udp["UDP send"]
       udp --> pc["PC"]
-      q1 -. "full" .-> c1["xcp_r5_queue_lost"]
-      out -. "not acknowledged for 50 sweeps" .-> c2["xcp_r5_out_overwritten"]
-      q2 -. "full" .-> c3["xcp_gw_txq_dropped"]
-      udp -. "send failed after retries" .-> c4["xcp_gw_sendto_drop"]
-      pc -. "gap in transport counter" .-> c5["loss on the wire or in the PC"]
+      q1 -. "full" .-> c1(["xcp_r5_queue_lost"])
+      out -. "no acknowledge<br>for 50 sweeps" .-> c2(["xcp_r5_out_overwritten"])
+      q2 -. "full" .-> c3(["xcp_gw_txq_dropped"])
+      udp -. "failed after<br>all retries" .-> c4(["xcp_gw_sendto_drop"])
 
-A gap in the transport counter with ``xcp_gw_sendto_drop`` unchanged was lost on the wire or in the PC, not in the UltraZohm.
+A datagram that could not be sent (``xcp_gw_sendto_drop``) is the only loss inside the UltraZohm that the master sees as a gap in the transport counter.
+A gap with this counter unchanged was lost on the wire or in the PC.
 
 Reading the counters
 --------------------
 
-- **CANape**: the counters are measurement objects in ``CANape/UZ_XCP/uz.A2L``.
-- **xcp_poll.py**: ``--stress`` prints the change of every counter over the run. A single counter can be read with ``--watch <name>:u32``.
-- **gen_a2l.py**: ``--diag`` adds the counters to a generated A2L file.
+- **CANape**: ``CANape/UZ_XCP/uz.A2L`` contains all counters of the A53 and the loss counters of the R5, for example ``xcp_r5_queue_lost`` and ``xcp_r5_out_overwritten``. The other R5 counters can be added from the ELF file like any other variable.
+- **xcp_poll.py**: ``--stress`` prints the change of the counters over the run. A single R5 counter can be read with ``--watch <name>:u32``, a counter of the A53 with its address, for example ``--watch 0xFFFFC034:u32``.
+- **gen_a2l.py**: a generated A2L file always contains the counters of the A53. ``--diag`` adds those of the R5.
 
 The counters of the R5 are global variables of the Baremetal application.
 The counters of the A53 are copied on every interrupt into the header of ``XCP_IN`` at fixed addresses from ``0xFFFFC008`` and are read through the R5 like any other memory.
@@ -51,7 +51,7 @@ R5 counters
      - Meaning
    * - ``xcp_r5_init_result``
      - 0
-     - Result of ``xcp_r5_init()``. Negative: the engine is disabled.
+     - Result of ``xcp_r5_init()``. Negative: the initialisation failed and the engine is disabled. ``0x7FFFFFFF``: ``xcp_r5_init()`` was not called.
    * - ``xcp_r5_cycle_count``
      - counts up
      - One count per call of ``ISR_Control``.
@@ -59,11 +59,11 @@ R5 counters
      - counts up
      - One count per exchange sweep of the main loop.
    * - ``xcp_r5_sweep_gap_max_us``
-     - about 100
-     - Longest time between two sweeps. A large value means that something blocks the main loop.
+     - slightly above 100
+     - Longest time between two sweeps since start-up, in microseconds. A single slow pass of the main loop raises it for good. A large value means that something blocks the main loop.
    * - ``xcp_r5_queue_lost``
      - 0
-     - Samples dropped because the DAQ queue of the R5 was full. This is the loss counter for measurement data on the R5.
+     - Measurement data dropped because the DAQ queue of the R5 was full. This is the loss counter for measurement data on the R5.
    * - ``xcp_r5_tx_held``
      - may count
      - Sweeps that filled ``XCP_OUT`` completely. The rest waited in the queue. A steady increase means the measurement produces more data than the exchange can carry.
@@ -72,7 +72,7 @@ R5 counters
      - Sweeps that kept the previous chain because the A53 had not acknowledged it yet. Delay, not loss.
    * - ``xcp_r5_out_overwritten``
      - 0
-     - Chains given up after 50 sweeps without acknowledge. The gateway is not running or stalled.
+     - Chains given up after 50 sweeps (5 ms) without acknowledge. Their data is lost. The gateway is not running or stalled.
    * - ``xcp_r5_cto_sent``
      - counts up
      - Command responses handed to the mailbox.
@@ -84,7 +84,7 @@ R5 counters
      - Command batches executed.
    * - ``xcp_r5_in_resumed``
      - may count
-     - Command batches that were executed over several sweeps.
+     - Sweeps that had to interrupt a command batch because four responses were already waiting for the mailbox. The batch continues in the next sweep.
    * - ``xcp_r5_cmd_oversize_drop``
      - 0
      - Commands longer than 248 bytes that were refused.
@@ -109,15 +109,15 @@ A53 gateway counters
    * - ``xcp_gw_ocm_skipped_writing``
      - ``0xFFFFC008``
      - may count
-     - The interrupt arrived while the R5 was writing. The read is repeated.
+     - The interrupt arrived while the R5 was writing. Nothing is read. The R5 keeps the data in place, so it is read with the next interrupt.
    * - ``xcp_gw_ocm_torn``
      - ``0xFFFFC00C``
      - may count
-     - The R5 changed ``XCP_OUT`` during the read. The read is repeated.
+     - The R5 changed ``XCP_OUT`` during the read. The read is discarded and repeated with the next interrupt.
    * - ``xcp_gw_ocm_cycles_missed``
      - ``0xFFFFC010``
      - may count
-     - Sweeps of the R5 that no interrupt read. Indicates interrupt latency on the A53.
+     - Sweeps of the R5 that no interrupt read. Indicates interrupt latency on the A53, not a loss.
    * - ``xcp_gw_ocm_capped``
      - ``0xFFFFC014``
      - 0
@@ -129,7 +129,7 @@ A53 gateway counters
    * - ``xcp_gw_ctoq_dropped``
      - ``0xFFFFC01C``
      - 0
-     - Response queue full.
+     - Response queue full. A response or an event was lost.
    * - ``xcp_gw_in_batches_sent``
      - ``0xFFFFC020``
      - counts up
@@ -145,7 +145,7 @@ A53 gateway counters
    * - ``xcp_gw_rx_malformed_drop``
      - ``0xFFFFC02C``
      - 0
-     - Datagram from the network with a broken frame structure, for example from a port scanner.
+     - Datagram from the network with a broken frame structure or a command longer than 248 bytes, for example from a port scanner.
    * - ``xcp_gw_sendto_err``
      - ``0xFFFFC030``
      - may count
@@ -177,17 +177,19 @@ Troubleshooting
    * - Symptom
      - Check
    * - No response to ``CONNECT``
-     - Serial console: is the XCP banner printed, is there a logging path mismatch warning? Is UDP port 5556 blocked by a firewall on the PC? Were both applications flashed?
+     - Serial console: is the XCP banner printed, is there a logging path mismatch warning? Does the master use UDP and port 5556? Is the port blocked by a firewall on the PC? Were both applications flashed?
    * - ``CONNECT`` works, reading a variable gives ``ERR_ACCESS_DENIED``
      - The address is outside the memory of the R5. The A2L file or the ELF file does not belong to the firmware on the board.
    * - A write gives ``ERR_WRITE_PROTECTED``
      - The target is not a global or ``static`` variable (for example a constant), or the firmware was built with ``XCP_R5_READ_ONLY``.
-   * - Measurement does not start, ``DAQ_CONFIG`` error
+   * - Measurement does not start, ``ERR_DAQ_CONFIG``
      - The A2L file must limit ODT entries to 240 bytes.
+   * - Measurement does not start, ``ERR_MEMORY_OVERFLOW``
+     - The measurement configuration is larger than the DAQ tables of the R5 (about 1000 signals). Measure fewer signals or raise ``OPTION_DAQ_MEM_SIZE`` in ``xcplib_r5_cfg.h``.
    * - A complete structure cannot be added in CANape
      - The A2L file needs a structure description, see :ref:`xcp_usage`.
    * - Values are plausible but shifted or wrong
-     - The addresses are stale. Reload the A2L file after building, or point the master to the current ELF file.
+     - The addresses are stale. Load the CANape project again after building, or generate the A2L file again. For a complete structure also check that its description matches the current layout, see :ref:`xcp_usage`.
    * - Gaps in the measurement, no counter of the UltraZohm changed
      - Loss in the network or in the PC. Increase the receive buffer of the PC or reduce the data rate with a slower raster.
    * - ``xcp_r5_queue_lost`` increases
@@ -195,6 +197,6 @@ Troubleshooting
    * - CANape reports a timeout during a running measurement
      - Use a command timeout ``T1`` of 5000 ms in the A2L file.
    * - Measurement stops by itself, ``xcp_gw_master_lost`` increased
-     - The gateway could not send for about one second, or the optional silence timeout expired.
+     - The gateway could not send for about one second, for example because the Ethernet link was down, or the optional silence timeout expired.
 
 The complete bring-up procedure with expected outputs is kept in ``option_z/TEST_PLAN.md`` of the repository.

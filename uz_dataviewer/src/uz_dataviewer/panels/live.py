@@ -174,6 +174,7 @@ class LiveWorkspace:
         self.paused = False
         self.window_seconds = 2.
         self.query = ''
+        self._observable_index = 0
         self.selected_slot = None
         self.variable_query = ''
         self.variable_values = {}
@@ -566,16 +567,54 @@ class LiveWorkspace:
                 imgui.set_drag_drop_payload_py_id(LIVE_SIGNAL_DND_TYPE, 0)
                 imgui.text_unformatted(name)
                 imgui.end_drag_drop_source()
+        self._observable_picker(profile, locked)
+
+    def _observable_picker(self, profile, locked):
         if imgui.begin_popup('Select observable'):
             imgui.text_unformatted(f'Channel {self.selected_slot}')
-            if imgui.is_window_appearing():
+            appearing = imgui.is_window_appearing()
+            if appearing:
+                self._observable_index = 0
                 imgui.set_keyboard_focus_here()
-            _, self.query = imgui.input_text('Fuzzy search', self.query)
-            imgui.begin_disabled(locked or not self.update.attached)
-            for name in fuzzy_names(profile.get('observables', {}), self.query):
-                if imgui.selectable(name, False)[0]:
+            step = 0
+            def navigate(data):
+                nonlocal step
+                if data.event_key == imgui.Key.down_arrow:
+                    step = 1
+                elif data.event_key == imgui.Key.up_arrow:
+                    step = -1
+                return 0
+            previous = self.query
+            submitted, self.query = imgui.input_text(
+                'Fuzzy search', self.query,
+                imgui.InputTextFlags_.enter_returns_true | imgui.InputTextFlags_.callback_history,
+                navigate)
+            changed = self.query != previous
+            matches = fuzzy_names(profile.get('observables', {}), self.query)
+            self._observable_index = (0 if changed else
+                max(0, min(len(matches) - 1, self._observable_index + step)))
+            enabled = not locked and self.update.attached
+            escaped = imgui.is_key_pressed(imgui.Key.escape)
+            if escaped:
+                imgui.close_current_popup()
+            elif submitted and enabled and matches:
+                self.send('set_observable', name=matches[self._observable_index], channel=self.selected_slot)
+                imgui.close_current_popup()
+            elif submitted:
+                imgui.set_keyboard_focus_here(-1)
+            imgui.text_disabled('Up/Down: choose  |  Enter: select  |  Esc: cancel')
+            imgui.begin_disabled(not enabled)
+            imgui.begin_child('observable_results', imgui.ImVec2(em_size(32), em_size(16)))
+            for index, name in enumerate(matches):
+                selected = index == self._observable_index
+                if imgui.selectable(name, selected)[0] and not submitted and not escaped:
                     self.send('set_observable', name=name, channel=self.selected_slot)
                     imgui.close_current_popup()
+                if selected and (step or changed or appearing):
+                    imgui.set_scroll_here_y()
+            if not matches:
+                imgui.text_disabled('No matching observables')
+            imgui.end_child()
             imgui.end_disabled()
             imgui.end_popup()
 

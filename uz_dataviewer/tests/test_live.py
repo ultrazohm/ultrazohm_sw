@@ -208,6 +208,112 @@ def test_fuzzy_observable_names():
     assert fuzzy_names(names, 'xyz') == []
 
 
+@pytest.fixture
+def observable_picker(gui_frame, app_state, monkeypatch):
+    from imgui_bundle import imgui
+    workspace = LiveWorkspace(LiveController())
+    workspace.update = LiveUpdate(1, attached=True)
+    calls = []
+    monkeypatch.setattr(workspace, 'send', lambda operation, **kwargs: calls.append((operation, kwargs)))
+    picker = SimpleNamespace(workspace=workspace, calls=calls, locked=False, opening=False, opened=False)
+    picker.positions, picker.selected_visible = {}, False
+    original_selectable = imgui.selectable
+    def selectable(label, selected=False, *args, **kwargs):
+        result = original_selectable(label, selected, *args, **kwargs)
+        if label.startswith('channel_'):
+            lo, hi = imgui.get_item_rect_min(), imgui.get_item_rect_max()
+            picker.positions[label] = ((lo.x + hi.x) / 2, (lo.y + hi.y) / 2)
+            if selected:
+                picker.selected_visible = imgui.is_item_visible()
+        return result
+    monkeypatch.setattr(imgui, 'selectable', selectable)
+    profile = {'observables': {f'channel_{i:02d}': i for i in range(30)}}
+    def render(state):
+        if picker.opening:
+            imgui.open_popup('Select observable')
+            picker.opening = False
+        workspace._observable_picker(profile, picker.locked)
+        picker.opened = imgui.is_popup_open('Select observable')
+    picker.frame = lambda: gui_frame(SimpleNamespace(render=render), app_state)
+    def open_picker():
+        workspace.query, workspace.selected_slot = '', 7
+        picker.opening = True
+        for _ in range(3):
+            picker.frame()
+    picker.open = open_picker
+    def key(value):
+        imgui.get_io().add_key_event(value, True)
+        picker.frame()
+        imgui.get_io().add_key_event(value, False)
+        picker.frame()
+    picker.key = key
+    try:
+        yield picker
+    finally:
+        workspace.close()
+
+
+def test_observable_keyboard_navigation_and_filtering(observable_picker):
+    from imgui_bundle import imgui
+    picker = observable_picker
+    picker.open()
+    picker.key(imgui.Key.up_arrow)  # Clamp at the first result.
+    assert picker.workspace._observable_index == 0
+    picker.key(imgui.Key.down_arrow)
+    picker.key(imgui.Key.down_arrow)
+    picker.key(imgui.Key.up_arrow)
+    picker.key(imgui.Key.enter)
+    assert picker.calls == [('set_observable', {'name': 'channel_01', 'channel': 7})]
+    assert not picker.opened
+    picker.open()
+    for _ in range(35):
+        picker.key(imgui.Key.down_arrow)
+    assert picker.workspace._observable_index == 29
+    assert picker.selected_visible
+    # Arrow navigation must leave the text field ready for further typing.
+    imgui.get_io().add_input_characters_utf8('12')
+    picker.frame()
+    assert picker.workspace.query == '12'
+    assert picker.workspace._observable_index == 0
+    picker.key(imgui.Key.enter)
+    assert picker.calls[-1] == ('set_observable', {'name': 'channel_12', 'channel': 7})
+    assert not picker.opened
+    picker.open()
+    assert picker.workspace._observable_index == 0 and picker.selected_visible
+
+
+def test_observable_picker_still_accepts_mouse_selection(observable_picker):
+    from imgui_bundle import imgui
+    picker = observable_picker
+    picker.open()
+    io = imgui.get_io()
+    io.add_mouse_pos_event(*picker.positions['channel_02'])
+    picker.frame()
+    io.add_mouse_button_event(0, True)
+    picker.frame()
+    io.add_mouse_button_event(0, False)
+    picker.frame()
+    assert picker.calls == [('set_observable', {'name': 'channel_02', 'channel': 7})]
+    assert not picker.opened
+
+
+@pytest.mark.parametrize('blocked', ['empty', 'logging', 'detached'])
+def test_observable_keyboard_empty_locked_and_escape(observable_picker, blocked):
+    from imgui_bundle import imgui
+    picker = observable_picker
+    picker.locked = blocked == 'logging'
+    picker.workspace.update = replace(picker.workspace.update, attached=blocked != 'detached')
+    picker.open()
+    if blocked == 'empty':
+        imgui.get_io().add_input_characters_utf8('no match')
+        picker.frame()
+    picker.key(imgui.Key.down_arrow)
+    picker.key(imgui.Key.enter)
+    assert picker.opened and not picker.calls
+    picker.key(imgui.Key.escape)
+    assert not picker.opened and not picker.calls
+
+
 def test_changed_observable_keeps_run_plots_and_unchanged_history():
     controller = LiveController(lambda _: None)
     workspace = LiveWorkspace(controller)

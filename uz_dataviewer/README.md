@@ -478,7 +478,11 @@ viewer does not start a replacement service afterward.
   connected/data-reception indicator or an error. Progress and results also appear
   in the Console; connection buttons stay disabled while a request is pending.
 - The 20 channel slots show the service's requested assignments. Double-click a slot
-  to choose an observable using case-insensitive fuzzy search. Selection is blocked
+  to choose an observable using case-insensitive fuzzy search. Use **Up/Down** to
+  highlight a result, **Enter** to assign it, and **Esc** to cancel. Typing continues
+  filtering the list after arrow navigation; editing the query highlights the first
+  match. Matches accept gaps between characters, but require their original order;
+  contiguous matches rank first. Selection is blocked
   while either stream is recording. A mapping/reconnect generation change clears
   live plot assignments and cached samples; drag the desired signals again.
 - Drag channels into **Live Plots**. This reuses the normal plot renderer, grid,

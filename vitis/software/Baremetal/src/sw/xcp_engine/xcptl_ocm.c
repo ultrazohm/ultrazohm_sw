@@ -73,6 +73,47 @@
 
 extern uint64_t uz_SystemTime_GetUptimeInUs(void);
 
+#if XCP_R5_PROFILE
+#include "xparameters.h" /* XPAR_CPU_CORTEXR5_0_CPU_CLK_FREQ_HZ */
+extern float uz_SystemTime_GetIsrExectionTimeInUs(void);
+
+/* R5 CPU cycle counter (PMU PMCCNTR). Enabled by xcp_r5_init(); it wraps
+ * every ~8.6 s at 500 MHz, so only differences are used. */
+static inline uint32_t xcp_r5_cycles(void) {
+    uint32_t v;
+    __asm volatile("mrc p15, 0, %0, c9, c13, 0" : "=r"(v));
+    return v;
+}
+
+static void xcp_r5_cycles_enable(void) {
+    uint32_t pmcr;
+    __asm volatile("mrc p15, 0, %0, c9, c12, 0" : "=r"(pmcr));
+    pmcr |= 1u;         /* E: counters on */
+    pmcr &= ~(1u << 3); /* D: count every cycle, not every 64th */
+    __asm volatile("mcr p15, 0, %0, c9, c12, 0" ::"r"(pmcr));
+    __asm volatile("mcr p15, 0, %0, c9, c12, 1" ::"r"(1u << 31)); /* PMCNTENSET: cycle counter */
+}
+
+volatile xcp_r5_prof_t xcp_r5_prof = {.version = 1u, .cpu_hz = XPAR_CPU_CORTEXR5_0_CPU_CLK_FREQ_HZ};
+/* The layout is read by tools/xcp_test/xcp_poll.py (PROF_FMT): keep both in sync. */
+_Static_assert(sizeof(xcp_r5_prof_t) == 136u, "xcp_r5_prof_t layout changed");
+_Static_assert(__builtin_offsetof(xcp_r5_prof_t, elapsed_cyc) == 40u, "xcp_r5_prof_t layout changed");
+
+/* Written by the control ISR (xcp_r5_event), 32-bit and wrapping; the main
+ * loop folds the differences into the 64-bit sums of xcp_r5_prof. */
+static volatile uint32_t gProfIsrNs = 0u;    /* run time of every ISR_Control [ns] */
+static volatile uint32_t gProfEventCyc = 0u; /* cycles spent in xcp_r5_event()     */
+static volatile uint32_t gProfEventCalls = 0u;
+static volatile uint32_t gProfEventMax = 0u;
+/* Main loop only. */
+static uint32_t gProfIsrNsFold = 0u;
+static uint32_t gProfEventCycFold = 0u;
+static uint32_t gProfEventCallsFold = 0u;
+static uint32_t gProfLastStart = 0u;
+static int gProfHaveLast = 0;
+static uint32_t gProfChainBytes = 0u; /* chain bytes written in the current exchange */
+#endif
+
 /* Framed CRM messages must fit the OCM mailbox slot. */
 #if (XCPTL_MAX_CTO_SIZE + XCPTL_TRANSPORT_LAYER_HEADER_SIZE) > 256
 #error "XCPTL_MAX_CTO_SIZE + header exceeds OCM_XCP_CTO_SLOT_LEN"
@@ -392,6 +433,9 @@ void xcp_r5_tx_pump(void) {
                 break;
             }
             (void)ocm_xcp_fifo_write(l, gTxHeld.buffer); /* cannot fail now */
+#if XCP_R5_PROFILE
+            gProfChainBytes += 4u + (uint32_t)l; /* length word + record */
+#endif
         } else {
             /* Impossible (segment <= OCM_XCP_RECORD_MAX, #if above), but never truncate. */
             xcp_r5_tx_oversize_drop++;
@@ -416,6 +460,9 @@ void xcp_r5_event(void) {
     if (gQueue == NULL) {
         return; /* init failed or not run: engine disabled */
     }
+#if XCP_R5_PROFILE
+    const uint32_t c0 = xcp_r5_cycles();
+#endif
     xcp_r5_cycle_count++;
     XcpEvent(xcp_r5_daq_event);
 
@@ -426,6 +473,19 @@ void xcp_r5_event(void) {
             XcpEvent(xcp_r5_daq_slice_event[i]);
         }
     }
+#if XCP_R5_PROFILE
+    {
+        const uint32_t d = xcp_r5_cycles() - c0;
+        gProfEventCyc += d;
+        gProfEventCalls++;
+        if (d > gProfEventMax) {
+            gProfEventMax = d;
+        }
+        /* Run time of the previous ISR_Control (uz_SystemTime Tic/Toc): the
+         * main loop subtracts it from the phases it interrupted. */
+        gProfIsrNs += (uint32_t)(uz_SystemTime_GetIsrExectionTimeInUs() * 1000.0f);
+    }
+#endif
 }
 
 /* One full exchange sweep (MAIN-LOOP context; use xcp_r5_background() for
@@ -435,11 +495,110 @@ void xcp_r5_event(void) {
  * acknowledge the generation, pump the mailbox, drain the DAQ queue ->
  * XCP_OUT chain, then publish the cycle (flush + even seqlock). The caller
  * signals the A53 (IPI) after this returns. */
+#if XCP_R5_PROFILE
+/* Phase stamps of one exchange: cycle counter and ISR time sum. */
+#define XCP_R5_PROF_MARK(i)        \
+    do {                           \
+        pc[i] = xcp_r5_cycles();   \
+        pi[i] = gProfIsrNs;        \
+    } while (0)
+
+static void xcp_r5_prof_account(const uint32_t *pc, const uint32_t *pi, int keep) {
+    volatile xcp_r5_prof_t *p = &xcp_r5_prof;
+    if (p->reset != 0u) {
+        /* Requested by the master (DOWNLOAD, runs in this context): restart
+         * all sums with the next exchange. */
+        p->reset = 0u;
+        p->exchanges = 0u;
+        p->keeps = 0u;
+        p->event_calls = 0u;
+        p->event_cyc_max = 0u;
+        p->copy_cyc_max = 0u;
+        p->flush_cyc_max = 0u;
+        p->total_cyc_max = 0u;
+        p->elapsed_cyc = 0u;
+        p->chain_bytes = 0u;
+        p->cyc_refresh = 0u;
+        p->cyc_commands = 0u;
+        p->cyc_copy = 0u;
+        p->cyc_flush = 0u;
+        p->cyc_total = 0u;
+        p->isr_ns_copy = 0u;
+        p->isr_ns_flush = 0u;
+        p->isr_ns_total = 0u;
+        p->isr_ns_all = 0u;
+        p->event_cyc = 0u;
+        gProfEventMax = 0u;
+        gProfIsrNsFold = gProfIsrNs;
+        gProfEventCycFold = gProfEventCyc;
+        gProfEventCallsFold = gProfEventCalls;
+        gProfHaveLast = 0;
+        gProfChainBytes = 0u;
+        return;
+    }
+    const uint32_t copy = pc[3] - pc[2];
+    const uint32_t flush = pc[4] - pc[3];
+    const uint32_t total = pc[4] - pc[0];
+    p->exchanges++;
+    if (keep) {
+        p->keeps++;
+    }
+    if (gProfHaveLast) {
+        p->elapsed_cyc += (uint32_t)(pc[0] - gProfLastStart);
+    }
+    gProfLastStart = pc[0];
+    gProfHaveLast = 1;
+    p->chain_bytes += gProfChainBytes;
+    gProfChainBytes = 0u;
+    p->cyc_refresh += (uint32_t)(pc[1] - pc[0]);
+    p->cyc_commands += (uint32_t)(pc[2] - pc[1]);
+    p->cyc_copy += copy;
+    p->cyc_flush += flush;
+    p->cyc_total += total;
+    p->isr_ns_copy += (uint32_t)(pi[3] - pi[2]);
+    p->isr_ns_flush += (uint32_t)(pi[4] - pi[3]);
+    p->isr_ns_total += (uint32_t)(pi[4] - pi[0]);
+    if (copy > p->copy_cyc_max) {
+        p->copy_cyc_max = copy;
+    }
+    if (flush > p->flush_cyc_max) {
+        p->flush_cyc_max = flush;
+    }
+    if (total > p->total_cyc_max) {
+        p->total_cyc_max = total;
+    }
+    {
+        const uint32_t v = gProfIsrNs;
+        p->isr_ns_all += (uint32_t)(v - gProfIsrNsFold);
+        gProfIsrNsFold = v;
+    }
+    {
+        const uint32_t v = gProfEventCyc;
+        p->event_cyc += (uint32_t)(v - gProfEventCycFold);
+        gProfEventCycFold = v;
+    }
+    {
+        const uint32_t v = gProfEventCalls;
+        p->event_calls += (uint32_t)(v - gProfEventCallsFold);
+        gProfEventCallsFold = v;
+    }
+    p->event_cyc_max = gProfEventMax;
+}
+#endif
+
 void xcp_r5_poll(void) {
     if (gQueue == NULL) {
         return; /* init failed or not run: engine disabled */
     }
+#if XCP_R5_PROFILE
+    uint32_t pc[5];
+    uint32_t pi[5];
+    XCP_R5_PROF_MARK(0);
+#endif
     ocm_xcp_fifo_cache_invalidate_before_read(); /* fresh XCP_IN: acks, in_gen, commands */
+#if XCP_R5_PROFILE
+    XCP_R5_PROF_MARK(1);
+#endif
 
     /* Consumption handshake: a chain that carried data stays in place until
      * the A53 acknowledges it; this sweep then only updates the header
@@ -539,6 +698,9 @@ void xcp_r5_poll(void) {
     /* After command processing: a response generated this cycle can ride the
      * mailbox in this same cycle (if it is free). */
     xcp_r5_pump_cto();
+#if XCP_R5_PROFILE
+    XCP_R5_PROF_MARK(2);
+#endif
 
     if (!keep) {
         xcp_r5_tx_pump();
@@ -546,8 +708,15 @@ void xcp_r5_poll(void) {
          * (XcpTlWaitForTransmitQueueEmpty). */
         gOutPending = ocm_xcp_fifo_chain_nonempty();
     }
+#if XCP_R5_PROFILE
+    XCP_R5_PROF_MARK(3);
+#endif
 
     ocm_xcp_fifo_cache_flush_after_write(); /* chain, then header + even seq */
+#if XCP_R5_PROFILE
+    XCP_R5_PROF_MARK(4);
+    xcp_r5_prof_account(pc, pi, keep);
+#endif
 }
 
 /* Paced sweep driver. Call from the MAIN LOOP every iteration; it runs one
@@ -581,6 +750,9 @@ int xcp_r5_background(void) {
 /* One-time init. Base addr 0 => XCP address == pointer => arbitrary R5
  * addressing (the point of Option Z). Returns 0 on success. */
 int xcp_r5_init(const char *name, const char *epk) {
+#if XCP_R5_PROFILE
+    xcp_r5_cycles_enable();
+#endif
     gCtr = 0u;
     gQueue = queueInit((size_t)XCP_R5_QUEUE_SIZE_BYTES);
     if (gQueue == NULL) {

@@ -167,6 +167,22 @@ A53 gateway counters
      - 0
      - Sessions that the gateway closed because the master was unreachable.
 
+Time profile of the R5
+----------------------
+
+The R5 also measures where its time goes.
+It times every exchange and every call of ``xcp_r5_event()`` with its CPU cycle counter and keeps the sums in the global structure ``xcp_r5_prof``.
+``xcp_poll.py --stress`` clears the sums before a run, reads them at the end of the run while DAQ is still running, and prints:
+
+- the exchanges per second and the wall time of one exchange,
+- the wall time of each phase of an exchange: refreshing the command region, executing commands, copying DAQ data into ``XCP_OUT`` and flushing the cache,
+- the copy and flush time per KB of DAQ data, once as wall time and once as CPU time without the control interrupts that hit the phase,
+- how the time of the R5 splits into the control interrupt, the exchanges and the rest of the main loop,
+- the run time of the control interrupt per cycle and the part of it spent in ``xcp_r5_event()``.
+
+The profile costs a few reads of the cycle counter per exchange and per control cycle.
+It is switched off with ``XCP_R5_PROFILE`` set to ``0`` in ``xcp_r5.h``.
+
 Troubleshooting
 ---------------
 

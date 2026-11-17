@@ -399,6 +399,68 @@ def stress_geometry(target_bytes, max_dto):
     return odts
 
 
+# R5 exchange profile (struct xcp_r5_prof, xcp_r5.h XCP_R5_PROFILE), layout
+# version 1: 10 x u32 then 12 x u64, 136 bytes. Keep in sync with xcp_r5.h.
+PROF_FMT = "<10I12Q"
+PROF_FIELDS = ("version cpu_hz reset exchanges keeps event_calls event_cyc_max "
+               "copy_cyc_max flush_cyc_max total_cyc_max elapsed_cyc chain_bytes "
+               "cyc_refresh cyc_commands cyc_copy cyc_flush cyc_total isr_ns_copy "
+               "isr_ns_flush isr_ns_total isr_ns_all event_cyc").split()
+
+
+def prof_reset(xcp, addr):
+    """Ask the R5 to restart its exchange profile (field `reset`, offset 8).
+    SET_MTA + DOWNLOAD; the R5 clears the sums at its next exchange."""
+    xcp._cmd_checked("SET_MTA", bytes([0xF6, 0, 0, 0]) + struct.pack("<I", addr + 8))
+    xcp._cmd_checked("DOWNLOAD", bytes([0xF0, 4]) + struct.pack("<I", 1))
+
+
+def prof_read(xcp, addr):
+    raw = xcp.short_upload(addr, struct.calcsize(PROF_FMT))
+    prof = dict(zip(PROF_FIELDS, struct.unpack(PROF_FMT, raw)))
+    return prof if prof["version"] == 1 else None
+
+
+def print_prof(p):
+    """Where the R5 spends its time: exchange phases (wall and CPU time),
+    the split between control ISR, exchanges and the rest of the main loop,
+    and the XCP part of the ISR."""
+    hz = float(p["cpu_hz"])
+    n = p["exchanges"]
+    if not n or not hz or not p["elapsed_cyc"]:
+        print("    R5 exchange profile: no data")
+        return
+
+    def us(cyc):
+        return 1e6 * cyc / hz
+
+    elapsed = us(p["elapsed_cyc"])
+    print("    R5 exchange profile while DAQ ran (%d exchanges = %.0f/s, %d kept the chain):"
+          % (n, n / (elapsed / 1e6), p["keeps"]))
+    print("      exchange, wall         avg %7.1f us   max %7.1f us"
+          % (us(p["cyc_total"]) / n, us(p["total_cyc_max"])))
+    print("      phases, avg wall       refresh %.1f   commands %.1f   copy %.1f   flush %.1f us"
+          % (us(p["cyc_refresh"]) / n, us(p["cyc_commands"]) / n,
+             us(p["cyc_copy"]) / n, us(p["cyc_flush"]) / n))
+    kb = p["chain_bytes"] / 1024.0
+    if kb > 0:
+        for name, cyc, isr_ns, mx in (("copy", p["cyc_copy"], p["isr_ns_copy"], p["copy_cyc_max"]),
+                                      ("flush", p["cyc_flush"], p["isr_ns_flush"], p["flush_cyc_max"])):
+            wall = us(cyc)
+            cpu = wall - isr_ns / 1000.0
+            print("      %-5s per KB           wall %6.2f us   CPU %6.2f us   (ISR share %4.1f %%, longest %.1f us)"
+                  % (name, wall / kb, cpu / kb, 100.0 * (isr_ns / 1000.0) / wall if wall else 0.0, us(mx)))
+        print("      chain data             %.1f MB in %.1f s = %.1f MB/s"
+              % (p["chain_bytes"] / 1e6, elapsed / 1e6, p["chain_bytes"] / elapsed))
+    isr = p["isr_ns_all"] / 1000.0
+    exch_cpu = us(p["cyc_total"]) - p["isr_ns_total"] / 1000.0
+    print("      R5 time split          control ISR %5.1f %%   exchanges %5.1f %%   rest of the main loop %5.1f %%"
+          % (100.0 * isr / elapsed, 100.0 * exch_cpu / elapsed, 100.0 * (elapsed - isr - exch_cpu) / elapsed))
+    if p["event_calls"]:
+        print("      per control cycle      ISR %5.2f us, of it xcp_r5_event() avg %5.2f us, max %5.2f us"
+              % (isr / p["event_calls"], us(p["event_cyc"]) / p["event_calls"], us(p["event_cyc_max"])))
+
+
 def run_stress(xcp, args, max_dto):
     """DAQ throughput stress: one wide multi-ODT list on args.daq_event (by
     default the full control rate). Verifies the CP7 gateway path under load: UDP batching
@@ -423,6 +485,14 @@ def run_stress(xcp, args, max_dto):
     if not pre:
         print("[!] R5 diag counters not resolvable (no Baremetal.elf?) -- skipping deltas")
     pre_a53 = read_a53_diag(xcp)
+    prof_addr = nm_lookup(DEFAULT_ELF_R5, args.nm, ["xcp_r5_prof"]).get("xcp_r5_prof")
+    prof = None
+    if prof_addr is not None:
+        try:
+            prof_reset(xcp, prof_addr)
+        except (TimeoutError, RuntimeError) as e:
+            print("[!] R5 exchange profile not resettable (%s) -- skipping it" % e)
+            prof_addr = None
 
     # A large kernel receive buffer so the flood is not dropped PC-side: at
     # 160 Mbit/s a ~100 ms Windows scheduling hiccup already costs 2 MB.
@@ -500,6 +570,11 @@ def run_stress(xcp, args, max_dto):
                     cycles += 1
                 off += 4 + dlc
     finally:
+        if prof_addr is not None:
+            try:  # while DAQ still runs; skipped DTOs no longer count here
+                prof = prof_read(xcp, prof_addr)
+            except (TimeoutError, RuntimeError):
+                prof = None
         xcp.daq_stop()
         xcp.drain()
 
@@ -557,6 +632,8 @@ def run_stress(xcp, args, max_dto):
               "0 = wire/PC-side loss)")
     else:
         print("    (A53 gateway counters not readable: gateway older than the XCP_IN mirror?)")
+    if prof:
+        print_prof(prof)
     if frames == 0:
         print("\n[x] no DTOs received -- stress FAILED")
         return 1

@@ -97,6 +97,13 @@ tests 1 to 4.
   overload limit did not move (R5-bound, see above). Counter meanings:
   `xcp_gw_ocm_skipped_writing` = header copy unusable, `xcp_gw_ocm_torn` =
   chain really rewritten mid-read
+- 2026-11-17, NOT yet on hardware: R5 time profile `xcp_r5_prof` (PMU cycle
+  counter: exchange phases refresh/commands/copy/flush with the ISR time
+  inside them, the XCP part of the ISR, the R5 time split); printed by
+  `xcp_poll.py --stress`. Switch `XCP_R5_PROFILE` (xcp_r5.h, default 1)
+- 2026-11-17, NOT yet on hardware: `XCP_R5_ENGINE_ASSERTS` (xcplib_r5_cfg.h,
+  default 1 = upstream asserts active in the Debug build) to measure and
+  optionally drop the engine asserts in the ISR path
 
 ## HARDWARE VALIDATED (2026-07-10/11)
 

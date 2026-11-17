@@ -119,6 +119,28 @@ Usage:
 
    source {../../tcl_scripts/vitis_generate_UltraZohm_workspace.tcl}
 
+.. _vitis_patch_freertos_bsp_tcl:
+
+vitis_patch_UltraZohm_freertos_bsp.tcl
+--------------------------------------
+
+Inserts ``portMEMORY_BARRIER`` into the generated ``FreeRTOSConfig.h`` of the FreeRTOS BSP.
+The FreeRTOS port of Vitis 2022.2 for the A53 does not define it, and without it the A53 can freeze under network load.
+``vitis_generate_UltraZohm_workspace.tcl`` and ``vitis_update_platform.tcl`` call the script after regenerating the BSP and again right before building the platform.
+After the platform build, both scripts check that the FreeRTOS kernel library and the exported headers were built with the define, and stop with an error otherwise.
+
+Every regeneration of the BSP removes the define again, also a change of the BSP settings in the Vitis GUI.
+The FreeRTOS application therefore does not compile against a BSP without the define and stops with the message ``FreeRTOS BSP without portMEMORY_BARRIER``.
+To fix this, run ``vitis_update_platform.tcl``, or type the following commands in the XSCT console and build the FreeRTOS application again:
+
+::
+
+   cd [getws]
+   source {../../tcl_scripts/vitis_patch_UltraZohm_freertos_bsp.tcl}
+   uz_vitis_patch_freertos_bsp [getws]
+   platform generate
+   uz_vitis_verify_freertos_bsp [getws]
+
 
 Startup scripts
 ---------------

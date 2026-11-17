@@ -76,7 +76,7 @@ Polars uses its native streaming reader and writer; CSV conversion can use more 
 Disk caching is disabled by default; indexes and summaries stay in RAM, and lazy CSV files are scanned directly.
 Enable **Disk cache** on the bottom status bar, ``--disk-cache`` or ``disk_cache(true)`` to reuse disk summaries and converted CSVs across restarts.
 The setting affects newly opened files; reopen existing files to apply it.
-When enabled, the application cache is stored in the selected workspace under ``artifacts/_user/viewer_cache`` for source runs or ``artifacts/_user_standalone/viewer_cache`` for standalone runs, unless overridden by ``UZ_DATAVIEWER_CACHE``.
+When enabled, the application cache is stored in the selected workspace under ``artifacts/_user/viewer_cache``, unless overridden by ``UZ_DATAVIEWER_CACHE``.
 Polars stores its disk caches in a separate ``polars/`` subdirectory, and the engines have distinct in-memory cache identities.
 
 Local log browser

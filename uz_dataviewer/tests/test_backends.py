@@ -164,9 +164,11 @@ def test_cli_defaults_and_explicit_overrides(monkeypatch):
     monkeypatch.setattr('uz_dataviewer.live_mapping.generate_mapping', generate)
     settings_calls = []
     monkeypatch.setattr('uz_dataviewer.settings.load_workspace_settings', settings_calls.append)
+    import importlib.util
     app.main([])
     assert captured[-1]['disk_cache'] is False
-    assert captured[-1]['use_live'] is False
+    # Live panels follow the installed CLI package; there is no flag.
+    assert captured[-1]['use_live'] is (importlib.util.find_spec('ultrazohm_cli') is not None)
     assert not mapping_calls
     assert (captured[-1]['backend'], captured[-1]['loading_mode']) == ('polars', 'lazy')
     app.main(['--backend', 'pyarrow', '--loading-mode', 'memory', '--disk-cache'])
@@ -174,12 +176,12 @@ def test_cli_defaults_and_explicit_overrides(monkeypatch):
     assert (captured[-1]['backend'], captured[-1]['loading_mode']) == ('pyarrow', 'memory')
     from types import SimpleNamespace
     monkeypatch.setattr(app, 'pfd', SimpleNamespace(select_folder=lambda *a: SimpleNamespace(result=lambda: '/selected/workspace')))
-    app.main(['--use-live'])
-    assert captured[-1]['use_live'] is True
     assert captured[-1]['live_repo'] is None
     assert not mapping_calls
     assert not settings_calls
-    app.main(['--use-live', '--live-repo', '/example/repository'])
+    with pytest.raises(SystemExit):
+        app.main(['--use-live'])
+    app.main(['--live-repo', '/example/repository'])
     assert captured[-1]['live_repo'] == '/example/repository'
     assert not mapping_calls
 

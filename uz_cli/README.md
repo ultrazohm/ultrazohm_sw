@@ -103,11 +103,10 @@ directories must not exist and their parent must exist. Every entry point (bare
 `ultrazohm_cli`, `serve`, Python `Acquisition()` and the viewer) writes Parquet only by
 default; `--format csv` (`format="csv"` in Python) adds CSV exports.
 
-The viewer owns its workspace preferences and log paths separately:
-`artifacts/_user` in developer mode and `artifacts/_user_standalone` in standalone
-mode. See [viewer usage](../uz_dataviewer/README.md) for settings and worker launch.
-The CLI console and Python automation work on Linux and Windows; the viewer's
-`uz …` console shortcut is available only on Linux.
+The viewer keeps its preferences and log paths in `artifacts/_user` of the
+selected checkout. See [viewer usage](../uz_dataviewer/README.md) for settings and
+worker launch. The CLI console, the viewer's `uz …` console commands and Python
+automation work on Linux and Windows.
 
 ### Control and recording lifecycle
 

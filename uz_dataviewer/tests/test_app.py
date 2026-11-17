@@ -166,7 +166,7 @@ def test_log_browser_uses_selected_workspace(tmp_path, monkeypatch, frozen, via_
     header = workspace / HEADER
     header.parent.mkdir(parents=True)
     header.touch()
-    log = workspace / 'artifacts' / '_user_standalone' / 'logs' / 'run.csv'
+    log = workspace / 'artifacts' / '_user' / 'logs' / 'run.csv'
     log.parent.mkdir(parents=True)
     log.touch()
     elsewhere = tmp_path / 'elsewhere'
@@ -181,7 +181,7 @@ def test_log_browser_uses_selected_workspace(tmp_path, monkeypatch, frozen, via_
         assert app.log_browser.directory == workspace
         app.log_browser.refresh()
         files, errors = app.log_browser._future.result(timeout=5)
-        assert files == [Path('artifacts/_user_standalone/logs/run.csv')]
+        assert files == [Path('artifacts/_user/logs/run.csv')]
         assert not errors
     finally:
         app._shutdown()

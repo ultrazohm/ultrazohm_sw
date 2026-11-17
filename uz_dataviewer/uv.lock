@@ -484,14 +484,14 @@ wheels = [
 
 [[package]]
 name = "ultrazohm-cli"
-version = "0.1.1.dev0"
+version = "0.1.3.dev0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "polars" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/dd/15/362b54ec8bcef8984d3b8bc2518f736e6aebdbf6f5b2e248cd70d2264736/ultrazohm_cli-0.1.1.dev0-cp310-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:4d33be62adf7b7a07802348fdae101e77a02c152c612c93ecf2e7b679128311a", size = 7922782, upload-time = "2026-11-17T14:04:26.173Z" },
-    { url = "https://files.pythonhosted.org/packages/1f/16/27f09c54d75a512d675f1ee5a49c33af1042ad42537a6c262e06f53a205e/ultrazohm_cli-0.1.1.dev0-cp310-abi3-win_amd64.whl", hash = "sha256:f9712fadfd3fadd771c1297fb73a0fcf164f605180520dac0099d8cb6fbd43aa", size = 8134671, upload-time = "2026-11-17T14:04:28.098Z" },
+    { url = "https://files.pythonhosted.org/packages/fe/64/fb159c011cb07719112c976cf2ced0cb0cf83798d3f6e3dd74b41ef302b0/ultrazohm_cli-0.1.3.dev0-cp310-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:0e014f537b2a77ce14cfcc7c9f40617dbc137a54584aa7d9eb2aa09a8b707610", size = 7922782, upload-time = "2026-11-17T14:45:12.632Z" },
+    { url = "https://files.pythonhosted.org/packages/91/be/bfc45031b2a3fcb9eaedfbe0463dbb1d0acfd8b0eafb854e1400bc86ba6a/ultrazohm_cli-0.1.3.dev0-cp310-abi3-win_amd64.whl", hash = "sha256:8497645f38fb096d5f1e87e063769cef53e612670dc00b4b7269031325e2078c", size = 8134678, upload-time = "2026-11-17T14:45:14.628Z" },
 ]
 
 [[package]]
@@ -505,6 +505,7 @@ dependencies = [
     { name = "pandas" },
     { name = "polars" },
     { name = "pyarrow" },
+    { name = "ultrazohm-cli", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')" },
 ]
 
 [package.optional-dependencies]
@@ -512,9 +513,6 @@ dev = [
     { name = "pyinstaller" },
     { name = "pytest" },
     { name = "ruff" },
-]
-live = [
-    { name = "ultrazohm-cli" },
 ]
 
 [package.metadata]
@@ -528,6 +526,6 @@ requires-dist = [
     { name = "pyinstaller", marker = "extra == 'dev'", specifier = ">=6.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7" },
     { name = "ruff", marker = "extra == 'dev'", specifier = "==0.17.2" },
-    { name = "ultrazohm-cli", marker = "extra == 'live'", specifier = ">=0.1.1.dev0" },
+    { name = "ultrazohm-cli", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')", specifier = ">=0.1.1.dev0" },
 ]
-provides-extras = ["dev", "live"]
+provides-extras = ["dev"]

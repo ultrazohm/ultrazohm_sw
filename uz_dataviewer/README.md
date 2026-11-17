@@ -58,21 +58,22 @@ Run the launcher from the repository root (Linux/macOS):
 
 ```bash
 ./uz_dataviewer/start.sh
-./uz_dataviewer/start.sh --use-live          # set up CLI backend, then open viewer
 ./uz_dataviewer/start.sh path/to/log.csv    # preload one or more files
 ./uz_dataviewer/start.sh session.json       # restore a saved session
+./uz_dataviewer/start.sh --dev-cli          # build this checkout's CLI and use it (needs Rust)
 ```
 
-Ordinary startup shows the offline workspace, even if the CLI wheel is already
-installed. Pass `--use-live` (or `--live-wheel PATH`)
-to include Live Data, Live Plots, Control, and Python. The Python entry point and
-installed `uz-dataviewer` command also accept `--use-live` to enable those panels.
+The launcher installs the locked dependencies into `uz_dataviewer/.venv`,
+including the published CLI package `ultrazohm_cli`, and opens the viewer. The
+live panels (Live Data, Live Plots, Control, Python) are present whenever
+`ultrazohm_cli` is installed, which is the case on Windows and Linux x86-64 and in
+the desktop bundle. Offline analysis never needs the CLI.
 
 On Windows, use PowerShell:
 
 ```powershell
 .\uz_dataviewer\start.ps1
-.\uz_dataviewer\start.ps1 --use-live
+.\uz_dataviewer\start.ps1 --dev-cli
 .\uz_dataviewer\start.ps1 "path\to\log.csv"
 ```
 
@@ -318,7 +319,7 @@ The regular viewer console commands remain available without the `uz` prefix.
 
 ### Python measurement scripts
 
-The native source launcher with `--use-live` includes a **Python** window beside
+The live workspace includes a **Python** window beside
 Live Plots. **Open Python file…** opens a native file picker. **Save** writes the
 current file; **Save as…** chooses a new filename. **Choose template** opens the
 built-in template list and loads the selection as an unsaved script. The editor
@@ -377,8 +378,8 @@ viewer environment. The window shows output and Python tracebacks (the most rece
 64 KiB). The ImGuiColorTextEdit editor provides Python syntax highlighting, line
 numbers, four-space indentation, matching brackets, and undo/redo. It becomes
 read-only during execution. This prototype does not include an interactive REPL
-or package management. Frozen executables
-do not support script execution; use `start.sh --use-live` / `start.ps1 --use-live`.
+or package management. Scripts run in the
+viewer's environment: the source launcher's `.venv`, or the bundled Python.
 
 While a script runs, manual connection, assignment, logging, and device controls
 are locked in this viewer; plots remain interactive. **Stop script + device** in
@@ -395,26 +396,13 @@ Other CLI clients are not locked.
 
 ### Starting acquisition
 
-Enable live support:
-
-```bash
-./uz_dataviewer/start.sh --use-live
-```
-
-```powershell
-.\uz_dataviewer\start.ps1 --use-live
-```
-
-The launcher installs the locked viewer dependencies including the `live` extra,
-which pins the `ultrazohm_cli` version in `uv.lock`, into `uz_dataviewer/.venv`.
-No Rust compiler is needed. Setup does not connect to hardware; the viewer
-opens afterward and **Connect** starts acquisition; **Existing service → Attach** reuses an existing service. Relative
+The ordinary launcher and the bundle include the CLI; no Rust compiler is needed.
+Startup does not connect to hardware; **Connect** starts acquisition; **Existing service → Attach** reuses an existing service. Relative
 recording arguments keep their original working directory.
 
 Selecting **Live Data → Browse for ultrazohm_sw** (or starting with `--live-repo`) calls the installed CLI's `create-json-from-javascope-h`
 command against the checkout's current JavaScope headers. It regenerates the JSON
-in the selected workspace under `artifacts/_user/` for source runs or
-`artifacts/_user_standalone/` for standalone runs, named
+in the selected workspace under `artifacts/_user/`, named
 `javascope_<repository commit>.json` (replaced on every start). The commit is taken from the
 generated metadata and includes `-dirty` when the relevant headers have local
 changes. These cache files are ignored by Git. Preparation runs in the background; failures appear in Live Data and leave the viewer open.
@@ -425,25 +413,15 @@ JSON** and passed to services launched by the viewer. An existing service keeps
 its loaded configuration; Connect/Attach reports a notice when its mapping differs
 from the selected file. Use Shutdown service and reconnect to apply the new map.
 Both launchers pass their checkout root, so this also works from another working
-directory. With a manually installed viewer, use `--use-live --live-repo PATH`
+directory. With a manually installed viewer, use `--live-repo PATH`
 when the repository cannot be discovered from the current directory or source tree.
 
-To move to a newer published CLI, run `uv lock --upgrade-package ultrazohm_cli`
-in `uz_dataviewer` and commit the lockfile. For unpublished changes, or one exact
-build from a GitHub release, use `--live-wheel` to install that wheel over the
-locked version; a wheel without the live-viewer APIs fails during setup. That flag also enables
-live setup, so `--use-live` is optional with an exact wheel:
-
-```bash
-./uz_dataviewer/start.sh --live-wheel /absolute/path/to/ultrazohm_cli-....whl
-```
-
-```powershell
-.\uz_dataviewer\start.ps1 --live-wheel C:\path\to\ultrazohm_cli-....whl
-```
-
-Use a wheel built with the `catalog` API. Offline viewing works without the wheel;
-live panels are only created when explicitly enabled.
+The launcher uses the `ultrazohm_cli` version locked in `uv.lock`. To move to a
+newer published CLI, run `uv lock --upgrade-package ultrazohm_cli` in
+`uz_dataviewer` and commit the lockfile. To develop the CLI and the viewer
+together, start with `--dev-cli`: it builds `uz_cli` from this checkout (Rust and
+a C/C++ toolchain required) and installs it over the locked version for that
+start. The next ordinary start returns to the locked version.
 
 **Flash UZ**, beside Connect/Disconnect, opens an **OK / Cancel** confirmation.
 The button is greyed out when Vitis XSCT is missing from PATH, with a tooltip
@@ -566,13 +544,11 @@ To open an activated DataViewer environment without launching the GUI or a servi
 
 ```bash
 ./uz_dataviewer/start.sh --launch shell
-# Also set up live dependencies if needed:
-./uz_dataviewer/start.sh --use-live --launch shell
+./uz_dataviewer/start.sh --launch shell --dev-cli   # with this checkout's CLI
 ```
 
-PowerShell supports the same options through `start.ps1`. Existing optional CLI
-packages are preserved in shell mode. Run `python measurement.py` or
-`ultrazohm_cli status` (when the CLI wheel is installed). Type `deactivate` to deactivate
+PowerShell supports the same options through `start.ps1`. Run
+`python measurement.py` or `ultrazohm_cli status`. Type `deactivate` to deactivate
 within the child shell, or `exit` to return to the original terminal.
 
 ### Combined desktop distribution
@@ -582,8 +558,8 @@ Extract the entire release archive and launch `uz_dataviewer/uz_dataviewer`
 it. Python and uv are bundled; Vitis is not. Select the **ultrazohm_sw root directory** with **Live Data → Browse for ultrazohm_sw**,
 next to **Browse for XSCT**, or pass `--live-repo PATH`. Offline viewing needs no selection. All available windows except Python open at startup; Navigation, Plots and Log
 Browser are selected. Mode selects Analysis or Live tabs without closing other
-windows. Use View to open Python or toggle individual windows. Source launchers retain
-`--use-live` for installing the CLI wheel; all available windows except Python start open, with Analysis tabs selected.
+windows. Use View to open Python or toggle individual windows. The source launcher
+behaves the same; all available windows except Python start open, with Analysis tabs selected.
 
 The source and packaged applications use the same CLI and script worker logic.
 Scripts execute as ordinary `__main__` files with `--endpoint`, with no injected
@@ -591,12 +567,13 @@ client. Source scripts use the venv's modules; packaged scripts use bundled
 modules. Additional dependencies can be used in an external venv with a matching
 CLI wheel attached to the service. Such scripts are not terminated by GUI Stop.
 
-Writable data belongs to the selected firmware workspace in both modes:
+Writable data belongs to the selected firmware workspace, the same folder for the
+bundle and the source launcher: `<workspace>/artifacts/_user/`. Until a workspace
+is known (for example a bundle started outside a checkout), the viewer uses a
+per-user folder instead of its working directory: `%LOCALAPPDATA%\UltraZohm\uz_dataviewer`
+on Windows, `${XDG_DATA_HOME:-~/.local/share}/ultrazohm/uz_dataviewer` on Linux.
 
-- Source/developer mode: `<workspace>/artifacts/_user/`.
-- Standalone mode: `<workspace>/artifacts/_user_standalone/`.
-
-Each directory contains `logs/` for recordings and service logs, `viewer.ini`
+The directory contains `logs/` for recordings and service logs, `viewer.ini`
 for layout settings, and `viewer_cache/` for optional data caches. Generated
 `javascope_*.json` mappings and editable `settings.json` and `tools.json`
 preferences live directly in the applicable user directory. Application packages,
@@ -624,15 +601,14 @@ existing startup channel assignments. Restoring preferences does not connect,
 send variable values, or start logging. Acquisition data and an Inspect snapshot
 are not included; use recording or Freeze/export for those.
 
-The two modes can use the same checkout without sharing preferences, caches,
-layout or default logs. Firmware sources and the Vitis workspace remain shared.
-An already running acquisition service owns its configuration: use
+Two viewers on the same checkout share preferences, layout, caches and default
+logs. An already running acquisition service owns its configuration: use
 Existing service > Attach from the other viewer rather than starting another
 service at the same endpoint. Do not flash/build the shared Vitis workspace
-concurrently from the two viewers.
+concurrently from two viewers.
 Explicit output paths and `UZ_DATAVIEWER_CACHE` still override their defaults.
-Existing files in older locations are left in place; copy settings or recordings
-into the applicable user directory if needed.
+Data from earlier versions in `artifacts/_user_standalone/` is left in place;
+copy settings or recordings into `artifacts/_user/` if needed.
 
 For flashing, XSCT is detected on PATH. If it is absent, use **Browse for XSCT**
 and select the vendor launcher, such as `Vitis/2022.2/bin/xsct.bat` on Windows

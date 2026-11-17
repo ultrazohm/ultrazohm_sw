@@ -1,5 +1,5 @@
 # Install uv and runtime dependencies, then launch the native data viewer.
-# Launcher options: --launch gui|shell, --use-live, --live-wheel PATH.
+# Launcher options: --launch gui|shell, --dev-cli (build and use this checkout's CLI).
 # Remaining arguments are forwarded to the viewer, including relative file paths.
 $ErrorActionPreference = 'Stop'
 

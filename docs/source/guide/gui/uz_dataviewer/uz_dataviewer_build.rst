@@ -62,8 +62,11 @@ Combined desktop packaging
 ==========================
 
 Select the ``ultrazohm_sw`` root at startup, or supply ``--live-repo``. All windows except Python start open, with Analysis tabs selected. Mode switches
-select Analysis or Live tabs once without closing other windows. Source launchers still use
-``--use-live`` to install the backend. Both deployments use the same subprocess
+select Analysis or Live tabs once without closing other windows. The live panels
+appear whenever the ``ultrazohm_cli`` package is installed: always in the bundle,
+and on Windows and Linux x86-64 in the source environment, where it is a locked
+dependency. ``start.sh --dev-cli`` (``start.ps1 --dev-cli``) builds the checkout's
+CLI and uses it instead. Both deployments use the same subprocess
 worker code; bundled scripts can import bundled dependencies, while source
 scripts can also use packages installed in the developer environment. Vitis is
 external and remains required for build/flash.
@@ -71,11 +74,12 @@ external and remains required for build/flash.
 Workspace data and process ownership
 ------------------------------------
 
-Developer execution stores viewer-owned data in
-``<workspace>/artifacts/_user``. Standalone execution uses
-``<workspace>/artifacts/_user_standalone``. Selecting the same firmware checkout
-in both modes therefore preserves independent preferences, layouts, caches and
-recordings. The standalone executable and ``_internal`` contain application
+Both the source launcher and the bundle store viewer-owned data in
+``<workspace>/artifacts/_user``, so they share preferences, layout, caches and
+recordings for the same checkout. Until a workspace is known, the viewer uses a
+per-user folder (``%LOCALAPPDATA%\UltraZohm\uz_dataviewer`` on Windows,
+``~/.local/share/ultrazohm/uz_dataviewer`` on Linux), never its working directory.
+The standalone executable and ``_internal`` contain application
 resources; they are not the destination for mutable workspace preferences.
 
 ``settings.json`` contains runtime preferences. Missing preferences are seeded

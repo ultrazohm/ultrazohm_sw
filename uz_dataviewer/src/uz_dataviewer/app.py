@@ -497,12 +497,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--backend", choices=("pyarrow", "polars"), default=default_backend,
                         help=f"IO backend for file loading (default: {default_backend})")
     parser.add_argument("--disk-cache", action="store_true", help="Persist measurement caches on disk (default: RAM only)")
-    parser.add_argument("--use-live", action="store_true", default=getattr(sys, "frozen", False), help="Enable live acquisition, control, and Python panels (native only)")
     parser.add_argument("--live-repo", help="UltraZohm repository whose headers generate the live channel mapping")
     parser.add_argument("files", nargs="*", help="CSV, Parquet, JSON sessions, or command scripts")
     args = parser.parse_args(argv)
+    # Live panels are available wherever the CLI package is installed (a
+    # dependency of the viewer on Windows and Linux x86-64, bundled when frozen).
+    import importlib.util
+    use_live = importlib.util.find_spec("ultrazohm_cli") is not None
     app = DataViewerApp(initial_files=args.files, loading_mode=args.loading_mode, backend=args.backend,
-                        disk_cache=args.disk_cache, use_live=args.use_live, live_repo=args.live_repo)
+                        disk_cache=args.disk_cache, use_live=use_live, live_repo=args.live_repo)
     app.run()
     return 0
 

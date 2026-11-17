@@ -11,6 +11,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 @pytest.fixture(autouse=True)
 def isolated_app_cache(tmp_path, monkeypatch):
     monkeypatch.setenv('UZ_DATAVIEWER_CACHE', str(tmp_path / 'app-cache'))
+    # Never write into the real per-user data directory.
+    monkeypatch.setenv('XDG_DATA_HOME', str(tmp_path / 'user-data'))
+    monkeypatch.setenv('LOCALAPPDATA', str(tmp_path / 'user-data'))
 
 
 @pytest.fixture

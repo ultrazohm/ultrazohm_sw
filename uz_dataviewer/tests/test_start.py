@@ -9,7 +9,6 @@ from types import SimpleNamespace
 
 import pytest
 
-from uz_dataviewer.check_live import main as check_live
 
 
 @pytest.fixture
@@ -49,6 +48,13 @@ if name == 'python':
 '''
     (tools/'uv').write_text(stub)
     (tools/'uv').chmod(0o755)
+    # Stand-in for uz_cli/tasks.py: "wheel --out DIR" writes one wheel, or fails.
+    (root/'uz_cli').mkdir()
+    (root/'uz_cli'/'tasks.py').write_text(
+        'import os, sys\nfrom pathlib import Path\n'
+        'if os.environ.get("FAIL_BUILD"): raise SystemExit(7)\n'
+        'out = Path(sys.argv[sys.argv.index("--out") + 1]); out.mkdir(parents=True)\n'
+        '(out / "ultrazohm_cli-0.0.0-py3-none-any.whl").touch()\n')
     environment = {**os.environ, 'PATH': str(tools)+os.pathsep+os.environ['PATH'], 'LAUNCH_LOG': str(log)}
     def run(*args, **extra_env):
         result = subprocess.run(['bash', str(project/'start.sh'), *args], cwd=tmp_path,
@@ -58,77 +64,43 @@ if name == 'python':
     return SimpleNamespace(run=run, project=project, root=root)
 
 
-def test_offline_launch_does_not_setup_cli(launcher):
+def test_ordinary_launch_runs_the_locked_environment(launcher):
     result, calls = launcher.run('a recording.csv', '--backend', 'polars')
     assert result.returncode == 0, result.stderr
     assert [c['name'] for c in calls] == ['uv']
-    assert calls[0]['args'][-4:] == ['uz-dataviewer', 'a recording.csv', '--backend', 'polars']
+    assert calls[0]['args'][0] == 'run'
+    assert calls[0]['args'][-6:] == ['uz-dataviewer', '--live-repo', str(launcher.root),
+                                     'a recording.csv', '--backend', 'polars']
 
 
-def test_use_live_installs_locked_cli_in_viewer_env_before_launch(launcher):
-    result, calls = launcher.run('--use-live', 'a recording.csv')
+def test_dev_cli_builds_the_checkout_cli_before_launch(launcher):
+    result, calls = launcher.run('--dev-cli', 'a recording.csv')
     assert result.returncode == 0, result.stderr
-    assert [c['name'] for c in calls] == ['uv', 'python', 'uz-dataviewer']
-    assert calls[0]['args'][0] == 'sync'
-    assert calls[0]['args'][-3:] == ['--extra', 'live', '--inexact']
-    assert calls[1]['args'] == ['-m', 'uz_dataviewer.check_live']
-    assert calls[2]['args'] == ['--use-live', '--live-repo', str(launcher.root), 'a recording.csv']
+    assert [c['name'] for c in calls] == ['uv', 'uv', 'uz-dataviewer']
+    assert calls[0]['args'][0] == 'sync' and '--inexact' in calls[0]['args']
+    wheel = launcher.root/'uz_cli'/'target'/'wheels-dev'/'ultrazohm_cli-0.0.0-py3-none-any.whl'
+    assert calls[1]['args'][:2] == ['pip', 'install']
+    assert calls[1]['args'][-3:] == ['--no-deps', '--reinstall', str(wheel)]
+    assert calls[2]['args'] == ['--live-repo', str(launcher.root), 'a recording.csv']
     assert len({c['cwd'] for c in calls}) == 1
 
 
-def test_explicit_live_wheel_replaces_the_locked_cli(launcher):
-    wheel = launcher.root/'ultrazohm_cli-test wheel.whl'
-    wheel.touch()
-    result, calls = launcher.run('--live-wheel', str(wheel), '--help')
-    assert result.returncode == 0, result.stderr
-    assert [c['name'] for c in calls] == ['uv', 'uv', 'python', 'uz-dataviewer']
-    assert calls[1]['args'][:2] == ['pip', 'install']
-    assert calls[1]['args'][-3:] == ['--no-deps', '--reinstall', str(wheel)]
-    assert calls[-1]['args'] == ['--use-live', '--live-repo', str(launcher.root), '--help']
-
-
-@pytest.mark.parametrize('variable,expected', [('FAIL_BACKEND', ['uv']),
-                                              ('FAIL_CHECK', ['uv', 'python'])])
-def test_failed_live_setup_never_opens_viewer(launcher, variable, expected):
-    result, calls = launcher.run('--use-live', **{variable: '7'})
+def test_failed_dev_cli_build_never_opens_viewer(launcher):
+    result, calls = launcher.run('--dev-cli', FAIL_BUILD='1')
     assert result.returncode != 0
-    assert [c['name'] for c in calls] == expected
+    assert [c['name'] for c in calls] == ['uv']
 
 
-def test_missing_live_wheel_fails_before_setup(launcher):
-    result, calls = launcher.run('--live-wheel', 'missing.whl')
-    assert result.returncode != 0
-    assert 'requires a compatible ultrazohm_cli wheel' in result.stderr
-    assert calls == []
-
-
-def test_live_api_check_rejects_old_backend(monkeypatch, capsys):
-    monkeypatch.setitem(sys.modules, 'ultrazohm_cli', SimpleNamespace(Client=object))
-    assert check_live() == 1
-    assert 'lacks live-viewer APIs' in capsys.readouterr().err
-
-
-def test_live_api_check_accepts_backend_without_connecting(monkeypatch, capsys):
-    class Client:
-        def __init__(self):
-            raise AssertionError('Setup must not connect to anything')
-        def catalog(self): pass
-        def read_since(self): pass
-    monkeypatch.setitem(sys.modules, 'ultrazohm_cli', SimpleNamespace(Client=Client))
-    assert check_live() == 0
-    assert 'Live backend ready' in capsys.readouterr().out
-
-
-@pytest.mark.parametrize('live', [False, True])
-def test_shell_launch_sets_up_environment_without_starting_gui(launcher, live):
-    args = ['--launch', 'shell'] + (['--use-live'] if live else [])
+@pytest.mark.parametrize('dev_cli', [False, True])
+def test_shell_launch_sets_up_environment_without_starting_gui(launcher, dev_cli):
+    args = ['--launch', 'shell'] + (['--dev-cli'] if dev_cli else [])
     result, calls = launcher.run(*args)
     assert result.returncode == 0, result.stderr
     assert calls[-1]['name'] == 'python'
     assert calls[-1]['args'] == ['-m', 'uz_dataviewer.env_shell']
     assert all(c['name'] != 'uz-dataviewer' for c in calls)
-    assert '--inexact' in calls[0]['args']  # Preserve an already installed CLI wheel.
-    assert ('live' in calls[0]['args']) == live
+    assert '--inexact' in calls[0]['args']  # Preserve an installed development CLI.
+    assert any(c['args'][:2] == ['pip', 'install'] for c in calls) == dev_cli
 
 
 @pytest.mark.parametrize('args', [('--launch',), ('--launch', 'wrong'),
@@ -158,7 +130,7 @@ def test_powershell_wrapper_forwards_arguments_and_exit_code(tmp_path, exit_code
                          '$viewerExit = $LASTEXITCODE\n'
                          'if ($env:PATH -ne $viewerBefore) { throw "Caller PATH changed" }\n'
                          'exit $viewerExit\n')
-    args = ['--use-live', '--live-wheel', 'a wheel.whl', 'a recording.csv']
+    args = ['--dev-cli', 'a recording.csv']
     result = subprocess.run([shell, '-NoProfile', '-File', str(bootstrap), *args],
         env={**os.environ, 'TEST_UV': str(stub), 'TEST_START': str(project / 'start.ps1'),
              'LAUNCH_LOG': str(report)}, capture_output=True, text=True)
@@ -186,17 +158,23 @@ def test_shared_launcher_platform_handoff(tmp_path, monkeypatch, platform, launc
         calls.append(args)
         return 7
     monkeypatch.setattr(module.subprocess, 'call', start)
-    wheel = tmp_path / 'ultrazohm_cli-test.whl'
-    wheel.touch()
-    assert module.main(['--use-live', '--launch', launch, '--live-wheel', str(wheel)]) == 7
+    wheels = project.parent / 'uz_cli' / 'target' / 'wheels-dev'
+
+    def run(args, **kwargs):
+        calls.append(args)
+        if 'tasks.py' in str(args[1]):
+            wheels.mkdir(parents=True)
+            (wheels / 'ultrazohm_cli-0.0.0-py3-none-any.whl').touch()
+    monkeypatch.setattr(module.subprocess, 'run', run)
+    assert module.main(['--dev-cli', '--launch', launch]) == 7
     scripts = project / '.venv' / ('Scripts' if platform == 'nt' else 'bin')
     python = str(scripts / ('python.exe' if platform == 'nt' else 'python'))
     assert calls[0][0:2] == ['uv', 'sync']
-    assert calls[0][-3:] == ['--extra', 'live', '--inexact']
-    assert calls[1] == ['uv', 'pip', 'install', '--python', python, '--no-deps', '--reinstall', str(wheel)]
-    assert calls[2] == [python, '-m', 'uz_dataviewer.check_live']
+    assert calls[1][1:] == [str(project.parent / 'uz_cli' / 'tasks.py'), 'wheel', '--out', str(wheels)]
+    assert calls[2] == ['uv', 'pip', 'install', '--python', python, '--no-deps', '--reinstall',
+                        str(wheels / 'ultrazohm_cli-0.0.0-py3-none-any.whl')]
     if launch == 'shell':
         assert calls[3] == [python, '-m', 'uz_dataviewer.env_shell']
     else:
         executable = str(scripts / ('uz-dataviewer.exe' if platform == 'nt' else 'uz-dataviewer'))
-        assert calls[3] == [executable, '--use-live', '--live-repo', str(project.parent)]
+        assert calls[3] == [executable, '--live-repo', str(project.parent)]

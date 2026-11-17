@@ -16,14 +16,26 @@ def find_repository(start):
                  if (root / HEADER).is_file()), None)
 
 
+def user_data_directory():
+    """Per-user viewer data used until a firmware checkout is known."""
+    if sys.platform == 'win32':
+        base = Path(os.environ.get('LOCALAPPDATA') or Path.home() / 'AppData' / 'Local') / 'UltraZohm'
+    else:
+        base = Path(os.environ.get('XDG_DATA_HOME') or Path.home() / '.local' / 'share') / 'ultrazohm'
+    return base / 'uz_dataviewer'
+
+
 def data_directory(repo=None):
+    """Viewer data: ``<checkout>/artifacts/_user`` for source and bundle alike.
+
+    Without an explicit checkout, the one containing the working directory is
+    used; outside any checkout, the per-user directory, never the working directory.
+    """
     if repo is not None:
         root = Path(repo).expanduser().resolve()
     else:
-        # Source startup from a repository subdirectory, or standalone analysis.
-        root = find_repository(Path.cwd()) or Path.cwd()
-    directory = '_user_standalone' if getattr(sys, 'frozen', False) else '_user'
-    path = root / 'artifacts' / directory
+        root = find_repository(Path.cwd())
+    path = root / 'artifacts' / '_user' if root is not None else user_data_directory()
     path.mkdir(parents=True, exist_ok=True)
     return path
 

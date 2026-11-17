@@ -1,4 +1,4 @@
-"""Standalone storage, runtime profiles, and remembered XSCT launchers."""
+"""Workspace storage, runtime profiles, and remembered XSCT launchers."""
 from uz_dataviewer import settings as runtime_settings
 import json
 import os
@@ -13,15 +13,24 @@ from uz_dataviewer.user_paths import data_directory
 
 @pytest.mark.parametrize('explicit', [False, True])
 @pytest.mark.parametrize('frozen', [False, True])
-def test_mode_data_is_under_repository_artifacts(tmp_path, monkeypatch, explicit, frozen):
+def test_data_is_under_repository_artifacts_in_both_modes(tmp_path, monkeypatch, explicit, frozen):
     header = tmp_path/'vitis/software/Baremetal/src/include/javascope.h'
     header.parent.mkdir(parents=True)
     header.touch()
     monkeypatch.setattr(sys, 'frozen', frozen, raising=False)
     monkeypatch.chdir(header.parent)
-    name = '_user_standalone' if frozen else '_user'
-    assert data_directory(tmp_path if explicit else None) == tmp_path/'artifacts'/name
-    assert not (tmp_path/'_user').exists()
+    assert data_directory(tmp_path if explicit else None) == tmp_path/'artifacts'/'_user'
+
+
+def test_outside_a_checkout_data_goes_to_the_user_directory_not_the_working_directory(tmp_path, monkeypatch):
+    from uz_dataviewer.user_paths import user_data_directory
+    downloads = tmp_path/'Downloads'
+    downloads.mkdir()
+    monkeypatch.chdir(downloads)
+    directory = data_directory()
+    assert directory == user_data_directory() and directory.is_dir()
+    assert tmp_path in directory.parents  # The test isolates the per-user location.
+    assert list(downloads.iterdir()) == []
 
 
 def test_console_routes_uz_lines_without_a_platform_check():
@@ -41,19 +50,16 @@ def test_console_routes_uz_lines_without_a_platform_check():
         app._shutdown()
 
 
-def test_modes_isolate_data_in_the_same_workspace(tmp_path, monkeypatch):
+def test_bundle_and_source_share_the_workspace_data(tmp_path, monkeypatch):
     executable = tmp_path/'distribution'/'uz_dataviewer.exe'
     monkeypatch.setattr(sys, 'frozen', True, raising=False)
     monkeypatch.setattr(sys, 'executable', str(executable))
     workspace = tmp_path/'workspace'
-    standalone = data_directory(workspace)
-    assert standalone == workspace/'artifacts'/'_user_standalone'
-    (standalone/'settings.json').write_text('standalone preferences')
+    bundle = data_directory(workspace)
+    (bundle/'settings.json').write_text('preferences')
     monkeypatch.setattr(sys, 'frozen', False)
-    developer = data_directory(workspace)
-    assert developer == workspace/'artifacts'/'_user'
-    assert not (developer/'settings.json').exists()
-    assert (standalone/'settings.json').read_text() == 'standalone preferences'
+    assert data_directory(workspace) == bundle == workspace/'artifacts'/'_user'
+    assert (bundle/'settings.json').read_text() == 'preferences'
     assert not (executable.parent/'artifacts').exists()
 
 
@@ -136,7 +142,7 @@ def test_frozen_app_retains_selected_firmware_workspace(tmp_path, monkeypatch):
     firmware = tmp_path/'separate firmware checkout'
     monkeypatch.setattr(sys, 'frozen', True, raising=False)
     monkeypatch.setattr(sys, 'executable', str(executable))
-    user_dir = firmware/'artifacts'/'_user_standalone'
+    user_dir = firmware/'artifacts'/'_user'
     app = DataViewerApp(use_live=True, live_mapping=str(user_dir/'mapping.json'),
                         live_repo=str(firmware))
     try:
@@ -193,7 +199,8 @@ def test_workspace_startup_initializes_missing_preferences_once(tmp_path, monkey
             finally:
                 self._shutdown()
     monkeypatch.setattr(app, 'DataViewerApp', Viewer)
-    args = ['--use-live', '--live-repo', str(tmp_path)]
+    monkeypatch.setattr('importlib.util.find_spec', lambda name: object() if name == 'ultrazohm_cli' else None)
+    args = ['--live-repo', str(tmp_path)]
     assert app.main(args) == 0
     saved = user_dir/'settings.json'
     original = '{"schema_version":1,"name":"edited","sample_period_us":75,"initial_channels":{}}\n'

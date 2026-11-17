@@ -73,7 +73,7 @@ def main():
                            cwd=tmp, check=True, timeout=60)
             configuration = json.loads(prepared.read_text())
             mapping, profile = Path(configuration['mapping']), Path(configuration['profile'])
-            assert mapping.parent.samefile(firmware/'artifacts'/'_user_standalone'), mapping
+            assert mapping.parent.samefile(firmware/'artifacts'/'_user'), mapping
             # Validate packaged flash dispatch without running any vendor/hardware commands.
             tools = directory/'fake-tools'
             tools.mkdir()

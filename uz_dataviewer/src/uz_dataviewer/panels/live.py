@@ -401,7 +401,7 @@ class LiveWorkspace:
 
     def _render_data(self, main_state):
         if not self.available:
-            imgui.text_wrapped('Live acquisition requires the ultrazohm_cli backend. Restart with start.sh --use-live (start.ps1 on Windows). Use --live-wheel PATH to select an exact wheel.')
+            imgui.text_wrapped('Live acquisition requires the ultrazohm_cli package, which is available for Windows and Linux x86-64.')
             return
         activity = self.update.activity or self.pending_message or (
             'Preparing ultrazohm_sw root directory…' if self._repo_future is not None else '')

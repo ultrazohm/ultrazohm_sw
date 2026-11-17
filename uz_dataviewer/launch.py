@@ -7,53 +7,55 @@ import sys
 
 
 def options(argv):
-    launch, live, wheel, viewer = 'gui', False, None, []
+    launch, dev_cli, viewer = 'gui', False, []
     args = iter(argv)
     for arg in args:
-        if arg == '--use-live':
-            live = True
-        elif arg in ('--launch', '--live-wheel'):
+        if arg == '--dev-cli':
+            dev_cli = True
+        elif arg == '--launch':
             value = next(args, None)
-            if arg == '--launch':
-                if value not in ('gui', 'shell'):
-                    raise ValueError('--launch requires gui or shell.')
-                launch = value
-            else:
-                if value is None or not Path(value).is_file():
-                    raise ValueError('--live-wheel requires a compatible ultrazohm_cli wheel path.')
-                live, wheel = True, str(Path(value).resolve())
+            if value not in ('gui', 'shell'):
+                raise ValueError('--launch requires gui or shell.')
+            launch = value
         else:
             viewer.append(arg)
     if launch == 'shell' and viewer:
         raise ValueError('Viewer arguments cannot be used with --launch shell.')
-    return launch, live, wheel, viewer
+    return launch, dev_cli, viewer
 
 
 def main(argv=None):
-    launch, live, wheel, viewer = options(sys.argv[1:] if argv is None else argv)
+    launch, dev_cli, viewer = options(sys.argv[1:] if argv is None else argv)
     project = Path(__file__).resolve().parent
+    root = project.parent
     uv = shutil.which('uv')
     if uv is None:
         raise ValueError('uv is required')
     # The repository's single Python pin (uv reads it only inside a project directory).
-    python_version = (project.parent / '.python-version').read_text(encoding='utf-8').strip()
+    python_version = (root / '.python-version').read_text(encoding='utf-8').strip()
     common = ['--project', str(project), '--python', python_version, '--no-build-package', 'imgui-bundle']
-    if not live and launch == 'gui':
-        return subprocess.call([uv, 'run', *common, 'uz-dataviewer', *viewer])
-    # Live mode installs the CLI version locked in uv.lock (the "live" extra).
-    subprocess.run([uv, 'sync', *common, *(['--extra', 'live'] if live else []), '--inexact'], check=True)
+    gui = ['--live-repo', str(root), *viewer]
+    if launch == 'gui' and not dev_cli:
+        # The locked dependencies, including the published ultrazohm_cli.
+        return subprocess.call([uv, 'run', *common, 'uz-dataviewer', *gui])
+    subprocess.run([uv, 'sync', *common, '--inexact'], check=True)
     scripts = project / '.venv' / ('Scripts' if os.name == 'nt' else 'bin')
     python = scripts / ('python.exe' if os.name == 'nt' else 'python')
-    if wheel:
-        # An exact wheel, for example from a branch build, replaces the locked CLI.
-        subprocess.run([uv, 'pip', 'install', '--python', str(python), '--no-deps', '--reinstall', wheel],
+    if dev_cli:
+        # Build ../uz_cli and install it over the locked CLI for this start; the
+        # next ordinary start restores the locked version.
+        wheels = root / 'uz_cli' / 'target' / 'wheels-dev'
+        shutil.rmtree(wheels, ignore_errors=True)
+        subprocess.run([sys.executable, str(root / 'uz_cli' / 'tasks.py'), 'wheel', '--out', str(wheels)], check=True)
+        built = sorted(wheels.glob('ultrazohm_cli-*.whl'))
+        if len(built) != 1:
+            raise ValueError(f'Expected one built wheel in {wheels}, found {len(built)}')
+        subprocess.run([uv, 'pip', 'install', '--python', str(python), '--no-deps', '--reinstall', str(built[0])],
                        check=True)
-    if live:
-        subprocess.run([str(python), '-m', 'uz_dataviewer.check_live'], check=True)
     if launch == 'shell':
         return subprocess.call([str(python), '-m', 'uz_dataviewer.env_shell'])
     executable = scripts / ('uz-dataviewer.exe' if os.name == 'nt' else 'uz-dataviewer')
-    return subprocess.call([str(executable), '--use-live', '--live-repo', str(project.parent), *viewer])
+    return subprocess.call([str(executable), *gui])
 
 
 if __name__ == '__main__':

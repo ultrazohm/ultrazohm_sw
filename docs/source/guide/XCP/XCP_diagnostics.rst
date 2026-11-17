@@ -18,7 +18,7 @@ Where data can wait or get lost
     flowchart TB
       isr["R5 ISR_Control"] --> q1["R5 DAQ queue, 32 KB"]
       q1 --> out["XCP_OUT, 32 KB"]
-      out --> q2["A53 DAQ queue, 262144 records"]
+      out --> q2["A53 DAQ queue, 65536 records"]
       q2 --> udp["UDP send"]
       udp --> pc["PC"]
       q1 -. "full" .-> c1(["xcp_r5_queue_lost"])

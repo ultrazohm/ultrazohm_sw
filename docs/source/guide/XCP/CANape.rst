@@ -435,7 +435,7 @@ This Tutorial was conducted using CANape 24.0.
 	:align: center
 
 
-27. Change to the Protocol section and configure the CTO/DTO size. For the UltraZohm set Max CTO and Max DTO to 248 and the time-out to 5000 ms. The screenshot shows other values.
+27. Change to the Protocol section and configure the CTO/DTO size. For the UltraZohm set Max CTO to 248, Max DTO to 1024 and the time-out to 5000 ms. The screenshot shows other values.
 
 .. _CANape_project_27:
 

@@ -12,10 +12,33 @@ on 2026-11-16; both are in git history up to commit c51d06c.
 User documentation: `docs/source/guide/XCP/` (usage, architecture with block
 diagrams, diagnostics). This file and its neighbours are the development log.
 
-## Changes after the last hardware run (2026-11-16, NOT yet on hardware)
+## Bench run 2026-11-17 (40 kHz control rate, MAX_DTO 248)
 
-Everything below was syntax-checked with the Vitis toolchains only. Rebuild
-and flash both applications, then rerun TEST_PLAN tests 1 to 4.
+The 2026-11-16 series below ran on hardware for the first time, stress tests
+only (`xcp_poll.py --stress`, 20-60 s each):
+- 100, 250 and 400 B/cycle (up to 128 Mbit/s): no loss anywhere. The
+  consumption handshake caught every late IPI read (`xcp_r5_out_held` > 0,
+  `xcp_r5_queue_lost` 0).
+- 500 B/cycle (160 Mbit/s): borderline, 0 loss in one run, some
+  `xcp_r5_queue_lost` in another; 8 % of the A53 reads torn.
+- 1000 B/cycle (320 Mbit/s): collapse. About a third of the cycles lost in
+  the R5 queue, 61 % of the A53 reads torn, A53 handled only ~3,500 of
+  ~10,000 IPIs/s. Likely mechanism: at 40 kHz the ISR leaves little R5 time,
+  each exchange sweep stretches, the A53 read window shrinks; keep sweeps
+  still bump the seqlock, so long reads of an unchanged chain are discarded
+  and the chain grows to 32 KB. Not fixed yet (candidates: cap the chain per
+  sweep, start the sweep interval at the end of the previous sweep, validate
+  the chain by `chain_seq` instead of the seqlock).
+- ISR cost of `xcp_r5_event()` (DAQ of `timingR5.isr_execution_time_us`):
+  14.2 us ISR without DAQ, about +1 us for the first ODT, +0.6-0.8 us per
+  further ODT, about 1 us per KB of data. Cost is per ODT (one DAQ message
+  each), not per byte. Hence MAX_DTO 1024 (8baa085), not yet measured.
+
+## Changes after the July hardware run (2026-11-16/17)
+
+Syntax-checked with the Vitis toolchains; the 2026-11-16 part ran in the
+bench run above. Rebuild and flash both applications, then rerun TEST_PLAN
+tests 1 to 4.
 
 - engine upgraded to upstream XCPlite V2.3.4, review fix series
 - A53-hosted XCPlite server removed; JavaScope and Option Z remain, selected
@@ -27,6 +50,9 @@ and flash both applications, then rerun TEST_PLAN tests 1 to 4.
 - gateway closes the session when the master is unreachable
 - write gate for calibration (data sections only), `XCP_R5_READ_ONLY`
 - A2L: structures for `Global_Data`, ODT entry size 240, T1 5000 ms
+- 2026-11-17, NOT yet on hardware: MAX_DTO 1024 (was 248), OCM chain
+  records up to 1400 B (`OCM_XCP_RECORD_MAX`, 16-bit lengths), gateway DAQ
+  queue 65536 x 1.4 KB; `xcp_poll.py --stress` packs ODTs up to MAX_DTO
 
 ## HARDWARE VALIDATED (2026-07-10/11)
 

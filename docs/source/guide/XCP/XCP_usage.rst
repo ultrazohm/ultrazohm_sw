@@ -90,6 +90,11 @@ A variable can also be given by its address (``0x...``) instead of its name.
     # throughput test: 2000 bytes per control cycle for 10 s, then the loss counters
     python tools/xcp_test/xcp_poll.py --ip 192.168.1.233 --stress
 
+The default of 2000 bytes per cycle is meant for a control rate of 10 kHz.
+At 40 kHz it would be 640 Mbit/s, so choose the load with ``--stress-bytes``, for example 500 bytes for 160 Mbit/s.
+The data rate that the stress test prints at the start also assumes 10 kHz.
+The summary at the end shows the real one.
+
 The stress test prints the data rate, the gaps in the transport counter and the change of the loss counters of :ref:`xcp_diagnostics` during the run.
 
 A2L file
@@ -141,7 +146,7 @@ Settings that an A2L file for the UltraZohm must contain:
    * - Transport
      - XCP on UDP, port 5556
    * - ``MAX_CTO`` / ``MAX_DTO``
-     - 248 / 248
+     - 248 / 1024
    * - Byte order
      - little endian (``MSB_LAST``)
    * - Largest ODT entry
@@ -164,8 +169,16 @@ A measurement on ``DAQ_R5`` produces one sample per control cycle; 2000 bytes pe
 In July 2026 an earlier version of this data path ran on hardware for one hour with 325 Mbit/s of measurement data (4000 bytes per cycle at 10 kHz).
 The XCP session stayed alive, and the data of about 0.003 % of the control cycles was lost at the exchange between the processors.
 The consumption handshake described in :ref:`xcp_architecture` was added afterwards to remove this loss.
-The test has not been repeated with it yet.
-The practical limit is usually the receive path of the PC.
+
+In November 2026 the current version was measured at a control rate of 40 kHz, still with DAQ messages of at most 248 bytes.
+Up to about 160 Mbit/s nothing was lost.
+Above that, the R5 no longer kept up, and ``xcp_r5_queue_lost`` counted lost samples.
+At 320 Mbit/s about a third of the control cycles were lost.
+At a high control rate the interrupt leaves little time for the main loop, and the main loop carries the exchange with the A53.
+The limit is then the R5, not Ethernet.
+Each ODT also costs time in the interrupt, see :ref:`xcp_architecture`.
+The larger DAQ messages of 1024 bytes were introduced afterwards to reduce this cost.
+They have not been measured yet.
 
 Calibrate
 ---------

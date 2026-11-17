@@ -65,9 +65,27 @@ This page calls one such exchange a sweep.
 
 Command execution, cache maintenance and the copy into the OCM never run in the interrupt.
 
-The run time of ``xcp_r5_event()`` in the interrupt has not been measured yet.
-The estimate is well below one microsecond while no measurement is running and about 5 µs per kilobyte of data that is measured per cycle.
 For comparison, the complete exchange inside the interrupt was measured with about 10 µs plus 10 µs per kilobyte, which is why it was moved to the main loop.
+
+The run time of ``xcp_r5_event()`` was measured on the test bench at a control rate of 40 kHz, with DAQ messages of at most 248 bytes:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 60 40
+
+   * - Part
+     - Cost per control cycle
+   * - first active ODT of the event, including the time stamp
+     - about 1 µs
+   * - every further ODT
+     - 0.6 to 0.8 µs
+   * - the measured bytes themselves
+     - about 1 µs per kilobyte
+
+Every ODT (object descriptor table, one packet of a DAQ list) becomes one DAQ message, so the cost depends on the number of ODTs much more than on the amount of data.
+An ODT holds at most ``MAX_DTO`` minus 8 bytes.
+Since ``MAX_DTO`` was raised from 248 to 1024 bytes, 1000 bytes per cycle need one ODT instead of five.
+The run time with the larger messages has not been measured yet.
 
 DAQ rasters
 ***********
@@ -121,14 +139,14 @@ Three queues connect them.
       xout["XCP_OUT"] -- "read under the seqlock" --> isr
       isr -- "commands, acknowledges" --> xin["XCP_IN"]
       isr -- "response queue,<br>has priority" --> tx["tx task<br>packs datagrams, stamps the transport counter"]
-      isr -- "DAQ queue,<br>262144 records" --> tx
+      isr -- "DAQ queue,<br>65536 records" --> tx
       tx --> mout["UDP datagram to the master"]
 
 - The **rx task** receives the datagrams of the master. It forwards a datagram only if it consists of well-formed XCP frames, and it remembers the sender as the master.
 - The **hook in** ``APU_IPI_ISR`` runs once for every IPI of the R5, that is once per sweep. It reads ``XCP_OUT``, puts responses and measurement data into two separate queues and writes the next commands and its acknowledges into ``XCP_IN``.
 - The **tx task** packs queued frames into datagrams of up to 1400 bytes, stamps the XCP transport counter and sends them. Responses are sent before waiting measurement data.
 
-The DAQ queue is deep (262144 records, about 68 MB) to bridge stalls of the network stack.
+The DAQ queue is deep (65536 records of up to 1400 bytes, about 92 MB) to bridge stalls of the network stack.
 
 The OCM exchange
 ----------------

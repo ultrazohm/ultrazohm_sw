@@ -368,13 +368,19 @@ def read_r5_diag(xcp, addrs):
     return out
 
 
+# Largest single ODT entry the R5 engine accepts (XCP_MAX_ODT_ENTRY_SIZE in
+# xcplib_r5_cfg.h, GET_DAQ_RESOLUTION_INFO MAX_ODT_ENTRY_SIZE_DAQ). WRITE_DAQ
+# with a bigger entry is refused with ERR_OUT_OF_RANGE (0x22).
+MAX_ODT_ENTRY_SIZE = 240
+
+
 def stress_geometry(target_bytes, max_dto):
     """Per-ODT entry sizes for a stress list. XCPlite DTO overhead per ODT:
     4-byte header ([odt][fill][daq u16]) + 4-byte timestamp in ODT0 only
     (xcplite.c: max payload = MAX_DTO - 4 - (odt==0 ? 4 : 0)). One entry per
     ODT keeps the 3 KB DAQ table memory tiny."""
-    odt0_budget = (max_dto - 4 - 4) & ~3
-    odt_budget = (max_dto - 4) & ~3
+    odt0_budget = min((max_dto - 4 - 4) & ~3, MAX_ODT_ENTRY_SIZE)
+    odt_budget = min((max_dto - 4) & ~3, MAX_ODT_ENTRY_SIZE)
     sizes = []
     remaining = target_bytes
     budget = odt0_budget

@@ -11,7 +11,7 @@
 |   On top of the sweep model, three mechanisms from the hedrive hardware
 |   campaign (uz_sw_xcp_hedrive_andi, XCP_BOTTLENECK_ANALYSIS.md T8) make the
 |   exchange safe:
-|     1. a seqlock on XCP_OUT (A53 discards torn reads),
+|     1. a seqlock on the XCP_OUT header (A53 discards torn header copies),
 |     2. a CTO mailbox with acknowledge (command responses survive cycle
 |        rewrites; a lost response kills the XCP session),
 |     3. a generation handshake on XCP_IN (commands are re-offered until the
@@ -19,7 +19,10 @@
 |   plus one of our own:
 |     4. a consumption handshake on the XCP_OUT chain (the R5 keeps a DAQ
 |        chain in place until the A53 acknowledges it, so a late, torn or
-|        skipped IPI read delays measurement data instead of losing it).
+|        skipped IPI read delays measurement data instead of losing it),
+|     5. chain validation by its own sequence number instead of the seqlock
+|        (chain_seq is 0 while the chain is rewritten and published only
+|        after the chain bytes), so a slow read of a KEPT chain stays valid.
 |
 |   Adapted from uz_sw_xcp_hedrive_andi RPU_APU_exchange (Jens Wenzl, 2023),
 |   which is hardware-proven. UltraZohm.
@@ -57,8 +60,8 @@
 #define OCM_XCP_IN_DIAG_ADDR  0xFFFFC008u
 #define OCM_XCP_IN_DIAG_COUNT 15u
 enum ocm_xcp_in_diag_slot {
-    OCM_XCP_DIAG_GW_OCM_SKIPPED_WRITING = 0, /* IPI hit the R5 mid-write          */
-    OCM_XCP_DIAG_GW_OCM_TORN,                /* XCP_OUT rewritten mid-read         */
+    OCM_XCP_DIAG_GW_OCM_SKIPPED_WRITING = 0, /* header copy skipped/torn, retried  */
+    OCM_XCP_DIAG_GW_OCM_TORN,                /* DAQ chain rewritten mid-read       */
     OCM_XCP_DIAG_GW_OCM_CYCLES_MISSED,       /* R5 cycles no IPI read              */
     OCM_XCP_DIAG_GW_OCM_CAPPED,              /* per-IPI drain cap hit              */
     OCM_XCP_DIAG_GW_TXQ_DROPPED,             /* DAQ queue full -> record dropped   */
@@ -145,10 +148,17 @@ void ocm_xcp_in_diag_write(uint32_t slot, uint32_t value);
 /* Last command-batch generation processed by the R5. Only valid under a
  * passing out_seq_read()/out_seq_unchanged() pair. */
 uint32_t ocm_xcp_in_consumed_read(void);
-/* Sequence of the chain currently in XCP_OUT (changes whenever the R5
- * rewinds the chain). Only valid under a passing seqlock pair. A chain whose
- * sequence was already consumed must not be forwarded again. */
+/* Sequence of the chain currently in XCP_OUT, from the control line that
+ * out_seq_read() refreshed. 0 = no valid chain (being rewritten). The R5
+ * publishes a non-zero value only after the chain bytes, so the chain does
+ * NOT need the seqlock: read chain_seq, the chain, then confirm with
+ * out_chain_unchanged(). A chain whose sequence was already consumed must
+ * not be forwarded again. */
 uint32_t ocm_xcp_out_chain_seq_read(void);
+/* Refresh the control line and return 1 if chain_seq is still the non-zero
+ * value read before the chain: then everything read from the chain since is
+ * consistent, even if the R5 swept (and updated header words) meanwhile. */
+int ocm_xcp_out_chain_unchanged(uint32_t chain_seq);
 /* Publish the last consumed chain sequence (write phase); the R5 keeps a
  * non-empty chain in place until it sees its sequence here. */
 void ocm_xcp_out_ack_write(uint32_t chain_seq);

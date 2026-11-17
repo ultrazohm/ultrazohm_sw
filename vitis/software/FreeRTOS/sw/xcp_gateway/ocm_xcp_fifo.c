@@ -9,14 +9,17 @@
 |   its IPI ISR. Whenever the A53 is late (IPI latency under network load),
 |   the R5 touches the region mid-read. Three mechanisms, ported from the
 |   hedrive hardware campaign (XCP_BOTTLENECK_ANALYSIS.md T8 + pcap
-|   addendum), make that safe; a fourth (ours) makes the DAQ chain lossless:
+|   addendum), make that safe; a fourth and a fifth (ours) make the DAQ chain
+|   lossless and its reads robust under load:
 |
-|   1. A seqlock on XCP_OUT: the R5 increments cycle_seq to an ODD value
-|      (flushed) before touching the region and to an EVEN value (flushed
-|      last, after the payload flush) when the cycle's content is complete.
-|      The A53 samples the sequence before and after reading; a mismatch or an
-|      odd value means the read raced the writer and everything read this IPI
-|      is discarded. Torn frames can therefore never reach the network.
+|   1. A seqlock on the XCP_OUT header: the R5 increments cycle_seq to an ODD
+|      value (flushed) before touching the region and to an EVEN value
+|      (flushed last, after the payload flush) when the sweep is complete.
+|      The A53 copies the header words and the CTO mailbox between two
+|      samples of the sequence; a mismatch or an odd value means the copy
+|      raced the writer, and it is retried with the next IPI. The DAQ chain
+|      is validated separately (5), so torn frames still never reach the
+|      network.
 |
 |   2. A CTO mailbox with an acknowledge: command responses (RES/ERR/EV/SERV)
 |      must NEVER be lost — a lost response kills the XCP session (master
@@ -45,12 +48,27 @@
 |      in the R5 queue instead of being overwritten. The hold is bounded by
 |      the caller (xcptl_ocm.c) so a dead gateway cannot stall the R5.
 |
+|   5. Chain validation by chain_seq instead of the seqlock (2026-11-17):
+|      before it touches any chain byte, the R5 sets chain_seq to 0 together
+|      with the odd cycle_seq (same control line, one flush), and it
+|      publishes the new chain_seq only after the chain bytes are flushed. A
+|      non-zero chain_seq therefore always describes a complete chain in the
+|      OCM - even if a dirty cache line is evicted early. The A53 reads
+|      chain_seq, the chain and chain_seq again; the same non-zero value
+|      proves a consistent read. A sweep that only KEEPS the chain (4) bumps
+|      cycle_seq for its header words but leaves chain_seq and the chain
+|      alone, so a read of a kept chain that takes longer than a sweep is no
+|      longer thrown away. Before, under load about half of all A53 reads
+|      were discarded that way and the throughput collapsed (bench at 40 kHz
+|      control rate, 2026-11-17).
+|
 |   XCP_OUT layout (R5 writes, A53 reads):
 |     +0    u32 cycle_seq    seqlock (odd = write in progress)
 |     +4    u32 cto_seq      mailbox sequence, 0 = never used
 |     +8    u32 cto_len      framed length of the mailbox message
 |     +12   u32 in_consumed  last XCP_IN generation processed by the R5
-|     +16   u32 chain_seq    sequence of the chain content (handshake 4)
+|     +16   u32 chain_seq    sequence of the chain content (4 and 5);
+|                            0 = no valid chain (being rewritten)
 |     +64   u8  cto_frame[OCM_XCP_CTO_SLOT_LEN]   (own cache lines)
 |     +320  message chain (see below)
 |
@@ -119,6 +137,9 @@
 #define XCP_OUT_CTO_LEN_P     ((volatile uint32_t *)(XCP_OUT_ADDR + 8u))
 #define XCP_OUT_IN_CONSUMED_P ((volatile uint32_t *)(XCP_OUT_ADDR + 12u))
 #define XCP_OUT_CHAIN_SEQ_P   ((volatile uint32_t *)(XCP_OUT_ADDR + 16u))
+/* cycle_seq .. chain_seq: inside the first cache line on both cores
+ * (R5 32 B, A53 64 B), so one flush / invalidate covers all of them. */
+#define XCP_OUT_SEQ_WORDS_LEN 20u
 #define XCP_OUT_CTO_FRAME_ADDR (XCP_OUT_ADDR + XCP_OUT_HDR_CTRL_LEN)
 #define XCP_IN_CTO_ACK_P      ((volatile uint32_t *)(XCP_IN_ADDR + 0u))
 #define XCP_IN_GEN_P          ((volatile uint32_t *)(XCP_IN_ADDR + 4u))
@@ -166,6 +187,8 @@ static volatile size_t addr_r_end = 0;
 static uint32_t cycle_seq_shadow = 0;
 static uint32_t cto_seq_shadow = 0;
 static uint32_t chain_seq_shadow = 0;
+/* A rewritten chain's new sequence waits for the chain flush (mechanism 5). */
+static int chain_seq_publish = 0;
 #endif
 
 volatile uint32_t ocm_xcp_w_dropped = 0;   /* write region full -> dropped     */
@@ -224,6 +247,12 @@ void ocm_xcp_fifo_cache_flush_after_write(void) {
             a += n;
         }
     }
+    if (chain_seq_publish) {
+        /* The chain bytes are in the OCM (the flush above ends with a DSB):
+         * only now may the chain become valid. */
+        *XCP_OUT_CHAIN_SEQ_P = chain_seq_shadow;
+        chain_seq_publish = 0;
+    }
     cycle_seq_shadow++; /* even: cycle content is complete */
     *XCP_OUT_CYCLE_SEQ_P = cycle_seq_shadow;
     Xil_DCacheFlushRange(XCP_OUT_ADDR, XCP_OUT_HDR_CTRL_LEN);
@@ -249,21 +278,26 @@ void ocm_xcp_fifo_prepare_read(void) {
 void ocm_xcp_fifo_prepare_write(void) {
 #ifdef OCM_XCP_RPU
     /* Seqlock write-begin: publish an ODD sequence before touching the
-     * region, so a concurrently reading A53 knows the content is in flux. */
+     * region, so a concurrently reading A53 knows the header is in flux.
+     * The chain is rewritten as well: chain_seq 0 = "no valid chain". Both
+     * words sit in the first control line, so this one flush publishes both
+     * BEFORE any chain byte changes (mechanism 5). */
     cycle_seq_shadow++;
     *XCP_OUT_CYCLE_SEQ_P = cycle_seq_shadow;
-    Xil_DCacheFlushRange(XCP_OUT_ADDR, 4u);
+    *XCP_OUT_CHAIN_SEQ_P = 0u;
+    Xil_DCacheFlushRange(XCP_OUT_ADDR, XCP_OUT_SEQ_WORDS_LEN);
 
     addr_w = XCP_OUT_CHAIN_ADDR;
     addr_w_start = XCP_OUT_CHAIN_ADDR; /* header is flushed separately (last) */
     addr_w_end = XCP_OUT_ADDR + XCP_OUT_LEN;
-    /* New chain content: new sequence (0 is reserved for "none yet"). The
-     * word travels with the header flush, i.e. after the chain bytes. */
+    /* New chain content: new sequence (0 is reserved for "no valid chain").
+     * Written to the OCM by cache_flush_after_write() only after the chain
+     * bytes are flushed - never earlier, not even by a cache eviction. */
     chain_seq_shadow++;
     if (chain_seq_shadow == 0u) {
         chain_seq_shadow = 1u;
     }
-    *XCP_OUT_CHAIN_SEQ_P = chain_seq_shadow;
+    chain_seq_publish = 1;
 #else
     addr_w = XCP_IN_CHAIN_ADDR;
     addr_w_start = XCP_IN_CHAIN_ADDR;  /* header is flushed separately (last) */
@@ -472,9 +506,18 @@ uint32_t ocm_xcp_in_consumed_read(void) {
     return *XCP_OUT_IN_CONSUMED_P;
 }
 
-/* Sequence of the chain content. Same control line, same validity rule. */
+/* Sequence of the chain content, from the control line out_seq_read() has
+ * just refreshed. 0 = being rewritten. Validated by out_chain_unchanged(),
+ * not by the seqlock (mechanism 5). */
 uint32_t ocm_xcp_out_chain_seq_read(void) {
     return *XCP_OUT_CHAIN_SEQ_P;
+}
+
+/* Re-check after the chain read. The invalidate ends with a DSB, so all chain
+ * loads before it have completed. */
+int ocm_xcp_out_chain_unchanged(uint32_t chain_seq) {
+    Xil_DCacheInvalidateRange(XCP_OUT_ADDR, XCP_OUT_SEQ_WORDS_LEN);
+    return (chain_seq != 0u) && (*XCP_OUT_CHAIN_SEQ_P == chain_seq);
 }
 
 /* Publish the last consumed chain sequence. Written during the write phase;

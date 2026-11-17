@@ -12,9 +12,11 @@
 |   (XCP_BOTTLENECK_ANALYSIS.md):
 |   - F1: the IPI ISR touches ONLY OCM + FreeRTOS queues (…FromISR). Sockets
 |     live in the tasks; never block/delay/print in ISR context.
-|   - T8: reads from XCP_OUT are staged locally and committed only under a
-|     passing seqlock check — torn frames never reach the network. Command
-|     responses arrive via the acknowledged CTO mailbox (exactly-once).
+|   - T8: reads from XCP_OUT are staged locally and committed only when the
+|     content was stable — the header and the CTO mailbox under the seqlock,
+|     the DAQ chain by its own sequence number (ocm_xcp_fifo.c, mechanism
+|     5) — so torn frames never reach the network. Command responses arrive
+|     via the acknowledged CTO mailbox (exactly-once).
 |   - T8 addendum: commands are delivered via a generation handshake — the
 |     current batch is rewritten into XCP_IN every IPI until the R5
 |     acknowledges execution. A command can never be lost to IPI latency.
@@ -131,13 +133,20 @@ static volatile uint32_t  gMasterGen = 0;    /* bumped on endpoint change       
 static volatile TickType_t gMasterLastRxTick = 0; /* last valid datagram from the master */
 
 /* Diagnostics (inspect via debugger; hedrive validation-checklist counters):
- *   xcp_gw_ocm_skipped_writing IPI hit the R5 mid-write (odd seqlock)
- *   xcp_gw_ocm_torn            R5 rewrote XCP_OUT mid-read; read discarded
- *   xcp_gw_ocm_cycles_missed   R5 sweeps never seen by any IPI read
+ *   xcp_gw_ocm_skipped_writing header copy unusable this IPI: the R5 was
+ *                              mid-sweep (odd seqlock) or swept during the
+ *                              copy. Mailbox and command ack are simply
+ *                              taken with the next IPI; the DAQ chain is
+ *                              read anyway (validated by chain_seq)
+ *   xcp_gw_ocm_torn            DAQ chain rewritten while the A53 read it
+ *                              (chain_seq changed); read discarded. Rare:
+ *                              the R5 rewrites a non-empty chain only after
+ *                              our ack or after the 50-sweep hold timeout
+ *   xcp_gw_ocm_cycles_missed   R5 sweeps between two header copies
  *                              (All three are IPI latency indicators only:
  *                              the R5 keeps a DAQ chain in place until it
  *                              is acknowledged - xcp_r5_out_held - so none
- *                              of them loses data any more.)
+ *                              of them loses data.)
  *   xcp_gw_ocm_capped          per-IPI drain cap hit with records left over
  *   xcp_gw_txq_dropped         DAQ queue full -> record tail-dropped
  *   xcp_gw_ctoq_dropped        CTO queue full -> frame dropped (must stay 0)
@@ -181,7 +190,8 @@ volatile uint32_t xcp_gw_sendto_drop = 0;
 volatile uint32_t xcp_gw_master_lost = 0;
 
 /*--------------------------------------------------------------------------
- * IPI ISR — read phase (XCP_OUT -> queues), seqlock-guarded.
+ * IPI ISR — read phase (XCP_OUT -> queues): header and CTO mailbox under the
+ * seqlock, DAQ chain validated by chain_seq (ocm_xcp_fifo.c, mechanism 5).
  * All buffers static: this runs only in the (non-reentrant) IPI ISR, and the
  * staging area is far too big for an ISR stack frame.
  *------------------------------------------------------------------------*/
@@ -201,106 +211,114 @@ static void xcp_gw_read_out_phase(BaseType_t *woken) {
     uint8_t  cto_len = 0;
     uint32_t cto_seq = 0;
     int      have_cto = 0;
+    int      header_ok = 0;
+    int      chain_ok = 0;
     uint32_t n_staged = 0;
     int      capped = 0;
 
-    /* Seqlock begin: odd = the R5 is rewriting the window right now. */
-    uint32_t seq_begin = ocm_xcp_out_seq_read();
-    if (seq_begin & 1u) {
-        xcp_gw_ocm_skipped_writing++;
-        return;
-    }
-
-    /* Stage the CTO mailbox (persists across cycles until acked) and the
-     * R5's command-batch ack; both live in the seqlock-guarded header. */
+    /* 1. Header copy under the seqlock: command-batch ack, chain sequence and
+     * the CTO mailbox (it persists across sweeps until acknowledged). Short -
+     * one control line plus at most one 256-byte frame - so it rarely
+     * overlaps an R5 sweep, and if it does it is simply taken next IPI. */
+    uint32_t seq_begin = ocm_xcp_out_seq_read(); /* refreshes the control line */
     uint32_t in_consumed_snap = ocm_xcp_in_consumed_read();
     uint32_t chain_seq_snap = ocm_xcp_out_chain_seq_read();
-    if (ocm_xcp_cto_read(&cto_len, gStageCto.data, &cto_seq)) {
-        if (cto_seq != gCtoLastSeq) {
+    if ((seq_begin & 1u) == 0u) {
+        if (ocm_xcp_cto_read(&cto_len, gStageCto.data, &cto_seq) && cto_seq != gCtoLastSeq) {
             have_cto = 1;
         }
+        header_ok = ocm_xcp_out_seq_unchanged(seq_begin);
     }
-
-    /* Stage the DAQ message chain - once per chain sequence: the R5 keeps a
-     * chain in place until we acknowledge it (consumption handshake), so the
-     * same content can be offered for several IPIs. */
-    ocm_xcp_fifo_prepare_read();
-    while (chain_seq_snap != gOutChainLast) {
-        uint16_t len;
-        uint8_t *data;
-        if (n_staged >= XCP_GW_DRAIN_MAX_PER_IPI) {
-            capped = 1; /* rest of this cycle is lost; R5 rewinds next cycle */
-            break;
-        }
-        if (!ocm_xcp_fifo_read(&len, &data)) {
-            break; /* end of chain (or bounds guard tripped) */
-        }
-        gStage[n_staged].len = len;
-        memcpy(gStage[n_staged].data, data, len);
-        n_staged++;
-    }
-
-    /* Seqlock end: if the R5 started a new cycle while we were reading, every
-     * staged byte is potentially a mix of two cycles — discard it all. The
-     * data is gone either way (the window is being rewritten); what matters
-     * is that torn frames never reach the network (hedrive T8). */
-    if (!ocm_xcp_out_seq_unchanged(seq_begin)) {
-        xcp_gw_ocm_torn++;
-        return;
-    }
-
-    /* Committed: the staged data is a consistent snapshot of cycle seq_begin. */
-    gInConsumed = in_consumed_snap;
-    gOutChainLast = chain_seq_snap; /* acknowledged to the R5 by the write phase */
-    if (gPrevSeqValid) {
-        uint32_t delta = seq_begin - gPrevSeq; /* wrap-safe */
-        if (delta > 2u) {
-            xcp_gw_ocm_cycles_missed += (delta - 2u) / 2u;
-        }
-    }
-    gPrevSeq = seq_begin;
-    gPrevSeqValid = 1;
-    if (capped) {
-        xcp_gw_ocm_capped++;
-    }
-
-    if (gCtoAdoptPending) {
-        /* Session change: whatever sits in the mailbox predates it. */
-        gCtoLastSeq = cto_seq;
-        gCtoAdoptPending = 0;
+    if (!header_ok) {
+        xcp_gw_ocm_skipped_writing++;
         have_cto = 0;
     }
 
-    int enqueued = 0;
-    if (have_cto) {
-        gCtoLastSeq = cto_seq; /* acked via the write phase this IPI */
-        gStageCto.len = cto_len;
-        if (xQueueSendToBackFromISR(gTxCtoQueue, &gStageCto, woken) == pdTRUE) {
-            enqueued = 1;
+    /* 2. DAQ chain, once per chain sequence, validated by chain_seq and not
+     * by the seqlock (ocm_xcp_fifo.c, mechanism 5): the R5 publishes a
+     * non-zero chain_seq only for a complete chain and zeroes it before a
+     * rewrite. A sweep that KEEPS an unacknowledged chain bumps the seqlock
+     * but not chain_seq, so this read may take longer than a sweep. */
+    if (chain_seq_snap != 0u && chain_seq_snap != gOutChainLast) {
+        ocm_xcp_fifo_prepare_read();
+        for (;;) {
+            uint16_t len;
+            uint8_t *data;
+            if (n_staged >= XCP_GW_DRAIN_MAX_PER_IPI) {
+                capped = 1; /* rest of this chain is lost: it is acknowledged as a whole */
+                break;
+            }
+            if (!ocm_xcp_fifo_read(&len, &data)) {
+                break; /* end of chain (or bounds guard tripped) */
+            }
+            gStage[n_staged].len = len;
+            memcpy(gStage[n_staged].data, data, len);
+            n_staged++;
+        }
+        if (ocm_xcp_out_chain_unchanged(chain_seq_snap)) {
+            chain_ok = 1;
         } else {
-            xcp_gw_ctoq_dropped++;
+            /* The R5 rewrote the chain meanwhile (empty chain, or its hold
+             * timeout ran out): discard; the new chain is read next IPI. */
+            xcp_gw_ocm_torn++;
         }
     }
-    if (gMasterValid) { /* no consumer yet: drop staged DAQ (the CTO ack still advances) */
-        for (uint32_t i = 0; i < n_staged; i++) {
-            /* Defensive classify by XCP PID: CTO packets that travelled the chain
-             * (EV/SERV from the R5 queue) jump the DAQ backlog too. */
-            if (gStage[i].len > XCP_TL_HEADER_LEN &&
-                gStage[i].data[XCP_TL_HEADER_LEN] >= XCP_PID_CTO_MIN) {
-                if (xQueueSendToBackFromISR(gTxCtoQueue, &gStage[i], woken) == pdTRUE) {
-                    enqueued = 1;
-                } else {
-                    xcp_gw_ctoq_dropped++;
-                }
-                continue;
+
+    /* 3. Commit what was consistent. */
+    int enqueued = 0;
+    if (header_ok) {
+        gInConsumed = in_consumed_snap;
+        if (gPrevSeqValid) {
+            uint32_t delta = seq_begin - gPrevSeq; /* wrap-safe */
+            if (delta > 2u) {
+                xcp_gw_ocm_cycles_missed += (delta - 2u) / 2u;
             }
-            if (xQueueSendToBackFromISR(gTxQueue, &gStage[i], woken) == pdTRUE) {
+        }
+        gPrevSeq = seq_begin;
+        gPrevSeqValid = 1;
+
+        if (gCtoAdoptPending) {
+            /* Session change: whatever sits in the mailbox predates it. */
+            gCtoLastSeq = cto_seq;
+            gCtoAdoptPending = 0;
+            have_cto = 0;
+        }
+        if (have_cto) {
+            gCtoLastSeq = cto_seq; /* acked via the write phase this IPI */
+            gStageCto.len = cto_len;
+            if (xQueueSendToBackFromISR(gTxCtoQueue, &gStageCto, woken) == pdTRUE) {
                 enqueued = 1;
             } else {
-                /* DAQ queue full: the UDP drain has stalled for longer than the
-                 * queue depth covers. Tail-drop and count. Never block, delay or
-                 * print here — ISR context (hedrive F1). */
-                xcp_gw_txq_dropped++;
+                xcp_gw_ctoq_dropped++;
+            }
+        }
+    }
+    if (chain_ok) {
+        gOutChainLast = chain_seq_snap; /* acknowledged to the R5 by the write phase */
+        if (capped) {
+            xcp_gw_ocm_capped++;
+        }
+        if (gMasterValid) { /* no consumer yet: drop staged DAQ (the chain ack still advances) */
+            for (uint32_t i = 0; i < n_staged; i++) {
+                /* Defensive classify by XCP PID: CTO packets that travelled the chain
+                 * (EV/SERV from the R5 queue) jump the DAQ backlog too. */
+                if (gStage[i].len > XCP_TL_HEADER_LEN &&
+                    gStage[i].data[XCP_TL_HEADER_LEN] >= XCP_PID_CTO_MIN) {
+                    if (xQueueSendToBackFromISR(gTxCtoQueue, &gStage[i], woken) == pdTRUE) {
+                        enqueued = 1;
+                    } else {
+                        xcp_gw_ctoq_dropped++;
+                    }
+                    continue;
+                }
+                if (xQueueSendToBackFromISR(gTxQueue, &gStage[i], woken) == pdTRUE) {
+                    enqueued = 1;
+                } else {
+                    /* DAQ queue full: the UDP drain has stalled for longer than the
+                     * queue depth covers. Tail-drop and count. Never block, delay or
+                     * print here — ISR context (hedrive F1). */
+                    xcp_gw_txq_dropped++;
+                }
             }
         }
     }

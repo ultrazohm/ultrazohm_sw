@@ -22,6 +22,7 @@ def launcher(tmp_path):
     tools = tmp_path/'tools'
     for directory in (project, cli, tools):
         directory.mkdir(parents=True)
+    (root/'.python-version').write_text('3.12\n')
     shutil.copyfile(Path(__file__).parents[1]/'start.sh', project/'start.sh')
     shutil.copyfile(Path(__file__).parents[1]/'launch.py', project/'launch.py')
     log = tmp_path/'calls.jsonl'
@@ -80,7 +81,7 @@ def test_use_live_installs_cli_in_viewer_env_before_launch(launcher):
 
 
 def test_explicit_live_wheel_uses_same_setup_flow(launcher):
-    wheel = launcher.root/'ultrazohm-test wheel.whl'
+    wheel = launcher.root/'ultrazohm_cli-test wheel.whl'
     wheel.touch()
     result, calls = launcher.run('--live-wheel', str(wheel), '--help')
     assert result.returncode == 0, result.stderr
@@ -105,7 +106,7 @@ def test_invalid_live_channel_fails_before_setup(launcher):
 
 
 def test_live_api_check_rejects_old_backend(monkeypatch, capsys):
-    monkeypatch.setitem(sys.modules, 'ultrazohm', SimpleNamespace(Client=object))
+    monkeypatch.setitem(sys.modules, 'ultrazohm_cli', SimpleNamespace(Client=object))
     assert check_live() == 1
     assert 'lacks live-viewer APIs' in capsys.readouterr().err
 
@@ -116,7 +117,7 @@ def test_live_api_check_accepts_backend_without_connecting(monkeypatch, capsys):
             raise AssertionError('Setup must not connect to anything')
         def catalog(self): pass
         def read_since(self): pass
-    monkeypatch.setitem(sys.modules, 'ultrazohm', SimpleNamespace(Client=Client))
+    monkeypatch.setitem(sys.modules, 'ultrazohm_cli', SimpleNamespace(Client=Client))
     assert check_live() == 0
     assert 'Live backend ready' in capsys.readouterr().out
 
@@ -148,6 +149,7 @@ def test_powershell_wrapper_forwards_arguments_and_exit_code(tmp_path, exit_code
         pytest.skip('PowerShell is unavailable on this host')
     project = tmp_path / 'checkout with spaces'
     project.mkdir()
+    (tmp_path/'.python-version').write_text('3.12\n')
     shutil.copyfile(Path(__file__).parents[1] / 'start.ps1', project / 'start.ps1')
     report = tmp_path / 'arguments.json'
     stub = project / 'uv.ps1'
@@ -176,6 +178,8 @@ def test_shared_launcher_platform_handoff(tmp_path, monkeypatch, platform, launc
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     project = tmp_path / 'checkout with spaces' / 'uz_dataviewer'
+    project.mkdir(parents=True)
+    (project.parent / '.python-version').write_text('3.12\n')
     monkeypatch.setattr(module, '__file__', str(project / 'launch.py'))
     monkeypatch.setattr(module, 'os', SimpleNamespace(name=platform))
     monkeypatch.setattr(module.shutil, 'which', lambda name: 'uv')

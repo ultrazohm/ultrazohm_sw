@@ -236,7 +236,7 @@ fn dispatch(args: Args) -> Result<()> {
         profile: None,
         channel_mapping: None,
         output: None,
-        format: Format::Csv,
+        format: Format::Parquet,
         ack: "off".into(),
         interactive: true,
     });
@@ -404,7 +404,7 @@ fn prompt(endpoint: &str, shutdown: &AtomicBool) -> Result<()> {
     let mut input = stdin.lock();
     while !shutdown.load(Ordering::SeqCst) {
         let line = if let Some(editor) = &mut editor {
-            match editor.readline("ultrazohm> ") {
+            match editor.readline("ultrazohm_cli> ") {
                 Ok(line) => {
                     editor.add_history_entry(line.as_str())?;
                     line
@@ -413,7 +413,7 @@ fn prompt(endpoint: &str, shutdown: &AtomicBool) -> Result<()> {
                 Err(error) => return Err(error.into()),
             }
         } else {
-            print!("ultrazohm> ");
+            print!("ultrazohm_cli> ");
             io::stdout().flush()?;
             let mut line = String::new();
             if input.read_line(&mut line)? == 0 {
@@ -451,7 +451,13 @@ fn prompt(endpoint: &str, shutdown: &AtomicBool) -> Result<()> {
     Ok(())
 }
 
-fn execute(command: Command, endpoint: &str) -> Result<()> {
+/// A parsed command is either a request to the service or a local tool run.
+enum Action {
+    Service(Operation),
+    Local(Command),
+}
+
+fn classify(command: Command) -> Result<Action> {
     let op = match command {
         Command::Recordings => Operation::Recordings,
         Command::DataInfo { stream, recording } => Operation::DataInfo {
@@ -505,44 +511,14 @@ fn execute(command: Command, endpoint: &str) -> Result<()> {
                 },
             }
         }
-        Command::Generate { repo, open } => {
-            return crate::vitis::run(
-                if open { "generate-open" } else { "generate" },
-                repo.as_deref(),
-                None,
-            );
-        }
-        Command::Build { repo } => {
-            return crate::vitis::run("build", repo.as_deref(), None);
-        }
-        Command::BuildClean { repo } => {
-            return crate::vitis::run("build-clean", repo.as_deref(), None);
-        }
-        Command::Flash { repo, profile } => {
-            return crate::vitis::run("flash", repo.as_deref(), Some(&profile));
-        }
-        Command::Serve { .. } => {
-            bail!("serve cannot be started inside an existing interactive session")
-        }
-        Command::Profile => {
-            println!(
-                "{}",
-                serde_json::to_string_pretty(&ProfileSettings::load(None)?)?
-            );
-            return Ok(());
-        }
-        Command::CreateJsonFromJavascopeH { repo, output } => {
-            let path = crate::header_mapping::run(repo.as_deref(), output.as_deref())?;
-            println!("Created channel mapping: {}", path.display());
-            return Ok(());
-        }
-        Command::ChannelMapping => {
-            println!(
-                "{}",
-                serde_json::to_string_pretty(&ChannelMapping::load(None)?)?
-            );
-            return Ok(());
-        }
+        local @ (Command::Generate { .. }
+        | Command::Build { .. }
+        | Command::BuildClean { .. }
+        | Command::Flash { .. }
+        | Command::Serve { .. }
+        | Command::Profile
+        | Command::CreateJsonFromJavascopeH { .. }
+        | Command::ChannelMapping) => return Ok(Action::Local(local)),
         Command::StartLogging => Operation::StartLogging {
             stream: Stream::Fast,
         },
@@ -585,42 +561,125 @@ fn execute(command: Command, endpoint: &str) -> Result<()> {
             enabled: enabled == "on",
         },
     };
+    Ok(Action::Service(op))
+}
+
+/// Run a command that does not talk to the service.
+fn run_local(command: Command) -> Result<()> {
+    match command {
+        Command::Generate { repo, open } => crate::vitis::run(
+            if open { "generate-open" } else { "generate" },
+            repo.as_deref(),
+            None,
+        ),
+        Command::Build { repo } => crate::vitis::run("build", repo.as_deref(), None),
+        Command::BuildClean { repo } => crate::vitis::run("build-clean", repo.as_deref(), None),
+        Command::Flash { repo, profile } => {
+            crate::vitis::run("flash", repo.as_deref(), Some(&profile))
+        }
+        Command::Serve { .. } => {
+            bail!("serve cannot be started inside an existing interactive session")
+        }
+        Command::Profile => {
+            println!(
+                "{}",
+                serde_json::to_string_pretty(&ProfileSettings::load(None)?)?
+            );
+            Ok(())
+        }
+        Command::CreateJsonFromJavascopeH { repo, output } => {
+            let path = crate::header_mapping::run(repo.as_deref(), output.as_deref())?;
+            println!("Created channel mapping: {}", path.display());
+            Ok(())
+        }
+        Command::ChannelMapping => {
+            println!(
+                "{}",
+                serde_json::to_string_pretty(&ChannelMapping::load(None)?)?
+            );
+            Ok(())
+        }
+        _ => unreachable!("classify returns only local commands as Local"),
+    }
+}
+
+/// Send one operation and write its reply: JSON, or a short table for data reads.
+fn send_operation(op: Operation, endpoint: &str, out: &mut impl Write) -> Result<()> {
     if matches!(op, Operation::ReadData { .. }) {
         use polars::prelude::*;
         let (header, bytes) = service::exchange(endpoint, op, true)?;
-        println!("{}", serde_json::to_string(&header)?);
+        writeln!(out, "{}", serde_json::to_string(&header)?)?;
         let df = IpcStreamReader::new(std::io::Cursor::new(bytes)).finish()?;
-        println!(
+        writeln!(
+            out,
             "{} rows × {} columns (showing first {})",
             df.height(),
             df.width(),
             df.height().min(20)
-        );
-        println!(
+        )?;
+        writeln!(
+            out,
             "{}",
             df.get_column_names()
                 .iter()
                 .map(|s| s.as_str())
                 .collect::<Vec<_>>()
                 .join("\t")
-        );
+        )?;
         for row in 0..df.height().min(20) {
-            println!(
+            writeln!(
+                out,
                 "{}",
                 df.get_columns()
                     .iter()
                     .map(|c| c.get(row).map(|v| v.to_string()))
                     .collect::<std::result::Result<Vec<_>, _>>()?
                     .join("\t")
-            );
+            )?;
         }
         return Ok(());
     }
-    println!(
+    writeln!(
+        out,
         "{}",
         serde_json::to_string_pretty(&service::request(endpoint, op)?)?
-    );
+    )?;
     Ok(())
+}
+
+fn execute(command: Command, endpoint: &str) -> Result<()> {
+    match classify(command)? {
+        Action::Service(op) => send_operation(op, endpoint, &mut io::stdout().lock()),
+        Action::Local(command) => run_local(command),
+    }
+}
+
+/// Run one line of the interactive prompt's syntax against the service at
+/// `endpoint` and return what it prints. Only service commands are accepted:
+/// local tools (serve, build, flash, generate, mappings) belong in a terminal.
+/// Help output is returned as text; parse errors and failed requests are errors.
+pub fn console_command(endpoint: &str, line: &str) -> Result<String> {
+    let mut words = prompt_words(line)?;
+    if words.is_empty() {
+        words.push("help".into());
+    }
+    let command = match InteractiveArgs::try_parse_from(std::iter::once(String::new()).chain(words))
+    {
+        Ok(args) => args.command,
+        Err(error) if error.use_stderr() => bail!("{}", error.render().to_string().trim_end()),
+        Err(help) => return Ok(help.render().to_string()),
+    };
+    match classify(command)? {
+        Action::Service(op) => {
+            let mut out = Vec::new();
+            send_operation(op, endpoint, &mut out)?;
+            Ok(String::from_utf8_lossy(&out).into_owned())
+        }
+        Action::Local(_) => bail!(
+            "this command runs local tools, not the service; run it in a terminal \
+             (in the viewer, Flash UZ has its own button)"
+        ),
+    }
 }
 
 #[cfg(test)]
@@ -667,7 +726,7 @@ mod tests {
 
     #[test]
     fn connect_defaults_match_in_shell_and_standalone_cli() {
-        let standalone = Args::try_parse_from(["ultrazohm", "connect"]).unwrap();
+        let standalone = Args::try_parse_from(["ultrazohm_cli", "connect"]).unwrap();
         let interactive = InteractiveArgs::try_parse_from(["", "connect"]).unwrap();
         for command in [standalone.command.unwrap(), interactive.command] {
             match command {
@@ -679,7 +738,7 @@ mod tests {
             }
         }
         assert!(
-            Args::try_parse_from(["ultrazohm"])
+            Args::try_parse_from(["ultrazohm_cli"])
                 .unwrap()
                 .command
                 .is_none()

@@ -47,7 +47,7 @@ class CliConsole:
     def submit_arguments(self, args, endpoint):
         if self.closed:
             raise RuntimeError('CLI console is closed')
-        if importlib.util.find_spec('ultrazohm') is None:
+        if importlib.util.find_spec('ultrazohm_cli') is None:
             self.console.error('Live is not activated.')
             return
         if len(self.jobs) >= 4:

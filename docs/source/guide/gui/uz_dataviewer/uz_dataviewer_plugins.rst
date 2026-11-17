@@ -95,8 +95,7 @@ Rules & tips
 - Output an ``(out_time, out_y, info)`` tuple. ``out_time`` is the independent axis of the derived signal and must preserve the input domain. Only the built-in FFT changes a time axis to frequency.
   Raise a normal exception with a clear message on bad input — it's caught, shown on the node, and the rest of the graph keeps working.
 - The result is materialized as a **derived run** named after the node, so it appears in Navigation and is draggable into plots / FFT / Histogram.
-- Keep transforms **pure NumPy** if you want them to also work in the web build. 
-  Native plugins can import anything that's installed.
+- Plugins can import any package installed in the viewer's environment; the standalone bundle provides NumPy, pandas, PyArrow and Polars.
 - Scripting & sessions: a graph stores only the node *kind* and its params, never your code, so ``.uzscript``/JSON round-trip unchanged.
   Opening a session whose plugin isn't installed keeps the node as a greyed **"missing plugin"** placeholder (params + links preserved); install the plugin and re-evaluate to restore it.
 

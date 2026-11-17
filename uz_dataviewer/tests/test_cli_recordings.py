@@ -27,7 +27,7 @@ FILES = {
 
 @pytest.fixture(scope='module')
 def recording(tmp_path_factory):
-    native = pytest.importorskip('ultrazohm')
+    native = pytest.importorskip('ultrazohm_cli')
     root = Path(__file__).resolve().parents[2]
     device_port, service_port = ports()
     simulator = subprocess.Popen([sys.executable, str(root/'javascope/test_server.py'), '--host', '127.0.0.1',

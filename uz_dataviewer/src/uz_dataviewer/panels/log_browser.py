@@ -1,7 +1,6 @@
 """Dockable browser of local log files; directory scans never read log contents."""
 from __future__ import annotations
 
-from .. import runtime
 
 import os
 from pathlib import Path
@@ -94,9 +93,6 @@ class LogBrowserPanel:
             self._executor.shutdown()
 
     def render(self, state):
-        if runtime.IS_WEB:
-            imgui.text_wrapped("Local directory browsing is available in the desktop app.")
-            return
         if not self._started:
             self.refresh()
         if self._dialog is not None and self._dialog.ready():

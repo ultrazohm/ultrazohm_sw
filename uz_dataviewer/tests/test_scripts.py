@@ -2,8 +2,6 @@
 
 import json
 
-from uz_dataviewer import runtime
-
 import pytest
 
 from uz_dataviewer import session
@@ -11,20 +9,16 @@ from uz_dataviewer.commands import CommandError
 from uz_dataviewer.state import AppState
 
 
-@pytest.mark.parametrize('web', [False, True])
-def test_automation_can_load_json_and_continue(app_state, tmp_path, monkeypatch, web):
+def test_automation_can_load_json_and_continue(app_state, tmp_path):
     snapshot = tmp_path / 'state.json'
     app_state.set_grid(2, 1)
     session.save_state(app_state, str(snapshot))
     app_state.set_grid(1, 1)
-    monkeypatch.setattr(runtime, 'IS_WEB', web)
     script = tmp_path / 'commands.uzscript'
     script.write_text(f'# Automation\n\nload_state({json.dumps(str(snapshot))})\nset_max_points(750)\n')
     assert session.run_script(app_state, str(script)) == 2
     assert (app_state.rows, app_state.cols) == (2, 1)
     assert app_state.max_points == 750
-    if web:
-        assert app_state.backend == 'pyarrow'
 
 
 def test_generated_session_scripts_rejected_before_mutation(app_state, tmp_path):

@@ -487,11 +487,11 @@ name = "uz-dataviewer"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "glfw", marker = "sys_platform != 'emscripten'" },
+    { name = "glfw" },
     { name = "imgui-bundle" },
     { name = "numpy" },
     { name = "pandas" },
-    { name = "polars", marker = "sys_platform != 'emscripten'" },
+    { name = "polars" },
     { name = "pyarrow" },
 ]
 
@@ -504,11 +504,11 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "glfw", marker = "sys_platform != 'emscripten'", specifier = "==2.11.0" },
+    { name = "glfw", specifier = "==2.11.0" },
     { name = "imgui-bundle", specifier = "==1.93.0" },
     { name = "numpy", specifier = "==2.5.4" },
     { name = "pandas", specifier = "==3.1.0" },
-    { name = "polars", marker = "sys_platform != 'emscripten'", specifier = "==2.0.0" },
+    { name = "polars", specifier = "==2.0.0" },
     { name = "pyarrow", specifier = "==26.0.0" },
     { name = "pyinstaller", marker = "extra == 'dev'", specifier = ">=6.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7" },

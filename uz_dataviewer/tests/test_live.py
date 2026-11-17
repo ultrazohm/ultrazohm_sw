@@ -504,7 +504,7 @@ def test_viewer_owned_service_finalizes_and_exits_on_close(tmp_path, disconnect_
     import socket
     import subprocess
     import sys
-    native = pytest.importorskip('ultrazohm')
+    native = pytest.importorskip('ultrazohm_cli')
     root = Path(__file__).resolve().parents[2]
     device_port, service_port = ports()
     simulator = subprocess.Popen([sys.executable, str(root/'javascope/test_server.py'),
@@ -1065,7 +1065,7 @@ def test_disconnect_button_requests_shutdown_and_keeps_viewer_open(gui_frame, ap
 
 def test_unused_controller_closes_without_optional_cli_wheel(monkeypatch):
     import sys
-    monkeypatch.setitem(sys.modules, 'ultrazohm', None)
+    monkeypatch.setitem(sys.modules, 'ultrazohm_cli', None)
     controller = LiveController()
     controller.close()
     controller.close()

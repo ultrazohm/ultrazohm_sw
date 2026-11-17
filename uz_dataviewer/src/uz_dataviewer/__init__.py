@@ -1,6 +1,6 @@
 """UltraZohm Data Viewer -- an imgui_bundle based log viewer.
 
-A native/web data viewer for JavaScope ``.csv`` and ``.parquet`` logs, providing
+A desktop data viewer for JavaScope ``.csv`` and ``.parquet`` logs, providing
 the same core functionality as the legacy Plotly/Dash ``dataviewer.py`` with a
 VSCode-style docked layout, drag-and-drop subplots and range-aware downsampling.
 

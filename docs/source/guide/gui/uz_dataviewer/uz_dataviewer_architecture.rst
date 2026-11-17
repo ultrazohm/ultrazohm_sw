@@ -107,9 +107,6 @@ Module map
    * - ``session.py``
      - JSON save/restore, command-script execution, CSV exports
      - ``to_dict``/``apply_dict``, ``export_*``
-   * - ``webbridge.py``
-     - Browser integration (file input, array load, downloads)
-     - ``load_columns``, ``download``
    * - ``panels/navigation.py``
      - Left tree, drag sources, file dialog, normalize menu
      - ``NavigationPanel``
@@ -159,17 +156,16 @@ Readers check cancellation between batches; an in-flight native read may finish 
 The in-memory loaders reduce transient allocations; the complete recording and analysis scratch still need to fit in RAM:
 
 - **float32 at parse, no intermediate copy.** ``_csv_column_types`` feeds Arrow ``ConvertOptions(column_types=…)`` so channels parse straight to ``float32`` (time stays ``float64``), avoiding the float64→float32 re-cast that doubled channel memory. ``_named_signals`` shares one naming/dedup pass across every load path.
-- **Streaming CSV.** Both native backends stream numeric batches into the shared ``collect_csv_batches`` allocator. It checks actual rows and retained numeric capacity against ``MAX_CSV_NUMERIC_BYTES`` before allocating or growing arrays; the file-size estimate is only an initial admission check. Parser scratch and transient growth copies are additional memory. The former small-file bulk path and streaming-size threshold have been removed. ``csv_policy.NULL_VALUES`` defines the missing-value spellings used by both native backends and the generated browser parser.
+- **Streaming CSV.** Both native backends stream numeric batches into the shared ``collect_csv_batches`` allocator. It checks actual rows and retained numeric capacity against ``MAX_CSV_NUMERIC_BYTES`` before allocating or growing arrays; the file-size estimate is only an initial admission check. Parser scratch and transient growth copies are additional memory. The former small-file bulk path and streaming-size threshold have been removed. ``csv_policy.NULL_VALUES`` defines the missing-value spellings used by both backends.
 - **Releasing Arrow's pool.** After every parse, ``parse_file`` calls ``_release_arrow_pool`` (``pa.default_memory_pool().release_unused()``): Arrow otherwise retains freed parse scratch rather than returning it to the OS, pinning RSS at the parse high-water mark (measured ~1.2 GB reclaimed on the 9M-row log, ~10 GB on the 75M).
 - **CSV size guard.** ``_guard_csv_size`` estimates the resident footprint from file size × column count and **refuses** a CSV above ``MAX_CSV_NUMERIC_BYTES``. Now that large CSVs stream, this is a **resident-RAM** ceiling (the full record must fit in memory), not a bulk-parse guard; it routes the user to lazy loading or ``convert(...)``. Actual capacity is checked independently during materialization.
 - **Streaming Parquet.** All eager PyArrow Parquet loads preallocate arrays from ``ParquetFile.metadata.num_rows`` and fill them with ``iter_batches``. There is one path for small and large files; lazy loads retain indexed sources.
 - **CSV→Parquet converter.** ``convert_csv_to_parquet`` stream-converts a CSV to Parquet with bounded memory (per-batch ``ParquetWriter.write_batch``), dropping JavaScope's empty trailing column and preserving raw headers so the result round-trips through the same name parsing. Exposed as the scriptable ``convert(src, [dst])`` command and the ``uz-dataviewer convert`` CLI.
   The shared converter owns temporary output, empty-recording validation, cancellation cleanup, and publication without overwriting existing destinations. GUI, console, and cache conversion use this same path; backend writers only fill unpublished temporary files.
 
-In-memory mode retains the complete recording. Native lazy mode reads raw windows
+In-memory mode retains the complete recording. Lazy mode reads raw windows
 and streams histogram batches without keeping the full recording resident;
-FFTs and node transforms still materialize their selected inputs. Browser memory
-constraints are described in :ref:`uz_dataviewer_web_large_logs`.
+FFTs and node transforms still materialize their selected inputs.
 
 The command layer
 =================
@@ -233,7 +229,7 @@ The base provides:
 - A **time-window selector** (``follow_combo``): ``Custom`` (``0``), ``Full`` (``-1``), or ``plot_N`` (``≥1``), resolved by ``AppState.resolve_x_window``. Switching to a plot computes immediately; switching to Custom/Full does **not** (the window can be the whole log).
 - **On-demand compute only** — never per frame. A compute happens on the *Compute* button, on a drag-in, or once when an input changes (``compute_requested``). Following a plot and then panning it goes **stale** rather than recomputing.
 - A **stale indicator**: a ``_computed_key`` snapshot (sources + window + options) is compared to the current key each frame; mismatch shows "⚠ stale - press Compute".
-- **Shared analysis controls use commands** (``fft_follow``, ``fft_remove_dc``, ``hist_bins``, ``*_xlim`` on zoom, ``*_export``, …) and **Export** (OS dialog on desktop, browser download on web).
+- **Shared analysis controls use commands** (``fft_follow``, ``fft_remove_dc``, ``hist_bins``, ``*_xlim`` on zoom, ``*_export``, …) and **Export** (OS save dialog).
 
 .. _uz_dataviewer_node_graph:
 
@@ -247,7 +243,7 @@ Nodes *produce* data; nothing else in the app needs to know they exist.
 - **Graph** (``NodeGraph``) of ``Node``s: a **source** wraps a ``(run, signal)`` ref; a **transform** (``fft`` / ``math`` / ``filter`` / ``shift``) pulls arrays from its inputs and computes. Links are validated against cycles; ids are persisted so derived-run labels (= node name) are stable across save/restore.
 - **On-demand evaluation** (``evaluate``): topological order; each transform reads its inputs (a source from the registry, an upstream transform from its cache), computes via ``transforms``/``analysis``, bumps a ``version``, and upserts its derived run **in place** (so plot references survive a re-eval). Per-node errors are logged and skipped, not fatal. A node is **stale** (``is_stale``) when its key — params + each input's version/identity — differs from the last evaluated key (the same idea as the analysis windows' ``_computed_key``).
 - **GUI-free + scriptable**: ``nodes.py``/``transforms.py`` import no GUI and raise plain ``ValueError``s, so the whole engine is driven and tested from command strings. The canvas (``panels/nodes.py``, ``imgui_node_editor``) is a thin layer that **only issues ``node_*`` commands** — drag-drop → ``node_source``, link → ``node_link``, a widget → ``node_set``, a drag → ``node_pos``, the button → ``node_eval``. The graph is automated through commands and restored through the JSON session.
-- **Transforms are pure NumPy** (windowed-sinc FIR filter, not SciPy) so native and web share one code path. FFT reuses ``analysis.compute_fft``; its derived run's x-axis is frequency.
+- **Transforms use NumPy** (windowed-sinc FIR filter). FFT reuses ``analysis.compute_fft``; its derived run's x-axis is frequency.
 - **Registry-driven.** Every transform (builtin *or* plugin) is a ``TransformSpec`` in ``REGISTRY``; the engine looks up available kinds, default params, input arity and the compute function there, so a plugin is indistinguishable from a builtin. External plugins (``plugins.py``, the ``@transform`` decorator) are loaded at startup from ``$UZ_DATAVIEWER_PLUGINS`` / ``~/.uz_dataviewer/nodes/`` — both optional; a missing dir, no files, or a broken plugin are all tolerated (the app runs with just the builtins). An unknown kind (plugin not installed) restores as a placeholder that keeps its params/links. See :doc:`uz_dataviewer_plugins`.
 
 .. note::
@@ -313,7 +309,6 @@ Hann windows belong to that computation and are released afterwards; there is no
 process-global cache retaining windows from previous FFT sizes.
 Cancellation of a NumPy FFT takes effect after its native call returns.
 Explicit console/script commands and node/plugin evaluation remain synchronous.
-Browser execution uses the same interfaces synchronously because its current runtime lacks workers.
 
 Time-series, XY and cursor requests share source validation, worker scheduling and error reporting through ``PlotsPanel._request_data``.
 Cached display and analysis results share the ``sources.validation_error`` contract with node stale detection.
@@ -370,10 +365,9 @@ Runtime services own display/analysis workers, the loading executor, pending loa
 It preserves the command registry and console, and installs a new session token. The consumed replacement no longer owns services; shutting it down cannot clear the transferred cache or stop the new workers.
 ``SessionPanel`` resets view caches and dialogs on token changes, including analysis results and canvas positions.
 ``clear_session`` uses the same replacement lifecycle.
-GUI command wrappers share an explicit success result; browser exports download only successful writes to fresh temporary paths.
-Small browser uploads receive separate backing directories so duplicate filenames retain independent contents.
+GUI command wrappers share an explicit success result.
 
-Browser-streamed arrays have no backing file and cannot be saved in a reloadable session.
+Runs without a backing file (live snapshots, arrays) cannot be saved in a reloadable session.
 Saving rejects them before opening the destination file. Export their data first.
 
 ``SubplotCell.y_lim`` and ``y2_lim`` record the last rendered primary and secondary Y ranges, separately from their one-shot pending limits.
@@ -386,26 +380,6 @@ a plot removes secondary-axis assignments as well as plotted signals.
 
 CSV exports (``export_data``, ``export_fft``, ``export_histogram``) also live here.
 FFT export validates all selected channels before writing; a missing or invalid channel aborts with its identity and reason.
-
-.. _uz_dataviewer_arch_native_web:
-
-Native vs web (``webbridge.py``)
-==================================
-
-The same Python runs on the desktop and in the browser via Pyodide (CPython→WASM); a single flag, ``runtime.IS_WEB``, gates the handful of edges that differ.
-The UI, command layer, plots, FFT/Histogram, nodes and downsampler are **identical** on both — the differences are file I/O, threading, the WASM memory ceiling, and plugin loading.
-
-Design-relevant points: loads are async on native and synchronous on web (Pyodide has no worker threads); the renderer never branches on the target because the **decimator is pure NumPy** (no native dependency to wheel for the browser); and the web build cannot hold a multi-GB log, so a large CSV is **stream-parsed into typed arrays** at full resolution. Recordings that exceed the browser numeric-data budget are rejected; load-time decimation has been removed.
-
-The user-facing comparison is in :doc:`uz_dataviewer_native_vs_web`; the wasm32 memory ceiling is discussed in :ref:`uz_dataviewer_web_large_logs`.
-
-Web edges (``webbridge.py`` / ``build/gen_web.py``):
-
-- **File I/O.** Native uses ``portable_file_dialogs`` plus a GLFW drop callback; web uses a hidden HTML ``<input type=file>`` to open, ``webbridge.download`` (a Blob + synthetic anchor click) to save, and a second hidden picker (``uzSessionInput``) for session uploads, routed by extension in ``webbridge.load_uploaded_session`` (``.json`` → ``load_state``, ``.uzscript``/``.txt`` → ``run_script``).
-- **Loading.** ``wireFileInput`` (``build/gen_web.py``) dispatches by type: a CSV ≤ ``FULL_LOAD_LIMIT`` (200 MB) **and any Parquet** take ``loadFull`` → written to the Pyodide FS and parsed by Arrow, same code as native; a larger CSV takes ``loadStreamingCsv``.
-- **Streaming CSV budget (CSV only).** ``loadStreamingCsv`` reads the ``File`` blob in chunks and passes full-resolution typed arrays to ``webbridge.load_columns``. It rejects recordings whose estimated numeric footprint exceeds ``MEM_BUDGET`` (~1.5 GiB), and checks the actual row count before growing arrays so an underestimate cannot bypass the budget. It never discards samples. This is a numeric-data budget, not a hard browser-memory limit: scratch space and transfer copies also need memory. Large Parquet files still use ``loadFull`` and must fit in the browser heap. Use native lazy loading for oversized recordings.
-- **Node plugins are native-only.** ``plugins.load_plugins`` (called once at startup in ``app.py``) scans filesystem/env plugin dirs (``$UZ_DATAVIEWER_PLUGINS``, ``~/.uz_dataviewer/nodes/``) that a browser tab cannot populate, so on web it finds nothing and the node graph runs the builtins in ``nodes.REGISTRY`` only. The ``load_plugins`` command still exists but has no dirs to read. See :doc:`uz_dataviewer_plugins`.
-- **Version pins.** ``PYODIDE_VERSION`` and ``IMGUI_BUNDLE_WHEEL`` (``build/gen_web.py``) must be a compatible pair — the ``imgui_bundle`` wheel is built against one specific Pyodide release, so bump them together (see the `imgui_bundle Pyodide docs <https://pthom.github.io/imgui_bundle/python_pyodide.html>`_). A true single-file, no-server build would require a C++/emscripten ``SINGLE_FILE`` rebuild and would drop the Python data stack (:ref:`uz_dataviewer_build_web`).
 
 Extending the app
 =================
@@ -482,8 +456,6 @@ Design decisions
      - Explicit references preserve repeated filenames and partially evaluated graphs.
    * - Per-log time normalization keeps ``time_raw``
      - Reversible, cheap (recompute on change only), and signals are never touched.
-   * - Web: stream-parse CSV → arrays
-     - Avoids holding multi-GB text in 32-bit WASM memory; rejects oversized numeric data without discarding samples.
    * - Pending-flag pattern (``fit_pending``, ``compute_requested``, …)
      - The immediate-mode way to express "do X once next frame".
 
@@ -497,7 +469,8 @@ Repository layout
    ├── src/uz_dataviewer/        # modules — see the module map above
    │   └── panels/               # navigation, plots, analysis base, fft, histogram, nodes
    ├── tests/                    # pytest (logic via commands + headless rendering)
-   └── build/                    # native (PyInstaller) + web (Pyodide) build flow
+   ├── tasks.py                  # lint, test, bundle, bundle-smoke (all systems)
+   └── build/                    # PyInstaller spec and frozen smoke tests
 
 Worker and source contracts
 ---------------------------

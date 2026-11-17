@@ -14,4 +14,4 @@ def test_run_py_starts_the_viewer(monkeypatch):
         assert exc.code == 0
     assert calls == [True]
     source = (Path(__file__).parents[1] / 'run.py').read_text()
-    assert 'ultrazohm' not in source and 'enable' not in source
+    assert 'ultrazohm_cli' not in source and 'enable' not in source

@@ -75,7 +75,7 @@ def test_invalid_headers_report_in_gui_without_aborting_startup(repo, monkeypatc
 
 
 def test_real_cli_generates_mapping_from_headers(tmp_path):
-    pytest.importorskip('ultrazohm')
+    pytest.importorskip('ultrazohm_cli')
     import shutil
     root = Path(__file__).resolve().parents[2]
     for name in (str(live_mapping.HEADER),

@@ -22,8 +22,8 @@ class SetupOnlyTest(unittest.TestCase):
             scripts.mkdir(parents=True)
             (env/'pyvenv.cfg').touch()
             (scripts/('python.exe' if sys.platform == 'win32' else 'python')).touch()
-            (scripts/('ultrazohm.exe' if sys.platform == 'win32' else 'ultrazohm')).touch()
-            wheel = root/'ultrazohm-0.1.0-py3-none-any.whl'
+            (scripts/('ultrazohm_cli.exe' if sys.platform == 'win32' else 'ultrazohm_cli')).touch()
+            wheel = root/'ultrazohm_cli-0.1.0-py3-none-any.whl'
             wheel.touch()
             argv = ['setup_uv.py', '--examples', '--launch', 'cli', '--venv', str(env),
                     '--launch', 'none', '--no-examples', '--wheel', str(wheel)]
@@ -37,7 +37,7 @@ class SetupOnlyTest(unittest.TestCase):
                 setup.main()
             popen.assert_not_called()
             commands = [call.args[0] for call in run.call_args_list]
-            installs = [cmd for cmd in commands if any('ultrazohm @' in str(arg) for arg in cmd)]
+            installs = [cmd for cmd in commands if any('ultrazohm_cli @' in str(arg) for arg in cmd)]
             self.assertEqual(len(installs), 1)
             self.assertNotIn('[examples]', installs[0][-1])
             expected_python = (scripts/('python.exe' if sys.platform == 'win32' else 'python')).resolve()

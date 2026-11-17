@@ -110,7 +110,7 @@ def main():
                     time.sleep(.05)
                 else: raise AssertionError((directory/'service.log').read_text())
                 script = directory/'script.py'
-                script.write_text('import argparse, time\nfrom ultrazohm import Client\np=argparse.ArgumentParser()\np.add_argument("--endpoint")\nu=Client(p.parse_args().endpoint)\nu.start_logging()\ntime.sleep(.3)\nu.stop_logging()\nprint("SCRIPT_OK", flush=True)\n')
+                script.write_text('import argparse, time\nfrom ultrazohm_cli import Client\np=argparse.ArgumentParser()\np.add_argument("--endpoint")\nu=Client(p.parse_args().endpoint)\nu.start_logging()\ntime.sleep(.3)\nu.stop_logging()\nprint("SCRIPT_OK", flush=True)\n')
                 result = subprocess.run([executable, '--internal-worker', 'script', str(script), '--endpoint', endpoint],
                                         capture_output=True, text=True, cwd=tmp, timeout=30)
                 assert result.returncode == 0, result.stderr

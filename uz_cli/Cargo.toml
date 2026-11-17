@@ -1,5 +1,5 @@
 [package]
-name = "ultrazohm"
+name = "ultrazohm_cli"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.90"
@@ -7,7 +7,7 @@ license = "Apache-2.0"
 description = "Headless UltraZohm acquisition and control"
 
 [lib]
-name = "ultrazohm"
+name = "ultrazohm_cli"
 crate-type = ["rlib", "cdylib"]
 
 [features]

@@ -1,3 +1,3 @@
 fn main() -> std::process::ExitCode {
-    std::process::ExitCode::from(ultrazohm::cli::run(std::env::args()) as u8)
+    std::process::ExitCode::from(ultrazohm_cli::cli::run(std::env::args()) as u8)
 }

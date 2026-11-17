@@ -6,7 +6,6 @@ current state; they do not provide a second session serialization protocol.
 
 from __future__ import annotations
 
-from . import runtime
 
 import json
 import os
@@ -200,9 +199,6 @@ def load_state(state: "AppState", path: str) -> None:
 
 
 def _session_backend(state, backend):
-    if runtime.IS_WEB and backend == "polars":
-        state.console.warn("Polars session opened with PyArrow in the browser.")
-        return "pyarrow"
     return backend
 
 

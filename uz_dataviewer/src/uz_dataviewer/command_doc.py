@@ -19,7 +19,6 @@ from __future__ import annotations
 
 import csv
 import io
-import os
 import pathlib
 
 from .commands import Command, CommandRegistry
@@ -116,27 +115,16 @@ def _args(cmd: Command) -> str:
     return ", ".join(parts)
 
 
-def _source(cmd: Command) -> str:
-    """Return the handler's source location as ``commands.py:NNN``."""
-    code = cmd.handler.__code__
-    return f"{os.path.basename(code.co_filename)}:{code.co_firstlineno}"
-
-
 def build_csv() -> str:
     """Render the full command reference as CSV text."""
-    reg = CommandRegistry()
-    rows = []
-    for cmd in reg.all():
-        group = group_for(cmd.name)
-        rows.append((GROUP_ORDER.index(group), cmd.handler.__code__.co_firstlineno, cmd))
-    # Sort by group order, then source line so commands from one factory stay together.
-    rows.sort(key=lambda r: (r[0], r[1], r[2].name))
+    # Group order, then name: the table changes only when a command does.
+    commands = sorted(CommandRegistry().all(), key=lambda cmd: (GROUP_ORDER.index(group_for(cmd.name)), cmd.name))
 
     buf = io.StringIO()
     writer = csv.writer(buf, lineterminator="\n")
-    writer.writerow(["Command", "Group", "Description", "Arguments", "Source"])
-    for _, _, cmd in rows:
-        writer.writerow([cmd.name, group_for(cmd.name), cmd.help, _args(cmd), _source(cmd)])
+    writer.writerow(["Command", "Group", "Description", "Arguments"])
+    for cmd in commands:
+        writer.writerow([cmd.name, group_for(cmd.name), cmd.help, _args(cmd)])
     return buf.getvalue()
 
 

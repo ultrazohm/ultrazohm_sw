@@ -31,4 +31,4 @@ fi
 PROJECT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 # Preserve the caller working directory and every argument.
-exec uv run --no-project --python 3.12 "$PROJECT_DIR/launch.py" "$@"
+exec uv run --no-project --python "$(cat "$PROJECT_DIR/../.python-version")" "$PROJECT_DIR/launch.py" "$@"

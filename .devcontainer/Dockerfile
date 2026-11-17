@@ -7,8 +7,7 @@
 # Debian trixie-based Python image.
 FROM docker.io/library/python:3.12-trixie AS ci
 
-# Build tools, GUI runtime libraries for headless ImGui tests, and Node.js for
-# the generated browser-bridge tests.
+# Build tools and GUI runtime libraries for headless ImGui tests.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
      && apt-get -y install --no-install-recommends build-essential \
                                                   make \
@@ -23,7 +22,6 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
                                                   libxau6 \
                                                   libxdmcp6 \
                                                   libxcb1 \
-                                                  nodejs \
      && rm -rf /var/lib/apt/lists/*
 
 # Rust CLI and native Python package. Pin the same toolchain as uz_cli.

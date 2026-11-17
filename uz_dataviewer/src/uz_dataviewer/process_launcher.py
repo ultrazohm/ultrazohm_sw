@@ -35,8 +35,8 @@ def main(argv=None):
                 os.environ['LD_LIBRARY_PATH'] = os.environ['LD_LIBRARY_PATH_ORIG']
             else:
                 os.environ.pop('LD_LIBRARY_PATH', None)
-        from ultrazohm.cli import main as cli_main
-        sys.argv = ['ultrazohm', *args]
+        from ultrazohm_cli.cli import main as cli_main
+        sys.argv = ['ultrazohm_cli', *args]
         return cli_main()
     if task == 'script':
         from .script_worker import main as script_main

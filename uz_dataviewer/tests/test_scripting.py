@@ -20,7 +20,7 @@ from uz_dataviewer.scripting import ScriptRunner, TEMPLATES
 
 @pytest.fixture
 def service(tmp_path):
-    native = pytest.importorskip('ultrazohm')
+    native = pytest.importorskip('ultrazohm_cli')
     device_port, service_port = ports()
     root = Path(__file__).resolve().parents[2]
     simulator = subprocess.Popen([sys.executable, str(root/'javascope/test_server.py'),
@@ -55,7 +55,7 @@ def test_script_import_completion_error_and_stop_preserve_logging(tmp_path, serv
         return not runner.busy
     try:
         path.write_text('from helpers import configure\n'
-            'import argparse\nfrom ultrazohm import Client\n'
+            'import argparse\nfrom ultrazohm_cli import Client\n'
             'if __name__ == "__main__":\n'
             '    parser = argparse.ArgumentParser()\n'
             '    parser.add_argument("--endpoint", required=True)\n'
@@ -322,7 +322,7 @@ def test_templates_are_standalone_scripts_with_endpoint(tmp_path, monkeypatch, n
         def set_variable(self, name, value): calls.append(('variable', name, value))
         def enable_system(self): calls.append(('system',))
         def enable_control(self): calls.append(('control',))
-    monkeypatch.setitem(sys.modules, 'ultrazohm', SimpleNamespace(Client=Client))
+    monkeypatch.setitem(sys.modules, 'ultrazohm_cli', SimpleNamespace(Client=Client))
     monkeypatch.setattr(time, 'sleep', lambda duration: None)
     path = tmp_path / 'measurement.py'
     path.write_text(TEMPLATES[name])

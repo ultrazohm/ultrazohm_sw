@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from . import runtime
 
 import enum
 import math
@@ -198,8 +197,7 @@ class HistogramConfig(AnalysisConfig):
 
 
 def default_data_settings():
-    """The browser cannot use the native Polars runtime."""
-    return ("pyarrow", "memory") if runtime.IS_WEB else ("polars", "lazy")
+    return ("polars", "lazy")
 
 
 @dataclass
@@ -239,10 +237,10 @@ class RuntimeServices:
     # Several plot jobs run concurrently so one slow summary build does not block
     # other subplots. Per-source summary locks and the shared cache are thread-safe.
     display: Requests = field(default_factory=lambda: Requests(
-        synchronous=runtime.IS_WEB, workers=min(4, os.cpu_count() or 1)))
-    analysis_jobs: Requests = field(default_factory=lambda: Requests(synchronous=runtime.IS_WEB))
+        workers=min(4, os.cpu_count() or 1)))
+    analysis_jobs: Requests = field(default_factory=lambda: Requests())
     analysis_displays: dict[str, Requests] = field(default_factory=lambda: {
-        name: Requests(synchronous=runtime.IS_WEB) for name in ("fft", "hist")})
+        name: Requests() for name in ("fft", "hist")})
     executor: CancellableExecutor = field(default_factory=CancellableExecutor)
     exports: list = field(default_factory=list)
     replay: object | None = None
@@ -401,7 +399,7 @@ class AppState(SessionData):
             if hi > lo:
                 self.set_plot_x_limits(plot_n, lo, hi)
 
-    # -- file loading (async on desktop, synchronous in the browser) -------
+    # -- file loading (asynchronous) --------------------------------------
     def request_load(self, path: str, loading_mode: str | None = None) -> None:
         """Open a file, optionally overriding the mode for this request only."""
         mode = self.loading_mode if loading_mode is None else loading_mode
@@ -412,7 +410,7 @@ class AppState(SessionData):
         validate_backend(backend)
         path = os.path.abspath(path)
         request = LoadRequest(path, mode, backend, self.disk_cache)
-        if not runtime.IS_WEB and path.lower().endswith(".csv"):
+        if path.lower().endswith(".csv"):
             try:
                 if os.path.getsize(path) > LARGE_CSV_BYTES:
                     self.services.large_csv_requests.append(request)
@@ -451,13 +449,6 @@ class AppState(SessionData):
             if selected != current:
                 self.commands.echo(self, name, [current])
         self.console.info(f"{'Converting and loading' if convert_from else 'Loading'} {os.path.basename(path)} ...")
-        if runtime.IS_WEB:
-            try:
-                parsed = self._open_background(path, request.mode, request.backend, request.disk_cache)
-                self._report_loaded(parsed.register(self.registry))
-            except Exception as exc:
-                self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
-            return
         if convert_from:
             future = self.services.executor.submit(self._convert_and_open, convert_from, request)
         else:
@@ -496,12 +487,7 @@ class AppState(SessionData):
         signals: dict,
         units: dict,
     ) -> Run:
-        """Register a run that was already parsed into numpy arrays.
-
-        Used by the web build, where the CSV is stream-parsed into typed arrays in
-        the browser (full resolution) rather than handed to the Arrow reader -- so
-        the multi-gigabyte text never has to be resident in 32-bit WASM memory.
-        """
+        """Register a run from NumPy arrays that have no backing file."""
         import numpy as np
 
         from .loader import validate_time_axis
@@ -559,10 +545,7 @@ class AppState(SessionData):
                 cfg.sources = remaining
                 self.services.analysis_jobs.forget(slot)
                 cfg.compute_requested = bool(remaining)
-        removed = self.registry.get(run_id)
         self.registry.remove_run(run_id)
-        if removed is not None:
-            self._release_upload(removed)
         self.console.info(f"Removed run {run.label}")
 
     def _report_loaded(self, run: Run) -> None:
@@ -637,28 +620,8 @@ class AppState(SessionData):
     def _open_background(self, path, mode, backend, disk_cache, cancel=None):
         return open_file(path, mode, self.registry.cache, self.cache_dir, backend=backend, disk_cache=disk_cache, cancel=cancel)
 
-    def _release_upload(self, run, *, closing=False) -> None:
-        if not run.owned_upload:
-            return
-        others = [r for r in self.registry.runs if r.id != run.id and r.path == run.path]
-        if others and not closing:
-            for other in others:
-                other.owned_upload, other.reloadable = True, False
-            return
-        from pathlib import Path
-        path = Path(run.path)
-        path.unlink(missing_ok=True)
-        from .webbridge import UPLOAD_ROOT
-        if path.parent != Path(UPLOAD_ROOT):
-            try:
-                path.parent.rmdir()
-            except OSError:
-                pass  # shared or nonempty upload directory
-
     def shutdown(self) -> None:
         if self.services is not None:
             self.services.close()
             self.registry.cache.clear()
-            for run in list(self.registry.runs):
-                self._release_upload(run, closing=True)
             self.services = None

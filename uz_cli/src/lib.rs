@@ -14,7 +14,7 @@ mod vitis;
 
 /// Software version: the release version stamped by CI, otherwise the crate version.
 /// Shown by `--version`, `status` and stored in each run's `run.json`.
-pub const VERSION: &str = match option_env!("ULTRAZOHM_RELEASE_VERSION") {
+pub const VERSION: &str = match option_env!("UZ_CLI_RELEASE_VERSION") {
     Some(version) => version,
     None => env!("CARGO_PKG_VERSION"),
 };

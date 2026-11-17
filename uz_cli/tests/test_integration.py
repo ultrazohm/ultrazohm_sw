@@ -19,7 +19,7 @@ import time
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-BIN = Path(os.environ.get("UZ_CLI_BIN", ROOT / "uz_cli/target/debug" / ("ultrazohm.exe" if os.name == "nt" else "ultrazohm")))
+BIN = Path(os.environ.get("UZ_CLI_BIN", ROOT / "uz_cli/target/debug" / ("ultrazohm_cli.exe" if os.name == "nt" else "ultrazohm_cli")))
 spec = importlib.util.spec_from_file_location("test_server", ROOT / "javascope/test_server.py")
 server_module = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = server_module
@@ -128,18 +128,18 @@ class SimulatorTest(unittest.TestCase):
         self.assertEqual(m.get_slow_data_value(7), 0)
 
 
-@unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for Python CLI tests")
+@unittest.skipUnless(importlib.util.find_spec("ultrazohm_cli"), "install native wheel for Python CLI tests")
 class PythonCLITest(unittest.TestCase):
     def test_module_help_version_and_parse_errors(self):
         for args, expected in [(["--help"], 0), (["--version"], 0), (["not-a-command"], 2)]:
-            result=subprocess.run([sys.executable,"-m","ultrazohm",*args],capture_output=True,text=True,timeout=10)
+            result=subprocess.run([sys.executable,"-m","ultrazohm_cli",*args],capture_output=True,text=True,timeout=10)
             self.assertEqual(result.returncode, expected, result.stderr)
-        result=subprocess.run([sys.executable,"-m","ultrazohm","profile"],capture_output=True,text=True,timeout=10)
+        result=subprocess.run([sys.executable,"-m","ultrazohm_cli","profile"],capture_output=True,text=True,timeout=10)
         self.assertEqual(result.returncode,0,result.stderr)
         self.assertEqual(len(json.loads(result.stdout)["initial_channels"]),20)
 
     def test_unavailable_service_has_a_stable_error_code(self):
-        from ultrazohm import Client
+        from ultrazohm_cli import Client
         with socket.socket() as unused:
             unused.bind(("127.0.0.1", 0))
             endpoint = f"127.0.0.1:{unused.getsockname()[1]}"
@@ -148,7 +148,7 @@ class PythonCLITest(unittest.TestCase):
         self.assertEqual(raised.exception.code, "connection_refused")
 
     def test_help_returns_without_exiting_interpreter(self):
-        code="from ultrazohm._native import cli_main; assert cli_main(['ultrazohm', '--help']) == 0; print('INTERPRETER_ALIVE')"
+        code="from ultrazohm_cli._native import cli_main; assert cli_main(['ultrazohm_cli', '--help']) == 0; print('INTERPRETER_ALIVE')"
         result=subprocess.run([sys.executable,"-c",code],capture_output=True,text=True,timeout=10)
         self.assertEqual(result.returncode,0,result.stderr)
         self.assertIn("INTERPRETER_ALIVE", result.stdout)
@@ -258,9 +258,9 @@ class IntegrationTest(unittest.TestCase):
             self.cli("start-logging")
             self.cli("start-logging-slow-data")
 
-    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for duration test")
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm_cli"), "install native wheel for duration test")
     def test_default_buffer_duration_uses_configured_sample_period(self):
-        from ultrazohm import Acquisition, Client
+        from ultrazohm_cli import Acquisition, Client
         profile = self.runtime_profile({})
         profile['sample_period_us'] = 10.0
         path = self.config_file('100khz.json', profile)
@@ -301,9 +301,9 @@ class IntegrationTest(unittest.TestCase):
             self.assertFalse(reply['state']['connected'])
         self.assertTrue(self.cli('status')['ok'])
 
-    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for snapshot test")
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm_cli"), "install native wheel for snapshot test")
     def test_live_snapshot_without_logging_and_cli_preview(self):
-        from ultrazohm import Client
+        from ultrazohm_cli import Client
         import polars as pl
         self.start(logging=False, data_options=("--buffer-samples", "960"))
         client = Client(self.endpoint)
@@ -337,10 +337,10 @@ class IntegrationTest(unittest.TestCase):
         self.assertEqual(remapped.columns[2], "JSO_lifecheck")
         self.assertEqual(remapped.columns.count("JSO_lifecheck"), 1)
 
-    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for recording test")
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm_cli"), "install native wheel for recording test")
     def test_python_configurable_buffers_and_recording_reads(self):
         import polars as pl
-        from ultrazohm import Acquisition, Client
+        from ultrazohm_cli import Acquisition, Client
         # Tiny 45-row segments exercise the configured threshold. Keep their
         # arrival rate below the debug wheel's disk throughput on Windows CI.
         self.spawn([sys.executable, ROOT/"javascope/test_server.py", "--port", self.device_port,
@@ -462,9 +462,9 @@ class IntegrationTest(unittest.TestCase):
         for part in sorted(self.run_dir.glob("data-part-*.parquet"))[:3]:
             self.assertEqual(pl.read_parquet(part).height, 300)
 
-    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for offline test")
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm_cli"), "install native wheel for offline test")
     def test_live_data_offline_and_invalid_python_configuration(self):
-        from ultrazohm import Acquisition, Client
+        from ultrazohm_cli import Acquisition, Client
         for option in ("buffer_samples", "segment_rows", "flush_interval_ms"):
             with self.assertRaisesRegex(RuntimeError, "positive"):
                 Acquisition(endpoint=self.endpoint, **{option: 0})
@@ -479,9 +479,9 @@ class IntegrationTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             a.read_recording()  # No recording was started.
 
-    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install wheel for data API tests")
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm_cli"), "install wheel for data API tests")
     def test_history_reads_unflushed_data_beyond_live_ring(self):
-        from ultrazohm import Client, Recording
+        from ultrazohm_cli import Client, Recording
         self.start(logging=False, format="parquet", data_options=(
             "--buffer-samples", "17", "--segment-rows", "100000", "--flush-interval-ms", "60000"))
         client = Client(self.endpoint)
@@ -504,10 +504,10 @@ class IntegrationTest(unittest.TestCase):
         self.assertTrue(handle.info()["complete"])
         self.assertTrue(handle.read_range(start, stop).equals(df))
 
-    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install wheel for data API tests")
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm_cli"), "install wheel for data API tests")
     def test_history_pages_cross_persisted_pending_and_finalized_ranges(self):
         import polars as pl
-        from ultrazohm import Client, Recording
+        from ultrazohm_cli import Client, Recording
         self.start(logging=False, format="csv", data_options=(
             "--buffer-samples", "17", "--segment-rows", "300", "--flush-interval-ms", "60000"))
         client = Client(self.endpoint)
@@ -557,9 +557,9 @@ class IntegrationTest(unittest.TestCase):
         self.assertEqual(self.service.wait(timeout=8),0)
         self.assertTrue(Recording(handle.path).read().equals(merged))
 
-    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install wheel for data API tests")
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm_cli"), "install wheel for data API tests")
     def test_data_cursors_expire_and_validate_source_identity(self):
-        from ultrazohm import Client
+        from ultrazohm_cli import Client
         self.start(logging=False, data_options=("--buffer-samples", "17"))
         client = Client(self.endpoint)
         wait_for(lambda: client.data_info()["stop"] is not None)
@@ -594,9 +594,9 @@ class IntegrationTest(unittest.TestCase):
         self.assertIn("cursor",json.loads(result.stdout.splitlines()[0]))
         self.assertIn("10 rows",result.stdout)
 
-    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install wheel for projection tests")
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm_cli"), "install wheel for projection tests")
     def test_projection_across_disk_pending_ram_and_completed_handles(self):
-        from ultrazohm import Client, Recording
+        from ultrazohm_cli import Client, Recording
         self.start(logging=False, format="parquet", data_options=(
             "--buffer-samples", "17", "--segment-rows", "300", "--flush-interval-ms", "60000"))
         client=Client(self.endpoint)
@@ -723,13 +723,14 @@ class IntegrationTest(unittest.TestCase):
             [str(BIN), "--endpoint", self.endpoint], cwd=self.tmp.name,
             input="status\nshutdown\n", text=True, capture_output=True, timeout=10)
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("ultrazohm>", result.stdout)
+        self.assertIn("ultrazohm_cli>", result.stdout)
         self.assertIn('"connected": false', result.stdout)
         directories = list(Path(self.tmp.name).glob("artifacts/live_logs/*"))
         self.assertEqual(len(directories), 1)
         self.assertRegex(directories[0].name, r"^\d{8}-\d{6}-\d{9}Z$")
         metadata = json.loads((directories[0]/"run.json").read_text())
-        self.assertEqual(metadata["format"], "csv")
+        # Parquet is the default everywhere; CSV is opt-in.
+        self.assertEqual(metadata["format"], "parquet")
         self.assertIsNone(metadata["device"])
         self.assertFalse(list(directories[0].glob("*.parquet")))
         self.assertFalse(list(directories[0].glob("*.csv")))
@@ -775,13 +776,13 @@ class IntegrationTest(unittest.TestCase):
         self.interactive_stderr.seek(0)
         stdout, stderr = self.interactive_stdout.read(), self.interactive_stderr.read()
         self.assertEqual(self.service.returncode, 0, stderr)
-        self.assertIn("ultrazohm> ", stdout)
+        self.assertIn("ultrazohm_cli> ", stdout)
         self.assertIn("sent_unconfirmed", stdout)
         self.assertIn("service_requested_assignments", stdout)
         self.assertIn("unknown-command", stderr)
         self.assertIn("serve cannot be started", stderr)
         events = [json.loads(line) for line in (self.run_dir/"commands.jsonl").read_text().splitlines()]
-        self.assertTrue(any(event["wire"] == [4, -12.5] for event in events))
+        self.assertTrue(any(event.get("wire") == [4, -12.5] for event in events))
         self.assertTrue((self.run_dir/"data.parquet").is_file())
         self.assertTrue((self.run_dir/"data.csv").is_file())
         self.assertTrue(json.loads((self.run_dir/"run.json").read_text())["end"]["complete"])
@@ -840,17 +841,17 @@ class IntegrationTest(unittest.TestCase):
         self.assertEqual(run["software_version"], version)
         self.assertTrue((self.run_dir/"data.parquet").is_file())
 
-    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel")
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm_cli"), "install native wheel")
     def test_pause_resume_preserves_recording_and_timestamp_gaps(self):
         self._pause_resume_scenario(60)
 
-    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel")
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm_cli"), "install native wheel")
     def test_pause_resume_queries_unflushed_data(self):
         self._pause_resume_scenario(1_000_000)
 
     def _pause_resume_scenario(self, segment_rows):
         import polars as pl
-        from ultrazohm import Client, Recording
+        from ultrazohm_cli import Client, Recording
         self.start(logging=False, format="csv", data_options=("--segment-rows", str(segment_rows), "--flush-interval-ms", "60000"))
         client = Client(self.endpoint)
         with self.assertRaises(RuntimeError): client.pause_logging()
@@ -897,6 +898,46 @@ class IntegrationTest(unittest.TestCase):
             self.assertTrue(recorded.equals(snapshots[stream]))
         self.assertTrue(pl.read_parquet(self.run_dir/"data.parquet").equals(snapshots["fast"]))
         self.assertFalse((self.run_dir/"data_0002.recording.json").exists())
+
+    def test_rejected_commands_are_audited(self):
+        self.start(logging=False)
+        with self.assertRaisesRegex(RuntimeError, "unknown writable variable"):
+            self.cli("set-variable", "no_such_variable", "1")
+        with self.assertRaisesRegex(RuntimeError, "button must be 1..8"):
+            self.cli("button", "9")
+        def rejected():
+            events = [json.loads(line) for line in (self.run_dir/"commands.jsonl").read_text().splitlines()]
+            return [event for event in events if event.get("outcome") == "rejected"]
+        events = wait_for(lambda: len(rejected()) == 2 and rejected())
+        self.assertEqual([event["request"]["command"]["op"] for event in events], ["set_variable", "button"])
+        self.assertIn("no_such_variable", events[0]["error"])
+        self.assertNotIn("wire", events[0])
+        # Successful commands keep their outcome; reads are not audited.
+        self.cli("stop")
+        self.cli("status")
+        def outcomes():
+            return [json.loads(line).get("outcome")
+                    for line in (self.run_dir/"commands.jsonl").read_text().splitlines()][20:]
+        wait_for(lambda: outcomes() == ["rejected", "rejected", "sent_unconfirmed"])
+
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm_cli"), "requires the installed wheel")
+    def test_console_command_sends_service_commands_only(self):
+        from ultrazohm_cli import console_command
+        self.start(logging=False)
+        status = json.loads(console_command("status", endpoint=self.endpoint))
+        self.assertTrue(status["state"]["connected"])
+        self.assertIn("sent_unconfirmed", console_command("set-variable send_field_1 -2.5", endpoint=self.endpoint))
+        self.assertIn("rows", console_command("tail 3", endpoint=self.endpoint))
+        self.assertIn("start-logging", console_command("--help", endpoint=self.endpoint))
+        self.assertIn("start-logging", console_command("", endpoint=self.endpoint))
+        for local in ("build", "flash", "serve", "channel-mapping"):
+            with self.assertRaisesRegex(RuntimeError, "local tools"):
+                console_command(local, endpoint=self.endpoint)
+        with self.assertRaisesRegex(RuntimeError, "unrecognized subcommand"):
+            console_command("no-such-command", endpoint=self.endpoint)
+        with self.assertRaises(RuntimeError) as refused:
+            console_command("status", endpoint="127.0.0.1:1")
+        self.assertEqual(refused.exception.code, "connection_refused")
 
     def test_default_initial_channels_and_exports(self):
         self.start(logging=False)
@@ -983,8 +1024,8 @@ class IntegrationTest(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "logging is active"):
             self.cli("set-observable", "lifecheck", "5")
         self.assertEqual(self.cli("observables"), selected)
-        if importlib.util.find_spec("ultrazohm"):
-            from ultrazohm import Client
+        if importlib.util.find_spec("ultrazohm_cli"):
+            from ultrazohm_cli import Client
             self.assertEqual(Client(self.endpoint).observables(), selected)
         self.cli("shutdown")
         self.assertEqual(self.service.wait(timeout=15), 0)
@@ -1085,8 +1126,8 @@ class IntegrationTest(unittest.TestCase):
         if importlib.util.find_spec("polars"):
             import polars as pl
             self.assertGreater(pl.read_parquet(first_part).height,0)
-        if importlib.util.find_spec("ultrazohm"):
-            from ultrazohm import Client
+        if importlib.util.find_spec("ultrazohm_cli"):
+            from ultrazohm_cli import Client
             c=Client(self.endpoint)
             c.set_variable("send_field_2",2.5)
             c.send_ack(True)
@@ -1395,9 +1436,9 @@ class IntegrationTest(unittest.TestCase):
             sock.sendall(b'{"api_version":2,"command":{"op":"status"}}\n')
             self.assertTrue(json.loads(replies.readline())["ok"])
 
-    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for embedded API test")
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm_cli"), "install native wheel for embedded API test")
     def test_embedded_python_acquisition(self):
-        from ultrazohm import Acquisition, Client
+        from ultrazohm_cli import Acquisition, Client
         self.server=self.spawn([sys.executable,ROOT/"javascope/test_server.py","--port",self.device_port])
         def ready():
             with socket.create_connection(("127.0.0.1",self.device_port),timeout=.1):
@@ -1427,7 +1468,7 @@ class IntegrationTest(unittest.TestCase):
         self.assertEqual(set(p for p in run_dir.glob("*.parquet") if "-part-" not in p.name), {run_dir/"data.parquet", run_dir/"data_slow_data.parquet", run_dir/"data_slow_data.updates.parquet"})
         self.assertFalse(list(run_dir.glob("*.csv")))
 
-    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for embedded API test")
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm_cli"), "install native wheel for embedded API test")
     def test_unclosed_embedded_acquisition_stops_device_and_finalizes(self):
         self.spawn([sys.executable, ROOT/"javascope/test_server.py", "--port", self.device_port])
         def ready():
@@ -1437,11 +1478,11 @@ class IntegrationTest(unittest.TestCase):
         root = Path(self.tmp.name)
         code = r'''import json, sys, time
 from pathlib import Path
-import ultrazohm
+import ultrazohm_cli
 endpoint, device, root = sys.argv[1], sys.argv[2], Path(sys.argv[3])
 def measure(output):
-    a = ultrazohm.Acquisition(device, endpoint=endpoint, output=str(output), format="parquet")
-    uz = ultrazohm.Client(endpoint)
+    a = ultrazohm_cli.Acquisition(device, endpoint=endpoint, output=str(output), format="parquet")
+    uz = ultrazohm_cli.Client(endpoint)
     uz.enable_system()
     uz.start_logging()
     deadline = time.monotonic() + 10
@@ -1450,7 +1491,7 @@ def measure(output):
         time.sleep(.03)
     uz.close()
     return a, uz.status()["state"]["commands_sent"]
-with ultrazohm.Acquisition(device, endpoint=endpoint, output=str(root/"with")) as a:
+with ultrazohm_cli.Acquisition(device, endpoint=endpoint, output=str(root/"with")) as a:
     pass
 assert a.is_finished()
 # Garbage collection without close() stops the device and finalizes immediately.
@@ -1473,9 +1514,9 @@ raise SystemExit(3)
         self.assertTrue((root/"exit/data.parquet").is_file())
         self.assertTrue(json.loads((root/"with/run.json").read_text())["end"]["complete"])
 
-    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for embedded API test")
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm_cli"), "install native wheel for embedded API test")
     def test_embedded_python_connect_later(self):
-        from ultrazohm import Acquisition, Client
+        from ultrazohm_cli import Acquisition, Client
         acquisition = Acquisition(endpoint=self.endpoint, output=str(Path(self.tmp.name)/"connect-later"))
         try:
             client = Client(self.endpoint)
@@ -1493,7 +1534,7 @@ raise SystemExit(3)
             acquisition.close()
         self.assertTrue(acquisition.is_finished())
 
-    @unittest.skipUnless(importlib.util.find_spec("ultrazohm"), "install native wheel for embedded API test")
+    @unittest.skipUnless(importlib.util.find_spec("ultrazohm_cli"), "install native wheel for embedded API test")
     def test_embedded_python_defaults(self):
         repo = Path(self.tmp.name)/"repo"
         repository_fixture(repo)
@@ -1506,15 +1547,15 @@ raise SystemExit(3)
         wait_for(ready)
         code = r'''import json, sys, time
 from pathlib import Path
-import ultrazohm
+import ultrazohm_cli
 endpoint, device_port = sys.argv[1:]
-a = ultrazohm.Acquisition(endpoint=endpoint)
+a = ultrazohm_cli.Acquisition(endpoint=endpoint)
 try:
-    uz = ultrazohm.Client(endpoint)
+    uz = ultrazohm_cli.Client(endpoint)
     assert not uz.status()["state"]["connected"]
     # A second owner must fail during construction, leaving this service usable.
     try:
-        ultrazohm.Acquisition(endpoint=endpoint)
+        ultrazohm_cli.Acquisition(endpoint=endpoint)
     except RuntimeError:
         pass
     else:
@@ -1529,12 +1570,12 @@ finally:
     a.close()
 output = Path(a.output)
 assert output.parent == Path.cwd().parent/"artifacts/live_logs", output
-assert (output/"data.csv").is_file()
+assert not (output/"data.csv").exists()  # Parquet by default; CSV is opt-in.
 assert (output/"data.parquet").is_file()
 assert json.loads((output/"run.json").read_text())["end"]["complete"]
 # Existing output directories must fail immediately too.
 try:
-    ultrazohm.Acquisition(endpoint=endpoint, output=str(output))
+    ultrazohm_cli.Acquisition(endpoint=endpoint, output=str(output))
 except RuntimeError:
     pass
 else:

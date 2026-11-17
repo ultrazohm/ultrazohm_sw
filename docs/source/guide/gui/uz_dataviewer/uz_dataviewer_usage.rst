@@ -34,10 +34,10 @@ JavaScope interaction
 Loading data
 ============
 
-- **Navigation ▸ Open file(s)…** loads ``.csv`` (JavaScope ``;``-separated **or** standard ``,``-separated — the delimiter is auto-detected) and ``.parquet``, multiple at once. On the desktop you can also drag ``.csv``/``.parquet`` files onto the window.
+- **Navigation ▸ Open file(s)…** loads ``.csv`` (JavaScope ``;``-separated **or** standard ``,``-separated — the delimiter is auto-detected) and ``.parquet``, multiple at once. You can also drag ``.csv``/``.parquet`` files onto the window.
 - Expand a run to see its channels. The checkbox (de)activates a run; right-click ▸ **Remove run** drops it.
 - **Per-log time normalization:** right-click a run ▸ tick **Normalize start time** and enter a start (default ``0``), then **Apply**. This shifts that log's time axis without touching the samples; untick to restore. (Also ``load("Log.csv", 0)``.)
-- **Large logs:** desktop lazy loading reads raw windows without retaining the complete recording. In-memory CSV loading enforces a numeric-data budget. Convert CSV to Parquet for faster repeated access, using ``convert("Log.csv")`` or ``uz-dataviewer convert Log.csv``. Browser limits are described in :doc:`uz_dataviewer_native_vs_web`.
+- **Large logs:** desktop lazy loading reads raw windows without retaining the complete recording. In-memory CSV loading enforces a numeric-data budget. Convert CSV to Parquet for faster repeated access, using ``convert("Log.csv")`` or ``uz-dataviewer convert Log.csv``.
 
 Backend and loading mode
 ------------------------
@@ -45,7 +45,7 @@ Backend and loading mode
 The **Backend** selector on the bottom status bar chooses **PyArrow** or **Polars** for subsequently opened recordings.
 The independent **Loading** selector chooses **In memory** or **Lazy**.
 Changing either setting leaves already loaded recordings unchanged.
-Desktop CSV selections larger than 1 GiB show a conversion recommendation for drag-and-drop, the Log Browser and the file picker.
+CSV selections larger than 1 GiB show a conversion recommendation for drag-and-drop, the Log Browser and the file picker.
 **Open CSV** reads the original directly without automatic cached conversion.
 **Convert to Parquet** writes a sibling file with the same stem and a ``.parquet`` extension in the background, then opens it using the selected backend and loading mode.
 Existing Parquet files are protected from overwriting; the dialog offers **Open existing Parquet** instead.
@@ -57,13 +57,11 @@ The status bar shows retained RAM cache usage next to FPS.
 An amber **cache limit hit** indication appears for five seconds after an entry is evicted or a result exceeds the cache capacity.
 Hover over it to see eviction and oversized-result counts since the last cache clear.
 Auto loading and the obsolete memory-budget controls have been removed; recreate old sessions with explicit loading settings.
-The desktop application defaults to **Polars + Lazy**.
-The online version defaults to **PyArrow + In memory** and supports PyArrow only.
+The application defaults to **Polars + Lazy**.
 The Log Browser's **Open lazy** and **Open in-memory** actions use the selected backend.
 A loaded run's context menu shows its backend.
 CSV conversion and CSV exports use the currently selected backend.
 JSON sessions retain the backend and storage mode for each file.
-Opening a Polars JSON session in the browser falls back to PyArrow with a console warning.
 
 .. code-block:: bash
 
@@ -173,8 +171,8 @@ Everything here is a command (``node_*``), so a graph is fully scriptable and sa
 Console & scripting
 ===================
 
-On Windows, ``uz ...`` CLI commands are disabled in the viewer Console.
-Use the Python panel for device automation; viewer commands remain available.
+With live mode enabled, lines starting with ``uz`` (for example ``uz status``) are sent as CLI commands to the attached acquisition service.
+Only service commands are accepted; local tools such as ``build`` or ``flash`` belong in a terminal or the **Flash UZ** button.
 
 Commands and supported gestures are echoed to the **Console** as a canonical command (``> add_signal(plot_1, run_1, ia)``, and ``> set_x_lim(plot_1, 1.2, 1.8)`` when you zoom).
 The input box runs the same commands:
@@ -215,7 +213,7 @@ file label; ``fwindow`` = ``custom`` / ``full`` / ``plot_N``; ``bool`` = ``on``/
 .. csv-table:: uz_dataviewer console commands
    :file: uz_dataviewer_commands.csv
    :header-rows: 1
-   :widths: 16 12 34 22 16
+   :widths: 18 14 40 28
 
 This table is generated from the live command registry (``python -m uz_dataviewer.command_doc``),
 and ``help`` prints the same list in the console, so both stay current.
@@ -223,7 +221,7 @@ and ``help`` prints the same list in the console, so both stay current.
 Session compatibility and analysis windows
 ------------------------------------------
 
-Failed restoration preserves the current session. Streamed browser recordings must be exported as data before saving a reloadable session.
+Failed restoration preserves the current session. Recordings without a backing file (live snapshots, node outputs) must be exported as data before saving a reloadable session.
 Transforms must be chained through node links, not by creating source nodes from derived outputs.
 
 Automation commands can reference derived outputs as ``node_output_N``, independently of which other nodes have been evaluated.

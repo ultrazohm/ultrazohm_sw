@@ -4,16 +4,14 @@ import pytest
 from uz_dataviewer.app import DataViewerApp
 
 
-@pytest.mark.parametrize('platform,session,is_web,expected', [
-    ('win32', None, False, True),
-    ('linux', 'x11', False, True),
-    ('linux', 'wayland', False, False),
-    ('linux', None, False, False),
-    ('darwin', None, False, False),
-    ('emscripten', 'x11', True, False),
-    ('linux', 'x11', True, False),
+@pytest.mark.parametrize('platform,session,expected', [
+    ('win32', None, True),
+    ('linux', 'x11', True),
+    ('linux', 'wayland', False),
+    ('linux', None, False),
+    ('darwin', None, False),
 ])
-def test_detached_windows_supported_platforms(monkeypatch, platform, session, is_web, expected):
+def test_detached_windows_supported_platforms(monkeypatch, platform, session, expected):
     from imgui_bundle import immapp
     monkeypatch.setattr('uz_dataviewer.plugins.load_plugins', lambda **kwargs: None)
     captured = []
@@ -21,7 +19,6 @@ def test_detached_windows_supported_platforms(monkeypatch, platform, session, is
     app = DataViewerApp()
     try:
         monkeypatch.setattr('sys.platform', platform)
-        monkeypatch.setattr('uz_dataviewer.runtime.IS_WEB', is_web)
         # DISPLAY alone must not enable viewports on Wayland or unknown sessions.
         monkeypatch.setenv('DISPLAY', ':0')
         if session is None:
@@ -49,16 +46,6 @@ def test_live_panels_are_opt_in(use_live, monkeypatch):
         if app.live is not None:
             assert app.live.controller.thread is None
             assert app.live.mapping == 'cached-mapping.json'
-    finally:
-        app._shutdown()
-
-
-def test_web_never_creates_live_workspace(monkeypatch):
-    monkeypatch.setattr('uz_dataviewer.runtime.IS_WEB', True)
-    monkeypatch.setattr('uz_dataviewer.plugins.load_plugins', lambda **kwargs: None)
-    app = DataViewerApp(use_live=True)
-    try:
-        assert app.live is None
     finally:
         app._shutdown()
 

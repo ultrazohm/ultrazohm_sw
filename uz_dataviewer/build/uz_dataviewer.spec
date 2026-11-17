@@ -28,7 +28,7 @@ datas += [(str(script_root.parent / 'vitis/software' / name), 'tcl_scripts/launc
           for name in ('Debug_UltraZohm.launch', 'Run_UltraZohm.launch',
                        'Debug_UltraZohm_fast_restart_PL_reset.launch')]
 binaries, hiddenimports = [], []
-for pkg in ("imgui_bundle", "pyarrow", "polars", "_polars_runtime_32", "ultrazohm"):
+for pkg in ("imgui_bundle", "pyarrow", "polars", "_polars_runtime_32", "ultrazohm_cli"):
     d, b, h = collect_all(pkg)
     datas += d
     binaries += b

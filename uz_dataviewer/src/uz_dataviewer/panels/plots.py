@@ -15,7 +15,6 @@ a typed command or a replayed script. Continuous pan/zoom gestures echo a
 
 from __future__ import annotations
 
-from .. import runtime
 
 import math
 
@@ -24,7 +23,6 @@ import numpy as np
 from ..sources import shift_time
 from imgui_bundle import em_size, imgui, imgui_ctx, implot
 
-from .. import webbridge
 from ..session import ensure_extension
 from ..state import AppState, PlotType, SignalRef, SubplotCell, XyStyle
 from .base import SessionPanel
@@ -265,11 +263,6 @@ class PlotsPanel(SessionPanel):
                     self._export_dialog = (
                         pfd.save_file("Export plot data", name, ["CSV (*.csv)", "*.csv"]),
                         cell,
-                    )
-                elif runtime.IS_WEB:  # no OS dialog in a tab -> write to FS + download
-                    webbridge.save_and_download(
-                        state, name,
-                        lambda path: self._emit(state, "export_data", plot_n, path, cell.export_relative),
                     )
             changed, rel = imgui.checkbox("start at 0", cell.export_relative)
             if changed:

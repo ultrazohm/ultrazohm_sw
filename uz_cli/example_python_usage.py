@@ -2,7 +2,7 @@
 
 Install from the repository root:
     python -m pip install "./uz_cli[examples]"
-Run (without a separate `ultrazohm serve` process):
+Run (without a separate `ultrazohm_cli serve` process):
     python uz_cli/example_python_usage.py
 
 Set PROFILE for startup selections. Firmware names/IDs are generated from the
@@ -18,7 +18,7 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import polars as pl
-import ultrazohm
+import ultrazohm_cli
 
 DEVICE = "192.168.1.233:1000"
 PROFILE = Path(__file__).parent / "profiles" / "standard.json"
@@ -30,11 +30,11 @@ OUTPUT = LOG_ROOT / ("lifecheck-" + datetime.now().strftime("%Y%m%d-%H%M%S-%f"))
 # Construction waits for the service and device connection; logging starts below.
 # Leaving the with block, also through an error or Ctrl-C, sends device Stop and
 # waits until data.parquet is complete.
-with ultrazohm.Acquisition(
+with ultrazohm_cli.Acquisition(
     DEVICE, profile=str(PROFILE),
     output=str(OUTPUT), format="parquet"
 ) as acquisition:
-    uz = ultrazohm.Client()
+    uz = ultrazohm_cli.Client()
 
     # Startup applies PROFILE["initial_channels"]. Names come from the checkout headers.
     # Override a selection before starting any logging if desired.

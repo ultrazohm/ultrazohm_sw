@@ -3,7 +3,7 @@ requires = ["maturin>=1.9,<2"]
 build-backend = "maturin"
 
 [project]
-name = "ultrazohm"
+name = "ultrazohm_cli"
 version = "0.1.0"
 requires-python = ">=3.10"
 description = "Rust-powered UltraZohm acquisition and control"
@@ -11,7 +11,7 @@ dependencies = ["polars>=1"]
 license = "Apache-2.0"
 
 [project.scripts]
-ultrazohm = "ultrazohm.cli:main"
+ultrazohm_cli = "ultrazohm_cli.cli:main"
 
 [project.optional-dependencies]
 examples = ["polars", "matplotlib"]
@@ -19,4 +19,4 @@ examples = ["polars", "matplotlib"]
 [tool.maturin]
 features = ["python"]
 python-source = "python"
-module-name = "ultrazohm._native"
+module-name = "ultrazohm_cli._native"

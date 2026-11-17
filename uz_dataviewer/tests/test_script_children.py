@@ -5,7 +5,7 @@ from uz_dataviewer.scripting import ScriptRunner
 
 
 def test_script_completion_terminates_background_child(tmp_path):
-    pytest.importorskip('ultrazohm')
+    pytest.importorskip('ultrazohm_cli')
     ready, release, action = [tmp_path/name for name in ('ready', 'release', 'action')]
     child = tmp_path/'child.py'
     child.write_text('from pathlib import Path\nimport time\n'

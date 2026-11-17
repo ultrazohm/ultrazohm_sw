@@ -549,7 +549,7 @@ def test_sessions_preserve_duplicate_names_and_instances(tmp_path):
 
 
 def test_json_session_can_be_opened_at_startup(app_state, tmp_path, monkeypatch):
-    from uz_dataviewer import plugins, webbridge
+    from uz_dataviewer import plugins
     from uz_dataviewer.app import DataViewerApp
     app_state.set_grid(2, 1)
     path = tmp_path / 'startup.json'
@@ -561,7 +561,6 @@ def test_json_session_can_be_opened_at_startup(app_state, tmp_path, monkeypatch)
         assert not app.state.is_loading
     finally:
         app.state.shutdown()
-        webbridge.register_state(None)
 
 
 @pytest.mark.parametrize('field,value', [

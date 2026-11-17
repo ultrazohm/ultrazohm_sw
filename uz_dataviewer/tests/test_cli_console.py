@@ -1,4 +1,4 @@
-"""Prefix routing and asynchronous, shell-free execution of debug CLI commands."""
+"""uz console lines go to the attached service; CliConsole runs Flash UZ's CLI."""
 from dataclasses import replace
 import subprocess
 import sys
@@ -10,13 +10,6 @@ import pytest
 from uz_dataviewer.app import DataViewerApp
 from uz_dataviewer.cli_console import CliConsole, arguments
 from uz_dataviewer.console import Console
-
-
-@pytest.fixture(autouse=True)
-def supported_console_platform(monkeypatch):
-    # These routing tests exercise platforms that expose the feature. Windows
-    # exclusion is tested separately in test_user_settings.py.
-    monkeypatch.setattr('uz_dataviewer.console.CLI_SUPPORTED', True)
 
 
 def submit(state, text):
@@ -46,19 +39,21 @@ def test_inactive_live_or_missing_wheel_reports_console_message(use_live):
             app.live.available = False
         submit(app.state, 'uz status')
         assert 'Live is not activated.' in app.state.console.as_text()
-        assert app._cli_console is None
+        assert not app._console_jobs
     finally:
         app._shutdown()
 
 
 def test_attached_endpoint_is_used_and_detached_input_can_choose_another(monkeypatch):
     calls = []
-    class Runner:
-        def __init__(self, console): pass
-        def submit(self, text, endpoint): calls.append((text, endpoint))
-        def close(self): pass
-    monkeypatch.setattr('uz_dataviewer.cli_console.CliConsole', Runner)
+
+    def console_command(line, endpoint):
+        calls.append((line, endpoint))
+        if line == 'build':
+            raise RuntimeError('this command runs local tools')
+        return '{"ok": true}\nsecond line\n'
     app = DataViewerApp(use_live=True)
+    monkeypatch.setitem(sys.modules, 'ultrazohm_cli', SimpleNamespace(console_command=console_command))
     try:
         app.live.available = True
         app.live.endpoint = '127.0.0.1:20111'
@@ -67,7 +62,16 @@ def test_attached_endpoint_is_used_and_detached_input_can_choose_another(monkeyp
         submit(app.state, 'uz status')
         app.live.update = replace(app.live.update, attached=False)
         submit(app.state, 'uz status')
-        assert calls == [('status', '127.0.0.1:20222'), ('status', '127.0.0.1:20111')]
+        submit(app.state, 'uz build')
+        deadline = time.monotonic() + 5
+        while app._console_jobs and time.monotonic() < deadline:
+            app._poll_console_jobs()
+            time.sleep(.01)
+        assert calls == [('status', '127.0.0.1:20222'), ('status', '127.0.0.1:20111'),
+                         ('build', '127.0.0.1:20111')]
+        text = app.state.console.as_text()
+        assert text.count('second line') == 2
+        assert 'uz build: this command runs local tools' in text
     finally:
         app._shutdown()
 
@@ -157,7 +161,7 @@ def test_output_streams_before_exit_and_active_commands_survive_close(tmp_path, 
 
 
 def test_actual_installed_cli_help_and_parse_error(tmp_path):
-    pytest.importorskip('ultrazohm')
+    pytest.importorskip('ultrazohm_cli')
     console = Console()
     runner = CliConsole(console, tmp_path/'logs')
     try:

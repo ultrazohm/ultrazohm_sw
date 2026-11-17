@@ -31,14 +31,14 @@ def compatible_wheels(names, python, env):
 import json, sys
 from pathlib import Path
 from packaging.tags import sys_tags
-from packaging.utils import parse_wheel_filename
+from packaging.utils import canonicalize_name, parse_wheel_filename
 supported = {tag: index for index, tag in enumerate(sys_tags())}
 found = []
 for name in json.load(sys.stdin):
     try:
         package, version, build, tags = parse_wheel_filename(Path(name).name)
         ranks = [supported[tag] for tag in tags if tag in supported]
-        if package == 'ultrazohm' and ranks:
+        if package == canonicalize_name('ultrazohm_cli') and ranks:
             found.append((version, -min(ranks), name))
     except ValueError:
         pass
@@ -58,11 +58,11 @@ def validate_cli_wheel(path):
             if len(entries) == 1:
                 config = configparser.ConfigParser(interpolation=None)
                 config.read_string(wheel.read(entries[0]).decode("utf-8"))
-                if config.get("console_scripts", "ultrazohm", fallback="").strip():
+                if config.get("console_scripts", "ultrazohm_cli", fallback="").strip():
                     return
     except (BadZipFile, UnicodeError, configparser.Error) as error:
         raise ValueError(f"Invalid CLI wheel {Path(path).name}: {error}") from error
-    raise ValueError(f"Wheel {Path(path).name} has no ultrazohm console command; "
+    raise ValueError(f"Wheel {Path(path).name} has no ultrazohm_cli console command; "
                      "use a newer CLI wheel or --latest")
 
 
@@ -102,7 +102,7 @@ def choose_local(wheels, channel, interactive, input_fn=input):
 
 
 def read_url(url):
-    request = Request(url, headers={"User-Agent": "ultrazohm-wheel-setup",
+    request = Request(url, headers={"User-Agent": "ultrazohm_cli-wheel-setup",
                                     "Accept": "application/vnd.github+json"})
     with urlopen(request, timeout=60) as response:
         return response.read()
@@ -140,7 +140,7 @@ def asset_url(asset):
 def download_latest(channel, destination, python, env, fetch=read_url):
     release = latest_release(channel, fetch)
     assets = {asset["name"]: asset for asset in release["assets"]}
-    names = [name for name in assets if re.fullmatch(r"ultrazohm-[A-Za-z0-9_.+-]+\.whl", name)]
+    names = [name for name in assets if re.fullmatch(r"ultrazohm_cli-[A-Za-z0-9_.+-]+\.whl", name)]
     matches = compatible_wheels(names, python, env)
     if not matches:
         raise ValueError(f"Newest {channel} release {release['tag_name']} has no wheel compatible "

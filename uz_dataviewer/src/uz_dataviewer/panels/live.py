@@ -157,7 +157,6 @@ class LiveWorkspace:
             restore_xsct(repo)
         except (OSError, ValueError, KeyError) as exc:
             self.tool_error = str(exc)
-        self.cli_busy = lambda: False
         self.flash_available = xsct_available()
         self._flash_config = None
         self.follow = True
@@ -178,7 +177,7 @@ class LiveWorkspace:
         self._last_feedback = None
         self._pending_plot_setup = None
         self.settings_notice = ''
-        self.available = importlib.util.find_spec('ultrazohm') is not None
+        self.available = importlib.util.find_spec('ultrazohm_cli') is not None
         self.scripts = ScriptRunner(send_stop=self.controller.send_stop)
         self.document = ScriptEditor(lambda: self.scripts.busy, lambda: self.controller.endpoint, self._start_script)
 
@@ -191,7 +190,7 @@ class LiveWorkspace:
 
     def prepare_repository(self, path):
         if (self._repo_future is not None or self.update.attached or self.pending_message
-                or self.scripts.busy or self.cli_busy() or self.controller.flashing):
+                or self.scripts.busy or self.controller.flashing):
             return
         self.repo_error = ''
 
@@ -402,7 +401,7 @@ class LiveWorkspace:
 
     def _render_data(self, main_state):
         if not self.available:
-            imgui.text_wrapped('Live acquisition requires the ultrazohm backend. Restart with start.sh --use-live (start.ps1 on Windows). Use --live-wheel PATH to select an exact wheel.')
+            imgui.text_wrapped('Live acquisition requires the ultrazohm_cli backend. Restart with start.sh --use-live (start.ps1 on Windows). Use --live-wheel PATH to select an exact wheel.')
             return
         activity = self.update.activity or self.pending_message or (
             'Preparing ultrazohm_sw root directory…' if self._repo_future is not None else '')
@@ -449,7 +448,7 @@ class LiveWorkspace:
                 imgui.same_line()
 
         next_button('Flash UZ')
-        imgui.begin_disabled(self.cli_busy() or not self.flash_available or not self.repository_ready)
+        imgui.begin_disabled(not self.flash_available or not self.repository_ready)
         if imgui.button('Flash UZ'):
             imgui.open_popup('Flash UltraZohm?')
         imgui.end_disabled()
@@ -467,12 +466,12 @@ class LiveWorkspace:
         next_button('Browse for ultrazohm_sw')
         imgui.begin_disabled(pfd is None or self._repo_dialog is not None
                              or self._repo_future is not None or bool(activity)
-                             or self.update.attached or self.scripts.busy or self.cli_busy())
+                             or self.update.attached or self.scripts.busy)
         if imgui.button('Browse for ultrazohm_sw'):
             self._repo_dialog = pfd.select_folder('Select ultrazohm_sw root directory', self.repo or str(Path.cwd()))
         imgui.end_disabled()
         next_button('Save live settings')
-        imgui.begin_disabled(not self.repository_ready or bool(activity) or self.scripts.busy or self.cli_busy())
+        imgui.begin_disabled(not self.repository_ready or bool(activity) or self.scripts.busy)
         if imgui.button('Save live settings'):
             self.save_live_settings()
         imgui.end_disabled()
@@ -735,8 +734,6 @@ class LiveWorkspace:
         if imgui.button('OK'):
             if not self.flash_available:
                 self.error = 'Vitis XSCT (xsct) is not on PATH'
-            elif self.cli_busy():
-                self.error = 'Wait for running CLI commands to finish before flashing'
             else:
                 endpoint = self.controller.endpoint if self.update.attached else self.endpoint
                 self.send('flash', endpoint=endpoint or self.endpoint, ip=self.ip, port=self.port,

@@ -50,7 +50,7 @@ Without an interactive terminal, choose a wheel explicitly with `--wheel`,
 
 ```sh
 ./uz_cli/run.sh --local-newest --launch cli -- --help
-./uz_cli/run.sh --wheel /path/to/ultrazohm-VERSION-TAGS.whl --launch cli -- serve --interactive --device 192.168.1.233:1000 --format csv
+./uz_cli/run.sh --wheel /path/to/ultrazohm_cli-VERSION-TAGS.whl --launch cli -- serve --interactive --device 192.168.1.233:1000 --format csv
 ```
 
 PowerShell accepts the same options. Setup can also be invoked directly:
@@ -64,9 +64,9 @@ interpreter for a new environment. Existing environments must use that Python
 series. Setup prints the activation command and validates the installed CLI
 without connecting to hardware. Re-running reinstalls the selected wheel.
 
-Inside the activated environment, use `ultrazohm`, `python -m ultrazohm`, or
-`uv run --no-project --active ultrazohm`. You can also call the environment's
-`bin/ultrazohm` or `Scripts/ultrazohm.exe` directly.
+Inside the activated environment, use `ultrazohm_cli`, `python -m ultrazohm_cli`, or
+`uv run --no-project --active ultrazohm_cli`. You can also call the environment's
+`bin/ultrazohm_cli` or `Scripts/ultrazohm_cli.exe` directly.
 
 ## Build
 
@@ -77,25 +77,18 @@ wheel into `uz_cli/target/wheels`, installs it with example dependencies and
 checks imports. Re-run `bash .devcontainer/post-create.sh` to refresh it.
 Container-built wheels require a compatible Linux host; Windows needs its own wheel.
 
-From `uz_cli`, the Makefile provides:
+Builds and checks run through `tasks.py`, which uses only the Python standard
+library and behaves the same on Linux, Windows and in CI. From the repository root:
 
-| Target | Output |
+| Task | Output |
 |---|---|
-| `make wheel` | Python wheel, including native extension and CLI entry point |
-| `make cli` | Standalone `target/release/ultrazohm` (`.exe` on Windows) |
-| `make native` | Rust library artifacts without Python bindings |
-| `make all` | All three outputs |
-| `make clean` | Remove `target/`, including its wheels; preserve environments and logs |
+| `python uz_cli/tasks.py wheel` | Optimized wheel for this machine in `target/wheels`, including native extension and CLI entry point |
+| `python uz_cli/tasks.py debug-wheel` | Unoptimized wheel for tests in `target/wheels-debug` |
+| `python uz_cli/tasks.py release-wheel` | Portable release wheel in `target/wheels-release` |
 
-Targets use release builds and the lockfile, reuse Cargo's cache, and do not
-install packages or connect to hardware. Override `CARGO`, `MATURIN` or `WHEEL_DIR`
-if needed. Without GNU Make, use the corresponding commands:
-
-```sh
-cargo build --release --locked
-maturin build --release --locked --out target/wheels
-cargo build --release --locked --lib
-```
+On Linux, `make -C uz_cli <task>` forwards to the same script. Maturin is used
+from PATH (the devcontainer has it) or run through `uv tool run`. The standalone
+executable is `cargo build --release --locked --bin ultrazohm_cli`.
 
 `cargo install --path . --locked` installs the standalone CLI. For Python source
 development, install Maturin into a virtual environment and run `maturin develop`.
@@ -104,7 +97,7 @@ these are Linux applications, not executables for the R5 baremetal environment.
 
 ## Run
 
-Bare `ultrazohm` starts an interactive, disconnected session with Parquet and CSV
+Bare `ultrazohm_cli` starts an interactive, disconnected session with Parquet and CSV
 exports configured. At its prompt, enter commands without the executable prefix:
 
 ```text
@@ -130,8 +123,8 @@ Underscore aliases such as `set_variable` and `start_logging` are also accepted.
 For an unattended service, or an interactive service with explicit settings:
 
 ```sh
-ultrazohm serve --device 192.168.1.233:1000 --output measurement-001 --format csv
-ultrazohm serve --interactive --channel-mapping my-mapping.json
+ultrazohm_cli serve --device 192.168.1.233:1000 --output measurement-001 --format csv
+ultrazohm_cli serve --interactive --channel-mapping my-mapping.json
 ```
 
 `serve` without `--device` waits for `connect [IP] [PORT]`. A failed connect can
@@ -143,9 +136,9 @@ All entry points reserve a new output directory but start with logging off.
 Without `--output`, CLI/Python sessions use
 `<repo>/artifacts/live_logs/<UTC timestamp>`, searching upward from the current
 directory; outside a checkout the current directory is the base. Explicit output
-directories must not exist and their parent must exist. `serve` defaults to
-`--format parquet`; `--format csv` adds CSV exports. Bare `ultrazohm` and Python
-`Acquisition()` default to `csv`, which retains Parquet too.
+directories must not exist and their parent must exist. Every entry point (bare
+`ultrazohm_cli`, `serve`, Python `Acquisition()` and the viewer) writes Parquet only by
+default; `--format csv` (`format="csv"` in Python) adds CSV exports.
 
 The viewer owns its workspace preferences and log paths separately:
 `artifacts/_user` in developer mode and `artifacts/_user_standalone` in standalone
@@ -198,9 +191,9 @@ There is no embedded firmware mapping. Without an explicit mapping, run inside
 the firmware checkout so headers can be parsed. The two flags are independent:
 
 ```sh
-ultrazohm profile > my-profile.json
-ultrazohm channel-mapping > my-mapping.json
-ultrazohm serve --interactive --profile my-profile.json --channel-mapping my-mapping.json
+ultrazohm_cli profile > my-profile.json
+ultrazohm_cli channel-mapping > my-mapping.json
+ultrazohm_cli serve --interactive --profile my-profile.json --channel-mapping my-mapping.json
 ```
 
 A runtime profile can select only the observables needed for a measurement:
@@ -231,8 +224,8 @@ IDs use the first selected slot. Names are frozen at recording start.
 ### Generate a mapping from the checkout
 
 ```sh
-ultrazohm create-json-from-javascope-h
-ultrazohm create-json-from-javascope-h --repo /path/to/ultrazohm_sw --output my-mapping.json
+ultrazohm_cli create-json-from-javascope-h
+ultrazohm_cli create-json-from-javascope-h --repo /path/to/ultrazohm_sw --output my-mapping.json
 ```
 
 The default destination is `<repo>/artifacts/channel_mappings/javascope.json`;
@@ -260,7 +253,7 @@ finalizes recordings and raises runtime/storage errors:
 
 ```python
 import time
-from ultrazohm import Acquisition, Client
+from ultrazohm_cli import Acquisition, Client
 
 with Acquisition(output="python-run", format="csv") as acquisition:
     uz = Client()
@@ -288,7 +281,7 @@ Local Vitis tools currently use the CLI, not module-level Python functions.
 ## Unified RAM and recording access
 
 ```python
-from ultrazohm import Client, Recording
+from ultrazohm_cli import Client, Recording
 
 uz = Client()
 recent = uz.tail(500)  # After at least 500 samples; logging need not be enabled.
@@ -329,11 +322,11 @@ Page large reads instead of materializing the full recording.
 CLI equivalents print metadata and at most 20 preview rows:
 
 ```sh
-ultrazohm data-info --recording 1
-ultrazohm recordings
-ultrazohm tail 500
-ultrazohm read-range 1000 2000 --recording 1 --channels JSO_lifecheck
-ultrazohm read-since --recording 1 --limit 10000
+ultrazohm_cli data-info --recording 1
+ultrazohm_cli recordings
+ultrazohm_cli tail 500
+ultrazohm_cli read-range 1000 2000 --recording 1 --channels JSO_lifecheck
+ultrazohm_cli read-since --recording 1 --limit 10000
 ```
 
 Supply `--cursor '<previous cursor JSON>'` to continue. `tail` replaces the old
@@ -387,7 +380,7 @@ each logger an independent queue of 3 seconds of acquisition (never fewer than
 2,048 frames) to absorb slow disk writes. Configure them with:
 
 ```sh
-ultrazohm serve --buffer-samples 100000 --segment-rows 50000 --flush-interval-ms 1000 --queue-seconds 10
+ultrazohm_cli serve --buffer-samples 100000 --segment-rows 50000 --flush-interval-ms 1000 --queue-seconds 10
 ```
 
 `--queue-seconds` accepts values up to 600; queued frames are held in RAM.
@@ -417,12 +410,12 @@ this protocol. See [architecture](docs/architecture.md) for the storage invarian
 Load the Vitis 2022.2 environment so `xsct` is on PATH:
 
 ```sh
-ultrazohm generate              # generate/build an empty vitis/workspace
-ultrazohm generate --open       # also open Vitis GUI; needs its launcher on PATH
-ultrazohm build                 # incremental application build
-ultrazohm build-clean           # clean platform/applications, then rebuild
-ultrazohm flash                 # incremental build, JTAG program and run
-ultrazohm build --repo "/path/to/ultrazohm_sw"
+ultrazohm_cli generate              # generate/build an empty vitis/workspace
+ultrazohm_cli generate --open       # also open Vitis GUI; needs its launcher on PATH
+ultrazohm_cli build                 # incremental application build
+ultrazohm_cli build-clean           # clean platform/applications, then rebuild
+ultrazohm_cli flash                 # incremental build, JTAG program and run
+ultrazohm_cli build --repo "/path/to/ultrazohm_sw"
 ```
 
 These local commands need a checkout, not an acquisition service. Repository
@@ -447,21 +440,21 @@ commands do not generate SD-card BOOT.BIN images. Equivalent Make targets are
 
 ## Tests
 
-Run the same checks as Linux CI from the repository root, in the dev container:
+Run the same checks as CI from the repository root, on Linux (dev container) or Windows:
 
 ```sh
-make -C uz_cli check           # fmt, clippy, Rust tests, Python integration tests
-make -C uz_cli release-wheel   # portable manylinux_2_28 wheel in target/wheels-release
-make -C uz_cli release-check   # integration tests against that installed wheel
+python uz_cli/tasks.py check           # fmt, clippy, Rust tests, Python integration tests
+python uz_cli/tasks.py release-wheel   # portable release wheel in target/wheels-release
+python uz_cli/tasks.py release-check   # integration tests against that installed wheel
 ```
 
 `check` builds a debug wheel, installs it into `uz_cli/target/ci-venv` and runs
 the integration tests twice: against the cargo-built executable and against the
-wheel's `ultrazohm` command. `release-wheel` links against glibc 2.28 using zig,
-so it needs no Docker build. Linux CI runs these targets in the `ci` stage of
-`.devcontainer/Dockerfile` (published to GHCR by `.github/workflows/ci-image.yml`,
-tagged by the Dockerfile hash), so local and CI toolchains match. Windows CI
-runs the equivalent commands directly.
+wheel's `ultrazohm_cli` command. On Linux, `release-wheel` links against glibc 2.28
+using zig, so it needs no Docker build. Linux CI runs these tasks in the `ci`
+stage of `.devcontainer/Dockerfile` (published to GHCR by
+`.github/workflows/ci-image.yml`, tagged by the Dockerfile hash), so local and CI
+toolchains match. Windows CI runs the same commands.
 
 Set `UZ_CLI_BIN` for another executable. Install the wheel and Polars to exercise
 Python bindings and independently read outputs. Tests use loopback simulators,
@@ -470,17 +463,17 @@ Manual simulation: `python javascope/test_server.py --host 127.0.0.1 --port 1000
 Synthetic dynamics do not model hardware interlocks or firmware queue races.
 Linux/Windows CI and hardware validation remain separate from local test results.
 
-## Publishing CLI wheels
+## Publishing
 
-The [CLI workflow](../.github/workflows/ultrazohm-cli.yml) checks Linux and Windows.
-After successful checks, pushes/manual runs on `main` publish stable wheels and
-`feature/uz_cli26` publishes testing prereleases. Other branches and PRs only test.
-Publishing requires both platform checks and tested release wheels.
+One [workflow](../.github/workflows/uz_cli.yml) checks the CLI on Linux and
+Windows, builds and tests the release wheels, tests the data viewer against them
+and builds its bundles, one version per run: `MAJOR.MINOR` from `pyproject.toml` plus the workflow run
+number, with `.dev0` outside `main`. The wheels are stamped and built once; the
+bundles contain exactly those wheels.
 
-Release targets are Windows x86-64 and Linux x86-64 `manylinux_2_28` (glibc 2.28+),
-using Python's 3.10+ stable ABI. macOS/ARM64 release wheels are not included.
-CI derives `.postN` or `.devN` versions from the base project version and run
-identity. Tags use `uz-cli-v<VERSION>` or `uz-cli-testing-v<VERSION>`. Wheels and
-`SHA256SUMS` are staged in a draft, then published using `GITHUB_TOKEN`.
-Setup selects by CLI tag/channel/publication time; these releases do not replace
-the repository's overall latest release. Local wheels work before any release exists.
+Pushes to `main` (stable), `develop` and `feature/uz_cli_dataviewer_testing`
+(prereleases) publish one GitHub release `ultrazohm-v<VERSION>` with both wheels,
+both bundles and `SHA256SUMS`, and upload the wheels to PyPI as `ultrazohm_cli` through
+trusted publishing. Other branches and pull requests only test. Release targets
+are Windows x86-64 and Linux x86-64 `manylinux_2_28` (glibc 2.28+), using Python's
+3.10+ stable ABI. These releases never replace the repository's latest release.

@@ -1,6 +1,5 @@
 """Bottom status bar: loading controls on the left, usage on the right."""
 
-from .. import runtime
 from imgui_bundle import em_size, imgui, imgui_ctx
 
 from .base import SessionPanel
@@ -10,8 +9,8 @@ class StatusPanel(SessionPanel):
     def render(self, state):
         with imgui_ctx.begin_horizontal("status", imgui.ImVec2(imgui.get_content_region_avail().x, 0)):
             imgui.push_id('data_settings')
-            backends = ['pyarrow'] if runtime.IS_WEB else ['pyarrow', 'polars']
-            labels = ['PyArrow'] if runtime.IS_WEB else ['PyArrow', 'Polars']
+            backends = ['pyarrow', 'polars']
+            labels = ['PyArrow', 'Polars']
             imgui.set_next_item_width(em_size(7))
             changed, backend = imgui.combo('Backend', backends.index(state.backend), labels)
             if changed:
@@ -25,8 +24,7 @@ class StatusPanel(SessionPanel):
             if changed:
                 self._emit(state, 'loading_mode', modes[mode])
             if imgui.is_item_hovered():
-                imgui.set_tooltip('Applies to files with backing storage; large browser-streamed CSVs remain in memory. '
-                                  'Existing runs keep their storage mode.')
+                imgui.set_tooltip('Existing runs keep their storage mode.')
 
             imgui.set_next_item_width(em_size(7))
             changed, mb = imgui.input_int('Cache (MiB)', state.registry.cache.limit // 1024**2)
@@ -37,11 +35,7 @@ class StatusPanel(SessionPanel):
             if changed:
                 self._emit(state, 'disk_cache', enabled)
             if imgui.is_item_hovered():
-                imgui.set_tooltip(
-                    'Cache indexes, summaries and CSV conversions in this tab; cleared on page reload. Reopen files to apply.'
-                    if runtime.IS_WEB else
-                    'Save indexes, summaries and CSV conversions across restarts. Reopen files to apply.'
-                )
+                imgui.set_tooltip('Save indexes, summaries and CSV conversions across restarts. Reopen files to apply.')
             imgui.pop_id()
 
             imgui.align_text_to_frame_padding()

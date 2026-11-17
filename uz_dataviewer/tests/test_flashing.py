@@ -32,7 +32,6 @@ def workflow(tmp_path, monkeypatch):
         def __init__(self):
             self.gone = False
             self.retry = 0
-            self.finalizing_reads = 0
             self.profile = dict(mapping, name='custom', sample_period_us=50., initial_channels={})
             self.value = {'state': {'connected': True, 'device': '192.168.1.233:1000'},
                           'logging': {'fast': {'phase': 'recording'}, 'slow': {'phase': 'recording'}},
@@ -41,25 +40,15 @@ def workflow(tmp_path, monkeypatch):
         def status(self):
             if self.gone:
                 raise ConnectionRefusedError('not running')
-            if any(v['phase'] == 'finalizing' for v in self.value['logging'].values()):
-                self.finalizing_reads += 1
-                if self.finalizing_reads >= 2:
-                    for v in self.value['logging'].values(): v['phase'] = 'complete'
-                    events.append('finalized')
             return deepcopy(self.value)
         def catalog(self): return {'profile': self.profile}
         def observables(self): return {'channels': [{'channel': 1, 'name': 'JSO_keep'},
                                                    {'channel': 2, 'name': 'JSO_removed'}]}
         def stop(self): events.append('stop')
-        def stop_logging(self):
-            events.append('stop_fast')
-            self.value['logging']['fast']['phase'] = 'finalizing'
-        def stop_logging_slow_data(self):
-            events.append('stop_slow')
-            self.value['logging']['slow']['phase'] = 'finalizing'
         def shutdown(self):
-            assert all(v['phase'] == 'complete' for v in self.value['logging'].values())
+            # Like the service: device Stop, finalize both recordings, then exit.
             events.append('shutdown')
+            for v in self.value['logging'].values(): v['phase'] = 'complete'
             self.gone = True
         def connect(self, ip, port):
             if self.retry:
@@ -101,12 +90,12 @@ def workflow(tmp_path, monkeypatch):
         controller.close()
 
 
-def test_sequence_finalizes_then_flashes_and_reconnects_with_new_profile(workflow):
+def test_sequence_shuts_down_then_flashes_and_reconnects_with_new_profile(workflow):
     w = workflow
     w.client.retry = 1
     w.controller._command('flash', w.request)
-    assert w.events == ['stop', 'stop_fast', 'stop_slow', 'finalized', 'shutdown',
-                        'mapping', 'flash', 'start', ('connect', '192.168.1.233', 1000)]
+    # Shutdown sends device Stop and finalizes recordings in the service itself.
+    assert w.events == ['shutdown', 'mapping', 'flash', 'start', ('connect', '192.168.1.233', 1000)]
     assert w.controller.attached
     assert w.client.profile['initial_channels'] == {'1': 'JSO_keep'}
     assert w.client.profile['sample_period_us'] == 50.
@@ -143,19 +132,19 @@ def test_flash_preserves_saved_user_settings(workflow):
     assert w.client.profile['sample_period_us'] == 50.  # Effective reconnect preserves the live service.
 
 
-@pytest.mark.parametrize('stage', ['stop', 'finalize', 'mapping', 'flash'])
+@pytest.mark.parametrize('stage', ['shutdown', 'exit', 'mapping', 'flash'])
 def test_failures_abort_later_stages(workflow, monkeypatch, stage):
     w = workflow
     def fail(*args, **kwargs): raise RuntimeError(stage+' failed')
-    if stage == 'stop': monkeypatch.setattr(w.client, 'stop', fail)
-    elif stage == 'finalize': monkeypatch.setattr(w.controller, '_wait_for', fail)
+    if stage == 'shutdown': monkeypatch.setattr(w.client, 'shutdown', fail)
+    elif stage == 'exit': monkeypatch.setattr(w.controller, '_wait_for', fail)
     elif stage == 'mapping': monkeypatch.setattr(live_mapping, 'generate_mapping', fail)
     else: monkeypatch.setattr(flashing, 'run_flash_cli', fail)
     with pytest.raises(RuntimeError, match=stage+' failed'):
         w.controller._command('flash', w.request)
     assert 'start' not in w.events
     if stage != 'flash': assert 'flash' not in w.events
-    if stage in ('stop', 'finalize'): assert 'shutdown' not in w.events
+    if stage in ('shutdown', 'exit'): assert 'mapping' not in w.events
 
 
 def test_worker_clears_flash_lock_after_failure():

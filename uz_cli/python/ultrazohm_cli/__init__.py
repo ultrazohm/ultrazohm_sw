@@ -10,7 +10,8 @@ import weakref
 from dataclasses import dataclass
 from io import BytesIO
 from ._native import (Connection as _Connection, Acquisition as _Acquisition,
-                      recording_info as _recording_info, recording_data as _recording_data)
+                      recording_info as _recording_info, recording_data as _recording_data,
+                      console_command as _console_command)
 
 
 def _position(value, name, *, positive=False):
@@ -207,4 +208,15 @@ class Client:
         return self._call("send_ack", enabled=enabled)
     def shutdown(self): return self._call("shutdown")
 
-__all__ = ["Client", "Acquisition", "Recording", "DataPage"]
+def console_command(line, endpoint="127.0.0.1:19740"):
+    """Run one command in the interactive prompt's syntax against a running service.
+
+    For example ``console_command("status")`` or ``console_command("set-variable
+    send_field_1 2.5")``. Returns the text the CLI would print. Only service
+    commands are accepted; local tools (serve, build, flash, generate) raise.
+    Help (``--help`` or an empty line) is returned as text.
+    """
+    return _console_command(endpoint, line)
+
+
+__all__ = ["Client", "Acquisition", "Recording", "DataPage", "console_command"]

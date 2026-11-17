@@ -144,7 +144,6 @@ for backend in ('pyarrow', 'polars'):
     uz.fft_frame(data.time, data['a'], backend=backend)
 convert_csv_to_parquet(sys.argv[1])
 assert 'imgui_bundle' not in sys.modules
-assert 'uz_dataviewer.webbridge' not in sys.modules
 '''
     result = subprocess.run([sys.executable, '-c', code, str(recording_csv)],
                             capture_output=True, text=True)

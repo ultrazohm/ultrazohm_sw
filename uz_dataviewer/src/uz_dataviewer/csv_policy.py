@@ -1,7 +1,7 @@
-"""Missing numeric CSV values shared by native and generated browser loaders."""
+"""Spellings of missing numeric CSV values, shared by both loader backends."""
 from itertools import product
 
-# Preserve Arrow's established spellings and the browser's case-insensitive ones.
+# Arrow's established spellings plus case-insensitive na/nan/null.
 NULL_VALUES = sorted({
     "", "#N/A", "#N/A N/A", "#NA", "-1.#IND", "-1.#QNAN", "-NaN", "-nan",
     "1.#IND", "1.#QNAN", "N/A", "n/a",

@@ -13,14 +13,12 @@ the transform-specific options, and the per-signal compute/draw.
 
 from __future__ import annotations
 
-from .. import runtime
 
 from typing import TYPE_CHECKING
 
 import numpy as np
 from imgui_bundle import em_size, imgui, implot
 
-from .. import webbridge
 from ..downsample import decimate_range, visible_slice
 from ..session import ensure_extension
 from .base import SessionPanel
@@ -220,10 +218,6 @@ class AnalysisPanel(SessionPanel):
             if pfd is not None and self._export_dialog is None:
                 self._export_dialog = pfd.save_file(
                     f"Export {self.prefix} data", name, ["CSV (*.csv)", "*.csv"]
-                )
-            elif runtime.IS_WEB:  # no OS dialog in a tab -> write to FS + download
-                webbridge.save_and_download(
-                    state, name, lambda path: self._emit(state, self.export_command, path)
                 )
 
         # Removed sources must disappear immediately, including while recomputing.

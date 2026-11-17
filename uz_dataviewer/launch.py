@@ -25,7 +25,7 @@ def options(argv):
                 backend += ['--channel', value]
             else:
                 if value is None or not Path(value).is_file():
-                    raise ValueError('--live-wheel requires a compatible ultrazohm wheel path.')
+                    raise ValueError('--live-wheel requires a compatible ultrazohm_cli wheel path.')
                 live = True
                 backend += ['--wheel', str(Path(value).resolve())]
         else:
@@ -41,7 +41,9 @@ def main(argv=None):
     uv = shutil.which('uv')
     if uv is None:
         raise ValueError('uv is required')
-    common = ['--project', str(project), '--python', '3.12', '--no-build-package', 'imgui-bundle']
+    # The repository's single Python pin (uv reads it only inside a project directory).
+    python_version = (project.parent / '.python-version').read_text(encoding='utf-8').strip()
+    common = ['--project', str(project), '--python', python_version, '--no-build-package', 'imgui-bundle']
     if not live and launch == 'gui':
         return subprocess.call([uv, 'run', *common, 'uz-dataviewer', *viewer])
     subprocess.run([uv, 'sync', *common, '--inexact'], check=True)
@@ -50,7 +52,7 @@ def main(argv=None):
     if live:
         # Reuse wheel selection/setup; do not sync again after the optional install.
         subprocess.run([sys.executable, str(project.parent / 'uz_cli' / 'setup_uv.py'),
-                        '--python', '3.12', '--venv', str(project / '.venv'),
+                        '--python', python_version, '--venv', str(project / '.venv'),
                         '--launch', 'none', '--no-examples', *backend], check=True)
         subprocess.run([str(python), '-m', 'uz_dataviewer.check_live'], check=True)
     if launch == 'shell':

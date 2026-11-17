@@ -4,7 +4,7 @@ import sys
 
 def main():
     try:
-        from ultrazohm import Client
+        from ultrazohm_cli import Client
     except ImportError as exc:
         print(f'Cannot load the live backend: {exc}', file=sys.stderr)
         return 1

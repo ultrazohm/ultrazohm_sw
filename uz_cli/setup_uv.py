@@ -43,7 +43,7 @@ def main():
                         help="Also install Python Polars and Matplotlib")
     parser.add_argument("--launch", choices=["none", "shell", "cli", "example"],
                         help="What to start after installation; none performs setup only")
-    parser.add_argument("command", nargs=argparse.REMAINDER, help="CLI arguments after -- (default: ultrazohm's interactive session)")
+    parser.add_argument("command", nargs=argparse.REMAINDER, help="CLI arguments after -- (default: ultrazohm_cli's interactive session)")
     args = parser.parse_args()
     extra = args.command[1:] if args.command[:1] == ["--"] else args.command
     if extra and args.launch != "cli":
@@ -53,11 +53,11 @@ def main():
         parser.error("uv must be installed and available on PATH")
 
     wheel = args.wheel
-    wheels = list((root / "target" / "wheels").glob("ultrazohm-*.whl")) if wheel is None else []
+    wheels = list((root / "target" / "wheels").glob("ultrazohm_cli-*.whl")) if wheel is None else []
     if wheel is not None:
         wheel = wheel.resolve()
-        if not wheel.is_file() or not wheel.name.startswith("ultrazohm-") or wheel.suffix != ".whl":
-            parser.error("--wheel must name an existing ultrazohm wheel (source installs are not supported)")
+        if not wheel.is_file() or not wheel.name.startswith("ultrazohm_cli-") or wheel.suffix != ".whl":
+            parser.error("--wheel must name an existing ultrazohm_cli wheel (source installs are not supported)")
 
     # Ignore an activated environment from another machine/container.
     install_env = os.environ.copy()
@@ -69,7 +69,7 @@ def main():
         subprocess.run([uv, "venv", "--python", args.python, str(venv)], check=True, env=install_env)
     scripts = venv / ("Scripts" if sys.platform == "win32" else "bin")
     python = scripts / ("python.exe" if sys.platform == "win32" else "python")
-    command = scripts / ("ultrazohm.exe" if sys.platform == "win32" else "ultrazohm")
+    command = scripts / ("ultrazohm_cli.exe" if sys.platform == "win32" else "ultrazohm_cli")
     if not python.is_file():
         parser.error("The existing environment's Python is missing. Virtual environments are not "
                      "portable between host/container; use --venv with a new path.")
@@ -103,12 +103,12 @@ def main():
             wheel = download_latest(channel, root / "target" / "wheels", python, install_env)
     validate_cli_wheel(wheel)
     print(f"Using wheel: {wheel.name}", flush=True)
-    package = "ultrazohm[examples]" if args.examples else "ultrazohm"
+    package = "ultrazohm_cli[examples]" if args.examples else "ultrazohm_cli"
     # Wheel-only installation means no Rust/compiler/build backend is needed.
     subprocess.run([uv, "pip", "install", "--python", str(python),
-                    "--only-binary", ":all:", "--reinstall-package", "ultrazohm",
+                    "--only-binary", ":all:", "--reinstall-package", "ultrazohm_cli",
                     f"{package} @ {wheel.as_uri()}"], check=True, env=install_env)
-    subprocess.run([str(python), "-c", "from ultrazohm import Acquisition, Client"], check=True)
+    subprocess.run([str(python), "-c", "from ultrazohm_cli import Acquisition, Client"], check=True)
     if not command.is_file():
         raise ValueError(f"Installation did not create the CLI command: {command}")
     subprocess.run([str(command), "--version"], check=True, env=install_env)
@@ -140,7 +140,7 @@ def main():
         print(f"Backend setup complete: {venv}", flush=True)
         return
     print(f"Ready. Run: {command} serve --interactive", flush=True)
-    print(f"Or: {python} -m ultrazohm --help", flush=True)
+    print(f"Or: {python} -m ultrazohm_cli --help", flush=True)
     if sys.platform == "win32":
         print(f"Activate in PowerShell: & '{scripts / 'Activate.ps1'}'", flush=True)
     else:

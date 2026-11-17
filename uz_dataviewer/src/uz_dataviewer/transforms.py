@@ -4,9 +4,6 @@ Each function takes plain NumPy arrays and returns ``(out_time, out_y, info)``;
 keeping them window-free and import-light means they are trivially unit-testable
 and reusable from headless tests. The FFT transform lives in :mod:`analysis`
 (``compute_fft``); this module holds the **math** and **filter** nodes.
-
-Everything here is pure NumPy -- no SciPy -- so the native and Pyodide/WASM builds
-run identical code (the same reason the decimator dropped ``tsdownsample``).
 """
 
 from __future__ import annotations

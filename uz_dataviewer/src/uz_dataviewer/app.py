@@ -6,15 +6,12 @@ with plots and analysis in the center. Log Browser is selected at startup.
 
 from __future__ import annotations
 
-from . import runtime
-
 import os
 import sys
 from pathlib import Path
 
 from imgui_bundle import hello_imgui, imgui, immapp
 
-from . import webbridge
 from .panels.fft import FftPanel
 from .panels.histogram import HistogramPanel
 from .panels.navigation import NavigationPanel
@@ -25,7 +22,7 @@ from .panels.status import StatusPanel
 from .session import ensure_extension
 from .state import AppState, default_data_settings
 
-try:  # portable_file_dialogs is unavailable in the browser build
+try:  # optional native file dialogs
     from imgui_bundle import portable_file_dialogs as pfd
 except Exception:  # pragma: no cover
     pfd = None
@@ -42,7 +39,7 @@ class DataViewerApp:
         workspace = Path(live_repo).expanduser().resolve() if live_repo else None
         if workspace is None and mapping_path:
             workspace = find_repository(mapping_path.parent)
-        self.artifacts = data_directory(workspace) if not runtime.IS_WEB else None
+        self.artifacts = data_directory(workspace)
         self.state = AppState()
         if self.artifacts is not None:
             self.state.cache_dir = os.environ.get('UZ_DATAVIEWER_CACHE', str(self.artifacts / 'viewer_cache'))
@@ -64,11 +61,11 @@ class DataViewerApp:
         self.histogram = HistogramPanel()
         self.nodes = NodesPanel()
         self.live = None
-        self._cli_console = None
+        self._console_executor = None
+        self._console_jobs = []
         self._select_initial_tabs = True
-        if self.state.console.cli_supported:
-            self.state.console.cli_handler = self._run_cli_command
-        if use_live and not runtime.IS_WEB:
+        self.state.console.cli_handler = self._run_cli_command
+        if use_live:
             from .panels.live import LiveWorkspace
             self.live = LiveWorkspace(repo=workspace)
             self.live.mapping = live_mapping
@@ -77,11 +74,8 @@ class DataViewerApp:
             self.live.repository_selected = self._repository_selected
             if workspace is not None and not live_mapping:
                 self.live.prepare_repository(workspace)
-            self.live.cli_busy = lambda: self._cli_console is not None and bool(self._cli_console.jobs)
         # Pending Session-menu file dialogs: (dialog, command_name, is_multi).
         self._session_dialog: tuple = ()
-        # Let the browser file-input bridge reach this state (no-op on desktop).
-        webbridge.register_state(self.state)
         # Load any external node plugins (optional; safe with no dir/files present).
         from . import plugins
 
@@ -100,7 +94,7 @@ class DataViewerApp:
                 self.state.console.error(f"Startup stopped at {path}: {exc}")
                 break
 
-        self.state.async_exports = not runtime.IS_WEB
+        self.state.async_exports = True
 
     # -- docking layout -----------------------------------------------------
     def _run_cli_command(self, text):
@@ -110,11 +104,31 @@ class DataViewerApp:
         if reason := self.live.block_reason('cli'):
             self.state.console.error(reason + '; wait for it to finish')
             return
-        if self._cli_console is None:
-            from .cli_console import CliConsole
-            self._cli_console = CliConsole(self.state.console)
-        endpoint = self.live.controller.endpoint if self.live.update.attached else self.live.endpoint
-        self._cli_console.submit(text, endpoint or self.live.endpoint)
+        try:
+            from ultrazohm_cli import console_command
+        except ImportError:
+            self.state.console.error('The installed CLI wheel has no console commands; install a current wheel.')
+            return
+        endpoint = (self.live.controller.endpoint if self.live.update.attached else self.live.endpoint) or self.live.endpoint
+        if self._console_executor is None:
+            from .workers import CancellableExecutor
+            self._console_executor = CancellableExecutor(name='uz-console')
+
+        def work(cancel=None):
+            return console_command(text, endpoint=endpoint)
+        # One worker keeps requests in order and the GUI responsive.
+        self._console_jobs.append((self._console_executor.submit(work), text))
+
+    def _poll_console_jobs(self):
+        while self._console_jobs and self._console_jobs[0][0].done():
+            future, text = self._console_jobs.pop(0)
+            try:
+                output = future.result()
+            except Exception as exc:  # noqa: BLE001 - surfaced to the console
+                self.state.console.error(f"{f'uz {text}'.rstrip()}: {exc}")
+                continue
+            for line in output.rstrip('\n').splitlines() or ['(no output)']:
+                self.state.console.info(line)
 
     def _docking_splits(self) -> list[hello_imgui.DockingSplit]:
         left = hello_imgui.DockingSplit()
@@ -222,10 +236,7 @@ class DataViewerApp:
             imgui.end_menu()
         if not imgui.begin_menu("Session"):
             return
-        if runtime.IS_WEB:
-            self._web_session_menu()
-        else:
-            self._native_session_menu()
+        self._native_session_menu()
         imgui.end_menu()
 
     def _new_plot_window(self):
@@ -276,19 +287,6 @@ class DataViewerApp:
                 "",
             )
 
-    def _web_session_menu(self) -> None:
-        """Browser has no OS file dialog: write+download to save, a hidden file
-        input to load (routed by extension in :func:`webbridge.load_uploaded_session`)."""
-        if imgui.menu_item("Save state...", "", False, True)[0]:
-            self._web_download("save_state", "session.json")
-        if imgui.menu_item("Load state / Run script...", "", False, True)[0]:
-            webbridge.trigger_session_open()
-
-    def _web_download(self, command: str, name: str) -> None:
-        webbridge.save_and_download(
-            self.state, name, lambda path: self.state.commands.execute(self.state, command, [path])
-        )
-
     def _poll_session_dialog(self) -> None:
         if not self._session_dialog:
             return
@@ -310,12 +308,10 @@ class DataViewerApp:
     def _install_file_drop(self) -> None:
         """Load `.csv`/`.parquet` files dropped onto the window (native, GLFW only).
 
-        hello_imgui has no file-drop callback, so we register GLFW's directly. On the
-        web build, a non-GLFW backend, or a missing `glfw` module this is a no-op and
-        the **Open file(s)...** button remains the way in.
+        hello_imgui has no file-drop callback, so we register GLFW's directly. With a
+        non-GLFW backend or a missing `glfw` module this is a no-op and the
+        **Open file(s)...** button remains the way in.
         """
-        if runtime.IS_WEB:
-            return
         try:
             import glfw
             from imgui_bundle import glfw_utils
@@ -342,8 +338,7 @@ class DataViewerApp:
         if self._select_initial_tabs and hasattr(self, '_runner_params') and imgui.get_frame_count() >= 2:
             self._apply_window_mode(False)
             self._select_initial_tabs = False
-        if self._cli_console is not None:
-            self._cli_console.poll()
+        self._poll_console_jobs()
         if self.live is not None:
             self.live.pump(self.state)
         self.state.poll_pending_loads()
@@ -366,8 +361,8 @@ class DataViewerApp:
             self.state.focus_histogram = False
 
     def _shutdown(self) -> None:
-        if self._cli_console is not None:
-            self._cli_console.close()
+        if self._console_executor is not None:
+            self._console_executor.shutdown()
         if self.live is not None:
             self.live.close()
         self.log_browser.shutdown()
@@ -421,16 +416,14 @@ class DataViewerApp:
 
     # -- runner -------------------------------------------------------------
     def run(self) -> None:
-        if not runtime.IS_WEB:
-            import imgui_bundle
-            # Our icon overrides the stock icon; retain bundled fonts and other
-            # framework assets instead of falling back to ImGui's bitmap font.
-            hello_imgui.add_assets_search_path(str(Path(imgui_bundle.__file__).parent / 'assets'))
-            hello_imgui.set_assets_folder(str(Path(__file__).parent / 'assets'))
+        import imgui_bundle
+        # Our icon overrides the stock icon; retain bundled fonts and other
+        # framework assets instead of falling back to ImGui's bitmap font.
+        hello_imgui.add_assets_search_path(str(Path(imgui_bundle.__file__).parent / 'assets'))
+        hello_imgui.set_assets_folder(str(Path(__file__).parent / 'assets'))
         params = hello_imgui.RunnerParams()
-        if not runtime.IS_WEB:
-            params.ini_filename = str(self.artifacts / 'viewer.ini')
-            params.ini_filename_use_app_window_title = False
+        params.ini_filename = str(self.artifacts / 'viewer.ini')
+        params.ini_filename_use_app_window_title = False
         self._runner_params = params
         params.app_window_params.window_title = "UltraZohm Data Viewer"
         params.app_window_params.window_geometry.size = (1500, 900)
@@ -439,7 +432,7 @@ class DataViewerApp:
         )
         # DISPLAY can also be set under Wayland (XWayland), so require an
         # explicit X11 session before allowing detached windows on Linux.
-        params.imgui_window_params.enable_viewports = not runtime.IS_WEB and (
+        params.imgui_window_params.enable_viewports = (
             sys.platform == "win32"
             or (sys.platform == "linux" and os.environ.get("XDG_SESSION_TYPE") == "x11")
         )

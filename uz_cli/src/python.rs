@@ -115,13 +115,20 @@ fn recording_data(
     Ok(PyBytes::new(py, &bytes))
 }
 
+/// One interactive-prompt command against a running service; returns its output.
+#[pyfunction]
+fn console_command(py: Python<'_>, endpoint: String, line: String) -> PyResult<String> {
+    py.detach(move || crate::cli::console_command(&endpoint, &line))
+        .map_err(|e| api_error(py, e))
+}
+
 /// Run the same CLI as the standalone binary, without requiring that binary.
 #[pyfunction]
 fn cli_main(py: Python<'_>, argv: Vec<String>) -> i32 {
     py.detach(move || crate::cli::run(argv))
 }
 
-/// Optional embedded Rust service. External `ultrazohm serve` survives Python exit.
+/// Optional embedded Rust service. External `ultrazohm_cli serve` survives Python exit.
 #[pyclass(subclass)]
 struct Acquisition {
     output: PathBuf,
@@ -132,7 +139,7 @@ struct Acquisition {
 impl Acquisition {
     #[new]
     #[allow(clippy::too_many_arguments)] // Python keyword options plus the GIL token.
-    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="csv".to_string(), ack=false, channel_mapping=None, *, buffer_samples=None, segment_rows=1_000_000, flush_interval_ms=60_000, recording_backend="parquet", queue_seconds=crate::live::DEFAULT_QUEUE_SECONDS))]
+    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="parquet".to_string(), ack=false, channel_mapping=None, *, buffer_samples=None, segment_rows=1_000_000, flush_interval_ms=60_000, recording_backend="parquet", queue_seconds=crate::live::DEFAULT_QUEUE_SECONDS))]
     fn new(
         py: Python<'_>,
         device: Option<String>,
@@ -317,6 +324,7 @@ fn _native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(recording_info, m)?)?;
     m.add_function(wrap_pyfunction!(recording_data, m)?)?;
     m.add_function(wrap_pyfunction!(cli_main, m)?)?;
+    m.add_function(wrap_pyfunction!(console_command, m)?)?;
     m.add_class::<Acquisition>()?;
     Ok(())
 }

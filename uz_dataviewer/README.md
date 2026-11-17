@@ -1,6 +1,6 @@
 # UltraZohm Data Viewer (`uz_dataviewer`)
 
-A native/web data viewer for UltraZohm JavaScope logs, built with
+A desktop data viewer (Windows and Linux) for UltraZohm JavaScope logs, built with
 [Dear ImGui via `imgui_bundle`](https://github.com/pthom/imgui_bundle) and ImPlot.
 It succeeds the Plotly/Dash `javascope/dataviewer.py`, with a native live-data prototype and a VSCode-style
 docked layout, drag-and-drop subplots, dedicated FFT/Histogram analysis windows, range-aware
@@ -50,7 +50,7 @@ window. Their actions appear as labelled informational messages in the console.
   (`node_*`) and extensible with your own **Python plugin nodes** (see [Plugins](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_plugins.rst)).
 - **Scriptable command console** — supported actions echo commands; the input runs them, with
   completion, history and a selectable log. Sessions save to JSON; `.uzscript` files run command automation.
-- **MaterialFlat theme.** Runs natively (Windows/Linux/macOS) and in the browser (Pyodide/WASM).
+- **MaterialFlat theme.** Runs on Windows and Linux.
 
 ## Quick start
 
@@ -165,9 +165,6 @@ They are disposable and source-versioned; close the viewer before clearing that 
 Disabling disk caching leaves existing cache files untouched and does not read them.
 There is currently no automatic disk-cache size limit.
 Read-only or full summary-cache storage falls back to RAM; enabled lazy CSV conversion requires writable cache space.
-The browser build retains synchronous execution because its current runtime has no worker-thread support.
-Browser uploads with backing files honor the same loading and cache settings as console loads.
-Browser file caches live in the tab's temporary filesystem and are cleared on page reload; large streamed CSVs remain array-backed. Streamed CSVs preserve every sample and reject estimated or actual numeric data above the 1.5 GiB budget. Use native lazy loading for larger recordings; load-time stride decimation has been removed.
 
 ### Session format and analysis correctness
 
@@ -177,8 +174,7 @@ Restoring a saved session replaces the current session only after successful loa
 Plot windows, precise time ranges and inactive recordings survive JSON round trips. Restoring a session resets panel caches and canvas positions; Y fitting completes when lazy samples arrive. Both primary and secondary Y limits survive JSON saves, including mouse zoom.
 Removing a followed subplot switches its analysis windows to Full and discards the removed plot's cached range.
 Recomputing a node preserves its derived recording's selected time origin.
-Small browser uploads use separate backing paths even when filenames match. Failed exports never download an earlier result.
-Streamed browser recordings have no backing file, so session saving is rejected; export their data first.
+Live snapshots and other runs without a backing file cannot be saved in a session; export their data first.
 Chain transforms with node links; using derived outputs as new source nodes is no longer supported.
 Analysis and exports use exact time windows, while plotting retains edge padding. Full analysis covers all selected recordings regardless of selection order.
 Linked time ranges apply immediately to scripts, exports and analysis, including
@@ -210,8 +206,8 @@ Shared upstream nodes are validated once per traversal, avoiding exponential
 work in graphs with reused inputs. Hann windows are released after each FFT.
 Native CSV materialization uses checked batch allocation for both backends,
 including actual row counts and retained buffer capacity. Parser scratch and
-transient growth copies remain outside the numeric-data budget. Native and
-browser CSV loaders share missing-value spellings (including NA, NULL and NaN).
+transient growth copies remain outside the numeric-data budget. Both CSV
+backends share missing-value spellings (including NA, NULL and NaN).
 
 Session restoration rejects malformed coordinates, unknown plot types/styles, and
 invalid numeric settings before replacing the current session. Commands use the
@@ -228,8 +224,7 @@ points explicitly from `uz_dataviewer.app`; package-root GUI aliases were remove
 |-----|-----|
 | **[Usage](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_usage.rst)** | Driving the app: panels, plots, analysis windows, the command console & scripting, full command reference. |
 | **[Architecture](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_architecture.rst)** | Developers: module map, the state-driven/command-routed design, internals, how to extend, testing, design decisions. |
-| **[Build](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_build.rst)** | Building native executables and the web/WASM app. |
-| **[Native Vs Web](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_native_vs_web.rst)** | What differs between the desktop and browser builds (file I/O, threading, memory) and what's identical. |
+| **[Build](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_build.rst)** | Tasks, desktop bundles and releases. |
 | **[Plugins](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_plugins.rst)** | Writing your own node transforms as Python plugins. |
 | **[Library](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_library.rst)** | Using the data/analysis core headlessly as a Python library (load logs, FFT, node transforms) — no GUI. |
 | **[Roadmap](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_roadmap.rst)** | Open ideas and the record of what's already shipped. |
@@ -254,38 +249,35 @@ uz_dataviewer/
 │   ├── nodes.py              # dataflow graph + evaluation -> derived signals
 │   ├── plugins.py            # external transform-node plugins (@transform, loader)
 │   ├── session.py            # JSON save/restore + .uzscript + CSV export
-│   ├── webbridge.py          # browser integration (file input, array load, downloads)
 │   └── panels/               # navigation, plots, analysis base, fft, histogram, nodes
 ├── tests/                    # pytest (logic via commands + headless rendering)
-└── build/                    # native (PyInstaller) + web (Pyodide) build flow
+├── tasks.py                  # lint, test, bundle, bundle-smoke (Linux, Windows, CI)
+└── build/                    # PyInstaller spec and frozen smoke tests
 ```
 
 Documentation lives in `../docs/source/guide/gui/uz_dataviewer/`.
 
 ## Tests
 
-Run the same checks as Linux CI, in the dev container:
+Run the same checks as CI, on Linux (dev container) or Windows:
 
 ```bash
-make -C uz_dataviewer check        # ruff and the full pytest suite, with a CLI wheel from this checkout
-make -C uz_dataviewer web-smoke    # browser build in headless Chromium
-make -C uz_dataviewer bundle bundle-smoke   # PyInstaller bundle and its smoke tests
+python uz_dataviewer/tasks.py check                  # ruff and the full pytest suite, with a CLI wheel from this checkout
+python uz_dataviewer/tasks.py bundle                 # PyInstaller bundle in dist/
+python uz_dataviewer/tasks.py bundle-smoke           # its smoke tests
 ```
 
-The targets use `uz_dataviewer/.venv-ci`, separate from the launchers' `.venv`.
-`check` builds a debug CLI wheel from `../uz_cli` unless `CLI_WHEEL=PATH` is given,
-so the live tests run against the same commit. Linux CI runs these targets in the
-`ci` stage of `.devcontainer/Dockerfile`; only the published Linux bundle is built
-in Ubuntu 22.04, because PyInstaller copies the build system's libraries.
+The tasks use `uz_dataviewer/.venv-ci`, separate from the launchers' `.venv`.
+`check` builds a debug CLI wheel from `../uz_cli` unless `--cli-wheel PATH` is given,
+so the live tests run against the same commit. `make -C uz_dataviewer check` forwards
+to the same script. Linux CI runs it in the `ci` stage of `.devcontainer/Dockerfile`;
+only the published Linux bundle is built in Ubuntu 22.04, because PyInstaller copies
+the build system's libraries.
 
 The console transcript does not capture every GUI gesture (including analysis
 Reset view and some Y/XY gestures). Use JSON snapshots for supported view settings.
 FFT-derived plots use Hz, remain independent of linked time axes, and export a
 `frequency` column. Time normalization and time-based analysis reject spectra.
-
-Browser uploads are temporary and cannot be saved as reloadable sessions.
-Memory imports release the uploaded file after parsing; lazy imports release it
-when the last referencing run is removed or the session closes.
 
 Sampling and domain transitions
 ------------------------------
@@ -300,41 +292,29 @@ retain their saved domain as unavailable placeholders until repaired.
 
 ## Native live-data prototype
 
-### Debug CLI in the Console
+### Service commands in the Console
 
-On Linux, with live mode enabled, enter `uz` followed by CLI arguments in the
-existing Console. Windows disables this interface; use the Python panel for
-automation. Viewer commands remain available on both platforms:
+With live mode enabled, enter `uz` followed by a CLI command in the existing
+Console to send it to the attached acquisition service, on Windows and Linux:
 
 ```text
 uz --help
 uz status
 uz set-variable send_field_19 5
 uz start-logging
-uz build
-uz flash
+uz tail 5
 ```
 
-Only the exact first token `uz` bypasses the viewer command parser. The installed
-CLI handles parsing, validation, and help, so all its commands are available.
-Each invocation runs asynchronously in the viewer's Python environment; stdout
-and stderr appear incrementally in the Console with a command number and exit
-status. Up to four invocations can run concurrently. Bare `uz` shows CLI help.
-Without live mode or the CLI wheel, the Console reports **Live is not activated.**
+Only the exact first token `uz` bypasses the viewer command parser. The line uses
+the syntax of `ultrazohm_cli serve --interactive`, is parsed by the installed CLI and
+runs on a background worker; its output or error appears in the Console. Bare
+`uz` shows the command help. Commands go to the attached endpoint (or the
+endpoint entered in Live Data when detached). Without live mode or the CLI wheel,
+the Console reports **Live is not activated.**
 
-Service commands use the attached endpoint (or the endpoint entered in Live Data
-when detached); an explicit CLI `--endpoint` overrides this default. Local commands
-inherit the viewer's working directory and environment, including Vitis/XSCT on
-PATH. Use `--repo` on commands that need a different checkout. Quoted paths are
-supported. This is a noninteractive CLI interface with no shell expansion or
-shell operators.
-
-These are direct debug invocations, including while GUI controls are locked by
-a Python script. `flash` runs as entered and may disconnect the viewer; it does
-not coordinate recording finalization, shutdown, or reconnection. CLI processes
-continue if the viewer closes, with active output files retained in a temporary
-`uz-cli-console-*` directory. The regular viewer console commands remain available
-without the `uz` prefix.
+Only service commands are accepted. Local tools (`serve`, `build`, `flash`,
+`generate`, mapping generation) are rejected: use **Flash UZ** or a terminal.
+The regular viewer console commands remain available without the `uz` prefix.
 
 ### Python measurement scripts
 
@@ -362,7 +342,7 @@ argument parsing, and Client construction:
 ```python
 import argparse
 import time
-from ultrazohm import Client
+from ultrazohm_cli import Client
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -458,16 +438,15 @@ container and use `--live-wheel` to select it explicitly. That flag also enables
 live setup, so `--use-live` is optional with an exact wheel:
 
 ```bash
-./uz_dataviewer/start.sh --live-wheel /absolute/path/to/ultrazohm-....whl
+./uz_dataviewer/start.sh --live-wheel /absolute/path/to/ultrazohm_cli-....whl
 ```
 
 ```powershell
-.\uz_dataviewer\start.ps1 --live-wheel C:\path\to\ultrazohm-....whl
+.\uz_dataviewer\start.ps1 --live-wheel C:\path\to\ultrazohm_cli-....whl
 ```
 
 Use a wheel built with the `catalog` API. Offline viewing works without the wheel;
-live panels are only created when explicitly enabled. Live acquisition is native
-only; the browser cannot connect to the local CLI socket.
+live panels are only created when explicitly enabled.
 
 **Flash UZ**, beside Connect/Disconnect, opens an **OK / Cancel** confirmation.
 The button is greyed out when Vitis XSCT is missing from PATH, with a tooltip
@@ -596,7 +575,7 @@ To open an activated DataViewer environment without launching the GUI or a servi
 
 PowerShell supports the same options through `start.ps1`. Existing optional CLI
 packages are preserved in shell mode. Run `python measurement.py` or
-`ultrazohm status` (when the CLI wheel is installed). Type `deactivate` to deactivate
+`ultrazohm_cli status` (when the CLI wheel is installed). Type `deactivate` to deactivate
 within the child shell, or `exit` to return to the original terminal.
 The CLI equivalent is `./uz_cli/run.sh --local-newest --launch shell`
 (`run.ps1` on Windows).
@@ -665,17 +644,16 @@ and select the vendor launcher, such as `Vitis/2022.2/bin/xsct.bat` on Windows
 or `bin/xsct` on Linux. Select XSCT rather than the Vitis GUI executable.
 The viewer remembers the path in `tools.json` in its user directory and prepends its directory
 to PATH for itself and its child processes on subsequent starts. The system
-PATH is unchanged. On Windows, `uz ...` commands in the viewer Console
-are disabled; use the Python panel for automation. Viewer commands such as
-`help` remain available. Starting the viewer from a Vitis command prompt (or after
+PATH is unchanged. Starting the viewer from a Vitis command prompt (or after
 sourcing `settings64.sh`) also works.
 
-To build the combined application, set `UZ_CLI_WHEEL` to the absolute path of a
-wheel built from the same commit, then run `build/build_native.sh` or its
-PowerShell equivalent. Build scripts synchronize locked dependencies before
-installing that wheel. CI builds both OS wheels, packages folder distributions,
-and tests frozen workers against the JavaScope simulator. Integration-branch
-releases are prereleases; main releases are stable. Browser builds remain separate.
+To build the combined application, run `python uz_dataviewer/tasks.py bundle`
+(optionally with `--cli-wheel PATH` for a wheel built from the same commit). The task
+synchronizes locked dependencies before installing that wheel. CI builds both OS
+wheels once, packages folder distributions from them, and tests frozen workers
+against the JavaScope simulator. Releases from `develop` and
+`feature/uz_cli_dataviewer_testing` are prereleases; `main` releases are stable.
+Each release holds both bundles and both CLI wheels, which are also on PyPI.
 
 The standalone distribution bundles repository Tcl scripts and Vitis launch
 presets. Its CLI workers always use those scripts, with the selected repository

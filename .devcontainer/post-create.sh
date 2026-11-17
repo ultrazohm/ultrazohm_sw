@@ -9,8 +9,8 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 # selected accidentally. Install exactly the artifact produced by this build.
 wheel_stage="$(mktemp -d)"
 trap 'rm -rf -- "$wheel_stage"' EXIT
-make -C uz_cli wheel WHEEL_DIR="$wheel_stage"
-wheels=("$wheel_stage"/ultrazohm-*.whl)
+python3 uz_cli/tasks.py wheel --out "$wheel_stage"
+wheels=("$wheel_stage"/ultrazohm_cli-*.whl)
 if [[ ${#wheels[@]} -ne 1 || ! -f "${wheels[0]}" ]]; then
     echo "Expected exactly one UltraZohm wheel from the container build." >&2
     exit 1
@@ -25,7 +25,7 @@ chmod +x javascope/build.sh javascope/run_with_test_server.sh
 # Fail setup visibly if the interpreter cannot load the installed packages.
 python - <<'PYTHON'
 import sys
-from ultrazohm import Acquisition, Client
+from ultrazohm_cli import Acquisition, Client
 import polars
 import matplotlib
 

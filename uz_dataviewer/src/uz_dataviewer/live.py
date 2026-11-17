@@ -442,7 +442,7 @@ class LiveController:
         with self._command_lock:
             endpoint = endpoint or self.endpoint
             if self.client_factory is None:
-                from ultrazohm import Client
+                from ultrazohm_cli import Client
                 client = Client(endpoint)
             else:
                 client = self.client_factory(endpoint)
@@ -499,7 +499,7 @@ class LiveController:
             self._variable_sends = {}
             self.attached = False
             if self.client_factory is None:
-                from ultrazohm import Client
+                from ultrazohm_cli import Client
                 self.client = Client(endpoint)
             else:
                 self.client = self.client_factory(endpoint)
@@ -655,17 +655,38 @@ class LiveController:
                 self.attached = False
                 self._reset()
                 self._status, self._catalog, self._assignments = {}, {}, ()
-                self._progress('Stopping device and finalizing recordings…')
-                if self.endpoint == self.owned.endpoint and self.owned.process is not None:
-                    code = self._wait_owned('Stopping device and finalizing recordings…')
-                    if code:
-                        raise RuntimeError(f'Service shutdown failed (exit {code}); check service.log')
+                if self._await_shutdown('Stopping device and finalizing recordings…', external=False):
                     self._notice = 'Service shut down; recordings finalized'
                 else:
                     self._notice = 'Service shutdown accepted; finalization continues in the external service'
 
             del reply
         self._status_at = 0.
+
+    def _await_shutdown(self, description, *, external):
+        """Wait after a shutdown request; the service itself sends device Stop and
+        finalizes both recordings. A viewer-owned service is awaited until it exits
+        and its exit code checked. Return whether completion was observed."""
+        self._progress(description)
+        if self.endpoint == self.owned.endpoint and self.owned.process is not None:
+            code = self._wait_owned(description)
+            if code:
+                raise RuntimeError(f'Service shutdown failed (exit {code}); check service.log')
+            return code is not None
+        if not external:
+            return False
+        from .flashing import connection_refused
+
+        def stopped():
+            try:
+                self.client.status()
+            except (OSError, RuntimeError) as exc:
+                return connection_refused(exc)
+            return False
+        # An external service stops listening before it finishes writing files;
+        # its finalization does not involve the device.
+        self._wait_for(stopped, 15, 'the acquisition service to stop')
+        return True
 
     def _wait_for(self, condition, timeout, description):
         deadline = time.monotonic() + timeout
@@ -709,34 +730,14 @@ class LiveController:
                 assignments = {str(item['channel']): item['name'] for item in
                                self.client.observables()['channels'] if item['name']}
             self._flash_context = (self.endpoint, previous, assignments, settings)
-            if status['state'].get('connected'):
-                self._progress('Sending device Stop…')
-                self.client.stop()
-            self._progress('Stopping and finalizing recordings…')
-            for stream, stop in (('fast', 'stop_logging'), ('slow', 'stop_logging_slow_data')):
-                if status.get('logging', {}).get(stream, {}).get('phase') in ('recording', 'paused'):
-                    getattr(self.client, stop)()
-            def finalized():
-                self._status = self.client.status()
-                for info in self._status.get('logging', {}).values():
-                    if info.get('phase') == 'failed':
-                        raise RuntimeError(f'Recording finalization failed: {info.get("error")}')
-                    if info.get('phase') in ('recording', 'paused', 'finalizing'):
-                        return False
-                return True
-            self._wait_for(finalized, 300, 'recordings to finalize')
-            self._progress('Shutting down acquisition service…')
+            # Shutdown sends device Stop and finalizes both recordings itself.
             self.attached = False
             self.client.shutdown()
-            def stopped():
-                try:
-                    self.client.status()
-                except (OSError, RuntimeError) as exc:
-                    return connection_refused(exc)
-                return False
-            self._wait_for(stopped, 15, 'the acquisition service to stop')
-            if self.owned.process is not None:
-                self.owned.process.wait(timeout=5)
+            if self.endpoint == self.owned.endpoint:
+                self.owned.shutdown_requested = True
+            if not self._await_shutdown('Stopping device, finalizing recordings and shutting down the service…',
+                                        external=True):
+                return  # The viewer closed; close() takes over waiting for the service.
         self.attached = False
         self._reset()
         self._status, self._catalog, self._assignments = {}, {}, ()
@@ -786,7 +787,7 @@ class LiveController:
     def _poll_client_for(self, endpoint):
         if self._poll_client is None or self._poll_endpoint != endpoint:
             if self.client_factory is None:
-                from ultrazohm import Client
+                from ultrazohm_cli import Client
                 self._poll_client = Client(endpoint)
             else:
                 self._poll_client = self.client_factory(endpoint)
@@ -924,7 +925,7 @@ class LiveController:
                 return  # Unused live panels need no optional CLI backend to close.
             factory = self.client_factory
             if factory is None:
-                from ultrazohm import Client
+                from ultrazohm_cli import Client
                 factory = Client
             # Stop the attached external device first. Cleanup of an unrelated
             # owned service must neither delay this Stop nor skip it on error.

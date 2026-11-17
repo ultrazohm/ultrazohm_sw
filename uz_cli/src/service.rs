@@ -125,6 +125,16 @@ pub fn error_code(error: &anyhow::Error) -> Option<&str> {
         .map(|e| e.code.as_str())
 }
 
+/// A device write that failed after the command was validated: the device may
+/// or may not have received it. Audited as `write_failed`.
+#[derive(Debug)]
+struct WriteFailed(&'static str);
+impl std::fmt::Display for WriteFailed {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.0)
+    }
+}
+
 /// A request that got no complete reply in time. Never sent to clients as a
 /// reply code; clients map it to `timeout` (see [`client_error_code`]).
 #[derive(Debug)]
@@ -568,7 +578,7 @@ impl Service {
             "schema_version":5,"run_id":run_id,"started_unix_ns":now_ns(),"device":config.device,
             "profile":config.profile,"format":config.format,"data_options":config.data,
             "time_basis":"seconds from acquisition start; configured sample period; gaps unknown",
-            "storage_layout":"consolidated_recordings","source":"ultrazohm",
+            "storage_layout":"consolidated_recordings","source":"ultrazohm_cli",
             "software_version":crate::VERSION
         });
         if let Some(dir) = &config.output {
@@ -675,7 +685,6 @@ impl Service {
     }
 
     fn handle(&mut self, req: Request) -> Result<Reply> {
-        let mut wire = None;
         match &req.command {
             Operation::ReadData { query } => {
                 let view = self.view(&query.source, Some(&query.selection))?;
@@ -691,16 +700,6 @@ impl Service {
                     infos.push(self.view(&source, None)?.info);
                 }
                 return Ok(Reply::Json(ok_reply(json!({"recordings":infos}))));
-            }
-            Operation::Connect { ip, port } => {
-                ensure!(self.connection.is_none(), "already connected");
-                ensure!(*port != 0, "port must be 1..65535");
-                let address = SocketAddr::new(
-                    ip.parse()
-                        .context("device IP must be a numeric IPv4 or IPv6 address")?,
-                    *port,
-                );
-                self.connect(&address.to_string())?;
             }
             Operation::Status => {
                 let available = self.context.ring.lock().unwrap().available();
@@ -740,6 +739,41 @@ impl Service {
                     "source":"service_requested_assignments",
                     "device_readback":false,"channels":channels}))));
             }
+            _ => {}
+        }
+        // Every command that reached execution is audited, including rejected
+        // ones and writes whose outcome on the device is unknown.
+        let result = self.apply(&req.command);
+        if let Some(audit) = self.events.as_ref() {
+            let entry = match &result {
+                Ok(wire) => json!({"host_unix_ns":now_ns(),"request":req,"wire":wire,
+                    "outcome":if wire.is_some(){"sent_unconfirmed"}else{"applied_locally"}}),
+                Err(error) => json!({"host_unix_ns":now_ns(),"request":req,
+                    "outcome":if error.downcast_ref::<WriteFailed>().is_some(){"write_failed"}else{"rejected"},
+                    "error":format!("{error:#}"),"code":error_code(error)}),
+            };
+            audit.record(entry, &self.context.state);
+        }
+        let wire = result?;
+        Ok(Reply::Json(ok_reply(
+            json!({"outcome":if wire.is_some(){"sent_unconfirmed"}else{"applied_locally"},"logging":self.recordings.status()}),
+        )))
+    }
+
+    /// Execute a command and return the device command it wrote, if any.
+    fn apply(&mut self, command: &Operation) -> Result<Option<(u32, f32)>> {
+        let mut wire = None;
+        match command {
+            Operation::Connect { ip, port } => {
+                ensure!(self.connection.is_none(), "already connected");
+                ensure!(*port != 0, "port must be 1..65535");
+                let address = SocketAddr::new(
+                    ip.parse()
+                        .context("device IP must be a numeric IPv4 or IPv6 address")?,
+                    *port,
+                );
+                self.connect(&address.to_string())?;
+            }
             Operation::StartLogging { stream } => {
                 if self.connection.is_none() {
                     return Err(coded("not_connected", "not connected; use connect first"));
@@ -768,7 +802,7 @@ impl Service {
                     && let Err(e) = send(&c.writer, 0, 0.0)
                 {
                     self.fail(format!("ACK write failed; outcome unknown: {e}"));
-                    return Err(e);
+                    return Err(e.context(WriteFailed("ACK write failed; outcome unknown")));
                 }
                 self.context.ack.store(*enabled, Ordering::SeqCst);
             }
@@ -798,6 +832,12 @@ impl Service {
             Operation::EnableControl => {
                 wire = Some((self.config.profile.command("Enable_Control")?, 0.0))
             }
+            Operation::ReadData { .. }
+            | Operation::DataInfo { .. }
+            | Operation::Recordings
+            | Operation::Status
+            | Operation::Catalog
+            | Operation::Observables => unreachable!("reads are answered in handle"),
         }
         if let Some((id, value)) = wire {
             let Some(connected) = self.connection.as_ref() else {
@@ -806,13 +846,13 @@ impl Service {
             encode_command(id, value)?; // Validation errors must not terminate acquisition.
             if let Err(e) = send(&connected.writer, id, value) {
                 self.fail(format!("command write failed; outcome unknown: {e}"));
-                return Err(e);
+                return Err(e.context(WriteFailed("command write failed; outcome unknown")));
             }
             self.context.state.lock().unwrap().commands_sent += 1;
-            if matches!(req.command, Operation::Shutdown) {
+            if matches!(command, Operation::Shutdown) {
                 self.shutdown_stop_sent = true;
             }
-            if let Operation::SetObservable { name, channel } = &req.command {
+            if let Operation::SetObservable { name, channel } = command {
                 self.selections[channel.to_string()] = json!(name);
                 // Retain other channels, but never relabel this channel's old samples.
                 self.context
@@ -822,15 +862,7 @@ impl Service {
                     .clear_channel(*channel as usize - 1);
             }
         }
-        if let Some(audit) = self.events.as_ref() {
-            audit.record(
-                json!({"host_unix_ns":now_ns(),"request":req,"wire":wire,"outcome":if wire.is_some(){"sent_unconfirmed"}else{"applied_locally"}}),
-                &self.context.state,
-            );
-        }
-        Ok(Reply::Json(ok_reply(
-            json!({"outcome":if wire.is_some(){"sent_unconfirmed"}else{"applied_locally"},"logging":self.recordings.status()}),
-        )))
+        Ok(wire)
     }
 
     fn view(&self, source: &Source, selection: Option<&Selection>) -> Result<DataView> {

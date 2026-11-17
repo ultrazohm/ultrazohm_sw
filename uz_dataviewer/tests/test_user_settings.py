@@ -24,19 +24,16 @@ def test_mode_data_is_under_repository_artifacts(tmp_path, monkeypatch, explicit
     assert not (tmp_path/'_user').exists()
 
 
-def test_windows_console_has_no_cli_handler_and_guides_users_to_python(monkeypatch):
+def test_console_routes_uz_lines_without_a_platform_check():
     from uz_dataviewer.app import DataViewerApp
-    monkeypatch.setattr('uz_dataviewer.console.CLI_SUPPORTED', False)
     app = DataViewerApp(use_live=True)
     try:
         console = app.state.console
-        assert console.cli_handler is None
-        assert not console.cli_supported
+        assert console.cli_handler == app._run_cli_command
+        app.live.available = False
         console._input = 'uz status'
         console._submit(app.state)
-        assert 'unavailable on Windows' in console.as_text()
-        assert 'Python panel' in console.as_text()
-        assert app._cli_console is None
+        assert 'Live is not activated.' in console.as_text()
         console._input = 'set_grid(2, 2)'
         console._submit(app.state)
         assert app.state.cell_count == 4
@@ -174,7 +171,6 @@ def test_initialize_and_connect_preserve_existing_preferences(tmp_path, monkeypa
 def test_workspace_startup_initializes_missing_preferences_once(tmp_path, monkeypatch, frozen):
     from uz_dataviewer import app, live_mapping
     monkeypatch.setattr(sys, 'frozen', frozen, raising=False)
-    monkeypatch.setattr(app.runtime, 'IS_WEB', False)
     user_dir = data_directory(tmp_path)
     mapping = user_dir/'mapping.json'
     mapping.write_text(json.dumps({'channels': 20, 'observables': {'JSO_lifecheck': 3}}))

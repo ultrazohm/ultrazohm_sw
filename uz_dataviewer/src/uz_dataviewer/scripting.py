@@ -11,7 +11,7 @@ _ENTRY_POINT = """
 
 if __name__ == "__main__":
     import argparse
-    from ultrazohm import Client
+    from ultrazohm_cli import Client
 
     parser = argparse.ArgumentParser(description="UltraZohm measurement")
     parser.add_argument("--endpoint", default="127.0.0.1:19740",
@@ -120,7 +120,7 @@ class ScriptRunner:
                 if self.send_stop is not None:
                     self.send_stop(endpoint)
                 elif self.client_factory is None:
-                    from ultrazohm import Client
+                    from ultrazohm_cli import Client
                     client = Client(endpoint)
                     client.stop()
                 else:

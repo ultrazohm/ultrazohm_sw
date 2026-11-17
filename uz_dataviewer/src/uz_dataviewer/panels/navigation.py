@@ -8,11 +8,9 @@ is :data:`SIGNAL_DND_TYPE`; the dragged :data:`SignalRef` is stashed on the
 
 from __future__ import annotations
 
-from .. import runtime
 
 from imgui_bundle import em_size, imgui
 
-from .. import webbridge
 from ..state import AppState
 from .base import SessionPanel
 
@@ -84,10 +82,7 @@ class NavigationPanel(SessionPanel):
         self._poll_open_dialog(state)
 
         if imgui.button("Open file(s)..."):
-            if runtime.IS_WEB:
-                # Browser: click the hidden HTML <input type="file">.
-                webbridge.trigger_file_dialog()
-            elif pfd is not None and self._open_dialog is None:
+            if pfd is not None and self._open_dialog is None:
                 self._open_dialog = pfd.open_file(
                     "Open log file(s)",
                     "",

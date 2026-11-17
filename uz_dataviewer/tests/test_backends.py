@@ -1,6 +1,5 @@
 """Backend selection is independent of storage policy and survives session restore."""
 
-from uz_dataviewer import runtime
 
 import json
 import subprocess
@@ -15,7 +14,7 @@ from uz_dataviewer import api
 from uz_dataviewer.commands import CommandError
 from uz_dataviewer.loader import convert_csv_to_parquet, open_file
 from uz_dataviewer.model import DataRegistry
-from uz_dataviewer.session import SCHEMA_VERSION, apply_dict, export_data, to_dict
+from uz_dataviewer.session import apply_dict, export_data, to_dict
 from uz_dataviewer.sources import ByteCache, SourceColumn
 from uz_dataviewer.state import AppState
 
@@ -113,19 +112,6 @@ def test_conversion_export_and_library(tmp_path, backend):
         state.shutdown()
 
 
-def test_web_uses_pyarrow_for_polars_session(logs, monkeypatch):
-    state = AppState()
-    monkeypatch.setattr(runtime, 'IS_WEB', True)
-    try:
-        with pytest.raises(CommandError, match='desktop'):
-            state.commands.execute(state, 'backend', ['polars'])
-        apply_dict(state, {'version':SCHEMA_VERSION, 'backend':'polars', 'runs':[{'key':'run:1', 'path':str(logs[0]), 'backend':'polars', 'mode':'memory', 'disk_cache':False}]})
-        assert state.backend == 'pyarrow'
-        assert state.registry.runs[0].backend == 'pyarrow'
-    finally:
-        state.shutdown()
-
-
 def test_pyarrow_startup_does_not_import_polars():
     code = 'import sys; from uz_dataviewer.state import AppState; s=AppState(); assert "polars" not in sys.modules; s.shutdown()'
     subprocess.run([sys.executable, '-c', code], check=True, timeout=20)
@@ -155,13 +141,11 @@ def test_obsolete_sessions_are_rejected():
         state.shutdown()
 
 
-@pytest.mark.parametrize('online, expected', [(False, ('polars', 'lazy')), (True, ('pyarrow', 'memory'))])
-def test_application_defaults_by_platform(monkeypatch, online, expected):
+def test_application_defaults():
     from uz_dataviewer.app import DataViewerApp
-    monkeypatch.setattr(runtime, 'IS_WEB', online)
     app = DataViewerApp()
     try:
-        assert (app.state.backend, app.state.loading_mode) == expected
+        assert (app.state.backend, app.state.loading_mode) == ('polars', 'lazy')
     finally:
         app._shutdown()
 
@@ -180,7 +164,6 @@ def test_cli_defaults_and_explicit_overrides(monkeypatch):
     monkeypatch.setattr('uz_dataviewer.live_mapping.generate_mapping', generate)
     settings_calls = []
     monkeypatch.setattr('uz_dataviewer.settings.load_workspace_settings', settings_calls.append)
-    monkeypatch.setattr(runtime, 'IS_WEB', False)
     app.main([])
     assert captured[-1]['disk_cache'] is False
     assert captured[-1]['use_live'] is False
@@ -199,9 +182,6 @@ def test_cli_defaults_and_explicit_overrides(monkeypatch):
     app.main(['--use-live', '--live-repo', '/example/repository'])
     assert captured[-1]['live_repo'] == '/example/repository'
     assert not mapping_calls
-    monkeypatch.setattr(runtime, 'IS_WEB', True)
-    app.main([])
-    assert (captured[-1]['backend'], captured[-1]['loading_mode']) == ('pyarrow', 'memory')
 
 
 def test_disk_cache_session_settings(logs, tmp_path):

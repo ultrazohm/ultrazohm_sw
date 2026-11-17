@@ -126,7 +126,7 @@ Firmware truncates fractional selection values; API v1 avoids them entirely.
 
 ## Signals and status
 
-Run `ultrazohm channel-mapping` in the checkout for the current numeric enum tables. Enum membership
+Run `ultrazohm_cli channel-mapping` in the checkout for the current numeric enum tables. Enum membership
 alone does not imply that a pointer has been assigned. All fast and slow pointers
 start at a shared zero value; all selected channels initially point to zero.
 
@@ -200,7 +200,16 @@ for wire commands (`shutdown` while connected included, since it sends device
 Stop), or `applied_locally` for local operations such as `connect`, ACK policy
 and logging control. Errors have `ok:false`, an `error` message and a stable
 `code` (`null` when uncoded); the CLI exits nonzero and Python raises
-`RuntimeError` with the same `code` attribute. Codes:
+`RuntimeError` with the same `code` attribute.
+
+Every command that reaches execution is appended to `commands.jsonl` with the
+request and an `outcome`: `sent_unconfirmed` (with the `wire` command),
+`applied_locally`, `rejected` (with `error` and `code`; nothing was written to
+the device), or `write_failed` (with `error`; the socket write failed after
+validation, so the device state is unknown). Reads are not audited, and requests
+canceled by Stop before execution never reach the audit.
+
+Error codes:
 
 | Code | Meaning |
 |---|---|
@@ -220,7 +229,7 @@ never need to match error text:
 | `transport` | Any other socket failure, for example a connection closed mid-reply |
 
 Status returns counters, last status word, ACK policy, terminal error,
-`software_version` (also in `run.json` and `ultrazohm --version`) and
+`software_version` (also in `run.json` and `ultrazohm_cli --version`) and
 `logging.fast` / `logging.slow` with phase, Parquet path and recording error.
 Operations: connect, status, catalog, observables, recordings, data_info,
 read_data, stop, enable_system, enable_control, set_variable, set_observable,
@@ -436,7 +445,7 @@ contains the validated firmware mapping and runtime settings loaded by this serv
 observable, slow-signal, variable and command names/IDs, channel geometry, initial
 assignments, nominal sample period and platform-state decoding. Native viewers use
 it to populate selectors instead of maintaining a second mapping. It is service
-configuration, not firmware readback. Python: `Client.catalog()`; CLI: `ultrazohm catalog`.
+configuration, not firmware readback. Python: `Client.catalog()`; CLI: `ultrazohm_cli catalog`.
 
 ### Unified shutdown
 

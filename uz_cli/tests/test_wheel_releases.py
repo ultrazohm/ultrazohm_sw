@@ -14,10 +14,9 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 import wheel_releases as releases
-from release_ci import release_metadata
 
-LINUX = "ultrazohm-0.2.0-cp310-abi3-manylinux_2_28_x86_64.whl"
-WINDOWS = "ultrazohm-0.2.0-cp310-abi3-win_amd64.whl"
+LINUX = "ultrazohm_cli-0.2.0-cp310-abi3-manylinux_2_28_x86_64.whl"
+WINDOWS = "ultrazohm_cli-0.2.0-cp310-abi3-win_amd64.whl"
 
 
 def release(channel="stable", ident=1, published="2026-01-01T00:00:00Z", **kwargs):
@@ -35,16 +34,16 @@ class WheelReleaseTest(unittest.TestCase):
     def test_local_cli_selection_uses_mtime_and_skips_legacy(self):
         with tempfile.TemporaryDirectory() as tmp:
             paths = [Path(tmp) / name for name in [
-                "ultrazohm-0.1.0-cp310-abi3-linux_x86_64.whl",
-                "ultrazohm-0.1.0.dev4001-cp310-abi3-linux_x86_64.whl",
-                "ultrazohm-0.1.0.dev5001-cp310-abi3-linux_x86_64.whl"]]
+                "ultrazohm_cli-0.1.0-cp310-abi3-linux_x86_64.whl",
+                "ultrazohm_cli-0.1.0.dev4001-cp310-abi3-linux_x86_64.whl",
+                "ultrazohm_cli-0.1.0.dev5001-cp310-abi3-linux_x86_64.whl"]]
             for index, path in enumerate(paths):
                 with ZipFile(path, "w") as wheel:
                     if index:
-                        wheel.writestr("ultrazohm.dist-info/entry_points.txt",
-                                       "[console_scripts]\nultrazohm = ultrazohm.cli:main\n")
+                        wheel.writestr("ultrazohm_cli.dist-info/entry_points.txt",
+                                       "[console_scripts]\nultrazohm_cli = ultrazohm_cli.cli:main\n")
                 os.utime(path, (100 + index, 100 + index))
-            with self.assertRaisesRegex(ValueError, "no ultrazohm console command"):
+            with self.assertRaisesRegex(ValueError, "no ultrazohm_cli console command"):
                 releases.validate_cli_wheel(paths[0])
             with patch.object(releases, "compatible_wheels", return_value=paths):
                 self.assertEqual(releases.local_cli_wheels(paths, sys.executable, {}),
@@ -57,9 +56,9 @@ class WheelReleaseTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Invalid CLI wheel"):
                 releases.validate_cli_wheel(path)
             with ZipFile(path, "w") as wheel:
-                wheel.writestr("ultrazohm.dist-info/entry_points.txt",
-                               "[console_scripts]\nother = ultrazohm.cli:main\n")
-            with self.assertRaisesRegex(ValueError, "no ultrazohm console command"):
+                wheel.writestr("ultrazohm_cli.dist-info/entry_points.txt",
+                               "[console_scripts]\nother = ultrazohm_cli.cli:main\n")
+            with self.assertRaisesRegex(ValueError, "no ultrazohm_cli console command"):
                 releases.validate_cli_wheel(path)
 
     def test_channel_detection_and_override_fallback(self):
@@ -109,8 +108,8 @@ class WheelReleaseTest(unittest.TestCase):
     def test_destination_tags_and_version_order(self):
         from packaging.tags import sys_tags
         tag = next(sys_tags())
-        names = [f"ultrazohm-{version}-{tag}.whl" for version in ["0.2.0", "0.10.0", "0.3.0.dev1"]]
-        result = releases.compatible_wheels(names + ["bad.whl", "ultrazohm-1.0-cp39-cp39-madeup.whl"], sys.executable, os.environ)
+        names = [f"ultrazohm_cli-{version}-{tag}.whl" for version in ["0.2.0", "0.10.0", "0.3.0.dev1"]]
+        result = releases.compatible_wheels(names + ["bad.whl", "ultrazohm_cli-1.0-cp39-cp39-madeup.whl"], sys.executable, os.environ)
         self.assertEqual(result, [names[1], names[2], names[0]])
 
     def download_fixture(self, destination, checksum=None, compatible=True):
@@ -151,13 +150,3 @@ class WheelReleaseTest(unittest.TestCase):
     def test_invalid_asset_origin(self):
         with self.assertRaisesRegex(ValueError, "unexpected"):
             releases.asset_url({"browser_download_url": "https://example.com/wheel.whl"})
-
-    def test_publish_branch_guard_and_unique_versions(self):
-        stable = release_metadata("main", "0.2.0", 42, 1)
-        testing = release_metadata("feature/uz_cli26", "0.2.0", 42, 1)
-        self.assertEqual(stable["version"], "0.2.0.post42001")
-        self.assertEqual(testing["version"], "0.2.0.dev42001")
-        self.assertTrue(testing["tag"].startswith("uz-cli-testing-v"))
-        self.assertNotEqual(stable, release_metadata("main", "0.2.0", 42, 2))
-        with self.assertRaisesRegex(ValueError, "not allowed"):
-            release_metadata("other", "0.2.0", 42, 1)

@@ -232,13 +232,22 @@ analysis: IMPROVEMENTS.md 2.4 and 2.5.
 - Tried and reverted: prefetch in the R5 copy, head drop of a stuck
   backlog, at most 10 segments per DAQ exchange - none made the uncached
   copy cheaper (IMPROVEMENTS.md 2.4).
-- Single DAQ frames missing at 500 B/cycle in 2 of 14 runs (71 and 48
-  frames), `xcp_gw_sendto_drop` 0 and no Windows UDP or adapter counter
-  moved. The PC uses a Realtek USB GbE adapter, and the new transport sends
-  ~10 datagrams per burst. Localisation is prepared: the GEM's frames_txed
-  counter (0xFF0E0108, clear-on-read, readable over JTAG without halting)
-  matched the adapter's received count frame for frame in 6 clean runs; a
-  run with gaps will show whether they leave the board.
+- "ctr gaps" at 500 B/cycle in 4 of 24 runs (71, 48, 34, 2 frames) are
+  reordering in the PC, not loss: the stress tool counted them as "arrived
+  late" (net lost 0) and passed. The board sends in order (one tx task, one
+  GEM). Localised with the GEM's frames_txed counter (0xFF0E0108,
+  clear-on-read, read over JTAG without halting) against the received count
+  of the PC's adapter (a Realtek USB GbE): equal frame for frame in 15 of
+  16 runs, one frame short in one run (1 in ~4.1 M lost between the board
+  and the adapter). The new transport sends ~10 datagrams per burst, which
+  makes the reordering show more often; whether CANape reports late
+  datagrams as counter errors is not checked yet (a PCIe NIC on the PC
+  would avoid it).
+- Engine asserts A/B (XCP_R5_ENGINE_ASSERTS 0 vs 1, same build otherwise):
+  xcp_r5_event() 1.21 / 1.99 / 2.85 us vs 1.23 / 2.20 / 3.06 us at
+  8 / 500 / 1000 B/cycle, ~0.2 us per control cycle with a DAQ list
+  running (~1 % of the 25 us period; R5 reserve 11.3 instead of 10.0 % at
+  1000 B). Left on, the Debug default.
 
 ## Changes after the July hardware run (2026-11-16/17)
 

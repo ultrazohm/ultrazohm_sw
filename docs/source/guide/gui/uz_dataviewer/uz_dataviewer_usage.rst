@@ -54,6 +54,8 @@ Existing Parquet files are protected from overwriting; the dialog offers **Open 
 The shared timestamp and summary cache defaults to **1,024 MiB** and remains configurable with **Cache (MiB)** on the bottom status bar.
 This is a retained-cache budget, not a limit on total application RAM.
 The status bar shows retained RAM cache usage next to FPS.
+The Data Viewer never uses GUI idle throttling: live, paused, and offline views
+continue rendering without mouse or keyboard input.
 An amber **cache limit hit** indication appears for five seconds after an entry is evicted or a result exceeds the cache capacity.
 Hover over it to see eviction and oversized-result counts since the last cache clear.
 Auto loading and the obsolete memory-budget controls have been removed; recreate old sessions with explicit loading settings.

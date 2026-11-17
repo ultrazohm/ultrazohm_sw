@@ -118,12 +118,6 @@ class LivePlotsPanel(PlotsPanel):
             self._selection = None
         super().render(state)
 
-    def _render_cell(self, state, index, cell, size):
-        super()._render_cell(state, index, cell, size)
-        if self.workspace is not None and self.workspace.update.attached and not self.workspace.paused:
-            from imgui_bundle import hello_imgui
-            hello_imgui.set_item_is_live()
-
     def _display(self, state, slot, run, channel, lo, hi, budget):
         source = run.data_source()
         offset = run.time_offset

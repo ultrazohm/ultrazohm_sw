@@ -467,8 +467,8 @@ class DataViewerApp:
         params.imgui_window_params.show_status_fps = False  # FPS and cache share our status item.
         params.imgui_window_params.remember_status_bar_settings = False
         params.imgui_window_params.show_menu_bar = True
-        # Visible live plots opt out individually; static analysis can idle.
-        params.fps_idling.enable_idling = True
+        # Never idle the viewer, including paused and offline views.
+        params.fps_idling.enable_idling = False
         # MaterialFlat theme (per the idea list); applied via hello_imgui's
         # tweakable theme so it survives the dock layout setup.
         params.imgui_window_params.tweaked_theme.theme = (

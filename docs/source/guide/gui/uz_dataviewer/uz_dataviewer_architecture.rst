@@ -513,5 +513,10 @@ Stop ordering and cancellation boundary, including queued console mutations.
 Lazy source identity checks run on background workers at approximately 4 Hz;
 strict validation still surrounds actual reads and exports. Cached displays may
 therefore remain visible briefly until a file change is detected. In-memory graph
-validity is checked immediately. Static views idle; visible live plots explicitly
-request full-rate rendering.
+validity is checked immediately.
+
+The Data Viewer must never use GUI idle throttling. Keep
+``params.fps_idling.enable_idling = False`` globally, including live streaming,
+paused views, and offline analysis. Do not re-enable idling or rely on individual
+plots to opt out; rendering must not slow down because mouse or keyboard input
+stops. Actual FPS still depends on rendering workload and display synchronization.

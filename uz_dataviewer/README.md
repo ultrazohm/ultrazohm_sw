@@ -131,6 +131,10 @@ plots (or the FFT / Histogram windows).
 
 ## Large recordings and responsiveness
 
+The Data Viewer never uses GUI idle throttling. Idling stays disabled during live
+streaming, paused views, and offline analysis, even without mouse or keyboard
+input. Actual FPS still depends on rendering workload and display synchronization.
+
 The desktop defaults to **Polars + Lazy**; the online version uses **PyArrow + In memory**.
 Choose **Loading → In memory / Lazy** on the bottom status bar before opening files,
 or select the mode at startup:

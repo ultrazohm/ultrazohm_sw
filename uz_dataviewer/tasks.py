@@ -1,25 +1,7 @@
-"""Start, build and test uz_dataviewer, identical on Linux, Windows and in CI.
+"""Start, build and test uz_dataviewer; the same tasks on Linux, Windows and in CI.
 
-Standard library only; needs uv. Run from anywhere, for example with
-`uv run uz_dataviewer/tasks.py TASK` (start.sh/start.ps1 install uv first and run
-`start`; on Linux, `make -C uz_dataviewer TASK` is a shortcut):
-
-    start [--dev-cli] [VIEWER_ARGS...]   open the viewer from uz_dataviewer/.venv (locked
-                                         dependencies, including the published CLI)
-    shell [--dev-cli]                    terminal with uz_dataviewer/.venv activated
-    lint                                 ruff
-    test [--cli-wheel PATH]              pytest with a matching CLI wheel
-    check [--cli-wheel PATH]             lint and test
-    bundle [--cli-wheel PATH]            PyInstaller desktop bundle in dist/
-    bundle-smoke                         start the bundle and its live workers headless
-
---dev-cli builds ../uz_cli and installs it over the locked CLI for that start
-(Rust needed); the next ordinary start restores the locked version. Without
---cli-wheel, test and bundle build a wheel from ../uz_cli (debug for tests,
-release for bundles). A bundle is portable only when built on an old glibc (CI
-uses Ubuntu 22.04). Environments: .venv for start/shell, .venv-ci for tests,
-.venv-build for bundles. Viewer options after the task name pass through, e.g.
-`start --backend pyarrow log.csv`; use `start -- --help` for the viewer's help.
+Standard library only; needs uv. `python uz_dataviewer/tasks.py` (or `make` in
+this directory) lists the tasks; `TASK --help` explains one.
 """
 import argparse
 import os
@@ -132,7 +114,7 @@ def _viewer_environment(dev_cli):
 
 
 def start(args):
-    # Keep the caller's working directory: relative recording paths stay valid.
+    """Open the viewer from uz_dataviewer/.venv, keeping the caller's working directory."""
     viewer = ["--live-repo", str(HERE.parent), *args.viewer]
     if not args.dev_cli:
         common = ["--project", str(HERE), "--python", PYTHON, "--no-build-package", "imgui-bundle"]
@@ -148,29 +130,87 @@ def shell(args):
     raise SystemExit(subprocess.call([str(python), "-m", "uz_dataviewer.env_shell"]))
 
 
+def _invocation():
+    """How this script was called, so help shows commands that can be copied."""
+    if os.environ.get("UZ_TASKS_VIA_MAKE"):
+        return lambda task, args="": f'make {task}' + (f' ARGS="{args}"' if args else "")
+    return lambda task, args="": f"uv run uz_dataviewer/tasks.py {task}" + (f" {args}" if args else "")
+
+
+def overview():
+    call = _invocation()
+    usage = 'make TASK [ARGS="..."]' if os.environ.get("UZ_TASKS_VIA_MAKE") else "uv run uz_dataviewer/tasks.py TASK [...]"
+    print(f"""uz_dataviewer tasks                       {usage}
+
+Use
+  start          Open the viewer with the published CLI; arguments go to the viewer
+  shell          Terminal with the viewer environment activated
+
+Develop
+  develop        Open the viewer with this checkout's CLI (builds it; needs Rust)
+  check          Lint and full test suite, as CI
+  bundle         Build the desktop bundle in dist/ (bundle-smoke tests it)
+
+CI only: lint, test, bundle-smoke
+
+Examples
+  {call("start", "log.parquet")}
+  {call("develop")}
+  {call("check")}
+
+Details: {call("TASK", "--help")}""")
+
+
+DESCRIPTIONS = {
+    "start": "Open the viewer from uz_dataviewer/.venv with the locked dependencies, including the "
+             "published CLI (ultrazohm_cli). Arguments after the task go to the viewer, including its "
+             "options; '--' before --help shows the viewer's own help. Relative file paths are "
+             "resolved from your current directory.",
+    "develop": "Like start, but first build ../uz_cli and install it over the locked CLI (needs Rust "
+               "and a C/C++ toolchain). The next ordinary start returns to the locked version.",
+    "shell": "Open a terminal with uz_dataviewer/.venv activated: python, uz-dataviewer and "
+             "ultrazohm_cli at the viewer's versions. --dev-cli uses this checkout's CLI.",
+    "check": "Lint and run the full test suite in .venv-ci, as CI does. Without --cli-wheel, a debug "
+             "CLI wheel is built from ../uz_cli so live tests use this checkout.",
+    "bundle": "Build the PyInstaller desktop bundle in dist/ from .venv-build. Without --cli-wheel, a "
+              "release CLI wheel is built from ../uz_cli. A bundle runs on systems with at least the "
+              "build system's glibc; CI builds the published one on Ubuntu 22.04.",
+}
+
+
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    tasks = parser.add_subparsers(dest="task", required=True)
-    started = tasks.add_parser("start", help="Open the viewer (the default of start.sh/start.ps1).")
-    started.add_argument("--dev-cli", action="store_true", help="build and use this checkout's CLI")
-    started.add_argument("viewer", nargs="*", help="arguments for the viewer, including its options")
-    started.set_defaults(function=start)
-    shelled = tasks.add_parser("shell", help="Open a terminal with the viewer environment activated.")
-    shelled.add_argument("--dev-cli", action="store_true", help="build and use this checkout's CLI")
-    shelled.set_defaults(function=shell)
-    for name, function, wheel in (("lint", lint, False), ("test", test, True), ("check", check, True),
-                                  ("bundle", bundle, True), ("bundle-smoke", bundle_smoke, False)):
-        task = tasks.add_parser(name, help=(function.__doc__ or name).splitlines()[0])
+    call = _invocation()
+    parser = argparse.ArgumentParser(prog=call("").strip(), add_help=False)
+    tasks = parser.add_subparsers(dest="task")
+
+    def add(name, function, *, dev_cli=False, wheel=False, viewer=False):
+        task = tasks.add_parser(name, prog=call(name), description=DESCRIPTIONS.get(name, function.__doc__))
+        if dev_cli:
+            task.add_argument("--dev-cli", action="store_true", help="build and use this checkout's CLI")
         if wheel:
             task.add_argument("--cli-wheel", type=Path, help="matching CLI wheel (default: build one from ../uz_cli)")
+        if viewer:
+            task.add_argument("viewer", nargs="*", help="arguments for the viewer, including its options")
         task.set_defaults(function=function)
+    add("start", start, viewer=True)
+    add("develop", start, viewer=True)
+    add("shell", shell, dev_cli=True)
+    for name, function, wheel in (("lint", lint, False), ("test", test, True), ("check", check, True),
+                                  ("bundle", bundle, True), ("bundle-smoke", bundle_smoke, False)):
+        add(name, function, wheel=wheel)
     argv = list(sys.argv[1:] if argv is None else argv)
-    if argv[:1] == ["start"] and not set(argv[1:2]) & {"-h", "--help"}:
-        # Everything after "start" (and an optional leading --dev-cli) belongs to
-        # the viewer, including its own options; "--" passes viewer --help.
-        dev_cli = argv[1:2] == ["--dev-cli"]
-        viewer = argv[2 if dev_cli else 1:]
-        args = argparse.Namespace(function=start, dev_cli=dev_cli, viewer=viewer[1:] if viewer[:1] == ["--"] else viewer)
+    if not argv or argv[0] in ("-h", "--help", "help"):
+        overview()
+        return
+    if argv[0] in ("start", "develop") and not set(argv[1:2]) & {"-h", "--help"}:
+        # Everything after the task belongs to the viewer, including its own
+        # options; "--" passes the viewer's --help.
+        viewer = argv[1:]
+        dev_cli = argv[0] == "develop" or viewer[:1] == ["--dev-cli"]  # start --dev-cli == develop
+        if viewer[:1] == ["--dev-cli"]:
+            viewer = viewer[1:]
+        args = argparse.Namespace(function=start, dev_cli=dev_cli,
+                                  viewer=viewer[1:] if viewer[:1] == ["--"] else viewer)
     else:
         args = parser.parse_args(argv)
     try:

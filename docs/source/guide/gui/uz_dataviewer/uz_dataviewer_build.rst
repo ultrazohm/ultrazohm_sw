@@ -65,7 +65,7 @@ Select the ``ultrazohm_sw`` root at startup, or supply ``--live-repo``. All wind
 select Analysis or Live tabs once without closing other windows. The live panels
 appear whenever the ``ultrazohm_cli`` package is installed: always in the bundle,
 and on Windows and Linux x86-64 in the source environment, where it is a locked
-dependency. ``start.sh --dev-cli`` (``start.ps1 --dev-cli``) builds the checkout's
+dependency. The ``develop`` task (``make develop``, ``start.sh --dev-cli``) builds the checkout's
 CLI and uses it instead. Both deployments use the same subprocess
 worker code; bundled scripts can import bundled dependencies, while source
 scripts can also use packages installed in the developer environment. Vitis is

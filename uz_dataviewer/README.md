@@ -74,14 +74,16 @@ the desktop bundle. Offline analysis never needs the CLI.
 directly, on Linux and Windows alike:
 
 ```bash
-uv run uz_dataviewer/tasks.py --help             # all tasks
-uv run uz_dataviewer/tasks.py start [--dev-cli] [VIEWER_ARGS...]
-uv run uz_dataviewer/tasks.py shell [--dev-cli]  # terminal in the viewer environment
+uv run uz_dataviewer/tasks.py                    # list the tasks
+uv run uz_dataviewer/tasks.py start [VIEWER_ARGS...]
+uv run uz_dataviewer/tasks.py develop [VIEWER_ARGS...]  # with this checkout's CLI
+uv run uz_dataviewer/tasks.py shell              # terminal in the viewer environment
 uv run uz_dataviewer/tasks.py check | bundle | bundle-smoke
+uv run uz_dataviewer/tasks.py TASK --help        # details of one task
 ```
 
-On Linux, `make -C uz_dataviewer TASK` is a shortcut for the same tasks
-(`make -C uz_dataviewer start ARGS="log.csv"` passes viewer arguments).
+On Linux, `make` in `uz_dataviewer` lists the same tasks as make commands, for
+example `make develop` or `make start ARGS="log.csv"`.
 
 On Windows, use PowerShell:
 
@@ -433,7 +435,7 @@ when the repository cannot be discovered from the current directory or source tr
 The launcher uses the `ultrazohm_cli` version locked in `uv.lock`. To move to a
 newer published CLI, run `uv lock --upgrade-package ultrazohm_cli` in
 `uz_dataviewer` and commit the lockfile. To develop the CLI and the viewer
-together, start with `--dev-cli`: it builds `uz_cli` from this checkout (Rust and
+together, use the `develop` task (`make develop`, or `start.sh --dev-cli`): it builds `uz_cli` from this checkout (Rust and
 a C/C++ toolchain required) and installs it over the locked version for that
 start. The next ordinary start returns to the locked version.
 

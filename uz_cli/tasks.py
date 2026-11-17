@@ -1,19 +1,9 @@
-"""Build and test tasks for uz_cli, identical on Linux, Windows and in CI.
+"""Build, test and install uz_cli; the same tasks on Linux, Windows and in CI.
 
-Standard library only. Run from anywhere:
-
-    python uz_cli/tasks.py install          build this checkout's CLI and install it as the ultrazohm_cli command
-    python uz_cli/tasks.py check            formatting, clippy, Rust tests, integration tests
-    python uz_cli/tasks.py debug-wheel      unoptimized wheel for tests into target/wheels-debug
-    python uz_cli/tasks.py wheel            optimized wheel for this machine into target/wheels
-    (with uv: uv run uz_cli/tasks.py TASK; on Linux: make -C uz_cli TASK)
-    python uz_cli/tasks.py release-wheel    portable release wheel into target/wheels-release
-    python uz_cli/tasks.py release-check    install that wheel in a fresh environment and run the integration tests
-    python uz_cli/tasks.py version          release version for a CI run (GITHUB_* variables)
-    python uz_cli/tasks.py stamp VERSION    write VERSION into pyproject.toml (wheel metadata)
-
-The Python version comes from the repository's .python-version, which uv reads.
-Set UZ_CLI_RELEASE_VERSION while building so the binary reports the same version.
+Standard library only. `python uz_cli/tasks.py` (or `make` in this directory)
+lists the tasks; `TASK --help` explains one. The Python version comes from the
+repository's .python-version. Set UZ_CLI_RELEASE_VERSION while building so the
+binary reports the same version as the wheel.
 """
 import argparse
 import os
@@ -161,24 +151,74 @@ def stamp(args):
     path.write_text(text, encoding="utf-8")
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    tasks = parser.add_subparsers(dest="task", required=True)
-    tasks.add_parser("install", help=install.__doc__).set_defaults(function=install)
-    tasks.add_parser("check", help="Formatting, clippy, Rust tests and integration tests, as CI.").set_defaults(function=check)
-    tasks.add_parser("debug-wheel", help="Unoptimized wheel for tests in target/wheels-debug.").set_defaults(function=debug_wheel)
-    built = tasks.add_parser("wheel", help="Optimized wheel for this machine in target/wheels.")
-    built.add_argument("--out", type=Path, help="output directory (default: target/wheels)")
-    built.set_defaults(function=wheel)
-    tasks.add_parser("release-wheel", help="Portable release wheel in target/wheels-release.").set_defaults(function=release_wheel)
-    checked = tasks.add_parser("release-check", help="Integration tests against the installed release wheel.")
-    checked.add_argument("--wheel-dir", type=Path, help="directory holding the wheel (default: target/wheels-release)")
-    checked.set_defaults(function=release_check)
-    tasks.add_parser("version", help="Release version for a CI run (GITHUB_* variables).").set_defaults(function=version)
-    stamped = tasks.add_parser("stamp", help="Write VERSION into pyproject.toml.")
-    stamped.add_argument("version")
-    stamped.set_defaults(function=stamp)
-    args = parser.parse_args()
+def _invocation():
+    """How this script was called, so help shows commands that can be copied."""
+    if os.environ.get("UZ_TASKS_VIA_MAKE"):
+        return lambda task, args="": f"make {task}" + (f' ARGS="{args}"' if args else "")
+    return lambda task, args="": f"uv run uz_cli/tasks.py {task}" + (f" {args}" if args else "")
+
+
+def overview():
+    call = _invocation()
+    usage = 'make TASK [ARGS="..."]' if os.environ.get("UZ_TASKS_VIA_MAKE") else "uv run uz_cli/tasks.py TASK [...]"
+    print(f"""uz_cli tasks                              {usage}
+
+Use
+  install        Build this checkout's CLI and install the ultrazohm_cli command (uv tool)
+
+Develop
+  check          Formatting, clippy, Rust tests and integration tests, as CI
+  wheel          Wheel for this machine in target/wheels
+  release-wheel  Portable release wheel in target/wheels-release (release-check tests it)
+
+CI only: debug-wheel, release-check, version, stamp
+
+Examples
+  {call("install")}
+  {call("check")}
+
+Details: {call("TASK", "--help")}
+Builds use native tools (rustup's pinned Rust, maturin, a C/C++ compiler); no containers.""")
+
+
+DESCRIPTIONS = {
+    "install": "Build an optimized wheel of this checkout for this machine and install it with "
+               "'uv tool install --force', replacing an ultrazohm_cli installed from PyPI until you "
+               "reinstall that.",
+    "check": "Formatting, clippy, Rust tests, then a debug wheel installed into target/ci-venv and "
+             "the integration tests twice: against the cargo binary and the wheel's command.",
+    "wheel": "Optimized wheel for this machine (not portable to older Linux systems).",
+    "release-wheel": "Portable release wheel: manylinux_2_28 on Linux (linked with zig), native on Windows.",
+    "release-check": "Install the release wheel into a fresh environment and run the integration tests.",
+    "debug-wheel": "Unoptimized wheel for tests in target/wheels-debug.",
+    "version": "Print the release version for a CI run from the GITHUB_* variables.",
+    "stamp": "Write VERSION into pyproject.toml (wheel metadata).",
+}
+
+
+def main(argv=None):
+    call = _invocation()
+    parser = argparse.ArgumentParser(prog=call("").strip(), add_help=False)
+    tasks = parser.add_subparsers(dest="task")
+
+    def add(name, function):
+        task = tasks.add_parser(name, prog=call(name), description=DESCRIPTIONS[name])
+        task.set_defaults(function=function)
+        return task
+    add("install", install)
+    add("check", check)
+    add("debug-wheel", debug_wheel)
+    add("wheel", wheel).add_argument("--out", type=Path, help="output directory (default: target/wheels)")
+    add("release-wheel", release_wheel)
+    add("release-check", release_check).add_argument(
+        "--wheel-dir", type=Path, help="directory holding the wheel (default: target/wheels-release)")
+    add("version", version)
+    add("stamp", stamp).add_argument("version")
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if not argv or argv[0] in ("-h", "--help", "help"):
+        overview()
+        return
+    args = parser.parse_args(argv)
     try:
         args.function(args)
     except subprocess.CalledProcessError as error:

@@ -94,6 +94,22 @@ def test_dev_cli_builds_the_checkout_cli_before_launch(launcher):
     assert calls[2]['cwd'] == str(launcher.tmp)
 
 
+def test_develop_task_equals_start_with_dev_cli(launcher):
+    result, calls = launcher.task('develop', 'a recording.csv')
+    assert result.returncode == 0, result.stderr
+    assert [c['name'] for c in calls] == ['uv', 'uv', 'uz-dataviewer']
+    assert calls[2]['args'] == ['--live-repo', str(launcher.root), 'a recording.csv']
+
+
+@pytest.mark.parametrize('via_make', [False, True])
+def test_overview_lists_tasks_as_they_are_called(launcher, via_make):
+    result, calls = launcher.task(**({'UZ_TASKS_VIA_MAKE': '1'} if via_make else {}))
+    assert result.returncode == 0 and calls == []
+    assert 'develop' in result.stdout and 'positional arguments' not in result.stdout
+    expected = 'make start ARGS="log.parquet"' if via_make else 'uv run uz_dataviewer/tasks.py start log.parquet'
+    assert expected in result.stdout
+
+
 def test_failed_dev_cli_build_never_opens_viewer(launcher):
     result, calls = launcher.start('--dev-cli', FAIL_BUILD='1')
     assert result.returncode != 0
@@ -117,7 +133,7 @@ def test_shell_task_sets_up_environment_without_starting_gui(launcher, dev_cli):
     assert any(c['args'][:2] == ['pip', 'install'] for c in calls) == dev_cli
 
 
-@pytest.mark.parametrize('args', [('shell', 'measurement.csv'), ('no-such-task',), ()])
+@pytest.mark.parametrize('args', [('shell', 'measurement.csv'), ('no-such-task',)])
 def test_invalid_tasks_do_not_set_up_anything(launcher, args):
     result, calls = launcher.task(*args)
     assert result.returncode != 0

@@ -439,9 +439,12 @@ installed viewer can select another checkout with `--live-repo PATH`.
 The launcher uses the `ultrazohm_cli` version locked in `uv.lock`. To move to a
 newer published CLI, run `uv lock --upgrade-package ultrazohm_cli` in
 `uz_dataviewer` and commit the lockfile. To develop the CLI and the viewer
-together, use the `develop` task (`make develop`, or `start.sh --dev-cli`): it builds `uz_cli` from this checkout (Rust and
-a C/C++ toolchain required) and installs it over the locked version for that
-start. The next ordinary start returns to the locked version.
+together, use the `develop` task (`make develop`, or `start.sh --dev-cli`): it first
+builds `uz_cli` from this checkout (Rust and a C/C++ toolchain required), installs
+the other dependencies from `uv.lock`, and installs the local CLI wheel. It does
+not resolve or download the published CLI, so an unpublished minimum CLI version
+does not block development. The lockfile stays unchanged. This also applies to
+`shell --dev-cli`. The next ordinary start uses the published dependency again.
 
 **Flash UZ**, beside Connect/Disconnect, opens an **OK / Cancel** confirmation.
 The button is greyed out when Vitis XSCT is missing from PATH, with a tooltip

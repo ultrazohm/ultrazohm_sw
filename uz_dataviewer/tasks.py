@@ -102,14 +102,20 @@ def bundle_smoke(_args):
 def _viewer_environment(dev_cli):
     """Sync uz_dataviewer/.venv (keeping a development CLI) and return its scripts directory."""
     common = ["--project", str(HERE), "--python", PYTHON, "--no-build-package", "imgui-bundle"]
-    subprocess.run(["uv", "sync", *common, "--inexact"], check=True)
     scripts = HERE / ".venv" / ("Scripts" if WINDOWS else "bin")
     if dev_cli:
-        # Install this checkout's CLI over the locked one for this start only.
+        # Build before touching the viewer environment. Development deliberately
+        # replaces the published CLI, whose minimum version may not exist yet.
         wheels = CLI / "target" / "wheels-dev"
         shutil.rmtree(wheels, ignore_errors=True)
         cli_tasks("wheel", "--out", wheels)
-        install_cli(scripts / ("python.exe" if WINDOWS else "python"), built_wheel(wheels))
+        wheel = built_wheel(wheels)
+        # Keep the other dependencies pinned without resolving or downloading
+        # the published CLI, and leave the shared release lockfile unchanged.
+        common += ["--frozen", "--no-install-package", "ultrazohm-cli"]
+    subprocess.run(["uv", "sync", *common, "--inexact"], check=True)
+    if dev_cli:
+        install_cli(scripts / ("python.exe" if WINDOWS else "python"), wheel)
     return scripts
 
 
@@ -166,8 +172,9 @@ DESCRIPTIONS = {
              "published CLI (ultrazohm_cli). Arguments after the task go to the viewer, including its "
              "options; '--' before --help shows the viewer's own help. Relative file paths are "
              "resolved from your current directory.",
-    "develop": "Like start, but first build ../uz_cli and install it over the locked CLI (needs Rust "
-               "and a C/C++ toolchain). The next ordinary start returns to the locked version.",
+    "develop": "Build ../uz_cli, install the other dependencies from uv.lock without resolving the "
+               "published CLI, then install the local wheel (needs Rust and a C/C++ toolchain). "
+               "The next ordinary start returns to the published dependency.",
     "shell": "Open a terminal with uz_dataviewer/.venv activated: python, uz-dataviewer and "
              "ultrazohm_cli at the viewer's versions. --dev-cli uses this checkout's CLI.",
     "check": "Lint and run the full test suite in .venv-ci, as CI does. Without --cli-wheel, a debug "

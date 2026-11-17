@@ -87,6 +87,8 @@ def test_dev_cli_builds_the_checkout_cli_before_launch(launcher):
     assert result.returncode == 0, result.stderr
     assert [c['name'] for c in calls] == ['uv', 'uv', 'uz-dataviewer']
     assert calls[0]['args'][0] == 'sync' and '--inexact' in calls[0]['args']
+    assert '--frozen' in calls[0]['args']
+    assert calls[0]['args'][calls[0]['args'].index('--no-install-package') + 1] == 'ultrazohm-cli'
     wheel = launcher.root/'uz_cli'/'target'/'wheels-dev'/'ultrazohm_cli-0.0.0-py3-none-any.whl'
     assert calls[1]['args'][:2] == ['pip', 'install']
     assert calls[1]['args'][-3:] == ['--no-deps', '--reinstall', str(wheel)]
@@ -113,7 +115,7 @@ def test_overview_lists_tasks_as_they_are_called(launcher, via_make):
 def test_failed_dev_cli_build_never_opens_viewer(launcher):
     result, calls = launcher.start('--dev-cli', FAIL_BUILD='1')
     assert result.returncode != 0
-    assert [c['name'] for c in calls] == ['uv']
+    assert calls == []  # A failed build must not sync or modify the viewer environment.
 
 
 def test_viewer_help_passes_through(launcher):
@@ -195,8 +197,10 @@ def test_tasks_platform_paths(tmp_path, monkeypatch, platform, task):
     assert stopped.value.code == 7
     scripts = project / '.venv' / ('Scripts' if platform == 'nt' else 'bin')
     python = str(scripts / ('python.exe' if platform == 'nt' else 'python'))
-    assert calls[0][0:2] == ['uv', 'sync']
-    assert calls[1][1:] == [str(project.parent / 'uz_cli' / 'tasks.py'), 'wheel', '--out', str(wheels)]
+    assert calls[0][1:] == [str(project.parent / 'uz_cli' / 'tasks.py'), 'wheel', '--out', str(wheels)]
+    assert calls[1][0:2] == ['uv', 'sync']
+    assert '--frozen' in calls[1]
+    assert calls[1][calls[1].index('--no-install-package') + 1] == 'ultrazohm-cli'
     assert calls[2] == ['uv', 'pip', 'install', '--quiet', '--python', python, '--no-deps', '--reinstall',
                         str(wheels / 'ultrazohm_cli-0.0.0-py3-none-any.whl')]
     if task == 'shell':

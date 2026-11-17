@@ -67,6 +67,39 @@ def test_render_spy_inset(states, gui_frame):
     assert state.cells[0].spy_rect is not None
 
 
+def test_double_left_click_resets_xy_limits(states, gui_frame, monkeypatch):
+    from imgui_bundle import imgui, implot
+    state = _state(states)
+    state.services.display.synchronous = True
+    cell = state.cells[0]
+    cell.plot_type = PlotType.XY
+    cell.xy_source = (1, 'ib')
+    cell.add((1, 'ia'))
+    cell.set_limits('x', 2., 3.)
+    cell.set_limits('y', 500., 600.)
+    panel = PlotsPanel()
+    geometry = {}
+    original = panel._plot_popup
+    def capture(state, index, cell):
+        geometry['pos'], geometry['size'] = implot.get_plot_pos(), implot.get_plot_size()
+        original(state, index, cell)
+    monkeypatch.setattr(panel, '_plot_popup', capture)
+    for _ in range(3):
+        gui_frame(panel, state)
+    assert cell.x_lim == (2., 3.) and cell.y_lim == (500., 600.)
+    pos, size = geometry['pos'], geometry['size']
+    io = imgui.get_io()
+    io.add_mouse_pos_event(pos.x + size.x * .6, pos.y + size.y * .4)
+    gui_frame(panel, state)
+    for down in (True, False, True, False):
+        io.add_mouse_button_event(0, down)
+        gui_frame(panel, state)
+    for _ in range(4):
+        gui_frame(panel, state)
+    assert -2 < cell.x_lim[0] < cell.x_lim[1] < 2
+    assert -2 < cell.y_lim[0] < cell.y_lim[1] < 2
+
+
 def test_render_cursors_and_secondary_axis(states, gui_frame):
     state = _state(states)
     state.set_grid(1, 1)

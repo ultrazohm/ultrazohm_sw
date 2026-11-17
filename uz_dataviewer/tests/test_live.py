@@ -777,6 +777,110 @@ def test_native_wheel_zoom_pan_inspect_and_resume(gui_frame, app_state):
         workspace.close()
 
 
+@pytest.mark.parametrize('linked', [False, True])
+@pytest.mark.parametrize('action', ['checkbox', 'toolbar', 'popup', 'double-click', 'double-click-axis'])
+def test_reset_or_follow_checkbox_resumes_newest_live_samples(
+        gui_frame, app_state, monkeypatch, linked, action):
+    from imgui_bundle import imgui, implot
+    imgui.get_io().display_size = imgui.ImVec2(1400, 1100)
+    workspace = LiveWorkspace(LiveController())
+    workspace.state.services.display.synchronous = True
+    workspace.state.set_grid(2, 1)
+    workspace.state.link_x = linked
+    geometry, controls = {}, {}
+    panel = SimpleNamespace(render=workspace.render_plots)
+
+    def render():
+        workspace.pump()
+        gui_frame(panel, app_state)
+
+    def capture_control(kind, original):
+        def control(label, *args, **kwargs):
+            assert label not in ('Inspect', 'Resume live')
+            result = original(label, *args, **kwargs)
+            if label in ('Follow live', 'Reset view'):
+                lo, hi = imgui.get_item_rect_min(), imgui.get_item_rect_max()
+                controls[kind] = ((lo.x + hi.x) / 2, (lo.y + hi.y) / 2)
+            return result
+        return control
+
+    original_popup = workspace.plots._plot_popup
+    def popup(state, index, cell):
+        geometry[index] = (implot.get_plot_pos(), implot.get_plot_size())
+        original_popup(state, index, cell)
+
+    monkeypatch.setattr(workspace.plots, '_plot_popup', popup)
+    for kind, name in [('checkbox', 'checkbox'), ('toolbar', 'button'), ('popup', 'small_button')]:
+        monkeypatch.setattr(imgui, name, capture_control(kind, getattr(imgui, name)))
+    try:
+        source = LiveSource(frame(0, 10000))
+        workspace.controller.update = LiveUpdate(1, source=source, epoch=('run', 0))
+        workspace.pump()
+        for cell in workspace.state.cells:
+            cell.add((workspace.run.id, 'a'))
+            cell.add((workspace.run.id, 'b'))
+            cell.set_secondary((workspace.run.id, 'b'), True)
+        for _ in range(3):
+            render()
+        workspace.inspect()
+        workspace.window_seconds = 1.25
+        for index, cell in enumerate(workspace.state.cells, 1):
+            workspace.state.set_plot_x_limits(index, 2., 3.25)
+            cell.set_limits('y', 500., 600.)
+            cell.set_limits('y2', 700., 800.)
+        latest = LiveSource(frame(2000, 12000))
+        workspace.controller.update = replace(workspace.controller.update, revision=2, source=latest)
+        for _ in range(3):
+            render()
+        assert workspace.run.source is source
+        assert workspace.paused and not workspace.follow
+
+        io = imgui.get_io()
+        if action in ('checkbox', 'toolbar'):
+            io.add_mouse_pos_event(*controls[action])
+        else:
+            pos, size = geometry[1]
+            io.add_mouse_pos_event(pos.x + size.x * .6,
+                                   pos.y + size.y + 8 if action == 'double-click-axis' else pos.y + size.y * .4)
+        render()
+        if action == 'popup':
+            io.add_mouse_button_event(implot.get_input_map().menu, True)
+            render()
+            io.add_mouse_button_event(implot.get_input_map().menu, False)
+            for _ in range(3):
+                render()
+            io.add_mouse_pos_event(*controls['popup'])
+            render()
+        for _ in range(2 if action.startswith('double-click') else 1):
+            io.add_mouse_button_event(0, True)
+            render()
+            # Holding the second click must not cancel the reset's Y fits.
+            for _ in range(2):
+                render()
+            io.add_mouse_button_event(0, False)
+            render()
+        for _ in range(4):
+            render()
+
+        assert workspace.follow and not workspace.paused and workspace.state.following_live
+        assert workspace.run.source is latest
+        assert workspace.window_seconds == pytest.approx(1.25)
+        for index, cell in enumerate(workspace.state.cells):
+            assert cell.x_lim == pytest.approx((10.749, 11.999))
+            if action != 'checkbox' and (index == 1 or action == 'toolbar'):
+                assert -2 < cell.y_lim[0] < cell.y_lim[1] < 2
+                assert -2 < cell.y2_lim[0] < cell.y2_lim[1] < 2
+            else:
+                assert cell.y_lim == (500., 600.)
+                assert cell.y2_lim == (700., 800.)
+        workspace.controller.update = replace(workspace.controller.update, revision=3,
+                                              source=LiveSource(frame(3000, 13000)))
+        render()
+        assert all(cell.x_lim == pytest.approx((11.749, 12.999)) for cell in workspace.state.cells)
+    finally:
+        workspace.close()
+
+
 def test_native_box_selection_enters_inspect(gui_frame, app_state):
     from imgui_bundle import imgui, implot
     workspace = LiveWorkspace(LiveController())

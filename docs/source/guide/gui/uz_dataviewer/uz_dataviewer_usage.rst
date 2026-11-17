@@ -115,12 +115,18 @@ Plot window
 - **Type** (per cell): ``line`` / ``scatter`` / ``stairs`` / ``xy`` (one signal vs another — pick the X signal in the cell header, and a **style** dropdown selects ``Line`` / ``Markers`` / ``Both``). Time-series types preserve spikes when downsampling; ``xy`` uses a plain stride, so a very dense phase plot can alias.
 - **Link X axes** (toolbar): pan/zoom one subplot and the others follow. **Any** plot you pan/zoom drives the shared range — there is no master plot; all linked plots show the same time window.
 - **Max points** (toolbar, with a quick-pick presets dropdown): the per-signal drawing budget — the visible window is drawn with about this many points and stays ~constant as you zoom. "downsampling: **active**" means the view is decimated; it switches to "**off (all samples)**" once the visible window holds fewer **raw samples** than Max points. The cell header shows ``~N pts shown (M in view)`` so you see both the drawn budget and the raw samples in the window.
-- **Reset view** auto-fits the cell to its data; **Clear** empties it.
+- **Reset view** auto-fits the cell to its data; double-left-clicking a plot or axis performs the same reset. The toolbar's Reset view resets all subplots. **Clear** empties the cell.
 - **Right axis:** right-click a signal in the legend ▸ **Right axis** to put it on its own (secondary Y) scale.
 - **samples** — a marker at every sample. **spy** — drag a rectangle on the plot; the inset below shows that region for primary (left) Y-axis signals only (its line colours match the main plot). Right-axis signals are excluded. **cursors** — two draggable vertical lines with a Δx / frequency / Δy readout. Enabling **cursors**/**spy** places them at 25 % / 75 % of the *current* view, so they always start on-screen.
 - **Export** writes the cell's signals over its current X window to CSV; tick **start at 0** to rebase the time column. (The export is comma-separated and re-imports cleanly. On a log already time-normalized to 0, the start is 0 either way.)
 
 For all plots: the mouse wheel zooms, right-click and drag draws a zoom rectangle, hold **Shift** to zoom only X, hold **Alt** to zoom only Y. Right-click an axis for more options.
+
+In **Live Plots**, **Reset view** and double-left-click also enable **Follow live**
+again, catch up to the newest samples, and keep the selected **Time depth (s)**.
+Unchecking **Follow live**, horizontal panning, or Shift-modified wheel/box zoom
+freezes the displayed snapshot; acquisition and logging continue. Checking
+**Follow live** resumes display updates. Ordinary wheel and box zoom keep following.
 
 .. _uz_dataviewer_fft_window:
 

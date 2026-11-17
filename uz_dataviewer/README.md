@@ -39,6 +39,7 @@ window. Their actions appear as labelled informational messages in the console.
   dividers, drag-and-drop signals, types line/scatter/stairs/**XY**, **linked X axes**
   and **secondary Y axis**. Right-click a plot for Reset view, Clear, **cursors**,
   **show samples**, **CSV export** and **spy** (a separate zoom window).
+  Double-left-click a plot or axis to perform **Reset view** for that subplot.
   The popup's **Grid layout** menu also offers the sliders and **Equal sizes**.
   Divider sizes are saved with JSON sessions; older sessions start with equal sizes.
 - **Range-aware downsampling** — a min/max pyramid (pure NumPy) for time series; multi-GB logs
@@ -490,12 +491,16 @@ viewer does not start a replacement service afterward.
   remap buttons. Ordinary wheel and box zoom keep following: their X span becomes
   the time depth and the right edge returns to the newest samples. **Shift-modified
   zoom** enters **Inspect** and keeps the selected region, freezing the current
-  bounded RAM snapshot while acquisition and logging continue. Panning also enters
-  Inspect. The slider controls the same X duration. Inspect has a button (or uncheck
-  Follow live).
+  bounded RAM snapshot while acquisition and logging continue. Horizontal panning
+  also enters Inspect. Unchecking **Follow live** freezes the display in the same
+  way. The slider controls the same X duration.
   In Inspect, normal cursor-centered zoom and pan work; the slider changes duration
-  around the current view's center. **Resume live** catches up to the newest samples
-  at the chosen duration. No disk/cloud history is fetched in either mode.
+  around the current view's center. Checking **Follow live** catches up to the newest
+  samples at the chosen duration. **Reset view**, including a double-left-click on
+  a plot or axis, also resumes Follow live and resets the subplot's axes while
+  preserving the chosen time depth. The toolbar's Reset view resets all subplots;
+  the popup and double-click reset the selected subplot. No disk/cloud history is
+  fetched in either mode.
 - **Freeze plot 1 for analysis** copies all channels in that plot's time window to
   Navigation and assigns its plotted signals to the normal Plots window. FFT,
   histogram and nodes can then consume stable samples. Snapshots are memory-only;

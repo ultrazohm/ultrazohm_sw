@@ -147,15 +147,18 @@ class PlotsPanel(SessionPanel):
             self._emit(state, "export_data", plot_n, path, relative)
 
     # -- toolbar ------------------------------------------------------------
+    def _reset_view(self, state, plot_n):
+        self._emit(state, "reset_view", plot_n)
+
     def _toolbar(self, state: AppState) -> None:
         status = "downsampling: active" if state.downsampling_active else "downsampling: off (all samples)"
         runs_label = f"({len(state.registry)} run(s) loaded)"
         with imgui_ctx.begin_horizontal("layout_controls"):
             if imgui.button("Reset view"):
                 for plot_n in range(1, state.cell_count + 1):
-                    self._emit(state, "reset_view", plot_n)
+                    self._reset_view(state, plot_n)
             if imgui.is_item_hovered():
-                imgui.set_tooltip("Reset the view of all subplots to their data extents.")
+                imgui.set_tooltip("Reset the view of all subplots.")
             self._grid_sliders(state)
 
             changed, link = imgui.checkbox("Link X axes", state.link_x)
@@ -223,6 +226,13 @@ class PlotsPanel(SessionPanel):
                 imgui.end_popup()
         finally:
             imgui.pop_id()
+
+    def _double_click_reset(self, index):
+        if imgui.is_mouse_double_clicked(0) and (
+                implot.is_plot_hovered() or any(implot.is_axis_hovered(axis) for axis in
+                                              (implot.ImAxis_.x1, implot.ImAxis_.y1, implot.ImAxis_.y2))):
+            # Use the same reset as the popup, after EndPlot publishes its limits.
+            self._requested_resets.add(index + 1)
 
     # -- per-plot popup controls ----------------------------------------------------
     def _cell_controls(self, state: AppState, index: int, cell: SubplotCell) -> None:
@@ -386,6 +396,7 @@ class PlotsPanel(SessionPanel):
             if cell.spy:
                 self._spy_rect(state, index, cell)
 
+            self._double_click_reset(index)
             self._plot_popup(state, index, cell)
             implot.end_plot()
             if linked:
@@ -513,6 +524,7 @@ class PlotsPanel(SessionPanel):
             if all_ready:
                 cell.pending_x_lim = cell.pending_y_lim = None
             self._accept_drop(state, index, cell)
+            self._double_click_reset(index)
             self._plot_popup(state, index, cell)
             implot.end_plot()
         self._last_points[index] = 0
@@ -850,10 +862,12 @@ class PlotsPanel(SessionPanel):
         if self._requested_grid is not None:
             self._emit(state, "set_grid", *self._requested_grid)
             self._requested_grid = None
-        for plot_n in sorted(self._requested_resets):
-            if plot_n <= state.cell_count:
-                self._emit(state, "reset_view", plot_n)
-        self._requested_resets.clear()
+        # Wait for release so a held double-click cannot cancel pending Y fits.
+        if not imgui.is_mouse_down(0):
+            for plot_n in sorted(self._requested_resets):
+                if plot_n <= state.cell_count:
+                    self._reset_view(state, plot_n)
+            self._requested_resets.clear()
         if self._equal_sizes:
             state.set_grid_ratios([1.] * state.rows, [1.] * state.cols)
             self._equal_sizes = False

@@ -34,6 +34,12 @@ class LivePlotsPanel(PlotsPanel):
         self._anchors = {}
         self._selection = None
 
+    def _reset_view(self, state, plot_n):
+        super()._reset_view(state, plot_n)
+        if self.workspace is not None:
+            self._selection = None
+            self.workspace.resume_live()
+
     def _apply_pending_limits(self, state, cell, data_min, data_max):
         if self.workspace is not None:
             implot.setup_axis_zoom_constraints(implot.ImAxis_.x1, .001, self.workspace.maximum_depth())
@@ -61,6 +67,10 @@ class LivePlotsPanel(PlotsPanel):
 
     def _time_series_input(self, state, index, cell, lo, hi):
         if self.workspace is None or not state.is_time_plot(cell):
+            return
+        if index + 1 in self._requested_resets:
+            # Native fitting can change the old window while the second click
+            # is held. Preserve the selected time depth until our reset runs.
             return
         hovered = implot.is_plot_hovered() or implot.is_axis_hovered(implot.ImAxis_.x1)
         wheel = imgui.get_io().mouse_wheel if hovered else 0.
@@ -762,18 +772,22 @@ class LiveWorkspace:
         self.follow, self.paused = True, False
         self._revision = -1
         self.pump()
+        self._follow_live_limits()
+
+    def _follow_live_limits(self):
+        self.state.following_live = self.follow and not self.paused
+        if self.run is not None and self.state.following_live:
+            start, stop = self.run.source.metadata.time_range
+            limits = (max(start, stop - self.window_seconds), max(start + .000001, stop))
+            self.state.shared_x = limits
+            for cell in self.state.cells:
+                if self.state.is_time_plot(cell):
+                    cell.pending_x_lim = limits
 
     def render_plots(self, main_state):
         changed, follow = imgui.checkbox('Follow live', self.follow and not self.paused)
         if changed:
             self.resume_live() if follow else self.inspect()
-        imgui.same_line()
-        if not self.follow or self.paused:
-            if imgui.button('Resume live'):
-                self.resume_live()
-        else:
-            if imgui.button('Inspect'):
-                self.inspect()
         imgui.same_line()
         imgui.begin_disabled(self.run is None)
         if imgui.button('Freeze plot 1 for analysis'):
@@ -790,23 +804,16 @@ class LiveWorkspace:
         self.window_seconds = max(.001, min(maximum, seconds))
         if not self.follow or self.paused:
             imgui.text_disabled('Inspect — snapshot frozen; acquisition continues')
-        imgui.text_disabled('Same mouse controls as Plots  |  Normal zoom: follow  |  Shift+zoom: inspect')
+        imgui.text_disabled('Zoom: follow  |  Pan / Shift+zoom: inspect  |  Double-click: reset + follow')
         if changed and not self.follow:
             for cell in self.state.cells:
                 if self.state.is_time_plot(cell) and cell.x_lim is not None:
                     center = sum(cell.x_lim) / 2
                     cell.pending_x_lim = (center - self.window_seconds / 2, center + self.window_seconds / 2)
             self.state.shared_x = None
-        self.state.following_live = self.follow and not self.paused
+        self._follow_live_limits()
         if not self.run:
             imgui.text_wrapped('Connect, then drag channels from Live Data into these plots. History is bounded by the CLI RAM buffer; disk/cloud history is a later step.')
-        elif self.follow and not self.paused:
-            start, stop = self.run.source.metadata.time_range
-            limits = (max(start, stop - self.window_seconds), max(start + .000001, stop))
-            self.state.shared_x = limits
-            for cell in self.state.cells:
-                if self.state.is_time_plot(cell):
-                    cell.pending_x_lim = limits
         self.plots.render(self.state)
 
     def close(self):

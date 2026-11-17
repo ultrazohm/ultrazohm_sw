@@ -272,18 +272,17 @@ def test_linked_mouse_zoom_and_pan_keep_analysis_and_export_in_sync(
     frame()
     boxed = state.cells[target].x_lim
     assert boxed[1] - boxed[0] < window[1] - window[0]
-    # EndPlot applies double-click fitting after get_plot_limits was captured.
-    # That fitted range must not snap back on the following frame.
+    # Double-left-click resets to the entire data extent, including samples
+    # outside the currently rendered window, and keeps every consumer in sync.
     for _ in range(30):
         frame()
     for down in (True, False, True):
-        io.add_mouse_button_event(implot.get_input_map().fit, down)
+        io.add_mouse_button_event(0, down)
         frame()
-    window = state.cells[target].x_lim
-    assert window != pytest.approx(boxed)
-    io.add_mouse_button_event(implot.get_input_map().fit, False)
+    io.add_mouse_button_event(0, False)
     frame()
     frame()
+    window = (float(t[0]), float(t[-1]))
     for i, cell in enumerate(state.cells, 1):
         assert cell.x_lim == pytest.approx(window)
         assert state.plot_time_range(i) == pytest.approx(window)
@@ -505,17 +504,24 @@ def test_toolbar_reset_fits_all_subplots(app_state, gui_frame, monkeypatch, link
 
 @pytest.mark.parametrize('linked', [False, True])
 @pytest.mark.parametrize('target', [0, 1])
-def test_popup_reset_fits_x_without_old_frame_overwriting_it(app_state, gui_frame, monkeypatch, linked, target):
+@pytest.mark.parametrize('action', ['popup', 'double-click', 'double-click-axis'])
+def test_plot_reset_survives_end_plot_and_fits_both_y_axes(
+        app_state, gui_frame, monkeypatch, linked, target, action):
     from imgui_bundle import imgui, implot
+    imgui.get_io().display_size = imgui.ImVec2(1400, 1100)
     state = app_state
     state.set_grid(2, 1)
     state.link_x = linked
     for index, cell in enumerate(state.cells):
         t = np.arange(10.) + 10 * index
-        run = state.registry.add_run(str(index), str(index), t, {'a': np.arange(10.)}, {})
+        run = state.registry.add_run(str(index), str(index), t,
+                                     {'a': np.arange(10.), 'b': np.arange(10.) + 100}, {})
         cell.add((run.id, 'a'))
+        cell.add((run.id, 'b'))
+        cell.set_secondary((run.id, 'b'), True)
         cell.set_limits('x', 3, 4)
         cell.set_limits('y', 500, 600)
+        cell.set_limits('y2', 700, 800)
     state.shared_x = (3., 4.) if linked else None
     panel = PlotsPanel()
     geometry = {}
@@ -536,19 +542,24 @@ def test_popup_reset_fits_x_without_old_frame_overwriting_it(app_state, gui_fram
         gui_frame(panel, state)
     pos, size = geometry[target]
     io = imgui.get_io()
-    io.add_mouse_pos_event(pos.x + size.x * .6, pos.y + size.y * .4)
+    io.add_mouse_pos_event(pos.x + size.x * .6,
+                           pos.y + size.y + 8 if action == 'double-click-axis' else pos.y + size.y * .4)
     gui_frame(panel, state)
-    io.add_mouse_button_event(implot.get_input_map().menu, True)
-    gui_frame(panel, state)
-    io.add_mouse_button_event(implot.get_input_map().menu, False)
-    for _ in range(4):
+    if action == 'popup':
+        io.add_mouse_button_event(implot.get_input_map().menu, True)
         gui_frame(panel, state)
-    assert reset_pos is not None
-    io.add_mouse_pos_event(*reset_pos)
+        io.add_mouse_button_event(implot.get_input_map().menu, False)
+        for _ in range(4):
+            gui_frame(panel, state)
+        assert reset_pos is not None
+        io.add_mouse_pos_event(*reset_pos)
+        gui_frame(panel, state)
+    for _ in range(1 if action == 'popup' else 2):
+        io.add_mouse_button_event(0, True)
+        gui_frame(panel, state)
+        io.add_mouse_button_event(0, False)
+        gui_frame(panel, state)
     gui_frame(panel, state)
-    io.add_mouse_button_event(0, True)
-    gui_frame(panel, state)
-    io.add_mouse_button_event(0, False)
     for _ in range(5):
         gui_frame(panel, state)
     expected = (0, 19) if linked else (target * 10, target * 10 + 9)
@@ -556,6 +567,9 @@ def test_popup_reset_fits_x_without_old_frame_overwriting_it(app_state, gui_fram
     assert state.plot_time_range(target + 1) == pytest.approx(expected)
     assert state.cells[target].y_lim[0] <= 0
     assert 9 <= state.cells[target].y_lim[1] < 500
+    assert state.cells[target].y2_lim[0] <= 100
+    assert 109 <= state.cells[target].y2_lim[1] < 700
     other = state.cells[1 - target]
     assert other.x_lim == pytest.approx(expected if linked else (3, 4))
     assert other.y_lim == (500., 600.)
+    assert other.y2_lim == (700., 800.)

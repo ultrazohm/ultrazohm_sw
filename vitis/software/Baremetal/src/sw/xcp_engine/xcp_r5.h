@@ -10,12 +10,13 @@
  *                         rate. This is the ONLY XCP call in the ISR; its cost
  *                         is the DAQ sample copy (~sub-us idle, ~5 us/KB).
  *                         It also serves the derived time slices (see below).
- *   xcp_r5_background() : call from the MAIN LOOP every iteration. Runs one
- *                         paced exchange sweep (commands + DAQ drain -> OCM,
- *                         every XCP_R5_SWEEP_PERIOD_US) and returns 1 when the
- *                         caller must trigger the IPI to the A53 gateway.
- *   xcp_r5_poll()       : one unpaced sweep (used by xcp_r5_background; direct
- *                         use only for special cases).
+ *   xcp_r5_background() : call from the MAIN LOOP every iteration. Polls the
+ *                         XCP_IN header every few microseconds, executes new
+ *                         commands at once and drains DAQ into the OCM once
+ *                         the A53 has acknowledged the previous chain (see
+ *                         XCP_R5_POLL_PERIOD_US in xcptl_ocm.c); returns 1
+ *                         when the caller must trigger the IPI to the A53.
+ *   xcp_r5_poll()       : one unpaced exchange (special cases only).
  *
  * DAQ rasters (event channel numbers as declared in CANape/UZ_XCP/uz.A2L):
  *   0 DAQ_R5     control-ISR rate (UZ_PWM_FREQUENCY x trigger factor)
@@ -50,17 +51,19 @@
 
 #include <stdint.h>
 
-/* Layout of xcp_r5_prof, version 1, 136 bytes, little endian. *_cyc are R5
- * CPU cycles (cpu_hz per second), *_ns come from uz_SystemTime. Wall time
- * includes the control ISRs that interrupted the main loop; isr_ns_* is that
- * ISR time, so wall - isr = CPU time of the phase. All values count from the
- * last reset: write 1 to `reset`, the next exchange clears everything. */
+/* Layout of xcp_r5_prof, version 2, 160 bytes, little endian (version 1 =
+ * the first 136 bytes; there `keeps` counted sweeps that kept an
+ * unacknowledged chain). *_cyc are R5 CPU cycles (cpu_hz per second), *_ns
+ * come from uz_SystemTime. Wall time includes the control ISRs that
+ * interrupted the main loop; isr_ns_* is that ISR time, so wall - isr = CPU
+ * time of the phase. All values count from the last reset: write 1 to
+ * `reset`, the next exchange clears everything. */
 typedef struct {
     uint32_t version;       /*   0  1                                          */
     uint32_t cpu_hz;        /*   4  R5 clock                                   */
     uint32_t reset;         /*   8  write 1 to clear                           */
-    uint32_t exchanges;     /*  12  exchange sweeps counted                    */
-    uint32_t keeps;         /*  16  ... that kept the unacknowledged chain     */
+    uint32_t exchanges;     /*  12  exchanges counted                          */
+    uint32_t keeps;         /*  16  ... header-only (commands, heartbeat)      */
     uint32_t event_calls;   /*  20  xcp_r5_event() calls = control cycles      */
     uint32_t event_cyc_max; /*  24  longest xcp_r5_event()                     */
     uint32_t copy_cyc_max;  /*  28  longest copy phase, wall                   */
@@ -78,6 +81,11 @@ typedef struct {
     uint64_t isr_ns_total;  /* 112  control-ISR time inside whole exchanges    */
     uint64_t isr_ns_all;    /* 120  all control-ISR time                       */
     uint64_t event_cyc;     /* 128  cycles in xcp_r5_event(), the XCP part of the ISR */
+    uint64_t ack_wait_us;   /* 136  sum: DAQ chain published -> A53 acknowledge */
+    uint32_t ack_n;         /* 144  acknowledges measured                      */
+    uint32_t ack_wait_max_us; /* 148  longest of them                          */
+    uint32_t daq_waits;     /* 152  DAQ exchanges due before the acknowledge   */
+    uint32_t polls;         /* 156  XCP_IN header polls                        */
 } xcp_r5_prof_t;
 
 #ifdef __cplusplus

@@ -448,13 +448,16 @@ def stress_geometry(target_bytes, max_dto):
     return odts
 
 
-# R5 exchange profile (struct xcp_r5_prof, xcp_r5.h XCP_R5_PROFILE), layout
-# version 1: 10 x u32 then 12 x u64, 136 bytes. Keep in sync with xcp_r5.h.
-PROF_FMT = "<10I12Q"
-PROF_FIELDS = ("version cpu_hz reset exchanges keeps event_calls event_cyc_max "
-               "copy_cyc_max flush_cyc_max total_cyc_max elapsed_cyc chain_bytes "
-               "cyc_refresh cyc_commands cyc_copy cyc_flush cyc_total isr_ns_copy "
-               "isr_ns_flush isr_ns_total isr_ns_all event_cyc").split()
+# R5 exchange profile (struct xcp_r5_prof, xcp_r5.h XCP_R5_PROFILE). Layout
+# version 2: 10 x u32, 13 x u64, 4 x u32 = 160 bytes; version 1 = the first
+# 136 bytes. Keep in sync with xcp_r5.h.
+PROF_FMT_V1 = "<10I12Q"
+PROF_FMT = "<10I13Q4I"
+PROF_FIELDS_V1 = ("version cpu_hz reset exchanges keeps event_calls event_cyc_max "
+                  "copy_cyc_max flush_cyc_max total_cyc_max elapsed_cyc chain_bytes "
+                  "cyc_refresh cyc_commands cyc_copy cyc_flush cyc_total isr_ns_copy "
+                  "isr_ns_flush isr_ns_total isr_ns_all event_cyc").split()
+PROF_FIELDS = PROF_FIELDS_V1 + "ack_wait_us ack_n ack_wait_max_us daq_waits polls".split()
 
 
 def prof_reset(xcp, addr):
@@ -466,8 +469,12 @@ def prof_reset(xcp, addr):
 
 def prof_read(xcp, addr):
     raw = xcp.short_upload(addr, struct.calcsize(PROF_FMT))
-    prof = dict(zip(PROF_FIELDS, struct.unpack(PROF_FMT, raw)))
-    return prof if prof["version"] == 1 else None
+    version = struct.unpack_from("<I", raw)[0]
+    if version == 2:
+        return dict(zip(PROF_FIELDS, struct.unpack(PROF_FMT, raw)))
+    if version == 1:
+        return dict(zip(PROF_FIELDS_V1, struct.unpack_from(PROF_FMT_V1, raw)))
+    return None
 
 
 def print_prof(p):
@@ -484,8 +491,12 @@ def print_prof(p):
         return 1e6 * cyc / hz
 
     elapsed = us(p["elapsed_cyc"])
-    print("    R5 exchange profile while DAQ ran (%d exchanges = %.0f/s, %d kept the chain):"
-          % (n, n / (elapsed / 1e6), p["keeps"]))
+    if p["version"] >= 2:
+        print("    R5 exchange profile while DAQ ran (%d exchanges = %.0f/s: %d DAQ, %d header-only):"
+              % (n, n / (elapsed / 1e6), n - p["keeps"], p["keeps"]))
+    else:
+        print("    R5 exchange profile while DAQ ran (%d exchanges = %.0f/s, %d kept the chain):"
+              % (n, n / (elapsed / 1e6), p["keeps"]))
     print("      exchange, wall         avg %7.1f us   max %7.1f us"
           % (us(p["cyc_total"]) / n, us(p["total_cyc_max"])))
     print("      phases, avg wall       refresh %.1f   commands %.1f   copy %.1f   flush %.1f us"
@@ -508,6 +519,11 @@ def print_prof(p):
     if p["event_calls"]:
         print("      per control cycle      ISR %5.2f us, of it xcp_r5_event() avg %5.2f us, max %5.2f us"
               % (isr / p["event_calls"], us(p["event_cyc"]) / p["event_calls"], us(p["event_cyc_max"])))
+    if p["version"] >= 2:
+        print("      A53 acknowledge        avg %5.1f us, max %5.0f us after the IPI (%d chains);"
+              " %d DAQ exchanges waited for it; %.0f XCP_IN polls/s"
+              % (p["ack_wait_us"] / p["ack_n"] if p["ack_n"] else 0.0, p["ack_wait_max_us"],
+                 p["ack_n"], p["daq_waits"], p["polls"] / (elapsed / 1e6)))
 
 
 def run_stress(xcp, args, max_dto):

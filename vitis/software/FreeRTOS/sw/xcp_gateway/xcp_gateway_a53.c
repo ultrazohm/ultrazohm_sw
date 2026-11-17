@@ -5,7 +5,9 @@
 |   the OCM FIFO; the XCP slave logic lives on the R5 (arbitrary addressing).
 |
 |   Data path (mirrors uz_sw_xcp_hedrive_andi OCM_eth_adapter, but UDP):
-|     CANape --UDP--> rx_task --queue--> IPI ISR --> XCP_IN  --> R5 XcpCommand
+|     CANape --UDP--> rx_task --queue--> XCP_IN --> R5 XcpCommand
+|                     (written by the rx task at once and re-offered by the
+|                      IPI ISR until the R5 acknowledges; the R5 polls XCP_IN)
 |     R5 XcpEvent/CRM --> XCP_OUT --> IPI ISR --queue--> tx_task --UDP--> CANape
 |
 |   Hard-learned rules ported from the hedrive hardware campaign
@@ -427,7 +429,7 @@ static xcp_gw_frame_t gInPeek;
 static uint8_t  gInBatchN = 0;
 static uint32_t gInGen = 0;              /* generation of the in-flight batch */
 
-static void xcp_gw_write_in_phase(BaseType_t *woken) {
+static void xcp_gw_write_in_phase(BaseType_t *woken, int from_ipi) {
     ocm_xcp_fifo_prepare_write();
     /* Publish the last consumed mailbox sequence every cycle (idempotent);
      * the R5 frees its CTO mailbox when this matches what it parked. */
@@ -470,7 +472,7 @@ static void xcp_gw_write_in_phase(BaseType_t *woken) {
             }
             xcp_gw_in_batches_sent++;
         }
-    } else {
+    } else if (from_ipi) {
         xcp_gw_in_retry_cycles++;
     }
 
@@ -483,7 +485,6 @@ static void xcp_gw_write_in_phase(BaseType_t *woken) {
     /* Mirror the gateway counters into the XCP_IN header spare words so the
      * XCP master can read them by absolute address (ocm_xcp_fifo.h). 14 plain
      * stores per IPI; they ride the header flush below. */
-    xcp_gw_ipi_count++;
     ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_OCM_SKIPPED_WRITING, xcp_gw_ocm_skipped_writing);
     ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_OCM_TORN, xcp_gw_ocm_torn);
     ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_OCM_CYCLES_MISSED, xcp_gw_ocm_cycles_missed);
@@ -528,8 +529,9 @@ void xcp_gateway_a53_on_ipi(BaseType_t *pxHigherPriorityTaskWoken) {
 #if XCP_GW_PROFILE
     const uint64_t t0 = xcp_gw_ticks();
 #endif
+    xcp_gw_ipi_count++;
     xcp_gw_read_out_phase(pxHigherPriorityTaskWoken);
-    xcp_gw_write_in_phase(pxHigherPriorityTaskWoken);
+    xcp_gw_write_in_phase(pxHigherPriorityTaskWoken, 1);
 #if XCP_GW_PROFILE
     const uint64_t t1 = xcp_gw_ticks();
     gProfIpi += t1 - t0;
@@ -537,9 +539,47 @@ void xcp_gateway_a53_on_ipi(BaseType_t *pxHigherPriorityTaskWoken) {
 #endif
 }
 
+/* Session change (rx task, inside its critical section): the response that
+ * sits in the R5 mailbox now predates the new master's first command - take
+ * it as consumed without forwarding it. This has to happen before that
+ * command is offered: the R5 may answer it before the next IPI, and the IPI
+ * read phase would then swallow the answer instead (every new session lost
+ * its first response to a 1 s master timeout). Returns 0 while the R5 has
+ * its header open (seqlock odd, e.g. during a long DAQ exchange); then the
+ * next IPI read phase adopts and the same IPI's write phase offers the
+ * command - the order of the original design. */
+static int xcp_gw_adopt_mailbox(void) {
+    for (int tries = 0; tries < 20; tries++) {
+        const uint32_t seq_begin = ocm_xcp_out_seq_read(); /* refreshes the control line */
+        if ((seq_begin & 1u) != 0u) {
+            continue;
+        }
+        const uint32_t cto_seq = ocm_xcp_out_cto_seq_read();
+        if (ocm_xcp_out_seq_unchanged(seq_begin)) {
+            gCtoLastSeq = cto_seq; /* acknowledged to the R5 by the next write phase */
+            gCtoAdoptPending = 0;
+            return 1;
+        }
+    }
+    gCtoAdoptPending = 1;
+    return 0;
+}
+
+/* Offer queued commands to the R5 at once instead of at the next IPI: the R5
+ * polls the XCP_IN header every few microseconds, but sends IPIs only with
+ * its exchanges - when no DAQ runs, a heartbeat (about 1 ms) apart. Same
+ * code as the IPI write phase; the critical section keeps the IPI ISR (same
+ * core) out. Task context (rx task). */
+static void xcp_gw_offer_commands(void) {
+    BaseType_t woken = pdFALSE; /* set only if a task waited for gRxQueue space: none does */
+    taskENTER_CRITICAL();
+    xcp_gw_write_in_phase(&woken, 0);
+    taskEXIT_CRITICAL();
+}
+
 /*--------------------------------------------------------------------------
  * RX task: receive XCP-on-UDP datagrams from CANape, remember the master
- * endpoint, and hand the frame to the IPI ISR via gRxQueue.
+ * endpoint, queue the frame (gRxQueue) and offer it to the R5 at once.
  *------------------------------------------------------------------------*/
 /* Walk the packed TL frames of a received datagram: every frame must have
  * 1 <= dlc <= XCP_GW_MAX_CTO_SIZE and the chain must end exactly at the
@@ -578,17 +618,21 @@ static void xcp_gw_rx_task(void *arg) {
             src.sin_port != gMaster.sin_port) {
             /* New master endpoint = new session: fresh CTR sequence, drop the
              * stale DAQ backlog (tx task), swallow a stale parked response
-             * (ISR adopt). Critical section: the tx task copies gMaster. */
+             * (xcp_gw_adopt_mailbox). Critical section: the tx task copies
+             * gMaster, and the IPI ISR must not forward the stale response. */
             taskENTER_CRITICAL();
             gMaster = src;
             gMasterValid = 1;
             gMasterGen++;
-            gCtoAdoptPending = 1;
+            (void)xcp_gw_adopt_mailbox();
             taskEXIT_CRITICAL();
         }
         gMasterLastRxTick = xTaskGetTickCount(); /* master supervision: it is alive */
         f.len = (uint16_t)n;
         (void)xQueueSendToBack(gRxQueue, &f, 0); /* drop if full; master retries */
+        if (!gCtoAdoptPending) {
+            xcp_gw_offer_commands(); /* else the next IPI adopts first, then offers */
+        }
     }
 }
 

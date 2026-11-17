@@ -125,6 +125,11 @@ int ocm_xcp_out_chain_acked(void);
 void ocm_xcp_fifo_prepare_write_keep(void);
 /* 1 = at least one message was written to the chain since prepare_write(). */
 int ocm_xcp_fifo_chain_nonempty(void);
+/* Cheap refresh for polling: the XCP_IN header only (cto_ack, in_gen, the
+ * gateway counter mirror and out_ack; 128 bytes). The command chain behind
+ * it is refreshed by cache_invalidate_before_read() when a new generation
+ * shows up. */
+void ocm_xcp_in_refresh_header(void);
 
 /* --- R5 side: CTO mailbox write + command generations --------------------- */
 /* 1 = the previously parked CTO has been acknowledged by the A53. Relies on
@@ -164,6 +169,10 @@ void ocm_xcp_in_diag_write(uint32_t slot, uint32_t value);
 /* Last command-batch generation processed by the R5. Only valid under a
  * passing out_seq_read()/out_seq_unchanged() pair. */
 uint32_t ocm_xcp_in_consumed_read(void);
+/* Sequence of the frame in the CTO mailbox (0 = never used), without copying
+ * the frame. Only valid under a passing out_seq_read()/out_seq_unchanged()
+ * pair. */
+uint32_t ocm_xcp_out_cto_seq_read(void);
 /* Sequence of the chain currently in XCP_OUT, from the control line that
  * out_seq_read() refreshed. 0 = no valid chain (being rewritten). The R5
  * publishes a non-zero value only after the chain bytes, so the chain does

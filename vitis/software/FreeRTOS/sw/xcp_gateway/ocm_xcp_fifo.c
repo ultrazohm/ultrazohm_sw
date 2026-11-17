@@ -44,9 +44,12 @@
 |      consumed as out_ack in the XCP_IN header. The R5 keeps a NON-EMPTY
 |      chain in place (header words still update under the seqlock) until
 |      it is acknowledged, so an IPI read that came late, was torn or hit an
-|      odd seqlock is simply repeated one sweep later: the DAQ backlog waits
-|      in the R5 queue instead of being overwritten. The hold is bounded by
-|      the caller (xcptl_ocm.c) so a dead gateway cannot stall the R5.
+|      odd seqlock is simply repeated with the next IPI: the DAQ backlog
+|      waits in the R5 queue instead of being overwritten. Since 2026-11-18
+|      the R5 does not even open a DAQ exchange before the acknowledge
+|      (header-only exchanges for commands keep the chain); the hold is
+|      bounded by the caller (xcptl_ocm.c) so a dead gateway cannot stall the
+|      R5.
 |
 |   5. Chain validation by chain_seq instead of the seqlock (2026-11-17):
 |      before it touches any chain byte, the R5 sets chain_seq to 0 together
@@ -331,6 +334,11 @@ int ocm_xcp_fifo_chain_nonempty(void) {
 int ocm_xcp_out_chain_acked(void) {
     return (*XCP_IN_OUT_ACK_P == chain_seq_shadow);
 }
+
+void ocm_xcp_in_refresh_header(void) {
+    /* The R5 never dirties XCP_IN after init: flush = invalidate here. */
+    Xil_DCacheFlushRange(XCP_IN_ADDR, XCP_IN_HDR_LEN);
+}
 #endif /* OCM_XCP_RPU */
 
 int ocm_xcp_fifo_write_fits(uint16_t len, const uint8_t *data) {
@@ -504,6 +512,11 @@ void ocm_xcp_in_diag_write(uint32_t slot, uint32_t value) {
  * line: only valid between out_seq_read() and a passing out_seq_unchanged(). */
 uint32_t ocm_xcp_in_consumed_read(void) {
     return *XCP_OUT_IN_CONSUMED_P;
+}
+
+/* Mailbox sequence from the control line out_seq_read() has just refreshed. */
+uint32_t ocm_xcp_out_cto_seq_read(void) {
+    return *XCP_OUT_CTO_SEQ_P;
 }
 
 /* Sequence of the chain content, from the control line out_seq_read() has

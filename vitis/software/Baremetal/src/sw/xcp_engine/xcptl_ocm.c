@@ -10,8 +10,9 @@
 |   R5 driving API (call from the Baremetal app):
 |     xcp_r5_init()       once at startup (after uz_SystemTime is up)
 |     xcp_r5_event()      from ISR_Control: sample DAQ (thin; just XcpEvent)
-|     xcp_r5_background() from the MAIN LOOP: paced command + DAQ sweep;
-|                         caller fires the IPI when it returns 1
+|     xcp_r5_background() from the MAIN LOOP: polls XCP_IN, runs command and
+|                         DAQ exchanges when due; caller fires the IPI when
+|                         it returns 1
 |
 |   DAQ rasters offered to the master (hedrive parity, see kXcpR5Slice below):
 |   DAQ_R5 at the control-ISR rate plus the derived time slices daq_1ms,
@@ -22,7 +23,7 @@
 |   Context split (required for high control rates, e.g. a future 100 kHz
 |   ISR): only the DAQ sampling copy (XcpEvent -> queue32) runs in the ISR;
 |   everything else — command processing, queue drain, OCM writes, cache
-|   maintenance — runs from the main loop at XCP_R5_SWEEP_PERIOD_US pace.
+|   maintenance — runs from the main loop (xcp_r5_background() pacing).
 |   queue32 is the ISR/main-loop boundary (internally locked with SHORT
 |   critical sections only; the bulk memcpys happen outside its lock, so the
 |   main loop never blocks the control ISR for more than pointer arithmetic).
@@ -60,25 +61,24 @@
 #include <string.h>
 #include <stdint.h>
 
-/* DAQ queue between the ISR (producer, XcpEvent) and the main-loop sweep
- * (consumer). Must hold one sweep period of DAQ production:
- * event_rate x payload/cycle x SWEEP_PERIOD. 32 KB covers e.g. 100 kHz x
- * 2 kB/ms at the 100 us sweep with 15x headroom at today's 10 kHz rates. */
-#define XCP_R5_QUEUE_SIZE_BYTES (32u * 1024u)
+/* DAQ queue between the ISR (producer, XcpEvent) and the main-loop DAQ
+ * exchanges (consumer), in segments of up to XCPTL_MAX_SEGMENT_SIZE. It must
+ * hold what the control ISR produces while one DAQ exchange waits for the
+ * A53's acknowledge plus a margin for A53 hiccups: 128 KB = ~93 segments =
+ * ~3 ms at 40 MB/s (1 KB per cycle at 40 kHz). Was 32 KB (~0.8 ms at that
+ * rate), sized for 10 kHz. Lives on the heap (lscript.ld _HEAP_SIZE). */
+#define XCP_R5_QUEUE_SIZE_BYTES (128u * 1024u)
 
-/* Main-loop sweep pacing: one OCM exchange (commands + DAQ drain + IPI) per
- * period. 100 us = the exchange cadence validated by the 1 h soak; the IPI
- * rate to the A53 stays what it was when the sweep lived in the 10 kHz ISR. */
-#define XCP_R5_SWEEP_PERIOD_US 100u
-
-extern uint64_t uz_SystemTime_GetUptimeInUs(void);
-
-#if XCP_R5_PROFILE
 #include "xparameters.h" /* XPAR_CPU_CORTEXR5_0_CPU_CLK_FREQ_HZ */
-extern float uz_SystemTime_GetIsrExectionTimeInUs(void);
 
-/* R5 CPU cycle counter (PMU PMCCNTR). Enabled by xcp_r5_init(); it wraps
- * every ~8.6 s at 500 MHz, so only differences are used. */
+/* R5 CPU cycle counter (PMU PMCCNTR): the time base of the main-loop pacing
+ * and of the profile. uz_SystemTime's uptime only advances once per control
+ * ISR (25 us at 40 kHz), too coarse for a poll every few microseconds.
+ * Enabled by xcp_r5_init(); it wraps every ~8.6 s at 500 MHz, so only
+ * differences of a few milliseconds are used (the heartbeat exchange bounds
+ * them). */
+#define XCP_R5_CYC_PER_US (XPAR_CPU_CORTEXR5_0_CPU_CLK_FREQ_HZ / 1000000u)
+
 static inline uint32_t xcp_r5_cycles(void) {
     uint32_t v;
     __asm volatile("mrc p15, 0, %0, c9, c13, 0" : "=r"(v));
@@ -94,10 +94,14 @@ static void xcp_r5_cycles_enable(void) {
     __asm volatile("mcr p15, 0, %0, c9, c12, 1" ::"r"(1u << 31)); /* PMCNTENSET: cycle counter */
 }
 
-volatile xcp_r5_prof_t xcp_r5_prof = {.version = 1u, .cpu_hz = XPAR_CPU_CORTEXR5_0_CPU_CLK_FREQ_HZ};
+#if XCP_R5_PROFILE
+extern float uz_SystemTime_GetIsrExectionTimeInUs(void);
+
+volatile xcp_r5_prof_t xcp_r5_prof = {.version = 2u, .cpu_hz = XPAR_CPU_CORTEXR5_0_CPU_CLK_FREQ_HZ};
 /* The layout is read by tools/xcp_test/xcp_poll.py (PROF_FMT): keep both in sync. */
-_Static_assert(sizeof(xcp_r5_prof_t) == 136u, "xcp_r5_prof_t layout changed");
+_Static_assert(sizeof(xcp_r5_prof_t) == 160u, "xcp_r5_prof_t layout changed");
 _Static_assert(__builtin_offsetof(xcp_r5_prof_t, elapsed_cyc) == 40u, "xcp_r5_prof_t layout changed");
+_Static_assert(__builtin_offsetof(xcp_r5_prof_t, ack_wait_us) == 136u, "xcp_r5_prof_t layout changed");
 
 /* Written by the control ISR (xcp_r5_event), 32-bit and wrapping; the main
  * loop folds the differences into the 64-bit sums of xcp_r5_prof. */
@@ -131,13 +135,38 @@ static uint32_t gProfChainBytes = 0u; /* chain bytes written in the current exch
  * depth only sets how far it runs ahead of the mailbox. */
 #define XCP_R5_CTO_PENDING_DEPTH 4u
 
-/* XCP_OUT consumption handshake: sweeps a non-empty chain is kept in place
- * waiting for the A53 acknowledge before it is overwritten anyway
- * (xcp_r5_out_overwritten). The bound only matters when the gateway is not
- * running at all; 50 sweeps = 5 ms is far beyond any IPI latency seen on
- * hardware (worst case in the 1 h soak: a few hundred us) and beyond what
- * the 32 KB queue bridges at high DAQ rates anyway. */
-#define XCP_R5_OUT_HOLD_MAX_SWEEPS 50u
+/* Main-loop pacing (xcp_r5_background). Commands and DAQ are decoupled
+ * (2026-11-18): the R5 refreshes the XCP_IN header every
+ * XCP_R5_POLL_PERIOD_US and runs a header-only exchange at once for a new
+ * command generation or a response waiting for the mailbox. A DAQ exchange
+ * rewrites the XCP_OUT chain only after the A53 has acknowledged the previous
+ * chain, and then as soon as the oldest waiting DAQ data is
+ * XCP_R5_DAQ_INTERVAL_US old or XCP_R5_DAQ_TRIGGER_SEGMENTS queue segments
+ * are waiting. Without any exchange for XCP_R5_DAQ_INTERVAL_US, a header-only
+ * heartbeat follows (it repeats a header copy the A53 had to skip and keeps
+ * the gateway counter mirror fresh).
+ * Before, one sweep on a fixed 100 us grid did everything: commands waited
+ * for the next sweep, and a chain acknowledged a few microseconds after the
+ * next sweep had started was kept for a whole further period. From
+ * ~1000 B/cycle at 40 kHz that cascaded into full 31 KB chains and queue
+ * overflow while the A53 still idled 40-57 % (bench 2026-11-17).
+ * The poll itself is cheap (four cache lines) and runs in main-loop time
+ * that is idle otherwise. */
+#ifndef XCP_R5_POLL_PERIOD_US
+#define XCP_R5_POLL_PERIOD_US 5u
+#endif
+#ifndef XCP_R5_DAQ_INTERVAL_US
+#define XCP_R5_DAQ_INTERVAL_US 1000u
+#endif
+#ifndef XCP_R5_DAQ_TRIGGER_SEGMENTS
+#define XCP_R5_DAQ_TRIGGER_SEGMENTS 8u
+#endif
+
+/* XCP_OUT consumption handshake: how long a non-empty chain waits for the
+ * A53 acknowledge before it is overwritten anyway (xcp_r5_out_overwritten).
+ * Only matters when the gateway is not running at all; the acknowledge takes
+ * tens of microseconds on hardware. */
+#define XCP_R5_OUT_HOLD_MAX_US 5000u
 
 /* Control-ISR rate = the base DAQ raster. Same expression main.c uses for
  * Global_Data.av.isr_samplerate_s, so it follows UZ_PWM_FREQUENCY, the trigger
@@ -200,34 +229,35 @@ static uint32_t gSliceCnt[XCP_R5_SLICE_COUNT] = {0u, 1u, 2u, 3u};
  *   xcp_r5_in_resumed       sweeps that suspended a command batch because the
  *                           pending-CTO FIFO was full (resumed next sweep;
  *                           no response is lost - only latency for bursts)
- *   xcp_r5_queue_lost       queue32 overflow between sweeps -> DAQ frames
- *                           lost at the source (raise QUEUE_SIZE or sweep
- *                           more often if this climbs)
- *   xcp_r5_tx_held          sweeps that filled the XCP_OUT chain with
- *                           backlog left over; the next segment stayed in
- *                           the queue and went out first in the next sweep
- *                           (backlog, not loss). Climbing steadily = DAQ
- *                           production exceeds the ~31 KB per sweep the
- *                           window can carry; expect xcp_r5_queue_lost next.
- *   xcp_r5_out_held         sweeps that kept the previous XCP_OUT chain in
- *                           place because the A53 had not acknowledged it
- *                           yet (late / torn / skipped IPI read). Latency,
- *                           not loss; a few per million sweeps is normal.
+ *   xcp_r5_queue_lost       queue32 overflow -> DAQ frames lost at the
+ *                           source (more DAQ data than the exchanges can
+ *                           carry, or the main loop is blocked)
+ *   xcp_r5_tx_held          DAQ exchanges that filled the XCP_OUT chain
+ *                           with backlog left over (or a segment popped in a
+ *                           header-only exchange); it stayed popped and went
+ *                           out first in the next DAQ exchange (backlog, not
+ *                           loss). Climbing steadily = DAQ production exceeds
+ *                           the ~31 KB per exchange the window can carry.
+ *   xcp_r5_out_held         DAQ exchanges that were due while the A53 had
+ *                           not acknowledged the previous chain yet (once
+ *                           per chain). Latency, not loss.
  *   xcp_r5_out_overwritten  chains overwritten unacknowledged after
- *                           XCP_R5_OUT_HOLD_MAX_SWEEPS (gateway not running
- *                           or stalled for milliseconds) -> DAQ data lost.
+ *                           XCP_R5_OUT_HOLD_MAX_US (gateway not running or
+ *                           stalled for milliseconds) -> DAQ data lost.
  *                           Must stay 0 while a master is connected.
  *   xcp_r5_write_denied     DOWNLOAD/SHORT_DOWNLOAD refused by the write
  *                           gate (target outside the data sections, or a
  *                           measurement-only build); the master gets
  *                           ERR_WRITE_PROTECTED
- *   xcp_r5_sweep_count      main-loop sweeps executed -> liveness probe
- *   xcp_r5_sweep_gap_max_us worst observed inter-sweep gap. THE main-loop
- *                           health number: ~SWEEP_PERIOD = loop plenty fast;
- *                           >> SWEEP_PERIOD = something in the main loop
- *                           blocks (throughput caps at ~31 KB per gap;
- *                           the 32 KB queue rides out gaps <= 0.8 ms at the
- *                           320 Mbit/s worst case). Reset via debugger. */
+ *   xcp_r5_sweep_count      exchanges executed (DAQ, command/response and
+ *                           heartbeat) -> liveness probe
+ *   xcp_r5_sweep_gap_max_us worst gap between two xcp_r5_background() calls.
+ *                           THE main-loop health number: a few us = loop
+ *                           plenty fast; hundreds of us = something in the
+ *                           main loop blocks (commands wait that long; the
+ *                           128 KB queue rides out ~3 ms at 40 MB/s).
+ *                           Includes the exchanges themselves. Reset via
+ *                           debugger. */
 volatile int32_t  xcp_r5_init_result = 0x7FFFFFFF; /* "init not run yet" */
 volatile uint32_t xcp_r5_cycle_count = 0u;
 volatile uint32_t xcp_r5_tx_oversize_drop = 0u;
@@ -272,11 +302,12 @@ static uint32_t gInCurGen = 0u;
 static uint16_t gInCurRec = 0u;
 static uint16_t gInCurOff = 0u;
 
-/* XCP_OUT consumption handshake state (sweep context only): the chain
- * published by the last non-keep sweep carried data and is not acknowledged
- * yet / number of sweeps it has been kept in place so far. */
-static int      gOutPending = 0;
-static uint32_t gOutHoldSweeps = 0u;
+/* Pacing state (main-loop context only, R5 cycles). */
+static int      gOutPending = 0;        /* DAQ chain published, not acknowledged */
+static uint32_t gOutSentCyc = 0u;       /* ... published at (the IPI)            */
+static int      gOutWaitCounted = 0;    /* xcp_r5_out_held counted for it        */
+static uint32_t gDaqAgeCyc = 0u;        /* queue last empty / last DAQ exchange  */
+static uint32_t gLastExchangeCyc = 0u;  /* end of the last exchange (heartbeat)  */
 
 /* Memory access gate for SHORT_UPLOAD/UPLOAD/DOWNLOAD/BUILD_CHECKSUM/DAQ
  * entries: without it the engine memcpy()s ANY 32-bit address the master
@@ -488,13 +519,6 @@ void xcp_r5_event(void) {
 #endif
 }
 
-/* One full exchange sweep (MAIN-LOOP context; use xcp_r5_background() for
- * pacing): refresh XCP_IN, open the XCP_OUT seqlock (keeping an
- * unacknowledged DAQ chain in place), execute a NEW command-batch generation
- * from XCP_IN -> XcpCommand (responses go to the CTO pending FIFO),
- * acknowledge the generation, pump the mailbox, drain the DAQ queue ->
- * XCP_OUT chain, then publish the cycle (flush + even seqlock). The caller
- * signals the A53 (IPI) after this returns. */
 #if XCP_R5_PROFILE
 /* Phase stamps of one exchange: cycle counter and ISR time sum. */
 #define XCP_R5_PROF_MARK(i)        \
@@ -528,6 +552,11 @@ static void xcp_r5_prof_account(const uint32_t *pc, const uint32_t *pi, int keep
         p->isr_ns_total = 0u;
         p->isr_ns_all = 0u;
         p->event_cyc = 0u;
+        p->ack_wait_us = 0u;
+        p->ack_n = 0u;
+        p->ack_wait_max_us = 0u;
+        p->daq_waits = 0u;
+        p->polls = 0u;
         gProfEventMax = 0u;
         gProfIsrNsFold = gProfIsrNs;
         gProfEventCycFold = gProfEventCyc;
@@ -584,44 +613,44 @@ static void xcp_r5_prof_account(const uint32_t *pc, const uint32_t *pi, int keep
     }
     p->event_cyc_max = gProfEventMax;
 }
+
+/* One DAQ chain acknowledged: wait from its publication (the IPI). */
+static void xcp_r5_prof_ack(uint32_t us) {
+    volatile xcp_r5_prof_t *p = &xcp_r5_prof;
+    p->ack_wait_us += us;
+    p->ack_n++;
+    if (us > p->ack_wait_max_us) {
+        p->ack_wait_max_us = us;
+    }
+}
 #endif
 
-void xcp_r5_poll(void) {
-    if (gQueue == NULL) {
-        return; /* init failed or not run: engine disabled */
-    }
+/* One exchange, MAIN-LOOP context (xcp_r5_background() decides when): open
+ * the XCP_OUT seqlock, execute a NEW command-batch generation from XCP_IN ->
+ * XcpCommand (responses go to the CTO pending FIFO), acknowledge it, pump the
+ * response mailbox and - in a DAQ exchange only - rewrite the XCP_OUT chain
+ * from the DAQ queue; then publish (flush + even seqlock). A header-only
+ * exchange leaves the chain and chain_seq untouched, so it may run while the
+ * A53 has not acknowledged (or still reads) the chain. Needs a fresh XCP_IN
+ * header (ocm_xcp_in_refresh_header()); the caller signals the A53 (IPI). */
+static void xcp_r5_exchange(int daq) {
 #if XCP_R5_PROFILE
     uint32_t pc[5];
     uint32_t pi[5];
     XCP_R5_PROF_MARK(0);
 #endif
-    ocm_xcp_fifo_cache_invalidate_before_read(); /* fresh XCP_IN: acks, in_gen, commands */
+    /* A new command generation needs its chain bytes as well. */
+    const uint32_t in_gen = ocm_xcp_in_gen_read();
+    if (in_gen != gInGenDone) {
+        ocm_xcp_fifo_cache_invalidate_before_read();
+    }
 #if XCP_R5_PROFILE
     XCP_R5_PROF_MARK(1);
 #endif
-
-    /* Consumption handshake: a chain that carried data stays in place until
-     * the A53 acknowledges it; this sweep then only updates the header
-     * (commands, mailbox) and leaves the DAQ backlog in the queue. */
-    int keep = 0;
-    if (gOutPending) {
-        if (ocm_xcp_out_chain_acked()) {
-            gOutPending = 0;
-            gOutHoldSweeps = 0u;
-        } else if (gOutHoldSweeps < XCP_R5_OUT_HOLD_MAX_SWEEPS) {
-            gOutHoldSweeps++;
-            xcp_r5_out_held++;
-            keep = 1;
-        } else {
-            xcp_r5_out_overwritten++; /* gateway gone or stalled: give up on that chain */
-            gOutPending = 0;
-            gOutHoldSweeps = 0u;
-        }
-    }
-    if (keep) {
-        ocm_xcp_fifo_prepare_write_keep(); /* seqlock -> odd; chain untouched */
+    if (daq) {
+        ocm_xcp_fifo_prepare_write(); /* seqlock -> odd; chain rewound, chain_seq 0 */
     } else {
-        ocm_xcp_fifo_prepare_write(); /* seqlock -> odd; chain rewound */
+        ocm_xcp_fifo_prepare_write_keep(); /* seqlock -> odd; chain untouched */
     }
 
     /* Commands: process a batch only when its generation is new. The A53
@@ -631,7 +660,6 @@ void xcp_r5_poll(void) {
      * re-offers identical batch bytes every IPI until acknowledged, so a
      * command can no longer be lost to IPI/cycle overlap (the hedrive T8
      * pcap-proven session killer). */
-    uint32_t in_gen = ocm_xcp_in_gen_read();
     if (in_gen != gInGenDone) {
         if (in_gen != gInCurGen) {
             gInCurGen = in_gen; /* new batch: start at its first frame */
@@ -695,14 +723,14 @@ void xcp_r5_poll(void) {
     }
     ocm_xcp_in_consumed_write(gInGenDone);
 
-    /* After command processing: a response generated this cycle can ride the
-     * mailbox in this same cycle (if it is free). */
+    /* After command processing: a response generated now can ride the
+     * mailbox in this same exchange (if it is free). */
     xcp_r5_pump_cto();
 #if XCP_R5_PROFILE
     XCP_R5_PROF_MARK(2);
 #endif
 
-    if (!keep) {
+    if (daq) {
         xcp_r5_tx_pump();
         /* Covers segments written from within XcpCommand too
          * (XcpTlWaitForTransmitQueueEmpty). */
@@ -715,34 +743,124 @@ void xcp_r5_poll(void) {
     ocm_xcp_fifo_cache_flush_after_write(); /* chain, then header + even seq */
 #if XCP_R5_PROFILE
     XCP_R5_PROF_MARK(4);
-    xcp_r5_prof_account(pc, pi, keep);
+    xcp_r5_prof_account(pc, pi, !daq);
 #endif
 }
 
-/* Paced sweep driver. Call from the MAIN LOOP every iteration; it runs one
- * xcp_r5_poll() sweep per XCP_R5_SWEEP_PERIOD_US and returns 1 when it did —
- * the caller must then trigger the IPI to the A53 gateway. Keeping the sweep
- * out of ISR_Control removes the whole XCP exchange cost (~10 us base +
- * ~10 us/KB, measured 2026-07-11) from the control ISR; only the XcpEvent
- * sampling copy remains there. */
+/* One unpaced exchange: commands, and DAQ if the previous chain is
+ * acknowledged. For special cases; the main loop uses xcp_r5_background().
+ * The caller triggers the IPI afterwards. */
+void xcp_r5_poll(void) {
+    if (gQueue == NULL) {
+        return; /* init failed or not run: engine disabled */
+    }
+    ocm_xcp_in_refresh_header();
+    const int daq = !gOutPending || ocm_xcp_out_chain_acked();
+    xcp_r5_exchange(daq);
+    gLastExchangeCyc = xcp_r5_cycles();
+    if (daq) {
+        gDaqAgeCyc = gLastExchangeCyc;
+        gOutSentCyc = gLastExchangeCyc;
+        gOutWaitCounted = 0;
+    }
+}
+
+/* Paced driver. Call from the MAIN LOOP every iteration; returns 1 when it
+ * ran an exchange - the caller must then trigger the IPI to the A53 gateway.
+ * Every XCP_R5_POLL_PERIOD_US it refreshes the XCP_IN header and decides (see
+ * XCP_R5_POLL_PERIOD_US above): commands and responses at once, DAQ once the
+ * last chain is acknowledged and the interval or the trigger level is
+ * reached, a heartbeat after a quiet interval. Keeping the exchanges out of
+ * ISR_Control removes their cost (~10 us base + ~10 us/KB, measured
+ * 2026-07-11) from the control ISR; only the XcpEvent sampling copy remains
+ * there. */
 int xcp_r5_background(void) {
-    static uint32_t last_sweep_us = 0u;
-    static int first_sweep = 1;
+    static uint32_t last_call_cyc = 0u;
+    static uint32_t last_poll_cyc = 0u;
+    static int first_call = 1;
     if (gQueue == NULL) {
         return 0; /* init failed or not run: engine disabled */
     }
-    uint32_t now_us = (uint32_t)uz_SystemTime_GetUptimeInUs();
-    uint32_t gap_us = (uint32_t)(now_us - last_sweep_us);
-    if (gap_us < XCP_R5_SWEEP_PERIOD_US) {
+    const uint32_t now = xcp_r5_cycles();
+    if (first_call) {
+        first_call = 0; /* boot-to-first-call gap is not a loop-health signal */
+        gDaqAgeCyc = now;
+        gLastExchangeCyc = now;
+    } else {
+        const uint32_t gap_us = (uint32_t)(now - last_call_cyc) / XCP_R5_CYC_PER_US;
+        if (gap_us > xcp_r5_sweep_gap_max_us) {
+            xcp_r5_sweep_gap_max_us = gap_us;
+        }
+    }
+    last_call_cyc = now;
+    if ((uint32_t)(now - last_poll_cyc) < XCP_R5_POLL_PERIOD_US * XCP_R5_CYC_PER_US) {
         return 0;
     }
-    if (first_sweep) {
-        first_sweep = 0; /* boot-to-first-sweep gap is not a loop-health signal */
-    } else if (gap_us > xcp_r5_sweep_gap_max_us) {
-        xcp_r5_sweep_gap_max_us = gap_us;
+    last_poll_cyc = now;
+    ocm_xcp_in_refresh_header(); /* cto_ack, in_gen, out_ack */
+#if XCP_R5_PROFILE
+    xcp_r5_prof.polls++;
+#endif
+
+    /* DAQ chain consumption handshake. */
+    if (gOutPending) {
+        const uint32_t waited = (uint32_t)(now - gOutSentCyc);
+        if (ocm_xcp_out_chain_acked()) {
+            gOutPending = 0;
+#if XCP_R5_PROFILE
+            xcp_r5_prof_ack(waited / XCP_R5_CYC_PER_US);
+#endif
+        } else if (waited >= XCP_R5_OUT_HOLD_MAX_US * XCP_R5_CYC_PER_US) {
+            xcp_r5_out_overwritten++; /* gateway gone or stalled: give up on that chain */
+            gOutPending = 0;
+        }
     }
-    last_sweep_us = now_us;
-    xcp_r5_poll();
+
+    /* Commands and responses go at once. */
+    const int cmd = (ocm_xcp_in_gen_read() != gInGenDone) && (gCtoPendingCount < XCP_R5_CTO_PENDING_DEPTH);
+    const int cto = (gCtoPendingCount != 0u) && ocm_xcp_cto_mailbox_free();
+
+    /* DAQ once the waiting data is old enough or plenty, and only on an
+     * acknowledged chain. gDaqAgeCyc follows "now" while nothing waits, so
+     * the interval is the age of the oldest waiting data. */
+    const uint32_t interval = XCP_R5_DAQ_INTERVAL_US * XCP_R5_CYC_PER_US;
+    const uint32_t level = queueLevel(gQueue, NULL);
+    int daq = 0;
+    if (!gTxHeldValid && level == 0u) {
+        gDaqAgeCyc = now;
+    } else if (gTxHeldValid || level >= XCP_R5_DAQ_TRIGGER_SEGMENTS ||
+               (uint32_t)(now - gDaqAgeCyc) >= interval) {
+        if (!gOutPending) {
+            daq = 1;
+        } else if (!gOutWaitCounted) {
+            gOutWaitCounted = 1;
+            xcp_r5_out_held++; /* due, but the last chain is not acknowledged yet */
+#if XCP_R5_PROFILE
+            xcp_r5_prof.daq_waits++;
+#endif
+        }
+    }
+    const int beat = (uint32_t)(now - gLastExchangeCyc) >= interval;
+    if (!cmd && !cto && !daq && !beat) {
+        return 0;
+    }
+    if (cmd) {
+        /* Commands get a quick header-only exchange; DAQ follows next poll.
+         * A DAQ exchange that is already copying is NOT cut short for a
+         * command: the cut chain would need its own acknowledge before the
+         * rest could follow, ~50 us of DAQ dead time per command, and with
+         * back-to-back commands at 1000 B/cycle that pushed the R5 into
+         * overload (23 % of the DAQ data lost, bench 2026-11-17). A command
+         * waits for the running copy instead (at most one chain). */
+        daq = 0;
+    }
+    xcp_r5_exchange(daq);
+    gLastExchangeCyc = xcp_r5_cycles();
+    if (daq) {
+        gDaqAgeCyc = gLastExchangeCyc;
+        gOutSentCyc = gLastExchangeCyc; /* the acknowledge wait starts with the IPI */
+        gOutWaitCounted = 0;
+    }
     xcp_r5_sweep_count++;
     return 1;
 }
@@ -750,9 +868,7 @@ int xcp_r5_background(void) {
 /* One-time init. Base addr 0 => XCP address == pointer => arbitrary R5
  * addressing (the point of Option Z). Returns 0 on success. */
 int xcp_r5_init(const char *name, const char *epk) {
-#if XCP_R5_PROFILE
-    xcp_r5_cycles_enable();
-#endif
+    xcp_r5_cycles_enable(); /* pacing time base (and profile) */
     gCtr = 0u;
     gQueue = queueInit((size_t)XCP_R5_QUEUE_SIZE_BYTES);
     if (gQueue == NULL) {

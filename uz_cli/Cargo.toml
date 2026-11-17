@@ -7,7 +7,7 @@ license = "Apache-2.0"
 description = "Headless UltraZohm acquisition and control"
 
 [lib]
-name = "ultrazohm_cli"
+name = "ultrazohm_cli_lib"
 crate-type = ["rlib", "cdylib"]
 
 [features]

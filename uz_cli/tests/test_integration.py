@@ -497,7 +497,8 @@ class IntegrationTest(unittest.TestCase):
         self.assertTrue(client.tail(150, recording=1).height == 150)
         with self.assertRaises(RuntimeError):
             client.read_range(start, stop)
-        handle = Recording(client.status()["logging"]["fast"]["handle"])
+        # The handle is reported once the writer has created its index.
+        handle = Recording(wait_for(lambda: client.status()["logging"]["fast"]["handle"]))
         self.assertIsNone(handle.info()["stop"])
         client.stop_logging()
         wait_complete(client.status)

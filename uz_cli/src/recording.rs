@@ -232,7 +232,8 @@ impl Recordings {
             phase: "recording",
             parquet: Some(dir.join(format!("{stem}.parquet"))),
             error: None,
-            handle: Some(crate::backend::index_path(&dir, &stem)),
+            // Reported once the writer has created the index (see below).
+            handle: None,
             backend: "parquet",
         };
         let writer_history = history.clone();
@@ -246,6 +247,7 @@ impl Recordings {
             let result: Result<()> = (|| {
                 // Disk initialization runs on the writer, never the control loop.
                 // Frames accepted meanwhile remain in the bounded recording queue.
+                let handle = crate::backend::index_path(&dir, &stem);
                 let log = writer.insert(LogWriter::new_for_backend(
                     dir,
                     profile,
@@ -257,6 +259,8 @@ impl Recordings {
                 )?);
                 log.segment_rows = options.segment_rows;
                 writer_history.lock().unwrap().reader = Some(log.reader());
+                // The index now exists, so a client can open the handle right away.
+                states.lock().unwrap()[slot].handle = Some(handle);
                 log.set_metadata(
                     json!({"recording":metadata,"rows":0,"complete":false,"error":null}),
                 )?;

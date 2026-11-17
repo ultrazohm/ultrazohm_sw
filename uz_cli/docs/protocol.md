@@ -436,7 +436,8 @@ Slow range queries preserve one original slow ID/value update per received sampl
 wide slow Parquet/CSV exports are a distinct derived representation. Durable
 `*.recording.json` handles identify the backend, schema, ordered immutable chunks
 (one merged file after a completed recording) and successfully committed ranges. They remain readable independently of service
-finalization and require no device connection.
+finalization and require no device connection. `status` reports a recording's
+`handle` once its index file exists, shortly after logging starts; until then it is null.
 
 ### Service catalog
 

@@ -43,7 +43,7 @@
 #include <string.h>
 #include <stdint.h>
 
-#define XCP_GW_FRAME_MAX     256  /* FIFO records are uint8_t-len capped        */
+#define XCP_GW_FRAME_MAX     OCM_XCP_RECORD_MAX /* one R5 queue segment = one datagram */
 #define XCP_TL_HEADER_LEN    4    /* [dlc:u16][ctr:u16]                          */
 #define XCP_PID_CTO_MIN      0xFCu
 /* Largest XCP command the R5 engine accepts (XCPTL_MAX_CTO_SIZE, set by
@@ -55,22 +55,24 @@
  * 10–20 kHz OCM drain and the UDP send rate, and measurement gaps hurt more
  * than backlog latency. Sized to bridge multi-second send stalls, matching
  * hedrive's final sizing (its rig saw ~2 s host receive pauses every few
- * minutes that a 140 ms queue could not absorb): 262144 x ~260 B ≈ 68 MB of
- * the 200 MB FreeRTOS heap ≈ 1.5 s of buffering at the 320 Mbit/s stress
- * rate (~3 s at 160 Mbit/s). The queue runs empty in steady state, so normal
+ * minutes that a 140 ms queue could not absorb). Items are fixed-size
+ * (XCP_GW_FRAME_MAX, one R5 segment of up to 1400 B since 2026-11-17, was
+ * 256): 65536 x ~1.4 KB ≈ 92 MB of the 200 MB FreeRTOS heap. Under load the
+ * R5 hands out mostly full segments, so that is ≈ 2 s of buffering at
+ * 320 Mbit/s; with small records it is fewer seconds. The queue runs empty in steady state, so normal
  * latency is unaffected. NOTE: UDP has no backpressure — this queue covers
  * ECU-side stalls (lwIP pbuf/ARP, task starvation); PC-side receive pauses
  * must be absorbed by the receiver's socket buffer (xcp_poll.py sets 32 MB).
  * Overflow policy: tail-drop + count, never purge, never block from the ISR. */
-#define XCP_GW_TXQ_DEPTH     262144
+#define XCP_GW_TXQ_DEPTH     65536
 /* Dedicated queue for CTO frames (RES/ERR/EV/SERV): responses must never
  * wait behind — or be dropped with — the DAQ backlog (hedrive T1). */
 #define XCP_GW_CTOQ_DEPTH    16
 #define XCP_GW_RXQ_DEPTH     64
 
 /* Bound the IPI-ISR time: max records staged OCM -> queues per interrupt.
- * The 32 KB XCP_OUT window holds ~123 max-size records (the R5 queue hands
- * out accumulated segments of up to 252 B); the cap only bites on many tiny
+ * The 32 KB XCP_OUT window holds ~23 max-size records (the R5 queue hands
+ * out accumulated segments of up to 1400 B); the cap only bites on many tiny
  * ones. A full window is rare - it means the R5 is working off a backlog. */
 #define XCP_GW_DRAIN_MAX_PER_IPI 128
 
@@ -83,6 +85,9 @@
  * transport does the same). 1400 keeps datagram + UDP/IP headers under a
  * 1500-byte MTU — no IP fragmentation. */
 #define XCP_GW_BATCH_BUF_SIZE 1400
+#if XCP_GW_BATCH_BUF_SIZE < XCP_GW_FRAME_MAX
+#error "a datagram must hold the largest R5 record"
+#endif
 
 /* Bounded send retry (hedrive "bounded sends", UDP flavor): lwip_sendto()
  * fails transiently under burst load (pbuf/TX-BD exhaustion at 40k
@@ -221,7 +226,7 @@ static void xcp_gw_read_out_phase(BaseType_t *woken) {
      * same content can be offered for several IPIs. */
     ocm_xcp_fifo_prepare_read();
     while (chain_seq_snap != gOutChainLast) {
-        uint8_t len;
+        uint16_t len;
         uint8_t *data;
         if (n_staged >= XCP_GW_DRAIN_MAX_PER_IPI) {
             capped = 1; /* rest of this cycle is lost; R5 rewinds next cycle */
@@ -366,7 +371,7 @@ static void xcp_gw_write_in_phase(BaseType_t *woken) {
 
     /* (Re)write the in-flight batch — identical bytes every IPI until acked. */
     for (uint8_t i = 0; i < gInBatchN; i++) {
-        if (!ocm_xcp_fifo_write((uint8_t)gInBatch[i].len, gInBatch[i].data)) {
+        if (!ocm_xcp_fifo_write(gInBatch[i].len, gInBatch[i].data)) {
             break; /* cannot happen (batch sized to the region); defensive */
         }
     }
@@ -435,7 +440,7 @@ static void xcp_gw_rx_task(void *arg) {
         slen = sizeof(src);
         int n = lwip_recvfrom(gSock, f.data, sizeof(f.data), 0, (struct sockaddr *)&src, &slen);
         if (n <= 0 || n > 255) {
-            continue; /* FIFO records are u8-length capped; oversize would alias to len 0 */
+            continue; /* command datagrams: XCP_IN batches are sized for <= 255 B records */
         }
         if (!xcp_gw_rx_frames_valid(f.data, (uint16_t)n)) {
             xcp_gw_rx_malformed_drop++; /* before master adoption: junk must not start a session */

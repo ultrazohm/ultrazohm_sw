@@ -33,6 +33,13 @@
  * + XCPTL_MAX_CTO_SIZE (248) payload, rounded to whole A53 cache lines. */
 #define OCM_XCP_CTO_SLOT_LEN 256u
 
+/* Largest chain record (length word excluded). A record is one R5 queue
+ * segment (XCPTL_MAX_SEGMENT_SIZE, xcplib_r5_cfg.h) and becomes one UDP
+ * datagram of the gateway, so 1400 keeps the datagram plus UDP/IP headers
+ * below a 1500-byte MTU. The chain length word was always 32 bit; until
+ * 2026-11-17 the API limited records to 255 bytes. */
+#define OCM_XCP_RECORD_MAX 1400u
+
 /* Usable command-chain bytes in XCP_IN (region minus its 128-byte header);
  * consistency-checked against the layout in ocm_xcp_fifo.c. The A53 sizes
  * its rewrite-until-acked command batch from this. */
@@ -75,16 +82,17 @@ void ocm_xcp_fifo_cache_flush_after_write(void);
 
 /* Append one framed message to the write region's chain.
  * Returns 1 if written, 0 if the region is full (caller drops/retries). */
-int ocm_xcp_fifo_write(uint8_t len, const uint8_t *data);
+int ocm_xcp_fifo_write(uint16_t len, const uint8_t *data);
 
 /* Return 1 if ocm_xcp_fifo_write(len, data) would succeed right now. No side
  * effects (ocm_xcp_w_dropped is not counted): lets a writer hold a message
  * back for the next cycle instead of dropping it. */
-int ocm_xcp_fifo_write_fits(uint8_t len, const uint8_t *data);
+int ocm_xcp_fifo_write_fits(uint16_t len, const uint8_t *data);
 
-/* Return 1 and point *data_p at the next message (length in *len), or 0 at the
- * end of the chain / on a corrupt length / at the region end. */
-int ocm_xcp_fifo_read(uint8_t *len, uint8_t **data_p);
+/* Return 1 and point *data_p at the next message (length in *len, at most
+ * OCM_XCP_RECORD_MAX), or 0 at the end of the chain / on a corrupt length /
+ * at the region end. */
+int ocm_xcp_fifo_read(uint16_t *len, uint8_t **data_p);
 
 #ifdef ARMR5
 /* --- R5 side: chain consumption handshake ---------------------------------- */

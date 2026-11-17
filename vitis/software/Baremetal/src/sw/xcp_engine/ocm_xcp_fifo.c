@@ -299,7 +299,7 @@ int ocm_xcp_out_chain_acked(void) {
 }
 #endif /* OCM_XCP_RPU */
 
-int ocm_xcp_fifo_write_fits(uint8_t len, const uint8_t *data) {
+int ocm_xcp_fifo_write_fits(uint16_t len, const uint8_t *data) {
     size_t limit = addr_w_end;
 
     /* DAQ (DTO) frames must leave the CTO reserve free; CTO frames may use it.
@@ -308,12 +308,15 @@ int ocm_xcp_fifo_write_fits(uint8_t len, const uint8_t *data) {
         limit -= XCP_WRITE_CTO_RESERVE;
     }
 
+    if ((len == 0u) || (len > OCM_XCP_RECORD_MAX)) {
+        return 0; /* the reader would reject it as corrupt */
+    }
     /* Need 4 (len) + len (payload) + 4 (terminator). In a keep cycle
      * (prepare_write_keep) addr_w_end == addr_w, so this is always false. */
     return (addr_w + 4u + (size_t)len + 4u) <= limit;
 }
 
-int ocm_xcp_fifo_write(uint8_t len, const uint8_t *data) {
+int ocm_xcp_fifo_write(uint16_t len, const uint8_t *data) {
     uint8_t *dst_p = (uint8_t *)(addr_w);
 
     if (!ocm_xcp_fifo_write_fits(len, data)) {
@@ -331,7 +334,7 @@ int ocm_xcp_fifo_write(uint8_t len, const uint8_t *data) {
     return 1;
 }
 
-int ocm_xcp_fifo_read(uint8_t *len, uint8_t **data_p) {
+int ocm_xcp_fifo_read(uint16_t *len, uint8_t **data_p) {
     uint8_t *src_p = (uint8_t *)(addr_r);
     uint32_t msg_len;
 
@@ -349,7 +352,7 @@ int ocm_xcp_fifo_read(uint8_t *len, uint8_t **data_p) {
     if (msg_len == 0u) {
         return 0; /* end of chain */
     }
-    if ((msg_len > 0xFFu) || (((size_t)src_p + 4u + msg_len) > addr_r_end)) {
+    if ((msg_len > OCM_XCP_RECORD_MAX) || (((size_t)src_p + 4u + msg_len) > addr_r_end)) {
         ocm_xcp_r_overrun++;
         return 0;
     }
@@ -357,7 +360,7 @@ int ocm_xcp_fifo_read(uint8_t *len, uint8_t **data_p) {
     Xil_DCacheInvalidateRange((size_t)src_p + 4u, msg_len);
 #endif
 
-    *len = (uint8_t)msg_len;
+    *len = (uint16_t)msg_len;
     src_p += 4;
     *data_p = src_p;
     src_p += msg_len;

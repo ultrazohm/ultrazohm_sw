@@ -77,6 +77,10 @@ extern uint64_t uz_SystemTime_GetUptimeInUs(void);
 #if (XCPTL_MAX_CTO_SIZE + XCPTL_TRANSPORT_LAYER_HEADER_SIZE) > 256
 #error "XCPTL_MAX_CTO_SIZE + header exceeds OCM_XCP_CTO_SLOT_LEN"
 #endif
+/* A popped queue segment is written as one OCM record. */
+#if XCPTL_MAX_SEGMENT_SIZE > OCM_XCP_RECORD_MAX
+#error "XCPTL_MAX_SEGMENT_SIZE exceeds OCM_XCP_RECORD_MAX (ocm_xcp_fifo.h)"
+#endif
 
 /* Pending CTO responses waiting for the OCM mailbox (one in-flight response
  * at a time, acknowledged by the A53, i.e. one response per sweep). A command
@@ -142,7 +146,8 @@ static uint32_t gSliceCnt[XCP_R5_SLICE_COUNT] = {0u, 1u, 2u, 3u};
 /* Diagnostics (inspect via JTAG or XCP SHORT_UPLOAD):
  *   xcp_r5_init_result      0 = ok, negative = init failed (engine disabled)
  *   xcp_r5_cycle_count      increments each control cycle -> liveness probe
- *   xcp_r5_tx_oversize_drop popped segment > 255 B (must stay 0; cfg bounds it)
+ *   xcp_r5_tx_oversize_drop popped segment > OCM_XCP_RECORD_MAX (must stay 0;
+ *                           the cfg and the #if above bound it)
  *   xcp_r5_cto_sent         CTO responses handed to the OCM mailbox
  *   xcp_r5_cto_dropped      pending-CTO FIFO overflow -> response lost (bug!)
  *   xcp_r5_cmd_oversize_drop TL frame with dlc > XCPTL_MAX_CTO_SIZE refused
@@ -381,14 +386,14 @@ void xcp_r5_tx_pump(void) {
             gTxHeldValid = 1;
         }
         uint16_t l = gTxHeld.size;
-        if (l <= 0xFFu) {
-            if (!ocm_xcp_fifo_write_fits((uint8_t)l, gTxHeld.buffer)) {
+        if (l <= OCM_XCP_RECORD_MAX) {
+            if (!ocm_xcp_fifo_write_fits(l, gTxHeld.buffer)) {
                 xcp_r5_tx_held++; /* chain full: keep the segment, retry next sweep */
                 break;
             }
-            (void)ocm_xcp_fifo_write((uint8_t)l, gTxHeld.buffer); /* cannot fail now */
+            (void)ocm_xcp_fifo_write(l, gTxHeld.buffer); /* cannot fail now */
         } else {
-            /* Impossible with XCPTL_MAX_SEGMENT_SIZE 252, but never truncate. */
+            /* Impossible (segment <= OCM_XCP_RECORD_MAX, #if above), but never truncate. */
             xcp_r5_tx_oversize_drop++;
         }
         queueRelease(gQueue, &gTxHeld);
@@ -477,7 +482,7 @@ void xcp_r5_poll(void) {
         int complete = 1;
         uint16_t rec = 0u;
         ocm_xcp_fifo_prepare_read();
-        uint8_t len;
+        uint16_t len;
         uint8_t *data;
         while (ocm_xcp_fifo_read(&len, &data)) {
             /* One record = one UDP datagram, which may carry SEVERAL

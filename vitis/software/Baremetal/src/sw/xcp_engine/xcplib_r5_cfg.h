@@ -70,22 +70,29 @@ extern uint8_t xcp_r5_check_write(uint32_t addr, uint8_t size);
  * (~1000 signals total); a too-small value shows up as MEMORY_OVERFLOW when
  * CANape allocates the DAQ lists. */
 #define OPTION_DAQ_MEM_SIZE (1024 * 6)
-/* OCM FIFO transport bound: a FIFO record is u8-length capped (<= 255 bytes
- * including the 4-byte TL header), and the A53 gateway frame cap is 256.
- * Segment 252 = exactly one max message (4 + 248). Upstream derives the
- * segment from OPTION_MTU rounded down to a multiple of 8, and 256 would not
- * fit a record, so the segment size is set directly (xcptl_cfg.h honours the
- * predefine, UZ patch). DTO 248 so CONNECT advertises MAX_CTO/MAX_DTO =
- * 248/248 (matches gen_a2l.py and CANape/UZ_XCP/uz.A2L). */
+/* Message and segment sizes. One queue segment becomes one OCM record and
+ * one UDP datagram of the A53 gateway, so the segment is bounded by
+ * OCM_XCP_RECORD_MAX (1400, ocm_xcp_fifo.h; checked in xcptl_ocm.c), which
+ * keeps the datagram plus UDP/IP headers below a 1500-byte MTU. Upstream
+ * derives the segment from OPTION_MTU; here it is set directly (xcptl_cfg.h
+ * honours the predefine, UZ patch).
+ * DTO 1024 (upstream default): every ODT is one DAQ message, and each costs a
+ * fixed ~0.6-0.8 us in ISR_Control (queue acquire/push, measured 2026-11-17),
+ * so a bigger DTO means fewer ODTs for the same data. An ODT now carries up
+ * to 1024 - 4 (ODT/DAQ header) - 4 (timestamp, first ODT) = 1016 bytes.
+ * Commands stay at MAX_CTO 248 (OCM mailbox slot, XCP_IN batch sizing).
+ * CONNECT advertises MAX_CTO/MAX_DTO = 248/1024 (matches gen_a2l.py and
+ * CANape/UZ_XCP/uz.A2L). Was 248/252 until 2026-11-17: the OCM records had an
+ * 8-bit length. */
 #undef  OPTION_MTU
-#define XCPTL_MAX_SEGMENT_SIZE 252
-#define XCPTL_MAX_DTO_SIZE 248
+#define XCPTL_MAX_SEGMENT_SIZE 1400
+#define XCPTL_MAX_DTO_SIZE 1024
 /* Largest single ODT entry the engine accepts and advertises
  * (GET_DAQ_RESOLUTION_INFO MAX_ODT_ENTRY_SIZE_DAQ; uz.A2L says 0xF0 too).
- * Upstream's default 248 equals the whole DTO, but an ODT carries at most
- * DTO - 4 (ODT/DAQ header) - 4 (timestamp in the first ODT) = 240 bytes, so a
- * 248-byte entry - what CANape builds when it merges the contiguous members
- * of a structure up to the advertised maximum - can never fit an ODT and
- * WRITE_DAQ fails with DAQ_CONFIG. 240 is a multiple of 4 (copy granularity). */
+ * Kept at 240 from the 248-byte DTO era, where an ODT carried at most 240
+ * bytes and a 248-byte entry (CANape merges the contiguous members of a
+ * structure up to this maximum) failed WRITE_DAQ with DAQ_CONFIG. An ODT now
+ * holds several such entries. The XCP protocol caps an entry at 255 (WRITE_DAQ
+ * size is one byte); 240 is a multiple of 4 (copy granularity). */
 #define XCP_MAX_ODT_ENTRY_SIZE 240
 #endif

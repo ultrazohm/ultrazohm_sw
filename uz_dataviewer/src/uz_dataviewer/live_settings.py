@@ -63,11 +63,17 @@ def read_view(path):
 
 def save(workspace):
     directory = workspace.user_directory()
-    settings = load_workspace_settings(workspace.mapping, directory)
+    settings = (workspace._repository_settings if workspace._repository_settings is not None
+                else load_workspace_settings(workspace.mapping, directory))
+    # Use the actual service configuration after connecting; it may have been
+    # regenerated from newer headers than the repository preview.
+    mapping = workspace.update.catalog if workspace.update.attached else settings.mapping
+    from .settings import read_runtime_settings
+    saved_profile = read_runtime_settings(settings.path)
     assignments = None
     if workspace.update.attached and workspace.update.assignments:
         assignments = {str(item['channel']): item['name'] for item in workspace.update.assignments if item['name']}
-    profile, removed = profile_for_mapping(settings.mapping, settings.profile, assignments)
+    profile, removed = profile_for_mapping(mapping, saved_profile, assignments)
     if assignments is not None and removed:
         raise ValueError('Cannot save channels absent from the selected firmware mapping: ' + ', '.join(removed))
     profile['sample_period_us'] = workspace.update.catalog.get('sample_period_us', profile['sample_period_us'])
@@ -76,6 +82,6 @@ def save(workspace):
     view.update(version=1, output_parent=str(Path(workspace.output).expanduser().resolve().parent),
                 plots=workspace._pending_plot_setup or plot_setup(workspace.state))
     # Disconnected saves preserve the existing startup selections.
-    write_json(directory / 'settings.json', profile if assignments is not None else settings.profile)
+    write_json(directory / 'settings.json', profile if assignments is not None else saved_profile)
     write_json(directory / 'live_view.json', view)
     return directory

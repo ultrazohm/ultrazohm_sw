@@ -421,21 +421,20 @@ The ordinary launcher and the bundle include the CLI; no Rust compiler is needed
 Startup does not connect to hardware; **Connect** starts acquisition; **Existing service → Attach** reuses an existing service. Relative
 recording arguments keep their original working directory.
 
-Selecting **Live Data → Browse for ultrazohm_sw** (or starting with `--live-repo`) calls the installed CLI's `create-json-from-javascope-h`
-command against the checkout's current JavaScope headers. It regenerates the JSON
-in the selected workspace under `artifacts/_user/`, named
-`javascope_<repository commit>.json` (replaced on every start). The commit is taken from the
-generated metadata and includes `-dirty` when the relevant headers have local
-changes. These cache files are ignored by Git. Preparation runs in the background; failures appear in Live Data and leave the viewer open.
-Connect and Flash UZ require successful preparation; attaching to an existing service does not. Offline startup does not generate a mapping.
+Selecting **Live Data → Browse for ultrazohm_sw** (or starting with `--live-repo`)
+asks the CLI for `channel-mapping --repo PATH` and, when preferences are missing,
+`profile --repo PATH`. The CLI reads current headers and filters only built-in
+default assignments. Metadata is returned directly; ordinary preparation creates
+no mapping cache file. Preparation runs in the background, and failures appear in
+Live Data without closing the viewer. Connect and Flash UZ require successful
+preparation; attaching to an existing service does not.
 
-The cached path is prefilled in **Live Data → Service settings → Channel mapping
-JSON** and passed to services launched by the viewer. An existing service keeps
-its loaded configuration; Connect/Attach reports a notice when its mapping differs
-from the selected file. Use Shutdown service and reconnect to apply the new map.
-Both launchers pass their checkout root, so this also works from another working
-directory. With a manually installed viewer, use `--live-repo PATH`
-when the repository cannot be discovered from the current directory or source tree.
+Connect launches `serve --repo PATH --profile settings.json`. The service resolves
+the firmware configuration itself, strictly validates saved preferences, and
+exposes the effective configuration through `catalog`. An existing service keeps
+its loaded configuration. Shut it down and reconnect to apply a different
+repository or changed headers. Both launchers pass their checkout root; a manually
+installed viewer can select another checkout with `--live-repo PATH`.
 
 The launcher uses the `ultrazohm_cli` version locked in `uv.lock`. To move to a
 newer published CLI, run `uv lock --upgrade-package ultrazohm_cli` in
@@ -616,8 +615,8 @@ per-user folder instead of its working directory: `%LOCALAPPDATA%\UltraZohm\uz_d
 on Windows, `${XDG_DATA_HOME:-~/.local/share}/ultrazohm/uz_dataviewer` on Linux.
 
 The directory contains `logs/` for recordings and service logs, `viewer.ini`
-for layout settings, and `viewer_cache/` for optional data caches. Generated
-`javascope_*.json` mappings and editable `settings.json` and `tools.json`
+for layout settings, and `viewer_cache/` for optional data caches. Flash-generated
+`javascope_*.json` snapshots and editable `settings.json` and `tools.json`
 preferences live directly in the applicable user directory. Application packages,
 Tcl scripts, assets and built-in defaults remain bundled in the standalone
 application; workspace preferences are never written into `_internal/`.
@@ -627,11 +626,12 @@ runtime settings from the bundled CLI defaults, filtered for that workspace's
 observables. It also creates missing tool preferences with no XSCT selection
 and creates the logs directory. Existing preferences are preserved byte for byte.
 Layout settings are managed by the GUI framework when the viewer runs.
-Connect and Flash filter effective channel assignments into separate session
-profile snapshots without rewriting `settings.json`. Edit `sample_period_us`
+Connect passes `settings.json` unchanged and rejects unavailable explicit channel
+assignments. Flash preserves its separate migration step and profile snapshot,
+reporting assignments removed by the new firmware. Edit `sample_period_us`
 and `initial_channels` before the next Connect; an empty `initial_channels`
 object sends no initial selections. Browsing for XSCT explicitly updates
-`tools.json`. Derived header mappings are regenerated at each live launch.
+`tools.json`. The service rereads headers at each repository-based launch.
 
 **Save live settings**, next to **Browse for ultrazohm_sw**, saves the current
 channel assignments as `initial_channels` in `settings.json`. It also writes

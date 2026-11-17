@@ -64,6 +64,9 @@ enum Command {
         /// Firmware names, numeric IDs, wire geometry and repository provenance.
         #[arg(long)]
         channel_mapping: Option<PathBuf>,
+        /// Firmware checkout to use instead of the current working directory.
+        #[arg(long, conflicts_with = "channel_mapping")]
+        repo: Option<PathBuf>,
         /// New session directory (default: repo artifacts/live_logs/<UTC timestamp>).
         /// Logging stays off until start-logging commands.
         #[arg(long)]
@@ -186,7 +189,13 @@ enum Command {
     /// Send device Stop, end acquisition, finalize recordings, and exit the service.
     Shutdown,
     /// Print the built-in runtime profile (initial channels and sampling period).
-    Profile,
+    Profile {
+        /// Filter built-in defaults against this firmware checkout.
+        #[arg(long, conflicts_with = "channel_mapping")]
+        repo: Option<PathBuf>,
+        #[arg(long)]
+        channel_mapping: Option<PathBuf>,
+    },
     /// Generate a channel-mapping JSON from the repository's JavaScope headers.
     CreateJsonFromJavascopeH {
         /// Repository root; otherwise search upward from the current directory.
@@ -197,7 +206,10 @@ enum Command {
         output: Option<PathBuf>,
     },
     /// Generate and print the firmware channel mapping from the checkout headers.
-    ChannelMapping,
+    ChannelMapping {
+        #[arg(long)]
+        repo: Option<PathBuf>,
+    },
 }
 #[derive(Parser)]
 #[command(
@@ -235,6 +247,7 @@ fn dispatch(args: Args) -> Result<()> {
         device: None,
         profile: None,
         channel_mapping: None,
+        repo: None,
         output: None,
         format: Format::Parquet,
         ack: "off".into(),
@@ -246,12 +259,22 @@ fn dispatch(args: Args) -> Result<()> {
             device,
             profile,
             channel_mapping,
+            repo,
             output,
             format,
             ack,
             interactive,
         } => {
-            let output = service::session_output(output)?;
+            let repo = repo
+                .as_deref()
+                .map(|path| crate::vitis::repository(Some(path)))
+                .transpose()?;
+            let profile = Profile::load_repository(
+                profile.as_deref(),
+                channel_mapping.as_deref(),
+                repo.as_deref(),
+            )?;
+            let output = service::session_output_for_repository(output, repo.as_deref())?;
             eprintln!(
                 "Session output: {} (logging starts on request)",
                 output.display()
@@ -266,7 +289,7 @@ fn dispatch(args: Args) -> Result<()> {
                     data,
                     device,
                     endpoint: args.endpoint,
-                    profile: Profile::load_files(profile.as_deref(), channel_mapping.as_deref())?,
+                    profile,
                     output: Some(output),
                     format,
                     ack: ack == "on",
@@ -516,9 +539,9 @@ fn classify(command: Command) -> Result<Action> {
         | Command::BuildClean { .. }
         | Command::Flash { .. }
         | Command::Serve { .. }
-        | Command::Profile
+        | Command::Profile { .. }
         | Command::CreateJsonFromJavascopeH { .. }
-        | Command::ChannelMapping) => return Ok(Action::Local(local)),
+        | Command::ChannelMapping { .. }) => return Ok(Action::Local(local)),
         Command::StartLogging => Operation::StartLogging {
             stream: Stream::Fast,
         },
@@ -580,10 +603,23 @@ fn run_local(command: Command) -> Result<()> {
         Command::Serve { .. } => {
             bail!("serve cannot be started inside an existing interactive session")
         }
-        Command::Profile => {
+        Command::Profile {
+            repo,
+            channel_mapping,
+        } => {
             println!(
                 "{}",
-                serde_json::to_string_pretty(&ProfileSettings::load(None)?)?
+                serde_json::to_string_pretty(&if repo.is_some() || channel_mapping.is_some() {
+                    let mapping = ChannelMapping::load_repository(
+                        channel_mapping.as_deref(),
+                        repo.as_deref(),
+                    )?;
+                    let settings = ProfileSettings::for_mapping(None, &mapping)?;
+                    Profile::from_mapping(settings.clone(), mapping)?;
+                    settings
+                } else {
+                    ProfileSettings::load(None)?
+                })?
             );
             Ok(())
         }
@@ -592,10 +628,13 @@ fn run_local(command: Command) -> Result<()> {
             println!("Created channel mapping: {}", path.display());
             Ok(())
         }
-        Command::ChannelMapping => {
+        Command::ChannelMapping { repo } => {
             println!(
                 "{}",
-                serde_json::to_string_pretty(&ChannelMapping::load(None)?)?
+                serde_json::to_string_pretty(&ChannelMapping::load_repository(
+                    None,
+                    repo.as_deref()
+                )?)?
             );
             Ok(())
         }

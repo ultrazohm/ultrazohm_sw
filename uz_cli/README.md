@@ -164,8 +164,29 @@ Legacy firmware control/logging remains supported; see the
 | Embedded `profiles/standard.json`, or `--profile PATH` | Schema version, name, nominal sample period, initial channels |
 | Header-generated mapping, or `--channel-mapping PATH` | Firmware IDs, packet geometry, platform-state decoding and source provenance |
 
-There is no embedded firmware mapping. Without an explicit mapping, run inside
-the firmware checkout so headers can be parsed. The two flags are independent:
+There is no embedded firmware mapping. Select the firmware checkout explicitly:
+
+```sh
+ultrazohm_cli serve --interactive --repo /path/to/firmware/ultrazohm_sw
+```
+
+This reads that checkout's current headers, keeps only built-in default channel
+assignments available in the mapping, and puts default session output under that
+checkout's `artifacts/live_logs`. It does not require generating a JSON file first.
+`catalog` reports the effective configuration. The nominal sample period remains
+100 microseconds unless overridden with `--profile`; it is not inferred from headers.
+
+Without `--repo` or `--channel-mapping`, headers are discovered from the current
+directory. `--repo` and `--channel-mapping` are mutually exclusive. A custom
+`--profile` works with either and is validated strictly: unknown assignments are
+errors, never silently dropped. To inspect or customize repository defaults:
+
+```sh
+ultrazohm_cli profile --repo /path/to/firmware/ultrazohm_sw > my-profile.json
+ultrazohm_cli channel-mapping --repo /path/to/firmware/ultrazohm_sw
+```
+
+Explicit mapping files remain supported:
 
 ```sh
 ultrazohm_cli profile > my-profile.json
@@ -184,16 +205,16 @@ A runtime profile can select only the observables needed for a measurement:
 }
 ```
 
-The bundled standard profile selects 20 named observables; each must exist in
-the mapping. The CLI validates them before connecting. The viewer seeds its own
-settings from that template, filtering unavailable names without rewriting
-existing preferences. Set `initial_channels` to `{}` or omit it in a custom
+The bundled standard profile proposes 20 named observables; unavailable defaults
+are skipped with a diagnostic. Explicit profiles must reference valid observables.
+The viewer gets matching defaults from the CLI and seeds missing workspace settings;
+existing preferences are passed unchanged to service validation. Set `initial_channels` to `{}` or omit it in a custom
 profile to leave all slots untouched. Initial selections are sent before the
 service becomes ready; they do not enable the system or start logging.
 
 Mapping provenance describes source headers, not verified running firmware.
 The IDs, geometry and configured sample period must match the deployed firmware.
-Changing JSON requires a service restart, not recompilation. `observables` lists
+Changing the repository or configuration requires a service restart, not recompilation. `observables` lists
 requested slot assignments and `catalog` returns loaded configuration; neither
 claims device readback. Unknown slots are omitted from logs; duplicate observable
 IDs use the first selected slot. Names are frozen at recording start.

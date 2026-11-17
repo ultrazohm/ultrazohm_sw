@@ -8,10 +8,10 @@ from pathlib import Path
 from .user_paths import write_json
 
 
-def default_profile():
+def default_profile(repo=None):
     from .process_launcher import command
     try:
-        result = subprocess.run(command('cli', 'profile'), capture_output=True,
+        result = subprocess.run(command('cli', 'profile', *(['--repo', str(repo)] if repo else [])), capture_output=True,
                                 text=True, encoding='utf-8', errors='replace', check=True, timeout=15)
     except subprocess.CalledProcessError as exc:
         raise RuntimeError('Could not load default runtime settings: ' + (exc.stderr or str(exc)).strip()) from exc
@@ -56,6 +56,21 @@ def load_workspace_settings(mapping_path, user_directory=None):
     if not settings_path.exists():
         defaults, _ = profile_for_mapping(mapping, default_profile(), None)
         write_json(settings_path, defaults, overwrite=False)
+    settings = read_runtime_settings(settings_path)
+    write_json(directory / 'tools.json', {'xsct': None}, overwrite=False)
+    (directory / 'logs').mkdir(exist_ok=True)
+    return WorkspaceSettings(settings_path, mapping, settings)
+
+
+def load_repository_settings(repo):
+    """Ask the CLI for firmware metadata/defaults; retain explicit user settings."""
+    from .live_mapping import read_mapping
+    from .user_paths import data_directory
+    mapping = _check_mapping(read_mapping(repo))
+    directory = data_directory(repo)
+    settings_path = directory / 'settings.json'
+    if not settings_path.exists():
+        write_json(settings_path, default_profile(repo), overwrite=False)
     settings = read_runtime_settings(settings_path)
     write_json(directory / 'tools.json', {'xsct': None}, overwrite=False)
     (directory / 'logs').mkdir(exist_ok=True)

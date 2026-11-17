@@ -153,6 +153,7 @@ class LiveWorkspace:
         self.port = 1000
         self.output = new_output_directory(repo)
         self.mapping = ''
+        self._repository_settings = None
         self.repo = str(repo) if repo is not None else None
         self._user_directory = None
         self._xsct_dialog = None
@@ -196,7 +197,7 @@ class LiveWorkspace:
 
     @property
     def repository_ready(self):
-        return bool(self.repo and self.mapping and self._repo_future is None)
+        return bool(self.repo and (self.mapping or self._repository_settings) and self._repo_future is None)
 
     def prepare_repository(self, path):
         if (self._repo_future is not None or self.update.attached or self.pending_message
@@ -205,12 +206,11 @@ class LiveWorkspace:
         self.repo_error = ''
 
         def prepare(cancel):
-            from ..live_mapping import repository, generate_mapping
-            from ..settings import load_workspace_settings
+            from ..live_mapping import repository
+            from ..settings import load_repository_settings
             root = repository(path)
-            mapping = generate_mapping(root)
-            settings = load_workspace_settings(mapping)
-            return root, mapping, settings.path.parent
+            settings = load_repository_settings(root)
+            return root, settings
 
         self._repo_future = self._repo_executor.submit(prepare)
 
@@ -224,9 +224,11 @@ class LiveWorkspace:
             return
         future, self._repo_future = self._repo_future, None
         try:
-            root, mapping, directory = future.result()
+            root, settings = future.result()
+            directory = settings.path.parent
             self.repository_selected(root, directory)
-            self.repo, self.mapping = str(root), str(mapping)
+            self.repo, self.mapping = str(root), ''
+            self._repository_settings = settings
             self._user_directory = directory
             self.output = new_output_directory(root)
             self.load_live_settings()
@@ -442,7 +444,7 @@ class LiveWorkspace:
                 self.send('shutdown')
             else:
                 self.send('connect', endpoint=self.endpoint, ip=self.ip, port=self.port,
-                          output=self.output, mapping=self.mapping, user_directory=str(self.user_directory()))
+                          output=self.output, repo=self.repo, mapping=self.mapping, user_directory=str(self.user_directory()))
         imgui.end_disabled()
         if imgui.is_item_hovered(imgui.HoveredFlags_.allow_when_disabled):
             imgui.set_tooltip(
@@ -521,8 +523,8 @@ class LiveWorkspace:
         self._render_flash_confirmation()
         if imgui.collapsing_header('Service settings (used when launching)'):
             _, self.output = imgui.input_text('New session directory', self.output)
-            imgui.text_wrapped('Channel mapping JSON: ' + (self.mapping or 'not prepared'))
-            if self.mapping:
+            imgui.text_wrapped('Firmware repository: ' + (self.repo or 'not selected'))
+            if self.repository_ready:
                 imgui.text_wrapped('Runtime settings: ' + str(self.user_directory() / 'settings.json'))
             imgui.text_wrapped('Connect launches a new service with these settings. Use Existing service to attach to a running service.')
         state = self.update.status.get('state', {})

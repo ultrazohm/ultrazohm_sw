@@ -609,6 +609,7 @@ def test_connect_click_reports_progress_and_completion(gui_frame, app_state, mon
             return super().catalog()
     controller = LiveController(lambda endpoint: SlowClient())
     controller.owned.endpoint = '127.0.0.1:19740'
+    controller.owned.repo = tmp_path
     controller.owned.process = SimpleNamespace(poll=lambda: None, wait=lambda: 0)
     workspace = LiveWorkspace(controller)
     workspace.repo, workspace.mapping = str(tmp_path), 'mapping.json'

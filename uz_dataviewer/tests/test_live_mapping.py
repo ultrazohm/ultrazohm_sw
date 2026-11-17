@@ -61,7 +61,7 @@ def test_repository_discovery_and_explicit_path_validation(repo, monkeypatch):
 def test_invalid_headers_report_in_gui_without_aborting_startup(repo, monkeypatch):
     from uz_dataviewer.app import DataViewerApp
     def fail(repo): raise ValueError('Broken header')
-    monkeypatch.setattr(live_mapping, 'generate_mapping', fail)
+    monkeypatch.setattr(live_mapping, 'read_mapping', fail)
     app = DataViewerApp(use_live=True, live_repo=str(repo))
     try:
         future = app.live._repo_future
@@ -91,6 +91,19 @@ def test_real_cli_generates_mapping_from_headers(tmp_path):
     assert mapping['legacy_javascope_header'] is True
     assert mapping['platform_state'] is None
     assert mapping['repository']['commit'] in path.name
+
+    # Repository preview and defaults use the CLI without publishing another map.
+    from uz_dataviewer.settings import load_repository_settings
+    header = tmp_path / live_mapping.HEADER
+    header.write_text(header.read_text().replace('JSO_theta_mech', 'JSO_custom_theta'))
+    snapshots = set(path.parent.glob('javascope_*.json'))
+    settings = load_repository_settings(tmp_path)
+    assert 'JSO_custom_theta' in settings.mapping['observables']
+    assert '4' not in settings.profile['initial_channels']
+    assert settings.profile['initial_channels']['3'] == 'JSO_lifecheck'
+    assert set(path.parent.glob('javascope_*.json')) == snapshots
+    settings.path.write_text(json.dumps(dict(settings.profile, sample_period_us=50)))
+    assert load_repository_settings(tmp_path).profile['sample_period_us'] == 50
 
 
 def test_commit_cache_is_overwritten_with_fresh_headers(repo, monkeypatch):

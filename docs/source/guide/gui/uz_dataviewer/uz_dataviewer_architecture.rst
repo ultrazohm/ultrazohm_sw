@@ -520,3 +520,22 @@ The Data Viewer must never use GUI idle throttling. Keep
 paused views, and offline analysis. Do not re-enable idling or rely on individual
 plots to opt out; rendering must not slow down because mouse or keyboard input
 stops. Actual FPS still depends on rendering workload and display synchronization.
+
+
+Repository-owned service configuration
+--------------------------------------
+
+The CLI owns firmware configuration resolution. ``serve --repo PATH`` reads the
+selected checkout's headers and filters only built-in initial-channel defaults.
+Explicit ``--profile`` settings remain strict. ``--channel-mapping`` is an
+alternative to ``--repo`` for standalone mapping files. The effective settings
+are exposed by ``catalog``; selecting another checkout requires restarting the
+service.
+
+The viewer previews metadata with ``channel-mapping --repo`` and obtains initial
+preferences through ``profile --repo``. These commands return JSON directly;
+normal repository preparation writes no mapping snapshot. Missing workspace
+preferences are seeded once. Connecting passes ``--repo`` and the saved
+``settings.json`` directly, without a temporary filtered profile. Saved signal
+selections use the running service's catalog. The Flash UZ migration path still
+keeps its mapping and profile snapshots to preserve assignments across a restart.

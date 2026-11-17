@@ -45,6 +45,42 @@ class HeaderMappingTest(unittest.TestCase):
         return subprocess.run([str(BIN), *map(str, args)], check=False, cwd=cwd or self.repo,
                               input=input, env=env, capture_output=True, text=True, timeout=15)
 
+    def test_repository_service_filters_defaults_and_exposes_effective_catalog(self):
+        header = self.repo / HEADERS[0]
+        header.write_text(header.read_text().replace('JSO_theta_mech', 'JSO_custom_theta'))
+        result = self.run_cli('profile', '--repo', self.repo, cwd=self.tmp.name)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        profile = json.loads(result.stdout)
+        self.assertNotIn('4', profile['initial_channels'])
+        self.assertIn('3', profile['initial_channels'])
+        result = self.run_cli('--endpoint', self.endpoint, 'serve', '--interactive',
+                              '--repo', self.repo, cwd=self.tmp.name, input='catalog\nshutdown\n')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('JSO_custom_theta', result.stdout)
+        self.assertNotIn('JSO_theta_mech', result.stdout)
+        self.assertIn(str(self.repo / 'artifacts' / 'live_logs'), result.stderr)
+        self.assertFalse(self.output.exists())  # No intermediate mapping file needed.
+        # An explicit profile is never silently filtered.
+        profile['initial_channels']['4'] = 'JSO_theta_mech'
+        path = self.repo / 'explicit.json'
+        path.write_text(json.dumps(profile))
+        result = self.run_cli('--endpoint', self.endpoint, 'serve', '--repo', self.repo,
+                              '--profile', path, cwd=self.tmp.name)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('invalid initial channel 4', result.stderr)
+
+    def test_repository_selection_is_unambiguous_and_reads_fresh_headers(self):
+        result = self.run_cli('channel-mapping', '--repo', self.repo, cwd=self.tmp.name)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        header = self.repo / HEADERS[0]
+        header.write_text(header.read_text().replace('JSO_theta_mech', 'JSO_changed'))
+        result = self.run_cli('channel-mapping', '--repo', self.repo, cwd=self.tmp.name)
+        self.assertIn('JSO_changed', json.loads(result.stdout)['observables'])
+        for command in ('serve', 'profile'):
+            result = self.run_cli(command, '--repo', self.repo, '--channel-mapping', 'other.json')
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn('cannot be used with', result.stderr)
+
     def test_default_paths_and_mapping_equivalence_without_tools(self):
         result = self.run_cli("create-json-from-javascope-h", cwd=self.repo / "vitis/software",
                               env={**os.environ, "PATH": ""})

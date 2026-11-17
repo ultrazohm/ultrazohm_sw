@@ -15,8 +15,8 @@ def test_selection_updates_paths_and_enables_connect(tmp_path, monkeypatch):
     mapping = directory / 'javascope_test.json'
     mapping.touch()
     monkeypatch.setattr('uz_dataviewer.live_mapping.generate_mapping', lambda root: mapping)
-    monkeypatch.setattr('uz_dataviewer.settings.load_workspace_settings',
-                        lambda mapping: SimpleNamespace(path=directory / 'settings.json'))
+    monkeypatch.setattr('uz_dataviewer.settings.load_repository_settings',
+                        lambda repo: SimpleNamespace(path=directory / 'settings.json'))
     monkeypatch.delenv('UZ_DATAVIEWER_CACHE', raising=False)
     app = DataViewerApp(use_live=True)
     calls = []
@@ -31,7 +31,7 @@ def test_selection_updates_paths_and_enables_connect(tmp_path, monkeypatch):
         app.live._repo_future.result(timeout=3)
         app.live.pump(app.state)
         assert app.live.repository_ready
-        assert app.live.mapping == str(mapping)
+        assert app.live.mapping == ''
         assert app.live.repo == str(root)
         assert app.live.user_directory() == directory
         assert app.log_browser.directory == root

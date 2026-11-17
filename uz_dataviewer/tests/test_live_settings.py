@@ -25,7 +25,7 @@ def workspace(root):
 def publish(panel, run_id='first'):
     source = LiveSource(pl.DataFrame({'time': np.arange(10.) / 1000, 'a': np.arange(10.), 'b': np.arange(10.)}))
     panel.controller.update = LiveUpdate(1, source=source, epoch=(run_id, 0), attached=True,
-        catalog={'sample_period_us': 50.}, assignments=({'channel': 1, 'name': 'b'}, {'channel': 2, 'name': 'a'}))
+        catalog={'sample_period_us': 50., 'channels': 20, 'observables': {'a': 1, 'b': 2}}, assignments=({'channel': 1, 'name': 'b'}, {'channel': 2, 'name': 'a'}))
     panel.pump()
 
 

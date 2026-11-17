@@ -27,6 +27,23 @@ impl ProfileSettings {
         );
         Ok(settings)
     }
+
+    /// Adapt only built-in defaults. Explicit profiles remain strict.
+    pub fn for_mapping(path: Option<&Path>, mapping: &ChannelMapping) -> Result<Self> {
+        let mut settings = Self::load(path)?;
+        if path.is_none() {
+            settings.initial_channels.retain(|channel, name| {
+                let keep = (1..=mapping.channels as u32).contains(channel)
+                    && (mapping.observables.contains_key(name)
+                        || mapping.observables.contains_key(&format!("JSO_{name}")));
+                if !keep {
+                    eprintln!("Default channel {channel} skipped: {name} is absent from this firmware mapping");
+                }
+                keep
+            });
+        }
+        Ok(settings)
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -101,8 +118,15 @@ pub struct ChannelMapping {
 }
 impl ChannelMapping {
     pub fn load(path: Option<&Path>) -> Result<Self> {
+        Self::load_repository(path, None)
+    }
+    pub fn load_repository(path: Option<&Path>, repo: Option<&Path>) -> Result<Self> {
+        ensure!(
+            path.is_none() || repo.is_none(),
+            "choose --repo or --channel-mapping, not both"
+        );
         let Some(path) = path else {
-            let root = crate::vitis::repository(None).context(
+            let root = crate::vitis::repository(repo).context(
                 "generating firmware mapping requires a checkout; run from the repository or pass --channel-mapping with header-generated JSON",
             )?;
             return crate::header_mapping::generate(&root);
@@ -274,8 +298,15 @@ impl Profile {
         Self::load_files(path, None)
     }
     pub fn load_files(profile: Option<&Path>, mapping: Option<&Path>) -> Result<Self> {
-        let settings = ProfileSettings::load(profile)?;
-        let mapping = ChannelMapping::load(mapping)?;
+        Self::load_repository(profile, mapping, None)
+    }
+    pub fn load_repository(
+        profile: Option<&Path>,
+        mapping: Option<&Path>,
+        repo: Option<&Path>,
+    ) -> Result<Self> {
+        let mapping = ChannelMapping::load_repository(mapping, repo)?;
+        let settings = ProfileSettings::for_mapping(profile, &mapping)?;
         Self::from_mapping(settings, mapping)
     }
     pub fn from_mapping(settings: ProfileSettings, mapping: ChannelMapping) -> Result<Self> {

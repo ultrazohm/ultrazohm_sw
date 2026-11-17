@@ -82,10 +82,19 @@ pub const DEFAULT_DEVICE_PORT: u16 = 1000;
 pub const DEFAULT_ENDPOINT: &str = "127.0.0.1:19740";
 /// Resolve session output identically for CLI and embedded Python acquisition.
 pub fn session_output(output: Option<PathBuf>) -> Result<PathBuf> {
+    session_output_for_repository(output, None)
+}
+pub fn session_output_for_repository(
+    output: Option<PathBuf>,
+    repo: Option<&std::path::Path>,
+) -> Result<PathBuf> {
     if let Some(path) = output {
         return std::path::absolute(path).context("cannot resolve output directory");
     }
-    let root = crate::vitis::repository(None).or_else(|_| std::env::current_dir())?;
+    let root = match repo {
+        Some(path) => path.to_path_buf(),
+        None => crate::vitis::repository(None).or_else(|_| std::env::current_dir())?,
+    };
     let parent = root.join("artifacts/live_logs");
     fs::create_dir_all(&parent)?;
     let now: chrono::DateTime<chrono::Utc> = std::time::SystemTime::now().into();

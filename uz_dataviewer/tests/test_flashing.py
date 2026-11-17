@@ -68,7 +68,8 @@ def workflow(tmp_path, monkeypatch):
         events.append('flash')
         emit('info', 'Programming output')
         return True
-    def start(output, selected_mapping, profile, options, ack):
+    def start(output, selected_mapping, profile, options, ack, *, repo=None):
+        assert repo == root
         events.append('start')
         starts.append((options, ack))
         assert not Path(output).exists()

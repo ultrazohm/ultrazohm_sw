@@ -131,7 +131,7 @@ def test_service_launch_passes_filtered_settings_profile(tmp_path, monkeypatch):
     controller._start_service(tmp_path/'logs'/'session', mapping)
     args = calls[0]
     settings = Path(args[args.index('--profile') + 1])
-    assert settings == tmp_path/'logs'/'session.profile.json'
+    assert settings == tmp_path/'settings.json'
     assert json.loads(settings.read_text())['initial_channels'] == {'3': 'JSO_lifecheck'}
     assert controller.messages.empty()
 
@@ -180,10 +180,10 @@ def test_workspace_startup_initializes_missing_preferences_once(tmp_path, monkey
     user_dir = data_directory(tmp_path)
     mapping = user_dir/'mapping.json'
     mapping.write_text(json.dumps({'channels': 20, 'observables': {'JSO_lifecheck': 3}}))
-    monkeypatch.setattr(live_mapping, 'generate_mapping', lambda repo: mapping)
-    monkeypatch.setattr(runtime_settings, 'default_profile', lambda: {
-        'name': 'standard', 'sample_period_us': 100,
-        'initial_channels': {'3': 'JSO_lifecheck', '4': 'JSO_theta_mech'}})
+    monkeypatch.setattr(live_mapping, 'read_mapping', lambda repo: json.loads(mapping.read_text()))
+    monkeypatch.setattr(runtime_settings, 'default_profile', lambda repo=None: {
+        'schema_version': 1, 'name': 'standard', 'sample_period_us': 100,
+        'initial_channels': {'3': 'JSO_lifecheck'}})
     header = tmp_path / live_mapping.HEADER
     header.parent.mkdir(parents=True)
     header.touch()
@@ -205,7 +205,7 @@ def test_workspace_startup_initializes_missing_preferences_once(tmp_path, monkey
     saved = user_dir/'settings.json'
     original = '{"schema_version":1,"name":"edited","sample_period_us":75,"initial_channels":{}}\n'
     saved.write_text(original)
-    monkeypatch.setattr(runtime_settings, 'default_profile', lambda: pytest.fail('Must not reapply defaults'))
+    monkeypatch.setattr(runtime_settings, 'default_profile', lambda repo=None: pytest.fail('Must not reapply defaults'))
     assert app.main(args) == 0
     assert saved.read_text() == original
 
@@ -333,3 +333,42 @@ def test_malformed_mapping_is_rejected_clearly(tmp_path):
     mapping.write_text('{}')
     with pytest.raises(ValueError, match='Invalid channel mapping'):
         runtime_settings.load_workspace_settings(mapping)
+
+
+@pytest.mark.parametrize('saved', [False, True])
+def test_repository_service_passes_repo_and_preserves_explicit_profile(tmp_path, monkeypatch, saved):
+    from types import SimpleNamespace
+    from uz_dataviewer.live import LiveController
+    directory = data_directory(tmp_path)
+    settings = directory / 'settings.json'
+    if saved:
+        # Even an unknown signal must reach CLI validation unchanged.
+        settings.write_text(json.dumps(dict(schema_version=1, name='user', sample_period_us=50,
+                                            initial_channels={'4': 'JSO_not_in_firmware'})))
+    calls = []
+    monkeypatch.setattr('uz_dataviewer.live.subprocess.Popen',
+                        lambda args, **kwargs: calls.append(args) or SimpleNamespace(poll=lambda: None))
+    monkeypatch.setattr(runtime_settings, 'prepare_profile', lambda *args: pytest.fail('No temporary profile'))
+    controller = LiveController()
+    controller.client = SimpleNamespace(status=lambda: {})
+    controller._start_service(tmp_path / 'session', 'obsolete-mapping.json', repo=tmp_path)
+    args = calls[0]
+    assert args[args.index('--repo') + 1] == str(tmp_path)
+    assert '--channel-mapping' not in args
+    assert ('--profile' in args) == saved
+    if saved:
+        assert args[args.index('--profile') + 1] == str(settings)
+        assert json.loads(settings.read_text())['initial_channels'] == {'4': 'JSO_not_in_firmware'}
+    assert not (tmp_path / 'session.profile.json').exists()
+
+
+def test_changed_repository_requires_restarting_owned_service(tmp_path):
+    from types import SimpleNamespace
+    from uz_dataviewer.live import LiveController
+    client = SimpleNamespace(status=lambda: {})
+    controller = LiveController(lambda endpoint: client)
+    controller.owned.endpoint = 'test-endpoint'
+    controller.owned.process = SimpleNamespace(poll=lambda: None)
+    controller.owned.repo = tmp_path / 'previous'
+    with pytest.raises(RuntimeError, match='different firmware repository'):
+        controller._command('connect', {'endpoint': 'test-endpoint', 'repo': str(tmp_path / 'new')})

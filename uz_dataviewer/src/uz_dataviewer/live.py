@@ -334,6 +334,7 @@ class OwnedService:
     endpoint: str | None = None
     shutdown_requested: bool = False
     log: Path | None = None
+    repo: Path | None = None
 
     @property
     def running(self):
@@ -510,7 +511,7 @@ class LiveController:
                 self.client = self.client_factory(endpoint)
             self.endpoint = endpoint
 
-    def _start_service(self, output, mapping, profile=None, data_options=None, ack=False, user_directory=None):
+    def _start_service(self, output, mapping, profile=None, data_options=None, ack=False, user_directory=None, repo=None):
         self._progress('Starting local acquisition service…')
         if self.owned.running:
             raise RuntimeError('The launched service is still running; check its endpoint and service.log')
@@ -523,13 +524,19 @@ class LiveController:
         from .process_launcher import command
         args = command('cli',
                 '--endpoint', self.endpoint, 'serve', '--output', str(output), '--format', 'parquet')
-        if mapping:
+        if repo:
+            args += ['--repo', str(Path(repo).expanduser().resolve())]
+            if not profile:
+                from .user_paths import data_directory
+                directory = Path(user_directory) if user_directory else data_directory(repo)
+                saved = directory / 'settings.json'
+                if saved.is_file():
+                    profile = saved
+        elif mapping:
             args += ['--channel-mapping', str(Path(mapping).expanduser().resolve())]
             if not profile:
-                from .settings import prepare_profile
-                profile, removed = prepare_profile(mapping, output.with_name(output.name + '.profile.json'), user_directory)
-                if removed:
-                    self._message('warn', 'Removed initial channels absent from the mapping: ' + ', '.join(removed))
+                from .settings import load_workspace_settings
+                profile = load_workspace_settings(mapping, user_directory).path
         if profile:
             args += ['--profile', str(profile)]
         if ack:
@@ -543,6 +550,7 @@ class LiveController:
         with log_path.open('ab') as log:
             self.owned.process = subprocess.Popen(args, stdout=log, stderr=log, **options)
             self.owned.endpoint = self.endpoint
+            self.owned.repo = Path(repo).expanduser().resolve() if repo else None
             self.owned.shutdown_requested = False
             self.owned.log = log_path
         deadline = time.monotonic() + 8
@@ -591,11 +599,15 @@ class LiveController:
                     raise
                 self._start_service(kwargs['output'], kwargs.get('mapping', ''),
                                     kwargs.get('profile'), kwargs.get('data_options'), kwargs.get('ack', False),
-                                    user_directory=kwargs.get('user_directory'))
+                                    user_directory=kwargs.get('user_directory'), repo=kwargs.get('repo'))
             else:
                 if operation == 'connect' and not (
                         self.owned.owns(self.endpoint)):
                     raise RuntimeError('A service is already running at this endpoint. Use Existing service > Attach.')
+                if (operation == 'connect' and kwargs.get('repo')
+                        and Path(kwargs['repo']).expanduser().resolve() != self.owned.repo):
+                    raise RuntimeError('The running service uses a different firmware repository. '
+                                       'Attach and shut it down before connecting with the selected repository.')
             self._progress('Reading service configuration…')
             status = self.client.status()
             if operation == 'connect':
@@ -769,7 +781,7 @@ class LiveController:
             return
         self._progress('Reconnecting to UltraZohm…')
         self._start_service(str(output), str(mapping_path), str(profile_path),
-                            settings.get('data_options'), settings.get('send_ack', False))
+                            settings.get('data_options'), settings.get('send_ack', False), repo=root)
         last_error = ''
         def reconnected():
             nonlocal last_error

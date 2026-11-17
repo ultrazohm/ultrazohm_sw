@@ -20,6 +20,16 @@ def repository(explicit=None):
     raise ValueError('UltraZohm repository not found; pass --live-repo PATH to generate its channel mapping')
 
 
+def read_mapping(repo):
+    """Read the CLI's repository mapping without an intermediate JSON file."""
+    from .process_launcher import command
+    result = subprocess.run(command('cli', 'channel-mapping', '--repo', str(repo)),
+        capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=60)
+    if result.returncode:
+        raise RuntimeError('Channel mapping generation failed: ' + (result.stderr.strip() or result.stdout.strip()))
+    return json.loads(result.stdout)
+
+
 def generate_mapping(repo=None):
     """Regenerate ``javascope_<commit>.json``; one cache file per checkout commit."""
     from .process_launcher import command

@@ -145,11 +145,64 @@ A53 HANG during the 900 B run (~16:42, 5 min after boot):
   tasks.o is identical to a rebuild without the barrier; with the barrier
   (or -fno-strict-aliasing) the loop re-reads the list head on every pass.
 - The workspace headers were re-patched the same evening with the project's
-  own uz_vitis_patch_freertos_bsp; platform and FreeRTOS app to be rebuilt.
+  own uz_vitis_patch_freertos_bsp; rebuilt and verified on the board the same
+  night (next section).
 - The one-socket-from-two-tasks use of lwIP (LWIP_NETCONN_FULLDUPLEX = 0),
   suspected first, is not the cause of this hang (still a design point).
 - The board stays hung (state preserved); a single-core A53 restart is
   excluded (known mailbox deadlock), so both apps must be programmed again.
+
+## Bench run 2026-11-17 night, kernel with the barrier (A53 rebuilt, R5 93f74de unchanged)
+
+- Build: FreeRTOSConfig.h re-patched with the project's
+  uz_vitis_patch_freertos_bsp, FreeRTOS BSP rebuilt with the Vitis makefiles
+  (the IDE held the workspace, so no xsct) and copied into the platform
+  export, FreeRTOS app relinked; the Baremetal app was up to date. In the new
+  FreeRTOS.elf, xTaskResumeAll/vTaskSuspendAll equal the barrier build, and
+  uz_vitis_verify_freertos_bsp (hardening branch on develop) passes.
+  Programmed with tcl_scripts/vitis_run_freertos_baremetal_fpga.tcl, the
+  script that Run_UltraZohm.launch executes; after the soaks the
+  xTaskResumeAll code in A53 memory (JTAG) still matched the new ELF.
+- Functional checks: 24 of 24 passed.
+- Stress sweep (xcp_poll.py --stress, 20 s each, 40 kHz), no hang at any load:
+
+| B/cycle | payload | lost | exchanges/s | chains kept | KB per rewrite | R5 idle |
+|---|---|---|---|---|---|---|
+| 250  | 82 Mbit/s  | 0 | 10000 | 0 %  | 1.0  | 31 % |
+| 500  | 160 Mbit/s | 0 | 10000 | 0 %  | 2.0  | 24 % |
+| 750  | 239 Mbit/s | 0 | 10000 | 0 %  | 3.0  | 17 % |
+| 900  | 286 Mbit/s | 0 | 10000 | ~0 % | 3.6  | 15 % |
+| 1000 | 318 Mbit/s | 0 | 7178  | 46 % | 10.2 | 12 % |
+| 1100 | 273 Mbit/s | R5 queue +178k | 2224 | 50 % | 30.7 | 5 % |
+| 1200 | 273 Mbit/s | R5 queue +229k | 2199 | 50 % | 31.0 | 5 % |
+| 1500 | 283 Mbit/s | R5 queue +570k, 12 frames after sendto | 2300 | 50 % | 30.8 | 5 % |
+| 2000 | 282 Mbit/s | R5 queue +641k | 2280 | 50 % | 30.9 | 5 % |
+
+- The R5 is not short of CPU (12 % idle at 1000 B). From 1000 B/cycle on,
+  an exchange takes most of the 100 us slot (85 us on average), and the
+  A53's acknowledge often arrives only after the next slot has started
+  (kept chains). Each kept chain makes the next one bigger, until from
+  1100 B on every rewrite carries a full XCP_OUT (~31 KB, ~390 us per
+  exchange instead of 52 us at 900 B). About 1100 such chains per second
+  (~35 MB/s) then get through, less than the 318 Mbit/s reached at 1000 B,
+  and the R5 DAQ queue overflows. Whether the A53 or the slot grid limits
+  is still open (no A53-side timing yet).
+- Exchanges at <= 900 B: exactly 10000/s (evening, same R5 build: ~9300/s,
+  cause unknown).
+- Command round trip (cmd_latency.py, 2000 commands each): median 374 / 338
+  / 374 / 816 us at 0 / 500 / 900 / 1000 B/cycle, no timeouts.
+- Soak 30 min at 900 B/cycle with back-to-back commands (scratchpad
+  soak_cmd_daq.py, the trigger of the hang): 4,874,535 commands (~2700/s),
+  median 312 us, p99 ~700 us, max 60 ms; DAQ ~37300 datagrams/s steady, R5
+  queue lost +0, 40 kHz throughout. 4 commands got no answer (1 in 1.2 M):
+  xcp_gw_in_batches_sent, xcp_r5_in_generations and xcp_r5_cto_sent all grew
+  by exactly the same 4,874,583, so single UDP datagrams were lost between
+  PC and A53 (either direction), not inside the gateway.
+- Overload soak 10 min at 1100 B/cycle with back-to-back commands: no hang;
+  327,621 commands, 1 without an answer, DAQ ~30300 datagrams/s, R5 queue
+  lost +5.5 M (overload). Command round trip median 1744 us (5x the 900 B
+  value): commands are executed only inside the DAQ exchange, and in
+  overload one exchange takes ~390 us and every second one is a keep.
 
 ## Changes after the July hardware run (2026-11-16/17)
 

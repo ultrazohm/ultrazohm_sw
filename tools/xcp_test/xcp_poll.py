@@ -344,19 +344,68 @@ A53_DIAG_COUNTERS = [
     "xcp_gw_in_batches_sent", "xcp_gw_in_retry_cycles", "xcp_gw_tx_malformed_drop",
     "xcp_gw_rx_malformed_drop", "xcp_gw_sendto_err", "xcp_gw_sendto_drop",
     "xcp_gw_ipi_count", "xcp_gw_txq_level", "xcp_gw_master_lost",
+    # A53 time profile (gateway XCP_GW_PROFILE): microsecond sums and counts,
+    # evaluated by print_a53_prof() instead of being listed as counters.
+    "xcp_gw_prof_now_us", "xcp_gw_prof_idle_us", "xcp_gw_prof_ipi_us",
+    "xcp_gw_prof_ipi_max_us", "xcp_gw_prof_chain_us", "xcp_gw_prof_enq_us",
+    "xcp_gw_prof_records", "xcp_gw_prof_tx_us", "xcp_gw_prof_sendto_us",
+    "xcp_gw_prof_sendto_n", "xcp_gw_prof_tx_kb", "xcp_gw_prof_sendto_max_us",
 ]
 A53_DIAG_GAUGES = ("xcp_gw_txq_level",)  # level, not a count: print the value, not a delta
 
 
 def read_a53_diag(xcp):
-    """Read the mirrored A53 gateway counters. Returns {name: value}."""
-    out = {}
-    for i, name in enumerate(A53_DIAG_COUNTERS):
-        try:
-            out[name] = struct.unpack("<I", xcp.short_upload(A53_DIAG_ADDR + 4 * i, 4))[0]
-        except (TimeoutError, RuntimeError):
-            break
-    return out
+    """Read the mirrored A53 gateway counters (one SHORT_UPLOAD). Returns
+    {name: value}, or {} if the read failed."""
+    n = len(A53_DIAG_COUNTERS)
+    try:
+        raw = xcp.short_upload(A53_DIAG_ADDR, 4 * n)
+    except (TimeoutError, RuntimeError):
+        return {}
+    return dict(zip(A53_DIAG_COUNTERS, struct.unpack("<%dI" % n, raw)))
+
+
+def print_a53_prof(pre, post):
+    """Where the A53 spends its time (gateway XCP_GW_PROFILE): the idle probe
+    gives the free CPU; IPI hook, tx task and lwip_sendto are wall times
+    (they include interrupts that hit them)."""
+    if not pre or not post:
+        return
+
+    def d(name):
+        return (post[name] - pre[name]) & 0xFFFFFFFF
+
+    win = d("xcp_gw_prof_now_us")
+    if win == 0:
+        print("    A53 gateway profile: no data (gateway built without XCP_GW_PROFILE?)")
+        return
+
+    def pct(us):
+        return 100.0 * us / win
+
+    ipis = d("xcp_gw_ipi_count")
+    rec = d("xcp_gw_prof_records")
+    sends = d("xcp_gw_prof_sendto_n")
+    idle, ipi, tx, snd = (d("xcp_gw_prof_idle_us"), d("xcp_gw_prof_ipi_us"),
+                          d("xcp_gw_prof_tx_us"), d("xcp_gw_prof_sendto_us"))
+    print("    A53 gateway profile while DAQ ran (%.1f s):" % (win / 1e6))
+    print("      A53 time split         idle %5.1f %%   IPI hook %5.1f %%   tx task %5.1f %%"
+          "   other (lwIP RX, GEM IRQs, other tasks) %5.1f %%"
+          % (pct(idle), pct(ipi), pct(tx), 100.0 - pct(idle) - pct(ipi) - pct(tx)))
+    if ipis:
+        print("      IPI hook               %d/s, avg %5.1f us, max %5.1f us (last full second)"
+              % (ipis / (win / 1e6), ipi / ipis, post["xcp_gw_prof_ipi_max_us"]))
+    if rec:
+        print("      per chain record       copy out of OCM %5.2f us, into the queues %5.2f us"
+              "   (%.1f records per IPI)"
+              % (d("xcp_gw_prof_chain_us") / rec, d("xcp_gw_prof_enq_us") / rec,
+                 rec / ipis if ipis else 0.0))
+    if sends:
+        kb = d("xcp_gw_prof_tx_kb")
+        print("      datagrams              %d/s, avg %4.0f B; lwip_sendto avg %5.1f us, max %6.1f us;"
+              " tx task per datagram %5.1f us"
+              % (sends / (win / 1e6), 1024.0 * kb / sends, snd / sends,
+                 post["xcp_gw_prof_sendto_max_us"], tx / sends))
 
 
 def read_r5_diag(xcp, addrs):
@@ -575,6 +624,7 @@ def run_stress(xcp, args, max_dto):
                 prof = prof_read(xcp, prof_addr)
             except (TimeoutError, RuntimeError):
                 prof = None
+        a53_prof_post = read_a53_diag(xcp)  # same window as the R5 profile
         xcp.daq_stop()
         xcp.drain()
 
@@ -617,6 +667,8 @@ def run_stress(xcp, args, max_dto):
     if pre_a53 and post_a53:
         print("    A53 gateway counter deltas over the run (XCP_IN header mirror):")
         for name in A53_DIAG_COUNTERS:
+            if name.startswith("xcp_gw_prof_"):
+                continue  # time profile: see print_a53_prof
             if name in pre_a53 and name in post_a53:
                 if name in A53_DIAG_GAUGES:
                     print("      %-26s  %d (level now)" % (name, post_a53[name]))
@@ -634,6 +686,7 @@ def run_stress(xcp, args, max_dto):
         print("    (A53 gateway counters not readable: gateway older than the XCP_IN mirror?)")
     if prof:
         print_prof(prof)
+    print_a53_prof(pre_a53, a53_prof_post)
     if frames == 0:
         print("\n[x] no DTOs received -- stress FAILED")
         return 1

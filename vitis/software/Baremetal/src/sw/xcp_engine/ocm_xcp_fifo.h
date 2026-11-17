@@ -49,7 +49,7 @@
 #define OCM_XCP_IN_CHAIN_LEN 896u
 
 /* A53 gateway diagnostics mirror: spare words of the XCP_IN header (from
- * byte 8, OCM_XCP_IN_DIAG_COUNT x u32; room up to byte 123) carry the
+ * byte 8, OCM_XCP_IN_DIAG_COUNT x u32; room up to byte 123, now used up) carry the
  * gateway's own counters, rewritten every
  * IPI cycle and published with the header flush. They are not part of the
  * handshake and the R5 never writes them, so the XCP master can read them by
@@ -58,7 +58,7 @@
  * build. The slot table is mirrored in CANape/UZ_XCP/uz.A2L (xcp_gw_*),
  * tools/xcp_test/gen_a2l.py and tools/xcp_test/xcp_poll.py: keep in sync. */
 #define OCM_XCP_IN_DIAG_ADDR  0xFFFFC008u
-#define OCM_XCP_IN_DIAG_COUNT 15u
+#define OCM_XCP_IN_DIAG_COUNT 27u
 enum ocm_xcp_in_diag_slot {
     OCM_XCP_DIAG_GW_OCM_SKIPPED_WRITING = 0, /* header copy skipped/torn, retried  */
     OCM_XCP_DIAG_GW_OCM_TORN,                /* DAQ chain rewritten mid-read       */
@@ -75,6 +75,22 @@ enum ocm_xcp_in_diag_slot {
     OCM_XCP_DIAG_GW_IPI_COUNT,               /* IPIs handled (A53 liveness)        */
     OCM_XCP_DIAG_GW_TXQ_LEVEL,               /* DAQ queue fill (gauge, not count)  */
     OCM_XCP_DIAG_GW_MASTER_LOST,             /* sessions closed by the gateway     */
+    /* A53 time profile (XCP_GW_PROFILE, xcp_gateway_a53.h; 0 when off):
+     * microsecond sums of the A53 system counter that wrap after ~71 min -
+     * the master uses differences over a run. Read by
+     * tools/xcp_test/xcp_poll.py --stress only, not part of the A2L. */
+    OCM_XCP_DIAG_GW_PROF_NOW_US,             /* A53 time base                      */
+    OCM_XCP_DIAG_GW_PROF_IDLE_US,            /* CPU time left to the idle probe    */
+    OCM_XCP_DIAG_GW_PROF_IPI_US,             /* in the IPI hook (both phases)      */
+    OCM_XCP_DIAG_GW_PROF_IPI_MAX_US,         /* longest IPI hook, last full second */
+    OCM_XCP_DIAG_GW_PROF_CHAIN_US,           /* DAQ chain OCM -> staging copy      */
+    OCM_XCP_DIAG_GW_PROF_ENQ_US,             /* staging -> queues (FromISR copies) */
+    OCM_XCP_DIAG_GW_PROF_RECORDS,            /* chain records staged (count)       */
+    OCM_XCP_DIAG_GW_PROF_TX_US,              /* tx task: batching + sendto         */
+    OCM_XCP_DIAG_GW_PROF_SENDTO_US,          /* inside lwip_sendto                 */
+    OCM_XCP_DIAG_GW_PROF_SENDTO_N,           /* lwip_sendto calls (count)          */
+    OCM_XCP_DIAG_GW_PROF_TX_KB,              /* datagram bytes handed to lwIP, KiB */
+    OCM_XCP_DIAG_GW_PROF_SENDTO_MAX_US,      /* longest sendto, last full second   */
 };
 
 void ocm_xcp_fifo_init(void);

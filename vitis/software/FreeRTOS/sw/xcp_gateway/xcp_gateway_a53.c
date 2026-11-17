@@ -44,6 +44,9 @@
 #include "ocm_xcp_fifo.h"
 #include <string.h>
 #include <stdint.h>
+#if XCP_GW_PROFILE
+#include "xparameters.h" /* XPAR_CPU_CORTEXA53_0_TIMESTAMP_CLK_FREQ */
+#endif
 
 #define XCP_GW_FRAME_MAX     OCM_XCP_RECORD_MAX /* one R5 queue segment = one datagram */
 #define XCP_TL_HEADER_LEN    4    /* [dlc:u16][ctr:u16]                          */
@@ -189,6 +192,77 @@ volatile uint32_t xcp_gw_sendto_err = 0;
 volatile uint32_t xcp_gw_sendto_drop = 0;
 volatile uint32_t xcp_gw_master_lost = 0;
 
+#if XCP_GW_PROFILE
+/* A53 time profile (XCP_GW_PROFILE, xcp_gateway_a53.h). Time base: the system
+ * counter CNTPCT_EL0 (33.3 MHz here, 30 ns), the same in every task and ISR.
+ * Sums in counter ticks with one writer each - 64-bit loads and stores are
+ * single-copy atomic on AArch64, so the IPI ISR may mirror what a task
+ * writes. Converted to microseconds only for the mirror. */
+#define XCP_GW_PROF_HZ ((uint64_t)XPAR_CPU_CORTEXA53_0_TIMESTAMP_CLK_FREQ)
+/* us = ticks * 1e6 / HZ in 32.32 fixed point: no division per IPI. */
+#define XCP_GW_PROF_US_PER_TICK_Q32 ((uint64_t)((1000000ull << 32) / XCP_GW_PROF_HZ))
+/* Idle probe: a gap of more than ~1 us between two counter reads means the
+ * probe was preempted; such a gap is not idle time. */
+#define XCP_GW_PROF_IDLE_GAP_TICKS (XCP_GW_PROF_HZ / 1000000u + 1u)
+
+static inline uint64_t xcp_gw_ticks(void) {
+    uint64_t v;
+    __asm volatile("isb\n\tmrs %0, cntpct_el0" : "=r"(v)::"memory");
+    return v;
+}
+
+static inline uint32_t xcp_gw_ticks_to_us(uint64_t t) {
+    return (uint32_t)(((__uint128_t)t * XCP_GW_PROF_US_PER_TICK_Q32) >> 32);
+}
+
+/* Maximum per one-second window; the mirror shows the last full window (a
+ * running maximum could only grow, and the master cannot reset it). */
+typedef struct {
+    uint64_t win_start;
+    uint64_t cur;
+    volatile uint64_t last;
+} xcp_gw_prof_max_t;
+
+static void xcp_gw_prof_max_update(xcp_gw_prof_max_t *m, uint64_t now, uint64_t d) {
+    if ((now - m->win_start) >= XCP_GW_PROF_HZ) {
+        m->last = m->cur;
+        m->cur = 0u;
+        m->win_start = now;
+    }
+    if (d > m->cur) {
+        m->cur = d;
+    }
+}
+
+static volatile uint64_t gProfIdle = 0u;     /* writer: idle probe task */
+static volatile uint64_t gProfIpi = 0u;      /* writer: IPI ISR         */
+static volatile uint64_t gProfChain = 0u;    /* writer: IPI ISR         */
+static volatile uint64_t gProfEnq = 0u;      /* writer: IPI ISR         */
+static volatile uint32_t gProfRecords = 0u;  /* writer: IPI ISR         */
+static xcp_gw_prof_max_t gProfIpiMax;        /* writer: IPI ISR         */
+static volatile uint64_t gProfTx = 0u;       /* writer: tx task         */
+static volatile uint64_t gProfSendto = 0u;   /* writer: tx task         */
+static volatile uint32_t gProfSendtoN = 0u;  /* writer: tx task         */
+static volatile uint64_t gProfTxBytes = 0u;  /* writer: tx task         */
+static xcp_gw_prof_max_t gProfSendtoMax;     /* writer: tx task         */
+
+/* Idle probe at the idle priority (the FreeRTOS idle task yields to it,
+ * configIDLE_SHOULD_YIELD): it runs only when no task and no interrupt wants
+ * the CPU and sums the time between back-to-back counter reads. */
+static void xcp_gw_idle_probe_task(void *arg) {
+    (void)arg;
+    uint64_t last = xcp_gw_ticks();
+    for (;;) {
+        const uint64_t now = xcp_gw_ticks();
+        const uint64_t d = now - last;
+        if (d <= XCP_GW_PROF_IDLE_GAP_TICKS) {
+            gProfIdle += d;
+        }
+        last = now;
+    }
+}
+#endif
+
 /*--------------------------------------------------------------------------
  * IPI ISR — read phase (XCP_OUT -> queues): header and CTO mailbox under the
  * seqlock, DAQ chain validated by chain_seq (ocm_xcp_fifo.c, mechanism 5).
@@ -240,6 +314,9 @@ static void xcp_gw_read_out_phase(BaseType_t *woken) {
      * rewrite. A sweep that KEEPS an unacknowledged chain bumps the seqlock
      * but not chain_seq, so this read may take longer than a sweep. */
     if (chain_seq_snap != 0u && chain_seq_snap != gOutChainLast) {
+#if XCP_GW_PROFILE
+        const uint64_t tc0 = xcp_gw_ticks();
+#endif
         ocm_xcp_fifo_prepare_read();
         for (;;) {
             uint16_t len;
@@ -262,6 +339,9 @@ static void xcp_gw_read_out_phase(BaseType_t *woken) {
              * timeout ran out): discard; the new chain is read next IPI. */
             xcp_gw_ocm_torn++;
         }
+#if XCP_GW_PROFILE
+        gProfChain += xcp_gw_ticks() - tc0;
+#endif
     }
 
     /* 3. Commit what was consistent. */
@@ -294,6 +374,10 @@ static void xcp_gw_read_out_phase(BaseType_t *woken) {
         }
     }
     if (chain_ok) {
+#if XCP_GW_PROFILE
+        const uint64_t te0 = xcp_gw_ticks();
+        gProfRecords += n_staged;
+#endif
         gOutChainLast = chain_seq_snap; /* acknowledged to the R5 by the write phase */
         if (capped) {
             xcp_gw_ocm_capped++;
@@ -321,6 +405,9 @@ static void xcp_gw_read_out_phase(BaseType_t *woken) {
                 }
             }
         }
+#if XCP_GW_PROFILE
+        gProfEnq += xcp_gw_ticks() - te0;
+#endif
     }
     if (enqueued) {
         (void)xSemaphoreGiveFromISR(gTxSignal, woken); /* wake the tx task (CTO or DAQ) */
@@ -412,6 +499,20 @@ static void xcp_gw_write_in_phase(BaseType_t *woken) {
     ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_IPI_COUNT, xcp_gw_ipi_count);
     ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_TXQ_LEVEL, (uint32_t)uxQueueMessagesWaitingFromISR(gTxQueue));
     ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_MASTER_LOST, xcp_gw_master_lost);
+#if XCP_GW_PROFILE
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_NOW_US, xcp_gw_ticks_to_us(xcp_gw_ticks()));
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_IDLE_US, xcp_gw_ticks_to_us(gProfIdle));
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_IPI_US, xcp_gw_ticks_to_us(gProfIpi));
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_IPI_MAX_US, xcp_gw_ticks_to_us(gProfIpiMax.last));
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_CHAIN_US, xcp_gw_ticks_to_us(gProfChain));
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_ENQ_US, xcp_gw_ticks_to_us(gProfEnq));
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_RECORDS, gProfRecords);
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_TX_US, xcp_gw_ticks_to_us(gProfTx));
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_SENDTO_US, xcp_gw_ticks_to_us(gProfSendto));
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_SENDTO_N, gProfSendtoN);
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_TX_KB, (uint32_t)(gProfTxBytes >> 10));
+    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_SENDTO_MAX_US, xcp_gw_ticks_to_us(gProfSendtoMax.last));
+#endif
     ocm_xcp_in_gen_publish(gInGen);
     ocm_xcp_fifo_cache_flush_after_write(); /* chain first, then header */
 }
@@ -424,8 +525,16 @@ void xcp_gateway_a53_on_ipi(BaseType_t *pxHigherPriorityTaskWoken) {
     if (!gGwReady) {
         return; /* pre-init IPI (R5 boots first); isr.c still clears the status */
     }
+#if XCP_GW_PROFILE
+    const uint64_t t0 = xcp_gw_ticks();
+#endif
     xcp_gw_read_out_phase(pxHigherPriorityTaskWoken);
     xcp_gw_write_in_phase(pxHigherPriorityTaskWoken);
+#if XCP_GW_PROFILE
+    const uint64_t t1 = xcp_gw_ticks();
+    gProfIpi += t1 - t0;
+    xcp_gw_prof_max_update(&gProfIpiMax, t1, t1 - t0);
+#endif
 }
 
 /*--------------------------------------------------------------------------
@@ -552,6 +661,9 @@ static void xcp_gw_tx_task(void *arg) {
         }
 
         uint32_t fill = 0;
+#if XCP_GW_PROFILE
+        const uint64_t tb0 = xcp_gw_ticks();
+#endif
 
         /* Take pending CTOs first (they jump the DAQ backlog). With both queues
          * empty, block on the ISR's "frames queued" signal so a response on an
@@ -594,11 +706,27 @@ static void xcp_gw_tx_task(void *arg) {
         dst = gMaster; /* consistent copy vs. a concurrent endpoint change */
         taskEXIT_CRITICAL();
         int sent = -1;
+#if XCP_GW_PROFILE
+        gProfTx += xcp_gw_ticks() - tb0; /* batching; the sends are added below */
+#endif
         for (int attempt = 0; attempt <= XCP_GW_SEND_RETRY_MAX; attempt++) {
             if (attempt != 0) {
                 vTaskDelay(1); /* one tick: GEM drains its TX ring by hardware */
             }
+#if XCP_GW_PROFILE
+            const uint64_t ts0 = xcp_gw_ticks();
+#endif
             sent = lwip_sendto(gSock, batch, fill, 0, (struct sockaddr *)&dst, sizeof(dst));
+#if XCP_GW_PROFILE
+            const uint64_t ts1 = xcp_gw_ticks();
+            gProfSendto += ts1 - ts0;
+            gProfTx += ts1 - ts0;
+            gProfSendtoN++;
+            xcp_gw_prof_max_update(&gProfSendtoMax, ts1, ts1 - ts0);
+            if (sent >= 0) {
+                gProfTxBytes += fill;
+            }
+#endif
             if (sent >= 0) {
                 break;
             }
@@ -662,6 +790,13 @@ int xcp_gateway_a53_init(uint32_t thread_stack, uint32_t thread_prio) {
     if (sys_thread_new("xcp_gw_tx", xcp_gw_tx_task, NULL, thread_stack, thread_prio) == NULL) {
         return -5;
     }
+#if XCP_GW_PROFILE
+    gProfIpiMax.win_start = xcp_gw_ticks();
+    gProfSendtoMax.win_start = gProfIpiMax.win_start;
+    /* Diagnostics only: without the probe the profile just shows no idle time. */
+    (void)xTaskCreate(xcp_gw_idle_probe_task, "xcp_gw_idle", configMINIMAL_STACK_SIZE, NULL,
+                      tskIDLE_PRIORITY, NULL);
+#endif
     gGwReady = 1; /* from here on the IPI ISR may touch the queues/FIFO */
     return 0;
 }

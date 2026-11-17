@@ -114,15 +114,40 @@ A53 HANG during the 900 B run (~16:42, 5 min after boot):
   ullCriticalNesting 1, GICC_PMR 0x90 (FreeRTOS critical mask) forever,
   tick frozen at 31462, IPI (ID 67) and tick (ID 68) pending, xYieldPending
   1, uxTopReadyPriority 9 although ready list 3 is empty, gTxSignal holds a
-  token that is never taken. I.e. corrupted FreeRTOS scheduler state.
+  token that is never taken.
 - Ruled out: GIC priorities (IPI/GEM 0xA0, tick 0xF0, mask 0x90), FPU
   context (port saves it in the IRQ entry), EL3 stack (60 KB), tx/idle/
   timer task stack overflow (fill pattern intact), neighbouring buffers
   (only kernel/BSP variables around the kernel lists).
-- Leading suspect, not proven: the gateway uses ONE lwIP socket from two
-  tasks at once (rx task blocks in lwip_recvfrom while the tx task calls
-  lwip_sendto) with LWIP_NETCONN_FULLDUPLEX = 0, which lwIP does not
-  support. The hang hit right when a command arrived while DAQ streamed.
+- ROOT CAUSE (confirmed the same evening): the FreeRTOS kernel was built
+  WITHOUT the portMEMORY_BARRIER patch
+  (tcl_scripts/vitis_patch_UltraZohm_freertos_bsp.tcl). In the workspace
+  regeneration of 2026-11-17 13:57, `bsp regenerate` failed on a file held
+  by another process (libsrc/standalone_v8_0/src/arm/cortexa9/sleep.c), the
+  patch step then found no FreeRTOSConfig.h and only printed a warning, and
+  Vitis generated the BSP sources later without the patch
+  (vitis/logs/generate_workspace_17-11-2026_13-57-45-08.log). The June
+  workspace (July bench, 1 h soak) had the patch.
+- Without the barrier, GCC -O2 loads pxTCB and its list containers once,
+  before the xPendingReadyList loop of xTaskResumeAll(). With two or more
+  tasks in that list, the second pass works on the first TCB again and
+  decrements the "list count" through a NULL container (x3 = 0, i.e. the
+  u64 at address 0, the first vector-table entry), so
+  xPendingReadyList.uxNumberOfItems never reaches 0: endless loop inside the
+  critical section. Two pending tasks need two ISRs readying tasks while the
+  scheduler is suspended, here the GEM (xemacif_input_thread, prio 3) and
+  the IPI (xcp_gw_tx, prio 2), hence load dependent.
+- Proof on the hung board (xsct, A53 halted briefly and resumed): pc in the
+  loop, x3 = 0 and x0 = TCB of xemacif_input_thread in every sample, the
+  pending list holds xcp_gw_tx with count 1; the u64 at 0x0 went from
+  0x14000630 (`b _boot`) to 0xFFFFFFB2_CDBF6B90 and kept falling by
+  ~26 M/s: 3.3e11 passes = 3.5 h = the time since the hang. The workspace
+  tasks.o is identical to a rebuild without the barrier; with the barrier
+  (or -fno-strict-aliasing) the loop re-reads the list head on every pass.
+- The workspace headers were re-patched the same evening with the project's
+  own uz_vitis_patch_freertos_bsp; platform and FreeRTOS app to be rebuilt.
+- The one-socket-from-two-tasks use of lwIP (LWIP_NETCONN_FULLDUPLEX = 0),
+  suspected first, is not the cause of this hang (still a design point).
 - The board stays hung (state preserved); a single-core A53 restart is
   excluded (known mailbox deadlock), so both apps must be programmed again.
 

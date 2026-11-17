@@ -70,6 +70,62 @@ only (`xcp_poll.py --stress`, 20-60 s each):
   the ISR (DAQ queue in TCM, lower control rate). Starting the 100 us
   interval at the end of a sweep would only remove the wasted hold sweeps.
 
+## Bench run 2026-11-17 evening, profile build (93f74de flashed, asserts on)
+
+Functional checks (scratchpad script, all against the live board):
+- 24 of 24 passed: writes accepted for .bss/.data, refused with
+  ERR_WRITE_PROTECTED (and counted) for .text, .rodata, heap, stack, ATCM,
+  BTCM, OCM; reads refused with ERR_ACCESS_DENIED outside R5 memory and
+  across the end of R5 DDR; ODT entry 241 B and prescaler 2 refused; DAQ
+  tables overflow after 765 entries in one 50-ODT list; oversize (300 B)
+  and malformed datagrams leave the session intact; 30 x connect / DAQ
+  320 Mbit/s / stop / disconnect without any loss counter moving.
+- Address 0 itself is not readable (engine null-pointer check), contrary
+  to "TCM readable" in the docs. Harmless, docs to be adjusted.
+- Rasters: 40000 / 1000 / 100 / 10 / 1 Hz on events 0..4.
+
+R5 time profile (xcp_poll.py --stress, 20 s each, 40 kHz):
+
+| B/cycle | exchanges/s | copy CPU us/KB | flush CPU us/KB | xcp_r5_event avg (max) | ISR / exchanges / rest of main loop |
+|---|---|---|---|---|---|
+| 8   | 9201 | (tiny) | (tiny) | 1.23 (1.91) us | 61.9 / 3.0 / 35.1 % |
+| 250 | 9337 | 2.52 | 1.82 | 1.66 (2.84) us | 63.7 / 5.8 / 30.5 % |
+| 500 | 9286 | 3.03 | 1.54 | 2.10 (3.31) us | 65.7 / 10.5 / 23.8 % |
+| 750 | 9279 | 3.11 | 1.61 | 2.59 (4.05) us | 67.7 / 15.5 / 16.8 % |
+
+- The copy and flush cost only ~4.6 us of CPU per KB together (the wall
+  time is ~3x that because the ISR interrupts them). At 750 B the R5 still
+  idles 17 % of the time. So the ~25 us/KB "ceiling" derived earlier from
+  exchange rates was wrong: the overload collapse is probably not CPU but
+  the exchange scheduling (a long rewrite exchange is followed at once by a
+  keep exchange, then the R5 waits for the next 100 us slot). Needs the
+  profile at 1000-1500 B to confirm; the run stopped before that.
+- The XCP part of the ISR: ~1.2 us + ~1.8 us per KB of measured data (one
+  ODT), the rest of ISR_Control ~14.2 us.
+
+A53 HANG during the 900 B run (~16:42, 5 min after boot):
+- DAQ data arrived for the full 20 s, then commands got no answer; no ping,
+  no ARP, no packets at all from the board; Ethernet link still up. R5
+  alive (XCP_OUT cycle_seq rising, DAQ still running, chains given up after
+  the 50-exchange hold since nothing acknowledges).
+- A53 #0 "Running" in xsct; halted for inspection (then resumed): stuck in
+  xTaskResumeAll() (tasks.c 2244-2260, the xPendingReadyList loop) called
+  from xQueueSemaphoreTake() of xcp_gw_tx_task (xSemaphoreTake(gTxSignal)),
+  ullCriticalNesting 1, GICC_PMR 0x90 (FreeRTOS critical mask) forever,
+  tick frozen at 31462, IPI (ID 67) and tick (ID 68) pending, xYieldPending
+  1, uxTopReadyPriority 9 although ready list 3 is empty, gTxSignal holds a
+  token that is never taken. I.e. corrupted FreeRTOS scheduler state.
+- Ruled out: GIC priorities (IPI/GEM 0xA0, tick 0xF0, mask 0x90), FPU
+  context (port saves it in the IRQ entry), EL3 stack (60 KB), tx/idle/
+  timer task stack overflow (fill pattern intact), neighbouring buffers
+  (only kernel/BSP variables around the kernel lists).
+- Leading suspect, not proven: the gateway uses ONE lwIP socket from two
+  tasks at once (rx task blocks in lwip_recvfrom while the tx task calls
+  lwip_sendto) with LWIP_NETCONN_FULLDUPLEX = 0, which lwIP does not
+  support. The hang hit right when a command arrived while DAQ streamed.
+- The board stays hung (state preserved); a single-core A53 restart is
+  excluded (known mailbox deadlock), so both apps must be programmed again.
+
 ## Changes after the July hardware run (2026-11-16/17)
 
 Syntax-checked with the Vitis toolchains; the 2026-11-16 part ran in the

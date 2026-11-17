@@ -129,7 +129,12 @@ bsp regenerate
 
 #####################################################
 puts "Info (UltraZohm): generate Platform project"
+# Patch again right before the build (the FreeRTOS BSP sources may have been
+# generated after the first patch) and make sure the kernel library is built
+# with it.
+uz_vitis_patch_freertos_bsp $WS_PATH
 platform generate
+uz_vitis_verify_freertos_bsp $WS_PATH
 
 #####################################################
 # clean up stale _ide folders - see Issue #353 in uz_sw

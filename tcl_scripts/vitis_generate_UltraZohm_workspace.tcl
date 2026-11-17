@@ -256,7 +256,12 @@ proc vitis_main {} {
   platform clean
   app_clean
   puts "Info (UltraZohm): build platform and all application projects"
+  # Patch again: the FreeRTOS BSP sources may have been generated after the
+  # first patch (e.g. after a failed 'bsp regenerate'). Then make sure the
+  # kernel library is built with it before the applications are built.
+  uz_vitis_patch_freertos_bsp $WS_PATH
   platform generate
+  uz_vitis_verify_freertos_bsp $WS_PATH
   app_build
 
 

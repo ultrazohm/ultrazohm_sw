@@ -4,7 +4,7 @@ set -euo pipefail
 # Resolve the repository independently of the workspace mount path.
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-# Build after the workspace is mounted, and retain the wheel for run.sh.
+# Build the CLI from this checkout after the workspace is mounted.
 # Stage this build separately so existing wheels for other hosts cannot be
 # selected accidentally. Install exactly the artifact produced by this build.
 wheel_stage="$(mktemp -d)"
@@ -15,8 +15,6 @@ if [[ ${#wheels[@]} -ne 1 || ! -f "${wheels[0]}" ]]; then
     echo "Expected exactly one UltraZohm wheel from the container build." >&2
     exit 1
 fi
-mkdir -p uz_cli/target/wheels
-cp -- "${wheels[0]}" uz_cli/target/wheels/
 python -m pip install --force-reinstall --no-deps "${wheels[0]}"
 python -m pip install "${wheels[0]}[examples]"
 python -m pip install -r docs/requirements.txt

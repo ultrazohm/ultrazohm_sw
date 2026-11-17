@@ -23,6 +23,9 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=7", "pyinstaller>=6.0", "ruff==0.17.2"]
+# Live acquisition backend (start.sh --use-live). Upgrade with:
+#   uv lock --upgrade-package ultrazohm_cli
+live = ["ultrazohm_cli>=0.1.1.dev0"]
 
 [project.scripts]
 uz-dataviewer = "uz_dataviewer.app:main"

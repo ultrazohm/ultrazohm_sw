@@ -8,65 +8,28 @@ This guide covers setup and usage. See the [wire/API specification](docs/protoco
 for firmware contracts and the [architecture](docs/architecture.md) for ownership,
 concurrency, storage guarantees and deferred work.
 
-## One-command setup and launch
+## Install
 
-With uv installed, run from the repository root:
-
-```sh
-./uz_cli/run.sh
-```
-
-On Windows PowerShell:
-
-```powershell
-.\uz_cli\run.ps1
-```
-
-Both launchers provision the Python series from `.devcontainer/Dockerfile`, create
-`uz_cli/.venv-host` (or `.venv-container` in Docker), install a compatible binary
-wheel plus example dependencies, and start the interactive CLI. No Rust compiler
-is needed. Run the scripts; do not source them. Virtual environments belong to
-the machine/container that created them.
-
-If local wheels exist in `uz_cli/target/wheels`, choose the newest local build or
-a GitHub release. Downloads verify SHA-256 checksums and are cached there.
-The release channel defaults to `testing` on `feature/uz_cli26`, otherwise `stable`.
-An explicit channel controls downloads; local builds can come from either channel.
-Downloaded wheels contain released code, not unbuilt local Rust changes.
-
-| Option | Purpose |
-|---|---|
-| `--latest --channel stable` or `testing` | Download the newest release in that channel |
-| `--local-newest` | Use the newest compatible local wheel by modification time |
-| `--wheel PATH` | Use an exact wheel file |
-| `--venv PATH` | Use a different environment |
-| `--launch shell` | Open an activated shell |
-| `--launch none` | Install without starting a process |
-| `--launch example` | Run `example_python_usage.py`; review its device settings first |
-| `--no-examples` | Omit Matplotlib and other example-only dependencies |
-
-Without an interactive terminal, choose a wheel explicitly with `--wheel`,
-`--local-newest` or `--latest`. Arguments after `--` go to the launched program:
+The CLI and Python API are published on PyPI as `ultrazohm_cli` (Windows x86-64
+and Linux x86-64 with glibc 2.28+, Python 3.10 or newer). No Rust compiler is
+needed. With [uv](https://docs.astral.sh/uv/):
 
 ```sh
-./uz_cli/run.sh --local-newest --launch cli -- --help
-./uz_cli/run.sh --wheel /path/to/ultrazohm_cli-VERSION-TAGS.whl --launch cli -- serve --interactive --device 192.168.1.233:1000 --format csv
+uv tool install ultrazohm_cli                      # newest stable release, as a command
+uv tool install --prerelease allow ultrazohm_cli   # newest build from develop or the testing branch
+uv tool install ultrazohm_cli==0.1.1.dev0          # one exact build (see its GitHub release)
+uv tool install ./uz_cli/target/wheels/ultrazohm_cli-*.whl   # a local build (see Build)
+ultrazohm_cli --help
 ```
 
-PowerShell accepts the same options. Setup can also be invoked directly:
+`uv tool upgrade ultrazohm_cli` updates it. If uv picks an older system Python,
+add `--python 3.12`. For the Python API, install the package into your project
+or virtual environment instead (`uv add ultrazohm_cli` or
+`pip install ultrazohm_cli`); `ultrazohm_cli[examples]` adds Matplotlib for the
+example script. `python -m ultrazohm_cli` runs the same CLI.
 
-```sh
-uv run --no-project --python 3.12 uz_cli/setup_uv.py --examples
-```
-
-Direct setup defaults to installation only; `--python VERSION` selects the
-interpreter for a new environment. Existing environments must use that Python
-series. Setup prints the activation command and validates the installed CLI
-without connecting to hardware. Re-running reinstalls the selected wheel.
-
-Inside the activated environment, use `ultrazohm_cli`, `python -m ultrazohm_cli`, or
-`uv run --no-project --active ultrazohm_cli`. You can also call the environment's
-`bin/ultrazohm_cli` or `Scripts/ultrazohm_cli.exe` directly.
+Each GitHub release `ultrazohm-v<VERSION>` also contains both wheels, the data
+viewer bundles and `SHA256SUMS`, for installing without PyPI access.
 
 ## Build
 

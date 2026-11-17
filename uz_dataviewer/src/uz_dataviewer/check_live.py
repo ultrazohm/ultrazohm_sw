@@ -9,8 +9,8 @@ def main():
         print(f'Cannot load the live backend: {exc}', file=sys.stderr)
         return 1
     if not all(callable(getattr(Client, name, None)) for name in ('catalog', 'read_since')):
-        print('The selected CLI wheel lacks live-viewer APIs. Use a current branch wheel '
-              'with --live-wheel or a compatible release via --live-channel testing.', file=sys.stderr)
+        print('The selected CLI wheel lacks live-viewer APIs. Use a current wheel with '
+              '--live-wheel, or --use-live for the locked ultrazohm_cli version.', file=sys.stderr)
         return 1
     print('Live backend ready.')
     return 0

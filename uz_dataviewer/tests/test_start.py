@@ -18,9 +18,8 @@ def launcher(tmp_path):
         pytest.skip('Bash launcher test requires a POSIX host')
     root = tmp_path/'checkout with spaces'
     project = root/'uz_dataviewer'
-    cli = root/'uz_cli'
     tools = tmp_path/'tools'
-    for directory in (project, cli, tools):
+    for directory in (project, tools):
         directory.mkdir(parents=True)
     (root/'.python-version').write_text('3.12\n')
     shutil.copyfile(Path(__file__).parents[1]/'start.sh', project/'start.sh')
@@ -35,6 +34,8 @@ if name == 'uv' and '--no-project' in sys.argv:
     os.execv(sys.executable, [sys.executable, *sys.argv[i:]])
 with open(os.environ['LAUNCH_LOG'], 'a') as log:
     log.write(json.dumps({'name': name, 'args': sys.argv[1:], 'cwd': os.getcwd()})+'\n')
+if name == 'uv' and sys.argv[1] == 'sync' and '--extra' in sys.argv and os.environ.get('FAIL_BACKEND'):
+    raise SystemExit(7)
 if name == 'uv' and sys.argv[1] == 'sync':
     project = Path(sys.argv[sys.argv.index('--project')+1])
     scripts = project/'.venv/bin'
@@ -43,14 +44,11 @@ if name == 'uv' and sys.argv[1] == 'sync':
         target = scripts/child
         target.write_text(Path(sys.argv[0]).read_text())
         target.chmod(0o755)
-if name == 'setup_uv.py':
-    raise SystemExit(int(os.environ.get('FAIL_BACKEND', '0')))
 if name == 'python':
     raise SystemExit(int(os.environ.get('FAIL_CHECK', '0')))
 '''
-    for executable in (tools/'uv', cli/'setup_uv.py'):
-        executable.write_text(stub)
-        executable.chmod(0o755)
+    (tools/'uv').write_text(stub)
+    (tools/'uv').chmod(0o755)
     environment = {**os.environ, 'PATH': str(tools)+os.pathsep+os.environ['PATH'], 'LAUNCH_LOG': str(log)}
     def run(*args, **extra_env):
         result = subprocess.run(['bash', str(project/'start.sh'), *args], cwd=tmp_path,
@@ -67,41 +65,40 @@ def test_offline_launch_does_not_setup_cli(launcher):
     assert calls[0]['args'][-4:] == ['uz-dataviewer', 'a recording.csv', '--backend', 'polars']
 
 
-def test_use_live_installs_cli_in_viewer_env_before_launch(launcher):
-    result, calls = launcher.run('--use-live', '--live-channel', 'testing', 'a recording.csv')
+def test_use_live_installs_locked_cli_in_viewer_env_before_launch(launcher):
+    result, calls = launcher.run('--use-live', 'a recording.csv')
     assert result.returncode == 0, result.stderr
-    assert [c['name'] for c in calls] == ['uv', 'setup_uv.py', 'python', 'uz-dataviewer']
+    assert [c['name'] for c in calls] == ['uv', 'python', 'uz-dataviewer']
     assert calls[0]['args'][0] == 'sync'
-    assert '--inexact' in calls[0]['args']
-    assert calls[1]['args'] == ['--python', '3.12', '--venv', str(launcher.project/'.venv'), '--launch', 'none',
-                               '--no-examples', '--channel', 'testing']
-    assert calls[2]['args'] == ['-m', 'uz_dataviewer.check_live']
-    assert calls[3]['args'] == ['--use-live', '--live-repo', str(launcher.root), 'a recording.csv']
+    assert calls[0]['args'][-3:] == ['--extra', 'live', '--inexact']
+    assert calls[1]['args'] == ['-m', 'uz_dataviewer.check_live']
+    assert calls[2]['args'] == ['--use-live', '--live-repo', str(launcher.root), 'a recording.csv']
     assert len({c['cwd'] for c in calls}) == 1
 
 
-def test_explicit_live_wheel_uses_same_setup_flow(launcher):
+def test_explicit_live_wheel_replaces_the_locked_cli(launcher):
     wheel = launcher.root/'ultrazohm_cli-test wheel.whl'
     wheel.touch()
     result, calls = launcher.run('--live-wheel', str(wheel), '--help')
     assert result.returncode == 0, result.stderr
-    assert calls[1]['name'] == 'setup_uv.py'
-    assert calls[1]['args'][-2:] == ['--wheel', str(wheel)]
+    assert [c['name'] for c in calls] == ['uv', 'uv', 'python', 'uz-dataviewer']
+    assert calls[1]['args'][:2] == ['pip', 'install']
+    assert calls[1]['args'][-3:] == ['--no-deps', '--reinstall', str(wheel)]
     assert calls[-1]['args'] == ['--use-live', '--live-repo', str(launcher.root), '--help']
 
 
-@pytest.mark.parametrize('variable,expected', [('FAIL_BACKEND', ['uv', 'setup_uv.py']),
-                                              ('FAIL_CHECK', ['uv', 'setup_uv.py', 'python'])])
+@pytest.mark.parametrize('variable,expected', [('FAIL_BACKEND', ['uv']),
+                                              ('FAIL_CHECK', ['uv', 'python'])])
 def test_failed_live_setup_never_opens_viewer(launcher, variable, expected):
     result, calls = launcher.run('--use-live', **{variable: '7'})
     assert result.returncode != 0
     assert [c['name'] for c in calls] == expected
 
 
-def test_invalid_live_channel_fails_before_setup(launcher):
-    result, calls = launcher.run('--use-live', '--live-channel', 'wrong')
+def test_missing_live_wheel_fails_before_setup(launcher):
+    result, calls = launcher.run('--live-wheel', 'missing.whl')
     assert result.returncode != 0
-    assert 'stable or testing' in result.stderr
+    assert 'requires a compatible ultrazohm_cli wheel' in result.stderr
     assert calls == []
 
 
@@ -131,7 +128,7 @@ def test_shell_launch_sets_up_environment_without_starting_gui(launcher, live):
     assert calls[-1]['args'] == ['-m', 'uz_dataviewer.env_shell']
     assert all(c['name'] != 'uz-dataviewer' for c in calls)
     assert '--inexact' in calls[0]['args']  # Preserve an already installed CLI wheel.
-    assert any(c['name'] == 'setup_uv.py' for c in calls) == live
+    assert ('live' in calls[0]['args']) == live
 
 
 @pytest.mark.parametrize('args', [('--launch',), ('--launch', 'wrong'),
@@ -189,12 +186,14 @@ def test_shared_launcher_platform_handoff(tmp_path, monkeypatch, platform, launc
         calls.append(args)
         return 7
     monkeypatch.setattr(module.subprocess, 'call', start)
-    assert module.main(['--use-live', '--launch', launch, '--live-channel', 'testing']) == 7
+    wheel = tmp_path / 'ultrazohm_cli-test.whl'
+    wheel.touch()
+    assert module.main(['--use-live', '--launch', launch, '--live-wheel', str(wheel)]) == 7
     scripts = project / '.venv' / ('Scripts' if platform == 'nt' else 'bin')
     python = str(scripts / ('python.exe' if platform == 'nt' else 'python'))
     assert calls[0][0:2] == ['uv', 'sync']
-    assert calls[1][1] == str(project.parent / 'uz_cli' / 'setup_uv.py')
-    assert calls[1][-2:] == ['--channel', 'testing']
+    assert calls[0][-3:] == ['--extra', 'live', '--inexact']
+    assert calls[1] == ['uv', 'pip', 'install', '--python', python, '--no-deps', '--reinstall', str(wheel)]
     assert calls[2] == [python, '-m', 'uz_dataviewer.check_live']
     if launch == 'shell':
         assert calls[3] == [python, '-m', 'uz_dataviewer.env_shell']

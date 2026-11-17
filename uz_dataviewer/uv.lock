@@ -483,6 +483,18 @@ wheels = [
 ]
 
 [[package]]
+name = "ultrazohm-cli"
+version = "0.1.1.dev0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "polars" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/dd/15/362b54ec8bcef8984d3b8bc2518f736e6aebdbf6f5b2e248cd70d2264736/ultrazohm_cli-0.1.1.dev0-cp310-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:4d33be62adf7b7a07802348fdae101e77a02c152c612c93ecf2e7b679128311a", size = 7922782, upload-time = "2026-11-17T14:04:26.173Z" },
+    { url = "https://files.pythonhosted.org/packages/1f/16/27f09c54d75a512d675f1ee5a49c33af1042ad42537a6c262e06f53a205e/ultrazohm_cli-0.1.1.dev0-cp310-abi3-win_amd64.whl", hash = "sha256:f9712fadfd3fadd771c1297fb73a0fcf164f605180520dac0099d8cb6fbd43aa", size = 8134671, upload-time = "2026-11-17T14:04:28.098Z" },
+]
+
+[[package]]
 name = "uz-dataviewer"
 version = "0.1.0"
 source = { editable = "." }
@@ -501,6 +513,9 @@ dev = [
     { name = "pytest" },
     { name = "ruff" },
 ]
+live = [
+    { name = "ultrazohm-cli" },
+]
 
 [package.metadata]
 requires-dist = [
@@ -513,5 +528,6 @@ requires-dist = [
     { name = "pyinstaller", marker = "extra == 'dev'", specifier = ">=6.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7" },
     { name = "ruff", marker = "extra == 'dev'", specifier = "==0.17.2" },
+    { name = "ultrazohm-cli", marker = "extra == 'live'", specifier = ">=0.1.1.dev0" },
 ]
-provides-extras = ["dev"]
+provides-extras = ["dev", "live"]

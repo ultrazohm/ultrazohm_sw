@@ -64,7 +64,7 @@ Run the launcher from the repository root (Linux/macOS):
 ```
 
 Ordinary startup shows the offline workspace, even if the CLI wheel is already
-installed. Pass `--use-live` (or `--live-wheel PATH` / `--live-channel CHANNEL`)
+installed. Pass `--use-live` (or `--live-wheel PATH`)
 to include Live Data, Live Plots, Control, and Python. The Python entry point and
 installed `uz-dataviewer` command also accept `--use-live` to enable those panels.
 
@@ -395,7 +395,7 @@ Other CLI clients are not locked.
 
 ### Starting acquisition
 
-Enable live support using the same wheel selection/download flow as `uz_cli`:
+Enable live support:
 
 ```bash
 ./uz_dataviewer/start.sh --use-live
@@ -405,11 +405,9 @@ Enable live support using the same wheel selection/download flow as `uz_cli`:
 .\uz_dataviewer\start.ps1 --use-live
 ```
 
-The launcher installs the locked viewer dependencies, then calls `uz_cli/run.sh`
-or `run.ps1` in setup-only mode, targeting `uz_dataviewer/.venv`. It offers the
-CLI's local-wheel menu when compatible local wheels exist, or downloads the latest
-release when none exist. No Rust compiler is needed for prebuilt wheels. The CLI
-launcher does not start an interactive CLI or connect to hardware; the viewer
+The launcher installs the locked viewer dependencies including the `live` extra,
+which pins the `ultrazohm_cli` version in `uv.lock`, into `uz_dataviewer/.venv`.
+No Rust compiler is needed. Setup does not connect to hardware; the viewer
 opens afterward and **Connect** starts acquisition; **Existing service → Attach** reuses an existing service. Relative
 recording arguments keep their original working directory.
 
@@ -430,11 +428,10 @@ Both launchers pass their checkout root, so this also works from another working
 directory. With a manually installed viewer, use `--use-live --live-repo PATH`
 when the repository cannot be discovered from the current directory or source tree.
 
-The release channel follows the CLI default. Override it with
-`--use-live --live-channel testing` (or `stable`). A published wheel must contain
-the live-viewer APIs; incompatible older wheels fail during setup with an error.
-For unpublished prototype changes, build a matching wheel in the development
-container and use `--live-wheel` to select it explicitly. That flag also enables
+To move to a newer published CLI, run `uv lock --upgrade-package ultrazohm_cli`
+in `uz_dataviewer` and commit the lockfile. For unpublished changes, or one exact
+build from a GitHub release, use `--live-wheel` to install that wheel over the
+locked version; a wheel without the live-viewer APIs fails during setup. That flag also enables
 live setup, so `--use-live` is optional with an exact wheel:
 
 ```bash
@@ -577,8 +574,6 @@ PowerShell supports the same options through `start.ps1`. Existing optional CLI
 packages are preserved in shell mode. Run `python measurement.py` or
 `ultrazohm_cli status` (when the CLI wheel is installed). Type `deactivate` to deactivate
 within the child shell, or `exit` to return to the original terminal.
-The CLI equivalent is `./uz_cli/run.sh --local-newest --launch shell`
-(`run.ps1` on Windows).
 
 ### Combined desktop distribution
 

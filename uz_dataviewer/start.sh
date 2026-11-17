@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Install runtime dependencies with uv and launch the native data viewer.
-# Usage: start.sh [--launch gui|shell] [--use-live] [--live-wheel PATH] [--live-channel stable|testing] [VIEWER_ARGUMENTS...]
+# Usage: start.sh [--launch gui|shell] [--use-live] [--live-wheel PATH] [VIEWER_ARGUMENTS...]
 set -euo pipefail
 
 if ! command -v uv >/dev/null 2>&1; then

@@ -5,20 +5,20 @@ extern DS_Data Global_Data;
 static const uz_testbench_config_t testbench_config = {
     .motor = {
         [UZ_MOTOR_BECKHOFF] = {
-            .inverter = UZ_INVERTER_DHG,
+            .inverter = UZ_INVERTER_WS,
             .resolver_channel = 1U,
             .resolver_direction = 1
         },
         [UZ_MOTOR_HM] = {
-            .inverter = UZ_INVERTER_WS,
+            .inverter = UZ_INVERTER_DHG,
             .resolver_channel = 3U,
             .resolver_direction = -1
         }
     },
     .inverter = {
         [UZ_INVERTER_DHG] = {
-            .pwm_output = UZ_PWM_OUTPUT_2L_1,
-            .deadtime_output = UZ_DEADTIME_OUTPUT_2L_1,
+            .pwm_output = UZ_PWM_OUTPUT_2L_0,
+            .deadtime_output = UZ_DEADTIME_OUTPUT_2L_0,
             .deadtime_us = UZ_PWM_DEADTIME_IN_US,
             .adc = {
                 .source = UZ_ADC_SOURCE_A2,
@@ -41,27 +41,26 @@ static const uz_testbench_config_t testbench_config = {
             }
         },
         [UZ_INVERTER_WS] = {
-            .pwm_output = UZ_PWM_OUTPUT_2L_0,
-            .deadtime_output = UZ_DEADTIME_OUTPUT_2L_0,
+            .pwm_output = UZ_PWM_OUTPUT_2L_1,
+            .deadtime_output = UZ_DEADTIME_OUTPUT_2L_1,
             .deadtime_us = UZ_PWM_DEADTIME_IN_US,
-            /* The WS ADC adapter and calibration are not identified in the current source. */
             .adc = {
-                .source = UZ_ADC_SOURCE_A1,
+                .source = UZ_ADC_SOURCE_A3,
                 .current_channels = {.phase_a = 0U, .phase_b = 1U, .phase_c = 2U, .dc_link = 7U},
                 .voltage_channels = {.phase_a = 4U, .phase_b = 5U, .phase_c = 6U, .dc_link = 3U},
                 .current_scaling = {
-                    .phase_a_gain = 1.0f, .phase_b_gain = 1.0f,
-                    .phase_c_gain = 1.0f, .dc_link_gain = 1.0f,
-                    .phase_a_offset = -1.75f, .phase_b_offset = -1.75f,
-                    .phase_c_offset = -1.75f, .dc_link_offset = 3.7f
+                    .phase_a_gain = 1.0f / 0.03993f, .phase_b_gain = 1.0f / 0.03993f,
+                    .phase_c_gain = 1.0f / 0.03993f, .dc_link_gain = 1.0f,
+                    .phase_a_offset = 1.7f, .phase_b_offset = 1.75f,
+                    .phase_c_offset = 1.77f, .dc_link_offset = 0.0f
                 },
                 .voltage_scaling = {
                     .phase_a_gain = 1.0f, .phase_b_gain = 1.0f,
-                    .phase_c_gain = 1.0f, .dc_link_gain = 1.0f,
+                    .phase_c_gain = 1.0f, .dc_link_gain = 1.0f / 0.003764f,
                     .phase_a_offset = 0.0f,
                     .phase_b_offset = 0.0f,
                     .phase_c_offset = 0.0f,
-                    .dc_link_offset = 0.0f
+                    .dc_link_offset = -3.0f
                 }
             }
         }

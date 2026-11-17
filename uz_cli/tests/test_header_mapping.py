@@ -58,7 +58,9 @@ class HeaderMappingTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn('JSO_custom_theta', result.stdout)
         self.assertNotIn('JSO_theta_mech', result.stdout)
-        self.assertIn(str(self.repo / 'artifacts' / 'live_logs'), result.stderr)
+        output_line = next(line for line in result.stderr.splitlines() if line.startswith('Session output: '))
+        session_path = output_line.removeprefix('Session output: ').removesuffix(' (logging starts on request)')
+        self.assertEqual(Path(session_path).parent, self.repo / 'artifacts' / 'live_logs')
         self.assertFalse(self.output.exists())  # No intermediate mapping file needed.
         # An explicit profile is never silently filtered.
         profile['initial_channels']['4'] = 'JSO_theta_mech'

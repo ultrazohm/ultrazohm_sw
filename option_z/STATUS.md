@@ -204,6 +204,42 @@ A53 HANG during the 900 B run (~16:42, 5 min after boot):
   value): commands are executed only inside the DAQ exchange, and in
   overload one exchange takes ~390 us and every second one is a keep.
 
+## Bench runs 2026-11-17/18 night: A53 profile, transport redesign
+
+All on the board, 40 kHz, R5 and A53 rebuilt with the Vitis makefiles and
+programmed with the Run_UltraZohm script. Details and the bottleneck
+analysis: IMPROVEMENTS.md 2.4 and 2.5.
+
+- A53 time profile (`d17bdeea`): the A53 idles 38-42 % at 900-1000 B/cycle
+  (40k datagrams/s, ~12 us of A53 time per datagram) and 57 % in the
+  1100 B overload. It is not the limit.
+- Transport redesign (`97ac9f86`): commands decoupled from DAQ, DAQ
+  exchanges driven by the A53's acknowledge, 1 ms heartbeat, 128 KB queue.
+  24/24 functional checks; 8 B/cycle 960 instead of 9800 IPIs and datagrams
+  per second; 1000 B/cycle clean without kept chains (acknowledge ~48 us
+  after the IPI); command round trip 238 us idle, 590 us at 1000 B/cycle,
+  1130 us at 1100 B/cycle (overload).
+- Soaks with back-to-back commands: 900 B/cycle 10 min, 942,781 commands,
+  0 timeouts, R5 queue lost +0. 1000 B/cycle 10 min: the R5 fell behind
+  within the first minute and stayed there (queue lost +3.57 M, ~15 %,
+  copy ~7.3 us/KB) - the same build ran 30 s clean before. Bistable near the
+  limit, see IMPROVEMENTS.md 2.4.
+- Found and fixed on the way: with commands offered at once, adopting a
+  stale mailbox response at the next IPI swallowed the R5's quick answer to
+  the first command of each new session (1 s master timeout); the adoption
+  is now synchronous in the rx task. Cutting a DAQ copy short for a command
+  lost 23 % of the DAQ data at 1000 B/cycle and was taken out again.
+- Tried and reverted: prefetch in the R5 copy, head drop of a stuck
+  backlog, at most 10 segments per DAQ exchange - none made the uncached
+  copy cheaper (IMPROVEMENTS.md 2.4).
+- Single DAQ frames missing at 500 B/cycle in 2 of 14 runs (71 and 48
+  frames), `xcp_gw_sendto_drop` 0 and no Windows UDP or adapter counter
+  moved. The PC uses a Realtek USB GbE adapter, and the new transport sends
+  ~10 datagrams per burst. Localisation is prepared: the GEM's frames_txed
+  counter (0xFF0E0108, clear-on-read, readable over JTAG without halting)
+  matched the adapter's received count frame for frame in 6 clean runs; a
+  run with gaps will show whether they leave the board.
+
 ## Changes after the July hardware run (2026-11-16/17)
 
 Syntax-checked with the Vitis toolchains; the 2026-11-16 part ran in the

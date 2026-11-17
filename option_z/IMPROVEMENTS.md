@@ -74,9 +74,10 @@ never read, because the R5 rewound the XCP_OUT chain every sweep (943 of
 Closed on 2026-11-16 without a ring buffer: the R5 keeps a non-empty chain in
 place until the A53 acknowledges its `chain_seq` (`out_ack` in the XCP_IN
 header) and holds new samples in its 32 KB queue meanwhile
-(`xcp_r5_out_held`); after 50 unacknowledged sweeps it gives up
-(`xcp_r5_out_overwritten`, gateway dead or stalled). Since then
-`xcp_gw_ocm_cycles_missed` is an IPI-latency indicator, not a loss counter.
+(`xcp_r5_out_held`); after 5 ms without the acknowledge it gives up
+(`xcp_r5_out_overwritten`, gateway dead or stalled; until 2026-11-18: 50
+sweeps). Since then `xcp_gw_ocm_cycles_missed` is an IPI-latency indicator,
+not a loss counter.
 
 ### 2.2 Torn-read window — RESOLVED (CP7)
 XCP_OUT now carries a seqlock (odd while the R5 writes, published after the
@@ -96,6 +97,100 @@ If throughput still limits: a slower raster in CANape (the engine has no DAQ
 prescaler), or the parked lwIP BSP
 knobs (`TCP_SND_BUF`-class tuning does not apply to UDP; pbuf/GEM BD counts
 would).
+
+### 2.4 Throughput limit — measured 2026-11-17/18 (40 kHz)
+Measured with the R5 profile (`xcp_r5_prof`) and the A53 gateway profile
+(mirror slots `xcp_gw_prof_*`), both printed by `xcp_poll.py --stress`:
+
+| Cost | Value |
+|---|---|
+| Control ISR at 40 kHz | 62-70 % of the R5; the XCP part (`xcp_r5_event`) is ~1.2 us + ~1.8 us per KB sampled |
+| R5 main loop left for XCP | the other ~30 % |
+| R5 per KB of DAQ, data still cached | copy DDR queue -> OCM ~3.6 us CPU, cache flush ~1.3 us |
+| R5 per KB of DAQ, data no longer cached | copy ~7.2-7.7 us CPU |
+| A53 per datagram | ~12-15 us: IPI hook ~2.3 us per record, tx task ~11 us incl. ~6-7 us in `lwip_sendto` |
+| A53 idle | ~40 % at 40k datagrams/s (1000 B/cycle), 55-60 % in overload |
+
+- The A53 is not the limit; it has room for ~65-70k datagrams/s.
+- The R5 copy into the OCM is. The R5 BSP maps the OCM Normal write-back
+  write-allocate (`platform/ZynqMP/mpu.c`), so every new XCP_OUT line is
+  first read from the OCM and later cleaned back.
+- Near the limit the R5 is bistable. At 40 kHz the control ISR turns the
+  32 KB data cache over in ~0.3 ms (sampled signals plus queue entries).
+  While the main loop copies data younger than that, the copy costs ~3.6
+  us/KB and the R5 can move ~60 MB/s; once it falls behind, it copies older,
+  uncached data at ~7.5 us/KB, can move only ~36 MB/s and never catches up
+  while the load stays above that. At 1000 B/cycle (40 MB/s) back-to-back
+  commands were enough to tip it over (15 % of the samples lost in 10 min);
+  at 900 B/cycle (36 MB/s) the same load ran clean.
+- Every DAQ chain waits 30-75 us for the A53's acknowledge before the next
+  one may be written; during that wait the queued data ages. That wait, not
+  the CPU, is what lets the data leave the cache.
+
+Tried on 2026-11-18 and reverted (measured on the board):
+- Software prefetch (PLD) in the R5 copy: cached copy 4.4 instead of 3.6
+  us/KB, uncached copy unchanged.
+- Cutting a stuck backlog down to fresh data (head drop): the copy stayed
+  at ~7.7 us/KB, the overload throughput fell from ~250 to ~200 Mbit/s.
+- At most 10 segments per DAQ exchange: copy at 7.2 us/KB already at
+  1000 B/cycle, which then lost data too. The cost is not the chain size.
+- Cutting a DAQ copy short for a waiting command: each cut chain needed its
+  own acknowledge, and with back-to-back commands 23 % of the DAQ data was
+  lost at 1000 B/cycle.
+
+Options, not done:
+1. **A ring buffer in XCP_OUT** instead of the single chain with its
+   acknowledge: the R5 copies each completed queue segment at once while it
+   is still cached and only stalls when the ring is full; the A53 consumes
+   behind it. Removes the acknowledge wait and with it the bistability.
+   Protocol change on both sides (OCM layout v4).
+2. XCP_OUT write-back **no** write-allocate, as an R5 MPU region of its own
+   (the A53 side unchanged): no line fills and almost no flush, estimated
+   ~1 us/KB instead of ~5 on the R5. For writes that is non-cacheable
+   behaviour of that window, which was ruled out for the OCM so far - needs
+   a decision.
+3. DMA (LPD ADMA): not available, the hardware design has no `psu_adma`.
+4. Zero copy (the A53 reads the queue segments in R5 DDR): needs several
+   popped but unreleased segments in queue32 (engine patch) and breaks if the
+   engine clears the queue while segments are in flight.
+5. Responses in the middle of a DAQ exchange: publish the header with the
+   response while the chain is still open (chain_seq 0 keeps it invalid),
+   then finish the chain. Commands would no longer wait for a running copy
+   (~0.6 ms round trip at 1000 B/cycle instead of ~0.24 ms idle). Needs the
+   header and the chain written in separate sessions in `ocm_xcp_fifo.c`.
+6. A53: FreeRTOS queue items are a fixed 1402 bytes and copied twice with
+   interrupts masked, five copies per record in all; a byte ring would save
+   ~25 % of the A53 time per datagram. Not needed while the A53 idles ~40 %.
+7. A53: a failed `lwip_sendto` is retried after one tick (10 ms at 100 Hz).
+   Fine while `xcp_gw_sendto_err` stays ~0 (it does since the TX sizing of
+   CP9).
+
+### 2.5 Exchange pacing — RESOLVED 2026-11-18 (`97ac9f86`)
+Inherited decisions that were replaced:
+- One sweep every 100 us (from the 10 kHz July bench, CP11) did commands,
+  DAQ and the IPI in one go. Commands waited for the next sweep; a chain
+  acknowledged a few microseconds after the next sweep had started was kept
+  for a whole further period, which from ~1000 B/cycle cascaded into 31 KB
+  chains and queue overflow while the A53 idled 40-57 %; the A53 took 10k
+  IPIs/s even with nothing to do; and the pacing clock (`uz_SystemTime`
+  uptime) advances only once per control ISR (25 us at 40 kHz).
+- The R5 DAQ queue was 32 KB (~0.8 ms at 40 MB/s), sized for 10 kHz.
+
+Now (`xcptl_ocm.c`, `XCP_R5_POLL_PERIOD_US`): the R5 polls the XCP_IN header
+every 5 us (CPU cycle counter); a new command batch or a waiting response
+gets a header-only exchange at once (the A53 rx task writes commands into
+XCP_IN when they arrive, not at the next IPI); a DAQ exchange runs only on an
+acknowledged chain, when the oldest waiting data is 1 ms old or 8 queue
+segments wait; after 1 ms without any exchange a header-only heartbeat
+follows. The queue is 128 KB (heap 256 KB).
+
+| | before | after |
+|---|---|---|
+| 8 B/cycle: IPIs = datagrams per s | 9800 (80 B each) | 960 (822 B each) |
+| A53 idle at 8 B/cycle | 79 % | 98 % |
+| 1000 B/cycle | 47 % kept chains, 0 loss | no waits for the acknowledge, 0 loss |
+| command round trip idle / 1000 B/cycle (median) | 374 / 816 us | 238 / 590 us |
+| back-to-back commands at 900 B/cycle | 0 loss (30 min) | 0 loss (10 min) |
 
 ## 3. Safety scope — required before live calibration (Z5)
 

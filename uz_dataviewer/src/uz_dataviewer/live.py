@@ -187,26 +187,31 @@ class LiveRing:
                         for name in arrays if name not in ('time', 'status')}
 
     def _summarize(self, first):
-        """Recompute buckets from the one containing buffer position ``first``.
+        """Summarize only buckets completed by this append.
 
-        Only the previously partial bucket and newly written rows are reduced.
+        Readers use raw samples for unfinished buckets. Defer their reductions
+        until complete, especially at coarse levels which can span many polls.
         Complete buckets below ``first`` never change, so published snapshots
         that reference them stay consistent.
         """
         bucket = first // LIVE_BUCKET
         lo = bucket * LIVE_BUCKET
+        stop = self.end // LIVE_BUCKET * LIVE_BUCKET
+        if lo == stop:
+            return
         for name, levels in self.summary.items():
             y = self.columns[name]
-            for target, values in zip(levels[0], bucket_extrema(y[lo:self.end])):
+            for target, values in zip(levels[0], bucket_extrema(y[lo:stop])):
                 target[bucket:bucket + len(values)] = np.where(values >= 0, values + lo, -1)
-            child_first, child_stop = bucket, bucket + len(values)
             for level in range(1, len(levels)):
-                parent = child_first // LIVE_FACTOR
-                start = parent * LIVE_FACTOR
+                parent = first // bucket_size(level)
+                parent_stop = self.end // bucket_size(level)
+                if parent == parent_stop:
+                    break
+                start, child_stop = parent * LIVE_FACTOR, parent_stop * LIVE_FACTOR
                 merged = merge_extrema(y, *(values[start:child_stop] for values in levels[level - 1]))
                 for target, values in zip(levels[level], merged):
                     target[parent:parent + len(values)] = values
-                child_first, child_stop = parent, parent + len(merged[0])
 
     def snapshot(self):
         """Views of the retained rows; later appends never modify them."""

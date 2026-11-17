@@ -31,6 +31,21 @@ example script. `python -m ultrazohm_cli` runs the same CLI.
 Each GitHub release `ultrazohm-v<VERSION>` also contains both wheels, the data
 viewer bundles and `SHA256SUMS`, for installing without PyPI access.
 
+To install and start from this checkout in its own `uz_cli/.venv`:
+
+```sh
+make -C uz_cli start local       # build and install the checkout, then open the CLI
+make -C uz_cli start release     # install/update the latest stable PyPI release, then open the CLI
+make -C uz_cli start release ARGS="-- --help"
+```
+
+Bare `make start` defaults to `local`. Both modes reuse `.venv` and reinstall the
+selected CLI, so switching modes also works when the version number is unchanged.
+The global `uv tool` installation is unaffected. On Windows, or without Make, use
+`python uz_cli/tasks.py start local` or `python uz_cli/tasks.py start release`;
+append `--` followed by CLI arguments as needed. Local mode requires the build
+tools below; release mode needs only uv and a supported Python/platform.
+
 ## Build
 
 Source builds require Rust 1.90.0 and a native C/C++ toolchain (Linux:

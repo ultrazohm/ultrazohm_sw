@@ -156,9 +156,18 @@ impl LiveBuffer {
         (stop.map(|end| end - self.available() as u64), stop)
     }
     pub fn frames(&self, start: u64, stop: u64) -> Vec<(u64, Arc<Frame>)> {
+        if start >= stop {
+            return Vec::new();
+        }
+        // Acquisition positions are ordered, even after the deque wraps. Polls
+        // usually ask for only the newest frames: do not scan the full history
+        // under the acquisition lock as the 30-second buffer fills.
+        let first = self
+            .frames
+            .partition_point(|(first, f)| first + f.slow_raw.len() as u64 <= start);
         self.frames
-            .iter()
-            .filter(|(first, f)| *first < stop && first + f.slow_raw.len() as u64 > start)
+            .range(first..)
+            .take_while(|(first, _)| *first < stop)
             .cloned()
             .collect()
     }
@@ -214,6 +223,41 @@ mod tests {
                 .map(|_| (first..first + rows).map(|x| x as f32).collect())
                 .collect(),
         }
+    }
+
+    #[test]
+    fn indexed_frame_lookup_matches_overlap_scan_after_wraparound() {
+        let mut ring = LiveBuffer::new(37);
+        let mut position = 0;
+        for i in 0..100 {
+            let rows = 1 + i % 11;
+            ring.push(position as u64, frame(position, rows));
+            position += rows;
+            // Include empty, partial, exact-boundary and out-of-buffer ranges.
+            for start in position.saturating_sub(50)..=position + 1 {
+                for length in [0, 1, 7, 40, 60] {
+                    let start = start as u64;
+                    let stop = start + length;
+                    let actual = ring.frames(start, stop);
+                    let expected: Vec<_> = ring
+                        .frames
+                        .iter()
+                        .filter(|(first, f)| {
+                            start < stop && *first < stop && first + f.slow_raw.len() as u64 > start
+                        })
+                        .collect();
+                    assert_eq!(actual.len(), expected.len());
+                    for ((index, frame), (expected_index, expected_frame)) in
+                        actual.iter().zip(expected)
+                    {
+                        assert_eq!(index, expected_index);
+                        assert!(Arc::ptr_eq(frame, expected_frame));
+                    }
+                }
+            }
+        }
+        ring.clear();
+        assert!(ring.frames(0, 1).is_empty());
     }
 
     #[test]

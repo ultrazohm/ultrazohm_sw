@@ -7,11 +7,11 @@ binary reports the same version as the wheel.
 """
 import argparse
 import os
-from pathlib import Path
 import re
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -71,13 +71,39 @@ def debug_wheel(_args):
     run(*maturin(), "build", "--locked", "--out", wheels)
 
 
-def install(_args):
-    """Build this checkout's CLI and install it as the ultrazohm_cli command (uv tool)."""
+def local_wheel():
+    """Build a fresh optimized wheel, reusing Cargo build artifacts."""
     out = TARGET / "wheels-install"
     shutil.rmtree(out, ignore_errors=True)
     run(*maturin(), "build", "--release", "--locked", "--out", out)
+    return single_wheel(out)
+
+
+def install(_args):
+    """Build this checkout's CLI and install it as the ultrazohm_cli command (uv tool)."""
+    built = local_wheel()
     python = (ROOT / ".python-version").read_text(encoding="utf-8").strip()
-    run("uv", "tool", "install", "--force", "--python", python, single_wheel(out))
+    run("uv", "tool", "install", "--force", "--python", python, built)
+
+
+def start(args):
+    """Install the chosen CLI into the project environment, then launch it."""
+    package = local_wheel() if args.source == "local" else "ultrazohm_cli"
+    venv = HERE / ".venv"
+    python = venv_bin(venv, "python")
+    if not python.is_file():
+        version = (ROOT / ".python-version").read_text(encoding="utf-8").strip()
+        run("uv", "venv", "--python", version, venv)
+    options = [] if args.source == "local" else [
+        "--upgrade-package", "ultrazohm_cli", "--prerelease", "disallow"]
+    # Reinstall even at the same version: local builds retain their base version,
+    # and switching to PyPI must replace a locally installed wheel too.
+    run("uv", "pip", "install", "--python", python,
+        "--reinstall-package", "ultrazohm_cli", *options, package)
+    cli_args = args.cli_args
+    if cli_args[:1] == ["--"]:
+        cli_args = cli_args[1:]
+    run(venv_bin(venv, "ultrazohm_cli"), *cli_args, cwd=Path.cwd())
 
 
 def check(args):
@@ -164,6 +190,7 @@ def overview():
     print(f"""uz_cli tasks                              {usage}
 
 Use
+  start [local|release]  Build the checkout or fetch stable PyPI, install in .venv and run (default: local)
   install        Build this checkout's CLI and install the ultrazohm_cli command (uv tool)
 
 Develop
@@ -174,6 +201,8 @@ Develop
 CI only: debug-wheel, release-check, version, stamp
 
 Examples
+  {call("start local")}
+  {call("start release", "-- --help")}
   {call("install")}
   {call("check")}
 
@@ -182,6 +211,9 @@ Builds use native tools (rustup's pinned Rust, maturin, a C/C++ compiler); no co
 
 
 DESCRIPTIONS = {
+    "start": "Install and launch in uz_cli/.venv. 'local' (default) builds this checkout first; "
+             "'release' fetches the latest stable version from PyPI. Pass CLI arguments after --. "
+             "The global uv tool installation is unchanged.",
     "install": "Build an optimized wheel of this checkout for this machine and install it with "
                "'uv tool install --force', replacing an ultrazohm_cli installed from PyPI until you "
                "reinstall that.",
@@ -205,6 +237,9 @@ def main(argv=None):
         task = tasks.add_parser(name, prog=call(name), description=DESCRIPTIONS[name])
         task.set_defaults(function=function)
         return task
+    launch = add("start", start)
+    launch.add_argument("source", nargs="?", choices=("local", "release"), default="local")
+    launch.add_argument("cli_args", nargs=argparse.REMAINDER, help="arguments forwarded to ultrazohm_cli")
     add("install", install)
     add("check", check)
     add("debug-wheel", debug_wheel)

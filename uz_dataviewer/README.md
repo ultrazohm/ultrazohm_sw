@@ -530,6 +530,23 @@ only the samples received so far while the buffer fills. Requests are paged
 independently of buffer capacity to respect the CLI response-size limit.
 Stale data, backend errors and cursor resynchronization are shown in the UI.
 
+To compare live-data preparation performance between machines, run this with the
+viewer's installed Python environment (PowerShell shown):
+
+```powershell
+.\uz_dataviewer\.venv\Scripts\python.exe .\uz_dataviewer\build\benchmark_live.py --sample-rate 10000 --traces 3
+```
+
+On Linux, use `uz_dataviewer/.venv/bin/python` with the same script and options.
+The benchmark simulates filling and wrapping the 30-second buffer and prints
+JSON timings for appends and preparing the visible traces. It needs no hardware.
+`--channels` defaults to 20: buffering work depends on acquired channels even
+when only three are plotted. These are CPU timings, not GUI FPS; they exclude
+the CLI, network, graphics driver and competition between worker threads.
+The reported ring allocation also excludes the CLI and older snapshots still
+held by Inspect or display readers. The status bar's RAM cache is a separate
+cache and does not include these live buffers.
+
 Prototype limits: live history is RAM-bounded even while logging. Full recording
 history during acquisition and cloud access are future adapters using the same
 source/query boundary. Live windows/settings are not saved in offline sessions;

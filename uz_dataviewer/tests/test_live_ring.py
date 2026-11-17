@@ -123,6 +123,39 @@ def test_bucket_summaries_match_brute_force_across_appends_and_compaction():
         assert_summary_matches(ring.snapshot())
 
 
+def test_only_newly_completed_buckets_are_reduced(monkeypatch):
+    """Small polls must not repeatedly reduce the same coarse partial buckets."""
+    from uz_dataviewer import live
+    reduced, merged = [], []
+    extrema, merge = live.bucket_extrema, live.merge_extrema
+
+    def track_extrema(y):
+        reduced.append(len(y))
+        return extrema(y)
+
+    def track_merge(y, mins, maxs, gaps):
+        merged.append(len(mins))
+        return merge(y, mins, maxs, gaps)
+
+    monkeypatch.setattr(live, 'bucket_extrema', track_extrema)
+    monkeypatch.setattr(live, 'merge_extrema', track_merge)
+    ring = LiveRing(100_000)
+    # Cross boundaries at all three levels, but leave a partial bucket at each.
+    stop = 9_009
+    for start in range(0, stop, 33):
+        ring.append(page(start, start + 33))
+    assert sum(reduced) == stop // LIVE_BUCKET * LIVE_BUCKET
+    assert all(n % LIVE_BUCKET == 0 for n in reduced)
+    levels = len(ring.summary['a'])
+    assert sum(merged) == sum(stop // bucket_size(k) * live.LIVE_FACTOR for k in range(1, levels))
+    assert all(n % live.LIVE_FACTOR == 0 for n in merged)
+    assert_summary_matches(ring.snapshot())
+    # The unfinished tail still contributes its newest extreme to display.
+    source = LiveSource(ring.snapshot())
+    result = source.read_plot('a', 0., stop - 1, 16)
+    assert result.values.max() == stop - 1
+
+
 def test_frozen_snapshot_summaries_are_never_modified():
     rng = np.random.default_rng(4)
     ring = LiveRing(10_000)

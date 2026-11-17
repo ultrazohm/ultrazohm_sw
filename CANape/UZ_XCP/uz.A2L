@@ -979,7 +979,7 @@ DUAL: on falling and rising edge*/
         0x00
         0x00
         0xF8
-        0xF8
+        0x400
         BYTE_ORDER_MSB_LAST
         ADDRESS_GRANULARITY_BYTE
         OPTIONAL_CMD ALLOC_ODT_ENTRY

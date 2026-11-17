@@ -161,7 +161,7 @@ def build_a2l(items, ip, port, struct_blocks=""):
       /begin PROTOCOL_LAYER
         0x0100
         5000 10000 0 0 0 0 0
-        248 248
+        248 1024
         BYTE_ORDER_MSB_LAST
         ADDRESS_GRANULARITY_BYTE
         OPTIONAL_CMD GET_DAQ_CLOCK

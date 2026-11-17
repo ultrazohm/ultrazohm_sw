@@ -41,8 +41,8 @@
 
 // DTO size
 // Maximum size of a XCP data packet (DAQ,STIM)
-// UZ: may be predefined by the platform config (xcplib_r5_cfg.h caps it at 248
-// because the OCM FIFO transport carries at most 255 bytes per record).
+// UZ: may be predefined by the platform config (xcplib_r5_cfg.h sets 1024; the
+// OCM transport carries up to OCM_XCP_RECORD_MAX = 1400 bytes per record).
 #ifndef XCPTL_MAX_DTO_SIZE
 #ifdef OPTION_QUEUE_64_FIX_SIZE
 // Must be %8, must result in a queue entry size (including header) that is a multiple of the cache line size for optimal performance

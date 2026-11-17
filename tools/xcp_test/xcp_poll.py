@@ -224,26 +224,29 @@ class XcpUdp:
         self._cmd_checked("START_STOP_SYNCH(start)", bytes([0xDD, 0x01]))
         return first_pid
 
-    def daq_setup_stress(self, base, entry_sizes, event=0, prescaler=1):
-        """Dynamic DAQ for throughput stress: 1 list, len(entry_sizes) ODTs with
-        ONE entry each (entry i reads `base` + running offset), timestamped.
+    def daq_setup_stress(self, base, odts, event=0, prescaler=1):
+        """Dynamic DAQ for throughput stress: 1 list with len(odts) ODTs;
+        odts[i] is the list of entry sizes of ODT i (stress_geometry). The
+        entries read `base` + running offset. Timestamped.
         Returns the FIRST_PID of the DAQ list."""
-        n_odts = len(entry_sizes)
+        n_odts = len(odts)
         self._cmd_checked("FREE_DAQ", bytes([0xD6]))
         self._cmd_checked("ALLOC_DAQ", bytes([0xD5, 0x00]) + struct.pack("<H", 1))
         self._cmd_checked("ALLOC_ODT",
                           bytes([0xD4, 0x00]) + struct.pack("<H", 0) + bytes([n_odts]))
-        for odt in range(n_odts):
+        for odt, entries in enumerate(odts):
             self._cmd_checked("ALLOC_ODT_ENTRY",
-                              bytes([0xD3, 0x00]) + struct.pack("<H", 0) + bytes([odt, 1]))
+                              bytes([0xD3, 0x00]) + struct.pack("<H", 0) +
+                              bytes([odt, len(entries)]))
         off = 0
-        for odt, size in enumerate(entry_sizes):
+        for odt, entries in enumerate(odts):
             self._cmd_checked("SET_DAQ_PTR",
                               bytes([0xE2, 0x00]) + struct.pack("<H", 0) + bytes([odt, 0]))
-            self._cmd_checked("WRITE_DAQ",
-                              bytes([0xE1, 0xFF, size & 0xFF, 0x00]) +
-                              struct.pack("<I", (base + off) & 0xFFFFFFFF))
-            off += size
+            for size in entries:  # WRITE_DAQ advances the entry pointer
+                self._cmd_checked("WRITE_DAQ",
+                                  bytes([0xE1, 0xFF, size & 0xFF, 0x00]) +
+                                  struct.pack("<I", (base + off) & 0xFFFFFFFF))
+                off += size
         # mode 0x10 = TIMESTAMP; daq 0; event; prescaler; priority 0
         self._cmd_checked("SET_DAQ_LIST_MODE",
                           bytes([0xE0, 0x10]) + struct.pack("<HH", 0, event) +
@@ -375,20 +378,25 @@ MAX_ODT_ENTRY_SIZE = 240
 
 
 def stress_geometry(target_bytes, max_dto):
-    """Per-ODT entry sizes for a stress list. XCPlite DTO overhead per ODT:
-    4-byte header ([odt][fill][daq u16]) + 4-byte timestamp in ODT0 only
-    (xcplite.c: max payload = MAX_DTO - 4 - (odt==0 ? 4 : 0)). One entry per
-    ODT keeps the 3 KB DAQ table memory tiny."""
-    odt0_budget = min((max_dto - 4 - 4) & ~3, MAX_ODT_ENTRY_SIZE)
-    odt_budget = min((max_dto - 4) & ~3, MAX_ODT_ENTRY_SIZE)
-    sizes = []
+    """Layout of a stress list: one list of entry sizes per ODT. XCPlite DTO
+    overhead per ODT: 4-byte header ([odt][fill][daq u16]) + 4-byte timestamp
+    in ODT0 only (xcplite.c: max payload = MAX_DTO - 4 - (odt==0 ? 4 : 0)).
+    Each entry is at most MAX_ODT_ENTRY_SIZE, and an ODT is filled with as
+    many entries as fit. That gives the fewest ODTs for the slave's MAX_DTO,
+    like CANape does, and the ODT count is what costs ISR time on the R5
+    (one DAQ message per ODT and cycle)."""
+    odts = []
     remaining = target_bytes
-    budget = odt0_budget
-    while remaining > 0 and len(sizes) < 200:
-        sizes.append(min(remaining, budget))
-        remaining -= sizes[-1]
-        budget = odt_budget
-    return sizes
+    while remaining > 0 and len(odts) < 200:
+        budget = (max_dto - 4 - (4 if not odts else 0)) & ~3
+        entries = []
+        while remaining > 0 and budget > 0 and len(entries) < 255:
+            size = min(remaining, budget, MAX_ODT_ENTRY_SIZE)
+            entries.append(size)
+            remaining -= size
+            budget -= size
+        odts.append(entries)
+    return odts
 
 
 def run_stress(xcp, args, max_dto):
@@ -396,16 +404,16 @@ def run_stress(xcp, args, max_dto):
     default the full control rate). Verifies the CP7 gateway path under load: UDP batching
     (frames/datagram), transport-CTR continuity (gaps = lost records), and the
     R5-side drop counters. hedrive reference: 160 Mbit/s sustained."""
-    sizes = stress_geometry(args.stress_bytes, max_dto)
-    per_cycle = sum(sizes)
+    odts = stress_geometry(args.stress_bytes, max_dto)
+    per_cycle = sum(sum(entries) for entries in odts)
     # OCM ceiling: the 32 KB XCP_OUT window carries ~30 KB of DTO payload per
-    # 100 us exchange sweep (chain minus 512 B CTO reserve, 8 B framing per
-    # 252 B segment). Above that the backlog stays in the R5 queue.
+    # 100 us exchange sweep (chain minus 512 B CTO reserve, record framing per
+    # segment of up to 1400 B). Above that the backlog stays in the R5 queue.
     if per_cycle > 25000:
         print("[!] %d B/cycle is near/above the OCM per-sweep ceiling (~30 KB): "
               "expect xcp_r5_tx_held and then xcp_r5_queue_lost to climb" % per_cycle)
-    print("[i] stress: %d B/cycle in %d ODTs @ base 0x%08X, event %d (%s), %gs" %
-          (per_cycle, len(sizes), args.stress_base, args.daq_event,
+    print("[i] stress: %d B/cycle in %d ODTs (MAX_DTO %d) @ base 0x%08X, event %d (%s), %gs" %
+          (per_cycle, len(odts), max_dto, args.stress_base, args.daq_event,
            R5_EVENT_NAMES.get(args.daq_event, "?"), args.daq_seconds))
     print("[i]         (at 10 kHz control rate = %.0f Mbit/s DAQ payload)" %
           (per_cycle * 10e3 * 8 / 1e6))
@@ -428,11 +436,11 @@ def run_stress(xcp, args, max_dto):
     except OSError:
         pass
 
-    first_pid = xcp.daq_setup_stress(args.stress_base, sizes,
+    first_pid = xcp.daq_setup_stress(args.stress_base, odts,
                                      event=args.daq_event,
                                      prescaler=args.prescaler)
     print("[+] DAQ RUNNING (first_pid=0x%02X, %d ODTs) -- collecting ...\n" %
-          (first_pid, len(sizes)))
+          (first_pid, len(odts)))
 
     buf = bytearray(4096)
     dgrams = frames = payload = cycles = 0

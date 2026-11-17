@@ -67,7 +67,7 @@ Command execution, cache maintenance and the copy into the OCM never run in the 
 
 For comparison, the complete exchange inside the interrupt was measured with about 10 µs plus 10 µs per kilobyte, which is why it was moved to the main loop.
 
-The run time of ``xcp_r5_event()`` was measured on the test bench at a control rate of 40 kHz, with DAQ messages of at most 248 bytes:
+The run time of ``xcp_r5_event()`` was measured on the test bench at a control rate of 40 kHz:
 
 .. list-table::
    :header-rows: 1
@@ -80,12 +80,13 @@ The run time of ``xcp_r5_event()`` was measured on the test bench at a control r
    * - every further ODT
      - 0.6 to 0.8 µs
    * - the measured bytes themselves
-     - about 1 µs per kilobyte
+     - about 2 µs per kilobyte
 
 Every ODT (object descriptor table, one packet of a DAQ list) becomes one DAQ message, so the cost depends on the number of ODTs much more than on the amount of data.
 An ODT holds at most ``MAX_DTO`` minus 8 bytes.
-Since ``MAX_DTO`` was raised from 248 to 1024 bytes, 1000 bytes per cycle need one ODT instead of five.
-The run time with the larger messages has not been measured yet.
+Since ``MAX_DTO`` was raised from 248 to 1024 bytes, 1000 bytes per cycle fit into one ODT instead of five.
+The interrupt then took 17.3 µs on average and at most 20.1 µs.
+The same data in six ODTs took 18.9 µs on average, and that run already lost samples, so the full cost is higher.
 
 DAQ rasters
 ***********

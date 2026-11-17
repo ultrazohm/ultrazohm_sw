@@ -91,7 +91,7 @@ A variable can also be given by its address (``0x...``) instead of its name.
     python tools/xcp_test/xcp_poll.py --ip 192.168.1.233 --stress
 
 The default of 2000 bytes per cycle is meant for a control rate of 10 kHz.
-At 40 kHz it would be 640 Mbit/s, so choose the load with ``--stress-bytes``, for example 500 bytes for 160 Mbit/s.
+At 40 kHz it would be 640 Mbit/s, so choose the load with ``--stress-bytes``, for example 1000 bytes for 320 Mbit/s.
 The data rate that the stress test prints at the start also assumes 10 kHz.
 The summary at the end shows the real one.
 
@@ -170,15 +170,17 @@ In July 2026 an earlier version of this data path ran on hardware for one hour w
 The XCP session stayed alive, and the data of about 0.003 % of the control cycles was lost at the exchange between the processors.
 The consumption handshake described in :ref:`xcp_architecture` was added afterwards to remove this loss.
 
-In November 2026 the current version was measured at a control rate of 40 kHz, still with DAQ messages of at most 248 bytes.
-Up to about 160 Mbit/s nothing was lost.
-Above that, the R5 no longer kept up, and ``xcp_r5_queue_lost`` counted lost samples.
-At 320 Mbit/s about a third of the control cycles were lost.
+In November 2026 the current version was measured at a control rate of 40 kHz:
+
+- With DAQ messages of at most 248 bytes, nothing was lost up to about 160 Mbit/s. At 320 Mbit/s about a third of the control cycles were lost.
+- With the current messages of up to 1024 bytes, 320 Mbit/s (1000 bytes per cycle) ran for five minutes without any loss.
+- At 384 Mbit/s (1200 bytes per cycle) the R5 no longer kept up. ``xcp_r5_queue_lost`` counted lost samples, and the throughput fell to about 280 Mbit/s.
+
 At a high control rate the interrupt leaves little time for the main loop, and the main loop carries the exchange with the A53.
 The limit is then the R5, not Ethernet.
+Overload does not degrade gracefully: above the limit, more than a quarter of the control cycles are lost.
+At 40 kHz, keep the data on ``DAQ_R5`` at or below about 1000 bytes per cycle and put everything else on a slower raster.
 Each ODT also costs time in the interrupt, see :ref:`xcp_architecture`.
-The larger DAQ messages of 1024 bytes were introduced afterwards to reduce this cost.
-They have not been measured yet.
 
 Calibrate
 ---------

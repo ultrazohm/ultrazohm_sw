@@ -34,6 +34,22 @@ only (`xcp_poll.py --stress`, 20-60 s each):
   further ODT, about 1 us per KB of data. Cost is per ODT (one DAQ message
   each), not per byte. Hence MAX_DTO 1024 (8baa085), not yet measured.
 
+## Bench run 2026-11-17, MAX_DTO 1024 (commit 8baa085 flashed)
+
+- ISR (DAQ of `timingR5`, entries packed into ODTs like CANape): 15.3 us
+  timing only, 15.9 / 16.3 / 17.3 us mean at 250 / 500 / 1000 B per cycle,
+  all in one ODT, max 20.1 us; about 2 us per KB. The same 1000 B as six
+  ODTs: 18.9 us mean while already losing samples.
+- `xcp_poll.py --stress`: 1000 B/cycle (320 Mbit/s) clean for 60 s and for
+  300 s (12.0 M cycles at 40,000 Hz, `xcp_r5_queue_lost` 0, net wire loss
+  0, `xcp_gw_txq_dropped` 0, 0.55 % of the A53 reads torn and recovered via
+  `xcp_r5_out_held`). 1200 B (384 Mbit/s), 1500 B and 2000 B: same collapse
+  as before (about 280 Mbit/s delivered, A53 handles only ~2,400-2,900
+  IPIs/s, 25-30 % of the cycles lost in the R5 queue).
+- So the limit at 40 kHz moved from ~160 to between 320 and 384 Mbit/s.
+  The overload collapse itself is still open (candidates in the run above).
+- CANape with MAX_DTO 1024 not tried yet.
+
 ## Changes after the July hardware run (2026-11-16/17)
 
 Syntax-checked with the Vitis toolchains; the 2026-11-16 part ran in the
@@ -50,9 +66,10 @@ tests 1 to 4.
 - gateway closes the session when the master is unreachable
 - write gate for calibration (data sections only), `XCP_R5_READ_ONLY`
 - A2L: structures for `Global_Data`, ODT entry size 240, T1 5000 ms
-- 2026-11-17, NOT yet on hardware: MAX_DTO 1024 (was 248), OCM chain
-  records up to 1400 B (`OCM_XCP_RECORD_MAX`, 16-bit lengths), gateway DAQ
-  queue 65536 x 1.4 KB; `xcp_poll.py --stress` packs ODTs up to MAX_DTO
+- 2026-11-17, bench-tested (stress tests only, see above): MAX_DTO 1024
+  (was 248), OCM chain records up to 1400 B (`OCM_XCP_RECORD_MAX`, 16-bit
+  lengths), gateway DAQ queue 65536 x 1.4 KB; `xcp_poll.py --stress` packs
+  ODTs up to MAX_DTO
 
 ## HARDWARE VALIDATED (2026-07-10/11)
 

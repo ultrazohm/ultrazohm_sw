@@ -73,7 +73,8 @@ def workflow(tmp_path, monkeypatch):
         events.append('start')
         starts.append((options, ack))
         assert not Path(output).exists()
-        assert Path(selected_mapping) == path
+        assert selected_mapping == ''
+        assert path.is_file()  # Retained snapshot is metadata, not a service override.
         client.profile = dict(mapping, **json.loads(Path(profile).read_text()))
         client.gone = False
         client.value['state']['connected'] = False

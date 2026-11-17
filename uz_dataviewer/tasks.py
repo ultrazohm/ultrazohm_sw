@@ -62,6 +62,9 @@ def lint(_args):
 def test(args):
     """Run pytest with a CLI wheel matching this checkout."""
     python = sync(HERE / ".venv-ci")
+    # Ordinary launches use the lockfile. Check it before the local wheel masks
+    # missing CLI features in the published dependency.
+    run(python, "-m", "pytest", "-q", "tests/test_cli_compatibility.py")
     wheel = args.cli_wheel
     if wheel is None:
         cli_tasks("debug-wheel")

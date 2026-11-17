@@ -335,6 +335,7 @@ class OwnedService:
     shutdown_requested: bool = False
     log: Path | None = None
     repo: Path | None = None
+    mapping: Path | None = None
 
     @property
     def running(self):
@@ -512,6 +513,8 @@ class LiveController:
             self.endpoint = endpoint
 
     def _start_service(self, output, mapping, profile=None, data_options=None, ack=False, user_directory=None, repo=None):
+        if repo and mapping:
+            raise ValueError('Choose either a firmware repository or an explicit channel mapping')
         self._progress('Starting local acquisition service…')
         if self.owned.running:
             raise RuntimeError('The launched service is still running; check its endpoint and service.log')
@@ -551,6 +554,7 @@ class LiveController:
             self.owned.process = subprocess.Popen(args, stdout=log, stderr=log, **options)
             self.owned.endpoint = self.endpoint
             self.owned.repo = Path(repo).expanduser().resolve() if repo else None
+            self.owned.mapping = Path(mapping).expanduser().resolve() if mapping else None
             self.owned.shutdown_requested = False
             self.owned.log = log_path
         deadline = time.monotonic() + 8
@@ -608,6 +612,10 @@ class LiveController:
                         and Path(kwargs['repo']).expanduser().resolve() != self.owned.repo):
                     raise RuntimeError('The running service uses a different firmware repository. '
                                        'Attach and shut it down before connecting with the selected repository.')
+                if (operation == 'connect' and kwargs.get('mapping')
+                        and Path(kwargs['mapping']).expanduser().resolve() != self.owned.mapping):
+                    raise RuntimeError('The running service uses a different channel mapping. '
+                                       'Attach and shut it down before connecting with the selected mapping.')
             self._progress('Reading service configuration…')
             status = self.client.status()
             if operation == 'connect':
@@ -780,7 +788,7 @@ class LiveController:
         if self.stop_event.is_set():
             return
         self._progress('Reconnecting to UltraZohm…')
-        self._start_service(str(output), str(mapping_path), str(profile_path),
+        self._start_service(str(output), '', str(profile_path),
                             settings.get('data_options'), settings.get('send_ack', False), repo=root)
         last_error = ''
         def reconnected():

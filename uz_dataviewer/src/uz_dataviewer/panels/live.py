@@ -153,6 +153,7 @@ class LiveWorkspace:
         self.port = 1000
         self.output = new_output_directory(repo)
         self.mapping = ''
+        self.mapping_is_explicit = False
         self._repository_settings = None
         self.repo = str(repo) if repo is not None else None
         self._user_directory = None
@@ -229,6 +230,7 @@ class LiveWorkspace:
             directory = settings.path.parent
             self.repository_selected(root, directory)
             self.repo, self.mapping = str(root), ''
+            self.mapping_is_explicit = False
             self._repository_settings = settings
             self._user_directory = directory
             self.output = new_output_directory(root)
@@ -313,6 +315,7 @@ class LiveWorkspace:
                     self.tool_error = str(exc)
         if update.flash_config is not None and update.flash_config != self._flash_config:
             self.mapping, self.output = update.flash_config
+            self.mapping_is_explicit = False
             self._flash_config = update.flash_config
         if main_state is not None:
             for _ in range(200):
@@ -445,7 +448,9 @@ class LiveWorkspace:
                 self.send('shutdown')
             else:
                 self.send('connect', endpoint=self.endpoint, ip=self.ip, port=self.port,
-                          output=self.output, repo=self.repo, mapping=self.mapping, user_directory=str(self.user_directory()))
+                          output=self.output, repo=None if self.mapping_is_explicit else self.repo,
+                          mapping=self.mapping if self.mapping_is_explicit else '',
+                          user_directory=str(self.user_directory()))
         imgui.end_disabled()
         if imgui.is_item_hovered(imgui.HoveredFlags_.allow_when_disabled):
             imgui.set_tooltip(
@@ -524,7 +529,10 @@ class LiveWorkspace:
         self._render_flash_confirmation()
         if imgui.collapsing_header('Service settings (used when launching)'):
             _, self.output = imgui.input_text('New session directory', self.output)
-            imgui.text_wrapped('Firmware repository: ' + (self.repo or 'not selected'))
+            if self.mapping_is_explicit:
+                imgui.text_wrapped('Channel mapping JSON: ' + self.mapping)
+            else:
+                imgui.text_wrapped('Firmware repository: ' + (self.repo or 'not selected'))
             if self.repository_ready:
                 imgui.text_wrapped('Runtime settings: ' + str(self.user_directory() / 'settings.json'))
             imgui.text_wrapped('Connect launches a new service with these settings. Use Existing service to attach to a running service.')

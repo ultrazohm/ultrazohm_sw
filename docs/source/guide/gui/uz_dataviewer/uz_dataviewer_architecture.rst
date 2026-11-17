@@ -539,3 +539,19 @@ preferences are seeded once. Connecting passes ``--repo`` and the saved
 ``settings.json`` directly, without a temporary filtered profile. Saved signal
 selections use the running service's catalog. The Flash UZ migration path still
 keeps its mapping and profile snapshots to preserve assignments across a restart.
+
+
+Dependency and mapping selection checks
+---------------------------------------
+
+The viewer requires CLI 0.1.27.dev0 or newer for repository-based configuration.
+CI exercises the locked PyPI CLI's repository commands before replacing it with
+the checkout-built wheel for the full integration suite. This also covers the
+ordinary source launcher, which uses the lockfile rather than a development wheel.
+
+An explicit ``DataViewerApp(live_mapping=...)`` selects that mapping even when its
+workspace is inferred from the path or supplied through ``live_repo``. The
+workspace still owns preferences and recordings. Generated Flash UZ snapshots
+are distinguished from explicit selections; subsequent repository-based launches
+reread headers. Service startup rejects simultaneous repository and mapping
+arguments, and changing either requires restarting an owned service.

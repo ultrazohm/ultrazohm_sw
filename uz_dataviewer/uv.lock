@@ -484,14 +484,14 @@ wheels = [
 
 [[package]]
 name = "ultrazohm-cli"
-version = "0.1.3.dev0"
+version = "0.1.27.dev0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "polars" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/fe/64/fb159c011cb07719112c976cf2ced0cb0cf83798d3f6e3dd74b41ef302b0/ultrazohm_cli-0.1.3.dev0-cp310-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:0e014f537b2a77ce14cfcc7c9f40617dbc137a54584aa7d9eb2aa09a8b707610", size = 7922782, upload-time = "2026-11-17T14:45:12.632Z" },
-    { url = "https://files.pythonhosted.org/packages/91/be/bfc45031b2a3fcb9eaedfbe0463dbb1d0acfd8b0eafb854e1400bc86ba6a/ultrazohm_cli-0.1.3.dev0-cp310-abi3-win_amd64.whl", hash = "sha256:8497645f38fb096d5f1e87e063769cef53e612670dc00b4b7269031325e2078c", size = 8134678, upload-time = "2026-11-17T14:45:14.628Z" },
+    { url = "https://files.pythonhosted.org/packages/65/9e/088bd4f08e2295daff86348fb3eac602b71e055ab88270ce7e75f10986a1/ultrazohm_cli-0.1.27.dev0-cp310-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:d12aeb132b66c44869144fc12250248a9dbc2f794b3ab726619fb5f09ca3cff8", size = 7935470, upload-time = "2026-11-17T17:51:03.385Z" },
+    { url = "https://files.pythonhosted.org/packages/bc/51/3fb0664415cb15a419762f02e422599f67f32acda64f84b4a096ff98e28d/ultrazohm_cli-0.1.27.dev0-cp310-abi3-win_amd64.whl", hash = "sha256:9309fbe0d9b31271108bf722b72335def74bc6dcf15a5604fa3136364617575d", size = 8147673, upload-time = "2026-11-17T17:51:05.625Z" },
 ]
 
 [[package]]
@@ -526,6 +526,6 @@ requires-dist = [
     { name = "pyinstaller", marker = "extra == 'dev'", specifier = ">=6.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7" },
     { name = "ruff", marker = "extra == 'dev'", specifier = "==0.17.2" },
-    { name = "ultrazohm-cli", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')", specifier = ">=0.1.1.dev0" },
+    { name = "ultrazohm-cli", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')", specifier = ">=0.1.27.dev0" },
 ]
 provides-extras = ["dev"]

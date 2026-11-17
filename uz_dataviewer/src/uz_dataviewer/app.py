@@ -68,7 +68,8 @@ class DataViewerApp:
         if use_live:
             from .panels.live import LiveWorkspace
             self.live = LiveWorkspace(repo=workspace)
-            self.live.mapping = live_mapping
+            self.live.mapping = str(mapping_path) if mapping_path else ''
+            self.live.mapping_is_explicit = mapping_path is not None
             if live_mapping:
                 self.live.load_live_settings()
             self.live.repository_selected = self._repository_selected

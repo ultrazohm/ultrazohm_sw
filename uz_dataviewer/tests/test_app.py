@@ -45,7 +45,9 @@ def test_live_panels_are_opt_in(use_live, monkeypatch):
         assert (app.live is not None) == use_live
         if app.live is not None:
             assert app.live.controller.thread is None
-            assert app.live.mapping == 'cached-mapping.json'
+            from pathlib import Path
+            assert app.live.mapping == str(Path('cached-mapping.json').resolve())
+            assert app.live.mapping_is_explicit
     finally:
         app._shutdown()
 

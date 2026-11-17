@@ -351,7 +351,7 @@ def test_repository_service_passes_repo_and_preserves_explicit_profile(tmp_path,
     monkeypatch.setattr(runtime_settings, 'prepare_profile', lambda *args: pytest.fail('No temporary profile'))
     controller = LiveController()
     controller.client = SimpleNamespace(status=lambda: {})
-    controller._start_service(tmp_path / 'session', 'obsolete-mapping.json', repo=tmp_path)
+    controller._start_service(tmp_path / 'session', '', repo=tmp_path)
     args = calls[0]
     assert args[args.index('--repo') + 1] == str(tmp_path)
     assert '--channel-mapping' not in args
@@ -372,3 +372,65 @@ def test_changed_repository_requires_restarting_owned_service(tmp_path):
     controller.owned.repo = tmp_path / 'previous'
     with pytest.raises(RuntimeError, match='different firmware repository'):
         controller._command('connect', {'endpoint': 'test-endpoint', 'repo': str(tmp_path / 'new')})
+
+
+@pytest.mark.parametrize('explicit_repo', [False, True])
+def test_explicit_mapping_survives_connect_with_workspace(tmp_path, monkeypatch, gui_frame, explicit_repo):
+    from types import SimpleNamespace
+    from imgui_bundle import imgui
+    from uz_dataviewer.app import DataViewerApp
+    from uz_dataviewer.user_paths import HEADER
+    root = tmp_path / 'firmware'
+    header = root / HEADER
+    header.parent.mkdir(parents=True)
+    header.touch()
+    directory = data_directory(root)
+    mapping = directory / 'selected.json'
+    mapping.write_text(json.dumps({'channels': 20, 'observables': {'JSO_custom': 42}}))
+    (directory / 'settings.json').write_text(json.dumps(dict(schema_version=1, name='custom',
+        sample_period_us=100, initial_channels={'1': 'JSO_custom'})))
+    app = DataViewerApp(use_live=True, live_mapping=str(mapping), live_repo=str(root) if explicit_repo else None)
+    requests, launches = [], []
+    controller = app.live.controller
+    try:
+        app.live.available = True
+        monkeypatch.setattr(controller, 'submit', lambda operation, **kwargs: requests.append((operation, kwargs)))
+        with monkeypatch.context() as patch:
+            patch.setattr(imgui, 'button', lambda label, *args, **kwargs: label == 'Connect')
+            gui_frame(SimpleNamespace(render=app.live.render_data), app.state)
+        operation, args = requests[0]
+        assert operation == 'connect'
+        assert args['repo'] is None
+        assert args['mapping'] == str(mapping)
+        assert args['user_directory'] == str(directory)
+        controller.client = SimpleNamespace(status=lambda: {})
+        monkeypatch.setattr('uz_dataviewer.live.subprocess.Popen',
+            lambda args, **kwargs: launches.append(args) or SimpleNamespace(poll=lambda: None))
+        controller._start_service(args['output'], args['mapping'], repo=args['repo'],
+                                  user_directory=args['user_directory'])
+        command = launches[0]
+        assert '--repo' not in command
+        assert command[command.index('--channel-mapping') + 1] == str(mapping)
+        assert command[command.index('--profile') + 1] == str(directory / 'settings.json')
+        assert controller.owned.mapping == mapping
+    finally:
+        controller.owned.process = None
+        app._shutdown()
+
+
+def test_service_launch_rejects_ambiguous_configuration(tmp_path):
+    from uz_dataviewer.live import LiveController
+    with pytest.raises(ValueError, match='either'):
+        LiveController()._start_service(tmp_path / 'session', 'selected.json', repo=tmp_path)
+    assert not (tmp_path / 'session.service.log').exists()
+
+
+def test_changed_mapping_requires_restarting_owned_service(tmp_path):
+    from types import SimpleNamespace
+    from uz_dataviewer.live import LiveController
+    controller = LiveController(lambda endpoint: SimpleNamespace(status=lambda: {}))
+    controller.owned.endpoint = 'test-endpoint'
+    controller.owned.process = SimpleNamespace(poll=lambda: None)
+    controller.owned.mapping = tmp_path / 'previous.json'
+    with pytest.raises(RuntimeError, match='different channel mapping'):
+        controller._command('connect', {'endpoint': 'test-endpoint', 'mapping': str(tmp_path / 'new.json')})

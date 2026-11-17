@@ -41,8 +41,14 @@ What runs where on the R5
 
 Only the sampling of measurement data runs inside the control interrupt.
 Everything else runs in the main loop underneath it.
-The main loop performs one exchange with the A53 at most every 100 µs.
-This page calls one such exchange a sweep.
+The main loop looks at ``XCP_IN`` every 5 µs and exchanges data with the A53 only when there is something to do:
+
+- A new command, or a response waiting for the mailbox, gets an exchange of its own at once. It does not touch the measurement data.
+- Measurement data is written to ``XCP_OUT`` only after the A53 has confirmed the previous chain, and then as soon as the oldest waiting data is 1 ms old or 8 segments of the DAQ queue (about 11 KB) are waiting. A command that arrives during such a copy waits for its end.
+- After 1 ms without any exchange, an exchange without measurement data follows anyway.
+
+Every exchange ends with an interrupt (IPI) to the A53.
+The times are set at the top of ``xcptl_ocm.c`` (``XCP_R5_POLL_PERIOD_US``, ``XCP_R5_DAQ_INTERVAL_US``, ``XCP_R5_DAQ_TRIGGER_SEGMENTS``).
 
 .. mermaid::
     :align: center
@@ -56,9 +62,9 @@ This page calls one such exchange a sweep.
       end
       subgraph ML["main loop"]
         direction TB
-        d["xcp_r5_background()<br>one sweep per 100 us"] --> e["read new commands from XCP_IN<br>and execute them"]
+        d["xcp_r5_background()<br>looks at XCP_IN every 5 us"] --> e["read new commands from XCP_IN<br>and execute them"]
         e --> f["park the response in the mailbox"]
-        f --> g["drain the DAQ queue into XCP_OUT"]
+        f --> g["DAQ exchange only:<br>drain the DAQ queue into XCP_OUT"]
         g --> h["publish, trigger IPI to the A53"]
       end
       c -. "DAQ queue" .-> g
@@ -127,7 +133,7 @@ The gateway on the A53
 ----------------------
 
 The gateway consists of two tasks and a hook in the interrupt handler of the IPI.
-Only the hook touches the OCM, and only the tasks use the UDP socket.
+Only the tasks use the UDP socket.
 Three queues connect them.
 
 .. mermaid::
@@ -137,14 +143,15 @@ Three queues connect them.
     flowchart TB
       min["UDP datagram from the master"] --> rx["rx task<br>checks the framing, remembers the master"]
       rx -- "command queue" --> isr["hook in APU_IPI_ISR<br>runs once per IPI from the R5"]
+      rx -- "new commands at once" --> xin
       xout["XCP_OUT"] -- "header under the seqlock,<br>chain checked by its number" --> isr
       isr -- "commands, acknowledges" --> xin["XCP_IN"]
       isr -- "response queue,<br>has priority" --> tx["tx task<br>packs datagrams, stamps the transport counter"]
       isr -- "DAQ queue,<br>65536 records" --> tx
       tx --> mout["UDP datagram to the master"]
 
-- The **rx task** receives the datagrams of the master. It forwards a datagram only if it consists of well-formed XCP frames, and it remembers the sender as the master.
-- The **hook in** ``APU_IPI_ISR`` runs once for every IPI of the R5, that is once per sweep. It reads ``XCP_OUT``, puts responses and measurement data into two separate queues and writes the next commands and its acknowledges into ``XCP_IN``.
+- The **rx task** receives the datagrams of the master. It forwards a datagram only if it consists of well-formed XCP frames, and it remembers the sender as the master. It writes a new command into ``XCP_IN`` at once, with interrupts masked and with the same code as the hook.
+- The **hook in** ``APU_IPI_ISR`` runs once for every IPI of the R5, that is after every exchange. It reads ``XCP_OUT``, puts responses and measurement data into two separate queues and writes the next commands and its acknowledges into ``XCP_IN``.
 - The **tx task** packs queued frames into datagrams of up to 1400 bytes, stamps the XCP transport counter and sends them. Responses are sent before waiting measurement data.
 
 The DAQ queue is deep (65536 records of up to 1400 bytes, about 92 MB) to bridge stalls of the network stack.
@@ -201,10 +208,10 @@ Every such loss is counted, see :ref:`xcp_diagnostics`.
      - The A53 rewrites the same batch of commands on every interrupt until the R5 confirms the generation number. The R5 executes each generation exactly once.
    * - Consumption handshake on the DAQ chain
      - measurement data
-     - The R5 leaves a chain of DAQ frames in place until the A53 confirms it, for at most 50 sweeps (5 ms). In the meantime new samples wait in the 32 KB queue of the R5.
+     - The R5 writes the next chain of DAQ frames only after the A53 has confirmed the previous one, and waits at most 5 ms for it. In the meantime new samples wait in the 128 KB queue of the R5. Commands do not wait for it: their exchanges leave the chain alone.
    * - Chain number
      - measurement data
-     - The R5 sets the number of the chain to 0 before it rewrites the chain and publishes the new number only when the chain is complete in the OCM. The A53 accepts a chain only if it saw the same non-zero number before and after reading it. A sweep that only keeps the chain does not change the number, so a long read of a kept chain stays valid. Half-written data never reaches the network.
+     - The R5 sets the number of the chain to 0 before it rewrites the chain and publishes the new number only when the chain is complete in the OCM. The A53 accepts a chain only if it saw the same non-zero number before and after reading it. An exchange that leaves the chain alone does not change the number, so a long read of the chain stays valid. Half-written data never reaches the network.
 
 Command and response
 ********************
@@ -221,8 +228,8 @@ Command and response
       participant R as R5 engine
       M->>A: UDP datagram<br>with command
       Note over A: rx task checks the frame,<br>remembers the master address
-      A->>O: IPI ISR writes batch<br>to XCP_IN, generation n
-      R->>O: sweep reads<br>generation n
+      A->>O: rx task writes batch<br>to XCP_IN, generation n
+      R->>O: poll sees<br>generation n
       Note over R: XcpCommand() executes
       R->>O: response into mailbox,<br>sequence s, consumed n
       R-->>A: IPI
@@ -244,13 +251,13 @@ Measurement data
       participant O as OCM
       participant A as A53 gateway
       I->>R: samples into<br>the DAQ queue
-      R->>O: sweep k writes chain c<br>to XCP_OUT
+      R->>O: DAQ exchange writes<br>chain c to XCP_OUT
       R-->>A: IPI
       A->>O: IPI ISR reads chain c,<br>checks that the number is still c
       A->>O: acknowledges c<br>in XCP_IN
       Note over A: tx task packs the frames<br>into datagrams and stamps<br>the transport counter
-      R->>O: sweep k+1 sees the acknowledge,<br>writes chain c+1
-      Note over R,A: no acknowledge yet, for example a late IPI:<br>the R5 keeps chain c and tries again one sweep later
+      R->>O: poll sees the acknowledge,<br>next DAQ exchange writes chain c+1
+      Note over R,A: no acknowledge yet, for example a late IPI:<br>the R5 leaves chain c alone, commands still go through
 
 The A53 stamps the XCP transport counter when it sends a datagram.
 Data that was lost before this point, in one of the buffers of the UltraZohm, is therefore **not** visible as a counter error in the master.

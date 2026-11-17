@@ -16,13 +16,13 @@ Where data can wait or get lost
     :caption: Buffers on the way of the measurement data and the counter that belongs to each of them
 
     flowchart TB
-      isr["R5 ISR_Control"] --> q1["R5 DAQ queue, 32 KB"]
+      isr["R5 ISR_Control"] --> q1["R5 DAQ queue, 128 KB"]
       q1 --> out["XCP_OUT, 32 KB"]
       out --> q2["A53 DAQ queue, 65536 records"]
       q2 --> udp["UDP send"]
       udp --> pc["PC"]
       q1 -. "full" .-> c1(["xcp_r5_queue_lost"])
-      out -. "no acknowledge<br>for 50 sweeps" .-> c2(["xcp_r5_out_overwritten"])
+      out -. "no acknowledge<br>for 5 ms" .-> c2(["xcp_r5_out_overwritten"])
       q2 -. "full" .-> c3(["xcp_gw_txq_dropped"])
       udp -. "failed after<br>all retries" .-> c4(["xcp_gw_sendto_drop"])
 
@@ -37,7 +37,7 @@ Reading the counters
 - **gen_a2l.py**: a generated A2L file always contains the counters of the A53. ``--diag`` adds those of the R5.
 
 The counters of the R5 are global variables of the Baremetal application.
-The counters of the A53 are copied on every interrupt into the header of ``XCP_IN`` at fixed addresses from ``0xFFFFC008`` and are read through the R5 like any other memory.
+The counters of the A53 are copied on every interrupt and for every command into the header of ``XCP_IN`` at fixed addresses from ``0xFFFFC008`` and are read through the R5 like any other memory.
 
 R5 counters
 -----------
@@ -57,22 +57,22 @@ R5 counters
      - One count per call of ``ISR_Control``.
    * - ``xcp_r5_sweep_count``
      - counts up
-     - One count per exchange sweep of the main loop.
+     - One count per exchange with the A53: measurement data, commands or the 1 ms heartbeat.
    * - ``xcp_r5_sweep_gap_max_us``
-     - slightly above 100
-     - Longest time between two sweeps since start-up, in microseconds. A single slow pass of the main loop raises it for good. A large value means that something blocks the main loop.
+     - below 1000
+     - Longest time between two passes of the main loop through ``xcp_r5_background()`` since start-up, in microseconds, including the exchanges themselves. A single slow pass raises it for good. A large value means that something blocks the main loop, and commands wait that long.
    * - ``xcp_r5_queue_lost``
      - 0
      - Measurement data dropped because the DAQ queue of the R5 was full. This is the loss counter for measurement data on the R5.
    * - ``xcp_r5_tx_held``
      - may count
-     - Sweeps that filled ``XCP_OUT`` completely. The rest waited in the queue. A steady increase means the measurement produces more data than the exchange can carry.
+     - Exchanges that filled ``XCP_OUT`` completely. The rest waited in the queue. A steady increase means the measurement produces more data than the exchange can carry.
    * - ``xcp_r5_out_held``
      - may count
-     - Sweeps that kept the previous chain because the A53 had not acknowledged it yet. Delay, not loss.
+     - Exchanges of measurement data that were due before the A53 had acknowledged the previous chain, counted once per chain. Delay, not loss.
    * - ``xcp_r5_out_overwritten``
      - 0
-     - Chains given up after 50 sweeps (5 ms) without acknowledge. Their data is lost. The gateway is not running or stalled.
+     - Chains given up after 5 ms without acknowledge. Their data is lost. The gateway is not running or stalled.
    * - ``xcp_r5_cto_sent``
      - counts up
      - Command responses handed to the mailbox.
@@ -84,7 +84,7 @@ R5 counters
      - Command batches executed.
    * - ``xcp_r5_in_resumed``
      - may count
-     - Sweeps that had to interrupt a command batch because four responses were already waiting for the mailbox. The batch continues in the next sweep.
+     - Exchanges that had to interrupt a command batch because four responses were already waiting for the mailbox. The batch continues in the next exchange.
    * - ``xcp_r5_cmd_oversize_drop``
      - 0
      - Commands longer than 248 bytes that were refused.
@@ -117,7 +117,7 @@ A53 gateway counters
    * - ``xcp_gw_ocm_cycles_missed``
      - ``0xFFFFC010``
      - may count
-     - Sweeps of the R5 that no interrupt read. Indicates interrupt latency on the A53, not a loss.
+     - Exchanges of the R5 that no interrupt read. Indicates interrupt latency on the A53, not a loss.
    * - ``xcp_gw_ocm_capped``
      - ``0xFFFFC014``
      - 0
@@ -174,14 +174,28 @@ The R5 also measures where its time goes.
 It times every exchange and every call of ``xcp_r5_event()`` with its CPU cycle counter and keeps the sums in the global structure ``xcp_r5_prof``.
 ``xcp_poll.py --stress`` clears the sums before a run, reads them at the end of the run while DAQ is still running, and prints:
 
-- the exchanges per second and the wall time of one exchange,
+- the exchanges per second, how many of them carried measurement data and how many only commands, and the wall time of one exchange,
 - the wall time of each phase of an exchange: refreshing the command region, executing commands, copying DAQ data into ``XCP_OUT`` and flushing the cache,
 - the copy and flush time per KB of DAQ data, once as wall time and once as CPU time without the control interrupts that hit the phase,
 - how the time of the R5 splits into the control interrupt, the exchanges and the rest of the main loop,
-- the run time of the control interrupt per cycle and the part of it spent in ``xcp_r5_event()``.
+- the run time of the control interrupt per cycle and the part of it spent in ``xcp_r5_event()``,
+- how long the A53 took to acknowledge a chain of measurement data after the interrupt, and how often the R5 looked at ``XCP_IN``.
 
 The profile costs a few reads of the cycle counter per exchange and per control cycle.
 It is switched off with ``XCP_R5_PROFILE`` set to ``0`` in ``xcp_r5.h``.
+
+Time profile of the A53
+-----------------------
+
+The gateway measures its own time with the system counter of the A53 and copies the sums into the last words of the counter area in ``XCP_IN``.
+``xcp_poll.py --stress`` prints them next to the profile of the R5:
+
+- how the time of the A53 splits into idle time, the interrupt hook, the tx task and everything else (network stack, interrupts of the Ethernet controller, other tasks),
+- the time of the interrupt hook per interrupt and per record of measurement data,
+- the datagrams per second, their average size, and the time of one ``lwip_sendto()`` call.
+
+The idle time comes from a task at the idle priority that only runs when nothing else needs the processor.
+The profile is switched off with ``XCP_GW_PROFILE`` set to ``0`` in ``xcp_gateway_a53.h``.
 
 The engine contains consistency checks from upstream XCPlite, some of them in the code that runs in the control interrupt.
 The Debug build of Vitis keeps them active, and a failing check stops the R5.

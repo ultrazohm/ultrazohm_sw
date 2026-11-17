@@ -173,13 +173,14 @@ The consumption handshake described in :ref:`xcp_architecture` was added afterwa
 In November 2026 the current version was measured at a control rate of 40 kHz:
 
 - With DAQ messages of at most 248 bytes, nothing was lost up to about 160 Mbit/s. At 320 Mbit/s about a third of the control cycles were lost.
-- With the current messages of up to 1024 bytes, 320 Mbit/s (1000 bytes per cycle) ran for five minutes without any loss.
-- At 384 Mbit/s (1200 bytes per cycle) the R5 no longer kept up. ``xcp_r5_queue_lost`` counted lost samples, and the throughput fell to about 280 Mbit/s.
+- With the current messages of up to 1024 bytes, 320 Mbit/s (1000 bytes per cycle) ran without any loss. With XCP commands sent back to back at the same time, 900 bytes per cycle ran for 10 minutes without loss; at 1000 bytes per cycle the R5 fell behind and about 15 % of the samples were lost.
+- From 1100 bytes per cycle on, the R5 no longer kept up. ``xcp_r5_queue_lost`` counted lost samples, and the throughput fell to about 250 Mbit/s.
+- A command took about 0.24 ms from the PC back to the PC without a measurement and about 0.6 ms at 1000 bytes per cycle.
 
-At a high control rate the interrupt leaves little time for the main loop, and the main loop carries the exchange with the A53.
-The limit is then the R5, not Ethernet.
-Overload does not degrade gracefully: above the limit, more than a quarter of the control cycles are lost.
-At 40 kHz, keep the data on ``DAQ_R5`` at or below about 1000 bytes per cycle and put everything else on a slower raster.
+At a high control rate the interrupt leaves little time for the main loop, and the main loop copies the measurement data into the OCM.
+The limit is then the R5, not Ethernet and not the A53, which was idle more than 40 % of the time at the limit.
+Overload does not degrade gracefully: once the R5 has fallen behind, it copies data that is no longer in its cache, which costs about twice as much, so the throughput sinks below the limit and stays there until the load drops.
+At 40 kHz, keep the data on ``DAQ_R5`` at or below about 900 bytes per cycle and put everything else on a slower raster. 1000 bytes per cycle work, but leave no reserve for disturbances.
 Each ODT also costs time in the interrupt, see :ref:`xcp_architecture`.
 
 Calibrate

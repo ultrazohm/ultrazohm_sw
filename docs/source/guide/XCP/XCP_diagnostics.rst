@@ -183,6 +183,10 @@ It times every exchange and every call of ``xcp_r5_event()`` with its CPU cycle 
 The profile costs a few reads of the cycle counter per exchange and per control cycle.
 It is switched off with ``XCP_R5_PROFILE`` set to ``0`` in ``xcp_r5.h``.
 
+The engine contains consistency checks from upstream XCPlite, some of them in the code that runs in the control interrupt.
+The Debug build of Vitis keeps them active, and a failing check stops the R5.
+To measure what they cost, or to build without them, set ``XCP_R5_ENGINE_ASSERTS`` to ``0`` in ``xcplib_r5_cfg.h``.
+
 Troubleshooting
 ---------------
 

@@ -95,4 +95,21 @@ extern uint8_t xcp_r5_check_write(uint32_t addr, uint8_t size);
  * holds several such entries. The XCP protocol caps an entry at 255 (WRITE_DAQ
  * size is one byte); 240 is a multiple of 4 (copy granularity). */
 #define XCP_MAX_ODT_ENTRY_SIZE 240
+/* Engine asserts: upstream XCPlite consistency checks, some of them in the
+ * DAQ code that runs in ISR_Control (queue segment and message checks,
+ * ODT entry checks under XCP_ENABLE_TEST_CHECKS). The Vitis Debug build does
+ * not define NDEBUG, so they are active, and a failing check calls abort()
+ * and stops the R5. 1 (default): keep them (upstream behaviour).
+ * 0: build the engine sources without them (NDEBUG from here on, plus a
+ * second include of assert.h for files that included it before this
+ * header), for example to measure what they cost in the ISR. */
+#ifndef XCP_R5_ENGINE_ASSERTS
+#define XCP_R5_ENGINE_ASSERTS 1
+#endif
+#if !XCP_R5_ENGINE_ASSERTS
+#ifndef NDEBUG
+#define NDEBUG
+#endif
+#include <assert.h>
+#endif
 #endif

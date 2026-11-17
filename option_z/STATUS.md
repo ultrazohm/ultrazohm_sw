@@ -23,12 +23,9 @@ only (`xcp_poll.py --stress`, 20-60 s each):
   `xcp_r5_queue_lost` in another; 8 % of the A53 reads torn.
 - 1000 B/cycle (320 Mbit/s): collapse. About a third of the cycles lost in
   the R5 queue, 61 % of the A53 reads torn, A53 handled only ~3,500 of
-  ~10,000 IPIs/s. Likely mechanism: at 40 kHz the ISR leaves little R5 time,
-  each exchange sweep stretches, the A53 read window shrinks; keep sweeps
-  still bump the seqlock, so long reads of an unchanged chain are discarded
-  and the chain grows to 32 KB. Not fixed yet (candidates: cap the chain per
-  sweep, start the sweep interval at the end of the previous sweep, validate
-  the chain by `chain_seq` instead of the seqlock).
+  ~10,000 IPIs/s. First guess was the A53 (long reads of an unchanged chain
+  discarded by keep sweeps). WRONG, see "chain validation" below: the R5
+  main loop is the limit.
 - ISR cost of `xcp_r5_event()` (DAQ of `timingR5.isr_execution_time_us`):
   14.2 us ISR without DAQ, about +1 us for the first ODT, +0.6-0.8 us per
   further ODT, about 1 us per KB of data. Cost is per ODT (one DAQ message
@@ -47,8 +44,31 @@ only (`xcp_poll.py --stress`, 20-60 s each):
   as before (about 280 Mbit/s delivered, A53 handles only ~2,400-2,900
   IPIs/s, 25-30 % of the cycles lost in the R5 queue).
 - So the limit at 40 kHz moved from ~160 to between 320 and 384 Mbit/s.
-  The overload collapse itself is still open (candidates in the run above).
 - CANape with MAX_DTO 1024 not tried yet.
+
+## Bench run 2026-11-17, chain validation (commit c271e7a flashed)
+
+- `xcp_gw_ocm_torn` 0 and `xcp_gw_ocm_skipped_writing` 0 in every run
+  (before: ~33,000 discarded reads per 30 s at overload). 1000 B/cycle still
+  clean (60 s, 0 loss).
+- The overload limit did NOT move: 1200 / 1500 / 2000 B/cycle still deliver
+  280-290 Mbit/s with large `xcp_r5_queue_lost`, A53 ~2,400 IPIs/s.
+- Root cause, measured by polling `xcp_r5_sweep_count` during the run (after
+  resetting `xcp_r5_sweep_gap_max_us` with SET_MTA + DOWNLOAD, which also
+  proves the write gate on hardware): the R5 manages 9,986 exchanges/s at
+  8 B/cycle, 8,785/s at 1000 B (longest gap 250 us), but only 2,224-2,311/s
+  at 1200-1500 B (longest gap 826 us). The main-loop exchange moves about
+  40 MB/s (~320 Mbit/s of chain bytes) with the ~30 % of the R5 that the
+  40 kHz ISR leaves, whatever the chain size. In overload every rewrite
+  sweep is followed by one hold sweep (`xcp_r5_tx_held` = `xcp_r5_out_held`),
+  because the next sweep starts at once after a long one, before the A53 has
+  read. The A53 is not the bottleneck; the discarded reads were a symptom.
+- Commands during overload: ~40 SHORT_UPLOADs per 10 s run, 0 timeouts.
+- Levers to raise the ceiling at 40 kHz (none implemented): make the R5 copy
+  into XCP_OUT cheaper (non-cacheable MPU mapping of XCP_OUT, or DMA), avoid
+  the copy (DAQ queue in OCM, read directly by the A53), or free R5 time in
+  the ISR (DAQ queue in TCM, lower control rate). Starting the 100 us
+  interval at the end of a sweep would only remove the wasted hold sweeps.
 
 ## Changes after the July hardware run (2026-11-16/17)
 
@@ -70,12 +90,13 @@ tests 1 to 4.
   (was 248), OCM chain records up to 1400 B (`OCM_XCP_RECORD_MAX`, 16-bit
   lengths), gateway DAQ queue 65536 x 1.4 KB; `xcp_poll.py --stress` packs
   ODTs up to MAX_DTO
-- 2026-11-17, NOT yet on hardware: the DAQ chain is validated by its own
-  `chain_seq` (0 while rewritten, published after the chain bytes) instead
-  of the seqlock, so a long A53 read of a kept chain is no longer thrown
-  away (ocm_xcp_fifo.c mechanism 5); targets the overload collapse above
-  ~320 Mbit/s at 40 kHz. Counter meanings: `xcp_gw_ocm_skipped_writing` =
-  header copy unusable, `xcp_gw_ocm_torn` = chain really rewritten mid-read
+- 2026-11-17, bench-tested (stress tests): the DAQ chain is validated by
+  its own `chain_seq` (0 while rewritten, published after the chain bytes)
+  instead of the seqlock, so a long A53 read of a kept chain is no longer
+  thrown away (ocm_xcp_fifo.c mechanism 5). Discarded reads went to 0; the
+  overload limit did not move (R5-bound, see above). Counter meanings:
+  `xcp_gw_ocm_skipped_writing` = header copy unusable, `xcp_gw_ocm_torn` =
+  chain really rewritten mid-read
 
 ## HARDWARE VALIDATED (2026-07-10/11)
 

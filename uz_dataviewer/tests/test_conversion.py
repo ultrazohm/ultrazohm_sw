@@ -77,8 +77,8 @@ def test_cancellation_before_publication_cleans_output(tmp_path, monkeypatch):
 
 
 def test_native_conversion_falls_back_to_rename_without_hard_links(tmp_path, monkeypatch):
-    from uz_dataviewer import user_paths
-    monkeypatch.setattr(user_paths.sys, 'platform', 'linux')
+    # Exercise the actual OS primitive: Linux/macOS use exclusive rename,
+    # while Windows rename already refuses replacement.
 
     def unsupported(*args):
         raise PermissionError('Operation not permitted')  # exFAT/FAT on Linux

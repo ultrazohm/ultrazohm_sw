@@ -221,7 +221,11 @@ def test_managed_flash_restarts_real_service_and_preserves_recordings(service, t
     client.start_logging()
     client.start_logging_slow_data()
     wait_for(lambda: client.status()['state']['samples'] > 100)
-    recordings = client.status()['logging']
+    # Handles are reported once each writer has created its index.
+    def with_handles():
+        logging = client.status()['logging']
+        return logging if all(info['handle'] for info in logging.values()) else None
+    recordings = wait_for(with_handles)
     controller = LiveController(hz=30)
     monkeypatch.setattr(flashing, 'run_flash_cli', lambda *args: True)
     monkeypatch.setattr(flashing, 'xsct_available', lambda: True)

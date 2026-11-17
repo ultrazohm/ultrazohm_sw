@@ -1,7 +1,10 @@
 # Option Z — test plan (XCPlite engine on the R5)
 
-Option Z is **fully wired and both apps build green**, but it has **not run on
-hardware** — the integration was done "assume it works". Test it incrementally:
+Option Z ran on hardware on 2026-07-10/11 (bring-up and a 1 h soak at
+325 Mbit/s, see `STATUS.md`). The changes of 2026-11-16 (engine V2.3.4, OCM
+layout v3 with the consumption handshake, master supervision, write gate) are
+**compiled but not yet run on hardware**: repeat tests 1 to 4 after flashing
+both apps. Test incrementally:
 each step isolates one layer so a failure points at a specific place. If you get
 stuck, the **fallback** (bottom) returns you to JavaScope.
 
@@ -60,8 +63,9 @@ Data path: `CANape/xcp_poll ⇄ UDP:5556 ⇄ A53 rx/tx tasks ⇄ queues ⇄ APU_
 
 1. Build **both** apps (Vitis IDE rebuilds the makefiles and auto-compiles the
    new `xcp_engine/` and `xcp_gateway/` folders; the Baremetal app already
-   passes `-DARMR5`). Or use the verified `make` outputs already in the Debug
-   folders.
+   passes `-DARMR5`). Do not reuse ELF files of an older build: the OCM
+   layout changed on 2026-11-16, and an old image on one core cannot talk to
+   a new one on the other.
 2. Flash **both** `Baremetal.elf` (R5) and `FreeRTOS.elf` (A53).
 
 ## Test 1 — both cores boot (serial console, 115200)
@@ -99,8 +103,8 @@ Read any R5 variable **by name** from the R5 ELF (no curated struct):
 python tools/xcp_test/xcp_poll.py --ip 192.168.1.233 ^
   --watch xcp_r5_cycle_count:u32 --watch xcp_r5_init_result:i32
 ```
-(`--elf` defaults to `FreeRTOS.elf`; unresolved names fall back to
-`Baremetal.elf` automatically.) `xcp_r5_cycle_count` increments every control
+(`--elf` defaults to the workspace `Baremetal.elf`, the R5 image.)
+`xcp_r5_cycle_count` increments every control
 cycle — if it climbs, the R5 engine is alive; `xcp_r5_init_result` must be 0.
 Pick further variables that move, e.g. a `Global_Data.av.*` address
 (get it from `armr5-none-eabi-nm Baremetal.elf`) once currents flow.
@@ -149,19 +153,23 @@ JavaScope OCM bank at `0xFFFF0000`) on event 0 at the control rate — at 10 kHz
 that is **160 Mbit/s of DAQ payload**, the rate the hedrive rig sustains.
 Scale with `--stress-bytes` (the 32 KB OCM window carries ~30 KB per 100 µs
 sweep, so Ethernet and the A53 are the practical limit, not the OCM) or thin
-with `--prescaler`.
+it out with a slower raster (`--daq-event 1..4`). The R5 engine has no DAQ
+prescaler (`XCP_ENABLE_DAQ_PRESCALER` is off): `--prescaler` values above 1
+are refused with ERR_OUT_OF_RANGE.
 
 The report verifies the CP7 mechanisms directly:
 - **frames/datagram** ≫ 1 → the gateway TX batching works (B1);
-- **ctr gaps = 0** → no records lost anywhere on the wire path (the A53
-  stamps the CTR contiguously at transmission time, so every drop —
-  gateway queue, OCM overwrite, PC-side rx — shows up here);
+- **ctr gaps = 0** → nothing was lost after the A53 stamped the counter
+  (send drop, wire, PC-side rx). The A53 stamps the CTR at transmission
+  time, so a drop BEFORE that point (R5 queue, OCM overwrite, A53 DAQ queue)
+  never shows up as a gap — those are in the counter deltas below;
 - **event cycles ~ control rate** (from ODT0 target timestamps);
-- **R5 counter deltas** (`ocm_xcp_w_dropped`, `xcp_r5_cto_dropped`, … read
-  via SHORT_UPLOAD before/after) — the "must stay 0" set is flagged.
+- **R5 and A53 counter deltas** (`ocm_xcp_w_dropped`, `xcp_r5_queue_lost`,
+  `xcp_gw_txq_dropped`, … read via SHORT_UPLOAD before/after, the A53 ones
+  through the OCM mirror) — the "must stay 0" set is flagged.
 
 Exit code: 0 = clean (pure reordering passes), 2 = ran with net loss (then
-check the JTAG-only A53 counters — `xcp_gw_sendto_drop`/`xcp_gw_sendto_err`
+check the A53 counters in the report — `xcp_gw_sendto_drop`/`xcp_gw_sendto_err`
 attribute it: >0 = ECU lwIP; 0 = wire/PC receive path).
 Escalation sequence for a soak: `--stress --daq-seconds 600`, then
 `--stress-bytes 4000 --daq-seconds 600`, then overnight.
@@ -190,11 +198,12 @@ on the `DAQ_R5` event. The generated A2L (and the ready-made project in
 rate) and the derived `daq_1ms` / `daq_10ms` / `daq_100ms` / `daq_1s` on event
 channels 1..4 — so each signal can be assigned to the raster it needs.
 
-## Debugging (it's untested — likely first-try issues)
+## Debugging
 
 Inspect these via the JTAG debugger (the R5 keeps stats):
 - **Engine health globals** (`xcp_engine/xcptl_ocm.c`): `xcp_r5_init_result`
-  (0 = ok, -1 queueInit, -2 XcpInit, -3 event, 0x7FFFFFFF = init never ran) and
+  (0 = ok, -1 queueInit, -2 XcpInit, -3 event, -4 event channel numbering
+  differs from the A2L, 0x7FFFFFFF = init never ran) and
   `xcp_r5_cycle_count` (must climb at the control rate). If init failed, the
   engine self-disables (`gQueue == NULL` guards) instead of crashing the ISR.
 - **OCM FIFO counters** (`vitis/software/Baremetal/src/sw/xcp_engine/ocm_xcp_fifo.c`):
@@ -250,11 +259,16 @@ Inspect these via the JTAG debugger (the R5 keeps stats):
   the master silent for that long while DAQ was streaming. The gateway
   injects an XCP DISCONNECT for the R5, so DAQ stops instead of streaming
   to a dead endpoint; reconnect as usual).
-- **R5 ISR budget**: the R5 runs `xcp_r5_event()` + `xcp_r5_poll()` + IPI inside
-  `ISR_Control` at the control rate. If `uz_SystemTime` ISR-exec jumps, the
-  command/DAQ work is too heavy for the 100 µs budget — move `xcp_r5_poll()` to
-  the main loop and trigger the IPI at a divided rate.
-- **IPI fires**: the A53 `APU_IPI_ISR` (gateway branch) must run each R5 cycle.
+- **R5 ISR budget**: since CP11 only `xcp_r5_event()` (the DAQ sampling copy)
+  runs in `ISR_Control`; the exchange sweep (`xcp_r5_background()` →
+  `xcp_r5_poll()` + IPI) runs in the main loop. The ISR cost has not been
+  re-measured since the move (expected: near the non-XCP baseline idle,
+  about +5 µs per KB measured per cycle). Compare
+  `timingR5.isr_execution_time_us` (static in `uz_SystemTime.c`, readable
+  over XCP) with and without a running measurement. A large
+  `xcp_r5_sweep_gap_max_us` means the main loop is blocked.
+- **IPI fires**: the A53 `APU_IPI_ISR` (gateway branch) must run once per R5
+  sweep (every 100 µs).
   Breakpoint `xcp_gateway_a53_on_ipi`. If never hit, the R5 `XIpiPsu_TriggerIpi`
   isn't reaching the A53 (mask/registration).
 - **Master learned**: the A53 `tx_task` drops frames until `gMasterValid` is set
@@ -270,20 +284,21 @@ Inspect these via the JTAG debugger (the R5 keeps stats):
 
 ### Known residual risks (accepted for bring-up)
 
-- **DAQ frames of a missed cycle are lost (by design, now safe + counted)**:
-  the R5 still rewinds the XCP_OUT chain every control cycle. Since CP7 a
-  late/overlapping IPI can no longer tear frames (seqlock), lose a command
-  response (CTO mailbox) or eat a command (generation handshake) — but the
-  missed cycle's DAQ frames are gone: a gap in the measurement, counted in
-  `xcp_gw_ocm_cycles_missed`/`xcp_gw_ocm_torn`. No ctr gaps anymore (the A53
-  stamps the counter at transmission time).
-- **ISR budget**: `xcp_r5_poll()` (command processing + queue drain + cache
-  flushes) runs inside `ISR_Control`. Watch `uz_SystemTime` ISR-exec time under
-  DAQ load; if it jumps, move `xcp_r5_poll()` to the main loop.
+- **DAQ frames of a missed sweep (resolved 2026-11-16, not yet on
+  hardware)**: until then the R5 rewound the XCP_OUT chain every sweep, so
+  the DAQ frames of a sweep no IPI read were lost (943 of 36.6 M cycles in
+  the 1 h soak). Now the R5 keeps an unacknowledged chain in place for up to
+  50 sweeps (consumption handshake): a late, torn or skipped IPI read costs
+  latency, not data. Only a gateway that stays silent for 5 ms loses chains
+  (`xcp_r5_out_overwritten`).
+- **ISR budget**: the exchange moved to the main loop in CP11 (see
+  Debugging above); the remaining ISR cost of `xcp_r5_event()` is still to
+  be measured.
 - **DAQ rate**: event 0 fires at the full control rate. Since CP7 the gateway
   batches records into ~1400-byte datagrams and buffers seconds of backlog
   (262144 records); if UDP drain still can't keep up, `xcp_gw_txq_dropped`
-  climbs — set a prescaler in CANape (or reduce the measurement).
+  climbs — move signals to a slower raster (`daq_1ms` … `daq_1s`) or reduce
+  the measurement; the engine has no DAQ prescaler.
 - **UDP session boundaries are heuristic**: a "new master" is detected by a
   changed IP:port. If CANape reconnects from the SAME endpoint, a stale
   parked response could be forwarded into the new session (hedrive's TCP

@@ -46,8 +46,9 @@ takes 32 KB of the 128 KB heap; watch `xcp_r5_init_result == -1`).
 `DAQ_R5` used to declare a hardcoded 1 ms while firing at the control rate.
 It now declares `XCP_R5_ISR_PERIOD_NS`, derived in `xcptl_ocm.c` from
 `UZ_PWM_FREQUENCY x Interrupt_ISR_freq_factor / INTERRUPT_ADC_TO_ISR_RATIO`
-(the expression `main.c` uses for `isr_samplerate_s`) — 25 µs at the current
-40 kHz configuration.
+(the expression `main.c` uses for `isr_samplerate_s`) — 25 µs at the 40 kHz
+of the test bench, 100 µs at the repository default of 10 kHz. The A2L files
+(`uz.A2L`, `gen_a2l.py`) declare the bench value of 25 µs as a constant.
 
 Same pass added the hedrive time slices as derived rasters (see
 `kXcpR5Slice`): event channels 1..4 = `daq_1ms` / `daq_10ms` / `daq_100ms` /
@@ -62,16 +63,20 @@ five lists.
 
 ## 2. Design debt — fix only if symptoms appear
 
-### 2.1 DAQ frames of a missed cycle are still lost — ~~RESOLVED for sessions~~, gaps remain by design (CP7)
-The R5 still rewinds the XCP_OUT chain every control cycle. What CP7 fixed
-(hedrive T8): a late/overlapping A53 IPI can no longer kill the session or
-corrupt data — command **responses** ride the acknowledged CTO mailbox,
-**commands** ride the XCP_IN generation handshake (rewrite-until-acked), and
-CTR gaps are gone because the A53 stamps the counter at transmission time.
-What remains lossy: **DAQ frames** of a cycle the A53 never saw (counted in
-`xcp_gw_ocm_cycles_missed`) — a measurement gap, not a failure. A real OCM
-ring buffer would close even that; only worth it if the counters show
-meaningful gap rates in practice.
+### 2.1 DAQ frames of a missed cycle — RESOLVED 2026-11-16 (consumption handshake, not yet on hardware)
+What CP7 fixed (hedrive T8): a late/overlapping A53 IPI can no longer kill the
+session or corrupt data — command **responses** ride the acknowledged CTO
+mailbox, **commands** ride the XCP_IN generation handshake
+(rewrite-until-acked), and the A53 stamps the transport counter at
+transmission time. What CP7 left lossy: the **DAQ frames** of a sweep the A53
+never read, because the R5 rewound the XCP_OUT chain every sweep (943 of
+36.6 M cycles in the 1 h soak, `xcp_gw_ocm_cycles_missed`).
+Closed on 2026-11-16 without a ring buffer: the R5 keeps a non-empty chain in
+place until the A53 acknowledges its `chain_seq` (`out_ack` in the XCP_IN
+header) and holds new samples in its 32 KB queue meanwhile
+(`xcp_r5_out_held`); after 50 unacknowledged sweeps it gives up
+(`xcp_r5_out_overwritten`, gateway dead or stalled). Since then
+`xcp_gw_ocm_cycles_missed` is an IPI-latency indicator, not a loss counter.
 
 ### 2.2 Torn-read window — RESOLVED (CP7)
 XCP_OUT now carries a seqlock (odd while the R5 writes, published after the
@@ -87,7 +92,8 @@ datagrams), and the DAQ queue is a deep burst absorber (262144 records ≈
 sizing; tail-drop + `xcp_gw_txq_dropped` on overflow — hedrive B5 final
 form). UDP has no backpressure, so PC-side receive pauses are absorbed by
 the receiver instead (`xcp_poll.py` sets a 32 MB socket buffer).
-If throughput still limits: DAQ prescaler in CANape, or the parked lwIP BSP
+If throughput still limits: a slower raster in CANape (the engine has no DAQ
+prescaler), or the parked lwIP BSP
 knobs (`TCP_SND_BUF`-class tuning does not apply to UDP; pbuf/GEM BD counts
 would).
 

@@ -45,7 +45,8 @@ A53 gateway counters after the soak (JTAG) — the CP7/CP9 mechanisms at work:
 recovered by the CP9 bounded retry), `ocm_torn 10` + `ocm_skipped 10`
 (seqlock caught 20 R5/A53 write-read collisions — each would have been
 corrupt wire data pre-CP7), `ocm_cycles_missed 943` (0.0026 % of cycles:
-IPI latency > 100 µs; pure DAQ gaps now — pre-CP7 any such cycle carrying
+IPI latency > 100 µs; pure DAQ gaps at that time, closed by the consumption
+handshake of 2026-11-16 — pre-CP7 any such cycle carrying
 a command response killed the session, the hedrive T8 random-death cause).
 
 R5 ISR budget measured (IMPROVEMENTS §1.1): with the sweep in the ISR,
@@ -54,8 +55,9 @@ the 100 kHz ISR target, so CP11 moved the exchange sweep to the main loop
 (`xcp_r5_background()`, paced at 100 µs; only the XcpEvent sampling copy
 stays in the ISR). Re-measure `isr_execution_time_us` after rebuild:
 expected near the non-XCP baseline at idle, ~+5 µs/KB while streaming.
-**Transport validated for use (1 h soak); ISR-cost re-measurement after
-the CP11 split is the only open check.**
+**Transport validated for use (1 h soak).** Open since then: the ISR-cost
+re-measurement after the CP11 split, and a hardware run of the 2026-11-16
+changes (see the top of this file).
 
 ## DAQ rasters (CP12, 2026-08-03)
 
@@ -64,7 +66,8 @@ The slave offers the hedrive set of measurement rasters, all served from
 rate (now *declared* at its real period instead of a hardcoded 1 ms) plus the
 derived slices 1 `daq_1ms`, 2 `daq_10ms`, 3 `daq_100ms`, 4 `daq_1s`. Dividers
 come from `UZ_PWM_FREQUENCY` and the trigger factor, so they follow a PWM
-frequency change (40 kHz today → 40 control cycles per ms); the counters are
+frequency change (40 kHz on the test bench → 40 control cycles per ms; the
+repository default of 10 kHz → 10); the counters are
 staggered so no two slices fire in the same cycle. Channel numbers are the
 creation order and are mirrored in `CANape/UZ_XCP/uz.A2L`; `xcp_r5_init()`
 refuses to run (`xcp_r5_init_result = -4`) if the numbering ever shifts.
@@ -78,7 +81,7 @@ What remains is Vitis assembly + on-hardware bring-up (see "Integration").
 | Milestone | State |
 |-----------|-------|
 | Z1 engine on armr5 | ✅ engine (`xcplite/queue32/util/xcpappl`) compiles unchanged for armr5 + `_BAREMETAL` platform branch — upstream **V2.3.4** since 2026-11-16 (was V2.1.0; see IMPROVEMENTS §4b, not yet hardware-tested) |
-| Z2 R5 transport | ✅ `xctpl_ocm.c` (engine TL + `xcp_r5_init/event/poll`) + `ocm_xcp_fifo.c` — R5 stack links to **only `uz_SystemTime`** (~36 KB) |
+| Z2 R5 transport | ✅ `xcptl_ocm.c` (engine TL + `xcp_r5_init/event/background/poll`) + `ocm_xcp_fifo.c` — R5 stack links to **only `uz_SystemTime`** (~36 KB) |
 | Z3 A53 gateway | ✅ `xcp_gateway_a53.c` (UDP ⇄ OCM, IPI-ISR + 2 tasks) — compiles against the A53 BSP, no unexpected unresolved syms |
 | Z1b Vitis wiring | ✅ integrated in-tree and brought up on hardware (2026-07-10), see "Integration" below |
 | Z4 arbitrary A2L | ✅ `gen_a2l.py`, `dwarf_structs.py`, `xcp_poll.py --watch/--daq`; CANape project in `CANape/UZ_XCP` |
@@ -103,11 +106,13 @@ vitis/software/Baremetal/src/sw/xcp_engine/platform_baremetal.c
                             clock = uz_SystemTime).
 vitis/software/Baremetal/src/sw/xcp_engine/xcptl_ocm.c
                             R5 XCP transport + driving API (XcpTl* + xcp_r5_init/
-                            event/poll/tx_pump). Replaces xcpethtl.c on the R5.
+                            event/background/poll/tx_pump), memory access check
+                            and write gate. Replaces xcpethtl.c on the R5.
 vitis/software/Baremetal/src/sw/xcp_engine/xcplib_r5_cfg.h
                             R5 config: no sockets, queue32, OPTION_CAL_SEGMENTS off
-                            (direct addressing), 1 us clock, MTU 284 / DTO 248
-                            (OCM record cap), no A2L gen/persistence.
+                            (direct addressing), 1 us clock, segment 252 / DTO 248
+                            (OCM record cap), ODT entry 240, no DAQ prescaler,
+                            no A2L gen/persistence.
 vitis/software/FreeRTOS/sw/xcp_gateway/xcp_gateway_a53.c
                             A53 UDP<->OCM gateway: xcp_gateway_a53_init() +
                             xcp_gateway_a53_on_ipi() + rx/tx tasks.
@@ -119,9 +124,10 @@ vitis/software/FreeRTOS/sw/xcp_gateway/xcp_gateway_a53.c
 CANape --UDP:5556--> rx_task --rxq--> APU_IPI_ISR --> XCP_IN  --> R5 XcpCommand
 R5 XcpEvent/CRM ----> XCP_OUT --> APU_IPI_ISR --txq--> tx_task --UDP--> CANape
 ```
-The R5 triggers the IPI once per control cycle (after `xcp_r5_poll()`); the A53
-IPI ISR touches only OCM + FreeRTOS queues (sockets live in the tasks — hedrive
-F1). Frame = `[dlc:u16][ctr:u16][packet]` (= the XCP-on-UDP datagram payload).
+The R5 triggers the IPI once per exchange sweep: since CP11 from the main loop
+(`xcp_r5_background()`, every 100 µs), before that once per control cycle from
+the ISR. The A53 IPI ISR touches only OCM + FreeRTOS queues (sockets live in
+the tasks — hedrive F1). Frame = `[dlc:u16][ctr:u16][packet]` (= the XCP-on-UDP datagram payload).
 
 Since CP7 (2026-07-09) the exchange carries the full hedrive T8 protocol:
 XCP_OUT is seqlock-guarded (torn reads discarded on the A53), command
@@ -131,7 +137,9 @@ R5 acks execution), the A53 owns the wire CTR (stamped at transmission time),
 CTO frames take a dedicated queue past the deep (262144-record ≈ 68 MB,
 hedrive stall-bridging sizing) DAQ backlog, and the tx task batches records
 into ~1400-byte datagrams (one `sendto` for many frames). See
-`option_z/TEST_PLAN.md` (CP7 blockquote) for the counter set.
+`option_z/TEST_PLAN.md` (CP7 blockquote) for the counter set. Since
+2026-11-16 the DAQ chain is acknowledged as well (consumption handshake,
+IMPROVEMENTS §2.1), so a late IPI read no longer loses measurement data.
 
 ## Integration — DONE (2026-06-17, hardened 2026-07-04)
 
@@ -139,14 +147,17 @@ All of the following is integrated in-tree and builds green; see
 `option_z/TEST_PLAN.md` for the bring-up sequence and the 2026-07-04 hardening:
 
 **R5 (Baremetal):** engine + glue live in `Baremetal/src/sw/xcp_engine/`
-(gated by `XCP_ENGINE_R5_ENABLE` in `Baremetal/src/defines.h`):
+(gated by `XCP_ENGINE_R5_ENABLE` in `Baremetal/src/defines.h`, derived from
+`UZ_LOGGING_PATH` in `shared/uz_logging_path.h`):
 `xcp_r5_init("UltraZohm_XCP","1.0")` in `main.c` (init_interrupts state);
-`xcp_r5_event(); xcp_r5_poll(); XIpiPsu_TriggerIpi(...)` in `ISR_Control`
-(`Baremetal/src/sw/isr.c`). `platform.h` auto-selects `_BAREMETAL` on ARMR5.
+`xcp_r5_event()` in `ISR_Control` (`Baremetal/src/sw/isr.c`);
+`xcp_r5_background()` + `XIpiPsu_TriggerIpi(...)` in the main loop of `main.c`
+(infinite_loop state, since CP11). `platform.h` auto-selects `_BAREMETAL` on ARMR5.
 
 **A53 (FreeRTOS):** gateway lives in `FreeRTOS/sw/xcp_gateway/` (gated by
-`LOGGING_PATH_XCP_R5_GATEWAY` in `FreeRTOS/defines.h`, XOR with JAVASCOPE /
-XCP_LITE): `xcp_gateway_a53_init(...)` from `main.c` after the IP is up;
+`LOGGING_PATH_XCP_R5_GATEWAY` in `FreeRTOS/defines.h`, derived from the same
+`UZ_LOGGING_PATH`, XOR with JAVASCOPE): `xcp_gateway_a53_init(...)` from
+`main.c` after the IP is up;
 `xcp_gateway_a53_on_ipi(&woken)` in `APU_IPI_ISR` (`FreeRTOS/sw/isr.c`).
 
 **Z4 — arbitrary A2L/measurement:** `tools/xcp_test/gen_a2l.py --symbols` emits

@@ -33,7 +33,7 @@ Reading the counters
 --------------------
 
 - **CANape**: ``CANape/UZ_XCP/uz.A2L`` contains all counters of the A53 and the loss counters of the R5, for example ``xcp_r5_queue_lost`` and ``xcp_r5_out_overwritten``. The other R5 counters can be added from the ELF file like any other variable.
-- **xcp_poll.py**: ``--stress`` prints the change of the counters over the run. A single R5 counter can be read with ``--watch <name>:u32``, a counter of the A53 with its address, for example ``--watch 0xFFFFC034:u32``.
+- **xcp_poll.py**: ``--stress`` prints the change of all A53 counters and of most R5 counters over the run. A single R5 counter can be read with ``--watch <name>:u32``, a counter of the A53 with its address, for example ``--watch 0xFFFFC034:u32``.
 - **gen_a2l.py**: a generated A2L file always contains the counters of the A53. ``--diag`` adds those of the R5.
 
 The counters of the R5 are global variables of the Baremetal application.

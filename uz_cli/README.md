@@ -18,7 +18,7 @@ needed. With [uv](https://docs.astral.sh/uv/):
 uv tool install ultrazohm_cli                      # newest stable release, as a command
 uv tool install --prerelease allow ultrazohm_cli   # newest build from develop or the testing branch
 uv tool install ultrazohm_cli==0.1.1.dev0          # one exact build (see its GitHub release)
-uv tool install ./uz_cli/target/wheels/ultrazohm_cli-*.whl   # a local build (see Build)
+uv run uz_cli/tasks.py install                     # build this checkout and install it (needs Rust)
 ultrazohm_cli --help
 ```
 

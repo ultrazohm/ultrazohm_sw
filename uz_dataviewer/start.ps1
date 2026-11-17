@@ -1,6 +1,6 @@
-# Install uv and runtime dependencies, then launch the native data viewer.
-# Launcher options: --launch gui|shell, --dev-cli (build and use this checkout's CLI).
-# Remaining arguments are forwarded to the viewer, including relative file paths.
+# Install uv if needed, then open the data viewer: uv run tasks.py start.
+# Usage: start.ps1 [--dev-cli] [VIEWER_ARGUMENTS...]   (other tasks: uv run tasks.py --help)
+# Viewer arguments are forwarded, including relative file paths.
 $ErrorActionPreference = 'Stop'
 
 try {
@@ -39,7 +39,7 @@ try {
     try {
         $env:PATH = (Split-Path -Parent $uvExecutable) + [IO.Path]::PathSeparator + $env:PATH
         $pythonVersion = (Get-Content -Raw (Join-Path $PSScriptRoot '../.python-version')).Trim()
-        & $uvExecutable run --no-project --python $pythonVersion (Join-Path $PSScriptRoot 'launch.py') @args
+        & $uvExecutable run --no-project --python $pythonVersion (Join-Path $PSScriptRoot 'tasks.py') start @args
         exit $LASTEXITCODE
     } finally {
         $env:PATH = $viewerOriginalPath

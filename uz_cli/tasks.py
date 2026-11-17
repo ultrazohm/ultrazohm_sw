@@ -2,9 +2,11 @@
 
 Standard library only. Run from anywhere:
 
+    python uz_cli/tasks.py install          build this checkout's CLI and install it as the ultrazohm_cli command
     python uz_cli/tasks.py check            formatting, clippy, Rust tests, integration tests
     python uz_cli/tasks.py debug-wheel      unoptimized wheel for tests into target/wheels-debug
     python uz_cli/tasks.py wheel            optimized wheel for this machine into target/wheels
+    (with uv: uv run uz_cli/tasks.py TASK; on Linux: make -C uz_cli TASK)
     python uz_cli/tasks.py release-wheel    portable release wheel into target/wheels-release
     python uz_cli/tasks.py release-check    install that wheel in a fresh environment and run the integration tests
     python uz_cli/tasks.py version          release version for a CI run (GITHUB_* variables)
@@ -77,6 +79,15 @@ def debug_wheel(_args):
     wheels = TARGET / "wheels-debug"
     shutil.rmtree(wheels, ignore_errors=True)
     run(*maturin(), "build", "--locked", "--out", wheels)
+
+
+def install(_args):
+    """Build this checkout's CLI and install it as the ultrazohm_cli command (uv tool)."""
+    out = TARGET / "wheels-install"
+    shutil.rmtree(out, ignore_errors=True)
+    run(*maturin(), "build", "--release", "--locked", "--out", out)
+    python = (ROOT / ".python-version").read_text(encoding="utf-8").strip()
+    run("uv", "tool", "install", "--force", "--python", python, single_wheel(out))
 
 
 def check(args):
@@ -153,17 +164,18 @@ def stamp(args):
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     tasks = parser.add_subparsers(dest="task", required=True)
-    tasks.add_parser("check").set_defaults(function=check)
-    tasks.add_parser("debug-wheel").set_defaults(function=debug_wheel)
-    built = tasks.add_parser("wheel")
+    tasks.add_parser("install", help=install.__doc__).set_defaults(function=install)
+    tasks.add_parser("check", help="Formatting, clippy, Rust tests and integration tests, as CI.").set_defaults(function=check)
+    tasks.add_parser("debug-wheel", help="Unoptimized wheel for tests in target/wheels-debug.").set_defaults(function=debug_wheel)
+    built = tasks.add_parser("wheel", help="Optimized wheel for this machine in target/wheels.")
     built.add_argument("--out", type=Path, help="output directory (default: target/wheels)")
     built.set_defaults(function=wheel)
-    tasks.add_parser("release-wheel").set_defaults(function=release_wheel)
-    checked = tasks.add_parser("release-check")
+    tasks.add_parser("release-wheel", help="Portable release wheel in target/wheels-release.").set_defaults(function=release_wheel)
+    checked = tasks.add_parser("release-check", help="Integration tests against the installed release wheel.")
     checked.add_argument("--wheel-dir", type=Path, help="directory holding the wheel (default: target/wheels-release)")
     checked.set_defaults(function=release_check)
-    tasks.add_parser("version").set_defaults(function=version)
-    stamped = tasks.add_parser("stamp")
+    tasks.add_parser("version", help="Release version for a CI run (GITHUB_* variables).").set_defaults(function=version)
+    stamped = tasks.add_parser("stamp", help="Write VERSION into pyproject.toml.")
     stamped.add_argument("version")
     stamped.set_defaults(function=stamp)
     args = parser.parse_args()

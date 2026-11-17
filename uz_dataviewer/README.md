@@ -54,7 +54,7 @@ window. Their actions appear as labelled informational messages in the console.
 
 ## Quick start
 
-Run the launcher from the repository root (Linux/macOS):
+Run the launcher from the repository root (Linux):
 
 ```bash
 ./uz_dataviewer/start.sh
@@ -68,6 +68,20 @@ including the published CLI package `ultrazohm_cli`, and opens the viewer. The
 live panels (Live Data, Live Plots, Control, Python) are present whenever
 `ultrazohm_cli` is installed, which is the case on Windows and Linux x86-64 and in
 the desktop bundle. Offline analysis never needs the CLI.
+
+`start.sh` and `start.ps1` only install uv when it is missing and then run
+`uz_dataviewer/tasks.py start`. With uv installed, every task is available
+directly, on Linux and Windows alike:
+
+```bash
+uv run uz_dataviewer/tasks.py --help             # all tasks
+uv run uz_dataviewer/tasks.py start [--dev-cli] [VIEWER_ARGS...]
+uv run uz_dataviewer/tasks.py shell [--dev-cli]  # terminal in the viewer environment
+uv run uz_dataviewer/tasks.py check | bundle | bundle-smoke
+```
+
+On Linux, `make -C uz_dataviewer TASK` is a shortcut for the same tasks
+(`make -C uz_dataviewer start ARGS="log.csv"` passes viewer arguments).
 
 On Windows, use PowerShell:
 
@@ -543,11 +557,11 @@ service, whereas closing the GUI retains the external-service ownership policy.
 To open an activated DataViewer environment without launching the GUI or a service:
 
 ```bash
-./uz_dataviewer/start.sh --launch shell
-./uz_dataviewer/start.sh --launch shell --dev-cli   # with this checkout's CLI
+uv run uz_dataviewer/tasks.py shell
+uv run uz_dataviewer/tasks.py shell --dev-cli   # with this checkout's CLI
 ```
 
-PowerShell supports the same options through `start.ps1`. Run
+The same works on Windows. Run
 `python measurement.py` or `ultrazohm_cli status`. Type `deactivate` to deactivate
 within the child shell, or `exit` to return to the original terminal.
 

@@ -107,8 +107,9 @@ service down. Script Stop invalidates queued manual commands and uses a control
 path independent of display reads. Flashing shuts the service down (which sends
 device Stop and finalizes recordings), then programs and reconnects.
 
-The Bash and PowerShell developer launchers bootstrap ``uv`` and delegate to
-``launch.py`` for shared argument parsing and setup. Standalone execution uses
+``start.sh`` and ``start.ps1`` install ``uv`` when it is missing and run
+``uz_dataviewer/tasks.py start``, which owns argument handling and setup.
+``tasks.py`` also provides ``shell``, ``check``, ``bundle`` and ``bundle-smoke``. Standalone execution uses
 its bundled worker entry point and requires no separately installed Python or
 Rust. The viewer command console, ``uz ...`` service commands and Python
 automation are available on Windows and Linux.

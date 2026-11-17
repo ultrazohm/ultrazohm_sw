@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Install runtime dependencies with uv and launch the native data viewer.
-# Usage: start.sh [--launch gui|shell] [--dev-cli] [VIEWER_ARGUMENTS...]
+# Install uv if needed, then open the data viewer: uv run tasks.py start.
+# Usage: start.sh [--dev-cli] [VIEWER_ARGUMENTS...]   (other tasks: uv run tasks.py --help)
 set -euo pipefail
 
 if ! command -v uv >/dev/null 2>&1; then
@@ -31,4 +31,4 @@ fi
 PROJECT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 # Preserve the caller working directory and every argument.
-exec uv run --no-project --python "$(cat "$PROJECT_DIR/../.python-version")" "$PROJECT_DIR/launch.py" "$@"
+exec uv run --no-project --python "$(cat "$PROJECT_DIR/../.python-version")" "$PROJECT_DIR/tasks.py" start "$@"

@@ -70,6 +70,12 @@ tests 1 to 4.
   (was 248), OCM chain records up to 1400 B (`OCM_XCP_RECORD_MAX`, 16-bit
   lengths), gateway DAQ queue 65536 x 1.4 KB; `xcp_poll.py --stress` packs
   ODTs up to MAX_DTO
+- 2026-11-17, NOT yet on hardware: the DAQ chain is validated by its own
+  `chain_seq` (0 while rewritten, published after the chain bytes) instead
+  of the seqlock, so a long A53 read of a kept chain is no longer thrown
+  away (ocm_xcp_fifo.c mechanism 5); targets the overload collapse above
+  ~320 Mbit/s at 40 kHz. Counter meanings: `xcp_gw_ocm_skipped_writing` =
+  header copy unusable, `xcp_gw_ocm_torn` = chain really rewritten mid-read
 
 ## HARDWARE VALIDATED (2026-07-10/11)
 

@@ -109,11 +109,11 @@ A53 gateway counters
    * - ``xcp_gw_ocm_skipped_writing``
      - ``0xFFFFC008``
      - may count
-     - The interrupt arrived while the R5 was writing. Nothing is read. The R5 keeps the data in place, so it is read with the next interrupt.
+     - The interrupt arrived while the R5 was writing, or the R5 changed the header during the copy. The response mailbox and the acknowledges are taken with the next interrupt. The DAQ chain is read anyway.
    * - ``xcp_gw_ocm_torn``
      - ``0xFFFFC00C``
      - may count
-     - The R5 changed ``XCP_OUT`` during the read. The read is discarded and repeated with the next interrupt.
+     - The R5 rewrote the DAQ chain while the A53 was reading it. The read is discarded, and the new chain is read with the next interrupt. Rare, because the R5 rewrites a chain with data only after the A53 confirmed it.
    * - ``xcp_gw_ocm_cycles_missed``
      - ``0xFFFFC010``
      - may count

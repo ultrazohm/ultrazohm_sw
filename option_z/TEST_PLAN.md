@@ -235,11 +235,13 @@ Inspect these via the JTAG debugger (the R5 keeps stats):
   MEASUREMENTs in `uz.A2L` at those fixed addresses, deltas printed by
   `xcp_poll.py --stress`; plus `xcp_gw_ipi_count` (A53 liveness) and the
   gauge `xcp_gw_txq_level` (DAQ backlog waiting for UDP)):
-  `xcp_gw_ocm_torn` / `xcp_gw_ocm_skipped_writing`
-  (seqlock collisions — occasional is fine, monotonic climb at idle is not),
-  `xcp_gw_ocm_cycles_missed` (R5 sweeps no IPI read; since the consumption
-  handshake these three are IPI-latency indicators, not DAQ gaps — the R5
-  re-offers the chain, see `xcp_r5_out_held`),
+  `xcp_gw_ocm_skipped_writing` (header copy unusable this IPI, R5
+  mid-sweep; mailbox and command ack are taken next IPI, the DAQ chain is
+  read anyway), `xcp_gw_ocm_torn` (DAQ chain rewritten during the read,
+  detected by the chain number since 2026-11-17; should be rare),
+  `xcp_gw_ocm_cycles_missed` (R5 sweeps between two header copies; these
+  three are IPI-latency indicators, not DAQ gaps — the R5 re-offers the
+  chain, see `xcp_r5_out_held`),
   `xcp_gw_ocm_capped` (per-IPI drain cap hit), `xcp_gw_txq_dropped` (UDP
   drain slower than DAQ production — plain overload), `xcp_gw_ctoq_dropped` +
   `xcp_gw_tx_malformed_drop` (both must stay 0), `xcp_gw_rx_malformed_drop`

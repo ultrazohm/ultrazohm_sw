@@ -137,7 +137,7 @@ Three queues connect them.
     flowchart TB
       min["UDP datagram from the master"] --> rx["rx task<br>checks the framing, remembers the master"]
       rx -- "command queue" --> isr["hook in APU_IPI_ISR<br>runs once per IPI from the R5"]
-      xout["XCP_OUT"] -- "read under the seqlock" --> isr
+      xout["XCP_OUT"] -- "header under the seqlock,<br>chain checked by its number" --> isr
       isr -- "commands, acknowledges" --> xin["XCP_IN"]
       isr -- "response queue,<br>has priority" --> tx["tx task<br>packs datagrams, stamps the transport counter"]
       isr -- "DAQ queue,<br>65536 records" --> tx
@@ -178,7 +178,7 @@ The file exists as two identical copies, one compiled for each processor (``Bare
    The OCM layout is the protocol between the two applications. After any change to ``ocm_xcp_fifo.c`` or ``ocm_xcp_fifo.h``, keep both copies identical and rebuild and flash **both** applications.
 
 Neither processor waits for the other one.
-Four mechanisms keep the exchange consistent when the A53 handles the interrupt late, which happens regularly under network load.
+Five mechanisms keep the exchange consistent when the A53 handles the interrupt late, which happens regularly under network load.
 A late interrupt cannot lose a command or a response.
 Measurement data is delayed by it and is only lost when a buffer overflows or the A53 does not answer for 5 ms.
 Every such loss is counted, see :ref:`xcp_diagnostics`.
@@ -190,9 +190,9 @@ Every such loss is counted, see :ref:`xcp_diagnostics`.
    * - Mechanism
      - Protects
      - How
-   * - Seqlock on ``XCP_OUT``
-     - everything the A53 reads
-     - The R5 sets a sequence word to an odd value before it changes the region and to an even value afterwards. The A53 discards a read if the word was odd or changed during the read. Half-written data never reaches the network.
+   * - Seqlock on the header of ``XCP_OUT``
+     - command responses and acknowledges
+     - The R5 sets a sequence word to an odd value before it changes the region and to an even value afterwards. The A53 discards its copy of the header and the response mailbox if the word was odd or changed during the copy, and takes it again with the next interrupt.
    * - Response mailbox with acknowledge
      - command responses
      - A response stays in its own slot until the A53 confirms its sequence number. A lost response would end the XCP session with a timeout.
@@ -202,6 +202,9 @@ Every such loss is counted, see :ref:`xcp_diagnostics`.
    * - Consumption handshake on the DAQ chain
      - measurement data
      - The R5 leaves a chain of DAQ frames in place until the A53 confirms it, for at most 50 sweeps (5 ms). In the meantime new samples wait in the 32 KB queue of the R5.
+   * - Chain number
+     - measurement data
+     - The R5 sets the number of the chain to 0 before it rewrites the chain and publishes the new number only when the chain is complete in the OCM. The A53 accepts a chain only if it saw the same non-zero number before and after reading it. A sweep that only keeps the chain does not change the number, so a long read of a kept chain stays valid. Half-written data never reaches the network.
 
 Command and response
 ********************
@@ -243,7 +246,7 @@ Measurement data
       I->>R: samples into<br>the DAQ queue
       R->>O: sweep k writes chain c<br>to XCP_OUT
       R-->>A: IPI
-      A->>O: IPI ISR reads chain c<br>under the seqlock
+      A->>O: IPI ISR reads chain c,<br>checks that the number is still c
       A->>O: acknowledges c<br>in XCP_IN
       Note over A: tx task packs the frames<br>into datagrams and stamps<br>the transport counter
       R->>O: sweep k+1 sees the acknowledge,<br>writes chain c+1

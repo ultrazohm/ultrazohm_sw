@@ -150,7 +150,9 @@ Calibrate
 ---------
 
 A variable is calibrated by writing to its address while the application runs.
-Writes are only accepted for global variables (see the memory access rules in :ref:`xcp_architecture`).
+Writes are accepted for every variable with static storage duration: global variables, ``static`` variables of a file and ``static`` variables inside a function.
+This includes the instances of the ``uz_`` software modules, which are stored in ``static`` arrays (usually named ``instances``).
+Local variables of a function and constants (``const``) cannot be written, see the memory access rules in :ref:`xcp_architecture`.
 
 .. warning::
    A calibration write changes a variable of the running control application immediately. The value is not checked. Only calibrate variables whose effect on your test bench you understand.

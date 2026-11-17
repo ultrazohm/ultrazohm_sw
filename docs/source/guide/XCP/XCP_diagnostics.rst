@@ -181,7 +181,7 @@ Troubleshooting
    * - ``CONNECT`` works, reading a variable gives ``ERR_ACCESS_DENIED``
      - The address is outside the memory of the R5. The A2L file or the ELF file does not belong to the firmware on the board.
    * - A write gives ``ERR_WRITE_PROTECTED``
-     - The target is not a global variable, or the firmware was built with ``XCP_R5_READ_ONLY``.
+     - The target is not a global or ``static`` variable (for example a constant), or the firmware was built with ``XCP_R5_READ_ONLY``.
    * - Measurement does not start, ``DAQ_CONFIG`` error
      - The A2L file must limit ODT entries to 240 bytes.
    * - A complete structure cannot be added in CANape

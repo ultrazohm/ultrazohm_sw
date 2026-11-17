@@ -12,7 +12,7 @@ Overview
 
 The XCP slave of the UltraZohm is split over both processors of the Zynq UltraScale+:
 
-- The **R5** (bare metal, the control core) runs the XCP protocol engine. The engine is the open-source `XCPlite <https://github.com/vectorgrp/XCPlite>`_ from Vector (MIT license, upstream version 2.3.4). Because the engine runs on the R5, the XCP master addresses R5 memory directly: every global variable of the R5 application can be measured and calibrated by its address, without registering it anywhere in the code.
+- The **R5** (bare metal, the control core) runs the XCP protocol engine. The engine is the open-source `XCPlite <https://github.com/vectorgrp/XCPlite>`_ from Vector (MIT license, upstream version 2.3.4). Because the engine runs on the R5, the XCP master addresses R5 memory directly: every variable of the R5 application with a fixed address, that is every global and every ``static`` variable, can be measured and calibrated by its address, without registering it anywhere in the code.
 - The **A53** (FreeRTOS, lwIP) is a gateway without XCP knowledge. It moves XCP frames between a UDP socket and the shared on-chip memory (OCM).
 - The two processors exchange frames through two fixed regions of the OCM and one inter-processor interrupt (IPI).
 
@@ -230,7 +230,7 @@ The XCP master sends plain addresses, so the R5 checks every access before it to
    * - Memory
      - Read (measure, upload)
      - Write (calibrate, download)
-   * - ``.data``, ``.sdata``, ``.sbss``, ``.bss`` (global variables)
+   * - ``.data``, ``.sdata``, ``.sbss``, ``.bss`` (global and ``static`` variables)
      - yes
      - yes, unless ``XCP_R5_READ_ONLY`` is set
    * - code and constants in DDR, heap, stacks
@@ -248,6 +248,10 @@ The XCP master sends plain addresses, so the R5 checks every access before it to
 
 A refused read is answered with ``ERR_ACCESS_DENIED``, a refused write with ``ERR_WRITE_PROTECTED``.
 Without the read check, a wrong address in the A2L file would raise a data abort on the control core.
+
+Local variables of a function live on the stack or in a register and have no fixed address.
+They can neither be measured nor calibrated by name.
+Declare such a variable ``static`` to make it accessible.
 
 .. note::
    The write check protects the application from stale addresses. It does not validate values: a calibration value is applied as it is sent, and a value wider than one machine word is not written atomically with respect to the control interrupt.

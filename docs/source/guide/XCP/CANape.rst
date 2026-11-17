@@ -10,8 +10,12 @@ Universities can obtain free licenses, while licenses for industrial use are sub
 
 .. note::
    The repository already contains a CANape project with a matching A2L file in ``CANape/UZ_XCP``.
-   It updates its addresses from ``vitis/workspace/Baremetal/Debug/Baremetal.elf`` and contains the measurement rasters, the diagnostic counters and structure descriptions for ``Global_Data``.
+   It updates its addresses from ``vitis/workspace/Baremetal/Debug/Baremetal.elf`` and contains the measurement rasters, the counters of the gateway, the loss counters of the R5 and structure descriptions for ``Global_Data``.
    See :doc:`XCP_usage` for the settings an A2L file for the UltraZohm needs. The tutorial below shows how to create such a project from scratch.
+
+.. warning::
+   Several screenshots of the tutorial were taken with a different XCP slave. They show values that do not work with the UltraZohm: TCP, port 12340, a Max CTO of 32, a Max DTO of 220 and a time stamp of 2 bytes.
+   Use the values given in the text of steps 20, 21, 23, 27 and 28 of the CANape project tutorial.
 
 Use XCP with UltraZohm
 ----------------------
@@ -368,7 +372,7 @@ This Tutorial was conducted using CANape 24.0.
 	:align: center
 
 
-20. Specify 1 µs as time stamp resolution.
+20. Specify 1 µs as time stamp resolution. For the UltraZohm set the size of the time stamp to DWORD (4 bytes). The screenshot shows WORD.
 
 .. _CANape_project_20:
 
@@ -377,7 +381,7 @@ This Tutorial was conducted using CANape 24.0.
 	:align: center
 
 
-21. Insert a new XCP event. "daq_fast" will be the ISR task of the UltraZohm software and will be called with a frequency specified by the FPGA design (default: PWM frequency). This example uses 10 kHz (= 100 µs). The ISR frequency is flexible, therefore the XCP event can be named "daq_fast" instead of "daq_100us".
+21. Insert a new XCP event. "daq_fast" will be the ISR task of the UltraZohm software and will be called with a frequency specified by the FPGA design (default: PWM frequency). This example uses 10 kHz (= 100 µs). The ISR frequency is flexible, therefore the XCP event can be named "daq_fast" instead of "daq_100us". On the UltraZohm this is event channel 0. The firmware calls it ``DAQ_R5``. The name used in CANape is free, only the channel number has to match.
 
 .. _CANape_project_21:
 
@@ -395,7 +399,7 @@ This Tutorial was conducted using CANape 24.0.
 	:align: center
 
 
-23. Continue adding the XCP events as shown in the following picture. The XCP events must exist in the UltraZohm software driver. Therefore, configure the event channel number correctly.
+23. Continue adding the XCP events as shown in the following picture. The XCP events must exist in the UltraZohm software driver. Therefore, configure the event channel number correctly. The UltraZohm provides the channels 0 (control interrupt), 1 (1 ms), 2 (10 ms), 3 (100 ms) and 4 (1 s), see :doc:`XCP_architecture`.
 
 .. _CANape_project_23:
 
@@ -431,7 +435,7 @@ This Tutorial was conducted using CANape 24.0.
 	:align: center
 
 
-27. Change to the Protocol section and configure the CTO/DTO size.
+27. Change to the Protocol section and configure the CTO/DTO size. For the UltraZohm set Max CTO and Max DTO to 248 and the time-out to 5000 ms. The screenshot shows other values.
 
 .. _CANape_project_27:
 
@@ -440,7 +444,7 @@ This Tutorial was conducted using CANape 24.0.
 	:align: center
 
 
-28. Change to the Transport Layer section and configure the Ethernet settings. In some cases, manual IP configuration is restricted by company administrators. In this case, use a link-local IP address (169.254.x.x), which is a self-configured, non-routable address valid only on a local network segment.
+28. Change to the Transport Layer section and configure the Ethernet settings. In some cases, manual IP configuration is restricted by company administrators. In this case, use a link-local IP address (169.254.x.x), which is a self-configured, non-routable address valid only on a local network segment. For the UltraZohm select the protocol UDP and port 5556, and enter as host the IP address that the UltraZohm prints on its serial console (see :doc:`XCP_usage`). The PC must be able to reach this address. The screenshot shows TCP and another port.
 
 .. _CANape_project_28:
 

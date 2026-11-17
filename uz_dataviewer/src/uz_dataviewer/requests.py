@@ -13,6 +13,7 @@ class Job:
     identity: object
     function: object
     cancel: threading.Event
+    continuous: bool = False
 
 
 class Requests:
@@ -39,7 +40,7 @@ class Requests:
         with self.condition:
             return bool(self.jobs or self.active)
 
-    def request(self, slot, key, identity, function, immediate=False):
+    def request(self, slot, key, identity, function, immediate=False, continuous=False):
         run_now = None
         with self.condition:
             if self.closed:
@@ -49,10 +50,10 @@ class Requests:
                 previous = self.jobs.pop(slot, None)
                 if previous:
                     previous.cancel.set()
-                if slot in self.active:
+                if slot in self.active and not (continuous and self.active[slot].identity == identity):
                     self.active[slot].cancel.set()
                 self.errors.pop(slot, None)
-                job = Job(key, identity, function, threading.Event())
+                job = Job(key, identity, function, threading.Event(), continuous)
                 if self.synchronous or immediate:
                     run_now = job
                 else:
@@ -145,7 +146,8 @@ class Requests:
                 result = job.function(job.cancel)
                 check(job.cancel)
                 with self.condition:
-                    if self.wanted.get(slot) == job.key:
+                    if (self.wanted.get(slot) == job.key or
+                            (job.continuous and slot in self.wanted and not job.cancel.is_set())):
                         self.results[slot] = (job.key, job.identity, result)
             except Cancelled:
                 pass

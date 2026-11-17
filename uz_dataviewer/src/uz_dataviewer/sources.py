@@ -6,6 +6,8 @@ have independent lifetimes; requesting an array explicitly may use substantial R
 from __future__ import annotations
 
 from collections import OrderedDict
+from contextvars import ContextVar
+
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterator, Protocol, Sequence
@@ -19,6 +21,10 @@ import time
 from zipfile import BadZipFile
 
 import numpy as np
+
+# Only GUI validity checks use background metadata IO. Nested derived-source
+# validators inherit this scope; raw reads and exports remain strict.
+_validation_jobs = ContextVar("validation_jobs", default=None)
 
 
 class Cancelled(Exception):
@@ -67,6 +73,22 @@ class FileIdentity:
         return FileIdentity(path, (s.st_size, s.st_mtime_ns, s.st_ctime_ns, s.st_ino))
 
     def validate(self):
+        jobs = _validation_jobs.get()
+        if jobs is not None:
+            key = (self, int(time.monotonic() * 4))
+            def validate(cancel):
+                try:
+                    self._validate()
+                    return (None,)
+                except (ValueError, OSError) as exc:
+                    return (str(exc),)
+            result = jobs.request(self, key, self, validate, continuous=True)
+            if result and result[0]:
+                raise ValueError(result[0])
+            return
+        self._validate()
+
+    def _validate(self):
         try:
             current = FileIdentity.capture(self.path)
         except OSError as exc:
@@ -75,13 +97,17 @@ class FileIdentity:
             raise ValueError(f'Source changed; reopen {self.path.name}')
 
 
-def validation_error(sources):
+def validation_error(sources, jobs=None):
     """One validity contract for cached displays, analyses and node outputs."""
+    token = _validation_jobs.set(jobs) if jobs is not None else None
     try:
         for source in sources:
             source.validate()
     except (ValueError, OSError) as exc:
         return str(exc)
+    finally:
+        if token is not None:
+            _validation_jobs.reset(token)
     return None
 
 

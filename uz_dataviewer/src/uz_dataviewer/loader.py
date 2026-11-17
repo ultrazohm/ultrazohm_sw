@@ -113,13 +113,16 @@ def numeric_columns(fields) -> tuple[list[str], tuple[str, ...]]:
 
     Signals are numeric samples; text or nested columns (for example the
     observable names of a raw slow-data history) are skipped instead of
-    failing the whole file. A non-numeric ``time`` column is an error.
+    failing the whole file. The time column (``time``, or the first named column) must be numeric.
     """
+    fields = list(fields)
+    names = [name for name, _ in fields if name.strip()]
+    time_column = "time" if "time" in names else next(iter(names), None)
     kept, skipped = [], []
     for name, numeric in fields:
         (kept if numeric or name.strip() == "" else skipped).append(name)
-    if "time" in skipped:
-        raise ValueError("time column is not numeric")
+    if time_column in skipped:
+        raise ValueError(f"time column {time_column!r} is not numeric")
     return kept, tuple(skipped)
 
 

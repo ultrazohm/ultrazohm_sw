@@ -184,6 +184,10 @@ def test_xy_rejects_changed_files_and_reads_lazy_data_off_thread(app_state, gui_
     assert drawn and drawn[-1] == 10
     assert threads and all(thread is not threading.main_thread() for thread in threads)
     write(20)
+    deadline = time.monotonic() + 5
+    while 'Source changed' not in state.console.as_text() and time.monotonic() < deadline:
+        gui_frame(panel, state)
+        time.sleep(.01)
     drawn.clear()
     for _ in range(3):
         gui_frame(panel, state)

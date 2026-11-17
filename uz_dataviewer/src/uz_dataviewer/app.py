@@ -101,6 +101,15 @@ class DataViewerApp:
         if self.live is None or not self.live.available:
             self.state.console.error('Live is not activated.')
             return
+        from .cli_console import arguments
+        words = arguments(text)
+        if words == ['stop']:
+            self.live.controller.cancel_pending_commands()
+            if not self.live.scripts.busy:
+                self.live.scripts.endpoint = (self.live.controller.endpoint if self.live.update.attached
+                                              else self.live.endpoint) or self.live.endpoint
+            self.live.scripts.stop()
+            return
         if reason := self.live.block_reason('cli'):
             self.state.console.error(reason + '; wait for it to finish')
             return
@@ -114,8 +123,23 @@ class DataViewerApp:
             from .workers import CancellableExecutor
             self._console_executor = CancellableExecutor(name='uz-console')
 
+        controller = self.live.controller
+        generation = controller._command_generation
+
         def work(cancel=None):
-            return console_command(text, endpoint=endpoint)
+            from .sources import check
+            from contextlib import nullcontext
+            # Read-only commands cannot re-enable the device and must not delay Stop.
+            read_only = not words or words[0] in (
+                'status', 'catalog', 'observables', 'get-observables', 'get_observables',
+                 'recordings', 'data-info', 'tail', 'read-range', 'read-since', 'help', '--help')
+            with nullcontext() if read_only else controller._command_lock:
+                check(cancel)
+                if generation != controller._command_generation or controller.stop_event.is_set():
+                    raise RuntimeError('Console command canceled by Stop or a session transition')
+                if reason := self.live.block_reason('cli'):
+                    raise RuntimeError(reason)
+                return console_command(text, endpoint=endpoint)
         # One worker keeps requests in order and the GUI responsive.
         self._console_jobs.append((self._console_executor.submit(work), text))
 
@@ -338,6 +362,9 @@ class DataViewerApp:
         if self._select_initial_tabs and hasattr(self, '_runner_params') and imgui.get_frame_count() >= 2:
             self._apply_window_mode(False)
             self._select_initial_tabs = False
+        if (self._console_jobs or self.state.is_loading or self.state.services.display.pending
+                or self.state.services.analysis_jobs.pending or self.state.services.exports):
+            hello_imgui.request_refresh()
         self._poll_console_jobs()
         if self.live is not None:
             self.live.pump(self.state)
@@ -440,9 +467,8 @@ class DataViewerApp:
         params.imgui_window_params.show_status_fps = False  # FPS and cache share our status item.
         params.imgui_window_params.remember_status_bar_settings = False
         params.imgui_window_params.show_menu_bar = True
-        # Always render at full rate. hello_imgui idles to ~9 fps when there's no
-        # input; for live panning/zooming of large logs we want full FPS throughout.
-        params.fps_idling.enable_idling = False
+        # Visible live plots opt out individually; static analysis can idle.
+        params.fps_idling.enable_idling = True
         # MaterialFlat theme (per the idea list); applied via hello_imgui's
         # tweakable theme so it survives the dock layout setup.
         params.imgui_window_params.tweaked_theme.theme = (

@@ -197,7 +197,7 @@ pub(crate) fn replace_file(source: &Path, target: &Path) -> std::io::Result<()> 
 
 /// Publish `source` as `target` only if `target` does not exist yet. Hard links
 /// make this atomic; file systems without them (FAT, exFAT, some network
-/// shares) fall back to a check followed by a rename.
+/// shares) use an exclusive OS rename.
 fn publish_new(source: &Path, target: &Path) -> std::io::Result<()> {
     publish_new_with(source, target, |source, target| {
         fs::hard_link(source, target)
@@ -212,15 +212,63 @@ fn publish_new_with(
     match link(source, target) {
         Ok(()) => Ok(()),
         Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => Err(error),
-        Err(_) => {
-            if fs::symlink_metadata(target).is_ok() {
-                return Err(std::io::Error::new(
-                    std::io::ErrorKind::AlreadyExists,
-                    format!("{} already exists", target.display()),
-                ));
-            }
-            replace_file(source, target)
+        Err(_) => rename_new(source, target),
+    }
+}
+
+// OS-level exclusive rename also works on filesystems without hard links.
+#[cfg(unix)]
+fn rename_new(source: &Path, target: &Path) -> std::io::Result<()> {
+    use std::os::unix::ffi::OsStrExt;
+    let source = std::ffi::CString::new(source.as_os_str().as_bytes())?;
+    let target = std::ffi::CString::new(target.as_os_str().as_bytes())?;
+    #[cfg(target_os = "linux")]
+    let result = {
+        unsafe extern "C" {
+            fn renameat2(
+                a: i32,
+                source: *const std::ffi::c_char,
+                b: i32,
+                target: *const std::ffi::c_char,
+                flags: u32,
+            ) -> i32;
         }
+        unsafe { renameat2(-100, source.as_ptr(), -100, target.as_ptr(), 1) }
+    };
+    #[cfg(target_os = "macos")]
+    let result = {
+        unsafe extern "C" {
+            fn renamex_np(
+                source: *const std::ffi::c_char,
+                target: *const std::ffi::c_char,
+                flags: u32,
+            ) -> i32;
+        }
+        unsafe { renamex_np(source.as_ptr(), target.as_ptr(), 4) }
+    };
+    #[cfg(not(any(target_os = "linux", target_os = "macos")))]
+    return Err(std::io::Error::from(std::io::ErrorKind::Unsupported));
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    if result == 0 {
+        Ok(())
+    } else {
+        Err(std::io::Error::last_os_error())
+    }
+}
+
+#[cfg(windows)]
+fn rename_new(source: &Path, target: &Path) -> std::io::Result<()> {
+    use std::os::windows::ffi::OsStrExt;
+    let source: Vec<u16> = source.as_os_str().encode_wide().chain(Some(0)).collect();
+    let target: Vec<u16> = target.as_os_str().encode_wide().chain(Some(0)).collect();
+    #[link(name = "kernel32")]
+    unsafe extern "system" {
+        fn MoveFileExW(source: *const u16, target: *const u16, flags: u32) -> i32;
+    }
+    if unsafe { MoveFileExW(source.as_ptr(), target.as_ptr(), 0) } != 0 {
+        Ok(())
+    } else {
+        Err(std::io::Error::last_os_error())
     }
 }
 

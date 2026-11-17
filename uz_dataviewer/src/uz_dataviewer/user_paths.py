@@ -56,10 +56,24 @@ def publish_new(temporary, destination):
     except FileExistsError:
         raise
     except OSError:
-        # FAT, exFAT and some network shares have no hard links: check, then rename.
-        if os.path.lexists(destination):
-            raise FileExistsError(f'{destination} already exists') from None
-        os.rename(temporary, destination)
+        # Use the OS no-replace rename, never a check followed by replacing rename.
+        import ctypes
+        import errno
+        library = ctypes.CDLL(None, use_errno=True)
+        if sys.platform.startswith('linux'):
+            function = library.renameat2
+            function.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_char_p, ctypes.c_uint]
+            result = function(-100, os.fsencode(temporary), -100, os.fsencode(destination), 1)
+        elif sys.platform == 'darwin':
+            function = library.renamex_np
+            function.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_uint]
+            result = function(os.fsencode(temporary), os.fsencode(destination), 4)
+        else:
+            raise OSError(errno.ENOTSUP, 'Atomic publication without replacement is unsupported')
+        if result:
+            code = ctypes.get_errno()
+            raise OSError(code, os.strerror(code), str(destination))
+
 
 
 def write_json(path, value, *, overwrite=True):

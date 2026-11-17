@@ -90,22 +90,22 @@ class PlotsPanel(SessionPanel):
         width = max(1., implot.get_plot_size().x)
         return max(2, min(state.max_points, int(width * 2), max(128, 32000 // max(1, traces))))
 
-    def _request_data(self, state, slot, key, identity, sources, compute):
+    def _request_data(self, state, slot, key, identity, sources, compute, *, continuous=False):
         """Validate sources even for cache hits; share scheduling and error handling."""
         from ..sources import ArraySource, validation_error
         self._used_slots.add(slot)
         for source in sources:
             source_id = source.metadata.identity
             if source_id not in self._validated_sources:
-                self._validated_sources[source_id] = validation_error([source])
+                self._validated_sources[source_id] = validation_error([source], state.services.validation_jobs)
             error = self._validated_sources[source_id]
             if error:
                 state.services.display.forget(slot)
                 self._report_error(state, slot, error)
                 return None
-        immediate = all(isinstance(source, ArraySource) and source.metadata.rows <= 4096
+        immediate = all(isinstance(source, ArraySource) and source.validator is None and source.metadata.rows <= 4096
                         for source in sources)
-        value = state.services.display.request(slot, key, identity, compute, immediate=immediate)
+        value = state.services.display.request(slot, key, identity, compute, immediate=immediate, continuous=continuous)
         error = state.services.display.errors.get(slot)
         if error:
             self._report_error(state, slot, error)

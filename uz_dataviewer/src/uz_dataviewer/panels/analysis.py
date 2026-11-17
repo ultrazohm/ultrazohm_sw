@@ -170,7 +170,7 @@ class AnalysisPanel(SessionPanel):
             if run.axis_domain != "time":
                 return 'Analysis windows require a time-domain recording'
             sources.append(run.data_source())
-        return validation_error(sources)
+        return validation_error(sources, state.services.validation_jobs)
 
     # -- shared render ------------------------------------------------------
     def _poll_export(self, state: "AppState") -> None:

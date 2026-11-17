@@ -63,13 +63,12 @@ workers and live controls have separate owners. Plotting and analysis share
 source/query abstractions with recorded measurements. See the
 [viewer README](../../uz_dataviewer/README.md) for its runtime boundaries.
 
-Developer and frozen modes use separate workspace data directories. A shared
+Developer and frozen modes share <checkout>/artifacts/_user; outside a checkout the viewer uses a per-user data directory. A shared
 settings loader seeds missing files, reads the mapping and preferences once,
 and derives session profiles without rewriting saved choices. Bundled code and
 templates are read-only inputs. The native console and Python automation remain
-available on Windows and Linux; only the viewer's `uz` shortcut is Linux-only.
-The browser viewer retains its offline analysis role and does not launch native
-acquisition/tool workers.
+available on Windows and Linux, including the viewer's `uz` shortcut.
+The browser build has been removed.
 
 ## Recording and shutdown invariants
 
@@ -124,7 +123,7 @@ separate from the optional CSV export format.
 Chunks and their `*.recording.json` index are published atomically. The persisted
 boundary advances only after both succeed. On Windows, replacing the index (and
 `run.json`) is retried for up to a second while another process holds it open;
-file systems without hard links publish a new index by rename. Index/footer metadata grows with
+file systems without hard links publish a new index using an OS exclusive rename. Index/footer metadata grows with
 chunk count; sample buffers stay bounded. At stop, the parts are merged into one
 file with the same rows and schema (`{stem}.parquet` for fast recordings,
 `{stem}.updates.parquet` for raw slow updates); after verifying row count and

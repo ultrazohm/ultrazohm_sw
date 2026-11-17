@@ -191,11 +191,12 @@ Generated command reference (``command_doc.py``)
 
 The command table in :ref:`uz_dataviewer_usage` is **generated from the live registry**, not hand-maintained.
 The commands are closures registered inside ``register_builtins`` and the ``_register_analysis_common`` / ``_register_node_commands`` factories — built from name f-strings (``fft_remove``, ``hist_remove`` are *one* closure parameterised by ``prefix``), so there is no module-level symbol for ``sphinx.ext.autodoc`` to document.
-``command_doc.build_csv`` instead instantiates a ``CommandRegistry`` and walks ``reg.all()``, taking the name, ``cmd.help`` (description), ``cmd.params`` (rendered ``name:kind``) and the handler's source location (``handler.__code__.co_filename``/``co_firstlineno`` → ``commands.py:577``) — that source column is exactly what makes an otherwise-unfindable closure locatable.
+``command_doc.build_csv`` renders command name, group, description and arguments.
+Commands are ordered by group and name; source-line changes do not affect the table.
 
 - **Grouping lives here, not in the registry.** ``group_for`` maps each command to a section (``GROUP_ORDER``) by name prefix (``fft_*``/``hist_*``/``node_*``) or an explicit table for the rest, and **raises** for any unassigned command. (``help`` lists commands flat; the curated grouping is documentation-only.)
 - **Committed, not built at docs time.** The output ``uz_dataviewer_commands.csv`` sits beside ``uz_dataviewer_usage.rst`` and is included via ``.. csv-table:: :file:``, so the Sphinx build stays hermetic. Regenerate with ``python -m uz_dataviewer.command_doc``.
-- **Drift-guarded.** ``tests/test_command_doc.py`` re-renders in memory and fails if the committed CSV is stale or a new command has no group — so editing a command (or even shifting its line) without regenerating breaks CI.
+- **Drift-guarded.** ``tests/test_command_doc.py`` re-renders in memory and fails if the committed CSV is stale or a new command has no group — so editing a command  without regenerating breaks CI.
 
 Plots panel internals (``panels/plots.py``)
 ============================================
@@ -500,3 +501,17 @@ Graph domain resolution shares a per-evaluation cache and uses iterative travers
 When a saved graph changes an output's domain, restoration discards its incompatible
 normalization and consumer assignments, matching live reevaluation. Failed outputs
 retain their saved domain as unavailable placeholders until repaired.
+
+
+Background display policy
+=========================
+
+Live display requests retain one active job and the newest queued replacement.
+Completed work from the same display identity may be shown while newer data is
+pending; changing identity cancels it. Device commands retain their independent
+Stop ordering and cancellation boundary, including queued console mutations.
+Lazy source identity checks run on background workers at approximately 4 Hz;
+strict validation still surrounds actual reads and exports. Cached displays may
+therefore remain visible briefly until a file change is detected. In-memory graph
+validity is checked immediately. Static views idle; visible live plots explicitly
+request full-rate rendering.

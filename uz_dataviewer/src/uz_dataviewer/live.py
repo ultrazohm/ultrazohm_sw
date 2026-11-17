@@ -410,7 +410,7 @@ class LiveController:
             raise RuntimeError('Live controller is closed')
         if self.flashing:
             raise RuntimeError('Flash UZ is already running')
-        if operation == 'stop':
+        if operation in ('stop', 'flash', 'shutdown', 'detach', 'attach', 'connect'):
             self.cancel_pending_commands()
         if operation == 'flash':
             self.flashing = True

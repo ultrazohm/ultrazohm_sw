@@ -238,6 +238,7 @@ class RuntimeServices:
     # other subplots. Per-source summary locks and the shared cache are thread-safe.
     display: Requests = field(default_factory=lambda: Requests(
         workers=min(4, os.cpu_count() or 1)))
+    validation_jobs: Requests = field(default_factory=lambda: Requests(workers=2))
     analysis_jobs: Requests = field(default_factory=lambda: Requests())
     analysis_displays: dict[str, Requests] = field(default_factory=lambda: {
         name: Requests() for name in ("fft", "hist")})
@@ -248,6 +249,7 @@ class RuntimeServices:
     large_csv_requests: list[LoadRequest] = field(default_factory=list)
 
     def close(self) -> None:
+        self.validation_jobs.close()
         self.display.close()
         self.analysis_jobs.close()
         for requests in self.analysis_displays.values():

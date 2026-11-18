@@ -45,7 +45,9 @@ Default programming modes for UltraZohm.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Faster programming mode for rapid software iteration. 
 
-- Skips PL programming and PS initialization if the FPGA is already configured; otherwise behaves like the default modes (full PL programming and ``psu_init``).
+- Skips PL programming and PS initialization if the FPGA already holds the bitstream of the workspace (``UltraZohm/hw/*.bit``); otherwise behaves like the default modes (full PL programming and ``psu_init``).
+  The script compares the build time that Vivado writes into the ``USR_ACCESS`` register of the bitstream (``BITSTREAM.CONFIG.USR_ACCESS TIMESTAMP``) with the value read from the FPGA over JTAG.
+  If they differ, or cannot be compared (e.g. a bitstream built without the timestamp), the console shows why and the UltraZohm is programmed completely.
 - Stops the cores R5:0 and A53:0 to quiesce software-driven AXI activity from PS to PL.
 - Issues a PL reset via ``psu_ps_pl_reset_config`` (resets PL logic to initial state similar to reprogramming it with the same bitstream).
 - Performs a core-level reset of the processors, downloads the ELF files, and starts execution.

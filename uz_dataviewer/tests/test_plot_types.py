@@ -126,8 +126,8 @@ def test_fft_window_renders_multiple_signals(states, gui_frame):
     from uz_dataviewer.panels.fft import FftPanel
 
     state = _state(states)
-    state.commands.dispatch(state, "fft_source(Log.csv, ia)")
-    state.commands.dispatch(state, "fft_source(Log.csv, ib)")
+    state.commands.execute(state, 'fft_source', ['Log.csv', 'ia'])
+    state.commands.execute(state, 'fft_source', ['Log.csv', 'ib'])
     panel = FftPanel()
     _drive_window(panel, state, gui_frame)
     assert len(panel._results) == 2  # one spectrum per source
@@ -137,8 +137,8 @@ def test_histogram_window_renders_multiple_signals(states, gui_frame):
     from uz_dataviewer.panels.histogram import HistogramPanel
 
     state = _state(states)
-    state.commands.dispatch(state, "hist_source(Log.csv, ia)")
-    state.commands.dispatch(state, "hist_source(Log.csv, ib)")
+    state.commands.execute(state, 'hist_source', ['Log.csv', 'ia'])
+    state.commands.execute(state, 'hist_source', ['Log.csv', 'ib'])
     panel = HistogramPanel()
     _drive_window(panel, state, gui_frame)
     assert len(panel._results) == 2  # one distribution per source
@@ -175,7 +175,7 @@ def test_analysis_window_computes_on_demand_not_every_frame(monkeypatch, states,
 
     monkeypatch.setattr(fft_mod, "compute_fft", counting)
     state = _state(states)
-    state.commands.dispatch(state, "fft_source(Log.csv, ia)")  # sets compute_requested
+    state.commands.execute(state, 'fft_source', ['Log.csv', 'ia'])  # sets compute_requested
     _drive_window(FftPanel(), state, gui_frame, frames=6)
     assert calls["n"] == 1  # computed once for the one source, not 6x
 

@@ -12,6 +12,14 @@ import threading
 from .sources import check
 
 
+class Cancellation:
+    def __init__(self, *events):
+        self.events = events
+
+    def is_set(self):
+        return any(event is not None and event.is_set() for event in self.events)
+
+
 def join_worker(thread):
     """Give cooperative cancellation a bounded chance to release resources."""
     if thread is not None and thread is not threading.current_thread():
@@ -25,12 +33,12 @@ class CancellableExecutor:
         self.cancel = threading.Event()
         self.thread = None
 
-    def submit(self, function, *args):
+    def submit(self, function, *args, dispose=None):
         future = Future()
         if self.cancel.is_set():
             future.cancel()
             return future
-        self.queue.put((future, function, args))
+        self.queue.put((future, function, args, dispose))
         if self.thread is None:
             self.thread = threading.Thread(target=self._work, daemon=True, name=self.name)
             self.thread.start()
@@ -41,7 +49,7 @@ class CancellableExecutor:
             item = self.queue.get()
             if item is None:
                 return
-            future, function, args = item
+            future, function, args, dispose = item
             if not future.set_running_or_notify_cancel():
                 continue
             result = None
@@ -51,7 +59,15 @@ class CancellableExecutor:
                 check(self.cancel)
                 future.set_result(result)
             except BaseException as exc:
-                future.set_exception(exc)
+                error = exc
+                if result is not None and dispose is not None:
+                    try:
+                        dispose(result)
+                    except BaseException as cleanup_error:
+                        # A cleanup failure must still complete the future;
+                        # otherwise callers wait forever on a dead worker.
+                        error = cleanup_error
+                future.set_exception(error)
             finally:
                 item = future = function = args = result = None
 

@@ -1,8 +1,4 @@
-"""Transactional JSON sessions and sequential command scripts for automation.
-
-JSON is the only session format. Scripts execute ordinary commands against the
-current state; they do not provide a second session serialization protocol.
-"""
+"""Transactional JSON workspace persistence and recording exports."""
 
 from __future__ import annotations
 
@@ -19,7 +15,7 @@ from .validation import axis_limits, finite_float, coordinates, spy_rectangle, h
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from .state import AppState
 
-SCHEMA_VERSION = 5
+SCHEMA_VERSION = 6
 
 
 def ensure_extension(path: str, ext: str) -> str:
@@ -155,6 +151,11 @@ def to_dict(state: "AppState") -> dict:
                  for r in state.registry.runs if not r.derived],
         "nodes": _nodes_to_list(state),
         "cells": cells,
+        "views": [dict(id=key, grid=[view.rows, view.cols],
+                       row_ratios=list(view.row_ratios), col_ratios=list(view.col_ratios),
+                       link_x=view.link_x, shared_x=view.shared_x, max_points=view.max_points,
+                       cells=plot_cells_to_list(view, lambda ref: _ref_to_saved(state, ref)))
+                  for key, view in state.plot_views.items()],
         "fft": {
             "x_lim": state.fft.pending_x_lim or state.fft.x_lim,
             "sources": [_ref_to_saved(state, r) for r in state.fft.sources],
@@ -179,6 +180,19 @@ def to_dict(state: "AppState") -> dict:
 
 def save_state(state: "AppState", path: str) -> None:
     data = to_dict(state)
+    save_snapshot(data, path)
+
+
+def save_snapshot(data: dict, path: str, *, cancel=None) -> None:
+    """Publish captured state with recording paths relative to its manifest."""
+    from copy import deepcopy
+    data = deepcopy(data)
+    directory = os.path.dirname(os.path.abspath(path))
+    for run in data.get('runs', []):
+        try:
+            run['path'] = os.path.relpath(run['path'], directory)
+        except ValueError:  # Different Windows drives require absolute paths.
+            run['path'] = os.path.abspath(run['path'])
     # Publish only a complete snapshot. A failed serialization/write/replace
     # must leave the previous session intact; use the same filesystem.
     fd, temporary = tempfile.mkstemp(prefix=".uz-session-", suffix=".tmp",
@@ -186,6 +200,8 @@ def save_state(state: "AppState", path: str) -> None:
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as fh:
             json.dump(data, fh, indent=2)
+        from .sources import check
+        check(cancel)
         os.replace(temporary, path)
     finally:
         if os.path.exists(temporary):
@@ -193,9 +209,16 @@ def save_state(state: "AppState", path: str) -> None:
 
 
 def load_state(state: "AppState", path: str) -> None:
+    apply_dict(state, read_snapshot(path))
+
+
+def read_snapshot(path: str) -> dict:
     with open(path, encoding="utf-8") as fh:
         data = json.load(fh)
-    apply_dict(state, data)
+    directory = os.path.dirname(os.path.abspath(path))
+    for run in data.get('runs', []):
+        run['path'] = os.path.normpath(os.path.join(directory, run['path']))
+    return data
 
 
 def _session_backend(state, backend):
@@ -274,6 +297,21 @@ def _apply_dict(state: "AppState", data: dict) -> None:
     changed_domains = _restore_nodes(state, data.get("nodes", []), _resolve)
 
     restore_plot_cells(state, data, _resolve)
+
+    from .plot_window import PlotWindowState
+    for spec in data.get('views', []):
+        key = bounded_int(spec['id'], 2, 2**31 - 1, 'view id')
+        if key in state.plot_views:
+            raise ValueError('Duplicate plot view id')
+        view = PlotWindowState(state, key)
+        state.plot_views[key] = view
+        state.next_view_id = max(state.next_view_id, key + 1)
+        view.set_grid(*spec['grid'])
+        view.set_grid_ratios(spec['row_ratios'], spec['col_ratios'])
+        view.link_x = boolean(spec['link_x'])
+        view.shared_x = axis_limits(*spec['shared_x']) if spec['shared_x'] is not None else None
+        view.max_points = display_budget(spec['max_points'])
+        restore_plot_cells(view, spec, _resolve)
 
     fft = data.get("fft") or {}
     state.fft.sources = [r for r in (_resolve(s) for s in fft.get("sources", [])) if r is not None]
@@ -357,32 +395,6 @@ def _check_reloadable(state):
     for run in state.registry.runs:
         if not run.derived and not run.reloadable:
             raise ValueError(f"Cannot save session: {run.label} has no backing file. Export its data first.")
-
-
-# -- command scripts ----------------------------------------------------------
-def run_script(state: "AppState", path: str) -> int | None:
-    """Run automation commands sequentially, stopping at the first error."""
-    from .commands import parse_call
-
-    with open(path, encoding="utf-8") as fh:
-        lines = fh.readlines()
-    if any(line.strip().startswith("# UltraZohm Data Viewer session script") for line in lines):
-        raise ValueError("Generated session scripts are no longer supported; save sessions as JSON.")
-    if getattr(state, 'async_exports', False):
-        from .automation import start
-        commands = [parse_call(line.strip()) for line in lines
-                    if line.strip() and not line.strip().startswith('#')]
-        start(state, commands, path)
-        return None
-    count = 0
-    for line in lines:
-        line = line.strip()
-        if not line or line.startswith("#"):
-            continue
-        name, args = parse_call(line)
-        state.commands.execute(state, name, args)
-        count += 1
-    return count
 
 
 # -- data export --------------------------------------------------------------

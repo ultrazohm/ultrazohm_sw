@@ -16,6 +16,60 @@ from uz_dataviewer.panels.live import LiveWorkspace
 from uz_dataviewer.scripting import ScriptRunner, TEMPLATES
 
 
+def test_generic_script_arguments_directory_and_endpoints(tmp_path):
+    import json
+    script_dir = tmp_path / 'scripts'
+    script_dir.mkdir()
+    working = tmp_path / 'working directory'
+    working.mkdir()
+    script = script_dir / 'inspect.py'
+    script.write_text('import json, os, sys\n'
+                      'from uz_dataviewer import Client\n'
+                      'print(json.dumps([sys.argv[1:], os.getcwd(), '
+                      'os.environ["UZ_DATAVIEWER_ENDPOINT"], '
+                      'os.environ["UZ_ACQUISITION_ENDPOINT"]]))\n')
+    runner = ScriptRunner(device_control=False)
+    try:
+        runner.start(script, '127.0.0.1:19740', viewer_endpoint='127.0.0.1:19742',
+                     args=['recording with spaces.csv', '--literal=$(echo nope)'], cwd=working)
+        def finished():
+            runner.poll()
+            return not runner.busy
+        wait_for(finished)
+        assert runner.exit_code == 0, runner.output
+        assert json.loads(runner.output) == [
+            ['recording with spaces.csv', '--literal=$(echo nope)'], str(working),
+            '127.0.0.1:19742', '127.0.0.1:19740']
+    finally:
+        runner.close()
+
+
+def test_script_rejects_missing_working_directory_before_start(tmp_path):
+    runner = ScriptRunner(device_control=False)
+    with pytest.raises(ValueError, match='Working directory'):
+        runner.start(tmp_path / 'script.py', cwd=tmp_path / 'missing')
+    assert not runner.busy
+
+
+def test_combined_template_controls_both_existing_services(tmp_path, service, control_session):
+    _, acquisition_endpoint = service
+    _, viewer, _, pump = control_session
+    path = tmp_path / 'combined.py'
+    path.write_text(TEMPLATES['Viewer and device status'])
+    runner = ScriptRunner(device_control=False)
+    try:
+        runner.start(path, acquisition_endpoint, viewer_endpoint=viewer.endpoint)
+        def finished():
+            runner.poll()
+            return not runner.busy
+        pump(finished)
+        assert runner.exit_code == 0, runner.output
+        assert 'Viewer:' in runner.output
+        assert 'Device:' in runner.output
+    finally:
+        runner.close()
+
+
 
 
 @pytest.fixture
@@ -58,7 +112,7 @@ def test_script_import_completion_error_and_stop_preserve_logging(tmp_path, serv
             'import argparse\nfrom ultrazohm_cli import Client\n'
             'if __name__ == "__main__":\n'
             '    parser = argparse.ArgumentParser()\n'
-            '    parser.add_argument("--endpoint", required=True)\n'
+            '    import os\n    parser.add_argument("--endpoint", default=os.environ["UZ_ACQUISITION_ENDPOINT"])\n'
             '    uz = Client(parser.parse_args().endpoint)\n'
             '    configure(uz)\n'
             '    uz.enable_system()\n'
@@ -102,6 +156,9 @@ def test_editor_and_manual_controls_lock(gui_frame, app_state, tmp_path):
         def close(self): pass
     runner = ActiveRunner()
     workspace.scripts = runner
+    from uz_dataviewer.panels.python import PythonPanel
+    panel = PythonPanel(SimpleNamespace(live=workspace, control_server=SimpleNamespace(endpoint='127.0.0.1:19741')))
+    panel.managed_device = True
     try:
         workspace.send('set_variable', name='send_field_1', value=1)
         assert 'locked' in workspace.error
@@ -111,8 +168,8 @@ def test_editor_and_manual_controls_lock(gui_frame, app_state, tmp_path):
         assert controller.commands.empty()
         workspace.update = SimpleNamespace(status={'state': {'connected': True}}, attached=True,
                                            catalog={}, error='')
-        gui_frame(SimpleNamespace(render=lambda _: workspace.render_python()), app_state)
-        editor = workspace.document.editor
+        gui_frame(SimpleNamespace(render=lambda _: panel.render()), app_state)
+        editor = panel.document.editor
         assert editor.get_language_name().lower() == 'python'
         assert editor.is_show_line_numbers_enabled()
         assert editor.is_auto_indent_enabled()
@@ -120,23 +177,23 @@ def test_editor_and_manual_controls_lock(gui_frame, app_state, tmp_path):
         assert editor.get_tab_size() == 4
         assert editor.is_read_only_enabled()
         gui_frame(SimpleNamespace(render=lambda _: workspace.render_control()), app_state)
-        workspace.document.path = str(tmp_path/'saved.py')
-        workspace.document.code = TEMPLATES['Timed recording']
+        panel.document.path = str(tmp_path/'saved.py')
+        panel.document.code = TEMPLATES['Timed recording']
         assert editor.get_text() == TEMPLATES['Timed recording']
-        assert workspace.document.save().read_text() == workspace.document.code
+        assert panel.document.save().read_text() == panel.document.code
         runner.busy = False
-        gui_frame(SimpleNamespace(render=lambda _: workspace.render_python()), app_state)
+        gui_frame(SimpleNamespace(render=lambda _: panel.render()), app_state)
         assert not editor.is_read_only_enabled()
-        original = workspace.document.code
+        original = panel.document.code
         editor.set_cursor(editor.DocPos(0, 0))
         editor.replace_text_in_current_cursor('# edited in the code editor\n')
         assert editor.can_undo()
-        gui_frame(SimpleNamespace(render=lambda _: workspace.render_python()), app_state)
-        assert workspace.document.editor is editor
+        gui_frame(SimpleNamespace(render=lambda _: panel.render()), app_state)
+        assert panel.document.editor is editor
         assert editor.can_undo()  # Rendering must preserve text, cursor, and undo history.
-        assert workspace.document.save().read_text().startswith('# edited in the code editor\n')
+        assert panel.document.save().read_text().startswith('# edited in the code editor\n')
         editor.undo()
-        assert workspace.document.code == original
+        assert panel.document.code == original
     finally:
         workspace.close()
 
@@ -285,7 +342,7 @@ def test_script_main_and_arguments_match_terminal_execution(tmp_path):
         'def run(uz):\n    raise AssertionError("must not be called automatically")\n'
         'if __name__ == "__main__":\n'
         '    p = argparse.ArgumentParser()\n'
-        '    p.add_argument("--endpoint", required=True)\n'
+        '    import os\n    p.add_argument("--endpoint", default=os.environ.get("UZ_ACQUISITION_ENDPOINT"))\n'
         '    print(json.dumps([p.parse_args().endpoint, VALUE, sys.argv[0]]))\n')
     endpoint = '127.0.0.1:23456'
     expected = subprocess.check_output([sys.executable, str(path), '--endpoint', endpoint], text=True)
@@ -314,7 +371,7 @@ def test_windows_bootstrap_preserves_main_and_exit_code(tmp_path):
     assert result.returncode == 7, result.stderr
 
 
-@pytest.mark.parametrize('name', ['Blank', 'Timed recording', 'Control sequence'])
+@pytest.mark.parametrize('name', ['Device status', 'Timed recording', 'Control sequence'])
 def test_templates_are_standalone_scripts_with_endpoint(tmp_path, monkeypatch, name):
     import runpy
     calls = []

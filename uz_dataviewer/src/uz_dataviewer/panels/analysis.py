@@ -187,6 +187,16 @@ class AnalysisPanel(SessionPanel):
         self._poll_export(state)
         cfg = self.config(state)
 
+        published = state.services.completed_analysis.pop(self.prefix, None)
+        if published is not None:
+            key, result = published
+            self._analysis_pending = None
+            if key == self._current_key(state, cfg):
+                self._results, self._info = result.series, result.info
+                self._computed_key = key
+                state.services.analysis_displays[self.prefix].retain(set())
+                self._fit_pending = True
+
         # -- controls (all routed through commands) --
         changed, value = follow_combo("Window", cfg.follow_plot, state.cell_count)
         if changed:

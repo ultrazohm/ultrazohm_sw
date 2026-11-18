@@ -14,11 +14,26 @@ from __future__ import annotations
 
 __version__ = "0.1.0"
 
-# GUI-free facade -- safe to import on a headless box (no imgui_bundle needed).
-from .api import Dataset, fft, fft_frame, kinds, node, read
+# Control clients need only the standard library. Numerical dependencies are
+# loaded when their public functions are first requested.
+from .client import Client, ViewerError, RunHandle, NodeHandle, ViewHandle
+
+
+def __getattr__(name):
+    if name in {"Dataset", "fft", "fft_frame", "kinds", "node", "read"}:
+        from . import api
+        value = getattr(api, name)
+        globals()[name] = value
+        return value
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 __all__ = [
     "__version__",
+    "Client",
+    "ViewerError",
+    "RunHandle",
+    "NodeHandle",
+    "ViewHandle",
     # headless library API
     "Dataset",
     "read",

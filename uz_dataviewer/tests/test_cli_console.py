@@ -1,5 +1,4 @@
 """uz console lines go to the attached service; CliConsole runs Flash UZ's CLI."""
-from dataclasses import replace
 import subprocess
 import sys
 import time
@@ -7,73 +6,16 @@ from types import SimpleNamespace
 
 import pytest
 
-from uz_dataviewer.app import DataViewerApp
 from uz_dataviewer.cli_console import CliConsole, arguments
 from uz_dataviewer.console import Console
 
 
-def submit(state, text):
-    state.console._input = text
-    state.console._submit(state)
 
 
-def test_only_exact_uz_prefix_bypasses_viewer_parser(app_state, monkeypatch):
-    forwarded, viewer = [], []
-    app_state.console.cli_handler = forwarded.append
-    monkeypatch.setattr(app_state.commands, 'dispatch', lambda state, text: viewer.append(text))
-    for text in ('uz status', '  uz\tset-variable send_field_1 5', 'uz', 'uz_example', 'help'):
-        submit(app_state, text)
-    assert forwarded == ['status', 'set-variable send_field_1 5', '']
-    assert viewer == ['uz_example', 'help']
-    assert app_state.console._input == ''
-    assert app_state.console._history[-1] == 'help'
-    app_state.console._input = 'uz --help'
-    assert app_state.console._completions(app_state) == []
 
 
-@pytest.mark.parametrize('use_live', [False, True])
-def test_inactive_live_or_missing_wheel_reports_console_message(use_live):
-    app = DataViewerApp(use_live=use_live)
-    try:
-        if app.live is not None:
-            app.live.available = False
-        submit(app.state, 'uz status')
-        assert 'Live is not activated.' in app.state.console.as_text()
-        assert not app._console_jobs
-    finally:
-        app._shutdown()
 
 
-def test_attached_endpoint_is_used_and_detached_input_can_choose_another(monkeypatch):
-    calls = []
-
-    def console_command(line, endpoint):
-        calls.append((line, endpoint))
-        if line == 'build':
-            raise RuntimeError('this command runs local tools')
-        return '{"ok": true}\nsecond line\n'
-    app = DataViewerApp(use_live=True)
-    monkeypatch.setitem(sys.modules, 'ultrazohm_cli', SimpleNamespace(console_command=console_command))
-    try:
-        app.live.available = True
-        app.live.endpoint = '127.0.0.1:20111'
-        app.live.controller.endpoint = '127.0.0.1:20222'
-        app.live.update = replace(app.live.update, attached=True)
-        submit(app.state, 'uz status')
-        app.live.update = replace(app.live.update, attached=False)
-        submit(app.state, 'uz status')
-        submit(app.state, 'uz build')
-        deadline = time.monotonic() + 5
-        while app._console_jobs and time.monotonic() < deadline:
-            app._poll_console_jobs()
-            time.sleep(.01)
-        assert calls == [('status', '127.0.0.1:20222'), ('status', '127.0.0.1:20111'),
-                         ('build', '127.0.0.1:20111')]
-        text = app.state.console.as_text()
-        assert text.count('second line') == 2
-        assert 'uz build: this command runs local tools' in text
-    finally:
-        app._shutdown()
 
 
 @pytest.mark.parametrize('text,windows,expected', [

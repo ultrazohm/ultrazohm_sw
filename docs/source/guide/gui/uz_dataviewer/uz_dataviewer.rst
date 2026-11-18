@@ -22,7 +22,7 @@ Features
 - Range-aware downsampling — multi-GB logs pan smoothly and zooming reveals detail
 - FFT & Histogram, optional locked time window to time plot, optional logarithmic axes, ``.csv`` export of FFT and histogram data
 - Nodes for applying transforms (FFT / math / filter / shift) to signals where the result becomes a new signal. Nodes can be extended with custom Python code for user-specific nodes (:doc:`uz_dataviewer_plugins`)
-- Command console and script support: commands automate data, analysis and plot settings. Save sessions to JSON; run automation commands from ``.uzscript`` files.
+- Python automation: control an open viewer through ``uz_dataviewer.Client`` from a terminal or the Python panel. Save and restore sessions as JSON.
 
 Starting uz_dataviewer
 ======================

@@ -124,7 +124,7 @@ def _viewer_environment(dev_cli):
 
 def start(args):
     """Open the viewer from uz_dataviewer/.venv, keeping the caller's working directory."""
-    viewer = ["--live-repo", str(HERE.parent), *args.viewer]
+    viewer = ["gui", "--live-repo", str(HERE.parent), *args.viewer]
     if not args.dev_cli:
         common = ["--project", str(HERE), "--python", PYTHON, "--no-build-package", "imgui-bundle"]
         raise SystemExit(subprocess.call(["uv", "run", *common, "uz-dataviewer", *viewer]))

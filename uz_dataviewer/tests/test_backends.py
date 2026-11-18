@@ -156,6 +156,8 @@ def test_cli_defaults_and_explicit_overrides(monkeypatch):
     class Viewer:
         def __init__(self, **kwargs): captured.append(kwargs)
         def run(self): pass
+        def enable_control(self, endpoint): pass
+        def _shutdown(self): pass
     monkeypatch.setattr(app, 'DataViewerApp', Viewer)
     mapping_calls = []
     def generate(repo):

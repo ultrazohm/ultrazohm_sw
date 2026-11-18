@@ -11,17 +11,34 @@ _ENTRY_POINT = """
 
 if __name__ == "__main__":
     import argparse
+    import os
     from ultrazohm_cli import Client
 
     parser = argparse.ArgumentParser(description="UltraZohm measurement")
-    parser.add_argument("--endpoint", default="127.0.0.1:19740",
+    parser.add_argument("--endpoint", default=os.environ.get("UZ_ACQUISITION_ENDPOINT", "127.0.0.1:19740"),
                         help="Acquisition service host:port")
     args = parser.parse_args()
     main(Client(args.endpoint))
 """
 
 TEMPLATES = {
-    'Blank': '''def main(uz):
+    'Viewer and device status': '''import os
+from uz_dataviewer import Client as ViewerClient
+from ultrazohm_cli import Client as DeviceClient
+
+with ViewerClient() as viewer:
+    device = DeviceClient(os.environ["UZ_ACQUISITION_ENDPOINT"])
+    print("Viewer:", viewer.status())
+    print("Device:", device.status())
+''',
+    'Viewer': '''from uz_dataviewer import Client
+
+with Client() as viewer:
+    print(viewer.status())
+''',
+    'Blank': '''print("Hello from Python")
+''',
+    'Device status': '''def main(uz):
     print(uz.status())
 ''' + _ENTRY_POINT,
     'Timed recording': '''import time
@@ -50,11 +67,13 @@ def main(uz):
 
 
 class ScriptRunner:
-    def __init__(self, client_factory=None, send_stop=None):
+    def __init__(self, client_factory=None, send_stop=None, *, device_control=True):
+        self.device_control = device_control
         self.client_factory = client_factory
         self.send_stop = send_stop
         self.process = None
         self.endpoint = None
+        self.exit_code = None
         self.message = 'Ready'
         self.output = ''
         self._directory = None
@@ -68,9 +87,14 @@ class ScriptRunner:
     def busy(self):
         return self.process is not None or self._stop_thread is not None
 
-    def start(self, path, endpoint):
+    def start(self, path, endpoint=None, *, viewer_endpoint=None, args=(), cwd=None):
         if self.busy:
             raise RuntimeError('A script is already running or stopping')
+        if isinstance(args, (str, bytes)) or any(not isinstance(arg, str) for arg in args):
+            raise TypeError('Script arguments must be a sequence of strings')
+        directory = Path(cwd).expanduser().resolve() if cwd else Path.cwd()
+        if not directory.is_dir():
+            raise ValueError(f'Working directory does not exist: {directory}')
         self._cleanup()
         self._directory = tempfile.TemporaryDirectory(prefix='uz-script-')
         self._log = Path(self._directory.name) / 'output.log'
@@ -78,15 +102,27 @@ class ScriptRunner:
         options = {'start_new_session': True} if os.name != 'nt' else {
             'creationflags': subprocess.CREATE_NEW_PROCESS_GROUP}
         env = os.environ.copy()
+        # Keep source-checkout imports valid even when the script changes cwd.
+        import sys
+        if not getattr(sys, 'frozen', False):
+            paths = [str(Path(__file__).resolve().parents[1])]
+            paths.extend(str(Path(p).resolve()) for p in env.get('PYTHONPATH', '').split(os.pathsep) if p)
+            env['PYTHONPATH'] = os.pathsep.join(paths)
         env['PYTHONIOENCODING'] = 'utf-8'
-        script_args = [str(Path(path).resolve()), '--endpoint', endpoint]
+        if endpoint is not None:
+            env['UZ_ACQUISITION_ENDPOINT'] = endpoint
+        if viewer_endpoint is not None:
+            env['UZ_DATAVIEWER_ENDPOINT'] = viewer_endpoint
+        script_args = [str(Path(path).expanduser().resolve()), *args]
         from .process_launcher import command as worker_command
         command = worker_command('script', *script_args)
         with self._log.open('wb') as output:
             self.process = subprocess.Popen(
                 command,
-                stdin=subprocess.DEVNULL, stdout=output, stderr=subprocess.STDOUT, env=env, **options)
+                stdin=subprocess.DEVNULL, stdout=output, stderr=subprocess.STDOUT,
+                env=env, cwd=directory, **options)
         self.endpoint = endpoint
+        self.exit_code = None
         self.message = 'Running'
         self.output = ''
 
@@ -95,9 +131,9 @@ class ScriptRunner:
         if self._stop_thread is not None:
             return
         process, endpoint = self.process, self.endpoint
-        if endpoint is None:
+        if self.device_control and endpoint is None:
             raise RuntimeError('No script service endpoint is available')
-        self.message = 'Stopping script and device…'
+        self.message = 'Stopping script and device…' if self.device_control else 'Stopping script…'
 
         def work():
             errors = []
@@ -117,7 +153,9 @@ class ScriptRunner:
             except Exception as exc:
                 errors.append(f'Script termination failed: {exc}')
             try:
-                if self.send_stop is not None:
+                if not self.device_control:
+                    pass
+                elif self.send_stop is not None:
                     self.send_stop(endpoint)
                 elif self.client_factory is None:
                     from ultrazohm_cli import Client
@@ -129,7 +167,8 @@ class ScriptRunner:
             except Exception as exc:
                 errors.append(f'Device Stop failed: {exc}')
             with self._lock:
-                self._stop_result = '; '.join(errors) if errors else 'Script stopped; device Stop sent. Logging unchanged.'
+                self._stop_result = '; '.join(errors) if errors else (
+                    'Script stopped; device Stop sent. Logging unchanged.' if self.device_control else 'Script stopped.')
 
         self._stop_thread = threading.Thread(target=work, name='uz-script-stop', daemon=True)
         self._stop_thread.start()
@@ -150,6 +189,7 @@ class ScriptRunner:
                 self._stop_thread = None
                 self.message = result
                 if self.process is not None and self.process.poll() is not None:
+                    self.exit_code = self.process.poll()
                     self.process = None
         elif self.process is not None and (code := self.process.poll()) is not None:
             if os.name != 'nt':
@@ -158,7 +198,10 @@ class ScriptRunner:
                 except ProcessLookupError:
                     pass
             self.process = None
-            self.message = 'Completed; device and logging state unchanged' if code == 0 else f'Script failed (exit {code}); device and logging state unchanged'
+            self.exit_code = code
+            self.message = 'Completed' if code == 0 else f'Script failed (exit {code})'
+            if self.device_control:
+                self.message += '; device and logging state unchanged'
 
     def _cleanup(self):
         if self._directory is not None:

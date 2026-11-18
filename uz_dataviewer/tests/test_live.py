@@ -561,16 +561,16 @@ def test_script_start_cancels_queue_and_rejects_inflight_command(monkeypatch, tm
     controller = LiveController(lambda _: FakeClient())
     workspace = LiveWorkspace(controller)
     started = []
-    monkeypatch.setattr(workspace.scripts, 'start', lambda *args: started.append(args))
+    monkeypatch.setattr(workspace.scripts, 'start', lambda *args, **kwargs: started.append(args))
     try:
         controller._command('attach', {'endpoint': 'fake'})
         controller._publish()
         workspace.pump()
         controller.commands.put((controller._command_generation, 'enable_system', {}))
         with controller._command_lock:
-            workspace._start_script(tmp_path/'script.py', 'fake')
+            with pytest.raises(RuntimeError, match='still running'):
+                workspace._start_script(tmp_path/'script.py', 'fake')
             assert not started
-            assert 'still running' in workspace.document.error
             assert controller.commands.empty()
         workspace._start_script(tmp_path/'script.py', 'fake')
         assert len(started) == 1

@@ -76,13 +76,13 @@ def test_invalid_analysis_view_limits_leave_session_intact(app_state, config, li
 
 def _populated_state(csv_path):
     state = AppState()
-    state.commands.dispatch(state, f'load({json.dumps(str(csv_path))})')
-    state.commands.dispatch(state, "set_grid(2, 1)")
-    state.commands.dispatch(state, "add_signal(plot_1, Log_test.csv, ia)")
-    state.commands.dispatch(state, "set_plot_type(plot_2, Scatter)")
-    state.commands.dispatch(state, "add_signal(plot_2, Log_test.csv, ib)")
-    state.commands.dispatch(state, "show_samples(plot_1, on)")
-    state.commands.dispatch(state, "set_max_points(750)")
+    state.commands.execute(state, 'load', [str(csv_path)])
+    state.commands.execute(state, 'set_grid', ['2', '1'])
+    state.commands.execute(state, 'add_signal', ['plot_1', 'Log_test.csv', 'ia'])
+    state.commands.execute(state, 'set_plot_type', ['plot_2', 'Scatter'])
+    state.commands.execute(state, 'add_signal', ['plot_2', 'Log_test.csv', 'ib'])
+    state.commands.execute(state, 'show_samples', ['plot_1', 'on'])
+    state.commands.execute(state, 'set_max_points', ['750'])
     return state
 
 
@@ -93,23 +93,23 @@ def test_export_relative_flag(tmp_path):
     csv = tmp_path / "Log_export.csv"
     csv.write_text("time;CH8=8)ia;\n100.0;1.0;\n100.1;2.0;\n100.2;3.0;\n")
     state = AppState()
-    state.commands.dispatch(state, f'load({json.dumps(str(csv))})')
-    state.commands.dispatch(state, "add_signal(plot_1, Log_export.csv, ia)")
+    state.commands.execute(state, 'load', [str(csv)])
+    state.commands.execute(state, 'add_signal', ['plot_1', 'Log_export.csv', 'ia'])
     out = tmp_path / "out.csv"
 
     # relative off -> keeps the real start time
-    state.commands.dispatch(state, f'export_data(plot_1, {json.dumps(str(out))}, false)')
+    state.commands.execute(state, 'export_data', ['plot_1', str(out), 'false'])
     assert float(pd.read_csv(out)["time"].iloc[0]) == 100.0
 
     # toggling the flag on then off must NOT leave the export rebased
-    state.commands.dispatch(state, "set_export_relative(plot_1, on)")
-    state.commands.dispatch(state, "set_export_relative(plot_1, off)")
+    state.commands.execute(state, 'set_export_relative', ['plot_1', 'on'])
+    state.commands.execute(state, 'set_export_relative', ['plot_1', 'off'])
     assert state.cells[0].export_relative is False
-    state.commands.dispatch(state, f'export_data(plot_1, {json.dumps(str(out))}, false)')
+    state.commands.execute(state, 'export_data', ['plot_1', str(out), 'false'])
     assert float(pd.read_csv(out)["time"].iloc[0]) == 100.0
 
     # relative on -> rebased to 0
-    state.commands.dispatch(state, f'export_data(plot_1, {json.dumps(str(out))}, true)')
+    state.commands.execute(state, 'export_data', ['plot_1', str(out), 'true'])
     assert float(pd.read_csv(out)["time"].iloc[0]) == 0.0
 
 
@@ -140,10 +140,10 @@ def test_xy_style_roundtrip(tmp_path):
     csv = tmp_path / "Log_test.csv"
     csv.write_text(SAMPLE)
     state = AppState()
-    state.commands.dispatch(state, f'load({json.dumps(str(csv))})')
-    state.commands.dispatch(state, "set_xy(plot_1, Log_test.csv, ia)")
-    state.commands.dispatch(state, "add_signal(plot_1, Log_test.csv, ib)")
-    state.commands.dispatch(state, "set_xy_style(plot_1, both)")
+    state.commands.execute(state, 'load', [str(csv)])
+    state.commands.execute(state, 'set_xy', ['plot_1', 'Log_test.csv', 'ia'])
+    state.commands.execute(state, 'add_signal', ['plot_1', 'Log_test.csv', 'ib'])
+    state.commands.execute(state, 'set_xy_style', ['plot_1', 'both'])
 
     # JSON round-trip.
     out = tmp_path / "session.json"
@@ -159,8 +159,8 @@ def test_json_restore_flags_analysis_recompute(tmp_path):
     csv = tmp_path / "Log_test.csv"
     csv.write_text(SAMPLE)
     state = _populated_state(str(csv))
-    state.commands.dispatch(state, "fft_source(Log_test.csv, ia)")
-    state.commands.dispatch(state, "hist_source(Log_test.csv, ib)")
+    state.commands.execute(state, 'fft_source', ['Log_test.csv', 'ia'])
+    state.commands.execute(state, 'hist_source', ['Log_test.csv', 'ib'])
 
     out = tmp_path / "session.json"
     session.save_state(state, str(out))
@@ -261,7 +261,6 @@ def test_restore_rejects_nonexistent_analysis_plot_transactionally(app_state):
 
 def test_json_preserves_hidden_view_and_analysis_settings(app_state, tmp_path):
     """Inactive controls survive restoration, including a former XY source."""
-    import json
     state = app_state
     state.backend, state.loading_mode = 'pyarrow', 'memory'
     path = tmp_path/'data.csv'
@@ -407,9 +406,9 @@ def test_invalid_secondary_assignment_rejected(app_state, tmp_path):
 def test_session_partial_evaluation_uses_node_identity(states, recording_csv, tmp_path, execute_commands):
     state = states()
     state.load_sync(str(recording_csv))
-    execute_commands(state, 'node_source(run_1,a)', 'node_add(math)', 'node_link(node_1,node_2)',
-            'node_set(node_2,k,2)', 'node_add(math)', 'node_link(node_1,node_3)',
-            'node_set(node_3,k,3)', 'node_eval(node_3)', 'add_signal(plot_1,run_2,out)')
+    execute_commands(state, ('node_source', ['run_1', 'a']), ('node_add', ['math']), ('node_link', ['node_1', 'node_2']),
+            ('node_set', ['node_2', 'k', '2']), ('node_add', ['math']), ('node_link', ['node_1', 'node_3']),
+            ('node_set', ['node_3', 'k', '3']), ('node_eval', ['node_3']), ('add_signal', ['plot_1', 'run_2', 'out']))
     restored = states()
     apply_dict(restored, to_dict(state))
     ref = restored.cells[0].signals[0]
@@ -451,9 +450,9 @@ def test_roundtrip_preserves_windows_precision_and_active(states, recording_csv,
 def test_session_preserves_node_names_with_id_gaps(states, recording_csv, tmp_path, execute_commands):
     state = states()
     state.load_sync(str(recording_csv))
-    execute_commands(state, 'node_add(math)', 'node_remove(node_1)', 'node_source(run_1,a)',
-            'node_add(math)', 'node_link(node_2,node_3)', 'node_eval()',
-            'add_signal(plot_1,node_output_3,out)')
+    execute_commands(state, ('node_add', ['math']), ('node_remove', ['node_1']), ('node_source', ['run_1', 'a']),
+            ('node_add', ['math']), ('node_link', ['node_2', 'node_3']), ('node_eval', []),
+            ('add_signal', ['plot_1', 'node_output_3', 'out']))
     restored = states()
     apply_dict(restored, to_dict(state))
     assert [node.name for node in restored.nodes.ordered()] == ['node_2', 'node_3']
@@ -478,9 +477,9 @@ def test_bad_session_structure_is_transactional(states, recording_csv):
 def test_roundtrip_preserves_derived_visibility_and_origin(states, recording_csv, tmp_path, execute_commands):
     state = states()
     state.load_sync(str(recording_csv))
-    execute_commands(state, 'node_source(run_1,a)', 'node_add(math)', 'node_link(node_1,node_2)',
-            'node_eval()', 'set_active(node_output_2,false)',
-            'normalize_time(node_output_2,100.000123456789)')
+    execute_commands(state, ('node_source', ['run_1', 'a']), ('node_add', ['math']), ('node_link', ['node_1', 'node_2']),
+            ('node_eval', []), ('set_active', ['node_output_2', 'false']),
+            ('normalize_time', ['node_output_2', '100.000123456789']))
     restored = states()
     apply_dict(restored, to_dict(state))
     run = restored.registry.get(restored.nodes.get(2).out_run_id)
@@ -732,7 +731,6 @@ def test_failed_save_preserves_previous_snapshot(app_state, tmp_path, monkeypatc
 
 
 def test_successful_save_replaces_snapshot(app_state, tmp_path):
-    import json
     from uz_dataviewer.session import save_state
     path = tmp_path / 'session.json'
     save_state(app_state, path)

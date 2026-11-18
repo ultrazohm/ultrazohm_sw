@@ -32,10 +32,11 @@ class PlotWindowState(AppState):
         self.plot_window_id = window_id
         self.registry = parent.registry
         self.console = _WindowConsole(parent.console, f'Plots {window_id}')
-        self.async_exports = parent.async_exports
+        self.async_exports = getattr(parent, 'async_exports', False)
         self._domains = {run.id: run.axis_domain for run in self.registry.runs}
 
     def sync(self, parent):
+        self.async_exports = getattr(parent, 'async_exports', False)
         self.dragged_ref = parent.dragged_ref
         self.backend = parent.backend
         domains = {run.id: run.axis_domain for run in self.registry.runs}

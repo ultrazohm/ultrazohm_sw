@@ -3,8 +3,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from uz_dataviewer.live import LiveController, LiveUpdate
-from uz_dataviewer.panels import live, script_editor
+from uz_dataviewer.panels import script_editor
+from uz_dataviewer.panels.python import PythonPanel
 from uz_dataviewer.scripting import TEMPLATES
 
 
@@ -20,17 +20,16 @@ class Dialog:
 
 @pytest.fixture
 def files(monkeypatch):
-    ws = live.LiveWorkspace(LiveController(lambda _: None))
-    ws.controller.endpoint = '127.0.0.1:19740'
-    ws.update = LiveUpdate(attached=True, status={'state': {'connected': True}})
+    app = SimpleNamespace(live=None, control_server=SimpleNamespace(endpoint='127.0.0.1:19741'))
+    ws = PythonPanel(app)
     pending, starts, calls = [], [], []
     def choose(kind, title, default, filters):
         calls.append((kind, title, default, filters))
         return pending.pop(0)
     monkeypatch.setattr(script_editor, 'pfd', SimpleNamespace(
         open_file=lambda *args: choose('open', *args), save_file=lambda *args: choose('save', *args)))
-    ws.scripts = SimpleNamespace(busy=False, message='Ready', output='', poll=lambda: None,
-        start=lambda path, endpoint: starts.append((path, endpoint)), close=lambda: None)
+    ws.runner = SimpleNamespace(busy=False, message='Ready', output='', poll=lambda: None,
+        start=lambda path, viewer_endpoint, **options: starts.append((path, viewer_endpoint)), close=lambda: None)
     try:
         yield SimpleNamespace(ws=ws, pending=pending, starts=starts, calls=calls)
     finally:
@@ -94,7 +93,7 @@ def test_unsaved_run_saves_selected_filename_then_executes(files, tmp_path):
     files.ws.document.poll()
     saved = target.with_suffix('.py')
     assert saved.read_text() == files.ws.document.code
-    assert files.starts == [(saved, '127.0.0.1:19740')]
+    assert files.starts == [(saved, '127.0.0.1:19741')]
     files.ws.document.request_save(run_after=True)
     assert len(files.calls) == 1  # Existing files run directly after saving.
     assert len(files.starts) == 2
@@ -104,11 +103,11 @@ def test_run_does_not_execute_after_connection_change_or_save_failure(files, tmp
     dialog = Dialog(str(tmp_path/'new.py'))
     files.pending.append(dialog)
     files.ws.document.request_save(run_after=True)
-    files.ws.controller.endpoint = '127.0.0.1:19741'
+    files.ws.app.control_server.endpoint = '127.0.0.1:19742'
     dialog.finished = True
     files.ws.document.poll()
     assert files.starts == []
-    assert 'connection changed' in files.ws.document.error
+    assert 'endpoint changed' in files.ws.document.error
     files.ws.document.path = ''
     target = tmp_path/'directory.py'
     target.mkdir()
@@ -120,6 +119,19 @@ def test_run_does_not_execute_after_connection_change_or_save_failure(files, tmp
     assert files.starts == []
     assert files.ws.document.error
     assert files.ws.document.path == ''
+
+
+def test_pending_save_does_not_switch_acquisition_target(files, tmp_path):
+    files.ws.app.live = SimpleNamespace(controller=SimpleNamespace(endpoint='127.0.0.1:19740'),
+                                        scripts=SimpleNamespace(busy=False))
+    dialog = Dialog(str(tmp_path / 'combined.py'))
+    files.pending.append(dialog)
+    files.ws.document.request_save(run_after=True)
+    files.ws.app.live.controller.endpoint = '127.0.0.1:19745'
+    dialog.finished = True
+    files.ws.document.poll()
+    assert not files.starts
+    assert 'endpoint changed' in files.ws.document.error
 
 
 def test_added_extension_never_silently_overwrites_existing_file(files, tmp_path):
@@ -167,7 +179,7 @@ def test_python_panel_shows_filename_only(files, tmp_path, gui_frame, app_state,
     monkeypatch.setattr(imgui, 'text_unformatted', text)
     path = tmp_path/'private-directory'/'example.py'
     files.ws.document.path = str(path)
-    gui_frame(SimpleNamespace(render=lambda _: files.ws.render_python()), app_state)
+    gui_frame(SimpleNamespace(render=lambda _: files.ws.render()), app_state)
     assert path.name in captured
     assert str(path) not in captured
 
@@ -178,10 +190,8 @@ def test_dialog_completes_without_new_acquisition_updates(files, tmp_path):
     path.write_text('pass\n')
     dialog = Dialog([str(path)])
     files.pending.append(dialog)
-    ws.controller.update = ws.update
-    ws._revision = ws.update.revision
     ws.document.open_dialog('open')
     dialog.finished = True
-    ws.pump()
+    ws.poll()
     assert ws.document.path == str(path)
     assert ws.document.code == path.read_text()

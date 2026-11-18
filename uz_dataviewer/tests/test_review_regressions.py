@@ -48,48 +48,31 @@ def test_exclusive_publication_fallback_preserves_existing_file(tmp_path, monkey
     assert target.read_text() == 'new'
 
 
-@pytest.mark.parametrize('stop_from_console', [False, True])
-def test_stop_bypasses_read_and_invalidates_queued_enable(monkeypatch, stop_from_console):
-    import sys
-    from types import SimpleNamespace
+def test_stop_bypasses_read_and_invalidates_queued_enable():
     from uz_dataviewer.app import DataViewerApp
-
     app = DataViewerApp(use_live=True)
     entered, release, stopped = (threading.Event() for _ in range(3))
-    commands = []
-    def console_command(text, endpoint):
-        if text == 'status':
+    class Client:
+        def __init__(self, endpoint): pass
+        def status(self):
             entered.set()
             assert release.wait(5)
-        commands.append(text)
-        return 'ok'
-    class Client:
-        def __init__(self, endpoint):
-            pass
-        def stop(self):
-            stopped.set()
+        def stop(self): stopped.set()
+    reader = threading.Thread(target=Client('test').status)
     try:
         app.live.available = True
-        app.live.controller.endpoint = 'test-endpoint'
-        app.live.controller.client_factory = Client
-        monkeypatch.setitem(sys.modules, 'ultrazohm_cli', SimpleNamespace(console_command=console_command))
-        app._run_cli_command('status')
+        controller = app.live.controller
+        controller.endpoint = 'test'
+        controller.client_factory = Client
+        reader.start()
         assert entered.wait(2)
-        app._run_cli_command('enable-system')
-        if stop_from_console:
-            app._run_cli_command('stop')
-        else:
-            app.live.send('stop')
-        assert stopped.wait(2), 'Stop must not wait for a read-only console request'
-        release.set()
-        for future, _ in app._console_jobs:
-            try:
-                future.result(timeout=2)
-            except RuntimeError as exc:
-                assert 'canceled' in str(exc)
-        assert commands == ['status']
+        controller.commands.put((controller._command_generation, 'enable_system', {}))
+        app.live.send('stop')
+        assert stopped.wait(2)
+        assert controller.commands.empty()
     finally:
         release.set()
+        reader.join(timeout=2)
         app._shutdown()
 
 

@@ -1,5 +1,7 @@
 """GUI exports use captured settings and background IO, with atomic publication."""
 from copy import copy, deepcopy
+import threading
+from .workers import Cancellation
 from .console import Console
 from .sources import check
 
@@ -23,11 +25,15 @@ def submit(state, handler, values):
         saved.time = copy(run.time) if hasattr(run.time, 'source') else run.time
         snapshot.registry._runs[key] = saved
     snapshot.console = Console()
+    canceled = threading.Event()
     def work(cancel):
+        cancel = Cancellation(cancel, canceled)
         snapshot._export_cancel = cancel
         check(cancel)
         return handler(snapshot, values)
-    jobs.append((state.services.executor.submit(work), snapshot))
+    future = state.services.executor.submit(work)
+    future.operation_cancel = canceled
+    jobs.append((future, snapshot))
     return 'Export started'
 
 
@@ -43,6 +49,3 @@ def poll(state):
                     state.console.ok(message)
             except Exception as exc:
                 state.console.error(f'Export failed: {exc}')
-
-    from .automation import poll as poll_replay
-    poll_replay(state)

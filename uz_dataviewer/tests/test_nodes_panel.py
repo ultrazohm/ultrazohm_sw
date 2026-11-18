@@ -23,10 +23,10 @@ def test_nodes_panel_renders_a_graph(app_state, gui_frame):
         "Log.csv", "Log.csv", t, {"ia": np.sin(2 * np.pi * 50 * t).astype(np.float32)}, {"ia": ""}
     )
     for line in (
-        "node_source(run_1, ia)", "node_add(filter)", "node_set(node_2, cutoff, 100)",
-        "node_link(node_1, node_2)", "node_add(fft)", "node_link(node_2, node_3)", "node_eval()",
+        ('node_source', ['run_1', 'ia']), ('node_add', ['filter']), ('node_set', ['node_2', 'cutoff', '100']),
+        ('node_link', ['node_1', 'node_2']), ('node_add', ['fft']), ('node_link', ['node_2', 'node_3']), ('node_eval', []),
     ):
-        state.commands.dispatch(state, line)
+        state.commands.execute(state, *line)
 
     panel = NodesPanel()
     for _ in range(3):

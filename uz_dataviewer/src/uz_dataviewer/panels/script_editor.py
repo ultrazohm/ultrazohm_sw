@@ -46,8 +46,8 @@ class ScriptEditor:
         return self.editor
 
     def render(self, can_run):
-        imgui.text_wrapped('Run executes this file with --endpoint HOST:PORT in this Python environment. '
-                           'Use a template for argument parsing and Client setup; imports and __main__ work normally.')
+        imgui.text_wrapped('Run executes this Python file in a fresh process. '
+                           'Viewer and acquisition endpoints are supplied through environment variables.')
         imgui.text_unformatted(Path(self.path).name if self.path else 'Unsaved script')
         imgui.begin_disabled(self.busy() or self.dialog is not None)
         if imgui.button('Open Python file...'):

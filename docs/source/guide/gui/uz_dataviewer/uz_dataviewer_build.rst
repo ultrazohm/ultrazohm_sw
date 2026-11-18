@@ -111,5 +111,6 @@ device Stop and finalizes recordings), then programs and reconnects.
 ``uz_dataviewer/tasks.py start``, which owns argument handling and setup.
 ``tasks.py`` also provides ``shell``, ``check``, ``bundle`` and ``bundle-smoke``. Standalone execution uses
 its bundled worker entry point and requires no separately installed Python or
-Rust. The viewer command console, ``uz ...`` service commands and Python
-automation are available on Windows and Linux.
+Rust. The application log and Python editor are available on Windows and Linux.
+External Python scripts use the installed ``uz_dataviewer.Client``; the bundled
+Python editor uses the executable's internal script worker.

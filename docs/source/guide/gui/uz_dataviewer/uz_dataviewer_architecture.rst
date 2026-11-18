@@ -17,10 +17,10 @@ The viewer is **state-driven and command-routed**:
 
 This model yields four properties:
 
-#. **Scriptability** — registered commands can be typed or replayed (``.uzscript``).
+#. **Scriptability** — external Python calls ``uz_dataviewer.Client`` to control the running app.
 #. **Live transcript** — the console shows what happened, as commands.
 #. **Save/restore** — sessions serialize to JSON through one restoration path.
-#. **Testability** — app logic is exercised by dispatching command strings; no window required.
+#. **Testability** — typed operations and local transport can be exercised without opening a window.
 
 .. warning::
 
@@ -42,7 +42,7 @@ Per frame:
       ├─ FftPanel.render(state)         # center tab: FFT window
       ├─ HistogramPanel.render(state)   # center tab: Histogram window
       ├─ NodesPanel.render(state)       # center tab: node canvas
-      └─ Console.render(state)          # bottom: log + command input
+      └─ Console.render(state)          # bottom: read-only application log
 
 Immediate mode has **no retained widget state**, so anything that must persist across frames lives in ``AppState``/``SubplotCell``.
 Transient "do this once next frame" requests use a **pending-flag pattern** (``cell.fit_pending``, ``cell.pending_x_lim``, ``cfg.compute_requested``): the renderer consumes and clears the flag.
@@ -58,7 +58,7 @@ Module map
      - Responsibility
      - Key types
    * - ``app.py``
-     - Docking layout, ``immapp`` runner, theme, Session menu, ``.uzscript``/file startup
+     - Docking layout, ``immapp`` runner, theme, Session menu, Python-script and recording startup
      - ``DataViewerApp``
    * - ``api.py``
      - GUI-free façade for headless/library use (load, FFT, node transforms) — see :doc:`uz_dataviewer_library`
@@ -68,13 +68,13 @@ Module map
      - ``AppState``, ``SubplotCell``, ``PlotType``,
        ``AnalysisConfig``/``FftConfig``/``HistogramConfig``
    * - ``commands.py``
-     - Command registry, parser, dispatcher, the ~60 built-in commands
+     - Shared operation metadata, validation and GUI handlers
      - ``CommandRegistry``, ``Command``, ``Param``
    * - ``command_doc.py``
-     - Generates the docs command reference (CSV) from the live registry — see :ref:`uz_dataviewer_generated_command_reference`
+     - Generates the docs command reference (CSV) from public Python client signatures — see :ref:`uz_dataviewer_generated_command_reference`
      - ``build_csv``, ``group_for``, ``GROUP_ORDER``
    * - ``console.py``
-     - Bottom console: scrolling selectable log + command input/completion/history
+     - Scrolling selectable application log
      - ``Console``
    * - ``model.py``
      - Loaded data + per-log time normalization
@@ -146,9 +146,10 @@ Loading & large logs (``loader.py``)
 Memory loads dispatch through ``parse_file`` → ``parse_csv`` / ``parse_parquet`` and return a ``ParsedRun``; lazy loads return an ``OpenedSource``.
 Both register through their ``register`` method. The redundant eager-only ``load_file`` wrapper has been removed.
 On native, interactive GUI loads run on the cancellable daemon worker in ``workers.py``.
-Startup arguments and explicit commands load synchronously in order, so scripts can
-refer to preceding recordings without waiting for a GUI frame. A startup failure
-is logged and stops the remaining arguments.
+Recordings before the first startup Python file are prepared during startup.
+Python files and subsequent arguments run sequentially after the UI opens.
+External Python load calls wait for background preparation and application-thread
+registration. A startup failure is logged and stops the remaining arguments.
 The worker prepares a resident run or lazy source; the main thread registers it in ``state.poll_pending_loads``, so ``DataRegistry`` is only mutated from one thread.
 Conversion runs in a spawned process so shutdown can interrupt native streaming IO and remove partial output.
 Readers check cancellation between batches; an in-flight native read may finish before cancellation is observed, but it cannot keep the application process alive.
@@ -161,42 +162,46 @@ The in-memory loaders reduce transient allocations; the complete recording and a
 - **CSV size guard.** ``_guard_csv_size`` estimates the resident footprint from file size × column count and **refuses** a CSV above ``MAX_CSV_NUMERIC_BYTES``. Now that large CSVs stream, this is a **resident-RAM** ceiling (the full record must fit in memory), not a bulk-parse guard; it routes the user to lazy loading or ``convert(...)``. Actual capacity is checked independently during materialization.
 - **Streaming Parquet.** All eager PyArrow Parquet loads preallocate arrays from ``ParquetFile.metadata.num_rows`` and fill them with ``iter_batches``. There is one path for small and large files; lazy loads retain indexed sources.
 - **CSV→Parquet converter.** ``convert_csv_to_parquet`` stream-converts a CSV to Parquet with bounded memory (per-batch ``ParquetWriter.write_batch``), dropping JavaScope's empty trailing column and preserving raw headers so the result round-trips through the same name parsing. Exposed as the scriptable ``convert(src, [dst])`` command and the ``uz-dataviewer convert`` CLI.
-  The shared converter owns temporary output, empty-recording validation, cancellation cleanup, and publication without overwriting existing destinations. GUI, console, and cache conversion use this same path; backend writers only fill unpublished temporary files.
+  The shared converter owns temporary output, empty-recording validation, cancellation cleanup, and publication without overwriting existing destinations. GUI, Python control, and cache conversion use this same path; backend writers only fill unpublished temporary files.
 
 In-memory mode retains the complete recording. Lazy mode reads raw windows
 and streams histogram batches without keeping the full recording resident;
 FFTs and node transforms still materialize their selected inputs.
 
-The command layer
-=================
+The operation and transport layers
+==================================
 
-``CommandRegistry`` holds ``Command``s (a name, typed ``Param``s, a handler, help).
-The grammar is a single function call, ``name(arg, arg, ...)`` (``parse_call``).
+``operations.py`` owns application-lifetime request coordination. Both GUI handlers
+and external control use shared state operations; the GUI does not connect to its
+own socket. ``commands.py`` retains internal operation metadata and handlers for
+existing panels. It has no text parser or script interpreter.
 
-- **Param kinds** drive both coercion and canonical formatting: ``int``, ``float``, ``bool``, ``str``, ``plot`` (``plot_1``↔index), ``run`` (``run_2`` or a file label), ``fwindow`` (``custom``/``full``/``plot_N`` for analysis windows).
-- **Three entry points**:
+``client.py`` and ``client_methods.py`` provide the public Python API without GUI
+or numerical imports. The client sends versioned, newline-delimited JSON over a
+persistent loopback TCP connection. ``control_server.py`` owns the listener and a
+bounded queue; socket threads never mutate application state. The application
+polls requests on its owning thread. Deferred operations return futures, allowing
+the UI to continue rendering while background work completes. Client disconnects
+cancel pending operations. Mutations are never automatically retried.
 
-  - ``execute(state, name, args)`` — used by UI handlers; coerces, runs, **echoes** the canonical call.
-  - ``dispatch(state, text)`` — used by the console/scripts; parses then executes; errors go to the console.
-  - ``echo(state, name, values)`` — logs a command **without** running it. Used for continuous gestures (zoom, cursor/spy drag) that ImPlot has *already* applied — the echo settles once on mouse-up rather than firing every frame.
-- **Run resolution by label** lets scripts say ``add_signal(plot_1, Log.csv, ia)`` and survive run-id reassignment after a reload.
+Run, node and view handles include a session identity. Replacing the session
+invalidates old handles. Explicit view handles address additional plot windows;
+omitting a view addresses the main window. Relative file paths supplied to the
+Python client are resolved in the caller's working directory.
 
-Panels never mutate ``AppState`` for a user action directly; they call ``state.commands.execute(...)`` (often via a small ``self._emit`` wrapper that logs errors).
-Command scripts automate the registered operations. A console transcript is not a complete GUI snapshot: dock layout, analysis Reset view, and some Y/XY gestures are not recorded. Use JSON snapshots to preserve supported view settings.
+The read-only application log records actions and failures. It is not a complete
+session representation. Save supported state through JSON session snapshots.
 
 .. _uz_dataviewer_generated_command_reference:
 
-Generated command reference (``command_doc.py``)
--------------------------------------------------
+Generated Python API reference (``command_doc.py``)
+--------------------------------------------------
 
-The command table in :ref:`uz_dataviewer_usage` is **generated from the live registry**, not hand-maintained.
-The commands are closures registered inside ``register_builtins`` and the ``_register_analysis_common`` / ``_register_node_commands`` factories — built from name f-strings (``fft_remove``, ``hist_remove`` are *one* closure parameterised by ``prefix``), so there is no module-level symbol for ``sphinx.ext.autodoc`` to document.
-``command_doc.build_csv`` renders command name, group, description and arguments.
-Commands are ordered by group and name; source-line changes do not affect the table.
-
-- **Grouping lives here, not in the registry.** ``group_for`` maps each command to a section (``GROUP_ORDER``) by name prefix (``fft_*``/``hist_*``/``node_*``) or an explicit table for the rest, and **raises** for any unassigned command. (``help`` lists commands flat; the curated grouping is documentation-only.)
-- **Committed, not built at docs time.** The output ``uz_dataviewer_commands.csv`` sits beside ``uz_dataviewer_usage.rst`` and is included via ``.. csv-table:: :file:``, so the Sphinx build stays hermetic. Regenerate with ``python -m uz_dataviewer.command_doc``.
-- **Drift-guarded.** ``tests/test_command_doc.py`` re-renders in memory and fails if the committed CSV is stale or a new command has no group — so editing a command  without regenerating breaks CI.
+``command_doc.build_csv`` renders public client signatures, documentation and
+operation groups into ``uz_dataviewer_commands.csv``. The usage guide includes
+this committed file, so documentation builds do not require the GUI runtime.
+Regenerate with ``python -m uz_dataviewer.command_doc``. The documentation test
+checks both the committed output and complete method grouping.
 
 Plots panel internals (``panels/plots.py``)
 ============================================
@@ -309,7 +314,15 @@ FFT still materializes the selected window.
 Hann windows belong to that computation and are released afterwards; there is no
 process-global cache retaining windows from previous FFT sizes.
 Cancellation of a NumPy FFT takes effect after its native call returns.
-Explicit console/script commands and node/plugin evaluation remain synchronous.
+``node_jobs.py`` captures a detached graph and recording metadata for background
+node evaluation. Immutable input arrays and the thread-safe sample cache are shared;
+node parameters, input lists, runs and signal metadata are copied. Publication on
+the application thread checks the original graph/source fingerprint and session
+identity. Changed inputs discard the result. Existing derived-run IDs and time
+normalization survive publication. GUI and Python node evaluation use this same
+operation; the synchronous engine remains available for headless analysis and
+preparing a replacement session. Cancellation is checked between reads and nodes,
+and after each transform returns.
 
 Time-series, XY and cursor requests share source validation, worker scheduling and error reporting through ``PlotsPanel._request_data``.
 Cached display and analysis results share the ``sources.validation_error`` contract with node stale detection.
@@ -337,15 +350,14 @@ Sessions (``session.py``)
 ==========================
 
 **JSON snapshot** (``save_state``/``load_state``) is the only session format.
-Schema version 5 reloads explicit per-run records and remaps recording/node keys,
+Schema version 6 includes additional plot views and reloads explicit per-run records and remaps recording/node keys,
 preserving duplicate names and repeated opens of the same path. Restoration uses
 a replacement state; failures leave the current session intact.
 
-``.uzscript`` files remain available through ``run_script`` for sequential command
-automation. They stop at the first error and retain changes from earlier commands.
-Use ``load_state("session.json")`` within a script to invoke transactional restoration.
-Generated session-script export and its separate restoration path have been removed.
-Old version 1/2/3/4 snapshots and all generated session scripts are rejected.
+Automation uses ordinary Python files and ``Client.load_session`` /
+``Client.save_session``. Session files contain data, never executable scripts.
+Snapshot writes use atomic replacement; recording paths are relative to the
+snapshot directory where possible. The custom script language is removed.
 
 Failed or incomplete transforms with saved output assignments receive empty derived
 run placeholders. The same validity check used for stale outputs blocks their data
@@ -436,7 +448,7 @@ Design decisions
        derive from it.
    * - Gestures **echo**, discrete actions **execute**
      - Zoom/drag are continuous; echoing once on settle keeps the console readable while
-       staying replayable.
+       recording understandable activity messages.
    * - Shared min/max summaries for resident and lazy sources
      - Background workers build summaries and cache completed display requests.
        Raw analysis and exports use original samples, never display summaries.
@@ -466,7 +478,7 @@ Repository layout
 .. code-block:: text
 
    uz_dataviewer/
-   ├── run.py                    # run from a source checkout (also replays *.uzscript)
+   ├── run.py                    # run from a source checkout (also launches ordinary Python files)
    ├── src/uz_dataviewer/        # modules — see the module map above
    │   └── panels/               # navigation, plots, analysis base, fft, histogram, nodes
    ├── tests/                    # pytest (logic via commands + headless rendering)
@@ -509,7 +521,7 @@ Background display policy
 Live display requests retain one active job and the newest queued replacement.
 Completed work from the same display identity may be shown while newer data is
 pending; changing identity cancels it. Device commands retain their independent
-Stop ordering and cancellation boundary, including queued console mutations.
+Stop ordering and cancellation boundary, including queued manual mutations.
 Lazy source identity checks run on background workers at approximately 4 Hz;
 strict validation still surrounds actual reads and exports. Cached displays may
 therefore remain visible briefly until a file change is detected. In-memory graph

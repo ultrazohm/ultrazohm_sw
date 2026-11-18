@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 
 
 import numpy as np
@@ -25,14 +24,14 @@ def _state(tmp_path):
     csv = tmp_path / "Log_test.csv"
     csv.write_text(SAMPLE)
     state = AppState()
-    state.commands.dispatch(state, f'load({json.dumps(str(csv))})')
+    state.commands.execute(state, 'load', [str(csv)])
     return state, state.registry.get(1)
 
 
 def test_normalize_time_shifts_to_zero(tmp_path):
     state, run = _state(tmp_path)
     assert abs(run.time[0] - 12.0) < 1e-6
-    state.commands.dispatch(state, "normalize_time(run_1)")  # default start 0
+    state.commands.execute(state, 'normalize_time', ['run_1'])  # default start 0
     assert abs(run.time[0] - 0.0) < 1e-6
     assert abs(run.time[-1] - 0.2) < 1e-6
     # signal values untouched, only the axis shifted
@@ -41,9 +40,9 @@ def test_normalize_time_shifts_to_zero(tmp_path):
 
 def test_normalize_to_custom_start_and_reset(tmp_path):
     state, run = _state(tmp_path)
-    state.commands.dispatch(state, "normalize_time(run_1, 100.0)")
+    state.commands.execute(state, 'normalize_time', ['run_1', '100.0'])
     assert abs(run.time[0] - 100.0) < 1e-6
-    state.commands.dispatch(state, "reset_time(run_1)")
+    state.commands.execute(state, 'reset_time', ['run_1'])
     assert abs(run.time[0] - 12.0) < 1e-6
     assert run.time_origin is None
 
@@ -52,14 +51,14 @@ def test_load_with_normalize_flag(tmp_path):
     csv = tmp_path / "Log_test.csv"
     csv.write_text(SAMPLE)
     state = AppState()
-    state.commands.dispatch(state, f'load({json.dumps(str(csv))}, 0)')
+    state.commands.execute(state, 'load', [str(csv), '0'])
     run = state.registry.get(1)
     assert abs(run.time[0] - 0.0) < 1e-6
 
 
 def test_time_origin_survives_session_roundtrip(tmp_path):
     state, run = _state(tmp_path)
-    state.commands.dispatch(state, "normalize_time(run_1, 5.0)")
+    state.commands.execute(state, 'normalize_time', ['run_1', '5.0'])
     snap = tmp_path / "s.json"
     session.save_state(state, str(snap))
 
@@ -72,9 +71,9 @@ def test_time_version_bumps_on_normalize(tmp_path):
     # must bump it so a cached envelope (built from the old time) is not reused.
     state, run = _state(tmp_path)
     v0 = run.time_version
-    state.commands.dispatch(state, "normalize_time(run_1)")
+    state.commands.execute(state, 'normalize_time', ['run_1'])
     assert run.time_version != v0
-    state.commands.dispatch(state, "reset_time(run_1)")
+    state.commands.execute(state, 'reset_time', ['run_1'])
     assert run.time_version not in (v0, None)
 
 

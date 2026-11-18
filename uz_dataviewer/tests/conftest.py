@@ -5,6 +5,35 @@ from pathlib import Path
 
 import pytest
 
+
+@pytest.fixture
+def control_session(app_state):
+    from concurrent.futures import ThreadPoolExecutor
+    import time
+    from uz_dataviewer import Client
+    from uz_dataviewer.operations import Operations
+    from uz_dataviewer.control_server import ControlServer
+    operations = Operations(app_state)
+    server = ControlServer('127.0.0.1:0')
+    client = Client(server.endpoint, timeout=5)
+    workers = ThreadPoolExecutor(1)
+    app_state.async_exports = True
+    def pump(predicate):
+        deadline = time.monotonic() + 10
+        while not predicate():
+            operations.poll()
+            app_state.poll_pending_loads()
+            server.poll(operations.dispatch)
+            assert time.monotonic() < deadline, 'Viewer operation timed out'
+            time.sleep(.001)
+    try:
+        yield app_state, client, workers, pump
+    finally:
+        server.close()
+        operations.close()
+        workers.shutdown(wait=True)
+        client.close()
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 
@@ -77,11 +106,10 @@ def recording_csv(tmp_path):
 
 @pytest.fixture
 def execute_commands():
-    from uz_dataviewer.commands import parse_call
 
     def execute(state, *lines):
         for line in lines:
-            state.commands.execute(state, *parse_call(line))
+            state.commands.execute(state, *line)
     return execute
 
 

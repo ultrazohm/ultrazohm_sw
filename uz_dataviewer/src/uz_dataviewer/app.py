@@ -41,6 +41,10 @@ class DataViewerApp:
             workspace = find_repository(mapping_path.parent)
         self.artifacts = data_directory(workspace)
         self.state = AppState()
+        self._closed = False
+        from .operations import Operations
+        self.operations = Operations(self.state)
+        self.control_server = None
         if self.artifacts is not None:
             self.state.cache_dir = os.environ.get('UZ_DATAVIEWER_CACHE', str(self.artifacts / 'viewer_cache'))
         self.state.disk_cache = disk_cache
@@ -54,17 +58,13 @@ class DataViewerApp:
         self.log_browser = LogBrowserPanel(workspace)
         self.plots = PlotsPanel()
         self._plot_windows = {}
-        self._next_plot_window_id = 2
         self._plot_windows_session = self.state.session_token
         self.status = StatusPanel()
         self.fft = FftPanel()
         self.histogram = HistogramPanel()
         self.nodes = NodesPanel()
         self.live = None
-        self._console_executor = None
-        self._console_jobs = []
         self._select_initial_tabs = True
-        self.state.console.cli_handler = self._run_cli_command
         if use_live:
             from .panels.live import LiveWorkspace
             self.live = LiveWorkspace(repo=workspace)
@@ -75,20 +75,30 @@ class DataViewerApp:
             self.live.repository_selected = self._repository_selected
             if workspace is not None and not live_mapping:
                 self.live.prepare_repository(workspace)
+        from .panels.python import PythonPanel
+        self.python_panel = PythonPanel(self)
         # Pending Session-menu file dialogs: (dialog, command_name, is_multi).
         self._session_dialog: tuple = ()
+        self._session_action = None
         # Load any external node plugins (optional; safe with no dir/files present).
         from . import plugins
 
         plugins.load_plugins(console=self.state.console)
         # Startup arguments are ordered automation. Register recordings before
         # executing dependent scripts; GUI opens remain asynchronous.
+        self._startup_scripts = []
+        self._startup_pending = None
+        self._startup_script = False
         for path in initial_files or []:
             if not os.path.exists(path):
                 self.state.console.warn(f"File not found: {path}")
                 break
-            command = ("load_state" if path.lower().endswith(".json") else
-                       "run_script" if path.lower().endswith(".uzscript") else "load")
+            if self._startup_scripts or path.lower().endswith('.py'):
+                self._startup_scripts.append(path)
+                continue
+            if path.lower().endswith('.uzscript'):
+                raise ValueError('.uzscript is no longer supported; use Python files')
+            command = 'load_state' if path.lower().endswith('.json') else 'load'
             try:
                 self.state.commands.execute(self.state, command, [path])
             except Exception as exc:
@@ -98,63 +108,6 @@ class DataViewerApp:
         self.state.async_exports = True
 
     # -- docking layout -----------------------------------------------------
-    def _run_cli_command(self, text):
-        if self.live is None or not self.live.available:
-            self.state.console.error('Live is not activated.')
-            return
-        from .cli_console import arguments
-        words = arguments(text)
-        if words == ['stop']:
-            self.live.controller.cancel_pending_commands()
-            if not self.live.scripts.busy:
-                self.live.scripts.endpoint = (self.live.controller.endpoint if self.live.update.attached
-                                              else self.live.endpoint) or self.live.endpoint
-            self.live.scripts.stop()
-            return
-        if reason := self.live.block_reason('cli'):
-            self.state.console.error(reason + '; wait for it to finish')
-            return
-        try:
-            from ultrazohm_cli import console_command
-        except ImportError:
-            self.state.console.error('The installed CLI wheel has no console commands; install a current wheel.')
-            return
-        endpoint = (self.live.controller.endpoint if self.live.update.attached else self.live.endpoint) or self.live.endpoint
-        if self._console_executor is None:
-            from .workers import CancellableExecutor
-            self._console_executor = CancellableExecutor(name='uz-console')
-
-        controller = self.live.controller
-        generation = controller._command_generation
-
-        def work(cancel=None):
-            from .sources import check
-            from contextlib import nullcontext
-            # Read-only commands cannot re-enable the device and must not delay Stop.
-            read_only = not words or words[0] in (
-                'status', 'catalog', 'observables', 'get-observables', 'get_observables',
-                 'recordings', 'data-info', 'tail', 'read-range', 'read-since', 'help', '--help')
-            with nullcontext() if read_only else controller._command_lock:
-                check(cancel)
-                if generation != controller._command_generation or controller.stop_event.is_set():
-                    raise RuntimeError('Console command canceled by Stop or a session transition')
-                if reason := self.live.block_reason('cli'):
-                    raise RuntimeError(reason)
-                return console_command(text, endpoint=endpoint)
-        # One worker keeps requests in order and the GUI responsive.
-        self._console_jobs.append((self._console_executor.submit(work), text))
-
-    def _poll_console_jobs(self):
-        while self._console_jobs and self._console_jobs[0][0].done():
-            future, text = self._console_jobs.pop(0)
-            try:
-                output = future.result()
-            except Exception as exc:  # noqa: BLE001 - surfaced to the console
-                self.state.console.error(f"{f'uz {text}'.rstrip()}: {exc}")
-                continue
-            for line in output.rstrip('\n').splitlines() or ['(no output)']:
-                self.state.console.info(line)
-
     def _docking_splits(self) -> list[hello_imgui.DockingSplit]:
         left = hello_imgui.DockingSplit()
         left.initial_dock = MAIN_DOCK
@@ -197,7 +150,7 @@ class DataViewerApp:
         nodes.gui_function = lambda: self.nodes.render(self.state)
 
         console = hello_imgui.DockableWindow()
-        console.label = "Console"
+        console.label = "Application log"
         console.dock_space_name = LOG_DOCK
         console.gui_function = lambda: self.state.console.render(self.state)
 
@@ -206,13 +159,16 @@ class DataViewerApp:
         logs.dock_space_name = LOG_DOCK
         logs.gui_function = lambda: self.log_browser.render(self.state)
 
-        windows = [nav, logs, plots, fft, histogram, nodes, console]
+        python_window = hello_imgui.DockableWindow()
+        python_window.label = 'Python'
+        python_window.dock_space_name = MAIN_DOCK
+        python_window.gui_function = self.python_panel.render
+        windows = [nav, logs, plots, fft, histogram, nodes, console, python_window]
         if self.live is not None:
             for label, dock, render in (
                 ('Live Data', LEFT_DOCK, lambda: self.live.render_data(self.state)),
                 ('Control', LOG_DOCK, self.live.render_control),
                 ('Live Plots', MAIN_DOCK, lambda: self.live.render_plots(self.state)),
-                ('Python', MAIN_DOCK, self.live.render_python),
             ):
                 window = hello_imgui.DockableWindow()
                 window.label = label
@@ -264,11 +220,9 @@ class DataViewerApp:
         self._native_session_menu()
         imgui.end_menu()
 
-    def _new_plot_window(self):
-        from .plot_window import PlotWindowState
-        window_id = self._next_plot_window_id
-        self._next_plot_window_id += 1
-        state = PlotWindowState(self.state, window_id)
+    def _new_plot_window(self, state=None):
+        state = state if state is not None else self.state.create_plot_view()
+        window_id = state.plot_window_id
         panel = PlotsPanel()
         window = hello_imgui.DockableWindow()
         window.label = f"Plots {window_id}"
@@ -286,33 +240,40 @@ class DataViewerApp:
         return state
 
     def _native_session_menu(self) -> None:
-        disabled = pfd is None or bool(self._session_dialog)
+        disabled = pfd is None or bool(self._session_dialog) or self._session_action is not None
         # Tuple: (dialog, command, is_multi, ext). `ext` (a save's expected extension)
         # is forced onto the result if the dialog returned none; "" for the loads.
         if imgui.menu_item("Save state...", "", False, not disabled)[0]:
             self._session_dialog = (
                 pfd.save_file("Save state", "session.json", ["JSON (*.json)", "*.json"]),
-                "save_state",
+                "save_session",
                 False,
                 ".json",
             )
         if imgui.menu_item("Load state...", "", False, not disabled)[0]:
             self._session_dialog = (
                 pfd.open_file("Load state", "", ["JSON (*.json)", "*.json"]),
-                "load_state",
+                "load_session",
                 True,
                 "",
             )
         imgui.separator()
-        if imgui.menu_item("Run script...", "", False, not disabled)[0]:
+        if imgui.menu_item("Run Python file...", "", False, not disabled)[0]:
             self._session_dialog = (
-                pfd.open_file("Run script", "", ["Script (*.uzscript *.txt)", "*.uzscript *.txt"]),
-                "run_script",
+                pfd.open_file("Run Python file", "", ["Python (*.py)", "*.py"]),
+                "run_python",
                 True,
                 "",
             )
 
     def _poll_session_dialog(self) -> None:
+        if self._session_action is not None and self._session_action.done():
+            try:
+                self._session_action.result()
+                self.state.console.info('Session operation completed')
+            except Exception as exc:
+                self.state.console.error(str(exc))
+            self._session_action = None
         if not self._session_dialog:
             return
         dialog, command, is_multi, ext = self._session_dialog
@@ -321,11 +282,24 @@ class DataViewerApp:
         result = dialog.result()
         path = (result[0] if result else "") if is_multi else result
         self._session_dialog = ()
+        if path and command == 'run_python':
+            self.python_panel.managed_device = False
+            self.python_panel.start(path, self.python_panel.endpoint())
+            return
         if path and ext:  # a save: make sure the file keeps its type extension
             path = ensure_extension(path, ext)
         if path:
             try:
-                self.state.commands.execute(self.state, command, [path])
+                if command == 'load_session':
+                    # A manual replacement supersedes application-owned
+                    # automation. External Python processes remain caller-owned.
+                    self.python_panel.stop_owned()
+                    self._startup_scripts.clear()
+                    if self._startup_pending is not None:
+                        self._startup_pending.cancel()
+                        self._startup_pending = None
+                    self._startup_script = False
+                self._session_action = self.operations.dispatch(command, {'path': path}, None)
             except Exception as exc:  # noqa: BLE001 - surfaced to the console
                 self.state.console.error(str(exc))
 
@@ -358,15 +332,55 @@ class DataViewerApp:
             self.state.console.warn(f"file drag-drop unavailable: {exc}")
 
     # -- per-frame ----------------------------------------------------------
+    def _poll_startup(self):
+        if self.control_server is None:
+            return
+        try:
+            if self._startup_script:
+                runner = self.python_panel.runner
+                if runner.busy:
+                    return
+                self._startup_script = False
+                if runner.exit_code != 0:
+                    raise RuntimeError(runner.message)
+            if self._startup_pending is not None:
+                if not self._startup_pending.done():
+                    return
+                pending, self._startup_pending = self._startup_pending, None
+                pending.result()
+            if not self._startup_scripts or self.python_panel.busy():
+                return
+            path = self._startup_scripts.pop(0)
+            if path.lower().endswith('.py'):
+                self.python_panel.runner.start(path, viewer_endpoint=self.python_panel.endpoint())
+                self._startup_script = True
+            else:
+                name = 'load_session' if path.lower().endswith('.json') else 'load'
+                self._startup_pending = self.operations.dispatch(name, {'path': path}, None)
+        except Exception as exc:
+            self._startup_scripts.clear()
+            self.state.console.error(f'Startup stopped: {exc}')
+
+    def enable_control(self, endpoint):
+        from .control_server import ControlServer
+        self.control_server = ControlServer(endpoint)
+        self.state.console.info(f'Viewer control: {self.control_server.endpoint}')
+
     def _pre_new_frame(self) -> None:
+        self.python_panel.poll()
+        self._poll_startup()
+        self.operations.poll()
+        if self.control_server is not None:
+            self.control_server.poll(self.operations.dispatch)
+            if self.control_server.pending:
+                hello_imgui.request_refresh()
         # Wait until restored docking/windows exist, then select Analysis once.
         if self._select_initial_tabs and hasattr(self, '_runner_params') and imgui.get_frame_count() >= 2:
             self._apply_window_mode(False)
             self._select_initial_tabs = False
-        if (self._console_jobs or self.state.is_loading or self.state.services.display.pending
+        if (self.operations.jobs or self.state.is_loading or self.state.services.display.pending
                 or self.state.services.analysis_jobs.pending or self.state.services.exports):
             hello_imgui.request_refresh()
-        self._poll_console_jobs()
         if self.live is not None:
             self.live.pump(self.state)
         self.state.poll_pending_loads()
@@ -377,6 +391,13 @@ class DataViewerApp:
                 state.shutdown()
             self._plot_windows.clear()
             self._plot_windows_session = self.state.session_token
+        for view_id in set(self._plot_windows) - set(self.state.plot_views):
+            state, _, window = self._plot_windows.pop(view_id)
+            hello_imgui.remove_dockable_window(window.label)
+            state.shutdown()
+        for view_id, state in self.state.plot_views.items():
+            if view_id not in self._plot_windows:
+                self._new_plot_window(state)
         # Hidden windows still need to publish completed exports and prune
         # assignments when a recording is removed from the shared registry.
         for state, _, _ in self._plot_windows.values():
@@ -389,8 +410,16 @@ class DataViewerApp:
             self.state.focus_histogram = False
 
     def _shutdown(self) -> None:
-        if self._console_executor is not None:
-            self._console_executor.shutdown()
+        if self._closed:
+            return
+        self._closed = True
+        if self._session_dialog:
+            self._session_dialog[0].kill()
+            self._session_dialog = ()
+        self.python_panel.close()
+        if self.control_server is not None:
+            self.control_server.close()
+        self.operations.close()
         if self.live is not None:
             self.live.close()
         self.log_browser.shutdown()
@@ -519,13 +548,14 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     import argparse
     parser = argparse.ArgumentParser(description="UltraZohm Data Viewer")
+    parser.add_argument("--endpoint", default="127.0.0.1:19741", help="Local viewer control endpoint")
     parser.add_argument("--loading-mode", choices=("memory", "lazy"), default=default_mode,
                         help=f"storage policy for opening recordings (default: {default_mode})")
     parser.add_argument("--backend", choices=("pyarrow", "polars"), default=default_backend,
                         help=f"IO backend for file loading (default: {default_backend})")
     parser.add_argument("--disk-cache", action="store_true", help="Persist measurement caches on disk (default: RAM only)")
     parser.add_argument("--live-repo", help="UltraZohm repository whose headers generate the live channel mapping")
-    parser.add_argument("files", nargs="*", help="CSV, Parquet, JSON sessions, or command scripts")
+    parser.add_argument("files", nargs="*", help="CSV, Parquet, JSON sessions, or Python files")
     args = parser.parse_args(argv)
     # Live panels are available wherever the CLI package is installed (a
     # dependency of the viewer on Windows and Linux x86-64, bundled when frozen).
@@ -533,7 +563,11 @@ def main(argv: list[str] | None = None) -> int:
     use_live = importlib.util.find_spec("ultrazohm_cli") is not None
     app = DataViewerApp(initial_files=args.files, loading_mode=args.loading_mode, backend=args.backend,
                         disk_cache=args.disk_cache, use_live=use_live, live_repo=args.live_repo)
-    app.run()
+    try:
+        app.enable_control(args.endpoint)
+        app.run()
+    finally:
+        app._shutdown()
     return 0
 
 

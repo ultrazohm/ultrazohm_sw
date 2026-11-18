@@ -1,14 +1,4 @@
-"""The bottom console: a scrolling log *and* a command line.
-
-Supported actions are echoed here as a command (level ``CMD``, rendered
-``> add_signal(plot_1, run_1, ia)``), and the input box at the bottom runs the
-same commands -- so the console is a log of replayable commands, not a complete GUI snapshot.
-Lines beginning with the exact token ``uz`` are instead sent as CLI commands to
-the attached acquisition service; they are separate from the viewer's replayable
-command language.
-The input offers name completion (matching commands listed below the box, Tab to
-fill) and an Up/Down history.
-"""
+"""Application activity log; execution belongs to Python scripts and the CLI."""
 
 from __future__ import annotations
 
@@ -21,7 +11,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from .state import AppState
 
-_MAX_COMPLETIONS = 6
 
 
 @dataclass
@@ -32,18 +21,11 @@ class LogEntry:
 
 
 class Console:
-    """Ring buffer of log lines plus a command input, rendered in one panel."""
+    """Read-only ring buffer of application activity, rendered in one panel."""
 
     def __init__(self, max_lines: int = 2000) -> None:
         self._entries: deque[LogEntry] = deque(maxlen=max_lines)
         self._scroll_to_bottom = False
-
-        # Command line state.
-        self._input = ""
-        self._history: list[str] = []
-        self._hist_idx = 0  # index into _history; == len means "current draft"
-        self._focus_input = False
-        self.cli_handler = None
 
     # -- logging API --------------------------------------------------------
     def _log(self, level: str, message: str) -> None:
@@ -91,16 +73,9 @@ class Console:
         if imgui.button("Clear"):
             self.clear()
         imgui.same_line()
-        imgui.text_disabled('select to copy  |  help: viewer commands  |  uz --help: service commands')
+        imgui.text_disabled('Application activity — select to copy')
         imgui.separator()
-
-        # Reserve space for the input row (+ its completion hints) at the bottom.
-        completions = self._completions(state)
-        reserved = imgui.get_frame_height_with_spacing() * (1 + len(completions)) + 6.0
-        self._render_body(reserved)
-
-        imgui.separator()
-        self._render_input(state, completions)
+        self._render_body(0)
 
     def _render_body(self, reserved: float) -> None:
         from imgui_bundle import imgui
@@ -125,74 +100,3 @@ class Console:
             imgui.set_scroll_here_y(1.0)
         self._scroll_to_bottom = False
         imgui.end_child()
-
-    def _completions(self, state: "AppState") -> list[str]:
-        text = self._input
-        if text.strip() and text.split(maxsplit=1)[0] == 'uz':
-            return []
-        if not text.strip() or "(" in text:
-            return []
-        return state.commands.complete(text)[:_MAX_COMPLETIONS]
-
-    def _render_input(self, state: "AppState", completions: list[str]) -> None:
-        from imgui_bundle import imgui
-        imgui.text(">")
-        imgui.same_line()
-        imgui.set_next_item_width(-1.0)
-        if self._focus_input:
-            imgui.set_keyboard_focus_here()
-            self._focus_input = False
-        submitted, self._input = imgui.input_text(
-            "##cmdinput", self._input, imgui.InputTextFlags_.enter_returns_true
-        )
-        focused = imgui.is_item_focused()
-
-        if submitted:
-            self._submit(state)
-        elif focused:
-            if imgui.is_key_pressed(imgui.Key.tab) and completions:
-                self._input = completions[0] + "("
-                self._focus_input = True
-            elif imgui.is_key_pressed(imgui.Key.up_arrow):
-                self._history_step(-1)
-            elif imgui.is_key_pressed(imgui.Key.down_arrow):
-                self._history_step(1)
-
-        # Completion hints: click to fill, or read the signature while typing args.
-        for name in completions:
-            cmd = state.commands.get(name)
-            label = cmd.signature() if cmd else name
-            if imgui.selectable(f"  {label}", False)[0]:
-                self._input = name + "("
-                self._focus_input = True
-
-    def _submit(self, state: "AppState") -> None:
-        text = self._input.strip()
-        if text:
-            if not self._history or self._history[-1] != text:
-                self._history.append(text)
-            self._hist_idx = len(self._history)
-            parts = text.split(maxsplit=1)
-            if parts[0] == 'uz':
-                self.command(text)
-                if self.cli_handler is None:
-                    self.error('Live is not activated.')
-                else:
-                    try:
-                        self.cli_handler(parts[1] if len(parts) > 1 else '')
-                    except Exception as exc:
-                        self.error(str(exc))
-            else:
-                state.commands.dispatch(state, text)
-        self._input = ""
-        self._focus_input = True
-
-    def _history_step(self, delta: int) -> None:
-        if not self._history:
-            return
-        self._hist_idx = max(0, min(len(self._history), self._hist_idx + delta))
-        if self._hist_idx >= len(self._history):
-            self._input = ""
-        else:
-            self._input = self._history[self._hist_idx]
-        self._focus_input = True

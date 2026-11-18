@@ -76,7 +76,7 @@ def test_start_script_runs_the_locked_environment(launcher):
     assert result.returncode == 0, result.stderr
     assert [c['name'] for c in calls] == ['uv']
     assert calls[0]['args'][0] == 'run'
-    assert calls[0]['args'][-6:] == ['uz-dataviewer', '--live-repo', str(launcher.root),
+    assert calls[0]['args'][-7:] == ['uz-dataviewer', 'gui', '--live-repo', str(launcher.root),
                                      'a recording.csv', '--backend', 'polars']
     # Relative recording paths stay valid: the caller's directory is kept.
     assert calls[0]['cwd'] == str(launcher.tmp)
@@ -92,7 +92,7 @@ def test_dev_cli_builds_the_checkout_cli_before_launch(launcher):
     wheel = launcher.root/'uz_cli'/'target'/'wheels-dev'/'ultrazohm_cli-0.0.0-py3-none-any.whl'
     assert calls[1]['args'][:2] == ['pip', 'install']
     assert calls[1]['args'][-3:] == ['--no-deps', '--reinstall', str(wheel)]
-    assert calls[2]['args'] == ['--live-repo', str(launcher.root), 'a recording.csv']
+    assert calls[2]['args'] == ['gui', '--live-repo', str(launcher.root), 'a recording.csv']
     assert calls[2]['cwd'] == str(launcher.tmp)
 
 
@@ -100,7 +100,7 @@ def test_develop_task_equals_start_with_dev_cli(launcher):
     result, calls = launcher.task('develop', 'a recording.csv')
     assert result.returncode == 0, result.stderr
     assert [c['name'] for c in calls] == ['uv', 'uv', 'uz-dataviewer']
-    assert calls[2]['args'] == ['--live-repo', str(launcher.root), 'a recording.csv']
+    assert calls[2]['args'] == ['gui', '--live-repo', str(launcher.root), 'a recording.csv']
 
 
 @pytest.mark.parametrize('via_make', [False, True])
@@ -207,4 +207,4 @@ def test_tasks_platform_paths(tmp_path, monkeypatch, platform, task):
         assert calls[3] == [python, '-m', 'uz_dataviewer.env_shell']
     else:
         executable = str(scripts / ('uz-dataviewer.exe' if platform == 'nt' else 'uz-dataviewer'))
-        assert calls[3] == [executable, '--live-repo', str(project.parent)]
+        assert calls[3] == [executable, 'gui', '--live-repo', str(project.parent)]

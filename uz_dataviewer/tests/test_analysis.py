@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 
 import csv
 import numpy as np
@@ -127,12 +126,12 @@ def test_fwindow_parsing():
 
 def test_fft_follow_command_sets_mode_and_echoes():
     state = _state()
-    state.commands.dispatch(state, "fft_source(run_1, ia)")
-    state.commands.dispatch(state, "fft_follow(full)")
+    state.commands.execute(state, 'fft_source', ['run_1', 'ia'])
+    state.commands.execute(state, 'fft_follow', ['full'])
     assert state.fft.follow_plot == -1
-    state.commands.dispatch(state, "fft_follow(custom)")
+    state.commands.execute(state, 'fft_follow', ['custom'])
     assert state.fft.follow_plot == 0
-    state.commands.dispatch(state, "fft_follow(plot_1)")
+    state.commands.execute(state, 'fft_follow', ['plot_1'])
     assert state.fft.follow_plot == 1
     # Following a plot requests a compute; custom/full do not.
     assert state.fft.compute_requested is True
@@ -143,10 +142,10 @@ def test_fft_follow_command_sets_mode_and_echoes():
 
 def test_fft_option_commands():
     state = _state()
-    state.commands.dispatch(state, "fft_remove_dc(off)")
-    state.commands.dispatch(state, "fft_hann(off)")
-    state.commands.dispatch(state, "fft_logx(on)")
-    state.commands.dispatch(state, "fft_logy(on)")
+    state.commands.execute(state, 'fft_remove_dc', ['off'])
+    state.commands.execute(state, 'fft_hann', ['off'])
+    state.commands.execute(state, 'fft_logx', ['on'])
+    state.commands.execute(state, 'fft_logy', ['on'])
     assert state.fft.remove_dc is False
     assert state.fft.window is False
     assert state.fft.log_x is True and state.fft.log_y is True
@@ -154,24 +153,24 @@ def test_fft_option_commands():
 
 def test_hist_bins_and_range_commands():
     state = _state()
-    state.commands.dispatch(state, "hist_bins(33)")
+    state.commands.execute(state, 'hist_bins', ['33'])
     assert state.histogram.bins == 33
-    state.commands.dispatch(state, "fft_range(0.5, 1.5)")
+    state.commands.execute(state, 'fft_range', ['0.5', '1.5'])
     assert (state.fft.x_min, state.fft.x_max) == (0.5, 1.5)
 
 
 def test_xlim_commands_set_pending():
     state = _state()
-    state.commands.dispatch(state, "fft_xlim(10, 200)")
+    state.commands.execute(state, 'fft_xlim', ['10', '200'])
     assert state.fft.pending_x_lim == (10.0, 200.0)
-    state.commands.dispatch(state, "hist_xlim(-1, 1)")
+    state.commands.execute(state, 'hist_xlim', ['-1', '1'])
     assert state.histogram.pending_x_lim == (-1.0, 1.0)
 
 
 def test_export_fft(tmp_path):
     state = _state()
-    state.commands.dispatch(state, "fft_source(run_1, ia)")
-    state.commands.dispatch(state, "fft_source(run_1, ib)")
+    state.commands.execute(state, 'fft_source', ['run_1', 'ia'])
+    state.commands.execute(state, 'fft_source', ['run_1', 'ib'])
     out = tmp_path / "fft.csv"
     n = session.export_fft(state, str(out))
     assert n == 3  # frequency + ia + ib
@@ -192,8 +191,8 @@ def test_export_fft_mixed_sample_rates_pairs_freq_with_amp(tmp_path):
                            {"sa": np.sin(2 * np.pi * 50 * t1).astype(np.float32)}, {"sa": ""})
     state.registry.add_run("b.csv", "b.csv", t2,
                            {"sb": np.sin(2 * np.pi * 123 * t2).astype(np.float32)}, {"sb": ""})
-    state.commands.dispatch(state, "fft_source(run_1, sa)")
-    state.commands.dispatch(state, "fft_source(run_2, sb)")
+    state.commands.execute(state, 'fft_source', ['run_1', 'sa'])
+    state.commands.execute(state, 'fft_source', ['run_2', 'sb'])
     out = tmp_path / "fft_mixed.csv"
     session.export_fft(state, str(out))
     df = pd.read_csv(out)
@@ -207,9 +206,9 @@ def test_export_fft_mixed_sample_rates_pairs_freq_with_amp(tmp_path):
 
 def test_export_histogram(tmp_path):
     state = _state()
-    state.commands.dispatch(state, "hist_source(run_1, ia)")
-    state.commands.dispatch(state, "hist_source(run_1, ib)")
-    state.commands.dispatch(state, "hist_bins(20)")
+    state.commands.execute(state, 'hist_source', ['run_1', 'ia'])
+    state.commands.execute(state, 'hist_source', ['run_1', 'ib'])
+    state.commands.execute(state, 'hist_bins', ['20'])
     out = tmp_path / "hist.csv"
     n = session.export_histogram(state, str(out))
     assert n == 3  # bin_center + ia + ib
@@ -220,9 +219,9 @@ def test_export_histogram(tmp_path):
 
 def test_fft_export_command_via_dispatch(tmp_path):
     state = _state()
-    state.commands.dispatch(state, "fft_source(run_1, ia)")
+    state.commands.execute(state, 'fft_source', ['run_1', 'ia'])
     out = tmp_path / "viacmd.csv"
-    state.commands.dispatch(state, f'fft_export({json.dumps(str(out))})')
+    state.commands.execute(state, 'fft_export', [str(out)])
     assert out.exists()
 
 

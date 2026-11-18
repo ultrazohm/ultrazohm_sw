@@ -26,7 +26,7 @@ uz_pmsm_control_t* initialize_prime_mover(float sample_time_s)
             .speed_controller_torque_in_Nm = {.lower_bound = -2.5f, .upper_bound = 2.5f},
             .i_d_in_A = {.lower_bound = -12.0f, .upper_bound = 12.0f},
             .i_q_in_A = {.lower_bound = -12.0f, .upper_bound = 12.0f},
-            .speed_in_rpm = {.lower_bound = -1100.0f, .upper_bound = 1100.0f},
+            .speed_in_rpm = {.lower_bound = -1600.0f, .upper_bound = 1600.0f},
             .disturbance_input_in_Nm = {.lower_bound = -2.5f, .upper_bound = 2.5f}
         },
         .safe_operating_region = {

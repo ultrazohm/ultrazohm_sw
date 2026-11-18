@@ -141,7 +141,7 @@ class BashBootstrapTest(unittest.TestCase):
     def test_existing_and_missing_uv_preserve_arguments_cwd_and_exit_code(self):
         for missing in (False, True):
             with self.subTest(missing=missing), tempfile.TemporaryDirectory(prefix='uz bootstrap ') as directory:
-                root = Path(directory)
+                root = Path(directory).resolve()
                 checkout = root / 'checkout with spaces'
                 checkout.mkdir()
                 shutil.copyfile(REPO / 'uz', checkout / 'uz')
@@ -192,7 +192,7 @@ class PowerShellBootstrapTest(unittest.TestCase):
         shell = shutil.which('pwsh') or shutil.which('powershell')
         for code in (0, 7):
             with self.subTest(code=code), tempfile.TemporaryDirectory(prefix='uz ps ') as directory:
-                root = Path(directory)
+                root = Path(directory).resolve()
                 shutil.copyfile(REPO / 'uz.ps1', root / 'uz.ps1')
                 (root / '.python-version').write_text('3.12\n')
                 stub = root / 'stub.ps1'

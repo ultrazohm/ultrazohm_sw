@@ -30,9 +30,7 @@ def run(*command, cwd=HERE, env=None):
 
 
 def maturin():
-    """The installed maturin, or a uv-managed one (with zig for portable Linux wheels)."""
-    if shutil.which("maturin"):
-        return ["maturin"]
+    """Keep maturin and zig in the same tool environment, independent of the caller's Python."""
     return ["uv", "tool", "run", "--from", "maturin[zig]>=1.9,<2" if not WINDOWS else "maturin>=1.9,<2", "maturin"]
 
 

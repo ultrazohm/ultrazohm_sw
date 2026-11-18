@@ -64,8 +64,8 @@ library and behaves the same on Linux, Windows and in CI. From the repository ro
 | `./uz task cli debug-wheel` | Unoptimized wheel for tests in `target/wheels-debug` |
 | `./uz task cli release-wheel` | Portable release wheel in `target/wheels-release` |
 
-On Windows, use `.\uz.ps1` with the same arguments. Maturin is used
-from PATH (the devcontainer has it) or run through `uv tool run`. The standalone
+On Windows, use `.\uz.ps1` with the same arguments. Maturin and Zig run together
+through `uv tool run`, independently of the launcher's Python environment. The standalone
 executable is `cargo build --release --locked --bin ultrazohm_cli`.
 
 `cargo install --path . --locked` installs the standalone CLI. For Python source

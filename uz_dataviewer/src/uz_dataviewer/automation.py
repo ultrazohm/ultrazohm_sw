@@ -37,7 +37,12 @@ def poll(state):
             state.console.ok(f'Ran {replay.count} command(s) from {replay.path}')
             return
         name, args = command
+        services = state.services
         state.commands.execute(state, name, args)
+        # Session commands replace runtime services and close the old replay owner.
+        # Keep the remaining commands attached to the newly installed services.
+        if state.services is not services:
+            state.services.replay = replay
         replay.count += 1
         if state.services.exports:
             replay.waiting = state.services.exports[-1][0]

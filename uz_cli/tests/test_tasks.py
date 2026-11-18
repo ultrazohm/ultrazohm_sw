@@ -82,6 +82,15 @@ class StartTest(unittest.TestCase):
             self.assertEqual(stopped.exception.code, 7)
             run.assert_not_called()
 
+    def test_prerelease_option_controls_install_and_is_not_forwarded(self):
+        for option in (['--prerelease=allow'], ['--prerelease', 'allow']):
+            with self.subTest(option=option), patch.object(tasks, 'run') as run:
+                tasks.main(['start', 'release', *option, '--', '--help'])
+                install = next(call.args for call in run.call_args_list
+                               if call.args[:3] == ('uv', 'pip', 'install'))
+                self.assertEqual(install[-3:], ('--prerelease', 'allow', 'ultrazohm_cli'))
+                self.assertEqual(run.call_args.args[1:], ('--help',))
+
     @unittest.skipUnless(shutil.which('make'), 'make is optional on Windows')
     def test_make_passes_mode_and_cli_arguments_once(self):
         for source in ('local', 'release'):

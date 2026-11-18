@@ -13,7 +13,7 @@ Voltage Measurement Box
 Source
 ******
 
-- `Voltage measurement box PCB repository <https://bitbucket.org/ultrazohm/uz_per_voltage_measurement_box/>`_
+- `Voltage measurement box PCB repository <https://github.com/ultrazohm/uz_per_voltage_measurement_box/>`_
 
 General description
 *******************

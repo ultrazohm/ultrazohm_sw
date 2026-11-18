@@ -52,6 +52,10 @@ To build and edit the documentation on your native system, you need to:
   :alt: Alternative text
 
 
+.. note:: If documentation dependencies are missing, run
+          ``python -m pip install -e ./pyuzlib -r docs/requirements.txt`` from the workspace root.
+          If the problem persists, open an `issue <https://github.com/ultrazohm/ultrazohm_sw/issues>`_.
+
 Makefile reference
 ******************
 
@@ -149,6 +153,7 @@ Please note that the installation steps for ``breathe`` (i.e., Doxygen) are not 
 .. youtube:: dxAlD-VzE0c
 
 This video shows how to change something in the documentation, add a new page, commit the changes and create a pull request in Bitbucket.
+Note that the repository is now hosted by Github.
 
 .. youtube:: pcG1XMzVDc8
 

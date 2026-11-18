@@ -8,7 +8,6 @@ Infrastructure
     :maxdepth: 1
     :caption: Infrastructure
 
-    bitbucket/bitbucket
     ci_pipeline/ci_pipeline
     tcl_scripts/tcl_scripts
     vscode_remote_container/vscode_remote_container

@@ -29,3 +29,13 @@ control_algorithms/uz_FOC.slxc
 vitis/Packages/*
 *.slxc
 *cpAnnotation.mat
+
+# Generated artifacts, including live measurement logs
+/artifacts/
+*.ini
+/uz_cli_channel_mappings/
+
+# Python/test tooling caches
+.pytest_cache/
+*.egg-info/
+uz_dataviewer/build/native/

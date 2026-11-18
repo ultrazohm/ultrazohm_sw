@@ -13,8 +13,8 @@ Create your own adapter cards
 
 The UltraZohm project is a work-in-progress project and you are welcome to contribute!
 To create an adapter card, fork one of the following template repositories:
-for a `Digital Adapter Card <https://bitbucket.org/ultrazohm/uz_d_template/>`_
-or for an `Analog Adapter Card <https://bitbucket.org/ultrazohm/uz_a_template/>`_
+for a `Digital Adapter Card <https://github.com/ultrazohm/uz_d_template/>`_
+or for an `Analog Adapter Card <https://github.com/ultrazohm/uz_a_template/>`_
 
 Guidelines
 ----------

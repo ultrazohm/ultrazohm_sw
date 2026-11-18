@@ -57,9 +57,9 @@ breathe_domain_by_extension = {
     "h": "c",
 }
 
-issues_uri = "https://bitbucket.org/ultrazohm/ultrazohm_sw/issues/{issue}"
-issues_pr_uri = "https://bitbucket.org/ultrazohm/ultrazohm_sw/pull-requests/{pr}"
-issues_commit_uri = "https://bitbucket.org/ultrazohm/ultrazohm_sw/commits/{commit}"
+issues_uri = "https://github.com/ultrazohm/ultrazohm_sw/issues/{issue}"
+issues_pr_uri = "https://github.com/ultrazohm/ultrazohm_sw/pull-requests/{pr}"
+issues_commit_uri = "https://github.com/ultrazohm/ultrazohm_sw/commits/{commit}"
 
 latex_engine = "lualatex"
 
@@ -68,17 +68,17 @@ latex_engine = "lualatex"
 
 html_theme = 'pydata_sphinx_theme'
 html_theme_options = {
-    "navigation_with_keys":"True"
+    "navigation_with_keys": True,
+    "use_edit_page_button": True,
 }
 
 # html_static_path = ['_static']
 
 html_context = {
-    "display_bitbucket": True,  # Integrate Bitbucket
-    "bitbucket_user": "ultrazohm",  # Username
-    "bitbucket_repo": "ultrazohm_sw",  # Repo name
-    "bitbucket_version": "main",  # Version
-    "conf_py_path": "/docs/source/",  # Path in the checkout to the docs root
+    "github_user": "ultrazohm",  # Username
+    "github_repo": "ultrazohm_sw",  # Repo name
+    "github_version": "main",  # Version
+    "doc_path": "docs/source",  # Path in the checkout to the docs root
 }
 
 

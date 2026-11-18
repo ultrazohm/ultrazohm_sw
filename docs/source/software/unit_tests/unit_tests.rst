@@ -215,7 +215,7 @@ This way you can include as many ``.c`` as needed.
 See:
 
 - https://github.com/ThrowTheSwitch/Ceedling/issues/113
-- `test_uz_wavegen_chirp.c <https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/vitis/software/Baremetal/test/uz/uz_wavegen/test_uz_wavegen_chirp.c>`_
+- `test_uz_wavegen_chirp.c <https://github.com/ultrazohm/ultrazohm_sw/src/main/vitis/software/Baremetal/test/uz/uz_wavegen/test_uz_wavegen_chirp.c>`_
 
 Passing and testing with structs or typedef as function arguments
 -----------------------------------------------------------------
@@ -308,7 +308,7 @@ Example of the resulting informative error message:
 
 More information:
 
-- https://bitbucket.org/ultrazohm/ultrazohm_sw/issues/180/ceedling-cmock-can-not-compare-structs-if
+- https://github.com/ultrazohm/ultrazohm_sw/issues/180/ceedling-cmock-can-not-compare-structs-if
 - https://papers707.rssing.com/chan-6065534/latest.php#item4
 - https://github.com/ThrowTheSwitch/Ceedling/issues/470
 - https://github.com/ThrowTheSwitch/CMock/issues/228

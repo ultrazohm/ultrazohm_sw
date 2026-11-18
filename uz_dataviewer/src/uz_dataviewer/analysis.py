@@ -5,34 +5,22 @@ Kept GUI-free so it is unit-testable and reusable from other analysis windows.
 
 from __future__ import annotations
 
-from collections import OrderedDict
+from dataclasses import dataclass
 
 import numpy as np
 
+from .sources import shift_time, TimeShift
+
 from .downsample import visible_slice
-
-# Hann windows are recomputed per FFT; cache by length (with the window sum, used
-# for the amplitude correction below) since the same window is re-used across
-# recomputes at the same span (cheap, avoids a cos over millions of samples each
-# Compute). Bounded LRU: a long session computing FFTs at many distinct window
-# lengths would otherwise retain a float32 window per length (~60 MB at 15 M
-# samples) for the life of the process.
-_HANN_CACHE_MAX = 8
-_HANN_CACHE: "OrderedDict[int, tuple[np.ndarray, float]]" = OrderedDict()
-
+from .sources import ByteCache, SampleSource
 
 def _hann(n: int) -> tuple[np.ndarray, float]:
-    """Return the length-``n`` Hann window and its sum (coherent gain · n)."""
-    cached = _HANN_CACHE.get(n)
-    if cached is None:
-        w = np.hanning(n).astype(np.float32)
-        cached = (w, float(w.sum(dtype=np.float64)))
-        _HANN_CACHE[n] = cached
-        if len(_HANN_CACHE) > _HANN_CACHE_MAX:
-            _HANN_CACHE.popitem(last=False)  # evict least-recently-used
-    else:
-        _HANN_CACHE.move_to_end(n)  # mark most-recently-used
-    return cached
+    """Return a computation-owned Hann window and its coherent-gain sum.
+
+    Do not retain potentially large windows after their FFT completes.
+    """
+    w = np.hanning(n).astype(np.float32)
+    return w, float(w.sum(dtype=np.float64))
 
 
 def _next_fast_len(n: int) -> int:
@@ -89,6 +77,7 @@ def compute_fft(
     *,
     remove_dc: bool = True,
     window: bool = True,
+    timestamp_resolution: float = 0.0,
 ) -> FftResult:
     """Single-sided amplitude spectrum of ``y`` over ``[x_min, x_max]``.
 
@@ -96,12 +85,25 @@ def compute_fft(
     transform. Returns an empty :class:`FftResult` (with an ``info`` reason) when
     the slice is too short or the time axis is unusable.
     """
+    time, y = np.asarray(time), np.asarray(y)
+    if time.ndim != 1 or y.ndim != 1 or time.shape != y.shape:
+        return FftResult(None, None, "FFT needs equal-length one-dimensional time and value arrays.")
     if time.shape[0] == 0:
         return FftResult(None, None, "No samples in this run to transform.")
     if x_max <= x_min:
-        x_min, x_max = float(time[0]), float(time[-1])
+        return FftResult(None, None, "Selected window is too short for an FFT.")
 
-    start, stop = visible_slice(time, x_min, x_max)
+    # Binary search requires an ordered axis, including samples outside the
+    # requested window. Validate before slicing so invalid input cannot hide.
+    from .loader import validate_time_axis
+    try:
+        validate_time_axis(time, "FFT")
+        if not np.isfinite([x_min, x_max]).all():
+            raise ValueError("FFT window limits must be finite.")
+    except ValueError as exc:
+        return FftResult(None, None, str(exc))
+
+    start, stop = visible_slice(time, x_min, x_max, padding=False)
     # Keep float32 (JavaScope data is float32): numpy's pocketfft preserves it as a
     # complex64 transform -- half the memory of the old float64 upcast (big on a
     # multi-million-sample full-window FFT, and on the WASM heap) and faster. A copy
@@ -117,13 +119,15 @@ def compute_fft(
     if not np.isfinite(ys).all():
         return FftResult(None, None, "Selected window has non-finite samples (NaN/Inf); cannot compute FFT.")
 
-    # Logs are uniformly sampled (the rate can differ between logs), so the step is
-    # exactly the span / interval count -- O(1), no full np.diff + median over the
-    # window (which is costly on a multi-million-sample full-window FFT).
-    dt = (float(ts[-1]) - float(ts[0])) / (n - 1)
-    if not np.isfinite(dt) or dt <= 0:
-        return FftResult(None, None, "Time axis is not increasing; cannot compute FFT.")
+    from .sampling import regular_sample_interval
+    try:
+        dt = regular_sample_interval(ts, "FFT", timestamp_resolution=timestamp_resolution)
+    except ValueError as exc:
+        return FftResult(None, None, str(exc))
 
+    # Scale before demeaning/FFT to avoid overflowing float32 intermediates.
+    scale = max(abs(float(ys.min())), abs(float(ys.max()))) or 1.0
+    ys /= scale
     if remove_dc:
         ys -= ys.mean(dtype=np.float64)  # accumulate the mean in float64, subtract in place
     # Amplitude normalisation is by the window's *coherent gain* (Σw): a tone of
@@ -149,5 +153,169 @@ def compute_fft(
         mag[0] *= 0.5
         if m % 2 == 0:
             mag[-1] *= 0.5
+    if not np.isfinite(freqs).all() or np.any(freqs > np.finfo(np.float32).max):
+        return FftResult(None, None, "FFT frequency exceeds the finite float32 output range.")
+    mag = mag.astype(np.float64) * scale
+    if not np.isfinite(mag).all() or np.any(mag > np.finfo(np.float32).max):
+        return FftResult(None, None, "FFT amplitude exceeds the finite float32 output range.")
     info = f"{n:,} samples, fs = {1.0 / dt:,.1f} Hz, window [{x_min:.4f}, {x_max:.4f}] s"
     return FftResult(freqs.astype(np.float32), mag.astype(np.float32), info)
+
+
+def compute_signal_fft(run, channel, x_min, x_max, *, remove_dc=True, window=True,
+                       cancel=None, label=None):
+    """Read and validate one spectrum, reporting failures with the signal identity."""
+    if run.axis_domain != "time":
+        raise ValueError("FFT requires a time-domain recording")
+    label = label or f"{channel} @ {run.label}"
+    selected = AnalysisInput((run.id, channel), label, run.data_source(), run.time_offset, run.timestamp_resolution)
+    return selected.fft(x_min, x_max, remove_dc=remove_dc, window=window, cancel=cancel)
+
+
+def histogram_sources(series, lo, hi, bins, cancel=None):
+    """Two-pass histogram over raw batches with common edges for all sources.
+
+    series: (label, source, channel, display_time_offset). Display summaries are
+    never used here. Memory is proportional to one batch and the output bins.
+    """
+    from .sources import check
+    from .validation import histogram_bins
+    bins = histogram_bins(bins)
+    ranges, minimum, maximum, dropped = [], None, None, 0
+    for label, source, channel, offset in series:
+        check(cancel)
+        from .sources import displayed_bounds
+        start, stop = displayed_bounds(source, lo, hi, offset, cancel)
+        count = 0
+        for _, values in source.iter_raw([channel], start, stop, cancel):
+            y = values[channel]
+            finite = np.isfinite(y)
+            dropped += int(len(y) - finite.sum())
+            y = y[finite]
+            if len(y):
+                low, high = float(y.min()), float(y.max())
+                minimum = low if minimum is None else min(minimum, low)
+                maximum = high if maximum is None else max(maximum, high)
+                count += len(y)
+        if count:
+            ranges.append((label, source, channel, start, stop, count))
+    if minimum is None:
+        return [], 0, dropped
+    from .validation import expanded_range
+    minimum, maximum = expanded_range(minimum, maximum, bins)
+    edges = np.linspace(minimum, maximum, bins + 1)
+    centers = (edges[:-1] + edges[1:]) / 2
+    results, total = [], 0
+    for label, source, channel, start, stop, count in ranges:
+        counts = np.zeros(len(centers), dtype=np.int64)
+        for _, values in source.iter_raw([channel], start, stop, cancel):
+            y = values[channel]
+            counts += np.histogram(y[np.isfinite(y)], bins=edges)[0]
+        results.append((label, centers, counts, float(edges[1] - edges[0])))
+        total += count
+    return results, total, dropped
+
+
+@dataclass(frozen=True)
+class AnalysisInput:
+    """A selected source and its displayed time offset, captured before scheduling.
+
+    Requests capture sources and scalar view/options, rather than GUI state.
+    Sources and the byte cache are shared. Derived-source validators also share
+    the graph/registry deliberately so they can detect invalidation during work.
+    """
+
+    ref: tuple[int, str]
+    label: str
+    source: SampleSource
+    time_offset: TimeShift | float
+    timestamp_resolution: float = 0.0
+
+    @classmethod
+    def capture(cls, registry, refs):
+        inputs = []
+        for ref in refs:
+            run = registry.get(ref[0])
+            if run is None or ref[1] not in run.signals:
+                raise ValueError(f"Analysis source {ref} is no longer loaded")
+            if run.axis_domain != "time":
+                raise ValueError("Analysis windows require a time-domain recording")
+            inputs.append(cls(ref, f"{ref[1]} @ {run.label} [run_{run.id}]",
+                              run.data_source(), run.time_offset, run.timestamp_resolution))
+        return tuple(inputs)
+
+    def read_window(self, lo, hi, cancel):
+        from .sources import displayed_bounds
+        start, stop = displayed_bounds(self.source, lo, hi, self.time_offset, cancel)
+        t, values = self.source.read_rows([self.ref[1]], start, stop, cancel)
+        return shift_time(t, self.time_offset), values[self.ref[1]]
+
+    def fft(self, lo, hi, *, remove_dc, window, cancel=None):
+        try:
+            t, y = self.read_window(lo, hi, cancel)
+            result = compute_fft(t, y, lo, hi, remove_dc=remove_dc, window=window,
+                                 timestamp_resolution=self.timestamp_resolution)
+            if not result.ok:
+                raise ValueError(result.info)
+        except (ValueError, OSError) as exc:
+            raise ValueError(f"Cannot compute FFT for {self.label}: {exc}") from exc
+        return result
+
+
+@dataclass(frozen=True)
+class AnalysisResult:
+    series: list
+    info: str
+
+
+@dataclass(frozen=True)
+class FftRequest:
+    sources: tuple[AnalysisInput, ...]
+    window: tuple[float, float]
+    remove_dc: bool
+    hann: bool
+    cache: ByteCache
+
+    def compute(self, cancel=None) -> AnalysisResult:
+        from .sources import ArraySource, check
+        results, errors, info = [], [], ""
+        lo, hi = self.window
+        for selected in self.sources:
+            check(cancel)
+            try:
+                result = selected.fft(lo, hi, remove_dc=self.remove_dc, window=self.hann, cancel=cancel)
+            except ValueError as exc:
+                errors.append(str(exc))
+                continue
+            source = ArraySource(result.freqs, {'value': result.mag}, self.cache)
+            if result.mag.size > 4096:
+                source.prepare_summary('value', cancel)
+            results.append((selected.ref, result.freqs, result.mag, source))
+            info = result.info
+        check(cancel)
+        if errors:
+            info = "\n".join([f"{len(results)} succeeded, {len(errors)} failed", *errors])
+        return AnalysisResult(results, info or "Drag signals here to analyse them.")
+
+
+@dataclass(frozen=True)
+class HistogramRequest:
+    sources: tuple[AnalysisInput, ...]
+    window: tuple[float, float]
+    bins: int
+
+    def compute(self, cancel=None) -> AnalysisResult:
+        from .sources import check
+        lo, hi = self.window
+        series = [(s.ref, s.source, s.ref[1], s.time_offset) for s in self.sources]
+        results, total, dropped = histogram_sources(series, lo, hi, self.bins, cancel)
+        check(cancel)
+        values = [(ref, centers, counts.astype(np.float64), width)
+                  for ref, centers, counts, width in results]
+        if results:
+            note = f", {dropped:,} non-finite skipped" if dropped else ""
+            info = (f"{len(results)} signal(s), {total:,} samples{note}, "
+                    f"window [{lo:.4f}, {hi:.4f}] s")
+        else:
+            info = "Drag signals here to histogram them."
+        return AnalysisResult(values, info)

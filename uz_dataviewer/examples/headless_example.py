@@ -4,9 +4,9 @@
 Loads a log, prints a DataFrame head, computes an FFT, and runs a low-pass filter
 node, all through the ergonomic facade in :mod:`uz_dataviewer.api`.
 
-    python examples/headless_example.py [path/to/log.csv]
+    python examples/headless_example.py path/to/log.csv
 
-(Defaults to a file under ``testdata/`` if no path is given.)
+Pass an existing CSV or Parquet recording as the required argument.
 """
 
 from __future__ import annotations
@@ -44,5 +44,7 @@ def main(path: str) -> None:
 
 
 if __name__ == "__main__":
-    default = os.path.join(os.path.dirname(__file__), "..", "testdata", "9m_rows.csv")
-    main(sys.argv[1] if len(sys.argv) > 1 else default)
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("path", help="CSV or Parquet recording")
+    main(parser.parse_args().path)

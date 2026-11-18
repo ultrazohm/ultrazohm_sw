@@ -5,58 +5,111 @@ Build
 =====
 
 ``uz_dataviewer`` is a Python ``imgui_bundle`` application.
-``imgui_bundle`` ships prebuilt native binaries (Dear ImGui, ImPlot, hello_imgui) for Windows, and Linux so the same source runs on all desktop platforms, and can also be executed in the browser via Pyodide.
+``imgui_bundle`` ships prebuilt native binaries (Dear ImGui, ImPlot, hello_imgui) for Windows and Linux, so the same source runs on both.
 In the following, the build process of ``uz_dataviewer`` is described.
 Usage of the :ref:`vscode_remote_container` is assumed.
 
-Native single-file executables (PyInstaller)
+Tasks
+=====
+
+Builds and tests run through ``uz_dataviewer/tasks.py`` (and ``uz_cli/tasks.py`` for the CLI).
+The scripts use only the Python standard library and behave the same on Linux, on Windows and in CI.
+Install ``uv`` first; it installs the Python version pinned in the repository's ``.python-version`` and the dependencies from ``uv.lock``.
+From the repository root:
+
+.. code-block:: bash
+
+   python uz_dataviewer/tasks.py check                  # ruff and the full pytest suite
+   python uz_dataviewer/tasks.py bundle                 # PyInstaller bundle in uz_dataviewer/dist
+   python uz_dataviewer/tasks.py bundle-smoke           # start the bundle and its live workers
+
+``check`` and ``bundle`` build a matching CLI wheel from ``uz_cli`` unless ``--cli-wheel PATH`` names one.
+Tests use ``.venv-ci`` and bundles ``.venv-build``; ``.venv`` belongs to the launchers.
+On Linux, ``make -C uz_dataviewer check`` forwards to the same script.
+
+Native standalone executables (PyInstaller)
 ============================================
 
-The build collects ``imgui_bundle`` and ``pyarrow`` (which carry native libraries) into one self-contained binary.
-Both native builds wrap ``pyinstaller build/uz_dataviewer.spec``.
-Cross-compiling is not supported by PyInstaller.
-Build each OS's binary on that OS.
+The bundle collects ``imgui_bundle``, ``pyarrow``, the Polars runtime and the CLI into a self-contained directory containing the executable and ``_internal``.
+Extract the entire archive and keep ``_internal`` beside the executable.
+The distributed executable does not require Python or uv on the target machine.
+PyInstaller cannot cross-compile: build each system's bundle on that system.
+A bundle built in the development container works on that machine; only the CI build in Ubuntu 22.04 is portable.
 
-Linux / Ubuntu
---------------
+The frozen smoke test checks native imports, Parquet reading with both backends in memory and lazy modes, downsampling and plot input; the live smoke test starts the bundled CLI workers against the simulator.
+These checks do not verify window creation or graphics drivers on the user's desktop.
 
-.. code-block:: bash
+Releases
+========
 
-   ./build/build_native.sh # from ultrazohm_sw/uz_dataviewer
-   # -> dist/uz_dataviewer
+``.github/workflows/uz_cli.yml`` checks the CLI, builds its wheels, tests the viewer against them and builds both desktop bundles.
+Each run computes one version: ``MAJOR.MINOR`` from ``uz_cli/pyproject.toml`` plus the workflow run number, with ``.dev0`` outside ``main``.
+The wheels are stamped and built once; the tests and both bundles use exactly those wheels, so ``ultrazohm_cli --version`` and ``run.json`` identify the build.
+Pull requests and other branches validate and keep the archives as workflow artifacts for 30 days.
 
-Windows (PowerShell)
---------------------
+Pushes to ``main`` (stable), ``develop`` and ``feature/uz_cli_dataviewer_testing`` (prereleases) publish:
 
-.. code-block:: powershell
+- one GitHub release ``ultrazohm-v<version>`` with both wheels, both bundles and ``SHA256SUMS``;
+  it never replaces the repository's latest release designation;
+- the wheels on PyPI as ``ultrazohm_cli`` through trusted publishing.
 
-   .\build\build_native.ps1 # from ultrazohm_sw/uz_dataviewer
-   # -> dist\uz_dataviewer.exe
+Linux bundles are built and smoke-tested in Ubuntu 22.04 and require x86_64, glibc 2.35 or newer, and desktop graphics libraries.
+Keep that build container at the oldest supported system: PyInstaller bundles libraries such as ``libstdc++.so.6`` but uses the target system's glibc.
+Windows bundles target x86_64 and must be extracted from the ZIP before launching.
+All other Linux jobs run in the ``ci`` stage of ``.devcontainer/Dockerfile``, the same toolchain as the :ref:`vscode_remote_container`.
 
+Combined desktop packaging
+==========================
 
+Select the ``ultrazohm_sw`` root at startup, or supply ``--live-repo``. All windows except Python start open, with Analysis tabs selected. Mode switches
+select Analysis or Live tabs once without closing other windows. The live panels
+appear whenever the ``ultrazohm_cli`` package is installed: always in the bundle,
+and on Windows and Linux x86-64 in the source environment, where it is a locked
+dependency. The ``develop`` task (``make develop``, ``start.sh --dev-cli``) builds the checkout's
+CLI and uses it instead. Both deployments use the same subprocess
+worker code; bundled scripts can import bundled dependencies, while source
+scripts can also use packages installed in the developer environment. Vitis is
+external and remains required for build/flash.
 
-.. _uz_dataviewer_build_web:
+Workspace data and process ownership
+------------------------------------
 
-Web / WASM (Pyodide)
-====================
+Both the source launcher and the bundle store viewer-owned data in
+``<workspace>/artifacts/_user``, so they share preferences, layout, caches and
+recordings for the same checkout. Until a workspace is known, the viewer uses a
+per-user folder (``%LOCALAPPDATA%\UltraZohm\uz_dataviewer`` on Windows,
+``~/.local/share/ultrazohm/uz_dataviewer`` on Linux), never its working directory.
+The standalone executable and ``_internal`` contain application
+resources; they are not the destination for mutable workspace preferences.
 
-.. code-block:: bash
+``settings.json`` contains runtime preferences. Missing preferences are seeded
+from the CLI's bundled standard profile, restricted to the selected firmware's
+available observables. Existing preferences are preserved. Connecting or
+flashing prepares an effective session profile when assignments need filtering;
+it does not rewrite the saved preferences. Header-generated mapping JSON is
+derived data and is regenerated for the selected firmware checkout.
 
-   ./build/build_web.sh                      # writes web/index.html (self-contained)
-   cd web && python -m http.server 8000      # then open http://localhost:8000/
+``tools.json`` remembers the selected XSCT launcher. Its directory is added to
+the application's process environment for child processes, without changing the
+system PATH. ``viewer.ini`` holds the window layout, ``viewer_cache`` holds
+optional analysis caches (unless overridden by ``UZ_DATAVIEWER_CACHE``), and
+``logs`` holds default session output. Explicit export, script, session and
+recording destinations remain user-selected. Script and CLI output capture also
+uses temporary directories.
 
-``build_web.sh`` runs ``build/gen_web.py``, which emits a single self-contained ``web/index.html`` following the official imgui_bundle Pyodide template.
-At load time the page:
+The live controller tracks its launched service separately from the service to
+which it is currently attached. Closing the viewer shuts down its owned service,
+which sends device Stop and finalizes recordings; the window waits up to ten
+seconds, after which the detached service completes finalization in the
+background (see its ``service.log`` and the ``end`` section of ``run.json``).
+For an attached external service it sends device Stop without shutting that
+service down. Script Stop invalidates queued manual commands and uses a control
+path independent of display reads. Flashing shuts the service down (which sends
+device Stop and finalizes recordings), then programs and reconnects.
 
-#. loads Pyodide ``v0.29.4`` from the CDN and wires the WebGL canvas to SDL;
-#. ``micropip``-installs the **imgui_bundle WASM wheel** (hosted by pthom at ``https://imgui-bundle.pages.dev/local_wheels/``) plus ``numpy``/``pandas``/``pyarrow`` from the Pyodide package index;
-#. writes the embedded ``uz_dataviewer`` sources into the Pyodide FS and starts the app (in Pyodide ``immapp.run()`` is auto-patched to be non-blocking).
-
-.. note::
-
-   ``uz_dataviewer`` can not be run by opening ``index.html`` directly from disk (``file://``) because the browser blocks Pyodide's package downloads from a ``file://`` origin. Use any static server, e.g., ``python -m http.server``. ``uz_dataviewer`` requires internet access at runtime.
-
-.. note::
-
-   ``uz_dataviewer`` is not fully identical in the web-version to the native version. See :doc:`uz_dataviewer_native_vs_web` for details.
-
+``start.sh`` and ``start.ps1`` install ``uv`` when it is missing and run
+``uz_dataviewer/tasks.py start``, which owns argument handling and setup.
+``tasks.py`` also provides ``shell``, ``check``, ``bundle`` and ``bundle-smoke``. Standalone execution uses
+its bundled worker entry point and requires no separately installed Python or
+Rust. The viewer command console, ``uz ...`` service commands and Python
+automation are available on Windows and Linux.

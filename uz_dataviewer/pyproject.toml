@@ -7,20 +7,27 @@ name = "uz_dataviewer"
 version = "0.1.0"
 description = "UltraZohm log data viewer built with Dear ImGui (imgui_bundle / ImPlot)"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 license = { text = "BSD-3-Clause" }
 authors = [{ name = "UltraZohm" }]
+# Versions validated by the lockfile and frozen builds.
 dependencies = [
-    "imgui-bundle>=1.6",
-    "numpy>=1.24",
-    "pandas>=2.0",
-    "pyarrow>=12.0",
-    # Native-only window file drag-drop (GLFW backend); a no-op if absent.
-    "glfw>=2.5; platform_system != 'Emscripten'",
+    "imgui-bundle==1.93.0",
+    "numpy==2.5.4",
+    "pandas==3.1.0",
+    "pyarrow==26.0.0",
+    "polars==2.0.0",
+    # Window file drag-drop (GLFW backend); a no-op if absent.
+    "glfw==2.11.0",
+    # Live acquisition backend; wheels exist for Windows and Linux x86-64 only.
+    # Repository-based setup requires CLI 0.1.27.dev0 or newer.
+    # Elsewhere the viewer runs without its live panels. Upgrade with:
+    #   uv lock --upgrade-package ultrazohm_cli
+    "ultrazohm_cli>=0.1.27.dev0; (sys_platform == 'linux' and platform_machine == 'x86_64') or (sys_platform == 'win32' and platform_machine == 'AMD64')",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7", "pyinstaller>=6.0"]
+dev = ["pytest>=7", "pyinstaller>=6.0", "ruff==0.17.2"]
 
 [project.scripts]
 uz-dataviewer = "uz_dataviewer.app:main"
@@ -28,6 +35,12 @@ uz-dataviewer = "uz_dataviewer.app:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+uz_dataviewer = ["assets/*.svg", "assets/app_settings/*.png", "assets/app_settings/*.ico"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+
+[tool.ruff.lint]
+select = ["F"]

@@ -220,7 +220,8 @@ proc vitis_main {} {
   # this is a bit of hack, since it is not possible to add a compiler directory using the TCL script
   # we have to add it with -I"path" which results in the same
   # but in Vitis in the compiler settings, it is listed under miscellaneous instead of directories
-  app config -name Baremetal compiler-misc -I"$SHARED_FOLDER"
+  set actor_include [file join $filename_Baremetal uz uz_exported_actor]
+  app config -name Baremetal compiler-misc [format {-I"%s" -I"%s"} $SHARED_FOLDER $actor_include]
   app config -name FreeRTOS compiler-misc -I"$SHARED_FOLDER"
 
   # set optimization level

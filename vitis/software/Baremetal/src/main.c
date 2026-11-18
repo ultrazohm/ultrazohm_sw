@@ -15,6 +15,9 @@
 
 // Includes from own files
 #include "main.h"
+#if UZ_PT1_REPLAY
+#include "uz/uz_exported_actor/examples/uz_actor_pt1_replay.h"
+#endif
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -81,6 +84,9 @@ int main(void)
         case init_gpios:
         	uz_sleep_seconds(5);
             Initialize_AXI_GPIO();
+#if UZ_PT1_REPLAY
+            uz_axigpio_disable_pwm_and_power_electronics();
+#endif
             uz_assert((apu_version_final > 0U) && (apu_version_final <= UZ_HARDWARE_VERSION_MAX));
             uz_frontpanel_button_and_led_init(apu_version_final);
             ultrazohm_state_machine_init(apu_version_final);
@@ -88,6 +94,9 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
+#if UZ_PT1_REPLAY
+            uz_actor_pt1_replay_init(1.0f / Global_Data.av.isr_samplerate_s);
+#endif
             JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;

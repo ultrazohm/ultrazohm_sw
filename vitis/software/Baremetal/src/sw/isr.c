@@ -30,6 +30,9 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#if UZ_PT1_REPLAY
+#include "../uz/uz_exported_actor/examples/uz_actor_pt1_replay.h"
+#endif
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -38,7 +41,9 @@ XIpiPsu IPI_instance;
 // Global variable structure
 extern DS_Data Global_Data;
 
-static void ReadAllADC();
+#if !UZ_PT1_REPLAY
+static void ReadAllADC(void);
+#endif
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 
 //==============================================================================================================================================================
@@ -50,6 +55,9 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
+#if UZ_PT1_REPLAY
+    uz_actor_pt1_replay_step();
+#else
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
@@ -68,6 +76,7 @@ void ISR_Control(void *data)
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
+#endif
     
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
@@ -189,10 +198,12 @@ u32 Rpu_IpiInit(u16 DeviceId)
     return XST_SUCCESS;
 }
 
-static void ReadAllADC()
+#if !UZ_PT1_REPLAY
+static void ReadAllADC(void)
 {
     ADC_readCardALL(&Global_Data);
 };
+#endif
 
 
 

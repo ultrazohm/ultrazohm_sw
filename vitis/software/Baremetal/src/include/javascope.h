@@ -49,6 +49,20 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
+	JSO_pt1_actor,
+	JSO_pt1_time,
+	JSO_pt1_episode,
+	JSO_pt1_episode_k,
+	JSO_pt1_y,
+	JSO_pt1_reference,
+	JSO_pt1_error,
+	JSO_pt1_action_value,
+	JSO_pt1_reward,
+	JSO_pt1_action_index,
+	JSO_pt1_q_action_minus_1,
+	JSO_pt1_q_action_0,
+	JSO_pt1_q_action_plus_1,
+	JSO_pt1_done,
 	JSO_ENDMARKER
 };
 
@@ -126,7 +140,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	send_field_1,
+	PT1-Reference,
 	send_field_2,
 	send_field_3,
 	send_field_4,
@@ -153,7 +167,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_LABELS_ZEROVALUE=0,
-	RPM,
+	-,
 	Nm,
 	A,
 	A,
@@ -236,9 +250,9 @@ enum gui_button_mapping {
 	MyButton1,
 	MyButton2,
 	MyButton3,
-	MyButton4,
-	MyButton5,
-	MyButton6,
+	PT1-DQN,
+	PT1-DDPG,
+	Manual-Mode,
 	MyButton7,
 	MyButton8,
 	MYBUTTONS_LABELS_ENDMARKER

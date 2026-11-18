@@ -135,6 +135,63 @@ The semicolon-separated columns match the `workshop_vv_dqn` evaluation logs.
 all three Q values and the greedy action. Evaluation has zero exploration,
 `terminated=0`, and `truncated=done=1` only at each episode's final step.
 
+## Replay PT1 on the UltraZohm with JavaScope
+
+1. With the power stage disabled, verify `UZ_PT1_REPLAY` is `1U` in
+   `src/uz/uz_global_configuration.h` (enabled on this feature branch), rebuild the Baremetal R5 application, and
+   launch UltraZohm with the usual R5 and FreeRTOS applications. The replay build
+   keeps PWM and power-electronics enable off and requires a 10 kHz control ISR
+   (the default). In an existing Vitis workspace, refresh the linked sources
+   and add `Baremetal/src/uz/uz_exported_actor` to the R5 compiler include paths
+   if the workspace was generated before the replay was added.
+2. Restart JavaScope so it reads the updated `javascope.h` and `properties.ini`.
+   Connect and verify the preselected channels
+   `pt1_actor`, `pt1_time`, `pt1_episode`, `pt1_episode_k`, `pt1_y`, `pt1_reference`,
+   `pt1_error`, `pt1_action_value`, `pt1_reward`, `pt1_action_index`, the three
+   `pt1_q_action_*` channels, and `pt1_done`.
+3. Enable **Log FastData**, set **Log every N** to **1**, and start logging.
+   In the Control tab press **PT1-DQN** (MyButton4) or **PT1-DDPG** (MyButton5).
+   The actor channel is 0 while idle, 1 during DQN replay, and 2 during DDPG
+   replay. Each button replays six 500-step episodes from the same initial
+   conditions as Ceedling.
+   Wait for the actor channel to return to 0 before stopping logging or starting
+   the other actor. Record one replay per actor per log.
+4. From `vitis/software/Baremetal`, compare the JavaScope capture against the
+   corresponding host log:
+
+   ```sh
+   python3 test/uz/uz_exported_actor/compare_pt1_javascope.py dqn /path/to/Log.csv \
+     build/artifacts/test-data/uz_exported_actor/pt1_dqn_eval.csv
+   ```
+
+   Use `ddpg` and `pt1_ddpg_eval.csv` for a DDPG recording.
+
+The comparison uses `pt1_time`, the controller's zero-based sample index. It
+checks all 3,000 samples in order, including discrete action indices for DQN, and
+allows small floating-point differences between R5 and host. The extra Ceedling
+columns are constant (`exploration_rate` and `terminated`), repeat `done`
+(`truncated`), or repeat the DQN action (`greedy_action_index` and
+`greedy_action_value`). Set `UZ_PT1_REPLAY` back to `0U` for normal control.
+
+### Manual references
+
+Press **Manual-Mode** (MyButton6) to run continuously with the last selected
+actor, or DQN after startup. Enter a value in **PT1-Reference** (Send Field 1)
+and press **Set** or **Enter**. The simulated plant uses the latest finite value
+on the next control tick and holds it until you send another. The reference
+starts at zero and is retained between manual runs.
+
+In manual mode, **PT1-DQN** and **PT1-DDPG** select the actor and reset the
+simulated plant to zero. Manual samples have `pt1_actor` equal to 3 for DQN
+or 4 for DDPG. The Ceedling comparison reads only fixture replay samples.
+Press **Manual-Mode** again or **Stop** to end manual control. Entering manual
+mode during a fixture replay ends that replay.
+
+The indicators beside **PT1-DQN** and **PT1-DDPG** show which actor is running.
+The **Manual-Mode** indicator lights during manual control, together with the
+active actor's indicator. All three turn off when the replay completes or you
+stop manual control.
+
 ## PMSM evaluation CSV log
 
 `ceedling _1.1.9_ test:pmsm_td3_export` writes

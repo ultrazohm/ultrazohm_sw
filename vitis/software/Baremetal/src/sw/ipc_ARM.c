@@ -18,6 +18,9 @@
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
+#if UZ_PT1_REPLAY
+#include "../uz/uz_exported_actor/examples/uz_actor_pt1_replay.h"
+#endif
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
@@ -34,6 +37,9 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		{
 
 		case (Stop): // Stop
+#if UZ_PT1_REPLAY
+			uz_actor_pt1_replay_stop();
+#endif
 			ultrazohm_state_machine_set_stop(true);
 			break;
 		case (201): // SELECT_DATA_CH1_bits
@@ -186,7 +192,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->av.snd_fld[1] = value;
+			data->av.snd_fld[1] = value;
+#if UZ_PT1_REPLAY
+			uz_actor_pt1_replay_set_reference(value);
+#endif
 			break;
 
 		case (Set_Send_Field_2):
@@ -278,15 +287,21 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-
+#if UZ_PT1_REPLAY
+			uz_actor_pt1_replay_start(UZ_PT1_REPLAY_DQN);
+#endif
 			break;
 
 		case (My_Button_5):
-
+#if UZ_PT1_REPLAY
+			uz_actor_pt1_replay_start(UZ_PT1_REPLAY_DDPG);
+#endif
 			break;
 
 		case (My_Button_6):
-
+#if UZ_PT1_REPLAY
+			uz_actor_pt1_replay_toggle_manual();
+#endif
 			break;
 
 		case (My_Button_7):
@@ -355,13 +370,31 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 6);
 
 	/* Bit 7 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 7);
+#if UZ_PT1_REPLAY
+	if (uz_actor_pt1_replay_get_active_actor() == UZ_PT1_REPLAY_DQN) {
+		js_status_BareToRTOS |= 1U << 7;
+	} else {
+		js_status_BareToRTOS &= ~(1U << 7);
+	}
+#endif
 
 	/* Bit 8 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 8);
+#if UZ_PT1_REPLAY
+	if (uz_actor_pt1_replay_get_active_actor() == UZ_PT1_REPLAY_DDPG) {
+		js_status_BareToRTOS |= 1U << 8;
+	} else {
+		js_status_BareToRTOS &= ~(1U << 8);
+	}
+#endif
 
 	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
+#if UZ_PT1_REPLAY
+	if (uz_actor_pt1_replay_is_manual()) {
+		js_status_BareToRTOS |= 1U << 9;
+	} else {
+		js_status_BareToRTOS &= ~(1U << 9);
+	}
+#endif
 
 	/* Bit 10 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 10);

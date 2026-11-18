@@ -277,7 +277,10 @@ def test_managed_flash_restarts_real_service_and_preserves_recordings(service, t
     options = client.status()['data_options']
     client.start_logging()
     client.start_logging_slow_data()
-    wait_for(lambda: client.status()['state']['samples'] > 100)
+    # Acquisition starts in the fixture, before logging is enabled. Its total
+    # may already exceed 100: wait for fresh samples in both recording routes.
+    baseline = client.status()['state']['samples']
+    wait_for(lambda: client.status()['state']['samples'] > baseline + 100)
     # Handles are reported once each writer has created its index.
     def with_handles():
         logging = client.status()['logging']

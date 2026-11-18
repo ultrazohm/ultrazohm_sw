@@ -145,8 +145,8 @@ class ControlServer:
                             # completion first so those bytes cannot cause a busy loop.
                             readable, _, _ = select.select([connection], [], [], 0)
                             if readable and not connection.recv(1, socket.MSG_PEEK):
-                                future.cancel()
                                 with self._lock:
+                                    future.cancel()
                                     self._pending.discard(future)
                                 return
                         result = future.result()
@@ -165,8 +165,8 @@ class ControlServer:
             pass
         finally:
             if future is not None and not future.done():
-                future.cancel()
                 with self._lock:
+                    future.cancel()
                     self._pending.discard(future)
             connection.close()
             with self._lock:

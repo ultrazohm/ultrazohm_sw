@@ -65,4 +65,9 @@ exe = EXE(
     icon=os.path.join(SRC, 'uz_dataviewer', 'assets', 'app_settings', 'icon.ico') if sys.platform == 'win32' else None,
 )
 
-coll = COLLECT(exe, a.binaries, a.datas, strip=False, upx=False, name="uz_dataviewer")
+terminal = EXE(
+    pyz, a.scripts, [], exclude_binaries=True, name="uz-dataviewer",
+    debug=False, bootloader_ignore_signals=False, strip=False, upx=True,
+    console=True,
+)
+coll = COLLECT(exe, terminal, a.binaries, a.datas, strip=False, upx=False, name="uz_dataviewer")

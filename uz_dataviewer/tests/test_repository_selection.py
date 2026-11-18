@@ -34,7 +34,7 @@ def test_selection_updates_paths_and_enables_connect(tmp_path, monkeypatch):
         assert app.live.mapping == ''
         assert app.live.repo == str(root)
         assert app.live.user_directory() == directory
-        assert app.log_browser.directory == root
+        assert app.log_browser.directory == root / 'artifacts'
         assert app.artifacts == directory
         assert app.state.cache_dir == str(directory / 'viewer_cache')
         assert app.live.output.startswith(str(directory / 'logs'))

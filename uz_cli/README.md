@@ -36,11 +36,11 @@ To install and start from this checkout in its own `uz_cli/.venv`:
 ```sh
 make -C uz_cli start local       # build and install the checkout, then open the CLI
 make -C uz_cli start release     # install/update the latest stable PyPI release, then open the CLI
-make -C uz_cli start release ARGS="--prerelease=allow"  # include development releases
+make -C uz_cli start prerelease  # install/update from PyPI, including development releases
 make -C uz_cli start release ARGS="-- --help"
 ```
 
-Bare `make start` defaults to `local`. Both modes reuse `.venv` and reinstall the
+Bare `make start` defaults to `local`. All modes reuse `.venv` and reinstall the
 selected CLI, so switching modes also works when the version number is unchanged.
 The global `uv tool` installation is unaffected. On Windows, or without Make, use
 `python uz_cli/tasks.py start local` or `python uz_cli/tasks.py start release`;

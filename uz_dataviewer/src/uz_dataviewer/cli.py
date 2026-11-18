@@ -84,7 +84,7 @@ def main(argv=None):
             result = getattr(client, name)(**arguments)
         if is_dataclass(result):
             result = asdict(result)
-        print(json.dumps(result, allow_nan=False, indent=None if args.json else 2))
+        print(json.dumps(result, default=asdict, allow_nan=False, indent=None if args.json else 2))
         return 0
     except (ViewerError, OSError, EOFError, ValueError) as exc:
         if args.json:

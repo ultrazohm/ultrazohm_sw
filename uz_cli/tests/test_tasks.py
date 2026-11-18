@@ -35,7 +35,7 @@ class ReleaseVersionTest(unittest.TestCase):
 class StartTest(unittest.TestCase):
     def test_install_and_launch_both_modes_on_both_platforms(self):
         for windows in (False, True):
-            for source in ('local', 'release'):
+            for source in ('local', 'release', 'prerelease'):
                 with self.subTest(windows=windows, source=source), tempfile.TemporaryDirectory() as root:
                     root = Path(root)
                     project = root / 'checkout with spaces' / 'uz_cli'
@@ -63,7 +63,7 @@ class StartTest(unittest.TestCase):
                         else:
                             self.assertFalse(any('maturin' in cmd for cmd, _ in calls))
                             self.assertEqual(install[-5:], ['--upgrade-package', 'ultrazohm_cli',
-                                                           '--prerelease', 'disallow', 'ultrazohm_cli'])
+                                                           '--prerelease', 'allow' if source == 'prerelease' else 'disallow', 'ultrazohm_cli'])
                         self.assertEqual(calls[-1], ([tasks.venv_bin(project / '.venv', 'ultrazohm_cli'),
                             '--endpoint', '127.0.0.1:1234', 'status'], {'cwd': Path.cwd()}))
                         # Subsequent launches reuse the environment, but reinstall the CLI.
@@ -93,7 +93,7 @@ class StartTest(unittest.TestCase):
 
     @unittest.skipUnless(shutil.which('make'), 'make is optional on Windows')
     def test_make_passes_mode_and_cli_arguments_once(self):
-        for source in ('local', 'release'):
+        for source in ('local', 'release', 'prerelease'):
             result = subprocess.run(['make', '-n', '-C', str(tasks.HERE), 'start', source,
                                      'ARGS=-- --help'], capture_output=True, text=True, check=True)
             self.assertEqual(result.stdout.count('tasks.py'), 1)

@@ -10,7 +10,7 @@ from __future__ import annotations
 import numpy as np
 from imgui_bundle import em_size, imgui, implot
 
-from ..analysis import AnalysisInput, HistogramRequest
+from ..analysis import HistogramRequest
 from ..state import AppState
 from .analysis import AnalysisPanel
 
@@ -41,8 +41,8 @@ class HistogramPanel(AnalysisPanel):
         imgui.same_line()
 
     def _make_request(self, state: AppState, cfg, x_min: float, x_max: float) -> HistogramRequest:
-        return HistogramRequest(AnalysisInput.capture(state.registry, cfg.sources),
-                          (x_min, x_max), cfg.bins)
+        from ..analysis_service import request
+        return request(state, 'hist', (x_min, x_max))
 
     def _draw(self, state: AppState) -> None:
         for ref, centers, counts, width in self._results:

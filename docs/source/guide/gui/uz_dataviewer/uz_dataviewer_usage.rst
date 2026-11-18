@@ -39,10 +39,26 @@ Loading data
 - **Per-log time normalization:** right-click a run ▸ tick **Normalize start time** and enter a start (default ``0``), then **Apply**. This shifts that log's time axis without touching the samples; untick to restore. (Also ``load("Log.csv", 0)``.)
 - **Large logs:** desktop lazy loading reads raw windows without retaining the complete recording. In-memory CSV loading enforces a numeric-data budget. Convert CSV to Parquet for faster repeated access, using ``viewer.convert("Log.csv")`` or ``uz-dataviewer convert Log.csv`` against an open viewer.
 
+Settings
+--------
+
+The **Settings** menu opens a non-modal window with **General**, **Data loading**,
+and **Performance** sections. Changes persist as application defaults; each section
+can be reset independently. General includes the log browser directory and startup
+visibility of Application log and Python. Leave the directory empty to use the
+firmware checkout's ``artifacts`` directory. Startup visibility takes effect on the
+next launch; other changes apply immediately.
+
+Settings are stored in ``viewer_preferences.json`` in the platform user data
+directory, separately from session files and device configuration. Loading a
+session restores its own data and plot settings without changing saved defaults.
+The Python client exposes the same service through ``viewer.get_settings()`` and
+``viewer.set_setting("cache_budget", 512)``.
+
 Backend and loading mode
 ------------------------
 
-The **Backend** selector on the bottom status bar chooses **PyArrow** or **Polars** for subsequently opened recordings.
+The **Backend** selector in **Settings → Data loading** chooses **PyArrow** or **Polars** for subsequently opened recordings.
 The independent **Loading** selector chooses **In memory** or **Lazy**.
 Changing either setting leaves already loaded recordings unchanged.
 CSV selections larger than 1 GiB show a conversion recommendation for drag-and-drop, the Log Browser and the file picker.
@@ -51,7 +67,7 @@ CSV selections larger than 1 GiB show a conversion recommendation for drag-and-d
 Existing Parquet files are protected from overwriting; the dialog offers **Open existing Parquet** instead.
 **Cancel** skips the selected file, and multi-file selections are prompted individually.
 
-The shared timestamp and summary cache defaults to **1,024 MiB** and remains configurable with **Cache (MiB)** on the bottom status bar.
+The shared timestamp and summary cache defaults to **1,024 MiB** and remains configurable with **Settings → Performance → RAM cache (MiB)**.
 This is a retained-cache budget, not a limit on total application RAM.
 The status bar shows retained RAM cache usage next to FPS.
 The Data Viewer never uses GUI idle throttling: live, paused, and offline views
@@ -78,7 +94,7 @@ The headless library accepts ``uz.read(path, backend="polars")``; its dataframe 
 The default library backend preserves the existing pandas DataFrame interface.
 Polars uses its native streaming reader and writer; CSV conversion can use more RAM than PyArrow.
 Disk caching is disabled by default; indexes and summaries stay in RAM, and lazy CSV files are scanned directly.
-Enable **Disk cache** on the bottom status bar, ``--disk-cache`` or ``viewer.disk_cache(True)`` to reuse disk summaries and converted CSVs across restarts.
+Enable **Settings → Data loading → Disk cache**, ``--disk-cache`` or ``viewer.disk_cache(True)`` to reuse disk summaries and converted CSVs across restarts.
 The setting affects newly opened files; reopen existing files to apply it.
 When enabled, the application cache is stored in the selected workspace under ``artifacts/_user/viewer_cache``, unless overridden by ``UZ_DATAVIEWER_CACHE``.
 Polars stores its disk caches in a separate ``polars/`` subdirectory, and the engines have distinct in-memory cache identities.

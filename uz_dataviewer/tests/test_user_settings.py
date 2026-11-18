@@ -193,7 +193,7 @@ def test_workspace_startup_initializes_missing_preferences_once(tmp_path, monkey
                 self._shutdown()
     monkeypatch.setattr(app, 'DataViewerApp', Viewer)
     monkeypatch.setattr('importlib.util.find_spec', lambda name: object() if name == 'ultrazohm_cli' else None)
-    args = ['--live-repo', str(tmp_path)]
+    args = ['--endpoint', '127.0.0.1:0', '--live-repo', str(tmp_path)]
     assert app.main(args) == 0
     saved = user_dir/'settings.json'
     original = '{"schema_version":1,"name":"edited","sample_period_us":75,"initial_channels":{}}\n'

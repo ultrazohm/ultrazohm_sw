@@ -95,7 +95,7 @@ def start(args):
         version = (ROOT / ".python-version").read_text(encoding="utf-8").strip()
         run("uv", "venv", "--python", version, venv)
     options = [] if args.source == "local" else [
-        "--upgrade-package", "ultrazohm_cli", "--prerelease", args.prerelease]
+        "--upgrade-package", "ultrazohm_cli", "--prerelease", "allow" if args.source == "prerelease" else args.prerelease]
     # Reinstall even at the same version: local builds retain their base version,
     # and switching to PyPI must replace a locally installed wheel too.
     run("uv", "pip", "install", "--python", python,
@@ -190,7 +190,7 @@ def overview():
     print(f"""uz_cli tasks                              {usage}
 
 Use
-  start [local|release]  Build the checkout or fetch stable PyPI, install in .venv and run (default: local)
+  start [local|release|prerelease]  Install the checkout or PyPI CLI in .venv and run (default: local)
   install        Build this checkout's CLI and install the ultrazohm_cli command (uv tool)
 
 Develop
@@ -212,7 +212,7 @@ Builds use native tools (rustup's pinned Rust, maturin, a C/C++ compiler); no co
 
 DESCRIPTIONS = {
     "start": "Install and launch in uz_cli/.venv. 'local' (default) builds this checkout first; "
-             "'release' fetches the latest stable version from PyPI. Use --prerelease allow "
+             "'release' fetches the latest stable version from PyPI; 'prerelease' includes development builds. Use --prerelease allow "
              "to include development releases. Pass CLI arguments after --. "
              "The global uv tool installation is unchanged.",
     "install": "Build an optimized wheel of this checkout for this machine and install it with "
@@ -239,7 +239,7 @@ def main(argv=None):
         task.set_defaults(function=function)
         return task
     launch = add("start", start)
-    launch.add_argument("source", nargs="?", choices=("local", "release"), default="local")
+    launch.add_argument("source", nargs="?", choices=("local", "release", "prerelease"), default="local")
     launch.add_argument("--prerelease", choices=("allow", "disallow"), default="disallow",
                         help="include prereleases when installing from PyPI (default: disallow)")
     add("install", install)

@@ -243,6 +243,7 @@ class RuntimeServices:
     validation_jobs: Requests = field(default_factory=lambda: Requests(workers=2))
     analysis_jobs: Requests = field(default_factory=lambda: Requests())
     completed_analysis: dict = field(default_factory=dict)
+    analysis_operations: dict = field(default_factory=dict)
     analysis_displays: dict[str, Requests] = field(default_factory=lambda: {
         name: Requests() for name in ("fft", "hist")})
     executor: CancellableExecutor = field(default_factory=CancellableExecutor)
@@ -473,7 +474,7 @@ class AppState(SessionData):
         convert_csv_to_parquet(source, request.path, backend=request.backend, cancel=cancel)
         return self._open_background(request.path, request.mode, request.backend, request.disk_cache, cancel=cancel)
 
-    def load_sync(self, path: str) -> Run | None:
+    def load_sync(self, path: str, *, cancel=None) -> Run | None:
         """Load a file on the calling thread and report it.
 
         Used by the ``load`` command and by session restore/replay so that any
@@ -481,10 +482,14 @@ class AppState(SessionData):
         run. Errors are logged and return ``None``; command handlers convert that
         result into a command failure.
         """
+        from .sources import Cancelled, check
+        check(cancel)
         path = os.path.abspath(path)
         self.console.info(f"Loading {os.path.basename(path)} ...")
         try:
-            run = open_file(path, self.loading_mode, self.registry.cache, self.cache_dir, backend=self.backend, disk_cache=self.disk_cache).register(self.registry)
+            run = open_file(path, self.loading_mode, self.registry.cache, self.cache_dir, backend=self.backend, disk_cache=self.disk_cache, cancel=cancel).register(self.registry)
+        except Cancelled:
+            raise
         except Exception as exc:  # noqa: BLE001 - surfaced to the console
             self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
             return None

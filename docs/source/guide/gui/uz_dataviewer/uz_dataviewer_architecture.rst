@@ -195,7 +195,7 @@ session representation. Save supported state through JSON session snapshots.
 .. _uz_dataviewer_generated_command_reference:
 
 Generated Python API reference (``command_doc.py``)
---------------------------------------------------
+---------------------------------------------------
 
 ``command_doc.build_csv`` renders public client signatures, documentation and
 operation groups into ``uz_dataviewer_commands.csv``. The usage guide includes
@@ -567,3 +567,11 @@ workspace still owns preferences and recordings. Generated Flash UZ snapshots
 are distinguished from explicit selections; subsequent repository-based launches
 reread headers. Service startup rejects simultaneous repository and mapping
 arguments, and changing either requires restarting an owned service.
+
+Analysis request construction and fingerprints live in ``analysis_service.py``;
+the operation coordinator does not import GUI panels. In the application, explicit
+and automatic analysis requests use the same coordinator and per-kind completion
+state. Superseded requests are cancelled. Standalone panels without an application
+coordinator retain the headless request scheduler used by component tests.
+Client/registry contract tests validate names, parameter types, optional arguments,
+and view targeting, in addition to the generated documentation checks.

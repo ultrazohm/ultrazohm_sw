@@ -129,6 +129,30 @@ conversions clean up temporary output.
 Then **Open file(s)…** in the Navigation panel, expand the run, and drag signals into the
 plots (or the FFT / Histogram windows).
 
+## Settings
+
+Click **Settings** in the menu bar to open a non-modal window:
+
+- **General:** log browser directory and startup visibility of Application log and Python.
+- **Data loading:** backend, loading mode, and disk cache for newly opened recordings.
+- **Performance:** RAM cache limit and display points per signal.
+
+Edits apply immediately (except startup visibility) and persist as application defaults
+in `viewer_preferences.json` in the platform user data directory. Each section has
+**Reset this section**. An empty log directory uses the firmware checkout's `artifacts`
+directory. The status bar displays FPS and cache usage.
+
+Session files retain their own data and plot settings; loading a session does not
+rewrite application defaults. Explicit startup options override saved defaults for
+that launch. Device configuration remains in its acquisition panels.
+The Python client uses the same settings service:
+
+```python
+viewer.get_settings()
+viewer.set_setting("cache_budget", 512)
+viewer.set_setting("show_application_log", False)
+```
+
 ## Large recordings and responsiveness
 
 The Data Viewer never uses GUI idle throttling. Idling stays disabled during live
@@ -136,7 +160,7 @@ streaming, paused views, and offline analysis, even without mouse or keyboard
 input. Actual FPS still depends on rendering workload and display synchronization.
 
 The desktop defaults to **Polars + Lazy**; the online version uses **PyArrow + In memory**.
-Choose **Loading → In memory / Lazy** on the bottom status bar before opening files,
+Choose **Settings → Data loading → Loading → In memory / Lazy** before opening files,
 or select the mode at startup:
 
 ```bash
@@ -170,7 +194,7 @@ Changed files must be reopened; cached results from their previous version are
 not reused, including in XY plots and cursor readouts. Lazy reads run on the desktop worker even for short recordings.
 
 The shared timestamp/summary RAM cache defaults to 1,024 MiB and is configurable
-with **Cache (MiB)** on the bottom status bar. Prepared plot arrays are bounded by display budgets.
+with **Settings → Performance → RAM cache (MiB)**. Prepared plot arrays are bounded by display budgets.
 Cache limits are **not a hard process-RAM limit**: decoded batches, index-building
 scratch, FFTs, explicit NumPy conversions, exports and Python transformation
 plugins can allocate additional memory. A full-recording FFT still needs its raw
@@ -182,7 +206,7 @@ Cancellation takes effect between reads and transforms; a running native transfo
 returns before its cancellation can be observed.
 
 Measurement caches stay in RAM by default; no automatic CSV conversion is written.
-Enable **Disk cache** on the bottom status bar, pass `--disk-cache`, or use `viewer.disk_cache(True)` to persist indexes and summaries and convert lazy CSV inputs into reusable Parquet files.
+Enable **Settings → Data loading → Disk cache**, pass `--disk-cache`, or use `viewer.disk_cache(True)` to persist indexes and summaries and convert lazy CSV inputs into reusable Parquet files.
 Reopen existing files to change their cache policy.
 JSON sessions preserve the setting for each file.
 When enabled, disk caches live in `~/.cache/uz_dataviewer` (Polars uses its `polars/` subdirectory), or the directory selected by `UZ_DATAVIEWER_CACHE`.
@@ -583,10 +607,10 @@ within the child shell, or `exit` to return to the original terminal.
 Extract the entire release archive and launch `uz_dataviewer/uz_dataviewer`
 (or `uz_dataviewer.exe` inside that folder on Windows). Keep `_internal` beside
 it. Python and uv are bundled; Vitis is not. Select the **ultrazohm_sw root directory** with **Live Data → Browse for ultrazohm_sw**,
-next to **Browse for XSCT**, or launch with `gui --live-repo PATH`. Offline viewing needs no selection. All available windows except Python open at startup; Navigation, Plots and Log
+next to **Browse for XSCT**, or launch with `gui --live-repo PATH`. Offline viewing needs no selection. All available windows except Python and Application log open at startup; Navigation, Plots and Log
 Browser are selected. Mode selects Analysis or Live tabs without closing other
 windows. Use View to open Python or toggle individual windows. The source launcher
-behaves the same; all available windows except Python start open, with Analysis tabs selected.
+behaves the same; all available windows except Python and Application log start open, with Analysis tabs selected.
 
 The source and packaged applications use the same CLI and script worker logic.
 Scripts execute as ordinary `__main__` files with the arguments entered in the
@@ -667,3 +691,18 @@ scripts and hardware export (XSA/bitstream). Flash builds the existing Vitis
 workspace before programming; generate it first if absent. The hardware-specific
 `psu_init.tcl` comes from that hardware export; vendor `fsbl.tcl` and
 `zynqmp_utils.tcl` come from Vitis. They are not generic application resources.
+
+The distribution includes two entry points: `uz_dataviewer` (`uz_dataviewer.exe`
+on Windows) launches the desktop without a console window; `uz-dataviewer`
+(`uz-dataviewer.exe`) is the terminal entry point with stdout, stderr and exit
+codes. Both share the same packaged modules. Use the terminal executable for
+`status`, `list-runs`, and other control commands.
+
+Discovery methods return typed handles, including handles nested in plot
+references. For example, `viewer.add_signal(1, viewer.list_runs()[0]["handle"], "y")`
+adds a recording already opened manually. CLI output remains ordinary JSON.
+Cancellation can stop preparation; once application-thread commit starts, the
+operation finishes publication and cannot be rolled back by disconnecting.
+
+Application log starts hidden; enable it through **View → Application log**.
+The Log Browser starts at the selected checkout’s `artifacts/` directory.

@@ -20,7 +20,7 @@ from .panels.nodes import NodesPanel
 from .panels.plots import PlotsPanel
 from .panels.status import StatusPanel
 from .session import ensure_extension
-from .state import AppState, default_data_settings
+from .state import AppState
 
 try:  # optional native file dialogs
     from imgui_bundle import portable_file_dialogs as pfd
@@ -33,7 +33,7 @@ LOG_DOCK = "LogBrowserSpace"
 
 
 class DataViewerApp:
-    def __init__(self, initial_files: list[str] | None = None, loading_mode: str | None = None, backend: str | None = None, disk_cache: bool = False, use_live: bool = False, live_mapping: str = '', live_repo: str | None = None) -> None:
+    def __init__(self, initial_files: list[str] | None = None, loading_mode: str | None = None, backend: str | None = None, disk_cache: bool | None = None, use_live: bool = False, live_mapping: str = '', live_repo: str | None = None) -> None:
         from .user_paths import data_directory, find_repository
         mapping_path = Path(live_mapping).expanduser().resolve() if live_mapping else None
         workspace = Path(live_repo).expanduser().resolve() if live_repo else None
@@ -47,7 +47,14 @@ class DataViewerApp:
         self.control_server = None
         if self.artifacts is not None:
             self.state.cache_dir = os.environ.get('UZ_DATAVIEWER_CACHE', str(self.artifacts / 'viewer_cache'))
-        self.state.disk_cache = disk_cache
+        from .preferences import Preferences
+        from .panels.settings import SettingsPanel
+        self.preferences = Preferences(self.state)
+        self.preferences.apply()
+        self.state.preferences = self.preferences
+        self.settings_panel = SettingsPanel(self.preferences)
+        if disk_cache is not None:
+            self.state.disk_cache = disk_cache
         if loading_mode is not None:
             self.state.loading_mode = loading_mode
         from .loader import validate_backend
@@ -55,7 +62,8 @@ class DataViewerApp:
             self.state.backend = backend
         validate_backend(self.state.backend)
         self.navigation = NavigationPanel()
-        self.log_browser = LogBrowserPanel(workspace)
+        self.log_browser = LogBrowserPanel(Path(self.preferences.values['log_directory']) if self.preferences.values['log_directory'] else workspace / 'artifacts' if workspace is not None else None)
+        self.preferences.changed = self._preferences_changed
         self.plots = PlotsPanel()
         self._plot_windows = {}
         self._plot_windows_session = self.state.session_token
@@ -176,7 +184,11 @@ class DataViewerApp:
                 window.gui_function = render
                 windows.append(window)
         for window in windows:
-            window.is_visible = window.label != 'Python'
+            window.is_visible = window.label not in {'Python', 'Application log'}
+            if window.label == 'Application log':
+                window.is_visible = self.preferences.values['show_application_log']
+            elif window.label == 'Python':
+                window.is_visible = self.preferences.values['show_python']
             window.remember_is_visible = False
         return windows
 
@@ -196,11 +208,26 @@ class DataViewerApp:
     def _repository_selected(self, root, directory):
         self.artifacts = directory
         self.state.cache_dir = os.environ.get('UZ_DATAVIEWER_CACHE', str(directory / 'viewer_cache'))
-        self.log_browser.refresh(root)
+        if not self.preferences.values['log_directory']:
+            self.log_browser.refresh(root / 'artifacts')
         if hasattr(self, '_runner_params'):
             self._runner_params.ini_filename = str(directory / 'viewer.ini')
 
+    def _preferences_changed(self, changes):
+        if 'log_directory' in changes:
+            from .panels.log_browser import default_log_directory
+            path = self.preferences.values['log_directory']
+            self.settings_panel.directory = path
+            default = self.artifacts.parent if self.artifacts.name == '_user' else default_log_directory()
+            self.log_browser.refresh(Path(path) if path else default)
+
+    def _show_gui(self):
+        self._show_load_dialog()
+        self.settings_panel.render()
+
     def _show_menus(self) -> None:
+        if imgui.menu_item('Settings', '', False)[0]:
+            self.settings_panel.visible = True
         # Append to Hello ImGui's existing menu, including its hidden ID
         # (docking_details.cpp::ShowViewMenu), rather than drawing a second View.
         if imgui.begin_menu("View##kdsflmkdflm"):
@@ -511,7 +538,7 @@ class DataViewerApp:
 
         params.callbacks.pre_new_frame = self._pre_new_frame
         params.callbacks.show_menus = self._show_menus
-        params.callbacks.show_gui = self._show_load_dialog
+        params.callbacks.show_gui = self._show_gui
         params.callbacks.show_status = self._show_status
         params.callbacks.before_exit = self._shutdown
         params.callbacks.post_init = self._install_file_drop
@@ -531,7 +558,9 @@ class DataViewerApp:
 
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
-    default_backend, default_mode = default_data_settings()
+    from .preferences import Preferences
+    defaults = Preferences().values
+    default_backend, default_mode = defaults['backend'], defaults['loading_mode']
     if argv and argv[0] == "convert":
         # Headless CSV->Parquet conversion: `uz-dataviewer convert big.csv ...`.
         from .loader import convert_csv_to_parquet
@@ -553,7 +582,7 @@ def main(argv: list[str] | None = None) -> int:
                         help=f"storage policy for opening recordings (default: {default_mode})")
     parser.add_argument("--backend", choices=("pyarrow", "polars"), default=default_backend,
                         help=f"IO backend for file loading (default: {default_backend})")
-    parser.add_argument("--disk-cache", action="store_true", help="Persist measurement caches on disk (default: RAM only)")
+    parser.add_argument("--disk-cache", action="store_true", default=defaults["disk_cache"], help="Persist measurement caches on disk (default: RAM only)")
     parser.add_argument("--live-repo", help="UltraZohm repository whose headers generate the live channel mapping")
     parser.add_argument("files", nargs="*", help="CSV, Parquet, JSON sessions, or Python files")
     args = parser.parse_args(argv)

@@ -73,6 +73,7 @@ class Operations:
             'add_signal': self.add_signal, 'clear_session': self.clear_session,
             'save_session': self.save_session, 'load_session': self.load_session,
             'convert': self.convert,
+            'get_settings': self.get_settings, 'set_setting': self.set_setting,
         }
         arguments = dict(arguments)
         view = arguments.pop('view', None)
@@ -150,6 +151,23 @@ class Operations:
         if operation in ('node_add', 'node_source'):
             return dict(session=self.session, id=result)
         return result
+
+    def _preferences(self):
+        if not hasattr(self._root_state, 'preferences'):
+            from .preferences import Preferences
+            self._root_state.preferences = Preferences(self._root_state)
+        return self._root_state.preferences
+
+    def get_settings(self):
+        return dict(self._preferences().values)
+
+    def set_setting(self, name, value):
+        from .preferences import DEFAULTS
+        if name in DEFAULTS and not isinstance(DEFAULTS[name], str) and isinstance(value, str):
+            import json
+            value = json.loads(value)
+        self._preferences().update({name: value})
+        return self.get_settings()
 
     def status(self):
         return dict(grid=[self.state.rows, self.state.cols],
@@ -259,25 +277,27 @@ class Operations:
         return self._submit(prepare, commit)
 
     def compute_analysis(self, kind):
-        from .panels.fft import FftPanel
-        from .panels.histogram import HistogramPanel
-        panel = FftPanel() if kind == 'fft' else HistogramPanel()
+        from . import analysis_service as analysis
         state = self.state
-        cfg = panel.config(state)
-        key = panel._current_key(state, cfg)
-        limits = state.resolve_x_window(cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources)
-        request = panel._make_request(state, cfg, *limits)
+        cfg = analysis.config(state, kind)
+        key = analysis.fingerprint(state, kind)
+        request = analysis.request(state, kind)
         cfg.compute_requested = False
-        state.services.analysis_jobs.forget(panel.prefix)
-        state.services.completed_analysis.pop(panel.prefix, None)
+        state.services.analysis_jobs.forget(kind)
+        state.services.completed_analysis.pop(kind, None)
+        previous = state.services.analysis_operations.get(kind)
+        if previous is not None:
+            previous.cancel()
         def commit(result):
-            if panel._current_key(state, cfg) != key:
+            if analysis.fingerprint(state, kind) != key:
                 raise ViewerError('inputs_changed', 'Analysis inputs changed during computation; compute again')
-            state.services.completed_analysis[panel.prefix] = (key, result)
+            state.services.completed_analysis[kind] = (key, result)
             if len(result.series) != len(request.sources):
                 raise ViewerError('analysis_failed', result.info)
             return result.info
-        return self._submit(request.compute, commit)
+        future = self._submit(request.compute, commit)
+        state.services.analysis_operations[kind] = future
+        return future
 
     def load_session(self, path):
         from .session import read_snapshot, _apply_dict
@@ -287,7 +307,7 @@ class Operations:
             replacement = AppState()
             replacement.cache_dir = directory
             try:
-                _apply_dict(replacement, read_snapshot(path))
+                _apply_dict(replacement, read_snapshot(path), cancel=cancel)
                 from .sources import check
                 check(cancel)
             except BaseException:
@@ -326,16 +346,21 @@ class Operations:
         self._sync()
         for source, target, session, commit in list(self.jobs):
             if getattr(target, 'view_id', 1) != 1 and target.view_id not in self._root_state.plot_views:
-                if not target.done():
+                if not target.done() and target.set_running_or_notify_cancel():
                     target.set_exception(ViewerError('stale_handle', 'View closed during operation'))
             if session != self.session:
-                if not target.done():
+                if not target.done() and target.set_running_or_notify_cancel():
                     target.set_exception(ViewerError('session_replaced', 'Session changed during operation'))
                 source.cancel()
             if not source.done():
                 continue
             self.jobs.remove((source, target, session, commit))
             if target.done():
+                self._discard(source)
+                continue
+            # Atomically reserve publication. Disconnects may cancel preparation,
+            # but cannot cancel a future after its commit has started.
+            if not target.set_running_or_notify_cancel():
                 self._discard(source)
                 continue
             try:
@@ -355,7 +380,7 @@ class Operations:
         for source, target, _, _ in self.jobs:
             source.cancel()
             source.add_done_callback(self._discard)
-            if not target.done():
+            if not target.done() and target.set_running_or_notify_cancel():
                 target.set_exception(ViewerError('closed', 'Viewer is closing'))
         self.jobs.clear()
         self.executor.shutdown()

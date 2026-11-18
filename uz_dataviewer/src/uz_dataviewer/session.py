@@ -242,7 +242,9 @@ def apply_dict(state: "AppState", data: dict) -> None:
     state.replace_session(replacement)
 
 
-def _apply_dict(state: "AppState", data: dict) -> None:
+def _apply_dict(state: "AppState", data: dict, *, cancel=None) -> None:
+    from .sources import check
+    check(cancel)
     if data.get("version") != SCHEMA_VERSION:
         raise ValueError(f"Unsupported session version; expected {SCHEMA_VERSION}. Recreate old sessions.")
     specs = data.get("runs", [])
@@ -257,10 +259,12 @@ def _apply_dict(state: "AppState", data: dict) -> None:
     mode, backend, disk_cache = state.loading_mode, state.backend, state.disk_cache
     try:
         for spec in specs:
+            check(cancel)
             state.loading_mode = spec["mode"]
             state.backend = _session_backend(state, spec["backend"])
             state.disk_cache = boolean(spec["disk_cache"])
-            run = state.load_sync(spec["path"])
+            run = state.load_sync(spec["path"], cancel=cancel)
+            check(cancel)
             if run is None:
                 raise ValueError(f"Cannot restore recording: {spec['path']}")
             run.set_time_origin(spec.get("time_origin"))
@@ -294,7 +298,7 @@ def _apply_dict(state: "AppState", data: dict) -> None:
 
     # Rebuild the node graph and evaluate it *before* resolving cell/analysis
     # assignments, so any references to a derived run (label == node name) resolve.
-    changed_domains = _restore_nodes(state, data.get("nodes", []), _resolve)
+    changed_domains = _restore_nodes(state, data.get("nodes", []), _resolve, cancel=cancel)
 
     restore_plot_cells(state, data, _resolve)
 
@@ -342,7 +346,7 @@ def _apply_dict(state: "AppState", data: dict) -> None:
     state.histogram.compute_requested = bool(state.histogram.sources)
 
 
-def _restore_nodes(state: "AppState", specs: list, resolve) -> None:
+def _restore_nodes(state: "AppState", specs: list, resolve, *, cancel=None) -> None:
     """Rebuild the node graph from a snapshot (preserving ids) and evaluate it."""
     from .nodes import NodeGraph, evaluate, publish_output
 
@@ -367,7 +371,7 @@ def _restore_nodes(state: "AppState", specs: list, resolve) -> None:
             if in_id is not None:
                 state.nodes.link(int(in_id), dst, slot)
     if state.nodes.nodes:
-        evaluate(state)
+        evaluate(state, cancel=cancel)
     changed_domains = set()
     for spec in specs:
         view = spec.get("output_view")

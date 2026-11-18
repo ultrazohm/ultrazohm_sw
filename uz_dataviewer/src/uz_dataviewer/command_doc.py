@@ -67,6 +67,8 @@ _EXPLICIT_GROUPS: dict[str, str] = {
     "save_session": "Session",
     "load_session": "Session",
     "status": "Session",
+    "get_settings": "Session",
+    "set_setting": "Session",
     "list_runs": "Data / runs",
     "list_nodes": "Nodes",
     "list_plots": "Layout",
@@ -110,7 +112,7 @@ def build_csv() -> str:
         parameters = list(inspect.signature(method).parameters.values())[1:]
         signature = inspect.Signature(parameters)
         writer.writerow([name, group_for(name), method.__doc__ or name.replace('_', ' ').capitalize(),
-                         f'viewer.{name}{signature}'])
+                         f'``viewer.{name}{signature}``'])
     return buf.getvalue()
 
 

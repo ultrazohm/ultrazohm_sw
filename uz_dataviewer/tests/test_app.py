@@ -110,7 +110,7 @@ def test_live_panels_are_opt_in(use_live, monkeypatch):
         windows = app._dockable_windows()
         labels = {window.label for window in windows}
         if use_live:
-            assert all(w.is_visible == (w.label != 'Python') for w in windows)
+            assert all(w.is_visible == (w.label not in {'Python', 'Application log'}) for w in windows)
         live_labels = {'Live Data', 'Live Plots', 'Control'}
         assert 'Python' in labels
         assert labels & live_labels == (live_labels if use_live else set())
@@ -221,7 +221,7 @@ def test_mode_only_focuses_targets_and_preserves_other_windows(monkeypatch):
             dockable_windows=windows, focus_dockable_window=focused.append))
         app._apply_window_mode(True)
         assert focused == ['Live Data', 'Control', 'Live Plots']
-        assert all(w.is_visible for w in windows if w.label != 'Python')
+        assert all(w.is_visible for w in windows if w.label not in {'Python', 'Application log'})
         # User choices outside the selected group survive subsequent switches.
         next(w for w in windows if w.label == 'FFT').is_visible = False
         app._apply_window_mode(False)
@@ -254,10 +254,10 @@ def test_log_browser_uses_selected_workspace(tmp_path, monkeypatch, frozen, via_
               else {'live_repo': str(workspace)})
     app = DataViewerApp(**kwargs)
     try:
-        assert app.log_browser.directory == workspace
+        assert app.log_browser.directory == workspace / 'artifacts'
         app.log_browser.refresh()
         files, errors = app.log_browser._future.result(timeout=5)
-        assert files == [Path('artifacts/_user/logs/run.csv')]
+        assert files == [Path('_user/logs/run.csv')]
         assert not errors
     finally:
         app._shutdown()

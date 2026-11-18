@@ -70,6 +70,35 @@ Path('script-completed').write_text('ok')
         assert not runner.busy, 'Bundled Python control script timed out'
         assert runner.exit_code == 0, runner.output
         assert (root / 'script-completed').read_text() == 'ok'
+        import sys
+        import subprocess
+        if getattr(sys, 'frozen', False):
+            terminal = Path(sys.executable).with_name('uz-dataviewer' + ('.exe' if sys.platform == 'win32' else ''))
+            help_result = subprocess.run([str(terminal), '--help'], capture_output=True, text=True, timeout=10)
+            assert help_result.returncode == 0 and 'usage:' in help_result.stdout
+            invalid = subprocess.run([str(terminal), 'not-a-command'], capture_output=True, text=True, timeout=10)
+            assert invalid.returncode != 0 and invalid.stderr
+            for command in ('status', 'list-runs'):
+                process = subprocess.Popen([str(terminal), '--endpoint', server.endpoint, '--json', command],
+                                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                try:
+                    deadline = time.monotonic() + 10
+                    while process.poll() is None and time.monotonic() < deadline:
+                        operations.poll()
+                        server.poll(operations.dispatch)
+                        time.sleep(.001)
+                    stdout, stderr = process.communicate(timeout=1)
+                    assert process.returncode == 0, stderr
+                    result = json.loads(stdout)
+                    if command == 'status':
+                        assert result['grid'] == [2, 1]
+                    else:
+                        assert len(result) == 2 and result[0]['handle']['session']
+                finally:
+                    if process.poll() is None:
+                        process.kill()
+                    process.wait()
+
     finally:
         runner.close()
         server.close()

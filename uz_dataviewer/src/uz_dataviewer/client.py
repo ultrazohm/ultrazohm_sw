@@ -107,20 +107,38 @@ class Client(ViewerMethods):
         return result
 
     def list_runs(self):
-        return self._call('list_runs')
+        result = self._call('list_runs')
+        for run in result:
+            run['handle'] = RunHandle(**run['handle'])
+        return result
 
     def list_nodes(self):
-        return self._call('list_nodes')
+        result = self._call('list_nodes')
+        for node in result:
+            node['handle'] = NodeHandle(**node['handle'])
+            if node['output'] is not None:
+                node['output'] = RunHandle(**node['output'])
+        return result
 
     def list_plots(self, *, view: ViewHandle | None = None):
-        return self._call('list_plots', view=view)
+        result = self._call('list_plots', view=view)
+        for plot in result:
+            references = plot['signals'] + plot['y2']
+            if plot['xy_source'] is not None:
+                references.append(plot['xy_source'])
+            for ref in references:
+                ref['run'] = RunHandle(**ref['run'])
+        return result
 
     def create_view(self):
         result = self._call('create_view')
         return ViewHandle(result['session'], result['id'])
 
     def list_views(self):
-        return self._call('list_views')
+        result = self._call('list_views')
+        for view in result:
+            view['handle'] = ViewHandle(**view['handle'])
+        return result
 
     def close_view(self, handle: ViewHandle):
         return self._call('close_view', handle=handle)
@@ -155,3 +173,11 @@ class Client(ViewerMethods):
 
     def load_session(self, path: str):
         return self._call('load_session', path=str(Path(path).expanduser().resolve()))
+
+    def get_settings(self):
+        """Return saved application defaults, independent of the current session."""
+        return self._call('get_settings')
+
+    def set_setting(self, name: str, value: str):
+        """Set an application default; booleans and numbers also accept JSON text."""
+        return self._call('set_setting', name=name, value=value)

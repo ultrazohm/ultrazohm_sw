@@ -11,7 +11,7 @@ from __future__ import annotations
 import numpy as np
 from imgui_bundle import imgui, implot
 
-from ..analysis import AnalysisInput, FftRequest
+from ..analysis import FftRequest
 from ..state import AppState
 from .analysis import AnalysisPanel
 
@@ -62,8 +62,8 @@ class FftPanel(AnalysisPanel):
         )
 
     def _make_request(self, state: AppState, cfg, x_min: float, x_max: float) -> FftRequest:
-        return FftRequest(AnalysisInput.capture(state.registry, cfg.sources),
-                          (x_min, x_max), cfg.remove_dc, cfg.window, state.registry.cache)
+        from ..analysis_service import request
+        return request(state, 'fft', (x_min, x_max))
 
     def _draw(self, state: AppState) -> None:
         for ref, freqs, mag, source in self._results:

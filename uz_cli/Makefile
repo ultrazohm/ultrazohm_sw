@@ -6,15 +6,15 @@ export UZ_TASKS_VIA_MAKE := 1
 help:
 	@python3 tasks.py
 start:
-	python3 tasks.py start $(or $(filter local release,$(MAKECMDGOALS)),local) $(ARGS)
+	python3 tasks.py start $(or $(filter local release prerelease,$(MAKECMDGOALS)),local) $(ARGS)
 
 # Treat the mode as an argument to start, not as another task.
 ifneq ($(filter start,$(MAKECMDGOALS)),)
-ifneq ($(word 2,$(filter local release,$(MAKECMDGOALS))),)
-$(error Choose either local or release for start)
+ifneq ($(word 2,$(filter local release prerelease,$(MAKECMDGOALS))),)
+$(error Choose exactly one of local, release or prerelease for start)
 endif
-.PHONY: local release
-local release:
+.PHONY: local release prerelease
+local release prerelease:
 	@:
 endif
 

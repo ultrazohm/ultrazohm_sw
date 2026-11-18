@@ -794,6 +794,18 @@ static void xcp_gw_tx_task(void *arg) {
             send_fail_run = 0;
             xcp_gw_master_lost_disconnect();
         }
+        /* Let lwIP's tcpip thread and the rx task run between datagrams.
+         * They run at this task's priority, FreeRTOS does not preempt between
+         * equal priorities, and with LWIP_TCPIP_CORE_LOCKING lwip_sendto
+         * never blocks: without the yield, a command arriving during a burst
+         * of DAQ datagrams waited in lwIP's mailbox until the whole burst was
+         * sent. Bench 2026-11-18, 900 B/cycle, 13-datagram bursts: commands
+         * back to back 583 us median at equal priority, 317 us with this task
+         * one priority lower. The yield does the same (4-segment trigger: 252
+         * vs 251 us) for about 2 % of the A53, and keeps this task above the
+         * application's priority-1 tasks (polled I2C, CAN), next to which the
+         * lower priority showed rare delays of 5-29 ms. */
+        taskYIELD();
     }
 }
 

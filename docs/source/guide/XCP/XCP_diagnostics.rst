@@ -190,7 +190,7 @@ Time profile of the A53
 The gateway measures its own time with the system counter of the A53 and copies the sums into the last words of the counter area in ``XCP_IN``.
 ``xcp_poll.py --stress`` prints them next to the profile of the R5:
 
-- how the time of the A53 splits into idle time, the interrupt hook, the tx task and everything else (network stack, interrupts of the Ethernet controller, other tasks),
+- how the time of the A53 splits into idle time, the interrupt hook, the tx task and everything else (network stack, interrupts of the Ethernet controller, other tasks, and the task switch after every datagram of the tx task),
 - the time of the interrupt hook per interrupt and per record of measurement data,
 - the datagrams per second, their average size, and the time of one ``lwip_sendto()`` call.
 

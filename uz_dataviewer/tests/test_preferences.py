@@ -28,7 +28,7 @@ def test_preferences_roundtrip_and_session_precedence(app_state):
     assert preferences.values['loading_mode'] == 'memory'
 
 
-def test_settings_restore_defaults_and_render_sections(gui_frame):
+def test_settings_restore_defaults_and_render_sections(gui_frame, tmp_path):
     preferences = Preferences()
     preferences.update({'loading_mode': 'memory', 'show_application_log': True, 'cache_budget': 16})
     app = DataViewerApp()
@@ -42,8 +42,8 @@ def test_settings_restore_defaults_and_render_sections(gui_frame):
             panel.section = section
             gui_frame(SimpleNamespace(render=lambda _: panel.render()), app.state)
             assert panel.visible
-        app.preferences.update({'log_directory': '/tmp'})
-        assert str(app.log_browser.directory) == '/tmp'
+        app.preferences.update({'log_directory': str(tmp_path)})
+        assert app.log_browser.directory == tmp_path.resolve()
     finally:
         app._shutdown()
 

@@ -176,13 +176,15 @@ Inherited decisions that were replaced:
   uptime) advances only once per control ISR (25 us at 40 kHz).
 - The R5 DAQ queue was 32 KB (~0.8 ms at 40 MB/s), sized for 10 kHz.
 
-Now (`xcptl_ocm.c`, `XCP_R5_POLL_PERIOD_US`): the R5 polls the XCP_IN header
-every 5 us (CPU cycle counter); a new command batch or a waiting response
-gets a header-only exchange at once (the A53 rx task writes commands into
-XCP_IN when they arrive, not at the next IPI); a DAQ exchange runs only on an
-acknowledged chain, when the oldest waiting data is 1 ms old or 8 queue
-segments wait (4 since 2.6); after 1 ms without any exchange a header-only
-heartbeat follows. The queue is 128 KB (heap 256 KB).
+Now (`xcptl_ocm.c`): the R5 polls the XCP_IN header at most every 5 us (CPU
+cycle counter, `XCP_R5_POLL_PERIOD_US`). At 40 kHz that came to one or two
+looks per gap between two control ISRs; see 2.7 for the pacing since. A new
+command batch or a waiting response gets a header-only exchange at once (the
+A53 rx task writes commands into XCP_IN when they arrive, not at the next
+IPI); a DAQ exchange runs only on an acknowledged chain, when the oldest
+waiting data is 1 ms old or 8 queue segments wait (4 since 2.6); after 1 ms
+without any exchange a header-only heartbeat follows. The queue is 128 KB
+(heap 256 KB).
 
 | | before | after |
 |---|---|---|
@@ -256,6 +258,54 @@ ms apart); "back to back" is a 2 min soak at 900 B/cycle:
   waited forever for a lost response while DAQ ran, because every DAQ
   datagram restarted the socket timeout. Both have a deadline per attempt
   now.
+
+### 2.7 Exchange pacing on the control ISR count — 2026-11-18 (`eda40099`)
+The pacing counted CPU cycles and allowed a look at XCP_IN every 5 us
+(`XCP_R5_POLL_PERIOD_US`). At 40 kHz the main loop only runs in the ~8 us
+between two control ISRs (the ISR takes ~17 of every 25 us). So that came
+to one or two looks per gap: 40,700 looks/s at 500 B/cycle and 21,200/s at
+900 B/cycle, where a DAQ copy spans about three periods. The main loop's own
+work per pass is small: three button reads and an LED write through the PS
+GPIO controller.
+
+Now the time base is `uz_SystemTime`'s interrupt counter (low word). The R5
+looks at the XCP_IN header on every main-loop pass. It exchanges with the
+A53 at most once per control period: after an exchange, the next one waits
+for the next control ISR, so there is at most one IPI per period. The 1 ms
+age, the heartbeat and the 5 ms hold are counted in control periods, and
+`xcp_r5_sweep_gap_max_us` has the resolution of one period. The CPU cycle
+counter remains the time base of the profile only.
+
+Tried first: one look per control period, at the first pass after each ISR.
+A command that lands after that look waits for the next period, which
+would be up to 100 us at 10 kHz.
+
+Median command round trip in us (`cmd_latency.py`, 2000 commands per load,
+40 kHz). Each build ran twice; the first old-pacing run was in the morning,
+all other runs in the afternoon:
+
+| Pacing | 0 B | 500 B | 900 B | 1000 B |
+|---|---|---|---|---|
+| cycle counter, a look at most every 5 us | 221, 229 | 226, 228 | 271, 273 | 274, 276 |
+| one look per control period | 223, 235 | 235, 231 | 284, 279 | 292, 315 |
+| a look every pass, one exchange per period (chosen) | 215, 251 | 223, 234 | 270, 296 | 279, 398 |
+
+- DAQ is unchanged: the same exchanges/s, copy cost per KB and A53 idle
+  time at 500 / 900 / 1000 B/cycle. The control ISR takes 16.6 / 17.2 us at
+  500 / 900 B/cycle, as before (one run: 17.1 us at 500 B).
+- Looks while DAQ runs: 53-58k/s at 500 B/cycle (was 40k), 31k/s at 900 B.
+  Without DAQ there is one on every main-loop pass.
+- The one-look variant was 5-15 us slower at 500-900 B/cycle in both runs.
+  The chosen pacing's first run was the fastest of all, its second run
+  slower at every load. The afternoon bench was noisy (next item), so
+  differences below ~20 us are not resolved.
+- Open, new on the afternoon bench: every build, including a control run
+  of the previous build. It showed rare A53 acknowledges of ~300 us after the
+  IPI (morning: at most 72 us), 0-6 lost responses per 2 min soak, and tips
+  into overload at 1000 B/cycle in some 20 s runs. The control run lost
+  120,645 samples in one of them. The board link is not loaded: 56 non-XCP
+  frames in 60 s. Cause unknown, possibly related to the rare lost
+  responses of 2.6.
 
 ## 3. Safety scope — required before live calibration (Z5)
 

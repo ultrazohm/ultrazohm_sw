@@ -274,6 +274,26 @@ PC's adapter. Analysis and table: IMPROVEMENTS.md 2.6.
 - Open: rare lost responses (3 of 8000 in one `cmd_latency.py` run, 0 of
   4 M in the soaks), not reproduced in a captured run.
 
+## Bench run 2026-11-18 afternoon: pacing on the control ISR count (`eda40099` flashed)
+
+Three builds, each flashed and then tested with the same set as above
+(`cmd_latency.py`, 20 s stress at 500 / 900 / 1000 B/cycle, 2 min soak):
+- the previous build as a control;
+- one look at XCP_IN per control period;
+- the chosen pacing: a look on every main-loop pass, at most one exchange
+  per control period.
+
+Analysis and table: IMPROVEMENTS.md 2.7.
+
+- Chosen build: 24/24 functional checks, DAQ unchanged, command round trip
+  within the bench noise of the old pacing. The one-look variant was 5-15 us
+  slower at 500-900 B/cycle.
+- The old pacing never looked every 5 us at 40 kHz: the main loop only runs
+  in the ~8 us between two control ISRs.
+- Open: the afternoon bench showed, on every build including the control,
+  rare A53 acknowledges of ~300 us (morning: at most 72 us), 0-6 lost
+  responses per soak and tips into overload at 1000 B/cycle in some runs.
+
 ## Changes after the July hardware run (2026-11-16/17)
 
 Syntax-checked with the Vitis toolchains; the 2026-11-16 part ran in the

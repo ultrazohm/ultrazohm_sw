@@ -41,14 +41,16 @@ What runs where on the R5
 
 Only the sampling of measurement data runs inside the control interrupt.
 Everything else runs in the main loop underneath it.
-The main loop looks at ``XCP_IN`` every 5 µs and exchanges data with the A53 only when there is something to do:
+The main loop looks at ``XCP_IN`` on every pass and exchanges data with the A53 only when there is something to do, at most once per control period:
 
 - A new command, or a response waiting for the mailbox, gets an exchange of its own at once. It does not touch the measurement data.
 - Measurement data is written to ``XCP_OUT`` only after the A53 has confirmed the previous chain, and then as soon as the oldest waiting data is 1 ms old or 4 segments of the DAQ queue (about 5.6 KB) are waiting. A command that arrives during such a copy waits for its end. At 900 bytes per control cycle and 40 kHz, a copy takes about 75 µs.
 - After 1 ms without any exchange, an exchange without measurement data follows anyway.
 
-Every exchange ends with an interrupt (IPI) to the A53.
-The times are set at the top of ``xcptl_ocm.c`` (``XCP_R5_POLL_PERIOD_US``, ``XCP_R5_DAQ_INTERVAL_US``, ``XCP_R5_DAQ_TRIGGER_SEGMENTS``).
+Every exchange ends with an interrupt (IPI) to the A53, so there is at most one per control period.
+After an exchange, the next one waits for the next control interrupt, and a command that arrives in between waits that long.
+At 40 kHz the main loop only runs in the roughly 8 µs between two control interrupts anyway.
+The 1 ms and the trigger level are set at the top of ``xcptl_ocm.c`` (``XCP_R5_DAQ_INTERVAL_US``, ``XCP_R5_DAQ_TRIGGER_SEGMENTS``). The R5 counts these times in control periods.
 
 .. mermaid::
     :align: center
@@ -62,7 +64,7 @@ The times are set at the top of ``xcptl_ocm.c`` (``XCP_R5_POLL_PERIOD_US``, ``XC
       end
       subgraph ML["main loop"]
         direction TB
-        d["xcp_r5_background()<br>looks at XCP_IN every 5 us"] --> e["read new commands from XCP_IN<br>and execute them"]
+        d["xcp_r5_background()<br>looks at XCP_IN, at most one<br>exchange per control period"] --> e["read new commands from XCP_IN<br>and execute them"]
         e --> f["park the response in the mailbox"]
         f --> g["DAQ exchange only:<br>drain the DAQ queue into XCP_OUT"]
         g --> h["publish, trigger IPI to the A53"]

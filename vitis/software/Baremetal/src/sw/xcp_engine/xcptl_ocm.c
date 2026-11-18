@@ -70,13 +70,24 @@
 #define XCP_R5_QUEUE_SIZE_BYTES (128u * 1024u)
 
 #include "xparameters.h" /* XPAR_CPU_CORTEXR5_0_CPU_CLK_FREQ_HZ */
+#include "../../uz/uz_SystemTime/uz_SystemTime.h" /* uz_SystemTime_GetInterruptCounter */
 
-/* R5 CPU cycle counter (PMU PMCCNTR): the time base of the main-loop pacing
- * and of the profile. uz_SystemTime's uptime only advances once per control
- * ISR (25 us at 40 kHz), too coarse for a poll every few microseconds.
- * Enabled by xcp_r5_init(); it wraps every ~8.6 s at 500 MHz, so only
- * differences of a few milliseconds are used (the heartbeat exchange bounds
- * them). */
+/* Time base of the main-loop pacing: the control ISRs counted by
+ * uz_SystemTime (uz_SystemTime_ISR_Tic(), the first call in ISR_Control).
+ * The main loop runs only between two ISRs, so a changed count means that a
+ * control ISR has run since the count was last read. Only the low word
+ * is used: one 32-bit load cannot tear against the ISR's 64-bit increment,
+ * and differences modulo 2^32 stay valid (the count wraps after ~30 h at
+ * 40 kHz). */
+static inline uint32_t xcp_r5_isr_count(void) {
+    return (uint32_t)uz_SystemTime_GetInterruptCounter();
+}
+
+#if XCP_R5_PROFILE
+/* R5 CPU cycle counter (PMU PMCCNTR): the time base of the profile, which
+ * needs sub-microsecond resolution; the pacing does not use it. Enabled by
+ * xcp_r5_init(); it wraps every ~8.6 s at 500 MHz, so only differences of a
+ * few milliseconds are used. */
 #define XCP_R5_CYC_PER_US (XPAR_CPU_CORTEXR5_0_CPU_CLK_FREQ_HZ / 1000000u)
 
 static inline uint32_t xcp_r5_cycles(void) {
@@ -93,9 +104,6 @@ static void xcp_r5_cycles_enable(void) {
     __asm volatile("mcr p15, 0, %0, c9, c12, 0" ::"r"(pmcr));
     __asm volatile("mcr p15, 0, %0, c9, c12, 1" ::"r"(1u << 31)); /* PMCNTENSET: cycle counter */
 }
-
-#if XCP_R5_PROFILE
-extern float uz_SystemTime_GetIsrExectionTimeInUs(void);
 
 volatile xcp_r5_prof_t xcp_r5_prof = {.version = 2u, .cpu_hz = XPAR_CPU_CORTEXR5_0_CPU_CLK_FREQ_HZ};
 /* The layout is read by tools/xcp_test/xcp_poll.py (PROF_FMT): keep both in sync. */
@@ -116,6 +124,7 @@ static uint32_t gProfEventCallsFold = 0u;
 static uint32_t gProfLastStart = 0u;
 static int gProfHaveLast = 0;
 static uint32_t gProfChainBytes = 0u; /* chain bytes written in the current exchange */
+static uint32_t gProfOutSentCyc = 0u; /* DAQ chain published at, for ack_wait_us    */
 #endif
 
 /* Framed CRM messages must fit the OCM mailbox slot. */
@@ -136,25 +145,31 @@ static uint32_t gProfChainBytes = 0u; /* chain bytes written in the current exch
 #define XCP_R5_CTO_PENDING_DEPTH 4u
 
 /* Main-loop pacing (xcp_r5_background). Commands and DAQ are decoupled
- * (2026-11-18): the R5 refreshes the XCP_IN header every
- * XCP_R5_POLL_PERIOD_US and runs a header-only exchange at once for a new
- * command generation or a response waiting for the mailbox. A DAQ exchange
- * rewrites the XCP_OUT chain only after the A53 has acknowledged the previous
- * chain, and then as soon as the oldest waiting DAQ data is
- * XCP_R5_DAQ_INTERVAL_US old or XCP_R5_DAQ_TRIGGER_SEGMENTS queue segments
- * are waiting. Without any exchange for XCP_R5_DAQ_INTERVAL_US, a header-only
- * heartbeat follows (it repeats a header copy the A53 had to skip and keeps
- * the gateway counter mirror fresh).
- * Before, one sweep on a fixed 100 us grid did everything: commands waited
- * for the next sweep, and a chain acknowledged a few microseconds after the
- * next sweep had started was kept for a whole further period. From
- * ~1000 B/cycle at 40 kHz that cascaded into full 31 KB chains and queue
- * overflow while the A53 still idled 40-57 % (bench 2026-11-17).
- * The poll itself is cheap (four cache lines) and runs in main-loop time
- * that is idle otherwise. */
-#ifndef XCP_R5_POLL_PERIOD_US
-#define XCP_R5_POLL_PERIOD_US 5u
-#endif
+ * (2026-11-18): the R5 looks at the XCP_IN header on every main-loop pass,
+ * but exchanges data with the A53 at most once per control period: after an
+ * exchange, the next one waits for the next control ISR (xcp_r5_isr_count).
+ * That also bounds the IPIs to one per period. A new command generation or a
+ * response waiting for the mailbox gets a header-only exchange at once. A
+ * DAQ exchange rewrites the XCP_OUT chain only after the A53 has
+ * acknowledged the previous chain, and then as soon as the oldest waiting
+ * DAQ data is XCP_R5_DAQ_INTERVAL_US old or XCP_R5_DAQ_TRIGGER_SEGMENTS
+ * queue segments are waiting. Without any exchange for
+ * XCP_R5_DAQ_INTERVAL_US, a header-only heartbeat follows (it repeats a
+ * header copy the A53 had to skip and keeps the gateway counter mirror
+ * fresh). The times are counted in whole control periods.
+ * Until 2026-11-18 the time base was the CPU cycle counter, with a look at
+ * most every 5 us. At 40 kHz the main loop only runs in the ~8 us between two
+ * control ISRs, so that came to one or two looks per gap (40,700 looks/s at
+ * 500 B/cycle, 21,200/s at 900 B/cycle, where a DAQ copy spans about three
+ * periods). Looking only once per period instead was tried the same day and
+ * cost commands 5-40 us at 40 kHz, because a command that lands after the
+ * one look waits for the next period (and would wait up to 100 us at 10 kHz).
+ * Before 2026-11-18, one sweep on a fixed 100 us grid did everything:
+ * commands waited for the next sweep, and a chain acknowledged a few
+ * microseconds after the next sweep had started was kept for a whole further
+ * period. From ~1000 B/cycle at 40 kHz that cascaded into full 31 KB chains
+ * and queue overflow while the A53 still idled 40-57 % (bench 2026-11-17).
+ * A look itself is cheap (four cache lines). */
 #ifndef XCP_R5_DAQ_INTERVAL_US
 #define XCP_R5_DAQ_INTERVAL_US 1000u
 #endif
@@ -189,6 +204,11 @@ static uint32_t gProfChainBytes = 0u; /* chain bytes written in the current exch
 /* Base event period in ns, reported to the master via GET_DAQ_EVENT_INFO
  * (0 = "sporadic or unknown", the sane answer for a misconfigured 0 Hz ISR). */
 #define XCP_R5_ISR_PERIOD_NS ((XCP_R5_ISR_FREQ_HZ) > 0u ? (1000000000u / (XCP_R5_ISR_FREQ_HZ)) : 0u)
+
+/* A pacing time in whole control periods: rounded up, at least one. */
+#define XCP_R5_PERIODS_CEIL(us) (((uint64_t)(us) * (XCP_R5_ISR_FREQ_HZ) + 999999u) / 1000000u)
+#define XCP_R5_US_TO_PERIODS(us) \
+    (XCP_R5_PERIODS_CEIL(us) > 0u ? (uint32_t)XCP_R5_PERIODS_CEIL(us) : 1u)
 
 /* Control cycles per millisecond, the divider base of the named time slices.
  * Clamped to >= 1 so an ISR slower than 1 kHz yields slow-but-sane rasters
@@ -262,11 +282,13 @@ static uint32_t gSliceCnt[XCP_R5_SLICE_COUNT] = {0u, 1u, 2u, 3u};
  *                           ERR_WRITE_PROTECTED
  *   xcp_r5_sweep_count      exchanges executed (DAQ, command/response and
  *                           heartbeat) -> liveness probe
- *   xcp_r5_sweep_gap_max_us worst gap between two xcp_r5_background() calls.
- *                           THE main-loop health number: a few us = loop
- *                           plenty fast; hundreds of us = something in the
- *                           main loop blocks (commands wait that long; the
- *                           128 KB queue rides out ~3 ms at 40 MB/s).
+ *   xcp_r5_sweep_gap_max_us worst gap between two xcp_r5_background() calls,
+ *                           counted in whole control periods (25 us steps
+ *                           at 40 kHz). THE main-loop health number: a few
+ *                           periods = fine (a DAQ copy at 900 B/cycle spans
+ *                           ~3); much more = something in the main loop
+ *                           blocks (commands wait that long; the 128 KB
+ *                           queue rides out ~3 ms at 40 MB/s).
  *                           Includes the exchanges themselves. Reset via
  *                           debugger. */
 volatile int32_t  xcp_r5_init_result = 0x7FFFFFFF; /* "init not run yet" */
@@ -313,12 +335,12 @@ static uint32_t gInCurGen = 0u;
 static uint16_t gInCurRec = 0u;
 static uint16_t gInCurOff = 0u;
 
-/* Pacing state (main-loop context only, R5 cycles). */
+/* Pacing state (main-loop context only, in control periods). */
 static int      gOutPending = 0;        /* DAQ chain published, not acknowledged */
-static uint32_t gOutSentCyc = 0u;       /* ... published at (the IPI)            */
+static uint32_t gOutSentIsr = 0u;       /* ... published at (the IPI)            */
 static int      gOutWaitCounted = 0;    /* xcp_r5_out_held counted for it        */
-static uint32_t gDaqAgeCyc = 0u;        /* queue last empty / last DAQ exchange  */
-static uint32_t gLastExchangeCyc = 0u;  /* end of the last exchange (heartbeat)  */
+static uint32_t gDaqAgeIsr = 0u;        /* queue last empty / last DAQ exchange  */
+static uint32_t gLastExchangeIsr = 0u;  /* end of the last exchange (heartbeat)  */
 
 /* Memory access gate for SHORT_UPLOAD/UPLOAD/DOWNLOAD/BUILD_CHECKSUM/DAQ
  * entries: without it the engine memcpy()s ANY 32-bit address the master
@@ -768,46 +790,47 @@ void xcp_r5_poll(void) {
     ocm_xcp_in_refresh_header();
     const int daq = !gOutPending || ocm_xcp_out_chain_acked();
     xcp_r5_exchange(daq);
-    gLastExchangeCyc = xcp_r5_cycles();
+    gLastExchangeIsr = xcp_r5_isr_count();
     if (daq) {
-        gDaqAgeCyc = gLastExchangeCyc;
-        gOutSentCyc = gLastExchangeCyc;
+        gDaqAgeIsr = gLastExchangeIsr;
+        gOutSentIsr = gLastExchangeIsr;
         gOutWaitCounted = 0;
+#if XCP_R5_PROFILE
+        gProfOutSentCyc = xcp_r5_cycles();
+#endif
     }
 }
 
 /* Paced driver. Call from the MAIN LOOP every iteration; returns 1 when it
  * ran an exchange - the caller must then trigger the IPI to the A53 gateway.
- * Every XCP_R5_POLL_PERIOD_US it refreshes the XCP_IN header and decides (see
- * XCP_R5_POLL_PERIOD_US above): commands and responses at once, DAQ once the
- * last chain is acknowledged and the interval or the trigger level is
- * reached, a heartbeat after a quiet interval. Keeping the exchanges out of
- * ISR_Control removes their cost (~10 us base + ~10 us/KB, measured
- * 2026-07-11) from the control ISR; only the XcpEvent sampling copy remains
- * there. */
+ * Unless an exchange already ran in the current control period, it
+ * refreshes the XCP_IN header and decides (see the pacing notes above):
+ * commands and responses at once, DAQ once the last chain is acknowledged
+ * and the interval or the trigger level is reached, a heartbeat after a
+ * quiet interval. Keeping the exchanges out of ISR_Control removes their
+ * cost (~10 us base + ~10 us/KB, measured 2026-07-11) from the control ISR;
+ * only the XcpEvent sampling copy remains there. */
 int xcp_r5_background(void) {
-    static uint32_t last_call_cyc = 0u;
-    static uint32_t last_poll_cyc = 0u;
+    static uint32_t last_call_isr = 0u;
     static int first_call = 1;
     if (gQueue == NULL) {
         return 0; /* init failed or not run: engine disabled */
     }
-    const uint32_t now = xcp_r5_cycles();
+    const uint32_t now = xcp_r5_isr_count();
     if (first_call) {
         first_call = 0; /* boot-to-first-call gap is not a loop-health signal */
-        gDaqAgeCyc = now;
-        gLastExchangeCyc = now;
+        gDaqAgeIsr = now;
+        gLastExchangeIsr = now;
     } else {
-        const uint32_t gap_us = (uint32_t)(now - last_call_cyc) / XCP_R5_CYC_PER_US;
+        const uint32_t gap_us = (uint32_t)(now - last_call_isr) * (XCP_R5_ISR_PERIOD_NS / 1000u);
         if (gap_us > xcp_r5_sweep_gap_max_us) {
             xcp_r5_sweep_gap_max_us = gap_us;
         }
     }
-    last_call_cyc = now;
-    if ((uint32_t)(now - last_poll_cyc) < XCP_R5_POLL_PERIOD_US * XCP_R5_CYC_PER_US) {
-        return 0;
+    last_call_isr = now;
+    if (now == gLastExchangeIsr) {
+        return 0; /* at most one exchange (IPI) per control period */
     }
-    last_poll_cyc = now;
     ocm_xcp_in_refresh_header(); /* cto_ack, in_gen, out_ack */
 #if XCP_R5_PROFILE
     xcp_r5_prof.polls++;
@@ -815,13 +838,12 @@ int xcp_r5_background(void) {
 
     /* DAQ chain consumption handshake. */
     if (gOutPending) {
-        const uint32_t waited = (uint32_t)(now - gOutSentCyc);
         if (ocm_xcp_out_chain_acked()) {
             gOutPending = 0;
 #if XCP_R5_PROFILE
-            xcp_r5_prof_ack(waited / XCP_R5_CYC_PER_US);
+            xcp_r5_prof_ack((xcp_r5_cycles() - gProfOutSentCyc) / XCP_R5_CYC_PER_US);
 #endif
-        } else if (waited >= XCP_R5_OUT_HOLD_MAX_US * XCP_R5_CYC_PER_US) {
+        } else if ((uint32_t)(now - gOutSentIsr) >= XCP_R5_US_TO_PERIODS(XCP_R5_OUT_HOLD_MAX_US)) {
             xcp_r5_out_overwritten++; /* gateway gone or stalled: give up on that chain */
             gOutPending = 0;
         }
@@ -832,15 +854,15 @@ int xcp_r5_background(void) {
     const int cto = (gCtoPendingCount != 0u) && ocm_xcp_cto_mailbox_free();
 
     /* DAQ once the waiting data is old enough or plenty, and only on an
-     * acknowledged chain. gDaqAgeCyc follows "now" while nothing waits, so
+     * acknowledged chain. gDaqAgeIsr follows "now" while nothing waits, so
      * the interval is the age of the oldest waiting data. */
-    const uint32_t interval = XCP_R5_DAQ_INTERVAL_US * XCP_R5_CYC_PER_US;
+    const uint32_t interval = XCP_R5_US_TO_PERIODS(XCP_R5_DAQ_INTERVAL_US);
     const uint32_t level = queueLevel(gQueue, NULL);
     int daq = 0;
     if (!gTxHeldValid && level == 0u) {
-        gDaqAgeCyc = now;
+        gDaqAgeIsr = now;
     } else if (gTxHeldValid || level >= XCP_R5_DAQ_TRIGGER_SEGMENTS ||
-               (uint32_t)(now - gDaqAgeCyc) >= interval) {
+               (uint32_t)(now - gDaqAgeIsr) >= interval) {
         if (!gOutPending) {
             daq = 1;
         } else if (!gOutWaitCounted) {
@@ -851,12 +873,13 @@ int xcp_r5_background(void) {
 #endif
         }
     }
-    const int beat = (uint32_t)(now - gLastExchangeCyc) >= interval;
+    const int beat = (uint32_t)(now - gLastExchangeIsr) >= interval;
     if (!cmd && !cto && !daq && !beat) {
         return 0;
     }
     if (cmd) {
-        /* Commands get a quick header-only exchange; DAQ follows next poll.
+        /* Commands get a quick header-only exchange; DAQ follows in the next
+         * control period.
          * A DAQ exchange that is already copying is NOT cut short for a
          * command: the cut chain would need its own acknowledge before the
          * rest could follow, ~50 us of DAQ dead time per command, and with
@@ -866,11 +889,14 @@ int xcp_r5_background(void) {
         daq = 0;
     }
     xcp_r5_exchange(daq);
-    gLastExchangeCyc = xcp_r5_cycles();
+    gLastExchangeIsr = xcp_r5_isr_count();
     if (daq) {
-        gDaqAgeCyc = gLastExchangeCyc;
-        gOutSentCyc = gLastExchangeCyc; /* the acknowledge wait starts with the IPI */
+        gDaqAgeIsr = gLastExchangeIsr;
+        gOutSentIsr = gLastExchangeIsr; /* the acknowledge wait starts with the IPI */
         gOutWaitCounted = 0;
+#if XCP_R5_PROFILE
+        gProfOutSentCyc = xcp_r5_cycles();
+#endif
     }
     xcp_r5_sweep_count++;
     return 1;
@@ -879,7 +905,9 @@ int xcp_r5_background(void) {
 /* One-time init. Base addr 0 => XCP address == pointer => arbitrary R5
  * addressing (the point of Option Z). Returns 0 on success. */
 int xcp_r5_init(const char *name, const char *epk) {
-    xcp_r5_cycles_enable(); /* pacing time base (and profile) */
+#if XCP_R5_PROFILE
+    xcp_r5_cycles_enable(); /* profile time base */
+#endif
     gCtr = 0u;
     gQueue = queueInit((size_t)XCP_R5_QUEUE_SIZE_BYTES);
     if (gQueue == NULL) {

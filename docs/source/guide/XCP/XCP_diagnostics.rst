@@ -60,7 +60,7 @@ R5 counters
      - One count per exchange with the A53: measurement data, commands or the 1 ms heartbeat.
    * - ``xcp_r5_sweep_gap_max_us``
      - below 1000
-     - Longest time between two passes of the main loop through ``xcp_r5_background()`` since start-up, in microseconds, including the exchanges themselves. A single slow pass raises it for good. A large value means that something blocks the main loop, and commands wait that long.
+     - Longest time between two passes of the main loop through ``xcp_r5_background()`` since start-up, in microseconds, including the exchanges themselves. It is counted in whole control periods (25 µs steps at 40 kHz). A single slow pass raises it for good. A large value means that something blocks the main loop, and commands wait that long.
    * - ``xcp_r5_queue_lost``
      - 0
      - Measurement data dropped because the DAQ queue of the R5 was full. This is the loss counter for measurement data on the R5.

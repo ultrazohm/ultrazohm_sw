@@ -10,12 +10,13 @@
  *                         rate. This is the ONLY XCP call in the ISR; its cost
  *                         is the DAQ sample copy (~sub-us idle, ~5 us/KB).
  *                         It also serves the derived time slices (see below).
- *   xcp_r5_background() : call from the MAIN LOOP every iteration. Polls the
- *                         XCP_IN header every few microseconds, executes new
- *                         commands at once and drains DAQ into the OCM once
- *                         the A53 has acknowledged the previous chain (see
- *                         XCP_R5_POLL_PERIOD_US in xcptl_ocm.c); returns 1
- *                         when the caller must trigger the IPI to the A53.
+ *   xcp_r5_background() : call from the MAIN LOOP every iteration. Looks at
+ *                         the XCP_IN header, executes new commands at once
+ *                         and drains DAQ into the OCM once the A53 has
+ *                         acknowledged the previous chain, with at most one
+ *                         exchange per control period (see the pacing notes
+ *                         in xcptl_ocm.c); returns 1 when the caller must
+ *                         trigger the IPI to the A53.
  *   xcp_r5_poll()       : one unpaced exchange (special cases only).
  *
  * DAQ rasters (event channel numbers as declared in CANape/UZ_XCP/uz.A2L):

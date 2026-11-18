@@ -181,16 +181,81 @@ every 5 us (CPU cycle counter); a new command batch or a waiting response
 gets a header-only exchange at once (the A53 rx task writes commands into
 XCP_IN when they arrive, not at the next IPI); a DAQ exchange runs only on an
 acknowledged chain, when the oldest waiting data is 1 ms old or 8 queue
-segments wait; after 1 ms without any exchange a header-only heartbeat
-follows. The queue is 128 KB (heap 256 KB).
+segments wait (4 since 2.6); after 1 ms without any exchange a header-only
+heartbeat follows. The queue is 128 KB (heap 256 KB).
 
 | | before | after |
 |---|---|---|
 | 8 B/cycle: IPIs = datagrams per s | 9800 (80 B each) | 960 (822 B each) |
 | A53 idle at 8 B/cycle | 79 % | 98 % |
 | 1000 B/cycle | 47 % kept chains, 0 loss | no waits for the acknowledge, 0 loss |
-| command round trip idle / 1000 B/cycle (median) | 374 / 816 us | 238 / 590 us |
-| back-to-back commands at 900 B/cycle | 0 loss (30 min) | 0 loss (10 min) |
+| command round trip, median, 0 / 500 / 900 / 1000 B/cycle | 374 / 338 / 374 / 816 us | 238 / 308 / 558 / 590 us |
+| back-to-back commands at 900 B/cycle | 315 us median, 0 loss (30 min) | 583 us median, 0 loss (10 min) |
+
+Commands under DAQ load got slower with this change at 500-900 B/cycle.
+The first version of this table listed only idle and 1000 B/cycle and hid
+that; found and fixed the same day, see 2.6.
+
+### 2.6 Command latency under DAQ load — RESOLVED 2026-11-18
+Two causes, found with A/B builds and a capture on the PC's adapter
+(Wireshark's dumpcap; the analysis pairs every command with its response):
+- A53: the tx task, lwIP's tcpip thread and the rx task all run at
+  priority 2. FreeRTOS does not preempt between equal priorities, and with
+  `LWIP_TCPIP_CORE_LOCKING` `lwip_sendto` never blocks. A command that
+  arrived during a burst of DAQ datagrams therefore waited in lwIP's mailbox
+  until the whole burst was sent: 892 of 1000 responses arrived after a full
+  burst (median 14 datagrams). The batching of 2.5 had made the bursts about
+  three times longer (13 datagrams at 900 B/cycle, ~4 with the 100 us grid).
+- R5: a command waits for a running DAQ copy. With 8 segments a DAQ exchange
+  took 184 us at 900 B/cycle.
+
+Fix: the tx task yields after every datagram (`xcp_gateway_a53.c`), and the
+DAQ trigger is 4 queue segments instead of 8 (`xcptl_ocm.c`). No lwIP
+setting changed.
+
+Measured at 40 kHz. "Single" is `cmd_latency.py` (2000 commands per load, 2
+ms apart); "back to back" is a 2 min soak at 900 B/cycle:
+
+| Build | single, median at 0 / 500 / 900 / 1000 B (us) | back to back | IPIs/s, A53 idle at 900 B |
+|---|---|---|---|
+| trigger 8, tx task at 2 (`97ac9f86`) | 224 / 305 / 544 / 583 | 583 us, 1560/s | 3050, 42 % |
+| trigger 8, tx task at 1 | 225 / 278 / 439 / 481 | 317 us, 2496/s | 3050, 42 % |
+| trigger 4, tx task at 1 | 220 / 224 / 266 / 281 | 251 us, 3384/s | 6800, 39 % |
+| trigger 2, tx task at 1 | 220 / 205 / 231 / 240 | 193 us, 4294/s | 14550, 34 % |
+| **trigger 4, yield (chosen)** | 221 / 226 / 271 / 274 | 252 us, 3387/s | 6800, 37 % |
+
+- Smaller chains copy cheaper per KB, because the data is younger and still
+  in the cache: 3.5 / 3.2 / 3.1 us/KB at 900 B/cycle for 8 / 4 / 2 segments,
+  2.9 instead of 3.5 at 1000 B/cycle. The R5's share in exchanges stayed at
+  17-19 % for all three. The cost of smaller chains is on the A53: one IPI
+  hook per chain.
+- The tx task one priority lower works as well as the yield. It puts the
+  task at the level of the application's priority-1 tasks, though (polled
+  I2C every 50 ms, CAN), and the priority-1 builds had the largest single
+  outliers (10-29 ms). The yield costs about 2 % of the A53 (shown as
+  "other" in the A53 profile).
+- Final build: 24/24 functional checks. Back to back for 10 min at 900
+  B/cycle: 2,025,581 commands, 0 timeouts, worst 1.9 ms. At 1000 B/cycle:
+  1,960,833 commands, 0 timeouts, worst 2.1 ms, R5 queue lost +0. With 8
+  segments the R5 had fallen behind within the first minute of that test
+  (15 % lost, 2.4). 1100 and 1200 B/cycle are still overload (copy back at
+  7.5 us/KB, ~28 % lost): the limit itself did not move.
+- At the PC's adapter (Npcap timestamps) the round trip is 168 us idle and
+  ~220 us at 900 B/cycle; Windows and Python add 50-100 us on top. The
+  board's own share idle is estimated at ~60 us, so the Realtek USB adapter
+  is probably the largest part (the PC also has a PCIe Ethernet port).
+- Not done: trigger 2 (another ~35-60 us for twice the A53 interrupt load).
+  Responses in the middle of a DAQ exchange (2.4, option 5) would allow long
+  chains without the command waiting for the copy.
+- Open: rare lost responses. One `cmd_latency.py` run lost 3 of 8000, while
+  the stress runs of the same minutes showed reordering on the PC. The
+  final build's soaks lost 0 of 4 M, and a captured run of 4000 commands
+  did not reproduce it. A first baseline run (trigger 8) had hung on one as
+  well. A captured run shows whether a missing response left the board.
+- Tool fix on the way: `xcp_poll.py` (`_command`) and `cmd_latency.py`
+  waited forever for a lost response while DAQ ran, because every DAQ
+  datagram restarted the socket timeout. Both have a deadline per attempt
+  now.
 
 ## 3. Safety scope — required before live calibration (Z5)
 

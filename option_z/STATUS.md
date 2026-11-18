@@ -217,8 +217,10 @@ analysis: IMPROVEMENTS.md 2.4 and 2.5.
   exchanges driven by the A53's acknowledge, 1 ms heartbeat, 128 KB queue.
   24/24 functional checks; 8 B/cycle 960 instead of 9800 IPIs and datagrams
   per second; 1000 B/cycle clean without kept chains (acknowledge ~48 us
-  after the IPI); command round trip 238 us idle, 590 us at 1000 B/cycle,
-  1130 us at 1100 B/cycle (overload).
+  after the IPI); command round trip 238 / 308 / 558 / 590 us at 0 / 500 /
+  900 / 1000 B/cycle, 1130 us at 1100 B/cycle (overload). At 500-900
+  B/cycle that is slower than before the redesign (374 us at 900 B/cycle);
+  fixed the next day, see the next section.
 - Soaks with back-to-back commands: 900 B/cycle 10 min, 942,781 commands,
   0 timeouts, R5 queue lost +0. 1000 B/cycle 10 min: the R5 fell behind
   within the first minute and stayed there (queue lost +3.57 M, ~15 %,
@@ -248,6 +250,29 @@ analysis: IMPROVEMENTS.md 2.4 and 2.5.
   8 / 500 / 1000 B/cycle, ~0.2 us per control cycle with a DAQ list
   running (~1 % of the 25 us period; R5 reserve 11.3 instead of 10.0 % at
   1000 B). Left on, the Debug default.
+
+## Bench run 2026-11-18: command latency under DAQ load
+
+Five builds on the board (DAQ trigger 8 / 4 / 2 segments, A53 tx task at
+priority 2 / 1 / yielding after every datagram), each with `cmd_latency.py`
+at 0 / 500 / 900 / 1000 B/cycle, 20 s stress runs at 500 / 900 / 1000 B and
+a 2 min soak of back-to-back commands at 900 B. Wireshark (dumpcap) on the
+PC's adapter. Analysis and table: IMPROVEMENTS.md 2.6.
+
+- Cause of the slow commands under load: on the A53 a burst of DAQ
+  datagrams held incoming commands in lwIP's mailbox (tx task, tcpip thread
+  and rx task at equal priority, sendto never blocks); on the R5 a command
+  waited for a 184 us DAQ copy.
+- Chosen: tx task yields after every datagram, DAQ trigger 4 segments.
+  900 B/cycle: back to back 252 instead of 583 us median, 3387 instead of
+  1560 commands/s; single commands 271 instead of 544 us. 6800 instead of
+  3050 IPIs/s, A53 idle 37 instead of 42 %.
+- Final build: 24/24 functional checks; 10 min back to back at 900 B/cycle
+  (2.03 M commands) and at 1000 B/cycle (1.96 M commands): 0 timeouts,
+  worst 1.9 / 2.1 ms, R5 queue lost +0. 1000 B/cycle no longer tips into
+  the slow copy within a minute. 1100 / 1200 B/cycle are still overload.
+- Open: rare lost responses (3 of 8000 in one `cmd_latency.py` run, 0 of
+  4 M in the soaks), not reproduced in a captured run.
 
 ## Changes after the July hardware run (2026-11-16/17)
 

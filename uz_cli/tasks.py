@@ -1,7 +1,7 @@
 """Build, test and install uz_cli; the same tasks on Linux, Windows and in CI.
 
-Standard library only. `python uz_cli/tasks.py` (or `make` in this directory)
-lists the tasks; `TASK --help` explains one. The Python version comes from the
+Standard library only. `./uz task cli help` lists the tasks;
+`./uz task cli TASK --help` explains one. The Python version comes from the
 repository's .python-version. Set UZ_CLI_RELEASE_VERSION while building so the
 binary reports the same version as the wheel.
 """
@@ -86,26 +86,6 @@ def install(_args):
     run("uv", "tool", "install", "--force", "--python", python, built)
 
 
-def start(args):
-    """Install the chosen CLI into the project environment, then launch it."""
-    package = local_wheel() if args.source == "local" else "ultrazohm_cli"
-    venv = HERE / ".venv"
-    python = venv_bin(venv, "python")
-    if not python.is_file():
-        version = (ROOT / ".python-version").read_text(encoding="utf-8").strip()
-        run("uv", "venv", "--python", version, venv)
-    options = [] if args.source == "local" else [
-        "--upgrade-package", "ultrazohm_cli", "--prerelease", "allow" if args.source == "prerelease" else args.prerelease]
-    # Reinstall even at the same version: local builds retain their base version,
-    # and switching to PyPI must replace a locally installed wheel too.
-    run("uv", "pip", "install", "--python", python,
-        "--reinstall-package", "ultrazohm_cli", *options, package)
-    cli_args = args.cli_args
-    if cli_args[:1] == ["--"]:
-        cli_args = cli_args[1:]
-    run(venv_bin(venv, "ultrazohm_cli"), *cli_args, cwd=Path.cwd())
-
-
 def check(args):
     run("cargo", "fmt", "--check")
     run("cargo", "clippy", "--all-targets", "--features", "python", "--locked", "--", "-D", "warnings")
@@ -178,43 +158,16 @@ def stamp(args):
 
 
 def _invocation():
-    """How this script was called, so help shows commands that can be copied."""
-    if os.environ.get("UZ_TASKS_VIA_MAKE"):
-        return lambda task, args="": f"make {task}" + (f' ARGS="{args}"' if args else "")
-    return lambda task, args="": f"uv run uz_cli/tasks.py {task}" + (f" {args}" if args else "")
+    prefix = ".\\uz.ps1" if WINDOWS else "./uz"
+    return lambda task, args="": f"{prefix} task cli {task}" + (f" {args}" if args else "")
 
 
 def overview():
-    call = _invocation()
-    usage = 'make TASK [ARGS="..."]' if os.environ.get("UZ_TASKS_VIA_MAKE") else "uv run uz_cli/tasks.py TASK [...]"
-    print(f"""uz_cli tasks                              {usage}
-
-Use
-  start [local|release|prerelease]  Install the checkout or PyPI CLI in .venv and run (default: local)
-  install        Build this checkout's CLI and install the ultrazohm_cli command (uv tool)
-
-Develop
-  check          Formatting, clippy, Rust tests and integration tests, as CI
-  wheel          Wheel for this machine in target/wheels
-  release-wheel  Portable release wheel in target/wheels-release (release-check tests it)
-
-CI only: debug-wheel, release-check, version, stamp
-
-Examples
-  {call("start local")}
-  {call("start release", "-- --help")}
-  {call("install")}
-  {call("check")}
-
-Details: {call("TASK", "--help")}
-Builds use native tools (rustup's pinned Rust, maturin, a C/C++ compiler); no containers.""")
+    print("CLI build tasks: check, wheel, debug-wheel, release-wheel, release-check, version, stamp, install")
+    print("Use ./uz shell to run both applications; ./uz task cli TASK --help for details.")
 
 
 DESCRIPTIONS = {
-    "start": "Install and launch in uz_cli/.venv. 'local' (default) builds this checkout first; "
-             "'release' fetches the latest stable version from PyPI; 'prerelease' includes development builds. Use --prerelease allow "
-             "to include development releases. Pass CLI arguments after --. "
-             "The global uv tool installation is unchanged.",
     "install": "Build an optimized wheel of this checkout for this machine and install it with "
                "'uv tool install --force', replacing an ultrazohm_cli installed from PyPI until you "
                "reinstall that.",
@@ -238,10 +191,6 @@ def main(argv=None):
         task = tasks.add_parser(name, prog=call(name), description=DESCRIPTIONS[name])
         task.set_defaults(function=function)
         return task
-    launch = add("start", start)
-    launch.add_argument("source", nargs="?", choices=("local", "release", "prerelease"), default="local")
-    launch.add_argument("--prerelease", choices=("allow", "disallow"), default="disallow",
-                        help="include prereleases when installing from PyPI (default: disallow)")
     add("install", install)
     add("check", check)
     add("debug-wheel", debug_wheel)
@@ -255,14 +204,7 @@ def main(argv=None):
     if not argv or argv[0] in ("-h", "--help", "help"):
         overview()
         return
-    cli_args = []
-    if argv[0] == "start" and "--" in argv:
-        separator = argv.index("--")
-        cli_args = argv[separator + 1:]
-        argv = argv[:separator]
     args = parser.parse_args(argv)
-    if args.task == "start":
-        args.cli_args = cli_args
     try:
         args.function(args)
     except subprocess.CalledProcessError as error:

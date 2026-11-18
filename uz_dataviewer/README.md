@@ -54,67 +54,29 @@ them, and saved sessions preserve their independent grids. Their actions appear 
 
 ## Quick start
 
-Run the launcher from the repository root (Linux):
+From the repository root, prepare and enter the shared CLI/viewer environment:
 
 ```bash
-./uz_dataviewer/start.sh
-./uz_dataviewer/start.sh path/to/log.csv    # preload one or more files
-./uz_dataviewer/start.sh session.json       # restore a saved session
-./uz_dataviewer/start.sh --dev-cli          # build this checkout's CLI and use it (needs Rust)
+./uz shell                    # Windows PowerShell: .\uz.ps1 shell
+uz-dataviewer
+uz-dataviewer gui path/to/log.csv
+uz-dataviewer gui session.json
 ```
 
-The launcher installs the locked dependencies into `uz_dataviewer/.venv`,
-including the published CLI package `ultrazohm_cli`, and opens the viewer. The
-live panels (Live Data, Live Plots, Control, Python) are present whenever
-`ultrazohm_cli` is installed, which is the case on Windows and Linux x86-64 and in
-the desktop bundle. Offline analysis never needs the CLI.
+`./uz shell [local|stable|prerelease]` selects the CLI source; without a source it
+reuses the last setup, or selects stable on first use. `local` builds the checkout's
+Rust CLI. The viewer is installed from source into the repository `.venv` along
+with its locked runtime dependencies. Both `uz-dataviewer` and `ultrazohm_cli`
+are available in the shell. `exit` returns to the original terminal.
 
-`start.sh` and `start.ps1` only install uv when it is missing and then run
-`uz_dataviewer/tasks.py start`. With uv installed, every task is available
-directly, on Linux and Windows alike:
+The Bash and PowerShell launchers bootstrap missing uv and the pinned Python;
+host Python and Make are not required. `./uz setup` prepares the environment
+without opening a shell. See the [shared launcher guide](../README.MD#cli-and-data-viewer)
+for source selection, prerequisites and build commands.
 
-```bash
-uv run uz_dataviewer/tasks.py                    # list the tasks
-uv run uz_dataviewer/tasks.py start [VIEWER_ARGS...]
-uv run uz_dataviewer/tasks.py develop [VIEWER_ARGS...]  # with this checkout's CLI
-uv run uz_dataviewer/tasks.py shell              # terminal in the viewer environment
-uv run uz_dataviewer/tasks.py check | bundle | bundle-smoke
-uv run uz_dataviewer/tasks.py TASK --help        # details of one task
-```
-
-On Linux, `make` in `uz_dataviewer` lists the same tasks as make commands, for
-example `make develop` or `make start ARGS="log.csv"`.
-
-On Windows, use PowerShell:
-
-```powershell
-.\uz_dataviewer\start.ps1
-.\uz_dataviewer\start.ps1 --dev-cli
-.\uz_dataviewer\start.ps1 "path\to\log.csv"
-```
-
-If Windows blocks script execution, run `powershell -ExecutionPolicy Bypass -File .\uz_dataviewer\start.ps1`.
-Both launchers automatically install missing uv using the [official installer](https://docs.astral.sh/uv/reference/installer/), without modifying shell profiles.
-Linux/macOS requires `curl` or `wget` for this initial download.
-The launchers use `uv run` to create/reuse `uz_dataviewer/.venv`, install the project and all runtime dependencies from `pyproject.toml`, and start the viewer.
-It selects Python 3.12 (downloaded by uv if needed) and requires a prebuilt
-`imgui-bundle` wheel, avoiding an accidental native build with Python 3.10.
-An existing `.venv` using another Python version is recreated by uv.
-The first run needs internet access and uses the included `uz_dataviewer/uv.lock`.
-No manual virtual environment activation is needed. Input paths are relative to
-your current directory; the launcher itself can be called from any directory.
-Startup files are processed in argument order, so a script can use recordings
-listed before it. A failed startup argument stops the remaining arguments and
-reports the error in the console.
-
-Alternatively, install and run manually from `uz_dataviewer/`:
-
-```bash
-pip install -r requirements.txt      # or: pip install -e .
-python run.py                        # or: python -m uz_dataviewer
-python run.py ../javascope/Log_2026-06-11_22-45-16.csv   # preload
-python run.py session.json           # restore a saved session
-```
+Start the GUI with `uz-dataviewer`, then use `uz-dataviewer status` from another
+activated terminal to control it. `uz-dataviewer --help` lists application commands;
+`./uz --help` lists repository tasks. Input paths are relative to your current directory.
 
 On desktop, selecting a CSV larger than 1 GiB prompts **Large log, conversion to parquet recommended**.
 Choose **Open CSV** to read it directly, or **Convert to Parquet** to create and open a file with the same stem and directory (for example, `logs/run.csv` becomes `logs/run.parquet`).
@@ -164,8 +126,8 @@ Choose **Settings → Data loading → Loading → In memory / Lazy** before ope
 or select the mode at startup:
 
 ```bash
-./uz_dataviewer/start.sh --loading-mode lazy path/to/log.parquet
-./uz_dataviewer/start.sh --loading-mode lazy path/to/log.csv
+uz-dataviewer gui --loading-mode lazy path/to/log.parquet
+uz-dataviewer gui --loading-mode lazy path/to/log.csv
 ```
 
 - **In memory** retains the existing full NumPy arrays for fast analysis.
@@ -311,15 +273,14 @@ Documentation lives in `../docs/source/guide/gui/uz_dataviewer/`.
 Run the same checks as CI, on Linux (dev container) or Windows:
 
 ```bash
-python uz_dataviewer/tasks.py check                  # ruff and the full pytest suite, with a CLI wheel from this checkout
-python uz_dataviewer/tasks.py bundle                 # PyInstaller bundle in dist/
-python uz_dataviewer/tasks.py bundle-smoke           # its smoke tests
+./uz check viewer                  # ruff and the full pytest suite, with a CLI wheel from this checkout
+./uz build viewer                 # PyInstaller bundle in dist/
+./uz task viewer bundle-smoke           # its smoke tests
 ```
 
-The tasks use `uz_dataviewer/.venv-ci`, separate from the launchers' `.venv`.
+The tasks use `uz_dataviewer/.venv-ci`, separate from the shared repository `.venv`.
 `check` builds a debug CLI wheel from `../uz_cli` unless `--cli-wheel PATH` is given,
-so the live tests run against the same commit. `make -C uz_dataviewer check` forwards
-to the same script. Linux CI runs it in the `ci` stage of `.devcontainer/Dockerfile`;
+so the live tests run against the same commit. `./uz check viewer` forwards to the same task implementation. Linux CI runs it in the `ci` stage of `.devcontainer/Dockerfile`;
 only the published Linux bundle is built in Ubuntu 22.04, because PyInstaller copies
 the build system's libraries.
 
@@ -344,7 +305,7 @@ retain their saved domain as unavailable placeholders until repaired.
 ### Python and terminal automation
 
 The viewer hosts a local control API at `127.0.0.1:19741`. Open an environment
-shell with `uv run uz_dataviewer/tasks.py shell`, then use ordinary Python or
+shell with `./uz shell`, then use ordinary Python or
 terminal commands. Control commands attach to an existing application:
 
 ```bash
@@ -431,18 +392,13 @@ Connect launches `serve --repo PATH --profile settings.json`. The service resolv
 the firmware configuration itself, strictly validates saved preferences, and
 exposes the effective configuration through `catalog`. An existing service keeps
 its loaded configuration. Shut it down and reconnect to apply a different
-repository or changed headers. Both launchers pass their checkout root; a manually
-installed viewer can select another checkout with `--live-repo PATH`.
+repository or changed headers. Select the checkout in the viewer, or pass `uz-dataviewer gui --live-repo PATH`.
 
-The launcher uses the `ultrazohm_cli` version locked in `uv.lock`. To move to a
-newer published CLI, run `uv lock --upgrade-package ultrazohm_cli` in
-`uz_dataviewer` and commit the lockfile. To develop the CLI and the viewer
-together, use the `develop` task (`make develop`, or `start.sh --dev-cli`): it first
-builds `uz_cli` from this checkout (Rust and a C/C++ toolchain required), installs
-the other dependencies from `uv.lock`, and installs the local CLI wheel. It does
-not resolve or download the published CLI, so an unpublished minimum CLI version
-does not block development. The lockfile stays unchanged. This also applies to
-`shell --dev-cli`. The next ordinary start uses the published dependency again.
+The shared launcher selects the CLI with `./uz setup stable`, `prerelease`, or
+`local`. Published versions must satisfy the viewer's minimum dependency version;
+other dependencies stay locked. Local setup builds this checkout's CLI and does
+not download the published CLI. Re-run `./uz setup local` after Rust changes.
+Plain `./uz shell` preserves the last selection; `./uz setup stable` switches back.
 
 **Flash UZ**, beside Connect/Disconnect, opens an **OK / Cancel** confirmation.
 The button is greyed out when Vitis XSCT is missing from PATH, with a tooltip
@@ -547,10 +503,10 @@ To compare live-data preparation performance between machines, run this with the
 viewer's installed Python environment (PowerShell shown):
 
 ```powershell
-.\uz_dataviewer\.venv\Scripts\python.exe .\uz_dataviewer\build\benchmark_live.py --sample-rate 10000 --traces 3
+.\.venv\Scripts\python.exe .\uz_dataviewer\build\benchmark_live.py --sample-rate 10000 --traces 3
 ```
 
-On Linux, use `uz_dataviewer/.venv/bin/python` with the same script and options.
+On Linux, use `.venv/bin/python` with the same script and options.
 The benchmark simulates filling and wrapping the 30-second buffer and prints
 JSON timings for appends and preparing the visible traces. It needs no hardware.
 `--channels` defaults to 20: buffering work depends on acquired channels even
@@ -594,8 +550,8 @@ service, whereas closing the GUI retains the external-service ownership policy.
 To open an activated DataViewer environment without launching the GUI or a service:
 
 ```bash
-uv run uz_dataviewer/tasks.py shell
-uv run uz_dataviewer/tasks.py shell --dev-cli   # with this checkout's CLI
+./uz shell
+./uz shell local   # with this checkout's CLI
 ```
 
 The same works on Windows. Run
@@ -670,7 +626,7 @@ to PATH for itself and its child processes on subsequent starts. The system
 PATH is unchanged. Starting the viewer from a Vitis command prompt (or after
 sourcing `settings64.sh`) also works.
 
-To build the combined application, run `python uz_dataviewer/tasks.py bundle`
+To build the combined application, run `./uz build viewer`
 (optionally with `--cli-wheel PATH` for a wheel built from the same commit). The task
 synchronizes locked dependencies before installing that wheel. CI builds both OS
 wheels once, packages folder distributions from them, and tests frozen workers

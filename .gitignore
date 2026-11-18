@@ -39,3 +39,8 @@ vitis/Packages/*
 .pytest_cache/
 *.egg-info/
 uz_dataviewer/build/native/
+
+# Shared launcher environment
+/.venv/
+/__pycache__/
+/tests/__pycache__/

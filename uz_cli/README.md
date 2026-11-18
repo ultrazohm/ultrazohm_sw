@@ -18,7 +18,7 @@ needed. With [uv](https://docs.astral.sh/uv/):
 uv tool install ultrazohm_cli                      # newest stable release, as a command
 uv tool install --prerelease allow ultrazohm_cli   # newest build from develop or the testing branch
 uv tool install ultrazohm_cli==0.1.1.dev0          # one exact build (see its GitHub release)
-uv run uz_cli/tasks.py install                     # build this checkout and install it (needs Rust)
+./uz task cli install                     # build this checkout and install it (needs Rust)
 ultrazohm_cli --help
 ```
 
@@ -31,29 +31,28 @@ example script. `python -m ultrazohm_cli` runs the same CLI.
 Each GitHub release `ultrazohm-v<VERSION>` also contains both wheels, the data
 viewer bundles and `SHA256SUMS`, for installing without PyPI access.
 
-To install and start from this checkout in its own `uz_cli/.venv`:
+For the shared repository environment (CLI and viewer), run from the root:
 
 ```sh
-make -C uz_cli start local       # build and install the checkout, then open the CLI
-make -C uz_cli start release     # install/update the latest stable PyPI release, then open the CLI
-make -C uz_cli start prerelease  # install/update from PyPI, including development releases
-make -C uz_cli start release ARGS="-- --help"
+./uz shell                    # stable on first use, otherwise reuse previous setup
+./uz shell local              # build this checkout's CLI, then enter the shell
+./uz shell stable             # install/update the stable PyPI CLI
+./uz shell prerelease         # include PyPI development releases
+ultrazohm_cli
 ```
 
-Bare `make start` defaults to `local`. All modes reuse `.venv` and reinstall the
-selected CLI, so switching modes also works when the version number is unchanged.
-The global `uv tool` installation is unaffected. On Windows, or without Make, use
-`python uz_cli/tasks.py start local` or `python uz_cli/tasks.py start release`;
-append `--` followed by CLI arguments as needed. Local mode requires the build
-tools below; release mode needs only uv and a supported Python/platform.
+On Windows use `.\uz.ps1` with the same arguments. `./uz setup [SOURCE]`
+only prepares the environment; `./uz shell` opens an activated child shell.
+See the [shared launcher guide](../README.MD#cli-and-data-viewer).
 
 ## Build
 
 Source builds require Rust 1.90.0 and a native C/C++ toolchain (Linux:
 `build-essential`; Windows: Visual Studio Build Tools with C++ development).
-The devcontainer supplies Rust, Maturin and uv. Its post-create script builds a
-wheel into `uz_cli/target/wheels`, installs it with example dependencies and
-checks imports. Re-run `bash .devcontainer/post-create.sh` to refresh it.
+The devcontainer supplies Rust, Maturin and uv. Its post-create script runs
+`./uz setup local` and installs example dependencies. Both `ultrazohm_cli` and
+`uz-dataviewer` are available in new container terminals. Re-run
+`bash .devcontainer/post-create.sh` to refresh the installation.
 Container-built wheels require a compatible Linux host; Windows needs its own wheel.
 
 Builds and checks run through `tasks.py`, which uses only the Python standard
@@ -61,11 +60,11 @@ library and behaves the same on Linux, Windows and in CI. From the repository ro
 
 | Task | Output |
 |---|---|
-| `python uz_cli/tasks.py wheel` | Optimized wheel for this machine in `target/wheels`, including native extension and CLI entry point |
-| `python uz_cli/tasks.py debug-wheel` | Unoptimized wheel for tests in `target/wheels-debug` |
-| `python uz_cli/tasks.py release-wheel` | Portable release wheel in `target/wheels-release` |
+| `./uz build cli` | Optimized wheel for this machine in `target/wheels`, including native extension and CLI entry point |
+| `./uz task cli debug-wheel` | Unoptimized wheel for tests in `target/wheels-debug` |
+| `./uz task cli release-wheel` | Portable release wheel in `target/wheels-release` |
 
-On Linux, `make -C uz_cli <task>` forwards to the same script. Maturin is used
+On Windows, use `.\uz.ps1` with the same arguments. Maturin is used
 from PATH (the devcontainer has it) or run through `uv tool run`. The standalone
 executable is `cargo build --release --locked --bin ultrazohm_cli`.
 
@@ -442,9 +441,9 @@ commands do not generate SD-card BOOT.BIN images. Equivalent Make targets are
 Run the same checks as CI from the repository root, on Linux (dev container) or Windows:
 
 ```sh
-python uz_cli/tasks.py check           # fmt, clippy, Rust tests, Python integration tests
-python uz_cli/tasks.py release-wheel   # portable release wheel in target/wheels-release
-python uz_cli/tasks.py release-check   # integration tests against that installed wheel
+./uz check cli           # fmt, clippy, Rust tests, Python integration tests
+./uz task cli release-wheel   # portable release wheel in target/wheels-release
+./uz task cli release-check   # integration tests against that installed wheel
 ```
 
 `check` builds a debug wheel, installs it into `uz_cli/target/ci-venv` and runs

@@ -83,8 +83,8 @@ JSON sessions retain the backend and storage mode for each file.
 
 .. code-block:: bash
 
-   ./uz_dataviewer/start.sh --backend polars --loading-mode lazy
-   ./uz_dataviewer/start.sh --backend pyarrow --loading-mode memory
+   uz-dataviewer gui --backend polars --loading-mode lazy
+   uz-dataviewer gui --backend pyarrow --loading-mode memory
    # In a second terminal, control the running viewer:
    uz-dataviewer backend polars
    uz-dataviewer convert path/to/log.csv
@@ -198,7 +198,7 @@ Python and terminal automation
 ==============================
 
 The viewer listens on ``127.0.0.1:19741`` by default. Open the project environment
-with ``uv run uz_dataviewer/tasks.py shell`` and control the existing viewer:
+with ``./uz shell`` and control the existing viewer:
 
 .. code-block:: python
 

@@ -12,6 +12,7 @@
 		"vscode": {
 			"settings": {
 				"terminal.integrated.shell.linux": "/bin/bash",
+				"python.defaultInterpreterPath": "${containerWorkspaceFolder}/.venv/bin/python",
 				"ceedlingExplorer.shellPath": "/bin/bash",
 				"ceedlingExplorer.debugConfiguration": "Ceedling Test Explorer Debug",
 				"ceedlingExplorer.projectPath": "vitis/software/Baremetal/"
@@ -51,6 +52,9 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
+	"remoteEnv": {
+		"PATH": "${containerWorkspaceFolder}/.venv/bin:${containerEnv:PATH}"
+	},
 	"postCreateCommand": "bash .devcontainer/post-create.sh"
 	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	//"remoteUser": "vscode"

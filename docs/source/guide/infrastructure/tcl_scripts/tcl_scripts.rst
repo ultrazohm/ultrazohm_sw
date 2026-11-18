@@ -131,15 +131,28 @@ After the platform build, both scripts check that the FreeRTOS kernel library an
 
 Every regeneration of the BSP removes the define again, also a change of the BSP settings in the Vitis GUI.
 The FreeRTOS application therefore does not compile against a BSP without the define and stops with the message ``FreeRTOS BSP without portMEMORY_BARRIER``.
-To fix this, run ``vitis_update_platform.tcl``, or type the following commands in the XSCT console and build the FreeRTOS application again:
+Before the UltraZohm is programmed, ``vitis_debug_run_UltraZohm.tcl`` checks that the kernel in ``FreeRTOS.elf`` is built with the define, and stops without touching the UltraZohm otherwise.
+This also catches an outdated ``FreeRTOS.elf``, e.g. if the last build of the FreeRTOS application failed.
+
+The checks read the compiled files, not their dates, so they do not report errors for files that are only older than others.
+For this, the patch adds one byte in the section ``.uz_freertos_memory_barrier`` to every kernel object file.
+The section is not loaded to the UltraZohm, and the kernel code is the same as with the define alone.
+A workspace patched by an older version of the script has the define without this section, and the checks report it until the fix below has been applied once.
+
+To fix it, type the following commands in the XSCT console (or run ``vitis_update_platform.tcl``, then clean and build the FreeRTOS application):
 
 ::
 
    cd [getws]
    source {../../tcl_scripts/vitis_patch_UltraZohm_freertos_bsp.tcl}
+   platform active UltraZohm
    uz_vitis_patch_freertos_bsp [getws]
    platform generate
    uz_vitis_verify_freertos_bsp [getws]
+   app clean -name FreeRTOS
+   app build -name FreeRTOS
+
+The FreeRTOS application is cleaned before it is built, because it is not linked again if only the kernel library has changed.
 
 
 Startup scripts

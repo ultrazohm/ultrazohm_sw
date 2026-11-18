@@ -56,6 +56,7 @@ Additional notes
 
 - After initially building the Vitis workspace via ``vitis_generate_UltraZohm_workspace.tcl``, the launch configurations may only appear after restarting Vitis once.
 - The programming sequence is defined by the TCL startup script ``tcl_scripts/vitis_debug_run_UltraZohm.tcl``.
+- Before the UltraZohm is touched, all modes check that the FreeRTOS kernel in ``FreeRTOS.elf`` is built with ``portMEMORY_BARRIER``, see :ref:`vitis_patch_freertos_bsp_tcl`.
 - Using separate launch configurations for ``Run_UltraZohm`` and ``Debug_UltraZohm`` ensures the active launch session is terminated when switching between them.
 
 .. figure:: images_vitis_programming_modes/launch_session_terminate.jpg

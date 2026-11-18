@@ -56,6 +56,12 @@ def parser():
 
 
 def main(argv=None):
+    # Frozen Windows consoles may use CP1252 even when PYTHONUTF8 is set.
+    # Help is generated from docstrings containing symbols such as Δ. Keep
+    # the terminal's encoding, but escape characters it cannot represent.
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(errors='backslashreplace')
     args = parser().parse_args(argv)
     if args.operation in (None, 'gui'):
         from .app import main as gui_main

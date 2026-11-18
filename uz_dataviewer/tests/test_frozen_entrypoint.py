@@ -20,3 +20,15 @@ def test_self_test_failure_writes_traceback_without_unhandled_exception(tmp_path
     result = json.loads(report.read_text())
     assert result['ok'] is False
     assert 'AssertionError: native smoke failure' in result['error']
+
+
+def test_terminal_help_survives_windows_legacy_encoding():
+    import os
+    import subprocess
+    result = subprocess.run([sys.executable, '-m', 'uz_dataviewer.cli', '--help'],
+                            env={**os.environ, 'PYTHONIOENCODING': 'cp1252:strict'},
+                            capture_output=True, timeout=10)
+    assert result.returncode == 0, result.stderr.decode('cp1252')
+    output = result.stdout.decode('cp1252')
+    assert 'usage:' in output
+    assert '\\u0394' in output  # Δ in generated command help has a readable fallback.

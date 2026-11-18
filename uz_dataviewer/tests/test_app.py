@@ -4,6 +4,77 @@ import pytest
 from uz_dataviewer.app import DataViewerApp
 
 
+@pytest.mark.parametrize('failure', ['bind', 'run'])
+def test_main_releases_resources_after_startup_failure(monkeypatch, failure):
+    from uz_dataviewer import app
+    closed = []
+    class Viewer:
+        def __init__(self, **kwargs): pass
+        def enable_control(self, endpoint):
+            if failure == 'bind':
+                raise OSError('address in use')
+        def run(self):
+            raise RuntimeError('renderer failed')
+        def _shutdown(self):
+            closed.append(True)
+    monkeypatch.setattr(app, 'DataViewerApp', Viewer)
+    with pytest.raises((OSError, RuntimeError)):
+        app.main([])
+    assert closed == [True]
+
+
+def test_session_menu_uses_background_transactional_operations(tmp_path, monkeypatch):
+    import threading
+    import time
+    from types import SimpleNamespace
+    from uz_dataviewer import session
+    app = DataViewerApp()
+    snapshot = tmp_path / 'session.json'
+    started, release = threading.Event(), threading.Event()
+    stopped = []
+    monkeypatch.setattr(app.python_panel, 'stop_owned', lambda: stopped.append(True))
+    original = session.read_snapshot
+    def read(path):
+        started.set()
+        assert release.wait(3)
+        return original(path)
+    def choose(operation, path):
+        dialog = SimpleNamespace(ready=lambda: True, result=lambda: str(path))
+        app._session_dialog = (dialog, operation, False, '')
+        app._poll_session_dialog()
+    def finish():
+        deadline = time.monotonic() + 3
+        while app._session_action is not None and time.monotonic() < deadline:
+            app.operations.poll()
+            app._poll_session_dialog()
+            time.sleep(.001)
+        assert app._session_action is None
+    try:
+        app.state.set_grid(3, 2)
+        choose('save_session', snapshot)
+        finish()
+        assert not stopped
+        app.state.set_grid(1, 1)
+        token = app.state.session_token
+        monkeypatch.setattr(session, 'read_snapshot', read)
+        choose('load_session', snapshot)
+        assert stopped == [True]
+        assert started.wait(2)
+        assert app.state.session_token is token
+        assert app.state.rows == 1
+        release.set()
+        finish()
+        assert app.state.rows == 3
+        assert app.state.cols == 2
+        token = app.state.session_token
+        choose('load_session', tmp_path / 'missing.json')
+        finish()
+        assert app.state.session_token is token
+    finally:
+        release.set()
+        app._shutdown()
+
+
 @pytest.mark.parametrize('platform,session,expected', [
     ('win32', None, True),
     ('linux', 'x11', True),
@@ -39,8 +110,9 @@ def test_live_panels_are_opt_in(use_live, monkeypatch):
         windows = app._dockable_windows()
         labels = {window.label for window in windows}
         if use_live:
-            assert all(w.is_visible == (w.label != 'Python') for w in windows)
-        live_labels = {'Live Data', 'Live Plots', 'Control', 'Python'}
+            assert all(w.is_visible == (w.label not in {'Python', 'Application log'}) for w in windows)
+        live_labels = {'Live Data', 'Live Plots', 'Control'}
+        assert 'Python' in labels
         assert labels & live_labels == (live_labels if use_live else set())
         assert (app.live is not None) == use_live
         if app.live is not None:
@@ -56,29 +128,31 @@ def test_startup_recording_precedes_script(tmp_path, monkeypatch):
     monkeypatch.setattr('uz_dataviewer.plugins.load_plugins', lambda **kwargs: None)
     recording = tmp_path / 'log.csv'
     recording.write_text('time;a\n0;1\n1;2\n')
-    script = tmp_path / 'setup.uzscript'
-    script.write_text('add_signal(plot_1, run_1, a)\n')
+    script = tmp_path / 'setup.py'
+    script.write_text('from uz_dataviewer import Client, RunHandle\nv = Client()\nv.status()\nv.add_signal(1, RunHandle(v.session, 1), "a")\n')
     app = DataViewerApp([str(recording), str(script)], backend='pyarrow', loading_mode='memory')
     try:
+        _finish_startup(app)
         assert app.state.cells[0].signals == [(1, 'a')]
         assert not app.state.is_loading
     finally:
-        app.state.shutdown()
+        app._shutdown()
 
 
 def test_startup_failure_is_reported_and_stops_following_scripts(tmp_path, monkeypatch):
     monkeypatch.setattr('uz_dataviewer.plugins.load_plugins', lambda **kwargs: None)
-    first = tmp_path / 'bad.uzscript'
-    first.write_text('add_signal(plot_1, run_1, missing)\n')
-    second = tmp_path / 'next.uzscript'
-    second.write_text('set_grid(2, 2)\n')
+    first = tmp_path / 'bad.py'
+    first.write_text('raise RuntimeError("stop here")\n')
+    second = tmp_path / 'next.py'
+    second.write_text('from uz_dataviewer import Client\nClient().set_grid(2, 2)\n')
     app = DataViewerApp([str(first), str(second)])
     try:
+        _finish_startup(app)
         assert app.state.cell_count == 1
         assert 'Startup stopped' in app.state.console.as_text()
         assert app.state.services.executor.thread is None
     finally:
-        app.state.shutdown()
+        app._shutdown()
 
 
 def test_status_owns_fps_even_after_framework_toggle(monkeypatch, gui_frame):
@@ -98,7 +172,7 @@ def test_status_owns_fps_even_after_framework_toggle(monkeypatch, gui_frame):
         gui_frame(Status(), app.state)
         assert not params.imgui_window_params.show_status_fps
     finally:
-        app.state.shutdown()
+        app._shutdown()
 
 
 def test_open_mode_menu_uses_real_imgui_binding(monkeypatch, gui_frame):
@@ -147,7 +221,7 @@ def test_mode_only_focuses_targets_and_preserves_other_windows(monkeypatch):
             dockable_windows=windows, focus_dockable_window=focused.append))
         app._apply_window_mode(True)
         assert focused == ['Live Data', 'Control', 'Live Plots']
-        assert all(w.is_visible for w in windows if w.label != 'Python')
+        assert all(w.is_visible for w in windows if w.label not in {'Python', 'Application log'})
         # User choices outside the selected group survive subsequent switches.
         next(w for w in windows if w.label == 'FFT').is_visible = False
         app._apply_window_mode(False)
@@ -180,10 +254,23 @@ def test_log_browser_uses_selected_workspace(tmp_path, monkeypatch, frozen, via_
               else {'live_repo': str(workspace)})
     app = DataViewerApp(**kwargs)
     try:
-        assert app.log_browser.directory == workspace
+        assert app.log_browser.directory == workspace / 'artifacts'
         app.log_browser.refresh()
         files, errors = app.log_browser._future.result(timeout=5)
-        assert files == [Path('artifacts/_user/logs/run.csv')]
+        assert files == [Path('_user/logs/run.csv')]
         assert not errors
     finally:
         app._shutdown()
+
+
+def _finish_startup(app):
+    import time
+    app.enable_control('127.0.0.1:0')
+    deadline = time.monotonic() + 10
+    while app._startup_scripts or app._startup_script or app._startup_pending is not None:
+        app.python_panel.poll()
+        app.operations.poll()
+        app.control_server.poll(app.operations.dispatch)
+        app._poll_startup()
+        assert time.monotonic() < deadline
+        time.sleep(.001)

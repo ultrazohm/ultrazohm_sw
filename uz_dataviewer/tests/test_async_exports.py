@@ -73,10 +73,8 @@ def test_export_captures_settings_and_does_not_block_controls(tmp_path, monkeypa
         state.shutdown()
 
 
-def test_script_waits_for_export_before_loading_existing_file(tmp_path, monkeypatch):
-    from uz_dataviewer import exports
-    state = AppState()
-    state.async_exports = True
+def test_python_waits_for_export_before_loading_existing_file(control_session, tmp_path, monkeypatch):
+    state, client, workers, pump = control_session
     state.loading_mode = 'memory'
     entered, release = threading.Event(), threading.Event()
     original = session._write_csv
@@ -85,53 +83,42 @@ def test_script_waits_for_export_before_loading_existing_file(tmp_path, monkeypa
         assert release.wait(5)
         return original(*args)
     monkeypatch.setattr(session, '_write_csv', blocked)
+    run = state.registry.add_run('new', '', np.arange(3.), {'a': np.array([10., 20., 30.])}, {})
+    state.cells[0].add((run.id, 'a'))
+    target = tmp_path / 'export.csv'
+    target.write_text('time,a\n0,-1\n1,-2\n2,-3\n')
+    def script():
+        client.export_data(1, target)
+        client.load(target)
+    future = workers.submit(script)
     try:
-        run = state.registry.add_run('new', '', np.arange(3.), {'a': np.array([10., 20., 30.])}, {})
-        state.cells[0].add((run.id, 'a'))
-        target = tmp_path / 'export.csv'
-        target.write_text('time,a\n0,-1\n1,-2\n2,-3\n')
-        script = tmp_path / 'test.uzscript'
-        import json
-        script.write_text(f'export_data(plot_1, {json.dumps(str(target))})\nload({json.dumps(str(target))})\n')
-        assert session.run_script(state, str(script)) is None
-        exports.poll(state)
-        assert entered.wait(2)
-        exports.poll(state)
+        pump(entered.is_set)
         assert len(state.registry.runs) == 1
+        assert not future.done()
         release.set()
-        deadline = time.monotonic() + 5
-        while state.services.replay is not None:
-            exports.poll(state)
-            assert time.monotonic() < deadline
-            time.sleep(.01)
+        pump(future.done)
+        future.result()
         np.testing.assert_array_equal(state.registry.runs[-1].signals['a'].y, [10, 20, 30])
     finally:
         release.set()
-        state.shutdown()
 
 
-def test_script_aborts_after_failed_export(tmp_path, monkeypatch):
-    from uz_dataviewer import exports
-    state = AppState()
-    state.async_exports = True
+def test_python_aborts_after_failed_export(control_session, tmp_path, monkeypatch):
+    from uz_dataviewer import ViewerError
+    state, client, workers, pump = control_session
     def fail(*args):
         raise OSError('disk full')
     monkeypatch.setattr(session, '_write_csv', fail)
-    try:
-        run = state.registry.add_run('new', '', np.arange(3.), {'a': np.arange(3.)}, {})
-        state.cells[0].add((run.id, 'a'))
-        target = tmp_path / 'old.csv'
-        target.write_text('time,a\n0,-1\n1,-2\n')
-        script = tmp_path / 'test.uzscript'
-        import json
-        script.write_text(f'export_data(plot_1, {json.dumps(str(target))})\nload({json.dumps(str(target))})\n')
-        session.run_script(state, str(script))
-        deadline = time.monotonic() + 5
-        while state.services.replay is not None:
-            exports.poll(state)
-            assert time.monotonic() < deadline
-            time.sleep(.01)
-        assert len(state.registry.runs) == 1
-        assert '-1' in target.read_text()
-    finally:
-        state.shutdown()
+    run = state.registry.add_run('new', '', np.arange(3.), {'a': np.arange(3.)}, {})
+    state.cells[0].add((run.id, 'a'))
+    target = tmp_path / 'old.csv'
+    target.write_text('time,a\n0,-1\n1,-2\n')
+    def script():
+        client.export_data(1, target)
+        client.load(target)
+    future = workers.submit(script)
+    pump(future.done)
+    with pytest.raises(ViewerError, match='disk full'):
+        future.result()
+    assert len(state.registry.runs) == 1
+    assert '-1' in target.read_text()

@@ -12,6 +12,105 @@ from uz_dataviewer.loader import open_file, convert_csv_to_parquet
 from uz_dataviewer.model import DataRegistry
 
 
+def check_python_control(root, recording):
+    """Run an ordinary script through the bundled worker against a live server."""
+    import time
+    from uz_dataviewer.control_server import ControlServer
+    from uz_dataviewer.operations import Operations
+    from uz_dataviewer.scripting import ScriptRunner
+    from uz_dataviewer.state import AppState
+    state = AppState()
+    operations = Operations(state)
+    server = ControlServer('127.0.0.1:0')
+    runner = ScriptRunner(device_control=False)
+    script = root / 'control.py'
+    script.write_text('''import sys
+from pathlib import Path
+from uz_dataviewer import Client, ViewerError
+assert sys.argv[2] == 'argument with spaces'
+with Client() as viewer:
+    viewer.clear_session()
+    run = viewer.load(sys.argv[1])
+    viewer.set_grid(2, 1)
+    viewer.add_signal(1, run, 'signal')
+    source = viewer.node_source(run, 'signal')
+    transform = viewer.node_add('math')
+    viewer.node_link(source, transform)
+    viewer.node_eval()
+    viewer.add_signal(2, viewer.node_output(transform), 'out')
+    viewer.fft_source(run, 'signal')
+    viewer.fft()
+    viewer.hist_source(run, 'signal')
+    viewer.histogram()
+    view = viewer.create_view()
+    viewer.add_signal(1, run, 'signal', view=view)
+    viewer.save_session('saved.json')
+    viewer.clear_session()
+    viewer.load_session('saved.json')
+    assert viewer.status()['grid'] == [2, 1]
+    assert len(viewer.list_runs()) == 2
+    assert len(viewer.list_views()) == 2
+    try:
+        viewer.add_signal(1, run, 'signal')
+    except ViewerError as error:
+        assert error.code == 'stale_handle'
+    else:
+        raise AssertionError('old handle accepted')
+Path('script-completed').write_text('ok')
+''', encoding='utf-8')
+    try:
+        runner.start(script, viewer_endpoint=server.endpoint,
+                     args=[str(recording), 'argument with spaces'], cwd=root)
+        deadline = time.monotonic() + 30
+        while runner.busy and time.monotonic() < deadline:
+            operations.poll()
+            server.poll(operations.dispatch)
+            runner.poll()
+            time.sleep(.001)
+        assert not runner.busy, 'Bundled Python control script timed out'
+        assert runner.exit_code == 0, runner.output
+        assert (root / 'script-completed').read_text() == 'ok'
+        import sys
+        import subprocess
+        if getattr(sys, 'frozen', False):
+            terminal = Path(sys.executable).with_name('uz-dataviewer' + ('.exe' if sys.platform == 'win32' else ''))
+            # The windowed Windows parent has no console stdin. Supply every
+            # standard handle explicitly when starting the console executable.
+            help_result = subprocess.run([str(terminal), '--help'], stdin=subprocess.DEVNULL,
+                                         capture_output=True, text=True, timeout=10)
+            assert help_result.returncode == 0 and 'usage:' in help_result.stdout, repr(help_result)
+            invalid = subprocess.run([str(terminal), 'not-a-command'], stdin=subprocess.DEVNULL,
+                                     capture_output=True, text=True, timeout=10)
+            assert invalid.returncode != 0 and invalid.stderr, repr(invalid)
+            for command in ('status', 'list-runs'):
+                process = subprocess.Popen([str(terminal), '--endpoint', server.endpoint, '--json', command],
+                                           stdin=subprocess.DEVNULL,
+                                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                try:
+                    deadline = time.monotonic() + 10
+                    while process.poll() is None and time.monotonic() < deadline:
+                        operations.poll()
+                        server.poll(operations.dispatch)
+                        time.sleep(.001)
+                    stdout, stderr = process.communicate(timeout=1)
+                    assert process.returncode == 0, stderr
+                    result = json.loads(stdout)
+                    if command == 'status':
+                        assert result['grid'] == [2, 1]
+                    else:
+                        assert len(result) == 2 and result[0]['handle']['session']
+                finally:
+                    if process.poll() is None:
+                        process.kill()
+                    process.wait()
+
+    finally:
+        runner.close()
+        server.close()
+        operations.close()
+        state.shutdown()
+
+
 def check_plot_input():
     """Exercise packaged ImPlot mouse input on both platforms without a GPU."""
     from uz_dataviewer.panels.plots import PlotsPanel
@@ -89,6 +188,7 @@ def run(report_path):
         converted = root / 'converted.parquet'
         convert_csv_to_parquet(str(csv), str(converted), backend='polars', cancel=threading.Event())
         assert converted.exists()
+        check_python_control(root, path)
         context = imgui.create_context()
         plot_context = implot.create_context()
         try:

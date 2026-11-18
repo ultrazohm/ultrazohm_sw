@@ -2,7 +2,7 @@
 
 PyInstaller runs the bundled entry script as top-level ``__main__`` with no
 package context, so it must use an *absolute* import (``__main__.py``'s relative
-``from .app import main`` only works under ``python -m uz_dataviewer``). The
+``from .cli import main`` only works under ``python -m uz_dataviewer``). The
 ``uz_dataviewer`` package is put on the path via the spec's ``pathex``.
 """
 
@@ -18,8 +18,18 @@ if __name__ == "__main__":
         from uz_dataviewer.process_launcher import main
         sys.exit(main(sys.argv[2:]))
     if len(sys.argv) == 3 and sys.argv[1] == "--self-test":
-        from frozen_self_test import run
-        run(sys.argv[2])
+        # A windowed Windows bootloader presents unhandled exceptions in a
+        # modal dialog. CI cannot dismiss it, hiding the failure until timeout.
+        import json
+        from pathlib import Path
+        import traceback
+        try:
+            from frozen_self_test import run
+            run(sys.argv[2])
+        except Exception:
+            Path(sys.argv[2]).write_text(json.dumps({"ok": False, "error": traceback.format_exc()}),
+                                         encoding="utf-8")
+            sys.exit(1)
     else:
-        from uz_dataviewer.app import main
+        from uz_dataviewer.cli import main
         sys.exit(main())

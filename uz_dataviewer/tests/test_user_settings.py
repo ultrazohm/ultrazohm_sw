@@ -33,22 +33,15 @@ def test_outside_a_checkout_data_goes_to_the_user_directory_not_the_working_dire
     assert list(downloads.iterdir()) == []
 
 
-def test_console_routes_uz_lines_without_a_platform_check():
+def test_application_log_is_independent_of_live_connectivity():
     from uz_dataviewer.app import DataViewerApp
-    app = DataViewerApp(use_live=True)
+    app = DataViewerApp(use_live=False)
     try:
-        console = app.state.console
-        assert console.cli_handler == app._run_cli_command
-        app.live.available = False
-        console._input = 'uz status'
-        console._submit(app.state)
-        assert 'Live is not activated.' in console.as_text()
-        console._input = 'set_grid(2, 2)'
-        console._submit(app.state)
-        assert app.state.cell_count == 4
+        app.state.console.info('Offline viewer ready')
+        assert 'Offline viewer ready' in app.state.console.as_text()
+        assert not hasattr(app.state.console, '_submit')
     finally:
         app._shutdown()
-
 
 def test_bundle_and_source_share_the_workspace_data(tmp_path, monkeypatch):
     executable = tmp_path/'distribution'/'uz_dataviewer.exe'
@@ -200,7 +193,7 @@ def test_workspace_startup_initializes_missing_preferences_once(tmp_path, monkey
                 self._shutdown()
     monkeypatch.setattr(app, 'DataViewerApp', Viewer)
     monkeypatch.setattr('importlib.util.find_spec', lambda name: object() if name == 'ultrazohm_cli' else None)
-    args = ['--live-repo', str(tmp_path)]
+    args = ['--endpoint', '127.0.0.1:0', '--live-repo', str(tmp_path)]
     assert app.main(args) == 0
     saved = user_dir/'settings.json'
     original = '{"schema_version":1,"name":"edited","sample_period_us":75,"initial_channels":{}}\n'

@@ -14,7 +14,6 @@ from ..model import Signal
 from ..sources import SourceColumn, shift_time
 from ..state import AppState
 from ..scripting import ScriptRunner
-from .script_editor import ScriptEditor
 from ..flashing import xsct_available, restore_xsct, select_xsct
 from .plots import PlotsPanel
 
@@ -192,7 +191,6 @@ class LiveWorkspace:
         self.settings_notice = ''
         self.available = importlib.util.find_spec('ultrazohm_cli') is not None
         self.scripts = ScriptRunner(send_stop=self.controller.send_stop)
-        self.document = ScriptEditor(lambda: self.scripts.busy, lambda: self.controller.endpoint, self._start_script)
 
     def block_reason(self, action='manual'):
         return action_block_reason(action, flashing=self.controller.flashing, script_busy=self.scripts.busy)
@@ -302,7 +300,6 @@ class LiveWorkspace:
         self.scripts.poll()
         update = self.controller.latest()
         self.update = update
-        self.document.poll()
         if self._xsct_dialog is not None and self._xsct_dialog.ready():
             selected = self._xsct_dialog.result()
             self._xsct_dialog = None
@@ -753,36 +750,16 @@ class LiveWorkspace:
                         self.send('set_variable', name=name, value=value)
             imgui.end_table()
 
-    def render_python(self):
-        connected = self.available and self.update.attached and self.update.status.get('state', {}).get('connected')
-        self.document.render(connected and not self.block_reason('script'))
-        imgui.same_line()
-        imgui.begin_disabled(not self.scripts.busy)
-        if imgui.button('Stop script + device'):
-            self.send('stop')
-        imgui.end_disabled()
-        imgui.text_wrapped(self.scripts.message)
-        imgui.text_wrapped('Run saves the file, asking for a filename for unsaved scripts. '
-                           'Stop terminates Python and sends device Stop; logging stays enabled. '
-                           'Completion or errors leave the device and logging in their resulting state.')
-        if self.document.error:
-            imgui.text_wrapped(self.document.error)
-        imgui.separator()
-        imgui.text_unformatted(self.scripts.output)
-
-    def _start_script(self, path, endpoint):
-        try:
-            if reason := self.block_reason('script'):
-                raise RuntimeError(reason)
-            if (endpoint != self.controller.endpoint or not self.update.attached or
-                    not self.update.status.get('state', {}).get('connected')):
-                raise RuntimeError('Service connection changed; connect and press Run again')
-            self.controller.cancel_pending_commands()
-            if not self.controller.commands_idle():
-                raise RuntimeError('A device command is still running; wait for it to finish and press Run again')
-            self.scripts.start(path, endpoint)
-        except Exception as exc:
-            self.document.error = str(exc)
+    def _start_script(self, path, endpoint, *, viewer_endpoint=None, **run_options):
+        if reason := self.block_reason('script'):
+            raise RuntimeError(reason)
+        if (endpoint != self.controller.endpoint or not self.update.attached or
+                not self.update.status.get('state', {}).get('connected')):
+            raise RuntimeError('Service connection changed; connect and press Run again')
+        self.controller.cancel_pending_commands()
+        if not self.controller.commands_idle():
+            raise RuntimeError('A device command is still running; wait for it to finish and press Run again')
+        self.scripts.start(path, endpoint, viewer_endpoint=viewer_endpoint, **run_options)
 
     def _render_flash_confirmation(self):
         opened, _ = imgui.begin_popup_modal('Flash UltraZohm?', flags=imgui.WindowFlags_.always_auto_resize)
@@ -874,7 +851,6 @@ class LiveWorkspace:
         if self._xsct_dialog is not None:
             self._xsct_dialog.kill()
             self._xsct_dialog = None
-        self.document.close()
         self.scripts.close()
         self.controller.close()
         self.state.shutdown()

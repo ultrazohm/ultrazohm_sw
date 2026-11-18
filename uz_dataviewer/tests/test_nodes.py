@@ -23,13 +23,7 @@ def _state_with_sine(freq=50.0, n=2000):
 
 def _run(state, *lines):
     for line in lines:
-        state.commands.execute(state, *_parse(line))
-
-
-def _parse(line):
-    from uz_dataviewer.commands import parse_call
-
-    return parse_call(line)
+        state.commands.execute(state, *line)
 
 
 def _derived(state, name):
@@ -42,8 +36,8 @@ def _derived(state, name):
 # -- engine via commands ------------------------------------------------------
 def test_fft_node_materializes_derived_run():
     state = _state_with_sine(50.0)
-    _run(state, "node_source(run_1, ia)", "node_add(fft)",
-         "node_link(node_1, node_2)", "node_eval()")
+    _run(state, ('node_source', ['run_1', 'ia']), ('node_add', ['fft']),
+         ('node_link', ['node_1', 'node_2']), ('node_eval', []))
     run = _derived(state, "node_2")
     assert run is not None and run.derived
     peak = run.time[int(np.argmax(run.signals["out"].y))]
@@ -57,10 +51,10 @@ def test_filter_then_fft_chain():
     sig = state.registry.get_signal(1, "ia")
     t = state.registry.get(1).time
     sig.y = (sig.y + np.sin(2 * np.pi * 400 * t)).astype(np.float32)
-    _run(state, "node_source(run_1, ia)", "node_add(filter)",
-         "node_set(node_2, cutoff, 40)", "node_set(node_2, taps, 201)",
-         "node_link(node_1, node_2)", "node_add(fft)",
-         "node_link(node_2, node_3)", "node_eval()")
+    _run(state, ('node_source', ['run_1', 'ia']), ('node_add', ['filter']),
+         ('node_set', ['node_2', 'cutoff', '40']), ('node_set', ['node_2', 'taps', '201']),
+         ('node_link', ['node_1', 'node_2']), ('node_add', ['fft']),
+         ('node_link', ['node_2', 'node_3']), ('node_eval', []))
     filt = _derived(state, "node_2")
     spec = _derived(state, "node_3")
     assert filt is not None and spec is not None
@@ -71,8 +65,8 @@ def test_filter_then_fft_chain():
 
 def test_stale_after_param_change():
     state = _state_with_sine()
-    _run(state, "node_source(run_1, ia)", "node_add(fft)",
-         "node_link(node_1, node_2)", "node_eval()")
+    _run(state, ('node_source', ['run_1', 'ia']), ('node_add', ['fft']),
+         ('node_link', ['node_1', 'node_2']), ('node_eval', []))
     node = state.nodes.get(2)
     assert not nodemod.is_stale(state.registry, state.nodes, node)
     state.commands.execute(state, "node_set", [2, "window", "false"])
@@ -114,17 +108,17 @@ def test_shared_upstream_validation_is_linear_and_observes_edits(app_state, monk
 
 def test_shift_node_offsets_time():
     state = _state_with_sine(50.0)
-    _run(state, "node_source(run_1, ia)", "node_add(shift)", "node_set(node_2, by, 5)",
-         "node_link(node_1, node_2)", "node_eval()")
+    _run(state, ('node_source', ['run_1', 'ia']), ('node_add', ['shift']), ('node_set', ['node_2', 'by', '5']),
+         ('node_link', ['node_1', 'node_2']), ('node_eval', []))
     run = _derived(state, "node_2")
     assert abs(float(run.time[0]) - 5.0) < 1e-6  # whole axis shifted +5 s
 
 
 def test_source_crop_limits_window():
     state = _state_with_sine(50.0, n=1000)  # t in [0, 1]
-    _run(state, "node_source(run_1, ia)", "node_set(node_1, tmin, 0.2)",
-         "node_set(node_1, tmax, 0.4)", "node_add(shift)", "node_set(node_2, by, 0)",
-         "node_link(node_1, node_2)", "node_eval()")
+    _run(state, ('node_source', ['run_1', 'ia']), ('node_set', ['node_1', 'tmin', '0.2']),
+         ('node_set', ['node_1', 'tmax', '0.4']), ('node_add', ['shift']), ('node_set', ['node_2', 'by', '0']),
+         ('node_link', ['node_1', 'node_2']), ('node_eval', []))
     run = _derived(state, "node_2")
     assert run.n_rows < 1000  # cropped
     assert run.time[0] >= 0.19 and run.time[-1] <= 0.41
@@ -139,9 +133,9 @@ def test_stale_propagates_downstream():
     before the upstream is re-evaluated (else a chained node shows fresh while
     displaying results from the old input)."""
     state = _state_with_sine(5.0, n=4000)
-    _run(state, "node_source(run_1, ia)", "node_add(filter)",
-         "node_set(node_2, cutoff, 40)", "node_link(node_1, node_2)",
-         "node_add(fft)", "node_link(node_2, node_3)", "node_eval()")
+    _run(state, ('node_source', ['run_1', 'ia']), ('node_add', ['filter']),
+         ('node_set', ['node_2', 'cutoff', '40']), ('node_link', ['node_1', 'node_2']),
+         ('node_add', ['fft']), ('node_link', ['node_2', 'node_3']), ('node_eval', []))
     filt, fft = state.nodes.get(2), state.nodes.get(3)
     assert not nodemod.is_stale(state.registry, state.nodes, fft)
     state.commands.execute(state, "node_set", [2, "cutoff", "80"])  # change upstream
@@ -153,15 +147,15 @@ def test_stale_propagates_downstream():
 
 def test_link_cycle_is_rejected():
     state = _state_with_sine()
-    _run(state, "node_add(math)", "node_add(math)", "node_link(node_1, node_2)")
+    _run(state, ('node_add', ['math']), ('node_add', ['math']), ('node_link', ['node_1', 'node_2']))
     with pytest.raises(ValueError):
         state.commands.execute(state, "node_link", [2, 1])
 
 
 def test_remove_node_drops_derived_run():
     state = _state_with_sine()
-    _run(state, "node_source(run_1, ia)", "node_add(fft)",
-         "node_link(node_1, node_2)", "node_eval()")
+    _run(state, ('node_source', ['run_1', 'ia']), ('node_add', ['fft']),
+         ('node_link', ['node_1', 'node_2']), ('node_eval', []))
     assert _derived(state, "node_2") is not None
     state.commands.execute(state, "node_remove", [2])
     assert _derived(state, "node_2") is None
@@ -170,8 +164,8 @@ def test_remove_node_drops_derived_run():
 
 def test_rename_relabels_derived_run():
     state = _state_with_sine()
-    _run(state, "node_source(run_1, ia)", "node_add(fft)",
-         "node_link(node_1, node_2)", "node_eval()", "node_rename(node_2, spectrum)")
+    _run(state, ('node_source', ['run_1', 'ia']), ('node_add', ['fft']),
+         ('node_link', ['node_1', 'node_2']), ('node_eval', []), ('node_rename', ['node_2', 'spectrum']))
     assert _derived(state, "node_2") is None
     assert _derived(state, "spectrum") is not None
 
@@ -179,9 +173,9 @@ def test_rename_relabels_derived_run():
 # -- session round-trip -------------------------------------------------------
 def test_json_round_trip_rebuilds_graph_and_derived_run(tmp_path):
     state = _state_with_sine(50.0)
-    _run(state, "node_source(run_1, ia)", "node_add(fft)",
-         "node_link(node_1, node_2)", "node_eval()",
-         "add_signal(plot_1, node_2, out)")
+    _run(state, ('node_source', ['run_1', 'ia']), ('node_add', ['fft']),
+         ('node_link', ['node_1', 'node_2']), ('node_eval', []),
+         ('add_signal', ['plot_1', 'node_2', 'out']))
     source = state.registry.runs[0]
     source.path = str(tmp_path / 'Log.csv')
     np.savetxt(source.path, np.column_stack([source.time, source.signals['ia'].y]), delimiter=';', header='time;ia', comments='')
@@ -203,13 +197,13 @@ def test_failed_parameter_revert_recovers_downstream(app_state):
     from uz_dataviewer.nodes import evaluate, is_stale
     state = app_state
     state.add_run_from_arrays('input', 'input', np.arange(8.), {'a': np.ones(8)}, {})
-    _run(state, 'node_source(run_1,a)', 'node_add(math)', 'node_link(node_1,node_2)',
-         'node_set(node_2,k,2)', 'node_eval()')
+    _run(state, ('node_source', ['run_1', 'a']), ('node_add', ['math']), ('node_link', ['node_1', 'node_2']),
+         ('node_set', ['node_2', 'k', '2']), ('node_eval', []))
     # Invalid session/plugin state may still reach evaluation, even though the
     # command boundary now rejects it before mutation.
     state.nodes.get(2).params['k'] = 'bad'
     evaluate(state)
-    _run(state, 'node_set(node_2,k,2)', 'node_add(math)', 'node_link(node_2,node_3)')
+    _run(state, ('node_set', ['node_2', 'k', '2']), ('node_add', ['math']), ('node_link', ['node_2', 'node_3']))
     assert is_stale(state.registry, state.nodes, state.nodes.get(2))
     assert evaluate(state) == 2
     assert not state.nodes.get(2).error and not state.nodes.get(3).error
@@ -245,8 +239,8 @@ def test_recomputed_output_preserves_normalization_and_consumers(app_state):
     time = np.arange(8.) + 100
     values = np.arange(8.) + 1
     state.add_run_from_arrays('input', 'input', time, {'a': values}, {})
-    _run(state, 'node_source(run_1,a)', 'node_add(math)', 'node_link(node_1,node_2)',
-         'node_eval()', 'normalize_time(node_output_2,0)')
+    _run(state, ('node_source', ['run_1', 'a']), ('node_add', ['math']), ('node_link', ['node_1', 'node_2']),
+         ('node_eval', []), ('normalize_time', ['node_output_2', '0']))
     node = state.nodes.get(2)
     run = state.registry.get(node.out_run_id)
     state.cells[0].signals = [(run.id, 'out')]
@@ -254,7 +248,7 @@ def test_recomputed_output_preserves_normalization_and_consumers(app_state):
     # Exercise replacement of an already constructed source too.
     run.data_source()
     version = run.time_version
-    _run(state, 'node_set(node_2,k,2)')
+    _run(state, ('node_set', ['node_2', 'k', '2']))
     assert evaluate(state) == 1
     assert state.registry.get(node.out_run_id) is run and run.time_version != version
     assert run.time_origin == 0
@@ -269,10 +263,10 @@ def test_recomputed_output_preserves_normalization_and_consumers(app_state):
 def test_deleted_output_recreated_and_indirect_source_rejected(states, recording_csv, execute_commands):
     state = states()
     state.load_sync(str(recording_csv))
-    execute_commands(state, 'node_source(run_1,a)', 'node_add(math)', 'node_link(node_1,node_2)', 'node_eval()')
+    execute_commands(state, ('node_source', ['run_1', 'a']), ('node_add', ['math']), ('node_link', ['node_1', 'node_2']), ('node_eval', []))
     node = state.nodes.get(2)
     with pytest.raises(CommandError, match='node_link'):
-        execute_commands(state, f'node_source(run_{node.out_run_id},out)')
+        execute_commands(state, ('node_source', [node.out_run_id, 'out']))
     state.remove_run(node.out_run_id)
     assert nodes.evaluate(state, 2) == 1 and state.registry.get(node.out_run_id) is not None
 
@@ -282,7 +276,7 @@ def test_source_version_invalidates_downstream(states, recording_csv, execute_co
     state = states()
     state.loading_mode = 'memory'
     run = state.load_sync(str(recording_csv))
-    execute_commands(state, 'node_source(run_1,a)', 'node_add(math)', 'node_link(node_1,node_2)', 'node_eval()')
+    execute_commands(state, ('node_source', ['run_1', 'a']), ('node_add', ['math']), ('node_link', ['node_1', 'node_2']), ('node_eval', []))
     run.signals['a'] = Signal('a', '', np.full(8, 42, dtype=np.float32), run.id)
     assert nodes.is_stale(state.registry, state.nodes, state.nodes.get(2))
     nodes.evaluate(state)

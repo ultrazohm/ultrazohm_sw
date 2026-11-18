@@ -1,6 +1,6 @@
 # Two stages from one file:
 #   ci   CLI and data viewer toolchain. GitHub Actions runs the uz_cli and
-#        uz_dataviewer make targets in this stage (see .github/workflows/ci-image.yml).
+#        uz_dataviewer tasks in this stage (see .github/workflows/ci-image.yml).
 #   dev  The development container: the ci stage plus firmware, docs and Java tools.
 # Developers and CI therefore build and test with the same toolchain.
 

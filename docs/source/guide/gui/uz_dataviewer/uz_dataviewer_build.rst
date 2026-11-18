@@ -14,18 +14,20 @@ Tasks
 
 Builds and tests run through ``uz_dataviewer/tasks.py`` (and ``uz_cli/tasks.py`` for the CLI).
 The scripts use only the Python standard library and behave the same on Linux, on Windows and in CI.
-Install ``uv`` first; it installs the Python version pinned in the repository's ``.python-version`` and the dependencies from ``uv.lock``.
+The root launcher installs missing uv and the Python version pinned in ``.python-version``;
+the task implementation installs dependencies from ``uv.lock``.
 From the repository root:
 
 .. code-block:: bash
 
-   python uz_dataviewer/tasks.py check                  # ruff and the full pytest suite
-   python uz_dataviewer/tasks.py bundle                 # PyInstaller bundle in uz_dataviewer/dist
-   python uz_dataviewer/tasks.py bundle-smoke           # start the bundle and its live workers
+   ./uz check viewer                  # ruff and the full pytest suite
+   ./uz build viewer                 # PyInstaller bundle in uz_dataviewer/dist
+   ./uz task viewer bundle-smoke           # start the bundle and its live workers
 
-``check`` and ``bundle`` build a matching CLI wheel from ``uz_cli`` unless ``--cli-wheel PATH`` names one.
-Tests use ``.venv-ci`` and bundles ``.venv-build``; ``.venv`` belongs to the launchers.
-On Linux, ``make -C uz_dataviewer check`` forwards to the same script.
+``check viewer`` and ``build viewer`` build a matching CLI wheel from ``uz_cli`` unless ``--cli-wheel PATH`` names one.
+Tests use ``uz_dataviewer/.venv-ci`` and bundles ``uz_dataviewer/.venv-build``;
+the root ``.venv`` is shared by both applications.
+On Windows, use ``.\uz.ps1`` with the same arguments.
 
 Native standalone executables (PyInstaller)
 ============================================
@@ -65,7 +67,7 @@ Select the ``ultrazohm_sw`` root at startup, or supply ``--live-repo``. All wind
 select Analysis or Live tabs once without closing other windows. The live panels
 appear whenever the ``ultrazohm_cli`` package is installed: always in the bundle,
 and on Windows and Linux x86-64 in the source environment, where it is a locked
-dependency. The ``develop`` task (``make develop``, ``start.sh --dev-cli``) builds the checkout's
+dependency. ``./uz setup local`` builds the checkout's
 CLI and uses it instead. Both deployments use the same subprocess
 worker code; bundled scripts can import bundled dependencies, while source
 scripts can also use packages installed in the developer environment. Vitis is
@@ -107,9 +109,11 @@ service down. Script Stop invalidates queued manual commands and uses a control
 path independent of display reads. Flashing shuts the service down (which sends
 device Stop and finalizes recordings), then programs and reconnects.
 
-``start.sh`` and ``start.ps1`` install ``uv`` when it is missing and run
-``uz_dataviewer/tasks.py start``, which owns argument handling and setup.
-``tasks.py`` also provides ``shell``, ``check``, ``bundle`` and ``bundle-smoke``. Standalone execution uses
+The root ``uz`` and ``uz.ps1`` launchers bootstrap uv and pinned Python.
+``setup`` installs both applications into the shared repository ``.venv``;
+``shell`` opens an activated terminal. ``build viewer``, ``check viewer`` and
+``task viewer bundle-smoke`` expose the build and test workflow. Standalone execution uses
 its bundled worker entry point and requires no separately installed Python or
-Rust. The viewer command console, ``uz ...`` service commands and Python
-automation are available on Windows and Linux.
+Rust. The application log and Python editor are available on Windows and Linux.
+External Python scripts use the installed ``uz_dataviewer.Client``; the bundled
+Python editor uses the executable's internal script worker.

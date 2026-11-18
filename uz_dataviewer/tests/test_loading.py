@@ -10,6 +10,27 @@ from uz_dataviewer.sources import Cancelled, check
 from uz_dataviewer.state import AppState
 
 
+def test_cleanup_error_completes_cancelled_worker_future():
+    worker = CancellableExecutor()
+    started, release = threading.Event(), threading.Event()
+    def work(cancel):
+        started.set()
+        assert release.wait(2)
+        return object()
+    def dispose(result):
+        raise RuntimeError('cleanup failed')
+    future = worker.submit(work, dispose=dispose)
+    try:
+        assert started.wait(2)
+        worker.cancel.set()
+        release.set()
+        with pytest.raises(RuntimeError, match='cleanup failed'):
+            future.result(timeout=2)
+    finally:
+        release.set()
+        worker.shutdown()
+
+
 def test_load_shutdown_cancels_active_and_queued_work():
     worker = CancellableExecutor()
     started = threading.Event()
@@ -86,18 +107,19 @@ def test_conversion_drains_large_error_before_worker_exits(monkeypatch):
         watchdog.cancel()
 
 
-def test_async_load_echo_preserves_captured_settings(states, tmp_path):
+def test_async_load_preserves_captured_settings(states, tmp_path):
     from uz_dataviewer.state import LoadRequest
 
-    state, replay = states(), states()
+    state = states()
     path = tmp_path / "recording.csv"
     path.write_text("time,a\n0,10\n1,20\n")
-    state.backend = replay.backend = "polars"
-    state.loading_mode = replay.loading_mode = "lazy"
+    state.backend = "polars"
+    state.loading_mode = "lazy"
     state._submit_load(LoadRequest(str(path), "memory", "pyarrow", False))
-    for entry in state.console._entries:
-        if entry.level == "CMD":
-            replay.commands.dispatch(replay, entry.message)
-    run = replay.registry.runs[0]
+    deadline = time.monotonic() + 5
+    while state.is_loading and time.monotonic() < deadline:
+        state.poll_pending_loads()
+        time.sleep(.001)
+    run = state.registry.runs[0]
     assert run.storage_mode == "memory" and run.backend == "pyarrow"
-    assert replay.loading_mode == "lazy" and replay.backend == "polars"
+    assert state.loading_mode == "lazy" and state.backend == "polars"

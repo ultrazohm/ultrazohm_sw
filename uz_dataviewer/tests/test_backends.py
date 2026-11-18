@@ -150,12 +150,17 @@ def test_application_defaults():
         app._shutdown()
 
 
-def test_cli_defaults_and_explicit_overrides(monkeypatch):
+def test_cli_defaults_and_explicit_overrides(monkeypatch, tmp_path):
     from uz_dataviewer import app
+    # Outside a checkout there is no inferred repository; startup inside a
+    # checkout is covered by test_repository_selection.
+    monkeypatch.chdir(tmp_path)
     captured = []
     class Viewer:
         def __init__(self, **kwargs): captured.append(kwargs)
         def run(self): pass
+        def enable_control(self, endpoint): pass
+        def _shutdown(self): pass
     monkeypatch.setattr(app, 'DataViewerApp', Viewer)
     mapping_calls = []
     def generate(repo):

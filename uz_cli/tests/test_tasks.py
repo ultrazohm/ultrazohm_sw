@@ -1,11 +1,12 @@
 """Task orchestration and CI release versions; no packages are built or installed."""
-import shutil
-import subprocess
 import sys
+import os
+import subprocess
 import tempfile
+from types import SimpleNamespace
+from unittest.mock import patch
 import unittest
 from pathlib import Path
-from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import tasks
@@ -32,75 +33,39 @@ class ReleaseVersionTest(unittest.TestCase):
                 release_version(base, "main", run)
 
 
-class StartTest(unittest.TestCase):
-    def test_install_and_launch_both_modes_on_both_platforms(self):
-        for windows in (False, True):
-            for source in ('local', 'release'):
-                with self.subTest(windows=windows, source=source), tempfile.TemporaryDirectory() as root:
-                    root = Path(root)
-                    project = root / 'checkout with spaces' / 'uz_cli'
-                    project.mkdir(parents=True)
-                    (project.parent / '.python-version').write_text('3.12\n')
-                    calls = []
-                    def run(*command, _calls=calls, **kwargs):
-                        _calls.append((list(command), kwargs))
-                        if 'build' in command:
-                            output = Path(command[-1])
-                            output.mkdir(parents=True)
-                            (output / 'ultrazohm_cli-0.1.0-test.whl').touch()
-                    with patch.multiple(tasks, HERE=project, ROOT=project.parent,
-                                        TARGET=project / 'target', WINDOWS=windows), \
-                            patch.object(tasks, 'run', side_effect=run), \
-                            patch.object(tasks, 'maturin', return_value=['maturin']):
-                        tasks.main(['start', source, '--', '--endpoint', '127.0.0.1:1234', 'status'])
-                        python = tasks.venv_bin(project / '.venv', 'python')
-                        install = next(cmd for cmd, _ in calls if cmd[:3] == ['uv', 'pip', 'install'])
-                        self.assertIn(python, install)
-                        self.assertIn('--reinstall-package', install)
-                        if source == 'local':
-                            self.assertEqual(calls[0][0][:4], ['maturin', 'build', '--release', '--locked'])
-                            self.assertIsInstance(install[-1], Path)
-                        else:
-                            self.assertFalse(any('maturin' in cmd for cmd, _ in calls))
-                            self.assertEqual(install[-5:], ['--upgrade-package', 'ultrazohm_cli',
-                                                           '--prerelease', 'disallow', 'ultrazohm_cli'])
-                        self.assertEqual(calls[-1], ([tasks.venv_bin(project / '.venv', 'ultrazohm_cli'),
-                            '--endpoint', '127.0.0.1:1234', 'status'], {'cwd': Path.cwd()}))
-                        # Subsequent launches reuse the environment, but reinstall the CLI.
-                        python.parent.mkdir(parents=True)
-                        python.touch()
-                        calls.clear()
-                        tasks.main(['start', source])
-                        self.assertFalse(any(cmd[:2] == ['uv', 'venv'] for cmd, _ in calls))
-                        self.assertTrue(any(cmd[:3] == ['uv', 'pip', 'install'] for cmd, _ in calls))
+class BuildTaskTest(unittest.TestCase):
+    def test_relative_output_is_resolved_from_calling_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            project = root / 'project'
+            caller = root / 'caller'
+            project.mkdir()
+            caller.mkdir()
+            builder = root / 'builder.py'
+            builder.write_text('import sys\nfrom pathlib import Path\n'
+                               'out = Path(sys.argv[sys.argv.index("--out") + 1])\n'
+                               'out.mkdir(parents=True)\n(out / "built.whl").touch()\n')
+            original = Path.cwd()
+            try:
+                os.chdir(caller)
+                # Simulate the build tool's working directory, without Rust.
+                def run(*command):
+                    subprocess.run([str(arg) for arg in command], cwd=project, check=True)
+                with patch.object(tasks, 'run', side_effect=run), \
+                        patch.object(tasks, 'maturin', return_value=[sys.executable, str(builder)]):
+                    tasks.wheel(SimpleNamespace(out=Path('output with spaces')))
+            finally:
+                os.chdir(original)
+            self.assertTrue((caller / 'output with spaces/built.whl').is_file())
+            self.assertFalse((project / 'output with spaces').exists())
 
-    def test_failed_build_stops_before_install_or_launch(self):
-        with patch.object(tasks, 'local_wheel', side_effect=subprocess.CalledProcessError(7, 'maturin')), \
-                patch.object(tasks, 'run') as run:
-            with self.assertRaises(SystemExit) as stopped:
-                tasks.main(['start'])
-            self.assertEqual(stopped.exception.code, 7)
-            run.assert_not_called()
-
-    def test_prerelease_option_controls_install_and_is_not_forwarded(self):
-        for option in (['--prerelease=allow'], ['--prerelease', 'allow']):
-            with self.subTest(option=option), patch.object(tasks, 'run') as run:
-                tasks.main(['start', 'release', *option, '--', '--help'])
-                install = next(call.args for call in run.call_args_list
-                               if call.args[:3] == ('uv', 'pip', 'install'))
-                self.assertEqual(install[-3:], ('--prerelease', 'allow', 'ultrazohm_cli'))
-                self.assertEqual(run.call_args.args[1:], ('--help',))
-
-    @unittest.skipUnless(shutil.which('make'), 'make is optional on Windows')
-    def test_make_passes_mode_and_cli_arguments_once(self):
-        for source in ('local', 'release'):
-            result = subprocess.run(['make', '-n', '-C', str(tasks.HERE), 'start', source,
-                                     'ARGS=-- --help'], capture_output=True, text=True, check=True)
-            self.assertEqual(result.stdout.count('tasks.py'), 1)
-            self.assertIn(f'tasks.py start {source} -- --help', result.stdout)
-        result = subprocess.run(['make', '-n', '-C', str(tasks.HERE), 'start', 'local', 'release'],
-                                capture_output=True, text=True, check=False)
-        self.assertNotEqual(result.returncode, 0)
+    def test_build_tools_use_repository_python_pin(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / '.python-version').write_text('3.12\n')
+            with patch.object(tasks, 'ROOT', root):
+                command = tasks.maturin()
+            self.assertEqual(command[command.index('--python') + 1], '3.12')
 
 
 if __name__ == "__main__":

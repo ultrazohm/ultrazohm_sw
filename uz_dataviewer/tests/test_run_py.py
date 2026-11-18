@@ -2,7 +2,7 @@
 import runpy
 from pathlib import Path
 
-import uz_dataviewer.app as app
+import uz_dataviewer.cli as app
 
 
 def test_run_py_starts_the_viewer(monkeypatch):

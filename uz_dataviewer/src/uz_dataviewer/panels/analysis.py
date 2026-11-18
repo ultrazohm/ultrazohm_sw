@@ -150,27 +150,13 @@ class AnalysisPanel(SessionPanel):
 
     # -- stale tracking -----------------------------------------------------
     def _current_key(self, state: "AppState", cfg: "AnalysisConfig") -> tuple:
-        try:
-            window = state.resolve_x_window(cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources)
-        except ValueError:
-            window = (cfg.x_min, cfg.x_max)
-        versions = tuple((ref, state.registry.get(ref[0]).time_version,
-                          state.registry.get_signal(*ref).version)
-                         for ref in cfg.sources if state.registry.get_signal(*ref) is not None)
-        return (versions, window[0], window[1], self._source_error(state, cfg)) + self._options_key(cfg)
+        from ..analysis_service import fingerprint
+        return fingerprint(state, self.prefix)
 
     @staticmethod
     def _source_error(state, cfg):
-        from ..sources import validation_error
-        sources = []
-        for ref in cfg.sources:
-            run = state.registry.get(ref[0])
-            if run is None or ref[1] not in run.signals:
-                return 'Analysis source is no longer loaded'
-            if run.axis_domain != "time":
-                return 'Analysis windows require a time-domain recording'
-            sources.append(run.data_source())
-        return validation_error(sources, state.services.validation_jobs)
+        from ..analysis_service import source_error
+        return source_error(state, cfg)
 
     # -- shared render ------------------------------------------------------
     def _poll_export(self, state: "AppState") -> None:
@@ -186,6 +172,16 @@ class AnalysisPanel(SessionPanel):
         self._sync_session(state)
         self._poll_export(state)
         cfg = self.config(state)
+
+        published = state.services.completed_analysis.pop(self.prefix, None)
+        if published is not None:
+            key, result = published
+            self._analysis_pending = None
+            if key == self._current_key(state, cfg):
+                self._results, self._info = result.series, result.info
+                self._computed_key = key
+                state.services.analysis_displays[self.prefix].retain(set())
+                self._fit_pending = True
 
         # -- controls (all routed through commands) --
         changed, value = follow_combo("Window", cfg.follow_plot, state.cell_count)
@@ -238,6 +234,21 @@ class AnalysisPanel(SessionPanel):
             state.services.analysis_displays[self.prefix].retain(set())
             self._info = source_error
             cfg.compute_requested = False
+        coordinator = getattr(state, 'viewer_operations', None)
+        if coordinator is not None:
+            self._analysis_pending = None
+            if cfg.compute_requested:
+                coordinator.compute_analysis(self.prefix)
+            pending = state.services.analysis_operations.get(self.prefix)
+            if pending is not None and not pending.done():
+                if source_error or not cfg.sources:
+                    pending.cancel()
+                else:
+                    imgui.text_disabled("Computing...")
+            elif pending is not None and not pending.cancelled():
+                error = pending.exception()
+                if error is not None:
+                    self._info = str(error)
         if cfg.compute_requested:
             cfg.compute_requested = False
             x_min, x_max = state.resolve_x_window(cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources)

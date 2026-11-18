@@ -1,7 +1,8 @@
 # PT1 hardware recordings and comparison
 
 With this branch's `UZ_PT1_REPLAY=1` firmware running at 10 kHz, close other
-device clients and activate the environment populated by `make -C uz_cli start release`.
+device clients and enter the shared repository environment with `./uz shell local`
+(build this checkout) or `./uz shell stable` (install the published release).
 From the repository root, record the actors independently:
 
 ```sh

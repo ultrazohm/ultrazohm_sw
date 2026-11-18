@@ -1,6 +1,6 @@
-# Install uv if needed, then open the data viewer: uv run tasks.py start.
-# Usage: start.ps1 [--dev-cli] [VIEWER_ARGUMENTS...]   (other tasks: uv run tasks.py --help)
-# Viewer arguments are forwarded, including relative file paths.
+# Bootstrap uv and pinned Python, then run a repository task.
+# Usage: .\uz.ps1 shell [local|stable|prerelease], .\uz.ps1 build cli, .\uz.ps1 --help
+# Task arguments are forwarded, including relative file paths.
 $ErrorActionPreference = 'Stop'
 
 try {
@@ -35,14 +35,14 @@ try {
         }
     }
 
-    $viewerOriginalPath = $env:PATH
+    $uzOriginalPath = $env:PATH
     try {
         $env:PATH = (Split-Path -Parent $uvExecutable) + [IO.Path]::PathSeparator + $env:PATH
-        $pythonVersion = (Get-Content -Raw (Join-Path $PSScriptRoot '../.python-version')).Trim()
-        & $uvExecutable run --no-project --python $pythonVersion (Join-Path $PSScriptRoot 'tasks.py') start @args
+        $pythonVersion = (Get-Content -Raw (Join-Path $PSScriptRoot '.python-version')).Trim()
+        & $uvExecutable run --no-project --isolated --python $pythonVersion (Join-Path $PSScriptRoot 'tasks.py') @args
         exit $LASTEXITCODE
     } finally {
-        $env:PATH = $viewerOriginalPath
+        $env:PATH = $uzOriginalPath
     }
 } catch {
     [Console]::Error.WriteLine($_.Exception.Message)

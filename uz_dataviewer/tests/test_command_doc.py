@@ -3,7 +3,7 @@
 import pytest
 
 from uz_dataviewer.command_doc import CSV_PATH, build_csv, group_for
-from uz_dataviewer.commands import CommandRegistry
+from uz_dataviewer.cli import public_methods
 
 
 def test_csv_up_to_date():
@@ -21,8 +21,8 @@ def test_csv_up_to_date():
 
 def test_every_command_grouped():
     """Every registered command must resolve to a documentation group."""
-    for cmd in CommandRegistry().all():
+    for name in public_methods():
         try:
-            group_for(cmd.name)
+            group_for(name)
         except KeyError as exc:  # pragma: no cover - failure path
             pytest.fail(str(exc))

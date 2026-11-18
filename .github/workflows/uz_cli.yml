@@ -11,6 +11,10 @@ on:
   push:
     branches: ['**']
     paths:
+      - 'uz'
+      - 'uz.ps1'
+      - 'tasks.py'
+      - 'tests/**'
       - 'uz_cli/**'
       - 'uz_dataviewer/**'
       - 'javascope/test_server.py'
@@ -23,6 +27,10 @@ on:
       - 'docs/source/guide/gui/uz_dataviewer/uz_dataviewer_commands.csv'
   pull_request:
     paths:
+      - 'uz'
+      - 'uz.ps1'
+      - 'tasks.py'
+      - 'tests/**'
       - 'uz_cli/**'
       - 'uz_dataviewer/**'
       - 'javascope/test_server.py'
@@ -75,7 +83,7 @@ jobs:
         with:
           workspaces: uz_cli
           key: checks-linux
-      - run: python3 uz_cli/tasks.py check
+      - run: ./uz check cli
 
   cli-check-windows:
     runs-on: windows-latest
@@ -98,7 +106,7 @@ jobs:
         with:
           workspaces: uz_cli
           key: checks-windows-latest
-      - run: python uz_cli/tasks.py check
+      - run: .\uz.ps1 check cli
 
   version:
     runs-on: ubuntu-latest
@@ -113,7 +121,7 @@ jobs:
           persist-credentials: false
           sparse-checkout: uz_cli
       - id: version
-        run: python3 uz_cli/tasks.py version
+        run: ./uz task cli version
 
   wheel-linux:
     needs: [image, version]
@@ -134,9 +142,9 @@ jobs:
         with:
           workspaces: uz_cli
           key: release-linux
-      - run: python3 uz_cli/tasks.py stamp "$UZ_CLI_RELEASE_VERSION"
-      - run: python3 uz_cli/tasks.py release-wheel
-      - run: python3 uz_cli/tasks.py release-check
+      - run: ./uz task cli stamp "$UZ_CLI_RELEASE_VERSION"
+      - run: ./uz task cli release-wheel
+      - run: ./uz task cli release-check
       - uses: actions/upload-artifact@v4
         with:
           name: wheel-linux
@@ -164,9 +172,9 @@ jobs:
         with:
           workspaces: uz_cli
           key: release-windows
-      - run: python uz_cli/tasks.py stamp "$env:UZ_CLI_RELEASE_VERSION"
-      - run: python uz_cli/tasks.py release-wheel
-      - run: python uz_cli/tasks.py release-check
+      - run: .\uz.ps1 task cli stamp "$env:UZ_CLI_RELEASE_VERSION"
+      - run: .\uz.ps1 task cli release-wheel
+      - run: .\uz.ps1 task cli release-check
       - uses: actions/upload-artifact@v4
         with:
           name: wheel-windows
@@ -192,7 +200,7 @@ jobs:
         with:
           name: wheel-linux
           path: cli-wheel
-      - run: python3 uz_dataviewer/tasks.py check --cli-wheel cli-wheel/*.whl
+      - run: ./uz check viewer --cli-wheel cli-wheel/*.whl
 
   viewer-test-windows:
     needs: wheel-windows
@@ -211,7 +219,7 @@ jobs:
         with:
           name: wheel-windows
           path: cli-wheel
-      - run: uv run --no-project python uz_dataviewer/tasks.py check --cli-wheel (Get-ChildItem cli-wheel/*.whl).FullName
+      - run: .\uz.ps1 check viewer --cli-wheel (Get-ChildItem cli-wheel/*.whl).FullName
 
   bundle-linux:
     needs: [viewer-test-linux, wheel-linux, version]
@@ -237,8 +245,8 @@ jobs:
         with:
           name: wheel-linux
           path: cli-wheel
-      - run: uv run --no-project python uz_dataviewer/tasks.py bundle --cli-wheel cli-wheel/*.whl
-      - run: uv run --no-project python uz_dataviewer/tasks.py bundle-smoke
+      - run: ./uz build viewer --cli-wheel cli-wheel/*.whl
+      - run: ./uz task viewer bundle-smoke
       - name: Package Linux executable
         run: |
           mkdir -p packages
@@ -268,8 +276,8 @@ jobs:
         with:
           name: wheel-windows
           path: cli-wheel
-      - run: uv run --no-project python uz_dataviewer/tasks.py bundle --cli-wheel (Get-ChildItem cli-wheel/*.whl).FullName
-      - run: uv run --no-project python uz_dataviewer/tasks.py bundle-smoke
+      - run: .\uz.ps1 build viewer --cli-wheel (Get-ChildItem cli-wheel/*.whl).FullName
+      - run: .\uz.ps1 task viewer bundle-smoke
       - name: Package Windows executable
         run: |
           New-Item -ItemType Directory -Force packages | Out-Null

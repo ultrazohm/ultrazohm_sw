@@ -228,6 +228,8 @@ class SessionData:
     dragged_log_path: str | None = None
     focus_fft: bool = False
     focus_histogram: bool = False
+    plot_views: dict = field(default_factory=dict)
+    next_view_id: int = 2
 
 
 @dataclass
@@ -240,11 +242,12 @@ class RuntimeServices:
         workers=min(4, os.cpu_count() or 1)))
     validation_jobs: Requests = field(default_factory=lambda: Requests(workers=2))
     analysis_jobs: Requests = field(default_factory=lambda: Requests())
+    completed_analysis: dict = field(default_factory=dict)
+    analysis_operations: dict = field(default_factory=dict)
     analysis_displays: dict[str, Requests] = field(default_factory=lambda: {
         name: Requests() for name in ("fft", "hist")})
     executor: CancellableExecutor = field(default_factory=CancellableExecutor)
     exports: list = field(default_factory=list)
-    replay: object | None = None
     pending: list[tuple[Future, str]] = field(default_factory=list)
     large_csv_requests: list[LoadRequest] = field(default_factory=list)
 
@@ -256,7 +259,6 @@ class RuntimeServices:
             requests.close()
         self.executor.shutdown()
         self.exports.clear()
-        self.replay = None
         self.pending.clear()
         self.large_csv_requests.clear()
 
@@ -282,6 +284,15 @@ class AppState(SessionData):
             setattr(self, attribute.name, getattr(replacement, attribute.name))
         self.services = replacement.services
         replacement.services = None
+        for view in self.plot_views.values():
+            view.console.parent = self.console
+
+    def create_plot_view(self):
+        from .plot_window import PlotWindowState
+        view = PlotWindowState(self, self.next_view_id)
+        self.plot_views[self.next_view_id] = view
+        self.next_view_id += 1
+        return view
 
     # -- grid management ----------------------------------------------------
     @property
@@ -463,7 +474,7 @@ class AppState(SessionData):
         convert_csv_to_parquet(source, request.path, backend=request.backend, cancel=cancel)
         return self._open_background(request.path, request.mode, request.backend, request.disk_cache, cancel=cancel)
 
-    def load_sync(self, path: str) -> Run | None:
+    def load_sync(self, path: str, *, cancel=None) -> Run | None:
         """Load a file on the calling thread and report it.
 
         Used by the ``load`` command and by session restore/replay so that any
@@ -471,10 +482,14 @@ class AppState(SessionData):
         run. Errors are logged and return ``None``; command handlers convert that
         result into a command failure.
         """
+        from .sources import Cancelled, check
+        check(cancel)
         path = os.path.abspath(path)
         self.console.info(f"Loading {os.path.basename(path)} ...")
         try:
-            run = open_file(path, self.loading_mode, self.registry.cache, self.cache_dir, backend=self.backend, disk_cache=self.disk_cache).register(self.registry)
+            run = open_file(path, self.loading_mode, self.registry.cache, self.cache_dir, backend=self.backend, disk_cache=self.disk_cache, cancel=cancel).register(self.registry)
+        except Cancelled:
+            raise
         except Exception as exc:  # noqa: BLE001 - surfaced to the console
             self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
             return None
@@ -624,6 +639,8 @@ class AppState(SessionData):
 
     def shutdown(self) -> None:
         if self.services is not None:
+            for view in self.plot_views.values():
+                view.shutdown()
             self.services.close()
             self.registry.cache.clear()
             self.services = None

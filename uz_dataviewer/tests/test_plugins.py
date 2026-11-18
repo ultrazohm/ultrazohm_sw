@@ -38,7 +38,7 @@ def clean_registry():
 
 def _run(state, *lines):
     for line in lines:
-        state.commands.dispatch(state, line)
+        state.commands.execute(state, *line)
 
 
 def _state_with_run(n=100):
@@ -54,8 +54,8 @@ def test_plugin_loads_and_runs(tmp_path, clean_registry):
     assert "double" in new and "double" in REGISTRY
 
     state = _state_with_run()
-    _run(state, "node_source(run_1, a)", "node_add(double)", "node_set(node_2, k, 5)",
-         "node_link(node_1, node_2)", "node_eval()")
+    _run(state, ('node_source', ['run_1', 'a']), ('node_add', ['double']), ('node_set', ['node_2', 'k', '5']),
+         ('node_link', ['node_1', 'node_2']), ('node_eval', []))
     derived = next(r for r in state.registry.runs if r.derived)
     assert abs(float(derived.signals["out"].y.mean()) - 5.0) < 1e-5  # a(=1) * k(=5)
 
@@ -143,8 +143,8 @@ def test_unknown_kind_restores_as_placeholder(tmp_path, clean_registry):
     load_plugins([str(tmp_path)])
 
     state = _state_with_run(50)
-    _run(state, "node_source(run_1, a)", "node_add(double)",
-         "node_link(node_1, node_2)", "node_eval()")
+    _run(state, ('node_source', ['run_1', 'a']), ('node_add', ['double']),
+         ('node_link', ['node_1', 'node_2']), ('node_eval', []))
     source = state.registry.runs[0]
     source.path = str(tmp_path / 'source.csv')
     np.savetxt(source.path, np.column_stack([source.time, source.signals['a'].y]), delimiter=';', header='time;a', comments='')
@@ -166,8 +166,8 @@ def test_plugin_node_renders_headless(tmp_path, clean_registry, gui_frame):
     load_plugins([str(tmp_path)])
 
     state = _state_with_run()
-    _run(state, "node_source(run_1, a)", "node_add(double)",
-         "node_link(node_1, node_2)", "node_eval()")
+    _run(state, ('node_source', ['run_1', 'a']), ('node_add', ['double']),
+         ('node_link', ['node_1', 'node_2']), ('node_eval', []))
     panel = NodesPanel()
     try:
         for _ in range(3):

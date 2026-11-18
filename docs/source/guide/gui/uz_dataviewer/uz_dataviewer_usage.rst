@@ -37,12 +37,28 @@ Loading data
 - **Navigation ▸ Open file(s)…** loads ``.csv`` (JavaScope ``;``-separated **or** standard ``,``-separated — the delimiter is auto-detected) and ``.parquet``, multiple at once. You can also drag ``.csv``/``.parquet`` files onto the window.
 - Expand a run to see its channels. The checkbox (de)activates a run; right-click ▸ **Remove run** drops it.
 - **Per-log time normalization:** right-click a run ▸ tick **Normalize start time** and enter a start (default ``0``), then **Apply**. This shifts that log's time axis without touching the samples; untick to restore. (Also ``load("Log.csv", 0)``.)
-- **Large logs:** desktop lazy loading reads raw windows without retaining the complete recording. In-memory CSV loading enforces a numeric-data budget. Convert CSV to Parquet for faster repeated access, using ``convert("Log.csv")`` or ``uz-dataviewer convert Log.csv``.
+- **Large logs:** desktop lazy loading reads raw windows without retaining the complete recording. In-memory CSV loading enforces a numeric-data budget. Convert CSV to Parquet for faster repeated access, using ``viewer.convert("Log.csv")`` or ``uz-dataviewer convert Log.csv`` against an open viewer.
+
+Settings
+--------
+
+The **Settings** menu opens a non-modal window with **General**, **Data loading**,
+and **Performance** sections. Changes persist as application defaults; each section
+can be reset independently. General includes the log browser directory and startup
+visibility of Application log and Python. Leave the directory empty to use the
+firmware checkout's ``artifacts`` directory. Startup visibility takes effect on the
+next launch; other changes apply immediately.
+
+Settings are stored in ``viewer_preferences.json`` in the platform user data
+directory, separately from session files and device configuration. Loading a
+session restores its own data and plot settings without changing saved defaults.
+The Python client exposes the same service through ``viewer.get_settings()`` and
+``viewer.set_setting("cache_budget", 512)``.
 
 Backend and loading mode
 ------------------------
 
-The **Backend** selector on the bottom status bar chooses **PyArrow** or **Polars** for subsequently opened recordings.
+The **Backend** selector in **Settings → Data loading** chooses **PyArrow** or **Polars** for subsequently opened recordings.
 The independent **Loading** selector chooses **In memory** or **Lazy**.
 Changing either setting leaves already loaded recordings unchanged.
 CSV selections larger than 1 GiB show a conversion recommendation for drag-and-drop, the Log Browser and the file picker.
@@ -51,7 +67,7 @@ CSV selections larger than 1 GiB show a conversion recommendation for drag-and-d
 Existing Parquet files are protected from overwriting; the dialog offers **Open existing Parquet** instead.
 **Cancel** skips the selected file, and multi-file selections are prompted individually.
 
-The shared timestamp and summary cache defaults to **1,024 MiB** and remains configurable with **Cache (MiB)** on the bottom status bar.
+The shared timestamp and summary cache defaults to **1,024 MiB** and remains configurable with **Settings → Performance → RAM cache (MiB)**.
 This is a retained-cache budget, not a limit on total application RAM.
 The status bar shows retained RAM cache usage next to FPS.
 The Data Viewer never uses GUI idle throttling: live, paused, and offline views
@@ -67,16 +83,18 @@ JSON sessions retain the backend and storage mode for each file.
 
 .. code-block:: bash
 
-   ./uz_dataviewer/start.sh --backend polars --loading-mode lazy
-   ./uz_dataviewer/start.sh --backend pyarrow --loading-mode memory
-   ./uz_dataviewer/start.sh convert --backend polars path/to/log.csv
+   uz-dataviewer gui --backend polars --loading-mode lazy
+   uz-dataviewer gui --backend pyarrow --loading-mode memory
+   # In a second terminal, control the running viewer:
+   uz-dataviewer backend polars
+   uz-dataviewer convert path/to/log.csv
 
-The console equivalent is ``backend(polars)`` followed by ``loading_mode(lazy)`` and ``load("path/to/log.parquet")``.
+The Python client equivalents are ``viewer.backend("polars")``, ``viewer.loading_mode("lazy")`` and ``viewer.load("path/to/log.parquet")``.
 The headless library accepts ``uz.read(path, backend="polars")``; its dataframe conversion returns a Polars DataFrame when that backend is selected.
 The default library backend preserves the existing pandas DataFrame interface.
 Polars uses its native streaming reader and writer; CSV conversion can use more RAM than PyArrow.
 Disk caching is disabled by default; indexes and summaries stay in RAM, and lazy CSV files are scanned directly.
-Enable **Disk cache** on the bottom status bar, ``--disk-cache`` or ``disk_cache(true)`` to reuse disk summaries and converted CSVs across restarts.
+Enable **Settings → Data loading → Disk cache**, ``--disk-cache`` or ``viewer.disk_cache(True)`` to reuse disk summaries and converted CSVs across restarts.
 The setting affects newly opened files; reopen existing files to apply it.
 When enabled, the application cache is stored in the selected workspace under ``artifacts/_user/viewer_cache``, unless overridden by ``UZ_DATAVIEWER_CACHE``.
 Polars stores its disk caches in a separate ``polars/`` subdirectory, and the engines have distinct in-memory cache identities.
@@ -176,55 +194,51 @@ Everything here is a command (``node_*``), so a graph is fully scriptable and sa
 
 **Custom transforms (plugins):** you can add your own node kinds by dropping a small Python file in a plugin folder — see :doc:`uz_dataviewer_plugins`.
 
-Console & scripting
-===================
+Python and terminal automation
+==============================
 
-With live mode enabled, lines starting with ``uz`` (for example ``uz status``) are sent as CLI commands to the attached acquisition service.
-Only service commands are accepted; local tools such as ``build`` or ``flash`` belong in a terminal or the **Flash UZ** button.
+The viewer listens on ``127.0.0.1:19741`` by default. Open the project environment
+with ``./uz shell`` and control the existing viewer:
 
-Commands and supported gestures are echoed to the **Console** as a canonical command (``> add_signal(plot_1, run_1, ia)``, and ``> set_x_lim(plot_1, 1.2, 1.8)`` when you zoom).
-The input box runs the same commands:
+.. code-block:: python
 
-- type a command name for **completion** (matches listed below the box; **Tab** fills the first; **Up/Down** cycle history),
-- ``help`` lists everything, ``help <name>`` shows one,
-- the log body is **always selectable** (drag to mark, **Ctrl+C** to copy) and auto-scrolls.
+   from uz_dataviewer import Client
+   viewer = Client()
+   run = viewer.load("Log.csv")
+   viewer.set_grid(2, 2)
+   viewer.add_signal(1, run, "ia")
+   viewer.save_session("analysis.json")
 
-.. code-block:: text
+The same operations are available as terminal subcommands, for example
+``uz-dataviewer set-grid 2 2``. Use ``--endpoint`` to select another instance and
+``--json`` for machine-readable output. Python uses ``UZ_DATAVIEWER_ENDPOINT``
+when no endpoint is specified. Handles identify recordings, nodes, and views
+within a session. Use ``view=viewer.create_view()`` to target an additional grid.
 
-   load("Log.csv")                         # optional 2nd arg normalises the start time
-   set_grid(2, 2)
-   add_signal(plot_1, run_1, ia)           # run by id ...
-   add_signal(plot_2, Log.csv, Speed_rpm)  # ... or by file label
-   set_axis(plot_1, run_1, Speed_rpm, right)
-   cursors(plot_1, on)
-   fft_source(run_1, ia)                    # send to the FFT window
-   fft_follow(full)                         # analyse the whole record
-   fft()                                    # compute + focus the FFT window
-   export_data(plot_1, "out.csv", true)     # true = rebase start time to 0
+**View → Python** opens an editor for normal Python files, available without a
+device connection. Run saves and executes in a fresh process. Managed device runs
+also receive ``UZ_ACQUISITION_ENDPOINT`` and provide **Stop script + device**.
+The application log is read-only; the old command language and ``.uzscript`` are
+removed. External terminals and IDEs use the same client API.
 
-Plots are referenced ``plot_1..plot_N`` (row-major); runs as ``run_<id>`` or by filename.
+Save and restore
+----------------
 
-Save / restore a session
-------------------------
+JSON schema 6 captures recordings, nodes, analysis settings, and plot views.
+Recording paths resolve relative to the snapshot. Saving is atomic and loading
+is transactional. Use ``viewer.save_session(path)`` and ``viewer.load_session(path)``.
+Python interpreter variables and running processes are not saved.
 
-- **Session ▸ Save state… / Load state…** — exact JSON snapshot (grid, assignments, plot types, cursors/spy, secondary axes, FFT/Histogram config, time normalization, file list); restore reloads the files and rebuilds the view.
-- **Session ▸ Run script…** — execute an editable ``.uzscript`` of automation commands against the current state. Scripts stop at the first error; earlier commands remain applied. Use ``load_state("session.json")`` to restore a session within automation.
+Public method reference
+=======================
 
-Command reference
-=================
+Methods accept ordinary Python values and session-scoped handles. The table is
+generated from the client signatures with ``python -m uz_dataviewer.command_doc``.
 
-The **Arguments** column lists each parameter as ``name:kind``; optional ones are bracketed
-(``[start:float]``). The argument *kinds* are: ``plot`` = ``plot_N``; ``run`` = ``run_N`` or a
-file label; ``fwindow`` = ``custom`` / ``full`` / ``plot_N``; ``bool`` = ``on``/``off`` (or
-``true``/``false``); the rest are ``int`` / ``float`` / ``str``.
-
-.. csv-table:: uz_dataviewer console commands
+.. csv-table:: Python viewer API
    :file: uz_dataviewer_commands.csv
    :header-rows: 1
    :widths: 18 14 40 28
-
-This table is generated from the live command registry (``python -m uz_dataviewer.command_doc``),
-and ``help`` prints the same list in the console, so both stay current.
 
 Session compatibility and analysis windows
 ------------------------------------------
@@ -232,11 +246,11 @@ Session compatibility and analysis windows
 Failed restoration preserves the current session. Recordings without a backing file (live snapshots, node outputs) must be exported as data before saving a reloadable session.
 Transforms must be chained through node links, not by creating source nodes from derived outputs.
 
-Automation commands can reference derived outputs as ``node_output_N``, independently of which other nodes have been evaluated.
+Python scripts obtain a derived recording handle with ``viewer.node_output(node)`` after evaluating the node.
 
-Saved sessions use schema version 5 and preserve separate instances of logs with identical filenames or paths.
+Saved sessions use schema version 6 and preserve separate instances of logs with identical filenames or paths.
 Restoring a session replaces the currently loaded session.
-Version 1/2/3/4 snapshots and all generated session scripts must be recreated as JSON sessions. Generated script export has been removed.
+Version 1/2/3/4/5 snapshots and all generated session scripts must be recreated as JSON sessions. Generated script export has been removed.
 Histogram, FFT, export and node crop ranges include only samples inside the selected time window.
 FFT and FIR filters require strictly increasing, uniformly spaced timestamps (100 ppm tolerance plus floating-point roundoff).
 Binary math requires matching time axes throughout both inputs. Unsupported sampling is rejected without interpolation.

@@ -14,14 +14,14 @@ from ..workers import CancellableExecutor
 
 
 def default_log_directory() -> Path:
-    """Find the checkout's javascope directory, including when started elsewhere."""
+    """Find the checkout's artifacts directory, including when started elsewhere."""
+    from ..user_paths import find_repository
     starts = [Path.cwd(), Path(sys.executable).parent, Path(__file__).resolve().parent]
     for start in starts:
-        for parent in (start, *start.parents):
-            candidate = parent / "javascope"
-            if candidate.is_dir():
-                return candidate
-    return Path.cwd() / "javascope"
+        root = find_repository(start)
+        if root is not None:
+            return root / "artifacts"
+    return Path.cwd() / "artifacts"
 
 
 def browsable(directory: Path) -> bool:

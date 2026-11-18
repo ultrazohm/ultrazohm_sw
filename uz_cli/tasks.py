@@ -1,7 +1,7 @@
 """Build, test and install uz_cli; the same tasks on Linux, Windows and in CI.
 
-Standard library only. `python uz_cli/tasks.py` (or `make` in this directory)
-lists the tasks; `TASK --help` explains one. The Python version comes from the
+Standard library only. `./uz task cli help` lists the tasks;
+`./uz task cli TASK --help` explains one. The Python version comes from the
 repository's .python-version. Set UZ_CLI_RELEASE_VERSION while building so the
 binary reports the same version as the wheel.
 """
@@ -30,10 +30,10 @@ def run(*command, cwd=HERE, env=None):
 
 
 def maturin():
-    """The installed maturin, or a uv-managed one (with zig for portable Linux wheels)."""
-    if shutil.which("maturin"):
-        return ["maturin"]
-    return ["uv", "tool", "run", "--from", "maturin[zig]>=1.9,<2" if not WINDOWS else "maturin>=1.9,<2", "maturin"]
+    """Keep maturin and zig in the same tool environment, independent of the caller's Python."""
+    python = (ROOT / ".python-version").read_text(encoding="utf-8").strip()
+    return ["uv", "tool", "run", "--python", python, "--from",
+            "maturin[zig]>=1.9,<2" if not WINDOWS else "maturin>=1.9,<2", "maturin"]
 
 
 def venv_bin(venv, name):
@@ -86,39 +86,6 @@ def install(_args):
     run("uv", "tool", "install", "--force", "--python", python, built)
 
 
-def start(args):
-    """Install the chosen CLI into the project environment, then launch it."""
-    package = local_wheel() if args.source == "local" else "ultrazohm_cli"
-    venv = HERE / ".venv"
-    python = venv_bin(venv, "python")
-    if not python.is_file():
-        version = (ROOT / ".python-version").read_text(encoding="utf-8").strip()
-        run("uv", "venv", "--python", version, venv)
-    options = [] if args.source == "local" else [
-        "--upgrade-package", "ultrazohm_cli", "--prerelease", args.prerelease]
-    # Reinstall even at the same version: local builds retain their base version,
-    # and switching to PyPI must replace a locally installed wheel too.
-    run("uv", "pip", "install", "--python", python,
-        "--reinstall-package", "ultrazohm_cli", *options, package)
-    cli_args = args.cli_args
-    if cli_args[:1] == ["--"]:
-        cli_args = cli_args[1:]
-    run(venv_bin(venv, "ultrazohm_cli"), *cli_args, cwd=Path.cwd())
-
-
-def venv(_args):
-    """Open a shell with the existing project environment activated."""
-    environment = HERE / ".venv"
-    activation = environment / ("Scripts/activate.bat" if WINDOWS else "bin/activate")
-    if not activation.is_file():
-        raise SystemExit("No project environment found. Run start local or start release first.")
-    print("Opening the activated project shell; use exit to return.", flush=True)
-    if WINDOWS:
-        run("cmd.exe", "/K", str(activation), cwd=Path.cwd())
-    else:
-        run("bash", "--rcfile", activation, "-i", cwd=Path.cwd())
-
-
 def check(args):
     run("cargo", "fmt", "--check")
     run("cargo", "clippy", "--all-targets", "--features", "python", "--locked", "--", "-D", "warnings")
@@ -132,7 +99,9 @@ def check(args):
 
 
 def wheel(args):
-    run(*maturin(), "build", "--release", "--locked", "--out", args.out or TARGET / "wheels")
+    # run() builds from HERE; resolve user paths before changing directory.
+    output = args.out.resolve() if args.out is not None else TARGET / "wheels"
+    run(*maturin(), "build", "--release", "--locked", "--out", output)
 
 
 def release_wheel(_args):
@@ -191,47 +160,16 @@ def stamp(args):
 
 
 def _invocation():
-    """How this script was called, so help shows commands that can be copied."""
-    if os.environ.get("UZ_TASKS_VIA_MAKE"):
-        return lambda task, args="": f"make {task}" + (f' ARGS="{args}"' if args else "")
-    return lambda task, args="": f"uv run uz_cli/tasks.py {task}" + (f" {args}" if args else "")
+    prefix = ".\\uz.ps1" if WINDOWS else "./uz"
+    return lambda task, args="": f"{prefix} task cli {task}" + (f" {args}" if args else "")
 
 
 def overview():
-    call = _invocation()
-    usage = 'make TASK [ARGS="..."]' if os.environ.get("UZ_TASKS_VIA_MAKE") else "uv run uz_cli/tasks.py TASK [...]"
-    print(f"""uz_cli tasks                              {usage}
-
-Use
-  start [local|release]  Build the checkout or fetch stable PyPI, install in .venv and run (default: local)
-  venv           Open a shell with the existing .venv activated; exit to return
-  install        Build this checkout's CLI and install the ultrazohm_cli command (uv tool)
-
-Develop
-  check          Formatting, clippy, Rust tests and integration tests, as CI
-  wheel          Wheel for this machine in target/wheels
-  release-wheel  Portable release wheel in target/wheels-release (release-check tests it)
-
-CI only: debug-wheel, release-check, version, stamp
-
-Examples
-  {call("start local")}
-  {call("start release", "-- --help")}
-  {call("install")}
-  {call("check")}
-
-Details: {call("TASK", "--help")}
-Builds use native tools (rustup's pinned Rust, maturin, a C/C++ compiler); no containers.""")
+    print("CLI build tasks: check, wheel, debug-wheel, release-wheel, release-check, version, stamp, install")
+    print("Use ./uz shell to run both applications; ./uz task cli TASK --help for details.")
 
 
 DESCRIPTIONS = {
-    "venv": "Open an activated subshell using the existing uz_cli/.venv, without installing or "
-            "updating packages. Uses Bash on Linux/macOS and cmd on Windows. Use exit to return; "
-            "a child process cannot activate the parent shell.",
-    "start": "Install and launch in uz_cli/.venv. 'local' (default) builds this checkout first; "
-             "'release' fetches the latest stable version from PyPI. Use --prerelease allow "
-             "to include development releases. Pass CLI arguments after --. "
-             "The global uv tool installation is unchanged.",
     "install": "Build an optimized wheel of this checkout for this machine and install it with "
                "'uv tool install --force', replacing an ultrazohm_cli installed from PyPI until you "
                "reinstall that.",
@@ -255,12 +193,7 @@ def main(argv=None):
         task = tasks.add_parser(name, prog=call(name), description=DESCRIPTIONS[name])
         task.set_defaults(function=function)
         return task
-    launch = add("start", start)
-    launch.add_argument("source", nargs="?", choices=("local", "release"), default="local")
-    launch.add_argument("--prerelease", choices=("allow", "disallow"), default="disallow",
-                        help="include prereleases when installing from PyPI (default: disallow)")
     add("install", install)
-    add("venv", venv)
     add("check", check)
     add("debug-wheel", debug_wheel)
     add("wheel", wheel).add_argument("--out", type=Path, help="output directory (default: target/wheels)")
@@ -273,14 +206,7 @@ def main(argv=None):
     if not argv or argv[0] in ("-h", "--help", "help"):
         overview()
         return
-    cli_args = []
-    if argv[0] == "start" and "--" in argv:
-        separator = argv.index("--")
-        cli_args = argv[separator + 1:]
-        argv = argv[:separator]
     args = parser.parse_args(argv)
-    if args.task == "start":
-        args.cli_args = cli_args
     try:
         args.function(args)
     except subprocess.CalledProcessError as error:

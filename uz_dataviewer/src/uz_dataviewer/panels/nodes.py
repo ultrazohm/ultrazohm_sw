@@ -7,7 +7,7 @@ in Navigation, draggable into any plot). Built on ``imgui_node_editor`` followin
 bundled ``demo_node_editor_basic`` pattern.
 
 Like every panel, this one only **issues commands** (``node_*``) -- it never mutates
-the graph directly -- so the canvas, the console and ``.uzscript`` stay in lock-step.
+the graph directly -- so canvas actions and Python control share the same operations.
 """
 
 from __future__ import annotations

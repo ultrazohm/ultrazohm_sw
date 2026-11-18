@@ -207,17 +207,16 @@ def test_cancellation_and_budget(recording, tmp_path):
 
 
 def test_source_node_crop_matches_eager(recording, tmp_path):
-    from uz_dataviewer.commands import parse_call
     path, _, _ = recording
     outputs = []
     for mode in ('memory', 'lazy'):
         state = AppState()
         state.loading_mode, state.cache_dir = mode, tmp_path / 'cache'
         state.load_sync(str(path))
-        for line in ('node_source(run_1, a)', 'node_set(node_1, tmin, 5)',
-                     'node_set(node_1, tmax, 6)', 'node_add(math)',
-                     'node_link(node_1, node_2)', 'node_eval()'):
-            state.commands.execute(state, *parse_call(line))
+        for line in (('node_source', ['run_1', 'a']), ('node_set', ['node_1', 'tmin', '5']),
+                     ('node_set', ['node_1', 'tmax', '6']), ('node_add', ['math']),
+                     ('node_link', ['node_1', 'node_2']), ('node_eval', [])):
+            state.commands.execute(state, *line)
         run = next(r for r in state.registry.runs if r.derived)
         outputs.append((run.time, run.signals['out'].y))
         state.shutdown()

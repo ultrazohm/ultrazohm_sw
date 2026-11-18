@@ -1,6 +1,6 @@
-"""Bottom status bar: loading controls on the left, usage on the right."""
+"""Bottom status bar: runtime performance and cache usage."""
 
-from imgui_bundle import em_size, imgui, imgui_ctx
+from imgui_bundle import imgui, imgui_ctx
 
 from .base import SessionPanel
 
@@ -8,36 +8,6 @@ from .base import SessionPanel
 class StatusPanel(SessionPanel):
     def render(self, state):
         with imgui_ctx.begin_horizontal("status", imgui.ImVec2(imgui.get_content_region_avail().x, 0)):
-            imgui.push_id('data_settings')
-            backends = ['pyarrow', 'polars']
-            labels = ['PyArrow', 'Polars']
-            imgui.set_next_item_width(em_size(7))
-            changed, backend = imgui.combo('Backend', backends.index(state.backend), labels)
-            if changed:
-                self._emit(state, 'backend', backends[backend])
-            if imgui.is_item_hovered():
-                imgui.set_tooltip('Applies to newly opened files. Existing runs keep their backend.')
-
-            modes = ['memory', 'lazy']
-            imgui.set_next_item_width(em_size(7))
-            changed, mode = imgui.combo('Loading', modes.index(state.loading_mode), ['In memory', 'Lazy'])
-            if changed:
-                self._emit(state, 'loading_mode', modes[mode])
-            if imgui.is_item_hovered():
-                imgui.set_tooltip('Existing runs keep their storage mode.')
-
-            imgui.set_next_item_width(em_size(7))
-            changed, mb = imgui.input_int('Cache (MiB)', state.registry.cache.limit // 1024**2)
-            if changed:
-                self._emit(state, 'cache_budget', max(1, mb))
-
-            changed, enabled = imgui.checkbox('Disk cache', state.disk_cache)
-            if changed:
-                self._emit(state, 'disk_cache', enabled)
-            if imgui.is_item_hovered():
-                imgui.set_tooltip('Save indexes, summaries and CSV conversions across restarts. Reopen files to apply.')
-            imgui.pop_id()
-
             imgui.align_text_to_frame_padding()
             cache = state.registry.cache.status()
             fps = imgui.get_io().framerate
@@ -45,7 +15,7 @@ class StatusPanel(SessionPanel):
             label = f"FPS: {fps:.1f}  |  RAM cache: {used:.1f} / {cache['limit'] / 1024**2:.0f} MiB"
             if cache['limit_hit']:
                 label += '  |  cache limit hit'
-            # Keep the settings and usage on one row without drawing over controls.
+            # Keep runtime usage readable in narrow windows.
             if imgui.calc_text_size(label).x > imgui.get_content_region_avail().x:
                 label = f"FPS: {fps:.0f} | RAM: {used:.0f} MiB"
             imgui.spring()

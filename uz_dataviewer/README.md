@@ -4,7 +4,7 @@ A desktop data viewer (Windows and Linux) for UltraZohm JavaScope logs, built wi
 [Dear ImGui via `imgui_bundle`](https://github.com/pthom/imgui_bundle) and ImPlot.
 It succeeds the Plotly/Dash `javascope/dataviewer.py`, with a native live-data prototype and a VSCode-style
 docked layout, drag-and-drop subplots, dedicated FFT/Histogram analysis windows, range-aware
-downsampling for multi-gigabyte logs, and a **scriptable command console** for automating data, analysis and plot settings.
+downsampling for multi-gigabyte logs, and a **Python and terminal control API** for automating data, analysis and plot settings.
 
 ```
 +------------------------------------------------------------------+
@@ -25,8 +25,7 @@ Drag it back to redock. Other environments keep panels inside the main window.
 axis ranges, cursors and downsampling settings are independent; recordings and
 their data cache are shared. Hide and reopen these windows using View.
 Additional plot windows last for the current session: loading a session closes
-them, and saved sessions and console scripts still describe the original Plots
-window. Their actions appear as labelled informational messages in the console.
+them, and saved sessions preserve their independent grids. Their actions appear as labelled informational messages in the console.
 
 ## Features at a glance
 
@@ -49,73 +48,35 @@ window. Their actions appear as labelled informational messages in the console.
 - **Node canvas** — drag a signal into a graph, apply transforms (FFT / math /
   filter / shift), and the result becomes a new draggable signal. Fully scriptable
   (`node_*`) and extensible with your own **Python plugin nodes** (see [Plugins](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_plugins.rst)).
-- **Scriptable command console** — supported actions echo commands; the input runs them, with
-  completion, history and a selectable log. Sessions save to JSON; `.uzscript` files run command automation.
+- **Python automation** — control the open viewer with `uz_dataviewer.Client` from a terminal,
+  Python file, or the Python panel. The application log reports actions and errors. Sessions save to JSON.
 - **MaterialFlat theme.** Runs on Windows and Linux.
 
 ## Quick start
 
-Run the launcher from the repository root (Linux):
+From the repository root, prepare and enter the shared CLI/viewer environment:
 
 ```bash
-./uz_dataviewer/start.sh
-./uz_dataviewer/start.sh path/to/log.csv    # preload one or more files
-./uz_dataviewer/start.sh session.json       # restore a saved session
-./uz_dataviewer/start.sh --dev-cli          # build this checkout's CLI and use it (needs Rust)
+./uz shell                    # Windows PowerShell: .\uz.ps1 shell
+uz-dataviewer
+uz-dataviewer gui path/to/log.csv
+uz-dataviewer gui session.json
 ```
 
-The launcher installs the locked dependencies into `uz_dataviewer/.venv`,
-including the published CLI package `ultrazohm_cli`, and opens the viewer. The
-live panels (Live Data, Live Plots, Control, Python) are present whenever
-`ultrazohm_cli` is installed, which is the case on Windows and Linux x86-64 and in
-the desktop bundle. Offline analysis never needs the CLI.
+`./uz shell [local|stable|prerelease]` selects the CLI source; without a source it
+reuses the last setup, or selects stable on first use. `local` builds the checkout's
+Rust CLI. The viewer is installed from source into the repository `.venv` along
+with its locked runtime dependencies. Both `uz-dataviewer` and `ultrazohm_cli`
+are available in the shell. `exit` returns to the original terminal.
 
-`start.sh` and `start.ps1` only install uv when it is missing and then run
-`uz_dataviewer/tasks.py start`. With uv installed, every task is available
-directly, on Linux and Windows alike:
+The Bash and PowerShell launchers bootstrap missing uv and the pinned Python;
+host Python and Make are not required. `./uz setup` prepares the environment
+without opening a shell. See the [shared launcher guide](../README.MD#cli-and-data-viewer)
+for source selection, prerequisites and build commands.
 
-```bash
-uv run uz_dataviewer/tasks.py                    # list the tasks
-uv run uz_dataviewer/tasks.py start [VIEWER_ARGS...]
-uv run uz_dataviewer/tasks.py develop [VIEWER_ARGS...]  # with this checkout's CLI
-uv run uz_dataviewer/tasks.py shell              # terminal in the viewer environment
-uv run uz_dataviewer/tasks.py check | bundle | bundle-smoke
-uv run uz_dataviewer/tasks.py TASK --help        # details of one task
-```
-
-On Linux, `make` in `uz_dataviewer` lists the same tasks as make commands, for
-example `make develop` or `make start ARGS="log.csv"`.
-
-On Windows, use PowerShell:
-
-```powershell
-.\uz_dataviewer\start.ps1
-.\uz_dataviewer\start.ps1 --dev-cli
-.\uz_dataviewer\start.ps1 "path\to\log.csv"
-```
-
-If Windows blocks script execution, run `powershell -ExecutionPolicy Bypass -File .\uz_dataviewer\start.ps1`.
-Both launchers automatically install missing uv using the [official installer](https://docs.astral.sh/uv/reference/installer/), without modifying shell profiles.
-Linux/macOS requires `curl` or `wget` for this initial download.
-The launchers use `uv run` to create/reuse `uz_dataviewer/.venv`, install the project and all runtime dependencies from `pyproject.toml`, and start the viewer.
-It selects Python 3.12 (downloaded by uv if needed) and requires a prebuilt
-`imgui-bundle` wheel, avoiding an accidental native build with Python 3.10.
-An existing `.venv` using another Python version is recreated by uv.
-The first run needs internet access and uses the included `uz_dataviewer/uv.lock`.
-No manual virtual environment activation is needed. Input paths are relative to
-your current directory; the launcher itself can be called from any directory.
-Startup files are processed in argument order, so a script can use recordings
-listed before it. A failed startup argument stops the remaining arguments and
-reports the error in the console.
-
-Alternatively, install and run manually from `uz_dataviewer/`:
-
-```bash
-pip install -r requirements.txt      # or: pip install -e .
-python run.py                        # or: python -m uz_dataviewer
-python run.py ../javascope/Log_2026-06-11_22-45-16.csv   # preload
-python run.py session.json           # restore a saved session
-```
+Start the GUI with `uz-dataviewer`, then use `uz-dataviewer status` from another
+activated terminal to control it. `uz-dataviewer --help` lists application commands;
+`./uz --help` lists repository tasks. Input paths are relative to your current directory.
 
 On desktop, selecting a CSV larger than 1 GiB prompts **Large log, conversion to parquet recommended**.
 Choose **Open CSV** to read it directly, or **Convert to Parquet** to create and open a file with the same stem and directory (for example, `logs/run.csv` becomes `logs/run.parquet`).
@@ -130,6 +91,30 @@ conversions clean up temporary output.
 Then **Open file(s)…** in the Navigation panel, expand the run, and drag signals into the
 plots (or the FFT / Histogram windows).
 
+## Settings
+
+Click **Settings** in the menu bar to open a non-modal window:
+
+- **General:** log browser directory and startup visibility of Application log and Python.
+- **Data loading:** backend, loading mode, and disk cache for newly opened recordings.
+- **Performance:** RAM cache limit and display points per signal.
+
+Edits apply immediately (except startup visibility) and persist as application defaults
+in `viewer_preferences.json` in the platform user data directory. Each section has
+**Reset this section**. An empty log directory uses the firmware checkout's `artifacts`
+directory. The status bar displays FPS and cache usage.
+
+Session files retain their own data and plot settings; loading a session does not
+rewrite application defaults. Explicit startup options override saved defaults for
+that launch. Device configuration remains in its acquisition panels.
+The Python client uses the same settings service:
+
+```python
+viewer.get_settings()
+viewer.set_setting("cache_budget", 512)
+viewer.set_setting("show_application_log", False)
+```
+
 ## Large recordings and responsiveness
 
 The Data Viewer never uses GUI idle throttling. Idling stays disabled during live
@@ -137,12 +122,12 @@ streaming, paused views, and offline analysis, even without mouse or keyboard
 input. Actual FPS still depends on rendering workload and display synchronization.
 
 The desktop defaults to **Polars + Lazy**; the online version uses **PyArrow + In memory**.
-Choose **Loading → In memory / Lazy** on the bottom status bar before opening files,
+Choose **Settings → Data loading → Loading → In memory / Lazy** before opening files,
 or select the mode at startup:
 
 ```bash
-./uz_dataviewer/start.sh --loading-mode lazy path/to/log.parquet
-./uz_dataviewer/start.sh --loading-mode lazy path/to/log.csv
+uz-dataviewer gui --loading-mode lazy path/to/log.parquet
+uz-dataviewer gui --loading-mode lazy path/to/log.csv
 ```
 
 - **In memory** retains the existing full NumPy arrays for fast analysis.
@@ -150,8 +135,8 @@ or select the mode at startup:
   CSV requires repeated text scanning and is slower for interactive navigation.
 
 The setting affects subsequent opens. Existing runs retain their storage mode;
-JSON sessions preserve mixed modes. The console equivalents
-are `loading_mode(lazy)` and `cache_budget(1024)`.
+JSON sessions preserve mixed modes. The Python client equivalents
+are `viewer.loading_mode("lazy")` and `viewer.cache_budget(1024)`.
 
 Plot preparation, first-use summaries, XY sampling, cursor reads, and GUI FFT /
 histogram computation run outside the desktop rendering thread. During an update,
@@ -171,15 +156,19 @@ Changed files must be reopened; cached results from their previous version are
 not reused, including in XY plots and cursor readouts. Lazy reads run on the desktop worker even for short recordings.
 
 The shared timestamp/summary RAM cache defaults to 1,024 MiB and is configurable
-with **Cache (MiB)** on the bottom status bar. Prepared plot arrays are bounded by display budgets.
+with **Settings → Performance → RAM cache (MiB)**. Prepared plot arrays are bounded by display budgets.
 Cache limits are **not a hard process-RAM limit**: decoded batches, index-building
 scratch, FFTs, explicit NumPy conversions, exports and Python transformation
 plugins can allocate additional memory. A full-recording FFT still needs its raw
-input and output arrays. Histograms stream raw batches in two passes. Explicit
-console/script commands and node/plugin evaluation retain synchronous semantics.
+input and output arrays. Histograms stream raw batches in two passes.
+Node evaluation runs on a detached graph in a background worker. Results are published
+on the application thread only if the graph and source inputs still match. Editing
+inputs during evaluation discards the result; evaluate again to use the new settings.
+Cancellation takes effect between reads and transforms; a running native transform
+returns before its cancellation can be observed.
 
 Measurement caches stay in RAM by default; no automatic CSV conversion is written.
-Enable **Disk cache** on the bottom status bar, pass `--disk-cache`, or use `disk_cache(true)` to persist indexes and summaries and convert lazy CSV inputs into reusable Parquet files.
+Enable **Settings → Data loading → Disk cache**, pass `--disk-cache`, or use `viewer.disk_cache(True)` to persist indexes and summaries and convert lazy CSV inputs into reusable Parquet files.
 Reopen existing files to change their cache policy.
 JSON sessions preserve the setting for each file.
 When enabled, disk caches live in `~/.cache/uz_dataviewer` (Polars uses its `polars/` subdirectory), or the directory selected by `UZ_DATAVIEWER_CACHE`.
@@ -190,9 +179,9 @@ Read-only or full summary-cache storage falls back to RAM; enabled lazy CSV conv
 
 ### Session format and analysis correctness
 
-Sessions now use schema version 5 with explicit run identities, including repeated opens and identical filenames in different directories.
+Sessions now use schema version 6 with explicit run identities, including repeated opens and identical filenames in different directories.
 Node links preserve explicit input slots, including disconnected slots. Canvas connection order does not change subtraction or division.
-Restoring a saved session replaces the current session only after successful loading. Failed restoration leaves the current session intact. Version 1–4 snapshots and generated session scripts must be recreated as JSON sessions; version 5 records the materialized output domain explicitly.
+Restoring a saved session replaces the current session only after successful loading. Failed restoration leaves the current session intact. Version 1–5 snapshots and generated session scripts must be recreated as JSON sessions; version 6 records the materialized output domain explicitly.
 Plot windows, precise time ranges and inactive recordings survive JSON round trips. Restoring a session resets panel caches and canvas positions; Y fitting completes when lazy samples arrive. Both primary and secondary Y limits survive JSON saves, including mouse zoom.
 Removing a followed subplot switches its analysis windows to Full and discards the removed plot's cached range.
 Recomputing a node preserves its derived recording's selected time origin.
@@ -211,7 +200,7 @@ For plain-array API calls, pass `timestamp_resolution=data.timestamp_resolution`
 precision, not an assumed JavaScope format. No samples are resampled.
 Binary math and XY plots require matching timestamps throughout both inputs; implicit index alignment and XY truncation have been removed. XY limits and zoom survive session round trips without changing linked time axes.
 Stale or failed derived outputs are blocked from plots, analysis and exports until successful reevaluation; existing assignments are preserved, including across JSON restoration. Failed graphs restore with empty, unavailable output placeholders until repaired. Source validation covers original CSV files even when reading a cached conversion.
-JSON is the only saved-session format; generated session-script export has been removed. Ordinary `.uzscript` automation remains supported and can call `load_state("session.json")`; commands run sequentially and stop at the first error. Completing an export dialog after its subplot was removed cancels the export.
+JSON is the only saved-session format; generated session-script export has been removed. Python automation uses `viewer.load_session("session.json")`; calls run sequentially and exceptions stop the script unless handled. Completing an export dialog after its subplot was removed cancels the export.
 FFT export validates every selected signal before writing: an invalid channel fails the export with its name and reason, preserving any existing destination file.
 The FFT window reports each failed channel even when other channels succeed.
 Plugin imports roll back their registrations on failure. Existing transform kinds
@@ -244,7 +233,7 @@ points explicitly from `uz_dataviewer.app`; package-root GUI aliases were remove
 
 | Doc | For |
 |-----|-----|
-| **[Usage](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_usage.rst)** | Driving the app: panels, plots, analysis windows, the command console & scripting, full command reference. |
+| **[Usage](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_usage.rst)** | Driving the app: panels, plots, analysis windows, Python automation, application log, full client API reference. |
 | **[Architecture](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_architecture.rst)** | Developers: module map, the state-driven/command-routed design, internals, how to extend, testing, design decisions. |
 | **[Build](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_build.rst)** | Tasks, desktop bundles and releases. |
 | **[Plugins](../docs/source/guide/gui/uz_dataviewer/uz_dataviewer_plugins.rst)** | Writing your own node transforms as Python plugins. |
@@ -256,12 +245,12 @@ points explicitly from `uz_dataviewer.app`; package-root GUI aliases were remove
 
 ```
 uz_dataviewer/
-├── run.py                    # run from a source checkout (also replays *.uzscript)
+├── run.py                    # run from a source checkout (also accepts Python startup files)
 ├── src/uz_dataviewer/
 │   ├── app.py                # docking layout, runner, theme, Session menu
 │   ├── state.py              # AppState, SubplotCell, FFT/Histogram configs
 │   ├── commands.py           # command registry / parser / dispatcher (the script API)
-│   ├── console.py            # console: selectable log + command input
+│   ├── console.py            # application activity log
 │   ├── model.py              # Run / Signal / DataRegistry (+ time normalization)
 │   ├── loader.py             # CSV/Parquet loading + channel-name parsing
 │   ├── sources.py            # raw sources, bounded caches and min/max summaries
@@ -270,7 +259,7 @@ uz_dataviewer/
 │   ├── transforms.py         # GUI-free node transforms (math, FIR filter)
 │   ├── nodes.py              # dataflow graph + evaluation -> derived signals
 │   ├── plugins.py            # external transform-node plugins (@transform, loader)
-│   ├── session.py            # JSON save/restore + .uzscript + CSV export
+│   ├── session.py            # JSON save/restore + CSV export
 │   └── panels/               # navigation, plots, analysis base, fft, histogram, nodes
 ├── tests/                    # pytest (logic via commands + headless rendering)
 ├── tasks.py                  # lint, test, bundle, bundle-smoke (Linux, Windows, CI)
@@ -284,15 +273,14 @@ Documentation lives in `../docs/source/guide/gui/uz_dataviewer/`.
 Run the same checks as CI, on Linux (dev container) or Windows:
 
 ```bash
-python uz_dataviewer/tasks.py check                  # ruff and the full pytest suite, with a CLI wheel from this checkout
-python uz_dataviewer/tasks.py bundle                 # PyInstaller bundle in dist/
-python uz_dataviewer/tasks.py bundle-smoke           # its smoke tests
+./uz check viewer                  # ruff and the full pytest suite, with a CLI wheel from this checkout
+./uz build viewer                 # PyInstaller bundle in dist/
+./uz task viewer bundle-smoke           # its smoke tests
 ```
 
-The tasks use `uz_dataviewer/.venv-ci`, separate from the launchers' `.venv`.
+The tasks use `uz_dataviewer/.venv-ci`, separate from the shared repository `.venv`.
 `check` builds a debug CLI wheel from `../uz_cli` unless `--cli-wheel PATH` is given,
-so the live tests run against the same commit. `make -C uz_dataviewer check` forwards
-to the same script. Linux CI runs it in the `ci` stage of `.devcontainer/Dockerfile`;
+so the live tests run against the same commit. `./uz check viewer` forwards to the same task implementation. Linux CI runs it in the `ci` stage of `.devcontainer/Dockerfile`;
 only the published Linux bundle is built in Ubuntu 22.04, because PyInstaller copies
 the build system's libraries.
 
@@ -314,106 +302,77 @@ retain their saved domain as unavailable placeholders until repaired.
 
 ## Native live-data prototype
 
-### Service commands in the Console
+### Python and terminal automation
 
-With live mode enabled, enter `uz` followed by a CLI command in the existing
-Console to send it to the attached acquisition service, on Windows and Linux:
-
-```text
-uz --help
-uz status
-uz set-variable send_field_19 5
-uz start-logging
-uz tail 5
-```
-
-Only the exact first token `uz` bypasses the viewer command parser. The line uses
-the syntax of `ultrazohm_cli serve --interactive`, is parsed by the installed CLI and
-runs on a background worker; its output or error appears in the Console. Bare
-`uz` shows the command help. Commands go to the attached endpoint (or the
-endpoint entered in Live Data when detached). Without live mode or the CLI wheel,
-the Console reports **Live is not activated.**
-
-Only service commands are accepted. Local tools (`serve`, `build`, `flash`,
-`generate`, mapping generation) are rejected: use **Flash UZ** or a terminal.
-The regular viewer console commands remain available without the `uz` prefix.
-
-### Python measurement scripts
-
-The live workspace includes a **Python** window beside
-Live Plots. **Open Python file…** opens a native file picker. **Save** writes the
-current file; **Save as…** chooses a new filename. **Choose template** opens the
-built-in template list and loads the selection as an unsaved script. The editor
-shows only the filename or “Unsaved script”; full paths stay internal.
-
-Connect in Live Data, then press **Run** to save and execute the script in a
-separate Python process using the viewer's environment. Unsaved scripts first
-open a save dialog. Cancelling that dialog leaves the editor unchanged and does
-not execute code. File dialogs are polled without blocking live plots.
-
-Run launches an ordinary Python script with the attached service endpoint:
+The viewer hosts a local control API at `127.0.0.1:19741`. Open an environment
+shell with `./uz shell`, then use ordinary Python or
+terminal commands. Control commands attach to an existing application:
 
 ```bash
-python measurement.py --endpoint 127.0.0.1:19740
+uz-dataviewer --endpoint 127.0.0.1:19741 gui
+# In another terminal:
+uz-dataviewer status
+uz-dataviewer load recording.csv
+uz-dataviewer set-grid 3 2
+uz-dataviewer --json list-runs
 ```
-
-The same file works unchanged from an activated terminal. The viewer does not
-inject variables or call a special function. Templates include explicit imports,
-argument parsing, and Client construction:
 
 ```python
-import argparse
-import time
-from ultrazohm_cli import Client
+from uz_dataviewer import Client
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--endpoint", default="127.0.0.1:19740")
-    uz = Client(parser.parse_args().endpoint)
-    uz.set_variable("send_field_1", 0.0)
-    uz.start_logging()
-    time.sleep(10)
-    uz.stop_logging()
+with Client() as viewer:
+    run = viewer.load("recording.csv")
+    viewer.set_grid(2, 1)
+    viewer.add_signal(1, run, "current")
+    view = viewer.create_view()
+    viewer.add_signal(1, run, "current", view=view)
+    viewer.save_session("analysis.json")
 ```
 
-Each Run uses a fresh process in the existing viewer virtual environment, not a
-new environment. The script receives `--endpoint HOST:PORT` and should parse it
-if it needs device access. `__name__`, `__file__`, arguments, imports beside the
-script, and exit codes follow ordinary script conventions. On Windows a minimal
-bootstrap establishes the child-process job before executing the script as
-`__main__`; it does not import the CLI or inject a Client.
+`Client` uses an explicit endpoint, then `UZ_DATAVIEWER_ENDPOINT`, then the default.
+Each viewer instance needs a distinct endpoint. Recording, node, and view handles
+belong to a session; removal or session replacement invalidates old handles.
+`list_runs()`, `list_nodes()`, `list_plots()`, and `list_views()` inspect state.
+Terminal subcommands use hyphens, Python methods use underscores. Run
+`uz-dataviewer --help` or a subcommand's `--help` for signatures. `--json` prints
+machine-readable results; failures return a nonzero exit code.
 
-Existing files that only define `run(uz)` need an explicit entry point (parse
-`--endpoint`, create `Client`, then call `run(uz)`). Saved user files are not
-rewritten automatically. Terminal execution does not lock viewer controls or
-provide its Stop button/process cleanup.
+Calls execute sequentially for each client. Loads and exports return when ready,
+while manual GUI interaction remains available. Manual changes can occur between
+calls; interactive automation is not a deterministic batch transaction. Client
+paths resolve from the caller's working directory. Mutations are never retried
+automatically after a transport failure, because they may already have completed.
 
-Use `uz.enable_system()`, `uz.enable_control()`, `uz.stop()`, and the other Client
-methods for device commands. Commands have no firmware acknowledgment: sequences
-requiring state confirmation must check `uz.status()` before proceeding. Stopping
-logging starts finalization; check its phase in `uz.status()['logging']` if the
-script needs a completed file before continuing.
+The **Python** panel is available in offline and live modes through **View → Python**.
+It edits ordinary `.py` files. Run saves the file and starts a fresh process in the
+viewer environment, with `UZ_DATAVIEWER_ENDPOINT` supplied. **Managed device run**
+requires a connected acquisition service, supplies `UZ_ACQUISITION_ENDPOINT`, locks
+manual device controls, and provides **Stop script + device**. Ordinary **Stop script**
+terminates Python without issuing a hardware Stop. External terminal processes
+remain externally owned. A script can import both `uz_dataviewer.Client` and
+`ultrazohm_cli.Client`; the latter connects to the acquisition service.
 
-Scripts can import helper modules beside their file and packages installed in the
-viewer environment. The window shows output and Python tracebacks (the most recent
-64 KiB). The ImGuiColorTextEdit editor provides Python syntax highlighting, line
-numbers, four-space indentation, matching brackets, and undo/redo. It becomes
-read-only during execution. This prototype does not include an interactive REPL
-or package management. Scripts run in the
-viewer's environment: the source launcher's `.venv`, or the bundled Python.
+The **Application log** displays diagnostics and operation activity. It has no
+command input. `.uzscript` and the old `uz …` console shortcut are removed. Use
+normal `.py` files and the acquisition package's terminal interface instead.
+See [compare_recordings.py](examples/compare_recordings.py) for the two-recording
+PT1 comparison workflow.
 
-While a script runs, manual connection, assignment, logging, and device controls
-are locked in this viewer; plots remain interactive. **Stop script + device** in
-Python and **Stop** in Control terminate the script process before independently
-sending device Stop. Logging remains enabled. Normal completion and errors leave
-device and logging state as the script left them, then restore manual controls.
-Stop discards pending GUI commands and waits for an in-flight control command
-before sending device Stop. Closing a connected viewer sends Stop, including when
-no script is running; an active script is terminated first. The acquisition
-service and logging continue when the service was started externally. When the
-viewer started the service, closing the viewer requests shutdown and waits for
-recordings to finalize and the service to exit, even if the viewer was detached.
-Other CLI clients are not locked.
+JSON schema 6 snapshots preserve recording references, node graphs, analysis
+settings, and additional plot grids. Recording paths are relative to the JSON
+file where possible. Saves replace files atomically; failed restoration leaves
+the existing workspace intact. Python variables, processes, and interpreter state
+are not persisted. Source builds use the project venv; frozen builds run scripts
+using bundled modules. An external Python environment can also attach to either.
+Choosing **Load state** manually stops app-owned scripts and clears pending startup
+automation before loading. External scripts retain ownership of their processes;
+their old session handles are rejected after replacement.
+
+Each viewer creates a random local control credential. Python clients and the CLI
+discover it automatically in a private per-user directory under the OS temporary
+directory. No token needs to be copied for normal use. Credentials are removed on
+shutdown; a restarted viewer requires a new client. The listener accepts only
+loopback connections and does not execute Python code from requests.
 
 ### Starting acquisition
 
@@ -421,7 +380,12 @@ The ordinary launcher and the bundle include the CLI; no Rust compiler is needed
 Startup does not connect to hardware; **Connect** starts acquisition; **Existing service → Attach** reuses an existing service. Relative
 recording arguments keep their original working directory.
 
-Selecting **Live Data → Browse for ultrazohm_sw** (or starting with `--live-repo`)
+Launching `uz-dataviewer` from an UltraZohm checkout (or any of its subdirectories)
+automatically selects that checkout for live mode. `gui --live-repo PATH` overrides
+this default. Outside a checkout, use **Live Data → Browse for ultrazohm_sw**;
+Browse also lets you switch to another checkout after startup.
+
+Preparing the selected checkout
 asks the CLI for `channel-mapping --repo PATH` and, when preferences are missing,
 `profile --repo PATH`. The CLI reads current headers and filters only built-in
 default assignments. Metadata is returned directly; ordinary preparation creates
@@ -433,18 +397,13 @@ Connect launches `serve --repo PATH --profile settings.json`. The service resolv
 the firmware configuration itself, strictly validates saved preferences, and
 exposes the effective configuration through `catalog`. An existing service keeps
 its loaded configuration. Shut it down and reconnect to apply a different
-repository or changed headers. Both launchers pass their checkout root; a manually
-installed viewer can select another checkout with `--live-repo PATH`.
+repository or changed headers. Select the checkout in the viewer, or pass `uz-dataviewer gui --live-repo PATH`.
 
-The launcher uses the `ultrazohm_cli` version locked in `uv.lock`. To move to a
-newer published CLI, run `uv lock --upgrade-package ultrazohm_cli` in
-`uz_dataviewer` and commit the lockfile. To develop the CLI and the viewer
-together, use the `develop` task (`make develop`, or `start.sh --dev-cli`): it first
-builds `uz_cli` from this checkout (Rust and a C/C++ toolchain required), installs
-the other dependencies from `uv.lock`, and installs the local CLI wheel. It does
-not resolve or download the published CLI, so an unpublished minimum CLI version
-does not block development. The lockfile stays unchanged. This also applies to
-`shell --dev-cli`. The next ordinary start uses the published dependency again.
+The shared launcher selects the CLI with `./uz setup stable`, `prerelease`, or
+`local`. Published versions must satisfy the viewer's minimum dependency version;
+other dependencies stay locked. Local setup builds this checkout's CLI and does
+not download the published CLI. Re-run `./uz setup local` after Rust changes.
+Plain `./uz shell` preserves the last selection; `./uz setup stable` switches back.
 
 **Flash UZ**, beside Connect/Disconnect, opens an **OK / Cancel** confirmation.
 The button is greyed out when Vitis XSCT is missing from PATH, with a tooltip
@@ -549,10 +508,10 @@ To compare live-data preparation performance between machines, run this with the
 viewer's installed Python environment (PowerShell shown):
 
 ```powershell
-.\uz_dataviewer\.venv\Scripts\python.exe .\uz_dataviewer\build\benchmark_live.py --sample-rate 10000 --traces 3
+.\.venv\Scripts\python.exe .\uz_dataviewer\build\benchmark_live.py --sample-rate 10000 --traces 3
 ```
 
-On Linux, use `uz_dataviewer/.venv/bin/python` with the same script and options.
+On Linux, use `.venv/bin/python` with the same script and options.
 The benchmark simulates filling and wrapping the 30-second buffer and prints
 JSON timings for appends and preparing the visible traces. It needs no hardware.
 `--channels` defaults to 20: buffering work depends on acquired channels even
@@ -574,10 +533,15 @@ Closing the workspace cancels publication of an unfinished export.
 Measurement-script completion terminates remaining child processes in its process group
 (on Windows, its job object) before manual controls are restored.
 
-The Python panel starts hidden in live mode; open it with **View → Python**.
-GUI `.uzscript` replay yields between commands and waits for each background
-export before running dependent commands. An export failure aborts the replay.
-Startup command-line scripts still execute sequentially before the GUI opens.
+The Python panel starts hidden; open it with **View → Python**. Set **Arguments**
+(quote values containing spaces) and **Working directory** before running. Arguments
+are passed directly to Python without shell expansion; use forward slashes for
+Windows paths. Scripts receive viewer and available acquisition endpoints through
+`UZ_DATAVIEWER_ENDPOINT` and `UZ_ACQUISITION_ENDPOINT`.
+The ordinary runner stops the script process; **Managed device run** also provides
+the device Stop workflow. Python client export calls wait for publication and raise
+on failure. Startup Python files run sequentially after the GUI opens, so the
+viewer can process their requests; a failed startup script stops the sequence.
 
 **Connect** starts a viewer-managed service and connects to the selected device IP.
 If an external service already occupies that endpoint, use **Existing service →
@@ -591,8 +555,8 @@ service, whereas closing the GUI retains the external-service ownership policy.
 To open an activated DataViewer environment without launching the GUI or a service:
 
 ```bash
-uv run uz_dataviewer/tasks.py shell
-uv run uz_dataviewer/tasks.py shell --dev-cli   # with this checkout's CLI
+./uz shell
+./uz shell local   # with this checkout's CLI
 ```
 
 The same works on Windows. Run
@@ -604,14 +568,14 @@ within the child shell, or `exit` to return to the original terminal.
 Extract the entire release archive and launch `uz_dataviewer/uz_dataviewer`
 (or `uz_dataviewer.exe` inside that folder on Windows). Keep `_internal` beside
 it. Python and uv are bundled; Vitis is not. Select the **ultrazohm_sw root directory** with **Live Data → Browse for ultrazohm_sw**,
-next to **Browse for XSCT**, or pass `--live-repo PATH`. Offline viewing needs no selection. All available windows except Python open at startup; Navigation, Plots and Log
+next to **Browse for XSCT**, or launch with `gui --live-repo PATH`. Offline viewing needs no selection. All available windows except Python and Application log open at startup; Navigation, Plots and Log
 Browser are selected. Mode selects Analysis or Live tabs without closing other
 windows. Use View to open Python or toggle individual windows. The source launcher
-behaves the same; all available windows except Python start open, with Analysis tabs selected.
+behaves the same; all available windows except Python and Application log start open, with Analysis tabs selected.
 
 The source and packaged applications use the same CLI and script worker logic.
-Scripts execute as ordinary `__main__` files with `--endpoint`, with no injected
-client. Source scripts use the venv's modules; packaged scripts use bundled
+Scripts execute as ordinary `__main__` files with the arguments entered in the
+Python panel and endpoint environment variables. No client object is injected. Source scripts use the venv's modules; packaged scripts use bundled
 modules. Additional dependencies can be used in an external venv with a matching
 CLI wheel attached to the service. Such scripts are not terminated by GUI Stop.
 
@@ -667,7 +631,7 @@ to PATH for itself and its child processes on subsequent starts. The system
 PATH is unchanged. Starting the viewer from a Vitis command prompt (or after
 sourcing `settings64.sh`) also works.
 
-To build the combined application, run `python uz_dataviewer/tasks.py bundle`
+To build the combined application, run `./uz build viewer`
 (optionally with `--cli-wheel PATH` for a wheel built from the same commit). The task
 synchronizes locked dependencies before installing that wheel. CI builds both OS
 wheels once, packages folder distributions from them, and tests frozen workers
@@ -688,3 +652,18 @@ scripts and hardware export (XSA/bitstream). Flash builds the existing Vitis
 workspace before programming; generate it first if absent. The hardware-specific
 `psu_init.tcl` comes from that hardware export; vendor `fsbl.tcl` and
 `zynqmp_utils.tcl` come from Vitis. They are not generic application resources.
+
+The distribution includes two entry points: `uz_dataviewer` (`uz_dataviewer.exe`
+on Windows) launches the desktop without a console window; `uz-dataviewer`
+(`uz-dataviewer.exe`) is the terminal entry point with stdout, stderr and exit
+codes. Both share the same packaged modules. Use the terminal executable for
+`status`, `list-runs`, and other control commands.
+
+Discovery methods return typed handles, including handles nested in plot
+references. For example, `viewer.add_signal(1, viewer.list_runs()[0]["handle"], "y")`
+adds a recording already opened manually. CLI output remains ordinary JSON.
+Cancellation can stop preparation; once application-thread commit starts, the
+operation finishes publication and cannot be rolled back by disconnecting.
+
+Application log starts hidden; enable it through **View → Application log**.
+The Log Browser starts at the selected checkout’s `artifacts/` directory.

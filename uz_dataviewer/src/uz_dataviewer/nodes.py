@@ -365,7 +365,7 @@ def _upstream(graph: NodeGraph, node_id: int, acc: set[int]) -> None:
 
 
 # -- output resolution --------------------------------------------------------
-def _node_output(state, node: Node) -> tuple[np.ndarray, np.ndarray]:
+def _node_output(state, node: Node, cancel=None) -> tuple[np.ndarray, np.ndarray]:
     """The (time, y) a node exposes: a source reads the registry, a transform
     returns its cached result. Raises if unavailable."""
     if node.kind == "source":
@@ -381,7 +381,7 @@ def _node_output(state, node: Node) -> tuple[np.ndarray, np.ndarray]:
         tmin, tmax = node.params.get("tmin", ""), node.params.get("tmax", "")
         lo = float(tmin) if tmin != "" else shift_time(source.metadata.time_range[0], run.time_offset)
         hi = float(tmax) if tmax != "" else shift_time(source.metadata.time_range[1], run.time_offset)
-        t, values = run.read_window([node.ref[1]], lo, hi)
+        t, values = run.read_window([node.ref[1]], lo, hi, cancel=cancel)
         return t, values[node.ref[1]]
     if node.error or is_stale(state.registry, state.nodes, node):
         raise ValueError(f"{node.name}: upstream result is not current")
@@ -535,7 +535,7 @@ def publish_output(state, node: Node, unit: str = "", *, domain=None) -> None:
     run.output_validator = validate_output
 
 
-def evaluate(state, node_id: int | None = None) -> int:
+def evaluate(state, node_id: int | None = None, *, cancel=None) -> int:
     """Evaluate the graph (or just ``node_id`` and its upstream), materializing
     each transform's output as a derived run. Returns the number of nodes computed.
     Per-node errors are logged and skipped so one bad node doesn't abort the rest.
@@ -550,6 +550,8 @@ def evaluate(state, node_id: int | None = None) -> int:
     domain_cache = {}
     computed = 0
     for nid in order:
+        from .sources import check, Cancelled
+        check(cancel)
         node = graph.nodes[nid]
         if not node.is_transform:
             continue
@@ -568,11 +570,14 @@ def evaluate(state, node_id: int | None = None) -> int:
                 node.kind == "math" and node.params.get("op") in {"derivative", "integral"})
             if requires_time and domains != {"time"}:
                 raise ValueError(f"{node.kind} requires time-domain inputs")
-            inputs = [_node_output(state, graph.nodes[i]) for i in node.inputs]
+            inputs = [_node_output(state, graph.nodes[i], cancel) for i in node.inputs]
             input_runs = [state.registry.get(up.ref[0] if up.kind == "source" else up.out_run_id)
                           for i in node.inputs for up in [graph.nodes[i]]]
             resolution = max((run.timestamp_resolution for run in input_runs if run is not None), default=0.0)
             out_time, out_y, info, unit = compute_node(node, inputs, timestamp_resolution=resolution)
+            check(cancel)
+        except Cancelled:
+            raise
         except Exception as exc:  # noqa: BLE001 - surfaced to the console
             node.error = str(exc)
             node.info = ""

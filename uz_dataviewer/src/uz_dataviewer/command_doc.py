@@ -1,19 +1,4 @@
-"""Generate the console-command reference for the documentation.
-
-The commands are not importable functions but closures held in
-:class:`~uz_dataviewer.commands.CommandRegistry` (see ``commands.py``), so the docs
-table cannot be produced by ``sphinx.ext.autodoc``. Instead we walk the live
-registry and emit a CSV that ``uz_dataviewer_usage.rst`` includes via
-``.. csv-table:: :file:``.
-
-The grouping (which command belongs under "FFT window", "Signals", …) is *not*
-stored in the registry; it lives here in :func:`group_for`. Run
-
-    python -m uz_dataviewer.command_doc
-
-to regenerate the committed CSV. ``tests/test_command_doc.py`` fails the build if the
-checked-in file drifts from what this module produces.
-"""
+"""Generate the public Python client reference from its actual method signatures."""
 
 from __future__ import annotations
 
@@ -21,7 +6,8 @@ import csv
 import io
 import pathlib
 
-from .commands import Command, CommandRegistry
+import inspect
+from .cli import public_methods
 
 # Column / section order for the rendered table.
 GROUP_ORDER: list[str] = [
@@ -78,7 +64,17 @@ _EXPLICIT_GROUPS: dict[str, str] = {
     # Session
     "save_state": "Session",
     "load_state": "Session",
-    "run_script": "Session",
+    "save_session": "Session",
+    "load_session": "Session",
+    "status": "Session",
+    "get_settings": "Session",
+    "set_setting": "Session",
+    "list_runs": "Data / runs",
+    "list_nodes": "Nodes",
+    "list_plots": "Layout",
+    "create_view": "Layout",
+    "list_views": "Layout",
+    "close_view": "Layout",
     # Console
     "help": "Console",
     "clear_console": "Console",
@@ -106,25 +102,17 @@ def group_for(name: str) -> str:
         ) from None
 
 
-def _args(cmd: Command) -> str:
-    """Render the parameter list as ``name:kind`` tokens (optional ones bracketed)."""
-    parts = []
-    for p in cmd.params:
-        token = f"{p.name}:{p.kind}"
-        parts.append(f"[{token}]" if p.optional else token)
-    return ", ".join(parts)
-
-
 def build_csv() -> str:
-    """Render the full command reference as CSV text."""
-    # Group order, then name: the table changes only when a command does.
-    commands = sorted(CommandRegistry().all(), key=lambda cmd: (GROUP_ORDER.index(group_for(cmd.name)), cmd.name))
-
+    """Generate the same operation surface exposed by Python and terminal clients."""
+    methods = sorted(public_methods().items(), key=lambda item: (GROUP_ORDER.index(group_for(item[0])), item[0]))
     buf = io.StringIO()
     writer = csv.writer(buf, lineterminator="\n")
-    writer.writerow(["Command", "Group", "Description", "Arguments"])
-    for cmd in commands:
-        writer.writerow([cmd.name, group_for(cmd.name), cmd.help, _args(cmd)])
+    writer.writerow(["Method", "Group", "Description", "Signature"])
+    for name, method in methods:
+        parameters = list(inspect.signature(method).parameters.values())[1:]
+        signature = inspect.Signature(parameters)
+        writer.writerow([name, group_for(name), method.__doc__ or name.replace('_', ' ').capitalize(),
+                         f'``viewer.{name}{signature}``'])
     return buf.getvalue()
 
 

@@ -1,24 +1,4 @@
-"""Unified command layer shared by the GUI and the console.
-
-Data and analysis controls, plot settings and supported gestures are expressed
-as commands. Some view-only gestures are not recorded. Running a command mutates the
-:class:`~uz_dataviewer.state.AppState` **and** echoes its canonical call (e.g.
-``add_signal(plot_1, run_1, ia)``) to the console. The console therefore doubles
-as a log of replayable operations: the same calls can be typed into the
-console input or replayed from a saved ``.uzscript`` file.
-
-A command has a name, a typed parameter list and a handler. Parameters of kind
-``plot``/``run`` accept the friendly ``plot_1`` / ``run_2`` forms (or bare
-integers); ``node_output_N`` resolves the evaluated output of a node.
-``run`` also resolves a run *label* (file name) so scripts written
-against ``load("Log.csv")`` keep working. The grammar is a single function call::
-
-    name(arg1, arg2, ...)        # or just  name   for a no-arg command
-
-This module owns the registry, the parser and the built-in command set. It must
-not import GUI modules at run time (only :mod:`state` lazily) so it stays usable
-from headless tests.
-"""
+"""Internal operation metadata and GUI handlers during the typed API migration."""
 
 from __future__ import annotations
 
@@ -62,65 +42,7 @@ class Command:
 Handler = Callable[["AppState", list], "str | None"]
 
 
-# -- parsing ------------------------------------------------------------------
-_CALL_RE = re.compile(r"^\s*([A-Za-z_]\w*)\s*(?:\((.*)\))?\s*$", re.DOTALL)
 _BARE_STR_RE = re.compile(r"^[\w./+\-:]+$")
-
-
-def _split_args(argstr: str) -> list[str]:
-    """Split a comma-separated argument string, honouring quotes."""
-    args, cur = [], []
-    quote = None
-    escaped = False
-    for ch in argstr:
-        if quote is not None:
-            cur.append(ch)
-            if escaped:
-                escaped = False
-            elif ch == "\\":
-                escaped = True
-            elif ch == quote:
-                quote = None
-        elif ch in ("'", '"'):
-            quote = ch
-            cur.append(ch)
-        elif ch == ",":
-            args.append("".join(cur).strip())
-            cur = []
-        else:
-            cur.append(ch)
-    if quote is not None:
-        raise CommandError("Unterminated quoted argument")
-    args.append("".join(cur).strip())
-    decoded = []
-    for arg in args:
-        if not arg:
-            raise CommandError("Empty argument; use an explicit quoted string")
-        if arg.startswith('"'):
-            try:
-                decoded.append(json.loads(arg))
-            except (ValueError, TypeError) as exc:
-                raise CommandError(f"Invalid quoted argument: {arg}") from exc
-        elif arg.startswith("'"):
-            import ast
-            try:
-                decoded.append(ast.literal_eval(arg))
-            except (ValueError, SyntaxError) as exc:
-                raise CommandError(f"Invalid quoted argument: {arg}") from exc
-        else:
-            decoded.append(arg)
-    return decoded
-
-
-def parse_call(text: str) -> tuple[str, list[str]]:
-    """Parse ``name(a, b, ...)`` into ``(name, [a, b, ...])`` (raw string args)."""
-    match = _CALL_RE.match(text)
-    if not match:
-        raise CommandError(f"Cannot parse command: {text!r}")
-    name = match.group(1)
-    argstr = match.group(2)
-    args = _split_args(argstr) if argstr and argstr.strip() else []
-    return name, args
 
 
 # -- coercion -----------------------------------------------------------------
@@ -244,7 +166,7 @@ def _coerce_args(state: "AppState", cmd: Command, args: list) -> list:
     out = []
     for i, param in enumerate(cmd.params):
         if i < len(args):
-            out.append(_coerce_one(state, param, args[i]))
+            out.append(None if param.optional and args[i] is None else _coerce_one(state, param, args[i]))
         else:
             out.append(None)
     return out
@@ -304,13 +226,6 @@ class CommandRegistry:
     def all(self) -> list[Command]:
         return [self._commands[n] for n in self.names()]
 
-    def complete(self, prefix: str) -> list[str]:
-        """Command names that start with the (head of the) given prefix."""
-        head = prefix.split("(", 1)[0].strip()
-        if not head:
-            return []
-        return [n for n in self.names() if n.startswith(head)]
-
     def execute(self, state: "AppState", name: str, args: list, *, echo: bool = True) -> str | None:
         cmd = self._commands.get(name)
         if cmd is None:
@@ -323,22 +238,22 @@ class CommandRegistry:
             message = submit(state, cmd.handler, values)
         else:
             message = cmd.handler(state, values)
+        from concurrent.futures import Future
+        if isinstance(message, Future):
+            def report(done):
+                if done.cancelled():
+                    return
+                try:
+                    result = done.result()['result']
+                    if result:
+                        state.console.ok(str(result))
+                except Exception as exc:
+                    state.console.error(str(exc))
+            message.add_done_callback(report)
+            return message
         if message:
             state.console.ok(message)
         return message
-
-    def dispatch(self, state: "AppState", text: str) -> None:
-        """Parse and run a line of text typed into the console. Errors are logged."""
-        text = text.strip()
-        if not text or text.startswith("#"):
-            return
-        try:
-            name, args = parse_call(text)
-            self.execute(state, name, args)
-        except CommandError as exc:
-            state.console.error(str(exc))
-        except Exception as exc:  # noqa: BLE001 - surface unexpected errors
-            state.console.error(f"{text}: {exc}")
 
     def echo(self, state: "AppState", name: str, values: list) -> None:
         """Log a command without executing it (gesture already applied by ImPlot)."""
@@ -417,13 +332,15 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
             "Restore a run's original (un-normalised) timestamps.")
 
     def set_grid(state, a):
-        state.set_grid(a[0], a[1])
+        from .operations import set_grid as apply
+        apply(state, a[0], a[1])
 
     reg.add("set_grid", [Param("rows", "int"), Param("cols", "int")], set_grid,
             "Set the subplot grid to rows x cols.")
 
     def link_x(state, a):
-        state.set_link_x(a[0])
+        from .operations import link_x as apply
+        apply(state, a[0])
 
     reg.add("link_x", [Param("on", "bool")], link_x, "Link/unlink the X axes across subplots.")
 
@@ -475,18 +392,11 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
 
     # -- per-plot ---------------------------------------------------------
     def add_signal(state, a):
-        plot_n, run_id, name = a
-        if state.registry.get_signal(run_id, name) is None:
-            raise CommandError(f"run_{run_id} has no signal {name!r}")
-        cell = _cell(state, plot_n)
-        refs = cell.active_refs
-        domain = state.registry.get(run_id).axis_domain
-        if refs and any(state.registry.get(ref[0]).axis_domain != domain for ref in refs):
-            raise CommandError("Cannot combine time and frequency axes in one plot")
-        if not cell.signals:
-            cell.pending_x_lim = cell.x_lim = None
-            state.plot_x_ranges.pop(plot_n, None)
-        cell.add((run_id, name))
+        from .operations import add_signal as apply
+        try:
+            apply(state, *a)
+        except ValueError as exc:
+            raise CommandError(str(exc)) from exc
 
     reg.add("add_signal", [Param("plot", "plot"), Param("run", "run"), Param("signal", "str")],
             add_signal, "Add a signal to a subplot.")
@@ -712,8 +622,10 @@ def _register_analysis_commands(reg: CommandRegistry) -> None:
     _register_analysis_common("hist", "histogram", "Histogram")
 
     def fft(state, a):
-        state.fft.compute_requested = True
         state.focus_fft = True
+        if coordinator := getattr(state, 'viewer_operations', None):
+            return coordinator.compute_analysis('fft')
+        state.fft.compute_requested = True
 
     reg.add("fft", [], fft, "Recompute and focus the FFT window.")
 
@@ -747,8 +659,10 @@ def _register_analysis_commands(reg: CommandRegistry) -> None:
     reg.add("fft_export", [Param("path", "str")], fft_export, "Export the FFT spectra to CSV.")
 
     def histogram(state, a):
-        state.histogram.compute_requested = True
         state.focus_histogram = True
+        if coordinator := getattr(state, 'viewer_operations', None):
+            return coordinator.compute_analysis('hist')
+        state.histogram.compute_requested = True
 
     reg.add("histogram", [], histogram, "Recompute and focus the Histogram window.")
 
@@ -781,13 +695,6 @@ def _register_session_commands(reg: CommandRegistry) -> None:
 
     reg.add("load_state", [Param("path", "str")], load_state, "Restore the GUI state from a JSON file.")
 
-    def run_script(state, a):
-        from .session import run_script as _run
-        n = _run(state, a[0])
-        return "Automation started" if n is None else f"Ran {n} command(s) from {a[0]}"
-
-    reg.add("run_script", [Param("path", "str")], run_script, "Replay commands from a .uzscript file.")
-
     # -- console / help ---------------------------------------------------
     def clear_console(state, a):
         state.console.clear()
@@ -810,9 +717,7 @@ def _register_session_commands(reg: CommandRegistry) -> None:
 
 
 def _register_node_commands(reg: CommandRegistry) -> None:
-    """The node-graph command surface. A graph is built and replayed entirely
-    through these flat calls, so console scripting and ``.uzscript`` work as for
-    everything else."""
+    """Node graph operations shared by application callers."""
     from .nodes import evaluate, transform_kinds
 
     def node_source(state, a):
@@ -822,7 +727,7 @@ def _register_node_commands(reg: CommandRegistry) -> None:
         if state.registry.get(run_id).derived:
             raise CommandError("Derived signals must be connected with node_link, not source nodes")
         node = state.nodes.add("source", ref=(run_id, name))
-        return f"Added {node.name} (source: {name})"
+        return node.id
 
     reg.add("node_source", [Param("run", "run"), Param("signal", "str")], node_source,
             "Add a source node wrapping a loaded signal (the graph's input).")
@@ -833,7 +738,7 @@ def _register_node_commands(reg: CommandRegistry) -> None:
         if kind not in kinds:
             raise CommandError(f"node_add kind must be one of {', '.join(kinds)}")
         node = state.nodes.add(kind)
-        return f"Added {node.name} ({kind})"
+        return node.id
 
     reg.add("node_add", [Param("kind", "str")], node_add,
             "Add a transform node (fft, math, filter, shift, or an installed plugin kind).")
@@ -888,6 +793,8 @@ def _register_node_commands(reg: CommandRegistry) -> None:
             node_pos, "Set a node's canvas position.")
 
     def node_eval(state, a):
+        if coordinator := getattr(state, 'viewer_operations', None):
+            return coordinator.evaluate_nodes(a[0])
         n = evaluate(state, a[0])
         return f"Evaluated {n} node(s)"
 

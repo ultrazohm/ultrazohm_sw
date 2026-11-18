@@ -154,11 +154,16 @@ class XcpUdp:
         self.sock.close()
 
     def _command(self, packet, retries=3):
-        """Send one XCP packet, return the response packet (header stripped)."""
+        """Send one XCP packet, return the response packet (header stripped).
+        Each attempt ends after the socket timeout even while DAQ runs: the
+        DAQ datagrams keep every single recv short, so the socket timeout
+        alone would wait forever for a lost response."""
+        wait_s = self.sock.gettimeout() or 1.0
         for _ in range(retries):
             hdr = struct.pack("<HH", len(packet), self.ctr & 0xFFFF)
             self.ctr += 1
             self.sock.sendto(hdr + packet, self.addr)
+            deadline = time.monotonic() + wait_s
             # A datagram may hold several concatenated TL frames (e.g. a DAQ
             # segment). Skip DAQ (pid < 0xFC) and async EV/SERV; return RES/ERR.
             try:
@@ -167,8 +172,10 @@ class XcpUdp:
                     for pkt in iter_tl_frames(data):
                         if pkt[0] in (PID_RES, PID_ERR):
                             return pkt
+                    if time.monotonic() > deadline:
+                        break
             except socket.timeout:
-                continue
+                pass
         raise TimeoutError("no XCP response (is the board up and the IP correct?)")
 
     def connect(self):

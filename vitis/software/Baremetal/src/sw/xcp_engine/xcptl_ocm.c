@@ -158,8 +158,19 @@ static uint32_t gProfChainBytes = 0u; /* chain bytes written in the current exch
 #ifndef XCP_R5_DAQ_INTERVAL_US
 #define XCP_R5_DAQ_INTERVAL_US 1000u
 #endif
+/* The trigger level sets the size of a DAQ exchange under load, and with it
+ * how long a command waits behind a running copy and how many datagrams the
+ * A53 then sends in one burst. Bench 2026-11-18 at 900 B/cycle, 40 kHz, with
+ * the gateway letting commands through during a burst (xcp_gateway_a53.c):
+ *   8 segments: 184 us per DAQ exchange, back-to-back commands 317 us median
+ *   4 segments:  74 us,                  252 us
+ *   2 segments:  40 us,                  193 us, but 14,500 instead of
+ *               6,800 IPIs/s and 34 instead of 37 % A53 idle time.
+ * Smaller chains also copy cheaper per KB (the data is younger, still in the
+ * cache); the R5's share of time in exchanges stayed at 17-19 % for all
+ * three. At low rates the interval decides, not the trigger. */
 #ifndef XCP_R5_DAQ_TRIGGER_SEGMENTS
-#define XCP_R5_DAQ_TRIGGER_SEGMENTS 8u
+#define XCP_R5_DAQ_TRIGGER_SEGMENTS 4u
 #endif
 
 /* XCP_OUT consumption handshake: how long a non-empty chain waits for the

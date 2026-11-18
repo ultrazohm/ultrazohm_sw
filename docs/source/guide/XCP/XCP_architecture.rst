@@ -44,7 +44,7 @@ Everything else runs in the main loop underneath it.
 The main loop looks at ``XCP_IN`` every 5 µs and exchanges data with the A53 only when there is something to do:
 
 - A new command, or a response waiting for the mailbox, gets an exchange of its own at once. It does not touch the measurement data.
-- Measurement data is written to ``XCP_OUT`` only after the A53 has confirmed the previous chain, and then as soon as the oldest waiting data is 1 ms old or 8 segments of the DAQ queue (about 11 KB) are waiting. A command that arrives during such a copy waits for its end.
+- Measurement data is written to ``XCP_OUT`` only after the A53 has confirmed the previous chain, and then as soon as the oldest waiting data is 1 ms old or 4 segments of the DAQ queue (about 5.6 KB) are waiting. A command that arrives during such a copy waits for its end. At 900 bytes per control cycle and 40 kHz, a copy takes about 75 µs.
 - After 1 ms without any exchange, an exchange without measurement data follows anyway.
 
 Every exchange ends with an interrupt (IPI) to the A53.

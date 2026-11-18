@@ -4,6 +4,9 @@
 #ifndef UZ_PT1_REPLAY
 #define UZ_PT1_REPLAY                          1U
 #endif
+#if (UZ_PT1_REPLAY != 0U) && (UZ_PT1_REPLAY != 1U)
+#error UZ_PT1_REPLAY must be 0U or 1U
+#endif
 
 #ifndef TEST
 
@@ -58,7 +61,7 @@
 #define UZ_CURRENTCONTROL_MAX_INSTANCES                 2U
 #define UZ_INCREMENTALENCODER_MAX_INSTANCES             1U
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      4U
-#if UZ_PT1_REPLAY
+#if UZ_PT1_REPLAY == 1U
 #define UZ_NN_LAYER_MAX_INSTANCES                       6U
 #define UZ_NN_MAX_INSTANCES                             2U
 #else

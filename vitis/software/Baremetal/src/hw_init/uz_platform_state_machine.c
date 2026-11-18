@@ -225,10 +225,12 @@ static void error_during(void)
 static void idle_during(void)
 {
     ready_LED_blink_slow();
-    if (!UZ_PT1_REPLAY && (ultrazohm_state.enable_system & (!ultrazohm_state.error_flag) & (!ultrazohm_state.stop_flag)))
+#if UZ_PT1_REPLAY == 0U
+    if (ultrazohm_state.enable_system && (!ultrazohm_state.error_flag) && (!ultrazohm_state.stop_flag))
     {
         ultrazohm_state_machine_switch_to_state(running_state);
     }
+#endif
     if (ultrazohm_state.error_flag)
     {
         ultrazohm_state_machine_switch_to_state(error_state);

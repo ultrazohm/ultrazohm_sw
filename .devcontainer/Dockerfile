@@ -32,7 +32,8 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o /tmp/rustup.sh 
     && rustup component add rustfmt clippy \
     && rm /tmp/rustup.sh
 # ziglang lets maturin link portable manylinux_2_28 wheels without a Docker build.
-RUN pip install --no-cache-dir 'maturin[zig]>=1.9,<2' 'uv==0.13.1'
+RUN pip install --no-cache-dir 'maturin[zig]>=1.9,<2' 'uv==0.13.1' 'clang-format==19.1.7'
+ENV UZ_DEVCONTAINER=1
 
 
 FROM ci AS dev

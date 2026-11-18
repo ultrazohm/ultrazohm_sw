@@ -1,0 +1,11 @@
+# Generated actor configurations are maintained by the exporter.
+vitis/software/Baremetal/src/uz/uz_exported_actor/examples/*/*_config.c
+vitis/software/Baremetal/src/uz/uz_exported_actor/examples/*/*_config.h
+vitis/software/Baremetal/test/uz/uz_exported_actor/fixtures/**
+# Generated firmware and third-party sources.
+**/build/**
+**/bsp/**
+**/BSP/**
+**/vendor/**
+**/third_party/**
+**/ThirdParty/**

@@ -1,12 +1,23 @@
 # Repository tooling; documentation builds remain in docs/Makefile.
+.DEFAULT_GOAL := help
 PYTHON ?= python3
 CEEDLING ?= ceedling
+FORMAT_PATH ?= vitis/software/Baremetal/src/uz/uz_exported_actor
+
+.PHONY: format format-check
+format:
+	$(PYTHON) .devcontainer/format.py format "$(FORMAT_PATH)"
+
+format-check:
+	$(PYTHON) .devcontainer/format.py check "$(FORMAT_PATH)"
 
 .PHONY: help pyuzlib-check-generated pyuzlib-check-datasets pyuzlib-check-machines pyuzlib-check-flux-maps pyuzlib-generate-machines pyuzlib-prepare-datasets pyuzlib-generate-machine-catalog pyuzlib-generate-flux-maps
 .PHONY: ceedling-test ceedling-test-with-export
 .PHONY: pyuzlib-test pyuzlib-smoke-pmsm-plot
 
 help:
+	@echo "make format                    Format C/H files (initial scope: uz_exported_actor)"
+	@echo "make format-check              Check formatting; override scope with FORMAT_PATH=..."
 	@echo "make pyuzlib-check-generated    Check all committed PMSM artifacts without writing them"
 	@echo "make pyuzlib-generate-machines  Regenerate all committed PMSM artifacts"
 	@echo "make ceedling-test             Run C tests (no documentation setup required)"

@@ -183,5 +183,12 @@ Ubuntu users can use the convenience Makefile:
 
 ``generate-open``, ``run``, and ``build-run`` are also available. ``XSCT`` can
 select another executable and ``PROFILE`` defaults to ``Run_UltraZohm``.
+The Makefile's GUI targets launch ``vitis`` directly from the native shell,
+as the former ``open_vitis.sh`` did. ``generate-open`` waits for XSCT to exit
+and release the workspace before starting the GUI. ``open`` does not start
+XSCT. Set ``VITIS=/path/to/vitis`` to select another GUI launcher.
+To regenerate from scratch, close Vitis and run ``make -C vitis clean-workspace``.
+This deletes all workspace contents, including hidden metadata and build outputs,
+except ``create_Vitis_workspace_here.txt``. Then run ``make -C vitis generate-open``.
 Close Vitis before modifying the workspace and do not run separate workspace
 operations concurrently.

@@ -30,7 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
-#if UZ_PT1_REPLAY
+#if UZ_PT1_REPLAY == 1U
 #include "../uz/uz_exported_actor/examples/uz_actor_pt1_replay.h"
 #endif
 
@@ -41,7 +41,7 @@ XIpiPsu IPI_instance;
 // Global variable structure
 extern DS_Data Global_Data;
 
-#if !UZ_PT1_REPLAY
+#if UZ_PT1_REPLAY == 0U
 static void ReadAllADC(void);
 #endif
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
@@ -55,7 +55,7 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
-#if UZ_PT1_REPLAY
+#if UZ_PT1_REPLAY == 1U
     uz_actor_pt1_replay_step();
 #else
     ReadAllADC();
@@ -198,7 +198,7 @@ u32 Rpu_IpiInit(u16 DeviceId)
     return XST_SUCCESS;
 }
 
-#if !UZ_PT1_REPLAY
+#if UZ_PT1_REPLAY == 0U
 static void ReadAllADC(void)
 {
     ADC_readCardALL(&Global_Data);

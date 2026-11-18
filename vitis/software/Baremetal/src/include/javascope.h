@@ -63,6 +63,11 @@ enum JS_OberservableData {
 	JSO_pt1_q_action_0,
 	JSO_pt1_q_action_plus_1,
 	JSO_pt1_done,
+	JSO_nn_update_active,
+	JSO_nn_update_received,
+	JSO_nn_update_error,
+	JSO_nn_update_target,
+	JSO_nn_update_expected,
 	JSO_ENDMARKER
 };
 
@@ -141,11 +146,11 @@ enum gui_button_mapping {
 
 	SND_FLD_ZEROVALUE=0,
 	PT1-Reference,
-	send_field_2,
-	send_field_3,
-	send_field_4,
-	send_field_5,
-	send_field_6,
+	NN-Layer,
+	NN-Type,
+	NN-Index,
+	NN-Value,
+	NN-Target,
 	send_field_7,
 	send_field_8,
 	send_field_9,
@@ -253,8 +258,8 @@ enum gui_button_mapping {
 	PT1-DQN,
 	PT1-DDPG,
 	Manual-Mode,
-	MyButton7,
-	MyButton8,
+	Enable-Parameter-Update,
+	Finish-Parameter-Update,
 	MYBUTTONS_LABELS_ENDMARKER
 
 

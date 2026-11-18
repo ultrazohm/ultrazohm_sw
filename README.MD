@@ -45,6 +45,49 @@ Currently, only people associated with the project partners of KI-Power and peop
 If you are interested in joining the UltraZohm community, get in touch with us by E-Mail (info@ultrazohm.com).
 We are working on streamlining the contribution process since we aim to welcome contributions of all kinds.
 
+## C formatting
+
+Run from the repository root:
+
+```sh
+make format
+make format-check
+```
+
+The initial scope is `vitis/software/Baremetal/src/uz/uz_exported_actor`.
+Override it explicitly to format another directory, for example:
+
+```sh
+make format FORMAT_PATH=vitis/software/Baremetal/src/uz/uz_nn
+```
+
+Formatting uses clang-format **19.1.7**, installed in the devcontainer image,
+and the root `.clang-format` configuration. `.clang-format-ignore` excludes
+generated actor configurations, BSPs, vendor code, and build outputs.
+`format-check` changes no files and exits unsuccessfully when formatting is needed.
+
+The style follows the [project coding guidelines](docs/source/software/software_development_guidlines/software_development_guidlines.rst):
+opening braces stay on the same line, indentation uses tabs at width 8, and
+control-statement bodies use braces. Short function and control-statement bodies
+are expanded over multiple lines. Tabs indent blocks; spaces align continuations.
+For details not consistently specified by existing code, the shared configuration
+chooses `type *name` pointer spacing, at most one consecutive empty line, and no
+column limit that forces wrapping of otherwise readable statements. Existing
+multiline layouts may remain. Include order, qualifier order, and comment text
+are preserved. The C editor settings use the same tab width.
+
+Inside the devcontainer, these commands run directly. From a native terminal,
+they start or reuse a separate tooling container using the same devcontainer
+configuration, execute the formatter there, and return its exit status. The
+container stays running for reuse; the terminal stays native. Docker and either
+the Dev Container CLI or Node.js/npx must be available on the host. The npx
+fallback uses `@devcontainers/cli@0.90.0`. First use may download dependencies
+and build the image. Tooling startup skips post-create tasks, which are not
+needed for formatting. Editor containers and their display mounts are left alone.
+
+Rebuild an existing editor devcontainer to install the formatter there. VS Code's
+C/C++ formatter uses `/usr/local/bin/clang-format` and the shared configuration.
+
 ## License
 
 The project is licensed under the Apache 2.0 license. See LICENSE for details.

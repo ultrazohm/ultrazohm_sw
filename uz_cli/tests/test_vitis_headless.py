@@ -1,11 +1,108 @@
 """Execute the real Tcl entry point with stubbed Vitis commands."""
 from pathlib import Path
+import os
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+@unittest.skipUnless(os.name == "posix" and shutil.which("make"), "POSIX Make required")
+class NativeGuiHandoffTest(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name) / "checkout with spaces"
+        self.vitis = self.root / "vitis"
+        self.workspace = self.vitis / "workspace"
+        self.workspace.mkdir(parents=True)
+        shutil.copy(ROOT / "vitis/Makefile", self.vitis)
+        tools = self.root / "tools with spaces"
+        tools.mkdir()
+        self.xsct = tools / "xsct"
+        self.gui = tools / "vitis"
+        self.xsct.write_text(f"#!{sys.executable}\n" + '''import atexit, os, sys
+from pathlib import Path
+workspace = Path(os.environ['UZ_TEST_WORKSPACE'])
+assert sys.argv[1:] == ['-nodisp', '../tcl_scripts/vitis_headless.tcl', 'generate']
+(workspace / 'xsct-called').touch()
+sys.exit(7) if os.environ.get('UZ_TEST_FAIL') else None
+atexit.register(lambda: (workspace / 'xsct-exited').touch())
+print('GENERATION_FINISHED', flush=True)
+''')
+        self.gui.write_text(f"#!{sys.executable}\n" + '''import os, sys
+from pathlib import Path
+workspace = Path(os.environ['UZ_TEST_WORKSPACE'])
+assert sys.argv[1:] == ['-workspace', str(workspace)]
+if (workspace / 'xsct-called').exists():
+    assert (workspace / 'xsct-exited').exists(), 'GUI started before XSCT exited'
+print('GUI_STARTED', flush=True)
+''')
+        self.xsct.chmod(0o755)
+        self.gui.chmod(0o755)
+        self.env = {**os.environ, "UZ_TEST_WORKSPACE": str(self.workspace)}
+        self.env.pop("UZ_WORKSPACE_ROOT", None)
+
+    def make(self, target, gui=None, fail=False):
+        return subprocess.run(
+            ["make", "--no-print-directory", "-C", str(self.vitis), target,
+             f"XSCT={self.xsct}", f"VITIS={gui or self.gui}"],
+            env={**self.env, **({"UZ_TEST_FAIL": "1"} if fail else {})},
+            text=True, capture_output=True, timeout=10)
+
+    def test_generate_waits_for_xsct_before_native_gui_with_paths_containing_spaces(self):
+        result = self.make("generate-open")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertLess(result.stdout.index("GENERATION_FINISHED"), result.stdout.index("GUI_STARTED"))
+
+    def test_generation_failure_does_not_launch_gui(self):
+        result = self.make("generate-open", fail=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertNotIn("GUI_STARTED", result.stdout)
+
+    def test_open_launches_native_gui_without_xsct(self):
+        result = self.make("open")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("GUI_STARTED", result.stdout)
+        self.assertFalse((self.workspace / "xsct-called").exists())
+
+    def test_missing_gui_is_rejected_before_generation(self):
+        result = self.make("generate-open", gui=self.gui.with_name("missing-vitis"))
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("GUI launcher not found", result.stderr)
+        self.assertFalse((self.workspace / "xsct-called").exists())
+
+    def test_clean_workspace_preserves_placeholder_and_removes_hidden_and_nested_contents(self):
+        placeholder = self.workspace / "create_Vitis_workspace_here.txt"
+        placeholder.write_text("Keep this placeholder unchanged.\n")
+        for name in ("Baremetal/Debug", ".metadata/.plugins"):
+            folder = self.workspace / name
+            folder.mkdir(parents=True)
+            (folder / "generated.bin").write_bytes(b"generated")
+        (self.workspace / "IDE.log").touch()
+        outside = self.root / "source.c"
+        outside.write_text("keep source\n")
+        (self.workspace / "linked-source").symlink_to(outside)
+        result = self.make("clean-workspace")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(list(self.workspace.iterdir()), [placeholder])
+        self.assertEqual(placeholder.read_text(), "Keep this placeholder unchanged.\n")
+        self.assertEqual(outside.read_text(), "keep source\n")
+
+    def test_clean_workspace_rejects_symlinked_workspace(self):
+        self.workspace.rmdir()
+        outside = self.root / "outside"
+        outside.mkdir()
+        marker = outside / "keep.txt"
+        marker.write_text("keep")
+        self.workspace.symlink_to(outside, target_is_directory=True)
+        result = self.make("clean-workspace")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("symlinked workspace", result.stderr)
+        self.assertEqual(marker.read_text(), "keep")
 
 
 @unittest.skipUnless(shutil.which("tclsh"), "Tcl interpreter required")

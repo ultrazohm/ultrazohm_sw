@@ -18,7 +18,7 @@
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
-#if UZ_PT1_REPLAY
+#if UZ_PT1_REPLAY == 1U
 #include "../uz/uz_exported_actor/examples/uz_actor_pt1_replay.h"
 #endif
 
@@ -89,7 +89,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
-#if UZ_PT1_REPLAY
+#if UZ_PT1_REPLAY == 1U
 	js_ch_observable[JSO_pt1_actor] = &uz_actor_pt1_replay_signals.actor;
 	js_ch_observable[JSO_pt1_time] = &uz_actor_pt1_replay_signals.time;
 	js_ch_observable[JSO_pt1_episode] = &uz_actor_pt1_replay_signals.episode;
@@ -104,6 +104,11 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_pt1_q_action_0] = &uz_actor_pt1_replay_signals.q_values[1];
 	js_ch_observable[JSO_pt1_q_action_plus_1] = &uz_actor_pt1_replay_signals.q_values[2];
 	js_ch_observable[JSO_pt1_done] = &uz_actor_pt1_replay_signals.done;
+	js_ch_observable[JSO_nn_update_active] = &uz_actor_pt1_update_status.active;
+	js_ch_observable[JSO_nn_update_received] = &uz_actor_pt1_update_status.received;
+	js_ch_observable[JSO_nn_update_error] = &uz_actor_pt1_update_status.error;
+	js_ch_observable[JSO_nn_update_target] = &uz_actor_pt1_update_status.target;
+	js_ch_observable[JSO_nn_update_expected] = &uz_actor_pt1_update_status.expected;
 #endif
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

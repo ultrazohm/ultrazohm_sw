@@ -11,6 +11,13 @@
 	"customizations": {
 		"vscode": {
 			"settings": {
+				"C_Cpp.clang_format_path": "/usr/local/bin/clang-format",
+				"C_Cpp.clang_format_style": "file",
+				"[c]": {
+					"editor.tabSize": 8,
+					"editor.insertSpaces": false,
+					"editor.detectIndentation": false
+				},
 				"python.defaultInterpreterPath": "/usr/local/bin/python3.12",
 				"terminal.integrated.shell.linux": "/bin/bash",
 				"ceedlingExplorer.shellPath": "/bin/bash",

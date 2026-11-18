@@ -15,7 +15,7 @@
 
 // Includes from own files
 #include "main.h"
-#if UZ_PT1_REPLAY
+#if UZ_PT1_REPLAY == 1U
 #include "uz/uz_exported_actor/examples/uz_actor_pt1_replay.h"
 #endif
 
@@ -84,7 +84,7 @@ int main(void)
         case init_gpios:
         	uz_sleep_seconds(5);
             Initialize_AXI_GPIO();
-#if UZ_PT1_REPLAY
+#if UZ_PT1_REPLAY == 1U
             uz_axigpio_disable_pwm_and_power_electronics();
 #endif
             uz_assert((apu_version_final > 0U) && (apu_version_final <= UZ_HARDWARE_VERSION_MAX));
@@ -94,7 +94,8 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
-#if UZ_PT1_REPLAY
+#if UZ_PT1_REPLAY == 1U
+            uz_assert(Global_Data.av.isr_samplerate_s > 0.0f);
             uz_actor_pt1_replay_init(1.0f / Global_Data.av.isr_samplerate_s);
 #endif
             JavaScope_initialize(&Global_Data);

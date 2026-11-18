@@ -1,0 +1,30 @@
+BasedOnStyle: LLVM
+
+# Project guidelines: K&R with function braces attached; tabs displayed at 8.
+BreakBeforeBraces: Attach
+IndentWidth: 8
+TabWidth: 8
+UseTab: ForIndentation
+ContinuationIndentWidth: 8
+IndentCaseLabels: false
+InsertBraces: true
+AllowShortBlocksOnASingleLine: Never
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortEnumsOnASingleLine: false
+
+# Consistent choices where existing code/guidelines leave the style unspecified.
+# No arbitrary line-length wrapping; retain deliberate multiline layout.
+ColumnLimit: 0
+DerivePointerAlignment: false
+PointerAlignment: Right
+SpaceBeforeParens: ControlStatements
+IndentPPDirectives: None
+MaxEmptyLinesToKeep: 1
+
+# Preserve include dependencies, qualifier order, and license/Doxygen text.
+SortIncludes: Never
+IncludeBlocks: Preserve
+QualifierAlignment: Leave
+ReflowComments: false

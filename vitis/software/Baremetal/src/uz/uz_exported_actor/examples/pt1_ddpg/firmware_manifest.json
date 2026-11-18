@@ -9,7 +9,7 @@
     "layer3_bias.csv": "525ad357d372ff87411f289f5f709c934742698dc2a9ca3ea075bbcba189cd17",
     "layer3_weights.csv": "134f5ea0b43cb3aac62bef625eb9abf960035ec1bfbec87d2afcdcbbf0f4fc84",
     "manifest.json": "9b3c7dbdc3931f02a0bec56a4336da3549989708ae8f383c927af1431e8c8146",
-    "pt1_ddpg_config.c": "70f56bd97185242e5d89e8c0f98d73e5e33ef83852a0b42ae001bd6dbdd5248b",
+    "pt1_ddpg_config.c": "e74c637b48935b23001ec9fcf77c280de6f767482a9a97c6886949ca0fffa702",
     "pt1_ddpg_config.h": "b30ec0c4e7b5dae2fd48658ae0c518c99586adec229ca2a0a1c58f309c6abd61"
   },
   "format": "ultrazohm_actor_c",

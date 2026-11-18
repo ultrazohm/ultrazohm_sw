@@ -106,6 +106,19 @@ def start(args):
     run(venv_bin(venv, "ultrazohm_cli"), *cli_args, cwd=Path.cwd())
 
 
+def venv(_args):
+    """Open a shell with the existing project environment activated."""
+    environment = HERE / ".venv"
+    activation = environment / ("Scripts/activate.bat" if WINDOWS else "bin/activate")
+    if not activation.is_file():
+        raise SystemExit("No project environment found. Run start local or start release first.")
+    print("Opening the activated project shell; use exit to return.", flush=True)
+    if WINDOWS:
+        run("cmd.exe", "/K", str(activation), cwd=Path.cwd())
+    else:
+        run("bash", "--rcfile", activation, "-i", cwd=Path.cwd())
+
+
 def check(args):
     run("cargo", "fmt", "--check")
     run("cargo", "clippy", "--all-targets", "--features", "python", "--locked", "--", "-D", "warnings")
@@ -191,6 +204,7 @@ def overview():
 
 Use
   start [local|release]  Build the checkout or fetch stable PyPI, install in .venv and run (default: local)
+  venv           Open a shell with the existing .venv activated; exit to return
   install        Build this checkout's CLI and install the ultrazohm_cli command (uv tool)
 
 Develop
@@ -211,6 +225,9 @@ Builds use native tools (rustup's pinned Rust, maturin, a C/C++ compiler); no co
 
 
 DESCRIPTIONS = {
+    "venv": "Open an activated subshell using the existing uz_cli/.venv, without installing or "
+            "updating packages. Uses Bash on Linux/macOS and cmd on Windows. Use exit to return; "
+            "a child process cannot activate the parent shell.",
     "start": "Install and launch in uz_cli/.venv. 'local' (default) builds this checkout first; "
              "'release' fetches the latest stable version from PyPI. Use --prerelease allow "
              "to include development releases. Pass CLI arguments after --. "
@@ -243,6 +260,7 @@ def main(argv=None):
     launch.add_argument("--prerelease", choices=("allow", "disallow"), default="disallow",
                         help="include prereleases when installing from PyPI (default: disallow)")
     add("install", install)
+    add("venv", venv)
     add("check", check)
     add("debug-wheel", debug_wheel)
     add("wheel", wheel).add_argument("--out", type=Path, help="output directory (default: target/wheels)")

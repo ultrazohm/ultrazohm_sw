@@ -18,7 +18,7 @@
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
-#if UZ_PT1_REPLAY
+#if UZ_PT1_REPLAY == 1U
 #include "../uz/uz_exported_actor/examples/uz_actor_pt1_replay.h"
 #endif
 
@@ -37,7 +37,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		{
 
 		case (Stop): // Stop
-#if UZ_PT1_REPLAY
+#if UZ_PT1_REPLAY == 1U
 			uz_actor_pt1_replay_stop();
 #endif
 			ultrazohm_state_machine_set_stop(true);
@@ -193,29 +193,44 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 			data->av.snd_fld[1] = value;
-#if UZ_PT1_REPLAY
+#if UZ_PT1_REPLAY == 1U
 			uz_actor_pt1_replay_set_reference(value);
 #endif
 			break;
 
 		case (Set_Send_Field_2):
-		data->av.snd_fld[2] = value;
+			data->av.snd_fld[2] = value;
+#if UZ_PT1_REPLAY == 1U
+			uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_LAYER, value);
+#endif
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.snd_fld[3] = value;
+			data->av.snd_fld[3] = value;
+#if UZ_PT1_REPLAY == 1U
+			uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_TYPE, value);
+#endif
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.snd_fld[4] = value;
+			data->av.snd_fld[4] = value;
+#if UZ_PT1_REPLAY == 1U
+			uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_INDEX, value);
+#endif
 			break;
 
 		case (Set_Send_Field_5):
-		data->av.snd_fld[5] = value;
+			data->av.snd_fld[5] = value;
+#if UZ_PT1_REPLAY == 1U
+			uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_VALUE, value);
+#endif
 			break;
 
 		case (Set_Send_Field_6):
-		data->av.snd_fld[6] = value;
+			data->av.snd_fld[6] = value;
+#if UZ_PT1_REPLAY == 1U
+			uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_TARGET, value);
+#endif
 			break;
 
 		case (Set_Send_Field_7):
@@ -287,29 +302,33 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-#if UZ_PT1_REPLAY
+#if UZ_PT1_REPLAY == 1U
 			uz_actor_pt1_replay_start(UZ_PT1_REPLAY_DQN);
 #endif
 			break;
 
 		case (My_Button_5):
-#if UZ_PT1_REPLAY
+#if UZ_PT1_REPLAY == 1U
 			uz_actor_pt1_replay_start(UZ_PT1_REPLAY_DDPG);
 #endif
 			break;
 
 		case (My_Button_6):
-#if UZ_PT1_REPLAY
+#if UZ_PT1_REPLAY == 1U
 			uz_actor_pt1_replay_toggle_manual();
 #endif
 			break;
 
 		case (My_Button_7):
-
+#if UZ_PT1_REPLAY == 1U
+			uz_actor_pt1_update_begin();
+#endif
 			break;
 
 		case (My_Button_8):
-
+#if UZ_PT1_REPLAY == 1U
+			uz_actor_pt1_update_finish();
+#endif
 			break;
 
 		case (Error_Reset):
@@ -370,34 +389,40 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 6);
 
 	/* Bit 7 - My_Button_4 */
-#if UZ_PT1_REPLAY
+#if UZ_PT1_REPLAY == 1U
 	if (uz_actor_pt1_replay_get_active_actor() == UZ_PT1_REPLAY_DQN) {
-		js_status_BareToRTOS |= 1U << 7;
+		js_status_BareToRTOS |= (1U << 7U);
 	} else {
-		js_status_BareToRTOS &= ~(1U << 7);
+		js_status_BareToRTOS &= ~(1U << 7U);
 	}
 #endif
 
 	/* Bit 8 - My_Button_5 */
-#if UZ_PT1_REPLAY
+#if UZ_PT1_REPLAY == 1U
 	if (uz_actor_pt1_replay_get_active_actor() == UZ_PT1_REPLAY_DDPG) {
-		js_status_BareToRTOS |= 1U << 8;
+		js_status_BareToRTOS |= (1U << 8U);
 	} else {
-		js_status_BareToRTOS &= ~(1U << 8);
+		js_status_BareToRTOS &= ~(1U << 8U);
 	}
 #endif
 
 	/* Bit 9 - My_Button_6 */
-#if UZ_PT1_REPLAY
+#if UZ_PT1_REPLAY == 1U
 	if (uz_actor_pt1_replay_is_manual()) {
-		js_status_BareToRTOS |= 1U << 9;
+		js_status_BareToRTOS |= (1U << 9U);
 	} else {
-		js_status_BareToRTOS &= ~(1U << 9);
+		js_status_BareToRTOS &= ~(1U << 9U);
 	}
 #endif
 
 	/* Bit 10 - My_Button_7 */
-	// js_status_BareToRTOS &= ~(1 << 10);
+#if UZ_PT1_REPLAY == 1U
+	if (uz_actor_pt1_update_is_active()) {
+		js_status_BareToRTOS |= (1U << 10U);
+	} else {
+		js_status_BareToRTOS &= ~(1U << 10U);
+	}
+#endif
 
 	/* Bit 11 - My_Button_8 */
 	// js_status_BareToRTOS &= ~(1 << 11);

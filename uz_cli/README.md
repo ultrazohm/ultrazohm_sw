@@ -40,6 +40,16 @@ make -C uz_cli start release ARGS="--prerelease=allow"  # include development re
 make -C uz_cli start release ARGS="-- --help"
 ```
 
+To open a shell in the existing environment without installing or updating anything:
+
+```bash
+make -C uz_cli venv  # or make venv from inside uz_cli
+```
+
+This opens an activated subshell (Bash on Linux/macOS, cmd on Windows); use `exit`
+to return. To activate your current Bash shell instead, run
+`source uz_cli/.venv/bin/activate` from the repository root.
+
 Bare `make start` defaults to `local`. Both modes reuse `.venv` and reinstall the
 selected CLI, so switching modes also works when the version number is unchanged.
 The global `uv tool` installation is unaffected. On Windows, or without Make, use

@@ -1,27 +1,52 @@
-/* Generated from manifest.json; do not edit. */
+/* Generated configuration with zero-initialized firmware parameters for upload testing.
+ * Ceedling loads the exported CSV parameters for the reference tests. */
 #include "pt1_ddpg_config.h"
 #include <stddef.h>
 
 _Static_assert(UZ_EXPORTED_ACTOR_ABI == 1U, "Actor adapter ABI mismatch");
 static float layer1_weights[64] = {
+#ifdef TEST
 #include "layer1_weights.csv"
+#else
+    0.0f
+#endif
 };
 static float layer1_bias[32] = {
+#ifdef TEST
 #include "layer1_bias.csv"
+#else
+    0.0f
+#endif
 };
 static float layer1_output[32];
 static float layer2_weights[1024] = {
+#ifdef TEST
 #include "layer2_weights.csv"
+#else
+    0.0f
+#endif
 };
 static float layer2_bias[32] = {
+#ifdef TEST
 #include "layer2_bias.csv"
+#else
+    0.0f
+#endif
 };
 static float layer2_output[32];
 static float layer3_weights[32] = {
+#ifdef TEST
 #include "layer3_weights.csv"
+#else
+    0.0f
+#endif
 };
 static float layer3_bias[1] = {
+#ifdef TEST
 #include "layer3_bias.csv"
+#else
+    0.0f
+#endif
 };
 static float layer3_output[1];
 static struct uz_nn_layer_config layers[UZ_NN_MAX_LAYER] = {

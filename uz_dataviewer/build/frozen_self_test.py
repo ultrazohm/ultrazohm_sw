@@ -74,12 +74,17 @@ Path('script-completed').write_text('ok')
         import subprocess
         if getattr(sys, 'frozen', False):
             terminal = Path(sys.executable).with_name('uz-dataviewer' + ('.exe' if sys.platform == 'win32' else ''))
-            help_result = subprocess.run([str(terminal), '--help'], capture_output=True, text=True, timeout=10)
-            assert help_result.returncode == 0 and 'usage:' in help_result.stdout
-            invalid = subprocess.run([str(terminal), 'not-a-command'], capture_output=True, text=True, timeout=10)
-            assert invalid.returncode != 0 and invalid.stderr
+            # The windowed Windows parent has no console stdin. Supply every
+            # standard handle explicitly when starting the console executable.
+            help_result = subprocess.run([str(terminal), '--help'], stdin=subprocess.DEVNULL,
+                                         capture_output=True, text=True, timeout=10)
+            assert help_result.returncode == 0 and 'usage:' in help_result.stdout, repr(help_result)
+            invalid = subprocess.run([str(terminal), 'not-a-command'], stdin=subprocess.DEVNULL,
+                                     capture_output=True, text=True, timeout=10)
+            assert invalid.returncode != 0 and invalid.stderr, repr(invalid)
             for command in ('status', 'list-runs'):
                 process = subprocess.Popen([str(terminal), '--endpoint', server.endpoint, '--json', command],
+                                           stdin=subprocess.DEVNULL,
                                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 try:
                     deadline = time.monotonic() + 10

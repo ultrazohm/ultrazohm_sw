@@ -1,6 +1,8 @@
 """Repository setup happens after startup and gates managed acquisition."""
 from types import SimpleNamespace
 
+import pytest
+
 from uz_dataviewer.app import DataViewerApp
 from uz_dataviewer.user_paths import HEADER
 
@@ -61,3 +63,29 @@ def test_attach_requires_no_repository_and_invalid_selection_can_retry(tmp_path,
         assert calls == ['attach']
     finally:
         app._shutdown()
+
+
+@pytest.mark.parametrize('location', ['root', 'nested', 'outside', 'explicit'])
+def test_terminal_startup_selects_launch_checkout(tmp_path, monkeypatch, location):
+    from uz_dataviewer import app, cli
+    root = tmp_path / 'ultrazohm_sw'
+    header = root / HEADER
+    header.parent.mkdir(parents=True)
+    header.touch()
+    nested = root / 'subdirectory'
+    nested.mkdir()
+    monkeypatch.chdir({'root': root, 'nested': nested,
+                       'outside': tmp_path, 'explicit': root}[location])
+    captured = {}
+    class Viewer:
+        def __init__(self, **kwargs):
+            captured.update(kwargs)
+        def enable_control(self, endpoint): pass
+        def run(self): pass
+        def _shutdown(self): pass
+    monkeypatch.setattr(app, 'DataViewerApp', Viewer)
+    explicit = tmp_path / 'another-checkout'
+    args = ['gui', '--live-repo', str(explicit)] if location == 'explicit' else []
+    assert cli.main(args) == 0
+    expected = explicit if location == 'explicit' else root if location != 'outside' else None
+    assert captured['live_repo'] == (str(expected) if expected else None)

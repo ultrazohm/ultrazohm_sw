@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 import os
+import platform
 from pathlib import Path
 import subprocess
 import sys
@@ -41,8 +42,18 @@ def executable(name):
     return scripts() / (name + (".exe" if WINDOWS else ""))
 
 
+def environment_context():
+    # Venv scripts and editable installs contain absolute paths. A checkout
+    # mounted in a container (or moved on the host) needs to be prepared again,
+    # even if its tracked inputs have not changed. Do not hash sys.executable:
+    # the bootstrap's isolated environment has a different path on each call.
+    return dict(root=str(ROOT), python_prefix=sys.base_prefix, python_version=list(sys.version_info[:3]),
+                platform=sys.platform, machine=platform.machine(), libc=list(platform.libc_ver()))
+
+
 def fingerprint():
     digest = hashlib.sha256()
+    digest.update(json.dumps(environment_context()).encode())
     for path in (".python-version", "tasks.py", "uz_dataviewer/pyproject.toml", "uz_dataviewer/uv.lock"):
         digest.update((ROOT / path).read_bytes())
     return digest.hexdigest()
@@ -64,6 +75,7 @@ def project_task(project, task, *arguments):
 def setup(source=None, *, reuse=False):
     """Install both commands into the repository venv; shell reuses a completed setup."""
     state = saved_setup()
+    context = environment_context()
     selected = source or state.get("source", "stable")
     signature = fingerprint()
     if (reuse and source is None and state.get("fingerprint") == signature
@@ -87,15 +99,28 @@ def setup(source=None, *, reuse=False):
             package = str(wheels[0])
 
         marker = ROOT / ".venv" / ".uz-setup.json"
-        marker.unlink(missing_ok=True)
+        # Retain the previous selection for retries, but never regard a
+        # partially updated environment as ready after a failed sync/install.
+        retry_state = json.dumps({"source": state.get("source", selected),
+                                  "context": state.get("context", context)}) + "\n"
+        if marker.exists():
+            marker.write_text(retry_state)
         env = os.environ.copy()
         env.pop("VIRTUAL_ENV", None)
         env["UV_PROJECT_ENVIRONMENT"] = str(ROOT / ".venv")
+        if state.get("context") is not None and state["context"] != context:
+            # Updating packages alone does not repair activation scripts or
+            # native libraries copied from a different host/container.
+            run("uv", "venv", "--clear", "--python", python_version, ROOT / ".venv", env=env)
+            marker.write_text(retry_state)
         # Install the viewer and its locked dependencies, selecting the CLI
         # separately so stable/prerelease/local never rewrites uv.lock.
         run("uv", "sync", "--project", viewer, "--python", python_version,
-            "--locked", "--no-dev", "--no-install-package", "ultrazohm-cli",
+            "--locked", "--inexact", "--no-dev", "--no-install-package", "ultrazohm-cli",
             "--no-build-package", "imgui-bundle", env=env)
+        # Sync may recreate the venv for a different interpreter. Write after
+        # it completes, also avoiding a non-venv directory on first setup.
+        marker.write_text(retry_state)
         options = [] if selected == "local" else [
             "--only-binary", ":all:", "--upgrade-package", "ultrazohm_cli",
             "--prerelease", "allow" if selected == "prerelease" else "disallow"]
@@ -112,7 +137,7 @@ def setup(source=None, *, reuse=False):
         # Fail during setup if either installed entry point cannot load.
         for name in ("ultrazohm_cli", "uz-dataviewer"):
             run(executable(name), "--help", stdout=subprocess.DEVNULL)
-        marker.write_text(json.dumps({"source": selected, "fingerprint": signature}) + "\n")
+        marker.write_text(json.dumps({"source": selected, "fingerprint": signature, "context": context}) + "\n")
     print(f"Both applications are ready in {ROOT / '.venv'} ({selected} CLI).", flush=True)
 
 

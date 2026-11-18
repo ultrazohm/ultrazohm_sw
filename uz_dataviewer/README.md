@@ -380,7 +380,12 @@ The ordinary launcher and the bundle include the CLI; no Rust compiler is needed
 Startup does not connect to hardware; **Connect** starts acquisition; **Existing service → Attach** reuses an existing service. Relative
 recording arguments keep their original working directory.
 
-Selecting **Live Data → Browse for ultrazohm_sw** (or starting with `--live-repo`)
+Launching `uz-dataviewer` from an UltraZohm checkout (or any of its subdirectories)
+automatically selects that checkout for live mode. `gui --live-repo PATH` overrides
+this default. Outside a checkout, use **Live Data → Browse for ultrazohm_sw**;
+Browse also lets you switch to another checkout after startup.
+
+Preparing the selected checkout
 asks the CLI for `channel-mapping --repo PATH` and, when preferences are missing,
 `profile --repo PATH`. The CLI reads current headers and filters only built-in
 default assignments. Metadata is returned directly; ordinary preparation creates

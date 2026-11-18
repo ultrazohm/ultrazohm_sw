@@ -31,7 +31,9 @@ def run(*command, cwd=HERE, env=None):
 
 def maturin():
     """Keep maturin and zig in the same tool environment, independent of the caller's Python."""
-    return ["uv", "tool", "run", "--from", "maturin[zig]>=1.9,<2" if not WINDOWS else "maturin>=1.9,<2", "maturin"]
+    python = (ROOT / ".python-version").read_text(encoding="utf-8").strip()
+    return ["uv", "tool", "run", "--python", python, "--from",
+            "maturin[zig]>=1.9,<2" if not WINDOWS else "maturin>=1.9,<2", "maturin"]
 
 
 def venv_bin(venv, name):
@@ -97,7 +99,9 @@ def check(args):
 
 
 def wheel(args):
-    run(*maturin(), "build", "--release", "--locked", "--out", args.out or TARGET / "wheels")
+    # run() builds from HERE; resolve user paths before changing directory.
+    output = args.out.resolve() if args.out is not None else TARGET / "wheels"
+    run(*maturin(), "build", "--release", "--locked", "--out", output)
 
 
 def release_wheel(_args):

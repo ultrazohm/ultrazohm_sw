@@ -56,7 +56,12 @@ Published CLI versions must satisfy the viewer's minimum version. Missing
 compatible wheels fail setup instead of triggering a native build or switching
 channels. If stable setup reports no compatible release, use `./uz setup prerelease`
 or `./uz setup local`. Explicit `setup` refreshes the selected installation; plain `shell`
-reuses it until setup inputs change. After Rust changes, rerun `./uz setup local`.
+reuses it until setup inputs change. Setup preserves extra packages installed in this
+environment, including the dev container's documentation tools. An interrupted update
+keeps the previous CLI source for the next retry. Moving the checkout or changing its
+Python/platform recreates the venv to repair absolute paths and native dependencies;
+install any extra packages again afterward. After CLI source changes (Rust or Python),
+rerun `./uz setup local`.
 Neither setup nor shell starts an application. To activate the existing environment
 in the current terminal instead, use `source .venv/bin/activate` in Bash or
 `.\.venv\Scripts\Activate.ps1` in PowerShell.

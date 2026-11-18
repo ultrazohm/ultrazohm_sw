@@ -8,6 +8,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import zipfile
 from unittest.mock import patch
 
 REPO = Path(__file__).resolve().parents[1]
@@ -107,8 +108,35 @@ class SetupTest(unittest.TestCase):
         with patch.object(tasks, 'run', side_effect=fail), self.assertRaises(SystemExit) as stopped:
             tasks.main(['shell', 'prerelease'])
         self.assertEqual(stopped.exception.code, 7)
-        self.assertEqual(tasks.saved_setup(), {})
+        self.assertEqual(tasks.saved_setup()['source'], 'stable')
+        self.assertNotIn('fingerprint', tasks.saved_setup())
         self.assertFalse(any('uz_dataviewer.env_shell' in cmd for cmd, _ in self.calls))
+
+    def test_failed_refresh_keeps_source_for_plain_shell_retry(self):
+        tasks.setup('prerelease')
+        def fail(*command, **kwargs):
+            if command[:2] == ('uv', 'sync'):
+                raise subprocess.CalledProcessError(7, command)
+            self.record(*command, **kwargs)
+        with patch.object(tasks, 'run', side_effect=fail):
+            with self.assertRaises(subprocess.CalledProcessError):
+                tasks.setup()
+        self.assertEqual(tasks.saved_setup()['source'], 'prerelease')
+        self.assertNotIn('fingerprint', tasks.saved_setup())
+        self.calls.clear()
+        tasks.main(['shell'])
+        self.assertIn('allow', self.install())
+
+    def test_moved_checkout_rebuilds_environment_before_reuse(self):
+        tasks.setup('prerelease')
+        destination = self.root / 'moved checkout'
+        shutil.copytree(self.root, destination, ignore=shutil.ignore_patterns('moved checkout'))
+        self.calls.clear()
+        with patch.object(tasks, 'ROOT', destination):
+            tasks.setup(reuse=True)
+            self.assertEqual(tasks.saved_setup()['context']['root'], str(destination))
+        self.assertEqual(self.calls[0][0][:3], ['uv', 'venv', '--clear'])
+        self.assertIn('allow', self.install())
 
     def test_failed_build_preserves_previous_setup(self):
         tasks.setup('stable')
@@ -134,6 +162,56 @@ class SetupTest(unittest.TestCase):
         with self.assertRaises(SystemExit):
             tasks.main(['setup', 'typo'])
         self.assertEqual(self.calls, [])
+
+
+@unittest.skipUnless(shutil.which('uv'), 'uv required for offline environment regression')
+class EnvironmentIntegrationTest(unittest.TestCase):
+    def test_failed_replacement_preserves_installed_cli_and_extra_packages(self):
+        with tempfile.TemporaryDirectory(prefix='uz sync ') as directory:
+            root = Path(directory).resolve()
+            project = root / 'uz_dataviewer'
+            project.mkdir()
+            def wheel(name):
+                path = root / f'{name}-1.0-py3-none-any.whl'
+                metadata = f'{name}-1.0.dist-info'
+                files = {f'{name}/__init__.py': 'VALUE = 42\n',
+                         f'{metadata}/METADATA': f'Metadata-Version: 2.1\nName: {name}\nVersion: 1.0\n',
+                         f'{metadata}/WHEEL': 'Wheel-Version: 1.0\nRoot-Is-Purelib: true\nTag: py3-none-any\n'}
+                files[f'{metadata}/RECORD'] = ''.join(f'{name},,\n' for name in files) + f'{metadata}/RECORD,,\n'
+                with zipfile.ZipFile(path, 'w') as archive:
+                    for name, content in files.items():
+                        archive.writestr(name, content)
+                return path
+            cli = wheel('ultrazohm_cli')
+            extra = wheel('user_extra')
+            (project / 'pyproject.toml').write_text(
+                '[project]\nname = "uz-dataviewer"\nversion = "1.0"\n'
+                'dependencies = ["ultrazohm_cli>=1.0"]\n[tool.uv]\npackage = false\n'
+                f'[tool.uv.sources]\nultrazohm-cli = {{path = "../{cli.name}"}}\n')
+            (root / '.python-version').write_text(sys._base_executable)
+            shutil.copyfile(REPO / 'tasks.py', root / 'tasks.py')
+            with patch.object(tasks, 'ROOT', root), patch.dict(os.environ, {
+                    'UV_CACHE_DIR': str(root / 'cache'), 'UV_OFFLINE': 'true', 'UV_PYTHON_DOWNLOADS': 'never'}):
+                def invoke(*command, **kwargs):
+                    subprocess.run([str(arg) for arg in command], check=True, capture_output=True, **kwargs)
+                invoke('uv', 'venv', '--python', sys._base_executable, root / '.venv')
+                invoke('uv', 'pip', 'install', '--python', tasks.executable('python'), cli, extra)
+                invoke('uv', 'lock', '--project', project, '--python', sys._base_executable)
+                marker = root / '.venv/.uz-setup.json'
+                marker.write_text(json.dumps({'source': 'prerelease', 'fingerprint': tasks.fingerprint(),
+                                              'context': tasks.environment_context()}))
+                def fail_install(*command, **kwargs):
+                    if command[:3] == ('uv', 'pip', 'install'):
+                        raise subprocess.CalledProcessError(7, command)
+                    invoke(*command, **kwargs)
+                with patch.object(tasks, 'run', side_effect=fail_install):
+                    with self.assertRaises(subprocess.CalledProcessError):
+                        tasks.setup('stable')
+                # Actual uv sync, not a mock: neither installed package may disappear.
+                invoke(tasks.executable('python'), '-c',
+                       'import ultrazohm_cli, user_extra; assert user_extra.VALUE == 42')
+                self.assertEqual(tasks.saved_setup()['source'], 'prerelease')
+                self.assertNotIn('fingerprint', tasks.saved_setup())
 
 
 @unittest.skipUnless(os.name == 'posix' and shutil.which('bash'), 'POSIX Bash required')

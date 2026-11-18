@@ -197,6 +197,24 @@ class IntegrationTest(unittest.TestCase):
             output.seek(0)
             self.fail(f'{error}\nCommand: {process.args}\nOutput:\n{output.read()}')
 
+    def wait_for_service_exit(self, process=None):
+        """Shutdown drains recordings and exports files, just like stop-logging."""
+        process = self.service if process is None else process
+        try:
+            return process.wait(timeout=FINALIZE_SECONDS)
+        except subprocess.TimeoutExpired:
+            outputs = []
+            for name in ("test_output", "interactive_stdout", "interactive_stderr"):
+                output = getattr(process, name, None) or getattr(self, name, None)
+                if output is not None:
+                    output.seek(0)
+                    outputs.append(f"{name}:\n{output.read()}")
+            files = sorted(p.name for p in self.run_dir.iterdir()) if self.run_dir.exists() else []
+            self.fail(
+                f"Service did not exit within {FINALIZE_SECONDS} s during recording finalization"
+                f"\nCommand: {process.args}\nRecording files: {files}\n" + "\n".join(outputs)
+            )
+
     def cli(self, *args):
         p = subprocess.run([str(BIN), "--endpoint", self.endpoint, *args], text=True, capture_output=True, timeout=8)
         if p.returncode:
@@ -555,7 +573,7 @@ class IntegrationTest(unittest.TestCase):
         wait_complete(client.status)
         self.assertEqual(len(client.recordings()),3)
         client.shutdown()
-        self.assertEqual(self.service.wait(timeout=8),0)
+        self.assertEqual(self.wait_for_service_exit(),0)
         self.assertTrue(Recording(handle.path).read().equals(merged))
 
     @unittest.skipUnless(importlib.util.find_spec("ultrazohm_cli"), "install wheel for data API tests")
@@ -674,7 +692,7 @@ class IntegrationTest(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError,'already connected'):
             self.cli('connect')
         self.cli('start-logging');time.sleep(.2)
-        self.cli('shutdown');self.assertEqual(service.wait(timeout=10),0)
+        self.cli('shutdown');self.assertEqual(self.wait_for_service_exit(service),0)
         self.assertTrue((self.run_dir/'data.parquet').exists())
         self.assertIn('JSO_lifecheck',(self.run_dir/'data.csv').read_text().splitlines()[0])
     def test_legacy_firmware_state_unavailable_with_control_and_logging(self):
@@ -772,7 +790,7 @@ class IntegrationTest(unittest.TestCase):
         self.service.stdin.flush()
         wait_for(lambda: self.cli("status")["state"]["commands_sent"] >= 5)
         self.assertIsNone(self.service.poll())
-        self.service.communicate("shutdown\n", timeout=15)
+        self.service.communicate("shutdown\n", timeout=FINALIZE_SECONDS)
         self.interactive_stdout.seek(0)
         self.interactive_stderr.seek(0)
         stdout, stderr = self.interactive_stdout.read(), self.interactive_stderr.read()
@@ -791,7 +809,7 @@ class IntegrationTest(unittest.TestCase):
     def test_interactive_eof_finalizes(self):
         self.start(interactive=True)
         wait_for(lambda: self.cli("status")["state"]["samples"] >= 30)
-        self.service.communicate("", timeout=15)
+        self.service.communicate("", timeout=FINALIZE_SECONDS)
         self.interactive_stderr.seek(0)
         stderr = self.interactive_stderr.read()
         self.assertEqual(self.service.returncode, 0, stderr)
@@ -801,7 +819,7 @@ class IntegrationTest(unittest.TestCase):
     def test_interactive_external_shutdown_does_not_wait_for_stdin(self):
         self.start(interactive=True)
         self.cli("shutdown")
-        self.assertEqual(self.service.wait(timeout=15), 0)
+        self.assertEqual(self.wait_for_service_exit(), 0)
         self.assertTrue((self.run_dir/"data.parquet").is_file())
 
     @unittest.skipIf(os.name == "nt", "Unix SIGINT; Windows console events need a console fixture")
@@ -809,7 +827,7 @@ class IntegrationTest(unittest.TestCase):
         self.start(interactive=True)
         wait_for(lambda: self.cli("status")["state"]["samples"] >= 30)
         self.service.send_signal(signal.SIGINT)
-        self.assertEqual(self.service.wait(timeout=15), 0)
+        self.assertEqual(self.wait_for_service_exit(), 0)
         self.assertTrue(json.loads((self.run_dir/"run.json").read_text())["end"]["complete"])
         self.assertTrue((self.run_dir/"data.parquet").is_file())
         self.assertTrue((self.run_dir/"data.csv").is_file())
@@ -819,7 +837,7 @@ class IntegrationTest(unittest.TestCase):
         wait_for(lambda: self.cli("status")["state"]["samples"] >= 30)
         self.server.terminate()
         self.server.wait(timeout=5)
-        self.assertNotEqual(self.service.wait(timeout=15), 0)
+        self.assertNotEqual(self.wait_for_service_exit(), 0)
         self.assertFalse(json.loads((self.run_dir/"run.json").read_text())["end"]["complete"])
         self.assertTrue((self.run_dir/"data.parquet").is_file())
 
@@ -833,7 +851,7 @@ class IntegrationTest(unittest.TestCase):
                                  check=True, timeout=8).stdout.split()[-1]
         self.assertEqual(self.cli("status")["software_version"], version)
         self.cli("shutdown")
-        self.assertEqual(self.service.wait(timeout=15), 0)
+        self.assertEqual(self.wait_for_service_exit(), 0)
         events = [json.loads(line) for line in (self.run_dir/"commands.jsonl").read_text().splitlines()]
         shutdown = next(event for event in events if event.get("request", {}).get("command", {}).get("op") == "shutdown")
         self.assertEqual(shutdown["wire"], [generated_mapping()["commands"]["Stop"], 0.0])
@@ -893,7 +911,7 @@ class IntegrationTest(unittest.TestCase):
         # Stopping/shutting down from paused must finalize both streams.
         client.stop_logging()
         client.shutdown()
-        self.assertEqual(self.service.wait(timeout=15), 0)
+        self.assertEqual(self.wait_for_service_exit(), 0)
         for stream, stem in (("fast", "data"), ("slow", "data_slow_data")):
             recorded = Recording(self.run_dir/(stem + ".recording.json")).read()
             self.assertTrue(recorded.equals(snapshots[stream]))
@@ -959,7 +977,7 @@ class IntegrationTest(unittest.TestCase):
         self.assertNotIn("initial_channels", mapping)
         self.assertEqual(mapping["repository"]["name"], "ultrazohm/ultrazohm_sw")
         self.cli("shutdown")
-        self.assertEqual(self.service.wait(timeout=15),0)
+        self.assertEqual(self.wait_for_service_exit(),0)
 
     def test_runtime_mapping_and_partial_initial_channels(self):
         mapping=generated_mapping()
@@ -983,7 +1001,7 @@ class IntegrationTest(unittest.TestCase):
         with (self.run_dir/"data.csv").open() as f:
             self.assertEqual(next(csv.reader(f)), ["time","status","JSO_MY_NEW_OBSERVABLE"])
         self.cli("shutdown")
-        self.assertEqual(self.service.wait(timeout=15),0)
+        self.assertEqual(self.wait_for_service_exit(),0)
 
     def test_invalid_initial_selection_fails_before_connect(self):
         with socket.socket() as listener:
@@ -1029,7 +1047,7 @@ class IntegrationTest(unittest.TestCase):
             from ultrazohm_cli import Client
             self.assertEqual(Client(self.endpoint).observables(), selected)
         self.cli("shutdown")
-        self.assertEqual(self.service.wait(timeout=15), 0)
+        self.assertEqual(self.wait_for_service_exit(), 0)
 
     def test_explicit_independent_logging_and_observable_lock(self):
         self.start(logging=False)
@@ -1079,7 +1097,7 @@ class IntegrationTest(unittest.TestCase):
         n=self.cli("status")["state"]["samples"]
         wait_for(lambda: self.cli("status")["state"]["samples"] > n)
         self.cli("shutdown")
-        self.assertEqual(self.service.wait(timeout=15), 0)
+        self.assertEqual(self.wait_for_service_exit(), 0)
 
     def test_slow_only_logging(self):
         self.start(logging=False)
@@ -1092,7 +1110,7 @@ class IntegrationTest(unittest.TestCase):
         self.assertFalse((self.run_dir/"data.parquet").exists())
         self.assertTrue((self.run_dir/"data_slow_data.csv").exists())
         self.cli("shutdown")
-        self.assertEqual(self.service.wait(timeout=15), 0)
+        self.assertEqual(self.wait_for_service_exit(), 0)
 
     def test_control_logging_ack_and_python(self):
         self.start()
@@ -1134,7 +1152,7 @@ class IntegrationTest(unittest.TestCase):
             c.send_ack(True)
             self.assertTrue(c.status()["send_ack"])
         self.cli("shutdown")
-        self.assertEqual(self.service.wait(timeout=8),0)
+        self.assertEqual(self.wait_for_service_exit(),0)
         self.assertEqual(set(p for p in self.run_dir.glob("*.parquet") if "-part-" not in p.name), {self.run_dir/"data.parquet", self.run_dir/"data_slow_data.parquet", self.run_dir/"data_slow_data.updates.parquet"})
         snapshot = (self.run_dir/"data.parquet").read_bytes()
         self.assertEqual(snapshot[:4],b"PAR1")
@@ -1186,7 +1204,7 @@ class IntegrationTest(unittest.TestCase):
         wait_for(lambda:list(self.run_dir.glob("data-part-*.parquet")))
         self.assertFalse(list(self.run_dir.glob("*.csv")))
         self.cli("shutdown")
-        self.assertEqual(self.service.wait(timeout=8),0)
+        self.assertEqual(self.wait_for_service_exit(),0)
         self.assertTrue((self.run_dir/"data.parquet").is_file())
         self.assertTrue((self.run_dir/"data.csv").is_file())
         self.assertFalse(list(self.run_dir.glob("*-part-*.parquet")))
@@ -1196,7 +1214,7 @@ class IntegrationTest(unittest.TestCase):
         wait_for(lambda:list(self.run_dir.glob("data-part-*.parquet")))
         (self.run_dir/"data.csv.partial").mkdir()
         self.cli("shutdown")
-        self.assertNotEqual(self.service.wait(timeout=8),0)
+        self.assertNotEqual(self.wait_for_service_exit(),0)
         end=json.loads((self.run_dir/"run.json").read_text())["end"]
         self.assertFalse(end["complete"])
         self.assertIn("CSV export failed",end["state"]["error"])
@@ -1219,7 +1237,7 @@ class IntegrationTest(unittest.TestCase):
         time.sleep(.1)
         self.assertEqual(self.cli("status")["state"]["frames"],n)
         self.cli("shutdown")
-        self.assertEqual(self.service.wait(timeout=8),0)
+        self.assertEqual(self.wait_for_service_exit(),0)
 
     def test_stop_is_not_blocked_by_idle_or_partial_control_requests(self):
         self.start(logging=False)
@@ -1252,7 +1270,7 @@ class IntegrationTest(unittest.TestCase):
         n=self.cli("status")["state"]["frames"]
         wait_for(lambda:self.cli("status")["state"]["frames"]>n)
         self.cli("shutdown")
-        self.assertEqual(self.service.wait(timeout=8),0)
+        self.assertEqual(self.wait_for_service_exit(),0)
         p=subprocess.run([str(BIN),"--endpoint",self.endpoint,"serve","--device",f"127.0.0.1:{self.device_port}","--output",str(self.run_dir)],capture_output=True,timeout=5)
         self.assertNotEqual(p.returncode,0)
 
@@ -1287,7 +1305,7 @@ class IntegrationTest(unittest.TestCase):
         self.service=self.spawn([BIN,"--endpoint",self.endpoint,"serve","--device",f"127.0.0.1:{self.device_port}","--output",self.run_dir])
         wait_for(lambda:self.cli("status")["state"]["samples"]==45)
         release.set()
-        self.assertNotEqual(self.service.wait(timeout=8),0)
+        self.assertNotEqual(self.wait_for_service_exit(),0)
         worker.join(timeout=2)
         end=json.loads((self.run_dir/"run.json").read_text())["end"]
         self.assertIn("invalid slow ID",end["state"]["error"])
@@ -1304,7 +1322,7 @@ class IntegrationTest(unittest.TestCase):
         wait_for(lambda: self.cli("status")["state"]["frames"] > frames)  # acquisition continues
         self.assertTrue(self.cli("stop")["ok"])  # device control remains available
         self.cli("shutdown")
-        self.assertNotEqual(self.service.wait(timeout=8),0)
+        self.assertNotEqual(self.wait_for_service_exit(),0)
         end=json.loads((self.run_dir/"run.json").read_text())["end"]
         self.assertFalse(end["complete"])
         self.assertIn("logging",end["state"]["error"])
@@ -1335,7 +1353,7 @@ class IntegrationTest(unittest.TestCase):
         self.assertTrue(recordings[1]["complete"])
         self.assertIsNone(recordings[1].get("error"))
         self.cli("shutdown")
-        self.assertNotEqual(self.service.wait(timeout=8), 0)
+        self.assertNotEqual(self.wait_for_service_exit(), 0)
         end = json.loads((self.run_dir/"run.json").read_text())["end"]
         self.assertFalse(end["complete"])
         self.assertIn("fast recording 1", end["state"]["error"])
@@ -1366,7 +1384,7 @@ class IntegrationTest(unittest.TestCase):
         self.assertEqual(self.cli("status")["logging"][stream]["error"],
                          failed["logging"][stream]["error"])
         self.cli("shutdown")
-        self.assertNotEqual(self.service.wait(timeout=8), 0)
+        self.assertNotEqual(self.wait_for_service_exit(), 0)
 
     def test_paused_fast_recording_failure_releases_assignments(self):
         self.check_paused_recording_failure_releases_assignments("fast")
@@ -1416,7 +1434,7 @@ class IntegrationTest(unittest.TestCase):
         try:
             time.sleep(.2)
             self.cli("shutdown")
-            self.assertEqual(self.service.wait(timeout=8), 0)
+            self.assertEqual(self.wait_for_service_exit(), 0)
         finally:
             stop.set()
             poller.join(3)
@@ -1589,7 +1607,7 @@ else:
         self.start()
         wait_for(lambda:self.cli("status")["state"]["samples"]>=30)
         self.server.terminate(); self.server.wait(timeout=5)
-        self.assertNotEqual(self.service.wait(timeout=8),0)
+        self.assertNotEqual(self.wait_for_service_exit(),0)
         end=json.loads((self.run_dir/"run.json").read_text())["end"]
         self.assertFalse(end["complete"])
         self.assertEqual(set(p for p in self.run_dir.glob("*.parquet") if "-part-" not in p.name), {self.run_dir/"data.parquet", self.run_dir/"data_slow_data.parquet", self.run_dir/"data_slow_data.updates.parquet"})

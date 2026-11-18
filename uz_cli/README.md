@@ -36,6 +36,7 @@ To install and start from this checkout in its own `uz_cli/.venv`:
 ```sh
 make -C uz_cli start local       # build and install the checkout, then open the CLI
 make -C uz_cli start release     # install/update the latest stable PyPI release, then open the CLI
+make -C uz_cli start release ARGS="--prerelease=allow"  # include development releases
 make -C uz_cli start release ARGS="-- --help"
 ```
 

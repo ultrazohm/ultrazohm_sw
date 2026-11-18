@@ -32,6 +32,33 @@ def test_generated_session_scripts_rejected_before_mutation(app_state, tmp_path)
         app_state.commands.execute(app_state, 'export_script', [str(script)])
 
 
+@pytest.mark.parametrize("reset_command", ["clear_session()", "load_state"])
+def test_gui_replay_continues_after_session_replacement(app_state, tmp_path, reset_command):
+    from uz_dataviewer import automation
+
+    snapshot = tmp_path / "session.json"
+    session.save_state(app_state, str(snapshot))
+    if reset_command == "load_state":
+        reset_command = f"load_state({json.dumps(str(snapshot))})"
+    recording = tmp_path / "recording.csv"
+    recording.write_text("time,y\n0,0\n0.0001,0.1\n")
+    script = tmp_path / "commands.uzscript"
+    script.write_text(
+        f"{reset_command}\nload({json.dumps(str(recording))})\n"
+        'set_grid(2, 1)\nadd_signal(plot_1, "recording.csv", "y")\n'
+    )
+    app_state.async_exports = True
+    assert session.run_script(app_state, str(script)) is None
+    for _ in range(10):
+        automation.poll(app_state)
+        if app_state.services.replay is None:
+            break
+    assert len(app_state.registry.runs) == 1
+    assert app_state.cell_count == 2
+    assert app_state.cells[0].signals == [(app_state.registry.runs[0].id, "y")]
+    assert app_state.services.replay is None
+
+
 def test_script_aborts_when_a_recording_cannot_load(tmp_path):
     from uz_dataviewer.session import run_script
     state = AppState()

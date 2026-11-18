@@ -95,7 +95,7 @@ def start(args):
         version = (ROOT / ".python-version").read_text(encoding="utf-8").strip()
         run("uv", "venv", "--python", version, venv)
     options = [] if args.source == "local" else [
-        "--upgrade-package", "ultrazohm_cli", "--prerelease", "disallow"]
+        "--upgrade-package", "ultrazohm_cli", "--prerelease", args.prerelease]
     # Reinstall even at the same version: local builds retain their base version,
     # and switching to PyPI must replace a locally installed wheel too.
     run("uv", "pip", "install", "--python", python,
@@ -212,7 +212,8 @@ Builds use native tools (rustup's pinned Rust, maturin, a C/C++ compiler); no co
 
 DESCRIPTIONS = {
     "start": "Install and launch in uz_cli/.venv. 'local' (default) builds this checkout first; "
-             "'release' fetches the latest stable version from PyPI. Pass CLI arguments after --. "
+             "'release' fetches the latest stable version from PyPI. Use --prerelease allow "
+             "to include development releases. Pass CLI arguments after --. "
              "The global uv tool installation is unchanged.",
     "install": "Build an optimized wheel of this checkout for this machine and install it with "
                "'uv tool install --force', replacing an ultrazohm_cli installed from PyPI until you "
@@ -239,7 +240,8 @@ def main(argv=None):
         return task
     launch = add("start", start)
     launch.add_argument("source", nargs="?", choices=("local", "release"), default="local")
-    launch.add_argument("cli_args", nargs=argparse.REMAINDER, help="arguments forwarded to ultrazohm_cli")
+    launch.add_argument("--prerelease", choices=("allow", "disallow"), default="disallow",
+                        help="include prereleases when installing from PyPI (default: disallow)")
     add("install", install)
     add("check", check)
     add("debug-wheel", debug_wheel)
@@ -253,7 +255,14 @@ def main(argv=None):
     if not argv or argv[0] in ("-h", "--help", "help"):
         overview()
         return
+    cli_args = []
+    if argv[0] == "start" and "--" in argv:
+        separator = argv.index("--")
+        cli_args = argv[separator + 1:]
+        argv = argv[:separator]
     args = parser.parse_args(argv)
+    if args.task == "start":
+        args.cli_args = cli_args
     try:
         args.function(args)
     except subprocess.CalledProcessError as error:

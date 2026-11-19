@@ -252,7 +252,7 @@ ultrazohm_dataviewer/
 │   ├── session.py            # JSON save/restore + CSV export
 │   └── panels/               # navigation, plots, analysis base, fft, histogram, nodes
 ├── tests/                    # pytest (logic via commands + headless rendering)
-├── tasks.py                  # lint, test, bundle, bundle-smoke (Linux, Windows, CI)
+├── tasks.py                  # lint and test; Windows bundle and bundle-smoke
 └── build/                    # PyInstaller spec and frozen smoke tests
 ```
 
@@ -609,8 +609,6 @@ Existing service > Attach from the other viewer rather than starting another
 service at the same endpoint. Do not flash/build the shared Vitis workspace
 concurrently from two viewers.
 Explicit output paths and `UZ_DATAVIEWER_CACHE` still override their defaults.
-Data from earlier versions in `artifacts/_user_standalone/` is left in place;
-copy settings or recordings into `artifacts/_user/` if needed.
 
 For flashing, XSCT is detected on PATH. If it is absent, use **Browse for XSCT**
 and select the vendor launcher, such as `Vitis/2022.2/bin/xsct.bat` on Windows

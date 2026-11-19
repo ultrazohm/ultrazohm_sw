@@ -11,8 +11,9 @@ def smoke(directory, version):
     if sys.platform != 'win32':
         raise RuntimeError('Windows archives must be tested on Windows')
     root = Path(__file__).resolve().parents[1]
+    archives = Path(directory).resolve()
     for name in ('ultrazohm-cli', 'ultrazohm-dataviewer'):
-        archive = Path(directory).resolve() / f'{name}-{version}-windows-x86_64.zip'
+        archive = archives / f'{name}-{version}-windows-x86_64.zip'
         with tempfile.TemporaryDirectory(prefix='UltraZohm extracted release ') as directory:
             with zipfile.ZipFile(archive) as package:
                 package.extractall(directory)

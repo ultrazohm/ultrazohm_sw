@@ -22,7 +22,7 @@ From the repository root:
    ./uz check viewer                  # ruff and the full pytest suite
    ./uz task viewer wheel           # publishable viewer wheel
    .\uz.ps1 build viewer           # Windows standalone bundle
-   ./uz task viewer bundle-smoke           # start the bundle and its live workers
+   .\uz.ps1 task viewer bundle-smoke  # Windows bundle and live workers
 
 ``check viewer`` and ``build viewer`` build a matching CLI wheel from ``ultrazohm_cli`` unless ``--cli-wheel PATH`` names one.
 Tests use ``ultrazohm_dataviewer/.venv-ci`` and bundles ``ultrazohm_dataviewer/.venv-build``; the root ``.venv`` is shared by both applications.
@@ -95,7 +95,9 @@ Script Stop invalidates queued manual commands and uses a control path independe
 Flashing shuts the service down (which sends device Stop and finalizes recordings), then programs and reconnects.
 
 The root ``uz`` and ``uz.ps1`` launchers bootstrap uv and pinned Python.
-``setup`` installs both applications into the shared repository ``.venv``; ``shell`` opens an activated terminal.
+``setup`` installs the selected applications into the shared repository ``.venv``; ``shell`` opens an activated terminal.
+Choose ``--app cli`` or ``--app viewer`` and the ``stable``, ``prerelease`` or ``local`` source.
+The default is the published stable viewer and CLI; explicit setup recreates the managed environment.
 ``build viewer``, ``check viewer`` and ``task viewer bundle-smoke`` expose the build and test workflow.
 Standalone execution uses its bundled worker entry point and requires no separately installed Python or Rust.
 The application log and Python editor are available on Windows and Linux.

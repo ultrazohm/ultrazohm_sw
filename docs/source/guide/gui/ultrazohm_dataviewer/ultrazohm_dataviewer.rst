@@ -1,8 +1,8 @@
 .. _ultrazohm_dataviewer:
 
-=============
-ultrazohm_dataviewer
-=============
+====================
+ultrazohm-dataviewer
+====================
 
 .. youtube:: JLRGM1H9AhQ
 
@@ -24,42 +24,66 @@ Features
 - Nodes for applying transforms (FFT / math / filter / shift) to signals where the result becomes a new signal. Nodes can be extended with custom Python code for user-specific nodes (:doc:`ultrazohm_dataviewer_plugins`)
 - Python automation: control an open viewer through ``ultrazohm_dataviewer.Client`` from a terminal or the Python panel. Save and restore sessions as JSON.
 
-Starting ultrazohm_dataviewer
-======================
+Starting the Data Viewer
+========================
 
-The ``ultrazohm_dataviewer`` is located in ``ultrazohm_sw/ultrazohm_dataviewer/`` and there are multiple options to run the application.
-The ``ultrazohm_dataviewer`` is available as a native application using the compiled binary, or running directly from source.
-See :ref:`ultrazohm_dataviewer_build` for instructions on how to build the binary.
+The Python package and terminal command are named ``ultrazohm-dataviewer``.
+Python scripts import ``ultrazohm_dataviewer``.
+Installing the viewer also installs the matching ``ultrazohm-cli`` dependency.
+The viewer requires Python 3.12 or later and a desktop display with OpenGL support.
 
 .. tab-set::
 
-    .. tab-item:: Native from binary
+    .. tab-item:: Python and uv (Linux and Windows)
 
-       Starting ``ultrazohm_dataviewer`` from the binary, assuming the binary is located in ``ultrazohm_sw/ultrazohm_dataviewer/dist``.
-       The application can be run in an arbitrary location.
-       When the binary is not located in ``ultrazohm_sw/ultrazohm_dataviewer/dist``, see :ref:`ultrazohm_dataviewer_plugins`.
-       
+       Run the published viewer directly:
+
        .. code-block:: bash
-       
-          ./ultrazohm_dataviewer/dist/ultrazohm_dataviewer # from ultrazohm_sw/
 
+          uvx --python 3.12 ultrazohm-dataviewer
+          uvx --python 3.12 ultrazohm-dataviewer gui measurement.csv
 
-    .. tab-item:: Native from source
+       For persistent commands, install both applications into a tool environment:
 
-        Starting ``ultrazohm_dataviewer`` from source, using venv is recommended, but not required if the required dependencies are installed.
-        Note that ``ultrazohm_dataviewer`` can only run in headless mode in the :ref:`vscode_remote_container`.
-        Thus the following commands need to be run on the local machine, not in the container, to see the GUI.
-        
-        .. code-block:: bash
-        
-           cd ultrazohm_dataviewer                     # from ultrazohm_sw/
-           python -m venv venv
-           source venv/bin/activate             # Linux/macOS
-           .\venv\Scripts\activate              # Windows
-           pip install -r requirements.txt      
-           python run.py                        # or: python -m ultrazohm_dataviewer
-           python run.py ../javascope/Log_2026-06-11_22-45-16.csv   # preload
-           python run.py session.json           # restore a saved session
+       .. code-block:: bash
+
+          uv tool install --python 3.12 --with-executables-from ultrazohm-cli ultrazohm-dataviewer
+
+       For Python scripts, use ``pip install ultrazohm-dataviewer`` in your project's virtual environment.
+       Use ``--prerelease allow`` with uv to include development releases, or ``==VERSION`` to select a release.
+       Linux uses published wheels; no Linux standalone archive is provided.
+
+    .. tab-item:: Windows standalone ZIP
+
+       Download ``ultrazohm-dataviewer-VERSION-windows-x86_64.zip`` from the GitHub release and extract the entire archive.
+       Double-click ``ultrazohm-dataviewer.exe`` to open the GUI without a console.
+       Python and uv are not required. Keep the ``_internal`` runtime directory beside the executable.
+       The same ZIP includes ``ultrazohm-cli.exe`` for hardware control.
+       From an existing PowerShell terminal, use the wrapper to wait for the viewer and retain the calling shell:
+
+       .. code-block:: powershell
+
+          .\ultrazohm-dataviewer.ps1
+          .\ultrazohm-dataviewer.ps1 --help
+          .\ultrazohm-dataviewer.ps1 status
+
+    .. tab-item:: Git checkout
+
+       From the repository root, select published packages or the current checkout:
+
+       .. code-block:: bash
+
+          ./uz shell stable --app viewer
+          ./uz shell prerelease --app viewer
+          ./uz shell local --app viewer
+
+       Use ``.\uz.ps1`` on Windows with the same arguments.
+       Inside the activated shell, run ``ultrazohm-dataviewer`` or ``ultrazohm-cli``.
+       ``stable`` and ``prerelease`` install from PyPI; ``local`` builds the checkout's CLI and installs the viewer editable.
+       Local CLI builds require Rust and a C/C++ toolchain.
+       Select ``--app cli`` for a CLI-only environment. Plain ``./uz shell`` reuses the last completed selection.
+       ``setup`` accepts the same options without opening a shell.
+       See :ref:`ultrazohm_dataviewer_build` for build and test tasks.
 
 
 Quickstart
@@ -89,8 +113,8 @@ The settings (6) give access to application settings, such import and export of 
 For all plots, the following interactions are available: Mouse wheel zooms in and out, right-click and drag creates a zoom rectangle, right-click while holding shift only zooms the x-axis, while holding Alt only zooms the y-axis.
 Right-clicking the x-axis or y-axis gives access to additional settings.
 
-Outline ultrazohm_dataviewer documentation
-===================================
+Documentation
+=============
 
 .. toctree::
    :maxdepth: 1

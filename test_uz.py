@@ -1,13 +1,33 @@
 """Minimal checks for project dispatch and child exit codes."""
 
 import sys
+import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 import uz
 
 
 class DispatchTest(unittest.TestCase):
+    def test_clear_venv_removes_only_managed_environment(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            venv = root / ".venv"
+            venv.mkdir()
+            (venv / ".uz-setup.json").write_text('{"app": "cli"}')
+            other = root / "ultrazohm_cli" / "target"
+            other.mkdir(parents=True)
+            with (
+                patch.object(uz, "ROOT", root),
+                patch.object(uz.subprocess, "Popen") as run,
+            ):
+                uz.main(["clear_venv"])
+                self.assertFalse(venv.exists())
+                self.assertTrue(other.is_dir())
+                uz.main(["clear_venv"])
+                run.assert_not_called()
+
     def test_forwarding(self):
         cases = [
             (["check", "cli"], "cli", ["check"]),

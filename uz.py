@@ -21,20 +21,49 @@ def selected_app():
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(prog=".\\uz.ps1" if os.name == "nt" else "./uz")
+    parser = argparse.ArgumentParser(
+        prog=".\\uz.ps1" if os.name == "nt" else "./uz",
+        description="Set up, build and check the UltraZohm CLI and Data Viewer.",
+        epilog="Use 'task cli help' or 'task viewer help' to list project tasks.",
+    )
+    descriptions = {
+        "setup": "prepare the selected application's environment",
+        "shell": "prepare the environment and open an activated shell",
+        "build": "build a CLI wheel or viewer desktop bundle",
+        "check": "run the selected project's checks",
+        "task": "run a project task, such as lint or format",
+    }
     commands = parser.add_subparsers(dest="command")
     for name in ("setup", "shell"):
-        command = commands.add_parser(name)
-        command.add_argument(
-            "source", nargs="?", choices=("local", "stable", "prerelease")
+        command = commands.add_parser(
+            name, help=descriptions[name], description=descriptions[name]
         )
-        command.add_argument("--app", choices=PROJECTS)
+        command.add_argument(
+            "source",
+            nargs="?",
+            choices=("local", "stable", "prerelease"),
+            help="installation source; defaults to the last selection, or stable on first use",
+        )
+        command.add_argument(
+            "--app",
+            choices=PROJECTS,
+            help="CLI only, or viewer with CLI; defaults to the last selection, or viewer",
+        )
     for name in ("build", "check", "task"):
-        command = commands.add_parser(name)
-        command.add_argument("project", choices=PROJECTS)
+        command = commands.add_parser(
+            name, help=descriptions[name], description=descriptions[name]
+        )
+        command.add_argument("project", choices=PROJECTS, help="project to run")
         if name == "task":
-            command.add_argument("task")
-        command.add_argument("arguments", nargs=argparse.REMAINDER)
+            command.add_argument("task", help="project task; use help to list tasks")
+        command.add_argument(
+            "arguments",
+            nargs=argparse.REMAINDER,
+            help="arguments forwarded to the project task",
+        )
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if argv == ["help"]:
+        argv = ["--help"]
     args = parser.parse_args(argv)
     if args.command is None:
         parser.print_help()

@@ -44,7 +44,7 @@ def test_independent_grids_and_commands_share_recordings(app, gui_frame):
     assert all(entry.level != "CMD" for entry in app.state.console._entries)
 
     def render(_):
-        for _, panel, window in app._plot_windows.values():
+        for _, _panel, window in app._plot_windows.values():
             imgui.begin(window.label)
             window.gui_function()
             imgui.end()

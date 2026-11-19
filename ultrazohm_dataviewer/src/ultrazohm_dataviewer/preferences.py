@@ -6,23 +6,23 @@ from pathlib import Path
 from .user_paths import user_data_directory, write_json
 from .validation import boolean, cache_budget_mb, display_budget
 
-DEFAULTS = dict(
-    backend="polars",
-    loading_mode="lazy",
-    disk_cache=False,
-    cache_budget=1024,
-    max_points=2000,
-    log_directory="",
-    show_application_log=False,
-    show_python=False,
-)
-COMMANDS = dict(
-    backend="backend",
-    loading_mode="loading_mode",
-    disk_cache="disk_cache",
-    cache_budget="cache_budget",
-    max_points="set_max_points",
-)
+DEFAULTS = {
+    "backend": "polars",
+    "loading_mode": "lazy",
+    "disk_cache": False,
+    "cache_budget": 1024,
+    "max_points": 2000,
+    "log_directory": "",
+    "show_application_log": False,
+    "show_python": False,
+}
+COMMANDS = {
+    "backend": "backend",
+    "loading_mode": "loading_mode",
+    "disk_cache": "disk_cache",
+    "cache_budget": "cache_budget",
+    "max_points": "set_max_points",
+}
 SECTIONS = {
     "General": ("log_directory", "show_application_log", "show_python"),
     "Data loading": ("backend", "loading_mode", "disk_cache"),

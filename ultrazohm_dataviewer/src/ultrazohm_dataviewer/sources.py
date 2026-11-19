@@ -14,10 +14,11 @@ import threading
 import time
 import uuid
 from collections import OrderedDict
+from collections.abc import Iterator, Sequence
 from contextvars import ContextVar
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterator, Protocol, Sequence
+from typing import Protocol
 from zipfile import BadZipFile
 
 import numpy as np
@@ -129,14 +130,14 @@ class ByteCache:
     def status(self):
         """Snapshot for the UI; highlight pressure for five seconds after a miss in capacity."""
         with self.lock:
-            return dict(
-                bytes=self.bytes,
-                limit=self.limit,
-                evictions=self.evictions,
-                oversized=self.oversized,
-                limit_hit=self.last_limit_hit is not None
+            return {
+                "bytes": self.bytes,
+                "limit": self.limit,
+                "evictions": self.evictions,
+                "oversized": self.oversized,
+                "limit_hit": self.last_limit_hit is not None
                 and time.monotonic() - self.last_limit_hit < 5,
-            )
+            }
 
     def get(self, key):
         with self.lock:
@@ -705,7 +706,7 @@ class ParquetSource(IndexedFileSource):
                 columns, lambda c: np.empty(0, np.float32)
             )
             self.timestamp_resolution = timestamp_resolution(columns)
-            self.columns = dict(zip(named, columns))
+            self.columns = dict(zip(named, columns, strict=False))
             self.offsets = np.r_[
                 0,
                 np.cumsum(

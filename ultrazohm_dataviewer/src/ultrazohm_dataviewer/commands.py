@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from .validation import finite_float
 
@@ -32,7 +33,7 @@ class Param:
 class Command:
     name: str
     params: list[Param]
-    handler: Callable[["AppState", list], str | None]
+    handler: Callable[[AppState, list], str | None]
     help: str = ""
 
     def signature(self) -> str:
@@ -84,7 +85,7 @@ def _plot_number(raw) -> int:
         raise CommandError(f"Expected a plot reference (plot_1), got {raw!r}") from exc
 
 
-def _resolve_node(state: "AppState", raw) -> int:
+def _resolve_node(state: AppState, raw) -> int:
     """Resolve a ``node_<id>`` token, a bare id, or a node *name* to a node id."""
     graph = state.nodes
     if isinstance(raw, int):
@@ -104,7 +105,7 @@ def _resolve_node(state: "AppState", raw) -> int:
     return node_id
 
 
-def _resolve_run(state: "AppState", raw) -> int:
+def _resolve_run(state: AppState, raw) -> int:
     if isinstance(raw, str) and raw.startswith("node_output_"):
         node_id = _resolve_node(state, raw[len("node_output_") :])
         run_id = state.nodes.get(node_id).out_run_id
@@ -131,7 +132,7 @@ def _resolve_run(state: "AppState", raw) -> int:
     return run_id
 
 
-def _coerce_one(state: "AppState", param: Param, raw):
+def _coerce_one(state: AppState, param: Param, raw):
     kind = param.kind
     if kind == "int":
         return int(str(raw).strip())
@@ -158,7 +159,7 @@ def _coerce_one(state: "AppState", param: Param, raw):
     raise CommandError(f"Unknown parameter kind: {kind}")
 
 
-def _coerce_args(state: "AppState", cmd: Command, args: list) -> list:
+def _coerce_args(state: AppState, cmd: Command, args: list) -> list:
     required = [p for p in cmd.params if not p.optional]
     if len(args) < len(required):
         raise CommandError(f"{cmd.name} expects {cmd.signature()}")
@@ -190,7 +191,7 @@ def _fmt_str(s: str) -> str:
 
 def format_call(cmd: Command, values: list) -> str:
     parts: list[str] = []
-    for param, value in zip(cmd.params, values):
+    for param, value in zip(cmd.params, values, strict=False):
         if value is None:
             continue
         if param.kind == "plot":
@@ -236,7 +237,7 @@ class CommandRegistry:
         return [self._commands[n] for n in self.names()]
 
     def execute(
-        self, state: "AppState", name: str, args: list, *, echo: bool = True
+        self, state: AppState, name: str, args: list, *, echo: bool = True
     ) -> str | None:
         cmd = self._commands.get(name)
         if cmd is None:
@@ -274,7 +275,7 @@ class CommandRegistry:
             state.console.ok(message)
         return message
 
-    def echo(self, state: "AppState", name: str, values: list) -> None:
+    def echo(self, state: AppState, name: str, values: list) -> None:
         """Log a command without executing it (gesture already applied by ImPlot)."""
         cmd = self._commands.get(name)
         if cmd is not None:
@@ -297,7 +298,7 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
     def _cell(state, plot_n):
         return state.cells[plot_n - 1]
 
-    def _resolve_plot_type(token: str) -> "PlotType":
+    def _resolve_plot_type(token: str) -> PlotType:
         for t in PlotType:
             if (
                 t.value.lower() == str(token).lower()

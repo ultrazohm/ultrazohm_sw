@@ -32,6 +32,7 @@ def timings(values):
         zip(
             ("p50_ms", "p95_ms", "max_ms"),
             np.percentile(values, [50, 95, 100]).round(3).tolist(),
+            strict=False,
         )
     )
 

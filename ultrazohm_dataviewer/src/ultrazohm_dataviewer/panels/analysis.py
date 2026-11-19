@@ -103,34 +103,32 @@ class AnalysisPanel(SessionPanel):
         return f"{self.prefix}_export"
 
     # -- subclass hooks -----------------------------------------------------
-    def config(
-        self, state: "AppState"
-    ) -> "AnalysisConfig":  # pragma: no cover - abstract
+    def config(self, state: AppState) -> AnalysisConfig:  # pragma: no cover - abstract
         raise NotImplementedError
 
-    def _extra_controls(self, state: "AppState", cfg: "AnalysisConfig") -> None:
+    def _extra_controls(self, state: AppState, cfg: AnalysisConfig) -> None:
         """Draw transform-specific controls (each routed through a command)."""
 
-    def _setup_axes(self, state: "AppState") -> None:
+    def _setup_axes(self, state: AppState) -> None:
         """Configure axis scales etc. after ``setup_axes``, before plotting."""
 
-    def _options_key(self, cfg: "AnalysisConfig") -> tuple:
+    def _options_key(self, cfg: AnalysisConfig) -> tuple:
         """The transform options that, when changed, make the result stale."""
         return ()
 
     def _make_request(
-        self, state: "AppState", cfg: "AnalysisConfig", x_min: float, x_max: float
+        self, state: AppState, cfg: AnalysisConfig, x_min: float, x_max: float
     ):
         raise NotImplementedError  # pragma: no cover - abstract
 
-    def _draw(self, state: "AppState") -> None:
+    def _draw(self, state: AppState) -> None:
         raise NotImplementedError  # pragma: no cover - abstract
 
     def _result_refs(self) -> list[tuple[int, str]]:
         return []
 
     def _plot_decimated(
-        self, state: "AppState", label: str, x: np.ndarray, y: np.ndarray, source
+        self, state: AppState, label: str, x: np.ndarray, y: np.ndarray, source
     ) -> None:
         """Plot a line range-decimated to the current view, so a multi-million-point
         spectrum doesn't redraw at full resolution every frame."""
@@ -160,7 +158,7 @@ class AnalysisPanel(SessionPanel):
             implot.plot_dummy(label)
 
     # -- stale tracking -----------------------------------------------------
-    def _current_key(self, state: "AppState", cfg: "AnalysisConfig") -> tuple:
+    def _current_key(self, state: AppState, cfg: AnalysisConfig) -> tuple:
         from ..analysis_service import fingerprint
 
         return fingerprint(state, self.prefix)
@@ -172,7 +170,7 @@ class AnalysisPanel(SessionPanel):
         return source_error(state, cfg)
 
     # -- shared render ------------------------------------------------------
-    def _poll_export(self, state: "AppState") -> None:
+    def _poll_export(self, state: AppState) -> None:
         if self._export_dialog is None or not self._export_dialog.ready():
             return
         path = self._export_dialog.result()
@@ -181,7 +179,7 @@ class AnalysisPanel(SessionPanel):
             path = ensure_extension(path, ".csv")  # dialog may drop the extension
             self._emit(state, self.export_command, path)
 
-    def render(self, state: "AppState") -> None:
+    def render(self, state: AppState) -> None:
         self._sync_session(state)
         self._poll_export(state)
         cfg = self.config(state)
@@ -371,7 +369,7 @@ class AnalysisPanel(SessionPanel):
             implot.end_plot()
 
     def _maybe_echo_zoom(
-        self, state: "AppState", lo: float, hi: float, *, suppress: bool
+        self, state: AppState, lo: float, hi: float, *, suppress: bool
     ) -> None:
         from ..validation import axis_limits
 
@@ -400,6 +398,6 @@ class AnalysisPanel(SessionPanel):
             self.config(state).x_lim = limits
             state.commands.echo(state, self.xlim_command, [lo, hi])
 
-    def _remove(self, state: "AppState", ref: tuple[int, str]) -> None:
+    def _remove(self, state: AppState, ref: tuple[int, str]) -> None:
         if ref in self.config(state).sources:
             self._emit(state, f"{self.prefix}_remove", ref[0], ref[1])

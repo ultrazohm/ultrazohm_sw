@@ -23,9 +23,13 @@ def test_pressure_on_eviction_and_oversize(monkeypatch):
     assert cache.status()["oversized"] == 1
     assert cache.status()["limit_hit"]
     cache.clear()
-    assert cache.status() == dict(
-        bytes=0, limit=10, evictions=0, oversized=0, limit_hit=False
-    )
+    assert cache.status() == {
+        "bytes": 0,
+        "limit": 10,
+        "evictions": 0,
+        "oversized": 0,
+        "limit_hit": False,
+    }
 
 
 def test_budget_reduction_reports_eviction():

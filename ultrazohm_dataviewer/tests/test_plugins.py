@@ -130,7 +130,7 @@ def test_same_filename_in_different_directories_has_distinct_modules(
     tmp_path, clean_registry
 ):
     directories = [tmp_path / "a", tmp_path / "b"]
-    for directory, kind in zip(directories, ("double", "triple")):
+    for directory, kind in zip(directories, ("double", "triple"), strict=False):
         directory.mkdir()
         (directory / "plugin.py").write_text(_PLUGIN.replace('"double"', repr(kind)))
     assert set(load_plugins([str(d) for d in directories])) == {"double", "triple"}

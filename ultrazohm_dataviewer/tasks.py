@@ -267,7 +267,7 @@ def main(argv=None):
     try:
         args.function(args)
     except subprocess.CalledProcessError as error:
-        raise SystemExit(error.returncode or 1)
+        raise SystemExit(error.returncode or 1) from None
 
 
 if __name__ == "__main__":

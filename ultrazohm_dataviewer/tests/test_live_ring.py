@@ -194,8 +194,8 @@ def test_frozen_snapshot_summaries_are_never_modified():
     copies = used(frozen)
     for start in range(7_000, 60_000, 1_111):
         ring.append(noisy_page(start, start + 1_111, rng))
-    for level, saved in zip(used(frozen), copies):
-        for values, copy in zip(level, saved):
+    for level, saved in zip(used(frozen), copies, strict=False):
+        for values, copy in zip(level, saved, strict=False):
             np.testing.assert_array_equal(values, copy)
     assert_summary_matches(frozen)
 

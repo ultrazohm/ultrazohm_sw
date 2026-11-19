@@ -273,7 +273,7 @@ class AppState(SessionData):
         self.console = Console()
         self.commands = CommandRegistry()
 
-    def replace_session(self, replacement: "AppState") -> None:
+    def replace_session(self, replacement: AppState) -> None:
         """Transfer declared session data and services; retain console and commands.
 
         The prepared replacement is consumed. Its shutdown becomes a no-op so it
@@ -564,7 +564,7 @@ class AppState(SessionData):
         self,
         label: str,
         path: str,
-        time: "np.ndarray",
+        time: np.ndarray,
         signals: dict,
         units: dict,
     ) -> Run:

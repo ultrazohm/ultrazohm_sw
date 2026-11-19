@@ -141,7 +141,7 @@ class ControlServer:
         while not self._closed:
             try:
                 connection, _ = self._listener.accept()
-            except socket.timeout:
+            except TimeoutError:
                 continue
             except OSError:
                 break
@@ -163,7 +163,7 @@ class ControlServer:
             with connection.makefile("rb") as stream:
                 while not self._closed:
                     request = wire.read(stream)
-                    reply = dict(version=wire.VERSION, id=request.get("id"))
+                    reply = {"version": wire.VERSION, "id": request.get("id")}
                     try:
                         future = self._submit(request)
                         completed = threading.Event()
@@ -180,22 +180,22 @@ class ControlServer:
                         result = future.result()
                         reply.update(result)
                     except Exception as exc:
-                        reply["error"] = dict(
-                            code=getattr(exc, "code", "operation_failed"),
-                            message=str(exc),
-                        )
+                        reply["error"] = {
+                            "code": getattr(exc, "code", "operation_failed"),
+                            "message": str(exc),
+                        }
                     try:
                         data = wire.encode(reply)
                     except (ValueError, TypeError):
                         data = wire.encode(
-                            dict(
-                                version=wire.VERSION,
-                                id=request.get("id"),
-                                error=dict(
-                                    code="invalid_result",
-                                    message="Operation result cannot be transmitted",
-                                ),
-                            )
+                            {
+                                "version": wire.VERSION,
+                                "id": request.get("id"),
+                                "error": {
+                                    "code": "invalid_result",
+                                    "message": "Operation result cannot be transmitted",
+                                },
+                            }
                         )
                     connection.sendall(data)
         except (OSError, EOFError, ValueError):

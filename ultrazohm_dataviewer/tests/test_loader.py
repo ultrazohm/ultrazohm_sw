@@ -221,14 +221,14 @@ def test_colliding_channels_preserve_raw_columns(
         path.write_text(
             ";".join(names)
             + "\n"
-            + "\n".join((";".join(map(str, row)) for row in zip(*arrays)))
+            + "\n".join(";".join(map(str, row)) for row in zip(*arrays, strict=False))
         )
     else:
-        pq.write_table(pa.table(dict(zip(names, arrays))), path)
+        pq.write_table(pa.table(dict(zip(names, arrays, strict=False))), path)
     run = open_file(str(path), mode, backend=backend).register(states().registry)
     assert len(run.signals) == 4 and "time" not in run.signals
     _, values = run.read_window(list(run.signals), 0, 1)
-    for actual, expected in zip(values.values(), arrays[1:]):
+    for actual, expected in zip(values.values(), arrays[1:], strict=False):
         np.testing.assert_array_equal(actual, expected)
 
 

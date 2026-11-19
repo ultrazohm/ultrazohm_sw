@@ -52,7 +52,7 @@ def test_analysis_view_limits_survive_json_roundtrip(
         assert cfg.x_lim == cfg.pending_x_lim == (10.0, 20.0)
         drawn_limits = []
 
-        def capture(state):
+        def capture(state, drawn_limits=drawn_limits):
             limits = implot.get_plot_limits()
             drawn_limits.append((limits.x.min, limits.x.max))
 

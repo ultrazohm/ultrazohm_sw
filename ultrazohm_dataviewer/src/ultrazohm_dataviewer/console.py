@@ -47,7 +47,7 @@ class Console:
         """Echo an executed/issued command (rendered with a ``>`` prefix)."""
         self._log("CMD", message)
 
-    def extend_from(self, other: "Console") -> None:
+    def extend_from(self, other: Console) -> None:
         """Append messages from a prepared session without replacing input/history."""
         self._entries.extend(other._entries)
         self._scroll_to_bottom = True
@@ -66,7 +66,7 @@ class Console:
         return f"[{entry.timestamp}] {entry.level:<5} {entry.message}"
 
     # -- rendering ----------------------------------------------------------
-    def render(self, state: "AppState") -> None:
+    def render(self, state: AppState) -> None:
         from imgui_bundle import imgui
 
         if imgui.button("Clear"):

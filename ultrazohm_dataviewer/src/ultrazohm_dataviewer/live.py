@@ -170,11 +170,11 @@ class LiveRing:
             if aligned:
                 for name, levels in old_summary.items():
                     for level, (old_arrays, new_arrays) in enumerate(
-                        zip(levels, self.summary[name])
+                        zip(levels, self.summary[name], strict=False)
                     ):
                         shift = start // bucket_size(level)
                         count = -(-(self.end - start) // bucket_size(level))
-                        for source, target in zip(old_arrays, new_arrays):
+                        for source, target in zip(old_arrays, new_arrays, strict=False):
                             values = source[shift : shift + count]
                             target[: len(values)] = np.where(
                                 values >= 0, values - start, -1
@@ -223,7 +223,9 @@ class LiveRing:
             return
         for name, levels in self.summary.items():
             y = self.columns[name]
-            for target, values in zip(levels[0], bucket_extrema(y[lo:stop])):
+            for target, values in zip(
+                levels[0], bucket_extrema(y[lo:stop]), strict=False
+            ):
                 target[bucket : bucket + len(values)] = np.where(
                     values >= 0, values + lo, -1
                 )
@@ -236,7 +238,7 @@ class LiveRing:
                 merged = merge_extrema(
                     y, *(values[start:child_stop] for values in levels[level - 1])
                 )
-                for target, values in zip(levels[level], merged):
+                for target, values in zip(levels[level], merged, strict=False):
                     target[parent : parent + len(values)] = values
 
     def snapshot(self):
@@ -979,7 +981,9 @@ class LiveController:
             self._wait_for(reconnected, 20, "UltraZohm to reconnect")
         except RuntimeError as exc:
             raise RuntimeError(f"{exc}: {last_error}") from exc
-        self._command("attach", dict(endpoint=self.endpoint, mapping=str(mapping_path)))
+        self._command(
+            "attach", {"endpoint": self.endpoint, "mapping": str(mapping_path)}
+        )
         self._variable_sends = {}
         self._flash_context = None
         self._notice = "Flash completed; acquisition service restarted and connected"

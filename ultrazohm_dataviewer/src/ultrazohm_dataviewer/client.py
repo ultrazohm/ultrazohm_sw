@@ -81,14 +81,14 @@ class Client(ViewerMethods):
 
                 self._token = discover(self.endpoint)
             request = wire.encode(
-                dict(
-                    version=wire.VERSION,
-                    id=self._sequence,
-                    operation=operation,
-                    arguments=arguments,
-                    session=self.session,
-                    token=self._token,
-                )
+                {
+                    "version": wire.VERSION,
+                    "id": self._sequence,
+                    "operation": operation,
+                    "arguments": arguments,
+                    "session": self.session,
+                    "token": self._token,
+                }
             )
             try:
                 if self._socket is None:
@@ -113,7 +113,7 @@ class Client(ViewerMethods):
     def _invoke(self, operation, arguments):
         for key, value in list(arguments.items()):
             if isinstance(value, (RunHandle, NodeHandle)):
-                arguments[key] = dict(session=value.session, id=value.id)
+                arguments[key] = {"session": value.session, "id": value.id}
             elif value is not None and (
                 key == "path"
                 or operation == "convert"
@@ -167,7 +167,9 @@ class Client(ViewerMethods):
     def node_output(self, node: NodeHandle):
         if not isinstance(node, NodeHandle):
             raise TypeError("node must be a NodeHandle")
-        result = self._call("node_output", node=dict(session=node.session, id=node.id))
+        result = self._call(
+            "node_output", node={"session": node.session, "id": node.id}
+        )
         return RunHandle(result["session"], result["id"])
 
     def clear_session(self):
@@ -193,7 +195,7 @@ class Client(ViewerMethods):
         return self._call(
             "add_signal",
             plot=plot,
-            run=dict(session=run.session, id=run.id),
+            run={"session": run.session, "id": run.id},
             signal=signal,
             view=view,
         )

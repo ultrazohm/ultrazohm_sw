@@ -1778,7 +1778,7 @@ class IntegrationTest(unittest.TestCase):
         self.cli("shutdown")
         self.assertEqual(self.wait_for_service_exit(), 0)
         self.assertEqual(
-            set(p for p in self.run_dir.glob("*.parquet") if "-part-" not in p.name),
+            {p for p in self.run_dir.glob("*.parquet") if "-part-" not in p.name},
             {
                 self.run_dir / "data.parquet",
                 self.run_dir / "data_slow_data.parquet",
@@ -1820,7 +1820,10 @@ class IntegrationTest(unittest.TestCase):
             self.assertEqual(parquet.height, len(rows))
             times = parquet["time"].to_list()
             self.assertTrue(
-                all(abs((b - a) - 0.0001) < 1e-10 for a, b in zip(times, times[1:]))
+                all(
+                    abs((b - a) - 0.0001) < 1e-10
+                    for a, b in zip(times, times[1:], strict=False)
+                )
             )
             slow = pl.read_parquet(self.run_dir / "data_slow_data.parquet")
             self.assertGreater(slow.height, 0)
@@ -1912,7 +1915,7 @@ class IntegrationTest(unittest.TestCase):
     def test_control_validation_and_exclusive_run(self):
         self.start()
         with socket.create_connection(
-            tuple(["127.0.0.1", int(self.endpoint.split(":")[1])])
+            ("127.0.0.1", int(self.endpoint.split(":")[1]))
         ) as sock:
             sock.sendall(b'{"api_version":1,"command":{"op":"stop"}}\n')
             reply = json.loads(sock.makefile("rb").readline())
@@ -2236,7 +2239,7 @@ class IntegrationTest(unittest.TestCase):
             json.loads((run_dir / "run.json").read_text())["end"]["complete"]
         )
         self.assertEqual(
-            set(p for p in run_dir.glob("*.parquet") if "-part-" not in p.name),
+            {p for p in run_dir.glob("*.parquet") if "-part-" not in p.name},
             {
                 run_dir / "data.parquet",
                 run_dir / "data_slow_data.parquet",
@@ -2434,7 +2437,7 @@ else:
         end = json.loads((self.run_dir / "run.json").read_text())["end"]
         self.assertFalse(end["complete"])
         self.assertEqual(
-            set(p for p in self.run_dir.glob("*.parquet") if "-part-" not in p.name),
+            {p for p in self.run_dir.glob("*.parquet") if "-part-" not in p.name},
             {
                 self.run_dir / "data.parquet",
                 self.run_dir / "data_slow_data.parquet",

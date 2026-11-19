@@ -60,10 +60,10 @@ class Operations:
 
     def _reply(self, result=None):
         self._sync()
-        return dict(session=self.session, result=result)
+        return {"session": self.session, "result": result}
 
     def _run_handle(self, run):
-        return dict(session=self.session, id=run.id)
+        return {"session": self.session, "id": run.id}
 
     def dispatch(self, operation, arguments, session):
         self._sync()
@@ -132,13 +132,14 @@ class Operations:
 
     def create_view(self):
         view = self._root_state.create_plot_view()
-        return dict(session=self.session, id=view.plot_window_id)
+        return {"session": self.session, "id": view.plot_window_id}
 
     def list_views(self):
         return [
-            dict(
-                handle=dict(session=self.session, id=key), grid=[state.rows, state.cols]
-            )
+            {
+                "handle": {"session": self.session, "id": key},
+                "grid": [state.rows, state.cols],
+            }
             for key, state in [
                 (1, self._root_state),
                 *self._root_state.plot_views.items(),
@@ -190,7 +191,7 @@ class Operations:
             )
             return target
         if operation in ("node_add", "node_source"):
-            return dict(session=self.session, id=result)
+            return {"session": self.session, "id": result}
         return result
 
     def _preferences(self):
@@ -218,37 +219,37 @@ class Operations:
         return self.get_settings()
 
     def status(self):
-        return dict(
-            grid=[self.state.rows, self.state.cols],
-            runs=len(self.state.registry.runs),
-            pending=len(self.jobs),
-        )
+        return {
+            "grid": [self.state.rows, self.state.cols],
+            "runs": len(self.state.registry.runs),
+            "pending": len(self.jobs),
+        }
 
     def list_runs(self):
         return [
-            dict(
-                handle=self._run_handle(run),
-                label=run.label,
-                path=run.path,
-                signals=list(run.signals),
-            )
+            {
+                "handle": self._run_handle(run),
+                "label": run.label,
+                "path": run.path,
+                "signals": list(run.signals),
+            }
             for run in self.state.registry.runs
         ]
 
     def list_nodes(self):
         return [
-            dict(
-                handle=dict(session=self.session, id=node.id),
-                name=node.name,
-                kind=node.kind,
-                params=dict(node.params),
-                inputs=list(node.inputs),
-                output=(
+            {
+                "handle": {"session": self.session, "id": node.id},
+                "name": node.name,
+                "kind": node.kind,
+                "params": dict(node.params),
+                "inputs": list(node.inputs),
+                "output": (
                     self._run_handle(run)
                     if (run := self.state.registry.get(node.out_run_id)) is not None
                     else None
                 ),
-            )
+            }
             for node in self.state.nodes.ordered()
         ]
 
@@ -257,7 +258,7 @@ class Operations:
 
         def reference(ref):
             return (
-                dict(run=dict(session=self.session, id=ref[0]), signal=ref[1])
+                {"run": {"session": self.session, "id": ref[0]}, "signal": ref[1]}
                 if ref
                 else None
             )

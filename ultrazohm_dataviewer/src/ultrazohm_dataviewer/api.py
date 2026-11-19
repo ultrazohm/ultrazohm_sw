@@ -183,7 +183,7 @@ def node(kind: str, *signals, timestamp_resolution=0.0, **params):
     if spec is None:
         raise ValueError(f"unknown node kind {kind!r}; one of {kinds()}")
     merged = nodes.default_params(kind)
-    merged.update({k: v for k, v in params.items()})
+    merged.update(dict(params.items()))
     inputs = [
         (np.asarray(t, dtype=np.float64), np.asarray(s, dtype=np.float64))
         for t, s in signals

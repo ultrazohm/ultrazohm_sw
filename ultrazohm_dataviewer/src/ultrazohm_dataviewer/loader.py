@@ -24,8 +24,8 @@ from __future__ import annotations
 import csv
 import os
 import re
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 import numpy as np
 import pyarrow as pa

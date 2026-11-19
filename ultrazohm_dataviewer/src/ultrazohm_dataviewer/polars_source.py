@@ -25,7 +25,7 @@ class PolarsSource(IndexedFileSource):
         self.time_col, columns = _split_time_columns(names)
         named, self.units = _named_signals(columns, lambda c: np.empty(0, np.float32))
         self.timestamp_resolution = timestamp_resolution(columns)
-        self.columns = dict(zip(named, columns))
+        self.columns = dict(zip(named, columns, strict=False))
         self._rows = self.scan.select(pl.len()).collect(engine="streaming").item()
         check(cancel)
         if not self._rows:

@@ -37,7 +37,7 @@ class TransportTests(unittest.TestCase):
         def handle(operation, arguments, session):
             self.assertEqual(threading.get_ident(), owner)
             observed.append((operation, arguments, session))
-            return dict(session="session-a", result={"grid": [2, 3]})
+            return {"session": "session-a", "result": {"grid": [2, 3]}}
 
         for _ in range(2):
             result = self.pump(self.workers.submit(self.client.status), handle)
@@ -54,7 +54,7 @@ class TransportTests(unittest.TestCase):
         self.assertEqual(error.exception.code, "stale_handle")
         result = self.pump(
             self.workers.submit(self.client.status),
-            lambda *_: dict(session="a", result=True),
+            lambda *_: {"session": "a", "result": True},
         )
         self.assertTrue(result)
 
@@ -98,7 +98,7 @@ class TransportTests(unittest.TestCase):
             time.sleep(0.001)
         self.assertTrue(calls)
         self.assertFalse(future.done())
-        pending.set_result(dict(session="a", result=42))
+        pending.set_result({"session": "a", "result": 42})
         self.assertEqual(future.result(timeout=2), 42)
 
     def test_shutdown_releases_pending_client(self):
@@ -146,13 +146,13 @@ class TransportTests(unittest.TestCase):
         connection = socket.create_connection(wire.address(self.server.endpoint))
         connection.sendall(
             wire.encode(
-                dict(
-                    version=1,
-                    id=1,
-                    operation="load",
-                    arguments={},
-                    token=self.server.token,
-                )
+                {
+                    "version": 1,
+                    "id": 1,
+                    "operation": "load",
+                    "arguments": {},
+                    "token": self.server.token,
+                }
             )
         )
 
@@ -183,18 +183,18 @@ class TransportTests(unittest.TestCase):
 
         def request(number):
             return wire.encode(
-                dict(
-                    version=1,
-                    id=number,
-                    operation="status",
-                    arguments={},
-                    token=self.server.token,
-                )
+                {
+                    "version": 1,
+                    "id": number,
+                    "operation": "status",
+                    "arguments": {},
+                    "token": self.server.token,
+                }
             )
 
         def handler(*args):
             received.append(args)
-            return source if len(received) == 1 else dict(session="a", result=2)
+            return source if len(received) == 1 else {"session": "a", "result": 2}
 
         try:
             connection.sendall(request(1))
@@ -209,7 +209,7 @@ class TransportTests(unittest.TestCase):
                 connection.sendall(request(2))
                 time.sleep(0.2)
                 self.assertLess(poll.call_count, 30)
-            source.set_result(dict(session="a", result=1))
+            source.set_result({"session": "a", "result": 1})
             with connection.makefile("rb") as stream:
                 self.assertEqual(wire.read(stream)["result"], 1)
                 deadline = time.monotonic() + 2

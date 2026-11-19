@@ -44,7 +44,10 @@ class PythonPanel:
                     "Script endpoint changed or run mode changed; run the script again"
                 )
             endpoint, acquisition, _ = target
-            options = dict(args=shlex.split(self.arguments), cwd=self.working_directory)
+            options = {
+                "args": shlex.split(self.arguments),
+                "cwd": self.working_directory,
+            }
             if self.managed_device:
                 if self.app.live is None:
                     raise RuntimeError("Live acquisition is unavailable")

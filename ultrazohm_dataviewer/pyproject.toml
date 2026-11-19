@@ -46,7 +46,7 @@ line-length = 88
 extend-exclude = ["target", "dist", "dist-wheels"]
 
 [tool.ruff.lint]
-select = ["F", "E4", "E7", "E9", "I"]
+select = ["F", "E4", "E7", "E9", "I", "B", "UP", "C4"]
 
 # Developer resolution uses the checkout; published wheel metadata retains
 # the exact version dependency and never includes this local source path.

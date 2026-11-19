@@ -112,7 +112,7 @@ def states():
 @pytest.fixture
 def recording_csv(tmp_path):
     path = tmp_path / "recording.csv"
-    path.write_text("time;a\n" + "".join((f"{i};{i + 1}\n" for i in range(8))))
+    path.write_text("time;a\n" + "".join(f"{i};{i + 1}\n" for i in range(8)))
     return path
 
 

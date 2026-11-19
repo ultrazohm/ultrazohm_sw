@@ -38,7 +38,7 @@ def _is_finite_range(lo: float, hi: float) -> bool:
     return math.isfinite(lo) and math.isfinite(hi) and hi > lo
 
 
-def _colored_spec(idx: int, *, marker: bool) -> "implot.Spec":
+def _colored_spec(idx: int, *, marker: bool) -> implot.Spec:
     """A draw Spec pinning a signal to colormap colour ``idx``.
 
     ImPlot's auto colours are assigned per ``begin_plot`` in draw order, so the same
@@ -778,7 +778,8 @@ class PlotsPanel(SessionPanel):
         sy = abs(y2 - y1) or 1.0
         last = self._last_logged_spy.get(index)
         if last is not None and all(
-            abs(a - b) < 0.005 * s for a, b, s in zip(last, rect, (sx, sy, sx, sy))
+            abs(a - b) < 0.005 * s
+            for a, b, s in zip(last, rect, (sx, sy, sx, sy), strict=False)
         ):
             return
         first = last is None

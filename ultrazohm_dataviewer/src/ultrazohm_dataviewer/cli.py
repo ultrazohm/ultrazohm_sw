@@ -131,11 +131,12 @@ def main(argv=None):
         if args.json:
             print(
                 json.dumps(
-                    dict(
-                        error=dict(
-                            code=getattr(exc, "code", "client_error"), message=str(exc)
-                        )
-                    )
+                    {
+                        "error": {
+                            "code": getattr(exc, "code", "client_error"),
+                            "message": str(exc),
+                        }
+                    }
                 ),
                 file=sys.stderr,
             )

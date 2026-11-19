@@ -780,7 +780,11 @@ def test_viewer_owned_service_finalizes_and_exits_on_close(tmp_path, disconnect_
         for operation in ("enable_system", "enable_control", "stop"):
             completed = controller.latest().completed_commands
             controller.submit(operation)
-            wait_for(lambda: controller.latest().completed_commands > completed)
+            wait_for(
+                lambda completed=completed: (
+                    controller.latest().completed_commands > completed
+                )
+            )
         controller.submit("button", number=1)
         variable = next(iter(controller.latest().catalog["variables"]))
         controller.submit("set_variable", name=variable, value=1.25)
@@ -1608,7 +1612,7 @@ def test_user_button_feedback_and_vertical_layout(
         assert indicators == expected
         assert len(positions) == 8
         assert len({x for x, _ in positions}) == 1
-        assert all(b[1] > a[1] for a, b in zip(positions, positions[1:]))
+        assert all(b[1] > a[1] for a, b in zip(positions, positions[1:], strict=False))
     finally:
         workspace.close()
 

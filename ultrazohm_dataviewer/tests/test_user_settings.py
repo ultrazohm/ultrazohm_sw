@@ -478,12 +478,12 @@ def test_repository_service_passes_repo_and_preserves_explicit_profile(
         # Even an unknown signal must reach CLI validation unchanged.
         settings.write_text(
             json.dumps(
-                dict(
-                    schema_version=1,
-                    name="user",
-                    sample_period_us=50,
-                    initial_channels={"4": "JSO_not_in_firmware"},
-                )
+                {
+                    "schema_version": 1,
+                    "name": "user",
+                    "sample_period_us": 50,
+                    "initial_channels": {"4": "JSO_not_in_firmware"},
+                }
             )
         )
     calls = []
@@ -547,12 +547,12 @@ def test_explicit_mapping_survives_connect_with_workspace(
     mapping.write_text(json.dumps({"channels": 20, "observables": {"JSO_custom": 42}}))
     (directory / "settings.json").write_text(
         json.dumps(
-            dict(
-                schema_version=1,
-                name="custom",
-                sample_period_us=100,
-                initial_channels={"1": "JSO_custom"},
-            )
+            {
+                "schema_version": 1,
+                "name": "custom",
+                "sample_period_us": 100,
+                "initial_channels": {"1": "JSO_custom"},
+            }
         )
     )
     app = DataViewerApp(

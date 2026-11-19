@@ -62,7 +62,7 @@ def clear_session(state):
     state.replace_session(replacement)
 
 
-def _nodes_to_list(state: "AppState") -> list[dict]:
+def _nodes_to_list(state: AppState) -> list[dict]:
     out = []
     for node in state.nodes.ordered():
         run = state.registry.get(node.out_run_id)
@@ -155,7 +155,7 @@ def restore_plot_cells(state, data, resolve):
         cell.fit_pending = True
 
 
-def to_dict(state: "AppState") -> dict:
+def to_dict(state: AppState) -> dict:
     _check_reloadable(state)
     cells = plot_cells_to_list(state, lambda ref: _ref_to_saved(state, ref))
     return {
@@ -186,16 +186,18 @@ def to_dict(state: "AppState") -> dict:
         "nodes": _nodes_to_list(state),
         "cells": cells,
         "views": [
-            dict(
-                id=key,
-                grid=[view.rows, view.cols],
-                row_ratios=list(view.row_ratios),
-                col_ratios=list(view.col_ratios),
-                link_x=view.link_x,
-                shared_x=view.shared_x,
-                max_points=view.max_points,
-                cells=plot_cells_to_list(view, lambda ref: _ref_to_saved(state, ref)),
-            )
+            {
+                "id": key,
+                "grid": [view.rows, view.cols],
+                "row_ratios": list(view.row_ratios),
+                "col_ratios": list(view.col_ratios),
+                "link_x": view.link_x,
+                "shared_x": view.shared_x,
+                "max_points": view.max_points,
+                "cells": plot_cells_to_list(
+                    view, lambda ref: _ref_to_saved(state, ref)
+                ),
+            }
             for key, view in state.plot_views.items()
         ],
         "fft": {
@@ -220,7 +222,7 @@ def to_dict(state: "AppState") -> dict:
     }
 
 
-def save_state(state: "AppState", path: str) -> None:
+def save_state(state: AppState, path: str) -> None:
     data = to_dict(state)
     save_snapshot(data, path)
 
@@ -253,7 +255,7 @@ def save_snapshot(data: dict, path: str, *, cancel=None) -> None:
             os.unlink(temporary)
 
 
-def load_state(state: "AppState", path: str) -> None:
+def load_state(state: AppState, path: str) -> None:
     apply_dict(state, read_snapshot(path))
 
 
@@ -278,7 +280,7 @@ def _replacement_state(state):
     return replacement
 
 
-def apply_dict(state: "AppState", data: dict) -> None:
+def apply_dict(state: AppState, data: dict) -> None:
     replacement = _replacement_state(state)
     try:
         _apply_dict(replacement, data)
@@ -288,7 +290,7 @@ def apply_dict(state: "AppState", data: dict) -> None:
     state.replace_session(replacement)
 
 
-def _apply_dict(state: "AppState", data: dict, *, cancel=None) -> None:
+def _apply_dict(state: AppState, data: dict, *, cancel=None) -> None:
     from .sources import check
 
     check(cancel)
@@ -424,7 +426,7 @@ def _apply_dict(state: "AppState", data: dict, *, cancel=None) -> None:
     state.histogram.compute_requested = bool(state.histogram.sources)
 
 
-def _restore_nodes(state: "AppState", specs: list, resolve, *, cancel=None) -> None:
+def _restore_nodes(state: AppState, specs: list, resolve, *, cancel=None) -> None:
     """Rebuild the node graph from a snapshot (preserving ids) and evaluate it."""
     from .nodes import NodeGraph, evaluate, publish_output
 
@@ -517,7 +519,7 @@ def _write_csv(columns, path, backend, cancel=None):
 
 
 def export_data(
-    state: "AppState", plot_index: int, path: str, relative: bool = False
+    state: AppState, plot_index: int, path: str, relative: bool = False
 ) -> int:
     """Write a subplot's signals to a wide CSV (``time`` + one column per signal).
 
@@ -572,7 +574,7 @@ def export_data(
     return len(columns)
 
 
-def export_fft(state: "AppState", path: str) -> int:
+def export_fft(state: AppState, path: str) -> int:
     """Write the FFT window's spectra to a CSV.
 
     A single shared ``frequency`` column + one amplitude column per signal when every
@@ -640,7 +642,7 @@ def export_fft(state: "AppState", path: str) -> int:
     return len(columns)
 
 
-def export_histogram(state: "AppState", path: str) -> int:
+def export_histogram(state: AppState, path: str) -> int:
     """Write the Histogram window's bins to a wide CSV: ``bin_center`` + one count
     column per signal, computed over a shared value range so columns align."""
 

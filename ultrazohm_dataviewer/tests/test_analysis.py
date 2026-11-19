@@ -390,7 +390,7 @@ def test_exports_preserve_duplicate_recordings(
         path = tmp_path / str(i) / "same.csv"
         path.parent.mkdir()
         path.write_text(
-            "time;a\n" + "".join((f"{j};{(i + 1) * (j + 1)}\n" for j in range(8)))
+            "time;a\n" + "".join(f"{j};{(i + 1) * (j + 1)}\n" for j in range(8))
         )
         run = state.load_sync(str(path))
         getattr(state, config).sources.append((run.id, "a"))
@@ -884,7 +884,9 @@ def test_analysis_request_captures_inputs_without_gui_state(app_state, panel_typ
     state.registry.remove_run(run.id)
     actual = request.compute()
     assert actual.info == expected.info
-    for left, right in zip(actual.series[0][1:3], expected.series[0][1:3]):
+    for left, right in zip(
+        actual.series[0][1:3], expected.series[0][1:3], strict=False
+    ):
         np.testing.assert_array_equal(left, right)
     with pytest.raises(FrozenInstanceError):
         request.window = (100, 107)
@@ -929,7 +931,9 @@ def test_javascope_quantized_logs_support_analysis_and_nodes(
     t = np.rint(np.arange(6000) / fs * 1e8) / 1e8
     y = np.sin(2 * np.pi * 1000 * t)
     path = tmp_path / "log.csv"
-    path.write_text("time;CH1=1)ia;\n" + "".join(f"{a};{b};\n" for a, b in zip(t, y)))
+    path.write_text(
+        "time;CH1=1)ia;\n" + "".join(f"{a};{b};\n" for a, b in zip(t, y, strict=False))
+    )
     if extension == "parquet":
         path = convert_csv_to_parquet(str(path), backend=backend)
     run = open_file(str(path), mode, backend=backend).register(app_state.registry)
@@ -964,7 +968,9 @@ def test_generic_arrays_require_explicit_timestamp_precision(tmp_path):
     t = np.rint(np.arange(6000) / 30000 * 1e8) / 1e8
     y = np.sin(2 * np.pi * 1000 * t)
     path = tmp_path / "generic.csv"
-    path.write_text("time,value\n" + "".join(f"{a},{b}\n" for a, b in zip(t, y)))
+    path.write_text(
+        "time,value\n" + "".join(f"{a},{b}\n" for a, b in zip(t, y, strict=False))
+    )
     data = api.read(path)
     assert data.timestamp_resolution == 0
     assert not api.fft(data.time, data["value"]).ok

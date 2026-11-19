@@ -16,8 +16,8 @@ is a thin layer on top that only issues ``node_*`` commands.
 from __future__ import annotations
 
 import itertools
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Callable
 
 import numpy as np
 
@@ -67,7 +67,7 @@ class ParamSpec:
 @dataclass
 class TransformSpec:
     kind: str
-    compute: "Callable"  # (inputs:list[(t,y)], params:dict) -> (t_out, y_out, info)
+    compute: Callable  # (inputs:list[(t,y)], params:dict) -> (t_out, y_out, info)
     params: dict = field(default_factory=dict)  # default params
     inputs: tuple[int, int] = (1, 1)  # (min, max) arity
     ui: tuple = ()  # ParamSpec list (for the generic plugin UI)
@@ -337,7 +337,7 @@ class NodeGraph:
         return node
 
     def _next_peek(self) -> int:
-        existing = [n for n in self.nodes] or [0]
+        existing = list(self.nodes) or [0]
         return max(existing) + 1
 
     def remove(self, node_id: int) -> Node | None:
@@ -409,7 +409,7 @@ class NodeGraph:
 def _topo_order(graph: NodeGraph) -> list[int]:
     from collections import deque
 
-    indeg = {nid: 0 for nid in graph.nodes}
+    indeg = dict.fromkeys(graph.nodes, 0)
     children = {nid: [] for nid in graph.nodes}
     for node in graph.nodes.values():
         for inp in set(node.inputs):
@@ -602,7 +602,7 @@ def output_domain(graph, node, domains=None):
         if current.kind in {"fft", "source"}:
             domains[nid] = "frequency" if current.kind == "fft" else "time"
             continue
-        inputs = set(i for i in current.inputs if i in graph.nodes)
+        inputs = {i for i in current.inputs if i in graph.nodes}
         if not ready:
             pending.append((nid, True))
             pending.extend((i, False) for i in inputs if i not in domains)

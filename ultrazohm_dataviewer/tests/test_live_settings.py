@@ -22,12 +22,12 @@ def workspace(root):
         )
         (directory / "settings.json").write_text(
             json.dumps(
-                dict(
-                    schema_version=1,
-                    name="test",
-                    sample_period_us=100.0,
-                    initial_channels={"1": "a"},
-                )
+                {
+                    "schema_version": 1,
+                    "name": "test",
+                    "sample_period_us": 100.0,
+                    "initial_channels": {"1": "a"},
+                }
             )
         )
     return panel

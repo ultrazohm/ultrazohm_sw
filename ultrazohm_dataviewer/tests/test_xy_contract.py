@@ -124,7 +124,7 @@ def test_async_xy_fits_and_releases_input_batches():
     references, alive, limits = [], [], []
 
     def batches(channels, start=0, stop=None, cancel=None):
-        for i in range(20):
+        for _i in range(20):
             check(cancel)
             values = np.linspace(100, 200, 20000, dtype=np.float32)
             if channels == ["b"]:
@@ -132,7 +132,7 @@ def test_async_xy_fits_and_releases_input_batches():
                 time.sleep(0.002)
             references.append(weakref.ref(values))
             alive.append(sum(ref() is not None for ref in references))
-            yield np.arange(20000), {name: values for name in channels}
+            yield np.arange(20000), dict.fromkeys(channels, values)
 
     source = SimpleNamespace(
         metadata=Metadata("xy-review", 400000, ("a", "b"), (0, 400000)),

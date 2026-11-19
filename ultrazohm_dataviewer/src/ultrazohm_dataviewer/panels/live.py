@@ -114,13 +114,13 @@ class LivePlotsPanel(PlotsPanel):
         if selecting:
             if self._selection is None:
                 button = implot.get_input_map().select
-                self._selection = dict(
-                    cell=id(cell),
-                    button=button,
-                    inspect=imgui.get_io().key_shift,
-                    anchor=(lo, hi),
-                    box=None,
-                )
+                self._selection = {
+                    "cell": id(cell),
+                    "button": button,
+                    "inspect": imgui.get_io().key_shift,
+                    "anchor": (lo, hi),
+                    "box": None,
+                }
             selection = self._selection
             if selection["cell"] != id(cell):
                 return

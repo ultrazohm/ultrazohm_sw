@@ -11,15 +11,15 @@ from .validation import axis_limits, boolean, bounded_int, display_budget, finit
 
 
 def plot_setup(state):
-    return dict(
-        grid=[state.rows, state.cols],
-        row_ratios=list(state.row_ratios),
-        col_ratios=list(state.col_ratios),
-        link_x=state.link_x,
-        shared_x=state.shared_x,
-        max_points=state.max_points,
-        cells=plot_cells_to_list(state, lambda ref: ref[1] if ref else None),
-    )
+    return {
+        "grid": [state.rows, state.cols],
+        "row_ratios": list(state.row_ratios),
+        "col_ratios": list(state.col_ratios),
+        "link_x": state.link_x,
+        "shared_x": state.shared_x,
+        "max_points": state.max_points,
+        "cells": plot_cells_to_list(state, lambda ref: ref[1] if ref else None),
+    }
 
 
 def restore_plots(state, data, resolve):

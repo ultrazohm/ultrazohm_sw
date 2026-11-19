@@ -78,7 +78,7 @@ def test_client_registry_contract():
             if p.name not in ("self", "view")
         ]
         assert [p.name for p in params] == [p.name for p in command.params], name
-        for actual, expected in zip(params, command.params):
+        for actual, expected in zip(params, command.params, strict=False):
             assert parameter_kind(actual) == types.get(expected.kind, expected.kind), (
                 name,
                 actual.name,

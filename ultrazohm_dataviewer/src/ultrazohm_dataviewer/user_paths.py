@@ -62,7 +62,7 @@ def publish_new(temporary, destination):
         os.link(temporary, destination)
     except FileExistsError:
         raise
-    except OSError:
+    except OSError as error:
         # Use the OS no-replace rename, never a check followed by replacing rename.
         import ctypes
         import errno
@@ -87,10 +87,10 @@ def publish_new(temporary, destination):
         else:
             raise OSError(
                 errno.ENOTSUP, "Atomic publication without replacement is unsupported"
-            )
+            ) from error
         if result:
             code = ctypes.get_errno()
-            raise OSError(code, os.strerror(code), str(destination))
+            raise OSError(code, os.strerror(code), str(destination)) from error
 
 
 def write_json(path, value, *, overwrite=True):

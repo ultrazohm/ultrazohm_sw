@@ -668,5 +668,5 @@ Run from the repository root:
 
 On Windows, use `.\uz.ps1` with the same arguments.
 `format` applies layout changes only; lint fixes and import sorting require explicit review.
-The enabled lint rules are `F`, `E4`, `E7`, `E9`, and `I`.
+The enabled lint rules are `F`, `E4`, `E7`, `E9`, `I`, `B`, `UP`, and `C4`.
 The project's `check` task and CI enforce both lint and formatting.

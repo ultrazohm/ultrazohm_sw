@@ -43,7 +43,7 @@ def initialize():
     handles = [duplicate(number) for _, number, _ in specs]
     # Attach even with valid pipes so interactive Ctrl-C reaches this process.
     kernel.AttachConsole(wintypes.DWORD(-1))
-    for (name, number, mode), handle in zip(specs, handles):
+    for (name, number, mode), handle in zip(specs, handles, strict=False):
         if handle is None:
             handle = duplicate(number)
         if handle is None:

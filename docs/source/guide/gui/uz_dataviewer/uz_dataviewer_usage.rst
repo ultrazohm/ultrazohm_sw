@@ -42,18 +42,15 @@ Loading data
 Settings
 --------
 
-The **Settings** menu opens a non-modal window with **General**, **Data loading**,
-and **Performance** sections. Changes persist as application defaults; each section
-can be reset independently. General includes the log browser directory and startup
-visibility of Application log and Python. Leave the directory empty to use the
-firmware checkout's ``artifacts`` directory. Startup visibility takes effect on the
-next launch; other changes apply immediately.
+The **Settings** menu opens a non-modal window with **General**, **Data loading**, and **Performance** sections.
+Changes persist as application defaults; each section can be reset independently.
+General includes the log browser directory and startup visibility of Application log and Python.
+Leave the directory empty to use the firmware checkout's ``artifacts`` directory.
+Startup visibility takes effect on the next launch; other changes apply immediately.
 
-Settings are stored in ``viewer_preferences.json`` in the platform user data
-directory, separately from session files and device configuration. Loading a
-session restores its own data and plot settings without changing saved defaults.
-The Python client exposes the same service through ``viewer.get_settings()`` and
-``viewer.set_setting("cache_budget", 512)``.
+Settings are stored in ``viewer_preferences.json`` in the platform user data directory, separately from session files and device configuration.
+Loading a session restores its own data and plot settings without changing saved defaults.
+The Python client exposes the same service through ``viewer.get_settings()`` and ``viewer.set_setting("cache_budget", 512)``.
 
 Backend and loading mode
 ------------------------
@@ -70,8 +67,7 @@ Existing Parquet files are protected from overwriting; the dialog offers **Open 
 The shared timestamp and summary cache defaults to **1,024 MiB** and remains configurable with **Settings → Performance → RAM cache (MiB)**.
 This is a retained-cache budget, not a limit on total application RAM.
 The status bar shows retained RAM cache usage next to FPS.
-The Data Viewer never uses GUI idle throttling: live, paused, and offline views
-continue rendering without mouse or keyboard input.
+The Data Viewer never uses GUI idle throttling: live, paused, and offline views continue rendering without mouse or keyboard input.
 An amber **cache limit hit** indication appears for five seconds after an entry is evicted or a result exceeds the cache capacity.
 Hover over it to see eviction and oversized-result counts since the last cache clear.
 Auto loading and the obsolete memory-budget controls have been removed; recreate old sessions with explicit loading settings.
@@ -140,11 +136,10 @@ Plot window
 
 For all plots: the mouse wheel zooms, right-click and drag draws a zoom rectangle, hold **Shift** to zoom only X, hold **Alt** to zoom only Y. Right-click an axis for more options.
 
-In **Live Plots**, **Reset view** and double-left-click also enable **Follow live**
-again, catch up to the newest samples, and keep the selected **Time depth (s)**.
-Unchecking **Follow live**, horizontal panning, or Shift-modified wheel/box zoom
-freezes the displayed snapshot; acquisition and logging continue. Checking
-**Follow live** resumes display updates. Ordinary wheel and box zoom keep following.
+In **Live Plots**, **Reset view** and double-left-click also enable **Follow live** again, catch up to the newest samples, and keep the selected **Time depth (s)**.
+Unchecking **Follow live**, horizontal panning, or Shift-modified wheel/box zoom freezes the displayed snapshot; acquisition and logging continue.
+Checking **Follow live** resumes display updates.
+Ordinary wheel and box zoom keep following.
 
 .. _uz_dataviewer_fft_window:
 
@@ -197,8 +192,8 @@ Everything here is a command (``node_*``), so a graph is fully scriptable and sa
 Python and terminal automation
 ==============================
 
-The viewer listens on ``127.0.0.1:19741`` by default. Open the project environment
-with ``./uz shell`` and control the existing viewer:
+The viewer listens on ``127.0.0.1:19741`` by default.
+Open the project environment with ``./uz shell`` and control the existing viewer:
 
 .. code-block:: python
 
@@ -209,31 +204,32 @@ with ``./uz shell`` and control the existing viewer:
    viewer.add_signal(1, run, "ia")
    viewer.save_session("analysis.json")
 
-The same operations are available as terminal subcommands, for example
-``uz-dataviewer set-grid 2 2``. Use ``--endpoint`` to select another instance and
-``--json`` for machine-readable output. Python uses ``UZ_DATAVIEWER_ENDPOINT``
-when no endpoint is specified. Handles identify recordings, nodes, and views
-within a session. Use ``view=viewer.create_view()`` to target an additional grid.
+The same operations are available as terminal subcommands, for example ``uz-dataviewer set-grid 2 2``.
+Use ``--endpoint`` to select another instance and ``--json`` for machine-readable output.
+Python uses ``UZ_DATAVIEWER_ENDPOINT`` when no endpoint is specified.
+Handles identify recordings, nodes, and views within a session.
+Use ``view=viewer.create_view()`` to target an additional grid.
 
-**View → Python** opens an editor for normal Python files, available without a
-device connection. Run saves and executes in a fresh process. Managed device runs
-also receive ``UZ_ACQUISITION_ENDPOINT`` and provide **Stop script + device**.
-The application log is read-only; the old command language and ``.uzscript`` are
-removed. External terminals and IDEs use the same client API.
+**View → Python** opens an editor for normal Python files, available without a device connection.
+Run saves and executes in a fresh process.
+Managed device runs also receive ``UZ_ACQUISITION_ENDPOINT`` and provide **Stop script + device**.
+The application log is read-only; the old command language and ``.uzscript`` are removed.
+External terminals and IDEs use the same client API.
 
 Save and restore
 ----------------
 
 JSON schema 6 captures recordings, nodes, analysis settings, and plot views.
-Recording paths resolve relative to the snapshot. Saving is atomic and loading
-is transactional. Use ``viewer.save_session(path)`` and ``viewer.load_session(path)``.
+Recording paths resolve relative to the snapshot.
+Saving is atomic and loading is transactional.
+Use ``viewer.save_session(path)`` and ``viewer.load_session(path)``.
 Python interpreter variables and running processes are not saved.
 
 Public method reference
 =======================
 
-Methods accept ordinary Python values and session-scoped handles. The table is
-generated from the client signatures with ``python -m uz_dataviewer.command_doc``.
+Methods accept ordinary Python values and session-scoped handles.
+The table is generated from the client signatures with ``python -m uz_dataviewer.command_doc``.
 
 .. csv-table:: Python viewer API
    :file: uz_dataviewer_commands.csv
@@ -243,24 +239,32 @@ generated from the client signatures with ``python -m uz_dataviewer.command_doc`
 Session compatibility and analysis windows
 ------------------------------------------
 
-Failed restoration preserves the current session. Recordings without a backing file (live snapshots, node outputs) must be exported as data before saving a reloadable session.
+Failed restoration preserves the current session.
+Recordings without a backing file (live snapshots, node outputs) must be exported as data before saving a reloadable session.
 Transforms must be chained through node links, not by creating source nodes from derived outputs.
 
 Python scripts obtain a derived recording handle with ``viewer.node_output(node)`` after evaluating the node.
 
 Saved sessions use schema version 6 and preserve separate instances of logs with identical filenames or paths.
 Restoring a session replaces the currently loaded session.
-Version 1/2/3/4/5 snapshots and all generated session scripts must be recreated as JSON sessions. Generated script export has been removed.
+Version 1/2/3/4/5 snapshots and all generated session scripts must be recreated as JSON sessions.
+Generated script export has been removed.
 Histogram, FFT, export and node crop ranges include only samples inside the selected time window.
 FFT and FIR filters require strictly increasing, uniformly spaced timestamps (100 ppm tolerance plus floating-point roundoff).
-Binary math requires matching time axes throughout both inputs. Unsupported sampling is rejected without interpolation.
+Binary math requires matching time axes throughout both inputs.
+Unsupported sampling is rejected without interpolation.
 FFT export rejects an invalid selected channel with its name and reason before writing any output.
-Applied primary and secondary Y limits, including mouse zoom, survive saving and restoring. Recomputing node outputs preserves their time normalization.
+Applied primary and secondary Y limits, including mouse zoom, survive saving and restoring.
+Recomputing node outputs preserves their time normalization.
 Shrinking the grid switches analysis windows following removed plots to Full.
 
 XY alignment and invalid results
 --------------------------------
 
-XY inputs must have equal lengths and matching displayed timestamps, including any per-run normalization. Mismatches are rejected instead of pairing unrelated samples. XY zoom and explicit X/Y limits survive JSON round trips; XY coordinates never drive linked time axes.
+XY inputs must have equal lengths and matching displayed timestamps, including any per-run normalization.
+Mismatches are rejected instead of pairing unrelated samples.
+XY zoom and explicit X/Y limits survive JSON round trips; XY coordinates never drive linked time axes.
 
-Changed source files must be reopened, including CSV files opened through a disk-cached Parquet conversion. Stale or failed node outputs keep their signal assignments, including across JSON restoration, but are unavailable to plots, analysis and exports until successful reevaluation. Fix the graph and evaluate it to repopulate the existing assignments.
+Changed source files must be reopened, including CSV files opened through a disk-cached Parquet conversion.
+Stale or failed node outputs keep their signal assignments, including across JSON restoration, but are unavailable to plots, analysis and exports until successful reevaluation.
+Fix the graph and evaluate it to repopulate the existing assignments.

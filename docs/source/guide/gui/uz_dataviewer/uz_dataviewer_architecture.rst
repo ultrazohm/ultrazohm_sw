@@ -131,7 +131,9 @@ Data model
 
 - A **``Run``** is one loaded file: a shared ``time`` axis (``float64``) plus one **``Signal``** per channel (``y`` as ``float32``).
   In-memory runs expose NumPy arrays; lazy runs expose ``SourceColumn`` views whose slices read original samples on demand.
-  Plotting uses ``Run.data_source()``. ``SourceColumn.read_rows`` selects a row interval; ``materialize()`` or explicit ``np.asarray`` reads a whole column. Implicit arithmetic, fancy indexing and reverse slicing are unsupported.
+  Plotting uses ``Run.data_source()``.
+  ``SourceColumn.read_rows`` selects a row interval; ``materialize()`` or explicit ``np.asarray`` reads a whole column.
+  Implicit arithmetic, fancy indexing and reverse slicing are unsupported.
 - **``DataRegistry``** owns runs and hands out stable integer ids; ``SignalRef = (run_id, name)`` identifies a signal everywhere.
 - **Time normalization** is per-log: ``Run.set_time_origin(target)`` keeps the original ``time_raw`` and derives ``time = time_raw - time_raw[0] + target``. It is reversible (``target=None`` restores raw) and re-derives only on change, never per frame.
 
@@ -144,12 +146,13 @@ Loading & large logs (``loader.py``)
 
 ``open_file`` selects the storage policy for GUI uploads, native loads and commands.
 Memory loads dispatch through ``parse_file`` → ``parse_csv`` / ``parse_parquet`` and return a ``ParsedRun``; lazy loads return an ``OpenedSource``.
-Both register through their ``register`` method. The redundant eager-only ``load_file`` wrapper has been removed.
+Both register through their ``register`` method.
+The redundant eager-only ``load_file`` wrapper has been removed.
 On native, interactive GUI loads run on the cancellable daemon worker in ``workers.py``.
 Recordings before the first startup Python file are prepared during startup.
 Python files and subsequent arguments run sequentially after the UI opens.
-External Python load calls wait for background preparation and application-thread
-registration. A startup failure is logged and stops the remaining arguments.
+External Python load calls wait for background preparation and application-thread registration.
+A startup failure is logged and stops the remaining arguments.
 The worker prepares a resident run or lazy source; the main thread registers it in ``state.poll_pending_loads``, so ``DataRegistry`` is only mutated from one thread.
 Conversion runs in a spawned process so shutdown can interrupt native streaming IO and remove partial output.
 Readers check cancellation between batches; an in-flight native read may finish before cancellation is observed, but it cannot keep the application process alive.
@@ -162,46 +165,46 @@ The in-memory loaders reduce transient allocations; the complete recording and a
 - **CSV size guard.** ``_guard_csv_size`` estimates the resident footprint from file size × column count and **refuses** a CSV above ``MAX_CSV_NUMERIC_BYTES``. Now that large CSVs stream, this is a **resident-RAM** ceiling (the full record must fit in memory), not a bulk-parse guard; it routes the user to lazy loading or ``convert(...)``. Actual capacity is checked independently during materialization.
 - **Streaming Parquet.** All eager PyArrow Parquet loads preallocate arrays from ``ParquetFile.metadata.num_rows`` and fill them with ``iter_batches``. There is one path for small and large files; lazy loads retain indexed sources.
 - **CSV→Parquet converter.** ``convert_csv_to_parquet`` stream-converts a CSV to Parquet with bounded memory (per-batch ``ParquetWriter.write_batch``), dropping JavaScope's empty trailing column and preserving raw headers so the result round-trips through the same name parsing. Exposed as the scriptable ``convert(src, [dst])`` command and the ``uz-dataviewer convert`` CLI.
-  The shared converter owns temporary output, empty-recording validation, cancellation cleanup, and publication without overwriting existing destinations. GUI, Python control, and cache conversion use this same path; backend writers only fill unpublished temporary files.
+  The shared converter owns temporary output, empty-recording validation, cancellation cleanup, and publication without overwriting existing destinations.
+  GUI, Python control, and cache conversion use this same path; backend writers only fill unpublished temporary files.
 
-In-memory mode retains the complete recording. Lazy mode reads raw windows
-and streams histogram batches without keeping the full recording resident;
-FFTs and node transforms still materialize their selected inputs.
+In-memory mode retains the complete recording.
+Lazy mode reads raw windows and streams histogram batches without keeping the full recording resident; FFTs and node transforms still materialize their selected inputs.
 
 The operation and transport layers
 ==================================
 
-``operations.py`` owns application-lifetime request coordination. Both GUI handlers
-and external control use shared state operations; the GUI does not connect to its
-own socket. ``commands.py`` retains internal operation metadata and handlers for
-existing panels. It has no text parser or script interpreter.
+``operations.py`` owns application-lifetime request coordination.
+Both GUI handlers and external control use shared state operations; the GUI does not connect to its own socket.
+``commands.py`` retains internal operation metadata and handlers for existing panels.
+It has no text parser or script interpreter.
 
-``client.py`` and ``client_methods.py`` provide the public Python API without GUI
-or numerical imports. The client sends versioned, newline-delimited JSON over a
-persistent loopback TCP connection. ``control_server.py`` owns the listener and a
-bounded queue; socket threads never mutate application state. The application
-polls requests on its owning thread. Deferred operations return futures, allowing
-the UI to continue rendering while background work completes. Client disconnects
-cancel pending operations. Mutations are never automatically retried.
+``client.py`` and ``client_methods.py`` provide the public Python API without GUI or numerical imports.
+The client sends versioned, newline-delimited JSON over a persistent loopback TCP connection.
+``control_server.py`` owns the listener and a bounded queue; socket threads never mutate application state.
+The application polls requests on its owning thread.
+Deferred operations return futures, allowing the UI to continue rendering while background work completes.
+Client disconnects cancel pending operations.
+Mutations are never automatically retried.
 
-Run, node and view handles include a session identity. Replacing the session
-invalidates old handles. Explicit view handles address additional plot windows;
-omitting a view addresses the main window. Relative file paths supplied to the
-Python client are resolved in the caller's working directory.
+Run, node and view handles include a session identity.
+Replacing the session invalidates old handles.
+Explicit view handles address additional plot windows; omitting a view addresses the main window.
+Relative file paths supplied to the Python client are resolved in the caller's working directory.
 
-The read-only application log records actions and failures. It is not a complete
-session representation. Save supported state through JSON session snapshots.
+The read-only application log records actions and failures.
+It is not a complete session representation.
+Save supported state through JSON session snapshots.
 
 .. _uz_dataviewer_generated_command_reference:
 
 Generated Python API reference (``command_doc.py``)
 ---------------------------------------------------
 
-``command_doc.build_csv`` renders public client signatures, documentation and
-operation groups into ``uz_dataviewer_commands.csv``. The usage guide includes
-this committed file, so documentation builds do not require the GUI runtime.
-Regenerate with ``python -m uz_dataviewer.command_doc``. The documentation test
-checks both the committed output and complete method grouping.
+``command_doc.build_csv`` renders public client signatures, documentation and operation groups into ``uz_dataviewer_commands.csv``.
+The usage guide includes this committed file, so documentation builds do not require the GUI runtime.
+Regenerate with ``python -m uz_dataviewer.command_doc``.
+The documentation test checks both the committed output and complete method grouping.
 
 Plots panel internals (``panels/plots.py``)
 ============================================
@@ -254,7 +257,8 @@ Nodes *produce* data; nothing else in the app needs to know they exist.
 
 .. note::
 
-   Binary math needs equal-length inputs with matching timestamps throughout both axes (no resampling or implicit index alignment). Source nodes accept recordings only; connect transforms with ``node_link`` so the graph tracks every dependency.
+   Binary math needs equal-length inputs with matching timestamps throughout both axes (no resampling or implicit index alignment).
+   Source nodes accept recordings only; connect transforms with ``node_link`` so the graph tracks every dependency.
 
 .. _uz_dataviewer_downsampling:
 
@@ -307,89 +311,89 @@ JSON sessions preserve per-file storage modes and the current settings.
 
 GUI FFT and histogram computations use a separate worker with frozen ``FftRequest`` / ``HistogramRequest`` inputs.
 ``AnalysisInput`` captures each selected source, reference, label and time offset; options and the resolved window are copied as scalar values.
-Sources and the thread-safe byte cache are shared deliberately. Workers receive neither ``AppState`` nor GUI panels and return an explicit ``AnalysisResult``.
-Full analysis resolves the union of selected recording extents, so selection order cannot truncate a longer or disjoint recording. Custom and followed ranges remain shared explicit windows.
+Sources and the thread-safe byte cache are shared deliberately.
+Workers receive neither ``AppState`` nor GUI panels and return an explicit ``AnalysisResult``.
+Full analysis resolves the union of selected recording extents, so selection order cannot truncate a longer or disjoint recording.
+Custom and followed ranges remain shared explicit windows.
 Histograms make two bounded passes over raw batches with shared bin edges.
 FFT still materializes the selected window.
-Hann windows belong to that computation and are released afterwards; there is no
-process-global cache retaining windows from previous FFT sizes.
+Hann windows belong to that computation and are released afterwards; there is no process-global cache retaining windows from previous FFT sizes.
 Cancellation of a NumPy FFT takes effect after its native call returns.
-``node_jobs.py`` captures a detached graph and recording metadata for background
-node evaluation. Immutable input arrays and the thread-safe sample cache are shared;
-node parameters, input lists, runs and signal metadata are copied. Publication on
-the application thread checks the original graph/source fingerprint and session
-identity. Changed inputs discard the result. Existing derived-run IDs and time
-normalization survive publication. GUI and Python node evaluation use this same
-operation; the synchronous engine remains available for headless analysis and
-preparing a replacement session. Cancellation is checked between reads and nodes,
-and after each transform returns.
+``node_jobs.py`` captures a detached graph and recording metadata for background node evaluation.
+Immutable input arrays and the thread-safe sample cache are shared; node parameters, input lists, runs and signal metadata are copied.
+Publication on the application thread checks the original graph/source fingerprint and session identity.
+Changed inputs discard the result.
+Existing derived-run IDs and time normalization survive publication.
+GUI and Python node evaluation use this same operation; the synchronous engine remains available for headless analysis and preparing a replacement session.
+Cancellation is checked between reads and nodes, and after each transform returns.
 
 Time-series, XY and cursor requests share source validation, worker scheduling and error reporting through ``PlotsPanel._request_data``.
 Cached display and analysis results share the ``sources.validation_error`` contract with node stale detection.
 ``FileIdentity`` validates both the original CSV and its cached Parquet representation; conversion publishes only if the original identity still matches.
-Derived ``ArraySource`` objects validate their owning node and upstream inputs before raw reads or cache reuse. Failed or stale outputs remain assigned but cannot be plotted, analysed or exported until successfully reevaluated.
+Derived ``ArraySource`` objects validate their owning node and upstream inputs before raw reads or cache reuse.
+Failed or stale outputs remain assigned but cannot be plotted, analysed or exported until successfully reevaluated.
 Only small resident arrays can run immediately on the desktop render thread.
-XY sampling validates all displayed timestamps in bounded paired batches, including timestamps omitted by the display stride. Different lengths or time bases are rejected; there is no implicit interpolation.
-XY view ranges are stored on their cell and never published as linked time ranges. Both plot types share explicit axis-limit application and view capture.
+XY sampling validates all displayed timestamps in bounded paired batches, including timestamps omitted by the display stride.
+Different lengths or time bases are rejected; there is no implicit interpolation.
+XY view ranges are stored on their cell and never published as linked time ranges.
+Both plot types share explicit axis-limit application and view capture.
 
 FFT and ordinary plots now share the ``ArraySource`` / ``SummarySource`` sampling engine.
 FFT summaries are constructed by the analysis worker, and unchanged spectrum views reuse their reduced arrays.
 ``IndexedFileSource`` owns file identity, timestamp indexing, bounds and cache persistence for both backends.
 Analysis, export and node cropping select exact time windows; padding is reserved for display.
 FFT rejects duplicate or irregular timestamps instead of returning a misleading frequency axis.
-JavaScope's raw ``CHn=n)`` headers identify its 10 ns timestamp quantization, including
-in converted Parquet files. These recordings must fit a single uniform grid within
-±5 ns plus floating-point roundoff; duplicate and backward timestamps remain invalid.
+JavaScope's raw ``CHn=n)`` headers identify its 10 ns timestamp quantization, including in converted Parquet files.
+These recordings must fit a single uniform grid within ±5 ns plus floating-point roundoff; duplicate and backward timestamps remain invalid.
 The precision is retained through normalization and built-in time-domain node outputs.
-Other recordings use the existing 100 ppm interval tolerance plus roundoff. Array API
-calls can explicitly pass ``timestamp_resolution`` (available on ``Dataset``).
-``sampling.py`` shares this validation with FIR filters,
-and validates complete time axes for binary math. Derived-run refresh preserves the existing time normalization.
+Other recordings use the existing 100 ppm interval tolerance plus roundoff.
+Array API calls can explicitly pass ``timestamp_resolution`` (available on ``Dataset``).
+``sampling.py`` shares this validation with FIR filters, and validates complete time axes for binary math.
+Derived-run refresh preserves the existing time normalization.
 
 Sessions (``session.py``)
 ==========================
 
 **JSON snapshot** (``save_state``/``load_state``) is the only session format.
-Schema version 6 includes additional plot views and reloads explicit per-run records and remaps recording/node keys,
-preserving duplicate names and repeated opens of the same path. Restoration uses
-a replacement state; failures leave the current session intact.
+Schema version 6 includes additional plot views and reloads explicit per-run records and remaps recording/node keys, preserving duplicate names and repeated opens of the same path.
+Restoration uses a replacement state; failures leave the current session intact.
 
-Automation uses ordinary Python files and ``Client.load_session`` /
-``Client.save_session``. Session files contain data, never executable scripts.
-Snapshot writes use atomic replacement; recording paths are relative to the
-snapshot directory where possible. The custom script language is removed.
+Automation uses ordinary Python files and ``Client.load_session`` / ``Client.save_session``.
+Session files contain data, never executable scripts.
+Snapshot writes use atomic replacement; recording paths are relative to the snapshot directory where possible.
+The custom script language is removed.
 
-Failed or incomplete transforms with saved output assignments receive empty derived
-run placeholders. The same validity check used for stale outputs blocks their data
-from plots, analysis and exports. Successful evaluation refreshes those runs in place,
-preserving assignments, visibility and time origin without saving stale sample arrays.
+Failed or incomplete transforms with saved output assignments receive empty derived run placeholders.
+The same validity check used for stale outputs blocks their data from plots, analysis and exports.
+Successful evaluation refreshes those runs in place, preserving assignments, visibility and time origin without saving stale sample arrays.
 
-Input lists are indexed slots (``null`` represents a disconnected slot). ``node_link(src, dst, slot)``
-and ``node_unlink(src, dst, slot)`` use zero-based slots; JSON preserves the slot explicitly.
+Input lists are indexed slots (``null`` represents a disconnected slot).
+``node_link(src, dst, slot)`` and ``node_unlink(src, dst, slot)`` use zero-based slots; JSON preserves the slot explicitly.
 The same upstream node can feed both binary inputs without collapsing the links.
-Staleness checks traverse each upstream node once per call, with a local visited
-set so shared inputs do not multiply work and subsequent edits remain visible.
-Explicit FFT and histogram view limits are saved and restored alongside their
-analysis settings, then reapplied when the panels recompute.
+Staleness checks traverse each upstream node once per call, with a local visited set so shared inputs do not multiply work and subsequent edits remain visible.
+Explicit FFT and histogram view limits are saved and restored alongside their analysis settings, then reapplied when the panels recompute.
 
 ``AppState`` inherits the explicitly declared ``SessionData`` fields and owns a separate ``RuntimeServices`` object at ``state.services``.
 Runtime services own display/analysis workers, the loading executor, pending loads and large-CSV prompts.
 ``AppState.replace_session`` transfers only declared session fields and service ownership, after shutting down the old workers.
-It preserves the command registry and console, and installs a new session token. The consumed replacement no longer owns services; shutting it down cannot clear the transferred cache or stop the new workers.
+It preserves the command registry and console, and installs a new session token.
+The consumed replacement no longer owns services; shutting it down cannot clear the transferred cache or stop the new workers.
 ``SessionPanel`` resets view caches and dialogs on token changes, including analysis results and canvas positions.
 ``clear_session`` uses the same replacement lifecycle.
 GUI command wrappers share an explicit success result.
 
 Runs without a backing file (live snapshots, arrays) cannot be saved in a reloadable session.
-Saving rejects them before opening the destination file. Export their data first.
+Saving rejects them before opening the destination file.
+Export their data first.
 
 ``SubplotCell.y_lim`` and ``y2_lim`` record the last rendered primary and secondary Y ranges, separately from their one-shot pending limits.
-JSON persists pending limits when present, otherwise the live range. Each Y axis completes fitting independently, so a restored zoom is not overwritten when lazy data arrives for the other axis. Reset view clears both ranges.
+JSON persists pending limits when present, otherwise the live range.
+Each Y axis completes fitting independently, so a restored zoom is not overwritten when lazy data arrives for the other axis.
+Reset view clears both ranges.
 Grid reduction prunes removed ranges and switches affected FFT/Histogram followers to Full.
 Invalid analysis plot references are rejected by commands and session restore.
 ``validation.axis_limits`` rejects non-finite or non-increasing limits before mutation.
-``SubplotCell`` owns clearing, secondary-axis membership and explicit limits; clearing
-a plot removes secondary-axis assignments as well as plotted signals.
+``SubplotCell`` owns clearing, secondary-axis membership and explicit limits; clearing a plot removes secondary-axis assignments as well as plotted signals.
 
 CSV exports (``export_data``, ``export_fft``, ``export_histogram``) also live here.
 FFT export validates all selected channels before writing; a missing or invalid channel aborts with its identity and reason.
@@ -490,88 +494,73 @@ Worker and source contracts
 
 ``workers.CancellableExecutor`` owns sequential loading and directory-scan work.
 ``requests.Requests`` retains its coalescing scheduler for display and analysis.
-Both use daemon threads, cooperative cancellation and a bounded shutdown join;
-a blocked native or filesystem call cannot hold the process open. Directory
-refresh also cancels the previous scan, including between files in one directory.
+Both use daemon threads, cooperative cancellation and a bounded shutdown join; a blocked native or filesystem call cannot hold the process open.
+Directory refresh also cancels the previous scan, including between files in one directory.
 
 ``sources.SampleSource`` describes validated raw row reads and time-window bounds.
-``DisplaySource`` adds display sampling and ``prepare_summary``; analysis never
-uses display summaries as raw samples. ``nodes.compute_node`` is the shared
-validated computation entry point for the graph and headless API.
+``DisplaySource`` adds display sampling and ``prepare_summary``; analysis never uses display summaries as raw samples.
+``nodes.compute_node`` is the shared validated computation entry point for the graph and headless API.
 
-Session saves write a temporary file beside the destination and replace the old
-snapshot only after serialization and writing succeed. Failed saves remove the
-temporary file and preserve the previous session.
+Session saves write a temporary file beside the destination and replace the old snapshot only after serialization and writing succeed.
+Failed saves remove the temporary file and preserve the previous session.
 
 Sampling and domain transitions
 -------------------------------
 
 Timestamp roundoff allowances are bounded to one percent of a sample interval.
-FFT and FIR reject axes whose absolute timestamp precision cannot establish that
-bound; binary math and XY never treat a sample-sized displacement as roundoff.
+FFT and FIR reject axes whose absolute timestamp precision cannot establish that bound; binary math and XY never treat a sample-sized displacement as roundoff.
 Graph domain resolution shares a per-evaluation cache and uses iterative traversal.
-When a saved graph changes an output's domain, restoration discards its incompatible
-normalization and consumer assignments, matching live reevaluation. Failed outputs
-retain their saved domain as unavailable placeholders until repaired.
+When a saved graph changes an output's domain, restoration discards its incompatible normalization and consumer assignments, matching live reevaluation.
+Failed outputs retain their saved domain as unavailable placeholders until repaired.
 
 
 Background display policy
 =========================
 
 Live display requests retain one active job and the newest queued replacement.
-Completed work from the same display identity may be shown while newer data is
-pending; changing identity cancels it. Device commands retain their independent
-Stop ordering and cancellation boundary, including queued manual mutations.
-Lazy source identity checks run on background workers at approximately 4 Hz;
-strict validation still surrounds actual reads and exports. Cached displays may
-therefore remain visible briefly until a file change is detected. In-memory graph
-validity is checked immediately.
+Completed work from the same display identity may be shown while newer data is pending; changing identity cancels it.
+Device commands retain their independent Stop ordering and cancellation boundary, including queued manual mutations.
+Lazy source identity checks run on background workers at approximately 4 Hz; strict validation still surrounds actual reads and exports.
+Cached displays may therefore remain visible briefly until a file change is detected.
+In-memory graph validity is checked immediately.
 
-The Data Viewer must never use GUI idle throttling. Keep
-``params.fps_idling.enable_idling = False`` globally, including live streaming,
-paused views, and offline analysis. Do not re-enable idling or rely on individual
-plots to opt out; rendering must not slow down because mouse or keyboard input
-stops. Actual FPS still depends on rendering workload and display synchronization.
+The Data Viewer must never use GUI idle throttling.
+Keep ``params.fps_idling.enable_idling = False`` globally, including live streaming, paused views, and offline analysis.
+Do not re-enable idling or rely on individual plots to opt out; rendering must not slow down because mouse or keyboard input stops.
+Actual FPS still depends on rendering workload and display synchronization.
 
 
 Repository-owned service configuration
 --------------------------------------
 
-The CLI owns firmware configuration resolution. ``serve --repo PATH`` reads the
-selected checkout's headers and filters only built-in initial-channel defaults.
-Explicit ``--profile`` settings remain strict. ``--channel-mapping`` is an
-alternative to ``--repo`` for standalone mapping files. The effective settings
-are exposed by ``catalog``; selecting another checkout requires restarting the
-service.
+The CLI owns firmware configuration resolution.
+``serve --repo PATH`` reads the selected checkout's headers and filters only built-in initial-channel defaults.
+Explicit ``--profile`` settings remain strict.
+``--channel-mapping`` is an alternative to ``--repo`` for standalone mapping files.
+The effective settings are exposed by ``catalog``; selecting another checkout requires restarting the service.
 
-The viewer previews metadata with ``channel-mapping --repo`` and obtains initial
-preferences through ``profile --repo``. These commands return JSON directly;
-normal repository preparation writes no mapping snapshot. Missing workspace
-preferences are seeded once. Connecting passes ``--repo`` and the saved
-``settings.json`` directly, without a temporary filtered profile. Saved signal
-selections use the running service's catalog. The Flash UZ migration path still
-keeps its mapping and profile snapshots to preserve assignments across a restart.
+The viewer previews metadata with ``channel-mapping --repo`` and obtains initial preferences through ``profile --repo``.
+These commands return JSON directly; normal repository preparation writes no mapping snapshot.
+Missing workspace preferences are seeded once.
+Connecting passes ``--repo`` and the saved ``settings.json`` directly, without a temporary filtered profile.
+Saved signal selections use the running service's catalog.
+The Flash UZ migration path still keeps its mapping and profile snapshots to preserve assignments across a restart.
 
 
 Dependency and mapping selection checks
 ---------------------------------------
 
 The viewer requires CLI 0.1.27.dev0 or newer for repository-based configuration.
-CI exercises the locked PyPI CLI's repository commands before replacing it with
-the checkout-built wheel for the full integration suite. This also covers the
-ordinary source launcher, which uses the lockfile rather than a development wheel.
+CI exercises the locked PyPI CLI's repository commands before replacing it with the checkout-built wheel for the full integration suite.
+This also covers the ordinary source launcher, which uses the lockfile rather than a development wheel.
 
-An explicit ``DataViewerApp(live_mapping=...)`` selects that mapping even when its
-workspace is inferred from the path or supplied through ``live_repo``. The
-workspace still owns preferences and recordings. Generated Flash UZ snapshots
-are distinguished from explicit selections; subsequent repository-based launches
-reread headers. Service startup rejects simultaneous repository and mapping
-arguments, and changing either requires restarting an owned service.
+An explicit ``DataViewerApp(live_mapping=...)`` selects that mapping even when its workspace is inferred from the path or supplied through ``live_repo``.
+The workspace still owns preferences and recordings.
+Generated Flash UZ snapshots are distinguished from explicit selections; subsequent repository-based launches reread headers.
+Service startup rejects simultaneous repository and mapping arguments, and changing either requires restarting an owned service.
 
-Analysis request construction and fingerprints live in ``analysis_service.py``;
-the operation coordinator does not import GUI panels. In the application, explicit
-and automatic analysis requests use the same coordinator and per-kind completion
-state. Superseded requests are cancelled. Standalone panels without an application
-coordinator retain the headless request scheduler used by component tests.
-Client/registry contract tests validate names, parameter types, optional arguments,
-and view targeting, in addition to the generated documentation checks.
+Analysis request construction and fingerprints live in ``analysis_service.py``; the operation coordinator does not import GUI panels.
+In the application, explicit and automatic analysis requests use the same coordinator and per-kind completion state.
+Superseded requests are cancelled.
+Standalone panels without an application coordinator retain the headless request scheduler used by component tests.
+Client/registry contract tests validate names, parameter types, optional arguments, and view targeting, in addition to the generated documentation checks.

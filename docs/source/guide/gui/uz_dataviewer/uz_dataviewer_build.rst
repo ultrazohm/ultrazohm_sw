@@ -14,8 +14,7 @@ Tasks
 
 Builds and tests run through ``uz_dataviewer/tasks.py`` (and ``uz_cli/tasks.py`` for the CLI).
 The scripts use only the Python standard library and behave the same on Linux, on Windows and in CI.
-The root launcher installs missing uv and the Python version pinned in ``.python-version``;
-the task implementation installs dependencies from ``uv.lock``.
+The root launcher installs missing uv and the Python version pinned in ``.python-version``; the task implementation installs dependencies from ``uv.lock``.
 From the repository root:
 
 .. code-block:: bash
@@ -25,8 +24,7 @@ From the repository root:
    ./uz task viewer bundle-smoke           # start the bundle and its live workers
 
 ``check viewer`` and ``build viewer`` build a matching CLI wheel from ``uz_cli`` unless ``--cli-wheel PATH`` names one.
-Tests use ``uz_dataviewer/.venv-ci`` and bundles ``uz_dataviewer/.venv-build``;
-the root ``.venv`` is shared by both applications.
+Tests use ``uz_dataviewer/.venv-ci`` and bundles ``uz_dataviewer/.venv-build``; the root ``.venv`` is shared by both applications.
 On Windows, use ``.\uz.ps1`` with the same arguments.
 
 Native standalone executables (PyInstaller)
@@ -63,57 +61,42 @@ All other Linux jobs run in the ``ci`` stage of ``.devcontainer/Dockerfile``, th
 Combined desktop packaging
 ==========================
 
-Select the ``ultrazohm_sw`` root at startup, or supply ``--live-repo``. All windows except Python start open, with Analysis tabs selected. Mode switches
-select Analysis or Live tabs once without closing other windows. The live panels
-appear whenever the ``ultrazohm_cli`` package is installed: always in the bundle,
-and on Windows and Linux x86-64 in the source environment, where it is a locked
-dependency. ``./uz setup local`` builds the checkout's
-CLI and uses it instead. Both deployments use the same subprocess
-worker code; bundled scripts can import bundled dependencies, while source
-scripts can also use packages installed in the developer environment. Vitis is
-external and remains required for build/flash.
+Select the ``ultrazohm_sw`` root at startup, or supply ``--live-repo``.
+All windows except Python start open, with Analysis tabs selected.
+Mode switches select Analysis or Live tabs once without closing other windows.
+The live panels appear whenever the ``ultrazohm_cli`` package is installed: always in the bundle, and on Windows and Linux x86-64 in the source environment, where it is a locked dependency.
+``./uz setup local`` builds the checkout's CLI and uses it instead.
+Both deployments use the same subprocess worker code; bundled scripts can import bundled dependencies, while source scripts can also use packages installed in the developer environment.
+Vitis is external and remains required for build/flash.
 
 Workspace data and process ownership
 ------------------------------------
 
-Both the source launcher and the bundle store viewer-owned data in
-``<workspace>/artifacts/_user``, so they share preferences, layout, caches and
-recordings for the same checkout. Until a workspace is known, the viewer uses a
-per-user folder (``%LOCALAPPDATA%\UltraZohm\uz_dataviewer`` on Windows,
-``~/.local/share/ultrazohm/uz_dataviewer`` on Linux), never its working directory.
-The standalone executable and ``_internal`` contain application
-resources; they are not the destination for mutable workspace preferences.
+Both the source launcher and the bundle store viewer-owned data in ``<workspace>/artifacts/_user``, so they share preferences, layout, caches and recordings for the same checkout.
+Until a workspace is known, the viewer uses a per-user folder (``%LOCALAPPDATA%\UltraZohm\uz_dataviewer`` on Windows, ``~/.local/share/ultrazohm/uz_dataviewer`` on Linux), never its working directory.
+The standalone executable and ``_internal`` contain application resources; they are not the destination for mutable workspace preferences.
 
-``settings.json`` contains runtime preferences. Missing preferences are seeded
-from the CLI's bundled standard profile, restricted to the selected firmware's
-available observables. Existing preferences are preserved. Connecting or
-flashing prepares an effective session profile when assignments need filtering;
-it does not rewrite the saved preferences. Header-generated mapping JSON is
-derived data and is regenerated for the selected firmware checkout.
+``settings.json`` contains runtime preferences.
+Missing preferences are seeded from the CLI's bundled standard profile, restricted to the selected firmware's available observables.
+Existing preferences are preserved.
+Connecting or flashing prepares an effective session profile when assignments need filtering; it does not rewrite the saved preferences.
+Header-generated mapping JSON is derived data and is regenerated for the selected firmware checkout.
 
-``tools.json`` remembers the selected XSCT launcher. Its directory is added to
-the application's process environment for child processes, without changing the
-system PATH. ``viewer.ini`` holds the window layout, ``viewer_cache`` holds
-optional analysis caches (unless overridden by ``UZ_DATAVIEWER_CACHE``), and
-``logs`` holds default session output. Explicit export, script, session and
-recording destinations remain user-selected. Script and CLI output capture also
-uses temporary directories.
+``tools.json`` remembers the selected XSCT launcher.
+Its directory is added to the application's process environment for child processes, without changing the system PATH.
+``viewer.ini`` holds the window layout, ``viewer_cache`` holds optional analysis caches (unless overridden by ``UZ_DATAVIEWER_CACHE``), and ``logs`` holds default session output.
+Explicit export, script, session and recording destinations remain user-selected.
+Script and CLI output capture also uses temporary directories.
 
-The live controller tracks its launched service separately from the service to
-which it is currently attached. Closing the viewer shuts down its owned service,
-which sends device Stop and finalizes recordings; the window waits up to ten
-seconds, after which the detached service completes finalization in the
-background (see its ``service.log`` and the ``end`` section of ``run.json``).
-For an attached external service it sends device Stop without shutting that
-service down. Script Stop invalidates queued manual commands and uses a control
-path independent of display reads. Flashing shuts the service down (which sends
-device Stop and finalizes recordings), then programs and reconnects.
+The live controller tracks its launched service separately from the service to which it is currently attached.
+Closing the viewer shuts down its owned service, which sends device Stop and finalizes recordings; the window waits up to ten seconds, after which the detached service completes finalization in the background (see its ``service.log`` and the ``end`` section of ``run.json``).
+For an attached external service it sends device Stop without shutting that service down.
+Script Stop invalidates queued manual commands and uses a control path independent of display reads.
+Flashing shuts the service down (which sends device Stop and finalizes recordings), then programs and reconnects.
 
 The root ``uz`` and ``uz.ps1`` launchers bootstrap uv and pinned Python.
-``setup`` installs both applications into the shared repository ``.venv``;
-``shell`` opens an activated terminal. ``build viewer``, ``check viewer`` and
-``task viewer bundle-smoke`` expose the build and test workflow. Standalone execution uses
-its bundled worker entry point and requires no separately installed Python or
-Rust. The application log and Python editor are available on Windows and Linux.
-External Python scripts use the installed ``uz_dataviewer.Client``; the bundled
-Python editor uses the executable's internal script worker.
+``setup`` installs both applications into the shared repository ``.venv``; ``shell`` opens an activated terminal.
+``build viewer``, ``check viewer`` and ``task viewer bundle-smoke`` expose the build and test workflow.
+Standalone execution uses its bundled worker entry point and requires no separately installed Python or Rust.
+The application log and Python editor are available on Windows and Linux.
+External Python scripts use the installed ``uz_dataviewer.Client``; the bundled Python editor uses the executable's internal script worker.

@@ -9,20 +9,19 @@ The library can load logs, compute FFTs, and run the node transforms from a Pyth
 
 .. note::
 
-   **Importing the package does not import the imgui GUI stack.**
-   ``import uz_dataviewer`` and ``from uz_dataviewer import Client`` use only the
-   Python standard library. Accessing the analysis API loads its numerical dependencies.
-   Reads, conversions, and analysis also avoid GUI imports. GUI entry points
-   must be imported explicitly from ``uz_dataviewer.app``.
+   **Importing the package does not import the imgui GUI stack.** ``import uz_dataviewer`` and ``from uz_dataviewer import Client`` use only the Python standard library.
+   Accessing the analysis API loads its numerical dependencies.
+   Reads, conversions, and analysis also avoid GUI imports.
+   GUI entry points must be imported explicitly from ``uz_dataviewer.app``.
    The core is therefore usable on a headless server and ``import`` stays fast.
 
 Controlling an open viewer
 ==========================
 
-Use ``Client`` when a script should change the running application. The viewer
-must already be open. The default endpoint is ``127.0.0.1:19741``; override it
-with ``Client("127.0.0.1:19742")`` or ``UZ_DATAVIEWER_ENDPOINT``. Each viewer
-instance must have its own endpoint.
+Use ``Client`` when a script should change the running application.
+The viewer must already be open.
+The default endpoint is ``127.0.0.1:19741``; override it with ``Client("127.0.0.1:19742")`` or ``UZ_DATAVIEWER_ENDPOINT``.
+Each viewer instance must have its own endpoint.
 
 .. code-block:: python
 
@@ -34,18 +33,17 @@ instance must have its own endpoint.
        viewer.add_signal(1, recording, "ia")
        viewer.save_session("analysis.json")
 
-The script runs in its own Python process; the viewer owns the plot and session
-state. GUI interactions and Python requests share that state. Each client call
-waits for its result or raises an exception; several calls are not a transaction.
-After an unrelated session replacement, create a new client and obtain new
-recording/node/view handles. Do not reuse handles from the previous session.
+The script runs in its own Python process; the viewer owns the plot and session state.
+GUI interactions and Python requests share that state.
+Each client call waits for its result or raises an exception; several calls are not a transaction.
+After an unrelated session replacement, create a new client and obtain new recording/node/view handles.
+Do not reuse handles from the previous session.
 See :doc:`uz_dataviewer_usage` for the full client API and Python editor workflow.
 
 The viewer authenticates each request with a random per-instance credential.
-Clients discover it automatically from a private per-user directory under the
-OS temporary directory. For explicit connection management, ``Client`` also
-accepts a ``token=`` keyword argument. Create a new client after restarting
-the viewer; credentials are never automatically refreshed to retry mutations.
+Clients discover it automatically from a private per-user directory under the OS temporary directory.
+For explicit connection management, ``Client`` also accepts a ``token=`` keyword argument.
+Create a new client after restarting the viewer; credentials are never automatically refreshed to retry mutations.
 
 Headless analysis quick start
 =============================

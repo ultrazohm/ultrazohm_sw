@@ -3,8 +3,8 @@
 Maintenance status and remaining limits
 =======================================
 
-This page replaces the earlier design backlog, which described several already
-implemented paths as future work. It is not a commitment to add features.
+This page replaces the earlier design backlog, which described several already implemented paths as future work.
+It is not a commitment to add features.
 
 Implemented contracts
 ---------------------
@@ -18,8 +18,8 @@ Implemented contracts
   dependencies; wrapping a derived output in a source node is rejected.
 - Sessions use stable file/node references, not display labels, to restore links.
 - FFT-derived runs carry a frequency axis. They cannot share a plot or linked
-  time range with time-domain recordings. Math preserves the input axis domain;
-  FFT, FIR filtering and time shifting require time-domain inputs.
+  time range with time-domain recordings.
+  Math preserves the input axis domain; FFT, FIR filtering and time shifting require time-domain inputs.
 
 Deliberate limits
 -----------------
@@ -27,7 +27,8 @@ Deliberate limits
 - XY plots use uniform stride for display and can alias dense trajectories.
   Their inputs must share matching sample axes; there is no implicit resampling.
 - Plugin inputs are read-only views and outputs are copied into owned numeric
-  buffers. This prevents accidental mutation, not malicious Python code.
+  buffers.
+  This prevents accidental mutation, not malicious Python code.
   Plugins are trusted native code and must preserve the independent-axis domain.
 - Units are not inferred through arbitrary math or plugins. A transform can
   declare its output unit explicitly; automatic dimensional algebra is absent.
@@ -39,6 +40,5 @@ Deliberate limits
 Validation
 ----------
 
-The test suite covers both backends, memory/lazy loading, GUI contexts, exports,
-plugins, session restoration, cancellation and live acquisition against the
-simulator. Release builds additionally run the frozen-executable self-test.
+The test suite covers both backends, memory/lazy loading, GUI contexts, exports, plugins, session restoration, cancellation and live acquisition against the simulator.
+Release builds additionally run the frozen-executable self-test.

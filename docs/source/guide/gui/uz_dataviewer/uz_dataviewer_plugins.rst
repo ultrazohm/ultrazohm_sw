@@ -30,11 +30,10 @@ You can also load new node kinds at runtime from the console:
    load_plugins("/path/to/my/plugins")     # or load_plugins() for the configured dirs
 
 A missing folder or file is silently skipped.
-A plugin that throws an error on import is logged to the console and skipped;
-its registrations and module entry are rolled back.
-Node kinds cannot replace an existing plugin or builtin registration. Restart the
-viewer to load changes to an already registered kind. This keeps cached node
-outputs consistent with the implementation that produced them.
+A plugin that throws an error on import is logged to the console and skipped; its registrations and module entry are rolled back.
+Node kinds cannot replace an existing plugin or builtin registration.
+Restart the viewer to load changes to an already registered kind.
+This keeps cached node outputs consistent with the implementation that produced them.
 
 Plugin structure
 ================
@@ -102,13 +101,11 @@ Rules & tips
 Transform ownership
 -------------------
 
-Plugin API version 2 makes inputs read-only array views. Allocate a separate working array before
-mutating samples. Returned arrays are validated, converted to float64 axes and
-float32 values, and copied into owned output buffers before publication. Invalid
-outputs fail only their node; independent graph branches continue evaluating.
+Plugin API version 2 makes inputs read-only array views.
+Allocate a separate working array before mutating samples.
+Returned arrays are validated, converted to float64 axes and float32 values, and copied into owned output buffers before publication.
+Invalid outputs fail only their node; independent graph branches continue evaluating.
 Plugins preserve the independent-axis domain of their inputs.
-Registration validates lowercase kind identifiers, callable implementations,
-input arity (0–1,024), unique parameter keys, declared widget types, nonempty
-unique enum choices, and typed defaults. Invalid declarations roll back the
-plugin import. Input arrays must be one-dimensional and paired with equal-length
-axes; output diagnostic text must be a string.
+Registration validates lowercase kind identifiers, callable implementations, input arity (0–1,024), unique parameter keys, declared widget types, nonempty unique enum choices, and typed defaults.
+Invalid declarations roll back the plugin import.
+Input arrays must be one-dimensional and paired with equal-length axes; output diagnostic text must be a string.

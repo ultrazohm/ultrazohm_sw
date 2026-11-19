@@ -75,14 +75,16 @@ Header controls
    JavaScope header controls
 
 
-Scope '''''
+Scope
+'''''
 
 - ``Run/Stop`` starts or pauses acquisition display updates.
 - ``Time base`` changes the displayed time window by plotting every Nth sample.
 - ``fixAxis`` disables automatic axis rescaling during acquisition.
 - ``Save Settings`` writes trigger, channel, scaling, offset, and sampling-rate settings to ``properties.ini``.
 
-Trigger '''''''
+Trigger
+'''''''
 
 - ``Trigger channel`` selects the trigger source.
 - ``Rising`` or ``Falling`` selects the signal edge.
@@ -91,7 +93,8 @@ Trigger '''''''
 - ``PreTrig.`` sets the fraction of pre-trigger data in the capture window.
 - ``SingleShot`` arms one triggered capture and freezes the display after the next valid event.
 
-Logging '''''''
+Logging
+'''''''
 
 - ``Logging OFF/ON`` starts or stops writing log files.
 - ``Log FastData`` includes fast scope samples in the log file.
@@ -179,22 +182,18 @@ The ``Control`` tab is the main interface for state-machine control, user inputs
 
 #. The ``receive_fields``
 
-   a.
-   Selected user-defined ``SlowData`` values can be shown more prominently here than in the ``SlowData`` table.
+   a. Selected user-defined ``SlowData`` values can be shown more prominently here than in the ``SlowData`` table.
 
-   b.
-   For configuring which values are shown here, see :ref:`javascope_customizing`.
+   b. For configuring which values are shown here, see :ref:`javascope_customizing`.
 
-   c.
-   If not all of the up to 20 channels are required, they can be set to ``JSSD_FLOAT_ZEROVALUE``.
+   c. If not all of the up to 20 channels are required, they can be set to ``JSSD_FLOAT_ZEROVALUE``.
 
 #. The ``send_fields``
 
    a. 20 values are available as references or setpoints for the user application.
 
-   b.
-   After entering a value, press ``enter`` or the ``set`` button to send it to the R5.
-   In ``ipc_ARM.c``, you can define how the value is used in the application.
+   b. After entering a value, press ``enter`` or the ``set`` button to send it to the R5.
+      In ``ipc_ARM.c``, you can define how the value is used in the application.
 
    .. _javascope_sendfields:
 
@@ -205,13 +204,11 @@ The ``Control`` tab is the main interface for state-machine control, user inputs
 
 #. The ``mybuttons``
 
-   a.
-   In addition to the ``send_field`` values, eight user buttons are available.
-   In ``ipc_ARM.c``, you can define what happens when the buttons are pressed.
+   a. In addition to the ``send_field`` values, eight user buttons are available.
+      In ``ipc_ARM.c``, you can define what happens when the buttons are pressed.
 
-   b.
-   Each button has a status indicator below it.
-   This indicator can also be set in ``ipc_ARM.c`` to provide feedback for button actions.
+   b. Each button has a status indicator below it.
+      This indicator can also be set in ``ipc_ARM.c`` to provide feedback for button actions.
       See ``/* Bit 4 - My_Button_1 */`` in the right picture below for an example.
 
    .. _javascope_mybuttons:
@@ -227,9 +224,8 @@ The ``Control`` tab is the main interface for state-machine control, user inputs
    The more values are displayed, the longer it takes until they are updated.
 #. ``Error Reset`` and the ``error code`` field provide fault handling.
 
-   a.
-   The behavior of ``Error Reset`` must also be programmed in ``ipc_ARM.c``. b.
-   To send error codes to the GUI for display in the ``error code`` field, use the ``SlowData`` variable ``JSSD_FLOAT_Error_Code``.
+   a. The behavior of ``Error Reset`` must also be programmed in ``ipc_ARM.c``.
+   b. To send error codes to the GUI for display in the ``error code`` field, use the ``SlowData`` variable ``JSSD_FLOAT_Error_Code``.
 
    .. warning::
       Error detection and handling have to be implemented by the user.

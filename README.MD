@@ -98,7 +98,7 @@ Linux needs curl or wget for uv bootstrap.
 
 On first use the default is `stable` with `--app viewer`. `stable` and `prerelease`
 install both selected applications from PyPI. `local` builds the CLI from this
-checkout and installs the viewer editable when selected. Local CLI builds require
+checkout and installs the viewer editable when selected, using locked dependency constraints. Local CLI builds require
 Rust and a C/C++ toolchain. Re-run local setup after CLI source changes.
 
 `setup` accepts the same arguments and prepares `.venv` without opening a shell.

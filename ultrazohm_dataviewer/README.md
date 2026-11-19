@@ -626,7 +626,7 @@ synchronizes locked dependencies before installing that wheel. CI builds both OS
 wheels once, packages folder distributions from them, and tests frozen workers
 against the JavaScope simulator. Releases from `develop` and
 `feature/uz_cli_dataviewer_testing` are prereleases; `main` releases are stable.
-Each release holds both bundles and both CLI wheels, which are also on PyPI.
+Each release holds two Windows ZIPs and three Python wheels (two CLI platform wheels and one viewer wheel), with both packages on PyPI.
 
 The standalone distribution bundles repository Tcl scripts and Vitis launch
 presets. Its CLI workers always use those scripts, with the selected repository

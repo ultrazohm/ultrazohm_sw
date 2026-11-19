@@ -31,8 +31,8 @@ def initialize():
     specs = [('stdin', -10, 'r'), ('stdout', -11, 'w'), ('stderr', -12, 'w')]
     # Preserve redirected pipe/file handles before attaching to a console.
     handles = [duplicate(number) for _, number, _ in specs]
-    if any(handle is None for handle in handles):
-        kernel.AttachConsole(wintypes.DWORD(-1))
+    # Attach even with valid pipes so interactive Ctrl-C reaches this process.
+    kernel.AttachConsole(wintypes.DWORD(-1))
     for (name, number, mode), handle in zip(specs, handles):
         if handle is None:
             handle = duplicate(number)

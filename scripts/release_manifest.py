@@ -12,6 +12,7 @@ def manifest(directory, version):
     files = sorted([*directory.glob('*.whl'), *directory.glob('*.zip')])
     expected = {'ultrazohm-cli': 2, 'ultrazohm-dataviewer': 1}
     entries = []
+    platforms = set()
     for path in files:
         if path.suffix == '.whl':
             with zipfile.ZipFile(path) as archive:
@@ -20,6 +21,17 @@ def manifest(directory, version):
                 name = package['Name'].replace('_', '-').lower()
                 if package['Version'] != version or name not in expected:
                     raise ValueError(f'Unexpected wheel metadata: {path.name}')
+                wheel_info, = [n for n in archive.namelist() if n.endswith('.dist-info/WHEEL')]
+                tags = BytesParser().parsebytes(archive.read(wheel_info)).get_all('Tag', [])
+                if name == 'ultrazohm-cli':
+                    platform = ('windows' if any(t.endswith('-win_amd64') for t in tags)
+                                else 'linux' if any(t.endswith('-manylinux_2_28_x86_64') for t in tags)
+                                else None)
+                    if platform is None or platform in platforms:
+                        raise ValueError('Expected one Windows and one manylinux_2_28 CLI wheel')
+                    platforms.add(platform)
+                elif tags != ['py3-none-any']:
+                    raise ValueError('Expected a platform-independent viewer wheel')
                 expected[name] -= 1
                 if name == 'ultrazohm-dataviewer' and f'ultrazohm-cli=={version}' not in package.get_all('Requires-Dist', []):
                     raise ValueError('Viewer wheel does not require the matching CLI')

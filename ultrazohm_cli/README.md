@@ -422,7 +422,7 @@ Linux/Windows CI and hardware validation remain separate from local test results
 One [workflow](../.github/workflows/uz_cli.yml) checks the CLI on Linux and Windows, builds and tests the release wheels, tests the data viewer against them and builds its bundles, one version per run: `MAJOR.MINOR` from `pyproject.toml` plus the workflow run number, with `.dev0` outside `main`.
 The wheels are stamped and built once; the bundles contain exactly those wheels.
 
-Pushes to `main` (stable), `develop` and `feature/uz_cli_dataviewer_testing` (prereleases) publish one GitHub release `ultrazohm-v<VERSION>` with both wheels, both bundles and `SHA256SUMS`, and upload the wheels to PyPI as `ultrazohm-cli` through trusted publishing.
+Pushes to `main` (stable), `develop` and `feature/uz_cli_dataviewer_testing` (prereleases) publish one GitHub release `ultrazohm-v<VERSION>` with three Python wheels, two Windows ZIPs and `SHA256SUMS`, and upload the wheels to PyPI as `ultrazohm-cli` and `ultrazohm-dataviewer` through trusted publishing.
 Other branches and pull requests only test.
 Release targets are Windows x86-64 and Linux x86-64 `manylinux_2_28` (glibc 2.28+), using Python's 3.10+ stable ABI.
 These releases never replace the repository's latest release.

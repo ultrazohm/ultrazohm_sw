@@ -121,6 +121,7 @@ def standalone(_args):
     if not WINDOWS:
         raise SystemExit("Standalone downloads are Windows-only; use the Python wheel on Linux.")
     run("cargo", "build", "--release", "--locked", "--bin", "ultrazohm-cli")
+    integration(venv_bin(TARGET / "release-venv", "python"), TARGET / "release" / "ultrazohm-cli.exe")
 
 
 def release_check(args):

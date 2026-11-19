@@ -281,6 +281,8 @@ jobs:
           path: native-cli
       - name: Package Windows applications
         run: uv run --no-project --python 3.12 scripts/package_windows.py --version "${{ needs.version.outputs.version }}" --cli native-cli/ultrazohm-cli.exe --viewer ultrazohm_dataviewer/dist/ultrazohm-dataviewer --output packages
+      - name: Test extracted Windows downloads
+        run: uv run --no-project --python 3.12 scripts/smoke_windows_archives.py packages "${{ needs.version.outputs.version }}"
       - uses: actions/upload-artifact@v4
         with:
           name: bundle-windows

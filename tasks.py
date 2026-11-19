@@ -105,11 +105,15 @@ def setup(source=None, *, app=None, reuse=False):
         run("uv", "venv", "--clear", "--python", python_version, ROOT / ".venv", env=env)
         marker.write_text(json.dumps({"source": selected, "app": selected_app}) + "\n")
         if selected == "local":
+            constraints = Path(directory) / "constraints.txt"
+            run("uv", "export", "--project", ROOT / "ultrazohm_dataviewer", "--locked",
+                "--no-dev", "--no-emit-project", "--no-emit-package", "ultrazohm-cli",
+                "--no-hashes", "--format", "requirements.txt", "--output-file", constraints, env=env)
             packages = [wheel]
             if selected_app == "viewer":
                 packages += ["--editable", ROOT / "ultrazohm_dataviewer"]
             run("uv", "pip", "install", "--python", executable("python"),
-                "--no-sources", "--only-binary", "imgui-bundle", *packages, env=env)
+                "--no-sources", "--constraint", constraints, "--only-binary", "imgui-bundle", *packages, env=env)
         else:
             package = "ultrazohm-cli" if selected_app == "cli" else "ultrazohm-dataviewer"
             run("uv", "pip", "install", "--python", executable("python"),

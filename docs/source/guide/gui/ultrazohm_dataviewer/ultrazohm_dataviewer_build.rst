@@ -20,7 +20,8 @@ From the repository root:
 .. code-block:: bash
 
    ./uz check viewer                  # ruff and the full pytest suite
-   ./uz build viewer                 # PyInstaller bundle in ultrazohm_dataviewer/dist
+   ./uz task viewer wheel           # publishable viewer wheel
+   .\uz.ps1 build viewer           # Windows standalone bundle
    ./uz task viewer bundle-smoke           # start the bundle and its live workers
 
 ``check viewer`` and ``build viewer`` build a matching CLI wheel from ``ultrazohm_cli`` unless ``--cli-wheel PATH`` names one.
@@ -33,8 +34,7 @@ Native standalone executables (PyInstaller)
 The bundle collects ``imgui_bundle``, ``pyarrow``, the Polars runtime and the CLI into a self-contained directory containing the executable and ``_internal``.
 Extract the entire archive and keep ``_internal`` beside the executable.
 The distributed executable does not require Python or uv on the target machine.
-PyInstaller cannot cross-compile: build each system's bundle on that system.
-A bundle built in the development container works on that machine; only the CI build in Ubuntu 22.04 is portable.
+PyInstaller builds the Windows bundle on Windows. Linux installations use Python wheels.
 
 The frozen smoke test checks native imports, Parquet reading with both backends in memory and lazy modes, downsampling and plot input; the live smoke test starts the bundled CLI workers against the simulator.
 These checks do not verify window creation or graphics drivers on the user's desktop.
@@ -42,9 +42,9 @@ These checks do not verify window creation or graphics drivers on the user's des
 Releases
 ========
 
-``.github/workflows/uz_cli.yml`` checks the CLI, builds its wheels, tests the viewer against them and builds both desktop bundles.
+``.github/workflows/uz_cli.yml`` checks the CLI, builds its wheels, tests the viewer against them and builds the Windows desktop bundle.
 Each run computes one version: ``MAJOR.MINOR`` from ``ultrazohm_cli/pyproject.toml`` plus the workflow run number, with ``.dev0`` outside ``main``.
-The wheels are stamped and built once; the tests and both bundles use exactly those wheels, so ``ultrazohm-cli --version`` and ``run.json`` identify the build.
+The wheels are stamped and built once; the tests and Windows viewer bundle use exactly those wheels, so ``ultrazohm-cli --version`` and ``run.json`` identify the build.
 Pull requests and other branches validate and keep the archives as workflow artifacts for 30 days.
 
 Pushes to ``main`` (stable), ``develop`` and ``feature/uz_cli_dataviewer_testing`` (prereleases) publish:

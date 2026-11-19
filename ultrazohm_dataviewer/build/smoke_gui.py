@@ -1,6 +1,7 @@
 """Launch the installed GUI and verify that its frame loop serves control calls."""
 import os
 from pathlib import Path
+import signal
 import socket
 import subprocess
 import sys
@@ -20,7 +21,8 @@ def main():
         with (root / 'gui.log').open('w+') as log:
             process = subprocess.Popen([sys.executable, '-m', 'ultrazohm_dataviewer',
                                         '--endpoint', endpoint], cwd=root, env=env,
-                                       stdin=subprocess.DEVNULL, stdout=log, stderr=log)
+                                       stdin=subprocess.DEVNULL, stdout=log, stderr=log,
+                                       start_new_session=os.name != 'nt')
             try:
                 deadline = time.monotonic() + 45
                 last_error = None
@@ -41,8 +43,17 @@ def main():
                 log.seek(0)
                 raise RuntimeError(f'GUI did not become ready: {last_error}\n{log.read()}')
             finally:
-                if process.poll() is None:
-                    process.terminate()
+                # Windows venv launchers and GUI workers can outlive the parent
+                # and retain inherited log handles. Stop the whole test tree.
+                if os.name == 'nt':
+                    if process.poll() is None:
+                        subprocess.run(['taskkill', '/PID', str(process.pid), '/T', '/F'],
+                                       capture_output=True, timeout=10, check=True)
+                else:
+                    try:
+                        os.killpg(process.pid, signal.SIGTERM)
+                    except ProcessLookupError:
+                        pass
                 try:
                     process.wait(timeout=10)
                 except subprocess.TimeoutExpired:

@@ -228,6 +228,9 @@ jobs:
           name: wheel-viewer
           path: viewer-wheel
       - run: ./uz check viewer --cli-wheel cli-wheel/*.whl --viewer-wheel viewer-wheel/*.whl
+      - name: Install virtual display for GUI startup check
+        run: apt-get update -qq && apt-get install -y --no-install-recommends xvfb xauth libgl1-mesa-dri
+      - run: xvfb-run -a ultrazohm_dataviewer/.venv-ci/bin/python ultrazohm_dataviewer/build/smoke_gui.py
 
   viewer-test-windows:
     needs: [wheel-windows, wheel-viewer]
@@ -251,6 +254,7 @@ jobs:
           name: wheel-viewer
           path: viewer-wheel
       - run: .\uz.ps1 check viewer --cli-wheel (Get-ChildItem cli-wheel/*.whl).FullName --viewer-wheel (Get-ChildItem viewer-wheel/*.whl).FullName
+      - run: .\ultrazohm_dataviewer\.venv-ci\Scripts\python.exe ultrazohm_dataviewer/build/smoke_gui.py
 
   bundle-windows:
     needs: [viewer-test-windows, wheel-windows, wheel-viewer, version]
@@ -344,8 +348,27 @@ jobs:
           # Never replace the repository's latest firmware/software release.
           gh release edit "$TAG" --draft=false --prerelease="$PRERELEASE" --latest=false
 
-  pypi:
+  validate-artifacts:
     needs: [version, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: '{wheel,bundle}-*'
+          path: packages
+          merge-multiple: true
+      - run: python3 scripts/release_manifest.py packages "${{ needs.version.outputs.version }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-manifest
+          path: |
+            packages/manifest.json
+            packages/SHA256SUMS
+          if-no-files-found: error
+
+  pypi:
+    needs: [version, validate-artifacts]
     if: needs.version.outputs.publish == 'true' && github.repository == 'ultrazohm/ultrazohm_sw'
     runs-on: ubuntu-24.04
     timeout-minutes: 10

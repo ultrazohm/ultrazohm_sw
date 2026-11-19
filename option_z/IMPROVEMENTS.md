@@ -280,32 +280,58 @@ Tried first: one look per control period, at the first pass after each ISR.
 A command that lands after that look waits for the next period, which
 would be up to 100 us at 10 kHz.
 
-Median command round trip in us (`cmd_latency.py`, 2000 commands per load,
-40 kHz). Each build ran twice; the first old-pacing run was in the morning,
-all other runs in the afternoon:
+Measured on 2026-11-19 with nothing else on the board. The first
+comparison, on the afternoon of 2026-11-18, ran while another agent session
+was using the board, and is superseded. Each build was freshly flashed, in
+the order chosen, old, one-look, one-look, old, chosen, plus two earlier
+runs of the chosen build. Median command round trip in us
+(`cmd_latency.py`, 2000 commands per load, 40 kHz):
 
 | Pacing | 0 B | 500 B | 900 B | 1000 B |
 |---|---|---|---|---|
-| cycle counter, a look at most every 5 us | 221, 229 | 226, 228 | 271, 273 | 274, 276 |
-| one look per control period | 223, 235 | 235, 231 | 284, 279 | 292, 315 |
-| a look every pass, one exchange per period (chosen) | 215, 251 | 223, 234 | 270, 296 | 279, 398 |
+| cycle counter, a look at most every 5 us | 218, 221 | 221, 225 | 267, 267 | 275, 273 |
+| one look per control period | 219, 221 | 222, 225 | 275, 269 | 275, 284 |
+| a look every pass, one exchange per period (chosen) | 224, 213, 213, 216 | 235, 219, 222, 221 | 272, 267, 265, 266 | 896, 271, 272, 274 |
 
-- DAQ is unchanged: the same exchanges/s, copy cost per KB and A53 idle
-  time at 500 / 900 / 1000 B/cycle. The control ISR takes 16.6 / 17.2 us at
-  500 / 900 B/cycle, as before (one run: 17.1 us at 500 B).
-- Looks while DAQ runs: 53-58k/s at 500 B/cycle (was 40k), 31k/s at 900 B.
-  Without DAQ there is one on every main-loop pass.
-- The one-look variant was 5-15 us slower at 500-900 B/cycle in both runs.
-  The chosen pacing's first run was the fastest of all, its second run
-  slower at every load. The afternoon bench was noisy (next item), so
-  differences below ~20 us are not resolved.
-- Open, new on the afternoon bench: every build, including a control run
-  of the previous build. It showed rare A53 acknowledges of ~300 us after the
-  IPI (morning: at most 72 us), 0-6 lost responses per 2 min soak, and tips
-  into overload at 1000 B/cycle in some 20 s runs. The control run lost
-  120,645 samples in one of them. The board link is not loaded: 56 non-XCP
-  frames in 60 s. Cause unknown, possibly related to the rare lost
-  responses of 2.6.
+- Single commands: the chosen pacing is as fast as the old one under DAQ
+  load and a few microseconds faster idle. The 896 us is a run in which
+  1000 B/cycle tipped into the slow copy (2.4). The one-look variant was
+  up to ~10 us slower at 900-1000 B/cycle.
+- DAQ throughput is the same on all three: 6808 DAQ exchanges/s at 900
+  B/cycle, the same copy cost per KB and A53 idle time, no loss in any 20 s
+  run. 24/24 functional checks on every run except the one with the tip
+  (1472 records lost in the reconnect cycles). 40 short DAQ runs at 1000
+  B/cycle (0.5 s each) per run: none of 240 lost data, on any build.
+- Looks per second while DAQ runs: 53-56k at 500 B/cycle (old pacing
+  40.7k, one-look 31k), 31k at 900 B (21k, 21k), 105k at 8 B (73k, 40k).
+- Open: two costs of the chosen pacing that the other two do not show.
+  - The control ISR is 0.2-0.5 us longer at 500 B/cycle in 6 of 8 runs
+    (all 8: 16.48-17.08 us, against 16.46-16.59 us for the old pacing and
+    the one-look variant in every run), and about 0.6 us longer in the
+    slower state of the soaks below. Not at 8 B/cycle. The XCP
+    sampling (`xcp_r5_event()`) is unchanged, so the time goes elsewhere
+    in the ISR. Cause not found. Every cycle the ISR writes the JavaScope
+    data into OCM bank 3 at 0xFFFF0000 (the bank of XCP_IN and XCP_OUT),
+    flushes it and sends an IPI to the A53. Those lines share D-cache sets
+    with the XCP_IN header, which the chosen pacing invalidates and reads
+    on every look.
+  - Back-to-back commands at 900 B/cycle for 10 min: the old pacing (2
+    runs) and the one-look variant (1 run) stayed at a flat 251-253 us
+    median, with 4-10 DAQ exchanges waiting for an acknowledge. The chosen
+    pacing fell into a slower state in all 3 runs: once for 2 min (256-258
+    us), once from minute 4 to the end (263 us; control ISR 17.56 instead of
+    ~17.2 us on average; 4739 waits), and once it tipped into the slow copy
+    after 4.5 min (948 us, 1.9 M records lost). At 1000 B/cycle it tipped
+    after 1.5 min; the old pacing ran 10 min clean there on 2026-11-18
+    (2.6).
+- The rare A53 acknowledges of 220-350 us are older than this change and
+  occur on every build: 295 us in a 10 min soak at 900 B/cycle on
+  2026-11-17, 320 and 246 us on the morning of 2026-11-18, 348 and 320 us
+  in the old pacing's 10 min soaks, and in 4 of 32 measurements on the
+  quiet bench. With the other session on the board they were in 13 of 20.
+  (Once the R5 has tipped into the slow copy, acknowledges are long anyway,
+  because the chains are large.) Cause unknown. The R5 looks at least once
+  per control period while it waits, so it is the A53 that answers late.
 
 ## 3. Safety scope — required before live calibration (Z5)
 

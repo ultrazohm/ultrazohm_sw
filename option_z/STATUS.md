@@ -290,9 +290,32 @@ Analysis and table: IMPROVEMENTS.md 2.7.
   slower at 500-900 B/cycle.
 - The old pacing never looked every 5 us at 40 kHz: the main loop only runs
   in the ~8 us between two control ISRs.
-- Open: the afternoon bench showed, on every build including the control,
-  rare A53 acknowledges of ~300 us (morning: at most 72 us), 0-6 lost
-  responses per soak and tips into overload at 1000 B/cycle in some runs.
+- The afternoon bench showed, on every build including the control, A53
+  acknowledges of ~300 us in 13 of 20 measurements, 0-6 lost responses per
+  soak and tips into overload at 1000 B/cycle in some runs. Another agent
+  session was using the board at the time; see the re-test of 2026-11-19.
+
+## Bench re-test 2026-11-19: pacing builds on a quiet bench (`eda40099`)
+
+The three builds of the day before again, with nothing else on the board,
+each freshly flashed, in an interleaved order. Each run: functional checks,
+`cmd_latency.py`, 20 s stress at 500 / 900 / 1000 B/cycle, a 2 min soak and
+40 short DAQ runs at 1000 B/cycle. Then 10 min soaks of back-to-back
+commands at 900 B/cycle (old, chosen, one-look, chosen, old) and 20 s
+stress runs at 8 / 500 B/cycle. The test tools take symbol addresses from
+the workspace ELF, so each build's ELF was put there for its runs.
+Analysis and tables: IMPROVEMENTS.md 2.7.
+
+- Single commands: the chosen pacing is as fast as the old one under DAQ
+  load and a few microseconds faster idle. DAQ throughput is the same on
+  all builds.
+- Open, costs of the chosen pacing: the control ISR is 0.2-0.5 us longer
+  at 500 B/cycle in 6 of 8 runs, and in all 3 of its 10 min soaks it fell
+  into a slower state (control ISR ~0.6 us longer), once tipping into the
+  slow copy (1.9 M records lost). The old pacing and the one-look variant
+  did neither.
+- The ~300 us A53 acknowledges are older than the change and remain, rarely
+  (4 of 32 measurements).
 
 ## Changes after the July hardware run (2026-11-16/17)
 

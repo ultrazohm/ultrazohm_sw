@@ -95,7 +95,11 @@ void ISR_Control(void *data)
     // update_temperatures_round_robin();
    //  Global_Data.control_mode=control_mode_m2_only_foc;
     // Current mapping
-    Global_Data.m1_phase_voltage.a = VOLTAGE_TO_VOLTS * Global_Data.av.adc_ltc2311_a1_ch3;
+    Global_Data.hc_adc4=Global_Data.av.adc_ltc2311_a3_ch7;
+    Global_Data.hc_adc3=Global_Data.av.adc_ltc2311_a3_ch6;
+    Global_Data.hc_adc2=Global_Data.av.adc_ltc2311_a3_ch5;
+    Global_Data.hc_adc1=Global_Data.av.adc_ltc2311_a3_ch4;
+        Global_Data.m1_phase_voltage.a = VOLTAGE_TO_VOLTS * Global_Data.av.adc_ltc2311_a1_ch3;
     Global_Data.m1_phase_voltage.b = VOLTAGE_TO_VOLTS * Global_Data.av.adc_ltc2311_a1_ch2;
     Global_Data.m1_phase_voltage.c = VOLTAGE_TO_VOLTS * Global_Data.av.adc_ltc2311_a1_ch1;
     Global_Data.m12_dc_voltage = VOLTAGE_TO_VOLTS * Global_Data.av.adc_ltc2311_a1_ch0;

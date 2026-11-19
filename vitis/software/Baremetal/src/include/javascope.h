@@ -159,6 +159,10 @@ enum JS_OberservableData
 	JSO_M4_TMP_H1,
 	JSO_M4_TMP_H2,
 	JSO_M4_TMP_H3,
+	JSO_hc_adc4,
+	JSO_hc_adc3,
+	JSO_hc_adc2,
+	JSO_hc_adc1,
 	JSO_D3_INPUT_LOOPBACK_UINT32,
 	JSO_ENDMARKER
 	/* Project Wizard END: javascope_observables */

@@ -255,6 +255,10 @@ typedef struct _DS_Data_ {
 	struct uz_3ph_dq_t m2_dut_i_dq_ref_A;
 	struct uz_3ph_dq_t m3_prime_mover_i_dq_ref_A;
 	struct uz_3ph_dq_t m4_dut_i_dq_ref_A;
+	float hc_adc4;
+	float hc_adc3;
+	float hc_adc2;
+	float hc_adc1;
 } DS_Data;
 
 #endif

@@ -207,6 +207,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_M4_TMP_H1]=&data->av.temp_m4_h1;
 	js_ch_observable[JSO_M4_TMP_H2]=&data->av.temp_m4_h2;
 	js_ch_observable[JSO_M4_TMP_H3]=&data->av.temp_m4_h3;
+	js_ch_observable[JSO_hc_adc4]=&data->hc_adc4;
+	js_ch_observable[JSO_hc_adc3]=&data->hc_adc3;
+	js_ch_observable[JSO_hc_adc2]=&data->hc_adc2;
+	js_ch_observable[JSO_hc_adc1]=&data->hc_adc1;
 	/* Project Wizard END: javascope_observable_pointers */
 	js_ch_observable[JSO_D3_INPUT_LOOPBACK_UINT32] = &data->av.d3_input_loopback_uint32;
 

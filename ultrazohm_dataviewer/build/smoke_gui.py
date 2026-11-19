@@ -1,4 +1,5 @@
 """Launch the installed GUI and verify that its frame loop serves control calls."""
+from contextlib import contextmanager
 import os
 from pathlib import Path
 import signal
@@ -9,14 +10,32 @@ import tempfile
 import time
 
 
+@contextmanager
+def smoke_directory():
+    directory = tempfile.TemporaryDirectory(prefix='ultrazohm GUI smoke ')
+    try:
+        yield Path(directory.name)
+    finally:
+        # TerminateProcess/taskkill can return before Windows releases inherited
+        # file handles. Retry briefly, but still fail on a persistent leak.
+        deadline = time.monotonic() + 10
+        while True:
+            try:
+                directory.cleanup()
+                break
+            except PermissionError:
+                if time.monotonic() >= deadline:
+                    raise
+                time.sleep(.1)
+
+
 def main():
     from ultrazohm_dataviewer import Client
     with socket.socket() as listener:
         listener.bind(('127.0.0.1', 0))
         endpoint = f'127.0.0.1:{listener.getsockname()[1]}'
-    with tempfile.TemporaryDirectory(prefix='ultrazohm GUI smoke ') as directory:
-        root = Path(directory)
-        env = {**os.environ, 'XDG_DATA_HOME': directory, 'LOCALAPPDATA': directory,
+    with smoke_directory() as root:
+        env = {**os.environ, 'XDG_DATA_HOME': str(root), 'LOCALAPPDATA': str(root),
                'UZ_DATAVIEWER_CACHE': str(root / 'cache')}
         with (root / 'gui.log').open('w+') as log:
             process = subprocess.Popen([sys.executable, '-m', 'ultrazohm_dataviewer',
@@ -48,7 +67,7 @@ def main():
                 if os.name == 'nt':
                     if process.poll() is None:
                         subprocess.run(['taskkill', '/PID', str(process.pid), '/T', '/F'],
-                                       capture_output=True, timeout=10, check=True)
+                                       timeout=10, check=True)
                 else:
                     try:
                         os.killpg(process.pid, signal.SIGTERM)

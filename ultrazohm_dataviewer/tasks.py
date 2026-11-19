@@ -154,7 +154,7 @@ def check(args):
 
 def wheel(args):
     """Build the publishable viewer wheel from staged sources."""
-    sys.path.insert(0, str(HERE.parent / "scripts"))
+    sys.path.insert(0, str(HERE / "tools"))
     from release_build import staged_project
 
     output = args.out.resolve() if args.out else HERE / "dist-wheels"
@@ -212,7 +212,7 @@ def _invocation():
 
 def overview():
     print(
-        "Viewer build tasks: lint, format, format-check, test, check, bundle, bundle-smoke"
+        "Viewer build tasks: setup, shell, lint, format, format-check, test, check, bundle, bundle-smoke"
     )
     print(
         "Use ./uz shell to run both applications; ./uz task viewer TASK --help for details."
@@ -259,6 +259,16 @@ def main(argv=None):
     wheel_task = tasks.add_parser("wheel", description=wheel.__doc__)
     wheel_task.add_argument("--out", type=Path)
     wheel_task.set_defaults(function=wheel)
+    from tools.setup_env import setup_task
+
+    for name in ("setup", "shell"):
+        setup_parser = tasks.add_parser(
+            name, description="Prepare this application's environment."
+        )
+        setup_parser.add_argument(
+            "source", nargs="?", choices=("local", "stable", "prerelease")
+        )
+        setup_parser.set_defaults(function=setup_task)
     argv = list(sys.argv[1:] if argv is None else argv)
     if not argv or argv[0] in ("-h", "--help", "help"):
         overview()

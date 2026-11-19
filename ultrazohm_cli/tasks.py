@@ -175,7 +175,7 @@ def wheel(args):
 
 
 def release_wheel(_args):
-    sys.path.insert(0, str(ROOT / "scripts"))
+    sys.path.insert(0, str(HERE / "tools"))
     from release_build import staged_project
 
     output = TARGET / "wheels-release"
@@ -266,7 +266,7 @@ def _invocation():
 
 def overview():
     print(
-        "CLI build tasks: lint, format, format-check, check, wheel, debug-wheel, release-wheel, release-check, version, standalone, install"
+        "CLI build tasks: setup, shell, lint, format, format-check, check, wheel, debug-wheel, release-wheel, release-check, version, standalone, install"
     )
     print(
         "Use ./uz shell to run both applications; ./uz task cli TASK --help for details."
@@ -324,6 +324,16 @@ def main(argv=None):
         help="directory holding the wheel (default: target/wheels-release)",
     )
     add("version", version)
+    from tools.setup_env import setup_task
+
+    for name in ("setup", "shell"):
+        setup_parser = tasks.add_parser(
+            name, description="Prepare this application's environment."
+        )
+        setup_parser.add_argument(
+            "source", nargs="?", choices=("local", "stable", "prerelease")
+        )
+        setup_parser.set_defaults(function=setup_task)
     argv = list(sys.argv[1:] if argv is None else argv)
     if not argv or argv[0] in ("-h", "--help", "help"):
         overview()

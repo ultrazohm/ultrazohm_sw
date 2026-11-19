@@ -13,9 +13,8 @@ on:
     paths:
       - 'uz'
       - 'uz.ps1'
-      - 'tasks.py'
-      - 'tests/**'
-      - 'scripts/**'
+      - 'uz.py'
+      - 'test_uz.py'
       - 'ultrazohm_cli/**'
       - 'ultrazohm_dataviewer/**'
       - 'javascope/test_server.py'
@@ -30,9 +29,8 @@ on:
     paths:
       - 'uz'
       - 'uz.ps1'
-      - 'tasks.py'
-      - 'tests/**'
-      - 'scripts/**'
+      - 'uz.py'
+      - 'test_uz.py'
       - 'ultrazohm_cli/**'
       - 'ultrazohm_dataviewer/**'
       - 'javascope/test_server.py'
@@ -74,14 +72,15 @@ jobs:
       - run: ./uz task ${{ matrix.project }} lint
       - run: ./uz task ${{ matrix.project }} format-check
 
-  shared-python-lint:
+  launcher-check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: '0.13.1'
-      - run: uv tool run --from ruff==0.17.2 ruff check --isolated --select F tasks.py tests scripts
+      - run: uv tool run --from ruff==0.17.2 ruff check --isolated --select F uz.py test_uz.py
+      - run: uv run --no-project --python 3.12 -m unittest test_uz -v
 
   image:
     uses: ./.github/workflows/ci-image.yml
@@ -313,9 +312,11 @@ jobs:
           name: native-cli-windows
           path: native-cli
       - name: Package Windows applications
-        run: uv run --no-project --python 3.12 scripts/package_windows.py --version "${{ needs.version.outputs.version }}" --cli native-cli/ultrazohm-cli.exe --viewer ultrazohm_dataviewer/dist/ultrazohm-dataviewer --output packages
+        run: uv run --no-project --python 3.12 ultrazohm_dataviewer/tools/package_windows.py --version "${{ needs.version.outputs.version }}" --cli native-cli/ultrazohm-cli.exe --viewer ultrazohm_dataviewer/dist/ultrazohm-dataviewer --output packages
+      - run: uv run --no-project --python 3.12 ultrazohm_cli/tools/package_windows.py --version "${{ needs.version.outputs.version }}" --cli native-cli/ultrazohm-cli.exe --output packages
       - name: Test extracted Windows downloads
-        run: uv run --no-project --python 3.12 scripts/smoke_windows_archives.py packages "${{ needs.version.outputs.version }}"
+        run: uv run --no-project --python 3.12 ultrazohm_dataviewer/tools/smoke_windows_archives.py packages "${{ needs.version.outputs.version }}"
+      - run: uv run --no-project --python 3.12 ultrazohm_cli/tools/smoke_windows_archives.py packages "${{ needs.version.outputs.version }}"
       - uses: actions/upload-artifact@v4
         with:
           name: bundle-windows
@@ -325,7 +326,7 @@ jobs:
           retention-days: 30
 
   release:
-    needs: [version, verify-published, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, python-style, shared-python-lint]
+    needs: [version, verify-published, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, python-style, launcher-check]
     if: needs.version.outputs.publish == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -350,7 +351,7 @@ jobs:
         run: |
           set -euo pipefail
           files=(*.whl *.zip)
-          python3 ../scripts/release_manifest.py . "$VERSION"
+          python3 ../ultrazohm_dataviewer/tools/release_manifest.py . "$VERSION"
           cat > release-notes.md <<EOF
           UltraZohm CLI and Data Viewer ${VERSION}.
 
@@ -378,7 +379,7 @@ jobs:
           gh release edit "$TAG" --draft=false --prerelease="$PRERELEASE" --latest=false
 
   validate-artifacts:
-    needs: [version, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, python-style, shared-python-lint]
+    needs: [version, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, python-style, launcher-check]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -387,7 +388,7 @@ jobs:
           pattern: '{wheel,bundle}-*'
           path: packages
           merge-multiple: true
-      - run: python3 scripts/release_manifest.py packages "${{ needs.version.outputs.version }}"
+      - run: python3 ultrazohm_dataviewer/tools/release_manifest.py packages "${{ needs.version.outputs.version }}"
       - uses: actions/upload-artifact@v4
         with:
           name: release-manifest
@@ -436,4 +437,5 @@ jobs:
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9
         with:
           version: '0.13.1'
-      - run: uv run --no-project --python 3.12 scripts/verify_published.py "${{ needs.version.outputs.version }}"
+      - run: uv run --no-project --python 3.12 ultrazohm_dataviewer/tools/verify_published.py "${{ needs.version.outputs.version }}"
+      - run: uv run --no-project --python 3.12 ultrazohm_cli/tools/verify_published.py "${{ needs.version.outputs.version }}"

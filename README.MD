@@ -160,6 +160,14 @@ Currently, only people associated with the project partners of KI-Power and peop
 If you are interested in joining the UltraZohm community, get in touch with us by E-Mail (info@ultrazohm.com).
 We are working on streamlining the contribution process since we aim to welcome contributions of all kinds.
 
+### Repository task ownership
+
+`uz` and `uz.ps1` bootstrap Python and call `uz.py`, which dispatches to the selected project's `tasks.py`.
+Installation, shell setup, build helpers, and release checks live in each project's `tools/` directory; their tests live in that project's `tests/` directory.
+The viewer owns combined distribution validation because it packages the CLI as a dependency.
+`./uz check cli` and `./uz check viewer` run only their respective project checks.
+The minimal launcher tests run separately with `python -m unittest test_uz`.
+
 ## License
 
 The project is licensed under the Apache 2.0 license. See LICENSE for details.

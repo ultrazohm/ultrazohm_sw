@@ -24,73 +24,118 @@ Having a common platform enables the active research community to focus on publi
 
 ## CLI and Data Viewer
 
-From the repository root, open one environment containing both applications:
+The two applications are `ultrazohm-cli` and `ultrazohm-dataviewer`.
+Python imports use `ultrazohm_cli` and `ultrazohm_dataviewer`.
+Installing the viewer also installs its matching CLI dependency.
 
-```bash
-./uz shell                    # Bash (Linux)
-# .\uz.ps1 shell             # Windows PowerShell: same arguments
-ultrazohm_cli --help
-uz-dataviewer --help
+### Python and uv (Linux and Windows)
+
+Run a published application directly:
+
+```sh
+uvx ultrazohm-cli
+uvx ultrazohm-dataviewer
 ```
 
-The launcher installs missing uv and the Python version in `.python-version`;
-no host Python or Make is required. Bash needs `curl` or `wget` to bootstrap uv.
-First setup needs internet access. If Windows blocks script execution, use
-`powershell -ExecutionPolicy Bypass -File .\uz.ps1 shell`.
+For persistent terminal commands:
 
-`setup` prepares the shared repository `.venv` without opening a shell. `shell`
-prepares it if needed and opens an activated child shell; `exit` returns to the
-original terminal. Both accept an optional CLI source:
-
-```bash
-./uz setup stable             # latest compatible stable CLI wheel from PyPI
-./uz setup prerelease         # latest compatible CLI, including development releases
-./uz setup local              # build this checkout's CLI (Rust/C++ tools required)
-./uz shell local              # setup local, then enter the shell
-./uz shell                    # reuse the last setup; stable on first use
+```sh
+uv tool install ultrazohm-cli
+# Or install both commands in one environment:
+uv tool install --with-executables-from ultrazohm-cli ultrazohm-dataviewer
 ```
 
-`release` is an alias for `stable`. The viewer always runs from this checkout
-(editable installation); other runtime dependencies come from its lockfile.
-Published CLI versions must satisfy the viewer's minimum version. Missing
-compatible wheels fail setup instead of triggering a native build or switching
-channels. If stable setup reports no compatible release, use `./uz setup prerelease`
-or `./uz setup local`. Explicit `setup` refreshes the selected installation; plain `shell`
-reuses it until setup inputs change. Setup preserves extra packages installed in this
-environment, including the dev container's documentation tools. An interrupted update
-keeps the previous CLI source for the next retry. Moving the checkout or changing its
-Python/platform recreates the venv to repair absolute paths and native dependencies;
-install any extra packages again afterward. After CLI source changes (Rust or Python),
-rerun `./uz setup local`.
-Neither setup nor shell starts an application. To activate the existing environment
-in the current terminal instead, use `source .venv/bin/activate` in Bash or
-`.\.venv\Scripts\Activate.ps1` in PowerShell.
+For Python scripts, install into your project's virtual environment:
 
-Builds and checks use the same interface locally and in CI, without entering the shell:
+```sh
+pip install ultrazohm-cli
+# Or install the viewer and CLI together:
+pip install ultrazohm-dataviewer
+```
 
-```bash
-./uz build cli                # native wheel in uz_cli/target/wheels
-./uz build viewer             # desktop bundle in uz_dataviewer/dist
+The CLI requires Python 3.10+; the viewer requires Python 3.12+.
+Published native CLI wheels support Windows x86-64 and Linux x86-64 (glibc 2.28+).
+GUI use requires a desktop display and graphics libraries. No Rust compiler is
+needed for published wheels. With uv, use `--python 3.12` to select Python explicitly.
+Use `--prerelease allow` to include development releases, or `==VERSION` for an exact release.
+A viewer release depends on the CLI with the same version.
+
+### Windows standalone downloads
+
+GitHub releases provide two ZIPs: `ultrazohm-cli-VERSION-windows-x86_64.zip`
+and `ultrazohm-dataviewer-VERSION-windows-x86_64.zip`.
+Extract the entire archive before running it. Neither needs installed Python or uv.
+
+The CLI ZIP contains `ultrazohm-cli.exe`. The viewer ZIP contains
+`ultrazohm-dataviewer.exe`, its runtime files, `ultrazohm-cli.exe`, and the
+`ultrazohm-dataviewer.ps1` terminal wrapper. Double-click the viewer executable
+for a GUI without a console. From PowerShell:
+
+```powershell
+.\ultrazohm-dataviewer.ps1
+.\ultrazohm-dataviewer.ps1 --help
+.\ultrazohm-dataviewer.ps1 status
+```
+
+The wrapper waits for the operation and leaves the calling shell open. With no
+arguments it opens the GUI and waits until it closes. Keep the runtime directory
+beside the executable. Linux uses the published Python wheels; no standalone
+Linux archives are provided. Downloads include `SHA256SUMS`.
+
+### Repository environments
+
+Use `./uz` on Linux or `.\uz.ps1` on Windows. The helper bootstraps uv and the
+Python version pinned in `.python-version`. First setup needs internet access;
+Linux needs curl or wget for uv bootstrap.
+
+```sh
+./uz shell stable --app cli       # published CLI only
+./uz shell stable --app viewer    # published viewer and CLI
+./uz shell prerelease --app viewer
+./uz shell local --app viewer     # editable viewer and locally built CLI
+./uz shell                       # reuse the last completed selection
+```
+
+On first use the default is `stable` with `--app viewer`. `stable` and `prerelease`
+install both selected applications from PyPI. `local` builds the CLI from this
+checkout and installs the viewer editable when selected. Local CLI builds require
+Rust and a C/C++ toolchain. Re-run local setup after CLI source changes.
+
+`setup` accepts the same arguments and prepares `.venv` without opening a shell.
+Explicit setup recreates the managed environment, removing stale packages and
+editable installs. Reinstall any additional project packages afterward.
+Plain `shell` reuses a completed environment while its setup inputs match.
+Neither command starts an application. Inside the activated shell, run
+`ultrazohm-cli`, `ultrazohm-dataviewer`, or `python measurement.py`.
+Use `exit` to return to the original shell.
+
+Application installation is independent of firmware selection. For example:
+
+```sh
+ultrazohm-cli create-json-from-javascope-h --repo /path/to/ultrazohm_sw --output mapping.json
+ultrazohm-dataviewer gui --live-repo /path/to/ultrazohm_sw
+```
+
+Vitis operations require a firmware checkout and an external Vitis installation.
+
+### Building and testing
+
+```sh
+./uz build cli                 # local CLI wheel
+./uz task viewer wheel         # viewer wheel
 ./uz check cli
-./uz check viewer
-./uz task cli release-wheel   # portable release wheel
-./uz task viewer bundle-smoke
-./uz task cli help            # additional project tasks
-./uz --help
+./uz check viewer              # tests installed wheels, including live simulation
+./uz task cli release-wheel    # portable CLI wheel
 ```
 
-Use `.\uz.ps1` instead of `./uz` in PowerShell. Build/check options are forwarded,
-e.g. `./uz check viewer --cli-wheel path/to/cli.whl`. Paths are relative to the
-calling terminal. These launchers replace the project Makefiles and viewer
-`start.sh`/`start.ps1`; application options now go directly to `uz-dataviewer` or
-`ultrazohm_cli`, after setup/activation.
+Windows also supports `.\uz.ps1 build viewer` and `.\uz.ps1 task cli standalone`.
+CI builds each release wheel once and uses those wheels for testing and bundling.
+`--cli-wheel PATH` and `--viewer-wheel PATH` select candidate wheels for viewer checks
+and builds. Paths are relative to the calling terminal.
 
-The dev container supplies the native build tools. Its post-create hook runs
-`./uz setup local`; both commands and the shared Python environment are available
-in new VS Code terminals. Rebuild the container to pick up this configuration.
-The viewer GUI still needs a display; the container supports headless testing.
-
-See [CLI usage](uz_cli/README.md) and [viewer usage](uz_dataviewer/README.md).
+The devcontainer runs `./uz setup local --app viewer` and installs documentation
+and example dependencies. The GUI still needs a display.
+See [CLI usage](ultrazohm_cli/README.md) and [viewer usage](ultrazohm_dataviewer/README.md).
 
 ## Research 
 

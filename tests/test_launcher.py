@@ -8,7 +8,6 @@ import subprocess
 import sys
 import tempfile
 import unittest
-import zipfile
 from unittest.mock import patch
 
 REPO = Path(__file__).resolve().parents[1]
@@ -19,199 +18,83 @@ spec.loader.exec_module(tasks)
 
 class SetupTest(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory(prefix='uz test ')
+        self.temp = tempfile.TemporaryDirectory(prefix='uz setup ')
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
-        (self.root / 'uz_dataviewer').mkdir()
-        for name in ('tasks.py', '.python-version', 'uz_dataviewer/pyproject.toml', 'uz_dataviewer/uv.lock'):
-            shutil.copyfile(REPO / name, self.root / name)
+        for name in ('tasks.py', '.python-version', 'ultrazohm_dataviewer/pyproject.toml', 'ultrazohm_dataviewer/uv.lock'):
+            target = self.root / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(REPO / name, target)
         self.calls = []
-        self.root_patch = patch.object(tasks, 'ROOT', self.root)
-        self.root_patch.start()
-        self.addCleanup(self.root_patch.stop)
-        self.run_patch = patch.object(tasks, 'run', side_effect=self.record)
-        self.run_patch.start()
-        self.addCleanup(self.run_patch.stop)
+        for patcher in (patch.object(tasks, 'ROOT', self.root),
+                        patch.object(tasks, 'run', side_effect=self.record),
+                        patch.object(tasks.subprocess, 'check_output', return_value='{}')):
+            patcher.start()
+            self.addCleanup(patcher.stop)
 
     def record(self, *command, **kwargs):
-        self.calls.append((list(command), kwargs))
+        self.calls.append(command)
         if '--out' in command:
-            out = Path(command[command.index('--out') + 1])
-            (out / 'ultrazohm_cli-0.1.0-test.whl').touch()
-        if command[:2] == ('uv', 'sync'):
+            Path(command[command.index('--out') + 1], 'ultrazohm_cli-0.1.0-test.whl').touch()
+        if command[:2] == ('uv', 'venv'):
             tasks.scripts().mkdir(parents=True, exist_ok=True)
-            for name in ('python', 'ultrazohm_cli', 'uz-dataviewer'):
+        if command[:3] == ('uv', 'pip', 'install'):
+            for name in ('python', 'ultrazohm-cli', 'ultrazohm-dataviewer'):
                 tasks.executable(name).touch()
 
-    def install(self):
-        return next(cmd for cmd, _ in self.calls if cmd[:3] == ['uv', 'pip', 'install'])
-
-    def test_source_selection_shared_venv_and_platform_paths(self):
-        for windows in (False, True):
-            for source in ('local', 'stable', 'prerelease'):
-                with self.subTest(windows=windows, source=source), patch.object(tasks, 'WINDOWS', windows):
+    def test_all_application_source_combinations(self):
+        for source in tasks.SOURCES:
+            for app in ('cli', 'viewer'):
+                with self.subTest(source=source, app=app):
                     self.calls.clear()
-                    tasks.setup(source)
-                    sync, options = next((cmd, kw) for cmd, kw in self.calls if cmd[:2] == ['uv', 'sync'])
-                    self.assertEqual(options['env']['UV_PROJECT_ENVIRONMENT'], str(self.root / '.venv'))
-                    self.assertIn('--locked', sync)
-                    self.assertIn('--no-install-package', sync)
-                    self.assertIn(tasks.executable('python'), self.install())
-                    self.assertIn('--no-deps', self.install())
+                    tasks.setup(source, app=app)
+                    install = next(c for c in self.calls if c[:3] == ('uv', 'pip', 'install'))
                     if source == 'local':
-                        self.assertIn('--out', self.calls[0][0])
-                        self.assertTrue(str(self.install()[-1]).endswith('.whl'))
+                        self.assertTrue(any(str(c).endswith('.whl') for c in install))
+                        self.assertEqual('--editable' in install, app == 'viewer')
+                        self.assertIn('--no-sources', install)
+                        self.assertNotIn('--no-build-package', install)
                     else:
-                        self.assertFalse(any('--out' in cmd for cmd, _ in self.calls))
-                        self.assertIn('--only-binary', self.install())
-                        self.assertEqual(self.install()[-3:-1], ['--prerelease',
-                                         'allow' if source == 'prerelease' else 'disallow'])
-                        self.assertTrue(self.install()[-1].startswith('ultrazohm_cli>='))
-                    self.assertEqual(tasks.saved_setup()['source'], source)
-                    self.assertEqual([c[0][0] for c in self.calls[-2:]],
-                                     [tasks.executable('ultrazohm_cli'), tasks.executable('uz-dataviewer')])
+                        self.assertEqual(install[-1], 'ultrazohm-cli' if app == 'cli' else 'ultrazohm-dataviewer')
+                        self.assertNotIn('--editable', install)
+                        self.assertEqual(install[install.index('--prerelease') + 1],
+                                         'allow' if source == 'prerelease' else 'disallow')
+                    self.assertTrue(any(c[:3] == ('uv', 'pip', 'check') for c in self.calls))
+                    state = tasks.saved_setup()
+                    self.assertEqual((state['source'], state['app']), (source, app))
+                    self.assertIn('fingerprint', state)
 
-    def test_shell_reuses_selection_but_refreshes_changed_setup(self):
-        tasks.setup('local')
-        self.calls.clear()
-        tasks.main(['shell'])
-        self.assertEqual(self.calls, [([tasks.executable('python'), '-m', 'uz_dataviewer.env_shell'], {'interactive': True})])
-        (self.root / 'uz_dataviewer/uv.lock').write_text('changed')
-        self.calls.clear()
-        tasks.main(['shell'])
-        self.assertIn('--out', self.calls[0][0])  # Still local, not silently changed to stable.
-        self.calls.clear()
-        tasks.main(['shell', 'stable'])
-        self.assertFalse(any('--out' in cmd for cmd, _ in self.calls))
-        self.assertEqual(tasks.saved_setup()['source'], 'stable')
-
-    def test_default_and_release_alias(self):
-        tasks.main(['setup'])
-        self.assertEqual(tasks.saved_setup()['source'], 'stable')
-        tasks.main(['setup', 'release'])
-        self.assertEqual(tasks.saved_setup()['source'], 'stable')
-
-    def test_missing_executable_forces_setup(self):
-        tasks.setup('stable')
-        tasks.executable('ultrazohm_cli').unlink()
+    def test_shell_reuses_completed_setup_and_refreshes_missing_command(self):
+        tasks.setup('stable', app='cli')
         self.calls.clear()
         tasks.setup(reuse=True)
-        self.assertTrue(self.install())
-
-    def test_failed_install_does_not_open_shell_or_mark_setup_complete(self):
-        tasks.setup('stable')
-        self.calls.clear()
-        def fail(*command, **kwargs):
-            if command[:3] == ('uv', 'pip', 'install'):
-                raise subprocess.CalledProcessError(7, command)
-            self.record(*command, **kwargs)
-        with patch.object(tasks, 'run', side_effect=fail), self.assertRaises(SystemExit) as stopped:
-            tasks.main(['shell', 'prerelease'])
-        self.assertEqual(stopped.exception.code, 7)
-        self.assertEqual(tasks.saved_setup()['source'], 'stable')
-        self.assertNotIn('fingerprint', tasks.saved_setup())
-        self.assertFalse(any('uz_dataviewer.env_shell' in cmd for cmd, _ in self.calls))
-
-    def test_failed_refresh_keeps_source_for_plain_shell_retry(self):
-        tasks.setup('prerelease')
-        def fail(*command, **kwargs):
-            if command[:2] == ('uv', 'sync'):
-                raise subprocess.CalledProcessError(7, command)
-            self.record(*command, **kwargs)
-        with patch.object(tasks, 'run', side_effect=fail):
-            with self.assertRaises(subprocess.CalledProcessError):
-                tasks.setup()
-        self.assertEqual(tasks.saved_setup()['source'], 'prerelease')
-        self.assertNotIn('fingerprint', tasks.saved_setup())
-        self.calls.clear()
-        tasks.main(['shell'])
-        self.assertIn('allow', self.install())
-
-    def test_moved_checkout_rebuilds_environment_before_reuse(self):
-        tasks.setup('prerelease')
-        destination = self.root / 'moved checkout'
-        shutil.copytree(self.root, destination, ignore=shutil.ignore_patterns('moved checkout'))
-        self.calls.clear()
-        with patch.object(tasks, 'ROOT', destination):
-            tasks.setup(reuse=True)
-            self.assertEqual(tasks.saved_setup()['context']['root'], str(destination))
-        self.assertEqual(self.calls[0][0][:3], ['uv', 'venv', '--clear'])
-        self.assertIn('allow', self.install())
-
-    def test_failed_build_preserves_previous_setup(self):
-        tasks.setup('stable')
-        previous = tasks.saved_setup()
-        with patch.object(tasks, 'project_task', side_effect=subprocess.CalledProcessError(9, 'build')):
-            with self.assertRaises(subprocess.CalledProcessError):
-                tasks.setup('local')
-        self.assertEqual(tasks.saved_setup(), previous)
-
-    def test_dispatch_preserves_arguments_and_caller_directory(self):
-        tasks.main(['build', 'viewer', '--cli-wheel', 'a directory/cli.whl'])
-        self.assertEqual(self.calls, [([sys.executable, self.root / 'uz_dataviewer/tasks.py',
-                                       'bundle', '--cli-wheel', 'a directory/cli.whl'], {})])
-        self.calls.clear()
-        tasks.main(['task', 'cli', 'stamp', '0.1.42.dev0'])
-        self.assertEqual(self.calls[0][0][-2:], ['stamp', '0.1.42.dev0'])
-        self.calls.clear()
-        tasks.main(['check', 'cli'])
-        self.assertIn('unittest', self.calls[0][0])
-        self.assertEqual(self.calls[-1][0][-1], 'check')
-
-    def test_invalid_command_never_installs(self):
-        with self.assertRaises(SystemExit):
-            tasks.main(['setup', 'typo'])
         self.assertEqual(self.calls, [])
+        tasks.executable('ultrazohm-cli').unlink()
+        tasks.setup(reuse=True)
+        self.assertTrue(self.calls)
 
+    def test_switch_recreates_environment(self):
+        tasks.setup('local', app='viewer')
+        self.calls.clear()
+        tasks.setup('stable', app='cli')
+        self.assertTrue(any(c[:3] == ('uv', 'venv', '--clear') for c in self.calls))
+        self.assertEqual(tasks.saved_setup()['app'], 'cli')
 
-@unittest.skipUnless(shutil.which('uv'), 'uv required for offline environment regression')
-class EnvironmentIntegrationTest(unittest.TestCase):
-    def test_failed_replacement_preserves_installed_cli_and_extra_packages(self):
-        with tempfile.TemporaryDirectory(prefix='uz sync ') as directory:
-            root = Path(directory).resolve()
-            project = root / 'uz_dataviewer'
-            project.mkdir()
-            def wheel(name):
-                path = root / f'{name}-1.0-py3-none-any.whl'
-                metadata = f'{name}-1.0.dist-info'
-                files = {f'{name}/__init__.py': 'VALUE = 42\n',
-                         f'{metadata}/METADATA': f'Metadata-Version: 2.1\nName: {name}\nVersion: 1.0\n',
-                         f'{metadata}/WHEEL': 'Wheel-Version: 1.0\nRoot-Is-Purelib: true\nTag: py3-none-any\n'}
-                files[f'{metadata}/RECORD'] = ''.join(f'{name},,\n' for name in files) + f'{metadata}/RECORD,,\n'
-                with zipfile.ZipFile(path, 'w') as archive:
-                    for name, content in files.items():
-                        archive.writestr(name, content)
-                return path
-            cli = wheel('ultrazohm_cli')
-            extra = wheel('user_extra')
-            (project / 'pyproject.toml').write_text(
-                '[project]\nname = "uz-dataviewer"\nversion = "1.0"\n'
-                'dependencies = ["ultrazohm_cli>=1.0"]\n[tool.uv]\npackage = false\n'
-                f'[tool.uv.sources]\nultrazohm-cli = {{path = "../{cli.name}"}}\n')
-            (root / '.python-version').write_text(sys._base_executable)
-            shutil.copyfile(REPO / 'tasks.py', root / 'tasks.py')
-            with patch.object(tasks, 'ROOT', root), patch.dict(os.environ, {
-                    'UV_CACHE_DIR': str(root / 'cache'), 'UV_OFFLINE': 'true', 'UV_PYTHON_DOWNLOADS': 'never'}):
-                def invoke(*command, **kwargs):
-                    subprocess.run([str(arg) for arg in command], check=True, capture_output=True, **kwargs)
-                invoke('uv', 'venv', '--python', sys._base_executable, root / '.venv')
-                invoke('uv', 'pip', 'install', '--python', tasks.executable('python'), cli, extra)
-                invoke('uv', 'lock', '--project', project, '--python', sys._base_executable)
-                marker = root / '.venv/.uz-setup.json'
-                marker.write_text(json.dumps({'source': 'prerelease', 'fingerprint': tasks.fingerprint(),
-                                              'context': tasks.environment_context()}))
-                def fail_install(*command, **kwargs):
-                    if command[:3] == ('uv', 'pip', 'install'):
-                        raise subprocess.CalledProcessError(7, command)
-                    invoke(*command, **kwargs)
-                with patch.object(tasks, 'run', side_effect=fail_install):
-                    with self.assertRaises(subprocess.CalledProcessError):
-                        tasks.setup('stable')
-                # Actual uv sync, not a mock: neither installed package may disappear.
-                invoke(tasks.executable('python'), '-c',
-                       'import ultrazohm_cli, user_extra; assert user_extra.VALUE == 42')
-                self.assertEqual(tasks.saved_setup()['source'], 'prerelease')
-                self.assertNotIn('fingerprint', tasks.saved_setup())
+    def test_failure_is_not_marked_ready(self):
+        tasks.setup('stable', app='cli')
+        original = self.record
+        def failing(*command, **kwargs):
+            if command[:3] == ('uv', 'pip', 'install'):
+                raise subprocess.CalledProcessError(1, command)
+            original(*command, **kwargs)
+        with patch.object(tasks, 'run', side_effect=failing):
+            with self.assertRaises(subprocess.CalledProcessError):
+                tasks.setup('prerelease', app='viewer')
+        self.assertNotIn('fingerprint', tasks.saved_setup())
+
+    def test_no_release_alias(self):
+        with self.assertRaises(SystemExit):
+            tasks.main(['setup', 'release'])
 
 
 @unittest.skipUnless(os.name == 'posix' and shutil.which('bash'), 'POSIX Bash required')

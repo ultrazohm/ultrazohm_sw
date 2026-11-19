@@ -33,14 +33,17 @@ vitis/Packages/*
 # Generated artifacts, including live measurement logs
 /artifacts/
 *.ini
-/uz_cli_channel_mappings/
+/ultrazohm_cli_channel_mappings/
 
 # Python/test tooling caches
 .pytest_cache/
 *.egg-info/
-uz_dataviewer/build/native/
+ultrazohm_dataviewer/build/native/
 
 # Shared launcher environment
 /.venv/
 /__pycache__/
 /tests/__pycache__/
+
+/scripts/__pycache__/
+/ultrazohm_dataviewer/dist-wheels/

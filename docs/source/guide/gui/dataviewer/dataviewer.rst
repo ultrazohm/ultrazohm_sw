@@ -6,7 +6,7 @@ Data viewer (deprecated)
 
 .. note::
 
-    The dataviewer is deprecated and will be removed in the future! Use the more powerful :ref:`uz_dataviewer`.
+    The dataviewer is deprecated and will be removed in the future! Use the more powerful :ref:`ultrazohm_dataviewer`.
 
 The :ref:`JavaScope` is used to observe log data during operation of the UltraZohm.
 In addition, log files can be created, which can be further analyzed.

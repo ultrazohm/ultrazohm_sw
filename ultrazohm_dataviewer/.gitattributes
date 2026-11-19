@@ -1,0 +1,3 @@
+# Application icons are bundled into builds whose checkouts skip LFS; keep these
+# small images in git so builds never package an LFS pointer instead of the image.
+src/ultrazohm_dataviewer/assets/**/*.png -filter -diff -merge -text

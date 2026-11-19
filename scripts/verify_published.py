@@ -7,6 +7,35 @@ import tempfile
 import time
 
 
+def verify_tools(root, version, index_args=None):
+    """Check uvx and persistent tools without touching the runner's installed tools."""
+    index_args = index_args or ['--default-index', 'https://pypi.org/simple']
+    for package in ('ultrazohm-cli', 'ultrazohm-dataviewer'):
+        tool_root = root / f'tools-{package}'
+        bin_dir = tool_root / 'bin'
+        env = {**os.environ, 'UV_TOOL_DIR': str(tool_root / 'environments'),
+               'UV_TOOL_BIN_DIR': str(bin_dir)}
+        options = ['--python', '3.12', '--no-build', *index_args]
+        # uvx is the alias for `uv tool run`.
+        output = subprocess.check_output(
+            ['uv', 'tool', 'run', '--isolated', *options, f'{package}=={version}', '--version'],
+            cwd=root, env=env, text=True)
+        if version not in output.split():
+            raise RuntimeError(f'uvx {package} reported {output!r}')
+        names = ['ultrazohm-cli']
+        extra = []
+        if package == 'ultrazohm-dataviewer':
+            names.append(package)
+            extra = ['--with-executables-from', 'ultrazohm-cli']
+        subprocess.run(['uv', 'tool', 'install', *options, *extra, f'{package}=={version}'],
+                       cwd=root, env=env, check=True)
+        for name in names:
+            command = bin_dir / (name + ('.exe' if os.name == 'nt' else ''))
+            output = subprocess.check_output([str(command), '--version'], cwd=root, env=env, text=True)
+            if version not in output.split():
+                raise RuntimeError(f'Installed tool {name} reported {output!r}')
+
+
 def verify(version):
     from release_build import VERSION
     if not VERSION.fullmatch(version):
@@ -41,7 +70,8 @@ def verify(version):
             else:
                 code += 'assert not any(d.metadata["Name"] == "imgui-bundle" for d in m.distributions())'
             subprocess.run([str(python), '-c', code], cwd=root, check=True)
-    print(f'PyPI release {version}: both clean installations verified.')
+        verify_tools(root, version)
+    print(f'PyPI release {version}: clean Python, uvx, and persistent tool installations verified.')
 
 
 if __name__ == '__main__':

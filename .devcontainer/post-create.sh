@@ -5,7 +5,7 @@ set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 # Use the same local setup as developers outside the container.
-./uz setup local
+./uz setup local --app viewer
 uv pip install --python .venv/bin/python matplotlib -r docs/requirements.txt
 chmod +x javascope/build.sh javascope/run_with_test_server.sh
 
@@ -13,7 +13,7 @@ chmod +x javascope/build.sh javascope/run_with_test_server.sh
 .venv/bin/python - <<'PYTHON'
 import sys
 from ultrazohm_cli import Acquisition, Client
-from uz_dataviewer import Client as ViewerClient
+from ultrazohm_dataviewer import Client as ViewerClient
 import polars
 import matplotlib
 

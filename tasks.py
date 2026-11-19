@@ -8,11 +8,10 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
-import tomllib
 
 ROOT = Path(__file__).resolve().parent
 WINDOWS = os.name == "nt"
-PROJECTS = {"cli": "uz_cli", "viewer": "uz_dataviewer"}
+PROJECTS = {"cli": "ultrazohm_cli", "viewer": "ultrazohm_dataviewer"}
 SOURCES = ("local", "stable", "prerelease")
 
 
@@ -54,7 +53,7 @@ def environment_context():
 def fingerprint():
     digest = hashlib.sha256()
     digest.update(json.dumps(environment_context()).encode())
-    for path in (".python-version", "tasks.py", "uz_dataviewer/pyproject.toml", "uz_dataviewer/uv.lock"):
+    for path in (".python-version", "tasks.py", "ultrazohm_dataviewer/pyproject.toml", "ultrazohm_dataviewer/uv.lock"):
         digest.update((ROOT / path).read_bytes())
     return digest.hexdigest()
 
@@ -72,73 +71,65 @@ def project_task(project, task, *arguments):
     run(sys.executable, ROOT / PROJECTS[project] / "tasks.py", task, *arguments)
 
 
-def setup(source=None, *, reuse=False):
-    """Install both commands into the repository venv; shell reuses a completed setup."""
+def setup(source=None, *, app=None, reuse=False):
+    """Prepare published applications or the local checkout in the managed venv."""
     state = saved_setup()
-    context = environment_context()
     selected = source or state.get("source", "stable")
+    selected_app = app or state.get("app", "viewer")
+    context = environment_context()
     signature = fingerprint()
-    if (reuse and source is None and state.get("fingerprint") == signature
-            and all(executable(name).is_file() for name in ("python", "ultrazohm_cli", "uz-dataviewer"))):
+    commands = ["ultrazohm-cli"]
+    if selected_app == "viewer":
+        commands.append("ultrazohm-dataviewer")
+    if (reuse and source is None and app is None and state.get("fingerprint") == signature
+            and state.get("app") == selected_app
+            and all(executable(name).is_file() for name in ["python", *commands])):
         return
-
-    viewer = ROOT / "uz_dataviewer"
     python_version = (ROOT / ".python-version").read_text().strip()
-    metadata = tomllib.loads((viewer / "pyproject.toml").read_text())
-    # Respect the viewer's minimum CLI version for published packages. Local
-    # builds deliberately override it (their base version may be older).
-    requirement = next(dep.split(";")[0].strip() for dep in metadata["project"]["dependencies"]
-                       if dep.startswith("ultrazohm_cli"))
+    env = os.environ.copy()
+    env.pop("VIRTUAL_ENV", None)
+    env["UV_PROJECT_ENVIRONMENT"] = str(ROOT / ".venv")
+    marker = ROOT / ".venv" / ".uz-setup.json"
     with tempfile.TemporaryDirectory(prefix="uz-wheel-") as directory:
-        package = requirement
+        wheel = None
         if selected == "local":
             project_task("cli", "wheel", "--out", directory)
             wheels = list(Path(directory).glob("ultrazohm_cli-*.whl"))
             if len(wheels) != 1:
                 raise SystemExit(f"Expected one CLI wheel in {directory}, found {len(wheels)}")
-            package = str(wheels[0])
-
-        marker = ROOT / ".venv" / ".uz-setup.json"
-        # Retain the previous selection for retries, but never regard a
-        # partially updated environment as ready after a failed sync/install.
-        retry_state = json.dumps({"source": state.get("source", selected),
-                                  "context": state.get("context", context)}) + "\n"
+            wheel = wheels[0]
+        # Build first, then replace the managed environment. This removes stale
+        # editable installs and GUI dependencies when changing application sets.
         if marker.exists():
-            marker.write_text(retry_state)
-        env = os.environ.copy()
-        env.pop("VIRTUAL_ENV", None)
-        env["UV_PROJECT_ENVIRONMENT"] = str(ROOT / ".venv")
-        if state.get("context") is not None and state["context"] != context:
-            # Updating packages alone does not repair activation scripts or
-            # native libraries copied from a different host/container.
-            run("uv", "venv", "--clear", "--python", python_version, ROOT / ".venv", env=env)
-            marker.write_text(retry_state)
-        # Install the viewer and its locked dependencies, selecting the CLI
-        # separately so stable/prerelease/local never rewrites uv.lock.
-        run("uv", "sync", "--project", viewer, "--python", python_version,
-            "--locked", "--inexact", "--no-dev", "--no-install-package", "ultrazohm-cli",
-            "--no-build-package", "imgui-bundle", env=env)
-        # Sync may recreate the venv for a different interpreter. Write after
-        # it completes, also avoiding a non-venv directory on first setup.
-        marker.write_text(retry_state)
-        options = [] if selected == "local" else [
-            "--only-binary", ":all:", "--upgrade-package", "ultrazohm_cli",
-            "--prerelease", "allow" if selected == "prerelease" else "disallow"]
-        try:
-            run("uv", "pip", "install", "--python", executable("python"), "--no-deps",
-                "--reinstall-package", "ultrazohm_cli", *options, package)
-        except subprocess.CalledProcessError:
-            if selected == "stable":
-                launcher = ".\\uz.ps1" if WINDOWS else "./uz"
-                print(f"Stable CLI installation failed. If no compatible stable wheel exists, use\n"
-                      f"  {launcher} setup prerelease\n"
-                      f"or {launcher} setup local (requires Rust/C++ tools).", file=sys.stderr)
-            raise
-        # Fail during setup if either installed entry point cannot load.
-        for name in ("ultrazohm_cli", "uz-dataviewer"):
+            marker.unlink()
+        run("uv", "venv", "--clear", "--python", python_version, ROOT / ".venv", env=env)
+        marker.write_text(json.dumps({"source": selected, "app": selected_app}) + "\n")
+        if selected == "local":
+            constraints = Path(directory) / "constraints.txt"
+            run("uv", "export", "--project", ROOT / "ultrazohm_dataviewer", "--locked",
+                "--no-dev", "--no-emit-project", "--no-emit-package", "ultrazohm-cli",
+                "--no-hashes", "--format", "requirements.txt", "--output-file", constraints, env=env)
+            packages = [wheel]
+            if selected_app == "viewer":
+                packages += ["--editable", ROOT / "ultrazohm_dataviewer"]
+            run("uv", "pip", "install", "--python", executable("python"),
+                "--no-sources", "--constraint", constraints, "--only-binary", "imgui-bundle", *packages, env=env)
+        else:
+            package = "ultrazohm-cli" if selected_app == "cli" else "ultrazohm-dataviewer"
+            run("uv", "pip", "install", "--python", executable("python"),
+                "--only-binary", ":all:", "--prerelease",
+                "allow" if selected == "prerelease" else "disallow", package, env=env)
+        run("uv", "pip", "check", "--python", executable("python"), env=env)
+        for name in commands:
             run(executable(name), "--help", stdout=subprocess.DEVNULL)
-        marker.write_text(json.dumps({"source": selected, "fingerprint": signature, "context": context}) + "\n")
-    print(f"Both applications are ready in {ROOT / '.venv'} ({selected} CLI).", flush=True)
+        versions = subprocess.check_output(
+            [str(executable("python")), "-c",
+             "import importlib.metadata,json; print(json.dumps({d.metadata['Name']: d.version "
+             "for d in importlib.metadata.distributions()}))"], text=True)
+        marker.write_text(json.dumps({"source": selected, "app": selected_app,
+                                     "fingerprint": signature, "context": context,
+                                     "versions": json.loads(versions)}) + "\n")
+    print(f"{selected_app} environment ready in {ROOT / '.venv'} ({selected}).", flush=True)
 
 
 def main(argv=None):
@@ -149,8 +140,9 @@ def main(argv=None):
     for name in ("setup", "shell"):
         task = commands.add_parser(name, help="prepare both applications" if name == "setup" else
                                    "prepare both applications and open an activated shell")
-        task.add_argument("source", nargs="?", choices=(*SOURCES, "release"),
-                          help="CLI source: reuse last selection, or stable on first use; release aliases stable")
+        task.add_argument("source", nargs="?", choices=SOURCES,
+                          help="Application source: reuse last selection, or stable on first use")
+        task.add_argument("--app", choices=PROJECTS, help="cli only, or viewer with CLI; defaults to last selection or viewer")
     for name in ("build", "check", "task"):
         help_text = {"build": "build a CLI wheel or viewer desktop bundle",
                      "check": "run the same checks as CI",
@@ -166,10 +158,9 @@ def main(argv=None):
         return
     try:
         if args.command in ("setup", "shell"):
-            source = "stable" if args.source == "release" else args.source
-            setup(source, reuse=args.command == "shell")
+            setup(args.source, app=args.app, reuse=args.command == "shell")
             if args.command == "shell":
-                run(executable("python"), "-m", "uz_dataviewer.env_shell", interactive=True)
+                run(executable("python"), ROOT / "scripts" / "env_shell.py", interactive=True)
             else:
                 print("Enter with .\\uz.ps1 shell or .\\.venv\\Scripts\\Activate.ps1" if WINDOWS else
                       "Enter with ./uz shell or source .venv/bin/activate")

@@ -80,7 +80,7 @@ def local_wheel():
 
 
 def install(_args):
-    """Build this checkout's CLI and install it as the ultrazohm_cli command (uv tool)."""
+    """Build this checkout's CLI and install it as the ultrazohm-cli command (uv tool)."""
     built = local_wheel()
     python = (ROOT / ".python-version").read_text(encoding="utf-8").strip()
     run("uv", "tool", "install", "--force", "--python", python, built)
@@ -121,7 +121,6 @@ def standalone(_args):
     if not WINDOWS:
         raise SystemExit("Standalone downloads are Windows-only; use the Python wheel on Linux.")
     run("cargo", "build", "--release", "--locked", "--bin", "ultrazohm-cli")
-    integration(venv_bin(TARGET / "release-venv", "python"), TARGET / "release" / "ultrazohm-cli.exe")
 
 
 def release_check(args):
@@ -129,6 +128,8 @@ def release_check(args):
     venv = TARGET / "release-venv"
     python = fresh_venv(venv, built, "polars", "packaging")
     integration(python, venv_bin(venv, "ultrazohm-cli"))
+    if args.standalone:
+        integration(python, TARGET / "release" / "ultrazohm-cli.exe")
 
 
 def release_version(base, branch, run_number):
@@ -172,7 +173,7 @@ def overview():
 DESCRIPTIONS = {
     "standalone": "Build the Windows native CLI executable.",
     "install": "Build an optimized wheel of this checkout for this machine and install it with "
-               "'uv tool install --force', replacing an ultrazohm_cli installed from PyPI until you "
+               "'uv tool install --force', replacing an ultrazohm-cli installed from PyPI until you "
                "reinstall that.",
     "check": "Formatting, clippy, Rust tests, then a debug wheel installed into target/ci-venv and "
              "the integration tests twice: against the cargo binary and the wheel's command.",
@@ -199,7 +200,10 @@ def main(argv=None):
     add("wheel", wheel).add_argument("--out", type=Path, help="output directory (default: target/wheels)")
     add("release-wheel", release_wheel)
     add("standalone", standalone)
-    add("release-check", release_check).add_argument(
+    release_parser = add("release-check", release_check)
+    release_parser.add_argument("--standalone", action="store_true",
+                                help="also test the Windows executable built by the standalone task")
+    release_parser.add_argument(
         "--wheel-dir", type=Path, help="directory holding the wheel (default: target/wheels-release)")
     add("version", version)
     argv = list(sys.argv[1:] if argv is None else argv)

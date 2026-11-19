@@ -173,8 +173,8 @@ jobs:
           workspaces: ultrazohm_cli
           key: release-windows
       - run: .\uz.ps1 task cli release-wheel
-      - run: .\uz.ps1 task cli release-check
       - run: .\uz.ps1 task cli standalone
+      - run: .\uz.ps1 task cli release-check --standalone
       - run: .\ultrazohm_cli\target\release\ultrazohm-cli.exe --version
       - uses: actions/upload-artifact@v4
         with:

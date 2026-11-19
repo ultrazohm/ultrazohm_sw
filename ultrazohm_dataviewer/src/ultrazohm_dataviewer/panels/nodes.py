@@ -18,12 +18,12 @@ from imgui_bundle import imgui_node_editor as ed
 from ..nodes import REGISTRY, is_stale, transform_kinds
 from ..state import AppState
 from ..transforms import MATH_BINARY
-from .base import SessionPanel
-from .navigation import SIGNAL_DND_TYPE
 
 # Editor IDs use two tag bits: node=0, output=1, input=2, link=3.
 # Pairing node/slot indices avoids fixed limits and overlapping input slots.
 from ..validation import parse_bool
+from .base import SessionPanel
+from .navigation import SIGNAL_DND_TYPE
 
 
 def _pair(a: int, b: int) -> int:
@@ -32,6 +32,7 @@ def _pair(a: int, b: int) -> int:
 
 def _unpair(value: int) -> tuple[int, int]:
     from math import isqrt
+
     total = (isqrt(8 * value + 1) - 1) // 2
     b = value - total * (total + 1) // 2
     return total - b, b
@@ -88,7 +89,7 @@ class NodesPanel(SessionPanel):
         self._positioned: set[int] = set()
         self._model_positions: dict[int, tuple[float, float]] = {}
         self._last_pos: dict[int, tuple[float, float]] = {}
-        self._renaming: int | None = None   # node whose name is being edited inline
+        self._renaming: int | None = None  # node whose name is being edited inline
         self._rename_buf: str = ""
         self._rename_focus: bool = False
 
@@ -205,15 +206,25 @@ class NodesPanel(SessionPanel):
     def _transform_params(self, state: AppState, node) -> None:
         """Generic renderer for built-in and plugin parameter declarations."""
         spec = REGISTRY.get(node.kind)
-        for ps in (spec.ui if spec is not None else ()):
-            if node.kind == "math" and ps.key == "k" and node.params.get("op") not in ("scale", "offset"):
+        for ps in spec.ui if spec is not None else ():
+            if (
+                node.kind == "math"
+                and ps.key == "k"
+                and node.params.get("op") not in ("scale", "offset")
+            ):
                 continue
-            if node.kind == "filter" and ps.key == "cutoff2" and node.params.get("type") != "band":
+            if (
+                node.kind == "filter"
+                and ps.key == "cutoff2"
+                and node.params.get("type") != "band"
+            ):
                 continue
             if ps.kind == "bool":
                 ch, on = imgui.checkbox(ps.label, _b(node.params, ps.key, False))
                 if ch:
-                    self._emit(state, "node_set", node.id, ps.key, "true" if on else "false")
+                    self._emit(
+                        state, "node_set", node.id, ps.key, "true" if on else "false"
+                    )
             elif ps.kind == "int":
                 self._int(state, node, ps.key, ps.label)
             elif ps.kind == "enum":
@@ -253,6 +264,7 @@ class NodesPanel(SessionPanel):
     def _float(self, state, node, key, label) -> None:
         try:
             from ..nodes import validate_parameter
+
             validate_parameter(node.kind, key, node.params.get(key, 0.0))
             val = float(node.params.get(key, 0.0))
         except (ValueError, TypeError, OverflowError):
@@ -264,6 +276,7 @@ class NodesPanel(SessionPanel):
     def _int(self, state, node, key, label) -> None:
         try:
             from ..nodes import validate_parameter
+
             validate_parameter(node.kind, key, node.params.get(key, 0))
             val = int(float(node.params.get(key, 0)))
         except (ValueError, TypeError, OverflowError):
@@ -274,7 +287,9 @@ class NodesPanel(SessionPanel):
 
     def _text(self, state, node, key, label) -> None:
         changed, val = imgui.input_text(
-            label, str(node.params.get(key, "")), imgui.InputTextFlags_.enter_returns_true
+            label,
+            str(node.params.get(key, "")),
+            imgui.InputTextFlags_.enter_returns_true,
         )
         if changed:
             self._emit(state, "node_set", node.id, key, val)
@@ -332,8 +347,12 @@ class NodesPanel(SessionPanel):
         replaced = self._sync_session(state)
         live = set(state.nodes.nodes)
         self._positioned.intersection_update(live)
-        self._model_positions = {key: value for key, value in self._model_positions.items() if key in live}
-        self._last_pos = {key: value for key, value in self._last_pos.items() if key in live}
+        self._model_positions = {
+            key: value for key, value in self._model_positions.items() if key in live
+        }
+        self._last_pos = {
+            key: value for key, value in self._last_pos.items() if key in live
+        }
         self._toolbar(state)
         imgui.separator()
         ed.begin("##nodes", imgui.ImVec2(0.0, 0.0))
@@ -344,8 +363,11 @@ class NodesPanel(SessionPanel):
         for node in state.nodes.ordered():
             for slot, in_id in enumerate(node.inputs):
                 if in_id in state.nodes.nodes:
-                    ed.link(ed.LinkId(_link_id(node.id, slot)),
-                            ed.PinId(_out_pin(in_id)), ed.PinId(_in_pin(node.id, slot)))
+                    ed.link(
+                        ed.LinkId(_link_id(node.id, slot)),
+                        ed.PinId(_out_pin(in_id)),
+                        ed.PinId(_in_pin(node.id, slot)),
+                    )
         self._handle_create(state)
         self._handle_delete(state)
         self._begin_rename(state)

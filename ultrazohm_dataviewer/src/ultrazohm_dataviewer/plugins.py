@@ -55,10 +55,16 @@ def transform(kind, *, params=None, inputs=(1, 1), ui=(), unit=""):
     """
 
     def decorator(fn):
-        register_transform(TransformSpec(
-            kind=str(kind), compute=fn, params=dict(params or {}),
-            inputs=tuple(inputs), ui=tuple(ui), unit=str(unit),
-        ))
+        register_transform(
+            TransformSpec(
+                kind=str(kind),
+                compute=fn,
+                params=dict(params or {}),
+                inputs=tuple(inputs),
+                ui=tuple(ui),
+                unit=str(unit),
+            )
+        )
         return fn
 
     return decorator

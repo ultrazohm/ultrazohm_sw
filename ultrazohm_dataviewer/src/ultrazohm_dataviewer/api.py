@@ -53,7 +53,15 @@ class Dataset:
     whole thing into a DataFrame with :meth:`to_dataframe`.
     """
 
-    __slots__ = ("label", "path", "time", "signals", "units", "backend", "timestamp_resolution")
+    __slots__ = (
+        "label",
+        "path",
+        "time",
+        "signals",
+        "units",
+        "backend",
+        "timestamp_resolution",
+    )
 
     def __init__(self, parsed) -> None:
         self.timestamp_resolution = parsed.timestamp_resolution
@@ -88,6 +96,7 @@ class Dataset:
         """Return a backend-native DataFrame of time plus one column per signal."""
         if self.backend == "polars":
             import polars as pl
+
             return pl.DataFrame({"time": self.time, **self.signals})
         import pandas as pd
 
@@ -119,11 +128,20 @@ def fft(
     t = np.asarray(time, dtype=np.float64)
     yy = np.asarray(y, dtype=np.float64)
     if t.ndim != 1 or yy.ndim != 1 or t.shape != yy.shape:
-        return FftResult(None, None, "FFT needs equal-length one-dimensional time and value arrays.")
-    lo = float(x_min) if x_min is not None else (float(t[0]) if len(t) else 0.)
-    hi = float(x_max) if x_max is not None else (float(t[-1]) if len(t) else 0.)
-    return compute_fft(t, yy, lo, hi, remove_dc=remove_dc, window=window,
-                       timestamp_resolution=timestamp_resolution)
+        return FftResult(
+            None, None, "FFT needs equal-length one-dimensional time and value arrays."
+        )
+    lo = float(x_min) if x_min is not None else (float(t[0]) if len(t) else 0.0)
+    hi = float(x_max) if x_max is not None else (float(t[-1]) if len(t) else 0.0)
+    return compute_fft(
+        t,
+        yy,
+        lo,
+        hi,
+        remove_dc=remove_dc,
+        window=window,
+        timestamp_resolution=timestamp_resolution,
+    )
 
 
 def fft_frame(time, y, *, backend="pyarrow", **kwargs):
@@ -141,8 +159,10 @@ def fft_frame(time, y, *, backend="pyarrow", **kwargs):
     columns = {"frequency": result.freqs, "amplitude": result.mag}
     if backend == "polars":
         import polars as pl
+
         return pl.DataFrame(columns)
     import pandas as pd
+
     return pd.DataFrame(columns)
 
 
@@ -165,10 +185,13 @@ def node(kind: str, *signals, timestamp_resolution=0.0, **params):
     merged = nodes.default_params(kind)
     merged.update({k: v for k, v in params.items()})
     inputs = [
-        (np.asarray(t, dtype=np.float64), np.asarray(s, dtype=np.float64)) for t, s in signals
+        (np.asarray(t, dtype=np.float64), np.asarray(s, dtype=np.float64))
+        for t, s in signals
     ]
     time, values, info, _ = nodes.compute_node(
-        nodes.Node(0, kind, kind, params=merged), inputs, timestamp_resolution=timestamp_resolution
+        nodes.Node(0, kind, kind, params=merged),
+        inputs,
+        timestamp_resolution=timestamp_resolution,
     )
     return time, values, info
 

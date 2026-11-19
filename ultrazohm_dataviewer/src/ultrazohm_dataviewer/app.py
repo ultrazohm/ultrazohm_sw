@@ -14,8 +14,8 @@ from imgui_bundle import hello_imgui, imgui, immapp
 
 from .panels.fft import FftPanel
 from .panels.histogram import HistogramPanel
-from .panels.navigation import NavigationPanel
 from .panels.log_browser import LogBrowserPanel
+from .panels.navigation import NavigationPanel
 from .panels.nodes import NodesPanel
 from .panels.plots import PlotsPanel
 from .panels.status import StatusPanel
@@ -33,9 +33,21 @@ LOG_DOCK = "LogBrowserSpace"
 
 
 class DataViewerApp:
-    def __init__(self, initial_files: list[str] | None = None, loading_mode: str | None = None, backend: str | None = None, disk_cache: bool | None = None, use_live: bool = False, live_mapping: str = '', live_repo: str | None = None) -> None:
+    def __init__(
+        self,
+        initial_files: list[str] | None = None,
+        loading_mode: str | None = None,
+        backend: str | None = None,
+        disk_cache: bool | None = None,
+        use_live: bool = False,
+        live_mapping: str = "",
+        live_repo: str | None = None,
+    ) -> None:
         from .user_paths import data_directory, find_repository
-        mapping_path = Path(live_mapping).expanduser().resolve() if live_mapping else None
+
+        mapping_path = (
+            Path(live_mapping).expanduser().resolve() if live_mapping else None
+        )
         workspace = Path(live_repo).expanduser().resolve() if live_repo else None
         if workspace is None and mapping_path:
             workspace = find_repository(mapping_path.parent)
@@ -43,12 +55,16 @@ class DataViewerApp:
         self.state = AppState()
         self._closed = False
         from .operations import Operations
+
         self.operations = Operations(self.state)
         self.control_server = None
         if self.artifacts is not None:
-            self.state.cache_dir = os.environ.get('UZ_DATAVIEWER_CACHE', str(self.artifacts / 'viewer_cache'))
-        from .preferences import Preferences
+            self.state.cache_dir = os.environ.get(
+                "UZ_DATAVIEWER_CACHE", str(self.artifacts / "viewer_cache")
+            )
         from .panels.settings import SettingsPanel
+        from .preferences import Preferences
+
         self.preferences = Preferences(self.state)
         self.preferences.apply()
         self.state.preferences = self.preferences
@@ -58,11 +74,18 @@ class DataViewerApp:
         if loading_mode is not None:
             self.state.loading_mode = loading_mode
         from .loader import validate_backend
+
         if backend is not None:
             self.state.backend = backend
         validate_backend(self.state.backend)
         self.navigation = NavigationPanel()
-        self.log_browser = LogBrowserPanel(Path(self.preferences.values['log_directory']) if self.preferences.values['log_directory'] else workspace / 'artifacts' if workspace is not None else None)
+        self.log_browser = LogBrowserPanel(
+            Path(self.preferences.values["log_directory"])
+            if self.preferences.values["log_directory"]
+            else workspace / "artifacts"
+            if workspace is not None
+            else None
+        )
         self.preferences.changed = self._preferences_changed
         self.plots = PlotsPanel()
         self._plot_windows = {}
@@ -75,8 +98,9 @@ class DataViewerApp:
         self._select_initial_tabs = True
         if use_live:
             from .panels.live import LiveWorkspace
+
             self.live = LiveWorkspace(repo=workspace)
-            self.live.mapping = str(mapping_path) if mapping_path else ''
+            self.live.mapping = str(mapping_path) if mapping_path else ""
             self.live.mapping_is_explicit = mapping_path is not None
             if live_mapping:
                 self.live.load_live_settings()
@@ -84,6 +108,7 @@ class DataViewerApp:
             if workspace is not None and not live_mapping:
                 self.live.prepare_repository(workspace)
         from .panels.python import PythonPanel
+
         self.python_panel = PythonPanel(self)
         # Pending Session-menu file dialogs: (dialog, command_name, is_multi).
         self._session_dialog: tuple = ()
@@ -101,12 +126,12 @@ class DataViewerApp:
             if not os.path.exists(path):
                 self.state.console.warn(f"File not found: {path}")
                 break
-            if self._startup_scripts or path.lower().endswith('.py'):
+            if self._startup_scripts or path.lower().endswith(".py"):
                 self._startup_scripts.append(path)
                 continue
-            if path.lower().endswith('.uzscript'):
-                raise ValueError('.uzscript is no longer supported; use Python files')
-            command = 'load_state' if path.lower().endswith('.json') else 'load'
+            if path.lower().endswith(".uzscript"):
+                raise ValueError(".uzscript is no longer supported; use Python files")
+            command = "load_state" if path.lower().endswith(".json") else "load"
             try:
                 self.state.commands.execute(self.state, command, [path])
             except Exception as exc:
@@ -168,15 +193,15 @@ class DataViewerApp:
         logs.gui_function = lambda: self.log_browser.render(self.state)
 
         python_window = hello_imgui.DockableWindow()
-        python_window.label = 'Python'
+        python_window.label = "Python"
         python_window.dock_space_name = MAIN_DOCK
         python_window.gui_function = self.python_panel.render
         windows = [nav, logs, plots, fft, histogram, nodes, console, python_window]
         if self.live is not None:
             for label, dock, render in (
-                ('Live Data', LEFT_DOCK, lambda: self.live.render_data(self.state)),
-                ('Control', LOG_DOCK, self.live.render_control),
-                ('Live Plots', MAIN_DOCK, lambda: self.live.render_plots(self.state)),
+                ("Live Data", LEFT_DOCK, lambda: self.live.render_data(self.state)),
+                ("Control", LOG_DOCK, self.live.render_control),
+                ("Live Plots", MAIN_DOCK, lambda: self.live.render_plots(self.state)),
             ):
                 window = hello_imgui.DockableWindow()
                 window.label = label
@@ -184,11 +209,11 @@ class DataViewerApp:
                 window.gui_function = render
                 windows.append(window)
         for window in windows:
-            window.is_visible = window.label not in {'Python', 'Application log'}
-            if window.label == 'Application log':
-                window.is_visible = self.preferences.values['show_application_log']
-            elif window.label == 'Python':
-                window.is_visible = self.preferences.values['show_python']
+            window.is_visible = window.label not in {"Python", "Application log"}
+            if window.label == "Application log":
+                window.is_visible = self.preferences.values["show_application_log"]
+            elif window.label == "Python":
+                window.is_visible = self.preferences.values["show_python"]
             window.remember_is_visible = False
         return windows
 
@@ -197,7 +222,11 @@ class DataViewerApp:
         """Select the requested tabs once without hiding or redocking other windows."""
         if live and (self.live is None or not self.live.available):
             return
-        active = ('Live Data', 'Control', 'Live Plots') if live else ('Navigation', 'Log Browser', 'Plots')
+        active = (
+            ("Live Data", "Control", "Live Plots")
+            if live
+            else ("Navigation", "Log Browser", "Plots")
+        )
         docking = self._runner_params.docking_params
         for window in docking.dockable_windows:
             if window.label in active:
@@ -207,18 +236,25 @@ class DataViewerApp:
 
     def _repository_selected(self, root, directory):
         self.artifacts = directory
-        self.state.cache_dir = os.environ.get('UZ_DATAVIEWER_CACHE', str(directory / 'viewer_cache'))
-        if not self.preferences.values['log_directory']:
-            self.log_browser.refresh(root / 'artifacts')
-        if hasattr(self, '_runner_params'):
-            self._runner_params.ini_filename = str(directory / 'viewer.ini')
+        self.state.cache_dir = os.environ.get(
+            "UZ_DATAVIEWER_CACHE", str(directory / "viewer_cache")
+        )
+        if not self.preferences.values["log_directory"]:
+            self.log_browser.refresh(root / "artifacts")
+        if hasattr(self, "_runner_params"):
+            self._runner_params.ini_filename = str(directory / "viewer.ini")
 
     def _preferences_changed(self, changes):
-        if 'log_directory' in changes:
+        if "log_directory" in changes:
             from .panels.log_browser import default_log_directory
-            path = self.preferences.values['log_directory']
+
+            path = self.preferences.values["log_directory"]
             self.settings_panel.directory = path
-            default = self.artifacts.parent if self.artifacts.name == '_user' else default_log_directory()
+            default = (
+                self.artifacts.parent
+                if self.artifacts.name == "_user"
+                else default_log_directory()
+            )
             self.log_browser.refresh(Path(path) if path else default)
 
     def _show_gui(self):
@@ -226,7 +262,7 @@ class DataViewerApp:
         self.settings_panel.render()
 
     def _show_menus(self) -> None:
-        if imgui.menu_item('Settings', '', False)[0]:
+        if imgui.menu_item("Settings", "", False)[0]:
             self.settings_panel.visible = True
         # Append to Hello ImGui's existing menu, including its hidden ID
         # (docking_details.cpp::ShowViewMenu), rather than drawing a second View.
@@ -267,12 +303,18 @@ class DataViewerApp:
         return state
 
     def _native_session_menu(self) -> None:
-        disabled = pfd is None or bool(self._session_dialog) or self._session_action is not None
+        disabled = (
+            pfd is None
+            or bool(self._session_dialog)
+            or self._session_action is not None
+        )
         # Tuple: (dialog, command, is_multi, ext). `ext` (a save's expected extension)
         # is forced onto the result if the dialog returned none; "" for the loads.
         if imgui.menu_item("Save state...", "", False, not disabled)[0]:
             self._session_dialog = (
-                pfd.save_file("Save state", "session.json", ["JSON (*.json)", "*.json"]),
+                pfd.save_file(
+                    "Save state", "session.json", ["JSON (*.json)", "*.json"]
+                ),
                 "save_session",
                 False,
                 ".json",
@@ -297,7 +339,7 @@ class DataViewerApp:
         if self._session_action is not None and self._session_action.done():
             try:
                 self._session_action.result()
-                self.state.console.info('Session operation completed')
+                self.state.console.info("Session operation completed")
             except Exception as exc:
                 self.state.console.error(str(exc))
             self._session_action = None
@@ -309,7 +351,7 @@ class DataViewerApp:
         result = dialog.result()
         path = (result[0] if result else "") if is_multi else result
         self._session_dialog = ()
-        if path and command == 'run_python':
+        if path and command == "run_python":
             self.python_panel.managed_device = False
             self.python_panel.start(path, self.python_panel.endpoint())
             return
@@ -317,7 +359,7 @@ class DataViewerApp:
             path = ensure_extension(path, ext)
         if path:
             try:
-                if command == 'load_session':
+                if command == "load_session":
                     # A manual replacement supersedes application-owned
                     # automation. External Python processes remain caller-owned.
                     self.python_panel.stop_owned()
@@ -326,7 +368,9 @@ class DataViewerApp:
                         self._startup_pending.cancel()
                         self._startup_pending = None
                     self._startup_script = False
-                self._session_action = self.operations.dispatch(command, {'path': path}, None)
+                self._session_action = self.operations.dispatch(
+                    command, {"path": path}, None
+                )
             except Exception as exc:  # noqa: BLE001 - surfaced to the console
                 self.state.console.error(str(exc))
 
@@ -351,7 +395,9 @@ class DataViewerApp:
                     if str(p).lower().endswith((".csv", ".parquet")):
                         self.state.request_load(str(p))
                     else:
-                        self.state.console.warn(f"ignored dropped file (not .csv/.parquet): {p}")
+                        self.state.console.warn(
+                            f"ignored dropped file (not .csv/.parquet): {p}"
+                        )
 
             self._drop_callback = _on_drop  # keep a reference so it is not GC'd
             glfw.set_drop_callback(window, _on_drop)
@@ -378,20 +424,25 @@ class DataViewerApp:
             if not self._startup_scripts or self.python_panel.busy():
                 return
             path = self._startup_scripts.pop(0)
-            if path.lower().endswith('.py'):
-                self.python_panel.runner.start(path, viewer_endpoint=self.python_panel.endpoint())
+            if path.lower().endswith(".py"):
+                self.python_panel.runner.start(
+                    path, viewer_endpoint=self.python_panel.endpoint()
+                )
                 self._startup_script = True
             else:
-                name = 'load_session' if path.lower().endswith('.json') else 'load'
-                self._startup_pending = self.operations.dispatch(name, {'path': path}, None)
+                name = "load_session" if path.lower().endswith(".json") else "load"
+                self._startup_pending = self.operations.dispatch(
+                    name, {"path": path}, None
+                )
         except Exception as exc:
             self._startup_scripts.clear()
-            self.state.console.error(f'Startup stopped: {exc}')
+            self.state.console.error(f"Startup stopped: {exc}")
 
     def enable_control(self, endpoint):
         from .control_server import ControlServer
+
         self.control_server = ControlServer(endpoint)
-        self.state.console.info(f'Viewer control: {self.control_server.endpoint}')
+        self.state.console.info(f"Viewer control: {self.control_server.endpoint}")
 
     def _pre_new_frame(self) -> None:
         self.python_panel.poll()
@@ -402,11 +453,20 @@ class DataViewerApp:
             if self.control_server.pending:
                 hello_imgui.request_refresh()
         # Wait until restored docking/windows exist, then select Analysis once.
-        if self._select_initial_tabs and hasattr(self, '_runner_params') and imgui.get_frame_count() >= 2:
+        if (
+            self._select_initial_tabs
+            and hasattr(self, "_runner_params")
+            and imgui.get_frame_count() >= 2
+        ):
             self._apply_window_mode(False)
             self._select_initial_tabs = False
-        if (self.operations.jobs or self.state.is_loading or self.state.services.display.pending
-                or self.state.services.analysis_jobs.pending or self.state.services.exports):
+        if (
+            self.operations.jobs
+            or self.state.is_loading
+            or self.state.services.display.pending
+            or self.state.services.analysis_jobs.pending
+            or self.state.services.exports
+        ):
             hello_imgui.request_refresh()
         if self.live is not None:
             self.live.pump(self.state)
@@ -433,7 +493,9 @@ class DataViewerApp:
             hello_imgui.get_runner_params().docking_params.focus_dockable_window("FFT")
             self.state.focus_fft = False
         if self.state.focus_histogram:
-            hello_imgui.get_runner_params().docking_params.focus_dockable_window("Histogram")
+            hello_imgui.get_runner_params().docking_params.focus_dockable_window(
+                "Histogram"
+            )
             self.state.focus_histogram = False
 
     def _shutdown(self) -> None:
@@ -462,16 +524,22 @@ class DataViewerApp:
         title = "Large CSV log"
         if not imgui.is_popup_open(title):
             imgui.open_popup(title)
-        visible, _ = imgui.begin_popup_modal(title, flags=imgui.WindowFlags_.always_auto_resize)
+        visible, _ = imgui.begin_popup_modal(
+            title, flags=imgui.WindowFlags_.always_auto_resize
+        )
         if visible:
             imgui.text_unformatted("Large log, conversion to parquet recommended")
             imgui.text_unformatted(os.path.basename(request.path))
             destination = os.path.splitext(request.path)[0] + ".parquet"
-            imgui.text_unformatted("Conversion saves beside the CSV and opens the Parquet file.")
+            imgui.text_unformatted(
+                "Conversion saves beside the CSV and opens the Parquet file."
+            )
             imgui.text_unformatted(f"Output: {destination}")
             exists = os.path.lexists(destination)
             if exists:
-                imgui.text_unformatted("A Parquet file already exists; it will not be overwritten.")
+                imgui.text_unformatted(
+                    "A Parquet file already exists; it will not be overwritten."
+                )
             choice = None
             if imgui.button("Open CSV"):
                 choice = "csv"
@@ -501,12 +569,15 @@ class DataViewerApp:
     # -- runner -------------------------------------------------------------
     def run(self) -> None:
         import imgui_bundle
+
         # Our icon overrides the stock icon; retain bundled fonts and other
         # framework assets instead of falling back to ImGui's bitmap font.
-        hello_imgui.add_assets_search_path(str(Path(imgui_bundle.__file__).parent / 'assets'))
-        hello_imgui.set_assets_folder(str(Path(__file__).parent / 'assets'))
+        hello_imgui.add_assets_search_path(
+            str(Path(imgui_bundle.__file__).parent / "assets")
+        )
+        hello_imgui.set_assets_folder(str(Path(__file__).parent / "assets"))
         params = hello_imgui.RunnerParams()
-        params.ini_filename = str(self.artifacts / 'viewer.ini')
+        params.ini_filename = str(self.artifacts / "viewer.ini")
         params.ini_filename_use_app_window_title = False
         self._runner_params = params
         params.app_window_params.window_title = "UltraZohm Data Viewer"
@@ -516,12 +587,13 @@ class DataViewerApp:
         )
         # DISPLAY can also be set under Wayland (XWayland), so require an
         # explicit X11 session before allowing detached windows on Linux.
-        params.imgui_window_params.enable_viewports = (
-            sys.platform == "win32"
-            or (sys.platform == "linux" and os.environ.get("XDG_SESSION_TYPE") == "x11")
+        params.imgui_window_params.enable_viewports = sys.platform == "win32" or (
+            sys.platform == "linux" and os.environ.get("XDG_SESSION_TYPE") == "x11"
         )
         params.imgui_window_params.show_status_bar = True
-        params.imgui_window_params.show_status_fps = False  # FPS and cache share our status item.
+        params.imgui_window_params.show_status_fps = (
+            False  # FPS and cache share our status item.
+        )
         params.imgui_window_params.remember_status_bar_settings = False
         params.imgui_window_params.show_menu_bar = True
         # Never idle the viewer, including paused and offline views.
@@ -559,15 +631,19 @@ class DataViewerApp:
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
     from .preferences import Preferences
+
     defaults = Preferences().values
-    default_backend, default_mode = defaults['backend'], defaults['loading_mode']
+    default_backend, default_mode = defaults["backend"], defaults["loading_mode"]
     if argv and argv[0] == "convert":
         # Headless CSV->Parquet conversion: `ultrazohm-dataviewer convert big.csv ...`.
+        import argparse
+
         from .loader import convert_csv_to_parquet
 
-        import argparse
         converter = argparse.ArgumentParser(prog="ultrazohm-dataviewer convert")
-        converter.add_argument("--backend", choices=("pyarrow", "polars"), default=default_backend)
+        converter.add_argument(
+            "--backend", choices=("pyarrow", "polars"), default=default_backend
+        )
         converter.add_argument("files", nargs="+")
         options = converter.parse_args(argv[1:])
         files = options.files
@@ -576,27 +652,56 @@ def main(argv: list[str] | None = None) -> int:
             print(f"converted {src} -> {out}")
         return 0
     import argparse
+
     parser = argparse.ArgumentParser(description="UltraZohm Data Viewer")
-    parser.add_argument("--endpoint", default="127.0.0.1:19741", help="Local viewer control endpoint")
-    parser.add_argument("--loading-mode", choices=("memory", "lazy"), default=default_mode,
-                        help=f"storage policy for opening recordings (default: {default_mode})")
-    parser.add_argument("--backend", choices=("pyarrow", "polars"), default=default_backend,
-                        help=f"IO backend for file loading (default: {default_backend})")
-    parser.add_argument("--disk-cache", action="store_true", default=defaults["disk_cache"], help="Persist measurement caches on disk (default: RAM only)")
-    parser.add_argument("--live-repo", help="UltraZohm repository (default: checkout containing the launch directory)")
-    parser.add_argument("files", nargs="*", help="CSV, Parquet, JSON sessions, or Python files")
+    parser.add_argument(
+        "--endpoint", default="127.0.0.1:19741", help="Local viewer control endpoint"
+    )
+    parser.add_argument(
+        "--loading-mode",
+        choices=("memory", "lazy"),
+        default=default_mode,
+        help=f"storage policy for opening recordings (default: {default_mode})",
+    )
+    parser.add_argument(
+        "--backend",
+        choices=("pyarrow", "polars"),
+        default=default_backend,
+        help=f"IO backend for file loading (default: {default_backend})",
+    )
+    parser.add_argument(
+        "--disk-cache",
+        action="store_true",
+        default=defaults["disk_cache"],
+        help="Persist measurement caches on disk (default: RAM only)",
+    )
+    parser.add_argument(
+        "--live-repo",
+        help="UltraZohm repository (default: checkout containing the launch directory)",
+    )
+    parser.add_argument(
+        "files", nargs="*", help="CSV, Parquet, JSON sessions, or Python files"
+    )
     args = parser.parse_args(argv)
     # Live panels are available wherever the CLI package is installed (a
     # dependency of the viewer on Windows and Linux x86-64, bundled when frozen).
     import importlib.util
+
     use_live = importlib.util.find_spec("ultrazohm_cli") is not None
     from .user_paths import find_repository
+
     live_repo = args.live_repo
     if live_repo is None:
         detected = find_repository(Path.cwd())
         live_repo = str(detected) if detected is not None else None
-    app = DataViewerApp(initial_files=args.files, loading_mode=args.loading_mode, backend=args.backend,
-                        disk_cache=args.disk_cache, use_live=use_live, live_repo=live_repo)
+    app = DataViewerApp(
+        initial_files=args.files,
+        loading_mode=args.loading_mode,
+        backend=args.backend,
+        disk_cache=args.disk_cache,
+        use_live=use_live,
+        live_repo=live_repo,
+    )
     try:
         app.enable_control(args.endpoint)
         app.run()

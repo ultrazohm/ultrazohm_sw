@@ -5,9 +5,10 @@ Close cancels queued/active work and joins only for a bounded grace period.
 Cancellation is cooperative; results must not be published after cancellation.
 Submit and shutdown of CancellableExecutor belong to the application thread.
 """
-from concurrent.futures import Future
-from queue import Queue, Empty
+
 import threading
+from concurrent.futures import Future
+from queue import Empty, Queue
 
 from .sources import check
 
@@ -23,7 +24,7 @@ class Cancellation:
 def join_worker(thread):
     """Give cooperative cancellation a bounded chance to release resources."""
     if thread is not None and thread is not threading.current_thread():
-        thread.join(timeout=.2)
+        thread.join(timeout=0.2)
 
 
 class CancellableExecutor:
@@ -40,7 +41,9 @@ class CancellableExecutor:
             return future
         self.queue.put((future, function, args, dispose))
         if self.thread is None:
-            self.thread = threading.Thread(target=self._work, daemon=True, name=self.name)
+            self.thread = threading.Thread(
+                target=self._work, daemon=True, name=self.name
+            )
             self.thread.start()
         return future
 

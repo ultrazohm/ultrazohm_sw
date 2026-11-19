@@ -5,6 +5,7 @@ Standard library only. `./uz task cli help` lists the tasks;
 repository's .python-version. Set UZ_CLI_RELEASE_VERSION while building so the
 binary reports the same version as the wheel.
 """
+
 import argparse
 import os
 import re
@@ -12,6 +13,8 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+
+import tomllib
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -32,8 +35,16 @@ def run(*command, cwd=HERE, env=None):
 def maturin():
     """Keep maturin and zig in the same tool environment, independent of the caller's Python."""
     python = (ROOT / ".python-version").read_text(encoding="utf-8").strip()
-    return ["uv", "tool", "run", "--python", python, "--from",
-            "maturin[zig]>=1.9,<2" if not WINDOWS else "maturin>=1.9,<2", "maturin"]
+    return [
+        "uv",
+        "tool",
+        "run",
+        "--python",
+        python,
+        "--from",
+        "maturin[zig]>=1.9,<2" if not WINDOWS else "maturin>=1.9,<2",
+        "maturin",
+    ]
 
 
 def venv_bin(venv, name):
@@ -52,7 +63,9 @@ def fresh_venv(venv, *packages):
 def single_wheel(directory):
     wheels = sorted(Path(directory).glob("ultrazohm_cli-*.whl"))
     if len(wheels) != 1:
-        raise SystemExit(f"Expected exactly one wheel in {directory}, found {len(wheels)}")
+        raise SystemExit(
+            f"Expected exactly one wheel in {directory}, found {len(wheels)}"
+        )
     return wheels[0]
 
 
@@ -61,7 +74,17 @@ def integration(python, command=None):
     env = os.environ.copy()
     if command is not None:
         env["UZ_CLI_BIN"] = str(command)
-    run(python, "-m", "unittest", "discover", "-s", "ultrazohm_cli/tests", "-v", cwd=ROOT, env=env)
+    run(
+        python,
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "ultrazohm_cli/tests",
+        "-v",
+        cwd=ROOT,
+        env=env,
+    )
 
 
 def debug_wheel(_args):
@@ -86,13 +109,60 @@ def install(_args):
     run("uv", "tool", "install", "--force", "--python", python, built)
 
 
+def ruff(*arguments):
+    """Run this project's pinned Ruff without installing application dependencies."""
+    config = HERE / "pyproject.toml"
+    settings = tomllib.loads(config.read_text(encoding="utf-8"))["tool"]["ruff"]
+    run(
+        "uv",
+        "tool",
+        "run",
+        "--from",
+        "ruff" + settings["required-version"],
+        "ruff",
+        *arguments,
+        "--config",
+        config,
+        ".",
+    )
+
+
+def lint(_args):
+    """Check this project's Python code without changing files."""
+    ruff("check")
+
+
+def format_code(_args):
+    """Format this project's Python code in place (no lint fixes)."""
+    ruff("format")
+
+
+def format_check(_args):
+    """Check this project's Python formatting without changing files."""
+    ruff("format", "--check")
+
+
 def check(args):
+    lint(args)
+    format_check(args)
     run("cargo", "fmt", "--check")
-    run("cargo", "clippy", "--all-targets", "--features", "python", "--locked", "--", "-D", "warnings")
+    run(
+        "cargo",
+        "clippy",
+        "--all-targets",
+        "--features",
+        "python",
+        "--locked",
+        "--",
+        "-D",
+        "warnings",
+    )
     run("cargo", "test", "--locked")
     run("cargo", "build", "--locked")
     debug_wheel(args)
-    python = fresh_venv(TARGET / "ci-venv", single_wheel(TARGET / "wheels-debug"), "polars", "packaging")
+    python = fresh_venv(
+        TARGET / "ci-venv", single_wheel(TARGET / "wheels-debug"), "polars", "packaging"
+    )
     # Once against the cargo-built executable, once against the wheel's console command.
     integration(python)
     integration(python, venv_bin(TARGET / "ci-venv", "ultrazohm-cli"))
@@ -107,19 +177,38 @@ def wheel(args):
 def release_wheel(_args):
     sys.path.insert(0, str(ROOT / "scripts"))
     from release_build import staged_project
+
     output = TARGET / "wheels-release"
     shutil.rmtree(output, ignore_errors=True)
     portable = [] if WINDOWS else ["--zig", "--compatibility", MANYLINUX]
-    with staged_project(HERE, os.environ.get("UZ_CLI_RELEASE_VERSION")) as (stage, version):
-        env = {**os.environ, "UZ_CLI_RELEASE_VERSION": version, "CARGO_TARGET_DIR": str(TARGET)}
-        run(*maturin(), "build", "--release", "--locked", *portable, "--out", output,
-            cwd=stage, env=env)
+    with staged_project(HERE, os.environ.get("UZ_CLI_RELEASE_VERSION")) as (
+        stage,
+        version,
+    ):
+        env = {
+            **os.environ,
+            "UZ_CLI_RELEASE_VERSION": version,
+            "CARGO_TARGET_DIR": str(TARGET),
+        }
+        run(
+            *maturin(),
+            "build",
+            "--release",
+            "--locked",
+            *portable,
+            "--out",
+            output,
+            cwd=stage,
+            env=env,
+        )
 
 
 def standalone(_args):
     """Build the Windows native CLI with the same version as its wheel."""
     if not WINDOWS:
-        raise SystemExit("Standalone downloads are Windows-only; use the Python wheel on Linux.")
+        raise SystemExit(
+            "Standalone downloads are Windows-only; use the Python wheel on Linux."
+        )
     run("cargo", "build", "--release", "--locked", "--bin", "ultrazohm-cli")
 
 
@@ -144,15 +233,23 @@ def release_version(base, branch, run_number):
 
 
 def version(_args):
-    found = re.search(r'^version = "([^"]+)"$', (HERE / "pyproject.toml").read_text(encoding="utf-8"),
-                      flags=re.MULTILINE)
+    found = re.search(
+        r'^version = "([^"]+)"$',
+        (HERE / "pyproject.toml").read_text(encoding="utf-8"),
+        flags=re.MULTILINE,
+    )
     base = found[1] if found else ""
     branch = os.environ.get("GITHUB_REF_NAME", "")
     pushed = os.environ.get("GITHUB_EVENT_NAME") == "push"
     value = release_version(base, branch, int(os.environ["GITHUB_RUN_NUMBER"]))
-    outputs = {"version": value, "tag": f"ultrazohm-v{value}",
-               "publish": str(pushed and branch in (STABLE_BRANCH, *PRERELEASE_BRANCHES)).lower(),
-               "prerelease": str(branch != STABLE_BRANCH).lower()}
+    outputs = {
+        "version": value,
+        "tag": f"ultrazohm-v{value}",
+        "publish": str(
+            pushed and branch in (STABLE_BRANCH, *PRERELEASE_BRANCHES)
+        ).lower(),
+        "prerelease": str(branch != STABLE_BRANCH).lower(),
+    }
     for key, item in outputs.items():
         print(f"{key}={item}")
     if path := os.environ.get("GITHUB_OUTPUT"):
@@ -162,21 +259,30 @@ def version(_args):
 
 def _invocation():
     prefix = ".\\uz.ps1" if WINDOWS else "./uz"
-    return lambda task, args="": f"{prefix} task cli {task}" + (f" {args}" if args else "")
+    return lambda task, args="": (
+        f"{prefix} task cli {task}" + (f" {args}" if args else "")
+    )
 
 
 def overview():
-    print("CLI build tasks: check, wheel, debug-wheel, release-wheel, release-check, version, standalone, install")
-    print("Use ./uz shell to run both applications; ./uz task cli TASK --help for details.")
+    print(
+        "CLI build tasks: lint, format, format-check, check, wheel, debug-wheel, release-wheel, release-check, version, standalone, install"
+    )
+    print(
+        "Use ./uz shell to run both applications; ./uz task cli TASK --help for details."
+    )
 
 
 DESCRIPTIONS = {
+    "lint": lint.__doc__,
+    "format": format_code.__doc__,
+    "format-check": format_check.__doc__,
     "standalone": "Build the Windows native CLI executable.",
     "install": "Build an optimized wheel of this checkout for this machine and install it with "
-               "'uv tool install --force', replacing an ultrazohm-cli installed from PyPI until you "
-               "reinstall that.",
+    "'uv tool install --force', replacing an ultrazohm-cli installed from PyPI until you "
+    "reinstall that.",
     "check": "Formatting, clippy, Rust tests, then a debug wheel installed into target/ci-venv and "
-             "the integration tests twice: against the cargo binary and the wheel's command.",
+    "the integration tests twice: against the cargo binary and the wheel's command.",
     "wheel": "Optimized wheel for this machine (not portable to older Linux systems).",
     "release-wheel": "Portable release wheel: manylinux_2_28 on Linux (linked with zig), native on Windows.",
     "release-check": "Install the release wheel into a fresh environment and run the integration tests.",
@@ -194,17 +300,29 @@ def main(argv=None):
         task = tasks.add_parser(name, prog=call(name), description=DESCRIPTIONS[name])
         task.set_defaults(function=function)
         return task
+
     add("install", install)
+    add("lint", lint)
+    add("format", format_code)
+    add("format-check", format_check)
     add("check", check)
     add("debug-wheel", debug_wheel)
-    add("wheel", wheel).add_argument("--out", type=Path, help="output directory (default: target/wheels)")
+    add("wheel", wheel).add_argument(
+        "--out", type=Path, help="output directory (default: target/wheels)"
+    )
     add("release-wheel", release_wheel)
     add("standalone", standalone)
     release_parser = add("release-check", release_check)
-    release_parser.add_argument("--standalone", action="store_true",
-                                help="also test the Windows executable built by the standalone task")
     release_parser.add_argument(
-        "--wheel-dir", type=Path, help="directory holding the wheel (default: target/wheels-release)")
+        "--standalone",
+        action="store_true",
+        help="also test the Windows executable built by the standalone task",
+    )
+    release_parser.add_argument(
+        "--wheel-dir",
+        type=Path,
+        help="directory holding the wheel (default: target/wheels-release)",
+    )
     add("version", version)
     argv = list(sys.argv[1:] if argv is None else argv)
     if not argv or argv[0] in ("-h", "--help", "help"):

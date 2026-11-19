@@ -1,4 +1,5 @@
 """Exercise bundled native modules and lazy Parquet reads without a display."""
+
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -8,23 +9,26 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 from imgui_bundle import imgui, implot
 
-from ultrazohm_dataviewer.loader import open_file, convert_csv_to_parquet
+from ultrazohm_dataviewer.loader import convert_csv_to_parquet, open_file
 from ultrazohm_dataviewer.model import DataRegistry
 
 
 def check_python_control(root, recording):
     """Run an ordinary script through the bundled worker against a live server."""
     import time
+
     from ultrazohm_dataviewer.control_server import ControlServer
     from ultrazohm_dataviewer.operations import Operations
     from ultrazohm_dataviewer.scripting import ScriptRunner
     from ultrazohm_dataviewer.state import AppState
+
     state = AppState()
     operations = Operations(state)
-    server = ControlServer('127.0.0.1:0')
+    server = ControlServer("127.0.0.1:0")
     runner = ScriptRunner(device_control=False)
-    script = root / 'control.py'
-    script.write_text('''import sys
+    script = root / "control.py"
+    script.write_text(
+        """import sys
 from pathlib import Path
 from ultrazohm_dataviewer import Client, ViewerError
 assert sys.argv[2] == 'argument with spaces'
@@ -57,48 +61,78 @@ with Client() as viewer:
     else:
         raise AssertionError('old handle accepted')
 Path('script-completed').write_text('ok')
-''', encoding='utf-8')
+""",
+        encoding="utf-8",
+    )
     try:
-        runner.start(script, viewer_endpoint=server.endpoint,
-                     args=[str(recording), 'argument with spaces'], cwd=root)
+        runner.start(
+            script,
+            viewer_endpoint=server.endpoint,
+            args=[str(recording), "argument with spaces"],
+            cwd=root,
+        )
         deadline = time.monotonic() + 30
         while runner.busy and time.monotonic() < deadline:
             operations.poll()
             server.poll(operations.dispatch)
             runner.poll()
-            time.sleep(.001)
-        assert not runner.busy, 'Bundled Python control script timed out'
+            time.sleep(0.001)
+        assert not runner.busy, "Bundled Python control script timed out"
         assert runner.exit_code == 0, runner.output
-        assert (root / 'script-completed').read_text() == 'ok'
-        import sys
+        assert (root / "script-completed").read_text() == "ok"
         import subprocess
-        if getattr(sys, 'frozen', False):
+        import sys
+
+        if getattr(sys, "frozen", False):
             terminal = Path(sys.executable)
             # The windowed Windows parent has no console stdin. Supply every
             # standard handle explicitly when starting the console executable.
-            help_result = subprocess.run([str(terminal), '--cli', '--help'], stdin=subprocess.DEVNULL,
-                                         capture_output=True, text=True, timeout=10)
-            assert help_result.returncode == 0 and 'usage:' in help_result.stdout, repr(help_result)
-            invalid = subprocess.run([str(terminal), '--cli', 'not-a-command'], stdin=subprocess.DEVNULL,
-                                     capture_output=True, text=True, timeout=10)
+            help_result = subprocess.run(
+                [str(terminal), "--cli", "--help"],
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
+            assert help_result.returncode == 0 and "usage:" in help_result.stdout, repr(
+                help_result
+            )
+            invalid = subprocess.run(
+                [str(terminal), "--cli", "not-a-command"],
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
             assert invalid.returncode != 0 and invalid.stderr, repr(invalid)
-            for command in ('status', 'list-runs'):
-                process = subprocess.Popen([str(terminal), '--cli', '--endpoint', server.endpoint, '--json', command],
-                                           stdin=subprocess.DEVNULL,
-                                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            for command in ("status", "list-runs"):
+                process = subprocess.Popen(
+                    [
+                        str(terminal),
+                        "--cli",
+                        "--endpoint",
+                        server.endpoint,
+                        "--json",
+                        command,
+                    ],
+                    stdin=subprocess.DEVNULL,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                )
                 try:
                     deadline = time.monotonic() + 10
                     while process.poll() is None and time.monotonic() < deadline:
                         operations.poll()
                         server.poll(operations.dispatch)
-                        time.sleep(.001)
+                        time.sleep(0.001)
                     stdout, stderr = process.communicate(timeout=1)
                     assert process.returncode == 0, stderr
                     result = json.loads(stdout)
-                    if command == 'status':
-                        assert result['grid'] == [2, 1]
+                    if command == "status":
+                        assert result["grid"] == [2, 1]
                     else:
-                        assert len(result) == 2 and result[0]['handle']['session']
+                        assert len(result) == 2 and result[0]["handle"]["session"]
                 finally:
                     if process.poll() is None:
                         process.kill()
@@ -115,6 +149,7 @@ def check_plot_input():
     """Exercise packaged ImPlot mouse input on both platforms without a GPU."""
     from ultrazohm_dataviewer.panels.plots import PlotsPanel
     from ultrazohm_dataviewer.state import AppState
+
     io = imgui.get_io()
     io.set_ini_filename(None)
     io.display_size = imgui.ImVec2(1200, 1000)
@@ -123,33 +158,37 @@ def check_plot_input():
     state = AppState()
     state.services.display.synchronous = True
     state.set_grid(2, 1)
-    t = np.linspace(0., 10., 1000)
-    run = state.registry.add_run('smoke', '', t, {'signal': np.sin(t)}, {})
+    t = np.linspace(0.0, 10.0, 1000)
+    run = state.registry.add_run("smoke", "", t, {"signal": np.sin(t)}, {})
     for cell in state.cells:
-        cell.add((run.id, 'signal'))
-    state.set_plot_x_limits(1, 0., 10.)
+        cell.add((run.id, "signal"))
+    state.set_plot_x_limits(1, 0.0, 10.0)
     geometry = {}
+
     class Panel(PlotsPanel):
         def _time_series_input(self, state, index, cell, lo, hi):
             geometry[index] = (implot.get_plot_pos(), implot.get_plot_size())
+
     panel = Panel()
+
     def frame():
         imgui.new_frame()
         imgui.set_next_window_pos(imgui.ImVec2(0, 0))
         imgui.set_next_window_size(imgui.ImVec2(1000, 900))
-        imgui.begin('Frozen plot input test')
+        imgui.begin("Frozen plot input test")
         panel.render(state)
         imgui.end()
         imgui.render()
+
     try:
         for _ in range(3):
             frame()
         for target in (1, 0):
             before = state.cells[target].x_lim
             pos, size = geometry[target]
-            io.add_mouse_pos_event(pos.x + size.x * .5, pos.y + size.y + 8)
+            io.add_mouse_pos_event(pos.x + size.x * 0.5, pos.y + size.y + 8)
             frame()
-            io.add_mouse_wheel_event(0., 1.)
+            io.add_mouse_wheel_event(0.0, 1.0)
             frame()
             frame()
             window = state.cells[target].x_lim
@@ -171,7 +210,9 @@ def run(report_path):
         pq.write_table(pa.table({"time": t, "signal": y}), path, row_group_size=4096)
         for backend in ("pyarrow", "polars"):
             for mode in ("memory", "lazy"):
-                loaded = open_file(str(path), mode, cache_dir=root / "cache", backend=backend)
+                loaded = open_file(
+                    str(path), mode, cache_dir=root / "cache", backend=backend
+                )
                 source = loaded.register(DataRegistry()).data_source()
                 times, channels = source.read_rows(["signal"], 4000, 4200)
                 np.testing.assert_array_equal(times, t[4000:4200])
@@ -183,10 +224,13 @@ def run(report_path):
                 np.testing.assert_array_equal(points.values, y[indices])
         # Exercise the spawned native conversion worker in the frozen executable.
         import threading
-        csv = root / 'convert.csv'
-        csv.write_text('time;signal\n0;1\n1;2\n')
-        converted = root / 'converted.parquet'
-        convert_csv_to_parquet(str(csv), str(converted), backend='polars', cancel=threading.Event())
+
+        csv = root / "convert.csv"
+        csv.write_text("time;signal\n0;1\n1;2\n")
+        converted = root / "converted.parquet"
+        convert_csv_to_parquet(
+            str(csv), str(converted), backend="polars", cancel=threading.Event()
+        )
         assert converted.exists()
         check_python_control(root, path)
         context = imgui.create_context()

@@ -5,26 +5,29 @@ import time
 
 import pytest
 
-from ultrazohm_dataviewer.workers import CancellableExecutor
 from ultrazohm_dataviewer.sources import Cancelled, check
 from ultrazohm_dataviewer.state import AppState
+from ultrazohm_dataviewer.workers import CancellableExecutor
 
 
 def test_cleanup_error_completes_cancelled_worker_future():
     worker = CancellableExecutor()
     started, release = threading.Event(), threading.Event()
+
     def work(cancel):
         started.set()
         assert release.wait(2)
         return object()
+
     def dispose(result):
-        raise RuntimeError('cleanup failed')
+        raise RuntimeError("cleanup failed")
+
     future = worker.submit(work, dispose=dispose)
     try:
         assert started.wait(2)
         worker.cancel.set()
         release.set()
-        with pytest.raises(RuntimeError, match='cleanup failed'):
+        with pytest.raises(RuntimeError, match="cleanup failed"):
             future.result(timeout=2)
     finally:
         release.set()
@@ -35,14 +38,16 @@ def test_load_shutdown_cancels_active_and_queued_work():
     worker = CancellableExecutor()
     started = threading.Event()
     stopped = threading.Event()
+
     def work(cancel):
         started.set()
         try:
             while True:
                 check(cancel)
-                time.sleep(.005)
+                time.sleep(0.005)
         finally:
             stopped.set()
+
     active = worker.submit(work)
     assert started.wait(2)
     queued = worker.submit(work)
@@ -56,52 +61,57 @@ def test_load_shutdown_cancels_active_and_queued_work():
 
 def _slow_native_conversion(source, destination, backend, connection):
     from pathlib import Path
-    Path(destination).write_bytes(b'partial')
+
+    Path(destination).write_bytes(b"partial")
     time.sleep(30)
 
 
-def test_cancel_conversion_stops_process_and_removes_temporary_file(tmp_path, monkeypatch):
+def test_cancel_conversion_stops_process_and_removes_temporary_file(
+    tmp_path, monkeypatch
+):
     import ultrazohm_dataviewer.loading as loading
-    monkeypatch.setattr(loading, '_convert_worker', _slow_native_conversion)
-    monkeypatch.setattr('ultrazohm_dataviewer.state.LARGE_CSV_BYTES', 1)
+
+    monkeypatch.setattr(loading, "_convert_worker", _slow_native_conversion)
+    monkeypatch.setattr("ultrazohm_dataviewer.state.LARGE_CSV_BYTES", 1)
     state = AppState()
-    path = tmp_path / 'input.csv'
-    path.write_text('time;a\n0;1\n1;2\n')
+    path = tmp_path / "input.csv"
+    path.write_text("time;a\n0;1\n1;2\n")
     try:
         state.request_load(str(path))
-        state.resolve_large_csv('convert')
+        state.resolve_large_csv("convert")
         future = state.services.pending[0][0]
-        deadline = time.monotonic()+10
+        deadline = time.monotonic() + 10
         while time.monotonic() < deadline:
-            files = list(tmp_path.glob('.uz-convert-*'))
+            files = list(tmp_path.glob(".uz-convert-*"))
             if files and files[0].stat().st_size:
                 break
-            time.sleep(.01)
+            time.sleep(0.01)
         else:
-            pytest.fail('Conversion process did not start')
+            pytest.fail("Conversion process did not start")
         state.shutdown()
         with pytest.raises(Cancelled):
             future.result(timeout=5)
-        assert not list(tmp_path.glob('.uz-convert-*'))
-        assert not path.with_suffix('.parquet').exists()
+        assert not list(tmp_path.glob(".uz-convert-*"))
+        assert not path.with_suffix(".parquet").exists()
     finally:
         state.shutdown()
 
 
 def _large_conversion_error(source, destination, backend, connection):
-    connection.send((False, 'large error ' + 'x' * 1_000_000))
+    connection.send((False, "large error " + "x" * 1_000_000))
     connection.close()
 
 
 def test_conversion_drains_large_error_before_worker_exits(monkeypatch):
     import ultrazohm_dataviewer.loading as loading
-    monkeypatch.setattr(loading, '_convert_worker', _large_conversion_error)
+
+    monkeypatch.setattr(loading, "_convert_worker", _large_conversion_error)
     cancel = threading.Event()
     watchdog = threading.Timer(10, cancel.set)
     watchdog.start()
     try:
-        with pytest.raises(ValueError, match='large error'):
-            loading.convert_cancellable('unused', 'unused', 'pyarrow', cancel)
+        with pytest.raises(ValueError, match="large error"):
+            loading.convert_cancellable("unused", "unused", "pyarrow", cancel)
         assert not cancel.is_set()
     finally:
         watchdog.cancel()
@@ -119,7 +129,7 @@ def test_async_load_preserves_captured_settings(states, tmp_path):
     deadline = time.monotonic() + 5
     while state.is_loading and time.monotonic() < deadline:
         state.poll_pending_loads()
-        time.sleep(.001)
+        time.sleep(0.001)
     run = state.registry.runs[0]
     assert run.storage_mode == "memory" and run.backend == "pyarrow"
     assert state.loading_mode == "lazy" and state.backend == "polars"

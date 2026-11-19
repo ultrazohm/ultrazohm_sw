@@ -1,22 +1,38 @@
 """Keep Windows measurement descendants inside a job owned by their worker."""
+
 import os
 
 
 def contain_children():
-    if os.name != 'nt':
+    if os.name != "nt":
         return None  # POSIX process groups are owned by ScriptRunner.
     import ctypes as c
     from ctypes import wintypes as w
+
     class Basic(c.Structure):
-        _fields_ = [('process_time', c.c_int64), ('job_time', c.c_int64),
-                    ('flags', w.DWORD), ('minimum', c.c_size_t), ('maximum', c.c_size_t),
-                    ('active', w.DWORD), ('affinity', c.c_size_t),
-                    ('priority', w.DWORD), ('scheduling', w.DWORD)]
+        _fields_ = [
+            ("process_time", c.c_int64),
+            ("job_time", c.c_int64),
+            ("flags", w.DWORD),
+            ("minimum", c.c_size_t),
+            ("maximum", c.c_size_t),
+            ("active", w.DWORD),
+            ("affinity", c.c_size_t),
+            ("priority", w.DWORD),
+            ("scheduling", w.DWORD),
+        ]
+
     class Extended(c.Structure):
-        _fields_ = [('basic', Basic), ('io', c.c_uint64 * 6),
-                    ('process_memory', c.c_size_t), ('job_memory', c.c_size_t),
-                    ('peak_process', c.c_size_t), ('peak_job', c.c_size_t)]
-    kernel = c.WinDLL('kernel32', use_last_error=True)
+        _fields_ = [
+            ("basic", Basic),
+            ("io", c.c_uint64 * 6),
+            ("process_memory", c.c_size_t),
+            ("job_memory", c.c_size_t),
+            ("peak_process", c.c_size_t),
+            ("peak_job", c.c_size_t),
+        ]
+
+    kernel = c.WinDLL("kernel32", use_last_error=True)
     kernel.CreateJobObjectW.argtypes = [c.c_void_p, w.LPCWSTR]
     kernel.CreateJobObjectW.restype = w.HANDLE
     kernel.SetInformationJobObject.argtypes = [w.HANDLE, c.c_int, c.c_void_p, w.DWORD]

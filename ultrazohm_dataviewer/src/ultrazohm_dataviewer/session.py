@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-
 import json
 import os
 import tempfile
@@ -10,7 +9,16 @@ from typing import TYPE_CHECKING
 
 from .loader import unique_name
 from .state import PlotType, XyStyle
-from .validation import axis_limits, finite_float, coordinates, spy_rectangle, histogram_bins, bounded_int, display_budget, boolean
+from .validation import (
+    axis_limits,
+    boolean,
+    bounded_int,
+    coordinates,
+    display_budget,
+    finite_float,
+    histogram_bins,
+    spy_rectangle,
+)
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from .state import AppState
@@ -67,7 +75,13 @@ def _nodes_to_list(state: "AppState") -> list[dict]:
                 "inputs": list(node.inputs),
                 "ref": _ref_to_saved(state, node.ref) if node.ref else None,
                 "pos": list(node.pos),
-                "output_view": {"active": run.active, "time_origin": run.time_origin, "axis_domain": run.axis_domain} if run else None,
+                "output_view": {
+                    "active": run.active,
+                    "time_origin": run.time_origin,
+                    "axis_domain": run.axis_domain,
+                }
+                if run
+                else None,
             }
         )
     return out
@@ -81,8 +95,9 @@ def plot_cells_to_list(state, encode):
             {
                 "signals": [encode(r) for r in cell.signals],
                 "type": cell.plot_type.value,
-                "x_lim": (cell.pending_x_lim or cell.x_lim) if cell.plot_type is PlotType.XY
-                         else state.plot_time_range(len(cells) + 1),
+                "x_lim": (cell.pending_x_lim or cell.x_lim)
+                if cell.plot_type is PlotType.XY
+                else state.plot_time_range(len(cells) + 1),
                 "y_lim": cell.pending_y_lim or cell.y_lim,
                 "y2_lim": cell.pending_y2_lim or cell.y2_lim,
                 "show_samples": cell.show_samples,
@@ -104,13 +119,23 @@ def restore_plot_cells(state, data, resolve):
         if i >= len(state.cells):
             break
         cell = state.cells[i]
-        cell.signals = [r for r in (resolve(s) for s in spec.get("signals", [])) if r is not None]
+        cell.signals = [
+            r for r in (resolve(s) for s in spec.get("signals", [])) if r is not None
+        ]
         cell.plot_type = PlotType(spec.get("type", PlotType.LINE.value))
         cell.show_samples = boolean(spec.get("show_samples", False))
         cell.spy = boolean(spec.get("spy", False))
-        cell.spy_rect = spy_rectangle(spec["spy_rect"]) if spec.get("spy_rect") is not None else None
+        cell.spy_rect = (
+            spy_rectangle(spec["spy_rect"])
+            if spec.get("spy_rect") is not None
+            else None
+        )
         cell.cursors = boolean(spec.get("cursors", False))
-        cell.cursor_x = coordinates(spec["cursor_x"], 2) if spec.get("cursor_x") is not None else None
+        cell.cursor_x = (
+            coordinates(spec["cursor_x"], 2)
+            if spec.get("cursor_x") is not None
+            else None
+        )
         cell.export_relative = boolean(spec.get("export_relative", False))
         cell.xy_source = resolve(spec.get("xy_source"))
         cell.xy_style = XyStyle(spec.get("xy_style", XyStyle.LINE.value))
@@ -118,9 +143,10 @@ def restore_plot_cells(state, data, resolve):
             if ref is not None:
                 cell.set_secondary(ref, True)
         lost_axis = any(resolve(ref) is None for ref in spec.get("signals", [])) or (
-            spec.get("xy_source") is not None and cell.xy_source is None)
-        for axis in ('x', 'y', 'y2'):
-            limits = spec.get(f'{axis}_lim')
+            spec.get("xy_source") is not None and cell.xy_source is None
+        )
+        for axis in ("x", "y", "y2"):
+            limits = spec.get(f"{axis}_lim")
             if limits is not None and not lost_axis:
                 cell.set_limits(axis, *limits)
         if cell.pending_x_lim and cell.plot_type is not PlotType.XY:
@@ -144,18 +170,34 @@ def to_dict(state: "AppState") -> dict:
         "disk_cache": state.disk_cache,
         "backend": state.backend,
         "cache_budget_mb": state.registry.cache.limit // 1024**2,
-        "runs": [{"key": f"run:{r.id}", "path": r.path,
-                  "mode": r.storage_mode,
-                  "backend": r.backend, "disk_cache": getattr(r.source, "disk_cache", False),
-                  "time_origin": r.time_origin, "active": r.active}
-                 for r in state.registry.runs if not r.derived],
+        "runs": [
+            {
+                "key": f"run:{r.id}",
+                "path": r.path,
+                "mode": r.storage_mode,
+                "backend": r.backend,
+                "disk_cache": getattr(r.source, "disk_cache", False),
+                "time_origin": r.time_origin,
+                "active": r.active,
+            }
+            for r in state.registry.runs
+            if not r.derived
+        ],
         "nodes": _nodes_to_list(state),
         "cells": cells,
-        "views": [dict(id=key, grid=[view.rows, view.cols],
-                       row_ratios=list(view.row_ratios), col_ratios=list(view.col_ratios),
-                       link_x=view.link_x, shared_x=view.shared_x, max_points=view.max_points,
-                       cells=plot_cells_to_list(view, lambda ref: _ref_to_saved(state, ref)))
-                  for key, view in state.plot_views.items()],
+        "views": [
+            dict(
+                id=key,
+                grid=[view.rows, view.cols],
+                row_ratios=list(view.row_ratios),
+                col_ratios=list(view.col_ratios),
+                link_x=view.link_x,
+                shared_x=view.shared_x,
+                max_points=view.max_points,
+                cells=plot_cells_to_list(view, lambda ref: _ref_to_saved(state, ref)),
+            )
+            for key, view in state.plot_views.items()
+        ],
         "fft": {
             "x_lim": state.fft.pending_x_lim or state.fft.x_lim,
             "sources": [_ref_to_saved(state, r) for r in state.fft.sources],
@@ -186,21 +228,24 @@ def save_state(state: "AppState", path: str) -> None:
 def save_snapshot(data: dict, path: str, *, cancel=None) -> None:
     """Publish captured state with recording paths relative to its manifest."""
     from copy import deepcopy
+
     data = deepcopy(data)
     directory = os.path.dirname(os.path.abspath(path))
-    for run in data.get('runs', []):
+    for run in data.get("runs", []):
         try:
-            run['path'] = os.path.relpath(run['path'], directory)
+            run["path"] = os.path.relpath(run["path"], directory)
         except ValueError:  # Different Windows drives require absolute paths.
-            run['path'] = os.path.abspath(run['path'])
+            run["path"] = os.path.abspath(run["path"])
     # Publish only a complete snapshot. A failed serialization/write/replace
     # must leave the previous session intact; use the same filesystem.
-    fd, temporary = tempfile.mkstemp(prefix=".uz-session-", suffix=".tmp",
-                                     dir=os.path.dirname(os.path.abspath(path)))
+    fd, temporary = tempfile.mkstemp(
+        prefix=".uz-session-", suffix=".tmp", dir=os.path.dirname(os.path.abspath(path))
+    )
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as fh:
             json.dump(data, fh, indent=2)
         from .sources import check
+
         check(cancel)
         os.replace(temporary, path)
     finally:
@@ -216,8 +261,8 @@ def read_snapshot(path: str) -> dict:
     with open(path, encoding="utf-8") as fh:
         data = json.load(fh)
     directory = os.path.dirname(os.path.abspath(path))
-    for run in data.get('runs', []):
-        run['path'] = os.path.normpath(os.path.join(directory, run['path']))
+    for run in data.get("runs", []):
+        run["path"] = os.path.normpath(os.path.join(directory, run["path"]))
     return data
 
 
@@ -227,6 +272,7 @@ def _session_backend(state, backend):
 
 def _replacement_state(state):
     from .state import AppState
+
     replacement = AppState()
     replacement.cache_dir = state.cache_dir
     return replacement
@@ -244,15 +290,24 @@ def apply_dict(state: "AppState", data: dict) -> None:
 
 def _apply_dict(state: "AppState", data: dict, *, cancel=None) -> None:
     from .sources import check
+
     check(cancel)
     if data.get("version") != SCHEMA_VERSION:
-        raise ValueError(f"Unsupported session version; expected {SCHEMA_VERSION}. Recreate old sessions.")
+        raise ValueError(
+            f"Unsupported session version; expected {SCHEMA_VERSION}. Recreate old sessions."
+        )
     specs = data.get("runs", [])
     if len({r["key"] for r in specs}) != len(specs):
         raise ValueError("Duplicate run keys in session")
     if "backend" in data:
-        state.commands.execute(state, "backend", [_session_backend(state, data["backend"])])
-    for command, field in (("disk_cache", "disk_cache"), ("loading_mode", "loading_mode"), ("cache_budget", "cache_budget_mb")):
+        state.commands.execute(
+            state, "backend", [_session_backend(state, data["backend"])]
+        )
+    for command, field in (
+        ("disk_cache", "disk_cache"),
+        ("loading_mode", "loading_mode"),
+        ("cache_budget", "cache_budget_mb"),
+    ):
         if field in data:
             state.commands.execute(state, command, [data[field]])
     run_ids = {}
@@ -275,10 +330,14 @@ def _apply_dict(state: "AppState", data: dict, *, cancel=None) -> None:
 
     rows, cols = data.get("grid", [state.rows, state.cols])
     state.set_grid(rows, cols)
-    state.set_grid_ratios(data.get("row_ratios", [1.] * state.rows),
-                          data.get("col_ratios", [1.] * state.cols))
+    state.set_grid_ratios(
+        data.get("row_ratios", [1.0] * state.rows),
+        data.get("col_ratios", [1.0] * state.cols),
+    )
     state.link_x = boolean(data.get("link_x", state.link_x))
-    state.shared_x = axis_limits(*data["shared_x"]) if data.get("shared_x") is not None else None
+    state.shared_x = (
+        axis_limits(*data["shared_x"]) if data.get("shared_x") is not None else None
+    )
     state.max_points = display_budget(data.get("max_points", state.max_points))
 
     changed_domains = set()
@@ -298,28 +357,40 @@ def _apply_dict(state: "AppState", data: dict, *, cancel=None) -> None:
 
     # Rebuild the node graph and evaluate it *before* resolving cell/analysis
     # assignments, so any references to a derived run (label == node name) resolve.
-    changed_domains = _restore_nodes(state, data.get("nodes", []), _resolve, cancel=cancel)
+    changed_domains = _restore_nodes(
+        state, data.get("nodes", []), _resolve, cancel=cancel
+    )
 
     restore_plot_cells(state, data, _resolve)
 
     from .plot_window import PlotWindowState
-    for spec in data.get('views', []):
-        key = bounded_int(spec['id'], 2, 2**31 - 1, 'view id')
+
+    for spec in data.get("views", []):
+        key = bounded_int(spec["id"], 2, 2**31 - 1, "view id")
         if key in state.plot_views:
-            raise ValueError('Duplicate plot view id')
+            raise ValueError("Duplicate plot view id")
         view = PlotWindowState(state, key)
         state.plot_views[key] = view
         state.next_view_id = max(state.next_view_id, key + 1)
-        view.set_grid(*spec['grid'])
-        view.set_grid_ratios(spec['row_ratios'], spec['col_ratios'])
-        view.link_x = boolean(spec['link_x'])
-        view.shared_x = axis_limits(*spec['shared_x']) if spec['shared_x'] is not None else None
-        view.max_points = display_budget(spec['max_points'])
+        view.set_grid(*spec["grid"])
+        view.set_grid_ratios(spec["row_ratios"], spec["col_ratios"])
+        view.link_x = boolean(spec["link_x"])
+        view.shared_x = (
+            axis_limits(*spec["shared_x"]) if spec["shared_x"] is not None else None
+        )
+        view.max_points = display_budget(spec["max_points"])
         restore_plot_cells(view, spec, _resolve)
 
     fft = data.get("fft") or {}
-    state.fft.sources = [r for r in (_resolve(s) for s in fft.get("sources", [])) if r is not None]
-    state.fft.follow_plot = bounded_int(fft.get("follow_plot", state.fft.follow_plot), -1, state.cell_count, "FFT follow plot")
+    state.fft.sources = [
+        r for r in (_resolve(s) for s in fft.get("sources", [])) if r is not None
+    ]
+    state.fft.follow_plot = bounded_int(
+        fft.get("follow_plot", state.fft.follow_plot),
+        -1,
+        state.cell_count,
+        "FFT follow plot",
+    )
     state.fft.x_min = finite_float(fft.get("x_min", state.fft.x_min))
     state.fft.x_max = finite_float(fft.get("x_max", state.fft.x_max))
     state.fft.remove_dc = boolean(fft.get("remove_dc", state.fft.remove_dc))
@@ -328,8 +399,15 @@ def _apply_dict(state: "AppState", data: dict, *, cancel=None) -> None:
     state.fft.log_y = boolean(fft.get("log_y", state.fft.log_y))
 
     hist = data.get("histogram") or {}
-    state.histogram.sources = [r for r in (_resolve(s) for s in hist.get("sources", [])) if r is not None]
-    state.histogram.follow_plot = bounded_int(hist.get("follow_plot", state.histogram.follow_plot), -1, state.cell_count, "Histogram follow plot")
+    state.histogram.sources = [
+        r for r in (_resolve(s) for s in hist.get("sources", [])) if r is not None
+    ]
+    state.histogram.follow_plot = bounded_int(
+        hist.get("follow_plot", state.histogram.follow_plot),
+        -1,
+        state.cell_count,
+        "Histogram follow plot",
+    )
     state.histogram.x_min = finite_float(hist.get("x_min", state.histogram.x_min))
     state.histogram.x_max = finite_float(hist.get("x_max", state.histogram.x_max))
     state.histogram.bins = histogram_bins(hist.get("bins", state.histogram.bins))
@@ -353,13 +431,22 @@ def _restore_nodes(state: "AppState", specs: list, resolve, *, cancel=None) -> N
     state.nodes = NodeGraph()
     for spec in sorted(specs, key=lambda s: int(s["id"])):
         saved_ref = spec.get("ref")
-        if spec.get("kind") == "source" and saved_ref and saved_ref[0].startswith("node:"):
-            raise ValueError("Derived signals must be connected with node_link, not source nodes")
+        if (
+            spec.get("kind") == "source"
+            and saved_ref
+            and saved_ref[0].startswith("node:")
+        ):
+            raise ValueError(
+                "Derived signals must be connected with node_link, not source nodes"
+            )
         ref = resolve(saved_ref) if spec.get("kind") == "source" else None
         # allow_unknown keeps a node whose plugin isn't installed as a placeholder
         # (params + links preserved) rather than dropping it.
         node = state.nodes.add(
-            spec["kind"], name=spec.get("name"), ref=ref, node_id=int(spec["id"]),
+            spec["kind"],
+            name=spec.get("name"),
+            ref=ref,
+            node_id=int(spec["id"]),
             allow_unknown=True,
         )
         node.params = dict(spec.get("params", {}))
@@ -398,23 +485,30 @@ def _restore_nodes(state: "AppState", specs: list, resolve, *, cancel=None) -> N
 def _check_reloadable(state):
     for run in state.registry.runs:
         if not run.derived and not run.reloadable:
-            raise ValueError(f"Cannot save session: {run.label} has no backing file. Export its data first.")
+            raise ValueError(
+                f"Cannot save session: {run.label} has no backing file. Export its data first."
+            )
 
 
 # -- data export --------------------------------------------------------------
 def _write_csv(columns, path, backend, cancel=None):
     import tempfile
-    fd, temporary = tempfile.mkstemp(prefix=".uz-export-", suffix=".csv",
-                                     dir=os.path.dirname(os.path.abspath(path)))
+
+    fd, temporary = tempfile.mkstemp(
+        prefix=".uz-export-", suffix=".csv", dir=os.path.dirname(os.path.abspath(path))
+    )
     os.close(fd)
     try:
         if backend == "polars":
             import polars as pl
+
             pl.DataFrame(columns).write_csv(temporary)
         else:
             import pandas as pd
+
             pd.DataFrame(columns).to_csv(temporary, index=False)
         from .sources import check
+
         check(cancel)
         os.replace(temporary, path)
     finally:
@@ -422,7 +516,9 @@ def _write_csv(columns, path, backend, cancel=None):
             os.unlink(temporary)
 
 
-def export_data(state: "AppState", plot_index: int, path: str, relative: bool = False) -> int:
+def export_data(
+    state: "AppState", plot_index: int, path: str, relative: bool = False
+) -> int:
     """Write a subplot's signals to a wide CSV (``time`` + one column per signal).
 
     Exports the currently visible time window (the linked range when set, else the
@@ -451,14 +547,20 @@ def export_data(state: "AppState", plot_index: int, path: str, relative: bool = 
     else:
         x_min, x_max = float(time[0]), float(time[-1])
 
-    channels = [ref[1] for ref in cell.signals if ref[0] == run0.id and state.registry.get_signal(*ref) is not None]
+    channels = [
+        ref[1]
+        for ref in cell.signals
+        if ref[0] == run0.id and state.registry.get_signal(*ref) is not None
+    ]
     t, values = run0.read_window(channels, x_min, x_max)
     if relative and run0.axis_domain != "time":
         raise ValueError("Relative time export requires a time-domain recording")
     columns = {run0.axis_domain: (t - t[0]) if relative and len(t) else t}
     for ref in cell.signals:
         if ref[0] != run0.id:
-            state.console.warn(f"export: skipped {state.signal_label(ref)} (different time base)")
+            state.console.warn(
+                f"export: skipped {state.signal_label(ref)} (different time base)"
+            )
             continue
         signal = state.registry.get_signal(ref[0], ref[1])
         if signal is not None:
@@ -466,7 +568,7 @@ def export_data(state: "AppState", plot_index: int, path: str, relative: bool = 
             # the "ia @ Log.csv" display label.
             columns[ref[1]] = values[ref[1]]
 
-    _write_csv(columns, path, state.backend, getattr(state, '_export_cancel', None))
+    _write_csv(columns, path, state.backend, getattr(state, "_export_cancel", None))
     return len(columns)
 
 
@@ -488,7 +590,9 @@ def export_fft(state: "AppState", path: str) -> int:
     cfg = state.fft
     if not cfg.sources:
         raise ValueError("FFT window has no signals")
-    x_min, x_max = state.resolve_x_window(cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources)
+    x_min, x_max = state.resolve_x_window(
+        cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources
+    )
 
     spectra: list[tuple[str, np.ndarray, np.ndarray]] = []  # (name, freqs, mag)
     used: set[str] = {"frequency"}
@@ -496,14 +600,27 @@ def export_fft(state: "AppState", path: str) -> int:
         run = state.registry.get(ref[0])
         signal = state.registry.get_signal(ref[0], ref[1])
         if run is None or signal is None:
-            raise ValueError(f"Cannot export FFT: {state.signal_label(ref)} is not loaded")
-        result = compute_signal_fft(run, ref[1], x_min, x_max, remove_dc=cfg.remove_dc,
-                                    window=cfg.window, label=state.signal_label(ref))
-        name = ref[1] if ref[1] not in used else f"{ref[1]} @ {run.label}"  # disambiguate dup names
+            raise ValueError(
+                f"Cannot export FFT: {state.signal_label(ref)} is not loaded"
+            )
+        result = compute_signal_fft(
+            run,
+            ref[1],
+            x_min,
+            x_max,
+            remove_dc=cfg.remove_dc,
+            window=cfg.window,
+            label=state.signal_label(ref),
+        )
+        name = (
+            ref[1] if ref[1] not in used else f"{ref[1]} @ {run.label}"
+        )  # disambiguate dup names
         name = unique_name(name, used)
         spectra.append((name, result.freqs, result.mag))
     freqs0 = spectra[0][1]
-    shared = all(f.shape == freqs0.shape and np.array_equal(f, freqs0) for _, f, _ in spectra)
+    shared = all(
+        f.shape == freqs0.shape and np.array_equal(f, freqs0) for _, f, _ in spectra
+    )
     if shared:  # one `frequency` column + one amplitude column per signal
         m = min(min(len(mag) for _, _, mag in spectra), len(freqs0))
         columns: dict[str, np.ndarray] = {"frequency": freqs0[:m]}
@@ -519,7 +636,7 @@ def export_fft(state: "AppState", path: str) -> int:
             acol[: len(mag)] = mag
             columns[unique_name(f"{name}_frequency", column_names)] = fcol
             columns[unique_name(name, column_names)] = acol
-    _write_csv(columns, path, state.backend, getattr(state, '_export_cancel', None))
+    _write_csv(columns, path, state.backend, getattr(state, "_export_cancel", None))
     return len(columns)
 
 
@@ -530,9 +647,12 @@ def export_histogram(state: "AppState", path: str) -> int:
     cfg = state.histogram
     if not cfg.sources:
         raise ValueError("Histogram window has no signals")
-    x_min, x_max = state.resolve_x_window(cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources)
+    x_min, x_max = state.resolve_x_window(
+        cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources
+    )
 
     from .analysis import histogram_sources
+
     series = []
     used = {"bin_center"}
     for ref in cfg.sources:
@@ -546,5 +666,5 @@ def export_histogram(state: "AppState", path: str) -> int:
         raise ValueError("no data to export")
     columns = {"bin_center": results[0][1]}
     columns.update({label: counts for label, _, counts, _ in results})
-    _write_csv(columns, path, state.backend, getattr(state, '_export_cancel', None))
+    _write_csv(columns, path, state.backend, getattr(state, "_export_cancel", None))
     return len(columns)

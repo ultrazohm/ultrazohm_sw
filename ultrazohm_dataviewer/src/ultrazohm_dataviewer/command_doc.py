@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import csv
+import inspect
 import io
 import pathlib
 
-import inspect
 from .cli import public_methods
 
 # Column / section order for the rendered table.
@@ -31,7 +31,8 @@ _EXPLICIT_GROUPS: dict[str, str] = {
     "loading_mode": "Data / runs",
     "clear_session": "Data / runs",
     "disk_cache": "Data / runs",
-    "cache_budget": "Data / runs",    "load": "Data / runs",
+    "cache_budget": "Data / runs",
+    "load": "Data / runs",
     "convert": "Data / runs",
     "remove_run": "Data / runs",
     "set_active": "Data / runs",
@@ -104,15 +105,24 @@ def group_for(name: str) -> str:
 
 def build_csv() -> str:
     """Generate the same operation surface exposed by Python and terminal clients."""
-    methods = sorted(public_methods().items(), key=lambda item: (GROUP_ORDER.index(group_for(item[0])), item[0]))
+    methods = sorted(
+        public_methods().items(),
+        key=lambda item: (GROUP_ORDER.index(group_for(item[0])), item[0]),
+    )
     buf = io.StringIO()
     writer = csv.writer(buf, lineterminator="\n")
     writer.writerow(["Method", "Group", "Description", "Signature"])
     for name, method in methods:
         parameters = list(inspect.signature(method).parameters.values())[1:]
         signature = inspect.Signature(parameters)
-        writer.writerow([name, group_for(name), method.__doc__ or name.replace('_', ' ').capitalize(),
-                         f'``viewer.{name}{signature}``'])
+        writer.writerow(
+            [
+                name,
+                group_for(name),
+                method.__doc__ or name.replace("_", " ").capitalize(),
+                f"``viewer.{name}{signature}``",
+            ]
+        )
     return buf.getvalue()
 
 

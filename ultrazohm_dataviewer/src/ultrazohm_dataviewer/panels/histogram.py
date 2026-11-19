@@ -40,9 +40,12 @@ class HistogramPanel(AnalysisPanel):
             self._emit(state, "hist_bins", max(1, n))
         imgui.same_line()
 
-    def _make_request(self, state: AppState, cfg, x_min: float, x_max: float) -> HistogramRequest:
+    def _make_request(
+        self, state: AppState, cfg, x_min: float, x_max: float
+    ) -> HistogramRequest:
         from ..analysis_service import request
-        return request(state, 'hist', (x_min, x_max))
+
+        return request(state, "hist", (x_min, x_max))
 
     def _draw(self, state: AppState) -> None:
         for ref, centers, counts, width in self._results:

@@ -13,7 +13,6 @@ the transform-specific options, and the per-signal compute/draw.
 
 from __future__ import annotations
 
-
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -58,7 +57,7 @@ class AnalysisPanel(SessionPanel):
     """Base class wiring sources, the window selector, zoom and drag-drop together,
     all routed through commands. Subclasses set ``prefix`` / ``compute_command``."""
 
-    prefix: str = ""           # "fft" / "hist" -> *_source/_clear/_follow/_range/_xlim/_export
+    prefix: str = ""  # "fft" / "hist" -> *_source/_clear/_follow/_range/_xlim/_export
     compute_command: str = ""  # "fft" / "histogram"
     x_label: str = ""
     y_label: str = ""
@@ -68,13 +67,15 @@ class AnalysisPanel(SessionPanel):
         self._export_dialog = None
         self._computed_key: tuple | None = None  # state at last compute (stale check)
         self._last_logged_x: tuple[float, float] | None = None  # zoom echo baseline
-        self._fit_pending: bool = True  # one-shot auto-fit (first show / Reset / new result)
+        self._fit_pending: bool = (
+            True  # one-shot auto-fit (first show / Reset / new result)
+        )
         self._zoom_after_fit = False
         self._generation = 0
         self._analysis_pending = None
         self._display_slots = set()
         self._display_pending = False
-        self._fitting: bool = False     # this frame is an auto-fit (decimate full range)
+        self._fitting: bool = False  # this frame is an auto-fit (decimate full range)
 
     # -- command-name helpers ----------------------------------------------
     @property
@@ -102,7 +103,9 @@ class AnalysisPanel(SessionPanel):
         return f"{self.prefix}_export"
 
     # -- subclass hooks -----------------------------------------------------
-    def config(self, state: "AppState") -> "AnalysisConfig":  # pragma: no cover - abstract
+    def config(
+        self, state: "AppState"
+    ) -> "AnalysisConfig":  # pragma: no cover - abstract
         raise NotImplementedError
 
     def _extra_controls(self, state: "AppState", cfg: "AnalysisConfig") -> None:
@@ -115,7 +118,9 @@ class AnalysisPanel(SessionPanel):
         """The transform options that, when changed, make the result stale."""
         return ()
 
-    def _make_request(self, state: "AppState", cfg: "AnalysisConfig", x_min: float, x_max: float):
+    def _make_request(
+        self, state: "AppState", cfg: "AnalysisConfig", x_min: float, x_max: float
+    ):
         raise NotImplementedError  # pragma: no cover - abstract
 
     def _draw(self, state: "AppState") -> None:
@@ -124,7 +129,9 @@ class AnalysisPanel(SessionPanel):
     def _result_refs(self) -> list[tuple[int, str]]:
         return []
 
-    def _plot_decimated(self, state: "AppState", label: str, x: np.ndarray, y: np.ndarray, source) -> None:
+    def _plot_decimated(
+        self, state: "AppState", label: str, x: np.ndarray, y: np.ndarray, source
+    ) -> None:
         """Plot a line range-decimated to the current view, so a multi-million-point
         spectrum doesn't redraw at full resolution every frame."""
         if self._fitting:
@@ -136,9 +143,13 @@ class AnalysisPanel(SessionPanel):
         identity = source.metadata.identity
         key = (identity, start, stop, budget)
         self._display_slots.add(label)
+
         def prepare(cancel):
             xs, ys = decimate_range(x, y, source, budget, start, stop, cancel)
-            return np.ascontiguousarray(xs, np.float64), np.ascontiguousarray(ys, np.float64)
+            return np.ascontiguousarray(xs, np.float64), np.ascontiguousarray(
+                ys, np.float64
+            )
+
         requests = state.services.analysis_displays[self.prefix]
         result = requests.request(label, key, identity, prepare)
         if not requests.ready(label, key) and requests.error(label) is None:
@@ -151,11 +162,13 @@ class AnalysisPanel(SessionPanel):
     # -- stale tracking -----------------------------------------------------
     def _current_key(self, state: "AppState", cfg: "AnalysisConfig") -> tuple:
         from ..analysis_service import fingerprint
+
         return fingerprint(state, self.prefix)
 
     @staticmethod
     def _source_error(state, cfg):
         from ..analysis_service import source_error
+
         return source_error(state, cfg)
 
     # -- shared render ------------------------------------------------------
@@ -234,7 +247,7 @@ class AnalysisPanel(SessionPanel):
             state.services.analysis_displays[self.prefix].retain(set())
             self._info = source_error
             cfg.compute_requested = False
-        coordinator = getattr(state, 'viewer_operations', None)
+        coordinator = getattr(state, "viewer_operations", None)
         if coordinator is not None:
             self._analysis_pending = None
             if cfg.compute_requested:
@@ -251,7 +264,9 @@ class AnalysisPanel(SessionPanel):
                     self._info = str(error)
         if cfg.compute_requested:
             cfg.compute_requested = False
-            x_min, x_max = state.resolve_x_window(cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources)
+            x_min, x_max = state.resolve_x_window(
+                cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources
+            )
             self._generation += 1
             key = (self._generation, self._current_key(state, cfg))
             request = self._make_request(state, cfg, x_min, x_max)
@@ -274,7 +289,9 @@ class AnalysisPanel(SessionPanel):
                 self._analysis_pending = None
             else:
                 imgui.text_disabled("Computing...")
-        if self._analysis_pending is not None and self._analysis_pending[1] != self._current_key(state, cfg):
+        if self._analysis_pending is not None and self._analysis_pending[
+            1
+        ] != self._current_key(state, cfg):
             state.services.analysis_jobs.forget(self.prefix)
             self._analysis_pending = None
         if not cfg.sources:
@@ -341,15 +358,23 @@ class AnalysisPanel(SessionPanel):
             # Echo a *_xlim command when a pan/zoom of this plot settles.
             lim = implot.get_plot_limits()
             if implot.is_plot_hovered():
-                self._maybe_echo_zoom(state, float(lim.x.min), float(lim.x.max), suppress=did_set or self._zoom_after_fit)
+                self._maybe_echo_zoom(
+                    state,
+                    float(lim.x.min),
+                    float(lim.x.max),
+                    suppress=did_set or self._zoom_after_fit,
+                )
             elif not did_set:
                 self._last_logged_x = (float(lim.x.min), float(lim.x.max))
 
             self._zoom_after_fit = did_set
             implot.end_plot()
 
-    def _maybe_echo_zoom(self, state: "AppState", lo: float, hi: float, *, suppress: bool) -> None:
+    def _maybe_echo_zoom(
+        self, state: "AppState", lo: float, hi: float, *, suppress: bool
+    ) -> None:
         from ..validation import axis_limits
+
         try:
             limits = axis_limits(lo, hi)
         except ValueError:
@@ -361,7 +386,11 @@ class AnalysisPanel(SessionPanel):
             return
         span = hi - lo
         last = self._last_logged_x
-        if last is not None and abs(last[0] - lo) < 0.005 * span and abs(last[1] - hi) < 0.005 * span:
+        if (
+            last is not None
+            and abs(last[0] - lo) < 0.005 * span
+            and abs(last[1] - hi) < 0.005 * span
+        ):
             return
         first = last is None
         self._last_logged_x = (lo, hi)

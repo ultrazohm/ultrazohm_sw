@@ -426,3 +426,20 @@ Pushes to `main` (stable), `develop` and `feature/uz_cli_dataviewer_testing` (pr
 Other branches and pull requests only test.
 Release targets are Windows x86-64 and Linux x86-64 `manylinux_2_28` (glibc 2.28+), using Python's 3.10+ stable ABI.
 These releases never replace the repository's latest release.
+
+## Python linting and formatting
+
+This project owns its Ruff configuration and pinned version in `pyproject.toml`.
+These tasks run Ruff in an isolated tool environment and do not build or install either application.
+Run from the repository root:
+
+```bash
+./uz task cli lint
+./uz task cli format
+./uz task cli format-check
+```
+
+On Windows, use `.\uz.ps1` with the same arguments.
+`format` applies layout changes only; lint fixes and import sorting require explicit review.
+The enabled lint rules are `F`, `E4`, `E7`, `E9`, and `I`.
+The project's `check` task and CI enforce both lint and formatting.

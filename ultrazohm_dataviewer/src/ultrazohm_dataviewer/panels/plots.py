@@ -15,15 +15,13 @@ a typed command or a replayed script. Continuous pan/zoom gestures echo a
 
 from __future__ import annotations
 
-
 import math
 
 import numpy as np
-
-from ..sources import shift_time
 from imgui_bundle import em_size, imgui, imgui_ctx, implot
 
 from ..session import ensure_extension
+from ..sources import shift_time
 from ..state import AppState, PlotType, SignalRef, SubplotCell, XyStyle
 from .base import SessionPanel
 from .navigation import SIGNAL_DND_TYPE
@@ -73,9 +71,11 @@ class PlotsPanel(SessionPanel):
         self._requested_resets: set[int] = set()
         self._equal_sizes = False
         self._driver: int = -1  # last interacted cell (also used by live inspect)
-        self._shared_axis_links = (implot.BoxedValue(0.), implot.BoxedValue(1.))
+        self._shared_axis_links = (implot.BoxedValue(0.0), implot.BoxedValue(1.0))
         self._last_points: dict[int, int] = {}  # cell index -> samples drawn last frame
-        self._last_raw: dict[int, int] = {}  # cell index -> raw samples in view last frame
+        self._last_raw: dict[
+            int, int
+        ] = {}  # cell index -> raw samples in view last frame
         self._last_logged_x: dict[int, tuple[float, float]] = {}  # for zoom echo
         self._cursor_text: dict[int, str] = {}  # cell index -> cursor readout
         self._last_logged_cursor: dict[int, tuple[float, float]] = {}  # cursor echo
@@ -87,25 +87,38 @@ class PlotsPanel(SessionPanel):
         self._validated_sources = {}
 
     def _budget(self, state, traces):
-        width = max(1., implot.get_plot_size().x)
-        return max(2, min(state.max_points, int(width * 2), max(128, 32000 // max(1, traces))))
+        width = max(1.0, implot.get_plot_size().x)
+        return max(
+            2, min(state.max_points, int(width * 2), max(128, 32000 // max(1, traces)))
+        )
 
-    def _request_data(self, state, slot, key, identity, sources, compute, *, continuous=False):
+    def _request_data(
+        self, state, slot, key, identity, sources, compute, *, continuous=False
+    ):
         """Validate sources even for cache hits; share scheduling and error handling."""
         from ..sources import ArraySource, validation_error
+
         self._used_slots.add(slot)
         for source in sources:
             source_id = source.metadata.identity
             if source_id not in self._validated_sources:
-                self._validated_sources[source_id] = validation_error([source], state.services.validation_jobs)
+                self._validated_sources[source_id] = validation_error(
+                    [source], state.services.validation_jobs
+                )
             error = self._validated_sources[source_id]
             if error:
                 state.services.display.forget(slot)
                 self._report_error(state, slot, error)
                 return None
-        immediate = all(isinstance(source, ArraySource) and source.validator is None and source.metadata.rows <= 4096
-                        for source in sources)
-        value = state.services.display.request(slot, key, identity, compute, immediate=immediate, continuous=continuous)
+        immediate = all(
+            isinstance(source, ArraySource)
+            and source.validator is None
+            and source.metadata.rows <= 4096
+            for source in sources
+        )
+        value = state.services.display.request(
+            slot, key, identity, compute, immediate=immediate, continuous=continuous
+        )
         error = state.services.display.errors.get(slot)
         if error:
             self._report_error(state, slot, error)
@@ -121,11 +134,17 @@ class PlotsPanel(SessionPanel):
     def _display(self, state, slot, run, channel, lo, hi, budget):
         source = run.data_source()
         offset = run.time_offset
-        identity = (source.metadata.identity, run.time_version, run.signals[channel].version)
+        identity = (
+            source.metadata.identity,
+            run.time_version,
+            run.signals[channel].version,
+        )
         key = (identity, lo, hi, budget)
+
         def compute(cancel):
             result = source.read_plot(channel, lo, hi, budget, cancel, offset=offset)
             return shift_time(result.time, offset), result.values, result.raw_count
+
         return self._request_data(state, slot, key, identity, [source], compute)
 
     # -- helpers ------------------------------------------------------------
@@ -138,9 +157,11 @@ class PlotsPanel(SessionPanel):
         path = dialog.result()
         self._export_dialog = None
         if path:
-            plot_n = next((i for i, current in enumerate(state.cells, 1) if current is cell), None)
+            plot_n = next(
+                (i for i, current in enumerate(state.cells, 1) if current is cell), None
+            )
             if plot_n is None:
-                state.console.warn('Export cancelled: the subplot was removed.')
+                state.console.warn("Export cancelled: the subplot was removed.")
                 return
             path = ensure_extension(path, ".csv")  # dialog may drop the extension
             relative = state.cells[plot_n - 1].export_relative
@@ -151,7 +172,11 @@ class PlotsPanel(SessionPanel):
         self._emit(state, "reset_view", plot_n)
 
     def _toolbar(self, state: AppState) -> None:
-        status = "downsampling: active" if state.downsampling_active else "downsampling: off (all samples)"
+        status = (
+            "downsampling: active"
+            if state.downsampling_active
+            else "downsampling: off (all samples)"
+        )
         runs_label = f"({len(state.registry)} run(s) loaded)"
         with imgui_ctx.begin_horizontal("layout_controls"):
             if imgui.button("Reset view"):
@@ -165,10 +190,18 @@ class PlotsPanel(SessionPanel):
             if changed:
                 self._emit(state, "link_x", link)
 
-        sampling_width = (em_size(11) + sum(imgui.calc_text_size(text).x
-                          for text in ("Max points", status, runs_label))
-                          + imgui.get_style().item_spacing.x * 5)
-        if imgui.get_content_region_avail().x - imgui.get_item_rect_size().x > sampling_width:
+        sampling_width = (
+            em_size(11)
+            + sum(
+                imgui.calc_text_size(text).x
+                for text in ("Max points", status, runs_label)
+            )
+            + imgui.get_style().item_spacing.x * 5
+        )
+        if (
+            imgui.get_content_region_avail().x - imgui.get_item_rect_size().x
+            > sampling_width
+        ):
             imgui.same_line()
         with imgui_ctx.begin_horizontal("sampling_controls"):
             imgui.text("Max points")
@@ -200,9 +233,13 @@ class PlotsPanel(SessionPanel):
     def _grid_sliders(self, state):
         rows, cols = self._requested_grid or (state.rows, state.cols)
         imgui.set_next_item_width(em_size(7))
-        changed_rows, rows = imgui.slider_int("Rows", rows, 1, 5, flags=imgui.SliderFlags_.always_clamp)
+        changed_rows, rows = imgui.slider_int(
+            "Rows", rows, 1, 5, flags=imgui.SliderFlags_.always_clamp
+        )
         imgui.set_next_item_width(em_size(7))
-        changed_cols, cols = imgui.slider_int("Columns", cols, 1, 5, flags=imgui.SliderFlags_.always_clamp)
+        changed_cols, cols = imgui.slider_int(
+            "Columns", cols, 1, 5, flags=imgui.SliderFlags_.always_clamp
+        )
         if changed_rows or changed_cols:
             # A popup can run while BeginSubplots still owns the old grid.
             self._requested_grid = (rows, cols)
@@ -229,8 +266,12 @@ class PlotsPanel(SessionPanel):
 
     def _double_click_reset(self, index):
         if imgui.is_mouse_double_clicked(0) and (
-                implot.is_plot_hovered() or any(implot.is_axis_hovered(axis) for axis in
-                                              (implot.ImAxis_.x1, implot.ImAxis_.y1, implot.ImAxis_.y2))):
+            implot.is_plot_hovered()
+            or any(
+                implot.is_axis_hovered(axis)
+                for axis in (implot.ImAxis_.x1, implot.ImAxis_.y1, implot.ImAxis_.y2)
+            )
+        ):
             # Use the same reset as the popup, after EndPlot publishes its limits.
             self._requested_resets.add(index + 1)
 
@@ -243,7 +284,9 @@ class PlotsPanel(SessionPanel):
             type_idx = type_labels.index(cell.plot_type.value)
             changed, type_idx = imgui.combo("##type", type_idx, type_labels)
             if changed:
-                self._emit(state, "set_plot_type", plot_n, list(PlotType)[type_idx].value)
+                self._emit(
+                    state, "set_plot_type", plot_n, list(PlotType)[type_idx].value
+                )
 
             if imgui.small_button("Reset view") and cell.signals:
                 # EndPlot still publishes the current frame's linked X limits.
@@ -259,7 +302,9 @@ class PlotsPanel(SessionPanel):
                     self._emit(state, "show_samples", plot_n, samples)
                 changed, spy = imgui.checkbox("spy", cell.spy)
                 if imgui.is_item_hovered():
-                    imgui.set_tooltip("Zoom primary (left) Y-axis signals; right-axis signals are excluded.")
+                    imgui.set_tooltip(
+                        "Zoom primary (left) Y-axis signals; right-axis signals are excluded."
+                    )
                 if changed:
                     self._emit(state, "spy", plot_n, spy)
                 changed, cursors = imgui.checkbox("cursors", cell.cursors)
@@ -271,7 +316,9 @@ class PlotsPanel(SessionPanel):
                 name = f"plot_{plot_n}.csv"
                 if pfd is not None and self._export_dialog is None:
                     self._export_dialog = (
-                        pfd.save_file("Export plot data", name, ["CSV (*.csv)", "*.csv"]),
+                        pfd.save_file(
+                            "Export plot data", name, ["CSV (*.csv)", "*.csv"]
+                        ),
                         cell,
                     )
             changed, rel = imgui.checkbox("start at 0", cell.export_relative)
@@ -336,7 +383,9 @@ class PlotsPanel(SessionPanel):
             self._emit(state, "set_xy", index + 1, ref[0], ref[1])
 
     # -- a single cell ------------------------------------------------------
-    def _render_cell(self, state: AppState, index: int, cell: SubplotCell, size: imgui.ImVec2) -> None:
+    def _render_cell(
+        self, state: AppState, index: int, cell: SubplotCell, size: imgui.ImVec2
+    ) -> None:
         imgui.push_id(index)
         if cell.plot_type in _TIME_SERIES:
             self._render_time_series(state, index, cell, size.x, size.y)
@@ -347,14 +396,22 @@ class PlotsPanel(SessionPanel):
 
     # -- time-series (line / scatter / stairs) ------------------------------
     def _render_time_series(
-        self, state: AppState, index: int, cell: SubplotCell, width: float, plot_h: float
+        self,
+        state: AppState,
+        index: int,
+        cell: SubplotCell,
+        width: float,
+        plot_h: float,
     ) -> None:
         plot_size = imgui.ImVec2(width, plot_h)
 
         data_min, data_max = self._cell_x_extent(state, cell)
 
         if implot.begin_plot(f"Plot {index + 1}##plot{index}", plot_size):
-            implot.setup_axes("time (s)" if state.plot_domain(cell) == "time" else "frequency (Hz)", "")
+            implot.setup_axes(
+                "time (s)" if state.plot_domain(cell) == "time" else "frequency (Hz)",
+                "",
+            )
             if cell.y2_signals:
                 implot.setup_axis(implot.ImAxis_.y2, "", implot.AxisFlags_.aux_default)
 
@@ -376,7 +433,9 @@ class PlotsPanel(SessionPanel):
             if _is_finite_range(raw_lo, raw_hi):
                 state.plot_x_ranges[index + 1] = (raw_lo, raw_hi)
 
-            points_shown, raw_in_view = self._plot_signals(state, index, cell, x_min, x_max)
+            points_shown, raw_in_view = self._plot_signals(
+                state, index, cell, x_min, x_max
+            )
             self._last_points[index] = points_shown
             self._last_raw[index] = raw_in_view
 
@@ -432,10 +491,19 @@ class PlotsPanel(SessionPanel):
             run = state.registry.get(ref[0])
             if signal is None or run is None or not run.active:
                 continue
-            implot.set_axis(implot.ImAxis_.y2 if ref in cell.y2_signals else implot.ImAxis_.y1)
+            implot.set_axis(
+                implot.ImAxis_.y2 if ref in cell.y2_signals else implot.ImAxis_.y1
+            )
             label = state.signal_label(ref)
-            result = self._display(state, ("plot", index, ref), run, ref[1], x_min, x_max,
-                                   self._budget(state, len(cell.signals)))
+            result = self._display(
+                state,
+                ("plot", index, ref),
+                run,
+                ref[1],
+                x_min,
+                x_max,
+                self._budget(state, len(cell.signals)),
+            )
             if result is None:
                 implot.plot_dummy(label)
                 continue
@@ -462,7 +530,12 @@ class PlotsPanel(SessionPanel):
 
     # -- XY (signal vs signal) ----------------------------------------------
     def _render_xy(
-        self, state: AppState, index: int, cell: SubplotCell, width: float, plot_h: float
+        self,
+        state: AppState,
+        index: int,
+        cell: SubplotCell,
+        width: float,
+        plot_h: float,
     ) -> None:
         if cell.xy_source is None:
             refs, _ = self._xy_source_options(state, cell)
@@ -477,16 +550,20 @@ class PlotsPanel(SessionPanel):
         x_label = state.signal_label(cell.xy_source) if cell.xy_source else "X"
 
         if cell.fit_pending:
-            self._pending_fit[id(cell)] = {'x', 'y'}
+            self._pending_fit[id(cell)] = {"x", "y"}
         if id(cell) in self._pending_fit:
             implot.set_next_axes_to_fit()  # must precede begin_plot
             cell.fit_pending = False
-        if implot.begin_plot(f"Plot {index + 1}##plot{index}", imgui.ImVec2(width, plot_h)):
+        if implot.begin_plot(
+            f"Plot {index + 1}##plot{index}", imgui.ImVec2(width, plot_h)
+        ):
             implot.setup_axes(x_label, "")
             self._apply_explicit_limits(cell, consume=False)
             all_ready = False
             if x_sig is not None:
-                stride = max(1, -(-x_sig.y.shape[0] // self._budget(state, len(cell.signals))))
+                stride = max(
+                    1, -(-x_sig.y.shape[0] // self._budget(state, len(cell.signals)))
+                )
                 want_marker = cell.xy_style in (XyStyle.MARKERS, XyStyle.BOTH)
                 all_ready = True
                 for i, ref in enumerate(list(cell.signals)):
@@ -495,14 +572,40 @@ class PlotsPanel(SessionPanel):
                     if sig is None or run is None or not run.active:
                         continue
                     left, right = x_run.data_source(), run.data_source()
-                    identity = (left.metadata.identity, right.metadata.identity, cell.xy_source[1], ref[1],
-                                x_run.time_offset, run.time_offset, x_run.time_version, run.time_version)
+                    identity = (
+                        left.metadata.identity,
+                        right.metadata.identity,
+                        cell.xy_source[1],
+                        ref[1],
+                        x_run.time_offset,
+                        run.time_offset,
+                        x_run.time_version,
+                        run.time_version,
+                    )
                     slot = ("xy", index, ref)
-                    def compute(cancel, left=left, right=right, xn=cell.xy_source[1], yn=ref[1],
-                                stride=stride, xo=x_run.time_offset, yo=run.time_offset):
+
+                    def compute(
+                        cancel,
+                        left=left,
+                        right=right,
+                        xn=cell.xy_source[1],
+                        yn=ref[1],
+                        stride=stride,
+                        xo=x_run.time_offset,
+                        yo=run.time_offset,
+                    ):
                         from ..sampling import sample_xy
+
                         return sample_xy(left, right, xn, yn, xo, yo, stride, cancel)
-                    value = self._request_data(state, slot, (identity, stride), identity, [left, right], compute)
+
+                    value = self._request_data(
+                        state,
+                        slot,
+                        (identity, stride),
+                        identity,
+                        [left, right],
+                        compute,
+                    )
                     if not state.services.display.ready(slot, (identity, stride)):
                         all_ready = False
                     if value is None:
@@ -566,49 +669,79 @@ class PlotsPanel(SessionPanel):
         # The Δx / Δy readout only changes when a cursor moves, so cache it
         # instead of recomputing (and interpolating) every frame.
         sources = [(ref[1], state.registry.get(ref[0])) for ref in cell.signals[:3]]
-        sources = [(name, run.data_source(), run.time_offset, run.time_version) for name, run in sources if run is not None]
-        identity = tuple((name, src.metadata.identity, off, version) for name, src, off, version in sources)
+        sources = [
+            (name, run.data_source(), run.time_offset, run.time_version)
+            for name, run in sources
+            if run is not None
+        ]
+        identity = tuple(
+            (name, src.metadata.identity, off, version)
+            for name, src, off, version in sources
+        )
         slot = ("cursor", index)
         domain = state.plot_domain(cell)
+
         def compute(cancel):
             dx = abs(x2 - x1)
-            parts = ([f"Δx={dx:.4g}s", f"f={1 / dx if dx else float('inf'):.4g}Hz"]
-                     if domain == "time" else [f"Δf={dx:.4g}Hz"])
+            parts = (
+                [f"Δx={dx:.4g}s", f"f={1 / dx if dx else float('inf'):.4g}Hz"]
+                if domain == "time"
+                else [f"Δf={dx:.4g}Hz"]
+            )
             for name, src, off, _ in sources:
                 vals = []
                 for x in (x1, x2):
                     from ..sources import displayed_bounds
+
                     a, b = displayed_bounds(src, x, x, off, cancel, padding=True)
                     t, ys = src.read_rows([name], a, b, cancel)
                     vals.append(self._value_at(shift_time(t, off), ys[name], x))
                 parts.append(f"{name}: Δy={vals[1] - vals[0]:.4g}")
             return "   ".join(parts)
-        value = self._request_data(state, slot, (identity, x1, x2), identity,
-                                   [src for _, src, _, _ in sources], compute)
+
+        value = self._request_data(
+            state,
+            slot,
+            (identity, x1, x2),
+            identity,
+            [src for _, src, _, _ in sources],
+            compute,
+        )
         if value is not None:
             self._cursor_text[index] = value
             # Keep the readout visible while dragging, even with settings closed.
             pos, size = implot.get_plot_pos(), implot.get_plot_size()
             padding = imgui.get_style().frame_padding
-            origin = imgui.ImVec2(pos.x + padding.x,
-                                 pos.y + size.y - imgui.get_text_line_height() - padding.y)
+            origin = imgui.ImVec2(
+                pos.x + padding.x,
+                pos.y + size.y - imgui.get_text_line_height() - padding.y,
+            )
             implot.push_plot_clip_rect()
             draw = implot.get_plot_draw_list()
             text_size = imgui.calc_text_size(value)
-            draw.add_rect_filled(origin, imgui.ImVec2(origin.x + text_size.x, origin.y + text_size.y),
-                                 imgui.get_color_u32(imgui.Col_.window_bg))
+            draw.add_rect_filled(
+                origin,
+                imgui.ImVec2(origin.x + text_size.x, origin.y + text_size.y),
+                imgui.get_color_u32(imgui.Col_.window_bg),
+            )
             draw.add_text(origin, imgui.get_color_u32(col), value)
             implot.pop_plot_clip_rect()
         else:
             self._cursor_text.pop(index, None)
         self._maybe_echo_cursors(state, index, x1, x2)
 
-    def _maybe_echo_cursors(self, state: AppState, index: int, x1: float, x2: float) -> None:
+    def _maybe_echo_cursors(
+        self, state: AppState, index: int, x1: float, x2: float
+    ) -> None:
         if imgui.is_mouse_down(0):
             return
         span = abs(x2 - x1) or 1.0
         last = self._last_logged_cursor.get(index)
-        if last is not None and abs(last[0] - x1) < 0.005 * span and abs(last[1] - x2) < 0.005 * span:
+        if (
+            last is not None
+            and abs(last[0] - x1) < 0.005 * span
+            and abs(last[1] - x2) < 0.005 * span
+        ):
             return
         first = last is None
         self._last_logged_cursor[index] = (x1, x2)
@@ -654,10 +787,19 @@ class PlotsPanel(SessionPanel):
             state.commands.echo(state, "set_spy_rect", [index + 1, x1, y1, x2, y2])
 
     def _render_spy_inset(
-        self, state: AppState, index: int, cell: SubplotCell, width: float, height: float
+        self,
+        state: AppState,
+        index: int,
+        cell: SubplotCell,
+        width: float,
+        height: float,
     ) -> None:
         x1, y1, x2, y2 = cell.spy_rect
-        if implot.begin_plot(f"##spy{index}", imgui.ImVec2(width, max(height, em_size(3))), implot.Flags_.canvas_only):
+        if implot.begin_plot(
+            f"##spy{index}",
+            imgui.ImVec2(width, max(height, em_size(3))),
+            implot.Flags_.canvas_only,
+        ):
             implot.setup_axes_limits(x1, x2, y1, y2, imgui.Cond_.always)
             for i, ref in enumerate(list(cell.signals)):
                 if ref in cell.y2_signals:
@@ -666,22 +808,39 @@ class PlotsPanel(SessionPanel):
                 run = state.registry.get(ref[0])
                 if signal is None or run is None or not run.active:
                     continue
-                result = self._display(state, ("spy", index, ref), run, ref[1], x1, x2,
-                                       self._budget(state, len(cell.signals)))
+                result = self._display(
+                    state,
+                    ("spy", index, ref),
+                    run,
+                    ref[1],
+                    x1,
+                    x2,
+                    self._budget(state, len(cell.signals)),
+                )
                 if result is None:
                     continue
                 xs, ys, _ = result
                 # Same colour index as the main plot so the inset matches.
-                implot.plot_line(state.signal_label(ref), xs, ys, _colored_spec(i, marker=False))
+                implot.plot_line(
+                    state.signal_label(ref), xs, ys, _colored_spec(i, marker=False)
+                )
             implot.end_plot()
 
     def _spy_windows(self, state):
         for index, cell in enumerate(state.cells):
-            if not cell.spy or cell.spy_rect is None or cell.plot_type not in _TIME_SERIES:
+            if (
+                not cell.spy
+                or cell.spy_rect is None
+                or cell.plot_type not in _TIME_SERIES
+            ):
                 continue
-            imgui.set_next_window_size(imgui.ImVec2(em_size(30), em_size(18)), imgui.Cond_.first_use_ever)
+            imgui.set_next_window_size(
+                imgui.ImVec2(em_size(30), em_size(18)), imgui.Cond_.first_use_ever
+            )
             visible, opened = imgui.begin(
-                f"Spy: Plot {index + 1}##{self.signal_payload_type}_spy_{getattr(state, 'plot_window_id', 0)}_{index}", True)
+                f"Spy: Plot {index + 1}##{self.signal_payload_type}_spy_{getattr(state, 'plot_window_id', 0)}_{index}",
+                True,
+            )
             if visible:
                 size = imgui.get_content_region_avail()
                 self._render_spy_inset(state, index, cell, size.x, size.y)
@@ -692,16 +851,19 @@ class PlotsPanel(SessionPanel):
     # -- shared bits --------------------------------------------------------
     @staticmethod
     def _capture_limits(cell, limits):
-        for field, axis in (('x_lim', limits.x), ('y_lim', limits.y)):
+        for field, axis in (("x_lim", limits.x), ("y_lim", limits.y)):
             lo, hi = float(axis.min), float(axis.max)
             if _is_finite_range(lo, hi):
                 setattr(cell, field, (lo, hi))
 
     @staticmethod
     def _apply_explicit_limits(cell, *, consume=True):
-        axes = [('pending_x_lim', implot.ImAxis_.x1), ('pending_y_lim', implot.ImAxis_.y1)]
+        axes = [
+            ("pending_x_lim", implot.ImAxis_.x1),
+            ("pending_y_lim", implot.ImAxis_.y1),
+        ]
         if cell.y2_signals and cell.plot_type in _TIME_SERIES:
-            axes.append(('pending_y2_lim', implot.ImAxis_.y2))
+            axes.append(("pending_y2_lim", implot.ImAxis_.y2))
         for field, axis in axes:
             limits = getattr(cell, field)
             if limits is not None:
@@ -709,27 +871,35 @@ class PlotsPanel(SessionPanel):
                 if consume:
                     setattr(cell, field, None)
 
-    def _apply_pending_limits(self, state: AppState, cell: SubplotCell, data_min, data_max) -> bool:
+    def _apply_pending_limits(
+        self, state: AppState, cell: SubplotCell, data_min, data_max
+    ) -> bool:
         """Apply one-shot fit / set_x_lim / set_y_lim requests. Returns did_fit."""
         did_fit = False
         if cell.fit_pending:
-            self._pending_fit[id(cell)] = {'y', 'y2'}
+            self._pending_fit[id(cell)] = {"y", "y2"}
             if cell.pending_x_lim is None and data_min is not None:
-                implot.setup_axis_limits(implot.ImAxis_.x1, data_min, data_max, implot.Cond_.always)
+                implot.setup_axis_limits(
+                    implot.ImAxis_.x1, data_min, data_max, implot.Cond_.always
+                )
                 did_fit = True
         elif cell.pending_x_lim is not None:
             self._pending_fit.pop(id(cell), None)
         fitting = self._pending_fit.get(id(cell), set())
         # Explicit limits finish fitting only their own axis. The other axis
         # can continue waiting for lazy samples without overwriting this view.
-        for axis in ('y', 'y2'):
-            if getattr(cell, f'pending_{axis}_lim') is not None:
+        for axis in ("y", "y2"):
+            if getattr(cell, f"pending_{axis}_lim") is not None:
                 fitting.discard(axis)
         if imgui.is_mouse_down(0) or imgui.get_io().mouse_wheel:
             fitting.clear()
         for axis, im_axis, refs in (
-            ('y', implot.ImAxis_.y1, [r for r in cell.signals if r not in cell.y2_signals]),
-            ('y2', implot.ImAxis_.y2, cell.y2_signals),
+            (
+                "y",
+                implot.ImAxis_.y1,
+                [r for r in cell.signals if r not in cell.y2_signals],
+            ),
+            ("y2", implot.ImAxis_.y2, cell.y2_signals),
         ):
             if axis not in fitting:
                 continue
@@ -757,7 +927,9 @@ class PlotsPanel(SessionPanel):
             return data_min, data_max
         return x_min, x_max
 
-    def _maybe_echo_zoom(self, state: AppState, index: int, lo: float, hi: float, *, suppress: bool) -> None:
+    def _maybe_echo_zoom(
+        self, state: AppState, index: int, lo: float, hi: float, *, suppress: bool
+    ) -> None:
         """Echo `set_x_lim(...)` once a pan/zoom gesture settles (mouse up)."""
         if suppress or imgui.is_mouse_down(0):
             return
@@ -782,20 +954,30 @@ class PlotsPanel(SessionPanel):
                     self._emit(state, "add_signal", index + 1, ref[0], ref[1])
             implot.end_drag_drop_target()
 
-    def _legend_popup(self, state: AppState, cell: SubplotCell, ref: SignalRef, label: str) -> None:
+    def _legend_popup(
+        self, state: AppState, cell: SubplotCell, ref: SignalRef, label: str
+    ) -> None:
         if implot.begin_legend_popup(label):
             imgui.text_disabled(label)
             plot_n = cell_index_of(state, cell) + 1
             if cell.plot_type in _TIME_SERIES:
                 on_right = ref in cell.y2_signals
                 if imgui.menu_item("Right axis", "", on_right)[0]:
-                    self._emit(state, "set_axis", plot_n, ref[0], ref[1],
-                               "left" if on_right else "right")
+                    self._emit(
+                        state,
+                        "set_axis",
+                        plot_n,
+                        ref[0],
+                        ref[1],
+                        "left" if on_right else "right",
+                    )
             if imgui.menu_item("Remove from plot", "", False)[0]:
                 self._emit(state, "remove_signal", plot_n, ref[0], ref[1])
             implot.end_legend_popup()
 
-    def _cell_x_extent(self, state: AppState, cell: SubplotCell) -> tuple[float | None, float | None]:
+    def _cell_x_extent(
+        self, state: AppState, cell: SubplotCell
+    ) -> tuple[float | None, float | None]:
         lo: float | None = None
         hi: float | None = None
         for ref in cell.signals:
@@ -814,13 +996,20 @@ class PlotsPanel(SessionPanel):
     ) -> tuple[float | None, float | None]:
         lo: float | None = None
         hi: float | None = None
-        for ref in (cell.signals if refs is None else refs):
+        for ref in cell.signals if refs is None else refs:
             run = state.registry.get(ref[0])
             signal = state.registry.get_signal(ref[0], ref[1])
             if run is None or signal is None or not run.active or signal.y.size == 0:
                 continue
-            result = self._display(state, ("fit", id(cell), ref), run, ref[1],
-                                   float(run.time[0]), float(run.time[-1]), 512)
+            result = self._display(
+                state,
+                ("fit", id(cell), ref),
+                run,
+                ref[1],
+                float(run.time[0]),
+                float(run.time[-1]),
+                512,
+            )
             if result is None:
                 return None, None
             finite = result[1][np.isfinite(result[1])]
@@ -832,6 +1021,7 @@ class PlotsPanel(SessionPanel):
         if lo is None or hi is None:
             return None, None
         from ..validation import expanded_range
+
         return expanded_range(lo, hi)
 
     # -- panel --------------------------------------------------------------
@@ -841,21 +1031,27 @@ class PlotsPanel(SessionPanel):
         A cell-local fit is otherwise overwritten by the previous shared range,
         hiding newly assigned recordings with different timestamps.
         """
-        if not state.link_x or getattr(state, 'following_live', False):
+        if not state.link_x or getattr(state, "following_live", False):
             return
-        cells = [(i, cell) for i, cell in enumerate(state.cells, 1)
-                 if state.is_time_plot(cell)]
+        cells = [
+            (i, cell)
+            for i, cell in enumerate(state.cells, 1)
+            if state.is_time_plot(cell)
+        ]
         # Explicit/restored windows take precedence over automatic fitting.
         if any(cell.pending_x_lim is not None for _, cell in cells):
             return
-        if not any(cell.fit_pending and self._cell_x_extent(state, cell)[0] is not None
-                   for _, cell in cells):
+        if not any(
+            cell.fit_pending and self._cell_x_extent(state, cell)[0] is not None
+            for _, cell in cells
+        ):
             return
         extents = [self._cell_x_extent(state, cell) for _, cell in cells]
         extents = [(lo, hi) for lo, hi in extents if lo is not None]
         if extents:
-            state.set_plot_x_limits(cells[0][0], min(lo for lo, _ in extents),
-                                    max(hi for _, hi in extents))
+            state.set_plot_x_limits(
+                cells[0][0], min(lo for lo, _ in extents), max(hi for _, hi in extents)
+            )
 
     def render(self, state: AppState) -> None:
         self._sync_session(state)
@@ -869,14 +1065,22 @@ class PlotsPanel(SessionPanel):
                     self._reset_view(state, plot_n)
             self._requested_resets.clear()
         if self._equal_sizes:
-            state.set_grid_ratios([1.] * state.rows, [1.] * state.cols)
+            state.set_grid_ratios([1.0] * state.rows, [1.0] * state.cols)
             self._equal_sizes = False
         live_cells = {id(cell) for cell in state.cells}
-        self._pending_fit = {key: axes for key, axes in self._pending_fit.items() if key in live_cells}
+        self._pending_fit = {
+            key: axes for key, axes in self._pending_fit.items() if key in live_cells
+        }
         if self._driver >= state.cell_count:
             self._driver = -1
-        for cache in (self._last_logged_x, self._last_logged_cursor, self._last_logged_spy,
-                      self._cursor_text, self._last_points, self._last_raw):
+        for cache in (
+            self._last_logged_x,
+            self._last_logged_cursor,
+            self._last_logged_spy,
+            self._cursor_text,
+            self._last_points,
+            self._last_raw,
+        ):
             for index in list(cache):
                 if index >= state.cell_count:
                     del cache[index]
@@ -892,8 +1096,14 @@ class PlotsPanel(SessionPanel):
         # Keep per-plot legends and the viewer's domain-aware axis linking.
         # Native grid menus expose competing sharing/link flags, so layout
         # settings live in our popup while the native splitters stay enabled.
-        if implot.begin_subplots("##grid", state.rows, state.cols, imgui.ImVec2(-1, -1),
-                                 implot.SubplotFlags_.no_menus, ratios):
+        if implot.begin_subplots(
+            "##grid",
+            state.rows,
+            state.cols,
+            imgui.ImVec2(-1, -1),
+            implot.SubplotFlags_.no_menus,
+            ratios,
+        ):
             try:
                 for index, cell in enumerate(state.cells):
                     self._render_cell(state, index, cell, imgui.ImVec2(-1, -1))

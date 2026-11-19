@@ -12,9 +12,14 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from .sources import shift_time, TimeShift
-
-from .sources import ArraySource, SourceColumn, ByteCache, DisplaySource
+from .sources import (
+    ArraySource,
+    ByteCache,
+    DisplaySource,
+    SourceColumn,
+    TimeShift,
+    shift_time,
+)
 
 # Monotonic data-version stamp. Every Signal and every (re)assigned run time axis
 # gets a globally-unique version, so consumers that cache by data identity (the plot
@@ -26,6 +31,7 @@ _DATA_VERSION = itertools.count(1)
 
 def _next_data_version() -> int:
     return next(_DATA_VERSION)
+
 
 # Distinct, color-blind friendly palette cycled across runs in the navigation
 # tree so the same run keeps a stable color hint everywhere in the UI.
@@ -125,9 +131,19 @@ class Run:
     output_validator: object = field(default=None, repr=False, compare=False)
 
     def data_source(self) -> DisplaySource:
-        version = (self.time_version, id(self.time), tuple((n, s.version, id(s.y)) for n, s in self.signals.items()))
-        if self.source is None or (not isinstance(self.time, SourceColumn) and version != self._source_version):
-            self.source = ArraySource(self.time, {n: s.y for n, s in self.signals.items()}, getattr(self, '_cache', None))
+        version = (
+            self.time_version,
+            id(self.time),
+            tuple((n, s.version, id(s.y)) for n, s in self.signals.items()),
+        )
+        if self.source is None or (
+            not isinstance(self.time, SourceColumn) and version != self._source_version
+        ):
+            self.source = ArraySource(
+                self.time,
+                {n: s.y for n, s in self.signals.items()},
+                getattr(self, "_cache", None),
+            )
         self._source_version = version
         if isinstance(self.source, ArraySource):
             self.source.validator = self.output_validator
@@ -135,7 +151,7 @@ class Run:
 
     @property
     def time_offset(self):
-        return self.time.offset if isinstance(self.time, SourceColumn) else 0.
+        return self.time.offset if isinstance(self.time, SourceColumn) else 0.0
 
     @property
     def storage_mode(self):
@@ -145,6 +161,7 @@ class Run:
         source = self.data_source()
         offset = self.time_offset
         from .sources import displayed_bounds
+
         a, b = displayed_bounds(source, lo, hi, offset, cancel)
         t, ys = source.read_rows(channels, a, b, cancel)
         return shift_time(t, offset), ys
@@ -156,18 +173,25 @@ class Run:
     def set_time_origin(self, target: float | None) -> None:
         """Normalise so the first sample sits at ``target`` (or restore raw)."""
         from .validation import finite_float
+
         if self.axis_domain != "time" and target is not None:
             raise ValueError("Time normalization requires a time-domain recording")
         target = finite_float(target) if target is not None else None
         raw = self.time_raw if self.time_raw is not None else self.time
         self.time_origin = target
         if isinstance(raw, SourceColumn):
-            offset = 0. if target is None else TimeShift(raw.source.metadata.time_range[0], float(target))
+            offset = (
+                0.0
+                if target is None
+                else TimeShift(raw.source.metadata.time_range[0], float(target))
+            )
             self.time = SourceColumn(raw.source, offset=offset)
         elif target is None or raw.shape[0] == 0:
             self.time = raw
         else:
-            self.time = shift_time(raw, TimeShift(float(raw[0]), float(target))).astype(np.float64)
+            self.time = shift_time(raw, TimeShift(float(raw[0]), float(target))).astype(
+                np.float64
+            )
         self.mark_time_changed()
 
     @property
@@ -198,10 +222,17 @@ class DataRegistry:
         units: dict[str, str],
     ) -> Run:
         time_arr = np.asarray(time, dtype=np.float64)
-        values_by_name = {name: np.asarray(values, dtype=np.float32) for name, values in signals.items()}
-        if time_arr.ndim != 1 or any(values.ndim != 1 or values.shape != time_arr.shape
-                                     for values in values_by_name.values()):
-            raise ValueError("Recording arrays must contain equal-length one-dimensional time and values")
+        values_by_name = {
+            name: np.asarray(values, dtype=np.float32)
+            for name, values in signals.items()
+        }
+        if time_arr.ndim != 1 or any(
+            values.ndim != 1 or values.shape != time_arr.shape
+            for values in values_by_name.values()
+        ):
+            raise ValueError(
+                "Recording arrays must contain equal-length one-dimensional time and values"
+            )
         time_arr = np.ascontiguousarray(time_arr)
         run_id = next(self._ids)
         color = _RUN_COLORS[(run_id - 1) % len(_RUN_COLORS)]
@@ -228,10 +259,20 @@ class DataRegistry:
     def add_source(self, label, path, source):
         run_id = next(self._ids)
         time = SourceColumn(source)
-        run = Run(run_id, label, path, time, {},
-                  color=_RUN_COLORS[(run_id - 1) % len(_RUN_COLORS)], time_raw=time, source=source)
-        run.signals = {name: Signal(name, source.units[name], SourceColumn(source, name), run_id)
-                       for name in source.metadata.channels}
+        run = Run(
+            run_id,
+            label,
+            path,
+            time,
+            {},
+            color=_RUN_COLORS[(run_id - 1) % len(_RUN_COLORS)],
+            time_raw=time,
+            source=source,
+        )
+        run.signals = {
+            name: Signal(name, source.units[name], SourceColumn(source, name), run_id)
+            for name in source.metadata.channels
+        }
         run._cache = self.cache
         self._runs[run_id] = run
         return run

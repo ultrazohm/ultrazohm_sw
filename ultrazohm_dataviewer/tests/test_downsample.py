@@ -2,13 +2,11 @@
 
 from __future__ import annotations
 
-
 import numpy as np
 import pytest
 
-
-from ultrazohm_dataviewer.sources import ArraySource
 from ultrazohm_dataviewer.downsample import decimate_range, visible_slice  # noqa: E402
+from ultrazohm_dataviewer.sources import ArraySource
 
 
 def test_visible_slice_pads_edges():
@@ -33,13 +31,17 @@ def test_visible_slice_is_fast_on_float32():
     per_call_ms = (_time.perf_counter() - t0) / 50 * 1e3
     # An up-cast is ~30 ms/call; a dtype-matched search is microseconds. 1 ms is
     # a generous ceiling that still fails loudly if the up-cast ever returns.
-    assert per_call_ms < 1.0, f"visible_slice too slow ({per_call_ms:.2f} ms) -- float32 up-cast?"
+    assert per_call_ms < 1.0, (
+        f"visible_slice too slow ({per_call_ms:.2f} ms) -- float32 up-cast?"
+    )
 
 
 def test_downsample_reduces_point_count():
     time = np.linspace(0.0, 100.0, 1_000_000)
     y = np.sin(time).astype(np.float32)
-    xs, ys = decimate_range(time, y, ArraySource(time, {'value': y}), 1000, 0, time.shape[0])
+    xs, ys = decimate_range(
+        time, y, ArraySource(time, {"value": y}), 1000, 0, time.shape[0]
+    )
     assert xs.shape[0] <= 1000
     assert xs.shape == ys.shape
 
@@ -48,7 +50,7 @@ def test_downsample_respects_range():
     time = np.linspace(0.0, 100.0, 1_000_000)
     y = np.sin(time).astype(np.float32)
     start, stop = visible_slice(time, 10.0, 20.0)
-    xs, ys = decimate_range(time, y, ArraySource(time, {'value': y}), 500, start, stop)
+    xs, ys = decimate_range(time, y, ArraySource(time, {"value": y}), 500, start, stop)
     assert xs.min() <= 10.1
     assert xs.max() >= 19.9
     assert xs.max() <= 20.2
@@ -57,7 +59,9 @@ def test_downsample_respects_range():
 def test_downsample_small_series_passthrough():
     time = np.array([0.0, 1.0, 2.0])
     y = np.array([1.0, 2.0, 3.0], dtype=np.float32)
-    xs, ys = decimate_range(time, y, ArraySource(time, {'value': y}), 1000, 0, time.shape[0])  # window <= n_out
+    xs, ys = decimate_range(
+        time, y, ArraySource(time, {"value": y}), 1000, 0, time.shape[0]
+    )  # window <= n_out
     np.testing.assert_array_equal(xs, time)
     np.testing.assert_array_equal(ys, y)
 
@@ -70,18 +74,25 @@ def test_downsample_budget_is_max_points_not_pixel_width():
     max_points = 20_000
 
     start, stop = 1_000_000, 1_005_500  # 5500 raw samples, well under the budget
-    xs, ys = decimate_range(time, y, ArraySource(time, {'value': y}), max_points, start, stop)
+    xs, ys = decimate_range(
+        time, y, ArraySource(time, {"value": y}), max_points, start, stop
+    )
     assert xs.shape[0] == stop - start  # raw, untouched
     np.testing.assert_array_equal(xs, time[start:stop])
     np.testing.assert_array_equal(ys, y[start:stop])
 
     start, stop = 0, 5_000_000  # far more than the budget -> envelope to ~max_points
-    xs, ys = decimate_range(time, y, ArraySource(time, {'value': y}), max_points, start, stop)
+    xs, ys = decimate_range(
+        time, y, ArraySource(time, {"value": y}), max_points, start, stop
+    )
     assert xs.shape[0] <= max_points
     assert xs.shape[0] >= max_points // 2  # lands near the budget, not far below it
 
 
-@pytest.mark.parametrize('dtype', [np.int32, np.int64, np.uint64])
-@pytest.mark.parametrize('window,expected', [((.2, 1.2), (1, 2)), ((.8, .9), (1, 1)), ((-.8, -.2), (0, 0))])
+@pytest.mark.parametrize("dtype", [np.int32, np.int64, np.uint64])
+@pytest.mark.parametrize(
+    "window,expected",
+    [((0.2, 1.2), (1, 2)), ((0.8, 0.9), (1, 1)), ((-0.8, -0.2), (0, 0))],
+)
 def test_integer_time_preserves_fractional_bounds(dtype, window, expected):
     assert visible_slice(np.arange(4, dtype=dtype), *window, padding=False) == expected

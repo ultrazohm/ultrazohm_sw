@@ -33,7 +33,9 @@ def main(path: str) -> None:
     name = data.names[0]
     spectrum = uz.fft_frame(data.time, data[name])
     peak = spectrum.loc[spectrum["amplitude"].idxmax()]
-    print(f"\nFFT of {name!r}: peak amplitude {peak['amplitude']:.4g} at {peak['frequency']:.2f} Hz")
+    print(
+        f"\nFFT of {name!r}: peak amplitude {peak['amplitude']:.4g} at {peak['frequency']:.2f} Hz"
+    )
 
     # 3. Run a node transform (same calculation the GUI's node graph uses).
     print("available node kinds:", uz.kinds())
@@ -45,6 +47,7 @@ def main(path: str) -> None:
 
 if __name__ == "__main__":
     import argparse
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("path", help="CSV or Parquet recording")
     main(parser.parse_args().path)

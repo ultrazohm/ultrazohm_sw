@@ -21,10 +21,9 @@ Large logs (see ``ultrazohm_dataviewer_architecture.rst``) are handled leanly on
 
 from __future__ import annotations
 
-
+import csv
 import os
 import re
-import csv
 from dataclasses import dataclass
 from typing import Callable
 
@@ -33,9 +32,9 @@ import pyarrow as pa
 import pyarrow.csv as pa_csv
 import pyarrow.parquet as pq
 
+from .csv_policy import NULL_VALUES
 from .model import DataRegistry, Run
 from .sources import IndexedFileSource, check
-from .csv_policy import NULL_VALUES
 
 
 @dataclass
@@ -57,11 +56,14 @@ class ParsedRun:
     skipped_columns: tuple[str, ...] = ()
 
     def register(self, registry: DataRegistry) -> Run:
-        run = registry.add_run(self.label, self.path, self.time, self.signals, self.units)
+        run = registry.add_run(
+            self.label, self.path, self.time, self.signals, self.units
+        )
         run.backend = self.backend
         run.timestamp_resolution = self.timestamp_resolution
         run.skipped_columns = self.skipped_columns
         return run
+
 
 _CHANNEL_PREFIX = re.compile(r"^CH\d+\s*=\s*\d+\s*\)\s*(.*)$")
 
@@ -127,8 +129,15 @@ def numeric_columns(fields) -> tuple[list[str], tuple[str, ...]]:
 
 
 def arrow_numeric_columns(schema) -> tuple[list[str], tuple[str, ...]]:
-    return numeric_columns((field.name, pa.types.is_integer(field.type) or pa.types.is_floating(field.type)
-                            or pa.types.is_boolean(field.type)) for field in schema)
+    return numeric_columns(
+        (
+            field.name,
+            pa.types.is_integer(field.type)
+            or pa.types.is_floating(field.type)
+            or pa.types.is_boolean(field.type),
+        )
+        for field in schema
+    )
 
 
 def _split_time_columns(column_names: list[str]) -> tuple[str, list[str]]:
@@ -193,7 +202,9 @@ def validate_time_axis(time: np.ndarray, path: str) -> None:
     if not np.isfinite(time).all():
         raise ValueError(f"{name}: time column contains non-finite values (NaN/Inf).")
     if time.shape[0] > 1 and np.any(time[1:] < time[:-1]):
-        raise ValueError(f"{name}: time column is not non-decreasing (timestamps go backwards).")
+        raise ValueError(
+            f"{name}: time column is not non-decreasing (timestamps go backwards)."
+        )
 
 
 def _sniff_delimiter(path: str) -> str:
@@ -290,7 +301,9 @@ def collect_csv_batches(path, columns, batches, cancel=None, *, backend="pyarrow
         check(cancel)
         needed = off + len(t)
         if needed > max_rows:
-            raise ValueError("CSV too large for numeric memory budget; use lazy loading")
+            raise ValueError(
+                "CSV too large for numeric memory budget; use lazy loading"
+            )
         if needed > cap:
             cap = min(max_rows, max(needed, int(cap * 1.5)))
             time = _grow(time, cap, off)
@@ -302,7 +315,15 @@ def collect_csv_batches(path, columns, batches, cancel=None, *, backend="pyarrow
     time = time[:off]
     validate_time_axis(time, path)
     signals, units = _named_signals(data_columns, lambda raw: arrays[raw][:off])
-    return ParsedRun(os.path.basename(path), path, time, signals, units, backend=backend, timestamp_resolution=timestamp_resolution(data_columns))
+    return ParsedRun(
+        os.path.basename(path),
+        path,
+        time,
+        signals,
+        units,
+        backend=backend,
+        timestamp_resolution=timestamp_resolution(data_columns),
+    )
 
 
 def parse_csv(path: str, cancel=None) -> ParsedRun:
@@ -316,21 +337,38 @@ def parse_csv(path: str, cancel=None) -> ParsedRun:
         parse_options=pa_csv.ParseOptions(delimiter=delimiter),
         read_options=pa_csv.ReadOptions(use_threads=True),
         convert_options=pa_csv.ConvertOptions(
-            strings_can_be_null=True, null_values=NULL_VALUES,
-            column_types=_csv_column_types(columns), include_columns=ordered,
+            strings_can_be_null=True,
+            null_values=NULL_VALUES,
+            column_types=_csv_column_types(columns),
+            include_columns=ordered,
         ),
     ) as reader:
+
         def batches():
             for batch in reader:
                 check(cancel)
-                yield batch.column(0).to_numpy(zero_copy_only=False), {
-                    c: batch.column(i + 1).to_numpy(zero_copy_only=False)
-                    for i, c in enumerate(data_columns)}
+                yield (
+                    batch.column(0).to_numpy(zero_copy_only=False),
+                    {
+                        c: batch.column(i + 1).to_numpy(zero_copy_only=False)
+                        for i, c in enumerate(data_columns)
+                    },
+                )
+
         return collect_csv_batches(path, columns, batches(), cancel)
 
 
-def collect_parquet_batches(path, columns, n_rows, batches, cancel=None, *, backend="pyarrow", strict_rows=False,
-                            skipped_columns=()):
+def collect_parquet_batches(
+    path,
+    columns,
+    n_rows,
+    batches,
+    cancel=None,
+    *,
+    backend="pyarrow",
+    strict_rows=False,
+    skipped_columns=(),
+):
     """Fill contiguous arrays from numeric batches, retaining backend row-count policy."""
     _, data_columns = _split_time_columns(columns)
     time = np.empty(n_rows, dtype=np.float64)
@@ -345,27 +383,43 @@ def collect_parquet_batches(path, columns, n_rows, batches, cancel=None, *, back
         off = end
     if off != n_rows:
         if strict_rows:
-            raise ValueError('Parquet row count changed during loading')
+            raise ValueError("Parquet row count changed during loading")
         time = time[:off]
         arrays = {k: v[:off] for k, v in arrays.items()}
     validate_time_axis(time, path)
     signals, units = _named_signals(data_columns, arrays.__getitem__)
-    return ParsedRun(os.path.basename(path), path, time, signals, units,
-                     backend=backend, timestamp_resolution=timestamp_resolution(data_columns),
-                     skipped_columns=tuple(skipped_columns))
+    return ParsedRun(
+        os.path.basename(path),
+        path,
+        time,
+        signals,
+        units,
+        backend=backend,
+        timestamp_resolution=timestamp_resolution(data_columns),
+        skipped_columns=tuple(skipped_columns),
+    )
 
 
-def _parse_parquet_streaming(pf: pq.ParquetFile, path: str, n_rows: int, cancel=None) -> ParsedRun:
+def _parse_parquet_streaming(
+    pf: pq.ParquetFile, path: str, n_rows: int, cancel=None
+) -> ParsedRun:
     names, skipped = arrow_numeric_columns(pf.schema_arrow)
     time_col, columns = _split_time_columns(names)
+
     def batches():
         for batch in pf.iter_batches(columns=[time_col, *columns]):
             check(cancel)
-            yield batch.column(0).to_numpy(zero_copy_only=False), {
-                name: batch.column(i + 1).to_numpy(zero_copy_only=False)
-                for i, name in enumerate(columns)}
-    return collect_parquet_batches(path, [time_col, *columns], n_rows, batches(), cancel,
-                                   skipped_columns=skipped)
+            yield (
+                batch.column(0).to_numpy(zero_copy_only=False),
+                {
+                    name: batch.column(i + 1).to_numpy(zero_copy_only=False)
+                    for i, name in enumerate(columns)
+                },
+            )
+
+    return collect_parquet_batches(
+        path, [time_col, *columns], n_rows, batches(), cancel, skipped_columns=skipped
+    )
 
 
 def parse_parquet(path: str, cancel=None) -> ParsedRun:
@@ -373,7 +427,9 @@ def parse_parquet(path: str, cancel=None) -> ParsedRun:
         return _parse_parquet_streaming(pf, path, pf.metadata.num_rows, cancel)
 
 
-def convert_csv_to_parquet(src: str, dst: str | None = None, *, backend="pyarrow", cancel=None) -> str:
+def convert_csv_to_parquet(
+    src: str, dst: str | None = None, *, backend="pyarrow", cancel=None
+) -> str:
     """Stream-convert a CSV log to Parquet with bounded memory.
 
     Reads ``src`` in row-group batches (never the whole file at once), casts
@@ -393,12 +449,16 @@ def convert_csv_to_parquet(src: str, dst: str | None = None, *, backend="pyarrow
         raise ValueError(f"convert expects a .csv file, got {src!r}")
     if os.path.lexists(dst):
         raise FileExistsError(f"Parquet file already exists: {dst}")
-    fd, temporary = tempfile.mkstemp(prefix=".uz-convert-", suffix=".parquet",
-                                     dir=os.path.dirname(os.path.abspath(dst)))
+    fd, temporary = tempfile.mkstemp(
+        prefix=".uz-convert-",
+        suffix=".parquet",
+        dir=os.path.dirname(os.path.abspath(dst)),
+    )
     os.close(fd)
     try:
         if cancel is not None:
             from .loading import convert_cancellable
+
             convert_cancellable(src, temporary, backend, cancel)
         else:
             _write_csv_to_parquet(src, temporary, backend=backend)
@@ -410,6 +470,7 @@ def convert_csv_to_parquet(src: str, dst: str | None = None, *, backend="pyarrow
         # Publish only complete output, and never overwrite a destination created
         # while conversion was running. The parent owns cleanup on cancellation.
         from .user_paths import publish_new
+
         publish_new(temporary, dst)
     finally:
         if os.path.exists(temporary):
@@ -421,6 +482,7 @@ def _write_csv_to_parquet(src, dst, *, backend="pyarrow"):
     """Backend writer for an unpublished temporary file owned by the caller."""
     if backend == "polars":
         from .polars_io import _write_csv_to_parquet as write
+
         return write(src, dst)
     delimiter = _sniff_delimiter(src)
     columns = _read_header(src, delimiter)
@@ -478,6 +540,7 @@ def parse_file(path: str, *, backend="pyarrow", cancel=None) -> ParsedRun:
     validate_backend(backend)
     if backend == "polars":
         from . import polars_io
+
         ext = os.path.splitext(path)[1].lower()
         if ext == ".csv":
             return polars_io.parse_csv(path, cancel=cancel)
@@ -502,8 +565,10 @@ def mark_cache_directory(directory):
     if not os.path.exists(tag):
         try:
             with open(tag, "w", encoding="utf-8") as output:
-                output.write("Signature: 8a477f597d28d172789f06886806bc55\n"
-                             "# Converted logs and display caches of the UltraZohm Data Viewer.\n")
+                output.write(
+                    "Signature: 8a477f597d28d172789f06886806bc55\n"
+                    "# Converted logs and display caches of the UltraZohm Data Viewer.\n"
+                )
         except OSError:
             pass  # A read-only cache stays usable.
 
@@ -527,7 +592,16 @@ def validate_backend(backend):
         raise ValueError("backend must be pyarrow or polars")
 
 
-def open_file(path, mode="memory", cache=None, cache_dir=None, *, backend="pyarrow", disk_cache=False, cancel=None):
+def open_file(
+    path,
+    mode="memory",
+    cache=None,
+    cache_dir=None,
+    *,
+    backend="pyarrow",
+    disk_cache=False,
+    cancel=None,
+):
     """Open using a selected storage policy. Existing parse_file stays eager."""
     check(cancel)
     validate_backend(backend)
@@ -544,15 +618,26 @@ def open_file(path, mode="memory", cache=None, cache_dir=None, *, backend="pyarr
     if path.lower().endswith(".csv") and not disk_cache:
         if backend == "pyarrow":
             from .csv_source import CsvSource as SourceClass
-        return OpenedSource(original, SourceClass(path, cache, cache_dir, cancel=cancel, disk_cache=False), backend=backend)
+        return OpenedSource(
+            original,
+            SourceClass(path, cache, cache_dir, cancel=cancel, disk_cache=False),
+            backend=backend,
+        )
     if path.lower().endswith(".csv"):
-        from pathlib import Path
         import hashlib
         import tempfile
+        from pathlib import Path
+
         from .sources import FileIdentity
+
         origin = FileIdentity.capture(path)
         identity = hashlib.sha256(repr(origin).encode()).hexdigest()
-        root = Path(cache_dir or os.environ.get("UZ_DATAVIEWER_CACHE", Path.home() / ".cache" / "ultrazohm_dataviewer"))
+        root = Path(
+            cache_dir
+            or os.environ.get(
+                "UZ_DATAVIEWER_CACHE", Path.home() / ".cache" / "ultrazohm_dataviewer"
+            )
+        )
         if backend == "polars":
             root = root / "polars"
         root.mkdir(parents=True, exist_ok=True)

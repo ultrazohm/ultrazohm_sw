@@ -59,6 +59,30 @@ env:
   CARGO_BUILD_JOBS: 2
 
 jobs:
+  python-style:
+    name: Python style (${{ matrix.project }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [cli, viewer]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: '0.13.1'
+      - run: ./uz task ${{ matrix.project }} lint
+      - run: ./uz task ${{ matrix.project }} format-check
+
+  shared-python-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: '0.13.1'
+      - run: uv tool run --from ruff==0.17.2 ruff check --isolated --select F tasks.py tests scripts
+
   image:
     uses: ./.github/workflows/ci-image.yml
     permissions:
@@ -301,7 +325,7 @@ jobs:
           retention-days: 30
 
   release:
-    needs: [version, verify-published, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows]
+    needs: [version, verify-published, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, python-style, shared-python-lint]
     if: needs.version.outputs.publish == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -354,7 +378,7 @@ jobs:
           gh release edit "$TAG" --draft=false --prerelease="$PRERELEASE" --latest=false
 
   validate-artifacts:
-    needs: [version, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows]
+    needs: [version, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, python-style, shared-python-lint]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

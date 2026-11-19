@@ -3,16 +3,14 @@
 from __future__ import annotations
 
 import os
-import numpy as np
-import pytest
 from pathlib import Path
 
+import numpy as np
+import pytest
 
-
+from ultrazohm_dataviewer import loader
 from ultrazohm_dataviewer.loader import open_file, parse_channel_name
 from ultrazohm_dataviewer.model import DataRegistry
-from ultrazohm_dataviewer import loader
-
 
 SAMPLE = (
     "time;CH1=1)ISR_ExecTime_us;CH8=8)ia;CH15=15)Speed_rpm;\n"
@@ -171,7 +169,9 @@ def test_csv_streaming_growth_preserves_samples(tmp_path, monkeypatch):
     assert streamed.signals["Speed_rpm"].unit == "rpm"
     np.testing.assert_allclose(streamed.time, baseline.time)
     for name in baseline.signals:
-        np.testing.assert_array_equal(streamed.signals[name].y, baseline.signals[name].y)
+        np.testing.assert_array_equal(
+            streamed.signals[name].y, baseline.signals[name].y
+        )
         assert streamed.signals[name].y.dtype == np.float32
     assert streamed.time.dtype == np.float64
 
@@ -185,7 +185,6 @@ def test_csv_streaming_rejects_decreasing_time(tmp_path):
 
 def test_parquet_streaming_preserves_all_row_groups(tmp_path):
     import pandas as pd
-
 
     n = 5000
     df = pd.DataFrame(
@@ -201,78 +200,104 @@ def test_parquet_streaming_preserves_all_row_groups(tmp_path):
 
     streamed = open_file(str(path)).register(DataRegistry())
     assert streamed.n_rows == n
-    np.testing.assert_array_equal(streamed.time, df['time'].to_numpy())
-    for name in ('ia', 'ib'):
+    np.testing.assert_array_equal(streamed.time, df["time"].to_numpy())
+    for name in ("ia", "ib"):
         np.testing.assert_array_equal(streamed.signals[name].y, df[name].to_numpy())
 
 
-@pytest.mark.parametrize('backend', ['pyarrow', 'polars'])
-@pytest.mark.parametrize('mode', ['memory', 'lazy'])
-@pytest.mark.parametrize('extension', ['csv', 'parquet'])
-def test_colliding_channels_preserve_raw_columns(tmp_path, states, backend, mode, extension):
+@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
+@pytest.mark.parametrize("mode", ["memory", "lazy"])
+@pytest.mark.parametrize("extension", ["csv", "parquet"])
+def test_colliding_channels_preserve_raw_columns(
+    tmp_path, states, backend, mode, extension
+):
     import pyarrow as pa
     import pyarrow.parquet as pq
-    path = tmp_path / f'collision.{extension}'
-    names = ['time', 'CH1=1)a', 'a', 'a [2]', 'CH2=2)time']
+
+    path = tmp_path / f"collision.{extension}"
+    names = ["time", "CH1=1)a", "a", "a [2]", "CH2=2)time"]
     arrays = [np.array([i, i + 1.0]) for i in (0, 10, 20, 30, 40)]
-    if extension == 'csv':
-        path.write_text(';'.join(names) + '\n' + '\n'.join((';'.join(map(str, row)) for row in zip(*arrays))))
+    if extension == "csv":
+        path.write_text(
+            ";".join(names)
+            + "\n"
+            + "\n".join((";".join(map(str, row)) for row in zip(*arrays)))
+        )
     else:
         pq.write_table(pa.table(dict(zip(names, arrays))), path)
     run = open_file(str(path), mode, backend=backend).register(states().registry)
-    assert len(run.signals) == 4 and 'time' not in run.signals
+    assert len(run.signals) == 4 and "time" not in run.signals
     _, values = run.read_window(list(run.signals), 0, 1)
     for actual, expected in zip(values.values(), arrays[1:]):
         np.testing.assert_array_equal(actual, expected)
 
 
-@pytest.mark.parametrize('backend', ['pyarrow', 'polars'])
-@pytest.mark.parametrize('mode', ['memory', 'lazy'])
+@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
+@pytest.mark.parametrize("mode", ["memory", "lazy"])
 def test_native_quoted_csv_headers(tmp_path, states, backend, mode):
-    path = tmp_path / 'quoted.csv'
+    path = tmp_path / "quoted.csv"
     path.write_text('time;"a,b,c";\n0;10;\n1;20;\n')
     run = open_file(str(path), mode, backend=backend).register(states().registry)
-    assert list(run.signals) == ['a,b,c']
-    np.testing.assert_array_equal(run.read_window(['a,b,c'], 0, 1)[1]['a,b,c'], [10, 20])
+    assert list(run.signals) == ["a,b,c"]
+    np.testing.assert_array_equal(
+        run.read_window(["a,b,c"], 0, 1)[1]["a,b,c"], [10, 20]
+    )
 
 
-@pytest.mark.parametrize('backend', ['pyarrow', 'polars'])
-@pytest.mark.parametrize('mode', ['memory', 'lazy', 'converted'])
+@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
+@pytest.mark.parametrize("mode", ["memory", "lazy", "converted"])
 def test_csv_missing_values_have_one_policy(tmp_path, backend, mode):
-    from ultrazohm_dataviewer.csv_policy import NULL_VALUES
     import csv
-    path = tmp_path / 'missing.csv'
-    with path.open('w', newline='') as fh:
+
+    from ultrazohm_dataviewer.csv_policy import NULL_VALUES
+
+    path = tmp_path / "missing.csv"
+    with path.open("w", newline="") as fh:
         writer = csv.writer(fh)
-        writer.writerow(['time', 'y'])
+        writer.writerow(["time", "y"])
         writer.writerows(enumerate(NULL_VALUES))
-    if mode == 'converted':
+    if mode == "converted":
         path = Path(loader.convert_csv_to_parquet(str(path), backend=backend))
-    run = loader.open_file(str(path), 'lazy' if mode == 'lazy' else 'memory', backend=backend).register(DataRegistry())
-    t, values = run.read_window(['y'], 0, len(NULL_VALUES))
+    run = loader.open_file(
+        str(path), "lazy" if mode == "lazy" else "memory", backend=backend
+    ).register(DataRegistry())
+    t, values = run.read_window(["y"], 0, len(NULL_VALUES))
     assert len(t) == len(NULL_VALUES)
-    assert np.isnan(values['y']).all()
+    assert np.isnan(values["y"]).all()
 
 
-@pytest.mark.parametrize('time,values', [(np.arange(8.), np.ones(2)),
-                                         (np.ones((8, 1)), np.ones(8)),
-                                         (np.array(1.), np.array(2.))])
+@pytest.mark.parametrize(
+    "time,values",
+    [
+        (np.arange(8.0), np.ones(2)),
+        (np.ones((8, 1)), np.ones(8)),
+        (np.array(1.0), np.array(2.0)),
+    ],
+)
 def test_registry_rejects_invalid_array_shapes_before_registration(time, values):
     registry = DataRegistry()
-    with pytest.raises(ValueError, match='equal-length one-dimensional'):
-        registry.add_run('bad', 'bad', time, {'a': values}, {})
+    with pytest.raises(ValueError, match="equal-length one-dimensional"):
+        registry.add_run("bad", "bad", time, {"a": values}, {})
     assert len(registry) == 0
-    run = registry.add_run('good', 'good', np.arange(8.), {'a': np.ones(8)}, {})
+    run = registry.add_run("good", "good", np.arange(8.0), {"a": np.ones(8)}, {})
     assert run.id == 1
 
 
 def test_parquet_collectors_preserve_row_count_policy():
-    from ultrazohm_dataviewer.loader import collect_parquet_batches
     import pytest
-    batches = [(np.array([0., 1.]), {'a': np.array([2., 3.], dtype=np.float32)})]
-    result = collect_parquet_batches('recording.parquet', ['time', 'a'], 3, batches)
-    np.testing.assert_array_equal(result.time, [0., 1.])
-    np.testing.assert_array_equal(result.signals['a'], [2., 3.])
-    with pytest.raises(ValueError, match='row count changed'):
-        collect_parquet_batches('recording.parquet', ['time', 'a'], 3, batches,
-                                backend='polars', strict_rows=True)
+
+    from ultrazohm_dataviewer.loader import collect_parquet_batches
+
+    batches = [(np.array([0.0, 1.0]), {"a": np.array([2.0, 3.0], dtype=np.float32)})]
+    result = collect_parquet_batches("recording.parquet", ["time", "a"], 3, batches)
+    np.testing.assert_array_equal(result.time, [0.0, 1.0])
+    np.testing.assert_array_equal(result.signals["a"], [2.0, 3.0])
+    with pytest.raises(ValueError, match="row count changed"):
+        collect_parquet_batches(
+            "recording.parquet",
+            ["time", "a"],
+            3,
+            batches,
+            backend="polars",
+            strict_rows=True,
+        )

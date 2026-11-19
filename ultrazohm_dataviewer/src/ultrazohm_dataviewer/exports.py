@@ -1,15 +1,17 @@
 """GUI exports use captured settings and background IO, with atomic publication."""
-from copy import copy, deepcopy
+
 import threading
-from .workers import Cancellation
+from copy import copy, deepcopy
+
 from .console import Console
 from .sources import check
+from .workers import Cancellation
 
 
 def submit(state, handler, values):
     jobs = state.services.exports
     if jobs:
-        raise ValueError('An export is already running; wait for it to finish')
+        raise ValueError("An export is already running; wait for it to finish")
     snapshot = copy(state)
     snapshot.cells = deepcopy(state.cells)
     # Rendering mutates this dictionary in place. Keep the windows from the
@@ -22,19 +24,21 @@ def submit(state, handler, values):
     for key, run in state.registry._runs.items():
         saved = copy(run)
         saved.signals = {name: copy(signal) for name, signal in run.signals.items()}
-        saved.time = copy(run.time) if hasattr(run.time, 'source') else run.time
+        saved.time = copy(run.time) if hasattr(run.time, "source") else run.time
         snapshot.registry._runs[key] = saved
     snapshot.console = Console()
     canceled = threading.Event()
+
     def work(cancel):
         cancel = Cancellation(cancel, canceled)
         snapshot._export_cancel = cancel
         check(cancel)
         return handler(snapshot, values)
+
     future = state.services.executor.submit(work)
     future.operation_cancel = canceled
     jobs.append((future, snapshot))
-    return 'Export started'
+    return "Export started"
 
 
 def poll(state):
@@ -48,4 +52,4 @@ def poll(state):
                 if message:
                     state.console.ok(message)
             except Exception as exc:
-                state.console.error(f'Export failed: {exc}')
+                state.console.error(f"Export failed: {exc}")

@@ -5,13 +5,12 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
+
 import numpy as np
 import pytest
 
-
-
-from ultrazohm_dataviewer import api, nodes
 import ultrazohm_dataviewer as uz
+from ultrazohm_dataviewer import api, nodes
 
 
 def _write_csv(tmp_path, fs=2000.0, n=4000, freq=50.0):
@@ -32,7 +31,9 @@ def test_read_returns_dataset(tmp_path):
     assert data.names == ["ia", "ib"]
     assert "ia" in data and len(data) == 2
     assert data.time.shape[0] == t.shape[0]
-    np.testing.assert_allclose(data["ia"][:5], np.sin(2 * np.pi * 50 * t[:5]), atol=1e-3)
+    np.testing.assert_allclose(
+        data["ia"][:5], np.sin(2 * np.pi * 50 * t[:5]), atol=1e-3
+    )
     df = data.to_dataframe()
     assert list(df.columns) == ["time", "ia", "ib"]
     assert len(df) == t.shape[0]
@@ -106,7 +107,9 @@ def test_import_is_gui_free():
         "print('ok')"
     )
     src = os.path.join(os.path.dirname(__file__), "..", "src")
-    env = dict(os.environ, PYTHONPATH=src + os.pathsep + os.environ.get("PYTHONPATH", ""))
+    env = dict(
+        os.environ, PYTHONPATH=src + os.pathsep + os.environ.get("PYTHONPATH", "")
+    )
     out = subprocess.run(
         [sys.executable, "-c", code], capture_output=True, text=True, env=env
     )
@@ -115,26 +118,28 @@ def test_import_is_gui_free():
 
 
 def test_public_node_api_shares_validation(monkeypatch):
-    spec = nodes.TransformSpec('bad', lambda inputs, params: (np.arange(2.0), np.arange(3.0), ''))
-    monkeypatch.setitem(nodes.REGISTRY, 'bad', spec)
-    with pytest.raises(ValueError, match='needs 1 input'):
-        api.node('bad')
-    with pytest.raises(ValueError, match='equal-length'):
-        api.node('bad', (np.arange(4.0), np.arange(4.0)))
+    spec = nodes.TransformSpec(
+        "bad", lambda inputs, params: (np.arange(2.0), np.arange(3.0), "")
+    )
+    monkeypatch.setitem(nodes.REGISTRY, "bad", spec)
+    with pytest.raises(ValueError, match="needs 1 input"):
+        api.node("bad")
+    with pytest.raises(ValueError, match="equal-length"):
+        api.node("bad", (np.arange(4.0), np.arange(4.0)))
 
 
-@pytest.mark.parametrize('kind,params', [('math', {}), ('filter', {'cutoff': .1})])
+@pytest.mark.parametrize("kind,params", [("math", {}), ("filter", {"cutoff": 0.1})])
 def test_convenience_wrappers_validate_output_shape(kind, params):
-    t, y = np.arange(8.), np.ones(7)
-    with pytest.raises(ValueError, match='equal-length'):
-        if kind == 'math':
+    t, y = np.arange(8.0), np.ones(7)
+    with pytest.raises(ValueError, match="equal-length"):
+        if kind == "math":
             api.math((t, y), **params)
         else:
             api.filter(t, y, **params)
 
 
 def test_headless_operations_do_not_import_gui(recording_csv):
-    code = '''
+    code = """
 import sys
 import ultrazohm_dataviewer as uz
 from ultrazohm_dataviewer.loader import convert_csv_to_parquet
@@ -144,27 +149,33 @@ for backend in ('pyarrow', 'polars'):
     uz.fft_frame(data.time, data['a'], backend=backend)
 convert_csv_to_parquet(sys.argv[1])
 assert 'imgui_bundle' not in sys.modules
-'''
-    result = subprocess.run([sys.executable, '-c', code, str(recording_csv)],
-                            capture_output=True, text=True)
+"""
+    result = subprocess.run(
+        [sys.executable, "-c", code, str(recording_csv)], capture_output=True, text=True
+    )
     assert result.returncode == 0, result.stderr
 
 
 def test_fft_rejects_invalid_axis_before_selecting_window():
     from ultrazohm_dataviewer.api import fft
-    for time in ([0, 1, 2, 3, 100, 4, 5, 6, 7],
-                 [0, 1, 2, 3, float('nan'), 4, 5, 6, 7],
-                 [0, 1, 2, 3, float('inf'), 4, 5, 6, 7]):
-        for limits in ({}, {'x_min': 0, 'x_max': 3}):
+
+    for time in (
+        [0, 1, 2, 3, 100, 4, 5, 6, 7],
+        [0, 1, 2, 3, float("nan"), 4, 5, 6, 7],
+        [0, 1, 2, 3, float("inf"), 4, 5, 6, 7],
+    ):
+        for limits in ({}, {"x_min": 0, "x_max": 3}):
             result = fft(time, list(range(len(time))), **limits)
             assert not result.ok
-            assert 'time column' in result.info
+            assert "time column" in result.info
 
 
-@pytest.mark.parametrize('values', [np.array([1., 2.]), np.ones((8, 1)), np.array(1.)])
+@pytest.mark.parametrize(
+    "values", [np.array([1.0, 2.0]), np.ones((8, 1)), np.array(1.0)]
+)
 def test_integral_rejects_broadcastable_malformed_inputs(values):
-    with pytest.raises(ValueError, match='equal-length one-dimensional'):
-        api.math((np.arange(8.), values), op='integral')
+    with pytest.raises(ValueError, match="equal-length one-dimensional"):
+        api.math((np.arange(8.0), values), op="integral")
 
 
 def test_state_import_does_not_load_gui():

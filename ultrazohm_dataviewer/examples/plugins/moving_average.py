@@ -26,5 +26,11 @@ def moving_average(inputs, params):
     width = max(1, int(float(params.get("width", 51))))
     kernel = np.ones(width) / width
     start = (width - 1) // 2
-    out = np.convolve(np.asarray(y, dtype=float), kernel, mode="full")[start:start + len(y)] if len(y) else np.empty(0)
+    out = (
+        np.convolve(np.asarray(y, dtype=float), kernel, mode="full")[
+            start : start + len(y)
+        ]
+        if len(y)
+        else np.empty(0)
+    )
     return time, out, f"moving avg, {width} samples"

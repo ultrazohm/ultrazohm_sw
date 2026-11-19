@@ -31,8 +31,7 @@ OUTPUT = LOG_ROOT / ("lifecheck-" + datetime.now().strftime("%Y%m%d-%H%M%S-%f"))
 # Leaving the with block, also through an error or Ctrl-C, sends device Stop and
 # waits until data.parquet is complete.
 with ultrazohm_cli.Acquisition(
-    DEVICE, profile=str(PROFILE),
-    output=str(OUTPUT), format="parquet"
+    DEVICE, profile=str(PROFILE), output=str(OUTPUT), format="parquet"
 ) as acquisition:
     uz = ultrazohm_cli.Client()
 

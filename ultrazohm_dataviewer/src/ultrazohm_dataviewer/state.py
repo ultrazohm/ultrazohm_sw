@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-
 import enum
 import math
 import os
@@ -11,16 +10,16 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     import numpy as np
-from .workers import CancellableExecutor
 from dataclasses import dataclass, field, fields
 
 from .commands import CommandRegistry
 from .console import Console
 from .loader import ParsedRun, open_file
-from .requests import Requests
 from .model import DataRegistry, Run, Signal
 from .nodes import NodeGraph
+from .requests import Requests
 from .validation import axis_limits, bounded_int, finite_float
+from .workers import CancellableExecutor
 
 # Identifies a signal across runs: (run_id, signal_name).
 LARGE_CSV_BYTES = 1024**3
@@ -119,7 +118,9 @@ class SubplotCell:
     @property
     def active_refs(self) -> list[SignalRef]:
         """Only visible inputs constrain the independent-axis domain."""
-        return self.signals + ([self.xy_source] if self.plot_type is PlotType.XY and self.xy_source else [])
+        return self.signals + (
+            [self.xy_source] if self.plot_type is PlotType.XY and self.xy_source else []
+        )
 
     def add(self, ref: SignalRef) -> bool:
         if ref not in self.signals:
@@ -144,11 +145,11 @@ class SubplotCell:
         self.fit_pending = True
 
     def set_limits(self, axis: str, lo: float, hi: float) -> None:
-        if axis not in ('x', 'y', 'y2'):
+        if axis not in ("x", "y", "y2"):
             raise ValueError(f"Unknown axis: {axis}")
         limits = axis_limits(lo, hi)
-        setattr(self, f'pending_{axis}_lim', limits)
-        setattr(self, f'{axis}_lim', limits)
+        setattr(self, f"pending_{axis}_lim", limits)
+        setattr(self, f"{axis}_lim", limits)
 
     def remove(self, ref: SignalRef) -> None:
         if ref in self.signals:
@@ -212,8 +213,8 @@ class SessionData:
     disk_cache: bool = False
     rows: int = 1
     cols: int = 1
-    row_ratios: list[float] = field(default_factory=lambda: [1.])
-    col_ratios: list[float] = field(default_factory=lambda: [1.])
+    row_ratios: list[float] = field(default_factory=lambda: [1.0])
+    col_ratios: list[float] = field(default_factory=lambda: [1.0])
     cells: list[SubplotCell] = field(default_factory=lambda: [SubplotCell()])
     link_x: bool = True
     shared_x: tuple[float, float] | None = None
@@ -238,14 +239,16 @@ class RuntimeServices:
 
     # Several plot jobs run concurrently so one slow summary build does not block
     # other subplots. Per-source summary locks and the shared cache are thread-safe.
-    display: Requests = field(default_factory=lambda: Requests(
-        workers=min(4, os.cpu_count() or 1)))
+    display: Requests = field(
+        default_factory=lambda: Requests(workers=min(4, os.cpu_count() or 1))
+    )
     validation_jobs: Requests = field(default_factory=lambda: Requests(workers=2))
     analysis_jobs: Requests = field(default_factory=lambda: Requests())
     completed_analysis: dict = field(default_factory=dict)
     analysis_operations: dict = field(default_factory=dict)
-    analysis_displays: dict[str, Requests] = field(default_factory=lambda: {
-        name: Requests() for name in ("fft", "hist")})
+    analysis_displays: dict[str, Requests] = field(
+        default_factory=lambda: {name: Requests() for name in ("fft", "hist")}
+    )
     executor: CancellableExecutor = field(default_factory=CancellableExecutor)
     exports: list = field(default_factory=list)
     pending: list[tuple[Future, str]] = field(default_factory=list)
@@ -289,6 +292,7 @@ class AppState(SessionData):
 
     def create_plot_view(self):
         from .plot_window import PlotWindowState
+
         view = PlotWindowState(self, self.next_view_id)
         self.plot_views[self.next_view_id] = view
         self.next_view_id += 1
@@ -307,12 +311,15 @@ class AppState(SessionData):
         for i in range(min(len(new_cells), len(self.cells))):
             new_cells[i] = self.cells[i]
         if rows != self.rows:
-            self.row_ratios = [1. / rows] * rows
+            self.row_ratios = [1.0 / rows] * rows
         if cols != self.cols:
-            self.col_ratios = [1. / cols] * cols
+            self.col_ratios = [1.0 / cols] * cols
         self.rows, self.cols, self.cells = rows, cols, new_cells
-        self.plot_x_ranges = {i: limits for i, limits in self.plot_x_ranges.items()
-                              if 1 <= i <= len(new_cells)}
+        self.plot_x_ranges = {
+            i: limits
+            for i, limits in self.plot_x_ranges.items()
+            if 1 <= i <= len(new_cells)
+        }
         for cfg in (self.fft, self.histogram):
             if cfg.follow_plot > len(new_cells):
                 cfg.follow_plot = -1  # removed plot: use the full recording
@@ -320,6 +327,7 @@ class AppState(SessionData):
 
     def set_grid_ratios(self, rows, cols) -> None:
         """Validate and normalize splitter sizes before passing them to ImPlot."""
+
         def normalized(values, count):
             if not isinstance(values, (list, tuple)) or len(values) != count:
                 raise ValueError("Grid sizes must match the number of rows and columns")
@@ -340,16 +348,25 @@ class AppState(SessionData):
         self.row_ratios, self.col_ratios = row_ratios, col_ratios
 
     def validate_follow_plot(self, target: int) -> int:
-        if target > 0 and target <= self.cell_count and self.plot_domain(self.cells[target - 1]) != "time":
+        if (
+            target > 0
+            and target <= self.cell_count
+            and self.plot_domain(self.cells[target - 1]) != "time"
+        ):
             raise ValueError("Analysis cannot follow a frequency-domain plot")
         if not -1 <= target <= self.cell_count:
-            raise ValueError(f"Analysis window must be custom, full, or plot_1..plot_{self.cell_count}")
+            raise ValueError(
+                f"Analysis window must be custom, full, or plot_1..plot_{self.cell_count}"
+            )
         return target
 
     def plot_domain(self, cell):
         refs = cell.active_refs
-        domains = {run.axis_domain for ref in refs
-                   if (run := self.registry.get(ref[0])) is not None}
+        domains = {
+            run.axis_domain
+            for ref in refs
+            if (run := self.registry.get(ref[0])) is not None
+        }
         if len(domains) > 1:
             raise ValueError("Cannot combine time and frequency axes in one plot")
         return next(iter(domains), "time")
@@ -371,9 +388,15 @@ class AppState(SessionData):
         if enabled:
             window = self.shared_x
             if window is None:
-                window = next((cell.pending_x_lim or cell.x_lim for cell in self.cells
-                               if self.is_time_plot(cell) and
-                               (cell.pending_x_lim or cell.x_lim)), None)
+                window = next(
+                    (
+                        cell.pending_x_lim or cell.x_lim
+                        for cell in self.cells
+                        if self.is_time_plot(cell)
+                        and (cell.pending_x_lim or cell.x_lim)
+                    ),
+                    None,
+                )
             if window is not None:
                 for index, cell in enumerate(self.cells, 1):
                     if self.is_time_plot(cell):
@@ -382,7 +405,7 @@ class AppState(SessionData):
 
     def set_plot_x_limits(self, plot_n: int, lo: float, hi: float) -> None:
         cell = self.cells[plot_n - 1]
-        cell.set_limits('x', lo, hi)
+        cell.set_limits("x", lo, hi)
         if self.is_time_plot(cell):
             self.plot_x_ranges[plot_n] = cell.pending_x_lim
             if self.link_x:
@@ -391,7 +414,7 @@ class AppState(SessionData):
                 # whose axis is otherwise left free for interactive panning.
                 for index, linked in enumerate(self.cells, 1):
                     if self.is_time_plot(linked):
-                        linked.set_limits('x', lo, hi)
+                        linked.set_limits("x", lo, hi)
                         self.plot_x_ranges[index] = linked.pending_x_lim
 
     def reset_plot_view(self, plot_n: int) -> None:
@@ -402,9 +425,14 @@ class AppState(SessionData):
         if cell.plot_type is PlotType.XY:
             return
         self.plot_x_ranges.pop(plot_n, None)
-        fit_cells = ([linked for linked in self.cells if self.is_time_plot(linked)]
-                     if self.link_x and self.is_time_plot(cell) else [cell])
-        runs = [self.registry.get(ref[0]) for linked in fit_cells for ref in linked.signals]
+        fit_cells = (
+            [linked for linked in self.cells if self.is_time_plot(linked)]
+            if self.link_x and self.is_time_plot(cell)
+            else [cell]
+        )
+        runs = [
+            self.registry.get(ref[0]) for linked in fit_cells for ref in linked.signals
+        ]
         runs = [run for run in runs if run is not None and run.active and run.n_rows]
         if runs:
             lo = min(float(run.time[0]) for run in runs)
@@ -420,6 +448,7 @@ class AppState(SessionData):
             raise ValueError(f"Unknown loading mode: {mode}")
         backend = self.backend
         from .loader import validate_backend
+
         validate_backend(backend)
         path = os.path.abspath(path)
         request = LoadRequest(path, mode, backend, self.disk_cache)
@@ -441,17 +470,25 @@ class AppState(SessionData):
             return
         if choice == "csv":
             # Explicitly opening CSV bypasses automatic cached conversion.
-            self._submit_load(LoadRequest(request.path, request.mode, request.backend, False))
+            self._submit_load(
+                LoadRequest(request.path, request.mode, request.backend, False)
+            )
             return
         destination = os.path.splitext(request.path)[0] + ".parquet"
-        target = LoadRequest(destination, request.mode, request.backend, request.disk_cache)
-        self._submit_load(target, convert_from=request.path if choice == "convert" else None)
+        target = LoadRequest(
+            destination, request.mode, request.backend, request.disk_cache
+        )
+        self._submit_load(
+            target, convert_from=request.path if choice == "convert" else None
+        )
 
     def _submit_load(self, request: LoadRequest, convert_from=None) -> None:
         path = request.path
-        settings = (("backend", request.backend, self.backend),
-                    ("loading_mode", request.mode, self.loading_mode),
-                    ("disk_cache", request.disk_cache, self.disk_cache))
+        settings = (
+            ("backend", request.backend, self.backend),
+            ("loading_mode", request.mode, self.loading_mode),
+            ("disk_cache", request.disk_cache, self.disk_cache),
+        )
         for name, selected, current in settings:
             if selected != current:
                 self.commands.echo(self, name, [selected])
@@ -461,18 +498,36 @@ class AppState(SessionData):
         for name, selected, current in settings:
             if selected != current:
                 self.commands.echo(self, name, [current])
-        self.console.info(f"{'Converting and loading' if convert_from else 'Loading'} {os.path.basename(path)} ...")
+        self.console.info(
+            f"{'Converting and loading' if convert_from else 'Loading'} {os.path.basename(path)} ..."
+        )
         if convert_from:
-            future = self.services.executor.submit(self._convert_and_open, convert_from, request)
+            future = self.services.executor.submit(
+                self._convert_and_open, convert_from, request
+            )
         else:
-            future = self.services.executor.submit(self._open_background, path, request.mode,
-                                           request.backend, request.disk_cache)
+            future = self.services.executor.submit(
+                self._open_background,
+                path,
+                request.mode,
+                request.backend,
+                request.disk_cache,
+            )
         self.services.pending.append((future, path))
 
     def _convert_and_open(self, source: str, request: LoadRequest, cancel=None):
         from .loader import convert_csv_to_parquet
-        convert_csv_to_parquet(source, request.path, backend=request.backend, cancel=cancel)
-        return self._open_background(request.path, request.mode, request.backend, request.disk_cache, cancel=cancel)
+
+        convert_csv_to_parquet(
+            source, request.path, backend=request.backend, cancel=cancel
+        )
+        return self._open_background(
+            request.path,
+            request.mode,
+            request.backend,
+            request.disk_cache,
+            cancel=cancel,
+        )
 
     def load_sync(self, path: str, *, cancel=None) -> Run | None:
         """Load a file on the calling thread and report it.
@@ -483,11 +538,20 @@ class AppState(SessionData):
         result into a command failure.
         """
         from .sources import Cancelled, check
+
         check(cancel)
         path = os.path.abspath(path)
         self.console.info(f"Loading {os.path.basename(path)} ...")
         try:
-            run = open_file(path, self.loading_mode, self.registry.cache, self.cache_dir, backend=self.backend, disk_cache=self.disk_cache, cancel=cancel).register(self.registry)
+            run = open_file(
+                path,
+                self.loading_mode,
+                self.registry.cache,
+                self.cache_dir,
+                backend=self.backend,
+                disk_cache=self.disk_cache,
+                cancel=cancel,
+            ).register(self.registry)
         except Cancelled:
             raise
         except Exception as exc:  # noqa: BLE001 - surfaced to the console
@@ -515,7 +579,9 @@ class AppState(SessionData):
         self._report_loaded(run)
         return run
 
-    def upsert_derived_run(self, label: str, time, signal_y, unit: str = "", *, run_id=None) -> int:
+    def upsert_derived_run(
+        self, label: str, time, signal_y, unit: str = "", *, run_id=None
+    ) -> int:
         """Create or refresh the single-channel derived run a node materializes.
 
         Refreshing *in place* (rather than remove + re-add) keeps the run id stable
@@ -536,7 +602,9 @@ class AppState(SessionData):
             run.set_time_origin(run.time_origin)
             run.signals = {"out": Signal("out", unit, y, run.id)}
             return run.id
-        run = self.registry.add_run(label, f"<derived:{label}>", time, {"out": y}, {"out": unit})
+        run = self.registry.add_run(
+            label, f"<derived:{label}>", time, {"out": y}, {"out": unit}
+        )
         run.derived = True
         return run.id
 
@@ -571,7 +639,9 @@ class AppState(SessionData):
             f"{len(run.signals)} signals, {run.duration:.3f} s span"
         )
         if run.skipped_columns:
-            self.console.info(f"Skipped non-numeric columns in {run.label}: {', '.join(run.skipped_columns)}")
+            self.console.info(
+                f"Skipped non-numeric columns in {run.label}: {', '.join(run.skipped_columns)}"
+            )
 
     def poll_pending_loads(self) -> None:
         """Finalise completed background loads; call once per frame.
@@ -580,6 +650,7 @@ class AppState(SessionData):
         the main thread, so the UI never reads a registry mid-write.
         """
         from .exports import poll
+
         poll(self)
         still_pending: list[tuple[Future[ParsedRun], str]] = []
         for future, path in self.services.pending:
@@ -609,22 +680,32 @@ class AppState(SessionData):
         subplot's live X range (falling back to the full record if that plot has
         no range yet).
         """
-        if any(run.axis_domain != "time" for run_id, _ in signals
-               if (run := self.registry.get(run_id)) is not None):
+        if any(
+            run.axis_domain != "time"
+            for run_id, _ in signals
+            if (run := self.registry.get(run_id)) is not None
+        ):
             raise ValueError("Analysis windows require a time-domain recording")
         if follow_plot == 0:  # Custom
             return custom
 
         if follow_plot >= 1 and self.is_time_plot(self.cells[follow_plot - 1]):
             rng = self.plot_time_range(follow_plot)
-            if rng is not None and math.isfinite(rng[0]) and math.isfinite(rng[1]) and rng[1] > rng[0]:
+            if (
+                rng is not None
+                and math.isfinite(rng[0])
+                and math.isfinite(rng[1])
+                and rng[1] > rng[0]
+            ):
                 return rng
 
         # A shared extent includes every selected recording, independent of order.
         runs = [self.registry.get(run_id) for run_id, _ in signals]
         runs = [run for run in runs if run is not None and run.n_rows]
         if runs:
-            return min(float(run.time[0]) for run in runs), max(float(run.time[-1]) for run in runs)
+            return min(float(run.time[0]) for run in runs), max(
+                float(run.time[-1]) for run in runs
+            )
         return custom
 
     # -- signal assignment helpers -----------------------------------------
@@ -635,7 +716,15 @@ class AppState(SessionData):
         return f"{ref[1]} @ {run.label} [run_{run.id}]"
 
     def _open_background(self, path, mode, backend, disk_cache, cancel=None):
-        return open_file(path, mode, self.registry.cache, self.cache_dir, backend=backend, disk_cache=disk_cache, cancel=cancel)
+        return open_file(
+            path,
+            mode,
+            self.registry.cache,
+            self.cache_dir,
+            backend=backend,
+            disk_cache=disk_cache,
+            cancel=cancel,
+        )
 
     def shutdown(self) -> None:
         if self.services is not None:

@@ -2,14 +2,10 @@
 
 from __future__ import annotations
 
-
-
 import numpy as np
-
 
 from ultrazohm_dataviewer import session
 from ultrazohm_dataviewer.state import AppState
-
 
 SAMPLE = (
     "time;CH8=8)ia;CH9=9)ib;\n"
@@ -24,31 +20,33 @@ def _state(tmp_path):
     csv = tmp_path / "Log_test.csv"
     csv.write_text(SAMPLE)
     state = AppState()
-    state.commands.execute(state, 'load', [str(csv)])
-    state.commands.execute(state, 'set_grid', ['1', '1'])
-    state.commands.execute(state, 'add_signal', ['plot_1', 'Log_test.csv', 'ia'])
-    state.commands.execute(state, 'add_signal', ['plot_1', 'Log_test.csv', 'ib'])
+    state.commands.execute(state, "load", [str(csv)])
+    state.commands.execute(state, "set_grid", ["1", "1"])
+    state.commands.execute(state, "add_signal", ["plot_1", "Log_test.csv", "ia"])
+    state.commands.execute(state, "add_signal", ["plot_1", "Log_test.csv", "ib"])
     return state
 
 
 def test_cursors_command_toggles(tmp_path):
     state = _state(tmp_path)
-    state.commands.execute(state, 'cursors', ['plot_1', 'on'])
+    state.commands.execute(state, "cursors", ["plot_1", "on"])
     assert state.cells[0].cursors is True
-    state.commands.execute(state, 'cursors', ['plot_1', 'off'])
+    state.commands.execute(state, "cursors", ["plot_1", "off"])
     assert state.cells[0].cursors is False
 
 
 def test_set_cursors_places_and_enables(tmp_path):
     state = _state(tmp_path)
-    state.commands.execute(state, 'set_cursors', ['plot_1', '0.5', '2.5'])
+    state.commands.execute(state, "set_cursors", ["plot_1", "0.5", "2.5"])
     assert state.cells[0].cursors is True
     assert state.cells[0].cursor_x == (0.5, 2.5)
 
 
 def test_set_spy_rect_places_and_enables(tmp_path):
     state = _state(tmp_path)
-    state.commands.execute(state, 'set_spy_rect', ['plot_1', '0.5', '-1.0', '1.5', '1.0'])
+    state.commands.execute(
+        state, "set_spy_rect", ["plot_1", "0.5", "-1.0", "1.5", "1.0"]
+    )
     assert state.cells[0].spy is True
     assert state.cells[0].spy_rect == (0.5, -1.0, 1.5, 1.0)
 
@@ -68,26 +66,30 @@ def test_value_at_matches_linear_interp(tmp_path):
 
 def test_set_axis_assigns_right_and_back(tmp_path):
     state = _state(tmp_path)
-    state.commands.execute(state, 'set_axis', ['plot_1', 'run_1', 'ib', 'right'])
+    state.commands.execute(state, "set_axis", ["plot_1", "run_1", "ib", "right"])
     assert (1, "ib") in state.cells[0].y2_signals
-    state.commands.execute(state, 'set_axis', ['plot_1', 'Log_test.csv', 'ib', 'left'])
+    state.commands.execute(state, "set_axis", ["plot_1", "Log_test.csv", "ib", "left"])
     assert (1, "ib") not in state.cells[0].y2_signals
 
 
 def test_set_axis_rejects_unassigned_signal(tmp_path):
     state = _state(tmp_path)
     # 'ic' is not in the plot -> reported (swallowed) and no change.
-    from ultrazohm_dataviewer.commands import CommandError
     import pytest
+
+    from ultrazohm_dataviewer.commands import CommandError
+
     with pytest.raises(CommandError):
-        state.commands.execute(state, 'set_axis', ['plot_1', 'Log_test.csv', 'ic', 'right'])
+        state.commands.execute(
+            state, "set_axis", ["plot_1", "Log_test.csv", "ic", "right"]
+        )
     assert state.cells[0].y2_signals == []
 
 
 def test_removing_signal_clears_secondary_axis(tmp_path):
     state = _state(tmp_path)
-    state.commands.execute(state, 'set_axis', ['plot_1', 'run_1', 'ib', 'right'])
-    state.commands.execute(state, 'remove_signal', ['plot_1', 'Log_test.csv', 'ib'])
+    state.commands.execute(state, "set_axis", ["plot_1", "run_1", "ib", "right"])
+    state.commands.execute(state, "remove_signal", ["plot_1", "Log_test.csv", "ib"])
     assert state.cells[0].y2_signals == []
 
 
@@ -131,7 +133,7 @@ def test_export_relative_time_zeroes_start(tmp_path):
 def test_export_command_via_dispatch(tmp_path):
     state = _state(tmp_path)
     out = tmp_path / "cmd.csv"
-    state.commands.execute(state, 'export_data', ['plot_1', str(out)])
+    state.commands.execute(state, "export_data", ["plot_1", str(out)])
     assert out.exists()
 
 
@@ -150,8 +152,8 @@ def test_export_then_import_roundtrips(tmp_path):
 
 def test_session_roundtrip_preserves_parity(tmp_path):
     state = _state(tmp_path)
-    state.commands.execute(state, 'set_axis', ['plot_1', 'run_1', 'ib', 'right'])
-    state.commands.execute(state, 'cursors', ['plot_1', 'on'])
+    state.commands.execute(state, "set_axis", ["plot_1", "run_1", "ib", "right"])
+    state.commands.execute(state, "cursors", ["plot_1", "on"])
 
     snap = tmp_path / "s.json"
     session.save_state(state, str(snap))

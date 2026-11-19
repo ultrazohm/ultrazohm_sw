@@ -8,7 +8,6 @@ is :data:`SIGNAL_DND_TYPE`; the dragged :data:`SignalRef` is stashed on the
 
 from __future__ import annotations
 
-
 from imgui_bundle import em_size, imgui
 
 from ..state import AppState
@@ -46,7 +45,9 @@ class NavigationPanel(SessionPanel):
                 self._emit(state, "normalize_time", run.id, target)
             else:
                 self._emit(state, "reset_time", run.id)
-        raw0 = float(run.time_raw[0]) if (run.time_raw is not None and run.n_rows) else 0.0
+        raw0 = (
+            float(run.time_raw[0]) if (run.time_raw is not None and run.n_rows) else 0.0
+        )
         now0 = float(run.time[0]) if run.n_rows else 0.0
         imgui.text_disabled(f"raw start {raw0:.4g}s  →  now {now0:.4g}s")
 
@@ -65,7 +66,9 @@ class NavigationPanel(SessionPanel):
         bounds = imgui.internal.ImRect(
             position, imgui.ImVec2(position.x + size.x, position.y + size.y)
         )
-        if imgui.internal.begin_drag_drop_target_custom(bounds, imgui.get_id("log_drop")):
+        if imgui.internal.begin_drag_drop_target_custom(
+            bounds, imgui.get_id("log_drop")
+        ):
             if imgui.accept_drag_drop_payload_py_id(LOG_DND_TYPE) is not None:
                 if state.dragged_log_path is not None:
                     state.request_load(state.dragged_log_path)
@@ -86,7 +89,12 @@ class NavigationPanel(SessionPanel):
                 self._open_dialog = pfd.open_file(
                     "Open log file(s)",
                     "",
-                    ["Log files (*.csv *.parquet)", "*.csv *.parquet", "All files", "*"],
+                    [
+                        "Log files (*.csv *.parquet)",
+                        "*.csv *.parquet",
+                        "All files",
+                        "*",
+                    ],
                     pfd.opt.multiselect,
                 )
         if state.is_loading:
@@ -98,7 +106,9 @@ class NavigationPanel(SessionPanel):
         imgui.separator()
 
         if len(state.registry) == 0:
-            imgui.text_wrapped("No data loaded. Use 'Open file(s)...' to load a .csv or .parquet log.")
+            imgui.text_wrapped(
+                "No data loaded. Use 'Open file(s)...' to load a .csv or .parquet log."
+            )
             return
 
         run_to_remove: int | None = None
@@ -123,7 +133,9 @@ class NavigationPanel(SessionPanel):
                 imgui.text_disabled(run.path)
                 imgui.text_disabled(f"Backend: {run.backend}")
                 unit = "s" if run.axis_domain == "time" else "Hz"
-                imgui.text_disabled(f"{run.n_rows:,} rows  |  {run.duration:.3f} {unit}")
+                imgui.text_disabled(
+                    f"{run.n_rows:,} rows  |  {run.duration:.3f} {unit}"
+                )
                 imgui.separator()
                 self._normalize_menu(state, run)
                 imgui.separator()

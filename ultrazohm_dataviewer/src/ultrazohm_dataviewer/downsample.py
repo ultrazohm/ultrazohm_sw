@@ -5,7 +5,9 @@ from __future__ import annotations
 import numpy as np
 
 
-def visible_slice(time: np.ndarray, x_min: float, x_max: float, *, padding: bool = True) -> tuple[int, int]:
+def visible_slice(
+    time: np.ndarray, x_min: float, x_max: float, *, padding: bool = True
+) -> tuple[int, int]:
     """Return ``(start, stop)`` indices covering ``[x_min, x_max]`` (inclusive-ish).
 
     One sample of padding is added on each side so lines reach the plot edges.
@@ -18,13 +20,15 @@ def visible_slice(time: np.ndarray, x_min: float, x_max: float, *, padding: bool
     for cursors). A matching-dtype scalar keeps it O(log n).
     """
     from .sources import SourceColumn
+
     if isinstance(time, SourceColumn):
         from .sources import displayed_bounds
+
         return displayed_bounds(time.source, x_min, x_max, time.offset, padding=padding)
     # Integer axes must retain fractional bounds (e.g. 0.2 must exclude 0).
     # Matching floating dtypes avoids promoting a large float32 FFT axis.
-    lo = time.dtype.type(x_min) if time.dtype.kind == 'f' else x_min
-    hi = time.dtype.type(x_max) if time.dtype.kind == 'f' else x_max
+    lo = time.dtype.type(x_min) if time.dtype.kind == "f" else x_min
+    hi = time.dtype.type(x_max) if time.dtype.kind == "f" else x_max
     start = int(np.searchsorted(time, lo, side="left"))
     stop = int(np.searchsorted(time, hi, side="right"))
     if x_max < x_min:
@@ -39,5 +43,7 @@ def decimate_range(time, y, source, n_out, start, stop, cancel=None):
     """Sample a resident array window through its existing ArraySource."""
     if stop <= start:
         return time[:0], y[:0]
-    result = source.read_plot('value', float(time[start]), float(time[stop - 1]), n_out, cancel, padding=False)
+    result = source.read_plot(
+        "value", float(time[start]), float(time[stop - 1]), n_out, cancel, padding=False
+    )
     return result.time, result.values

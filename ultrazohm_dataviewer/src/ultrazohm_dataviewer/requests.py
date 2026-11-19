@@ -1,8 +1,11 @@
 """Coalescing background requests: one queued job per consumer, no GUI calls."""
+
 from __future__ import annotations
+
+import threading
 from collections import OrderedDict
 from dataclasses import dataclass
-import threading
+
 from .sources import Cancelled, check
 from .workers import join_worker
 
@@ -23,6 +26,7 @@ class Requests:
     summary build) does not hold back other consumers. A slot never runs on two
     workers at once: its replacement waits until the cancelled job has returned.
     """
+
     def __init__(self, synchronous=False, workers=1):
         self.synchronous = synchronous
         self.workers = max(1, int(workers))
@@ -50,7 +54,9 @@ class Requests:
                 previous = self.jobs.pop(slot, None)
                 if previous:
                     previous.cancel.set()
-                if slot in self.active and not (continuous and self.active[slot].identity == identity):
+                if slot in self.active and not (
+                    continuous and self.active[slot].identity == identity
+                ):
                     self.active[slot].cancel.set()
                 self.errors.pop(slot, None)
                 job = Job(key, identity, function, threading.Event(), continuous)
@@ -84,7 +90,7 @@ class Requests:
         """
         self.threads = [thread for thread in self.threads if thread.is_alive()]
         if len(self.threads) < min(self.workers, len(self.jobs) + len(self.active)):
-            thread = threading.Thread(target=self._work, name='uz-data', daemon=True)
+            thread = threading.Thread(target=self._work, name="uz-data", daemon=True)
             self.threads.append(thread)
             thread.start()
 
@@ -134,7 +140,9 @@ class Requests:
     def _work(self):
         while True:
             with self.condition:
-                self.condition.wait_for(lambda: self.closed or self._runnable() is not None)
+                self.condition.wait_for(
+                    lambda: self.closed or self._runnable() is not None
+                )
                 if self.closed:
                     return
                 slot = self._runnable()
@@ -146,12 +154,17 @@ class Requests:
                 result = job.function(job.cancel)
                 check(job.cancel)
                 with self.condition:
-                    if (self.wanted.get(slot) == job.key or
-                            (job.continuous and slot in self.wanted and not job.cancel.is_set())):
+                    if self.wanted.get(slot) == job.key or (
+                        job.continuous
+                        and slot in self.wanted
+                        and not job.cancel.is_set()
+                    ):
                         self.results[slot] = (job.key, job.identity, result)
             except Cancelled:
                 pass
-            except BaseException as exc:  # plugin code may raise SystemExit; keep serving
+            except (
+                BaseException
+            ) as exc:  # plugin code may raise SystemExit; keep serving
                 with self.condition:
                     if self.wanted.get(slot) == job.key:
                         self.errors[slot] = str(exc)

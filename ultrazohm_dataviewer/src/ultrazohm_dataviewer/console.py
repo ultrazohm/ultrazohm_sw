@@ -7,10 +7,8 @@ from collections import deque
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from .state import AppState
-
 
 
 @dataclass
@@ -70,15 +68,17 @@ class Console:
     # -- rendering ----------------------------------------------------------
     def render(self, state: "AppState") -> None:
         from imgui_bundle import imgui
+
         if imgui.button("Clear"):
             self.clear()
         imgui.same_line()
-        imgui.text_disabled('Application activity — select to copy')
+        imgui.text_disabled("Application activity — select to copy")
         imgui.separator()
         self._render_body(0)
 
     def _render_body(self, reserved: float) -> None:
         from imgui_bundle import imgui
+
         # The log body is always a read-only, mouse-selectable text box. To keep
         # it auto-scrolling (which a bare InputTextMultiline does not), the input
         # is sized to its full content height inside an outer scrolling child, and
@@ -92,9 +92,15 @@ class Console:
         n_lines = text.count("\n") + 1
         # Multiline text uses font height, not the spacing between widgets.
         # Adding item spacing per line creates a large blank tail in long logs.
-        body_h = n_lines * imgui.get_text_line_height() + 2 * imgui.get_style().frame_padding.y
+        body_h = (
+            n_lines * imgui.get_text_line_height()
+            + 2 * imgui.get_style().frame_padding.y
+        )
         imgui.input_text_multiline(
-            "##console_text", text, imgui.ImVec2(-1.0, body_h), imgui.InputTextFlags_.read_only
+            "##console_text",
+            text,
+            imgui.ImVec2(-1.0, body_h),
+            imgui.InputTextFlags_.read_only,
         )
         if self._scroll_to_bottom and at_bottom:
             imgui.set_scroll_here_y(1.0)

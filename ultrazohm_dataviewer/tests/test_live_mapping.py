@@ -1,7 +1,8 @@
 """Fresh header mappings, cache provenance, and startup failure behavior."""
+
 import json
-from pathlib import Path
 import sys
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -11,111 +12,144 @@ from ultrazohm_dataviewer import live_mapping
 
 @pytest.fixture
 def repo(tmp_path):
-    root = tmp_path/'checkout with spaces'
-    header = root/live_mapping.HEADER
+    root = tmp_path / "checkout with spaces"
+    header = root / live_mapping.HEADER
     header.parent.mkdir(parents=True)
     header.touch()
     return root
 
 
-def test_generate_mapping_calls_cli_and_publishes_one_cache_per_commit(repo, monkeypatch):
+def test_generate_mapping_calls_cli_and_publishes_one_cache_per_commit(
+    repo, monkeypatch
+):
     calls = []
-    mapping = {'repository': {'commit': 'a'*40+'-dirty'}, 'observables': {'JSO_custom': 29}}
+    mapping = {
+        "repository": {"commit": "a" * 40 + "-dirty"},
+        "observables": {"JSO_custom": 29},
+    }
+
     def run(args, **kwargs):
         calls.append(args)
-        Path(args[args.index('--output')+1]).write_text(json.dumps(mapping))
+        Path(args[args.index("--output") + 1]).write_text(json.dumps(mapping))
         return SimpleNamespace(returncode=0)
-    monkeypatch.setattr(live_mapping.subprocess, 'run', run)
+
+    monkeypatch.setattr(live_mapping.subprocess, "run", run)
     first = live_mapping.generate_mapping(repo)
     second = live_mapping.generate_mapping(repo)
     assert first == second
-    assert first.parent == repo/'artifacts'/'_user'
-    assert first.name == 'javascope_' + 'a'*40 + '-dirty.json'
+    assert first.parent == repo / "artifacts" / "_user"
+    assert first.name == "javascope_" + "a" * 40 + "-dirty.json"
     assert json.loads(first.read_text()) == mapping
-    assert calls[0][:8] == [sys.executable, '-u', '-m', 'ultrazohm_dataviewer.process_launcher', 'cli', 'create-json-from-javascope-h', '--repo', str(repo)]
+    assert calls[0][:8] == [
+        sys.executable,
+        "-u",
+        "-m",
+        "ultrazohm_dataviewer.process_launcher",
+        "cli",
+        "create-json-from-javascope-h",
+        "--repo",
+        str(repo),
+    ]
     assert list(first.parent.iterdir()) == [first]
 
 
 def test_generation_failure_keeps_old_cache_but_never_reuses_it(repo, monkeypatch):
-    cache = repo/'artifacts'/'_user'
+    cache = repo / "artifacts" / "_user"
     cache.mkdir(parents=True)
-    old = cache/'old.json'
-    old.write_text('old mapping')
-    monkeypatch.setattr(live_mapping.subprocess, 'run', lambda *a, **k:
-                        SimpleNamespace(returncode=1, stderr='Invalid enum', stdout=''))
-    with pytest.raises(RuntimeError, match='Invalid enum'):
+    old = cache / "old.json"
+    old.write_text("old mapping")
+    monkeypatch.setattr(
+        live_mapping.subprocess,
+        "run",
+        lambda *a, **k: SimpleNamespace(returncode=1, stderr="Invalid enum", stdout=""),
+    )
+    with pytest.raises(RuntimeError, match="Invalid enum"):
         live_mapping.generate_mapping(repo)
     assert list(cache.iterdir()) == [old]
-    assert old.read_text() == 'old mapping'
+    assert old.read_text() == "old mapping"
 
 
 def test_repository_discovery_and_explicit_path_validation(repo, monkeypatch):
-    child = repo/'some folder'
+    child = repo / "some folder"
     child.mkdir()
     monkeypatch.chdir(child)
     assert live_mapping.repository() == repo
-    with pytest.raises(ValueError, match='header not found'):
+    with pytest.raises(ValueError, match="header not found"):
         live_mapping.repository(child)
 
 
 def test_invalid_headers_report_in_gui_without_aborting_startup(repo, monkeypatch):
     from ultrazohm_dataviewer.app import DataViewerApp
-    def fail(repo): raise ValueError('Broken header')
-    monkeypatch.setattr(live_mapping, 'read_mapping', fail)
+
+    def fail(repo):
+        raise ValueError("Broken header")
+
+    monkeypatch.setattr(live_mapping, "read_mapping", fail)
     app = DataViewerApp(use_live=True, live_repo=str(repo))
     try:
         future = app.live._repo_future
-        with pytest.raises(ValueError, match='Broken header'):
+        with pytest.raises(ValueError, match="Broken header"):
             future.result(timeout=3)
         app.live.pump(app.state)
-        assert 'Broken header' in app.live.repo_error
+        assert "Broken header" in app.live.repo_error
         assert not app.live.repository_ready
     finally:
         app._shutdown()
 
 
 def test_real_cli_generates_mapping_from_headers(tmp_path):
-    pytest.importorskip('ultrazohm_cli')
+    pytest.importorskip("ultrazohm_cli")
     import shutil
+
     root = Path(__file__).resolve().parents[2]
-    for name in (str(live_mapping.HEADER),
-                 'vitis/software/shared/APU_RPU_shared.h', 'vitis/software/FreeRTOS/main.h',
-                 'vitis/software/FreeRTOS/defines.h', 'tcl_scripts/vitis_headless.tcl'):
-        target = tmp_path/name
+    for name in (
+        str(live_mapping.HEADER),
+        "vitis/software/shared/APU_RPU_shared.h",
+        "vitis/software/FreeRTOS/main.h",
+        "vitis/software/FreeRTOS/defines.h",
+        "tcl_scripts/vitis_headless.tcl",
+    ):
+        target = tmp_path / name
         target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(root/name, target)
+        shutil.copyfile(root / name, target)
     path = live_mapping.generate_mapping(tmp_path)
     mapping = json.loads(path.read_text())
-    assert mapping['observables']['JSO_lifecheck'] == 3
-    assert mapping['channels'] == 20
-    assert mapping['legacy_javascope_header'] is True
-    assert mapping['platform_state'] is None
-    assert mapping['repository']['commit'] in path.name
+    assert mapping["observables"]["JSO_lifecheck"] == 3
+    assert mapping["channels"] == 20
+    assert mapping["legacy_javascope_header"] is True
+    assert mapping["platform_state"] is None
+    assert mapping["repository"]["commit"] in path.name
 
     # Repository preview and defaults use the CLI without publishing another map.
     from ultrazohm_dataviewer.settings import load_repository_settings
+
     header = tmp_path / live_mapping.HEADER
-    header.write_text(header.read_text().replace('JSO_theta_mech', 'JSO_custom_theta'))
-    snapshots = set(path.parent.glob('javascope_*.json'))
+    header.write_text(header.read_text().replace("JSO_theta_mech", "JSO_custom_theta"))
+    snapshots = set(path.parent.glob("javascope_*.json"))
     settings = load_repository_settings(tmp_path)
-    assert 'JSO_custom_theta' in settings.mapping['observables']
-    assert '4' not in settings.profile['initial_channels']
-    assert settings.profile['initial_channels']['3'] == 'JSO_lifecheck'
-    assert set(path.parent.glob('javascope_*.json')) == snapshots
+    assert "JSO_custom_theta" in settings.mapping["observables"]
+    assert "4" not in settings.profile["initial_channels"]
+    assert settings.profile["initial_channels"]["3"] == "JSO_lifecheck"
+    assert set(path.parent.glob("javascope_*.json")) == snapshots
     settings.path.write_text(json.dumps(dict(settings.profile, sample_period_us=50)))
-    assert load_repository_settings(tmp_path).profile['sample_period_us'] == 50
+    assert load_repository_settings(tmp_path).profile["sample_period_us"] == 50
 
 
 def test_commit_cache_is_overwritten_with_fresh_headers(repo, monkeypatch):
     version = [1]
+
     def run(args, **kwargs):
-        mapping = {'repository': {'commit': 'abc123-dirty'}, 'observables': {'changed': version[0]}}
-        Path(args[args.index('--output')+1]).write_text(json.dumps(mapping))
+        mapping = {
+            "repository": {"commit": "abc123-dirty"},
+            "observables": {"changed": version[0]},
+        }
+        Path(args[args.index("--output") + 1]).write_text(json.dumps(mapping))
         return SimpleNamespace(returncode=0)
-    monkeypatch.setattr(live_mapping.subprocess, 'run', run)
+
+    monkeypatch.setattr(live_mapping.subprocess, "run", run)
     first = live_mapping.generate_mapping(repo)
     version[0] = 2
     second = live_mapping.generate_mapping(repo)
     assert first == second
-    assert first.name == 'javascope_abc123-dirty.json'
-    assert json.loads(second.read_text())['observables']['changed'] == 2
+    assert first.name == "javascope_abc123-dirty.json"
+    assert json.loads(second.read_text())["observables"]["changed"] == 2

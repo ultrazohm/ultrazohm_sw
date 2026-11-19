@@ -1,9 +1,10 @@
 """Execute the real Tcl entry point with stubbed Vitis commands."""
-from pathlib import Path
+
 import shutil
 import subprocess
 import tempfile
 import unittest
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -22,7 +23,7 @@ class HeadlessBuildTest(unittest.TestCase):
                 folder.mkdir(parents=True)
                 (folder / f"{name}.elf").touch()
             harness = scripts / "test.tcl"
-            harness.write_text('''set ::env(XILINX_VITIS) /fake/vitis
+            harness.write_text("""set ::env(XILINX_VITIS) /fake/vitis
 proc setws {args} {}
 proc platform {args} {puts "CALL platform $args"}
 proc app {args} {
@@ -37,9 +38,13 @@ set config [lindex $argv 1]
 set fail [lindex $argv 2]
 set argv [list [lindex $argv 0]]
 source [file join [file dirname [info script]] vitis_headless.tcl]
-''')
-            return subprocess.run(["tclsh", str(harness), action, config, str(int(fail))],
-                                  capture_output=True, text=True, timeout=10)
+""")
+            return subprocess.run(
+                ["tclsh", str(harness), action, config, str(int(fail))],
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
 
     def test_incremental_does_not_force_generation_or_configuration(self):
         result = self.run_build("build")
@@ -54,9 +59,15 @@ source [file join [file dirname [info script]] vitis_headless.tcl]
     def test_clean_precedes_build(self):
         result = self.run_build("build-clean")
         self.assertEqual(result.returncode, 0, result.stderr)
-        for command in ("app clean -name Baremetal", "app clean -name FreeRTOS", "platform clean"):
-            self.assertLess(result.stdout.index(f"CALL {command}"),
-                            result.stdout.index("CALL app build"))
+        for command in (
+            "app clean -name Baremetal",
+            "app clean -name FreeRTOS",
+            "platform clean",
+        ):
+            self.assertLess(
+                result.stdout.index(f"CALL {command}"),
+                result.stdout.index("CALL app build"),
+            )
 
     def test_switches_release_to_debug(self):
         result = self.run_build("build", config="Release")
@@ -73,7 +84,7 @@ source [file join [file dirname [info script]] vitis_headless.tcl]
     def test_make_reuse_and_invalidation(self):
         with tempfile.TemporaryDirectory() as tmp:
             script = Path(tmp) / "test.tcl"
-            script.write_text('''source [lindex $argv 0]
+            script.write_text("""source [lindex $argv 0]
 set root [lindex $argv 1]
 set workspace [file join $root workspace]
 set scripts [file join $root scripts]
@@ -119,10 +130,18 @@ set ::env(XILINX_VITIS) /other/vitis
 check {![uz_can_make $workspace [uz_build_signature $workspace $scripts] $stamp]}
 file delete [file join $workspace Baremetal Debug makefile]
 check {![uz_can_make $workspace $signature $stamp]}
-''')
-            result = subprocess.run(["tclsh", str(script),
-                                     str(ROOT / "tcl_scripts/vitis_incremental.tcl"), tmp],
-                                    capture_output=True, text=True, timeout=10)
+""")
+            result = subprocess.run(
+                [
+                    "tclsh",
+                    str(script),
+                    str(ROOT / "tcl_scripts/vitis_incremental.tcl"),
+                    tmp,
+                ],
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
             self.assertEqual(result.returncode, 0, result.stderr)
 
     @unittest.skipUnless(shutil.which("make"), "Make required")
@@ -142,16 +161,19 @@ check {![uz_can_make $workspace $signature $stamp]}
             utility.mkdir(parents=True)
             for name in ("zynqmp_utils.tcl", "fsbl.tcl"):
                 (utility / name).touch()
-            (scripts / "vitis_run_freertos_baremetal_fpga.tcl").write_text('puts "PROGRAMMED"')
+            (scripts / "vitis_run_freertos_baremetal_fpga.tcl").write_text(
+                'puts "PROGRAMMED"'
+            )
             for app in ("Baremetal", "FreeRTOS"):
                 folder = workspace / app / "Debug"
                 folder.mkdir(parents=True)
                 (folder / "source.c").write_text("original")
                 (folder / "header.h").write_text("original")
                 (folder / "makefile").write_text(
-                    f".PHONY: all\nall: {app}.elf\n{app}.elf: source.c header.h\n\tcp source.c $@\n")
+                    f".PHONY: all\nall: {app}.elf\n{app}.elf: source.c header.h\n\tcp source.c $@\n"
+                )
             harness = scripts / "test.tcl"
-            harness.write_text('''set ::env(XILINX_VITIS) [lindex $argv 1]
+            harness.write_text("""set ::env(XILINX_VITIS) [lindex $argv 1]
 set argv [list [lindex $argv 0]]
 proc setws {args} {}
 proc disconnect {} {}
@@ -162,10 +184,16 @@ proc app {args} {
     }
 }
 source [file join [file dirname [info script]] vitis_headless.tcl]
-''')
+""")
+
             def run(action):
-                return subprocess.run(["tclsh", str(harness), action, str(repo / "tools")],
-                                      capture_output=True, text=True, timeout=10)
+                return subprocess.run(
+                    ["tclsh", str(harness), action, str(repo / "tools")],
+                    capture_output=True,
+                    text=True,
+                    timeout=10,
+                )
+
             first = run("build")
             self.assertEqual(first.returncode, 0, first.stderr)
             self.assertIn("changes found, building", first.stdout)
@@ -176,6 +204,7 @@ source [file join [file dirname [info script]] vitis_headless.tcl]
                 self.assertEqual("PROGRAMMED" in unchanged.stdout, action == "flash")
             # An updated header must trigger a build even though source names are unchanged.
             import os
+
             elf = workspace / "Baremetal/Debug/Baremetal.elf"
             (workspace / "Baremetal/Debug/header.h").write_text("updated header")
             os.utime(elf, (1, 1))

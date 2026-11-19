@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from ultrazohm_dataviewer.command_doc import build_csv, group_for
 from ultrazohm_dataviewer.cli import public_methods
+from ultrazohm_dataviewer.command_doc import build_csv, group_for
 
 
 def test_csv_up_to_date():
@@ -14,7 +14,10 @@ def test_csv_up_to_date():
     If this fails, a command changed without regenerating the docs table. Run:
         python -m ultrazohm_dataviewer.command_doc
     """
-    csv_path = Path(__file__).resolve().parents[2] / "docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer_commands.csv"
+    csv_path = (
+        Path(__file__).resolve().parents[2]
+        / "docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer_commands.csv"
+    )
     committed = csv_path.read_text(encoding="utf-8")
     assert committed == build_csv(), (
         "ultrazohm_dataviewer_commands.csv is stale; "

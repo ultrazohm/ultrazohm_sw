@@ -1,4 +1,5 @@
 """Sampling contracts shared by FFT and node transforms; no resampling."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -21,20 +22,30 @@ def regular_sample_interval(time, operation: str, *, timestamp_resolution=0.0) -
     dt = (float(time[-1]) - float(time[0])) / (len(time) - 1)
     if not np.isfinite(dt) or dt <= 0:
         raise ValueError(f"{operation} needs finite, strictly increasing timestamps")
-    roundoff = np.finfo(np.float64).eps * max(abs(float(time[0])), abs(float(time[-1]))) * 8
-    if roundoff > abs(dt) * .01:
-        raise ValueError(f"{operation} timestamp precision is insufficient to establish uniform sampling")
+    roundoff = (
+        np.finfo(np.float64).eps * max(abs(float(time[0])), abs(float(time[-1]))) * 8
+    )
+    if roundoff > abs(dt) * 0.01:
+        raise ValueError(
+            f"{operation} timestamp precision is insufficient to establish uniform sampling"
+        )
     tolerance = max(abs(dt) * 1e-4, roundoff)
     for start in range(0, len(time) - 1, _BLOCK):
-        block = time[start:min(len(time), start + _BLOCK + 1)]
+        block = time[start : min(len(time), start + _BLOCK + 1)]
         intervals = np.diff(block)
         if not np.isfinite(block).all() or np.any(intervals <= 0):
-            raise ValueError(f"{operation} needs finite, strictly increasing timestamps")
+            raise ValueError(
+                f"{operation} needs finite, strictly increasing timestamps"
+            )
         if not timestamp_resolution and np.any(np.abs(intervals - dt) > tolerance):
-            raise ValueError(f"{operation} needs uniformly spaced timestamps; selected window is irregular")
+            raise ValueError(
+                f"{operation} needs uniformly spaced timestamps; selected window is irregular"
+            )
     if timestamp_resolution:
-        if timestamp_resolution > dt * .01:
-            raise ValueError(f"{operation} timestamp precision is insufficient to establish uniform sampling")
+        if timestamp_resolution > dt * 0.01:
+            raise ValueError(
+                f"{operation} timestamp precision is insufficient to establish uniform sampling"
+            )
         return _quantized_interval(time, timestamp_resolution, roundoff, operation)
     return dt
 
@@ -55,7 +66,9 @@ def _quantized_interval(time, quantum, roundoff, operation):
         low, high, imin, imax = np.inf, -np.inf, 0, 0
         for start in range(0, len(time), _BLOCK):
             stop = min(start + _BLOCK, len(time))
-            residual = (time[start:stop] - float(time[0])) - np.arange(start, stop, dtype=np.float64) * dt
+            residual = (time[start:stop] - float(time[0])) - np.arange(
+                start, stop, dtype=np.float64
+            ) * dt
             a, b = int(residual.argmin()), int(residual.argmax())
             if residual[a] < low:
                 low, imin = float(residual[a]), start + a
@@ -70,7 +83,9 @@ def _quantized_interval(time, quantum, roundoff, operation):
             upper = min(upper, dt + correction)
         if lower >= upper:
             break
-    raise ValueError(f"{operation} needs uniformly spaced timestamps; selected window is irregular")
+    raise ValueError(
+        f"{operation} needs uniformly spaced timestamps; selected window is irregular"
+    )
 
 
 def require_matching_time(left, right) -> None:
@@ -78,24 +93,39 @@ def require_matching_time(left, right) -> None:
     if left.ndim != 1 or left.shape != right.shape:
         raise ValueError("Binary math needs matching time axes")
     for start in range(0, len(left), _BLOCK):
-        a, b = left[start:start + _BLOCK], right[start:start + _BLOCK]
+        a, b = left[start : start + _BLOCK], right[start : start + _BLOCK]
         if not np.isfinite(a).all() or not np.isfinite(b).all():
             raise ValueError("Binary math needs finite timestamps")
-        tolerance = np.finfo(np.float64).eps * max(float(np.max(np.abs(a))), float(np.max(np.abs(b)))) * 8
+        tolerance = (
+            np.finfo(np.float64).eps
+            * max(float(np.max(np.abs(a))), float(np.max(np.abs(b))))
+            * 8
+        )
         # Roundoff must never permit a meaningful fraction of a sample period.
-        steps = np.concatenate([np.diff(left[max(0, start - 1):start + _BLOCK]),
-                                np.diff(right[max(0, start - 1):start + _BLOCK])])
+        steps = np.concatenate(
+            [
+                np.diff(left[max(0, start - 1) : start + _BLOCK]),
+                np.diff(right[max(0, start - 1) : start + _BLOCK]),
+            ]
+        )
         positive = steps[steps > 0]
-        tolerance = min(tolerance, float(positive.min()) * .01) if len(positive) else 0.
+        tolerance = (
+            min(tolerance, float(positive.min()) * 0.01) if len(positive) else 0.0
+        )
         if np.any(np.abs(a - b) > tolerance):
-            raise ValueError("Binary math needs matching time axes; inputs are not time-aligned")
+            raise ValueError(
+                "Binary math needs matching time axes; inputs are not time-aligned"
+            )
 
 
-def sample_xy(left, right, x_channel, y_channel, x_offset, y_offset, stride, cancel=None):
+def sample_xy(
+    left, right, x_channel, y_channel, x_offset, y_offset, stride, cancel=None
+):
     """Validate every displayed timestamp while sampling aligned raw batches."""
     from .sources import check
+
     if left.metadata.rows != right.metadata.rows:
-        raise ValueError('XY needs matching time axes and equal-length inputs')
+        raise ValueError("XY needs matching time axes and equal-length inputs")
     xs, ys, offset = [], [], 0
     x_batches = iter(left.iter_raw([x_channel], cancel=cancel))
     y_batches = iter(right.iter_raw([y_channel], cancel=cancel))
@@ -115,13 +145,17 @@ def sample_xy(left, right, x_channel, y_channel, x_offset, y_offset, stride, can
                     yv = values[y_channel]
             if not len(xt) or not len(yt):
                 if len(xt) or len(yt) or offset != left.metadata.rows:
-                    raise ValueError('XY needs equal-length inputs')
+                    raise ValueError("XY needs equal-length inputs")
                 break
             n = min(len(xt), len(yt))
             try:
-                require_matching_time(shift_time(xt[:n], x_offset), shift_time(yt[:n], y_offset))
+                require_matching_time(
+                    shift_time(xt[:n], x_offset), shift_time(yt[:n], y_offset)
+                )
             except ValueError as exc:
-                raise ValueError('XY needs matching displayed timestamps; inputs are not time-aligned') from exc
+                raise ValueError(
+                    "XY needs matching displayed timestamps; inputs are not time-aligned"
+                ) from exc
             start = (-offset) % stride
             xs.append(xv[start:n:stride].copy())
             ys.append(yv[start:n:stride].copy())
@@ -131,5 +165,7 @@ def sample_xy(left, right, x_channel, y_channel, x_offset, y_offset, stride, can
     finally:
         x_batches.close()
         y_batches.close()
-    return (np.ascontiguousarray(np.concatenate(xs) if xs else [], dtype=np.float64),
-            np.ascontiguousarray(np.concatenate(ys) if ys else [], dtype=np.float64))
+    return (
+        np.ascontiguousarray(np.concatenate(xs) if xs else [], dtype=np.float64),
+        np.ascontiguousarray(np.concatenate(ys) if ys else [], dtype=np.float64),
+    )

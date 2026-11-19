@@ -1,7 +1,8 @@
 """Detached node evaluation with application-thread publication."""
-from copy import copy, deepcopy
-from types import SimpleNamespace, MethodType
+
 import itertools
+from copy import copy, deepcopy
+from types import MethodType, SimpleNamespace
 
 from . import nodes
 from .console import Console
@@ -10,10 +11,22 @@ from .state import AppState
 
 def fingerprint(state):
     """Include computational inputs, not presentation-only edits or plot layout."""
-    return tuple((node.id, id(node), node.kind, deepcopy(node.params), tuple(node.inputs),
-                  node.ref, node.version, node.out_run_id,
-                  nodes._source_signature(state.registry, node) if node.kind == 'source' else None)
-                 for node in state.nodes.nodes.values())
+    return tuple(
+        (
+            node.id,
+            id(node),
+            node.kind,
+            deepcopy(node.params),
+            tuple(node.inputs),
+            node.ref,
+            node.version,
+            node.out_run_id,
+            nodes._source_signature(state.registry, node)
+            if node.kind == "source"
+            else None,
+        )
+        for node in state.nodes.nodes.values()
+    )
 
 
 def capture(state):
@@ -34,9 +47,15 @@ def capture(state):
         # replace the live source's validation closure.
         run.source = copy(original.source)
         registry._runs[key] = run
-    snapshot = SimpleNamespace(nodes=graph, registry=registry, console=Console(),
-                               cells=[], plot_x_ranges={},
-                               fft=SimpleNamespace(sources=[]), histogram=SimpleNamespace(sources=[]))
+    snapshot = SimpleNamespace(
+        nodes=graph,
+        registry=registry,
+        console=Console(),
+        cells=[],
+        plot_x_ranges={},
+        fft=SimpleNamespace(sources=[]),
+        histogram=SimpleNamespace(sources=[]),
+    )
     snapshot.upsert_derived_run = MethodType(AppState.upsert_derived_run, snapshot)
     return snapshot
 
@@ -50,14 +69,18 @@ def publish(state, snapshot):
             continue
         node.error, node.info = result.error, result.info
         if node.error:
-            state.console.error(f'{node.name}: {node.error}')
+            state.console.error(f"{node.name}: {node.error}")
         if node.version == result.version:
             continue
         node.out_time, node.out_y = result.out_time, result.out_y
         node.version = result.version
         node.eval_key = nodes.node_key(state.registry, state.nodes, node)
         run = snapshot.registry.get(result.out_run_id)
-        nodes.publish_output(state, node, run.signals['out'].unit, domain=run.axis_domain)
-        state.registry.get(node.out_run_id).timestamp_resolution = run.timestamp_resolution
+        nodes.publish_output(
+            state, node, run.signals["out"].unit, domain=run.axis_domain
+        )
+        state.registry.get(
+            node.out_run_id
+        ).timestamp_resolution = run.timestamp_resolution
         computed += 1
     return computed

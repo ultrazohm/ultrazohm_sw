@@ -4,13 +4,10 @@ The worker publishes immutable, bounded snapshots. The GUI never performs networ
 IO. Closing the viewer finalizes its owned service and sends Stop to an attached
 external device. The displayed history is bounded by the service RAM buffer.
 """
+
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from contextlib import nullcontext
 import ipaddress
-from pathlib import Path
-from queue import Empty, Full, Queue
 import json
 import os
 import subprocess
@@ -18,6 +15,10 @@ import sys
 import threading
 import time
 import uuid
+from contextlib import nullcontext
+from dataclasses import dataclass, field
+from pathlib import Path
+from queue import Empty, Full, Queue
 
 import numpy as np
 
@@ -66,6 +67,7 @@ class RingSnapshot(dict):
     ``offset`` converts them to row indices and only buckets ending at or before
     ``valid_end`` are complete.
     """
+
     summary: dict
     offset: int = 0
     valid_end: int = 0
@@ -81,8 +83,12 @@ def bucket_extrema(y):
     pos = np.arange(n)
     low = np.minimum.reduceat(np.where(finite, y, np.inf), starts)
     high = np.maximum.reduceat(np.where(finite, y, -np.inf), starts)
-    mins = np.minimum.reduceat(np.where(finite & (y == np.repeat(low, lengths)), pos, n), starts)
-    maxs = np.maximum.reduceat(np.where(finite & (y == np.repeat(high, lengths)), pos, -1), starts)
+    mins = np.minimum.reduceat(
+        np.where(finite & (y == np.repeat(low, lengths)), pos, n), starts
+    )
+    maxs = np.maximum.reduceat(
+        np.where(finite & (y == np.repeat(high, lengths)), pos, -1), starts
+    )
     gaps = np.minimum.reduceat(np.where(~finite, pos, n), starts)
     mins[mins == n] = -1
     gaps[gaps == n] = -1
@@ -94,8 +100,10 @@ def merge_extrema(y, mins, maxs, gaps):
     last maximum and first non-finite position of each parent."""
     groups = -(-len(mins) // LIVE_FACTOR)
     pad = groups * LIVE_FACTOR - len(mins)
+
     def grouped(values):
         return np.r_[values, np.full(pad, -1, np.int64)].reshape(groups, LIVE_FACTOR)
+
     mins, maxs, gaps = grouped(mins), grouped(maxs), grouped(gaps)
     low = np.where(mins >= 0, y[np.maximum(mins, 0)], np.inf)
     high = np.where(maxs >= 0, y[np.maximum(maxs, 0)], -np.inf)
@@ -119,6 +127,7 @@ class LiveRing:
     Per-bucket extrema are maintained alongside, so wide follow-live windows are
     drawn from buckets instead of re-reducing every raw sample on each update.
     """
+
     def __init__(self, capacity):
         self.capacity = max(1, int(capacity))
         self.reset()
@@ -138,7 +147,7 @@ class LiveRing:
         if n >= self.capacity:
             self._allocate(arrays)
             for name, values in arrays.items():
-                self.columns[name][:self.capacity] = values[-self.capacity:]
+                self.columns[name][: self.capacity] = values[-self.capacity :]
             self.end = self.length = self.capacity
             self._summarize(0)
             return
@@ -157,34 +166,47 @@ class LiveRing:
             old, old_summary = self.columns, self.summary
             self._allocate(arrays)
             for name, values in old.items():
-                self.columns[name][:self.end - start] = values[start:self.end]
+                self.columns[name][: self.end - start] = values[start : self.end]
             if aligned:
                 for name, levels in old_summary.items():
-                    for level, (old_arrays, new_arrays) in enumerate(zip(levels, self.summary[name])):
+                    for level, (old_arrays, new_arrays) in enumerate(
+                        zip(levels, self.summary[name])
+                    ):
                         shift = start // bucket_size(level)
                         count = -(-(self.end - start) // bucket_size(level))
                         for source, target in zip(old_arrays, new_arrays):
-                            values = source[shift:shift + count]
-                            target[:len(values)] = np.where(values >= 0, values - start, -1)
+                            values = source[shift : shift + count]
+                            target[: len(values)] = np.where(
+                                values >= 0, values - start, -1
+                            )
             self.end = self.end - start
             first = self.end if aligned else 0
             self.length = keep
         for name, values in arrays.items():
-            self.columns[name][self.end:self.end + n] = values
+            self.columns[name][self.end : self.end + n] = values
         self.end += n
         self.length = min(self.length + n, self.capacity)
         self._summarize(first)
 
     def _allocate(self, arrays):
         size = 2 * self.capacity
-        self.columns = {name: np.empty(size, dtype=values.dtype)
-                        for name, values in arrays.items()}
+        self.columns = {
+            name: np.empty(size, dtype=values.dtype) for name, values in arrays.items()
+        }
         levels = 1
         while size // bucket_size(levels) >= LIVE_FACTOR:
             levels += 1
-        self.summary = {name: [tuple(np.full(size // bucket_size(level) + 1, -1, np.int64) for _ in range(3))
-                               for level in range(levels)]
-                        for name in arrays if name not in ('time', 'status')}
+        self.summary = {
+            name: [
+                tuple(
+                    np.full(size // bucket_size(level) + 1, -1, np.int64)
+                    for _ in range(3)
+                )
+                for level in range(levels)
+            ]
+            for name in arrays
+            if name not in ("time", "status")
+        }
 
     def _summarize(self, first):
         """Summarize only buckets completed by this append.
@@ -202,30 +224,36 @@ class LiveRing:
         for name, levels in self.summary.items():
             y = self.columns[name]
             for target, values in zip(levels[0], bucket_extrema(y[lo:stop])):
-                target[bucket:bucket + len(values)] = np.where(values >= 0, values + lo, -1)
+                target[bucket : bucket + len(values)] = np.where(
+                    values >= 0, values + lo, -1
+                )
             for level in range(1, len(levels)):
                 parent = first // bucket_size(level)
                 parent_stop = self.end // bucket_size(level)
                 if parent == parent_stop:
                     break
                 start, child_stop = parent * LIVE_FACTOR, parent_stop * LIVE_FACTOR
-                merged = merge_extrema(y, *(values[start:child_stop] for values in levels[level - 1]))
+                merged = merge_extrema(
+                    y, *(values[start:child_stop] for values in levels[level - 1])
+                )
                 for target, values in zip(levels[level], merged):
-                    target[parent:parent + len(values)] = values
+                    target[parent : parent + len(values)] = values
 
     def snapshot(self):
         """Views of the retained rows; later appends never modify them."""
         if self.columns is None or not self.length:
             return None
         start = self.end - self.length
-        result = RingSnapshot({name: values[start:self.end] for name, values in self.columns.items()})
+        result = RingSnapshot(
+            {name: values[start : self.end] for name, values in self.columns.items()}
+        )
         result.summary, result.offset, result.valid_end = self.summary, start, self.end
         return result
 
 
 def _column(frame, name):
     column = frame[name]
-    return column.to_numpy() if hasattr(column, 'to_numpy') else column
+    return column.to_numpy() if hasattr(column, "to_numpy") else column
 
 
 class LiveSource(MemorySource):
@@ -234,20 +262,23 @@ class LiveSource(MemorySource):
     Accepts a Polars frame or a mapping of NumPy columns (a :class:`LiveRing`
     snapshot). Ring snapshots also provide bucket extrema for wide windows.
     """
+
     def __init__(self, frame):
-        names = frame.columns if hasattr(frame, 'columns') else list(frame)
-        t = _column(frame, 'time')
-        channels = {n: _column(frame, n) for n in names if n not in ('time', 'status')}
+        names = frame.columns if hasattr(frame, "columns") else list(frame)
+        t = _column(frame, "time")
+        channels = {n: _column(frame, n) for n in names if n not in ("time", "status")}
         super().__init__(t, channels)
-        self.units = dict.fromkeys(channels, '')
-        self.timestamp_resolution = 0.
-        self._summary = getattr(frame, 'summary', None)
-        self._offset = getattr(frame, 'offset', 0)
-        self._valid_end = getattr(frame, 'valid_end', 0)
+        self.units = dict.fromkeys(channels, "")
+        self.timestamp_resolution = 0.0
+        self._summary = getattr(frame, "summary", None)
+        self._offset = getattr(frame, "offset", 0)
+        self._valid_end = getattr(frame, "valid_end", 0)
         # MemorySource creates a unique identity, which invalidates display results
         # even when the user keeps the same (paused) X-axis range while data grows.
 
-    def read_plot(self, channel, lo, hi, budget, cancel=None, *, padding=True, offset=0.):
+    def read_plot(
+        self, channel, lo, hi, budget, cancel=None, *, padding=True, offset=0.0
+    ):
         check(cancel)
         budget = max(2, int(budget))
         a, b = self.bounds(lo, hi, cancel, padding=padding, offset=offset)
@@ -299,7 +330,9 @@ class LiveSource(MemorySource):
 
         # Window end rows keep lines reaching the plot edges, as with raw reads.
         edges = np.array([a, b - 1], np.int64) + self._offset
-        positions = np.concatenate([edges, *collect(a + self._offset, b + self._offset, level)])
+        positions = np.concatenate(
+            [edges, *collect(a + self._offset, b + self._offset, level)]
+        )
         positions.sort()
         # A constant bucket reports one sample as both minimum and maximum.
         positions = positions[np.r_[True, positions[1:] != positions[:-1]]]
@@ -317,11 +350,11 @@ class LiveUpdate:
     assignments: tuple = ()
     source: LiveSource | None = None
     epoch: tuple | None = None
-    error: str = ''
-    notice: str = ''
+    error: str = ""
+    notice: str = ""
     attached: bool = False
-    received_at: float = 0.
-    activity: str = ''
+    received_at: float = 0.0
+    activity: str = ""
     completed_commands: int = 0
     variable_sends: dict = field(default_factory=dict)
     flash_config: tuple | None = None
@@ -330,6 +363,7 @@ class LiveUpdate:
 @dataclass
 class OwnedService:
     """The launched process remains owned even when the viewer attaches elsewhere."""
+
     process: object = None
     endpoint: str | None = None
     shutdown_requested: bool = False
@@ -347,17 +381,16 @@ class OwnedService:
 
 def cursor_invalid(exc):
     """Whether a read failed because its cursor no longer addresses retained data."""
-    return getattr(exc, 'code', None) == 'cursor_expired'
-
+    return getattr(exc, "code", None) == "cursor_expired"
 
 
 def action_block_reason(action, *, flashing=False, script_busy=False):
     """Shared interaction policy; connection and execution checks stay with their owners."""
     if flashing:
-        return 'Flash UZ is running'
-    if script_busy and action not in ('stop', 'cli'):
-        return 'Manual controls are locked while the script runs'
-    return ''
+        return "Flash UZ is running"
+    if script_busy and action not in ("stop", "cli"):
+        return "Manual controls are locked while the script runs"
+    return ""
 
 
 class LiveController:
@@ -368,6 +401,7 @@ class LiveController:
     long command never freezes live plots. The polling thread exclusively owns
     ``ring`` and ``cursor``; commands request a fresh history through ``_reset``.
     """
+
     def __init__(self, client_factory=None, hz=30):
         self.client_factory = client_factory
         self.interval = 1 / hz
@@ -394,17 +428,17 @@ class LiveController:
         self.ring = None
         self.attached = False
         self.revision = 0
-        self._status_at = 0.
+        self._status_at = 0.0
         self._last_source = None
         self._epoch = None
         self._status = {}
         self._catalog = {}
         self._assignments = ()
-        self._notice = ''
-        self._error = ''
-        self._poll_error = ''
-        self._received_at = 0.
-        self._activity = ''
+        self._notice = ""
+        self._error = ""
+        self._poll_error = ""
+        self._received_at = 0.0
+        self._activity = ""
         self._completed_commands = 0
         self._variable_sends = {}
         self.flashing = False
@@ -414,25 +448,29 @@ class LiveController:
 
     def submit(self, operation, **kwargs):
         if self.stop_event.is_set():
-            raise RuntimeError('Live controller is closed')
+            raise RuntimeError("Live controller is closed")
         if self.flashing:
-            raise RuntimeError('Flash UZ is already running')
-        if operation in ('stop', 'flash', 'shutdown', 'detach', 'attach', 'connect'):
+            raise RuntimeError("Flash UZ is already running")
+        if operation in ("stop", "flash", "shutdown", "detach", "attach", "connect"):
             self.cancel_pending_commands()
-        if operation == 'flash':
+        if operation == "flash":
             self.flashing = True
         if self.thread is None:
-            self.thread = threading.Thread(target=self._work, name='uz-live', daemon=True)
+            self.thread = threading.Thread(
+                target=self._work, name="uz-live", daemon=True
+            )
             self.thread.start()
-            self.poll_thread = threading.Thread(target=self._poll_work, name='uz-live-poll', daemon=True)
+            self.poll_thread = threading.Thread(
+                target=self._poll_work, name="uz-live-poll", daemon=True
+            )
             self.poll_thread.start()
         try:
             with self.lock:
                 self.commands.put_nowait((self._command_generation, operation, kwargs))
         except Full as exc:
-            if operation == 'flash':
+            if operation == "flash":
                 self.flashing = False
-            raise RuntimeError('Live command queue is busy') from exc
+            raise RuntimeError("Live command queue is busy") from exc
 
     def cancel_pending_commands(self):
         """Invalidate even a command already dequeued but not yet executing."""
@@ -450,6 +488,7 @@ class LiveController:
             endpoint = endpoint or self.endpoint
             if self.client_factory is None:
                 from ultrazohm_cli import Client
+
                 client = Client(endpoint)
             else:
                 client = self.client_factory(endpoint)
@@ -471,12 +510,22 @@ class LiveController:
             return
         with self.lock:
             self.revision += 1
-            self.update = LiveUpdate(self.revision, self._status, self._catalog,
-                                     self._assignments, self._last_source, self._epoch,
-                                     self._error or self._poll_error, self._notice,
-                                     self.attached, self._received_at,
-                                     self._activity, self._completed_commands, self._variable_sends.copy(),
-                                     self._flash_config)
+            self.update = LiveUpdate(
+                self.revision,
+                self._status,
+                self._catalog,
+                self._assignments,
+                self._last_source,
+                self._epoch,
+                self._error or self._poll_error,
+                self._notice,
+                self.attached,
+                self._received_at,
+                self._activity,
+                self._completed_commands,
+                self._variable_sends.copy(),
+                self._flash_config,
+            )
 
     def _message(self, level, text):
         try:
@@ -497,7 +546,7 @@ class LiveController:
         with self.lock:
             self._reset_generation += 1
             self._last_source = self._epoch = None
-            self._received_at = 0.
+            self._received_at = 0.0
 
     def _make_client(self, endpoint):
         if endpoint != self.endpoint or self.client is None:
@@ -507,68 +556,113 @@ class LiveController:
             self.attached = False
             if self.client_factory is None:
                 from ultrazohm_cli import Client
+
                 self.client = Client(endpoint)
             else:
                 self.client = self.client_factory(endpoint)
             self.endpoint = endpoint
 
-    def _start_service(self, output, mapping, profile=None, data_options=None, ack=False, user_directory=None, repo=None):
+    def _start_service(
+        self,
+        output,
+        mapping,
+        profile=None,
+        data_options=None,
+        ack=False,
+        user_directory=None,
+        repo=None,
+    ):
         if repo and mapping:
-            raise ValueError('Choose either a firmware repository or an explicit channel mapping')
-        self._progress('Starting local acquisition service…')
+            raise ValueError(
+                "Choose either a firmware repository or an explicit channel mapping"
+            )
+        self._progress("Starting local acquisition service…")
         if self.owned.running:
-            raise RuntimeError('The launched service is still running; check its endpoint and service.log')
+            raise RuntimeError(
+                "The launched service is still running; check its endpoint and service.log"
+            )
         output = Path(output).expanduser().resolve()
         # One output directory per service lifetime, never reuse an existing run.
         output.parent.mkdir(parents=True, exist_ok=True)
         if output.exists():
-            raise ValueError('Choose a new session directory; existing recordings are never overwritten')
-        log_path = output.with_name(output.name + '.service.log')
+            raise ValueError(
+                "Choose a new session directory; existing recordings are never overwritten"
+            )
+        log_path = output.with_name(output.name + ".service.log")
         from .process_launcher import command
-        args = command('cli',
-                '--endpoint', self.endpoint, 'serve', '--output', str(output), '--format', 'parquet')
+
+        args = command(
+            "cli",
+            "--endpoint",
+            self.endpoint,
+            "serve",
+            "--output",
+            str(output),
+            "--format",
+            "parquet",
+        )
         if repo:
-            args += ['--repo', str(Path(repo).expanduser().resolve())]
+            args += ["--repo", str(Path(repo).expanduser().resolve())]
             if not profile:
                 from .user_paths import data_directory
-                directory = Path(user_directory) if user_directory else data_directory(repo)
-                saved = directory / 'settings.json'
+
+                directory = (
+                    Path(user_directory) if user_directory else data_directory(repo)
+                )
+                saved = directory / "settings.json"
                 if saved.is_file():
                     profile = saved
         elif mapping:
-            args += ['--channel-mapping', str(Path(mapping).expanduser().resolve())]
+            args += ["--channel-mapping", str(Path(mapping).expanduser().resolve())]
             if not profile:
                 from .settings import load_workspace_settings
+
                 profile = load_workspace_settings(mapping, user_directory).path
         if profile:
-            args += ['--profile', str(profile)]
+            args += ["--profile", str(profile)]
         if ack:
-            args += ['--ack', 'on']
-        for name in ('buffer_samples', 'segment_rows', 'flush_interval_ms', 'queue_seconds', 'recording_backend'):
+            args += ["--ack", "on"]
+        for name in (
+            "buffer_samples",
+            "segment_rows",
+            "flush_interval_ms",
+            "queue_seconds",
+            "recording_backend",
+        ):
             if (value := (data_options or {}).get(name)) is not None:
-                args += ['--'+name.replace('_', '-'), str(value)]
-        options = {'stdin': subprocess.DEVNULL, 'start_new_session': True} if os.name != 'nt' else {
-            'stdin': subprocess.DEVNULL,
-            'creationflags': subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP}
-        with log_path.open('ab') as log:
-            self.owned.process = subprocess.Popen(args, stdout=log, stderr=log, **options)
+                args += ["--" + name.replace("_", "-"), str(value)]
+        options = (
+            {"stdin": subprocess.DEVNULL, "start_new_session": True}
+            if os.name != "nt"
+            else {
+                "stdin": subprocess.DEVNULL,
+                "creationflags": subprocess.DETACHED_PROCESS
+                | subprocess.CREATE_NEW_PROCESS_GROUP,
+            }
+        )
+        with log_path.open("ab") as log:
+            self.owned.process = subprocess.Popen(
+                args, stdout=log, stderr=log, **options
+            )
             self.owned.endpoint = self.endpoint
             self.owned.repo = Path(repo).expanduser().resolve() if repo else None
-            self.owned.mapping = Path(mapping).expanduser().resolve() if mapping else None
+            self.owned.mapping = (
+                Path(mapping).expanduser().resolve() if mapping else None
+            )
             self.owned.shutdown_requested = False
             self.owned.log = log_path
         deadline = time.monotonic() + 8
         while not self.stop_event.is_set() and time.monotonic() < deadline:
             if self.owned.process.poll() is not None:
-                raise RuntimeError(f'Service failed; see {log_path}')
+                raise RuntimeError(f"Service failed; see {log_path}")
             try:
                 self.client.status()
                 return
             except (OSError, RuntimeError):
-                self.stop_event.wait(.1)
+                self.stop_event.wait(0.1)
         # A service that never answered must not block later Connect attempts.
         self._terminate_owned()
-        raise RuntimeError(f'Service startup timed out; see {log_path}')
+        raise RuntimeError(f"Service startup timed out; see {log_path}")
 
     def _terminate_owned(self):
         process = self.owned.process
@@ -587,106 +681,156 @@ class LiveController:
             if self.stop_event.is_set():
                 return None  # close() takes over waiting for finalization
             self._progress(description)
-            self.stop_event.wait(.2)
+            self.stop_event.wait(0.2)
         return self.owned.process.returncode
 
     def _command(self, operation, kwargs):
-        if operation == 'flash':
+        if operation == "flash":
             self._flash(kwargs)
-        elif operation in ('attach', 'connect'):
-            self._progress('Checking acquisition service…')
-            self._make_client(kwargs['endpoint'])
+        elif operation in ("attach", "connect"):
+            self._progress("Checking acquisition service…")
+            self._make_client(kwargs["endpoint"])
             try:
                 self.client.status()
             except (OSError, RuntimeError):
-                if operation != 'connect':
+                if operation != "connect":
                     raise
-                self._start_service(kwargs['output'], kwargs.get('mapping', ''),
-                                    kwargs.get('profile'), kwargs.get('data_options'), kwargs.get('ack', False),
-                                    user_directory=kwargs.get('user_directory'), repo=kwargs.get('repo'))
+                self._start_service(
+                    kwargs["output"],
+                    kwargs.get("mapping", ""),
+                    kwargs.get("profile"),
+                    kwargs.get("data_options"),
+                    kwargs.get("ack", False),
+                    user_directory=kwargs.get("user_directory"),
+                    repo=kwargs.get("repo"),
+                )
             else:
-                if operation == 'connect' and not (
-                        self.owned.owns(self.endpoint)):
-                    raise RuntimeError('A service is already running at this endpoint. Use Existing service > Attach.')
-                if (operation == 'connect' and kwargs.get('repo')
-                        and Path(kwargs['repo']).expanduser().resolve() != self.owned.repo):
-                    raise RuntimeError('The running service uses a different firmware repository. '
-                                       'Attach and shut it down before connecting with the selected repository.')
-                if (operation == 'connect' and kwargs.get('mapping')
-                        and Path(kwargs['mapping']).expanduser().resolve() != self.owned.mapping):
-                    raise RuntimeError('The running service uses a different channel mapping. '
-                                       'Attach and shut it down before connecting with the selected mapping.')
-            self._progress('Reading service configuration…')
+                if operation == "connect" and not (self.owned.owns(self.endpoint)):
+                    raise RuntimeError(
+                        "A service is already running at this endpoint. Use Existing service > Attach."
+                    )
+                if (
+                    operation == "connect"
+                    and kwargs.get("repo")
+                    and Path(kwargs["repo"]).expanduser().resolve() != self.owned.repo
+                ):
+                    raise RuntimeError(
+                        "The running service uses a different firmware repository. "
+                        "Attach and shut it down before connecting with the selected repository."
+                    )
+                if (
+                    operation == "connect"
+                    and kwargs.get("mapping")
+                    and Path(kwargs["mapping"]).expanduser().resolve()
+                    != self.owned.mapping
+                ):
+                    raise RuntimeError(
+                        "The running service uses a different channel mapping. "
+                        "Attach and shut it down before connecting with the selected mapping."
+                    )
+            self._progress("Reading service configuration…")
             status = self.client.status()
-            if operation == 'connect':
-                if status['state']['connected']:
-                    requested = (ipaddress.ip_address(kwargs['ip']), int(kwargs['port']))
-                    device = status['state'].get('device', '')
-                    host, _, port = device.rpartition(':')
+            if operation == "connect":
+                if status["state"]["connected"]:
+                    requested = (
+                        ipaddress.ip_address(kwargs["ip"]),
+                        int(kwargs["port"]),
+                    )
+                    device = status["state"].get("device", "")
+                    host, _, port = device.rpartition(":")
                     try:
-                        actual = (ipaddress.ip_address(host.strip('[]')), int(port))
+                        actual = (ipaddress.ip_address(host.strip("[]")), int(port))
                     except ValueError:
                         actual = None
                     if actual != requested:
-                        raise RuntimeError(f'Service is already connected to {device or "an unknown device"}; '
-                                           f'requested {kwargs["ip"]}:{kwargs["port"]}. '
-                                           'Use Attach service for that device or a separate service endpoint.')
+                        raise RuntimeError(
+                            f"Service is already connected to {device or 'an unknown device'}; "
+                            f"requested {kwargs['ip']}:{kwargs['port']}. "
+                            "Use Attach service for that device or a separate service endpoint."
+                        )
                 else:
-                    self._progress(f'Connecting to UltraZohm at {kwargs["ip"]}:{kwargs["port"]}…')
-                    self.client.connect(kwargs['ip'], kwargs['port'])
+                    self._progress(
+                        f"Connecting to UltraZohm at {kwargs['ip']}:{kwargs['port']}…"
+                    )
+                    self.client.connect(kwargs["ip"], kwargs["port"])
                     self._reset()
-            self._catalog = self.client.catalog()['profile']
+            self._catalog = self.client.catalog()["profile"]
             self.attached = True
             self._status = self.client.status()
-            self._notice = f'Attached to acquisition service at {self.endpoint}'
-            if mapping := kwargs.get('mapping'):
+            self._notice = f"Attached to acquisition service at {self.endpoint}"
+            if mapping := kwargs.get("mapping"):
                 try:
-                    expected = json.loads(Path(mapping).expanduser().read_text(encoding='utf-8'))
-                    fields = ('api_version', 'channels', 'samples_per_packet', 'observables',
-                              'slow_signals', 'variables', 'commands', 'platform_state', 'legacy_javascope_header',
-                              'javascope')
-                    if any(expected.get(key) != self._catalog.get(key) for key in fields):
-                        self._notice += (f'. The service uses a different channel mapping than {mapping}. '
-                                         'Restart the service to apply the selected mapping.')
+                    expected = json.loads(
+                        Path(mapping).expanduser().read_text(encoding="utf-8")
+                    )
+                    fields = (
+                        "api_version",
+                        "channels",
+                        "samples_per_packet",
+                        "observables",
+                        "slow_signals",
+                        "variables",
+                        "commands",
+                        "platform_state",
+                        "legacy_javascope_header",
+                        "javascope",
+                    )
+                    if any(
+                        expected.get(key) != self._catalog.get(key) for key in fields
+                    ):
+                        self._notice += (
+                            f". The service uses a different channel mapping than {mapping}. "
+                            "Restart the service to apply the selected mapping."
+                        )
                 except (OSError, ValueError) as exc:
-                    self._notice += f'. Could not compare the selected channel mapping: {exc}'
-        elif operation == 'detach':
+                    self._notice += (
+                        f". Could not compare the selected channel mapping: {exc}"
+                    )
+        elif operation == "detach":
             self.attached = False
-            self._notice = 'Detached; the service and logging continue'
+            self._notice = "Detached; the service and logging continue"
         else:
             if not self.attached:
-                raise RuntimeError('Attach to a service first')
+                raise RuntimeError("Attach to a service first")
             try:
                 reply = getattr(self.client, operation)(**kwargs)
             except Exception as exc:
                 from .flashing import connection_refused
-                if operation != 'shutdown' or not connection_refused(exc):
+
+                if operation != "shutdown" or not connection_refused(exc):
                     raise
                 # A dead service cannot acknowledge shutdown. Release the local
                 # attachment so the user can change repositories and reconnect.
                 self.attached = False
                 self._reset()
                 self._status, self._catalog, self._assignments = {}, {}, ()
-                self._poll_error = ''
-                self._status_at = 0.
-                self._notice = 'Detached: acquisition service unavailable; device Stop and recording finalization could not be confirmed. Check service.log.'
+                self._poll_error = ""
+                self._status_at = 0.0
+                self._notice = "Detached: acquisition service unavailable; device Stop and recording finalization could not be confirmed. Check service.log."
                 return
-            if operation == 'set_variable':
-                self._variable_sends[kwargs['name']] = (time.monotonic(), kwargs['value'])
-            self._notice = f'{operation}: request sent (device commands have no acknowledgment)'
-            if operation == 'shutdown':
+            if operation == "set_variable":
+                self._variable_sends[kwargs["name"]] = (
+                    time.monotonic(),
+                    kwargs["value"],
+                )
+            self._notice = (
+                f"{operation}: request sent (device commands have no acknowledgment)"
+            )
+            if operation == "shutdown":
                 if self.endpoint == self.owned.endpoint:
                     self.owned.shutdown_requested = True
                 self.attached = False
                 self._reset()
                 self._status, self._catalog, self._assignments = {}, {}, ()
-                if self._await_shutdown('Stopping device and finalizing recordings…', external=False):
-                    self._notice = 'Service shut down; recordings finalized'
+                if self._await_shutdown(
+                    "Stopping device and finalizing recordings…", external=False
+                ):
+                    self._notice = "Service shut down; recordings finalized"
                 else:
-                    self._notice = 'Service shutdown accepted; finalization continues in the external service'
+                    self._notice = "Service shutdown accepted; finalization continues in the external service"
 
             del reply
-        self._status_at = 0.
+        self._status_at = 0.0
 
     def _await_shutdown(self, description, *, external):
         """Wait after a shutdown request; the service itself sends device Stop and
@@ -696,7 +840,9 @@ class LiveController:
         if self.endpoint == self.owned.endpoint and self.owned.process is not None:
             code = self._wait_owned(description)
             if code:
-                raise RuntimeError(f'Service shutdown failed (exit {code}); check service.log')
+                raise RuntimeError(
+                    f"Service shutdown failed (exit {code}); check service.log"
+                )
             return code is not None
         if not external:
             return False
@@ -708,33 +854,37 @@ class LiveController:
             except (OSError, RuntimeError) as exc:
                 return connection_refused(exc)
             return False
+
         # An external service stops listening before it finishes writing files;
         # its finalization does not involve the device.
-        self._wait_for(stopped, 15, 'the acquisition service to stop')
+        self._wait_for(stopped, 15, "the acquisition service to stop")
         return True
 
     def _wait_for(self, condition, timeout, description):
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
             if self.stop_event.is_set():
-                raise RuntimeError('Viewer closed; flash preparation stopped')
+                raise RuntimeError("Viewer closed; flash preparation stopped")
             if condition():
                 return
             self._publish()
-            self.stop_event.wait(.1)
-        raise RuntimeError(f'Timed out waiting for {description}')
+            self.stop_event.wait(0.1)
+        raise RuntimeError(f"Timed out waiting for {description}")
 
     def _flash(self, kwargs):
         from .flashing import connection_refused, run_flash_cli, xsct_available
+        from .live_mapping import generate_mapping, repository
         from .settings import load_workspace_settings, profile_for_mapping
         from .user_paths import write_json
-        from .live_mapping import generate_mapping, repository
+
         if not xsct_available():
-            raise RuntimeError('Vitis XSCT (xsct) is not on PATH. Load the Vitis environment and restart the viewer.')
-        root = repository(kwargs.get('repo') or None)
-        self._make_client(kwargs['endpoint'])
-        self._poll_error = ''
-        self._progress('Preparing Flash UZ…')
+            raise RuntimeError(
+                "Vitis XSCT (xsct) is not on PATH. Load the Vitis environment and restart the viewer."
+            )
+        root = repository(kwargs.get("repo") or None)
+        self._make_client(kwargs["endpoint"])
+        self._poll_error = ""
+        self._progress("Preparing Flash UZ…")
         try:
             status = self.client.status()
         except (OSError, RuntimeError) as exc:
@@ -743,76 +893,102 @@ class LiveController:
             status = None
         previous, assignments = None, None
         settings = status or {}
-        if status is None and self._flash_context is not None and self._flash_context[0] == self.endpoint:
+        if (
+            status is None
+            and self._flash_context is not None
+            and self._flash_context[0] == self.endpoint
+        ):
             _, previous, assignments, settings = self._flash_context
-        target_ip, target_port = kwargs['ip'], kwargs['port']
-        if address := settings.get('state', {}).get('device'):
-            host, port = address.rsplit(':', 1)
-            target_ip, target_port = host.strip('[]'), int(port)
+        target_ip, target_port = kwargs["ip"], kwargs["port"]
+        if address := settings.get("state", {}).get("device"):
+            host, port = address.rsplit(":", 1)
+            target_ip, target_port = host.strip("[]"), int(port)
         if status is not None:
-            previous = self.client.catalog()['profile']
-            if status['state'].get('connected'):
-                assignments = {str(item['channel']): item['name'] for item in
-                               self.client.observables()['channels'] if item['name']}
+            previous = self.client.catalog()["profile"]
+            if status["state"].get("connected"):
+                assignments = {
+                    str(item["channel"]): item["name"]
+                    for item in self.client.observables()["channels"]
+                    if item["name"]
+                }
             self._flash_context = (self.endpoint, previous, assignments, settings)
             # Shutdown sends device Stop and finalizes both recordings itself.
             self.attached = False
             self.client.shutdown()
             if self.endpoint == self.owned.endpoint:
                 self.owned.shutdown_requested = True
-            if not self._await_shutdown('Stopping device, finalizing recordings and shutting down the service…',
-                                        external=True):
+            if not self._await_shutdown(
+                "Stopping device, finalizing recordings and shutting down the service…",
+                external=True,
+            ):
                 return  # The viewer closed; close() takes over waiting for the service.
         self.attached = False
         self._reset()
         self._status, self._catalog, self._assignments = {}, {}, ()
         if self.stop_event.is_set():
             return
-        self._progress('Generating channel mapping…')
+        self._progress("Generating channel mapping…")
         mapping_path = generate_mapping(root)
-        self._message('info', f'Channel mapping regenerated: {mapping_path}')
+        self._message("info", f"Channel mapping regenerated: {mapping_path}")
         workspace = load_workspace_settings(mapping_path)
         if previous is None:
             previous = workspace.profile
         profile, removed = profile_for_mapping(workspace.mapping, previous, assignments)
         if removed:
-            self._message('warn', 'Removed channel assignments absent from the new mapping: '+', '.join(removed))
-        output = Path(new_output_directory(parent=Path(kwargs['output']).expanduser().resolve().parent))
+            self._message(
+                "warn",
+                "Removed channel assignments absent from the new mapping: "
+                + ", ".join(removed),
+            )
+        output = Path(
+            new_output_directory(
+                parent=Path(kwargs["output"]).expanduser().resolve().parent
+            )
+        )
         output.parent.mkdir(parents=True, exist_ok=True)
-        profile_path = output.with_name(output.name+'.profile.json')
+        profile_path = output.with_name(output.name + ".profile.json")
         write_json(profile_path, profile)
         self._flash_config = (str(mapping_path), str(output))
-        self._progress('Flashing UltraZohm; see Console for progress…')
+        self._progress("Flashing UltraZohm; see Console for progress…")
         if not run_flash_cli(root, self.endpoint, self.stop_event, self._message):
             return
         if self.stop_event.is_set():
             return
-        self._progress('Reconnecting to UltraZohm…')
-        self._start_service(str(output), '', str(profile_path),
-                            settings.get('data_options'), settings.get('send_ack', False), repo=root)
-        last_error = ''
+        self._progress("Reconnecting to UltraZohm…")
+        self._start_service(
+            str(output),
+            "",
+            str(profile_path),
+            settings.get("data_options"),
+            settings.get("send_ack", False),
+            repo=root,
+        )
+        last_error = ""
+
         def reconnected():
             nonlocal last_error
             try:
-                if not self.client.status()['state'].get('connected'):
+                if not self.client.status()["state"].get("connected"):
                     self.client.connect(target_ip, target_port)
                 return True
             except (OSError, RuntimeError) as exc:
                 last_error = str(exc)
                 return False
+
         try:
-            self._wait_for(reconnected, 20, 'UltraZohm to reconnect')
+            self._wait_for(reconnected, 20, "UltraZohm to reconnect")
         except RuntimeError as exc:
-            raise RuntimeError(f'{exc}: {last_error}') from exc
-        self._command('attach', dict(endpoint=self.endpoint, mapping=str(mapping_path)))
+            raise RuntimeError(f"{exc}: {last_error}") from exc
+        self._command("attach", dict(endpoint=self.endpoint, mapping=str(mapping_path)))
         self._variable_sends = {}
         self._flash_context = None
-        self._notice = 'Flash completed; acquisition service restarted and connected'
+        self._notice = "Flash completed; acquisition service restarted and connected"
 
     def _poll_client_for(self, endpoint):
         if self._poll_client is None or self._poll_endpoint != endpoint:
             if self.client_factory is None:
                 from ultrazohm_cli import Client
+
                 self._poll_client = Client(endpoint)
             else:
                 self._poll_client = self.client_factory(endpoint)
@@ -834,16 +1010,16 @@ class LiveController:
         client = self._poll_client_for(endpoint)
         if time.monotonic() >= self._status_at:
             status = client.status()
-            assignments = tuple(client.observables()['channels'])
+            assignments = tuple(client.observables()["channels"])
             with self.lock:
                 if not self._current(generation):
                     return
                 self._status, self._assignments = status, assignments
-            self._status_at = time.monotonic() + .25
+            self._status_at = time.monotonic() + 0.25
         status = self._status
-        if not status.get('state', {}).get('connected'):
+        if not status.get("state", {}).get("connected"):
             return
-        capacity = status['data_options']['buffer_samples']
+        capacity = status["data_options"]["buffer_samples"]
         if self.ring is None or self.ring.capacity != capacity:
             self.ring = LiveRing(capacity)
         pages = []
@@ -862,14 +1038,18 @@ class LiveController:
             # Refresh through the previously displayed time before publishing;
             # larger histories span multiple IPC pages and must not jump backward.
             for _ in range((capacity + 99_999) // 100_000):
-                if (not page.data.height or previous_stop is None or
-                        page.stop >= previous_stop or self.stop_event.is_set()):
+                if (
+                    not page.data.height
+                    or previous_stop is None
+                    or page.stop >= previous_stop
+                    or self.stop_event.is_set()
+                ):
                     break
                 pages.append(page)
                 page = client.read_since(page.cursor, limit=min(capacity, 100_000))
-            self._notice = 'Live buffer resynchronized'
+            self._notice = "Live buffer resynchronized"
         pages.append(page)
-        epoch = (page.info['run_id'], page.info['generation'])
+        epoch = (page.info["run_id"], page.info["generation"])
         if epoch != self._epoch:
             self.ring.reset()
         self.cursor, self.cursor_stop = page.cursor, page.stop
@@ -898,23 +1078,27 @@ class LiveController:
             if self.stop_event.is_set():
                 break
             if operation is not None:
-                self._error = ''
-                self._progress('Connecting…' if operation == 'connect' else f'{operation}: working…')
+                self._error = ""
+                self._progress(
+                    "Connecting…"
+                    if operation == "connect"
+                    else f"{operation}: working…"
+                )
                 try:
                     # Flash checks stop_event between its preparation stages and
                     # may run a detached programmer; do not lock shutdown behind it.
-                    with self._command_lock if operation != 'flash' else nullcontext():
+                    with self._command_lock if operation != "flash" else nullcontext():
                         with self.lock:
                             current = generation == self._command_generation
                         if current and not self.stop_event.is_set():
                             self._command(operation, kwargs)
-                    self._error = ''
+                    self._error = ""
                 except Exception as exc:
                     self._error = str(exc)
                 finally:
-                    if operation == 'flash':
+                    if operation == "flash":
                         self.flashing = False
-                    self._activity = ''
+                    self._activity = ""
                     self._completed_commands += 1
                     self._publish()
 
@@ -925,11 +1109,11 @@ class LiveController:
             if self.attached and not self.flashing:
                 try:
                     self._poll()
-                    self._poll_error = ''
+                    self._poll_error = ""
                 except Exception as exc:
                     self._poll_error = str(exc)
                 self._publish()
-            self.stop_event.wait(max(0., self.interval - (time.monotonic() - started)))
+            self.stop_event.wait(max(0.0, self.interval - (time.monotonic() - started)))
 
     def close(self):
         """Shut down a viewer-owned service; only Stop an externally owned device."""
@@ -943,7 +1127,9 @@ class LiveController:
         # Commands observe stop_event; bound the wait so a stuck command cannot hang exit.
         locked = self._command_lock.acquire(timeout=35)
         try:
-            connected = self.attached and self._status.get('state', {}).get('connected', False)
+            connected = self.attached and self._status.get("state", {}).get(
+                "connected", False
+            )
             owned_endpoint = self.owned.endpoint
             owned_running = self.owned.running
             if not connected and not (owned_running and owned_endpoint):
@@ -951,6 +1137,7 @@ class LiveController:
             factory = self.client_factory
             if factory is None:
                 from ultrazohm_cli import Client
+
                 factory = Client
             # Stop the attached external device first. Cleanup of an unrelated
             # owned service must neither delay this Stop nor skip it on error.
@@ -958,8 +1145,8 @@ class LiveController:
                 try:
                     factory(self.endpoint).stop()
                 except Exception as exc:
-                    self._message('error', f'Device Stop on viewer close failed: {exc}')
-                    print(f'Device Stop on viewer close failed: {exc}', file=sys.stderr)
+                    self._message("error", f"Device Stop on viewer close failed: {exc}")
+                    print(f"Device Stop on viewer close failed: {exc}", file=sys.stderr)
             if owned_running and owned_endpoint:
                 try:
                     if not self.owned.shutdown_requested:
@@ -969,15 +1156,19 @@ class LiveController:
                         code = self.owned.process.wait(timeout=CLOSE_FINALIZE_TIMEOUT)
                     except subprocess.TimeoutExpired:
                         # The service runs in its own session and keeps finalizing.
-                        print('The acquisition service is still finalizing recordings in the background; '
-                              f'see {self.owned.log or "its service.log"} and the end section of run.json.',
-                              file=sys.stderr)
+                        print(
+                            "The acquisition service is still finalizing recordings in the background; "
+                            f"see {self.owned.log or 'its service.log'} and the end section of run.json.",
+                            file=sys.stderr,
+                        )
                         return
                     if code:
-                        raise RuntimeError(f'Acquisition service exited with code {code}; check service.log')
+                        raise RuntimeError(
+                            f"Acquisition service exited with code {code}; check service.log"
+                        )
                 except Exception as exc:
-                    self._message('error', f'Owned service cleanup failed: {exc}')
-                    print(f'Owned service cleanup failed: {exc}', file=sys.stderr)
+                    self._message("error", f"Owned service cleanup failed: {exc}")
+                    print(f"Owned service cleanup failed: {exc}", file=sys.stderr)
         finally:
             if locked:
                 self._command_lock.release()
@@ -985,6 +1176,6 @@ class LiveController:
 
 def new_output_directory(repo=None, *, parent=None):
     from .user_paths import data_directory
-    root = Path(parent) if parent is not None else data_directory(repo) / 'logs'
-    return str(root /
-               (time.strftime('%Y%m%d-%H%M%S') + '-' + uuid.uuid4().hex[:6]))
+
+    root = Path(parent) if parent is not None else data_directory(repo) / "logs"
+    return str(root / (time.strftime("%Y%m%d-%H%M%S") + "-" + uuid.uuid4().hex[:6]))

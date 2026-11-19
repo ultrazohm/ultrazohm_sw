@@ -1,21 +1,22 @@
 """Dockable browser of local log files; directory scans never read log contents."""
+
 from __future__ import annotations
 
-
 import os
-from pathlib import Path
 import sys
+from pathlib import Path
 from threading import Event
 
 from imgui_bundle import imgui
 
-from .navigation import LOG_DND_TYPE, pfd
 from ..workers import CancellableExecutor
+from .navigation import LOG_DND_TYPE, pfd
 
 
 def default_log_directory() -> Path:
     """Find the checkout's artifacts directory, including when started elsewhere."""
     from ..user_paths import find_repository
+
     starts = [Path.cwd(), Path(sys.executable).parent, Path(__file__).resolve().parent]
     for start in starts:
         root = find_repository(start)
@@ -30,8 +31,12 @@ def browsable(directory: Path) -> bool:
     Starting at a repository root must not walk into build outputs or
     dependency trees; their data files are not measurement logs.
     """
-    return not (directory.name.startswith(".") or directory.name in ("__pycache__", "node_modules")
-                or (directory / "pyvenv.cfg").is_file() or (directory / "CACHEDIR.TAG").is_file())
+    return not (
+        directory.name.startswith(".")
+        or directory.name in ("__pycache__", "node_modules")
+        or (directory / "pyvenv.cfg").is_file()
+        or (directory / "CACHEDIR.TAG").is_file()
+    )
 
 
 def scan_logs(directory: Path, cancel: Event) -> tuple[list[Path], list[str]]:
@@ -40,7 +45,9 @@ def scan_logs(directory: Path, cancel: Event) -> tuple[list[Path], list[str]]:
         return [], []
     if not directory.is_dir():
         return [], [f"Directory not found: {directory}"]
-    for root, folders, names in os.walk(directory, onerror=lambda error: errors.append(str(error))):
+    for root, folders, names in os.walk(
+        directory, onerror=lambda error: errors.append(str(error))
+    ):
         if cancel.is_set():
             return [], []
         folders[:] = [name for name in folders if browsable(Path(root) / name)]
@@ -56,7 +63,11 @@ def scan_logs(directory: Path, cancel: Event) -> tuple[list[Path], list[str]]:
 
 class LogBrowserPanel:
     def __init__(self, directory: Path | None = None):
-        self.directory = directory.expanduser().resolve() if directory is not None else default_log_directory()
+        self.directory = (
+            directory.expanduser().resolve()
+            if directory is not None
+            else default_log_directory()
+        )
         self.files: list[Path] = []
         self.errors: list[str] = []
         self._dialog = None
@@ -108,7 +119,9 @@ class LogBrowserPanel:
             self._future = None
         imgui.begin_disabled(pfd is None or self._dialog is not None)
         if imgui.button("Open directory..."):
-            self._dialog = pfd.select_folder("Choose log directory", str(self.directory))
+            self._dialog = pfd.select_folder(
+                "Choose log directory", str(self.directory)
+            )
         imgui.end_disabled()
         imgui.same_line()
         if imgui.button("Refresh"):
@@ -139,7 +152,9 @@ class LogBrowserPanel:
                     if imgui.is_item_clicked(imgui.MouseButton_.right):
                         clicked_path = path
                     imgui.get_window_draw_list().add_text(
-                        text_position, imgui.get_color_u32(imgui.Col_.text), str(relative)
+                        text_position,
+                        imgui.get_color_u32(imgui.Col_.text),
+                        str(relative),
                     )
                     if imgui.begin_drag_drop_source():
                         state.dragged_log_path = path

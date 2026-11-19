@@ -653,3 +653,20 @@ operation finishes publication and cannot be rolled back by disconnecting.
 
 Application log starts hidden; enable it through **View → Application log**.
 The Log Browser starts at the selected checkout’s `artifacts/` directory.
+
+## Python linting and formatting
+
+This project owns its Ruff configuration and pinned version in `pyproject.toml`.
+These tasks run Ruff in an isolated tool environment and do not build or install either application.
+Run from the repository root:
+
+```bash
+./uz task viewer lint
+./uz task viewer format
+./uz task viewer format-check
+```
+
+On Windows, use `.\uz.ps1` with the same arguments.
+`format` applies layout changes only; lint fixes and import sorting require explicit review.
+The enabled lint rules are `F`, `E4`, `E7`, `E9`, and `I`.
+The project's `check` task and CI enforce both lint and formatting.

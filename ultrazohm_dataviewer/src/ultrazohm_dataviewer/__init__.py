@@ -16,16 +16,18 @@ from ._version import __version__
 
 # Control clients need only the standard library. Numerical dependencies are
 # loaded when their public functions are first requested.
-from .client import Client, ViewerError, RunHandle, NodeHandle, ViewHandle
+from .client import Client, NodeHandle, RunHandle, ViewerError, ViewHandle
 
 
 def __getattr__(name):
     if name in {"Dataset", "fft", "fft_frame", "kinds", "node", "read"}:
         from . import api
+
         value = getattr(api, name)
         globals()[name] = value
         return value
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
 
 __all__ = [
     "__version__",

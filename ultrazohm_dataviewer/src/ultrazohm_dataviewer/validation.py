@@ -1,4 +1,5 @@
 """Shared validation for user-supplied view coordinates."""
+
 import math
 
 
@@ -27,7 +28,7 @@ def expanded_range(lo, hi, intervals=1):
         raise ValueError("Data range must be ordered and interval count positive")
     width = math.ulp(max(abs(lo), abs(hi))) * intervals * 8
     if hi == lo:
-        width = max(1., width)
+        width = max(1.0, width)
     if hi - lo < width:
         upper = lo + width
         if math.isfinite(upper):

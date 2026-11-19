@@ -3,20 +3,40 @@
 Service errors raise RuntimeError with a ``code`` attribute (for example
 ``cursor_expired``, ``canceled_by_stop``, ``not_connected``, ``busy``).
 """
+
 import atexit
 import json
 import sys
 import weakref
 from dataclasses import dataclass
 from io import BytesIO
-from ._native import (Connection as _Connection, Acquisition as _Acquisition,
-                      recording_info as _recording_info, recording_data as _recording_data,
-                      console_command as _console_command)
+
+from ._native import (
+    Acquisition as _Acquisition,
+)
+from ._native import (
+    Connection as _Connection,
+)
+from ._native import (
+    console_command as _console_command,
+)
+from ._native import (
+    recording_data as _recording_data,
+)
+from ._native import (
+    recording_info as _recording_info,
+)
 
 
 def _position(value, name, *, positive=False):
-    if isinstance(value, bool) or not isinstance(value, int) or value < (1 if positive else 0):
-        raise ValueError(f"{name} must be a {'positive' if positive else 'non-negative'} integer")
+    if (
+        isinstance(value, bool)
+        or not isinstance(value, int)
+        or value < (1 if positive else 0)
+    ):
+        raise ValueError(
+            f"{name} must be a {'positive' if positive else 'non-negative'} integer"
+        )
     return value
 
 
@@ -31,6 +51,7 @@ def _source(stream, recording):
 @dataclass(frozen=True)
 class DataPage:
     """Rows and an opaque cursor describing the next unread sample."""
+
     data: object
     cursor: dict
     start: int
@@ -44,8 +65,10 @@ class Recording:
     Live pending samples are accessed through Client. This handle reads published
     batches. Slow recordings expose raw updates; legacy exports are wide tables.
     """
+
     def __init__(self, path):
         from pathlib import Path
+
         self.path = str(Path(path).resolve())
         self.info()  # Validate backend/version at open.
 
@@ -54,22 +77,30 @@ class Recording:
 
     def read_range(self, start, stop, *, channels=None):
         import polars as pl
+
         _position(start, "start")
         _position(stop, "stop")
-        return pl.read_ipc_stream(BytesIO(_recording_data(self.path, start, stop, channels)))
+        return pl.read_ipc_stream(
+            BytesIO(_recording_data(self.path, start, stop, channels))
+        )
 
     def iter_batches(self, batch_samples=10_000, *, channels=None):
         _position(batch_samples, "batch_samples", positive=True)
         info = self.info()
         start, stop = info["start"] or 0, info["stop"] or 0
         for first in range(start, stop, batch_samples):
-            yield self.read_range(first, min(first + batch_samples, stop), channels=channels)
+            yield self.read_range(
+                first, min(first + batch_samples, stop), channels=channels
+            )
 
     def read(self, *, channels=None):
         import polars as pl
+
         # Several stored row groups per request; well within the response limit.
         batches = list(self.iter_batches(262_144, channels=channels))
-        return pl.concat(batches) if batches else self.read_range(0, 0, channels=channels)
+        return (
+            pl.concat(batches) if batches else self.read_range(0, 0, channels=channels)
+        )
 
 
 def _close_at_exit(reference):
@@ -78,7 +109,9 @@ def _close_at_exit(reference):
         try:
             acquisition.close()
         except Exception as error:  # noqa: BLE001 - interpreter exit cannot raise
-            print(f"UltraZohm acquisition closed with an error: {error}", file=sys.stderr)
+            print(
+                f"UltraZohm acquisition closed with an error: {error}", file=sys.stderr
+            )
 
 
 class Acquisition(_Acquisition):
@@ -109,6 +142,7 @@ class Acquisition(_Acquisition):
         _source(stream, recording)
         return Recording(self.recording_handle_path(stream, recording))
 
+
 class Client:
     """Control an existing external or embedded acquisition service.
 
@@ -116,6 +150,7 @@ class Client:
     Client may be shared between threads; calls are serialized. Use separate
     Clients when a command (such as Stop) must not wait behind a long read.
     """
+
     def __init__(self, endpoint="127.0.0.1:19740"):
         self.endpoint = endpoint
         self._connection = _Connection(endpoint)
@@ -125,30 +160,48 @@ class Client:
         self._connection.close()
 
     def _call(self, op, **fields):
-        return json.loads(self._connection.request(json.dumps({"op": op, **fields}, allow_nan=False)))
+        return json.loads(
+            self._connection.request(json.dumps({"op": op, **fields}, allow_nan=False))
+        )
 
     def connect(self, ip="192.168.1.233", port=1000):
         """Connect an offline service and apply its initial observables."""
         return self._call("connect", ip=ip, port=port)
 
-    def start_logging(self, stream="fast"): return self._call("start_logging", stream=stream)
-    def stop_logging(self, stream="fast"): return self._call("stop_logging", stream=stream)
+    def start_logging(self, stream="fast"):
+        return self._call("start_logging", stream=stream)
+
+    def stop_logging(self, stream="fast"):
+        return self._call("stop_logging", stream=stream)
+
     def pause_logging(self, stream="fast"):
         """Suspend a recording; keep acquisition/RAM and the recording open."""
         return self._call("pause_logging", stream=stream)
+
     def resume_logging(self, stream="fast"):
         """Resume the same recording; timestamps retain the pause gap."""
         return self._call("resume_logging", stream=stream)
-    def start_logging_slow_data(self): return self.start_logging("slow")
-    def stop_logging_slow_data(self): return self.stop_logging("slow")
-    def pause_logging_slow_data(self): return self.pause_logging("slow")
-    def resume_logging_slow_data(self): return self.resume_logging("slow")
+
+    def start_logging_slow_data(self):
+        return self.start_logging("slow")
+
+    def stop_logging_slow_data(self):
+        return self.stop_logging("slow")
+
+    def pause_logging_slow_data(self):
+        return self.pause_logging("slow")
+
+    def resume_logging_slow_data(self):
+        return self.resume_logging("slow")
+
     def observables(self):
         """Return all channel assignments requested in this session; no device readback."""
         return self._call("observables")
+
     def catalog(self):
         """Return the service's firmware mapping and runtime profile, not device readback."""
         return self._call("catalog")
+
     def recordings(self):
         return self._call("recordings")["recordings"]
 
@@ -158,25 +211,49 @@ class Client:
 
     def _read(self, selection, *, stream, recording, channels):
         import polars as pl
-        command = {"op": "read_data", "query": {"source": _source(stream, recording),
-                   "selection": selection, "channels": channels}}
-        header, payload = self._connection.data_query(json.dumps(command, allow_nan=False))
+
+        command = {
+            "op": "read_data",
+            "query": {
+                "source": _source(stream, recording),
+                "selection": selection,
+                "channels": channels,
+            },
+        }
+        header, payload = self._connection.data_query(
+            json.dumps(command, allow_nan=False)
+        )
         metadata = json.loads(header)
-        return DataPage(pl.read_ipc_stream(BytesIO(payload)), metadata["cursor"],
-                        metadata["start"], metadata["stop"], metadata["info"])
+        return DataPage(
+            pl.read_ipc_stream(BytesIO(payload)),
+            metadata["cursor"],
+            metadata["start"],
+            metadata["stop"],
+            metadata["info"],
+        )
 
     def tail(self, n, *, stream="fast", recording=None, channels=None):
         _position(n, "n", positive=True)
-        return self._read({"kind": "tail", "count": n}, stream=stream,
-                          recording=recording, channels=channels).data
+        return self._read(
+            {"kind": "tail", "count": n},
+            stream=stream,
+            recording=recording,
+            channels=channels,
+        ).data
 
     def read_range(self, start, stop, *, stream="fast", recording=None, channels=None):
         _position(start, "start")
         _position(stop, "stop")
-        return self._read({"kind": "range", "start": start, "stop": stop}, stream=stream,
-                          recording=recording, channels=channels).data
+        return self._read(
+            {"kind": "range", "start": start, "stop": stop},
+            stream=stream,
+            recording=recording,
+            channels=channels,
+        ).data
 
-    def read_since(self, cursor=None, *, limit=10_000, stream=None, recording=None, channels=None):
+    def read_since(
+        self, cursor=None, *, limit=10_000, stream=None, recording=None, channels=None
+    ):
         """Read a bounded page. Reuse page.cursor to resume without overlap.
 
         With no cursor, starts at the earliest currently available sample. Expired
@@ -189,24 +266,48 @@ class Client:
             stream = stream or cursor.get("stream")
             if recording is None:
                 recording = cursor.get("recording")
-        return self._read({"kind": "since", "cursor": cursor, "limit": limit},
-                          stream=stream or "fast", recording=recording, channels=channels)
+        return self._read(
+            {"kind": "since", "cursor": cursor, "limit": limit},
+            stream=stream or "fast",
+            recording=recording,
+            channels=channels,
+        )
+
     def status(self):
         """Return service status; state.platform_state is the mapped name or None."""
         return self._call("status")
-    def stop(self): return self._call("stop")
-    def enable_system(self): return self._call("enable_system")
-    def enable_control(self): return self._call("enable_control")
+
+    def stop(self):
+        return self._call("stop")
+
+    def enable_system(self):
+        return self._call("enable_system")
+
+    def enable_control(self):
+        return self._call("enable_control")
+
     def error_reset(self):
-        raise RuntimeError("Error_Reset is a no-op in this firmware; use stop to leave error state")
-    def set_variable(self, name, value): return self._call("set_variable", name=name, value=value)
-    def set_observable(self, name, channel): return self._call("set_observable", name=name, channel=channel)
-    def button(self, number): return self._call("button", number=number)
+        raise RuntimeError(
+            "Error_Reset is a no-op in this firmware; use stop to leave error state"
+        )
+
+    def set_variable(self, name, value):
+        return self._call("set_variable", name=name, value=value)
+
+    def set_observable(self, name, channel):
+        return self._call("set_observable", name=name, channel=channel)
+
+    def button(self, number):
+        return self._call("button", number=number)
+
     def send_ack(self, enabled):
         if not isinstance(enabled, bool):
             raise TypeError("enabled must be bool")
         return self._call("send_ack", enabled=enabled)
-    def shutdown(self): return self._call("shutdown")
+
+    def shutdown(self):
+        return self._call("shutdown")
+
 
 def console_command(line, endpoint="127.0.0.1:19740"):
     """Run one command in the interactive prompt's syntax against a running service.

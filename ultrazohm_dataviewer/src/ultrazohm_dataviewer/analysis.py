@@ -9,10 +9,9 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from .sources import shift_time, TimeShift
-
 from .downsample import visible_slice
-from .sources import ByteCache, SampleSource
+from .sources import ByteCache, SampleSource, TimeShift, shift_time
+
 
 def _hann(n: int) -> tuple[np.ndarray, float]:
     """Return a computation-owned Hann window and its coherent-gain sum.
@@ -58,7 +57,9 @@ class FftResult:
         ok: ``True`` when ``freqs`` and ``mag`` are populated.
     """
 
-    def __init__(self, freqs: np.ndarray | None, mag: np.ndarray | None, info: str) -> None:
+    def __init__(
+        self, freqs: np.ndarray | None, mag: np.ndarray | None, info: str
+    ) -> None:
         self.freqs = freqs
         self.mag = mag
         self.info = info
@@ -87,7 +88,9 @@ def compute_fft(
     """
     time, y = np.asarray(time), np.asarray(y)
     if time.ndim != 1 or y.ndim != 1 or time.shape != y.shape:
-        return FftResult(None, None, "FFT needs equal-length one-dimensional time and value arrays.")
+        return FftResult(
+            None, None, "FFT needs equal-length one-dimensional time and value arrays."
+        )
     if time.shape[0] == 0:
         return FftResult(None, None, "No samples in this run to transform.")
     if x_max <= x_min:
@@ -96,6 +99,7 @@ def compute_fft(
     # Binary search requires an ordered axis, including samples outside the
     # requested window. Validate before slicing so invalid input cannot hide.
     from .loader import validate_time_axis
+
     try:
         validate_time_axis(time, "FFT")
         if not np.isfinite([x_min, x_max]).all():
@@ -117,11 +121,18 @@ def compute_fft(
     # otherwise propagate through the whole spectrum. The transform assumes a
     # uniform time base, so masking would corrupt it -- reject instead.
     if not np.isfinite(ys).all():
-        return FftResult(None, None, "Selected window has non-finite samples (NaN/Inf); cannot compute FFT.")
+        return FftResult(
+            None,
+            None,
+            "Selected window has non-finite samples (NaN/Inf); cannot compute FFT.",
+        )
 
     from .sampling import regular_sample_interval
+
     try:
-        dt = regular_sample_interval(ts, "FFT", timestamp_resolution=timestamp_resolution)
+        dt = regular_sample_interval(
+            ts, "FFT", timestamp_resolution=timestamp_resolution
+        )
     except ValueError as exc:
         return FftResult(None, None, str(exc))
 
@@ -129,7 +140,9 @@ def compute_fft(
     scale = max(abs(float(ys.min())), abs(float(ys.max()))) or 1.0
     ys /= scale
     if remove_dc:
-        ys -= ys.mean(dtype=np.float64)  # accumulate the mean in float64, subtract in place
+        ys -= ys.mean(
+            dtype=np.float64
+        )  # accumulate the mean in float64, subtract in place
     # Amplitude normalisation is by the window's *coherent gain* (Σw): a tone of
     # amplitude A peaks at A/2·Σw, so 2/Σw recovers A. For the rectangular case
     # Σw = n, which is the plain 2/n. (Using 2/n with a Hann window under-reports
@@ -154,21 +167,34 @@ def compute_fft(
         if m % 2 == 0:
             mag[-1] *= 0.5
     if not np.isfinite(freqs).all() or np.any(freqs > np.finfo(np.float32).max):
-        return FftResult(None, None, "FFT frequency exceeds the finite float32 output range.")
+        return FftResult(
+            None, None, "FFT frequency exceeds the finite float32 output range."
+        )
     mag = mag.astype(np.float64) * scale
     if not np.isfinite(mag).all() or np.any(mag > np.finfo(np.float32).max):
-        return FftResult(None, None, "FFT amplitude exceeds the finite float32 output range.")
-    info = f"{n:,} samples, fs = {1.0 / dt:,.1f} Hz, window [{x_min:.4f}, {x_max:.4f}] s"
+        return FftResult(
+            None, None, "FFT amplitude exceeds the finite float32 output range."
+        )
+    info = (
+        f"{n:,} samples, fs = {1.0 / dt:,.1f} Hz, window [{x_min:.4f}, {x_max:.4f}] s"
+    )
     return FftResult(freqs.astype(np.float32), mag.astype(np.float32), info)
 
 
-def compute_signal_fft(run, channel, x_min, x_max, *, remove_dc=True, window=True,
-                       cancel=None, label=None):
+def compute_signal_fft(
+    run, channel, x_min, x_max, *, remove_dc=True, window=True, cancel=None, label=None
+):
     """Read and validate one spectrum, reporting failures with the signal identity."""
     if run.axis_domain != "time":
         raise ValueError("FFT requires a time-domain recording")
     label = label or f"{channel} @ {run.label}"
-    selected = AnalysisInput((run.id, channel), label, run.data_source(), run.time_offset, run.timestamp_resolution)
+    selected = AnalysisInput(
+        (run.id, channel),
+        label,
+        run.data_source(),
+        run.time_offset,
+        run.timestamp_resolution,
+    )
     return selected.fft(x_min, x_max, remove_dc=remove_dc, window=window, cancel=cancel)
 
 
@@ -180,11 +206,13 @@ def histogram_sources(series, lo, hi, bins, cancel=None):
     """
     from .sources import check
     from .validation import histogram_bins
+
     bins = histogram_bins(bins)
     ranges, minimum, maximum, dropped = [], None, None, 0
     for label, source, channel, offset in series:
         check(cancel)
         from .sources import displayed_bounds
+
         start, stop = displayed_bounds(source, lo, hi, offset, cancel)
         count = 0
         for _, values in source.iter_raw([channel], start, stop, cancel):
@@ -202,6 +230,7 @@ def histogram_sources(series, lo, hi, bins, cancel=None):
     if minimum is None:
         return [], 0, dropped
     from .validation import expanded_range
+
     minimum, maximum = expanded_range(minimum, maximum, bins)
     edges = np.linspace(minimum, maximum, bins + 1)
     centers = (edges[:-1] + edges[1:]) / 2
@@ -240,12 +269,20 @@ class AnalysisInput:
                 raise ValueError(f"Analysis source {ref} is no longer loaded")
             if run.axis_domain != "time":
                 raise ValueError("Analysis windows require a time-domain recording")
-            inputs.append(cls(ref, f"{ref[1]} @ {run.label} [run_{run.id}]",
-                              run.data_source(), run.time_offset, run.timestamp_resolution))
+            inputs.append(
+                cls(
+                    ref,
+                    f"{ref[1]} @ {run.label} [run_{run.id}]",
+                    run.data_source(),
+                    run.time_offset,
+                    run.timestamp_resolution,
+                )
+            )
         return tuple(inputs)
 
     def read_window(self, lo, hi, cancel):
         from .sources import displayed_bounds
+
         start, stop = displayed_bounds(self.source, lo, hi, self.time_offset, cancel)
         t, values = self.source.read_rows([self.ref[1]], start, stop, cancel)
         return shift_time(t, self.time_offset), values[self.ref[1]]
@@ -253,8 +290,15 @@ class AnalysisInput:
     def fft(self, lo, hi, *, remove_dc, window, cancel=None):
         try:
             t, y = self.read_window(lo, hi, cancel)
-            result = compute_fft(t, y, lo, hi, remove_dc=remove_dc, window=window,
-                                 timestamp_resolution=self.timestamp_resolution)
+            result = compute_fft(
+                t,
+                y,
+                lo,
+                hi,
+                remove_dc=remove_dc,
+                window=window,
+                timestamp_resolution=self.timestamp_resolution,
+            )
             if not result.ok:
                 raise ValueError(result.info)
         except (ValueError, OSError) as exc:
@@ -278,23 +322,28 @@ class FftRequest:
 
     def compute(self, cancel=None) -> AnalysisResult:
         from .sources import ArraySource, check
+
         results, errors, info = [], [], ""
         lo, hi = self.window
         for selected in self.sources:
             check(cancel)
             try:
-                result = selected.fft(lo, hi, remove_dc=self.remove_dc, window=self.hann, cancel=cancel)
+                result = selected.fft(
+                    lo, hi, remove_dc=self.remove_dc, window=self.hann, cancel=cancel
+                )
             except ValueError as exc:
                 errors.append(str(exc))
                 continue
-            source = ArraySource(result.freqs, {'value': result.mag}, self.cache)
+            source = ArraySource(result.freqs, {"value": result.mag}, self.cache)
             if result.mag.size > 4096:
-                source.prepare_summary('value', cancel)
+                source.prepare_summary("value", cancel)
             results.append((selected.ref, result.freqs, result.mag, source))
             info = result.info
         check(cancel)
         if errors:
-            info = "\n".join([f"{len(results)} succeeded, {len(errors)} failed", *errors])
+            info = "\n".join(
+                [f"{len(results)} succeeded, {len(errors)} failed", *errors]
+            )
         return AnalysisResult(results, info or "Drag signals here to analyse them.")
 
 
@@ -306,16 +355,21 @@ class HistogramRequest:
 
     def compute(self, cancel=None) -> AnalysisResult:
         from .sources import check
+
         lo, hi = self.window
         series = [(s.ref, s.source, s.ref[1], s.time_offset) for s in self.sources]
         results, total, dropped = histogram_sources(series, lo, hi, self.bins, cancel)
         check(cancel)
-        values = [(ref, centers, counts.astype(np.float64), width)
-                  for ref, centers, counts, width in results]
+        values = [
+            (ref, centers, counts.astype(np.float64), width)
+            for ref, centers, counts, width in results
+        ]
         if results:
             note = f", {dropped:,} non-finite skipped" if dropped else ""
-            info = (f"{len(results)} signal(s), {total:,} samples{note}, "
-                    f"window [{lo:.4f}, {hi:.4f}] s")
+            info = (
+                f"{len(results)} signal(s), {total:,} samples{note}, "
+                f"window [{lo:.4f}, {hi:.4f}] s"
+            )
         else:
             info = "Drag signals here to histogram them."
         return AnalysisResult(values, info)

@@ -21,11 +21,9 @@ from typing import Callable
 
 import numpy as np
 
-from .sources import shift_time
-
 from . import transforms
 from .analysis import compute_fft
-
+from .sources import shift_time
 from .validation import parse_bool as _as_bool
 
 
@@ -69,11 +67,11 @@ class ParamSpec:
 @dataclass
 class TransformSpec:
     kind: str
-    compute: "Callable"           # (inputs:list[(t,y)], params:dict) -> (t_out, y_out, info)
+    compute: "Callable"  # (inputs:list[(t,y)], params:dict) -> (t_out, y_out, info)
     params: dict = field(default_factory=dict)  # default params
-    inputs: tuple[int, int] = (1, 1)             # (min, max) arity
-    ui: tuple = ()                # ParamSpec list (for the generic plugin UI)
-    unit: str = ""               # output unit for the derived run
+    inputs: tuple[int, int] = (1, 1)  # (min, max) arity
+    ui: tuple = ()  # ParamSpec list (for the generic plugin UI)
+    unit: str = ""  # output unit for the derived run
 
 
 REGISTRY: dict[str, TransformSpec] = {}
@@ -82,32 +80,59 @@ REGISTRY: dict[str, TransformSpec] = {}
 def register_transform(spec: TransformSpec) -> None:
     """Register a transform kind (used by builtins at import and by plugins)."""
     import re
-    if not isinstance(spec.kind, str) or not re.fullmatch(r"[a-z][a-z0-9_]*", spec.kind) or spec.kind == "source":
+
+    if (
+        not isinstance(spec.kind, str)
+        or not re.fullmatch(r"[a-z][a-z0-9_]*", spec.kind)
+        or spec.kind == "source"
+    ):
         raise ValueError(f"invalid transform kind {spec.kind!r}")
     if spec.kind in REGISTRY:
-        raise ValueError(f"Transform {spec.kind!r} is already registered; restart to load a changed plugin")
+        raise ValueError(
+            f"Transform {spec.kind!r} is already registered; restart to load a changed plugin"
+        )
     if not callable(spec.compute):
         raise ValueError("Transform compute must be callable")
-    if (not isinstance(spec.inputs, (tuple, list)) or len(spec.inputs) != 2 or any(type(n) is not int for n in spec.inputs)
-            or not 0 <= spec.inputs[0] <= spec.inputs[1] <= 1024):
+    if (
+        not isinstance(spec.inputs, (tuple, list))
+        or len(spec.inputs) != 2
+        or any(type(n) is not int for n in spec.inputs)
+        or not 0 <= spec.inputs[0] <= spec.inputs[1] <= 1024
+    ):
         raise ValueError("Transform input arity must satisfy 0 <= min <= max <= 1024")
     keys = set()
     for parameter in spec.ui:
-        if not isinstance(parameter, ParamSpec) or parameter.kind not in {"float", "int", "bool", "enum", "str"}:
+        if not isinstance(parameter, ParamSpec) or parameter.kind not in {
+            "float",
+            "int",
+            "bool",
+            "enum",
+            "str",
+        }:
             raise ValueError("Invalid transform parameter declaration")
-        if not isinstance(parameter.key, str) or not parameter.key or parameter.key in keys:
+        if (
+            not isinstance(parameter.key, str)
+            or not parameter.key
+            or parameter.key in keys
+        ):
             raise ValueError("Parameter keys must be nonempty and unique")
         keys.add(parameter.key)
         if not isinstance(parameter.label, str):
             raise ValueError("Parameter labels must be strings")
-        if parameter.kind == "enum" and (not parameter.options or
-                any(not isinstance(v, str) for v in parameter.options) or
-                len(set(parameter.options)) != len(parameter.options)):
+        if parameter.kind == "enum" and (
+            not parameter.options
+            or any(not isinstance(v, str) for v in parameter.options)
+            or len(set(parameter.options)) != len(parameter.options)
+        ):
             raise ValueError("Enum options must be nonempty, distinct strings")
-    if not isinstance(spec.params, dict) or any(not isinstance(k, str) for k in spec.params):
+    if not isinstance(spec.params, dict) or any(
+        not isinstance(k, str) for k in spec.params
+    ):
         raise ValueError("Transform defaults must be a mapping with string keys")
     for key, value in spec.params.items():
-        _validate_parameter(spec.kind, next((p for p in spec.ui if p.key == key), None), key, value)
+        _validate_parameter(
+            spec.kind, next((p for p in spec.ui if p.key == key), None), key, value
+        )
     REGISTRY[spec.kind] = spec
 
 
@@ -125,8 +150,10 @@ def default_params(kind: str) -> dict:
 def _fft_compute(inputs, params, *, timestamp_resolution=0.0):
     time, y = inputs[0]
     res = compute_fft(
-        np.asarray(time, np.float64), np.asarray(y, np.float64),
-        float(time[0]), float(time[-1]),
+        np.asarray(time, np.float64),
+        np.asarray(y, np.float64),
+        float(time[0]),
+        float(time[-1]),
         remove_dc=_as_bool(params.get("remove_dc", True)),
         window=_as_bool(params.get("window", True)),
         timestamp_resolution=timestamp_resolution,
@@ -142,13 +169,19 @@ def _math_compute(inputs, params):
 
 def _filter_compute(inputs, params, *, timestamp_resolution=0.0):
     time, y = inputs[0]
-    return transforms.filter_node(time, y, params, timestamp_resolution=timestamp_resolution)
+    return transforms.filter_node(
+        time, y, params, timestamp_resolution=timestamp_resolution
+    )
 
 
 def _shift_compute(inputs, params):
     time, y = inputs[0]
     by = float(params.get("by", 0.0))
-    return np.asarray(time, np.float64) + by, np.asarray(y, np.float64), f"shift {by:+g} s"
+    return (
+        np.asarray(time, np.float64) + by,
+        np.asarray(y, np.float64),
+        f"shift {by:+g} s",
+    )
 
 
 def validate_parameter(kind, key, value):
@@ -175,7 +208,9 @@ def _validate_parameter(kind, parameter, key, value):
             number = float(value)
             if not np.isfinite(number):
                 raise ValueError("must be finite")
-            if parameter.kind == "int" and (not number.is_integer() or not -(2**31) <= number < 2**31):
+            if parameter.kind == "int" and (
+                not number.is_integer() or not -(2**31) <= number < 2**31
+            ):
                 raise ValueError("must be a 32-bit integer")
         elif parameter.kind == "bool":
             _as_bool(value)
@@ -185,18 +220,43 @@ def _validate_parameter(kind, parameter, key, value):
         raise ValueError(f"{kind}.{key}: invalid value {value!r} ({exc})") from exc
 
 
-register_transform(TransformSpec("fft", _fft_compute,
-    {"remove_dc": "true", "window": "true"}, (1, 1),
-    (ParamSpec.bool("remove_dc", "remove DC"), ParamSpec.bool("window", "Hann"))))
-register_transform(TransformSpec("math", _math_compute,
-    {"op": "scale", "k": "1.0"}, (1, 2),
-    (ParamSpec.enum("op", transforms.MATH_OPS), ParamSpec.float("k", "##k"))))
-register_transform(TransformSpec("filter", _filter_compute,
-    {"type": "low", "cutoff": "0", "cutoff2": "0", "taps": "101"}, (1, 1),
-    (ParamSpec.enum("type", transforms.FILTER_TYPES), ParamSpec.float("cutoff", "cutoff Hz"),
-     ParamSpec.float("cutoff2", "cutoff2 Hz"), ParamSpec.int("taps"))))
-register_transform(TransformSpec("shift", _shift_compute, {"by": "0"}, (1, 1),
-    (ParamSpec.float("by", "by (s)"),)))
+register_transform(
+    TransformSpec(
+        "fft",
+        _fft_compute,
+        {"remove_dc": "true", "window": "true"},
+        (1, 1),
+        (ParamSpec.bool("remove_dc", "remove DC"), ParamSpec.bool("window", "Hann")),
+    )
+)
+register_transform(
+    TransformSpec(
+        "math",
+        _math_compute,
+        {"op": "scale", "k": "1.0"},
+        (1, 2),
+        (ParamSpec.enum("op", transforms.MATH_OPS), ParamSpec.float("k", "##k")),
+    )
+)
+register_transform(
+    TransformSpec(
+        "filter",
+        _filter_compute,
+        {"type": "low", "cutoff": "0", "cutoff2": "0", "taps": "101"},
+        (1, 1),
+        (
+            ParamSpec.enum("type", transforms.FILTER_TYPES),
+            ParamSpec.float("cutoff", "cutoff Hz"),
+            ParamSpec.float("cutoff2", "cutoff2 Hz"),
+            ParamSpec.int("taps"),
+        ),
+    )
+)
+register_transform(
+    TransformSpec(
+        "shift", _shift_compute, {"by": "0"}, (1, 1), (ParamSpec.float("by", "by (s)"),)
+    )
+)
 
 
 @dataclass
@@ -205,7 +265,9 @@ class Node:
     kind: str
     name: str
     params: dict = field(default_factory=dict)
-    inputs: list[int | None] = field(default_factory=list)  # indexed input slots; None = disconnected
+    inputs: list[int | None] = field(
+        default_factory=list
+    )  # indexed input slots; None = disconnected
     ref: tuple | None = None  # source nodes only: (run_id, signal_name)
     pos: tuple[float, float] = (0.0, 0.0)
 
@@ -234,8 +296,15 @@ class NodeGraph:
         self._ids = itertools.count(1)
 
     # -- mutation ---------------------------------------------------------
-    def add(self, kind: str, *, name: str | None = None, ref: tuple | None = None,
-            node_id: int | None = None, allow_unknown: bool = False) -> Node:
+    def add(
+        self,
+        kind: str,
+        *,
+        name: str | None = None,
+        ref: tuple | None = None,
+        node_id: int | None = None,
+        allow_unknown: bool = False,
+    ) -> Node:
         # ``allow_unknown`` lets session restore keep a node whose plugin is not
         # installed (a placeholder) instead of dropping it; interactive node_add
         # rejects unknown kinds.
@@ -255,8 +324,13 @@ class NodeGraph:
                 suffix += 1
         if node_id is not None:  # keep the counter ahead of restored ids
             self._ids = itertools.count(max(nid + 1, self._next_peek()))
-        node = Node(id=nid, kind=kind, name=name or f"node_{nid}",
-                    params=default_params(kind), ref=ref)
+        node = Node(
+            id=nid,
+            kind=kind,
+            name=name or f"node_{nid}",
+            params=default_params(kind),
+            ref=ref,
+        )
         slot = len(self.nodes)
         node.pos = (30.0 + (slot % 6) * 190.0, 30.0 + (slot // 6) * 150.0)
         self.nodes[nid] = node
@@ -282,7 +356,10 @@ class NodeGraph:
         if src_id == dst_id or self._reaches(dst_id, src_id):
             raise ValueError("link would create a cycle")
         if slot is None:
-            slot = next((i for i, value in enumerate(dst.inputs) if value is None), len(dst.inputs))
+            slot = next(
+                (i for i, value in enumerate(dst.inputs) if value is None),
+                len(dst.inputs),
+            )
         spec = REGISTRY.get(dst.kind)
         if slot < 0 or (spec is not None and slot >= spec.inputs[1]):
             raise ValueError("Input slot is outside the node's input range")
@@ -331,6 +408,7 @@ class NodeGraph:
 # -- topology -----------------------------------------------------------------
 def _topo_order(graph: NodeGraph) -> list[int]:
     from collections import deque
+
     indeg = {nid: 0 for nid in graph.nodes}
     children = {nid: [] for nid in graph.nodes}
     for node in graph.nodes.values():
@@ -376,11 +454,21 @@ def _node_output(state, node: Node, cancel=None) -> tuple[np.ndarray, np.ndarray
         if run is None or sig is None:
             raise ValueError(f"{node.name}: source signal is not loaded")
         if run.derived:
-            raise ValueError("Derived signals must be connected with node_link, not source nodes")
+            raise ValueError(
+                "Derived signals must be connected with node_link, not source nodes"
+            )
         source = run.data_source()
         tmin, tmax = node.params.get("tmin", ""), node.params.get("tmax", "")
-        lo = float(tmin) if tmin != "" else shift_time(source.metadata.time_range[0], run.time_offset)
-        hi = float(tmax) if tmax != "" else shift_time(source.metadata.time_range[1], run.time_offset)
+        lo = (
+            float(tmin)
+            if tmin != ""
+            else shift_time(source.metadata.time_range[0], run.time_offset)
+        )
+        hi = (
+            float(tmax)
+            if tmax != ""
+            else shift_time(source.metadata.time_range[1], run.time_offset)
+        )
         t, values = run.read_window([node.ref[1]], lo, hi, cancel=cancel)
         return t, values[node.ref[1]]
     if node.error or is_stale(state.registry, state.nodes, node):
@@ -400,7 +488,12 @@ def _source_signature(registry, node: Node):
     signal = registry.get_signal(*node.ref)
     sig = None if run is None or signal is None else (run.time_version, signal.version)
     from .sources import validation_error
-    error = validation_error([run.data_source()]) if run is not None else 'Source is missing'
+
+    error = (
+        validation_error([run.data_source()])
+        if run is not None
+        else "Source is missing"
+    )
     return ("ref", node.ref, sig, window, error)
 
 
@@ -433,15 +526,20 @@ def is_stale(registry, graph: NodeGraph, node: Node) -> bool:
         if current.id in visited or not current.is_transform:
             continue
         visited.add(current.id)
-        if current.error or current.eval_key is None or current.eval_key != node_key(registry, graph, current):
+        if (
+            current.error
+            or current.eval_key is None
+            or current.eval_key != node_key(registry, graph, current)
+        ):
             return True
         pending.extend(graph.nodes[i] for i in current.inputs if i in graph.nodes)
     return False
 
 
 # -- computation --------------------------------------------------------------
-def compute_node(node: Node, inputs: list[tuple[np.ndarray, np.ndarray]], *, timestamp_resolution=0.0
-             ) -> tuple[np.ndarray, np.ndarray, str, str]:
+def compute_node(
+    node: Node, inputs: list[tuple[np.ndarray, np.ndarray]], *, timestamp_resolution=0.0
+) -> tuple[np.ndarray, np.ndarray, str, str]:
     """Dispatch to the node's registered transform. Returns ``(out_time, out_y,
     info, unit)``; raises a clear error if the kind has no spec (missing plugin)."""
     spec = REGISTRY.get(node.kind)
@@ -453,27 +551,39 @@ def compute_node(node: Node, inputs: list[tuple[np.ndarray, np.ndarray]], *, tim
     if not (lo <= len(inputs) <= hi):
         want = f"{lo}" if lo == hi else f"{lo}..{hi}"
         raise ValueError(f"{node.kind} needs {want} input(s), got {len(inputs)}")
+
     # Views protect shared recordings and upstream caches against accidental writes.
     def readonly(array):
         view = np.asarray(array).view()
         view.flags.writeable = False
         return view
+
     protected = []
     for t, y in inputs:
         t, y = readonly(t), readonly(y)
         if t.ndim != 1 or y.ndim != 1 or t.shape != y.shape:
-            raise ValueError("Node input must contain equal-length one-dimensional time and value arrays")
+            raise ValueError(
+                "Node input must contain equal-length one-dimensional time and value arrays"
+            )
         from .loader import validate_time_axis
+
         validate_time_axis(t, node.name)
         protected.append((t, y))
-    options = {"timestamp_resolution": timestamp_resolution} if spec.compute in (_fft_compute, _filter_compute) else {}
+    options = (
+        {"timestamp_resolution": timestamp_resolution}
+        if spec.compute in (_fft_compute, _filter_compute)
+        else {}
+    )
     out_time, out_y, info = spec.compute(protected, dict(node.params), **options)
     # Own the published buffers: plugins may return aliases or retain references.
     out_time = np.array(out_time, dtype=np.float64, order="C", copy=True)
     out_y = np.array(out_y, dtype=np.float32, order="C", copy=True)
     if out_time.ndim != 1 or out_y.ndim != 1 or out_time.shape != out_y.shape:
-        raise ValueError("Node output must contain equal-length one-dimensional time and value arrays")
+        raise ValueError(
+            "Node output must contain equal-length one-dimensional time and value arrays"
+        )
     from .loader import validate_time_axis
+
     validate_time_axis(out_time, node.name)
     if not isinstance(info, str):
         raise ValueError("Node output info must be a string")
@@ -507,14 +617,18 @@ def output_domain(graph, node, domains=None):
 def publish_output(state, node: Node, unit: str = "", *, domain=None) -> None:
     """Create/refresh a stable output, including an unavailable empty placeholder."""
     domain = domain or output_domain(state.nodes, node)
-    existing = state.registry.get(node.out_run_id) if node.out_run_id is not None else None
+    existing = (
+        state.registry.get(node.out_run_id) if node.out_run_id is not None else None
+    )
     if existing is not None and existing.axis_domain != domain:
         existing.time_origin = None
         existing.axis_domain = domain
         for index, cell in enumerate(state.cells, 1):
             if any(ref[0] == existing.id for ref in cell.signals):
                 cell.signals = [ref for ref in cell.signals if ref[0] != existing.id]
-                cell.y2_signals = [ref for ref in cell.y2_signals if ref[0] != existing.id]
+                cell.y2_signals = [
+                    ref for ref in cell.y2_signals if ref[0] != existing.id
+                ]
                 cell.x_lim = cell.pending_x_lim = None
                 state.plot_x_ranges.pop(index, None)
             if cell.xy_source and cell.xy_source[0] == existing.id:
@@ -523,12 +637,16 @@ def publish_output(state, node: Node, unit: str = "", *, domain=None) -> None:
             cfg.sources = [ref for ref in cfg.sources if ref[0] != existing.id]
     time = node.out_time if node.out_time is not None else np.empty(0, np.float64)
     values = node.out_y if node.out_y is not None else np.empty(0, np.float32)
-    node.out_run_id = state.upsert_derived_run(node.name, time, values, unit, run_id=node.out_run_id)
+    node.out_run_id = state.upsert_derived_run(
+        node.name, time, values, unit, run_id=node.out_run_id
+    )
     graph, registry = state.nodes, state.registry
 
     def validate_output():
         if is_stale(registry, graph, node):
-            raise ValueError(f"{node.name}: derived output is not current; evaluate the node ({node.error or 'inputs changed'})")
+            raise ValueError(
+                f"{node.name}: derived output is not current; evaluate the node ({node.error or 'inputs changed'})"
+            )
 
     run = state.registry.get(node.out_run_id)
     run.axis_domain = domain
@@ -550,7 +668,8 @@ def evaluate(state, node_id: int | None = None, *, cancel=None) -> int:
     domain_cache = {}
     computed = 0
     for nid in order:
-        from .sources import check, Cancelled
+        from .sources import Cancelled, check
+
         check(cancel)
         node = graph.nodes[nid]
         if not node.is_transform:
@@ -563,18 +682,30 @@ def evaluate(state, node_id: int | None = None, *, cancel=None) -> int:
         try:
             if any(i is None for i in node.inputs):
                 raise ValueError("Connect all input slots before evaluating")
-            domains = {output_domain(graph, graph.nodes[i], domain_cache) for i in node.inputs}
+            domains = {
+                output_domain(graph, graph.nodes[i], domain_cache) for i in node.inputs
+            }
             if len(domains) > 1:
                 raise ValueError("Cannot combine time and frequency axes")
             requires_time = node.kind in {"fft", "filter", "shift"} or (
-                node.kind == "math" and node.params.get("op") in {"derivative", "integral"})
+                node.kind == "math"
+                and node.params.get("op") in {"derivative", "integral"}
+            )
             if requires_time and domains != {"time"}:
                 raise ValueError(f"{node.kind} requires time-domain inputs")
             inputs = [_node_output(state, graph.nodes[i], cancel) for i in node.inputs]
-            input_runs = [state.registry.get(up.ref[0] if up.kind == "source" else up.out_run_id)
-                          for i in node.inputs for up in [graph.nodes[i]]]
-            resolution = max((run.timestamp_resolution for run in input_runs if run is not None), default=0.0)
-            out_time, out_y, info, unit = compute_node(node, inputs, timestamp_resolution=resolution)
+            input_runs = [
+                state.registry.get(up.ref[0] if up.kind == "source" else up.out_run_id)
+                for i in node.inputs
+                for up in [graph.nodes[i]]
+            ]
+            resolution = max(
+                (run.timestamp_resolution for run in input_runs if run is not None),
+                default=0.0,
+            )
+            out_time, out_y, info, unit = compute_node(
+                node, inputs, timestamp_resolution=resolution
+            )
             check(cancel)
         except Cancelled:
             raise
@@ -589,10 +720,13 @@ def evaluate(state, node_id: int | None = None, *, cancel=None) -> int:
         node.info = info
         node.error = ""
         node.eval_key = node_key(state.registry, graph, node)
-        publish_output(state, node, unit, domain=output_domain(graph, node, domain_cache))
+        publish_output(
+            state, node, unit, domain=output_domain(graph, node, domain_cache)
+        )
         # Built-ins preserve the timestamp grid except FFT. Plugins have no
         # precision contract, so their outputs revert to strict validation.
         state.registry.get(node.out_run_id).timestamp_resolution = (
-            resolution if node.kind in {"math", "filter", "shift"} else 0.0)
+            resolution if node.kind in {"math", "filter", "shift"} else 0.0
+        )
         computed += 1
     return computed

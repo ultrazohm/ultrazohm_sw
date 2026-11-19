@@ -55,15 +55,20 @@ class FftPanel(AnalysisPanel):
     def _setup_axes(self, state: AppState) -> None:
         cfg = state.fft
         implot.setup_axis_scale(
-            implot.ImAxis_.x1, implot.Scale_.log10 if cfg.log_x else implot.Scale_.linear
+            implot.ImAxis_.x1,
+            implot.Scale_.log10 if cfg.log_x else implot.Scale_.linear,
         )
         implot.setup_axis_scale(
-            implot.ImAxis_.y1, implot.Scale_.log10 if cfg.log_y else implot.Scale_.linear
+            implot.ImAxis_.y1,
+            implot.Scale_.log10 if cfg.log_y else implot.Scale_.linear,
         )
 
-    def _make_request(self, state: AppState, cfg, x_min: float, x_max: float) -> FftRequest:
+    def _make_request(
+        self, state: AppState, cfg, x_min: float, x_max: float
+    ) -> FftRequest:
         from ..analysis_service import request
-        return request(state, 'fft', (x_min, x_max))
+
+        return request(state, "fft", (x_min, x_max))
 
     def _draw(self, state: AppState) -> None:
         for ref, freqs, mag, source in self._results:

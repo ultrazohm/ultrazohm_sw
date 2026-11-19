@@ -30,8 +30,9 @@ def _require_increasing_time(time: np.ndarray, op: str) -> None:
         raise ValueError(f"{op} needs a strictly increasing time axis")
 
 
-def math_node(inputs: list[tuple[np.ndarray, np.ndarray]], params: dict
-              ) -> tuple[np.ndarray, np.ndarray, str]:
+def math_node(
+    inputs: list[tuple[np.ndarray, np.ndarray]], params: dict
+) -> tuple[np.ndarray, np.ndarray, str]:
     """Arithmetic on one or two input signals.
 
     Unary (one input): ``scale`` (×k), ``offset`` (+k), ``derivative`` (d/dt),
@@ -103,8 +104,9 @@ def _fir_lowpass(fc_norm: float, taps: int) -> np.ndarray:
     return h / h.sum()
 
 
-def filter_node(time: np.ndarray, y: np.ndarray, params: dict, *, timestamp_resolution=0.0
-                ) -> tuple[np.ndarray, np.ndarray, str]:
+def filter_node(
+    time: np.ndarray, y: np.ndarray, params: dict, *, timestamp_resolution=0.0
+) -> tuple[np.ndarray, np.ndarray, str]:
     """Linear-phase windowed-sinc FIR filter (low/high/band-pass).
 
     ``cutoff`` (and ``cutoff2`` for band) are in Hz; the sample rate is inferred
@@ -112,14 +114,19 @@ def filter_node(time: np.ndarray, y: np.ndarray, params: dict, *, timestamp_reso
     """
     ftype = str(params.get("type", "low")).lower()
     if ftype not in FILTER_TYPES:
-        raise ValueError(f"Unknown filter type {ftype!r}; one of {', '.join(FILTER_TYPES)}")
+        raise ValueError(
+            f"Unknown filter type {ftype!r}; one of {', '.join(FILTER_TYPES)}"
+        )
 
     time = np.asarray(time, dtype=np.float64)
     y = np.asarray(y, dtype=np.float64)
     if time.shape[0] < 2:
         raise ValueError("filter needs at least 2 samples")
-    fs = 1.0 / regular_sample_interval(time, "filter", timestamp_resolution=timestamp_resolution)
+    fs = 1.0 / regular_sample_interval(
+        time, "filter", timestamp_resolution=timestamp_resolution
+    )
     from .validation import bounded_int
+
     taps = bounded_int(params.get("taps", 101), 3, 100_001, "Filter taps")
     fc = float(params.get("cutoff", 0.0))
     if not np.isfinite(fc) or fc <= 0.0:
@@ -147,5 +154,5 @@ def filter_node(time: np.ndarray, y: np.ndarray, params: dict, *, timestamp_reso
     # when the FIR kernel is longer than the signal.
     full = np.convolve(y, h, mode="full")
     offset = (len(h) - 1) // 2
-    out = full[offset:offset + len(y)]
+    out = full[offset : offset + len(y)]
     return time, out, f"{info}, {len(h)} taps"

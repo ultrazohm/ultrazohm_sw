@@ -3,21 +3,21 @@
 Parquet sources retain metadata only. Raw batches, summaries and display results
 have independent lifetimes; requesting an array explicitly may use substantial RAM.
 """
+
 from __future__ import annotations
 
-from collections import OrderedDict
-from contextvars import ContextVar
-
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Iterator, Protocol, Sequence
 import hashlib
 import json
 import os
 import tempfile
-import uuid
 import threading
 import time
+import uuid
+from collections import OrderedDict
+from contextvars import ContextVar
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Iterator, Protocol, Sequence
 from zipfile import BadZipFile
 
 import numpy as np
@@ -39,6 +39,7 @@ def check(cancel=None):
 @dataclass(frozen=True)
 class TimeShift:
     """Rebase before adding the target to preserve small normalized origins."""
+
     origin: float
     target: float
 
@@ -49,7 +50,7 @@ def shift_time(values, shift):
     return values + shift if shift else values
 
 
-def displayed_bounds(source, lo, hi, offset=0., cancel=None, *, padding=False):
+def displayed_bounds(source, lo, hi, offset=0.0, cancel=None, *, padding=False):
     """Select by displayed float64 timestamps, including rounded duplicates.
 
     Subtracting an offset from the window is not an inverse of floating-point
@@ -76,12 +77,14 @@ class FileIdentity:
         jobs = _validation_jobs.get()
         if jobs is not None:
             key = (self, int(time.monotonic() * 4))
+
             def validate(cancel):
                 try:
                     self._validate()
                     return (None,)
                 except (ValueError, OSError) as exc:
                     return (str(exc),)
+
             result = jobs.request(self, key, self, validate, continuous=True)
             if result and result[0]:
                 raise ValueError(result[0])
@@ -92,9 +95,9 @@ class FileIdentity:
         try:
             current = FileIdentity.capture(self.path)
         except OSError as exc:
-            raise ValueError(f'Source unavailable; reopen {self.path.name}') from exc
+            raise ValueError(f"Source unavailable; reopen {self.path.name}") from exc
         if current != self:
-            raise ValueError(f'Source changed; reopen {self.path.name}')
+            raise ValueError(f"Source changed; reopen {self.path.name}")
 
 
 def validation_error(sources, jobs=None):
@@ -113,6 +116,7 @@ def validation_error(sources, jobs=None):
 
 class ByteCache:
     """Thread-safe, shared LRU; oversized entries are returned but not retained."""
+
     def __init__(self, limit=1024 * 1024**2):
         self.limit = limit
         self.bytes = 0
@@ -125,9 +129,14 @@ class ByteCache:
     def status(self):
         """Snapshot for the UI; highlight pressure for five seconds after a miss in capacity."""
         with self.lock:
-            return dict(bytes=self.bytes, limit=self.limit, evictions=self.evictions,
-                        oversized=self.oversized,
-                        limit_hit=self.last_limit_hit is not None and time.monotonic() - self.last_limit_hit < 5)
+            return dict(
+                bytes=self.bytes,
+                limit=self.limit,
+                evictions=self.evictions,
+                oversized=self.oversized,
+                limit_hit=self.last_limit_hit is not None
+                and time.monotonic() - self.last_limit_hit < 5,
+            )
 
     def get(self, key):
         with self.lock:
@@ -194,27 +203,51 @@ class SampleSource(Protocol):
 
     def validate(self) -> None: ...
 
-    def bounds(self, lo: float, hi: float, cancel: threading.Event | None = None,
-               *, padding: bool = True, offset: TimeShift | float = 0.) -> tuple[int, int]: ...
+    def bounds(
+        self,
+        lo: float,
+        hi: float,
+        cancel: threading.Event | None = None,
+        *,
+        padding: bool = True,
+        offset: TimeShift | float = 0.0,
+    ) -> tuple[int, int]: ...
 
-    def read_rows(self, channels: Sequence[str], start: int, stop: int,
-                  cancel: threading.Event | None = None
-                  ) -> tuple[np.ndarray, dict[str, np.ndarray]]: ...
+    def read_rows(
+        self,
+        channels: Sequence[str],
+        start: int,
+        stop: int,
+        cancel: threading.Event | None = None,
+    ) -> tuple[np.ndarray, dict[str, np.ndarray]]: ...
 
-    def iter_raw(self, channels: Sequence[str], start: int = 0, stop: int | None = None,
-                 cancel: threading.Event | None = None
-                 ) -> Iterator[tuple[np.ndarray, dict[str, np.ndarray]]]: ...
+    def iter_raw(
+        self,
+        channels: Sequence[str],
+        start: int = 0,
+        stop: int | None = None,
+        cancel: threading.Event | None = None,
+    ) -> Iterator[tuple[np.ndarray, dict[str, np.ndarray]]]: ...
 
 
 class DisplaySource(SampleSource, Protocol):
     """Display summaries are distinct from the raw-data analysis contract."""
 
-    def read_plot(self, channel: str, lo: float, hi: float, budget: int,
-                  cancel: threading.Event | None = None, *, padding: bool = True,
-                  offset: TimeShift | float = 0.
-                  ) -> PlotData: ...
+    def read_plot(
+        self,
+        channel: str,
+        lo: float,
+        hi: float,
+        budget: int,
+        cancel: threading.Event | None = None,
+        *,
+        padding: bool = True,
+        offset: TimeShift | float = 0.0,
+    ) -> PlotData: ...
 
-    def prepare_summary(self, channel: str, cancel: threading.Event | None = None) -> None: ...
+    def prepare_summary(
+        self, channel: str, cancel: threading.Event | None = None
+    ) -> None: ...
 
 
 def envelope(t, y, indices, budget):
@@ -223,7 +256,9 @@ def envelope(t, y, indices, budget):
     Budget targets finite extrema; gap markers can add up to half that count.
     """
     if len(y) <= budget:
-        return np.ascontiguousarray(t, dtype=np.float64), np.ascontiguousarray(y, dtype=np.float64)
+        return np.ascontiguousarray(t, dtype=np.float64), np.ascontiguousarray(
+            y, dtype=np.float64
+        )
     groups = max(1, budget // 2)
     # Sample-space buckets keep summaries and raw refinement on the same axis.
     span = max(1, int(indices[-1]) - int(indices[0]) + 1)
@@ -234,9 +269,13 @@ def envelope(t, y, indices, budget):
     low = np.minimum.reduceat(np.where(finite, y, np.inf), starts)
     high = np.maximum.reduceat(np.where(finite, y, -np.inf), starts)
     pos = np.arange(len(y))
-    mins = np.minimum.reduceat(np.where(finite & (y == np.repeat(low, lengths)), pos, len(y)), starts)
+    mins = np.minimum.reduceat(
+        np.where(finite & (y == np.repeat(low, lengths)), pos, len(y)), starts
+    )
     # First minimum / last maximum retain both ends of constant buckets.
-    maxs = np.maximum.reduceat(np.where(finite & (y == np.repeat(high, lengths)), pos, -1), starts)
+    maxs = np.maximum.reduceat(
+        np.where(finite & (y == np.repeat(high, lengths)), pos, -1), starts
+    )
     gaps = np.minimum.reduceat(np.where(~finite, pos, len(y)), starts)
     selected = np.unique(np.r_[mins, maxs, gaps])
     selected = selected[(selected >= 0) & (selected < len(y))]
@@ -249,30 +288,38 @@ class MemorySource:
     def __init__(self, time, channels):
         self.time = time
         self.channels = channels
-        self.metadata = Metadata(f'memory:{uuid.uuid4().hex}', len(time), tuple(channels),
-                                 (float(time[0]), float(time[-1])) if len(time) else (0., 0.))
+        self.metadata = Metadata(
+            f"memory:{uuid.uuid4().hex}",
+            len(time),
+            tuple(channels),
+            (float(time[0]), float(time[-1])) if len(time) else (0.0, 0.0),
+        )
 
     def read_rows(self, channels, start, stop, cancel=None):
         self.validate()
         check(cancel)
-        return self.time[start:stop], {c: self.channels[c][start:stop] for c in channels}
+        return self.time[start:stop], {
+            c: self.channels[c][start:stop] for c in channels
+        }
 
     def iter_raw(self, channels, start=0, stop=None, cancel=None):
         stop = self.metadata.rows if stop is None else stop
         for i in range(start, stop, 65536):
             yield self.read_rows(channels, i, min(i + 65536, stop), cancel)
 
-    def bounds(self, lo, hi, cancel=None, *, padding=True, offset=0.):
+    def bounds(self, lo, hi, cancel=None, *, padding=True, offset=0.0):
         self.validate()
         check(cancel)
         from .downsample import visible_slice
+
         return visible_slice(shift_time(self.time, offset), lo, hi, padding=padding)
 
     def validate(self):
         pass
 
+
 # Each summary bucket keeps original extrema and a representative gap.
-POINT = np.dtype([('i', '<i8'), ('t', '<f8'), ('y', '<f4')])
+POINT = np.dtype([("i", "<i8"), ("t", "<f8"), ("y", "<f4")])
 BASE = 1024
 FACTOR = 8
 CACHE_VERSION = 4
@@ -281,16 +328,20 @@ CACHE_VERSION = 4
 def summarize(points, bucket):
     if not len(points):
         return points
-    group = points['i'] // bucket
+    group = points["i"] // bucket
     starts = np.r_[0, np.flatnonzero(np.diff(group)) + 1]
     lengths = np.diff(np.r_[starts, len(points)])
-    y = points['y']
+    y = points["y"]
     finite = np.isfinite(y)
     low = np.minimum.reduceat(np.where(finite, y, np.inf), starts)
     high = np.maximum.reduceat(np.where(finite, y, -np.inf), starts)
     pos = np.arange(len(y))
-    mins = np.minimum.reduceat(np.where(finite & (y == np.repeat(low, lengths)), pos, len(y)), starts)
-    maxs = np.maximum.reduceat(np.where(finite & (y == np.repeat(high, lengths)), pos, -1), starts)
+    mins = np.minimum.reduceat(
+        np.where(finite & (y == np.repeat(low, lengths)), pos, len(y)), starts
+    )
+    maxs = np.maximum.reduceat(
+        np.where(finite & (y == np.repeat(high, lengths)), pos, -1), starts
+    )
     gaps = np.minimum.reduceat(np.where(~finite, pos, len(y)), starts)
     select = np.unique(np.r_[mins, maxs, gaps])
     return points[select[(select >= 0) & (select < len(y))]]
@@ -304,22 +355,28 @@ def raw_summary(t, y, offset, finite=False):
     if not finite and not np.isfinite(y).all():
         # Preserve representative gaps and finite extrema, even mixed within a block.
         p = np.empty(n, dtype=POINT)
-        p['i'], p['t'], p['y'] = np.arange(offset, offset + n), t, y
+        p["i"], p["t"], p["y"] = np.arange(offset, offset + n), t, y
         return summarize(p, BASE)
     block = y[lead:end].reshape(-1, BASE)
     base = np.arange(len(block)) * BASE + lead
-    indices = np.unique(np.r_[np.arange(lead), base + block.argmin(axis=1),
-                              base + BASE - 1 - block[:, ::-1].argmax(axis=1), np.arange(end, n)])
+    indices = np.unique(
+        np.r_[
+            np.arange(lead),
+            base + block.argmin(axis=1),
+            base + BASE - 1 - block[:, ::-1].argmax(axis=1),
+            np.arange(end, n),
+        ]
+    )
     p = np.empty(len(indices), dtype=POINT)
-    p['i'], p['t'], p['y'] = indices + offset, t[indices], y[indices]
+    p["i"], p["t"], p["y"] = indices + offset, t[indices], y[indices]
     return summarize(p, BASE)
 
 
 def atomic_npz(path, **arrays):
     path.parent.mkdir(parents=True, exist_ok=True)
-    fd, name = tempfile.mkstemp(dir=path.parent, suffix='.tmp')
+    fd, name = tempfile.mkstemp(dir=path.parent, suffix=".tmp")
     try:
-        with os.fdopen(fd, 'wb') as f:
+        with os.fdopen(fd, "wb") as f:
             np.savez(f, **arrays)
         os.replace(name, path)
     finally:
@@ -329,6 +386,7 @@ def atomic_npz(path, **arrays):
 
 class SummarySource:
     """Mixin with bounded shared summary cache and optional durable summaries."""
+
     def prepare_summary(self, channel, cancel=None):
         """Warm the display cache without exposing its internal pyramid format."""
         self._summary(channel, cancel)
@@ -336,7 +394,7 @@ class SummarySource:
     def _summary(self, channel, cancel):
         self.validate()
         check(cancel)
-        key = (self.metadata.identity, channel, 'summary')
+        key = (self.metadata.identity, channel, "summary")
         cached = self.cache.get(key)
         if cached is not None:
             return cached
@@ -350,13 +408,25 @@ class SummarySource:
             if path is not None and path.exists():
                 try:
                     with np.load(path, allow_pickle=False) as saved:
-                        count = saved['count']
-                        if count.ndim != 0 or count.dtype.kind not in "iu" or not 1 <= int(count) <= 64:
-                            raise ValueError('Invalid summary count')
-                        levels = [saved[f'l{i}'] for i in range(int(count))]
+                        count = saved["count"]
+                        if (
+                            count.ndim != 0
+                            or count.dtype.kind not in "iu"
+                            or not 1 <= int(count) <= 64
+                        ):
+                            raise ValueError("Invalid summary count")
+                        levels = [saved[f"l{i}"] for i in range(int(count))]
                     for level in levels:
-                        if level.dtype != POINT or level.ndim != 1 or not len(level) or np.any(np.diff(level['i']) <= 0) or level['i'][0] < 0 or level['i'][-1] >= self.metadata.rows or not np.isfinite(level['t']).all():
-                            raise ValueError('Invalid summary')
+                        if (
+                            level.dtype != POINT
+                            or level.ndim != 1
+                            or not len(level)
+                            or np.any(np.diff(level["i"]) <= 0)
+                            or level["i"][0] < 0
+                            or level["i"][-1] >= self.metadata.rows
+                            or not np.isfinite(level["t"]).all()
+                        ):
+                            raise ValueError("Invalid summary")
                 except (ValueError, OSError, KeyError, EOFError, BadZipFile):
                     levels = None
             if levels is None:
@@ -372,7 +442,11 @@ class SummarySource:
                 self.validate()
                 if path is not None:
                     try:
-                        atomic_npz(path, count=len(levels), **{f'l{i}': v for i, v in enumerate(levels)})
+                        atomic_npz(
+                            path,
+                            count=len(levels),
+                            **{f"l{i}": v for i, v in enumerate(levels)},
+                        )
                     except OSError:
                         pass  # Read-only/full cache does not prevent viewing.
             return self.cache.put(key, levels, sum(v.nbytes for v in levels))
@@ -385,7 +459,9 @@ class SummarySource:
             offset += len(t)
         return summarize(np.concatenate(chunks), BASE)
 
-    def read_plot(self, channel, lo, hi, budget, cancel=None, *, padding=True, offset=0.):
+    def read_plot(
+        self, channel, lo, hi, budget, cancel=None, *, padding=True, offset=0.0
+    ):
         budget = max(2, int(budget))
         start, stop = displayed_bounds(self, lo, hi, offset, cancel, padding=padding)
         if stop <= start:
@@ -395,13 +471,18 @@ class SummarySource:
         # using it would leave sparse points in the interior while raw boundary
         # refinement densely fills the edges. Read the selected raw window instead.
         target_buckets = max(1, budget // 2)
-        if stop - start < BASE * target_buckets or stop - start <= max(budget, BASE * 2):
+        if stop - start < BASE * target_buckets or stop - start <= max(
+            budget, BASE * 2
+        ):
             t, ys = self.read_rows([channel], start, stop, cancel)
             x, y = envelope(t, ys[channel], np.arange(start, stop), budget)
             return PlotData(x, y, stop - start)
         levels = self._summary(channel, cancel)
         level = 0
-        while level + 1 < len(levels) and BASE * FACTOR**(level + 1) <= (stop - start) / target_buckets:
+        while (
+            level + 1 < len(levels)
+            and BASE * FACTOR ** (level + 1) <= (stop - start) / target_buckets
+        ):
             level += 1
 
         def collect(a, b, k):
@@ -411,7 +492,7 @@ class SummarySource:
             if k < 0:
                 t, ys = self.read_rows([channel], a, b, cancel)
                 p = np.empty(len(t), dtype=POINT)
-                p['i'], p['t'], p['y'] = np.arange(a, b), t, ys[channel]
+                p["i"], p["t"], p["y"] = np.arange(a, b), t, ys[channel]
                 return [p]
             size = BASE * FACTOR**k
             left = min(b, ((a + size - 1) // size) * size)
@@ -419,13 +500,13 @@ class SummarySource:
             out = collect(a, left, k - 1)
             if right > left:
                 p = levels[k]
-                i, j = np.searchsorted(p['i'], [left, right])
+                i, j = np.searchsorted(p["i"], [left, right])
                 out.append(p[i:j])
             out.extend(collect(right, b, k - 1))
             return out
 
         points = np.concatenate(collect(start, stop, level))
-        x, y = envelope(points['t'], points['y'], points['i'], budget)
+        x, y = envelope(points["t"], points["y"], points["i"], budget)
         check(cancel)
         return PlotData(x, y, stop - start)
 
@@ -456,15 +537,25 @@ class ArraySource(SummarySource, MemorySource):
 
 class IndexedFileSource(SummarySource):
     """Backend-neutral file identity, timestamp index, raw windows and summaries."""
+
     def _initialize(self, path, cache, cache_dir, disk_cache, backend):
         self.path = Path(path).resolve()
         self.file_identity = FileIdentity.capture(self.path)
         self.signature = self.file_identity.signature
         self.origin = None
         self.disk_cache = disk_cache
-        identity = hashlib.sha256(json.dumps([backend, str(self.path), self.signature, CACHE_VERSION]).encode()).hexdigest()
-        root = Path(cache_dir or os.environ.get('UZ_DATAVIEWER_CACHE', Path.home() / '.cache' / 'ultrazohm_dataviewer'))
-        self.directory = (root / 'polars' if backend == 'polars' else root) / identity
+        identity = hashlib.sha256(
+            json.dumps(
+                [backend, str(self.path), self.signature, CACHE_VERSION]
+            ).encode()
+        ).hexdigest()
+        root = Path(
+            cache_dir
+            or os.environ.get(
+                "UZ_DATAVIEWER_CACHE", Path.home() / ".cache" / "ultrazohm_dataviewer"
+            )
+        )
+        self.directory = (root / "polars" if backend == "polars" else root) / identity
         self.cache = cache if cache is not None else ByteCache()
         self.summary_lock = threading.Lock()
         self.index_lock = threading.Lock()
@@ -475,13 +566,24 @@ class IndexedFileSource(SummarySource):
         if not self.disk_cache:
             return False
         try:
-            with np.load(self.directory / 'time.npz', allow_pickle=False) as data:
-                first, last, offsets = data['first'], data['last'], data['offsets']
-            if (first.ndim != 1 or last.ndim != 1 or offsets.ndim != 1
-                    or not len(first) or len(first) != len(last) or len(offsets) != len(first) + 1
-                    or offsets.dtype.kind not in 'iu' or offsets[0] != 0 or offsets[-1] != self._rows
-                    or np.any(np.diff(offsets) <= 0) or not np.isfinite(first).all()
-                    or not np.isfinite(last).all() or np.any(first > last) or np.any(first[1:] < last[:-1])):
+            with np.load(self.directory / "time.npz", allow_pickle=False) as data:
+                first, last, offsets = data["first"], data["last"], data["offsets"]
+            if (
+                first.ndim != 1
+                or last.ndim != 1
+                or offsets.ndim != 1
+                or not len(first)
+                or len(first) != len(last)
+                or len(offsets) != len(first) + 1
+                or offsets.dtype.kind not in "iu"
+                or offsets[0] != 0
+                or offsets[-1] != self._rows
+                or np.any(np.diff(offsets) <= 0)
+                or not np.isfinite(first).all()
+                or not np.isfinite(last).all()
+                or np.any(first > last)
+                or np.any(first[1:] < last[:-1])
+            ):
                 return False
             self.first, self.last, self.index_offsets = first, last, offsets
             self._index_ready = True
@@ -501,21 +603,30 @@ class IndexedFileSource(SummarySource):
                 check(cancel)
                 if not len(t):
                     continue
-                if not np.isfinite(t).all() or np.any(t[1:] < t[:-1]) or t[0] < previous:
-                    raise ValueError('time must be finite and non-decreasing')
+                if (
+                    not np.isfinite(t).all()
+                    or np.any(t[1:] < t[:-1])
+                    or t[0] < previous
+                ):
+                    raise ValueError("time must be finite and non-decreasing")
                 first.append(float(t[0]))
                 previous = float(t[-1])
                 last.append(previous)
                 offsets.append(offsets[-1] + len(t))
             if not first:
-                raise ValueError('time column is empty')
+                raise ValueError("time column is empty")
             self.first, self.last = np.array(first), np.array(last)
             self.index_offsets = np.array(offsets, dtype=np.int64)
             self.validate()
             check(cancel)
             if self.disk_cache:
                 try:
-                    atomic_npz(self.directory / 'time.npz', first=self.first, last=self.last, offsets=self.index_offsets)
+                    atomic_npz(
+                        self.directory / "time.npz",
+                        first=self.first,
+                        last=self.last,
+                        offsets=self.index_offsets,
+                    )
                 except OSError:
                     pass
             self._index_ready = True
@@ -526,7 +637,11 @@ class IndexedFileSource(SummarySource):
             self.origin.validate()
 
     def summary_path(self, channel):
-        return self.directory / (hashlib.sha256(channel.encode()).hexdigest() + '.npz') if self.disk_cache else None
+        return (
+            self.directory / (hashlib.sha256(channel.encode()).hexdigest() + ".npz")
+            if self.disk_cache
+            else None
+        )
 
     def read_rows(self, channels, start, stop, cancel=None):
         start, stop = max(0, start), min(stop, self.metadata.rows)
@@ -535,64 +650,94 @@ class IndexedFileSource(SummarySource):
         values = {c: np.empty(n, np.float32) for c in channels}
         off = 0
         for t, ys in self.iter_raw(channels, start, stop, cancel):
-            time[off:off + len(t)] = t
+            time[off : off + len(t)] = t
             for c in channels:
-                values[c][off:off + len(t)] = ys[c]
+                values[c][off : off + len(t)] = ys[c]
             off += len(t)
         return time, values
 
-    def _search(self, value, side, cancel, offset=0.):
+    def _search(self, value, side, cancel, offset=0.0):
         g = int(np.searchsorted(shift_time(self.last, offset), value, side=side))
         if g == len(self.last):
             return self.metadata.rows
         a, b = int(self.index_offsets[g]), int(self.index_offsets[g + 1])
         # Time-only row groups are cached under the same application budget.
-        key = (self.metadata.identity, 'time', g)
+        key = (self.metadata.identity, "time", g)
         t = self.cache.get(key)
         if t is None:
             t, _ = self.read_rows([], a, b, cancel)
             self.cache.put(key, t, t.nbytes)
         return a + int(np.searchsorted(shift_time(t, offset), value, side=side))
 
-    def bounds(self, lo, hi, cancel=None, *, padding=True, offset=0.):
+    def bounds(self, lo, hi, cancel=None, *, padding=True, offset=0.0):
         self.validate()
         check(cancel)
         self._ensure_index(cancel)
-        start = self._search(lo, 'left', cancel, offset)
-        stop = self._search(hi, 'right', cancel, offset)
+        start = self._search(lo, "left", cancel, offset)
+        stop = self._search(hi, "right", cancel, offset)
         if hi < lo:
             return start, start
-        return (max(0, start - 1), min(self.metadata.rows, stop + 1)) if padding else (start, stop)
-
+        return (
+            (max(0, start - 1), min(self.metadata.rows, stop + 1))
+            if padding
+            else (start, stop)
+        )
 
 
 class ParquetSource(IndexedFileSource):
-    def __init__(self, path, cache=None, cache_dir=None, cancel=None, *, disk_cache=False):
+    def __init__(
+        self, path, cache=None, cache_dir=None, cancel=None, *, disk_cache=False
+    ):
         import pyarrow.parquet as pq
-        from .loader import _split_time_columns, _named_signals, arrow_numeric_columns, timestamp_resolution
-        identity = self._initialize(path, cache, cache_dir, disk_cache, 'pyarrow')
+
+        from .loader import (
+            _named_signals,
+            _split_time_columns,
+            arrow_numeric_columns,
+            timestamp_resolution,
+        )
+
+        identity = self._initialize(path, cache, cache_dir, disk_cache, "pyarrow")
         with pq.ParquetFile(self.path) as pf:
             names, self.skipped_columns = arrow_numeric_columns(pf.schema_arrow)
             self.time_col, columns = _split_time_columns(names)
-            named, self.units = _named_signals(columns, lambda c: np.empty(0, np.float32))
+            named, self.units = _named_signals(
+                columns, lambda c: np.empty(0, np.float32)
+            )
             self.timestamp_resolution = timestamp_resolution(columns)
             self.columns = dict(zip(named, columns))
-            self.offsets = np.r_[0, np.cumsum([pf.metadata.row_group(i).num_rows for i in range(pf.num_row_groups)])]
+            self.offsets = np.r_[
+                0,
+                np.cumsum(
+                    [
+                        pf.metadata.row_group(i).num_rows
+                        for i in range(pf.num_row_groups)
+                    ]
+                ),
+            ]
             self._rows = int(self.offsets[-1])
             if self._rows == 0:
-                raise ValueError('time column is empty')
+                raise ValueError("time column is empty")
             if self._restore_index():
                 extent = (float(self.first[0]), float(self.last[-1]))
             else:
                 # Opening is metadata-only when Parquet has usable time statistics.
                 # Validate actual sample order on the first raw/display request.
                 index = pf.schema_arrow.names.index(self.time_col)
-                stats = [pf.metadata.row_group(g).column(index).statistics
-                         for g in range(pf.num_row_groups) if pf.metadata.row_group(g).num_rows]
-                if all(v is not None and v.has_min_max and v.null_count == 0 for v in stats):
-                    extent = (min(float(v.min) for v in stats), max(float(v.max) for v in stats))
+                stats = [
+                    pf.metadata.row_group(g).column(index).statistics
+                    for g in range(pf.num_row_groups)
+                    if pf.metadata.row_group(g).num_rows
+                ]
+                if all(
+                    v is not None and v.has_min_max and v.null_count == 0 for v in stats
+                ):
+                    extent = (
+                        min(float(v.min) for v in stats),
+                        max(float(v.max) for v in stats),
+                    )
                     if not np.isfinite(extent).all():
-                        raise ValueError('time must be finite')
+                        raise ValueError("time must be finite")
                 else:
                     self._ensure_index(cancel)
                     extent = (float(self.first[0]), float(self.last[-1]))
@@ -600,32 +745,50 @@ class ParquetSource(IndexedFileSource):
 
     def _time_batches(self, cancel):
         import pyarrow.parquet as pq
+
         with pq.ParquetFile(self.path) as pf:
-            for batch in pf.iter_batches(columns=[self.time_col], batch_size=65536, use_threads=False):
+            for batch in pf.iter_batches(
+                columns=[self.time_col], batch_size=65536, use_threads=False
+            ):
                 check(cancel)
                 yield batch.column(0).to_numpy(zero_copy_only=False)
 
     def iter_raw(self, channels, start=0, stop=None, cancel=None):
         import pyarrow.parquet as pq
+
         self.validate()
         self._ensure_index(cancel)
         stop = self.metadata.rows if stop is None else min(stop, self.metadata.rows)
         if start >= stop:
             return
-        first = max(0, int(np.searchsorted(self.offsets, start, side='right')) - 1)
-        last = min(len(self.offsets) - 2, int(np.searchsorted(self.offsets, stop - 1, side='right')) - 1)
+        first = max(0, int(np.searchsorted(self.offsets, start, side="right")) - 1)
+        last = min(
+            len(self.offsets) - 2,
+            int(np.searchsorted(self.offsets, stop - 1, side="right")) - 1,
+        )
         columns = [self.time_col] + [self.columns[c] for c in channels]
         with pq.ParquetFile(self.path) as pf:
             for g in range(first, last + 1):
                 offset = int(self.offsets[g])
-                for batch in pf.iter_batches(row_groups=[g], columns=columns, batch_size=65536, use_threads=False):
+                for batch in pf.iter_batches(
+                    row_groups=[g], columns=columns, batch_size=65536, use_threads=False
+                ):
                     check(cancel)
                     end = offset + len(batch)
                     a, b = max(start - offset, 0), min(stop - offset, len(batch))
                     if a < b:
                         batch = batch.slice(a, b - a)
-                        t = np.asarray(batch.column(0).to_numpy(zero_copy_only=False), dtype=np.float64)
-                        ys = {c: np.asarray(batch.column(i + 1).to_numpy(zero_copy_only=False), dtype=np.float32) for i, c in enumerate(channels)}
+                        t = np.asarray(
+                            batch.column(0).to_numpy(zero_copy_only=False),
+                            dtype=np.float64,
+                        )
+                        ys = {
+                            c: np.asarray(
+                                batch.column(i + 1).to_numpy(zero_copy_only=False),
+                                dtype=np.float32,
+                            )
+                            for i, c in enumerate(channels)
+                        }
                         yield t, ys
                     offset = end
                     if offset >= stop:
@@ -639,19 +802,24 @@ class SourceColumn:
     GUI code uses the source directly. np.asarray(view) explicitly materializes one
     complete column. Arithmetic must operate on explicitly materialized arrays.
     """
-    def __init__(self, source: SampleSource, channel=None, offset=0.):
+
+    def __init__(self, source: SampleSource, channel=None, offset=0.0):
         self.source, self.channel, self.offset = source, channel, offset
         self.shape = (source.metadata.rows,)
         self.size = source.metadata.rows
         self.ndim = 1
-        self.dtype = np.dtype('float64' if channel is None else 'float32')
+        self.dtype = np.dtype("float64" if channel is None else "float32")
 
     def __len__(self):
         return self.size
 
     def __array__(self, dtype=None, copy=None):
         result = self.materialize()
-        return np.array(result, dtype=dtype, copy=True) if copy else np.asarray(result, dtype=dtype)
+        return (
+            np.array(result, dtype=dtype, copy=True)
+            if copy
+            else np.asarray(result, dtype=dtype)
+        )
 
     def materialize(self):
         """Read the full column; callers explicitly accept the allocation cost."""
@@ -659,7 +827,9 @@ class SourceColumn:
 
     def read_rows(self, start, stop):
         """Read a contiguous row interval without NumPy compatibility dispatch."""
-        t, ys = self.source.read_rows([] if self.channel is None else [self.channel], start, stop)
+        t, ys = self.source.read_rows(
+            [] if self.channel is None else [self.channel], start, stop
+        )
         if self.channel is not None:
             return ys[self.channel]
         return shift_time(t, self.offset)
@@ -672,8 +842,10 @@ class SourceColumn:
             if not 0 <= i < self.size:
                 raise IndexError(i)
             if self.channel is None and i in (0, self.size - 1):
-                return shift_time(self.source.metadata.time_range[0 if i == 0 else 1], self.offset)
-            return self[i:i + 1][0]
+                return shift_time(
+                    self.source.metadata.time_range[0 if i == 0 else 1], self.offset
+                )
+            return self[i : i + 1][0]
         if not isinstance(item, slice):
             raise TypeError("Use materialize() before fancy indexing a lazy column")
         start, stop, step = item.indices(self.size)

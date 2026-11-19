@@ -254,6 +254,11 @@ jobs:
           name: wheel-viewer
           path: viewer-wheel
       - run: .\uz.ps1 check viewer --cli-wheel (Get-ChildItem cli-wheel/*.whl).FullName --viewer-wheel (Get-ChildItem viewer-wheel/*.whl).FullName
+      # Hosted Windows runners have no OpenGL-capable graphics driver.
+      - uses: pyvista/setup-headless-display-action@9c1c7435d9635423c90d2c37489588c81673274a # v3
+        with:
+          pyvista: false
+          mesa3d-release: '24.3.0'
       - run: .\ultrazohm_dataviewer\.venv-ci\Scripts\python.exe ultrazohm_dataviewer/build/smoke_gui.py
 
   bundle-windows:

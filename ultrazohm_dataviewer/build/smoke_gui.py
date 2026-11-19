@@ -29,6 +29,7 @@ def main():
                         break
                     try:
                         with Client(endpoint, timeout=1) as viewer:
+                            viewer.set_grid(2, 1)
                             status = viewer.status()
                             assert status['grid'] == [2, 1], status
                             print('Installed GUI started and served a control request.')

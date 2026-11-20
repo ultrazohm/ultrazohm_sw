@@ -310,11 +310,7 @@ runs of the chosen build. Median command round trip in us
     the one-look variant in every run), and about 0.6 us longer in the
     slower state of the soaks below. Not at 8 B/cycle. The XCP
     sampling (`xcp_r5_event()`) is unchanged, so the time goes elsewhere
-    in the ISR. Cause not found. Every cycle the ISR writes the JavaScope
-    data into OCM bank 3 at 0xFFFF0000 (the bank of XCP_IN and XCP_OUT),
-    flushes it and sends an IPI to the A53. Those lines share D-cache sets
-    with the XCP_IN header, which the chosen pacing invalidates and reads
-    on every look.
+    in the ISR. Cause not found.
   - Back-to-back commands at 900 B/cycle for 10 min: the old pacing (2
     runs) and the one-look variant (1 run) stayed at a flat 251-253 us
     median, with 4-10 DAQ exchanges waiting for an acknowledge. The chosen
@@ -324,6 +320,14 @@ runs of the chosen build. Median command round trip in us
     after 4.5 min (948 us, 1.9 M records lost). At 1000 B/cycle it tipped
     after 1.5 min; the old pacing ran 10 min clean there on 2026-11-18
     (2.6).
+  - The chosen pacing and the one-look variant differ only in the gate,
+    three lines (checked on the flashed ELFs): the chosen one looks again
+    on every later pass of a control period without an exchange. That is
+    the obvious candidate, but in the 900 B/cycle soaks all three builds
+    looked at XCP_IN about equally often (21-24k/s). The one-look
+    variant's extra variable also shifts the R5's data by 16 bytes.
+    JavaScope plays no part: with `UZ_LOGGING_PATH_XCP` the ISR calls
+    `xcp_r5_event()` instead of `JavaScope_update()`.
 - The rare A53 acknowledges of 220-350 us are older than this change and
   occur on every build: 295 us in a 10 min soak at 900 B/cycle on
   2026-11-17, 320 and 246 us on the morning of 2026-11-18, 348 and 320 us

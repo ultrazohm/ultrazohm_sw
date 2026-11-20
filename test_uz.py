@@ -51,7 +51,7 @@ class DispatchTest(unittest.TestCase):
             uz.main(["dataviewer", "--interactive", "--local"])
             setup.setup.assert_called_once_with("local", reuse=True)
             self.assertEqual(
-                start.call_args.args[0][-1], "/environment/ultrazohm-dataviewer"
+                Path(start.call_args.args[0][-1]), Path("/environment/ultrazohm-dataviewer")
             )
             ready.assert_called_once_with(
                 start.return_value, Path("/environment/python")

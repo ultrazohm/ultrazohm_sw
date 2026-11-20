@@ -1,6 +1,7 @@
 """Dispatch repository commands to the CLI or viewer's own tasks."""
 
 import argparse
+import importlib
 import json
 import os
 import shutil
@@ -34,6 +35,30 @@ def selected_app():
         return "viewer"
 
 
+def launch_app(args):
+    project = "viewer" if args.command == "dataviewer" else "cli"
+    setup = importlib.import_module(f"{PROJECTS[project]}.tools.setup_env")
+    # Reuse matching installations, while making stable the shortcut default
+    # regardless of the last source selected with setup/shell.
+    source = None if setup.saved_setup().get("source") == args.source else args.source
+    setup.setup(source, reuse=True)
+    executable = setup.executable(f"ultrazohm-{args.command}")
+    if getattr(args, "interactive", False):
+        options = (
+            {"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP}
+            if os.name == "nt"
+            else {"start_new_session": True}
+        )
+        subprocess.Popen([str(executable)], stdin=subprocess.DEVNULL, **options)
+        setup.run(
+            setup.executable("python"),
+            ROOT / PROJECTS[project] / "tools/env_shell.py",
+            interactive=True,
+        )
+    else:
+        setup.run(executable, interactive=True)
+
+
 def main(argv=None):
     launcher = ".\\uz.ps1" if os.name == "nt" else "./uz"
     parser = argparse.ArgumentParser(
@@ -41,6 +66,11 @@ def main(argv=None):
         description="Set up, build and check the UltraZohm CLI and Data Viewer.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f"""Getting started:
+  {launcher} dataviewer               Start the stable DataViewer
+  {launcher} dataviewer --interactive Start the viewer and open a command shell
+  {launcher} cli                      Start the stable interactive CLI
+  Both shortcuts accept --stable (default), --prerelease, or --local.
+
   {launcher} shell stable             Install the published viewer + CLI and open a shell
   {launcher} shell local              Build/install this checkout and open a shell
   {launcher} shell stable --app cli   Install only the published CLI and open a shell
@@ -93,6 +123,25 @@ They do not require running setup first; build tools may still be required.""",
         "task": "run a project task, such as lint or format",
     }
     commands = parser.add_subparsers(dest="command")
+    for name in ("dataviewer", "cli"):
+        command = commands.add_parser(name, help=f"Prepare and start {name}")
+        sources = command.add_mutually_exclusive_group()
+        for source in ("stable", "prerelease", "local"):
+            sources.add_argument(
+                f"--{source}",
+                dest="source",
+                action="store_const",
+                const=source,
+                help=f"Use {source} packages"
+                + (" (default)" if source == "stable" else ""),
+            )
+        command.set_defaults(source="stable")
+        if name == "dataviewer":
+            command.add_argument(
+                "--interactive",
+                action="store_true",
+                help="Launch the viewer in the background and open an activated command shell",
+            )
     commands.add_parser(
         "clear_venv",
         help="remove the repository .venv and forget the setup selection",
@@ -132,6 +181,14 @@ They do not require running setup first; build tools may still be required.""",
     args = parser.parse_args(argv)
     if args.command is None:
         parser.print_help()
+        return
+    if args.command in ("dataviewer", "cli"):
+        try:
+            launch_app(args)
+        except subprocess.CalledProcessError as error:
+            raise SystemExit(error.returncode or 1) from None
+        except KeyboardInterrupt:
+            raise SystemExit(130) from None
         return
     if args.command == "clear_venv":
         try:

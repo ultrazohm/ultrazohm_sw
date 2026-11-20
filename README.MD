@@ -89,6 +89,26 @@ Use `./uz` on Linux or `.\uz.ps1` on Windows. The helper bootstraps uv and the
 Python version pinned in `.python-version`. First setup needs internet access;
 Linux needs curl or wget for uv bootstrap.
 
+Start an application directly:
+
+```sh
+./uz dataviewer                 # stable viewer
+./uz dataviewer --interactive   # viewer plus activated shell for commands
+./uz cli                        # stable interactive CLI
+./uz dataviewer --prerelease
+./uz cli --local
+```
+
+Both shortcuts accept mutually exclusive `--stable` (default), `--prerelease`,
+and `--local` flags. They reuse a matching environment or prepare the selected
+application and source as needed. Their default is always stable, independent of
+the previous setup selection. Changing application or source replaces the managed
+environment. With `dataviewer --interactive`, run commands such as
+`ultrazohm-dataviewer status` or `ultrazohm-cli` in the activated shell.
+Exiting that shell leaves the viewer running.
+
+To prepare an environment and open a shell without starting an application:
+
 ```sh
 ./uz shell stable --app cli       # published CLI only
 ./uz shell stable --app viewer    # published viewer and CLI

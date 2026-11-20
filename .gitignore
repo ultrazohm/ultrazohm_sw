@@ -30,8 +30,10 @@ vitis/Packages/*
 *.slxc
 *cpAnnotation.mat
 
-# Generated artifacts, including live measurement logs
-/artifacts/
+# Keep JSON artifacts visible to Git at every depth.
+/artifacts/**
+!/artifacts/**/
+!/artifacts/**/*.json
 *.ini
 /ultrazohm_cli_channel_mappings/
 

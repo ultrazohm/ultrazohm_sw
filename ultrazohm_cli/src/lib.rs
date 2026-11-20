@@ -1,3 +1,4 @@
+mod artifacts;
 pub mod backend;
 pub mod cli;
 pub mod data;

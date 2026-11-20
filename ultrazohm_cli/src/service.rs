@@ -95,7 +95,9 @@ pub fn session_output_for_repository(
         Some(path) => path.to_path_buf(),
         None => crate::vitis::repository(None).or_else(|_| std::env::current_dir())?,
     };
-    let parent = root.join("artifacts/live_logs");
+    let artifacts = root.join("artifacts");
+    crate::artifacts::ensure_ignore_file(&artifacts)?;
+    let parent = artifacts.join("live_logs");
     fs::create_dir_all(&parent)?;
     let now: chrono::DateTime<chrono::Utc> = std::time::SystemTime::now().into();
     Ok(parent.join(now.format("%Y%m%d-%H%M%S-%fZ").to_string()))

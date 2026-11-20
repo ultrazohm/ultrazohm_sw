@@ -384,9 +384,14 @@ pub fn generate(root: &Path) -> Result<ChannelMapping> {
 pub fn run(repo: Option<&Path>, output: Option<&Path>) -> Result<PathBuf> {
     let root = crate::vitis::repository(repo)?;
     let mapping = generate(&root)?;
+    let artifacts = root.join("artifacts");
     let output = output
         .map(Path::to_path_buf)
-        .unwrap_or_else(|| root.join("artifacts/channel_mappings/javascope.json"));
+        .unwrap_or_else(|| artifacts.join("channel_mappings/javascope.json"));
+    if std::path::absolute(&output)?.starts_with(&artifacts) {
+        crate::artifacts::ensure_ignore_file(&artifacts)
+            .with_context(|| format!("initializing {}", artifacts.display()))?;
+    }
     let bytes = format!("{}\n", serde_json::to_string_pretty(&mapping)?);
     if let Some(parent) = output.parent().filter(|p| !p.as_os_str().is_empty()) {
         fs::create_dir_all(parent).with_context(|| format!("creating {}", parent.display()))?;

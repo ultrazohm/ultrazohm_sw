@@ -44,6 +44,12 @@ def data_directory(repo=None):
         root = find_repository(Path.cwd())
     path = root / "artifacts" / "_user" if root is not None else user_data_directory()
     path.mkdir(parents=True, exist_ok=True)
+    if root is not None:
+        try:
+            with (path.parent / ".gitignore").open("x", encoding="utf-8") as ignore:
+                ignore.write("*\n!*/\n!*.json\n")
+        except FileExistsError:
+            pass
     return path
 
 

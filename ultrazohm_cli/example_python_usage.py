@@ -25,6 +25,11 @@ PROFILE = Path(__file__).parent / "profiles" / "standard.json"
 # Resolve from this script so the destination does not depend on the working directory.
 LOG_ROOT = Path(__file__).resolve().parents[1] / "artifacts" / "live_logs"
 LOG_ROOT.mkdir(parents=True, exist_ok=True)
+try:
+    with (LOG_ROOT.parent / ".gitignore").open("x", encoding="utf-8") as ignore:
+        ignore.write("*\n!*/\n!*.json\n")
+except FileExistsError:
+    pass
 OUTPUT = LOG_ROOT / ("lifecheck-" + datetime.now().strftime("%Y%m%d-%H%M%S-%f"))
 
 # Construction waits for the service and device connection; logging starts below.

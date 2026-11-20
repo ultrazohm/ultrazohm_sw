@@ -98,6 +98,9 @@ class HeaderMappingTest(unittest.TestCase):
             Path(session_path).parent, self.repo / "artifacts" / "live_logs"
         )
         self.assertFalse(self.output.exists())  # No intermediate mapping file needed.
+        self.assertEqual(
+            (self.repo / "artifacts/.gitignore").read_text(), "*\n!*/\n!*.json\n"
+        )
         # An explicit profile is never silently filtered.
         profile["initial_channels"]["4"] = "JSO_theta_mech"
         path = self.repo / "explicit.json"
@@ -137,6 +140,9 @@ class HeaderMappingTest(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         generated = json.loads(self.output.read_text())
+        self.assertEqual(
+            (self.repo / "artifacts/.gitignore").read_text(), "*\n!*/\n!*.json\n"
+        )
         result = self.run_cli("channel-mapping", env={**os.environ, "PATH": ""})
         self.assertEqual(result.returncode, 0, result.stderr)
         default = json.loads(result.stdout)

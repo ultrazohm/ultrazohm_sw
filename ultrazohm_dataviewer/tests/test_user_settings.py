@@ -26,6 +26,7 @@ def test_data_is_under_repository_artifacts_in_both_modes(
         data_directory(tmp_path if explicit else None)
         == tmp_path / "artifacts" / "_user"
     )
+    assert (tmp_path / "artifacts" / ".gitignore").read_text() == "*\n!*/\n!*.json\n"
 
 
 def test_outside_a_checkout_data_goes_to_the_user_directory_not_the_working_directory(

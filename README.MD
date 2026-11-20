@@ -105,6 +105,7 @@ Rust and a C/C++ toolchain. Re-run local setup after CLI source changes.
 Explicit setup recreates the managed environment, removing stale packages and
 editable installs. Reinstall any additional project packages afterward.
 Plain `shell` reuses a completed environment while its setup inputs match.
+Use `./uz clear_venv` or `.\uz.ps1 clear_venv` to remove the repository `.venv` and reset the saved selection.
 Neither command starts an application. Inside the activated shell, run
 `ultrazohm-cli`, `ultrazohm-dataviewer`, or `python measurement.py`.
 Use `exit` to return to the original shell.

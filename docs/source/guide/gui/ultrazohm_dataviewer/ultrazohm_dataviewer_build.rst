@@ -4,11 +4,6 @@
 Build
 =====
 
-``ultrazohm_dataviewer`` is a Python ``imgui_bundle`` application.
-``imgui_bundle`` ships prebuilt native binaries (Dear ImGui, ImPlot, hello_imgui) for Windows and Linux, so the same source runs on both.
-In the following, the build process of ``ultrazohm_dataviewer`` is described.
-Usage of the :ref:`vscode_remote_container` is assumed.
-
 Tasks
 =====
 
@@ -19,14 +14,20 @@ From the repository root:
 
 .. code-block:: bash
 
-   ./uz check viewer                  # ruff and the full pytest suite
-   ./uz task viewer wheel           # publishable viewer wheel
-   .\uz.ps1 build viewer           # Windows standalone bundle
-   .\uz.ps1 task viewer bundle-smoke  # Windows bundle and live workers
+   ./uz check viewer        # lint, format check, and tests
+   ./uz task viewer wheel   # Python wheel
+
+On Windows, use ``.\uz.ps1`` with the same arguments.
+Build and test the Windows bundle in PowerShell.
+
+.. code-block:: powershell
+
+   .\uz.ps1 build viewer
+   .\uz.ps1 task viewer bundle-smoke
 
 ``check viewer`` and ``build viewer`` build a matching CLI wheel from ``ultrazohm_cli`` unless ``--cli-wheel PATH`` names one.
-Tests use ``ultrazohm_dataviewer/.venv-ci`` and bundles ``ultrazohm_dataviewer/.venv-build``; the root ``.venv`` is shared by both applications.
-On Windows, use ``.\uz.ps1`` with the same arguments.
+Tests use ``ultrazohm_dataviewer/.venv-ci`` and bundles use ``ultrazohm_dataviewer/.venv-build``.
+The root ``.venv`` is shared by both applications.
 
 Native standalone executables (PyInstaller)
 ============================================
@@ -34,10 +35,11 @@ Native standalone executables (PyInstaller)
 The bundle collects ``imgui_bundle``, ``pyarrow``, the Polars runtime and the CLI into a self-contained directory containing the executable and ``_internal``.
 Extract the entire archive and keep ``_internal`` beside the executable.
 The distributed executable does not require Python or uv on the target machine.
-PyInstaller builds the Windows bundle on Windows. Linux installations use Python wheels.
+PyInstaller builds the Windows bundle on Windows.
+Linux installations use Python wheels.
 
 The frozen smoke test checks native imports, Parquet reading with both backends in memory and lazy modes, downsampling and plot input; the live smoke test starts the bundled CLI workers against the simulator.
-These checks do not verify window creation or graphics drivers on the user's desktop.
+CI also checks GUI startup on Linux and Windows using a headless display.
 
 Releases
 ========
@@ -53,21 +55,10 @@ Pushes to ``main`` (stable), ``develop`` and ``feature/uz_cli_dataviewer_testing
   it never replaces the repository's latest release designation;
 - the wheels on PyPI as ``ultrazohm-cli`` and ``ultrazohm-dataviewer`` through trusted publishing.
 
-Linux users install the published Python wheels with uv or pip. No standalone Linux archive is built.
+Linux users install the published Python wheels with uv or pip.
 Windows ZIPs provide CLI-only and viewer-plus-CLI applications without an installed Python.
 The viewer ZIP contains one GUI executable and a PowerShell wrapper for terminal commands.
 
-
-Combined desktop packaging
-==========================
-
-Select the ``ultrazohm_sw`` root at startup, or supply ``--live-repo``.
-All windows except Python start open, with Analysis tabs selected.
-Mode switches select Analysis or Live tabs once without closing other windows.
-The live panels appear whenever the ``ultrazohm_cli`` package is installed: always in the bundle, and on Windows and Linux x86-64 in the source environment, where it is a locked dependency.
-``./uz setup local`` builds the checkout's CLI and uses it instead.
-Both deployments use the same subprocess worker code; bundled scripts can import bundled dependencies, while source scripts can also use packages installed in the developer environment.
-Vitis is external and remains required for build/flash.
 
 Workspace data and process ownership
 ------------------------------------
@@ -79,8 +70,8 @@ The standalone executable and ``_internal`` contain application resources; they 
 ``settings.json`` contains runtime preferences.
 Missing preferences are seeded from the CLI's bundled standard profile, restricted to the selected firmware's available observables.
 Existing preferences are preserved.
-Connecting or flashing prepares an effective session profile when assignments need filtering; it does not rewrite the saved preferences.
-Header-generated mapping JSON is derived data and is regenerated for the selected firmware checkout.
+Connect passes saved preferences to the CLI, which rejects unavailable explicit channel assignments.
+Flash generates a mapping snapshot and a separate session profile that drops unavailable assignments without rewriting saved preferences.
 
 ``tools.json`` remembers the selected XSCT launcher.
 Its directory is added to the application's process environment for child processes, without changing the system PATH.
@@ -94,11 +85,6 @@ For an attached external service it sends device Stop without shutting that serv
 Script Stop invalidates queued manual commands and uses a control path independent of display reads.
 Flashing shuts the service down (which sends device Stop and finalizes recordings), then programs and reconnects.
 
-The root ``uz`` and ``uz.ps1`` launchers bootstrap uv and pinned Python.
-``setup`` installs the selected applications into the shared repository ``.venv``; ``shell`` opens an activated terminal.
-Choose ``--app cli`` or ``--app viewer`` and the ``stable``, ``prerelease`` or ``local`` source.
-The default is the published stable viewer and CLI; explicit setup recreates the managed environment.
-``build viewer``, ``check viewer`` and ``task viewer bundle-smoke`` expose the build and test workflow.
 Standalone execution uses its bundled worker entry point and requires no separately installed Python or Rust.
 The application log and Python editor are available on Windows and Linux.
 External Python scripts use the installed ``ultrazohm_dataviewer.Client``; the bundled Python editor uses the executable's internal script worker.

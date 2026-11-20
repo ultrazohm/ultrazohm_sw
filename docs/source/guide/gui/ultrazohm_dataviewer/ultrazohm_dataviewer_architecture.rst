@@ -298,7 +298,8 @@ Display buffers are bounded by trace/plot budgets.
 These are not total-process memory limits: decoded batches, summary-construction scratch, full FFTs and explicit array-based plugins/exports need additional memory.
 Indexes and summaries are kept in RAM by default, without reading or writing disk caches.
 Optional persistent caches have no automatic disk-size limit and can be removed while the viewer is closed.
-The cache directory defaults to ``~/.cache/ultrazohm_dataviewer`` and is overridden by ``UZ_DATAVIEWER_CACHE``.
+The desktop stores disk caches in ``viewer_cache`` under ``<workspace>/artifacts/_user`` or the per-user data directory.
+Set ``UZ_DATAVIEWER_CACHE`` to override this path.
 Writes are atomic; invalid cache containers are rebuilt.
 
 ``loading_mode(memory|lazy)`` affects subsequent opens.

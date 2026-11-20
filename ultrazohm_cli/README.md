@@ -26,7 +26,7 @@ Python imports use `ultrazohm_cli`; `python -m ultrazohm_cli` runs the CLI.
 
 Source builds require Rust 1.90.0 and a native C/C++ toolchain (Linux: `build-essential`; Windows: Visual Studio Build Tools with C++ development).
 The devcontainer supplies Rust, Maturin and uv.
-Its post-create script runs `./uz setup local` and installs example dependencies.
+Its post-create script runs `./uz setup local --app viewer` and installs example dependencies.
 Both `ultrazohm-cli` and `ultrazohm-dataviewer` are available in new container terminals.
 Re-run `bash .devcontainer/post-create.sh` to refresh the installation.
 Container-built wheels require a compatible Linux host; Windows needs its own wheel.
@@ -51,11 +51,12 @@ Native Linux ARM64 builds are possible; these are Linux applications, not execut
 
 ## Run
 
-Bare `ultrazohm-cli` starts an interactive, disconnected session with Parquet and CSV exports configured.
+Run `ultrazohm-cli` from the firmware checkout to open a disconnected interactive session.
+Use `ultrazohm-cli serve --interactive --repo PATH` to select a checkout explicitly.
 At its prompt, enter commands without the executable prefix:
 
 ```text
-connect                        # default 192.168.1.233:1000
+connect
 status
 set-variable send_field_1 -12.5
 set-observable lifecheck 1
@@ -69,6 +70,7 @@ shutdown
 ```
 
 Use `help` or `help set-variable`.
+With no arguments, `connect` uses `192.168.1.233:1000`.
 Tab completes command names; Up/Down recalls commands from this session.
 Piped input works too.
 Arguments are space-separated; quote paths containing spaces.
@@ -94,7 +96,6 @@ Every entry point (bare `ultrazohm-cli`, `serve`, Python `Acquisition()` and the
 
 The viewer keeps its preferences and log paths in `artifacts/_user` of the selected checkout.
 See [viewer usage](../ultrazohm_dataviewer/README.md) for settings and worker launch.
-The CLI console, the viewer's `uz …` console commands and Python automation work on Linux and Windows.
 
 ### Control and recording lifecycle
 

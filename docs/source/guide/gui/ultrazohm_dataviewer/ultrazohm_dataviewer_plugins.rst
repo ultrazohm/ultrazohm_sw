@@ -15,22 +15,27 @@ Plugins location
 
 ``ultrazohm_dataviewer`` scans these locations in order, and only if they exist:
 
-#. ``UZ_DATAVIEWER_PLUGINS``: one or more directories (``os.pathsep``-separated: ``:`` on Linux/macOS, ``;`` on Windows). Point this at your plugin folder.
+#. ``UZ_DATAVIEWER_PLUGINS`` lists plugin directories separated by ``:`` on Linux or ``;`` on Windows.
 #. ``~/.ultrazohm_dataviewer/nodes/``: the default user plugin folder.
 
 .. code-block:: bash
 
    export UZ_DATAVIEWER_PLUGINS=/path/to/my/plugins
-   python run.py
+   ultrazohm-dataviewer
 
-You can also load new node kinds at runtime from the console:
+Load plugins into an open viewer through the Python client.
+Omit the directory to use the configured search paths.
 
-.. code-block:: text
+.. code-block:: python
 
-   load_plugins("/path/to/my/plugins")     # or load_plugins() for the configured dirs
+   from ultrazohm_dataviewer import Client
+
+   with Client() as viewer:
+       viewer.load_plugins("/path/to/my/plugins")
 
 A missing folder or file is silently skipped.
-A plugin that throws an error on import is logged to the console and skipped; its registrations and module entry are rolled back.
+Import failures appear in the Application log.
+The viewer skips the failed plugin and rolls back its registrations and module entry.
 Node kinds cannot replace an existing plugin or builtin registration.
 Restart the viewer to load changes to an already registered kind.
 This keeps cached node outputs consistent with the implementation that produced them.

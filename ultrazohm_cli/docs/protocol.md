@@ -116,7 +116,7 @@ Aliases may be added explicitly to a copied channel mapping.
 It does not set the measured value.
 Names accept the exact `JSO_...` identifier or the suffix.
 IDs come from the deployed header/channel mapping.
-Firmware truncates fractional selection values; API v1 avoids them entirely.
+The control API accepts integer channel numbers and resolves observable names to integer firmware IDs.
 
 ## Signals and status
 
@@ -267,9 +267,10 @@ Its mask must select two adjacent bits at shift 0..30, and its `values` object m
 Older custom mappings must add this object; invalid mappings are rejected before device access.
 Both flags also exist as Python constructor arguments `profile` and `channel_mapping`.
 The standard profile is embedded; firmware mappings are generated from checkout headers when omitted.
-Outside the checkout, pass a previously header-generated mapping explicitly.
+Outside the checkout, use `--repo PATH` to select a firmware checkout or `--channel-mapping PATH` to use a saved mapping.
 
-Default initial channels select IDs 1..20 into slots 1..20.
+The standard profile proposes 20 named observables for slots 1–20.
+Names resolve against the selected firmware mapping, and unavailable built-in defaults are skipped.
 All channel/name pairs are validated before device access.
 Connection initialization emits their ordinary 201..220 wire commands in channel order before accepting API commands.
 Successful writes populate `observables`, increment command counters, and appear as `initial_channels` events in the audit.

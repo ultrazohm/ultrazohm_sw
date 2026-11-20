@@ -61,8 +61,8 @@ See the [viewer README](../../ultrazohm_dataviewer/README.md) for its runtime bo
 Developer and frozen modes share <checkout>/artifacts/_user; outside a checkout the viewer uses a per-user data directory.
 A shared settings loader seeds missing files, reads the mapping and preferences once, and derives session profiles without rewriting saved choices.
 Bundled code and templates are read-only inputs.
-The native console and Python automation remain available on Windows and Linux, including the viewer's `uz` shortcut.
-The browser build has been removed.
+The CLI provides an interactive terminal on Windows and Linux.
+The viewer supports Python automation through its Python panel or an external script.
 
 ## Recording and shutdown invariants
 

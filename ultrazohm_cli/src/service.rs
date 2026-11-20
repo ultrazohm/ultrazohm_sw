@@ -318,6 +318,7 @@ struct State {
     frames: u64,
     samples: u64,
     status: u32,
+    user_buttons: [bool; 8],
     platform_state: Option<String>,
     commands_sent: u64,
     ack_sent: u64,
@@ -1137,6 +1138,7 @@ impl ConnectionContext {
                         s.frames += 1;
                         s.samples += profile.samples_per_packet as u64;
                         s.status = frame.status;
+                        s.user_buttons = crate::protocol::user_buttons(frame.status);
                         s.platform_state = profile
                             .platform_state
                             .as_ref()

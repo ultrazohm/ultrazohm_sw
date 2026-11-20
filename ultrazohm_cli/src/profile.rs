@@ -13,6 +13,53 @@ pub struct ProfileSettings {
     pub initial_channels: BTreeMap<u32, String>,
 }
 impl ProfileSettings {
+    pub fn validate(&self) -> Result<()> {
+        ensure!(
+            self.schema_version == 1,
+            "unsupported profile schema_version"
+        );
+        ensure!(
+            self.sample_period_us.is_finite() && self.sample_period_us > 0.0,
+            "sample_period_us must be positive and finite"
+        );
+        Ok(())
+    }
+    /// Carry runtime choices into a new firmware mapping, reporting dropped assignments.
+    pub fn remap(&self, mapping: &ChannelMapping) -> Result<(Self, Vec<String>)> {
+        self.validate()?;
+        let mut selected = std::collections::BTreeMap::new();
+        let mut removed = Vec::new();
+        for (channel, name) in &self.initial_channels {
+            let canonical = if mapping.observables.contains_key(name) {
+                name.clone()
+            } else {
+                format!("JSO_{name}")
+            };
+            if *channel > 0
+                && (*channel as usize) <= mapping.channels
+                && mapping.observables.contains_key(&canonical)
+            {
+                selected.insert(*channel, canonical);
+            } else {
+                removed.push(name.clone());
+            }
+        }
+        if selected.is_empty()
+            && !self.initial_channels.is_empty()
+            && mapping.observables.contains_key("JSO_ZEROVALUE")
+        {
+            selected.insert(1, "JSO_ZEROVALUE".into());
+        }
+        let settings = ProfileSettings {
+            schema_version: 1,
+            name: self.name.clone(),
+            sample_period_us: self.sample_period_us,
+            initial_channels: selected,
+        };
+        settings.validate()?;
+        Ok((settings, removed))
+    }
+
     pub fn load(path: Option<&Path>) -> Result<Self> {
         let text = match path {
             Some(p) => std::fs::read_to_string(p)
@@ -25,6 +72,7 @@ impl ProfileSettings {
             settings.schema_version == 1,
             "unsupported profile schema_version"
         );
+        settings.validate()?;
         Ok(settings)
     }
 
@@ -294,37 +342,15 @@ pub struct Profile {
     pub platform_state: Option<PlatformStateMapping>,
 }
 impl Profile {
-    /// Carry runtime choices into a new firmware mapping, reporting dropped assignments.
+    /// Reuse the runtime-profile rules for firmware session replacement.
     pub fn remap(&self, mapping: ChannelMapping) -> Result<(Self, Vec<String>)> {
-        let mut selected = std::collections::BTreeMap::new();
-        let mut removed = Vec::new();
-        for (channel, name) in &self.initial_channels {
-            let canonical = if mapping.observables.contains_key(name) {
-                name.clone()
-            } else {
-                format!("JSO_{name}")
-            };
-            if *channel > 0
-                && (*channel as usize) <= mapping.channels
-                && mapping.observables.contains_key(&canonical)
-            {
-                selected.insert(*channel, canonical);
-            } else {
-                removed.push(name.clone());
-            }
-        }
-        if selected.is_empty()
-            && !self.initial_channels.is_empty()
-            && mapping.observables.contains_key("JSO_ZEROVALUE")
-        {
-            selected.insert(1, "JSO_ZEROVALUE".into());
-        }
         let settings = ProfileSettings {
             schema_version: 1,
             name: self.name.clone(),
             sample_period_us: self.sample_period_us,
-            initial_channels: selected,
+            initial_channels: self.initial_channels.clone(),
         };
+        let (settings, removed) = settings.remap(&mapping)?;
         Ok((Self::from_mapping(settings, mapping)?, removed))
     }
 

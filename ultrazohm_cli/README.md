@@ -436,6 +436,7 @@ associated with their original files.
 
 ```python
 from ultrazohm_cli import Client
+
 client = Client("127.0.0.1:19740")
 job = client.firmware("build")
 progress = client.job(job["id"])  # job metadata, log text, next_offset
@@ -524,3 +525,35 @@ After flash, reconnection retries for up to 20 seconds. A failed reconnect does 
 Python `Acquisition.output` and its recording helpers follow the latest session, including after close. Save a durable `Recording` handle before flashing to retain access to an earlier session; recording numbers restart in each session.
 
 Shutdown during programming waits for completion, then retries device Stop delivery for a bounded 20-second boot window when the firmware mapping is known. Failed programming or uncertain mapping is reported as an error without guessing command IDs. If delivery fails, the firmware job log and stderr contain the failure and the service exits nonzero. The viewer submits Stop and shutdown independently of flash progress without blocking its UI. A successful retry clears that operation's displayed failure for the same service, while the Console retains the diagnostic history.
+
+## Configuration and owned service processes from Python
+
+Offline helpers use the same Rust validation and remapping as the service:
+
+```python
+from ultrazohm_cli.configuration import channel_mapping, default_profile, remap_profile
+
+mapping = channel_mapping("/path/to/ultrazohm_sw")
+profile = default_profile("/path/to/ultrazohm_sw")
+profile, removed = remap_profile(mapping, profile, {"1": "lifecheck"})
+```
+
+`validate_profile` validates runtime preferences; `read_profile` loads them from JSON.
+Remapping returns removed names explicitly. Applications deciding to save a startup
+profile should reject unwanted removals rather than silently changing user choices.
+
+`ultrazohm_cli.process.ServiceProcess` owns an external service process. `start`
+accepts its endpoint, output directory, firmware repository or mapping, optional
+profile and recording options. `shutdown` checks service identity before requesting
+shutdown; `wait` waits for finalization and can yield to a caller's cancellation event.
+The caller decides when to stop or shut down a device. Creating a helper or attaching
+an ordinary `Client` does not transfer ownership of an existing service.
+
+CLI native executables and Python wheels embed the firmware Tcl scripts and launch
+templates. Before execution, scripts are materialized under the checkout's
+`artifacts/cli-tools/<content-id>/tcl_scripts`, under the firmware workspace lock.
+Unchanged resources retain their timestamps for incremental builds. DataViewer uses
+these CLI-owned resources in both source and frozen mode.
+
+`status.state.user_buttons` contains eight decoded booleans in button order 1–8.
+Clients should use them instead of interpreting JavaScope wire-status bit positions.

@@ -259,15 +259,6 @@ pub(super) fn run(
                             "service has no firmware checkout; start serve --repo PATH",
                         )?))?;
                     let xsct = crate::vitis::selected_xsct(config.xsct.as_deref())?;
-                    let script = std::env::var_os("UZ_CLI_TCL_DIR")
-                        .map(PathBuf::from)
-                        .unwrap_or_else(|| repo.join("tcl_scripts"))
-                        .join("vitis_headless.tcl");
-                    ensure!(
-                        script.is_file(),
-                        "Vitis entry script not found: {}",
-                        script.display()
-                    );
                     let headers = crate::header_mapping::HEADERS
                         .iter()
                         .map(|p| fs::read(repo.join(p)).ok())

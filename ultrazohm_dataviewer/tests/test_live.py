@@ -1559,18 +1559,18 @@ def test_control_button_labels_preserve_slot_commands(
 
 
 @pytest.mark.parametrize(
-    "status,frames,attached,error,expected",
+    "buttons,frames,attached,error,expected",
     [
-        (1 << 4, 1, True, "", ["ACT"] + ["—"] * 7),
-        (1 << 11, 1, True, "", ["—"] * 7 + ["ACT"]),
-        (0xF00F, 1, True, "", ["—"] * 8),
-        (0xFF0, 0, True, "", ["?"] * 8),
-        (0xFF0, 1, False, "", ["?"] * 8),
-        (0xFF0, 1, True, "Connection refused", ["?"] * 8),
+        ([True] + [False] * 7, 1, True, "", ["ACT"] + ["—"] * 7),
+        ([False] * 7 + [True], 1, True, "", ["—"] * 7 + ["ACT"]),
+        ([False] * 8, 1, True, "", ["—"] * 8),
+        ([True] * 8, 0, True, "", ["?"] * 8),
+        ([True] * 8, 1, False, "", ["?"] * 8),
+        ([True] * 8, 1, True, "Connection refused", ["?"] * 8),
     ],
 )
 def test_user_button_feedback_and_vertical_layout(
-    gui_frame, app_state, monkeypatch, status, frames, attached, error, expected
+    gui_frame, app_state, monkeypatch, buttons, frames, attached, error, expected
 ):
     from imgui_bundle import imgui
 
@@ -1580,7 +1580,14 @@ def test_user_button_feedback_and_vertical_layout(
         workspace.update,
         attached=attached,
         error=error,
-        status={"state": {"connected": True, "status": status, "frames": frames}},
+        status={
+            "state": {
+                "connected": True,
+                "status": 0,
+                "user_buttons": buttons,
+                "frames": frames,
+            }
+        },
     )
     indicators, positions = [], []
     original_button = imgui.button

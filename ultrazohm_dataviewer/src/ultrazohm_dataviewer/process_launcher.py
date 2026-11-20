@@ -30,9 +30,6 @@ def main(argv=None):
     if task == "cli":
         # External tools must not inherit frozen-library search paths.
         if getattr(sys, "frozen", False):
-            from pathlib import Path
-
-            os.environ["UZ_CLI_TCL_DIR"] = str(Path(sys._MEIPASS) / "tcl_scripts")
             if os.name == "nt":
                 import ctypes
 

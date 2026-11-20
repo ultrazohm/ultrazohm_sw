@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import ipaddress
 import json
-import os
 import subprocess
 import sys
 import threading
@@ -361,26 +360,6 @@ class LiveUpdate:
     variable_sends: dict = field(default_factory=dict)
 
 
-@dataclass
-class OwnedService:
-    """The launched process remains owned even when the viewer attaches elsewhere."""
-
-    process: object = None
-    endpoint: str | None = None
-    shutdown_requested: bool = False
-    log: Path | None = None
-    repo: Path | None = None
-    mapping: Path | None = None
-    service_id: str | None = None
-
-    @property
-    def running(self):
-        return self.process is not None and self.process.poll() is None
-
-    def owns(self, endpoint):
-        return self.endpoint == endpoint and self.running
-
-
 def cursor_invalid(exc):
     """Whether a read failed because its cursor no longer addresses retained data."""
     return getattr(exc, "code", None) == "cursor_expired"
@@ -420,7 +399,9 @@ class LiveController:
         self.control_commands = Queue(maxsize=32)
         self._pending_controls = 0
         self._control_errors = {}
-        self.owned = OwnedService()
+        from ultrazohm_cli.process import ServiceProcess
+
+        self.owned = ServiceProcess()
         self.client = None
         self.endpoint = None
         self._poll_client = None
@@ -674,38 +655,10 @@ class LiveController:
         user_directory=None,
         repo=None,
     ):
-        if repo and mapping:
-            raise ValueError(
-                "Choose either a firmware repository or an explicit channel mapping"
-            )
-        self._progress("Starting local acquisition service…")
-        if self.owned.running:
-            raise RuntimeError(
-                "The launched service is still running; check its endpoint and service.log"
-            )
-        output = Path(output).expanduser().resolve()
-        # One output directory per service lifetime, never reuse an existing run.
-        output.parent.mkdir(parents=True, exist_ok=True)
-        if output.exists():
-            raise ValueError(
-                "Choose a new session directory; existing recordings are never overwritten"
-            )
-        log_path = output.with_name(output.name + ".service.log")
-        from .process_launcher import command
-
-        args = command(
-            "cli",
-            "--endpoint",
-            self.endpoint,
-            "serve",
-            "--output",
-            str(output),
-            "--format",
-            "parquet",
-        )
-        if repo:
-            args += ["--repo", str(Path(repo).expanduser().resolve())]
-            if not profile:
+        # Selecting saved preferences is application policy; process mechanics
+        # and CLI arguments belong to the CLI package.
+        if not profile:
+            if repo:
                 from .user_paths import data_directory
 
                 directory = (
@@ -714,77 +667,33 @@ class LiveController:
                 saved = directory / "settings.json"
                 if saved.is_file():
                     profile = saved
-        elif mapping:
-            args += ["--channel-mapping", str(Path(mapping).expanduser().resolve())]
-            if not profile:
+            elif mapping:
                 from .settings import load_workspace_settings
 
                 profile = load_workspace_settings(mapping, user_directory).path
-        if profile:
-            args += ["--profile", str(profile)]
-        if ack:
-            args += ["--ack", "on"]
-        for name in (
-            "buffer_samples",
-            "segment_rows",
-            "flush_interval_ms",
-            "queue_seconds",
-            "recording_backend",
-        ):
-            if (value := (data_options or {}).get(name)) is not None:
-                args += ["--" + name.replace("_", "-"), str(value)]
-        options = (
-            {"stdin": subprocess.DEVNULL, "start_new_session": True}
-            if os.name != "nt"
-            else {
-                "stdin": subprocess.DEVNULL,
-                "creationflags": subprocess.DETACHED_PROCESS
-                | subprocess.CREATE_NEW_PROCESS_GROUP,
-            }
+        from .process_launcher import command
+
+        self._progress("Starting local acquisition service…")
+        self.owned.start(
+            output,
+            mapping,
+            profile,
+            data_options,
+            ack,
+            repo=repo,
+            endpoint=self.endpoint,
+            client=self.client,
+            cancel=self.stop_event,
+            command_prefix=command("cli"),
         )
-        with log_path.open("ab") as log:
-            self.owned.process = subprocess.Popen(
-                args, stdout=log, stderr=log, **options
-            )
-            self.owned.endpoint = self.endpoint
-            self.owned.repo = Path(repo).expanduser().resolve() if repo else None
-            self.owned.mapping = (
-                Path(mapping).expanduser().resolve() if mapping else None
-            )
-            self.owned.shutdown_requested = False
-            self.owned.log = log_path
-        deadline = time.monotonic() + 8
-        while not self.stop_event.is_set() and time.monotonic() < deadline:
-            if self.owned.process.poll() is not None:
-                raise RuntimeError(f"Service failed; see {log_path}")
-            try:
-                self.owned.service_id = self.client.status()["service_id"]
-                return
-            except (OSError, RuntimeError):
-                self.stop_event.wait(0.1)
-        # A service that never answered must not block later Connect attempts.
-        self._terminate_owned()
-        raise RuntimeError(f"Service startup timed out; see {log_path}")
 
     def _terminate_owned(self):
-        process = self.owned.process
-        if process is None or process.poll() is not None:
-            return
-        process.terminate()
-        try:
-            process.wait(timeout=5)
-        except subprocess.TimeoutExpired:
-            process.kill()
-            process.wait()
+        self.owned.terminate_startup()
 
     def _wait_owned(self, description):
-        """Wait for the owned service without blocking viewer shutdown."""
-        while self.owned.process.poll() is None:
-            if self.stop_event.is_set():
-                return None  # close() takes over waiting for finalization
-            self._progress(description)
-            self.stop_event.wait(0.2)
-        return self.owned.process.returncode
+        return self.owned.wait(
+            cancel=self.stop_event, progress=lambda: self._progress(description)
+        )
 
     def _command(self, operation, kwargs):
         if operation == "flash":
@@ -1211,18 +1120,7 @@ class LiveController:
                     print(f"Device Stop on viewer close failed: {exc}", file=sys.stderr)
             if owned_running and owned_endpoint:
                 try:
-                    if not self.owned.shutdown_requested:
-                        owned_client = factory(owned_endpoint)
-                        if (
-                            self.owned.service_id
-                            and owned_client.status()["service_id"]
-                            != self.owned.service_id
-                        ):
-                            raise RuntimeError(
-                                "Owned service was replaced; refusing to shut down its replacement"
-                            )
-                        owned_client.shutdown()
-                        self.owned.shutdown_requested = True
+                    self.owned.shutdown(factory(owned_endpoint))
                     try:
                         code = self.owned.process.wait(timeout=CLOSE_FINALIZE_TIMEOUT)
                     except subprocess.TimeoutExpired:

@@ -2,14 +2,26 @@
 
 import json
 from dataclasses import replace
+from pathlib import Path
 from types import SimpleNamespace
 
 import numpy as np
 import polars as pl
 
 from ultrazohm_dataviewer.live import LiveController, LiveSource, LiveUpdate
-from ultrazohm_dataviewer.live_settings import save
+from ultrazohm_dataviewer.live_settings import (
+    save_startup_profile,
+    save_view_preferences,
+)
 from ultrazohm_dataviewer.panels.live import LiveWorkspace
+
+
+def contract(observables):
+    from ultrazohm_cli.configuration import channel_mapping
+
+    result = channel_mapping(Path(__file__).resolve().parents[2])
+    result["observables"] = observables
+    return result
 
 
 def workspace(root):
@@ -17,9 +29,7 @@ def workspace(root):
     directory = panel.user_directory()
     panel.mapping = str(directory / "mapping.json")
     if not (directory / "mapping.json").exists():
-        (directory / "mapping.json").write_text(
-            json.dumps({"channels": 20, "observables": {"a": 1, "b": 2}})
-        )
+        (directory / "mapping.json").write_text(json.dumps(contract({"a": 1, "b": 2})))
         (directory / "settings.json").write_text(
             json.dumps(
                 {
@@ -72,7 +82,8 @@ def test_save_and_restore_live_settings_without_sending_commands(tmp_path):
         first.ip = "192.168.1.42"
         first.port = 1001
         first.variable_values = {"setpoint": "3.5"}
-        directory = save(first)
+        directory = save_view_preferences(first)
+        save_startup_profile(first)
         assert json.loads((directory / "settings.json").read_text())[
             "initial_channels"
         ] == {"1": "b", "2": "a"}
@@ -90,7 +101,7 @@ def test_save_and_restore_live_settings_without_sending_commands(tmp_path):
         assert second.controller.commands.empty()
         # A disconnected save must retain the pending layout and saved channels.
         before = (directory / "settings.json").read_text()
-        save(second)
+        save_view_preferences(second)
         assert (directory / "settings.json").read_text() == before
         publish(second, "another-service")
         assert second.state.rows == 2
@@ -110,7 +121,7 @@ def test_save_and_restore_live_settings_without_sending_commands(tmp_path):
 def test_invalid_view_does_not_partially_apply_preferences(tmp_path):
     panel = workspace(tmp_path)
     try:
-        save(panel)
+        save_view_preferences(panel)
         path = panel.user_directory() / "live_view.json"
         data = json.loads(path.read_text())
         data["ip"] = "changed"
@@ -130,7 +141,7 @@ def test_missing_live_signals_do_not_prevent_restoring_other_traces(tmp_path):
         publish(panel)
         panel.state.cells[0].add((panel.run.id, "a"))
         panel.state.cells[0].add((panel.run.id, "missing"))
-        save(panel)
+        save_view_preferences(panel)
         panel.load_live_settings()
         panel.controller.update = replace(panel.controller.update, revision=2)
         panel._source = None
@@ -146,12 +157,12 @@ def test_save_live_button_writes_settings(gui_frame, app_state, monkeypatch, tmp
     panel = workspace(tmp_path)
     panel.available = True
     monkeypatch.setattr(
-        imgui, "button", lambda label, *args, **kwargs: label == "Save live settings"
+        imgui, "button", lambda label, *args, **kwargs: label == "Save view preferences"
     )
     try:
         gui_frame(SimpleNamespace(render=panel.render_data), app_state)
         assert (panel.user_directory() / "live_view.json").is_file()
-        assert "Live settings saved" in panel.settings_notice
+        assert "View preferences saved" in panel.settings_notice
     finally:
         panel.close()
 
@@ -161,7 +172,7 @@ def test_attached_service_cannot_save_incompatible_local_startup_channels(tmp_pa
 
     panel = workspace(tmp_path)
     try:
-        directory = save(panel)
+        directory = save_view_preferences(panel)
         paths = [directory / "settings.json", directory / "live_view.json"]
         before = [path.read_bytes() for path in paths]
         for assignment in (
@@ -181,7 +192,7 @@ def test_attached_service_cannot_save_incompatible_local_startup_channels(tmp_pa
             with pytest.raises(
                 ValueError, match="absent from the selected firmware mapping"
             ):
-                save(panel)
+                save_startup_profile(panel)
             assert [path.read_bytes() for path in paths] == before
     finally:
         panel.close()
@@ -202,7 +213,7 @@ def test_save_refreshes_local_repository_mapping_after_firmware_changes(
 
         def read_mapping(repo):
             requested.append(repo)
-            return {"channels": 20, "observables": {"NEW_SIGNAL": 1}}
+            return contract({"NEW_SIGNAL": 1})
 
         monkeypatch.setattr(
             "ultrazohm_dataviewer.live_mapping.read_mapping", read_mapping
@@ -217,7 +228,7 @@ def test_save_refreshes_local_repository_mapping_after_firmware_changes(
             },
             assignments=({"channel": 1, "name": "NEW_SIGNAL"},),
         )
-        directory = save(panel)
+        directory = save_startup_profile(panel)
         assert requested == [str(tmp_path)]
         assert json.loads((directory / "settings.json").read_text())[
             "initial_channels"
@@ -226,14 +237,12 @@ def test_save_refreshes_local_repository_mapping_after_firmware_changes(
         panel.close()
 
 
-def test_local_mapping_timeout_preserves_saved_settings(tmp_path, monkeypatch):
-    import subprocess
-
+def test_local_mapping_failure_preserves_saved_settings(tmp_path, monkeypatch):
     from ultrazohm_dataviewer.settings import load_workspace_settings
 
     panel = workspace(tmp_path)
     try:
-        directory = save(panel)
+        directory = save_view_preferences(panel)
         paths = [directory / "settings.json", directory / "live_view.json"]
         before = [path.read_bytes() for path in paths]
         panel._repository_settings = load_workspace_settings(panel.mapping, directory)
@@ -242,13 +251,39 @@ def test_local_mapping_timeout_preserves_saved_settings(tmp_path, monkeypatch):
         )
 
         def timeout(repo):
-            raise subprocess.TimeoutExpired("channel-mapping", 60)
+            raise RuntimeError("Invalid local firmware mapping")
 
         monkeypatch.setattr("ultrazohm_dataviewer.live_mapping.read_mapping", timeout)
-        panel.save_live_settings()
-        assert (
-            "Timed out validating the local firmware mapping" in panel.settings_notice
-        )
+        panel.save_live_settings(startup=True)
+        assert "Invalid local firmware mapping" in panel.settings_notice
         assert [path.read_bytes() for path in paths] == before
     finally:
         panel.close()
+
+
+def test_view_preferences_without_checkout_never_touch_runtime_profile(
+    tmp_path, monkeypatch
+):
+    monkeypatch.chdir(tmp_path)
+    first = LiveWorkspace(LiveController(lambda _: None))
+    second = None
+    try:
+        assert first.repo is None and not first.repository_ready
+        first.endpoint = "127.0.0.1:19741"
+        first.window_seconds = 8.0
+        first.state.set_grid(2, 1)
+        first.update = replace(
+            first.update,
+            attached=True,
+            assignments=({"channel": 1, "name": "REMOTE_ONLY"},),
+        )
+        directory = save_view_preferences(first)
+        assert not (directory / "settings.json").exists()
+        second = LiveWorkspace(LiveController(lambda _: None))
+        assert second.endpoint == first.endpoint
+        assert second.window_seconds == 8.0
+        assert second._pending_plot_setup["grid"] == [2, 1]
+    finally:
+        first.close()
+        if second:
+            second.close()

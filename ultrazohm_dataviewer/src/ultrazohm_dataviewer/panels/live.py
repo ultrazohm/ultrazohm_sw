@@ -230,6 +230,7 @@ class LiveWorkspace:
         self.settings_notice = ""
         self.available = importlib.util.find_spec("ultrazohm_cli") is not None
         self.scripts = ScriptRunner(send_stop=self.controller.send_stop)
+        self.load_live_settings()
 
     def block_reason(self, action="manual"):
         return action_block_reason(
@@ -319,12 +320,15 @@ class LiveWorkspace:
         except (OSError, ValueError, KeyError, TypeError) as exc:
             self.settings_notice = f"Could not load live settings: {exc}"
 
-    def save_live_settings(self):
-        from ..live_settings import save
+    def save_live_settings(self, *, startup=False):
+        from ..live_settings import save_startup_profile, save_view_preferences
 
         try:
-            directory = save(self)
-            self.settings_notice = f"Live settings saved to {directory}"
+            directory = (
+                save_startup_profile(self) if startup else save_view_preferences(self)
+            )
+            label = "Startup profile" if startup else "View preferences"
+            self.settings_notice = f"{label} saved to {directory}"
         except (OSError, ValueError, KeyError, TypeError, RuntimeError) as exc:
             self.settings_notice = f"Could not save live settings: {exc}"
 
@@ -646,16 +650,19 @@ class LiveWorkspace:
                 "Select ultrazohm_sw root directory", self.repo or str(Path.cwd())
             )
         imgui.end_disabled()
-        next_button("Save live settings")
+        next_button("Save view preferences")
+        if imgui.button("Save view preferences"):
+            self.save_live_settings()
+        next_button("Save startup profile")
         imgui.begin_disabled(
             not self.repository_ready or bool(activity) or self.scripts.busy
         )
-        if imgui.button("Save live settings"):
-            self.save_live_settings()
+        if imgui.button("Save startup profile"):
+            self.save_live_settings(startup=True)
         imgui.end_disabled()
         if imgui.is_item_hovered(imgui.HoveredFlags_.allow_when_disabled):
             imgui.set_tooltip(
-                "Save startup channels and live plot preferences for this workspace. No device commands are sent."
+                "Save startup channels for the selected local firmware workspace. No device commands are sent."
             )
         if self.settings_notice:
             imgui.text_wrapped(self.settings_notice)
@@ -941,9 +948,9 @@ class LiveWorkspace:
             ):
                 self.send("button", number=number)
             imgui.same_line()
-            # JavaScope's fixed wire convention: user buttons 1..8 use bits 4..11.
-            active = bool(state.get("status", 0) & (1 << (number + 3)))
-            if not feedback_available:
+            buttons = state.get("user_buttons", ())
+            active = buttons[number - 1] if len(buttons) == 8 else False
+            if not feedback_available or len(buttons) != 8:
                 imgui.text_disabled("?")
             elif active:
                 imgui.text_colored((0.3, 0.9, 0.5, 1.0), "ACT")

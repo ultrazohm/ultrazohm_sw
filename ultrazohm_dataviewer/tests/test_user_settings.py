@@ -12,6 +12,14 @@ from ultrazohm_dataviewer import settings as runtime_settings
 from ultrazohm_dataviewer.user_paths import data_directory
 
 
+def contract(observables):
+    from ultrazohm_cli.configuration import channel_mapping
+
+    value = channel_mapping(Path(__file__).resolve().parents[2])
+    value["observables"] = observables
+    return value
+
+
 @pytest.mark.parametrize("explicit", [False, True])
 @pytest.mark.parametrize("frozen", [False, True])
 def test_data_is_under_repository_artifacts_in_both_modes(
@@ -72,11 +80,12 @@ def test_normal_connect_filters_bundled_defaults_and_loads_editable_settings(
     tmp_path, monkeypatch
 ):
     path = tmp_path / "mapping.json"
-    path.write_text(json.dumps({"channels": 20, "observables": {"JSO_lifecheck": 3}}))
+    path.write_text(json.dumps(contract({"JSO_lifecheck": 3})))
     monkeypatch.setattr(
         runtime_settings,
         "default_profile",
         lambda: {
+            "schema_version": 1,
             "name": "standard",
             "sample_period_us": 100,
             "initial_channels": {"3": "JSO_lifecheck", "4": "JSO_theta_mech"},
@@ -145,13 +154,12 @@ def test_service_launch_passes_filtered_settings_profile(tmp_path, monkeypatch):
     from ultrazohm_dataviewer.live import LiveController
 
     mapping = tmp_path / "mapping.json"
-    mapping.write_text(
-        json.dumps({"channels": 20, "observables": {"JSO_lifecheck": 3}})
-    )
+    mapping.write_text(json.dumps(contract({"JSO_lifecheck": 3})))
     monkeypatch.setattr(
         runtime_settings,
         "default_profile",
         lambda: {
+            "schema_version": 1,
             "name": "standard",
             "sample_period_us": 100,
             "initial_channels": {"3": "JSO_lifecheck", "4": "JSO_theta_mech"},
@@ -199,9 +207,7 @@ def test_frozen_app_retains_selected_firmware_workspace(tmp_path, monkeypatch):
 
 def test_initialize_and_connect_preserve_existing_preferences(tmp_path, monkeypatch):
     mapping = tmp_path / "mapping.json"
-    mapping.write_text(
-        json.dumps({"channels": 20, "observables": {"JSO_lifecheck": 3}})
-    )
+    mapping.write_text(json.dumps(contract({"JSO_lifecheck": 3})))
     settings = tmp_path / "settings.json"
     original = '{"schema_version":1,"name":"custom","sample_period_us":50,"initial_channels":{"3":"JSO_lifecheck","4":"JSO_theta_mech"}}\n'
     settings.write_text(original)
@@ -244,9 +250,7 @@ def test_workspace_startup_initializes_missing_preferences_once(
     monkeypatch.setattr(sys, "frozen", frozen, raising=False)
     user_dir = data_directory(tmp_path)
     mapping = user_dir / "mapping.json"
-    mapping.write_text(
-        json.dumps({"channels": 20, "observables": {"JSO_lifecheck": 3}})
-    )
+    mapping.write_text(json.dumps(contract({"JSO_lifecheck": 3})))
     monkeypatch.setattr(
         live_mapping, "read_mapping", lambda repo: json.loads(mapping.read_text())
     )
@@ -426,14 +430,13 @@ def test_external_mapping_keeps_preferences_in_selected_workspace(
     external = tmp_path / "external"
     external.mkdir()
     mapping = external / "mapping.json"
-    mapping.write_text(
-        json.dumps({"channels": 20, "observables": {"JSO_lifecheck": 3}})
-    )
+    mapping.write_text(json.dumps(contract({"JSO_lifecheck": 3})))
     user_dir = data_directory(tmp_path / "workspace")
     monkeypatch.setattr(
         runtime_settings,
         "default_profile",
         lambda: {
+            "schema_version": 1,
             "name": "standard",
             "sample_period_us": 100,
             "initial_channels": {"3": "JSO_lifecheck"},
@@ -445,15 +448,13 @@ def test_external_mapping_keeps_preferences_in_selected_workspace(
     assert (user_dir / "tools.json").is_file()
 
 
-def test_default_profile_worker_failure_has_actionable_error(monkeypatch):
-    import subprocess
+def test_default_profile_library_failure_has_actionable_error(monkeypatch):
+    import ultrazohm_cli.configuration as configuration
 
     def fail(*args, **kwargs):
-        raise subprocess.CalledProcessError(
-            1, ["profile"], stderr="native profile error"
-        )
+        raise RuntimeError("native profile error")
 
-    monkeypatch.setattr(runtime_settings.subprocess, "run", fail)
+    monkeypatch.setattr(configuration, "default_profile", fail)
     with pytest.raises(RuntimeError, match="native profile error"):
         runtime_settings.default_profile()
 

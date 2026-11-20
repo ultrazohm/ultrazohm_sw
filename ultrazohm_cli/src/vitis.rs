@@ -6,7 +6,33 @@ use std::{
     process::Command,
 };
 
-const SCRIPT: &str = "tcl_scripts/vitis_headless.tcl";
+include!(concat!(env!("OUT_DIR"), "/firmware_resources.rs"));
+
+// Called under the firmware checkout lock. Content-addressed paths preserve
+// incremental-build signatures across processes and survive GUI termination.
+fn entry_script(root: &Path) -> Result<PathBuf> {
+    if let Some(directory) = env::var_os("UZ_CLI_TCL_DIR") {
+        let path = std::path::absolute(PathBuf::from(directory).join("vitis_headless.tcl"))?;
+        ensure!(
+            path.is_file(),
+            "Vitis entry script not found: {}",
+            path.display()
+        );
+        return Ok(path);
+    }
+    let directory = root
+        .join("artifacts/cli-tools")
+        .join(RESOURCE_ID)
+        .join("tcl_scripts");
+    for (name, contents) in RESOURCES {
+        let path = directory.join(name);
+        if std::fs::read(&path).ok().as_deref() != Some(*contents) {
+            std::fs::create_dir_all(path.parent().unwrap())?;
+            std::fs::write(&path, contents)?;
+        }
+    }
+    Ok(directory.join("vitis_headless.tcl"))
+}
 
 fn is_repository(path: &Path) -> bool {
     path.join("vitis/software/Baremetal/src/include/javascope.h")
@@ -77,15 +103,7 @@ pub(crate) fn execute(
     xsct_override: Option<&Path>,
 ) -> Result<()> {
     let root = repository(repo)?;
-    let script = env::var_os("UZ_CLI_TCL_DIR")
-        .map(|dir| PathBuf::from(dir).join("vitis_headless.tcl"))
-        .unwrap_or_else(|| root.join(SCRIPT));
-    let script = std::path::absolute(script)?;
-    ensure!(
-        script.is_file(),
-        "Vitis entry script not found: {}",
-        script.display()
-    );
+    let script = entry_script(&root)?;
     let executable = selected_xsct(xsct_override)?;
     eprintln!("Vitis {action}: repository {}", root.display());
     let mut command = Command::new(&executable);

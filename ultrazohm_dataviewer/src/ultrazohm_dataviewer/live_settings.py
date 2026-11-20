@@ -1,7 +1,6 @@
 """Explicitly saved live preferences; signal names survive service restarts."""
 
 import json
-import subprocess
 from pathlib import Path
 
 from .session import plot_cells_to_list, restore_plot_cells
@@ -75,7 +74,7 @@ def read_view(path):
     return data
 
 
-def save(workspace):
+def save_startup_profile(workspace):
     directory = workspace.user_directory()
     settings = (
         workspace._repository_settings
@@ -92,12 +91,7 @@ def save(workspace):
     ):
         from .live_mapping import read_mapping
 
-        try:
-            mapping = read_mapping(workspace.repo)
-        except subprocess.TimeoutExpired as exc:
-            raise RuntimeError(
-                "Timed out validating the local firmware mapping"
-            ) from exc
+        mapping = read_mapping(workspace.repo)
     else:
         mapping = settings.mapping
     from .settings import read_runtime_settings
@@ -119,6 +113,17 @@ def save(workspace):
     profile["sample_period_us"] = workspace.update.catalog.get(
         "sample_period_us", profile["sample_period_us"]
     )
+    # Disconnected saves preserve the existing startup selections.
+    write_json(
+        directory / "settings.json",
+        profile if assignments is not None else saved_profile,
+    )
+    return directory
+
+
+def save_view_preferences(workspace):
+    """Save presentation preferences without requiring local firmware or a CLI profile."""
+    directory = workspace.user_directory()
     view = {
         key: getattr(workspace, key)
         for key in (
@@ -136,11 +141,6 @@ def save(workspace):
         version=1,
         output_parent=str(Path(workspace.output).expanduser().resolve().parent),
         plots=workspace._pending_plot_setup or plot_setup(workspace.state),
-    )
-    # Disconnected saves preserve the existing startup selections.
-    write_json(
-        directory / "settings.json",
-        profile if assignments is not None else saved_profile,
     )
     write_json(directory / "live_view.json", view)
     return directory

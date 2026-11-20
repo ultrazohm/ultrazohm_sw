@@ -86,13 +86,35 @@ class VitisCommandTest(unittest.TestCase):
                 call = json.loads(self.result.read_text())
                 self.assertEqual(Path(call["cwd"]).resolve(), self.repo.resolve())
                 self.assertEqual(call["args"][0], "-nodisp")
-                self.assertEqual(Path(call["args"][1]).resolve(), self.script.resolve())
+                script = Path(call["args"][1]).resolve()
+                self.assertTrue(
+                    script.is_relative_to(self.repo / "artifacts/cli-tools")
+                )
+                self.assertEqual(
+                    script.read_bytes(),
+                    (ROOT / "tcl_scripts/vitis_headless.tcl").read_bytes(),
+                )
+                self.assertTrue(
+                    (script.parent / "launch/Run_UltraZohm.launch").is_file()
+                )
                 self.assertEqual(call["args"][2:], [action, *tail])
         result = self.cli("generate", "--local", "--open", "--repo", str(self.repo))
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(
             json.loads(self.result.read_text())["args"][2:], ["generate-open"]
         )
+
+    def test_embedded_scripts_work_without_checkout_scripts_and_preserve_timestamps(
+        self,
+    ):
+        self.script.unlink()
+        first = self.cli("build", "--local", "--repo", str(self.repo))
+        self.assertEqual(first.returncode, 0, first.stderr)
+        script = Path(json.loads(self.result.read_text())["args"][1])
+        stamp = script.stat().st_mtime_ns
+        second = self.cli("build", "--local", "--repo", str(self.repo))
+        self.assertEqual(second.returncode, 0, second.stderr)
+        self.assertEqual(script.stat().st_mtime_ns, stamp)
 
     def test_discovery_from_subdirectory(self):
         result = self.cli("build", "--local", cwd=self.repo / "vitis/software")

@@ -169,3 +169,14 @@ These limitations belong to the device adapter, not the CLI version.
   Local recording must remain usable without cloud access.
 - Future firmware framing, sequence counters, clocks and command receipts can
   improve integrity without replacing the named control/query API.
+
+## Shared configuration and launcher boundary
+
+The CLI Python package exposes offline configuration through `configuration` and
+external service ownership through `process.ServiceProcess`. Rust owns runtime
+profile validation/remapping and user-button wire decoding. DataViewer owns plot
+preferences, choosing an explicit startup-profile destination, and its close policy;
+it delegates process startup/readiness and identity-checked shutdown to the CLI helper.
+View preference saving is independent of firmware configuration and local checkouts.
+The CLI build embeds firmware scripts, including in the native library used by frozen
+viewers, so GUI packaging does not select or distribute a separate Tcl implementation.

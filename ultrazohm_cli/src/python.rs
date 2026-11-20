@@ -340,8 +340,55 @@ impl Drop for Acquisition {
         }
     }
 }
+/// Offline configuration helpers share validation with service startup.
+#[pyfunction]
+#[pyo3(signature=(operation, payload=None, repo=None))]
+fn configuration(
+    py: Python<'_>,
+    operation: String,
+    payload: Option<String>,
+    repo: Option<PathBuf>,
+) -> PyResult<String> {
+    py.detach(move || -> anyhow::Result<String> {
+        use crate::profile::{ChannelMapping, ProfileSettings};
+        let value = match operation.as_str() {
+            "mapping" => {
+                serde_json::to_value(ChannelMapping::load_repository(None, repo.as_deref())?)?
+            }
+            "defaults" => {
+                let settings = if repo.is_some() {
+                    let mapping = ChannelMapping::load_repository(None, repo.as_deref())?;
+                    ProfileSettings::for_mapping(None, &mapping)?
+                } else {
+                    ProfileSettings::load(None)?
+                };
+                serde_json::to_value(settings)?
+            }
+            "validate" => {
+                let settings: ProfileSettings =
+                    serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
+                settings.validate()?;
+                serde_json::to_value(settings)?
+            }
+            "remap" => {
+                let value: serde_json::Value =
+                    serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
+                let settings: ProfileSettings = serde_json::from_value(value["profile"].clone())?;
+                let mapping: ChannelMapping = serde_json::from_value(value["mapping"].clone())?;
+                let (settings, removed) = settings.remap(&mapping)?;
+                Profile::from_mapping(settings.clone(), mapping)?;
+                serde_json::json!({"profile": settings, "removed": removed})
+            }
+            _ => anyhow::bail!("unknown configuration operation"),
+        };
+        Ok(serde_json::to_string(&value)?)
+    })
+    .map_err(|e| error(format!("{e:#}")))
+}
+
 #[pymodule]
 fn _native(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(configuration, m)?)?;
     m.add_class::<Connection>()?;
     m.add_function(wrap_pyfunction!(recording_info, m)?)?;
     m.add_function(wrap_pyfunction!(recording_data, m)?)?;

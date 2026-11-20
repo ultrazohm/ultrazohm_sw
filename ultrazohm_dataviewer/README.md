@@ -461,7 +461,7 @@ This directory holds `logs/`, `viewer.ini`, and the optional `viewer_cache/`.
 Set `UZ_DATAVIEWER_CACHE` to override the cache path.
 
 The viewer seeds missing `settings.json` from the CLI's standard profile, filtered against the selected checkout.
-Edit `sample_period_us` and `initial_channels` before connecting, or use **Save live settings** to save the current assignments and plot preferences.
+Edit `sample_period_us` and `initial_channels` before connecting, or explicitly use **Save startup profile** to save current channel assignments validated against the selected local firmware mapping. **Save view preferences** separately saves layout, endpoint and display preferences without changing startup profiles; it also works when attaching without a local checkout.
 Saving while disconnected preserves the existing startup assignments.
 The viewer saves view preferences separately in `live_view.json` and restores them without connecting or writing to the device.
 

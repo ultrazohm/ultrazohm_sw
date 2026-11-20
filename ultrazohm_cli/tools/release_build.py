@@ -25,6 +25,7 @@ def staged_project(project, version=None):
             "pyproject.toml",
             "README.md",
             "Cargo.toml",
+            "build.rs",
             "Cargo.lock",
             "rust-toolchain.toml",
             "src",
@@ -40,6 +41,17 @@ def staged_project(project, version=None):
                 )
             elif source.is_file():
                 shutil.copy2(source, stage / name)
+        resources = stage / "firmware_resources"
+        shutil.copytree(project.parent / "tcl_scripts", resources)
+        (resources / "launch").mkdir(exist_ok=True)
+        for name in (
+            "Debug_UltraZohm.launch",
+            "Run_UltraZohm.launch",
+            "Debug_UltraZohm_fast_restart_PL_reset.launch",
+        ):
+            shutil.copy2(
+                project.parent / "vitis/software" / name, resources / "launch" / name
+            )
         path = stage / "pyproject.toml"
         text = path.read_text()
         text, count = re.subn(

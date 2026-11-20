@@ -21,9 +21,24 @@ class ViewerMethods:
         "Remove all signals from a subplot."
         return self._invoke("clear_plot", {"plot": plot, "view": view})
 
-    def convert(self, src: str, dst: str | None = None):
+    def convert(
+        self,
+        src: str,
+        dst: str | None = None,
+        *,
+        axis_column: str | None = None,
+        axis_domain: str | None = None,
+    ):
         "Stream-convert CSV to Parquet using the selected backend; dst defaults to src with a .parquet extension. Existing destinations and empty inputs are rejected."
-        return self._invoke("convert", {"src": src, "dst": dst})
+        return self._invoke(
+            "convert",
+            {
+                "src": src,
+                "dst": dst,
+                "axis_column": axis_column,
+                "axis_domain": axis_domain,
+            },
+        )
 
     def cursors(self, plot: int, on: bool, *, view: ViewHandle | None = None):
         "Toggle two measurement cursors (Δx / frequency readout) on a subplot."

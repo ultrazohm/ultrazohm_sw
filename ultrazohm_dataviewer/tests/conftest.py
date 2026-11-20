@@ -50,6 +50,24 @@ def isolated_app_cache(tmp_path, monkeypatch):
     # Never write into the real per-user data directory.
     monkeypatch.setenv("XDG_DATA_HOME", str(tmp_path / "user-data"))
     monkeypatch.setenv("LOCALAPPDATA", str(tmp_path / "user-data"))
+    from ultrazohm_dataviewer import user_paths
+
+    checkout = Path(__file__).resolve().parents[2]
+    original = user_paths.data_directory
+
+    def isolated_directory(repo=None):
+        root = (
+            Path(repo).resolve()
+            if repo is not None
+            else user_paths.find_repository(Path.cwd())
+        )
+        if root == checkout:
+            path = tmp_path / "checkout-data"
+            path.mkdir(exist_ok=True)
+            return path
+        return original(repo)
+
+    monkeypatch.setattr(user_paths, "data_directory", isolated_directory)
 
 
 @pytest.fixture

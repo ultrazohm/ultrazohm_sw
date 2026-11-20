@@ -59,7 +59,7 @@ def test_load_shutdown_cancels_active_and_queued_work():
     assert worker.thread.daemon
 
 
-def _slow_native_conversion(source, destination, backend, connection):
+def _slow_native_conversion(source, destination, backend, connection, axis=None):
     from pathlib import Path
 
     Path(destination).write_bytes(b"partial")
@@ -97,7 +97,7 @@ def test_cancel_conversion_stops_process_and_removes_temporary_file(
         state.shutdown()
 
 
-def _large_conversion_error(source, destination, backend, connection):
+def _large_conversion_error(source, destination, backend, connection, axis=None):
     connection.send((False, "large error " + "x" * 1_000_000))
     connection.close()
 
@@ -133,3 +133,37 @@ def test_async_load_preserves_captured_settings(states, tmp_path):
     run = state.registry.runs[0]
     assert run.storage_mode == "memory" and run.backend == "pyarrow"
     assert state.loading_mode == "lazy" and state.backend == "polars"
+
+
+def test_cancelled_load_completion_prevents_registration(app_state, tmp_path):
+    path = tmp_path / "input.csv"
+    path.write_text("time,a\n0,1\n1,2\n")
+    completion = app_state.request_load(str(path))
+    worker = app_state.services.pending[0][0]
+    worker.result(timeout=5)
+    completion.cancel()
+    app_state.poll_pending_loads()
+    assert not app_state.registry.runs
+    assert not app_state.is_loading
+
+
+@pytest.mark.parametrize("prompt", ["axis", "large"])
+def test_shutdown_cancels_load_waiting_for_choice(tmp_path, monkeypatch, prompt):
+    state = AppState()
+    path = tmp_path / "input.csv"
+    path.write_text("seconds,a\n0,1\n1,2\n")
+    if prompt == "large":
+        monkeypatch.setattr("ultrazohm_dataviewer.state.LARGE_CSV_BYTES", 1)
+    completion = state.request_load(str(path))
+    try:
+        if prompt == "axis":
+            deadline = time.monotonic() + 5
+            while not state.services.axis_requests:
+                state.poll_pending_loads()
+                assert time.monotonic() < deadline
+                time.sleep(0.001)
+        assert not completion.done()
+        state.shutdown()
+        assert completion.cancelled()
+    finally:
+        state.shutdown()

@@ -71,7 +71,12 @@ def parser():
                 options.update(nargs="?", default=parameter.default)
             if parameter.kind is inspect.Parameter.KEYWORD_ONLY:
                 options.pop("nargs", None)
-                command.add_argument("--" + parameter.name, **options)
+                flags = list(
+                    dict.fromkeys(
+                        ["--" + parameter.name.replace("_", "-"), "--" + parameter.name]
+                    )
+                )
+                command.add_argument(*flags, dest=parameter.name, **options)
             else:
                 command.add_argument(parameter.name, **options)
     return root

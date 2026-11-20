@@ -240,15 +240,24 @@ def version(_args):
     )
     base = found[1] if found else ""
     branch = os.environ.get("GITHUB_REF_NAME", "")
-    pushed = os.environ.get("GITHUB_EVENT_NAME") == "push"
-    value = release_version(base, branch, int(os.environ["GITHUB_RUN_NUMBER"]))
+    event = os.environ.get("GITHUB_EVENT_NAME")
+    pushed = event == "push"
+    manual = (
+        event == "workflow_dispatch"
+        and os.environ.get("UZ_PUBLISH_PRERELEASE") == "true"
+    )
+    if manual and branch not in PRERELEASE_BRANCHES:
+        raise ValueError("Manual publication is restricted to prerelease branches")
+    value = release_version(
+        base, branch if pushed else "validation", int(os.environ["GITHUB_RUN_NUMBER"])
+    )
     outputs = {
         "version": value,
         "tag": f"ultrazohm-v{value}",
         "publish": str(
-            pushed and branch in (STABLE_BRANCH, *PRERELEASE_BRANCHES)
+            (pushed and branch in (STABLE_BRANCH, "develop")) or manual
         ).lower(),
-        "prerelease": str(branch != STABLE_BRANCH).lower(),
+        "prerelease": str(not (pushed and branch == STABLE_BRANCH)).lower(),
     }
     for key, item in outputs.items():
         print(f"{key}={item}")

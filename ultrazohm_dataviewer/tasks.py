@@ -64,7 +64,16 @@ def built_wheel(directory):
     return wheels[0]
 
 
-def install_packages(python, args):
+def install_packages(python, args, *, release=False):
+    if args.cli_wheel is None and release:
+        with tempfile.TemporaryDirectory(prefix="cli-release-wheel-") as directory:
+            cli_tasks("wheel", "--out", directory)
+            from argparse import Namespace
+
+            return install_packages(
+                python,
+                Namespace(**{**vars(args), "cli_wheel": built_wheel(Path(directory))}),
+            )
     cli_wheel = args.cli_wheel
     if cli_wheel is None:
         cli_tasks("debug-wheel")
@@ -172,7 +181,7 @@ def bundle(args):
             "Standalone bundles are Windows-only; use the Python wheel on Linux."
         )
     python = sync(HERE / ".venv-build")
-    install_packages(python, args)
+    install_packages(python, args, release=True)
     shutil.rmtree(HERE / "build" / "native", ignore_errors=True)
     shutil.rmtree(HERE / "dist", ignore_errors=True)
     run(
@@ -223,8 +232,8 @@ DESCRIPTIONS = {
     "check": "Lint and run the full test suite in .venv-ci, as CI does. Without --cli-wheel, a debug "
     "CLI wheel is built from ../ultrazohm_cli so live tests use this checkout.",
     "bundle": "Build the PyInstaller desktop bundle in dist/ from .venv-build. Without --cli-wheel, a "
-    "release CLI wheel is built from ../ultrazohm_cli. A bundle runs on systems with at least the "
-    "build system's glibc; CI builds the published one on Ubuntu 22.04.",
+    "release CLI wheel is built from ../ultrazohm_cli. Standalone bundles are Windows-only; "
+    "Linux uses Python wheels.",
 }
 
 

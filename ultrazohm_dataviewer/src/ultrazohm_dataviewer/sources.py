@@ -539,7 +539,9 @@ class ArraySource(SummarySource, MemorySource):
 class IndexedFileSource(SummarySource):
     """Backend-neutral file identity, timestamp index, raw windows and summaries."""
 
-    def _initialize(self, path, cache, cache_dir, disk_cache, backend):
+    def _initialize(
+        self, path, cache, cache_dir, disk_cache, backend, axis_column=None
+    ):
         self.path = Path(path).resolve()
         self.file_identity = FileIdentity.capture(self.path)
         self.signature = self.file_identity.signature
@@ -547,7 +549,7 @@ class IndexedFileSource(SummarySource):
         self.disk_cache = disk_cache
         identity = hashlib.sha256(
             json.dumps(
-                [backend, str(self.path), self.signature, CACHE_VERSION]
+                [backend, str(self.path), self.signature, CACHE_VERSION, axis_column]
             ).encode()
         ).hexdigest()
         root = Path(
@@ -687,7 +689,14 @@ class IndexedFileSource(SummarySource):
 
 class ParquetSource(IndexedFileSource):
     def __init__(
-        self, path, cache=None, cache_dir=None, cancel=None, *, disk_cache=False
+        self,
+        path,
+        cache=None,
+        cache_dir=None,
+        cancel=None,
+        *,
+        disk_cache=False,
+        axis_column=None,
     ):
         import pyarrow.parquet as pq
 
@@ -698,10 +707,14 @@ class ParquetSource(IndexedFileSource):
             timestamp_resolution,
         )
 
-        identity = self._initialize(path, cache, cache_dir, disk_cache, "pyarrow")
+        identity = self._initialize(
+            path, cache, cache_dir, disk_cache, "pyarrow", axis_column
+        )
         with pq.ParquetFile(self.path) as pf:
-            names, self.skipped_columns = arrow_numeric_columns(pf.schema_arrow)
-            self.time_col, columns = _split_time_columns(names)
+            names, self.skipped_columns = arrow_numeric_columns(
+                pf.schema_arrow, axis_column
+            )
+            self.time_col, columns = _split_time_columns(names, axis_column)
             named, self.units = _named_signals(
                 columns, lambda c: np.empty(0, np.float32)
             )

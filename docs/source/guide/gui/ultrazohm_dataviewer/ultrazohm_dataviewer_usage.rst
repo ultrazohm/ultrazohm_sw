@@ -77,6 +77,16 @@ A loaded run's context menu shows its backend.
 CSV conversion and CSV exports use the currently selected backend.
 JSON sessions retain the backend and storage mode for each file.
 
+A single ``time`` or ``frequency`` column selects the independent axis automatically.
+FFT exports reopen with frequency semantics. For other column names, or if both names
+are present, the GUI asks for the independent column and its domain (seconds or Hz).
+Python automation passes ``axis_column="seconds", axis_domain="time"`` to
+``read()``, ``viewer.load()`` or ``viewer.convert()``. Terminal control uses
+``ultrazohm-dataviewer load file.csv --axis-column seconds --axis-domain time``.
+Parquet conversion and JSON sessions preserve this choice. Existing schema-6 sessions
+without axis fields retain their former time/first-column choice.
+
+
 .. code-block:: bash
 
    ultrazohm-dataviewer gui --backend polars --loading-mode lazy

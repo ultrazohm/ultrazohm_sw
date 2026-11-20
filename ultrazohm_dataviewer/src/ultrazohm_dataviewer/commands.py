@@ -321,8 +321,8 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
 
     # -- data / layout ----------------------------------------------------
     def load(state, a):
-        path, start = a
-        run = state.load_sync(path)
+        path, start, axis_column, axis_domain = a
+        run = state.load_sync(path, axis_column=axis_column, axis_domain=axis_domain)
         if run is None:
             raise CommandError(f"Failed to load {path}")
         if start is not None:
@@ -330,7 +330,12 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
 
     reg.add(
         "load",
-        [Param("path", "str"), Param("start", "float", optional=True)],
+        [
+            Param("path", "str"),
+            Param("start", "float", optional=True),
+            Param("axis_column", "str", optional=True),
+            Param("axis_domain", "str", optional=True),
+        ],
         load,
         "Load a .csv/.parquet log; the optional start normalises the time origin.",
     )
@@ -338,13 +343,24 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
     def convert(state, a):
         from .loader import convert_csv_to_parquet
 
-        src, dst = a
-        out = convert_csv_to_parquet(src, dst, backend=state.backend)
+        src, dst, axis_column, axis_domain = a
+        out = convert_csv_to_parquet(
+            src,
+            dst,
+            backend=state.backend,
+            axis_column=axis_column,
+            axis_domain=axis_domain,
+        )
         state.console.info(f"converted {src} -> {out}")
 
     reg.add(
         "convert",
-        [Param("src", "str"), Param("dst", "str", optional=True)],
+        [
+            Param("src", "str"),
+            Param("dst", "str", optional=True),
+            Param("axis_column", "str", optional=True),
+            Param("axis_domain", "str", optional=True),
+        ],
         convert,
         "Stream-convert CSV to Parquet using the selected backend; "
         "dst defaults to src with a .parquet extension. Existing destinations and empty inputs are rejected.",

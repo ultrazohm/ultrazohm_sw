@@ -1,15 +1,15 @@
 name: UltraZohm CLI and Data Viewer
 # One pipeline, one version per run. CLI checks run on both systems; the CLI
 # wheels are stamped and built once, and the viewer tests and Windows desktop
-# bundles use exactly those wheels. Pushes to main (stable), develop and
-# feature/uz_cli_dataviewer_testing (prereleases) publish one GitHub release
+# bundles use exactly those wheels. Pushes to main (stable) and develop
+# (prerelease), plus explicitly requested feature-branch dispatches publish a release
 # with wheels and bundles, and upload both packages to PyPI.
 # Keep this file name: PyPI's trusted publisher names it, and versions use its
 # run number (renaming the file restarts run numbers).
 
 on:
   push:
-    branches: ['**']
+    branches: [main, develop]
     paths:
       - 'uz'
       - 'uz.ps1'
@@ -42,6 +42,11 @@ on:
       - '.python-version'
       - 'docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer_commands.csv'
   workflow_dispatch:
+    inputs:
+      publish_prerelease:
+        description: Publish a prerelease from develop or the CLI/viewer feature branch
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -145,6 +150,8 @@ jobs:
         with:
           persist-credentials: false
       - id: version
+        env:
+          UZ_PUBLISH_PRERELEASE: ${{ inputs.publish_prerelease }}
         run: ./uz task cli version
 
   wheel-linux:
@@ -209,6 +216,32 @@ jobs:
           name: wheel-windows
           path: ultrazohm_cli/target/wheels-release/*.whl
           if-no-files-found: error
+
+  cli-python-minimum:
+    needs: [wheel-linux, wheel-windows]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact: wheel-linux
+          - os: windows-2022
+            artifact: wheel-windows
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: minimum-wheel
+      - name: Install and test the supported minimum Python
+        shell: bash
+        run: |
+          python -m pip install minimum-wheel/*.whl polars
+          export UZ_CLI_BIN="$(python -c 'import shutil; print(shutil.which("ultrazohm-cli"))')"
+          python -m unittest discover -s ultrazohm_cli/tests -p test_integration.py -v
 
   wheel-viewer:
     needs: version
@@ -326,7 +359,7 @@ jobs:
           retention-days: 30
 
   release:
-    needs: [version, verify-published, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, python-style, launcher-check]
+    needs: [version, verify-published, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, cli-python-minimum, python-style, launcher-check]
     if: needs.version.outputs.publish == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -350,7 +383,6 @@ jobs:
           PRERELEASE: ${{ needs.version.outputs.prerelease }}
         run: |
           set -euo pipefail
-          files=(*.whl *.zip)
           python3 ../ultrazohm_dataviewer/tools/release_manifest.py . "$VERSION"
           cat > release-notes.md <<EOF
           UltraZohm CLI and Data Viewer ${VERSION}.
@@ -363,23 +395,10 @@ jobs:
           Data Viewer: \`uvx ultrazohm-dataviewer==${VERSION}\`. Windows users can also extract the ZIP and run ultrazohm-dataviewer.exe. Linux uses the Python packages; no standalone archive is provided.
           Verify downloads against SHA256SUMS.
           EOF
-          # A rerun resumes an incomplete draft, but leaves a published release intact.
-          if state="$(gh release view "$TAG" --json isDraft --jq '.isDraft' 2>/dev/null)"; then
-            if [[ "$state" == false ]]; then
-              echo "Release $TAG is already published."
-              exit 0
-            fi
-          else
-            gh release create "$TAG" --target "$GITHUB_SHA" --draft \
-              --title "UltraZohm $VERSION" --notes-file release-notes.md \
-              --prerelease="$PRERELEASE" --latest=false
-          fi
-          gh release upload "$TAG" "${files[@]}" SHA256SUMS manifest.json --clobber
-          # Never replace the repository's latest firmware/software release.
-          gh release edit "$TAG" --draft=false --prerelease="$PRERELEASE" --latest=false
+          python3 ../ultrazohm_dataviewer/tools/verify_artifacts.py github . "$TAG" "$PRERELEASE"
 
   validate-artifacts:
-    needs: [version, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, python-style, launcher-check]
+    needs: [version, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, cli-python-minimum, python-style, launcher-check]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -404,8 +423,16 @@ jobs:
     timeout-minutes: 10
     environment: pypi
     permissions:
+      contents: read
       id-token: write
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-manifest
+          path: manifest
+      - name: Verify existing PyPI bytes before uploading either package
+        run: python3 ultrazohm_dataviewer/tools/verify_artifacts.py pypi manifest/manifest.json
       - uses: actions/download-artifact@v4
         with:
           pattern: wheel-*
@@ -437,5 +464,10 @@ jobs:
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9
         with:
           version: '0.13.1'
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-manifest
+          path: manifest
+      - run: uv run --no-project --python 3.12 ultrazohm_dataviewer/tools/verify_artifacts.py pypi manifest/manifest.json --complete
       - run: uv run --no-project --python 3.12 ultrazohm_dataviewer/tools/verify_published.py "${{ needs.version.outputs.version }}"
       - run: uv run --no-project --python 3.12 ultrazohm_cli/tools/verify_published.py "${{ needs.version.outputs.version }}"

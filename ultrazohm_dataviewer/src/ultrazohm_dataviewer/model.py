@@ -110,6 +110,7 @@ class Run:
     timestamp_resolution: float = 0.0
     """Known timestamp quantization in seconds; zero means unspecified."""
 
+    axis_column: str | None = None
     axis_domain: str = "time"
     """Independent-axis domain: time (seconds) or frequency (Hz)."""
 

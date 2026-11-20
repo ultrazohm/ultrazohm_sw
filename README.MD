@@ -30,11 +30,12 @@ Installing the viewer also installs its matching CLI dependency.
 
 ### Python and uv (Linux and Windows)
 
+Until the first stable release is published, select prereleases explicitly.
 Run a published application directly:
 
 ```sh
-uvx ultrazohm-cli
-uvx ultrazohm-dataviewer
+uvx --prerelease allow ultrazohm-cli
+uvx --prerelease allow ultrazohm-dataviewer
 ```
 
 For persistent terminal commands:
@@ -102,7 +103,9 @@ checkout and installs the viewer editable when selected, using locked dependency
 Rust and a C/C++ toolchain. Re-run local setup after CLI source changes.
 
 `setup` accepts the same arguments and prepares `.venv` without opening a shell.
-Explicit setup recreates the managed environment, removing stale packages and
+Failed setup restores the previous managed environment. If filesystem errors prevent
+restoration, setup retains the backup and prints its location for manual recovery.
+Successful explicit setup recreates the managed environment, removing stale packages and
 editable installs. Reinstall any additional project packages afterward.
 Plain `shell` reuses a completed environment while its setup inputs match.
 Use `./uz clear_venv` or `.\uz.ps1 clear_venv` to remove the repository `.venv` and reset the saved selection.

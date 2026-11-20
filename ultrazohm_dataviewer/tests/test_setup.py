@@ -48,7 +48,7 @@ class SetupTest(unittest.TestCase):
             ).touch()
         if command[:2] == ("uv", "venv"):
             tasks.scripts().mkdir(parents=True, exist_ok=True)
-        if command[:3] == ("uv", "pip", "install"):
+        if command[:3] == ("uv", "pip", "install") and "--target" not in command:
             for name in ("python", "ultrazohm-cli", "ultrazohm-dataviewer"):
                 tasks.executable(name).touch()
 
@@ -99,8 +99,11 @@ class SetupTest(unittest.TestCase):
         self.assertTrue(any(c[:3] == ("uv", "venv", "--clear") for c in self.calls))
         self.assertEqual(tasks.saved_setup()["app"], "viewer")
 
-    def test_failure_is_not_marked_ready(self):
+    def test_failure_restores_previous_environment(self):
         tasks.setup("stable")
+        previous = tasks.saved_setup()
+        sentinel = tasks.scripts() / "user-package.txt"
+        sentinel.write_text("preserve me")
         original = self.record
 
         def failing(*command, **kwargs):
@@ -111,4 +114,66 @@ class SetupTest(unittest.TestCase):
         with patch.object(tasks, "run", side_effect=failing):
             with self.assertRaises(subprocess.CalledProcessError):
                 tasks.setup("prerelease")
-        self.assertNotIn("fingerprint", tasks.saved_setup())
+        self.assertEqual(previous, tasks.saved_setup())
+        self.assertEqual(sentinel.read_text(), "preserve me")
+
+    def test_post_install_failure_restores_previous_environment(self):
+        tasks.setup("stable")
+        previous = tasks.saved_setup()
+        sentinel = tasks.scripts() / "user-package.txt"
+        sentinel.write_text("preserve me")
+        original = self.record
+
+        def failing(*command, **kwargs):
+            if command[:3] == ("uv", "pip", "check"):
+                raise subprocess.CalledProcessError(1, command)
+            original(*command, **kwargs)
+
+        with patch.object(tasks, "run", side_effect=failing):
+            with self.assertRaises(subprocess.CalledProcessError):
+                tasks.setup("prerelease")
+        self.assertEqual(previous, tasks.saved_setup())
+        self.assertEqual(sentinel.read_text(), "preserve me")
+
+    def test_failed_removal_retains_backup(self):
+        environment = self.root / ".venv"
+        environment.mkdir()
+        (environment / "original").write_text("preserve me")
+        remove = shutil.rmtree
+
+        def locked(path, *args, **kwargs):
+            if Path(path) == environment:
+                raise PermissionError("new environment locked")
+            return remove(path, *args, **kwargs)
+
+        with patch.object(tasks.shutil, "rmtree", side_effect=locked):
+            with self.assertRaisesRegex(
+                RuntimeError, "Previous environment retained at"
+            ) as error:
+                with tasks.replace_environment():
+                    environment.mkdir()
+                    raise RuntimeError("installation failed")
+        (backup,) = self.root.glob(".uz-backup-*/environment")
+        self.assertEqual((backup / "original").read_text(), "preserve me")
+        self.assertIn(str(backup), str(error.exception))
+
+    def test_failed_restore_retains_backup(self):
+        environment = self.root / ".venv"
+        environment.mkdir()
+        (environment / "original").write_text("preserve me")
+        rename = Path.rename
+
+        def locked(path, target):
+            if path.name == "environment":
+                raise PermissionError("restore denied")
+            return rename(path, target)
+
+        with patch.object(Path, "rename", locked):
+            with self.assertRaisesRegex(
+                RuntimeError, "Previous environment retained at"
+            ):
+                with tasks.replace_environment():
+                    environment.mkdir()
+                    raise RuntimeError("installation failed")
+        (backup,) = self.root.glob(".uz-backup-*/environment")
+        self.assertEqual((backup / "original").read_text(), "preserve me")

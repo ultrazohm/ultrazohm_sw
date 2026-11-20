@@ -178,6 +178,8 @@ def to_dict(state: AppState) -> dict:
                 "backend": r.backend,
                 "disk_cache": getattr(r.source, "disk_cache", False),
                 "time_origin": r.time_origin,
+                "axis_column": r.axis_column,
+                "axis_domain": r.axis_domain,
                 "active": r.active,
             }
             for r in state.registry.runs
@@ -320,7 +322,25 @@ def _apply_dict(state: AppState, data: dict, *, cancel=None) -> None:
             state.loading_mode = spec["mode"]
             state.backend = _session_backend(state, spec["backend"])
             state.disk_cache = boolean(spec["disk_cache"])
-            run = state.load_sync(spec["path"], cancel=cancel)
+            from .axis import inspect_axis
+
+            try:
+                axis = inspect_axis(
+                    spec["path"],
+                    spec.get("axis_column"),
+                    spec.get("axis_domain"),
+                    legacy="axis_domain" not in spec,
+                )
+            except (OSError, ValueError) as error:
+                raise ValueError(
+                    f"Cannot restore recording: {spec['path']}: {error}"
+                ) from error
+            run = state.load_sync(
+                spec["path"],
+                cancel=cancel,
+                axis_column=axis.column,
+                axis_domain=axis.domain,
+            )
             check(cancel)
             if run is None:
                 raise ValueError(f"Cannot restore recording: {spec['path']}")
@@ -557,6 +577,10 @@ def export_data(
     t, values = run0.read_window(channels, x_min, x_max)
     if relative and run0.axis_domain != "time":
         raise ValueError("Relative time export requires a time-domain recording")
+    if run0.axis_domain in channels:
+        raise ValueError(
+            f"Signal name conflicts with exported axis column: {run0.axis_domain}"
+        )
     columns = {run0.axis_domain: (t - t[0]) if relative and len(t) else t}
     for ref in cell.signals:
         if ref[0] != run0.id:

@@ -6,11 +6,12 @@ import enum
 import math
 import os
 from concurrent.futures import Future
+from functools import partial
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     import numpy as np
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, field, fields, replace
 
 from .commands import CommandRegistry
 from .console import Console
@@ -31,6 +32,9 @@ class LoadRequest:
     mode: str
     backend: str
     disk_cache: bool
+    axis_column: str | None = None
+    axis_domain: str | None = None
+    completion: Future = field(default_factory=Future, compare=False, repr=False)
 
 
 SignalRef = tuple[int, str]
@@ -253,6 +257,7 @@ class RuntimeServices:
     exports: list = field(default_factory=list)
     pending: list[tuple[Future, str]] = field(default_factory=list)
     large_csv_requests: list[LoadRequest] = field(default_factory=list)
+    axis_requests: list = field(default_factory=list)
 
     def close(self) -> None:
         self.validation_jobs.close()
@@ -261,9 +266,17 @@ class RuntimeServices:
         for requests in self.analysis_displays.values():
             requests.close()
         self.executor.shutdown()
+        for future, _ in self.pending:
+            if request := getattr(future, "load_request", None):
+                request.completion.cancel()
+        for request in self.large_csv_requests:
+            request.completion.cancel()
+        for request, _, _ in self.axis_requests:
+            request.completion.cancel()
         self.exports.clear()
         self.pending.clear()
         self.large_csv_requests.clear()
+        self.axis_requests.clear()
 
 
 class AppState(SessionData):
@@ -441,8 +454,15 @@ class AppState(SessionData):
                 self.set_plot_x_limits(plot_n, lo, hi)
 
     # -- file loading (asynchronous) --------------------------------------
-    def request_load(self, path: str, loading_mode: str | None = None) -> None:
-        """Open a file, optionally overriding the mode for this request only."""
+    def request_load(
+        self,
+        path: str,
+        loading_mode: str | None = None,
+        *,
+        axis_column=None,
+        axis_domain=None,
+    ) -> Future:
+        """Return completion after registration, including any GUI prompts."""
         mode = self.loading_mode if loading_mode is None else loading_mode
         if mode not in {"memory", "lazy"}:
             raise ValueError(f"Unknown loading mode: {mode}")
@@ -451,15 +471,18 @@ class AppState(SessionData):
 
         validate_backend(backend)
         path = os.path.abspath(path)
-        request = LoadRequest(path, mode, backend, self.disk_cache)
+        request = LoadRequest(
+            path, mode, backend, self.disk_cache, axis_column, axis_domain
+        )
         if path.lower().endswith(".csv"):
             try:
                 if os.path.getsize(path) > LARGE_CSV_BYTES:
                     self.services.large_csv_requests.append(request)
-                    return
+                    return request.completion
             except OSError:
                 pass  # The normal loader reports missing or unreadable files.
         self._submit_load(request)
+        return request.completion
 
     def resolve_large_csv(self, choice: str) -> None:
         """Resolve the oldest GUI prompt using the settings captured at selection."""
@@ -467,22 +490,30 @@ class AppState(SessionData):
             raise ValueError(f"Unknown large CSV action: {choice}")
         request = self.services.large_csv_requests.pop(0)
         if choice == "cancel":
+            request.completion.cancel()
             return
         if choice == "csv":
             # Explicitly opening CSV bypasses automatic cached conversion.
-            self._submit_load(
-                LoadRequest(request.path, request.mode, request.backend, False)
-            )
+            self._submit_load(replace(request, disk_cache=False))
             return
         destination = os.path.splitext(request.path)[0] + ".parquet"
-        target = LoadRequest(
-            destination, request.mode, request.backend, request.disk_cache
-        )
+        target = replace(request, path=destination)
         self._submit_load(
             target, convert_from=request.path if choice == "convert" else None
         )
 
+    def resolve_axis(self, column=None, domain=None):
+        request, _, convert_from = self.services.axis_requests.pop(0)
+        if column is not None:
+            self._submit_load(
+                replace(request, axis_column=column, axis_domain=domain), convert_from
+            )
+        else:
+            request.completion.cancel()
+
     def _submit_load(self, request: LoadRequest, convert_from=None) -> None:
+        if request.completion.cancelled():
+            return
         path = request.path
         settings = (
             ("backend", request.backend, self.backend),
@@ -507,19 +538,32 @@ class AppState(SessionData):
             )
         else:
             future = self.services.executor.submit(
-                self._open_background,
+                partial(
+                    self._open_background,
+                    axis_column=request.axis_column,
+                    axis_domain=request.axis_domain,
+                )
+                if request.axis_column is not None or request.axis_domain is not None
+                else self._open_background,
                 path,
                 request.mode,
                 request.backend,
                 request.disk_cache,
             )
+        future.load_request = request
+        future.convert_from = convert_from
         self.services.pending.append((future, path))
 
     def _convert_and_open(self, source: str, request: LoadRequest, cancel=None):
         from .loader import convert_csv_to_parquet
 
         convert_csv_to_parquet(
-            source, request.path, backend=request.backend, cancel=cancel
+            source,
+            request.path,
+            backend=request.backend,
+            cancel=cancel,
+            axis_column=request.axis_column,
+            axis_domain=request.axis_domain,
         )
         return self._open_background(
             request.path,
@@ -529,7 +573,9 @@ class AppState(SessionData):
             cancel=cancel,
         )
 
-    def load_sync(self, path: str, *, cancel=None) -> Run | None:
+    def load_sync(
+        self, path: str, *, cancel=None, axis_column=None, axis_domain=None
+    ) -> Run | None:
         """Load a file on the calling thread and report it.
 
         Used by the ``load`` command and by session restore/replay so that any
@@ -551,6 +597,8 @@ class AppState(SessionData):
                 backend=self.backend,
                 disk_cache=self.disk_cache,
                 cancel=cancel,
+                axis_column=axis_column,
+                axis_domain=axis_domain,
             ).register(self.registry)
         except Cancelled:
             raise
@@ -636,7 +684,7 @@ class AppState(SessionData):
     def _report_loaded(self, run: Run) -> None:
         self.console.ok(
             f"Loaded {run.label}: {run.n_rows:,} rows, "
-            f"{len(run.signals)} signals, {run.duration:.3f} s span"
+            f"{len(run.signals)} signals, {run.duration:.3f} {'Hz' if run.axis_domain == 'frequency' else 's'} span"
         )
         if run.skipped_columns:
             self.console.info(
@@ -649,26 +697,55 @@ class AppState(SessionData):
         The worker only *parsed*; the registry mutation (``register``) happens here on
         the main thread, so the UI never reads a registry mid-write.
         """
+        from .axis import AxisSelectionRequired
         from .exports import poll
 
         poll(self)
+        self.services.axis_requests[:] = [
+            item
+            for item in self.services.axis_requests
+            if not item[0].completion.cancelled()
+        ]
+        self.services.large_csv_requests[:] = [
+            request
+            for request in self.services.large_csv_requests
+            if not request.completion.cancelled()
+        ]
         still_pending: list[tuple[Future[ParsedRun], str]] = []
         for future, path in self.services.pending:
+            request = getattr(future, "load_request", None)
+            completion = request.completion if request is not None else None
+            if completion is not None and completion.cancelled():
+                future.cancel()
+                continue
             if not future.done():
                 still_pending.append((future, path))
                 continue
             try:
                 parsed = future.result()
                 run = parsed.register(self.registry)
+            except AxisSelectionRequired as exc:
+                self.services.axis_requests.append(
+                    (future.load_request, exc.columns, future.convert_from)
+                )
+                continue
             except Exception as exc:  # noqa: BLE001 - surfaced to the console
                 self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
+                if completion is not None:
+                    completion.set_exception(exc)
                 continue
             self._report_loaded(run)
+            if completion is not None:
+                completion.set_result(run)
         self.services.pending = still_pending
 
     @property
     def is_loading(self) -> bool:
-        return bool(self.services.pending)
+        return bool(
+            self.services.pending
+            or self.services.axis_requests
+            or self.services.large_csv_requests
+        )
 
     def resolve_x_window(
         self, follow_plot: int, custom: tuple[float, float], signals: list[SignalRef]
@@ -715,7 +792,17 @@ class AppState(SessionData):
             return ref[1]
         return f"{ref[1]} @ {run.label} [run_{run.id}]"
 
-    def _open_background(self, path, mode, backend, disk_cache, cancel=None):
+    def _open_background(
+        self,
+        path,
+        mode,
+        backend,
+        disk_cache,
+        cancel=None,
+        *,
+        axis_column=None,
+        axis_domain=None,
+    ):
         return open_file(
             path,
             mode,
@@ -724,6 +811,8 @@ class AppState(SessionData):
             backend=backend,
             disk_cache=disk_cache,
             cancel=cancel,
+            axis_column=axis_column,
+            axis_domain=axis_domain,
         )
 
     def shutdown(self) -> None:

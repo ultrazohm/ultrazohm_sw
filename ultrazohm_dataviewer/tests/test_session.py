@@ -609,6 +609,8 @@ def test_sessions_preserve_duplicate_names_and_instances(tmp_path):
 
 
 def test_json_session_can_be_opened_at_startup(app_state, tmp_path, monkeypatch):
+    import time
+
     from ultrazohm_dataviewer import plugins
     from ultrazohm_dataviewer.app import DataViewerApp
 
@@ -618,10 +620,18 @@ def test_json_session_can_be_opened_at_startup(app_state, tmp_path, monkeypatch)
     monkeypatch.setattr(plugins, "load_plugins", lambda **kwargs: None)
     app = DataViewerApp(initial_files=[str(path)])
     try:
+        app.enable_control("127.0.0.1:0")
+        deadline = time.monotonic() + 10
+        while app._startup_scripts or app._startup_pending is not None:
+            app.operations.poll()
+            app.state.poll_pending_loads()
+            app._poll_startup()
+            assert time.monotonic() < deadline
+            time.sleep(0.001)
         assert (app.state.rows, app.state.cols) == (2, 1)
         assert not app.state.is_loading
     finally:
-        app.state.shutdown()
+        app._shutdown()
 
 
 @pytest.mark.parametrize(

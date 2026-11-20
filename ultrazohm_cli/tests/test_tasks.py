@@ -84,3 +84,55 @@ class BuildTaskTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PublicationPolicyTest(unittest.TestCase):
+    def test_event_and_branch_policy(self):
+        cases = [
+            ("push", "main", "false", "true", "false"),
+            ("push", "develop", "false", "true", "true"),
+            ("push", "feature/uz_cli_dataviewer_testing", "false", "false", "true"),
+            ("pull_request", "main", "true", "false", "true"),
+            (
+                "workflow_dispatch",
+                "feature/uz_cli_dataviewer_testing",
+                "true",
+                "true",
+                "true",
+            ),
+            ("workflow_dispatch", "develop", "false", "false", "true"),
+        ]
+        for event, branch, requested, published, prerelease in cases:
+            with (
+                self.subTest(event=event, branch=branch),
+                tempfile.TemporaryDirectory() as directory,
+            ):
+                output = Path(directory) / "outputs"
+                with patch.dict(
+                    os.environ,
+                    {
+                        "GITHUB_EVENT_NAME": event,
+                        "GITHUB_REF_NAME": branch,
+                        "UZ_PUBLISH_PRERELEASE": requested,
+                        "GITHUB_RUN_NUMBER": "99",
+                        "GITHUB_OUTPUT": str(output),
+                    },
+                ):
+                    tasks.version(None)
+                values = dict(
+                    line.split("=", 1) for line in output.read_text().splitlines()
+                )
+                self.assertEqual(values["publish"], published)
+                self.assertEqual(values["prerelease"], prerelease)
+
+    def test_manual_stable_publication_is_rejected(self):
+        with patch.dict(
+            os.environ,
+            {
+                "GITHUB_EVENT_NAME": "workflow_dispatch",
+                "GITHUB_REF_NAME": "main",
+                "UZ_PUBLISH_PRERELEASE": "true",
+            },
+        ):
+            with self.assertRaises(ValueError):
+                tasks.version(None)

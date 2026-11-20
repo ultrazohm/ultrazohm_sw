@@ -232,6 +232,8 @@ class Operations:
                 "label": run.label,
                 "path": run.path,
                 "signals": list(run.signals),
+                "axis_column": run.axis_column,
+                "axis_domain": run.axis_domain,
             }
             for run in self.state.registry.runs
         ]
@@ -274,7 +276,7 @@ class Operations:
             raise ViewerError("no_output", "Node has no evaluated output")
         return self._run_handle(run)
 
-    def load(self, path, start=None):
+    def load(self, path, start=None, *, axis_column=None, axis_domain=None):
         from .loader import open_file
 
         state = self.state
@@ -298,9 +300,13 @@ class Operations:
                 backend=backend,
                 disk_cache=disk_cache,
                 cancel=cancel,
+                axis_column=axis_column,
+                axis_domain=axis_domain,
             )
 
         def commit(parsed):
+            if start is not None and parsed.axis_domain != "time":
+                raise ValueError("Only time-domain recordings can be normalized")
             run = parsed.register(state.registry)
             if start is not None:
                 run.set_time_origin(start)
@@ -338,13 +344,22 @@ class Operations:
 
         return self._submit(prepare, lambda result: result)
 
-    def convert(self, src, dst=None):
+    def convert(self, src, dst=None, *, axis_column=None, axis_domain=None):
         from .loader import convert_csv_to_parquet
 
         backend = self.state.backend
 
         def prepare(cancel):
-            return str(convert_csv_to_parquet(src, dst, backend=backend, cancel=cancel))
+            return str(
+                convert_csv_to_parquet(
+                    src,
+                    dst,
+                    backend=backend,
+                    cancel=cancel,
+                    axis_column=axis_column,
+                    axis_domain=axis_domain,
+                )
+            )
 
         def commit(path):
             self.state.console.info(f"converted {src} -> {path}")

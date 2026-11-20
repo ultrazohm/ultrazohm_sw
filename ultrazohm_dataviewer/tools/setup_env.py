@@ -4,9 +4,11 @@ import hashlib
 import json
 import os
 import platform
+import shutil
 import subprocess
 import sys
 import tempfile
+from contextlib import contextmanager
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -86,6 +88,43 @@ def cli_task(task, *arguments):
     run(sys.executable, ROOT / "ultrazohm_cli" / "tasks.py", task, *arguments)
 
 
+@contextmanager
+def replace_environment():
+    """Restore on failure; retain the backup if recovery itself fails."""
+    environment = ROOT / ".venv"
+    directory = Path(tempfile.mkdtemp(prefix=".uz-backup-", dir=ROOT))
+    backup = directory / "environment"
+    succeeded = False
+    try:
+        existed = environment.exists()
+        if existed:
+            environment.rename(backup)
+        try:
+            yield
+            succeeded = True
+        except BaseException:
+            try:
+                if environment.exists():
+                    shutil.rmtree(environment)
+                if existed:
+                    backup.rename(environment)
+            except BaseException as recovery_error:
+                message = (
+                    f"Environment recovery failed. Previous environment retained at {backup}. "
+                    f"After resolving the filesystem error, restore it to {environment}."
+                    if existed
+                    else f"Could not remove the failed environment at {environment}."
+                )
+                raise RuntimeError(message) from recovery_error
+            raise
+    finally:
+        # Never let automatic temporary-directory cleanup erase the only backup.
+        if succeeded:
+            shutil.rmtree(directory)
+        elif not backup.exists():
+            shutil.rmtree(directory, ignore_errors=True)
+
+
 def setup(source=None, *, reuse=False):
     """Prepare published applications or the local checkout in the managed venv."""
     state = saved_setup()
@@ -116,92 +155,129 @@ def setup(source=None, *, reuse=False):
                     f"Expected one CLI wheel in {directory}, found {len(wheels)}"
                 )
             wheel = wheels[0]
-        # Build first, then replace the managed environment. This removes stale
-        # editable installs and GUI dependencies when changing application sets.
-        if marker.exists():
-            marker.unlink()
-        run(
-            "uv", "venv", "--clear", "--python", python_version, ROOT / ".venv", env=env
-        )
-        marker.write_text(json.dumps({"source": selected, "app": APP}) + "\n")
-        if selected == "local":
-            constraints = Path(directory) / "constraints.txt"
-            run(
-                "uv",
-                "export",
-                "--project",
-                ROOT / "ultrazohm_dataviewer",
-                "--locked",
-                "--no-dev",
-                "--no-emit-project",
-                "--no-emit-package",
-                "ultrazohm-cli",
-                "--no-hashes",
-                "--format",
-                "requirements.txt",
-                "--output-file",
-                constraints,
-                env=env,
-            )
-            packages = [wheel, "--editable", ROOT / PROJECT]
+        if selected != "local":
+            # Resolve and download the published package before moving the working
+            # environment. The final install reuses uv's wheel cache; rollback
+            # still covers installation, dependency checks and command smoke tests.
             run(
                 "uv",
                 "pip",
                 "install",
                 "--python",
-                executable("python"),
-                "--no-sources",
-                "--constraint",
-                constraints,
-                "--only-binary",
-                "imgui-bundle",
-                *packages,
-                env=env,
-            )
-        else:
-            package = "ultrazohm-dataviewer"
-            run(
-                "uv",
-                "pip",
-                "install",
-                "--python",
-                executable("python"),
+                python_version,
+                "--target",
+                Path(directory) / "preflight",
                 "--only-binary",
                 ":all:",
                 "--prerelease",
                 "allow" if selected == "prerelease" else "disallow",
-                package,
+                "ultrazohm-dataviewer",
                 env=env,
             )
-        run("uv", "pip", "check", "--python", executable("python"), env=env)
-        for name in commands:
-            run(executable(name), "--help", stdout=subprocess.DEVNULL)
-        versions = subprocess.check_output(
-            [
-                str(executable("python")),
-                "-c",
-                "import importlib.metadata,json; print(json.dumps({d.metadata['Name']: d.version "
-                "for d in importlib.metadata.distributions()}))",
-            ],
-            text=True,
-        )
-        marker.write_text(
-            json.dumps(
-                {
-                    "source": selected,
-                    "app": APP,
-                    "fingerprint": signature,
-                    "context": context,
-                    "versions": json.loads(versions),
-                }
+        # Build first, then replace the managed environment. This removes stale
+        # editable installs and GUI dependencies when changing application sets.
+        with replace_environment():
+            if marker.exists():
+                marker.unlink()
+            run(
+                "uv",
+                "venv",
+                "--clear",
+                "--python",
+                python_version,
+                ROOT / ".venv",
+                env=env,
             )
-            + "\n"
-        )
+            marker.write_text(json.dumps({"source": selected, "app": APP}) + "\n")
+            if selected == "local":
+                constraints = Path(directory) / "constraints.txt"
+                run(
+                    "uv",
+                    "export",
+                    "--project",
+                    ROOT / "ultrazohm_dataviewer",
+                    "--locked",
+                    "--no-dev",
+                    "--no-emit-project",
+                    "--no-emit-package",
+                    "ultrazohm-cli",
+                    "--no-hashes",
+                    "--format",
+                    "requirements.txt",
+                    "--output-file",
+                    constraints,
+                    env=env,
+                )
+                packages = [wheel, "--editable", ROOT / PROJECT]
+                run(
+                    "uv",
+                    "pip",
+                    "install",
+                    "--python",
+                    executable("python"),
+                    "--no-sources",
+                    "--constraint",
+                    constraints,
+                    "--only-binary",
+                    "imgui-bundle",
+                    *packages,
+                    env=env,
+                )
+            else:
+                package = "ultrazohm-dataviewer"
+                run(
+                    "uv",
+                    "pip",
+                    "install",
+                    "--python",
+                    executable("python"),
+                    "--only-binary",
+                    ":all:",
+                    "--prerelease",
+                    "allow" if selected == "prerelease" else "disallow",
+                    package,
+                    env=env,
+                )
+            run("uv", "pip", "check", "--python", executable("python"), env=env)
+            for name in commands:
+                run(executable(name), "--help", stdout=subprocess.DEVNULL)
+            versions = subprocess.check_output(
+                [
+                    str(executable("python")),
+                    "-c",
+                    "import importlib.metadata,json; print(json.dumps({d.metadata['Name']: d.version "
+                    "for d in importlib.metadata.distributions()}))",
+                ],
+                text=True,
+            )
+            marker.write_text(
+                json.dumps(
+                    {
+                        "source": selected,
+                        "app": APP,
+                        "fingerprint": signature,
+                        "context": context,
+                        "versions": json.loads(versions),
+                    }
+                )
+                + "\n"
+            )
     print(f"{APP} environment ready in {ROOT / '.venv'} ({selected}).", flush=True)
 
 
 def setup_task(args):
-    setup(args.source, reuse=args.task == "shell")
+    try:
+        setup(args.source, reuse=args.task == "shell")
+    except subprocess.CalledProcessError:
+        if (args.source or saved_setup().get("source", "stable")) == "stable":
+            launcher = ".\\uz.ps1" if os.name == "nt" else "./uz"
+            print(
+                "Stable installation failed. If only development releases are available, "
+                f"run {launcher} setup prerelease --app {APP}. "
+                "The previous environment has been preserved.",
+                file=sys.stderr,
+            )
+        raise
     if args.task == "shell":
         run(
             executable("python"),

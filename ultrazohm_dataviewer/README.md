@@ -477,3 +477,41 @@ On Windows, use `.\uz.ps1` with the same arguments.
 `format` applies layout changes only; lint fixes and import sorting require explicit review.
 The enabled lint rules are `F`, `E4`, `E7`, `E9`, `I`, `B`, `UP`, and `C4`.
 The project's `check` task and CI enforce both lint and formatting.
+
+## Import axes and migration
+
+A single column named `time` or `frequency` selects the independent axis automatically. FFT exports (`frequency,out`) therefore reopen as frequency-domain data in both loading modes and both backends. Files with neither name, or with both names, show **Choose independent axis** when opened in the GUI. Select the column and whether it represents seconds or Hz. Cancellation skips that file. Non-numeric axis columns are rejected.
+
+Python and terminal automation specify the selection explicitly:
+
+```python
+data = read("measurement.csv", axis_column="seconds", axis_domain="time")
+run = viewer.load("spectrum.csv", axis_column="hz", axis_domain="frequency")
+viewer.convert("spectrum.csv", axis_column="hz", axis_domain="frequency")
+```
+
+```sh
+ultrazohm-dataviewer load spectrum.csv --axis-column hz --axis-domain frequency
+```
+
+`load` and `convert` terminal commands control an already-running viewer. `ultrazohm-dataviewer gui measurement.csv` opens the GUI. `read()` works directly in Python without a GUI. The Python dataset exposes `axis_column` and `axis_domain`; its historical `.time` array holds the selected independent axis in either domain. `to_dataframe()` preserves the selected column name. CSV plot exports use the canonical `time` or `frequency` header and reject signal-name collisions instead of overwriting the axis.
+
+CSV-to-Parquet conversion writes axis metadata. Sessions save each recording's column and domain, and cache identities include the column selection. Existing schema-6 sessions without axis fields retain the former time/first-column selection. Frequency-domain recordings reject time normalization and time-only analysis. Earlier unsupported session schemas still require recreation.
+
+The migration removes the custom command language and `.uzscript` runner, generated script export, automatic loading mode and its old memory-budget controls. Use Python `Client` automation, JSON sessions, explicit memory/lazy loading and the retained-cache budget. Old browser/Pyodide delivery and Linux standalone archives are not current distribution targets; Linux uses Python wheels. JavaScope firmware compatibility remains supported.
+
+Device Stop, recording Stop and service shutdown have different meanings: device Stop leaves acquisition connected; stopping fast or slow logging finalizes only that stream; shutdown ends the service and finalizes recordings. Detaching a viewer from an externally owned service leaves that service running. Live viewing uses bounded recent history; complete history browsing during acquisition and cloud storage remain future capabilities. Acquisition timestamps use the nominal configured sampling period and cannot reconstruct transport gaps.
+
+## Capability status
+
+| Capability | Current maturity and validation |
+| --- | --- |
+| CSV/Parquet browsing, plotting and exports | Implemented; both backends, memory/lazy modes and axis roundtrips covered by regression tests. |
+| FFT, histogram and node analysis | Implemented; domain constraints and session persistence covered by tests. |
+| Python Client, terminal control and Python panel | Implemented; local control and startup ordering tested. |
+| Live scope and fast/slow recording | Implemented; simulator integration covers control, finalization and disconnects. Physical-device acceptance remains pending. |
+| Header discovery and Flash UZ | Implemented; parser and fake-tooling tests pass. Actual Vitis/JTAG acceptance remains pending. |
+| Windows desktop distribution | Release-wheel bundling and smoke checks run in Windows CI; no local Windows execution is claimed. |
+| Full recording-history browsing during acquisition; cloud storage | Future capabilities. |
+
+The retained tests and pending hardware checklist are described in the [CLI validation guide](../ultrazohm_cli/README.md#hardware-acceptance-pending).

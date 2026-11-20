@@ -2,10 +2,10 @@ Method,Group,Description,Signature
 backend,Data / runs,"IO backend for subsequent opens, exports and CSV conversion: pyarrow or polars (desktop only).",``viewer.backend(name: 'str')``
 cache_budget,Data / runs,Shared timestamp/summary RAM cache budget in MiB.,``viewer.cache_budget(mib: 'int')``
 clear_session,Data / runs,Clear session,``viewer.clear_session()``
-convert,Data / runs,Stream-convert CSV to Parquet using the selected backend; dst defaults to src with a .parquet extension. Existing destinations and empty inputs are rejected.,"``viewer.convert(src: 'str', dst: 'str | None' = None)``"
+convert,Data / runs,Stream-convert CSV to Parquet using the selected backend; dst defaults to src with a .parquet extension. Existing destinations and empty inputs are rejected.,"``viewer.convert(src: 'str', dst: 'str | None' = None, *, axis_column: 'str | None' = None, axis_domain: 'str | None' = None)``"
 disk_cache,Data / runs,"Persist indexes, summaries and CSV conversions for subsequent opens (default: false).",``viewer.disk_cache(on: 'bool')``
 list_runs,Data / runs,List runs,``viewer.list_runs()``
-load,Data / runs,Load,"``viewer.load(path: str, start: float | None = None)``"
+load,Data / runs,Load,"``viewer.load(path: str, start: float | None = None, *, axis_column: str | None = None, axis_domain: str | None = None)``"
 loading_mode,Data / runs,Storage policy for subsequent opens: memory or lazy.,``viewer.loading_mode(mode: 'str')``
 normalize_time,Data / runs,Shift a run so its first sample sits at start (default 0).,"``viewer.normalize_time(run: 'RunHandle', start: 'float | None' = None)``"
 remove_run,Data / runs,Remove a loaded run and its plots.,``viewer.remove_run(run: 'RunHandle')``

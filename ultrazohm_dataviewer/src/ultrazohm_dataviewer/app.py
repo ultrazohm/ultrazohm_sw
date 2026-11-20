@@ -117,26 +117,13 @@ class DataViewerApp:
         from . import plugins
 
         plugins.load_plugins(console=self.state.console)
-        # Startup arguments are ordered automation. Register recordings before
-        # executing dependent scripts; GUI opens remain asynchronous.
-        self._startup_scripts = []
+        # All startup files share the asynchronous GUI loading path. Its completion
+        # spans axis/conversion prompts and registration before dependent scripts.
+        self._startup_scripts = list(initial_files or [])
         self._startup_pending = None
         self._startup_script = False
-        for path in initial_files or []:
-            if not os.path.exists(path):
-                self.state.console.warn(f"File not found: {path}")
-                break
-            if self._startup_scripts or path.lower().endswith(".py"):
-                self._startup_scripts.append(path)
-                continue
-            if path.lower().endswith(".uzscript"):
-                raise ValueError(".uzscript is no longer supported; use Python files")
-            command = "load_state" if path.lower().endswith(".json") else "load"
-            try:
-                self.state.commands.execute(self.state, command, [path])
-            except Exception as exc:
-                self.state.console.error(f"Startup stopped at {path}: {exc}")
-                break
+        if any(path.lower().endswith(".uzscript") for path in self._startup_scripts):
+            raise ValueError(".uzscript is no longer supported; use Python files")
 
         self.state.async_exports = True
 
@@ -420,8 +407,14 @@ class DataViewerApp:
                 if not self._startup_pending.done():
                     return
                 pending, self._startup_pending = self._startup_pending, None
+                if pending.cancelled():
+                    raise RuntimeError("Startup load cancelled")
                 pending.result()
-            if not self._startup_scripts or self.python_panel.busy():
+            if (
+                not self._startup_scripts
+                or self.python_panel.busy()
+                or self.state.is_loading
+            ):
                 return
             path = self._startup_scripts.pop(0)
             if path.lower().endswith(".py"):
@@ -429,11 +422,12 @@ class DataViewerApp:
                     path, viewer_endpoint=self.python_panel.endpoint()
                 )
                 self._startup_script = True
-            else:
-                name = "load_session" if path.lower().endswith(".json") else "load"
+            elif path.lower().endswith(".json"):
                 self._startup_pending = self.operations.dispatch(
-                    name, {"path": path}, None
+                    "load_session", {"path": path}, None
                 )
+            else:
+                self._startup_pending = self.state.request_load(path)
         except Exception as exc:
             self._startup_scripts.clear()
             self.state.console.error(f"Startup stopped: {exc}")
@@ -518,6 +512,7 @@ class DataViewerApp:
         self.state.shutdown()
 
     def _show_load_dialog(self) -> None:
+        self._show_axis_dialog()
         if not self.state.services.large_csv_requests:
             return
         request = self.state.services.large_csv_requests[0]
@@ -557,6 +552,43 @@ class DataViewerApp:
                 choice = "cancel"
             if choice:
                 self.state.resolve_large_csv(choice)
+                imgui.close_current_popup()
+            imgui.end_popup()
+
+    def _show_axis_dialog(self):
+        if not self.state.services.axis_requests:
+            return
+        request, columns, _ = self.state.services.axis_requests[0]
+        if getattr(self, "_axis_request", None) is not request:
+            self._axis_request = request
+            self._axis_column = 0
+            self._axis_domain = 0
+        title = "Choose independent axis"
+        if not imgui.is_popup_open(title):
+            imgui.open_popup(title)
+        visible, _ = imgui.begin_popup_modal(
+            title, flags=imgui.WindowFlags_.always_auto_resize
+        )
+        if visible:
+            imgui.text_unformatted(os.path.basename(request.path))
+            imgui.text_unformatted("Select the independent column and its meaning.")
+            _, self._axis_column = imgui.combo(
+                "Column", self._axis_column, ["Choose a column", *columns]
+            )
+            _, self._axis_domain = imgui.combo(
+                "Domain", self._axis_domain, ["Time (seconds)", "Frequency (Hz)"]
+            )
+            imgui.begin_disabled(self._axis_column == 0)
+            if imgui.button("Open"):
+                self.state.resolve_axis(
+                    columns[self._axis_column - 1],
+                    ("time", "frequency")[self._axis_domain],
+                )
+                imgui.close_current_popup()
+            imgui.end_disabled()
+            imgui.same_line()
+            if imgui.button("Cancel"):
+                self.state.resolve_axis()
                 imgui.close_current_popup()
             imgui.end_popup()
 
@@ -645,10 +677,17 @@ def main(argv: list[str] | None = None) -> int:
             "--backend", choices=("pyarrow", "polars"), default=default_backend
         )
         converter.add_argument("files", nargs="+")
+        converter.add_argument("--axis-column")
+        converter.add_argument("--axis-domain", choices=("time", "frequency"))
         options = converter.parse_args(argv[1:])
         files = options.files
         for src in files:
-            out = convert_csv_to_parquet(src, backend=options.backend)
+            out = convert_csv_to_parquet(
+                src,
+                backend=options.backend,
+                axis_column=options.axis_column,
+                axis_domain=options.axis_domain,
+            )
             print(f"converted {src} -> {out}")
         return 0
     import argparse

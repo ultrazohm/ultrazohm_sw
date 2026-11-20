@@ -7,7 +7,14 @@ from .sources import IndexedFileSource, Metadata, check
 
 class CsvSource(IndexedFileSource):
     def __init__(
-        self, path, cache=None, cache_dir=None, cancel=None, *, disk_cache=False
+        self,
+        path,
+        cache=None,
+        cache_dir=None,
+        cancel=None,
+        *,
+        disk_cache=False,
+        axis_column=None,
     ):
         from .loader import (
             _named_signals,
@@ -17,10 +24,10 @@ class CsvSource(IndexedFileSource):
             timestamp_resolution,
         )
 
-        identity = self._initialize(path, cache, cache_dir, False, "csv")
+        identity = self._initialize(path, cache, cache_dir, False, "csv", axis_column)
         self.delimiter = _sniff_delimiter(str(self.path))
         columns = _read_header(str(self.path), self.delimiter)
-        self.time_col, columns = _split_time_columns(columns)
+        self.time_col, columns = _split_time_columns(columns, axis_column)
         named, self.units = _named_signals(columns, lambda c: np.empty(0, np.float32))
         self.timestamp_resolution = timestamp_resolution(columns)
         self.columns = dict(zip(named, columns, strict=False))
@@ -50,7 +57,7 @@ class CsvSource(IndexedFileSource):
             convert_options=csv.ConvertOptions(
                 include_columns=columns,
                 null_values=NULL_VALUES,
-                column_types=_csv_column_types(columns),
+                column_types=_csv_column_types(columns, self.time_col),
             ),
         ) as reader:
             for batch in reader:

@@ -208,6 +208,12 @@ class IntegrationTest(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
+        # Default-output and failed-start paths may create parent directories.
+        # Give every test a firmware fixture so these writes never reach the checkout.
+        repository_fixture(Path(self.tmp.name))
+        original_cwd = Path.cwd()
+        os.chdir(self.tmp.name)
+        self.addCleanup(os.chdir, original_cwd)
         # Keep both sockets bound until both ports are chosen. Releasing the
         # first before choosing the second allows the OS to return it again.
         with socket.socket() as service, socket.socket() as device:
@@ -297,6 +303,7 @@ class IntegrationTest(unittest.TestCase):
         ack="off",
         format="csv",
         interactive=False,
+        windows_console=False,
         logging=True,
         profile=None,
         mapping=None,
@@ -358,6 +365,7 @@ class IntegrationTest(unittest.TestCase):
             self.addCleanup(self.interactive_stderr.close)
             self.service = subprocess.Popen(
                 [str(x) for x in [*args, "--interactive"]],
+                creationflags=subprocess.CREATE_NEW_CONSOLE if windows_console else 0,
                 stdin=subprocess.PIPE,
                 stdout=self.interactive_stdout,
                 stderr=self.interactive_stderr,
@@ -1219,7 +1227,13 @@ class IntegrationTest(unittest.TestCase):
         nested = root / "ultrazohm_cli/nested"
         nested.mkdir(parents=True)
         result = subprocess.run(
-            [str(BIN), "--endpoint", self.endpoint, "serve", "--interactive"],
+            [
+                str(BIN),
+                "--endpoint",
+                self.endpoint,
+                "serve",
+                "--interactive",
+            ],
             cwd=nested,
             input="shutdown\n",
             text=True,
@@ -1234,7 +1248,15 @@ class IntegrationTest(unittest.TestCase):
 
     def test_offline_interactive_shutdown(self):
         result = subprocess.run(
-            [str(BIN), "--endpoint", self.endpoint, "serve", "--interactive"],
+            [
+                str(BIN),
+                "--endpoint",
+                self.endpoint,
+                "serve",
+                "--interactive",
+                "--output",
+                str(Path(self.tmp.name) / "offline-interactive"),
+            ],
             input="status\nshutdown\n",
             text=True,
             capture_output=True,
@@ -1305,6 +1327,37 @@ class IntegrationTest(unittest.TestCase):
         self.start(interactive=True)
         wait_for(lambda: self.cli("status")["state"]["samples"] >= 30)
         self.service.send_signal(signal.SIGINT)
+        self.assertEqual(self.wait_for_service_exit(), 0)
+        self.assertTrue(
+            json.loads((self.run_dir / "run.json").read_text())["end"]["complete"]
+        )
+        self.assertTrue((self.run_dir / "data.parquet").is_file())
+        self.assertTrue((self.run_dir / "data.csv").is_file())
+
+    @unittest.skipUnless(os.name == "nt", "Windows console control fixture")
+    def test_windows_console_ctrl_c_finalizes(self):
+        self.start(interactive=True, windows_console=True)
+        wait_for(lambda: self.cli("status")["state"]["samples"] >= 30)
+        # Attach an isolated helper to the CLI's console. Sending CTRL_C to this
+        # console cannot interrupt the test runner or other hosted-runner jobs.
+        helper = """
+import ctypes, sys, time
+kernel = ctypes.WinDLL("kernel32", use_last_error=True)
+kernel.FreeConsole()
+if not kernel.AttachConsole(int(sys.argv[1])):
+    raise ctypes.WinError(ctypes.get_last_error())
+if not kernel.SetConsoleCtrlHandler(None, True):
+    raise ctypes.WinError(ctypes.get_last_error())
+if not kernel.GenerateConsoleCtrlEvent(0, 0):
+    raise ctypes.WinError(ctypes.get_last_error())
+time.sleep(0.2)
+kernel.FreeConsole()
+"""
+        subprocess.run(
+            [sys.executable, "-c", helper, str(self.service.pid)],
+            check=True,
+            timeout=10,
+        )
         self.assertEqual(self.wait_for_service_exit(), 0)
         self.assertTrue(
             json.loads((self.run_dir / "run.json").read_text())["end"]["complete"]

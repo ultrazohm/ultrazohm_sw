@@ -102,7 +102,7 @@ def test_failed_conversion_cleans_partial_file(state, tmp_path, monkeypatch):
     path = tmp_path / "input.csv"
     path.write_text("time;a\n0;1\n1;2\n")
 
-    def fail(src, dst, backend, cancel):
+    def fail(src, dst, backend, cancel, *, axis=None):
         Path(dst).write_bytes(b"partial")
         raise ValueError("invalid CSV")
 

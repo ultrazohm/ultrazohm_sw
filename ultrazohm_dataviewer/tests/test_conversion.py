@@ -66,7 +66,7 @@ def test_cancellation_before_publication_cleans_output(tmp_path, monkeypatch):
     source.write_text("time;a\n0;1\n1;2\n")
     cancel = threading.Event()
 
-    def cancelled_writer(src, dst, backend, event):
+    def cancelled_writer(src, dst, backend, event, *, axis=None):
         loader._write_csv_to_parquet(src, dst, backend=backend)
         event.set()
 

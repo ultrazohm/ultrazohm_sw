@@ -175,9 +175,20 @@ class Client(ViewerMethods):
     def clear_session(self):
         return self._call("clear_session")
 
-    def load(self, path: str, start: float | None = None):
+    def load(
+        self,
+        path: str,
+        start: float | None = None,
+        *,
+        axis_column: str | None = None,
+        axis_domain: str | None = None,
+    ):
         result = self._call(
-            "load", path=str(Path(path).expanduser().resolve()), start=start
+            "load",
+            path=str(Path(path).expanduser().resolve()),
+            start=start,
+            axis_column=axis_column,
+            axis_domain=axis_domain,
         )
         return RunHandle(result["session"], result["id"])
 

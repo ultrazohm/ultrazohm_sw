@@ -46,7 +46,7 @@ __all__ = [
 
 
 class Dataset:
-    """A loaded log: a shared ``time`` axis plus named signal arrays.
+    """A loaded log: an independent axis (exposed as ``time``) and named signals.
 
     Thin read-friendly wrapper over ``loader.ParsedRun``. Index a signal by name
     (``data["ia"]``), test membership (``"ia" in data``), iterate names, or pull the
@@ -61,9 +61,13 @@ class Dataset:
         "units",
         "backend",
         "timestamp_resolution",
+        "axis_column",
+        "axis_domain",
     )
 
     def __init__(self, parsed) -> None:
+        self.axis_column = parsed.axis_column
+        self.axis_domain = parsed.axis_domain
         self.timestamp_resolution = parsed.timestamp_resolution
         self.backend: str = parsed.backend
         self.label: str = parsed.label
@@ -94,18 +98,25 @@ class Dataset:
 
     def to_dataframe(self):
         """Return a backend-native DataFrame of time plus one column per signal."""
+        axis = self.axis_column or self.axis_domain
+        if axis in self.signals:
+            raise ValueError(f"Signal name conflicts with axis column: {axis}")
         if self.backend == "polars":
             import polars as pl
 
-            return pl.DataFrame({"time": self.time, **self.signals})
+            return pl.DataFrame({axis: self.time, **self.signals})
         import pandas as pd
 
-        return pd.DataFrame({"time": self.time, **self.signals})
+        return pd.DataFrame({axis: self.time, **self.signals})
 
 
-def read(path, *, backend="pyarrow") -> Dataset:
+def read(path, *, backend="pyarrow", axis_column=None, axis_domain=None) -> Dataset:
     """Load a ``.csv``/``.parquet`` log and return its data as a :class:`Dataset`."""
-    return Dataset(parse_file(str(path), backend=backend))
+    return Dataset(
+        parse_file(
+            str(path), backend=backend, axis_column=axis_column, axis_domain=axis_domain
+        )
+    )
 
 
 def fft(

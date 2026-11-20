@@ -334,7 +334,7 @@ def test_log_browser_uses_selected_workspace(
         app._shutdown()
 
 
-def _finish_startup(app):
+def _finish_startup(app, on_frame=None):
     import time
 
     app.enable_control("127.0.0.1:0")
@@ -344,7 +344,79 @@ def _finish_startup(app):
     ):
         app.python_panel.poll()
         app.operations.poll()
+        app.state.poll_pending_loads()
         app.control_server.poll(app.operations.dispatch)
         app._poll_startup()
+        if on_frame is not None:
+            on_frame()
         assert time.monotonic() < deadline
         time.sleep(0.001)
+
+
+@pytest.mark.parametrize("after_script", [False, True])
+@pytest.mark.parametrize("outcome", ["success", "invalid", "cancel"])
+def test_startup_axis_choice_waits_for_success(tmp_path, after_script, outcome):
+    recording = tmp_path / "custom.csv"
+    recording.write_text(
+        "seconds,value\n0,1\n1,2\n"
+        if outcome != "invalid"
+        else "seconds,value\ninvalid,1\ninvalid,2\n"
+    )
+    marker = tmp_path / "script-ran"
+    script = tmp_path / "next.py"
+    script.write_text(f"from pathlib import Path\nPath({str(marker)!r}).touch()\n")
+    prefix = tmp_path / "first.py"
+    prefix.write_text("pass\n")
+    files = ([str(prefix)] if after_script else []) + [str(recording), str(script)]
+    app = DataViewerApp(files, backend="pyarrow", loading_mode="memory")
+    choices = []
+
+    def choose():
+        if app.state.services.axis_requests:
+            assert not marker.exists()
+            assert not app._startup_pending.done()
+            choices.append(True)
+            app.state.resolve_axis() if outcome == "cancel" else app.state.resolve_axis(
+                "seconds", "time"
+            )
+
+    try:
+        _finish_startup(app, choose)
+        assert choices == [True]
+        assert marker.exists() == (outcome == "success")
+        assert len(app.state.registry.runs) == (1 if outcome == "success" else 0)
+        if outcome != "success":
+            assert "Startup stopped" in app.state.console.as_text()
+    finally:
+        app._shutdown()
+
+
+@pytest.mark.parametrize("choice", ["csv", "convert", "cancel"])
+def test_startup_large_csv_choice_preserves_completion(tmp_path, monkeypatch, choice):
+    monkeypatch.setattr("ultrazohm_dataviewer.state.LARGE_CSV_BYTES", 1)
+    recording = tmp_path / "large.csv"
+    recording.write_text("seconds,value\n0,1\n1,2\n")
+    app = DataViewerApp([str(recording)], backend="pyarrow")
+    choices = []
+    completion = []
+
+    def choose():
+        if app.state.services.large_csv_requests:
+            completion.append(app._startup_pending)
+            app.state.resolve_large_csv(choice)
+            choices.append("large")
+        if app.state.services.axis_requests:
+            assert app._startup_pending is completion[0]
+            assert not completion[0].done()
+            app.state.resolve_axis("seconds", "time")
+            choices.append("axis")
+
+    try:
+        _finish_startup(app, choose)
+        assert choices == (["large"] if choice == "cancel" else ["large", "axis"])
+        if choice == "cancel":
+            assert completion[0].cancelled()
+        else:
+            assert completion[0].result() is app.state.registry.runs[0]
+    finally:
+        app._shutdown()

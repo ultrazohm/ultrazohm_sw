@@ -420,11 +420,15 @@ Linux/Windows CI and hardware validation remain separate from local test results
 
 ## Publishing
 
-One [workflow](../.github/workflows/uz_cli.yml) checks the CLI on Linux and Windows, builds and tests the release wheels, tests the data viewer against them and builds its bundles, one version per run: `MAJOR.MINOR` from `pyproject.toml` plus the workflow run number, with `.dev0` outside `main`.
+One [workflow](../.github/workflows/uz_cli.yml) checks the CLI on Linux and Windows, builds and tests the release wheels, tests the data viewer against them and builds its bundles, one version per run: `MAJOR.MINOR` from `pyproject.toml` plus the workflow run number, with `.dev0` except for pushes to `main`.
 The wheels are stamped and built once; the bundles contain exactly those wheels.
 
-Pushes to `main` (stable), `develop` and `feature/uz_cli_dataviewer_testing` (prereleases) publish one GitHub release `ultrazohm-v<VERSION>` with three Python wheels, two Windows ZIPs and `SHA256SUMS`, and upload the wheels to PyPI as `ultrazohm-cli` and `ultrazohm-dataviewer` through trusted publishing.
-Other branches and pull requests only test.
+Pushes to `main` (stable) and `develop` (prereleases) publish one GitHub release `ultrazohm-v<VERSION>` with three Python wheels, two Windows ZIPs and `SHA256SUMS`, and upload the wheels to PyPI as `ultrazohm-cli` and `ultrazohm-dataviewer` through trusted publishing.
+Feature branches run the full pipeline on pull requests, avoiding a duplicate push run for the same change. Pushes to integration branches still validate the resulting branch state. Manual dispatch tests any branch; selecting `publish_prerelease` permits publication only from `develop` or `feature/uz_cli_dataviewer_testing`.
+
+Before either PyPI upload, every existing wheel at that version must match the candidate manifest's filename, size and SHA-256. After publication, CI downloads and hashes every wheel, then smoke-tests installed packages on Linux and Windows. GitHub release reruns verify existing assets, upload only missing draft assets, and reject mismatches or incomplete already-published releases. No asset is overwritten. The workflow filename and run-number version sequence remain unchanged.
+
+CLI release wheels also run the simulator integration suite on the minimum supported Python 3.10 on both platforms. Windows has a dedicated console Ctrl-C finalization fixture; the existing Unix SIGINT check remains.
 Release targets are Windows x86-64 and Linux x86-64 `manylinux_2_28` (glibc 2.28+), using Python's 3.10+ stable ABI.
 These releases never replace the repository's latest release.
 
@@ -444,3 +448,14 @@ On Windows, use `.\uz.ps1` with the same arguments.
 `format` applies layout changes only; lint fixes and import sorting require explicit review.
 The enabled lint rules are `F`, `E4`, `E7`, `E9`, `I`, `B`, `UP`, and `C4`.
 The project's `check` task and CI enforce both lint and formatting.
+
+## Hardware acceptance (pending)
+
+Simulator and fake-XSCT checks do not establish physical-device readiness. Before a hardware release, record the firmware revision, board, host OS and Vitis version, then verify:
+
+- Discover mappings from the selected checkout, connect, and compare observable names and assignments with firmware.
+- Exercise system enable, control enable, device Stop and independent fast/slow recording. Confirm Stop leaves acquisition connected and shutdown finalizes recordings.
+- Record through a disconnect and inspect completion flags, CSV/Parquet output and partial-file cleanup.
+- Flash through XSCT/JTAG, reconnect, and verify preserved assignments and idle logging.
+
+These checks require a device and Vitis installation and remain pending; CI does not claim to perform them.

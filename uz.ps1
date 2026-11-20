@@ -1,5 +1,5 @@
-# Bootstrap uv and pinned Python, then run a repository task.
-# Usage: .\uz.ps1 shell [local|stable|prerelease], .\uz.ps1 build cli, .\uz.ps1 --help
+# Bootstrap uv and pinned Python, then run a published UltraZohm tool.
+# Usage: .\uz.ps1 venv [stable|prerelease], .\uz.ps1 install cli, .\uz.ps1 --help
 # Task arguments are forwarded, including relative file paths.
 $ErrorActionPreference = 'Stop'
 

@@ -16,8 +16,9 @@ Python/uv, Windows standalone downloads, and repository environments.
 uvx ultrazohm-cli
 # For Python scripts in your virtual environment:
 pip install ultrazohm-cli
-# For CLI-only development from this checkout:
-./uz shell local --app cli
+# For local development of both applications:
+./uz_developer setup
+./uz_developer shell
 ```
 
 Python imports use `ultrazohm_cli`; `python -m ultrazohm_cli` runs the CLI.
@@ -26,7 +27,7 @@ Python imports use `ultrazohm_cli`; `python -m ultrazohm_cli` runs the CLI.
 
 Source builds require Rust 1.90.0 and a native C/C++ toolchain (Linux: `build-essential`; Windows: Visual Studio Build Tools with C++ development).
 The devcontainer supplies Rust, Maturin and uv.
-Its post-create script runs `./uz setup local --app viewer` and installs example dependencies.
+Its post-create script installs both applications and example dependencies into container Python, independently of the host `.venv`. Run the application commands directly inside the container.
 Both `ultrazohm-cli` and `ultrazohm-dataviewer` are available in new container terminals.
 Re-run `bash .devcontainer/post-create.sh` to refresh the installation.
 Container-built wheels require a compatible Linux host; Windows needs its own wheel.
@@ -36,11 +37,11 @@ From the repository root:
 
 | Task | Output |
 |---|---|
-| `./uz build cli` | Optimized wheel for this machine in `target/wheels`, including native extension and CLI entry point |
-| `./uz task cli debug-wheel` | Unoptimized wheel for tests in `target/wheels-debug` |
-| `./uz task cli release-wheel` | Portable release wheel in `target/wheels-release` |
+| `./uz_developer build cli` | Optimized wheel for this machine in `target/wheels`, including native extension and CLI entry point |
+| `./uz_developer task cli debug-wheel` | Unoptimized wheel for tests in `target/wheels-debug` |
+| `./uz_developer task cli release-wheel` | Portable release wheel in `target/wheels-release` |
 
-On Windows, use `.\uz.ps1` with the same arguments.
+On Windows, use `.\uz_developer.ps1` with the same arguments.
 Maturin and Zig run together through `uv tool run`, independently of the launcher's Python environment.
 The standalone executable is `cargo build --release --locked --bin ultrazohm-cli`.
 
@@ -401,9 +402,9 @@ Equivalent Make targets are `make -C vitis build` and `make -C vitis build-clean
 Run the same checks as CI from the repository root, on Linux (dev container) or Windows:
 
 ```sh
-./uz check cli           # fmt, clippy, Rust tests, Python integration tests
-./uz task cli release-wheel   # portable release wheel in target/wheels-release
-./uz task cli release-check   # integration tests against that installed wheel
+./uz_developer check cli           # fmt, clippy, Rust tests, Python integration tests
+./uz_developer task cli release-wheel   # portable release wheel in target/wheels-release
+./uz_developer task cli release-check   # integration tests against that installed wheel
 ```
 
 `check` builds a debug wheel, installs it into `ultrazohm_cli/target/ci-venv` and runs the integration tests twice: against the cargo-built executable and against the wheel's `ultrazohm-cli` command.
@@ -439,12 +440,12 @@ These tasks run Ruff in an isolated tool environment and do not build or install
 Run from the repository root:
 
 ```bash
-./uz task cli lint
-./uz task cli format
-./uz task cli format-check
+./uz_developer task cli lint
+./uz_developer task cli format
+./uz_developer task cli format-check
 ```
 
-On Windows, use `.\uz.ps1` with the same arguments.
+On Windows, use `.\uz_developer.ps1` with the same arguments.
 `format` applies layout changes only; lint fixes and import sorting require explicit review.
 The enabled lint rules are `F`, `E4`, `E7`, `E9`, `I`, `B`, `UP`, and `C4`.
 The project's `check` task and CI enforce both lint and formatting.

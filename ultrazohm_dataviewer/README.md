@@ -197,14 +197,14 @@ Documentation lives in `../docs/source/guide/gui/ultrazohm_dataviewer/`.
 Run the same checks as CI, on Linux (dev container) or Windows:
 
 ```bash
-./uz check viewer                  # ruff and the full pytest suite, with a CLI wheel from this checkout
-./uz build viewer                 # PyInstaller bundle in dist/
-./uz task viewer bundle-smoke           # its smoke tests
+./uz_developer check viewer                  # ruff and the full pytest suite, with a CLI wheel from this checkout
+./uz_developer build viewer                 # PyInstaller bundle in dist/
+./uz_developer task viewer bundle-smoke           # its smoke tests
 ```
 
 The tasks use `ultrazohm_dataviewer/.venv-ci`, separate from the shared repository `.venv`.
 `check` builds a debug CLI wheel from `../ultrazohm_cli` unless `--cli-wheel PATH` is given,
-so the live tests run against the same commit. `./uz check viewer` forwards to the same task implementation. Linux CI runs it in the `ci` stage of `.devcontainer/Dockerfile`;
+so the live tests run against the same commit. `./uz_developer check viewer` forwards to the same task implementation. Linux CI runs it in the `ci` stage of `.devcontainer/Dockerfile`;
 Linux is distributed through Python wheels. Windows standalone packaging copies
 the build system's libraries.
 
@@ -226,7 +226,7 @@ Failed outputs retain their saved domain as unavailable placeholders until repai
 ### Python and terminal automation
 
 The viewer hosts a local control API at `127.0.0.1:19741`.
-Open an environment shell with `./uz shell`, then use ordinary Python or terminal commands.
+Open an environment shell with `./uz_developer shell`, then use ordinary Python or terminal commands.
 Control commands attach to an existing application:
 
 ```bash
@@ -320,7 +320,7 @@ Select the checkout in the viewer, or pass `ultrazohm-dataviewer gui --live-repo
 
 Repository setup selects both applications consistently: `stable` and `prerelease` use published packages; `local` uses the checkout.
 Use `--app viewer` to include both.
-Re-run `./uz setup local --app viewer` after CLI changes.
+Re-run `./uz_developer setup` after CLI changes.
 
 **Flash UZ** requires XSCT and confirmation.
 The viewer shuts down any running service, which sends device Stop and finalizes recordings.
@@ -468,12 +468,12 @@ These tasks run Ruff in an isolated tool environment and do not build or install
 Run from the repository root:
 
 ```bash
-./uz task viewer lint
-./uz task viewer format
-./uz task viewer format-check
+./uz_developer task viewer lint
+./uz_developer task viewer format
+./uz_developer task viewer format-check
 ```
 
-On Windows, use `.\uz.ps1` with the same arguments.
+On Windows, use `.\uz_developer.ps1` with the same arguments.
 `format` applies layout changes only; lint fixes and import sorting require explicit review.
 The enabled lint rules are `F`, `E4`, `E7`, `E9`, `I`, `B`, `UP`, and `C4`.
 The project's `check` task and CI enforce both lint and formatting.

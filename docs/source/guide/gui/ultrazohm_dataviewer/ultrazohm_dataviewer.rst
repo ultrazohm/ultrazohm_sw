@@ -69,21 +69,26 @@ The viewer requires Python 3.12 or later and a desktop display with OpenGL suppo
 
     .. tab-item:: Git checkout
 
-       From the repository root, select published packages or the current checkout:
+       From the repository root, run published applications or open a published-library shell:
 
        .. code-block:: bash
 
-          ./uz shell stable --app viewer
-          ./uz shell prerelease --app viewer
-          ./uz shell local --app viewer
+          ./uz dataviewer stable
+          ./uz dataviewer prerelease
+          ./uz install dataviewer prerelease
+          ./uz venv prerelease
 
-       Use ``.\uz.ps1`` on Windows with the same arguments.
-       Inside the activated shell, run ``ultrazohm-dataviewer`` or ``ultrazohm-cli``.
-       ``stable`` and ``prerelease`` install from PyPI; ``local`` builds the checkout's CLI and installs the viewer editable.
-       Local CLI builds require Rust and a C/C++ toolchain.
-       Select ``--app cli`` for a CLI-only environment. Plain ``./uz shell`` reuses the last completed selection.
-       ``setup`` accepts the same options without opening a shell.
-       Run ``./uz clear_venv`` or ``.\uz.ps1 clear_venv`` to remove the repository environment and reset the saved selection.
+       Use ``.\uz.ps1`` on Windows. Channels default to stable.
+       These commands use uv-managed environments, independently of the checkout's ``.venv``.
+       Inside the activated shell, run ``ultrazohm-dataviewer``, ``ultrazohm-cli``, or Python scripts.
+       Use ``exit`` to leave the shell.
+
+       For local development, run ``./uz_developer setup``, then
+       ``./uz_developer dataviewer`` or ``./uz_developer shell``.
+       On Windows, use ``.\uz_developer.ps1``.
+       Setup builds the local CLI and installs the viewer editable; it requires Rust and a C/C++ toolchain.
+       Launches never reinstall. Run setup again after CLI or dependency changes.
+       Run ``./uz_developer clear_venv`` to remove the development environment when unused.
        See :ref:`ultrazohm_dataviewer_build` for build and test tasks.
 
 

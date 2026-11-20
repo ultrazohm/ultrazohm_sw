@@ -272,13 +272,8 @@ pub(super) fn run(
                         .iter()
                         .map(|p| fs::read(repo.join(p)).ok())
                         .collect::<Vec<_>>();
-                    let stop_profile = if action == "flash" {
-                        Some(
-                            config
-                                .profile
-                                .remap(ChannelMapping::load_repository(None, Some(&repo))?)?
-                                .0,
-                        )
+                    let firmware_mapping = if action == "flash" {
+                        Some(ChannelMapping::load_repository(None, Some(&repo))?)
                     } else {
                         None
                     };
@@ -348,34 +343,62 @@ pub(super) fn run(
                             ));
                         }
                         let cleanup_target = next.device.clone();
+                        let mut programming_attempted = false;
+                        let mut programmed_profile = None;
                         let result = (|| -> Result<Option<Session>> {
-                            *worker_phase.lock().unwrap() = action_copy.clone();
+                            let build_action = if action_copy == "flash" {
+                                "build"
+                            } else {
+                                &action_copy
+                            };
+                            *worker_phase.lock().unwrap() = build_action.into();
                             crate::vitis::execute(
-                                &action_copy,
+                                build_action,
                                 Some(&repo),
-                                if action_copy == "flash" {
-                                    Some("Run_UltraZohm")
-                                } else {
-                                    None
-                                },
+                                None,
                                 Some(&output),
                                 Some(&xsct),
                             )?;
                             if action_copy != "flash" {
                                 return Ok(None);
                             }
-                            *worker_phase.lock().unwrap() = "loading_configuration".into();
                             ensure!(
                                 headers
                                     == crate::header_mapping::HEADERS
                                         .iter()
                                         .map(|p| fs::read(repo.join(p)).ok())
                                         .collect::<Vec<_>>(),
-                                "firmware headers changed during programming; acquisition remains disconnected"
+                                "firmware headers changed during build; programming was not started"
                             );
-                            let mapping = ChannelMapping::load_repository(None, Some(&repo))?;
+                            let mapping =
+                                firmware_mapping.expect("flash mapping validated before build");
                             let (profile, removed) = next.profile.remap(mapping)?;
                             next.profile = profile;
+                            ensure!(
+                                !worker_shutdown.load(Ordering::SeqCst),
+                                "shutdown requested before programming"
+                            );
+                            *worker_phase.lock().unwrap() = "programming".into();
+                            programming_attempted = true;
+                            crate::vitis::execute(
+                                "program-built",
+                                Some(&repo),
+                                Some("Run_UltraZohm"),
+                                Some(&output),
+                                Some(&xsct),
+                            )?;
+                            ensure!(
+                                headers
+                                    == crate::header_mapping::HEADERS
+                                        .iter()
+                                        .map(|p| fs::read(repo.join(p)).ok())
+                                        .collect::<Vec<_>>(),
+                                "firmware headers changed during programming"
+                            );
+                            // Only a successful programming operation with unchanged inputs
+                            // establishes which mapping may be used for subsequent cleanup.
+                            programmed_profile = Some(next.profile.clone());
+                            *worker_phase.lock().unwrap() = "loading_configuration".into();
                             use std::io::Write;
                             let mut output = &output;
                             writeln!(
@@ -431,7 +454,11 @@ pub(super) fn run(
                             Ok(Some(replacement))
                         })();
                         if let Err(error) = result {
-                            if let (Some(target), Some(profile)) = (cleanup_target, stop_profile)
+                            if programming_attempted && programmed_profile.is_none() {
+                                return Err(error.context("Running firmware configuration is unknown; no network Stop sent after programming attempt"));
+                            }
+                            if let (Some(target), Some(profile)) =
+                                (cleanup_target, programmed_profile)
                                 && let Err(stop_error) = stop_after_programming(&target, &profile)
                             {
                                 return Err(error.context(format!(

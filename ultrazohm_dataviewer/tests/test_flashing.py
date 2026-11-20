@@ -278,3 +278,72 @@ def test_flash_shutdown_detaches_and_marks_owned_service(monkeypatch):
         assert "finalized" in controller.latest().notice
     finally:
         controller.close()
+
+
+@pytest.mark.parametrize("failure_path", ["worker", "normal", "independent"])
+@pytest.mark.parametrize("retry_path", ["worker", "normal", "independent"])
+def test_stop_retry_clears_matching_failure_across_paths(
+    monkeypatch, failure_path, retry_path
+):
+    from live_support import wait_for
+
+    client = Mock()
+    client.stop.side_effect = RuntimeError("temporary Stop failure")
+    controller = LiveController(lambda _: client)
+    controller.client = client
+    controller.endpoint = "127.0.0.1:19740"
+    controller.attached = True
+    monkeypatch.setattr(controller, "_poll_work", lambda: None)
+
+    def send(path, failing=False):
+        controller.flashing = path == "worker"
+        if path == "independent":
+            if failing:
+                with pytest.raises(RuntimeError, match="temporary Stop failure"):
+                    controller.send_stop()
+            else:
+                controller.send_stop()
+        else:
+            count = controller.latest().completed_commands
+            controller.submit("stop")
+            wait_for(lambda: controller.latest().completed_commands > count)
+
+    try:
+        send(failure_path, failing=True)
+        assert "temporary Stop failure" in controller.latest().error
+        # A success for a different endpoint must not erase this service's failure.
+        client.stop.side_effect = None
+        controller.send_stop("127.0.0.1:19741")
+        assert "temporary Stop failure" in controller.latest().error
+        send(retry_path)
+        assert not controller.latest().error
+        assert any(
+            "temporary Stop failure" in message
+            for _, message in controller.messages.queue
+        )
+    finally:
+        controller.close()
+
+
+def test_control_success_preserves_other_failure_and_newer_command_error(monkeypatch):
+    from live_support import wait_for
+
+    client = Mock()
+    client.shutdown.side_effect = RuntimeError("shutdown unavailable")
+    controller = LiveController(lambda _: client)
+    controller.endpoint = "127.0.0.1:19740"
+    controller.client = client
+    controller.attached = controller.flashing = True
+    monkeypatch.setattr(controller, "_poll_work", lambda: None)
+    try:
+        controller.submit("shutdown")
+        wait_for(lambda: controller.latest().completed_commands == 1)
+        controller.send_stop()
+        assert "shutdown unavailable" in controller.latest().error
+        controller.flashing = False
+        client.set_variable.side_effect = RuntimeError("new variable failure")
+        controller.submit("set_variable", name="send_field_1", value=1)
+        wait_for(lambda: controller.latest().completed_commands == 2)
+        assert "new variable failure" in controller.latest().error
+    finally:
+        controller.close()

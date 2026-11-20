@@ -437,6 +437,12 @@ The service remains reachable while flash replaces its acquisition session.
 Status exposes `service_id`, `session_id`, `device_target`, `repository`,
 `firmware_available`, `active_job`, `configuration_valid`, `lifecycle`, and `shutting_down`.
 Queued session mutations can fail with `session_replaced`; clients must refresh their catalog and cursors.
-Shutdown during programming is deferred until programming and Stop delivery finish.
-Errors after programming attempt Stop independently of session reconstruction, using the validated
-preflight mapping. This is best effort: checkout changes during a build can invalidate the firmware contract.
+Flash runs separate `build` and `programming` stages under one workspace lock.
+The service checks the captured headers after building and again after programming.
+A build failure never starts programming or sends commands using the proposed mapping;
+the old connected session already received Stop before the build.
+After successful programming with unchanged headers, cleanup can use the captured new
+mapping even if session reconstruction fails. A partial programming failure or changed
+headers leaves the running firmware unknown: the job fails explicitly and no network
+Stop is guessed. Inspect the hardware and retry programming with verified inputs.
+Shutdown waits for programming and, when its mapping is known, bounded Stop delivery.

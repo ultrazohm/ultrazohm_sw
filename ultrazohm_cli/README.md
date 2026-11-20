@@ -411,7 +411,7 @@ profile is `Run_UltraZohm`. Flash means JTAG programming/execution, not persiste
 flash-memory writing. Build-only jobs leave the current acquisition session unchanged.
 
 During flashing, the control endpoint stays available. The service sends device Stop,
-finishes recordings, programs, reloads JavaScope headers, validates retained channel
+finishes recordings, builds, validates captured JavaScope headers, programs, validates retained channel
 assignments, and creates a fresh session/output directory. Logging starts idle;
 system and control enable are never requested automatically. Header changes during
 the operation are rejected. Build/programming failures leave acquisition disconnected
@@ -419,11 +419,19 @@ and the service available for inspection/retry. A reconnect failure is reported 
 failed job even if programming succeeded. Invalid firmware configuration blocks Connect
 until a successful flash or an explicit restart with verified configuration.
 
+Building and programming are separate stages under the same checkout lock. A failed
+build does not program the device or send commands from the proposed firmware mapping.
+After successful programming, cleanup uses the captured new mapping. If programming
+fails partway or headers change during programming, the running firmware is unknown;
+the job reports that Stop could not safely be sent rather than guessing a command ID.
+The internal Tcl `program-built` action is used only after the service's successful
+build and header validation; direct Tcl `flash` and `run` still build before programming.
+
 `status` includes `service_id`, `session_id`, `output`, `repository`, `firmware_available`,
 `lifecycle`, `active_job`, and `error`. Clients must refresh catalogs and discard old
 cursors when the session changes. API v3 replaces v2; upgrade clients and service together.
-A Python `Acquisition.output` remains the initial session path; use `Client.status()["output"]`
-for the current session after replacement. Previously acquired recording handles remain
+A Python `Acquisition.output` follows the current session after replacement, as does
+`Client.status()["output"]`. Previously acquired recording handles remain
 associated with their original files.
 
 ```python
@@ -515,4 +523,4 @@ After flash, reconnection retries for up to 20 seconds. A failed reconnect does 
 
 Python `Acquisition.output` and its recording helpers follow the latest session, including after close. Save a durable `Recording` handle before flashing to retain access to an earlier session; recording numbers restart in each session.
 
-Shutdown during programming waits for completion, then retries device Stop delivery for a bounded 20-second boot window. If delivery fails, the firmware job log and stderr contain the failure and the service exits nonzero. The viewer submits Stop and shutdown independently of flash progress without blocking its UI.
+Shutdown during programming waits for completion, then retries device Stop delivery for a bounded 20-second boot window when the firmware mapping is known. Failed programming or uncertain mapping is reported as an error without guessing command IDs. If delivery fails, the firmware job log and stderr contain the failure and the service exits nonzero. The viewer submits Stop and shutdown independently of flash progress without blocking its UI. A successful retry clears that operation's displayed failure for the same service, while the Console retains the diagnostic history.

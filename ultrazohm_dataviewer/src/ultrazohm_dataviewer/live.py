@@ -418,7 +418,7 @@ class LiveController:
         self.poll_thread = None
         self.control_thread = None
         self.control_commands = Queue(maxsize=32)
-        self._control_error = ""
+        self._control_errors = {}
         self.owned = OwnedService()
         self.client = None
         self.endpoint = None
@@ -521,13 +521,28 @@ class LiveController:
                             self._notice = "Service shut down; recordings finalized"
                         else:
                             self._notice = "Service shutdown accepted; finalization continues in the external service"
-                    self._control_error = ""
+                    self._control_succeeded(operation, endpoint)
                 except Exception as exc:
-                    self._control_error = f"{operation} failed: {exc}"
-                    self._message("error", self._control_error)
+                    self._control_failed(operation, endpoint, exc)
                 finally:
                     self._completed_commands += 1
                     self._publish()
+
+    def _control_failed(self, operation, endpoint, error):
+        message = f"{operation} failed: {error}"
+        with self.lock:
+            key = (endpoint, operation)
+            self._control_errors.pop(key, None)
+            self._control_errors[key] = message
+        self._message("error", message)
+        self._publish()
+
+    def _control_succeeded(self, operation, endpoint):
+        # A retry on any transport clears only that operation's failure for
+        # that service. The Console retains the original diagnostic message.
+        with self.lock:
+            self._control_errors.pop((endpoint, operation), None)
+        self._publish()
 
     def cancel_pending_commands(self):
         """Invalidate even a command already dequeued but not yet executing."""
@@ -549,7 +564,12 @@ class LiveController:
                 client = Client(endpoint)
             else:
                 client = self.client_factory(endpoint)
-            client.stop()
+            try:
+                client.stop()
+            except Exception as exc:
+                self._control_failed("stop", endpoint, exc)
+                raise
+            self._control_succeeded("stop", endpoint)
 
     def commands_idle(self):
         """Check without blocking the GUI; canceled commands cannot execute later."""
@@ -574,7 +594,18 @@ class LiveController:
                 self._assignments,
                 self._last_source,
                 self._epoch,
-                self._control_error or self._error or self._poll_error,
+                self._error
+                or self._poll_error
+                or next(
+                    (
+                        message
+                        for (endpoint, _), message in reversed(
+                            self._control_errors.items()
+                        )
+                        if endpoint == self.endpoint
+                    ),
+                    "",
+                ),
                 self._notice,
                 self.attached,
                 self._received_at,
@@ -868,6 +899,8 @@ class LiveController:
                 self._status_at = 0.0
                 self._notice = "Detached: acquisition service unavailable; device Stop and recording finalization could not be confirmed. Check service.log."
                 return
+            if operation in ("stop", "shutdown"):
+                self._control_succeeded(operation, self.endpoint)
             if operation == "set_variable":
                 self._variable_sends[kwargs["name"]] = (
                     time.monotonic(),
@@ -1103,7 +1136,10 @@ class LiveController:
                             self._command(operation, kwargs)
                     self._error = ""
                 except Exception as exc:
-                    self._error = str(exc)
+                    if operation in ("stop", "shutdown"):
+                        self._control_failed(operation, self.endpoint, exc)
+                    else:
+                        self._error = str(exc)
                 finally:
                     if operation == "flash":
                         self.flashing = False

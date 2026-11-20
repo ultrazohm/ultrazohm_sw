@@ -9,12 +9,12 @@ if {[info exists ::env(UZ_WORKSPACE_ROOT)]} {
 # Keep this at global scope: the existing launch wrappers use global variables.
 if {[catch {
     set action [lindex $argv 0]
-    if {$action ni {build build-clean run flash generate generate-open open}} {
-        error "Usage: xsct -nodisp vitis_headless.tcl {generate|generate-open|open|build|build-clean|flash|run} ?Run_UltraZohm?"
+    if {$action ni {build build-clean run flash program-built generate generate-open open}} {
+        error "Usage: xsct -nodisp vitis_headless.tcl {generate|generate-open|open|build|build-clean|flash|run|program-built} ?Run_UltraZohm?"
     }
     if {$action eq "flash"} { set action run }
     set profile Run_UltraZohm
-    if {$action eq "run"} {
+    if {$action in {run program-built}} {
         if {[llength $argv] > 2} { error "Expected run or flash with at most one profile" }
         if {[llength $argv] == 2} { set profile [lindex $argv 1] }
         if {$profile ne "Run_UltraZohm"} {
@@ -50,7 +50,8 @@ if {[catch {
     }
     if {$action ne "open"} { setws $workspace }
     cd $workspace
-    # Every programming entry point builds first, including direct XSCT calls.
+    # Public flash/run commands build first. The service uses program-built only
+    # after a successful build and validation of its captured firmware headers.
     # Vitis/make track changed sources and headers; clean only on request.
     if {$action in {build build-clean run}} {
         source [file join $script_dir vitis_incremental.tcl]
@@ -112,7 +113,7 @@ if {[catch {
         generate - generate-open {
             source [file join $script_dir vitis_generate_UltraZohm_workspace.tcl]
         }
-        run {
+        run - program-built {
             # Use the same wrapper as the corresponding checked-in .launch file.
             # Add future debug profiles here together with debugger session handling.
             switch -- $profile {

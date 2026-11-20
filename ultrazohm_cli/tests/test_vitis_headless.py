@@ -197,6 +197,13 @@ source [file join [file dirname [info script]] vitis_headless.tcl]
             first = run("build")
             self.assertEqual(first.returncode, 0, first.stderr)
             self.assertIn("changes found, building", first.stdout)
+            # The service's internal stage programs the existing successful build,
+            # without a second implicit build that could change its mapping.
+            programmed = run("program-built")
+            self.assertEqual(programmed.returncode, 0, programmed.stderr)
+            self.assertIn("PROGRAMMED", programmed.stdout)
+            self.assertNotIn("building", programmed.stdout)
+            self.assertNotIn("changes found", programmed.stdout)
             for action in ("build", "flash"):
                 unchanged = run(action)
                 self.assertEqual(unchanged.returncode, 0, unchanged.stderr)

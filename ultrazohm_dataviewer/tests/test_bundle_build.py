@@ -19,7 +19,8 @@ def test_bundle_builds_release_wheel_in_isolated_directory(monkeypatch, tmp_path
     builds, calls = [], []
 
     def build(*args):
-        builds.append(args)
+        # Resolve while the directory exists: Windows may supply its 8.3 alias.
+        builds.append(Path(args[2]).resolve())
         assert args[:2] == ("wheel", "--out")
         path = Path(args[2]) / "ultrazohm_cli-0.1.0-test.whl"
         with zipfile.ZipFile(path, "w") as archive:
@@ -33,9 +34,9 @@ def test_bundle_builds_release_wheel_in_isolated_directory(monkeypatch, tmp_path
         release=True,
     )
     assert len(builds) == 1
-    assert not Path(builds[0][2]).exists()
+    assert not builds[0].exists()
     install = next(c for c in calls if c[:3] == ("uv", "pip", "install"))
-    assert Path(install[-2]).parent == Path(builds[0][2])
+    assert Path(install[-2]).parent == builds[0]
 
 
 def test_bundle_selects_release_install(monkeypatch):

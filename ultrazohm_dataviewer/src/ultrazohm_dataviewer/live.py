@@ -418,6 +418,7 @@ class LiveController:
         self.poll_thread = None
         self.control_thread = None
         self.control_commands = Queue(maxsize=32)
+        self._pending_controls = 0
         self._control_errors = {}
         self.owned = OwnedService()
         self.client = None
@@ -453,12 +454,20 @@ class LiveController:
     def submit(self, operation, **kwargs):
         if self.stop_event.is_set():
             raise RuntimeError("Live controller is closed")
+        if operation == "flash":
+            # A flash can finish before its concurrent shutdown reply arrives.
+            # Keep the next flash from reusing state that reply still updates.
+            with self.lock:
+                if self._pending_controls:
+                    raise RuntimeError("Wait for pending Stop or shutdown to finish")
         if self.flashing and operation in ("stop", "shutdown"):
             self.cancel_pending_commands()
             try:
-                self.control_commands.put_nowait(
-                    (operation, kwargs.get("endpoint") or self.endpoint)
-                )
+                with self.lock:
+                    self.control_commands.put_nowait(
+                        (operation, kwargs.get("endpoint") or self.endpoint)
+                    )
+                    self._pending_controls += 1
             except Full as exc:
                 raise RuntimeError("Control command queue is busy") from exc
             if self.control_thread is None:
@@ -527,6 +536,8 @@ class LiveController:
                 finally:
                     self._completed_commands += 1
                     self._publish()
+                    with self.lock:
+                        self._pending_controls -= 1
 
     def _control_failed(self, operation, endpoint, error):
         message = f"{operation} failed: {error}"

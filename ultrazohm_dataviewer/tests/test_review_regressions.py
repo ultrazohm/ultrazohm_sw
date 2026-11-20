@@ -186,3 +186,81 @@ def test_publication_race_has_exactly_one_winner(tmp_path, monkeypatch):
     winners = [winner for winner in winners if winner is not None]
     assert len(winners) == 1
     assert target.read_text() == winners[0]
+
+
+@pytest.mark.parametrize("shutdown_fails", [False, True])
+def test_next_flash_waits_for_pending_shutdown(shutdown_fails):
+    from live_support import wait_for
+
+    from ultrazohm_dataviewer.live import LiveController
+
+    entered, release, finish_first, started_second = (
+        threading.Event() for _ in range(4)
+    )
+
+    class Client:
+        def __init__(self, endpoint):
+            self.endpoint = endpoint
+
+        def shutdown(self):
+            entered.set()
+            assert release.wait(5)
+            if shutdown_fails:
+                raise RuntimeError("Shutdown rejected")
+
+        def status(self):
+            return {"firmware_available": True, "device_target": "localhost:1"}
+
+        def firmware(self, *args, **kwargs):
+            if self.endpoint == "second":
+                started_second.set()
+            return {"id": 1}
+
+        def job(self, *args):
+            finished = self.endpoint == "first" and finish_first.is_set()
+            return {
+                "log": "",
+                "next_offset": 0,
+                "job": {
+                    "phase": "build",
+                    "state": "succeeded" if finished else "running",
+                },
+            }
+
+    controller = LiveController(client_factory=Client)
+    controller._poll = lambda: None
+
+    def flash(endpoint):
+        controller.submit(
+            "flash", endpoint=endpoint, output="unused", ip="localhost", port=1
+        )
+
+    try:
+        flash("first")
+        wait_for(lambda: controller.attached)
+        controller.submit("shutdown", endpoint="first")
+        assert entered.wait(2)
+        finish_first.set()
+        wait_for(lambda: not controller.flashing)
+        with pytest.raises(RuntimeError, match="pending Stop or shutdown"):
+            flash("second")
+        assert not started_second.is_set()
+        release.set()
+        wait_for(lambda: controller._pending_controls == 0)
+        flash("second")
+        assert started_second.wait(2)
+        assert controller.endpoint == "second"
+        assert controller.attached
+        assert controller.flashing
+        assert not controller._flash_shutdown.is_set()
+    finally:
+        release.set()
+        controller.stop_event.set()
+        for thread in (
+            controller.thread,
+            controller.control_thread,
+            controller.poll_thread,
+        ):
+            if thread is not None:
+                thread.join(2)
+                assert not thread.is_alive()

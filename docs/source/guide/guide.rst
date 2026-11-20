@@ -192,6 +192,7 @@ Interfaces of Cabinet
    gui/install
    gui/network
    gui/javascope
-   gui/uz_dataviewer/uz_dataviewer
+   gui/ultrazohm_cli
+   gui/ultrazohm_dataviewer/ultrazohm_dataviewer
    gui/dataviewer/dataviewer
 

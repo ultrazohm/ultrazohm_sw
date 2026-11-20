@@ -1,2 +1,0 @@
-# Run from uz_dataviewer/: runtime dependencies are defined in pyproject.toml.
-.

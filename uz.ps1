@@ -39,7 +39,7 @@ try {
     try {
         $env:PATH = (Split-Path -Parent $uvExecutable) + [IO.Path]::PathSeparator + $env:PATH
         $pythonVersion = (Get-Content -Raw (Join-Path $PSScriptRoot '.python-version')).Trim()
-        & $uvExecutable run --no-project --isolated --python $pythonVersion (Join-Path $PSScriptRoot 'tasks.py') @args
+        & $uvExecutable run --no-project --isolated --python $pythonVersion (Join-Path $PSScriptRoot 'uz.py') @args
         exit $LASTEXITCODE
     } finally {
         $env:PATH = $uzOriginalPath

@@ -192,7 +192,8 @@ The ``Control`` tab is the main interface for state-machine control, user inputs
 
    a. 20 values are available as references or setpoints for the user application.
 
-   b. After entering a value, press ``enter`` or the ``set`` button to send it to the R5. In ``ipc_ARM.c``, you can define how the value is used in the application.
+   b. After entering a value, press ``enter`` or the ``set`` button to send it to the R5.
+      In ``ipc_ARM.c``, you can define how the value is used in the application.
 
    .. _javascope_sendfields:
 
@@ -203,9 +204,11 @@ The ``Control`` tab is the main interface for state-machine control, user inputs
 
 #. The ``mybuttons``
 
-   a. In addition to the ``send_field`` values, eight user buttons are available. In ``ipc_ARM.c``, you can define what happens when the buttons are pressed.
+   a. In addition to the ``send_field`` values, eight user buttons are available.
+      In ``ipc_ARM.c``, you can define what happens when the buttons are pressed.
 
-   b. Each button has a status indicator below it. This indicator can also be set in ``ipc_ARM.c`` to provide feedback for button actions.
+   b. Each button has a status indicator below it.
+      This indicator can also be set in ``ipc_ARM.c`` to provide feedback for button actions.
       See ``/* Bit 4 - My_Button_1 */`` in the right picture below for an example.
 
    .. _javascope_mybuttons:
@@ -225,11 +228,11 @@ The ``Control`` tab is the main interface for state-machine control, user inputs
    b. To send error codes to the GUI for display in the ``error code`` field, use the ``SlowData`` variable ``JSSD_FLOAT_Error_Code``.
 
    .. warning::
-      Error detection and handling have to be implemented by the user. The GUI just provides an interface.
+      Error detection and handling have to be implemented by the user.
+      The GUI just provides an interface.
 
 
-Vitis-side user C-code integration is unchanged:
-``send_field_x`` values, ``receive_field_x`` mappings, error-code handling, button labels, and the eight ``my buttons`` are configured in ``javascope.h`` and ``javascope.c``.
+Vitis-side user C-code integration is unchanged: ``send_field_x`` values, ``receive_field_x`` mappings, error-code handling, button labels, and the eight ``my buttons`` are configured in ``javascope.h`` and ``javascope.c``.
 
 
 More Send and Receive tab

@@ -1,6 +1,6 @@
 # Two stages from one file:
-#   ci   CLI and data viewer toolchain. GitHub Actions runs the uz_cli and
-#        uz_dataviewer tasks in this stage (see .github/workflows/ci-image.yml).
+#   ci   CLI and data viewer toolchain. GitHub Actions runs the ultrazohm_cli and
+#        ultrazohm_dataviewer tasks in this stage (see .github/workflows/ci-image.yml).
 #   dev  The development container: the ci stage plus firmware, docs and Java tools.
 # Developers and CI therefore build and test with the same toolchain.
 
@@ -24,7 +24,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
                                                   libxcb1 \
      && rm -rf /var/lib/apt/lists/*
 
-# Rust CLI and native Python package. Pin the same toolchain as uz_cli.
+# Rust CLI and native Python package. Pin the same toolchain as ultrazohm_cli.
 ENV RUSTUP_HOME=/opt/rustup CARGO_HOME=/opt/cargo
 ENV PATH="/opt/cargo/bin:$PATH"
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o /tmp/rustup.sh \

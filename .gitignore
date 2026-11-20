@@ -30,17 +30,20 @@ vitis/Packages/*
 *.slxc
 *cpAnnotation.mat
 
-# Generated artifacts, including live measurement logs
-/artifacts/
+# Keep JSON artifacts visible to Git at every depth.
+/artifacts/**
+!/artifacts/**/
+!/artifacts/**/*.json
 *.ini
-/uz_cli_channel_mappings/
+/ultrazohm_cli_channel_mappings/
 
 # Python/test tooling caches
 .pytest_cache/
 *.egg-info/
-uz_dataviewer/build/native/
+ultrazohm_dataviewer/build/native/
 
 # Shared launcher environment
 /.venv/
 /__pycache__/
-/tests/__pycache__/
+
+/ultrazohm_dataviewer/dist-wheels/

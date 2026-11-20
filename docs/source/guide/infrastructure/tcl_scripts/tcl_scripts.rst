@@ -123,10 +123,9 @@ Usage:
 Command-line workspace operations
 ---------------------------------
 
-``vitis_headless.tcl`` is the shared XSCT entry point for workspace generation,
-building, and JTAG programming. The Makefile and Windows batch wrappers in
-``vitis/`` delegate to it. It resolves the workspace relative to its own location, so callers
-can use an absolute script path from any working directory.
+``vitis_headless.tcl`` is the shared XSCT entry point for workspace generation, building, and JTAG programming.
+The Makefile and Windows batch wrappers in ``vitis/`` delegate to it.
+It resolves the workspace relative to its own location, so callers can use an absolute script path from any working directory.
 
 With Vitis 2022.2's ``xsct`` on ``PATH``, run from the repository root:
 
@@ -137,12 +136,12 @@ With Vitis 2022.2's ``xsct`` on ``PATH``, run from the repository root:
    xsct -nodisp tcl_scripts/vitis_headless.tcl flash Run_UltraZohm
    xsct -nodisp tcl_scripts/vitis_headless.tcl open
 
-On Windows, use ``xsct.bat`` if required by the command shell. No Bash or Make
-installation is needed for direct XSCT invocation. Native Windows build and
-hardware programming still require validation.
+On Windows, use ``xsct.bat`` if required by the command shell.
+No Bash or Make installation is needed for direct XSCT invocation.
+Native Windows build and hardware programming still require validation.
 
-Windows convenience wrappers are also available. From the repository root in
-Command Prompt:
+Windows convenience wrappers are also available.
+From the repository root in Command Prompt:
 
 .. code-block:: bat
 
@@ -151,26 +150,23 @@ Command Prompt:
    vitis\build_and_flash.bat
 
 The first creates/builds an empty workspace and opens Vitis (``generate-open``).
-The second opens an existing workspace. The third incrementally builds, then
-programs and runs over JTAG (``flash``), defaulting to ``Run_UltraZohm``; this
-profile can also be passed explicitly. Close Vitis before building/flashing.
-The wrappers locate the Tcl script relative to themselves, forward its exit
-status, and require ``xsct.bat`` on ``PATH``. Set the ``XSCT`` environment
-variable to an alternative launcher path if needed. In PowerShell, prefix the
-commands with ``.\``.
+The second opens an existing workspace.
+The third incrementally builds, then programs and runs over JTAG (``flash``), defaulting to ``Run_UltraZohm``; this profile can also be passed explicitly.
+Close Vitis before building/flashing.
+The wrappers locate the Tcl script relative to themselves, forward its exit status, and require ``xsct.bat`` on ``PATH``.
+Set the ``XSCT`` environment variable to an alternative launcher path if needed.
+In PowerShell, prefix the commands with ``.\``.
 
-``generate`` creates and builds an empty workspace; only the placeholder file
-``create_Vitis_workspace_here.txt`` may already exist. ``generate-open`` also
-starts the GUI after successful generation. ``open`` launches the GUI for an
-existing workspace. Both GUI actions require ``vitis`` on ``PATH`` and return
-after launching it.
+``generate`` creates and builds an empty workspace; only the placeholder file ``create_Vitis_workspace_here.txt`` may already exist.
+``generate-open`` also starts the GUI after successful generation.
+``open`` launches the GUI for an existing workspace.
+Both GUI actions require ``vitis`` on ``PATH`` and return after launching it.
 
-``flash`` (also accepted as ``run``) incrementally builds first, then programs
-and runs through JTAG using the existing ``Run_UltraZohm`` profile. It does not
-write persistent flash storage. Debug profiles require the Vitis GUI. Build or
-programming failures return a nonzero status. Programming requires the vendor
-environment (including ``XILINX_VITIS``), JTAG drivers, and a local hardware
-server at ``127.0.0.1:3121``.
+``flash`` (also accepted as ``run``) incrementally builds first, then programs and runs through JTAG using the existing ``Run_UltraZohm`` profile.
+It does not write persistent flash storage.
+Debug profiles require the Vitis GUI.
+Build or programming failures return a nonzero status.
+Programming requires the vendor environment (including ``XILINX_VITIS``), JTAG drivers, and a local hardware server at ``127.0.0.1:3121``.
 
 Ubuntu users can use the convenience Makefile:
 

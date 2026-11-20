@@ -1,22 +1,23 @@
 name: UltraZohm CLI and Data Viewer
 # One pipeline, one version per run. CLI checks run on both systems; the CLI
-# wheels are stamped and built once, and the viewer tests and both desktop
-# bundles use exactly those wheels. Pushes to main (stable), develop and
-# feature/uz_cli_dataviewer_testing (prereleases) publish one GitHub release
-# with wheels and bundles, and upload the wheels to PyPI as ultrazohm_cli.
+# wheels are stamped and built once, and the viewer tests and Windows desktop
+# bundles use exactly those wheels. Pushes to main (stable) and develop
+# (prerelease), plus explicitly requested feature-branch dispatches publish a release
+# with wheels and bundles, and upload both packages to PyPI.
 # Keep this file name: PyPI's trusted publisher names it, and versions use its
 # run number (renaming the file restarts run numbers).
 
 on:
   push:
-    branches: ['**']
+    branches: [main, develop]
     paths:
       - 'uz'
       - 'uz.ps1'
-      - 'tasks.py'
-      - 'tests/**'
-      - 'uz_cli/**'
-      - 'uz_dataviewer/**'
+      - 'uz.py'
+      - 'uz_environment.py'
+      - 'test_uz.py'
+      - 'ultrazohm_cli/**'
+      - 'ultrazohm_dataviewer/**'
       - 'javascope/test_server.py'
       - 'vitis/software/**'
       - 'tcl_scripts/**'
@@ -24,15 +25,16 @@ on:
       - '.github/workflows/ci-image.yml'
       - '.devcontainer/Dockerfile'
       - '.python-version'
-      - 'docs/source/guide/gui/uz_dataviewer/uz_dataviewer_commands.csv'
+      - 'docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer_commands.csv'
   pull_request:
     paths:
       - 'uz'
       - 'uz.ps1'
-      - 'tasks.py'
-      - 'tests/**'
-      - 'uz_cli/**'
-      - 'uz_dataviewer/**'
+      - 'uz.py'
+      - 'uz_environment.py'
+      - 'test_uz.py'
+      - 'ultrazohm_cli/**'
+      - 'ultrazohm_dataviewer/**'
       - 'javascope/test_server.py'
       - 'vitis/software/**'
       - 'tcl_scripts/**'
@@ -40,8 +42,13 @@ on:
       - '.github/workflows/ci-image.yml'
       - '.devcontainer/Dockerfile'
       - '.python-version'
-      - 'docs/source/guide/gui/uz_dataviewer/uz_dataviewer_commands.csv'
+      - 'docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer_commands.csv'
   workflow_dispatch:
+    inputs:
+      publish_prerelease:
+        description: Publish a prerelease from develop or the CLI/viewer feature branch
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -57,6 +64,34 @@ env:
   CARGO_BUILD_JOBS: 2
 
 jobs:
+  python-style:
+    name: Python style (${{ matrix.project }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [cli, viewer]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: '0.13.1'
+      - run: ./uz task ${{ matrix.project }} lint
+      - run: ./uz task ${{ matrix.project }} format-check
+
+  launcher-check:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: '0.13.1'
+      - run: uv tool run --from ruff==0.17.2 ruff check --isolated --select F uz.py uz_environment.py test_uz.py
+      - run: uv run --no-project --python 3.12 -m unittest test_uz -v
+
   image:
     uses: ./.github/workflows/ci-image.yml
     permissions:
@@ -81,7 +116,7 @@ jobs:
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: uz_cli
+          workspaces: ultrazohm_cli
           key: checks-linux
       - run: ./uz check cli
 
@@ -99,12 +134,12 @@ jobs:
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: '0.13.1'
-      # Installs the toolchain pinned in uz_cli/rust-toolchain.toml.
+      # Installs the toolchain pinned in ultrazohm_cli/rust-toolchain.toml.
       - run: rustup toolchain install
-        working-directory: uz_cli
+        working-directory: ultrazohm_cli
       - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: uz_cli
+          workspaces: ultrazohm_cli
           key: checks-windows-latest
       - run: .\uz.ps1 check cli
 
@@ -119,8 +154,9 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          sparse-checkout: uz_cli
       - id: version
+        env:
+          UZ_PUBLISH_PRERELEASE: ${{ inputs.publish_prerelease }}
         run: ./uz task cli version
 
   wheel-linux:
@@ -140,15 +176,14 @@ jobs:
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: uz_cli
+          workspaces: ultrazohm_cli
           key: release-linux
-      - run: ./uz task cli stamp "$UZ_CLI_RELEASE_VERSION"
       - run: ./uz task cli release-wheel
       - run: ./uz task cli release-check
       - uses: actions/upload-artifact@v4
         with:
           name: wheel-linux
-          path: uz_cli/target/wheels-release/*.whl
+          path: ultrazohm_cli/target/wheels-release/*.whl
           if-no-files-found: error
 
   wheel-windows:
@@ -167,23 +202,72 @@ jobs:
         with:
           version: '0.13.1'
       - run: rustup toolchain install
-        working-directory: uz_cli
+        working-directory: ultrazohm_cli
       - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: uz_cli
+          workspaces: ultrazohm_cli
           key: release-windows
-      - run: .\uz.ps1 task cli stamp "$env:UZ_CLI_RELEASE_VERSION"
       - run: .\uz.ps1 task cli release-wheel
-      - run: .\uz.ps1 task cli release-check
+      - run: .\uz.ps1 task cli standalone
+      - run: .\uz.ps1 task cli release-check --standalone
+      - run: .\ultrazohm_cli\target\release\ultrazohm-cli.exe --version
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-cli-windows
+          path: ultrazohm_cli/target/release/ultrazohm-cli.exe
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
           name: wheel-windows
-          path: uz_cli/target/wheels-release/*.whl
+          path: ultrazohm_cli/target/wheels-release/*.whl
+          if-no-files-found: error
+
+  cli-python-minimum:
+    needs: [wheel-linux, wheel-windows]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact: wheel-linux
+          - os: windows-2022
+            artifact: wheel-windows
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: minimum-wheel
+      - name: Install and test the supported minimum Python
+        shell: bash
+        run: |
+          python -m pip install minimum-wheel/*.whl polars
+          export UZ_CLI_BIN="$(python -c 'import shutil; print(shutil.which("ultrazohm-cli"))')"
+          python -m unittest discover -s ultrazohm_cli/tests -p test_integration.py -v
+
+  wheel-viewer:
+    needs: version
+    runs-on: ubuntu-latest
+    env:
+      UZ_CLI_RELEASE_VERSION: ${{ needs.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9
+        with:
+          version: '0.13.1'
+      - run: ./uz task viewer wheel
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheel-viewer
+          path: ultrazohm_dataviewer/dist-wheels/*.whl
           if-no-files-found: error
 
   # Lint and the full suite, including live tests, against this run's wheel.
   viewer-test-linux:
-    needs: [image, wheel-linux]
+    needs: [image, wheel-linux, wheel-viewer]
     runs-on: ubuntu-latest
     container:
       image: ${{ needs.image.outputs.image }}
@@ -200,10 +284,17 @@ jobs:
         with:
           name: wheel-linux
           path: cli-wheel
-      - run: ./uz check viewer --cli-wheel cli-wheel/*.whl
+      - uses: actions/download-artifact@v4
+        with:
+          name: wheel-viewer
+          path: viewer-wheel
+      - run: ./uz check viewer --cli-wheel cli-wheel/*.whl --viewer-wheel viewer-wheel/*.whl
+      - name: Install virtual display for GUI startup check
+        run: apt-get update -qq && apt-get install -y --no-install-recommends xvfb xauth libgl1-mesa-dri
+      - run: xvfb-run -a ultrazohm_dataviewer/.venv-ci/bin/python ultrazohm_dataviewer/build/smoke_gui.py
 
   viewer-test-windows:
-    needs: wheel-windows
+    needs: [wheel-windows, wheel-viewer]
     runs-on: windows-2022
     timeout-minutes: 30
     steps:
@@ -214,53 +305,25 @@ jobs:
         with:
           version: '0.13.1'
           enable-cache: true
-          cache-dependency-glob: uz_dataviewer/uv.lock
+          cache-dependency-glob: ultrazohm_dataviewer/uv.lock
       - uses: actions/download-artifact@v4
         with:
           name: wheel-windows
           path: cli-wheel
-      - run: .\uz.ps1 check viewer --cli-wheel (Get-ChildItem cli-wheel/*.whl).FullName
-
-  bundle-linux:
-    needs: [viewer-test-linux, wheel-linux, version]
-    runs-on: ubuntu-24.04
-    # Build and smoke-test on the oldest supported system (glibc 2.35).
-    # PyInstaller bundles libstdc++, whose libc requirements also matter.
-    container: ubuntu:22.04
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - name: Install build and GUI runtime libraries
-        run: |
-          apt-get update -qq
-          apt-get install -y --no-install-recommends ca-certificates binutils libgl1 libx11-6 libxext6 libxau6 libxdmcp6 libxcb1
-      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
-        with:
-          version: '0.13.1'
-          enable-cache: true
-          cache-dependency-glob: uz_dataviewer/uv.lock
       - uses: actions/download-artifact@v4
         with:
-          name: wheel-linux
-          path: cli-wheel
-      - run: ./uz build viewer --cli-wheel cli-wheel/*.whl
-      - run: ./uz task viewer bundle-smoke
-      - name: Package Linux executable
-        run: |
-          mkdir -p packages
-          tar -C uz_dataviewer/dist -czf "packages/uz_dataviewer-${{ needs.version.outputs.version }}-linux-x86_64.tar.gz" uz_dataviewer
-      - uses: actions/upload-artifact@v4
+          name: wheel-viewer
+          path: viewer-wheel
+      - run: .\uz.ps1 check viewer --cli-wheel (Get-ChildItem cli-wheel/*.whl).FullName --viewer-wheel (Get-ChildItem viewer-wheel/*.whl).FullName
+      # Hosted Windows runners have no OpenGL-capable graphics driver.
+      - uses: pyvista/setup-headless-display-action@9c1c7435d9635423c90d2c37489588c81673274a # v3
         with:
-          name: bundle-linux
-          path: packages/*.tar.gz
-          if-no-files-found: error
-          compression-level: 0
-          retention-days: 30
+          pyvista: false
+          mesa3d-release: '24.3.0'
+      - run: .\ultrazohm_dataviewer\.venv-ci\Scripts\python.exe ultrazohm_dataviewer/build/smoke_gui.py
 
   bundle-windows:
-    needs: [viewer-test-windows, wheel-windows, version]
+    needs: [viewer-test-windows, wheel-windows, wheel-viewer, version]
     runs-on: windows-2022
     timeout-minutes: 30
     steps:
@@ -271,17 +334,27 @@ jobs:
         with:
           version: '0.13.1'
           enable-cache: true
-          cache-dependency-glob: uz_dataviewer/uv.lock
+          cache-dependency-glob: ultrazohm_dataviewer/uv.lock
       - uses: actions/download-artifact@v4
         with:
           name: wheel-windows
           path: cli-wheel
-      - run: .\uz.ps1 build viewer --cli-wheel (Get-ChildItem cli-wheel/*.whl).FullName
+      - uses: actions/download-artifact@v4
+        with:
+          name: wheel-viewer
+          path: viewer-wheel
+      - run: .\uz.ps1 build viewer --cli-wheel (Get-ChildItem cli-wheel/*.whl).FullName --viewer-wheel (Get-ChildItem viewer-wheel/*.whl).FullName
       - run: .\uz.ps1 task viewer bundle-smoke
-      - name: Package Windows executable
-        run: |
-          New-Item -ItemType Directory -Force packages | Out-Null
-          Compress-Archive -Path uz_dataviewer\dist\uz_dataviewer -DestinationPath "packages\uz_dataviewer-${{ needs.version.outputs.version }}-windows-x86_64.zip" -Force
+      - uses: actions/download-artifact@v4
+        with:
+          name: native-cli-windows
+          path: native-cli
+      - name: Package Windows applications
+        run: uv run --no-project --python 3.12 ultrazohm_dataviewer/tools/package_windows.py --version "${{ needs.version.outputs.version }}" --cli native-cli/ultrazohm-cli.exe --viewer ultrazohm_dataviewer/dist/ultrazohm-dataviewer --output packages
+      - run: uv run --no-project --python 3.12 ultrazohm_cli/tools/package_windows.py --version "${{ needs.version.outputs.version }}" --cli native-cli/ultrazohm-cli.exe --output packages
+      - name: Test extracted Windows downloads
+        run: uv run --no-project --python 3.12 ultrazohm_dataviewer/tools/smoke_windows_archives.py packages "${{ needs.version.outputs.version }}"
+      - run: uv run --no-project --python 3.12 ultrazohm_cli/tools/smoke_windows_archives.py packages "${{ needs.version.outputs.version }}"
       - uses: actions/upload-artifact@v4
         with:
           name: bundle-windows
@@ -291,13 +364,14 @@ jobs:
           retention-days: 30
 
   release:
-    needs: [version, bundle-linux, bundle-windows, cli-check-linux, cli-check-windows]
+    needs: [version, verify-published, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, cli-python-minimum, python-style, launcher-check]
     if: needs.version.outputs.publish == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           pattern: '{wheel,bundle}-*'
@@ -314,9 +388,7 @@ jobs:
           PRERELEASE: ${{ needs.version.outputs.prerelease }}
         run: |
           set -euo pipefail
-          files=(*.whl *.tar.gz *.zip)
-          test "${#files[@]}" -eq 4
-          sha256sum "${files[@]}" > SHA256SUMS
+          python3 ../ultrazohm_dataviewer/tools/release_manifest.py . "$VERSION"
           cat > release-notes.md <<EOF
           UltraZohm CLI and Data Viewer ${VERSION}.
 
@@ -324,40 +396,83 @@ jobs:
           Branch: ${GITHUB_REF_NAME}
           Workflow: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
 
-          CLI and Python API: \`uv tool install ultrazohm_cli==${VERSION}\` (Python 3.10+, Windows x86-64, Linux x86-64 with glibc 2.28+).
-          Data Viewer: extract the archive and run uz_dataviewer; it bundles this CLI. Linux needs glibc 2.35+ and desktop graphics libraries.
+          CLI and Python API: \`uv tool install ultrazohm-cli==${VERSION}\` (Python 3.10+, Windows x86-64, Linux x86-64 with glibc 2.28+).
+          Data Viewer: \`uvx ultrazohm-dataviewer==${VERSION}\`. Windows users can also extract the ZIP and run ultrazohm-dataviewer.exe. Linux uses the Python packages; no standalone archive is provided.
           Verify downloads against SHA256SUMS.
           EOF
-          # A rerun resumes an incomplete draft, but leaves a published release intact.
-          if state="$(gh release view "$TAG" --json isDraft --jq '.isDraft' 2>/dev/null)"; then
-            if [[ "$state" == false ]]; then
-              echo "Release $TAG is already published."
-              exit 0
-            fi
-          else
-            gh release create "$TAG" --target "$GITHUB_SHA" --draft \
-              --title "UltraZohm $VERSION" --notes-file release-notes.md \
-              --prerelease="$PRERELEASE" --latest=false
-          fi
-          gh release upload "$TAG" "${files[@]}" SHA256SUMS --clobber
-          # Never replace the repository's latest firmware/software release.
-          gh release edit "$TAG" --draft=false --prerelease="$PRERELEASE" --latest=false
+          python3 ../ultrazohm_dataviewer/tools/verify_artifacts.py github . "$TAG" "$PRERELEASE"
+
+  validate-artifacts:
+    needs: [version, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, cli-python-minimum, python-style, launcher-check]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: '{wheel,bundle}-*'
+          path: packages
+          merge-multiple: true
+      - run: python3 ultrazohm_dataviewer/tools/release_manifest.py packages "${{ needs.version.outputs.version }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-manifest
+          path: |
+            packages/manifest.json
+            packages/SHA256SUMS
+          if-no-files-found: error
 
   pypi:
-    needs: [version, bundle-linux, bundle-windows, cli-check-linux, cli-check-windows]
+    needs: [version, validate-artifacts]
     if: needs.version.outputs.publish == 'true' && github.repository == 'ultrazohm/ultrazohm_sw'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     environment: pypi
     permissions:
+      contents: read
       id-token: write
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-manifest
+          path: manifest
+      - name: Verify existing PyPI bytes before uploading either package
+        run: python3 ultrazohm_dataviewer/tools/verify_artifacts.py pypi manifest/manifest.json
       - uses: actions/download-artifact@v4
         with:
           pattern: wheel-*
           path: dist
           merge-multiple: true
+      - run: |
+          mkdir cli-dist viewer-dist
+          mv dist/ultrazohm_cli-*.whl cli-dist/
+          mv dist/ultrazohm_dataviewer-*.whl viewer-dist/
       # Trusted publishing: PyPI trusts this workflow file and the pypi environment.
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
+          packages-dir: cli-dist/
           skip-existing: true
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: viewer-dist/
+          skip-existing: true
+
+  verify-published:
+    needs: [version, pypi]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9
+        with:
+          version: '0.13.1'
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-manifest
+          path: manifest
+      - run: uv run --no-project --python 3.12 ultrazohm_dataviewer/tools/verify_artifacts.py pypi manifest/manifest.json --complete
+      - run: uv run --no-project --python 3.12 ultrazohm_dataviewer/tools/verify_published.py "${{ needs.version.outputs.version }}"
+      - run: uv run --no-project --python 3.12 ultrazohm_cli/tools/verify_published.py "${{ needs.version.outputs.version }}"

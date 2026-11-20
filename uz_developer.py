@@ -14,9 +14,41 @@ PROJECTS = {"cli": "ultrazohm_cli", "viewer": "ultrazohm_dataviewer"}
 
 
 def main(argv=None):
+    launcher = ".\\uz_developer.ps1" if os.name == "nt" else "./uz_developer"
     parser = argparse.ArgumentParser(
-        prog=".\\uz_developer.ps1" if os.name == "nt" else "./uz_developer",
-        description=__doc__,
+        prog=launcher,
+        description="Build and run the local checkout's CLI and DataViewer. "
+        "Application code comes from this checkout, not published PyPI releases; "
+        "external dependencies and build tools may still be downloaded.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=f"""Command syntax:
+  {launcher} setup
+  {launcher} cli [-- APPLICATION_ARGS...]
+  {launcher} dataviewer [-- APPLICATION_ARGS...]
+  {launcher} shell
+  {launcher} status
+  {launcher} clear_venv
+  {launcher} build {{cli|viewer}} [TASK_ARGS...]
+  {launcher} check {{cli|viewer}} [TASK_ARGS...]
+  {launcher} task {{cli|viewer}} TASK [TASK_ARGS...]
+
+setup builds the local CLI wheel and installs the local DataViewer in editable
+mode into .venv. Launches and shells use that prepared local installation and
+never rebuild or reinstall. Run setup again after CLI or dependency changes;
+restart the viewer after edits to its Python source.
+
+Examples:
+  {launcher} setup
+  {launcher} dataviewer
+  {launcher} cli -- --help
+  {launcher} build cli --out /path/to/wheels
+  {launcher} check viewer
+  {launcher} task cli release-wheel
+  {launcher} task viewer check --help
+
+Use task cli help or task viewer help to list project tasks.
+Inside the dev container, run installed application commands directly;
+build/check/task remain available. Use ./uz for published application versions.""",
     )
     commands = parser.add_subparsers(dest="command", required=True)
     for name, help_text in (
@@ -30,11 +62,22 @@ def main(argv=None):
         command = commands.add_parser(name, help=f"Run local {name}; never reinstall")
         command.add_argument("arguments", nargs=argparse.REMAINDER)
     for name in ("build", "check", "task"):
-        command = commands.add_parser(name)
+        descriptions = {
+            "build": "Build a local CLI wheel or Windows DataViewer bundle",
+            "check": "Run the selected local project's checks and tests",
+            "task": "Run a specific local project task; use TASK --help for options",
+        }
+        command = commands.add_parser(
+            name, help=descriptions[name], description=descriptions[name]
+        )
         command.add_argument("project", choices=PROJECTS)
         if name == "task":
             command.add_argument("task")
-        command.add_argument("arguments", nargs=argparse.REMAINDER)
+        command.add_argument(
+            "arguments",
+            nargs=argparse.REMAINDER,
+            help="Arguments forwarded to the project task",
+        )
     argv = list(sys.argv[1:] if argv is None else argv)
     if argv == ["help"]:
         argv = ["--help"]

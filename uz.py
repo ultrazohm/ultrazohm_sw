@@ -27,11 +27,27 @@ def run(command):
 
 
 def main(argv=None):
+    launcher = ".\\uz.ps1" if os.name == "nt" else "./uz"
     parser = argparse.ArgumentParser(
-        prog=".\\uz.ps1" if os.name == "nt" else "./uz",
+        prog=launcher,
         description="Run published UltraZohm tools through uv; never modify the development .venv.",
-        epilog="Channels default to stable. Use prerelease explicitly for development releases. "
-        "For local source builds, use uz_developer.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=f"""Command syntax:
+  {launcher} cli [stable|prerelease] [-- APPLICATION_ARGS...]
+  {launcher} dataviewer [stable|prerelease] [-- APPLICATION_ARGS...]
+  {launcher} venv [stable|prerelease]
+  {launcher} install {{dataviewer|cli}} [stable|prerelease]
+
+The channel defaults to stable. prerelease also allows development releases.
+Specify the channel before forwarding application arguments.
+
+Examples:
+  {launcher} dataviewer prerelease
+  {launcher} cli stable -- --help
+  {launcher} venv prerelease
+  {launcher} install cli prerelease
+
+Use COMMAND --help for command details. For local source builds, use uz_developer.""",
     )
     commands = parser.add_subparsers(dest="command", required=True)
     descriptions = {
@@ -47,7 +63,11 @@ def main(argv=None):
         if name == "install":
             command.add_argument("application", choices=PACKAGES)
         command.add_argument(
-            "channel", nargs="?", choices=("stable", "prerelease"), default="stable"
+            "channel",
+            nargs="?",
+            choices=("stable", "prerelease"),
+            default="stable",
+            help="Release channel (default: stable); prerelease allows development releases",
         )
         if name in PACKAGES:
             command.add_argument(

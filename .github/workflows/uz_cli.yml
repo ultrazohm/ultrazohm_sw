@@ -15,6 +15,9 @@ on:
       - 'uz.ps1'
       - 'uz.py'
       - 'uz_environment.py'
+      - 'uz_developer*'
+      - 'uz_shell.py'
+      - 'test_uz_developer.py'
       - 'test_uz.py'
       - 'ultrazohm_cli/**'
       - 'ultrazohm_dataviewer/**'
@@ -32,6 +35,9 @@ on:
       - 'uz.ps1'
       - 'uz.py'
       - 'uz_environment.py'
+      - 'uz_developer*'
+      - 'uz_shell.py'
+      - 'test_uz_developer.py'
       - 'test_uz.py'
       - 'ultrazohm_cli/**'
       - 'ultrazohm_dataviewer/**'
@@ -76,8 +82,8 @@ jobs:
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: '0.13.1'
-      - run: ./uz task ${{ matrix.project }} lint
-      - run: ./uz task ${{ matrix.project }} format-check
+      - run: ./uz_developer task ${{ matrix.project }} lint
+      - run: ./uz_developer task ${{ matrix.project }} format-check
 
   launcher-check:
     strategy:
@@ -89,8 +95,8 @@ jobs:
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: '0.13.1'
-      - run: uv tool run --from ruff==0.17.2 ruff check --isolated --select F uz.py uz_environment.py test_uz.py
-      - run: uv run --no-project --python 3.12 -m unittest test_uz -v
+      - run: uv tool run --from ruff==0.17.2 ruff check --isolated --select F uz.py uz_developer.py uz_developer_environment.py uz_environment.py uz_shell.py test_uz.py test_uz_developer.py
+      - run: uv run --no-project --python 3.12 -m unittest test_uz test_uz_developer -v
 
   image:
     uses: ./.github/workflows/ci-image.yml
@@ -118,7 +124,7 @@ jobs:
         with:
           workspaces: ultrazohm_cli
           key: checks-linux
-      - run: ./uz check cli
+      - run: ./uz_developer check cli
 
   cli-check-windows:
     runs-on: windows-latest
@@ -141,7 +147,7 @@ jobs:
         with:
           workspaces: ultrazohm_cli
           key: checks-windows-latest
-      - run: .\uz.ps1 check cli
+      - run: .\uz_developer.ps1 check cli
 
   version:
     runs-on: ubuntu-latest
@@ -157,7 +163,7 @@ jobs:
       - id: version
         env:
           UZ_PUBLISH_PRERELEASE: ${{ inputs.publish_prerelease }}
-        run: ./uz task cli version
+        run: ./uz_developer task cli version
 
   wheel-linux:
     needs: [image, version]
@@ -178,8 +184,8 @@ jobs:
         with:
           workspaces: ultrazohm_cli
           key: release-linux
-      - run: ./uz task cli release-wheel
-      - run: ./uz task cli release-check
+      - run: ./uz_developer task cli release-wheel
+      - run: ./uz_developer task cli release-check
       - uses: actions/upload-artifact@v4
         with:
           name: wheel-linux
@@ -207,9 +213,9 @@ jobs:
         with:
           workspaces: ultrazohm_cli
           key: release-windows
-      - run: .\uz.ps1 task cli release-wheel
-      - run: .\uz.ps1 task cli standalone
-      - run: .\uz.ps1 task cli release-check --standalone
+      - run: .\uz_developer.ps1 task cli release-wheel
+      - run: .\uz_developer.ps1 task cli standalone
+      - run: .\uz_developer.ps1 task cli release-check --standalone
       - run: .\ultrazohm_cli\target\release\ultrazohm-cli.exe --version
       - uses: actions/upload-artifact@v4
         with:
@@ -258,7 +264,7 @@ jobs:
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9
         with:
           version: '0.13.1'
-      - run: ./uz task viewer wheel
+      - run: ./uz_developer task viewer wheel
       - uses: actions/upload-artifact@v4
         with:
           name: wheel-viewer
@@ -288,7 +294,7 @@ jobs:
         with:
           name: wheel-viewer
           path: viewer-wheel
-      - run: ./uz check viewer --cli-wheel cli-wheel/*.whl --viewer-wheel viewer-wheel/*.whl
+      - run: ./uz_developer check viewer --cli-wheel cli-wheel/*.whl --viewer-wheel viewer-wheel/*.whl
       - name: Install virtual display for GUI startup check
         run: apt-get update -qq && apt-get install -y --no-install-recommends xvfb xauth libgl1-mesa-dri
       - run: xvfb-run -a ultrazohm_dataviewer/.venv-ci/bin/python ultrazohm_dataviewer/build/smoke_gui.py
@@ -314,7 +320,7 @@ jobs:
         with:
           name: wheel-viewer
           path: viewer-wheel
-      - run: .\uz.ps1 check viewer --cli-wheel (Get-ChildItem cli-wheel/*.whl).FullName --viewer-wheel (Get-ChildItem viewer-wheel/*.whl).FullName
+      - run: .\uz_developer.ps1 check viewer --cli-wheel (Get-ChildItem cli-wheel/*.whl).FullName --viewer-wheel (Get-ChildItem viewer-wheel/*.whl).FullName
       # Hosted Windows runners have no OpenGL-capable graphics driver.
       - uses: pyvista/setup-headless-display-action@9c1c7435d9635423c90d2c37489588c81673274a # v3
         with:
@@ -343,8 +349,8 @@ jobs:
         with:
           name: wheel-viewer
           path: viewer-wheel
-      - run: .\uz.ps1 build viewer --cli-wheel (Get-ChildItem cli-wheel/*.whl).FullName --viewer-wheel (Get-ChildItem viewer-wheel/*.whl).FullName
-      - run: .\uz.ps1 task viewer bundle-smoke
+      - run: .\uz_developer.ps1 build viewer --cli-wheel (Get-ChildItem cli-wheel/*.whl).FullName --viewer-wheel (Get-ChildItem viewer-wheel/*.whl).FullName
+      - run: .\uz_developer.ps1 task viewer bundle-smoke
       - uses: actions/download-artifact@v4
         with:
           name: native-cli-windows

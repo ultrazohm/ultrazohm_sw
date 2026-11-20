@@ -14,16 +14,16 @@ From the repository root:
 
 .. code-block:: bash
 
-   ./uz check viewer        # lint, format check, and tests
-   ./uz task viewer wheel   # Python wheel
+   ./uz_developer check viewer        # lint, format check, and tests
+   ./uz_developer task viewer wheel   # Python wheel
 
-On Windows, use ``.\uz.ps1`` with the same arguments.
+On Windows, use ``.\uz_developer.ps1`` with the same arguments.
 Build and test the Windows bundle in PowerShell.
 
 .. code-block:: powershell
 
-   .\uz.ps1 build viewer
-   .\uz.ps1 task viewer bundle-smoke
+   .\uz_developer.ps1 build viewer
+   .\uz_developer.ps1 task viewer bundle-smoke
 
 ``check viewer`` and ``build viewer`` build a matching CLI wheel from ``ultrazohm_cli`` unless ``--cli-wheel PATH`` names one.
 Tests use ``ultrazohm_dataviewer/.venv-ci`` and bundles use ``ultrazohm_dataviewer/.venv-build``.

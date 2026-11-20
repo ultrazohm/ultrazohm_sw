@@ -1,7 +1,7 @@
 """Build, test and install ultrazohm_cli; the same tasks on Linux, Windows and in CI.
 
-Standard library only. `./uz task cli help` lists the tasks;
-`./uz task cli TASK --help` explains one. The Python version comes from the
+Standard library only. `./uz_developer task cli help` lists the tasks;
+`./uz_developer task cli TASK --help` explains one. The Python version comes from the
 repository's .python-version. Set UZ_CLI_RELEASE_VERSION while building so the
 binary reports the same version as the wheel.
 """
@@ -275,10 +275,10 @@ def _invocation():
 
 def overview():
     print(
-        "CLI build tasks: setup, shell, lint, format, format-check, check, wheel, debug-wheel, release-wheel, release-check, version, standalone, install"
+        "CLI build tasks: lint, format, format-check, check, wheel, debug-wheel, release-wheel, release-check, version, standalone, install"
     )
     print(
-        "Use ./uz shell to run both applications; ./uz task cli TASK --help for details."
+        "Use ./uz_developer shell to run both applications; ./uz_developer task cli TASK --help for details."
     )
 
 
@@ -333,16 +333,6 @@ def main(argv=None):
         help="directory holding the wheel (default: target/wheels-release)",
     )
     add("version", version)
-    from tools.setup_env import setup_task
-
-    for name in ("setup", "shell"):
-        setup_parser = tasks.add_parser(
-            name, description="Prepare this application's environment."
-        )
-        setup_parser.add_argument(
-            "source", nargs="?", choices=("local", "stable", "prerelease")
-        )
-        setup_parser.set_defaults(function=setup_task)
     argv = list(sys.argv[1:] if argv is None else argv)
     if not argv or argv[0] in ("-h", "--help", "help"):
         overview()

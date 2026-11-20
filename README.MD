@@ -83,60 +83,63 @@ arguments it opens the GUI and waits until it closes. Keep the runtime directory
 beside the executable. Linux uses the published Python wheels; no standalone
 Linux archives are provided. Downloads include `SHA256SUMS`.
 
-### Repository environments
+### Published applications
 
-Use `./uz` on Linux or `.\uz.ps1` on Windows. The helper bootstraps uv and the
-Python version pinned in `.python-version`. First setup needs internet access;
-Linux needs curl or wget for uv bootstrap.
-
-Start an application directly:
+Use `./uz` on Ubuntu or `.\uz.ps1` on Windows. Both bootstrap uv and the
+Python version pinned in `.python-version` when needed. First use requires
+internet access; Ubuntu needs curl or wget to bootstrap uv.
 
 ```sh
-./uz dataviewer                 # stable viewer
-./uz dataviewer --interactive   # viewer plus activated shell for commands
-./uz cli                        # stable interactive CLI
-./uz dataviewer --prerelease
-./uz cli --local
+./uz dataviewer stable
+./uz cli prerelease
+./uz install dataviewer prerelease
+./uz install cli prerelease
+./uz venv prerelease
 ```
 
-Both shortcuts accept mutually exclusive `--stable` (default), `--prerelease`,
-and `--local` flags. They reuse a matching environment or prepare the selected
-application and source as needed. Their default is always stable, independent of
-the previous setup selection. CLI launches reuse a matching viewer installation, which
-already includes the CLI. Changes that require replacing the managed environment, and
-`clear_venv`, are blocked while launcher-managed applications or shells are using it.
-Close those applications and shells before switching sources. If stable setup fails,
-the launcher prints the explicit `--prerelease` command; it never silently changes channels.
-With `dataviewer --interactive`, the launcher waits for the viewer control API before
-opening the shell. Startup failure or timeout is reported without opening a shell. Run commands such as
-`ultrazohm-dataviewer status` or `ultrazohm-cli` in the activated shell.
-Exiting that shell leaves the viewer running.
+The channel is optional and defaults to `stable`. Stable never silently permits
+prereleases. Application arguments follow the channel, for example
+`./uz dataviewer prerelease -- gui --live-repo /path/to/checkout`.
+Applications run through `uv tool run` in isolated cached environments.
+`install` uses `uv tool install` to expose the selected application command on your
+user PATH; follow uv's PATH instructions if needed. These commands never use or
+change the repository `.venv`. DataViewer includes the CLI Python library.
 
-To prepare an environment and open a shell without starting an application:
+`venv` opens an activated shell with both published libraries and commands in a
+uv-managed cached environment. Use `python measurement.py`, `ultrazohm-cli`, or
+`ultrazohm-dataviewer` there; use `exit` to return. Multiple shells can share it.
+This environment is disposable (uv cache cleanup can remove it); use your own
+project environment for persistent extra dependencies.
+
+### Local development
+
+Use `./uz_developer` on Ubuntu or `.\uz_developer.ps1` on Windows:
 
 ```sh
-./uz shell stable --app cli       # published CLI only
-./uz shell stable --app viewer    # published viewer and CLI
-./uz shell prerelease --app viewer
-./uz shell local --app viewer     # editable viewer and locally built CLI
-./uz shell                       # reuse the last completed selection
+./uz_developer setup       # explicitly build CLI and install editable viewer
+./uz_developer cli         # run the prepared local CLI
+./uz_developer dataviewer  # run the prepared local viewer
+./uz_developer shell       # open the prepared development shell
+./uz_developer status
+./uz_developer clear_venv
 ```
 
-On first use the default is `stable` with `--app viewer`. `stable` and `prerelease`
-install both selected applications from PyPI. `local` builds the CLI from this
-checkout and installs the viewer editable when selected, using locked dependency constraints. Local CLI builds require
-Rust and a C/C++ toolchain. Re-run local setup after CLI source changes.
+There is one development `.venv` containing both applications. Local setup needs
+Rust and a C/C++ toolchain. Launches and shells never install or rebuild anything.
+Run setup after CLI or dependency changes; restart the viewer after edits to its
+Python sources. Application arguments can follow `--`.
+Multiple managed applications and shells may share the environment. Setup and
+clear_venv refuse while it is in use, before starting a build. Exit managed shells
+(`deactivate` alone does not release their usage lock) before reinstalling.
+Explicit setup replaces the environment, so reinstall any additional packages
+afterward. Failed installation restores the previous environment; if restoration
+fails, the backup is retained and its path is reported.
 
-`setup` accepts the same arguments and prepares `.venv` without opening a shell.
-Failed setup restores the previous managed environment. If filesystem errors prevent
-restoration, setup retains the backup and prints its location for manual recovery.
-Successful explicit setup recreates the managed environment, removing stale packages and
-editable installs. Reinstall any additional project packages afterward.
-Plain `shell` reuses a completed environment while its setup inputs match.
-Use `./uz clear_venv` or `.\uz.ps1 clear_venv` to remove the repository `.venv` and reset the saved selection.
-Neither command starts an application. Inside the activated shell, run
-`ultrazohm-cli`, `ultrazohm-dataviewer`, or `python measurement.py`.
-Use `exit` to return to the original shell.
+Host environments are platform-specific and must not be shared with a container.
+Inside the dev container, run `ultrazohm-cli`, `ultrazohm-dataviewer`, or `python`
+directly. Container creation installs both applications into container Python;
+refresh with `bash .devcontainer/post-create.sh`. Host environment commands are
+blocked there. The GUI requires display forwarding if run inside the container.
 
 Application installation is independent of firmware selection. For example:
 
@@ -150,20 +153,20 @@ Vitis operations require a firmware checkout and an external Vitis installation.
 ### Building and testing
 
 ```sh
-./uz build cli                 # local CLI wheel
-./uz task viewer wheel         # viewer wheel
-./uz check cli
-./uz check viewer              # tests installed wheels, including live simulation
-./uz task cli release-wheel    # portable CLI wheel
+./uz_developer build cli                 # local CLI wheel
+./uz_developer task viewer wheel         # viewer wheel
+./uz_developer check cli
+./uz_developer check viewer              # tests installed wheels, including live simulation
+./uz_developer task cli release-wheel    # portable CLI wheel
 ```
 
-Windows also supports `.\uz.ps1 build viewer` and `.\uz.ps1 task cli standalone`.
+Windows also supports `.\uz_developer.ps1 build viewer` and `.\uz_developer.ps1 task cli standalone`.
 CI builds each release wheel once and uses those wheels for testing and bundling.
 `--cli-wheel PATH` and `--viewer-wheel PATH` select candidate wheels for viewer checks
 and builds. Paths are relative to the calling terminal.
 
-The devcontainer runs `./uz setup local --app viewer` and installs documentation
-and example dependencies. The GUI still needs a display.
+The devcontainer installs local applications, documentation, and example dependencies
+into container Python. The GUI still needs a display.
 See [CLI usage](ultrazohm_cli/README.md) and [viewer usage](ultrazohm_dataviewer/README.md).
 
 ## Research 
@@ -191,11 +194,14 @@ We are working on streamlining the contribution process since we aim to welcome 
 
 ### Repository task ownership
 
-`uz` and `uz.ps1` bootstrap Python and call `uz.py`, which dispatches to the selected project's `tasks.py`.
-Installation, shell setup, build helpers, and release checks live in each project's `tools/` directory; their tests live in that project's `tests/` directory.
-The viewer owns combined distribution validation because it packages the CLI as a dependency.
-`./uz check cli` and `./uz check viewer` run only their respective project checks.
-The minimal launcher tests run separately with `python -m unittest test_uz`.
+`uz` / `uz.ps1` call `uz.py` for published tools. `uz_developer` /
+`uz_developer.ps1` call `uz_developer.py` for local development and dispatch build
+and test commands to each project's `tasks.py`. Both bootstrap uv and Python.
+Local environment installation is owned by `uz_developer_environment.py`;
+`uz_shell.py` only opens an activated shell. Project build helpers and release
+checks remain in each project's `tools/` directory.
+Run launcher/environment tests with
+`python -m unittest test_uz test_uz_developer`.
 
 ## C formatting
 

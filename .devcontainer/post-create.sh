@@ -7,7 +7,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 # The mounted .venv belongs to the host and may contain Windows binaries or
 # host-only interpreter paths. Install into the container's Python instead.
 # Inside the container, run ultrazohm-cli / ultrazohm-dataviewer directly;
-# ./uz_developer setup and ./uz_developer shell manage the host's workspace .venv.
+# ./uz venv dev can also open a fresh isolated local development shell.
 unset VIRTUAL_ENV
 wheel_stage="$(mktemp -d)"
 trap 'rm -rf -- "$wheel_stage"' EXIT
@@ -24,7 +24,7 @@ uv pip install --system --python /usr/local/bin/python --no-sources \
     --constraint "$wheel_stage/constraints.txt" --only-binary imgui-bundle \
     --reinstall-package ultrazohm-cli \
     "${wheels[0]}" --editable ultrazohm_dataviewer \
-    matplotlib -r docs/requirements.txt
+    -r requirements.txt -r docs/requirements.txt
 uv pip check --system --python /usr/local/bin/python
 chmod +x javascope/build.sh javascope/run_with_test_server.sh
 

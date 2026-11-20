@@ -203,7 +203,7 @@ Python and terminal automation
 ==============================
 
 The viewer listens on ``127.0.0.1:19741`` by default.
-Open the project environment with ``./uz_developer shell`` and control the existing viewer:
+Open the project environment with ``./uz venv dev`` and control the existing viewer:
 
 .. code-block:: python
 

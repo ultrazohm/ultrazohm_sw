@@ -49,7 +49,7 @@ class BuildTaskTest(unittest.TestCase):
             builder.write_text(
                 "import sys\nfrom pathlib import Path\n"
                 'out = Path(sys.argv[sys.argv.index("--out") + 1])\n'
-                'out.mkdir(parents=True)\n(out / "built.whl").touch()\n'
+                'out.mkdir(parents=True, exist_ok=True)\n(out / "built.whl").touch()\n'
             )
             original = Path.cwd()
             try:
@@ -68,10 +68,39 @@ class BuildTaskTest(unittest.TestCase):
                     ),
                 ):
                     tasks.wheel(SimpleNamespace(out=Path("output with spaces")))
+                    sentinel = caller / "output with spaces" / "keep.txt"
+                    sentinel.write_text("existing output")
+                    tasks.debug_wheel(SimpleNamespace(out=Path("output with spaces")))
+                    self.assertEqual(sentinel.read_text(), "existing output")
             finally:
                 os.chdir(original)
             self.assertTrue((caller / "output with spaces/built.whl").is_file())
             self.assertFalse((project / "output with spaces").exists())
+
+    def test_checks_clean_up_private_environments(self):
+        environments = []
+
+        def fresh(venv, *packages):
+            self.assertTrue(venv.parent.is_dir())
+            environments.append(venv)
+            return tasks.venv_bin(venv, "python")
+
+        def integration(*args):
+            self.assertTrue(environments[-1].parent.is_dir())
+
+        with (
+            patch.object(tasks, "lint"),
+            patch.object(tasks, "format_check"),
+            patch.object(tasks, "run"),
+            patch.object(tasks, "debug_wheel"),
+            patch.object(tasks, "single_wheel", return_value=Path("local.whl")),
+            patch.object(tasks, "fresh_venv", side_effect=fresh),
+            patch.object(tasks, "integration", side_effect=integration),
+        ):
+            for _ in range(2):
+                tasks.check(SimpleNamespace())
+                self.assertFalse(environments[-1].parent.exists())
+        self.assertNotEqual(environments[0], environments[1])
 
     def test_build_tools_use_repository_python_pin(self):
         with tempfile.TemporaryDirectory() as directory:

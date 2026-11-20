@@ -47,3 +47,6 @@ ultrazohm_dataviewer/build/native/
 /__pycache__/
 
 /ultrazohm_dataviewer/dist-wheels/
+
+# Shared build output locks
+/.uz-build-locks/

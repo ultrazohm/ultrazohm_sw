@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Bootstrap uv and pinned Python, then run a repository task.
-# Usage: ./uz_developer shell, ./uz_developer build cli, ./uz_developer --help
+# Usage: ./uz_developer build cli, ./uz_developer --help
 set -euo pipefail
 
 if ! command -v uv >/dev/null 2>&1; then

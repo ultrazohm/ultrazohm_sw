@@ -1,5 +1,5 @@
 # Bootstrap uv and pinned Python, then run a repository task.
-# Usage: .\uz_developer.ps1 shell, .\uz_developer.ps1 build cli, .\uz_developer.ps1 --help
+# Usage: .\uz_developer.ps1 build cli, .\uz_developer.ps1 --help
 # Task arguments are forwarded, including relative file paths.
 $ErrorActionPreference = 'Stop'
 

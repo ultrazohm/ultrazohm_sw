@@ -83,12 +83,12 @@ The viewer requires Python 3.12 or later and a desktop display with OpenGL suppo
        Inside the activated shell, run ``ultrazohm-dataviewer``, ``ultrazohm-cli``, or Python scripts.
        Use ``exit`` to leave the shell.
 
-       For local development, run ``./uz_developer setup``, then
-       ``./uz_developer dataviewer`` or ``./uz_developer shell``.
-       On Windows, use ``.\uz_developer.ps1``.
-       Setup builds the local CLI and installs the viewer editable; it requires Rust and a C/C++ toolchain.
-       Launches never reinstall. Run setup again after CLI or dependency changes.
-       Run ``./uz_developer clear_venv`` to remove the development environment when unused.
+       For local development, run ``./uz venv dev``, then ``ultrazohm-dataviewer``.
+       On Windows, use ``.\uz.ps1 venv dev``.
+       Every invocation builds the local CLI and installs the viewer editable into
+       a fresh temporary environment; Rust and a C/C++ toolchain are required.
+       Close applications before leaving the shell: its environment is deleted on exit.
+       All shell modes include dependencies from root ``requirements.txt``.
        See :ref:`ultrazohm_dataviewer_build` for build and test tasks.
 
 

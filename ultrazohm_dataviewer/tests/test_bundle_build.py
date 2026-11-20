@@ -54,3 +54,27 @@ def test_bundle_selects_release_install(monkeypatch):
     )
     module.bundle(argparse.Namespace(cli_wheel=None, viewer_wheel=None))
     assert installs == [{"release": True}]
+
+
+def test_test_environment_is_private_and_lives_through_gui_smoke(monkeypatch):
+    module = tasks()
+    environments, calls = [], []
+
+    def sync(venv):
+        assert venv.parent.is_dir()
+        environments.append(venv)
+        return venv / "python"
+
+    def run(*command, **kwargs):
+        assert environments[-1].parent.is_dir()
+        calls.append(command)
+
+    monkeypatch.setattr(module, "sync", sync)
+    monkeypatch.setattr(module, "install_packages", lambda *args: None)
+    monkeypatch.setattr(module, "run", run)
+    for _ in range(2):
+        module.test(argparse.Namespace(gui_smoke=True))
+        assert not environments[-1].parent.exists()
+    assert environments[0] != environments[1]
+    assert calls[1][-1] == module.HERE / "build/smoke_gui.py"
+    assert calls[0][0] == calls[1][0]

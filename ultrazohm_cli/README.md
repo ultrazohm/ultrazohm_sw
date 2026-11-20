@@ -17,8 +17,7 @@ uvx ultrazohm-cli
 # For Python scripts in your virtual environment:
 pip install ultrazohm-cli
 # For local development of both applications:
-./uz_developer setup
-./uz_developer shell
+./uz venv dev
 ```
 
 Python imports use `ultrazohm_cli`; `python -m ultrazohm_cli` runs the CLI.
@@ -407,7 +406,7 @@ Run the same checks as CI from the repository root, on Linux (dev container) or 
 ./uz_developer task cli release-check   # integration tests against that installed wheel
 ```
 
-`check` builds a debug wheel, installs it into `ultrazohm_cli/target/ci-venv` and runs the integration tests twice: against the cargo-built executable and against the wheel's `ultrazohm-cli` command.
+`check` builds a debug wheel, installs it into a fresh temporary environment and runs the integration tests twice: against the cargo-built executable and against the wheel's `ultrazohm-cli` command.
 On Linux, `release-wheel` links against glibc 2.28 using zig, so it needs no Docker build.
 Linux CI runs these tasks in the `ci` stage of `.devcontainer/Dockerfile` (published to GHCR by `.github/workflows/ci-image.yml`, tagged by the Dockerfile hash), so local and CI toolchains match.
 Windows CI runs the same commands.

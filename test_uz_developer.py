@@ -1,6 +1,7 @@
-"""Local setup, non-mutating launch, rollback and concurrent usage tests."""
+"""Fresh developer shells, task dispatch, cleanup and output concurrency."""
 
 import contextlib
+import inspect
 import io
 import json
 import os
@@ -8,260 +9,168 @@ import shutil
 import subprocess
 import sys
 import tempfile
-import time
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-import uz_developer as developer
-import uz_developer_environment as environment
-from uz_environment import environment_lock
+import uz
+import uz_developer
+import uz_venv
+from test_uz import wheel
+from uz_build import build_lock
+
+ROOT = Path(__file__).resolve().parent
 
 
 class DeveloperTest(unittest.TestCase):
-    def setUp(self):
-        self.temp = tempfile.TemporaryDirectory(prefix="uz development ")
-        self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name)
-        (self.root / ".python-version").write_text(sys.executable)
-        for patcher in (
-            patch.object(developer, "ROOT", self.root),
-            patch.object(environment, "ROOT", self.root),
-            patch.dict(os.environ, {"UZ_DEV_CONTAINER": "0"}),
-        ):
-            patcher.start()
-            self.addCleanup(patcher.stop)
-
-    def installed(self):
-        for name in ("python", "ultrazohm-cli", "ultrazohm-dataviewer"):
-            path = environment.executable(name)
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.touch()
-        (self.root / ".venv/.uz-setup.json").write_text(
-            json.dumps(
-                {
-                    "source": "local",
-                    "app": "viewer",
-                    "context": {"root": str(self.root), "platform": sys.platform},
-                }
-            )
-        )
-
-    def test_launches_never_install_and_forward_arguments(self):
-        self.installed()
-        with (
-            patch.object(environment, "setup") as setup,
-            patch.object(environment.subprocess, "run"),
-            patch.object(environment, "run") as run,
-        ):
-            for app in ("cli", "dataviewer"):
-                developer.main([app, "--", "--endpoint", "127.0.0.1:19742"])
-                run.assert_called_with(
-                    environment.executable(f"ultrazohm-{app}"),
-                    "--endpoint",
-                    "127.0.0.1:19742",
-                )
-            developer.main(["shell"])
-            run.assert_called_with(
-                environment.executable("python"), self.root / "uz_shell.py"
-            )
-            setup.assert_not_called()
-
-    def test_missing_or_foreign_environment_never_rebuilds(self):
-        for foreign in (False, True):
-            if foreign:
-                self.installed()
-                marker = self.root / ".venv/.uz-setup.json"
-                state = json.loads(marker.read_text())
-                state["context"]["platform"] = "foreign"
-                marker.write_text(json.dumps(state))
-            with (
-                patch.object(environment, "setup") as setup,
-                patch.object(environment, "run") as run,
-                contextlib.redirect_stderr(io.StringIO()),
-                self.assertRaises(SystemExit),
+    def test_dispatch_and_removed_commands(self):
+        with patch.object(uz_developer, "run") as run:
+            uz_developer.main(["build", "cli", "--out", "a path"])
+            self.assertEqual(run.call_args.args[0][-3:], ["wheel", "--out", "a path"])
+            uz_developer.main(["check", "viewer", "--gui-smoke"])
+            self.assertEqual(run.call_args.args[0][-2:], ["check", "--gui-smoke"])
+            for command in (
+                "setup",
+                "shell",
+                "cli",
+                "dataviewer",
+                "status",
+                "clear_venv",
             ):
-                developer.main(["cli"])
-            setup.assert_not_called()
-            run.assert_not_called()
-
-    def test_container_guard(self):
-        with patch.dict(os.environ, {"UZ_DEV_CONTAINER": "1"}):
-            for command in ("setup", "cli", "dataviewer", "shell", "clear_venv"):
                 with (
                     contextlib.redirect_stderr(io.StringIO()),
                     self.assertRaises(SystemExit),
                 ):
-                    developer.main([command])
-            self.assertFalse((self.root / ".venv").exists())
+                    uz_developer.main([command])
 
-    def test_lock_checked_before_build(self):
-        with (
-            environment_lock(self.root, use=True),
-            patch.object(environment, "run") as run,
-        ):
-            with self.assertRaisesRegex(RuntimeError, "in use"):
-                environment.setup()
-            run.assert_not_called()
-
-    def test_clear_refuses_active_users(self):
-        self.installed()
-        with environment_lock(self.root, use=True):
-            with (
-                contextlib.redirect_stderr(io.StringIO()),
-                self.assertRaises(SystemExit),
-            ):
-                developer.main(["clear_venv"])
-        self.assertTrue((self.root / ".venv").exists())
-        developer.main(["clear_venv"])
-        self.assertFalse((self.root / ".venv").exists())
-
-    def test_dispatch(self):
-        for arguments, project, task in (
-            (["build", "cli"], "cli", "wheel"),
-            (["build", "viewer"], "viewer", "bundle"),
-            (["check", "viewer"], "viewer", "check"),
-            (["task", "cli", "release-wheel"], "cli", "release-wheel"),
-        ):
-            with patch.object(environment, "run") as run:
-                developer.main(arguments)
-                run.assert_called_once_with(
-                    sys.executable,
-                    self.root / developer.PROJECTS[project] / "tasks.py",
-                    task,
+    def test_build_lock_is_shared_across_processes_and_released(self):
+        with tempfile.TemporaryDirectory() as directory:
+            code = "from uz_build import build_lock; import sys;\nwith build_lock(sys.argv[1], 'cli'): print('acquired')"
+            with build_lock(directory, "cli"):
+                result = subprocess.run(
+                    [sys.executable, "-c", code, directory],
+                    capture_output=True,
+                    text=True,
                 )
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("Another cli build", result.stderr)
+                with build_lock(directory, "viewer"):
+                    pass
+            result = subprocess.run(
+                [sys.executable, "-c", code, directory], capture_output=True, text=True
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
 
-    def test_setup_and_failed_install_rollback(self):
-        def run(*command):
-            if "--out" in command:
-                (command[-1] / "ultrazohm_cli-0.1.0-test.whl").touch()
-            if command[:2] == ("uv", "venv"):
-                environment.executable("python").parent.mkdir(parents=True)
-            if command[:3] == ("uv", "pip", "install"):
-                for name in ("python", "ultrazohm-cli", "ultrazohm-dataviewer"):
-                    environment.executable(name).touch()
+    def test_independent_shell_lifetimes_and_failure_cleanup(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / ".python-version").write_text(sys.executable)
+            (root / ".venv").mkdir()
+            sentinel = root / ".venv/preserve"
+            sentinel.write_text("host")
+            shells = []
 
-        with (
-            patch.object(environment, "run", side_effect=run),
-            patch.object(environment.subprocess, "check_output", return_value="{}"),
-        ):
-            environment.setup()
-        self.assertEqual(environment.saved_setup()["source"], "local")
-        sentinel = self.root / ".venv/preserve"
-        sentinel.write_text("previous environment")
+            def run(command):
+                if "--out" in command:
+                    out = Path(command[-1])
+                    out.mkdir()
+                    (out / "ultrazohm_cli-0.1.0-test.whl").touch()
+                if Path(command[-1]).name == "uz_shell.py":
+                    location = Path(command[0]).parents[2]
+                    shells.append(location)
+                    if len(shells) == 1:
+                        uz_venv.development_shell(root, run)
+                        self.assertTrue(location.exists())
+                    else:
+                        self.assertNotEqual(shells[0], location)
+                        self.assertTrue(shells[0].exists())
 
-        def failure(*command):
-            if command[:3] == ("uv", "pip", "install"):
+            uz_venv.development_shell(root, run)
+            self.assertTrue(all(not p.exists() for p in shells))
+            self.assertEqual(sentinel.read_text(), "host")
+            touched = []
+
+            def fail(command):
+                touched.append(Path(command[-1]).parent)
                 raise subprocess.CalledProcessError(7, command)
-            run(*command)
 
-        with patch.object(environment, "run", side_effect=failure):
             with self.assertRaises(subprocess.CalledProcessError):
-                environment.setup()
-        self.assertEqual(sentinel.read_text(), "previous environment")
+                uz_venv.development_shell(root, fail)
+            self.assertFalse(touched[0].exists())
 
-    def test_environment_lease_blocks_replacement_across_processes(self):
-        with tempfile.TemporaryDirectory() as directory:
+    @unittest.skipUnless(shutil.which("uv"), "uv needed")
+    def test_real_local_install_and_cleanup_without_published_apps(self):
+        with tempfile.TemporaryDirectory(prefix="uz local fixture ") as directory:
             root = Path(directory)
-            script = (
-                "import sys; from uz_environment import environment_lock; "
-                "lock=environment_lock(sys.argv[1], use=True); lock.__enter__(); "
-                "print('ready', flush=True); sys.stdin.read(); lock.__exit__(None,None,None)"
+            (root / ".python-version").write_text(sys.executable)
+            (root / "requirements.txt").write_text("shell-extra==1.0.0\n")
+            packages = root / "packages"
+            packages.mkdir()
+            wheel(packages, "shell-extra", "1.0.0")
+            # No published UltraZohm wheels exist in the index: local provenance is required.
+            cli = root / "ultrazohm_cli"
+            cli.mkdir()
+            cli.joinpath("tasks.py").write_text(
+                "import zipfile,sys\nfrom pathlib import Path\n"
+                + inspect.getsource(wheel)
+                + "\nout=Path(sys.argv[-1]); out.mkdir(); wheel(out,'ultrazohm-cli','0.1.0')\n"
             )
-            with subprocess.Popen(
-                [sys.executable, "-c", script, directory],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                text=True,
-            ) as child:
-                try:
-                    self.assertEqual(child.stdout.readline().strip(), "ready")
-                    with environment_lock(root, use=True):
-                        pass  # Multiple applications can share an installation.
-                    with self.assertRaisesRegex(RuntimeError, "in use"):
-                        with environment_lock(root):
-                            self.fail("replacement acquired an active environment")
-                finally:
-                    child.stdin.close()
-                    child.wait(timeout=10)
-            with environment_lock(root):
-                pass
-
-    def test_background_supervisor_holds_lease_until_application_exits(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            ready = root / "ready"
-            script = (
-                "import sys; from pathlib import Path; "
-                "Path(sys.argv[1]).touch(); sys.stdin.read()"
+            viewer = root / "ultrazohm_dataviewer"
+            viewer.mkdir()
+            source = viewer / "src/ultrazohm_dataviewer"
+            source.mkdir(parents=True)
+            (source / "__init__.py").write_text('def main(): print("local viewer")\n')
+            viewer.joinpath("pyproject.toml").write_text(
+                '[build-system]\nrequires=[]\nbuild-backend="backend"\nbackend-path=["."]\n'
             )
-            with subprocess.Popen(
-                [
-                    sys.executable,
-                    str(Path(__file__).resolve().parent / "uz_environment.py"),
-                    directory,
-                    sys.executable,
-                    "-c",
-                    script,
-                    str(ready),
-                ],
-                stdin=subprocess.PIPE,
-            ) as child:
-                try:
-                    deadline = time.monotonic() + 10
-                    while not ready.exists() and time.monotonic() < deadline:
-                        self.assertIsNone(child.poll())
-                        time.sleep(0.01)
-                    self.assertTrue(ready.exists())
-                    with self.assertRaisesRegex(RuntimeError, "in use"):
-                        with environment_lock(root):
-                            self.fail("background application lost its lease")
-                finally:
-                    child.stdin.close()
-                    child.wait(timeout=10)
-            self.assertEqual(child.returncode, 0)
-            with environment_lock(root):
-                pass
+            viewer.joinpath("backend.py").write_text(
+                "import zipfile\nfrom pathlib import Path\n"
+                + inspect.getsource(wheel)
+                + """
+def build_editable(wheel_directory, config_settings=None, metadata_directory=None):
+    wheel(Path(wheel_directory), "ultrazohm-dataviewer", "0.1.0", ["ultrazohm-cli==0.1.0"])
+    path = next(Path(wheel_directory).glob("*.whl"))
+    with zipfile.ZipFile(path) as archive:
+        entries = {n: archive.read(n) for n in archive.namelist() if not n.startswith("ultrazohm_dataviewer/")}
+    entries["local-viewer.pth"] = str(Path(__file__).parent / "src").encode()
+    with zipfile.ZipFile(path, "w") as archive:
+        for n, data in entries.items(): archive.writestr(n, data)
+    return path.name
+"""
+            )
+            report = root / "report.json"
+            (root / "uz_shell.py").write_text(
+                "import json,sys,importlib.metadata as m,ultrazohm_dataviewer as v; from pathlib import Path; "
+                f"Path({str(report)!r}).write_text(json.dumps([sys.prefix,v.__file__,"
+                "m.version('ultrazohm-cli'),m.version('shell-extra')]))"
+            )
+            config = root / "uv.toml"
+            config.write_text(
+                "no-index = true\nfind-links = " + json.dumps([str(packages)]) + "\n"
+            )
+            env = {
+                "UV_CONFIG_FILE": str(config),
+                "UV_CACHE_DIR": str(root / "cache"),
+                "UV_PYTHON_DOWNLOADS": "never",
+            }
+            real_run = uz.run
 
-    def test_failed_removal_retains_backup(self):
-        venv = self.root / ".venv"
-        venv.mkdir()
-        (venv / "original").write_text("preserve me")
-        remove = shutil.rmtree
+            def run(command):
+                # Fixture has no lockfile. Exercise every actual build/install/shell step;
+                # export itself is covered by the real project's locked build tasks.
+                if command[:2] == ["uv", "export"]:
+                    Path(command[-1]).write_text("")
+                else:
+                    real_run(command)
 
-        def locked(path, *args, **kwargs):
-            if Path(path) == venv:
-                raise PermissionError("new environment locked")
-            return remove(path, *args, **kwargs)
+            with patch.dict(os.environ, env):
+                uz_venv.development_shell(root, run)
+            prefix, module, cli_version, extra = json.loads(report.read_text())
+            self.assertFalse(Path(prefix).exists())
+            self.assertEqual(Path(module).resolve(), (source / "__init__.py").resolve())
+            self.assertEqual((cli_version, extra), ("0.1.0", "1.0.0"))
+            self.assertFalse((root / ".venv").exists())
 
-        with patch.object(environment.shutil, "rmtree", side_effect=locked):
-            with self.assertRaisesRegex(
-                RuntimeError, "Previous environment retained at"
-            ) as error:
-                with environment.replace_environment():
-                    venv.mkdir()
-                    raise RuntimeError("installation failed")
-        (backup,) = self.root.glob(".uz-backup-*/environment")
-        self.assertEqual((backup / "original").read_text(), "preserve me")
-        self.assertIn(str(backup), str(error.exception))
 
-    def test_failed_restore_retains_backup(self):
-        venv = self.root / ".venv"
-        venv.mkdir()
-        (venv / "original").write_text("preserve me")
-        rename = Path.rename
-
-        def locked(path, target):
-            if path.name == "environment":
-                raise PermissionError("restore denied")
-            return rename(path, target)
-
-        with patch.object(Path, "rename", locked):
-            with self.assertRaisesRegex(
-                RuntimeError, "Previous environment retained at"
-            ):
-                with environment.replace_environment():
-                    venv.mkdir()
-                    raise RuntimeError("installation failed")
-        (backup,) = self.root.glob(".uz-backup-*/environment")
-        self.assertEqual((backup / "original").read_text(), "preserve me")
+if __name__ == "__main__":
+    unittest.main()

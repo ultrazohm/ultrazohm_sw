@@ -108,38 +108,42 @@ change the repository `.venv`. DataViewer includes the CLI Python library.
 `venv` opens an activated shell with both published libraries and commands in a
 uv-managed cached environment. Use `python measurement.py`, `ultrazohm-cli`, or
 `ultrazohm-dataviewer` there; use `exit` to return. Multiple shells can share it.
-This environment is disposable (uv cache cleanup can remove it); use your own
-project environment for persistent extra dependencies.
+Extra shell dependencies are declared in root `requirements.txt` and installed
+for all shell modes. Edit that file instead of manually installing into a cached
+environment. It is a dependency list, not an exact version lock.
 
 ### Local development
 
-Use `./uz_developer` on Ubuntu or `.\uz_developer.ps1` on Windows:
+Open a fresh shell from the checkout on Ubuntu or Windows:
 
 ```sh
-./uz_developer setup       # explicitly build CLI and install editable viewer
-./uz_developer cli         # run the prepared local CLI
-./uz_developer dataviewer  # run the prepared local viewer
-./uz_developer shell       # open the prepared development shell
-./uz_developer status
-./uz_developer clear_venv
+./uz venv dev
+# In the activated shell:
+ultrazohm-cli
+ultrazohm-dataviewer
+python measurement.py
+exit
 ```
 
-There is one development `.venv` containing both applications. Local setup needs
-Rust and a C/C++ toolchain. Launches and shells never install or rebuild anything.
-Run setup after CLI or dependency changes; restart the viewer after edits to its
-Python sources. Application arguments can follow `--`.
-Multiple managed applications and shells may share the environment. Setup and
-clear_venv refuse while it is in use, before starting a build. Exit managed shells
-(`deactivate` alone does not release their usage lock) before reinstalling.
-Explicit setup replaces the environment, so reinstall any additional packages
-afterward. Failed installation restores the previous environment; if restoration
-fails, the backup is retained and its path is reported.
+On Windows, use `.\uz.ps1 venv dev`. Each invocation builds the local CLI,
+installs the local DataViewer editable and adds `requirements.txt` dependencies
+into its own temporary environment. Rust and a C/C++ toolchain are required.
+Neither application is downloaded from PyPI in dev mode; external dependencies
+and build tools may be downloaded. Open a new dev shell after CLI or dependency
+changes; restart the viewer after Python source changes.
 
-Host environments are platform-specific and must not be shared with a container.
+Separate dev shells have separate environments. Close their applications before
+exiting: the environment is deleted when its shell exits, including after failure.
+Builds reuse compilation/download caches. Simultaneous builds targeting the same
+shared outputs fail with a retry message; existing shells remain usable.
+No launcher creates, replaces or activates the repository `.venv`.
+
+Host and container environments remain separate, including on Windows.
 Inside the dev container, run `ultrazohm-cli`, `ultrazohm-dataviewer`, or `python`
-directly. Container creation installs both applications into container Python;
-refresh with `bash .devcontainer/post-create.sh`. Host environment commands are
-blocked there. The GUI requires display forwarding if run inside the container.
+directly. Container creation installs local applications into container Python;
+refresh with `bash .devcontainer/post-create.sh`. You may also use
+`./uz venv dev` for a fresh temporary shell inside the container.
+The GUI requires display forwarding if run inside the container.
 
 Application installation is independent of firmware selection. For example:
 
@@ -161,6 +165,8 @@ Vitis operations require a firmware checkout and an external Vitis installation.
 ```
 
 Windows also supports `.\uz_developer.ps1 build viewer` and `.\uz_developer.ps1 task cli standalone`.
+Build/test Python environments are temporary per invocation and cleaned up on exit.
+Build artifacts remain at their documented output paths.
 CI builds each release wheel once and uses those wheels for testing and bundling.
 `--cli-wheel PATH` and `--viewer-wheel PATH` select candidate wheels for viewer checks
 and builds. Paths are relative to the calling terminal.
@@ -197,7 +203,8 @@ We are working on streamlining the contribution process since we aim to welcome 
 `uz` / `uz.ps1` call `uz.py` for published tools. `uz_developer` /
 `uz_developer.ps1` call `uz_developer.py` for local development and dispatch build
 and test commands to each project's `tasks.py`. Both bootstrap uv and Python.
-Local environment installation is owned by `uz_developer_environment.py`;
+Fresh local shell installation is owned by `uz_venv.py`;
+`uz_build.py` coordinates shared build outputs;
 `uz_shell.py` only opens an activated shell. Project build helpers and release
 checks remain in each project's `tools/` directory.
 Run launcher/environment tests with

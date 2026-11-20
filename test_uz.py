@@ -106,6 +106,8 @@ class UserCommandsTest(unittest.TestCase):
                     [f"ultrazohm-cli=={version}"],
                 )
             (root / ".python-version").write_text(sys.executable)
+            (root / "requirements.txt").write_text("shell-extra==1.0.0\n")
+            wheel(wheels, "shell-extra", "1.0.0")
             (root / ".venv").mkdir()
             sentinel = root / ".venv/host-environment"
             sentinel.write_text("untouched")
@@ -114,7 +116,7 @@ class UserCommandsTest(unittest.TestCase):
             (root / "uz_shell.py").write_text(
                 "import sys,json,importlib.metadata as m; from pathlib import Path; "
                 f"Path({str(report)!r}).write_text(json.dumps([sys.prefix, "
-                "m.version('ultrazohm-cli'),m.version('ultrazohm-dataviewer')]))"
+                "m.version('ultrazohm-cli'),m.version('ultrazohm-dataviewer'),m.version('shell-extra')]))"
             )
             config = root / "uv.toml"
             config.write_text(
@@ -137,7 +139,8 @@ class UserCommandsTest(unittest.TestCase):
                     uz.main(["cli", channel])
                     uz.main(["dataviewer", channel])
                     uz.main(["venv", channel])
-                    prefix, cli, viewer = json.loads(report.read_text())
+                    prefix, cli, viewer, extra = json.loads(report.read_text())
+                    self.assertEqual(extra, "1.0.0")
                     self.assertEqual((cli, viewer), (version, version))
                     self.assertNotEqual(Path(prefix), root / ".venv")
                 uz.main(["install", "cli", "prerelease"])

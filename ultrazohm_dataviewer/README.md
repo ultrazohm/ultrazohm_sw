@@ -202,7 +202,7 @@ Run the same checks as CI, on Linux (dev container) or Windows:
 ./uz_developer task viewer bundle-smoke           # its smoke tests
 ```
 
-The tasks use `ultrazohm_dataviewer/.venv-ci`, separate from the shared repository `.venv`.
+Each task uses a fresh temporary Python environment, cleaned up when it finishes.
 `check` builds a debug CLI wheel from `../ultrazohm_cli` unless `--cli-wheel PATH` is given,
 so the live tests run against the same commit. `./uz_developer check viewer` forwards to the same task implementation. Linux CI runs it in the `ci` stage of `.devcontainer/Dockerfile`;
 Linux is distributed through Python wheels. Windows standalone packaging copies
@@ -226,7 +226,7 @@ Failed outputs retain their saved domain as unavailable placeholders until repai
 ### Python and terminal automation
 
 The viewer hosts a local control API at `127.0.0.1:19741`.
-Open an environment shell with `./uz_developer shell`, then use ordinary Python or terminal commands.
+Open an environment shell with `./uz venv dev`, then use ordinary Python or terminal commands.
 Control commands attach to an existing application:
 
 ```bash
@@ -318,9 +318,10 @@ An existing service keeps its loaded configuration.
 Shut it down and reconnect to apply a different repository or changed headers.
 Select the checkout in the viewer, or pass `ultrazohm-dataviewer gui --live-repo PATH`.
 
-Repository setup selects both applications consistently: `stable` and `prerelease` use published packages; `local` uses the checkout.
-Use `--app viewer` to include both.
-Re-run `./uz_developer setup` after CLI changes.
+`./uz venv stable|prerelease` opens a cached shell with both published applications.
+`./uz venv dev` rebuilds the local CLI and installs the local viewer editable into a
+fresh temporary shell. Open a new dev shell after CLI changes. All shell modes
+include dependencies declared in root `requirements.txt`.
 
 **Flash UZ** requires XSCT and confirmation.
 The viewer shuts down any running service, which sends device Stop and finalizes recordings.
@@ -401,10 +402,10 @@ Stale data, backend errors and cursor resynchronization are shown in the UI.
 To compare live-data preparation performance between machines, run this with the viewer's installed Python environment (PowerShell shown):
 
 ```powershell
-.\.venv\Scripts\python.exe .\ultrazohm_dataviewer\build\benchmark_live.py --sample-rate 10000 --traces 3
+python .\ultrazohm_dataviewer\build\benchmark_live.py --sample-rate 10000 --traces 3
 ```
 
-On Linux, use `.venv/bin/python` with the same script and options.
+Run this from a `./uz venv dev` shell; on Linux use the same script and options.
 The benchmark simulates filling and wrapping the 30-second buffer and prints
 JSON timings for appends and preparing the visible traces.
 It runs without hardware.

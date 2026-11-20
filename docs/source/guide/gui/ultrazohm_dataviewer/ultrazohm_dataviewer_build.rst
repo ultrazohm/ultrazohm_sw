@@ -26,8 +26,9 @@ Build and test the Windows bundle in PowerShell.
    .\uz_developer.ps1 task viewer bundle-smoke
 
 ``check viewer`` and ``build viewer`` build a matching CLI wheel from ``ultrazohm_cli`` unless ``--cli-wheel PATH`` names one.
-Tests use ``ultrazohm_dataviewer/.venv-ci`` and bundles use ``ultrazohm_dataviewer/.venv-build``.
-The root ``.venv`` is shared by both applications.
+Tests and bundles use separate temporary Python environments, cleaned up on completion.
+Download and compilation caches are reused; shared build outputs are protected by locks.
+The root ``.venv`` is not used. Use ``./uz venv dev`` for a fresh local development shell.
 
 Native standalone executables (PyInstaller)
 ============================================

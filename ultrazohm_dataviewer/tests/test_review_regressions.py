@@ -264,3 +264,89 @@ def test_next_flash_waits_for_pending_shutdown(shutdown_fails):
             if thread is not None:
                 thread.join(2)
                 assert not thread.is_alive()
+
+
+def test_shutdown_keeps_next_output_separate_from_service_output(tmp_path, monkeypatch):
+    from dataclasses import replace
+    from pathlib import Path
+
+    from ultrazohm_dataviewer.live import LiveController
+    from ultrazohm_dataviewer.panels.live import LiveWorkspace
+
+    controller = LiveController()
+    workspace = LiveWorkspace(controller)
+    old = tmp_path / "old-run"
+    old.mkdir()
+    workspace.output = str(old)
+    controller.update = replace(
+        controller.update, attached=True, status={"output": str(old)}
+    )
+    workspace.update = controller.update
+    monkeypatch.setattr(controller, "submit", lambda *args, **kwargs: None)
+    try:
+        workspace.send("shutdown")
+        next_output = workspace.output
+        assert next_output != str(old)
+        workspace.pump()  # The service is still reporting its old directory.
+        assert workspace.output == next_output
+        controller.update = replace(
+            controller.update, attached=False, status={}, revision=1
+        )
+        workspace.pump()
+        assert workspace.output == next_output
+        assert not Path(next_output).exists()
+        # Attaching to a remote service must not change local startup preferences.
+        controller.update = replace(
+            controller.update,
+            attached=True,
+            status={"output": "/remote/session"},
+            revision=2,
+        )
+        workspace.pump()
+        assert workspace.output == next_output
+    finally:
+        workspace.close()
+
+
+def test_old_poll_cannot_replace_new_service_catalog():
+    from ultrazohm_dataviewer.live import LiveController
+
+    entered, release = threading.Event(), threading.Event()
+
+    class Client:
+        def __init__(self, endpoint):
+            self.endpoint = endpoint
+
+        def status(self):
+            return {"session_id": self.endpoint, "state": {"connected": False}}
+
+        def observables(self):
+            return {"channels": []}
+
+        def catalog(self):
+            if self.endpoint == "old":
+                entered.set()
+                assert release.wait(5)
+            return {"profile": {"service": self.endpoint}}
+
+    controller = LiveController(client_factory=Client)
+    controller._make_client("old")
+    controller.attached = True
+    poll = threading.Thread(target=controller._poll)
+    poll.start()
+    try:
+        assert entered.wait(2)
+        controller._command("attach", {"endpoint": "new"})
+        assert controller._catalog == {"service": "new"}
+        release.set()
+        poll.join(2)
+        assert not poll.is_alive()
+        assert controller._catalog == {"service": "new"}
+        controller._status_at = 0
+        controller._poll()
+        assert controller._catalog == {"service": "new"}
+        assert controller._status["session_id"] == "new"
+    finally:
+        release.set()
+        poll.join(2)
+        controller.stop_event.set()

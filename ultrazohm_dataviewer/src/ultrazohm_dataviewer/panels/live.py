@@ -189,7 +189,7 @@ class LiveWorkspace:
         self.endpoint = "127.0.0.1:19740"
         self.ip = "192.168.1.233"
         self.port = 1000
-        self.output = new_output_directory(repo)
+        self.output = new_output_directory(repo)  # Next local service startup only.
         self.mapping = ""
         self.mapping_is_explicit = False
         self._repository_settings = None
@@ -390,8 +390,6 @@ class LiveWorkspace:
                     self.tool_error = ""
                 except (OSError, ValueError) as exc:
                     self.tool_error = str(exc)
-        if update.attached and update.status.get("output"):
-            self.output = update.status["output"]
         if main_state is not None:
             for _ in range(200):
                 try:
@@ -720,6 +718,10 @@ class LiveWorkspace:
         profile = self.update.catalog
         imgui.separator()
         if imgui.collapsing_header("Connection details"):
+            if self.update.attached and self.update.status.get("output"):
+                imgui.text_wrapped(
+                    "Service recording directory: " + self.update.status["output"]
+                )
             imgui.text_unformatted(
                 "Service: " + ("attached" if self.update.attached else "detached")
             )

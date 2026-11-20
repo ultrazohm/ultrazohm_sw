@@ -1043,6 +1043,7 @@ class LiveController:
     def _poll(self):
         with self.lock:
             generation, endpoint = self._reset_generation, self.endpoint
+            session_id = self._status.get("session_id")
         if generation != self._poll_reset_seen:
             self.cursor = self.cursor_stop = None
             if self.ring is not None:
@@ -1056,19 +1057,22 @@ class LiveController:
                 if status.get("session_id", True)
                 else ()
             )
-            if status.get("session_id") != self._status.get("session_id"):
-                self.cursor = self.cursor_stop = None
-                if self.ring is not None:
-                    self.ring.reset()
-                self._last_source = None
-                self._catalog = (
+            session_changed = status.get("session_id") != session_id
+            if session_changed:
+                catalog = (
                     client.catalog()["profile"] if status.get("session_id") else {}
                 )
             with self.lock:
-                if not self._current(generation):
+                if not self._current(generation) or endpoint != self.endpoint:
                     return
+                if session_changed:
+                    self.cursor = self.cursor_stop = None
+                    if self.ring is not None:
+                        self.ring.reset()
+                    self._last_source = None
+                    self._catalog = catalog
                 self._status, self._assignments = status, assignments
-            self._status_at = time.monotonic() + 0.25
+                self._status_at = time.monotonic() + 0.25
         status = self._status
         if not status.get("state", {}).get("connected"):
             return

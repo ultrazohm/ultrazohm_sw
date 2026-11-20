@@ -302,6 +302,7 @@ fn dispatch(args: Args) -> Result<()> {
             let stopped = shutdown.clone();
             service::serve_with_ready(
                 Config {
+                    current_output: None,
                     repo: repo.clone(),
                     xsct,
                     data,

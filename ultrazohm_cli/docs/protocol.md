@@ -1,4 +1,4 @@
-# Current JavaScope protocol and local API v2
+# Current JavaScope protocol and local API v3
 
 ## Evidence and scope
 
@@ -172,17 +172,17 @@ Default: off for this firmware.
 CLI and native Python bindings call the same Rust control client.
 The local transport is newline-terminated JSON over persistent loopback TCP connections: a client may send any number of requests on one connection, strictly one at a time, and receives each reply before sending the next.
 Each message is at most 64 KiB.
-Requests and replies carry `api_version: 2`; any other version is rejected with an error and the connection is closed.
-Version 1 (one request per connection) is no longer accepted.
+Requests and replies carry `api_version: 3`; any other version is rejected with an error and the connection is closed.
+Versions 1 and 2 are no longer accepted.
 `read_data` replies additionally carry a length-delimited binary Arrow body after the JSON header line, as specified below.
 The endpoint is restricted to numeric loopback addresses and has no multi-user authentication.
 Local users with access to it can control the attached device; remote/cloud control requires a separate authenticated boundary.
 
 ```json
-{"api_version":2,"command":{"op":"set_variable","name":"send_field_1","value":12.5}}
+{"api_version":3,"command":{"op":"set_variable","name":"send_field_1","value":12.5}}
 ```
 
-Success: `{"api_version":2,"ok":true,"outcome":"sent_unconfirmed","logging":{...}}` for wire commands (`shutdown` while connected included, since it sends device Stop), or `applied_locally` for local operations such as `connect`, ACK policy and logging control.
+Success: `{"api_version":3,"ok":true,"outcome":"sent_unconfirmed","logging":{...}}` for wire commands (`shutdown` while connected included, since it sends device Stop), or `applied_locally` for local operations such as `connect`, ACK policy and logging control.
 Errors have `ok:false`, an `error` message and a stable `code` (`null` when uncoded); the CLI exits nonzero and Python raises `RuntimeError` with the same `code` attribute.
 
 Every command that reaches execution is appended to `commands.jsonl` with the request and an `outcome`: `sent_unconfirmed` (with the `wire` command), `applied_locally`, `rejected` (with `error` and `code`; nothing was written to the device), or `write_failed` (with `error`; the socket write failed after validation, so the device state is unknown).
@@ -207,7 +207,7 @@ The Python client also sets a code for requests that got no reply, so callers ne
 | `transport` | Any other socket failure, for example a connection closed mid-reply |
 
 Status returns counters, last status word, ACK policy, terminal error, `software_version` (also in `run.json` and `ultrazohm_cli --version`) and `logging.fast` / `logging.slow` with phase, Parquet path and recording error.
-Operations: connect, status, catalog, observables, recordings, data_info, read_data, stop, enable_system, enable_control, set_variable, set_observable, button, send_ack, start_logging, stop_logging, pause_logging, resume_logging, shutdown.
+Operations: firmware, jobs, job, connect, status, catalog, observables, recordings, data_info, read_data, stop, enable_system, enable_control, set_variable, set_observable, button, send_ack, start_logging, stop_logging, pause_logging, resume_logging, shutdown.
 The four logging operations take an optional `stream` field (`"fast"`, the default, or `"slow"`).
 Error_Reset is not an operation because its firmware case is empty; the CLI `error-reset` command explains this locally.
 Unknown operations/fields and unsupported versions fail without sending bytes.
@@ -251,7 +251,7 @@ Stopping the device is independent of stopping acquisition or either logger.
 
 ## Channel assignment query
 
-`{"api_version":2,"command":{"op":"observables"}}` returns `channels`, an ordered array of 20 objects with `channel` (1..20), `name`, `id`, and `state`.
+`{"api_version":3,"command":{"op":"observables"}}` returns `channels`, an ordered array of 20 objects with `channel` (1..20), `name`, `id`, and `state`.
 Known entries use the canonical name and ID from the active channel mapping with state `sent_unconfirmed`.
 Untouched channels have null name/ID and state `unknown`.
 The reply includes `source: "service_requested_assignments"` and `device_readback: false`.
@@ -282,7 +282,7 @@ Repository provenance is user-supplied mapping metadata, not device discovery.
 ## Connection lifecycle
 
 Without `serve --device IP:PORT`, the control endpoint starts offline.
-The request `{"api_version":2,"command":{"op":"connect","ip":"192.168.1.233","port":1000}}` opens the device connection and applies configured initial observables.
+The request `{"api_version":3,"command":{"op":"connect","ip":"192.168.1.233","port":1000}}` opens the device connection and applies configured initial observables.
 CLI and Python helpers supply these defaults; the JSON operation requires both fields.
 IP must be numeric IPv4/IPv6 and port must be 1..65535.
 A failed attempt returns an error and leaves the service available for another attempt.
@@ -357,7 +357,7 @@ Null selects the recent RAM ring; a number selects a recording, including pendin
 Their metadata includes an `error` string; one failed recording does not prevent listing or reading the others.
 
 ```json
-{"api_version":2,"command":{"op":"read_data","query":{"source":{"stream":"fast","recording":1},"selection":{"kind":"range","start":100,"stop":200},"channels":["JSO_lifecheck"]}}}
+{"api_version":3,"command":{"op":"read_data","query":{"source":{"stream":"fast","recording":1},"selection":{"kind":"range","start":100,"stop":200},"channels":["JSO_lifecheck"]}}}
 ```
 
 Selection alternatives are `{"kind":"tail","count":500}` and `{"kind":"since","cursor":null,"limit":10000}`.
@@ -422,3 +422,21 @@ Existing modern JSON without the marker continues to load (the marker defaults t
 
 This describes the headers used to generate the mapping, not detected firmware capabilities.
 Always generate from headers matching the programmed firmware.
+
+## Firmware jobs (API v3)
+
+`firmware` accepts `action` (`generate`, `build`, `build-clean`, or `flash`),
+`request_id`, optional numeric `device` address:port, and `no_reconnect` (default false).
+It returns a `job` with `id`, `request_id`, `action`, `phase`, `state`, and `result`.
+Identical requests with a retained request ID return the existing job; conflicting reuse fails.
+`jobs` lists retained jobs. `job` accepts `id` and a byte `offset` (default zero),
+and returns `job`, `log`, and `next_offset`. Poll until the job is complete and the log is drained.
+Job states are `running`, `succeeded`, and `failed`; completed results include `ok` and an error on failure.
+
+The service remains reachable while flash replaces its acquisition session.
+Status exposes `service_id`, `session_id`, `device_target`, `repository`,
+`firmware_available`, `active_job`, `configuration_valid`, `lifecycle`, and `shutting_down`.
+Queued session mutations can fail with `session_replaced`; clients must refresh their catalog and cursors.
+Shutdown during programming is deferred until programming and Stop delivery finish.
+Errors after programming attempt Stop independently of session reconstruction, using the validated
+preflight mapping. This is best effort: checkout changes during a build can invalidate the firmware contract.

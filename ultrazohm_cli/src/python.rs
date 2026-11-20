@@ -131,7 +131,7 @@ fn cli_main(py: Python<'_>, argv: Vec<String>) -> i32 {
 /// Optional embedded Rust service. External `ultrazohm_cli serve` survives Python exit.
 #[pyclass(subclass)]
 struct Acquisition {
-    output: PathBuf,
+    output: Arc<Mutex<PathBuf>>,
     stop: Arc<AtomicBool>,
     worker: Option<thread::JoinHandle<anyhow::Result<()>>>,
 }
@@ -192,13 +192,16 @@ impl Acquisition {
         let output =
             service::session_output_for_repository(output.map(PathBuf::from), repo.as_deref())
                 .map_err(error)?;
-        let worker_output = output.clone();
+        let output = Arc::new(Mutex::new(output));
+        let worker_output = output.lock().unwrap().clone();
+        let current_output = output.clone();
         let (ready_tx, ready_rx) = mpsc::sync_channel(1);
         let stop = Arc::new(AtomicBool::new(false));
         let signal = stop.clone();
         let worker = thread::spawn(move || {
             service::serve_with_ready(
                 Config {
+                    current_output: Some(current_output),
                     repo,
                     xsct,
                     data,
@@ -235,7 +238,7 @@ impl Acquisition {
     /// The session directory, including automatically generated defaults.
     #[getter]
     fn output(&self) -> String {
-        self.output.to_string_lossy().into_owned()
+        self.output.lock().unwrap().to_string_lossy().into_owned()
     }
     fn close(&mut self, py: Python<'_>) -> PyResult<()> {
         self.stop.store(true, Ordering::SeqCst);
@@ -272,7 +275,7 @@ impl Acquisition {
         } else {
             base
         };
-        let path = crate::backend::index_path(&self.output, &id);
+        let path = crate::backend::index_path(&self.output.lock().unwrap(), &id);
         let reader = crate::backend::open(&path).map_err(error)?;
         if !reader.info().map_err(error)?.complete {
             return Err(error(
@@ -302,16 +305,18 @@ impl Acquisition {
         } else {
             base
         };
-        let summary =
-            crate::backend::read_metadata(&crate::backend::index_path(&self.output, &stem))
-                .map_err(error)?
-                .unwrap_or_default();
+        let summary = crate::backend::read_metadata(&crate::backend::index_path(
+            &self.output.lock().unwrap(),
+            &stem,
+        ))
+        .map_err(error)?
+        .unwrap_or_default();
         if summary["complete"] != true {
             return Err(error(
                 "recording is not complete; inspect its metadata for errors",
             ));
         }
-        let path = self.output.join(format!("{stem}.parquet"));
+        let path = self.output.lock().unwrap().join(format!("{stem}.parquet"));
         if !path.is_file() {
             return Err(error("completed recording file is missing"));
         }

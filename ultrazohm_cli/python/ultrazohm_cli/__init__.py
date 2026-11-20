@@ -1,4 +1,4 @@
-"""Named API v2; all device IO and logging execute in Rust.
+"""Named API v3; all device IO and logging execute in Rust.
 
 Service errors raise RuntimeError with a ``code`` attribute (for example
 ``cursor_expired``, ``canceled_by_stop``, ``not_connected``, ``busy``).

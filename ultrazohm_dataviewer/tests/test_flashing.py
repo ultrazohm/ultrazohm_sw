@@ -177,3 +177,104 @@ def _coded(code, message):
 )
 def test_refused_connections_are_recognized_by_code(error, refused):
     assert flashing.connection_refused(error) is refused
+
+
+def test_disconnected_flash_uses_service_target():
+    client = Mock()
+    client.status.return_value = {
+        "firmware_available": True,
+        "state": {"connected": False},
+        "device_target": "192.168.55.233:1000",
+    }
+    client.firmware.return_value = {"id": "job"}
+    client.job.return_value = {
+        "job": {"state": "succeeded", "phase": "complete"},
+        "log": "",
+        "next_offset": 0,
+    }
+    controller = LiveController(lambda _: client)
+    controller._flash(
+        {"endpoint": "127.0.0.1:19740", "ip": "192.168.1.233", "port": 1000}
+    )
+    client.firmware.assert_called_once_with("flash", device="192.168.55.233:1000")
+    controller.close()
+
+
+def test_stop_and_shutdown_bypass_flash_monitor():
+    from ultrazohm_dataviewer.live import action_block_reason
+
+    client = Mock()
+    controller = LiveController(lambda _: client)
+    controller.endpoint = "127.0.0.1:19740"
+    controller.flashing = True
+    for action in ("stop", "shutdown"):
+        assert not action_block_reason(action, flashing=True)
+        controller.submit(action)
+        from live_support import wait_for
+
+        wait_for(lambda action=action: getattr(client, action).call_count == 1)
+        getattr(client, action).assert_called_once()
+    assert controller.commands.empty()
+    controller.close()
+
+
+@pytest.mark.parametrize("operation", ["stop", "shutdown"])
+@pytest.mark.parametrize("fails", [False, True])
+def test_flash_control_requests_do_not_block_gui(operation, fails):
+    import threading
+
+    from live_support import wait_for
+
+    entered, release = threading.Event(), threading.Event()
+    client = Mock()
+
+    def request():
+        entered.set()
+        assert release.wait(3)
+        if fails:
+            raise RuntimeError("service unavailable")
+
+    getattr(client, operation).side_effect = request
+    controller = LiveController(lambda _: client)
+    controller.endpoint = "127.0.0.1:19740"
+    controller.flashing = True
+    returned = threading.Event()
+    caller = threading.Thread(
+        target=lambda: (controller.submit(operation), returned.set())
+    )
+    try:
+        caller.start()
+        assert entered.wait(1)
+        assert returned.wait(0.3), "submit blocked on network IO"
+        release.set()
+        wait_for(lambda: controller.latest().completed_commands == 1)
+        if fails:
+            assert "service unavailable" in controller.latest().error
+        else:
+            assert not controller.latest().error
+    finally:
+        release.set()
+        caller.join(3)
+        controller.close()
+    assert not controller.control_thread.is_alive()
+
+
+def test_flash_shutdown_detaches_and_marks_owned_service(monkeypatch):
+    from live_support import wait_for
+
+    client = Mock()
+    controller = LiveController(lambda _: client)
+    controller.endpoint = controller.owned.endpoint = "127.0.0.1:19740"
+    controller.attached = controller.flashing = True
+    controller._status = {"session_id": "old"}
+    monkeypatch.setattr(controller, "_await_shutdown", lambda *a, **kw: True)
+    try:
+        controller.submit("shutdown")
+        wait_for(lambda: controller.latest().completed_commands == 1)
+        assert not controller.latest().attached
+        assert controller.latest().status == {}
+        assert controller.owned.shutdown_requested
+        assert controller._flash_shutdown.is_set()
+        assert "finalized" in controller.latest().notice
+    finally:
+        controller.close()

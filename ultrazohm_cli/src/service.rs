@@ -104,6 +104,17 @@ pub fn session_output_for_repository(
     Ok(parent.join(now.format("%Y%m%d-%H%M%S-%fZ").to_string()))
 }
 
+fn replacement_output(
+    previous: Option<&std::path::Path>,
+    repo: Option<&std::path::Path>,
+) -> Result<PathBuf> {
+    if let Some(parent) = previous.and_then(std::path::Path::parent) {
+        let now: chrono::DateTime<chrono::Utc> = std::time::SystemTime::now().into();
+        return Ok(parent.join(now.format("%Y%m%d-%H%M%S-%fZ").to_string()));
+    }
+    session_output_for_repository(None, repo)
+}
+
 const MAX_MESSAGE: usize = 65536;
 /// API v3: persistent controller, replaceable sessions and firmware jobs.
 pub const API_VERSION: u32 = 3;
@@ -289,6 +300,7 @@ pub struct Request {
 }
 #[derive(Clone, Debug)]
 pub struct Config {
+    pub current_output: Option<Arc<Mutex<PathBuf>>>,
     pub repo: Option<PathBuf>,
     pub xsct: Option<PathBuf>,
     pub device: Option<String>,
@@ -570,6 +582,7 @@ pub fn serve_with_ready(
 /// All mutable session ownership stays on the control thread. The connection
 /// context shares only the synchronized state needed by acquisition workers.
 struct Session {
+    reconnect_error: Option<String>,
     config: Config,
     context: ConnectionContext,
     run_id: String,
@@ -652,7 +665,11 @@ impl Session {
             routes: recordings.routes.clone(),
             ring,
         };
+        if let (Some(current), Some(output)) = (&config.current_output, &config.output) {
+            *current.lock().unwrap() = output.clone();
+        }
         let mut service = Self {
+            reconnect_error: None,
             config,
             context,
             run_id,
@@ -678,6 +695,7 @@ impl Session {
     fn connect(&mut self, device: &str) -> Result<()> {
         let (connection, selections) = self.context.connect(device, &self.events)?;
         self.connection = Some(connection);
+        self.reconnect_error = None;
         self.selections = selections;
         Ok(())
     }

@@ -2,7 +2,7 @@
 use super::*;
 use crate::profile::ChannelMapping;
 use std::collections::VecDeque;
-use std::io::{Read, Seek, SeekFrom};
+use std::io::{Read, Seek, SeekFrom, Write};
 
 struct Job {
     id: String,
@@ -38,6 +38,7 @@ pub(super) fn run(
     let mut last_error: Option<String> = None;
     let mut finalization_error: Option<String> = None;
     let mut configuration_valid = true;
+    let mut shutdown_started = false;
     let stop_requested = Arc::new(AtomicBool::new(false));
     let mut cleanup: Option<thread::JoinHandle<Result<()>>> = None;
     ready();
@@ -75,7 +76,10 @@ pub(super) fn run(
                     }
                     configuration_valid = true;
                     config = replacement.config.clone();
-                    let error = replacement.context.state.lock().unwrap().error.clone();
+                    let error = replacement
+                        .reconnect_error
+                        .clone()
+                        .or_else(|| replacement.context.state.lock().unwrap().error.clone());
                     session = Some(replacement);
                     if let Some(error) = error {
                         bail!(error);
@@ -86,6 +90,20 @@ pub(super) fn run(
             job.result = Some(match result {
                 Ok(()) => json!({"ok":true}),
                 Err(e) => {
+                    let message = format!("Firmware job {} failed: {e:#}", job.id);
+                    eprintln!("{message}");
+                    if let Err(log_error) = fs::OpenOptions::new()
+                        .append(true)
+                        .open(&job.log)
+                        .and_then(|mut file| {
+                            writeln!(file, "{message}").and_then(|_| file.sync_all())
+                        })
+                    {
+                        eprintln!("Could not persist firmware failure: {log_error}");
+                    }
+                    if shutdown.load(Ordering::SeqCst) {
+                        finalization_error = Some(message);
+                    }
                     last_error = Some(format!("{e:#}"));
                     json!({"ok":false,"error":format!("{e:#}")})
                 }
@@ -93,6 +111,17 @@ pub(super) fn run(
             *job.phase.lock().unwrap() = "complete".into();
         }
         let busy = cleanup.is_some() || jobs.back().is_some_and(|j| j.worker.is_some());
+        if shutdown.load(Ordering::SeqCst) && !shutdown_started {
+            shutdown_started = true;
+            stop_requested.store(true, Ordering::SeqCst);
+            if let Some(s) = session.as_mut() {
+                if s.connection.is_some() && !s.shutdown_stop_sent {
+                    s.stop_device();
+                    s.shutdown_stop_sent = true;
+                }
+                s.context.shutdown.store(true, Ordering::SeqCst);
+            }
+        }
         if shutdown.load(Ordering::SeqCst) && !busy {
             if let Some(s) = session.take() {
                 s.context.shutdown.store(true, Ordering::SeqCst);
@@ -108,6 +137,7 @@ pub(super) fn run(
                     .is_some_and(|c| c.acquisition.is_finished())
         }) {
             let old = session.take().unwrap();
+            config = snapshot_config(&old);
             old.context.shutdown.store(true, Ordering::SeqCst);
             cleanup = Some(thread::spawn(move || old.finish()));
             continue;
@@ -242,9 +272,16 @@ pub(super) fn run(
                         .iter()
                         .map(|p| fs::read(repo.join(p)).ok())
                         .collect::<Vec<_>>();
-                    if action == "flash" {
-                        ChannelMapping::load_repository(None, Some(&repo))?;
-                    }
+                    let stop_profile = if action == "flash" {
+                        Some(
+                            config
+                                .profile
+                                .remap(ChannelMapping::load_repository(None, Some(&repo))?)?
+                                .0,
+                        )
+                    } else {
+                        None
+                    };
                     if let Some(device) = device {
                         let _: SocketAddr = device
                             .parse()
@@ -273,21 +310,7 @@ pub(super) fn run(
                     let worker_phase = phase.clone();
                     let mut next = config.clone();
                     if let Some(s) = session.as_ref() {
-                        next.profile = s.config.profile.clone();
-                        next.ack = s.context.ack.load(Ordering::SeqCst);
-                        next.device = s
-                            .context
-                            .state
-                            .lock()
-                            .unwrap()
-                            .device
-                            .clone()
-                            .or(next.device);
-                        for (channel, name) in s.selections.as_object().into_iter().flatten() {
-                            if let (Ok(channel), Some(name)) = (channel.parse(), name.as_str()) {
-                                next.profile.initial_channels.insert(channel, name.into());
-                            }
-                        }
+                        next = snapshot_config(s);
                     }
                     if let Some(device) = device {
                         next.device = Some(device.clone());
@@ -324,80 +347,100 @@ pub(super) fn run(
                                 "shutdown requested before programming",
                             ));
                         }
-                        *worker_phase.lock().unwrap() = action_copy.clone();
-                        crate::vitis::execute(
-                            &action_copy,
-                            Some(&repo),
-                            if action_copy == "flash" {
-                                Some("Run_UltraZohm")
-                            } else {
-                                None
-                            },
-                            Some(&output),
-                            Some(&xsct),
-                        )?;
-                        if action_copy != "flash" {
-                            return Ok(None);
-                        }
-                        *worker_phase.lock().unwrap() = "loading_configuration".into();
-                        ensure!(
-                            headers
-                                == crate::header_mapping::HEADERS
-                                    .iter()
-                                    .map(|p| fs::read(repo.join(p)).ok())
-                                    .collect::<Vec<_>>(),
-                            "firmware headers changed during programming; acquisition remains disconnected"
-                        );
-                        let mapping = ChannelMapping::load_repository(None, Some(&repo))?;
-                        let (profile, removed) = next.profile.remap(mapping)?;
-                        next.profile = profile;
-                        use std::io::Write;
-                        let mut output = &output;
-                        writeln!(
-                            output,
-                            "Removed channel assignments: {}",
-                            serde_json::to_string(&removed)?
-                        )?;
-                        next.output = Some(session_output_for_repository(None, Some(&repo))?);
-                        *worker_phase.lock().unwrap() = "reconnecting".into();
-                        let target = next.device.take();
-                        let mut replacement = Session::new(next, Arc::new(AtomicBool::new(false)))?;
-                        replacement.config.device = target.clone();
-                        if let Some(target) = target {
-                            if !reconnect || worker_shutdown.load(Ordering::SeqCst) {
-                                if worker_stop.load(Ordering::SeqCst)
-                                    || worker_shutdown.load(Ordering::SeqCst)
-                                {
-                                    let stopped = (|| -> Result<()> {
-                                        let mut socket = TcpStream::connect_timeout(
-                                            &target.parse()?,
-                                            Duration::from_secs(3),
-                                        )?;
-                                        socket.set_write_timeout(Some(Duration::from_secs(3)))?;
-                                        socket.write_all(&encode_command(
-                                            replacement.config.profile.command("Stop")?,
-                                            0.0,
-                                        )?)?;
-                                        Ok(())
-                                    })();
-                                    if let Err(error) = stopped {
-                                        replacement.context.state.lock().unwrap().error = Some(
-                                            format!("Stop after programming failed: {error:#}"),
+                        let cleanup_target = next.device.clone();
+                        let result = (|| -> Result<Option<Session>> {
+                            *worker_phase.lock().unwrap() = action_copy.clone();
+                            crate::vitis::execute(
+                                &action_copy,
+                                Some(&repo),
+                                if action_copy == "flash" {
+                                    Some("Run_UltraZohm")
+                                } else {
+                                    None
+                                },
+                                Some(&output),
+                                Some(&xsct),
+                            )?;
+                            if action_copy != "flash" {
+                                return Ok(None);
+                            }
+                            *worker_phase.lock().unwrap() = "loading_configuration".into();
+                            ensure!(
+                                headers
+                                    == crate::header_mapping::HEADERS
+                                        .iter()
+                                        .map(|p| fs::read(repo.join(p)).ok())
+                                        .collect::<Vec<_>>(),
+                                "firmware headers changed during programming; acquisition remains disconnected"
+                            );
+                            let mapping = ChannelMapping::load_repository(None, Some(&repo))?;
+                            let (profile, removed) = next.profile.remap(mapping)?;
+                            next.profile = profile;
+                            use std::io::Write;
+                            let mut output = &output;
+                            writeln!(
+                                output,
+                                "Removed channel assignments: {}",
+                                serde_json::to_string(&removed)?
+                            )?;
+                            next.output =
+                                Some(replacement_output(next.output.as_deref(), Some(&repo))?);
+                            *worker_phase.lock().unwrap() = "reconnecting".into();
+                            let target = next.device.take();
+                            let mut replacement =
+                                Session::new(next, Arc::new(AtomicBool::new(false)))?;
+                            replacement.config.device = target.clone();
+                            if let Some(target) = target {
+                                if !reconnect || worker_shutdown.load(Ordering::SeqCst) {
+                                    if worker_stop.load(Ordering::SeqCst)
+                                        || worker_shutdown.load(Ordering::SeqCst)
+                                    {
+                                        let stopped = stop_after_programming(
+                                            &target,
+                                            &replacement.config.profile,
                                         );
+                                        if let Err(error) = stopped {
+                                            replacement.reconnect_error = Some(format!(
+                                                "Stop after programming failed: {error:#}"
+                                            ));
+                                        }
+                                    }
+                                    return Ok(Some(replacement));
+                                }
+                                let deadline = Instant::now() + Duration::from_secs(20);
+                                loop {
+                                    match replacement.connect(&target) {
+                                        Ok(()) => break,
+                                        Err(e) if Instant::now() >= deadline => {
+                                            // Connection failure is a job error, not a corrupt recording.
+                                            replacement.reconnect_error = Some(format!(
+                                                "programming succeeded, reconnect failed: {e:#}"
+                                            ));
+                                            break;
+                                        }
+                                        Err(_) => thread::sleep(Duration::from_millis(100)),
                                     }
                                 }
-                                return Ok(Some(replacement));
+                                if replacement.connection.is_some()
+                                    && (worker_stop.load(Ordering::SeqCst)
+                                        || worker_shutdown.load(Ordering::SeqCst))
+                                {
+                                    replacement.stop_device();
+                                }
                             }
-                            if let Err(e) = replacement.connect(&target) {
-                                replacement.context.state.lock().unwrap().error =
-                                    Some(format!("programming succeeded, reconnect failed: {e:#}"));
-                            } else if worker_stop.load(Ordering::SeqCst)
-                                || worker_shutdown.load(Ordering::SeqCst)
+                            Ok(Some(replacement))
+                        })();
+                        if let Err(error) = result {
+                            if let (Some(target), Some(profile)) = (cleanup_target, stop_profile)
+                                && let Err(stop_error) = stop_after_programming(&target, &profile)
                             {
-                                replacement.stop_device();
+                                return Err(error.context(format!(
+                                    "Post-programming Stop failed: {stop_error:#}"
+                                )));
                             }
+                            return Err(error);
                         }
-                        Ok(Some(replacement))
+                        result
                     });
                     last_error = None;
                     jobs.push_back(Job {
@@ -424,8 +467,10 @@ pub(super) fn run(
                     );
                     let mut next = config.clone();
                     next.device = None;
-                    next.output =
-                        Some(session_output_for_repository(None, config.repo.as_deref())?);
+                    next.output = Some(replacement_output(
+                        config.output.as_deref(),
+                        config.repo.as_deref(),
+                    )?);
                     session = Some(Session::new(next, Arc::new(AtomicBool::new(false)))?);
                     session.as_mut().unwrap().handle(pending.request)
                 }
@@ -452,4 +497,55 @@ pub(super) fn run(
         bail!(error);
     }
     Ok(())
+}
+
+// The TCP listener may start after XSCT returns. Shutdown must allow the same
+// boot window as normal reconnect, without starting acquisition or enabling anything.
+fn stop_after_programming(target: &str, profile: &Profile) -> Result<()> {
+    let address = target.parse()?;
+    let command = encode_command(profile.command("Stop")?, 0.0)?;
+    let deadline = Instant::now() + Duration::from_secs(20);
+    loop {
+        let remaining = deadline.saturating_duration_since(Instant::now());
+        if remaining.is_zero() {
+            bail!("timed out delivering Stop to {target}");
+        }
+        let attempt = (|| -> Result<()> {
+            let mut socket =
+                TcpStream::connect_timeout(&address, remaining.min(Duration::from_secs(3)))?;
+            let remaining = deadline.saturating_duration_since(Instant::now());
+            ensure!(!remaining.is_zero(), "Stop delivery deadline expired");
+            socket.set_write_timeout(Some(remaining.min(Duration::from_secs(3))))?;
+            socket.write_all(&command)?;
+            Ok(())
+        })();
+        match attempt {
+            Ok(()) => return Ok(()),
+            Err(error) if Instant::now() >= deadline => return Err(error),
+            Err(_) => thread::sleep(
+                deadline
+                    .saturating_duration_since(Instant::now())
+                    .min(Duration::from_millis(100)),
+            ),
+        }
+    }
+}
+
+fn snapshot_config(session: &Session) -> Config {
+    let mut config = session.config.clone();
+    config.ack = session.context.ack.load(Ordering::SeqCst);
+    config.device = session
+        .context
+        .state
+        .lock()
+        .unwrap()
+        .device
+        .clone()
+        .or(config.device);
+    for (channel, name) in session.selections.as_object().into_iter().flatten() {
+        if let (Ok(channel), Some(name)) = (channel.parse(), name.as_str()) {
+            config.profile.initial_channels.insert(channel, name.into());
+        }
+    }
+    config
 }

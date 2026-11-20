@@ -510,3 +510,9 @@ Simulator and fake-XSCT checks do not establish physical-device readiness. Befor
 - Flash through XSCT/JTAG, reconnect, and verify preserved assignments and idle logging.
 
 These checks require a device and Vitis installation and remain pending; CI does not claim to perform them.
+
+After flash, reconnection retries for up to 20 seconds. A failed reconnect does not invalidate completed recordings or prevent another flash. Replacement sessions receive a fresh directory under the same output parent.
+
+Python `Acquisition.output` and its recording helpers follow the latest session, including after close. Save a durable `Recording` handle before flashing to retain access to an earlier session; recording numbers restart in each session.
+
+Shutdown during programming waits for completion, then retries device Stop delivery for a bounded 20-second boot window. If delivery fails, the firmware job log and stderr contain the failure and the service exits nonzero. The viewer submits Stop and shutdown independently of flash progress without blocking its UI.

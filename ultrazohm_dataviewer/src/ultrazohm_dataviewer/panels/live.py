@@ -898,7 +898,10 @@ class LiveWorkspace:
         )
         imgui.begin_disabled(
             not self.scripts.busy
-            and (not self.update.attached or not state.get("connected"))
+            and (
+                not self.update.attached
+                or (not state.get("connected") and not self.controller.flashing)
+            )
         )
         for label, operation in [
             ("Enable System", "enable_system"),

@@ -204,3 +204,193 @@ class FirmwareServiceTest(unittest.TestCase):
             self.request(endpoint, "job", id=job["id"])["job"]["state"], "running"
         )
         self.processes[0][0].wait(timeout=10)
+
+    def test_flash_preserves_output_parent(self):
+        endpoint = self.start()
+        before = self.request(endpoint, "status")["output"]
+        job = self.submit(endpoint, "flash")
+        self.assertEqual(self.finished(endpoint, job)["job"]["state"], "succeeded")
+        from pathlib import Path
+
+        self.assertEqual(
+            Path(before).parent, Path(self.request(endpoint, "status")["output"]).parent
+        )
+
+    def test_reconnect_failure_does_not_poison_next_flash(self):
+        endpoint = self.start()
+        with socket.socket() as reserve:
+            reserve.bind(("127.0.0.1", 0))
+            port = reserve.getsockname()[1]
+        job = self.request(
+            endpoint,
+            "firmware",
+            action="flash",
+            request_id="failure",
+            device=f"127.0.0.1:{port}",
+            no_reconnect=False,
+        )["job"]
+        result = wait_for(
+            lambda: (
+                r
+                if (r := self.request(endpoint, "job", id=job["id"]))["job"]["state"]
+                != "running"
+                else None
+            ),
+            seconds=30,
+        )
+        self.assertEqual(result["job"]["state"], "failed")
+        self.assertIsNone(self.request(endpoint, "status")["state"]["error"])
+        retry = self.submit(endpoint, "flash", request_id="retry")
+        self.assertEqual(self.finished(endpoint, retry)["job"]["state"], "succeeded")
+
+    def test_device_becoming_ready_after_programming_is_retried(self):
+        endpoint = self.start()
+        with socket.socket() as device:
+            device.bind(("127.0.0.1", 0))
+            port = device.getsockname()[1]
+            job = self.request(
+                endpoint,
+                "firmware",
+                action="flash",
+                request_id="late",
+                device=f"127.0.0.1:{port}",
+                no_reconnect=False,
+            )["job"]
+            wait_for(lambda: self.result.exists())
+            time.sleep(0.3)
+            device.listen()
+            device.settimeout(5)
+            connection, _ = device.accept()
+            with connection:
+                self.assertEqual(
+                    self.finished(endpoint, job)["job"]["state"], "succeeded"
+                )
+                self.request(endpoint, "shutdown")
+                self.processes[0][0].wait(timeout=5)
+
+    @unittest.skipIf(
+        os.name == "nt", "POSIX SIGINT delivery; Windows uses console events"
+    )
+    def test_signal_shutdown_stops_device_during_build(self):
+        import signal
+
+        (self.bin / "fake.py").write_text(
+            "import time\nprint('building', flush=True)\ntime.sleep(2)\n"
+        )
+        endpoint = self.start()
+        with socket.socket() as device:
+            device.bind(("127.0.0.1", 0))
+            device.listen()
+            self.request(
+                endpoint, "connect", ip="127.0.0.1", port=device.getsockname()[1]
+            )
+            connection, _ = device.accept()
+            with connection:
+                before = self.request(endpoint, "status")["state"]["commands_sent"]
+                job = self.submit(endpoint)
+                wait_for(
+                    lambda: (
+                        "building" in self.request(endpoint, "job", id=job["id"])["log"]
+                    )
+                )
+                self.processes[0][0].send_signal(signal.SIGINT)
+                connection.settimeout(1)
+                data = b""
+                while len(data) < (before + 1) * 8:
+                    chunk = connection.recv(4096)
+                    self.assertTrue(chunk)
+                    data += chunk
+                self.assertIsNone(self.processes[0][0].poll())
+                self.processes[0][0].wait(timeout=5)
+
+    def test_embedded_output_tracks_replacement_session_after_close(self):
+        import ultrazohm_cli
+
+        (self.bin / "fake.py").write_text("print('programmed')\n")
+
+        with socket.socket() as reserve:
+            reserve.bind(("127.0.0.1", 0))
+            endpoint = f"127.0.0.1:{reserve.getsockname()[1]}"
+        with ultrazohm_cli.Acquisition(
+            endpoint=endpoint,
+            repo=str(self.repo),
+            xsct=str(self.bin / ("xsct.bat" if os.name == "nt" else "xsct")),
+        ) as acquisition:
+            before = acquisition.output
+            job = self.submit(endpoint, "flash")
+            self.assertEqual(self.finished(endpoint, job)["job"]["state"], "succeeded")
+            current = self.request(endpoint, "status")["output"]
+            self.assertNotEqual(before, current)
+            self.assertEqual(acquisition.output, current)
+        self.assertEqual(acquisition.output, current)
+
+    def test_shutdown_waits_for_boot_and_delivers_stop(self):
+        import struct
+
+        (self.bin / "fake.py").write_text(
+            "import time\nprint('programming',flush=True)\ntime.sleep(0.3)\n"
+        )
+        endpoint = self.start()
+        with socket.socket() as device:
+            device.bind(("127.0.0.1", 0))
+            port = device.getsockname()[1]
+            job = self.request(
+                endpoint,
+                "firmware",
+                action="flash",
+                request_id="shutdown",
+                device=f"127.0.0.1:{port}",
+                no_reconnect=False,
+            )["job"]
+            wait_for(
+                lambda: (
+                    "programming" in self.request(endpoint, "job", id=job["id"])["log"]
+                )
+            )
+            self.assertTrue(self.request(endpoint, "shutdown")["deferred"])
+            time.sleep(0.6)
+            self.assertIsNone(self.processes[0][0].poll())
+            device.listen()
+            device.settimeout(3)
+            connection, _ = device.accept()
+            with connection:
+                connection.settimeout(3)
+                data = b""
+                while len(data) < 8:
+                    chunk = connection.recv(8 - len(data))
+                    self.assertTrue(chunk)
+                    data += chunk
+                mapping = json.loads(
+                    self.cli("channel-mapping", "--repo", str(self.repo)).stdout
+                )
+                self.assertEqual(
+                    struct.unpack("<If", data), (mapping["commands"]["Stop"], 0.0)
+                )
+            self.processes[0][0].wait(timeout=5)
+            self.assertEqual(self.processes[0][0].returncode, 0)
+
+    def test_shutdown_stop_failure_is_persisted_and_exits_nonzero(self):
+        (self.bin / "fake.py").write_text(
+            "import time\nprint('programming',flush=True)\ntime.sleep(0.3)\n"
+        )
+        endpoint = self.start()
+        with socket.socket() as device:
+            device.bind(("127.0.0.1", 0))
+            job = self.request(
+                endpoint,
+                "firmware",
+                action="flash",
+                request_id="failed-shutdown",
+                device=f"127.0.0.1:{device.getsockname()[1]}",
+                no_reconnect=False,
+            )["job"]
+            wait_for(
+                lambda: (
+                    "programming" in self.request(endpoint, "job", id=job["id"])["log"]
+                )
+            )
+            self.request(endpoint, "shutdown")
+            self.processes[0][0].wait(timeout=30)
+        self.assertNotEqual(self.processes[0][0].returncode, 0)
+        log = self.repo / "artifacts" / f"firmware-{job['id']}.log"
+        self.assertIn("Stop after programming failed", log.read_text())

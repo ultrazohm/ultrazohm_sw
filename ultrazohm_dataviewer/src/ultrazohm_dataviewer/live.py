@@ -388,7 +388,7 @@ def cursor_invalid(exc):
 
 def action_block_reason(action, *, flashing=False, script_busy=False):
     """Shared interaction policy; connection and execution checks stay with their owners."""
-    if flashing:
+    if flashing and action not in ("stop", "shutdown"):
         return "Flash UZ is running"
     if script_busy and action not in ("stop", "cli"):
         return "Manual controls are locked while the script runs"
@@ -416,6 +416,9 @@ class LiveController:
         self.stop_event = threading.Event()
         self.thread = None
         self.poll_thread = None
+        self.control_thread = None
+        self.control_commands = Queue(maxsize=32)
+        self._control_error = ""
         self.owned = OwnedService()
         self.client = None
         self.endpoint = None
@@ -444,16 +447,32 @@ class LiveController:
         self._completed_commands = 0
         self._variable_sends = {}
         self.flashing = False
+        self._flash_shutdown = threading.Event()
         self.messages = Queue(maxsize=2000)
 
     def submit(self, operation, **kwargs):
         if self.stop_event.is_set():
             raise RuntimeError("Live controller is closed")
+        if self.flashing and operation in ("stop", "shutdown"):
+            self.cancel_pending_commands()
+            try:
+                self.control_commands.put_nowait(
+                    (operation, kwargs.get("endpoint") or self.endpoint)
+                )
+            except Full as exc:
+                raise RuntimeError("Control command queue is busy") from exc
+            if self.control_thread is None:
+                self.control_thread = threading.Thread(
+                    target=self._control_work, name="uz-live-control", daemon=True
+                )
+                self.control_thread.start()
+            return
         if self.flashing and operation not in ("stop", "shutdown"):
             raise RuntimeError("Flash UZ is already running")
         if operation in ("stop", "flash", "shutdown", "detach", "attach", "connect"):
             self.cancel_pending_commands()
         if operation == "flash":
+            self._flash_shutdown.clear()
             self.flashing = True
         if self.thread is None:
             self.thread = threading.Thread(
@@ -471,6 +490,44 @@ class LiveController:
             if operation == "flash":
                 self.flashing = False
             raise RuntimeError("Live command queue is busy") from exc
+
+    def _control_work(self):
+        """Lifecycle requests bypass flash monitoring without blocking the GUI."""
+        while not self.stop_event.is_set():
+            try:
+                operation, endpoint = self.control_commands.get(timeout=self.interval)
+            except Empty:
+                continue
+            with self._command_lock:
+                if self.stop_event.is_set():
+                    return
+                try:
+                    from ultrazohm_cli import Client
+
+                    client = (self.client_factory or Client)(endpoint)
+                    getattr(client, operation)()
+                    if operation == "shutdown":
+                        self._flash_shutdown.set()
+                        if endpoint == self.owned.endpoint:
+                            self.owned.shutdown_requested = True
+                        self.attached = False
+                        self._reset()
+                        self._status, self._catalog, self._assignments = {}, {}, ()
+                        self._poll_error = ""
+                        self._error = ""
+                        if self._await_shutdown(
+                            "Stopping device and finalizing recordings…", external=False
+                        ):
+                            self._notice = "Service shut down; recordings finalized"
+                        else:
+                            self._notice = "Service shutdown accepted; finalization continues in the external service"
+                    self._control_error = ""
+                except Exception as exc:
+                    self._control_error = f"{operation} failed: {exc}"
+                    self._message("error", self._control_error)
+                finally:
+                    self._completed_commands += 1
+                    self._publish()
 
     def cancel_pending_commands(self):
         """Invalidate even a command already dequeued but not yet executing."""
@@ -517,7 +574,7 @@ class LiveController:
                 self._assignments,
                 self._last_source,
                 self._epoch,
-                self._error or self._poll_error,
+                self._control_error or self._error or self._poll_error,
                 self._notice,
                 self.attached,
                 self._received_at,
@@ -890,7 +947,7 @@ class LiveController:
             raise RuntimeError(
                 "The selected service needs a firmware checkout and Vitis XSCT"
             )
-        device = status.get("state", {}).get("device")
+        device = status.get("state", {}).get("device") or status.get("device_target")
         if not device:
             host = kwargs["ip"]
             device = (
@@ -901,8 +958,15 @@ class LiveController:
         job = self.client.firmware("flash", device=device)
         self._message("info", f"Firmware job {job['id']} accepted by {self.endpoint}")
         offset = 0
-        while not self.stop_event.is_set():
-            reply = self.client.job(job["id"], offset)
+        while not self.stop_event.is_set() and not self._flash_shutdown.is_set():
+            try:
+                reply = self.client.job(job["id"], offset)
+            except (OSError, RuntimeError):
+                if self._flash_shutdown.is_set():
+                    return
+                raise
+            if self._flash_shutdown.is_set():
+                return
             if reply["log"]:
                 self._message("info", reply["log"])
             next_offset = reply["next_offset"]
@@ -1066,7 +1130,7 @@ class LiveController:
             return
         self.stop_event.set()
         self.cancel_pending_commands()
-        for thread in (self.thread, self.poll_thread):
+        for thread in (self.thread, self.poll_thread, self.control_thread):
             if thread is not None:
                 thread.join(timeout=1)
         # Commands observe stop_event; bound the wait so a stuck command cannot hang exit.

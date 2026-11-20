@@ -154,6 +154,12 @@ To fix it, type the following commands in the XSCT console (or run ``vitis_updat
 
 The FreeRTOS application is cleaned before it is built, because it is not linked again if only the kernel library has changed.
 
+To start the UltraZohm anyway, e.g. to test something before the workspace is fixed, create an empty file ``uz_start_without_memory_barrier.txt`` in the workspace folder (``ultrazohm_sw/vitis/workspace``).
+The launch then prints a warning instead of stopping, and the A53 can freeze under network load.
+As long as the file exists, the launch does not stop for a missing ``portMEMORY_BARRIER``, so delete it once the workspace is fixed (the launch reminds you).
+The file is not tracked by git, and a newly generated workspace starts without it.
+It only affects the launch: a FreeRTOS application built against a BSP without the define still fails to compile.
+
 
 Startup scripts
 ---------------

@@ -46,7 +46,9 @@
 #   uz_vitis_check_freertos_elf ws_path elf
 #       call it before the ELF is downloaded to the A53 (see
 #       vitis_debug_run_UltraZohm.tcl). Stops with an error unless the kernel
-#       linked into the ELF is compiled with the define.
+#       linked into the ELF is compiled with the define. If the workspace
+#       folder holds the file uz_start_without_memory_barrier.txt, it only
+#       warns, so that the UltraZohm can be started anyway.
 #
 # How the checks see the compiled kernel: next to the define, the patch adds
 # one byte in the section .uz_freertos_memory_barrier to every kernel object
@@ -376,6 +378,19 @@ proc uz_vitis_verify_freertos_bsp {ws_path} {
       are built with portMEMORY_BARRIER"
 }
 
+# File in the workspace folder that lets uz_vitis_check_freertos_elf start a
+# FreeRTOS.elf without the barrier anyway.
+proc uz_vitis_barrier_override_name {} {
+  return uz_start_without_memory_barrier.txt
+}
+
+# Path of that file, or "" if there is none. Also accepts the name without or
+# with a second extension, e.g. "....txt.txt" from the Windows Explorer.
+proc uz_vitis_barrier_override {ws_path} {
+  set pattern "[file rootname [uz_vitis_barrier_override_name]]*"
+  return [lindex [glob -nocomplain -types f -directory $ws_path -- $pattern] 0]
+}
+
 proc uz_vitis_check_freertos_elf {ws_path elf} {
   foreach bsp [uz_vitis_freertos_bsp_dirs $ws_path] {
     if {[uz_vitis_freertos_port_has_barrier $bsp]} {
@@ -390,11 +405,24 @@ proc uz_vitis_check_freertos_elf {ws_path elf} {
   if {[catch {uz_vitis_has_barrier_section [uz_vitis_read_binary $elf]} ok]} {
     error "Error (UltraZohm): cannot read $elf: $ok. The UltraZohm was not programmed."
   }
+  set override [uz_vitis_barrier_override $ws_path]
   if {!$ok} {
+    if {$override ne ""} {
+      puts "Warning (UltraZohm): the FreeRTOS kernel in $elf is not built with the\
+          portMEMORY_BARRIER patch, the A53 can freeze under load."
+      puts "Warning (UltraZohm): starting anyway, because $override exists.\
+          Delete it once the workspace is fixed."
+      return
+    }
     set hint [uz_vitis_freertos_fix_hint $ws_path]
+    set start_anyway [file join $ws_path [uz_vitis_barrier_override_name]]
     error "Error (UltraZohm): the FreeRTOS kernel in $elf is not built with the\
         portMEMORY_BARRIER patch (or with an older version of it), the A53 can freeze\
-        under load. The UltraZohm was not programmed.\n$hint"
+        under load. The UltraZohm was not programmed.\n$hint\nTo start the UltraZohm\
+        anyway, create the (empty) file $start_anyway and launch again."
   }
   puts "Info (UltraZohm): the FreeRTOS kernel in $elf is built with portMEMORY_BARRIER"
+  if {$override ne ""} {
+    puts "Info (UltraZohm): $override is no longer needed, you can delete it."
+  }
 }

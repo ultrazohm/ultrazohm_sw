@@ -116,7 +116,8 @@ puts "=====================================================\n\n"
 #####################################################
 cd [getws]
 # Refuse to program a FreeRTOS.elf whose kernel lacks portMEMORY_BARRIER (the
-# A53 freezes under load). Runs before the board is touched.
+# A53 freezes under load), unless the workspace folder holds the file
+# uz_start_without_memory_barrier.txt. Runs before the board is touched.
 source [file join $::uz_vitis_script_dir vitis_patch_UltraZohm_freertos_bsp.tcl]
 uz_vitis_check_freertos_elf [getws] [file join [getws] FreeRTOS Debug FreeRTOS.elf]
 #####################################################

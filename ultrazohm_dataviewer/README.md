@@ -314,8 +314,8 @@ preparation; attaching to an existing service does not.
 
 Connect launches `serve --repo PATH --profile settings.json`.
 The service resolves the firmware configuration itself, strictly validates saved preferences, and exposes the effective configuration through `catalog`.
-An existing service keeps its loaded configuration.
-Shut it down and reconnect to apply a different repository or changed headers.
+An existing service keeps its loaded configuration until a coordinated flash replaces the session.
+Restart the service to select a different repository.
 Select the checkout in the viewer, or pass `ultrazohm-dataviewer gui --live-repo PATH`.
 
 `./uz venv stable|prerelease` opens a cached shell with both published applications.
@@ -323,12 +323,21 @@ Select the checkout in the viewer, or pass `ultrazohm-dataviewer gui --live-repo
 fresh temporary shell. Open a new dev shell after CLI changes. All shell modes
 include dependencies declared in root `requirements.txt`.
 
-**Flash UZ** requires XSCT and confirmation.
-The viewer shuts down any running service, which sends device Stop and finalizes recordings.
-It writes a header mapping snapshot and a separate session profile that keeps available channel assignments and reports removed names.
-After a successful build and JTAG program, the viewer starts a fresh service using the selected checkout and the session profile.
-Logging starts idle.
-If the viewer closes during programming, the CLI can finish independently and the viewer does not reconnect.
+**Flash UZ** submits a firmware job to the selected CLI service after confirmation.
+The service machine needs XSCT and a configured firmware checkout; an attached viewer
+does not need either locally. The service sends Stop, finalizes recordings, programs,
+reloads firmware configuration, and reconnects with a fresh session. The control endpoint
+stays available and all clients observe the new session. Logging starts idle.
+The Application log shows job progress. A terminal can initiate or inspect the same jobs.
+
+Closing any attached viewer sends device Stop. If the viewer started the service, it
+also requests shutdown; otherwise the service stays running. An accepted shutdown waits
+for programming already underway to finish. Other terminal clients observe Stop or,
+for a viewer-owned service, its eventual shutdown. Stop delivery is best effort when
+the device connection is unavailable.
+
+Select local XSCT before starting a viewer-owned service. Once attached, tool capability
+comes from the service; changing the local PATH does not configure a remote process.
 
 - **Live Data** sits beside Navigation. **Connect** starts a service at the selected endpoint
   and connects it to the device. **Existing service → Attach** attaches to an

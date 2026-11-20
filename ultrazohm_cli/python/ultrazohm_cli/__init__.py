@@ -164,6 +164,24 @@ class Client:
             self._connection.request(json.dumps({"op": op, **fields}, allow_nan=False))
         )
 
+    def firmware(self, action, *, request_id=None, device=None, no_reconnect=False):
+        """Submit a firmware job to this service's checkout; returns job metadata."""
+        import uuid
+
+        return self._call(
+            "firmware",
+            action=action,
+            request_id=request_id or str(uuid.uuid4()),
+            device=device,
+            no_reconnect=no_reconnect,
+        )["job"]
+
+    def jobs(self):
+        return self._call("jobs")["jobs"]
+
+    def job(self, job_id, offset=0):
+        return self._call("job", id=job_id, offset=offset)
+
     def connect(self, ip="192.168.1.233", port=1000):
         """Connect an offline service and apply its initial observables."""
         return self._call("connect", ip=ip, port=port)
@@ -314,7 +332,8 @@ def console_command(line, endpoint="127.0.0.1:19740"):
 
     For example ``console_command("status")`` or ``console_command("set-variable
     send_field_1 2.5")``. Returns the text the CLI would print. Only service
-    commands are accepted; local tools (serve, build, flash, generate) raise.
+    commands are accepted; firmware commands return accepted job metadata without waiting.
+    Local tools (serve, explicit --local builds, mappings) raise.
     Help (``--help`` or an empty line) is returned as text.
     """
     return _console_command(endpoint, line)

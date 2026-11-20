@@ -86,7 +86,7 @@ ultrazohm-cli serve --interactive --channel-mapping my-mapping.json
 
 `serve` without `--device` waits for `connect [IP] [PORT]`.
 A failed connect can be retried; a second connect while connected is rejected.
-Transport failure after connection ends acquisition and finalizes logs.
+Transport failure ends the acquisition session and finalizes logs; the service remains available to report the failure and accept a new connection.
 External CLI/Python clients can control the service while its interactive prompt waits for input.
 
 All entry points reserve a new output directory but start with logging off.
@@ -189,7 +189,7 @@ Initial selections are sent before the service becomes ready; they do not enable
 
 Mapping provenance describes source headers, not verified running firmware.
 The IDs, geometry and configured sample period must match the deployed firmware.
-Changing the repository or configuration requires a service restart, not recompilation.
+Changing the service checkout requires a restart. Flashing reloads firmware configuration into a new acquisition session without restarting the service.
 `observables` lists requested slot assignments and `catalog` returns loaded configuration; neither claims device readback.
 Unknown slots are omitted from logs; duplicate observable IDs use the first selected slot.
 Names are frozen at recording start.
@@ -350,7 +350,7 @@ ultrazohm-cli serve --buffer-samples 100000 --segment-rows 50000 --flush-interva
 `--queue-seconds` accepts values up to 600; queued frames are held in RAM.
 Python `Acquisition` accepts the same `queue_seconds` keyword.
 
-Settings are fixed for the service lifetime and reported in `status.data_options`.
+Settings are fixed for an acquisition session and reported in `status.data_options`.
 The ring retains at most one partial extra frame internally; queries respect its exact sample capacity.
 Observable changes clear live history and invalidate its cursors.
 Samples that leave RAM while logging is off cannot be recovered.
@@ -368,27 +368,78 @@ See [architecture](docs/architecture.md) for the storage invariants.
 
 ## Vitis workspace, build and JTAG programming
 
-Load the Vitis 2022.2 environment so `xsct` is on PATH:
+Start the service on the machine with the firmware checkout, Vitis/XSCT, and JTAG access:
 
 ```sh
-ultrazohm-cli generate              # generate/build an empty vitis/workspace
-ultrazohm-cli generate --open       # also open Vitis GUI; needs its launcher on PATH
-ultrazohm-cli build                 # incremental application build
-ultrazohm-cli build-clean           # clean platform/applications, then rebuild
-ultrazohm-cli flash                 # incremental build, JTAG program and run
-ultrazohm-cli build --repo "/path/to/ultrazohm_sw"
+ultrazohm-cli serve --repo /path/to/ultrazohm_sw --device 192.168.1.233:1000
+# Optional: --xsct /path/to/Vitis/bin/xsct instead of loading settings64.sh / PATH.
 ```
 
-These local commands need a checkout, not an acquisition service.
-Repository search starts from the current directory; `--repo` selects an exact root.
-The workspace is `<repo>/vitis/workspace`; generation refuses populated workspaces.
-`flash --profile Run_UltraZohm` is the supported launch profile; debug profiles use the GUI.
-Flash here means JTAG programming/execution, not persistent flash-memory writing.
+Other terminals and DataViewers use the same endpoint (default `127.0.0.1:19740`):
 
-Commands run `xsct -nodisp .../tcl_scripts/vitis_headless.tcl`, stream its output and propagate failures.
-On Linux load `settings64.sh`; on Windows use the Vitis command environment.
-The viewer also provides an XSCT picker and remembers its launcher in workspace `tools.json`.
-Avoid concurrent Vitis operations on one workspace and close acquisition before programming the connected device.
+```sh
+ultrazohm-cli generate            # create/build an empty Vitis workspace
+ultrazohm-cli build               # incremental build on the service machine
+ultrazohm-cli build-clean         # clean and rebuild on the service machine
+ultrazohm-cli flash               # stop acquisition, build/program, reload and reconnect
+ultrazohm-cli flash --device 192.168.1.233:1000  # initially disconnected service
+ultrazohm-cli flash --no-reconnect # program without reconnecting
+ultrazohm-cli build --no-wait      # print the accepted job ID and return
+ultrazohm-cli jobs
+ultrazohm-cli job JOB_ID --follow
+```
+
+Commands wait for completion by default and propagate job failure as a nonzero exit.
+Interrupting a waiting client does not cancel the service job. Job IDs allow another
+terminal to follow it. No request silently falls back to local execution.
+One firmware job is accepted at a time; a filesystem lock also protects the checkout
+against another service or standalone build. Job logs remain under the service
+checkout's `artifacts/` directory. The service retains up to 64 job records in memory;
+restart clears that history and never replays jobs automatically.
+
+For offline workspace preparation/builds, explicitly select local execution:
+
+```sh
+ultrazohm-cli generate --local --open --repo /path/to/checkout
+ultrazohm-cli build --local --repo /path/to/checkout
+ultrazohm-cli build-clean --local --repo /path/to/checkout
+```
+
+`flash` always uses the service. The former `flash --repo` and `flash --profile`
+interface is removed; select the checkout at service startup. The supported launch
+profile is `Run_UltraZohm`. Flash means JTAG programming/execution, not persistent
+flash-memory writing. Build-only jobs leave the current acquisition session unchanged.
+
+During flashing, the control endpoint stays available. The service sends device Stop,
+finishes recordings, programs, reloads JavaScope headers, validates retained channel
+assignments, and creates a fresh session/output directory. Logging starts idle;
+system and control enable are never requested automatically. Header changes during
+the operation are rejected. Build/programming failures leave acquisition disconnected
+and the service available for inspection/retry. A reconnect failure is reported as a
+failed job even if programming succeeded. Invalid firmware configuration blocks Connect
+until a successful flash or an explicit restart with verified configuration.
+
+`status` includes `service_id`, `session_id`, `output`, `repository`, `firmware_available`,
+`lifecycle`, `active_job`, and `error`. Clients must refresh catalogs and discard old
+cursors when the session changes. API v3 replaces v2; upgrade clients and service together.
+A Python `Acquisition.output` remains the initial session path; use `Client.status()["output"]`
+for the current session after replacement. Previously acquired recording handles remain
+associated with their original files.
+
+```python
+from ultrazohm_cli import Client
+client = Client("127.0.0.1:19740")
+job = client.firmware("build")
+progress = client.job(job["id"])  # job metadata, log text, next_offset
+# Reuse an explicit request_id when recovering an uncertain submission.
+```
+
+Graceful shutdown waits for programming already in progress to finish and then exits;
+it does not forcibly kill XSCT. Stop remains responsive and never cancels a build.
+For remote access, forward this loopback endpoint through SSH. Checkout/tool paths and
+recording files belong to the service machine; no shared filesystem is required for live
+viewing or job progress. File browsing and offline recording analysis still need access
+to those files.
 
 Incremental builds reuse generated Makefiles when inputs are unchanged, report whether work is needed, and refresh through Vitis when metadata/toolchain inputs change.
 `flash` programs even when no rebuild is needed.

@@ -165,7 +165,7 @@ def test_service_launch_passes_filtered_settings_profile(tmp_path, monkeypatch):
 
     monkeypatch.setattr("ultrazohm_dataviewer.live.subprocess.Popen", launch)
     controller = LiveController()
-    controller.client = SimpleNamespace(status=lambda: {})
+    controller.client = SimpleNamespace(status=lambda: {"service_id": "test-service"})
     controller._start_service(tmp_path / "logs" / "session", mapping)
     args = calls[0]
     settings = Path(args[args.index("--profile") + 1])
@@ -498,7 +498,7 @@ def test_repository_service_passes_repo_and_preserves_explicit_profile(
         lambda *args: pytest.fail("No temporary profile"),
     )
     controller = LiveController()
-    controller.client = SimpleNamespace(status=lambda: {})
+    controller.client = SimpleNamespace(status=lambda: {"service_id": "test-service"})
     controller._start_service(tmp_path / "session", "", repo=tmp_path)
     args = calls[0]
     assert args[args.index("--repo") + 1] == str(tmp_path)
@@ -517,7 +517,7 @@ def test_changed_repository_requires_restarting_owned_service(tmp_path):
 
     from ultrazohm_dataviewer.live import LiveController
 
-    client = SimpleNamespace(status=lambda: {})
+    client = SimpleNamespace(status=lambda: {"service_id": "test-service"})
     controller = LiveController(lambda endpoint: client)
     controller.owned.endpoint = "test-endpoint"
     controller.owned.process = SimpleNamespace(poll=lambda: None)
@@ -580,7 +580,9 @@ def test_explicit_mapping_survives_connect_with_workspace(
         assert args["repo"] is None
         assert args["mapping"] == str(mapping)
         assert args["user_directory"] == str(directory)
-        controller.client = SimpleNamespace(status=lambda: {})
+        controller.client = SimpleNamespace(
+            status=lambda: {"service_id": "test-service"}
+        )
         monkeypatch.setattr(
             "ultrazohm_dataviewer.live.subprocess.Popen",
             lambda args, **kwargs: (
@@ -620,7 +622,9 @@ def test_changed_mapping_requires_restarting_owned_service(tmp_path):
 
     from ultrazohm_dataviewer.live import LiveController
 
-    controller = LiveController(lambda endpoint: SimpleNamespace(status=lambda: {}))
+    controller = LiveController(
+        lambda endpoint: SimpleNamespace(status=lambda: {"service_id": "test-service"})
+    )
     controller.owned.endpoint = "test-endpoint"
     controller.owned.process = SimpleNamespace(poll=lambda: None)
     controller.owned.mapping = tmp_path / "previous.json"

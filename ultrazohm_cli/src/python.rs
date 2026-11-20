@@ -139,7 +139,7 @@ struct Acquisition {
 impl Acquisition {
     #[new]
     #[allow(clippy::too_many_arguments)] // Python keyword options plus the GIL token.
-    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="parquet".to_string(), ack=false, channel_mapping=None, *, buffer_samples=None, segment_rows=1_000_000, flush_interval_ms=60_000, recording_backend="parquet", queue_seconds=crate::live::DEFAULT_QUEUE_SECONDS))]
+    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="parquet".to_string(), ack=false, channel_mapping=None, *, repo=None, xsct=None, buffer_samples=None, segment_rows=1_000_000, flush_interval_ms=60_000, recording_backend="parquet", queue_seconds=crate::live::DEFAULT_QUEUE_SECONDS))]
     fn new(
         py: Python<'_>,
         device: Option<String>,
@@ -149,6 +149,8 @@ impl Acquisition {
         format: String,
         ack: bool,
         channel_mapping: Option<String>,
+        repo: Option<String>,
+        xsct: Option<String>,
         buffer_samples: Option<usize>,
         segment_rows: usize,
         flush_interval_ms: u64,
@@ -166,9 +168,20 @@ impl Acquisition {
             queue_seconds,
         };
         data.validate().map_err(error)?;
-        let profile = Profile::load_files(
+        let repo = repo
+            .map(PathBuf::from)
+            .map(|path| crate::vitis::repository(Some(&path)))
+            .transpose()
+            .map_err(error)?;
+        let xsct = xsct
+            .map(PathBuf::from)
+            .map(|path| crate::vitis::selected_xsct(Some(&path)))
+            .transpose()
+            .map_err(error)?;
+        let profile = Profile::load_repository(
             profile.as_deref().map(std::path::Path::new),
             channel_mapping.as_deref().map(std::path::Path::new),
+            repo.as_deref(),
         )
         .map_err(error)?;
         let format = match format.as_str() {
@@ -176,7 +189,9 @@ impl Acquisition {
             "parquet" => Format::Parquet,
             _ => return Err(error("format must be csv or parquet")),
         };
-        let output = service::session_output(output.map(PathBuf::from)).map_err(error)?;
+        let output =
+            service::session_output_for_repository(output.map(PathBuf::from), repo.as_deref())
+                .map_err(error)?;
         let worker_output = output.clone();
         let (ready_tx, ready_rx) = mpsc::sync_channel(1);
         let stop = Arc::new(AtomicBool::new(false));
@@ -184,6 +199,8 @@ impl Acquisition {
         let worker = thread::spawn(move || {
             service::serve_with_ready(
                 Config {
+                    repo,
+                    xsct,
                     data,
                     device,
                     endpoint,

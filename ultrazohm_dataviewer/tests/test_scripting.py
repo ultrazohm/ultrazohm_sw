@@ -91,9 +91,35 @@ def test_combined_template_controls_both_existing_services(
 
 @pytest.fixture
 def service(tmp_path):
+    import os
+    import shlex
+    import shutil
+
     native = pytest.importorskip("ultrazohm_cli")
     device_port, service_port = ports()
     root = Path(__file__).resolve().parents[2]
+    checkout = tmp_path / "checkout"
+    for name in (
+        "vitis/software/Baremetal/src/include/javascope.h",
+        "vitis/software/Baremetal/src/include/javascope_status.h",
+        "vitis/software/shared/APU_RPU_shared.h",
+        "vitis/software/FreeRTOS/main.h",
+        "vitis/software/FreeRTOS/defines.h",
+        "tcl_scripts/vitis_headless.tcl",
+    ):
+        dest = checkout / name
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        if (root / name).is_file():
+            shutil.copyfile(root / name, dest)
+    stub = tmp_path / "fake_xsct.py"
+    stub.write_text("print('simulated programming complete')\n")
+    xsct = tmp_path / ("xsct.bat" if os.name == "nt" else "xsct")
+    xsct.write_text(
+        f'@echo off\n"{sys.executable}" "{stub}" %*\n'
+        if os.name == "nt"
+        else f'#!/bin/sh\nexec {shlex.quote(sys.executable)} {shlex.quote(str(stub))} "$@"\n'
+    )
+    xsct.chmod(0o755)
     simulator = subprocess.Popen(
         [
             sys.executable,
@@ -110,7 +136,11 @@ def service(tmp_path):
     acquisition = None
     try:
         acquisition = native.Acquisition(
-            endpoint=endpoint, output=str(tmp_path / "recordings"), format="parquet"
+            endpoint=endpoint,
+            output=str(tmp_path / "recordings"),
+            format="parquet",
+            repo=str(checkout),
+            xsct=str(xsct),
         )
         client = native.Client(endpoint)
 
@@ -351,13 +381,11 @@ def test_close_waits_for_inflight_script_stop():
     assert not runner.busy
 
 
-def test_managed_flash_restarts_real_service_and_preserves_recordings(
+def test_managed_flash_replaces_session_and_preserves_recordings(
     service, tmp_path, monkeypatch
 ):
     import json
     from pathlib import Path
-
-    from ultrazohm_dataviewer import flashing
 
     client, endpoint = service
     old_assignments = client.observables()["channels"]
@@ -376,8 +404,7 @@ def test_managed_flash_restarts_real_service_and_preserves_recordings(
 
     recordings = wait_for(with_handles)
     controller = LiveController(hz=30)
-    monkeypatch.setattr(flashing, "run_flash_cli", lambda *args: True)
-    monkeypatch.setattr(flashing, "xsct_available", lambda: True)
+    before = client.status()
     try:
         controller.submit("attach", endpoint=endpoint)
         wait_for(lambda: controller.latest().attached)
@@ -414,12 +441,10 @@ def test_managed_flash_restarts_real_service_and_preserves_recordings(
         assert all(v["phase"] == "idle" for v in status["logging"].values())
         assert status["data_options"] == options
         assert client.observables()["channels"] == old_assignments
-        mapping, output = controller.latest().flash_config
-        assert (
-            client.catalog()["profile"]["observables"]
-            == json.loads(Path(mapping).read_text())["observables"]
-        )
-        assert Path(output).is_dir()
+        assert status["service_id"] == before["service_id"]
+        assert status["session_id"] != before["session_id"]
+        assert Path(status["output"]).is_dir()
+        assert controller.owned.process is None
         for info in recordings.values():
             assert Path(info["parquet"]).is_file()
             # The recording summary is stored with its index.

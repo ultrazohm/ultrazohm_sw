@@ -486,7 +486,7 @@ class IntegrationTest(unittest.TestCase):
             # Let accept run before sending, then split the JSON and newline.
             # Windows inherits nonblocking mode from the listener unless reset.
             time.sleep(0.1)
-            sock.sendall(b'{"api_version":2,"command":')
+            sock.sendall(b'{"api_version":3,"command":')
             time.sleep(0.1)
             sock.sendall(b'{"op":"status"}}')
             time.sleep(0.1)
@@ -1142,7 +1142,6 @@ class IntegrationTest(unittest.TestCase):
         for command in [
             ("start-logging",),
             ("start-logging-slow-data",),
-            ("stop",),
             ("set-observable", "lifecheck", "1"),
         ]:
             with self.assertRaisesRegex(RuntimeError, "not connected"):
@@ -1414,11 +1413,14 @@ kernel.FreeConsole()
         self.assertTrue((self.run_dir / "data.parquet").is_file())
         self.assertTrue((self.run_dir / "data.csv").is_file())
 
-    def test_interactive_disconnect_does_not_wait_for_stdin(self):
+    def test_interactive_service_survives_device_disconnect(self):
         self.start(interactive=True)
         wait_for(lambda: self.cli("status")["state"]["samples"] >= 30)
         self.server.terminate()
         self.server.wait(timeout=5)
+        wait_for(lambda: self.cli("status").get("error"))
+        self.assertIsNone(self.service.poll())
+        self.cli("shutdown")
         self.assertNotEqual(self.wait_for_service_exit(), 0)
         self.assertFalse(
             json.loads((self.run_dir / "run.json").read_text())["end"]["complete"]
@@ -1598,7 +1600,10 @@ kernel.FreeConsole()
             "start-logging", console_command("--help", endpoint=self.endpoint)
         )
         self.assertIn("start-logging", console_command("", endpoint=self.endpoint))
-        for local in ("build", "flash", "serve", "channel-mapping"):
+        self.assertIn(
+            "jobs", json.loads(console_command("jobs", endpoint=self.endpoint))
+        )
+        for local in ("build --local", "serve", "channel-mapping"):
             with self.assertRaisesRegex(RuntimeError, "local tools"):
                 console_command(local, endpoint=self.endpoint)
         with self.assertRaisesRegex(RuntimeError, "unrecognized subcommand"):
@@ -2004,7 +2009,7 @@ kernel.FreeConsole()
                 client = socket.create_connection(address)
                 clients.append(client)
                 if i % 2:
-                    client.sendall(b'{"api_version":2,"command":')
+                    client.sendall(b'{"api_version":3,"command":')
             time.sleep(0.05)  # Let the service accept the stalled connections.
             started = time.monotonic()
             self.assertTrue(self.cli("stop")["ok"])
@@ -2104,6 +2109,9 @@ kernel.FreeConsole()
         )
         wait_for(lambda: self.cli("status")["state"]["samples"] == 45)
         release.set()
+        wait_for(lambda: self.cli("status").get("error"))
+        self.assertIsNone(self.service.poll())
+        self.cli("shutdown")
         self.assertNotEqual(self.wait_for_service_exit(), 0)
         worker.join(timeout=2)
         end = json.loads((self.run_dir / "run.json").read_text())["end"]
@@ -2251,7 +2259,7 @@ kernel.FreeConsole()
             with socket.create_connection(address, timeout=3) as sock:
                 replies = sock.makefile("rb")
                 while not stop.is_set():
-                    sock.sendall(b'{"api_version":2,"command":{"op":"status"}}\n')
+                    sock.sendall(b'{"api_version":3,"command":{"op":"status"}}\n')
                     if not replies.readline():
                         return
                     time.sleep(0.02)
@@ -2273,17 +2281,17 @@ kernel.FreeConsole()
         ) as sock:
             replies = sock.makefile("rb")
             for _ in range(3):
-                sock.sendall(b'{"api_version":2,"command":{"op":"status"}}\n')
+                sock.sendall(b'{"api_version":3,"command":{"op":"status"}}\n')
                 self.assertTrue(json.loads(replies.readline())["ok"])
             sock.sendall(
-                b'{"api_version":2,"command":{"op":"read_data","query":{"source":{"stream":"fast",'
+                b'{"api_version":3,"command":{"op":"read_data","query":{"source":{"stream":"fast",'
                 b'"recording":null},"selection":{"kind":"since","cursor":{"run_id":"other",'
                 b'"stream":"fast","recording":null,"generation":0,"next_sample":0},"limit":5}}}}\n'
             )
             reply = json.loads(replies.readline())
             self.assertFalse(reply["ok"])
             self.assertEqual(reply["code"], "cursor_expired")
-            sock.sendall(b'{"api_version":2,"command":{"op":"status"}}\n')
+            sock.sendall(b'{"api_version":3,"command":{"op":"status"}}\n')
             self.assertTrue(json.loads(replies.readline())["ok"])
 
     @unittest.skipUnless(
@@ -2537,6 +2545,9 @@ else:
         wait_for(lambda: self.cli("status")["state"]["samples"] >= 30)
         self.server.terminate()
         self.server.wait(timeout=5)
+        wait_for(lambda: self.cli("status").get("error"))
+        self.assertIsNone(self.service.poll())
+        self.cli("shutdown")
         self.assertNotEqual(self.wait_for_service_exit(), 0)
         end = json.loads((self.run_dir / "run.json").read_text())["end"]
         self.assertFalse(end["complete"])

@@ -359,7 +359,6 @@ class LiveUpdate:
     activity: str = ""
     completed_commands: int = 0
     variable_sends: dict = field(default_factory=dict)
-    flash_config: tuple | None = None
 
 
 @dataclass
@@ -372,6 +371,7 @@ class OwnedService:
     log: Path | None = None
     repo: Path | None = None
     mapping: Path | None = None
+    service_id: str | None = None
 
     @property
     def running(self):
@@ -444,14 +444,12 @@ class LiveController:
         self._completed_commands = 0
         self._variable_sends = {}
         self.flashing = False
-        self._flash_config = None
-        self._flash_context = None
         self.messages = Queue(maxsize=2000)
 
     def submit(self, operation, **kwargs):
         if self.stop_event.is_set():
             raise RuntimeError("Live controller is closed")
-        if self.flashing:
+        if self.flashing and operation not in ("stop", "shutdown"):
             raise RuntimeError("Flash UZ is already running")
         if operation in ("stop", "flash", "shutdown", "detach", "attach", "connect"):
             self.cancel_pending_commands()
@@ -526,7 +524,6 @@ class LiveController:
                 self._activity,
                 self._completed_commands,
                 self._variable_sends.copy(),
-                self._flash_config,
             )
 
     def _message(self, level, text):
@@ -658,7 +655,7 @@ class LiveController:
             if self.owned.process.poll() is not None:
                 raise RuntimeError(f"Service failed; see {log_path}")
             try:
-                self.client.status()
+                self.owned.service_id = self.client.status()["service_id"]
                 return
             except (OSError, RuntimeError):
                 self.stop_event.wait(0.1)
@@ -756,7 +753,11 @@ class LiveController:
                     )
                     self.client.connect(kwargs["ip"], kwargs["port"])
                     self._reset()
-            self._catalog = self.client.catalog()["profile"]
+            self._catalog = (
+                self.client.catalog()["profile"]
+                if status.get("session_id", True)
+                else {}
+            )
             self.attached = True
             self._status = self.client.status()
             self._notice = f"Attached to acquisition service at {self.endpoint}"
@@ -874,119 +875,47 @@ class LiveController:
         raise RuntimeError(f"Timed out waiting for {description}")
 
     def _flash(self, kwargs):
-        from .flashing import connection_refused, run_flash_cli, xsct_available
-        from .live_mapping import generate_mapping, repository
-        from .settings import load_workspace_settings, profile_for_mapping
-        from .user_paths import write_json
+        from .flashing import connection_refused
 
-        if not xsct_available():
-            raise RuntimeError(
-                "Vitis XSCT (xsct) is not on PATH. Load the Vitis environment and restart the viewer."
-            )
-        root = repository(kwargs.get("repo") or None)
         self._make_client(kwargs["endpoint"])
-        self._poll_error = ""
-        self._progress("Preparing Flash UZ…")
         try:
             status = self.client.status()
         except (OSError, RuntimeError) as exc:
             if not connection_refused(exc):
                 raise
-            status = None
-        previous, assignments = None, None
-        settings = status or {}
-        if (
-            status is None
-            and self._flash_context is not None
-            and self._flash_context[0] == self.endpoint
-        ):
-            _, previous, assignments, settings = self._flash_context
-        target_ip, target_port = kwargs["ip"], kwargs["port"]
-        if address := settings.get("state", {}).get("device"):
-            host, port = address.rsplit(":", 1)
-            target_ip, target_port = host.strip("[]"), int(port)
-        if status is not None:
-            previous = self.client.catalog()["profile"]
-            if status["state"].get("connected"):
-                assignments = {
-                    str(item["channel"]): item["name"]
-                    for item in self.client.observables()["channels"]
-                    if item["name"]
-                }
-            self._flash_context = (self.endpoint, previous, assignments, settings)
-            # Shutdown sends device Stop and finalizes both recordings itself.
-            self.attached = False
-            self.client.shutdown()
-            if self.endpoint == self.owned.endpoint:
-                self.owned.shutdown_requested = True
-            if not self._await_shutdown(
-                "Stopping device, finalizing recordings and shutting down the service…",
-                external=True,
-            ):
-                return  # The viewer closed; close() takes over waiting for the service.
-        self.attached = False
-        self._reset()
-        self._status, self._catalog, self._assignments = {}, {}, ()
-        if self.stop_event.is_set():
-            return
-        self._progress("Generating channel mapping…")
-        mapping_path = generate_mapping(root)
-        self._message("info", f"Channel mapping regenerated: {mapping_path}")
-        workspace = load_workspace_settings(mapping_path)
-        if previous is None:
-            previous = workspace.profile
-        profile, removed = profile_for_mapping(workspace.mapping, previous, assignments)
-        if removed:
-            self._message(
-                "warn",
-                "Removed channel assignments absent from the new mapping: "
-                + ", ".join(removed),
+            self._start_service(kwargs["output"], "", "", repo=kwargs.get("repo"))
+            status = self.client.status()
+        self.attached = True
+        if not status.get("firmware_available"):
+            raise RuntimeError(
+                "The selected service needs a firmware checkout and Vitis XSCT"
             )
-        output = Path(
-            new_output_directory(
-                parent=Path(kwargs["output"]).expanduser().resolve().parent
+        device = status.get("state", {}).get("device")
+        if not device:
+            host = kwargs["ip"]
+            device = (
+                f"[{host}]:{kwargs['port']}"
+                if ":" in host
+                else f"{host}:{kwargs['port']}"
             )
-        )
-        output.parent.mkdir(parents=True, exist_ok=True)
-        profile_path = output.with_name(output.name + ".profile.json")
-        write_json(profile_path, profile)
-        self._flash_config = (str(mapping_path), str(output))
-        self._progress("Flashing UltraZohm; see Console for progress…")
-        if not run_flash_cli(root, self.endpoint, self.stop_event, self._message):
-            return
-        if self.stop_event.is_set():
-            return
-        self._progress("Reconnecting to UltraZohm…")
-        self._start_service(
-            str(output),
-            "",
-            str(profile_path),
-            settings.get("data_options"),
-            settings.get("send_ack", False),
-            repo=root,
-        )
-        last_error = ""
-
-        def reconnected():
-            nonlocal last_error
-            try:
-                if not self.client.status()["state"].get("connected"):
-                    self.client.connect(target_ip, target_port)
-                return True
-            except (OSError, RuntimeError) as exc:
-                last_error = str(exc)
-                return False
-
-        try:
-            self._wait_for(reconnected, 20, "UltraZohm to reconnect")
-        except RuntimeError as exc:
-            raise RuntimeError(f"{exc}: {last_error}") from exc
-        self._command(
-            "attach", {"endpoint": self.endpoint, "mapping": str(mapping_path)}
-        )
-        self._variable_sends = {}
-        self._flash_context = None
-        self._notice = "Flash completed; acquisition service restarted and connected"
+        job = self.client.firmware("flash", device=device)
+        self._message("info", f"Firmware job {job['id']} accepted by {self.endpoint}")
+        offset = 0
+        while not self.stop_event.is_set():
+            reply = self.client.job(job["id"], offset)
+            if reply["log"]:
+                self._message("info", reply["log"])
+            next_offset = reply["next_offset"]
+            self._progress(f"Flash UZ: {reply['job']['phase']}")
+            if reply["job"]["state"] != "running" and next_offset == offset:
+                if reply["job"]["state"] != "succeeded":
+                    raise RuntimeError(f"Firmware job failed: {reply['job']['result']}")
+                self._reset()
+                self._status_at = 0
+                self._notice = "Flash completed; service session replaced"
+                return
+            offset = next_offset
+            self.stop_event.wait(0.1)
 
     def _poll_client_for(self, endpoint):
         if self._poll_client is None or self._poll_endpoint != endpoint:
@@ -1014,7 +943,19 @@ class LiveController:
         client = self._poll_client_for(endpoint)
         if time.monotonic() >= self._status_at:
             status = client.status()
-            assignments = tuple(client.observables()["channels"])
+            assignments = (
+                tuple(client.observables()["channels"])
+                if status.get("session_id", True)
+                else ()
+            )
+            if status.get("session_id") != self._status.get("session_id"):
+                self.cursor = self.cursor_stop = None
+                if self.ring is not None:
+                    self.ring.reset()
+                self._last_source = None
+                self._catalog = (
+                    client.catalog()["profile"] if status.get("session_id") else {}
+                )
             with self.lock:
                 if not self._current(generation):
                     return
@@ -1089,8 +1030,8 @@ class LiveController:
                     else f"{operation}: working…"
                 )
                 try:
-                    # Flash checks stop_event between its preparation stages and
-                    # may run a detached programmer; do not lock shutdown behind it.
+                    # Flash only follows a service job; shutdown must not wait for
+                    # the GUI-side progress loop.
                     with self._command_lock if operation != "flash" else nullcontext():
                         with self.lock:
                             current = generation == self._command_generation
@@ -1131,9 +1072,7 @@ class LiveController:
         # Commands observe stop_event; bound the wait so a stuck command cannot hang exit.
         locked = self._command_lock.acquire(timeout=35)
         try:
-            connected = self.attached and self._status.get("state", {}).get(
-                "connected", False
-            )
+            connected = self.attached
             owned_endpoint = self.owned.endpoint
             owned_running = self.owned.running
             if not connected and not (owned_running and owned_endpoint):
@@ -1154,7 +1093,16 @@ class LiveController:
             if owned_running and owned_endpoint:
                 try:
                     if not self.owned.shutdown_requested:
-                        factory(owned_endpoint).shutdown()
+                        owned_client = factory(owned_endpoint)
+                        if (
+                            self.owned.service_id
+                            and owned_client.status()["service_id"]
+                            != self.owned.service_id
+                        ):
+                            raise RuntimeError(
+                                "Owned service was replaced; refusing to shut down its replacement"
+                            )
+                        owned_client.shutdown()
                         self.owned.shutdown_requested = True
                     try:
                         code = self.owned.process.wait(timeout=CLOSE_FINALIZE_TIMEOUT)

@@ -5,7 +5,6 @@ import os
 import shutil
 from pathlib import Path
 
-from .cli_console import CliConsole
 from .user_paths import write_json
 
 
@@ -87,36 +86,3 @@ def connection_refused(error):
         or "os error 10061" in text
         or "actively refused" in text
     )
-
-
-def run_flash_cli(repo, endpoint, stop_event, emit):
-    if stop_event.is_set():
-        return False
-
-    class Output:
-        def info(self, text):
-            emit("info", text)
-
-        def ok(self, text):
-            emit("ok", text)
-
-        def error(self, text):
-            emit("error", text)
-
-    runner = CliConsole(Output())
-    try:
-        job = runner.submit_arguments(["flash", "--repo", str(repo)], endpoint)
-        if job is None:
-            raise RuntimeError("CLI wheel unavailable; live is not activated")
-        while job.returncode is None:
-            if stop_event.is_set():
-                return False  # The detached CLI finishes programming; do not reconnect after GUI exit.
-            runner.poll()
-            stop_event.wait(0.05)
-        if job.returncode != 0:
-            raise RuntimeError(
-                f"Flashing failed (exit {job.returncode}); see Console output"
-            )
-        return True
-    finally:
-        runner.close()

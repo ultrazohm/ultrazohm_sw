@@ -152,7 +152,11 @@ ultrazohm-cli create-json-from-javascope-h --repo /path/to/ultrazohm_sw --output
 ultrazohm-dataviewer gui --live-repo /path/to/ultrazohm_sw
 ```
 
-Vitis operations require a firmware checkout and an external Vitis installation.
+Vitis operations require a firmware checkout and an external Vitis installation. Firmware
+commands normally execute through the selected CLI service, on its machine. Start it
+with `ultrazohm-cli serve --repo PATH`, then use `build`, `flash`, or the viewer's
+Flash UZ action. Offline builds require `build --local --repo PATH`.
+See [firmware tooling](ultrazohm_cli/README.md) for job progress and lifecycle details.
 
 ### Building and testing
 

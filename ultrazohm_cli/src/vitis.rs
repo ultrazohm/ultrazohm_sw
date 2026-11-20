@@ -36,7 +36,7 @@ pub fn repository(explicit: Option<&Path>) -> Result<PathBuf> {
     )
 }
 
-fn xsct() -> Result<PathBuf> {
+pub(crate) fn xsct() -> Result<PathBuf> {
     #[cfg(windows)]
     let names = ["xsct.exe", "xsct.cmd", "xsct.bat"];
     #[cfg(not(windows))]
@@ -57,6 +57,26 @@ fn xsct() -> Result<PathBuf> {
 
 pub fn run(action: &str, repo: Option<&Path>, profile: Option<&str>) -> Result<()> {
     let root = repository(repo)?;
+    let artifacts = root.join("artifacts");
+    std::fs::create_dir_all(&artifacts)?;
+    let lock = std::fs::OpenOptions::new()
+        .create(true)
+        .truncate(false)
+        .read(true)
+        .write(true)
+        .open(artifacts.join("firmware.lock"))?;
+    lock.try_lock().context("firmware workspace is in use")?;
+    execute(action, Some(&root), profile, None, None)
+}
+
+pub(crate) fn execute(
+    action: &str,
+    repo: Option<&Path>,
+    profile: Option<&str>,
+    log: Option<&std::fs::File>,
+    xsct_override: Option<&Path>,
+) -> Result<()> {
+    let root = repository(repo)?;
     let script = env::var_os("UZ_CLI_TCL_DIR")
         .map(|dir| PathBuf::from(dir).join("vitis_headless.tcl"))
         .unwrap_or_else(|| root.join(SCRIPT));
@@ -66,7 +86,7 @@ pub fn run(action: &str, repo: Option<&Path>, profile: Option<&str>) -> Result<(
         "Vitis entry script not found: {}",
         script.display()
     );
-    let executable = xsct()?;
+    let executable = selected_xsct(xsct_override)?;
     eprintln!("Vitis {action}: repository {}", root.display());
     let mut command = Command::new(&executable);
     command
@@ -78,6 +98,9 @@ pub fn run(action: &str, repo: Option<&Path>, profile: Option<&str>) -> Result<(
     if let Some(profile) = profile {
         command.arg(profile);
     }
+    if let Some(log) = log {
+        command.stdout(log.try_clone()?).stderr(log.try_clone()?);
+    }
     let status = command
         .status()
         .with_context(|| format!("failed to start Vitis XSCT at {}", executable.display()))?;
@@ -86,4 +109,16 @@ pub fn run(action: &str, repo: Option<&Path>, profile: Option<&str>) -> Result<(
         "Vitis {action} failed ({status}); see XSCT output above"
     );
     Ok(())
+}
+
+pub(crate) fn selected_xsct(path: Option<&Path>) -> Result<PathBuf> {
+    if let Some(path) = path {
+        ensure!(
+            path.is_file(),
+            "XSCT launcher not found: {}",
+            path.display()
+        );
+        return std::path::absolute(path).context("resolve XSCT launcher");
+    }
+    xsct()
 }

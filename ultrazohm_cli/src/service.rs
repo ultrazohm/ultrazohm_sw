@@ -23,6 +23,7 @@ use std::{
 };
 
 mod control;
+mod controller;
 
 // Bounded audit IO: slow storage must never hold up device Stop. Audit failure
 // is reported in status and in run.json's end section; it never ends
@@ -104,8 +105,8 @@ pub fn session_output_for_repository(
 }
 
 const MAX_MESSAGE: usize = 65536;
-/// Local API version. v2: persistent connections and coded errors.
-pub const API_VERSION: u32 = 2;
+/// API v3: persistent controller, replaceable sessions and firmware jobs.
+pub const API_VERSION: u32 = 3;
 
 /// An error with a stable machine-readable `code`, carried in JSON error replies.
 #[derive(Debug)]
@@ -190,6 +191,19 @@ fn error_reply(error: &anyhow::Error) -> Value {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(tag = "op", rename_all = "snake_case", deny_unknown_fields)]
 pub enum Operation {
+    Firmware {
+        action: String,
+        request_id: String,
+        device: Option<String>,
+        #[serde(default)]
+        no_reconnect: bool,
+    },
+    Jobs,
+    Job {
+        id: String,
+        #[serde(default)]
+        offset: usize,
+    },
     Connect {
         ip: String,
         port: u16,
@@ -245,6 +259,8 @@ impl Operation {
         matches!(
             self,
             Self::Status
+                | Self::Jobs
+                | Self::Job { .. }
                 | Self::Catalog
                 | Self::Observables
                 | Self::DataInfo { .. }
@@ -273,6 +289,8 @@ pub struct Request {
 }
 #[derive(Clone, Debug)]
 pub struct Config {
+    pub repo: Option<PathBuf>,
+    pub xsct: Option<PathBuf>,
     pub device: Option<String>,
     pub endpoint: String,
     pub profile: Profile,
@@ -546,15 +564,12 @@ pub fn serve_with_ready(
     // Claim the control endpoint before touching the device (new device clients replace old ones).
     let listener = TcpListener::bind(local_address(&config.endpoint)?)?;
     listener.set_nonblocking(true)?;
-    let service = Service::new(config, shutdown)?;
-    eprintln!("UltraZohm service listening on {}", service.config.endpoint);
-    ready();
-    service.run(listener)
+    controller::run(config, shutdown, listener, ready)
 }
 
 /// All mutable session ownership stays on the control thread. The connection
 /// context shares only the synchronized state needed by acquisition workers.
-struct Service {
+struct Session {
     config: Config,
     context: ConnectionContext,
     run_id: String,
@@ -571,8 +586,19 @@ enum Reply {
     Data(Box<DataView>, Query),
 }
 
-impl Service {
-    fn new(config: Config, shutdown: Arc<AtomicBool>) -> Result<Self> {
+impl Session {
+    fn stop_device(&mut self) {
+        if let Err(error) = self.handle(Request {
+            api_version: API_VERSION,
+            command: Operation::Stop,
+        }) {
+            self.context.state.lock().unwrap().error = Some(format!("Stop failed: {error:#}"));
+        }
+    }
+
+    fn new(mut config: Config, shutdown: Arc<AtomicBool>) -> Result<Self> {
+        config.profile.validate()?;
+        config.data.resolve(config.profile.sample_period_us)?;
         if let Some(dir) = &config.output {
             ensure!(
                 !dir.exists(),
@@ -656,45 +682,6 @@ impl Service {
         Ok(())
     }
 
-    fn run(mut self, listener: TcpListener) -> Result<()> {
-        let control = match control::ControlServer::new(
-            listener,
-            self.context.shutdown.clone(),
-            self.context.state.clone(),
-        ) {
-            Ok(control) => control,
-            Err(error) => {
-                self.fail(format!("control transport: {error:#}"));
-                if let Err(finish) = self.finish() {
-                    eprintln!("Service finalization: {finish:#}");
-                }
-                return Err(error);
-            }
-        };
-        while !self.context.shutdown.load(Ordering::SeqCst) {
-            // A failed recording is reported in its status and at exit; it never
-            // ends acquisition or device control (optional exports included).
-            if self
-                .connection
-                .as_ref()
-                .is_some_and(|c| c.acquisition.is_finished())
-            {
-                self.context.shutdown.store(true, Ordering::SeqCst);
-                break;
-            }
-            // Wake on the next request; time out to recheck acquisition state.
-            if let Some(pending) = control.next(Duration::from_millis(50)) {
-                let response = self.handle(pending.request);
-                // A client that disconnected meanwhile no longer needs the reply.
-                let _ = pending.reply.send(response);
-            }
-        }
-        // Stop the device before waiting for any slow client or disk worker.
-        let result = self.finish();
-        let connections = control.finish();
-        result.and(connections)
-    }
-
     fn handle(&mut self, req: Request) -> Result<Reply> {
         match &req.command {
             Operation::ReadData { query } => {
@@ -775,6 +762,9 @@ impl Service {
     fn apply(&mut self, command: &Operation) -> Result<Option<(u32, f32)>> {
         let mut wire = None;
         match command {
+            Operation::Firmware { .. } | Operation::Jobs | Operation::Job { .. } => {
+                unreachable!("controller operation")
+            }
             Operation::Connect { ip, port } => {
                 ensure!(self.connection.is_none(), "already connected");
                 ensure!(*port != 0, "port must be 1..65535");

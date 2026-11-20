@@ -69,29 +69,33 @@ class VitisCommandTest(unittest.TestCase):
             timeout=10,
         )
 
+    def test_service_commands_never_fall_back_to_local_tools(self):
+        result = self.cli("--endpoint", "127.0.0.1:1", "build")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse(self.result.exists())
+
     def test_actions_and_paths_with_spaces(self):
         for command, action, tail in [
             ("generate", "generate", []),
             ("build", "build", []),
             ("build-clean", "build-clean", []),
-            ("flash", "flash", ["Run_UltraZohm"]),
         ]:
             with self.subTest(command=command):
-                result = self.cli(command, "--repo", str(self.repo))
+                result = self.cli(command, "--local", "--repo", str(self.repo))
                 self.assertEqual(result.returncode, 0, result.stderr)
                 call = json.loads(self.result.read_text())
                 self.assertEqual(Path(call["cwd"]).resolve(), self.repo.resolve())
                 self.assertEqual(call["args"][0], "-nodisp")
                 self.assertEqual(Path(call["args"][1]).resolve(), self.script.resolve())
                 self.assertEqual(call["args"][2:], [action, *tail])
-        result = self.cli("generate", "--open", "--repo", str(self.repo))
+        result = self.cli("generate", "--local", "--open", "--repo", str(self.repo))
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(
             json.loads(self.result.read_text())["args"][2:], ["generate-open"]
         )
 
     def test_discovery_from_subdirectory(self):
-        result = self.cli("build", cwd=self.repo / "vitis/software")
+        result = self.cli("build", "--local", cwd=self.repo / "vitis/software")
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(
             Path(json.loads(self.result.read_text())["cwd"]).resolve(),
@@ -99,16 +103,20 @@ class VitisCommandTest(unittest.TestCase):
         )
 
     def test_missing_repository_and_tool(self):
-        result = self.cli("build")
+        result = self.cli("build", "--local")
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("--repo", result.stderr)
-        result = self.cli("build", "--repo", str(self.base))
+        result = self.cli("build", "--local", "--repo", str(self.base))
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("not an UltraZohm repository", result.stderr)
         empty = self.base / "empty"
         empty.mkdir()
         result = self.cli(
-            "build", "--repo", str(self.repo), env={**self.env, "PATH": str(empty)}
+            "build",
+            "--local",
+            "--repo",
+            str(self.repo),
+            env={**self.env, "PATH": str(empty)},
         )
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("not found on PATH", result.stderr)
@@ -116,7 +124,11 @@ class VitisCommandTest(unittest.TestCase):
 
     def test_child_failure_and_invalid_profile(self):
         result = self.cli(
-            "build", "--repo", str(self.repo), env={**self.env, "UZ_TEST_EXIT": "7"}
+            "build",
+            "--local",
+            "--repo",
+            str(self.repo),
+            env={**self.env, "UZ_TEST_EXIT": "7"},
         )
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Vitis build failed", result.stderr)
@@ -134,7 +146,7 @@ class VitisCommandTest(unittest.TestCase):
         script.write_text("# bundled entry point")
         self.script.unlink()
         self.env["UZ_CLI_TCL_DIR"] = str(bundle)
-        result = self.cli("flash", "--repo", str(self.repo))
+        result = self.cli("build", "--local", "--repo", str(self.repo))
         self.assertEqual(result.returncode, 0, result.stderr)
         call = json.loads(self.result.read_text())
         self.assertEqual(Path(call["args"][1]).resolve(), script.resolve())

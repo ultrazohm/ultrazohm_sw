@@ -294,6 +294,40 @@ pub struct Profile {
     pub platform_state: Option<PlatformStateMapping>,
 }
 impl Profile {
+    /// Carry runtime choices into a new firmware mapping, reporting dropped assignments.
+    pub fn remap(&self, mapping: ChannelMapping) -> Result<(Self, Vec<String>)> {
+        let mut selected = std::collections::BTreeMap::new();
+        let mut removed = Vec::new();
+        for (channel, name) in &self.initial_channels {
+            let canonical = if mapping.observables.contains_key(name) {
+                name.clone()
+            } else {
+                format!("JSO_{name}")
+            };
+            if *channel > 0
+                && (*channel as usize) <= mapping.channels
+                && mapping.observables.contains_key(&canonical)
+            {
+                selected.insert(*channel, canonical);
+            } else {
+                removed.push(name.clone());
+            }
+        }
+        if selected.is_empty()
+            && !self.initial_channels.is_empty()
+            && mapping.observables.contains_key("JSO_ZEROVALUE")
+        {
+            selected.insert(1, "JSO_ZEROVALUE".into());
+        }
+        let settings = ProfileSettings {
+            schema_version: 1,
+            name: self.name.clone(),
+            sample_period_us: self.sample_period_us,
+            initial_channels: selected,
+        };
+        Ok((Self::from_mapping(settings, mapping)?, removed))
+    }
+
     pub fn load(path: Option<&Path>) -> Result<Self> {
         Self::load_files(path, None)
     }
@@ -442,6 +476,28 @@ impl Profile {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn remapping_preserves_runtime_choices_and_reports_removed_channels() {
+        let repo = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .unwrap();
+        let mapping = ChannelMapping::load_repository(None, Some(repo)).unwrap();
+        let settings = ProfileSettings::for_mapping(None, &mapping).unwrap();
+        let mut profile = Profile::from_mapping(settings, mapping.clone()).unwrap();
+        let name = mapping.observables.keys().next().unwrap().clone();
+        profile.sample_period_us = 50.0;
+        profile.initial_channels = [
+            (1, name.trim_start_matches("JSO_").into()),
+            (2, "JSO_missing_test_signal".into()),
+            (mapping.channels as u32 + 1, name.clone()),
+        ]
+        .into();
+        let (updated, removed) = profile.remap(mapping).unwrap();
+        assert_eq!(updated.sample_period_us, 50.0);
+        assert_eq!(updated.initial_channels, [(1, name)].into());
+        assert_eq!(removed.len(), 2);
+    }
 
     fn state_mapping() -> PlatformStateMapping {
         PlatformStateMapping {

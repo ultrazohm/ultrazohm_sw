@@ -256,6 +256,24 @@ impl ControlServer {
         })
     }
 
+    pub fn invalidate_session(&self) {
+        let mut state = self.queue.state.lock().unwrap();
+        let (cancel, keep) = state.pending.drain(..).partition::<Vec<_>, _>(|p| {
+            !p.request.command.read_only()
+                && !matches!(
+                    p.request.command,
+                    Operation::Stop | Operation::Shutdown | Operation::Firmware { .. }
+                )
+        });
+        state.pending = keep.into();
+        for p in cancel {
+            let _ = p.reply.send(Err(coded(
+                "session_replaced",
+                "acquisition session changed before execution",
+            )));
+        }
+    }
+
     pub fn next(&self, timeout: Duration) -> Option<Pending> {
         self.queue.next(timeout)
     }

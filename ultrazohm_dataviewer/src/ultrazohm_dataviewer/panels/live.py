@@ -209,7 +209,6 @@ class LiveWorkspace:
         except (OSError, ValueError, KeyError) as exc:
             self.tool_error = str(exc)
         self.flash_available = xsct_available()
-        self._flash_config = None
         self.follow = True
         self.paused = False
         self.window_seconds = 2.0
@@ -335,7 +334,10 @@ class LiveWorkspace:
                 raise RuntimeError(
                     "Wait for ultrazohm_sw root directory preparation to finish."
                 )
-            if operation in ("connect", "flash") and not self.repository_ready:
+            if (
+                operation == "connect"
+                or (operation == "flash" and not self.update.attached)
+            ) and not self.repository_ready:
                 raise RuntimeError(
                     "Select and prepare the ultrazohm_sw root directory first."
                 )
@@ -373,6 +375,11 @@ class LiveWorkspace:
         self.scripts.poll()
         update = self.controller.latest()
         self.update = update
+        self.flash_available = (
+            bool(update.status.get("firmware_available"))
+            if update.attached
+            else xsct_available()
+        )
         if self._xsct_dialog is not None and self._xsct_dialog.ready():
             selected = self._xsct_dialog.result()
             self._xsct_dialog = None
@@ -383,13 +390,8 @@ class LiveWorkspace:
                     self.tool_error = ""
                 except (OSError, ValueError) as exc:
                     self.tool_error = str(exc)
-        if (
-            update.flash_config is not None
-            and update.flash_config != self._flash_config
-        ):
-            self.mapping, self.output = update.flash_config
-            self.mapping_is_explicit = False
-            self._flash_config = update.flash_config
+        if update.attached and update.status.get("output"):
+            self.output = update.status["output"]
         if main_state is not None:
             for _ in range(200):
                 try:
@@ -601,19 +603,29 @@ class LiveWorkspace:
                 imgui.same_line()
 
         next_button("Flash UZ")
-        imgui.begin_disabled(not self.flash_available or not self.repository_ready)
+        imgui.begin_disabled(
+            not self.flash_available
+            or (not self.update.attached and not self.repository_ready)
+        )
         if imgui.button("Flash UZ"):
             imgui.open_popup("Flash UltraZohm?")
         imgui.end_disabled()
         if imgui.is_item_hovered(imgui.HoveredFlags_.allow_when_disabled):
             imgui.set_tooltip(
-                "Select the Vitis XSCT launcher with Browse for XSCT, or start the viewer from a Vitis command prompt."
+                (
+                    "Configure Vitis XSCT on the service machine and restart the service."
+                    if self.update.attached
+                    else "Select the Vitis XSCT launcher before starting the local service."
+                )
                 if not self.flash_available
-                else "Ask for confirmation, then send device Stop, finalize logging, shut down the service, regenerate the mapping, flash, and reconnect."
+                else "Ask for confirmation, then send device Stop, finalize logging, replace the acquisition session, flash, and reconnect on the service machine."
             )
         imgui.end_disabled()
         imgui.begin_disabled(
-            pfd is None or self._xsct_dialog is not None or bool(activity)
+            pfd is None
+            or self._xsct_dialog is not None
+            or bool(activity)
+            or self.update.attached
         )
         if imgui.button("Browse for XSCT"):
             self._xsct_dialog = pfd.open_file(
@@ -1053,11 +1065,11 @@ class LiveWorkspace:
             "Send device Stop, finish fast and slow logging, flash the system, and reconnect?"
         )
         imgui.text_wrapped(
-            "The acquisition service will restart with a fresh channel mapping."
+            "The service stays running and replaces its acquisition session with a fresh channel mapping."
         )
         if imgui.button("OK"):
             if not self.flash_available:
-                self.error = "Vitis XSCT (xsct) is not on PATH"
+                self.error = "The selected service has no firmware tooling available"
             else:
                 endpoint = (
                     self.controller.endpoint if self.update.attached else self.endpoint

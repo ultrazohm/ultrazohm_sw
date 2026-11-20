@@ -11,7 +11,7 @@ use std::{
     process::Command,
 };
 
-const HEADERS: [&str; 5] = [
+pub(crate) const HEADERS: [&str; 5] = [
     "vitis/software/Baremetal/src/include/javascope.h",
     "vitis/software/Baremetal/src/include/javascope_status.h",
     "vitis/software/shared/APU_RPU_shared.h",

@@ -1,6 +1,7 @@
 """Explicitly saved live preferences; signal names survive service restarts."""
 
 import json
+import subprocess
 from pathlib import Path
 
 from .session import plot_cells_to_list, restore_plot_cells
@@ -81,11 +82,24 @@ def save(workspace):
         if workspace._repository_settings is not None
         else load_workspace_settings(workspace.mapping, directory)
     )
-    # Use the actual service configuration after connecting; it may have been
-    # regenerated from newer headers than the repository preview.
-    mapping = (
-        workspace.update.catalog if workspace.update.attached else settings.mapping
-    )
+    # These preferences start a LOCAL service. An attached service's catalog
+    # does not establish compatibility with that local firmware checkout.
+    # Refresh repository metadata because the preview may predate a flash/edit.
+    if (
+        workspace._repository_settings is not None
+        and workspace.update.attached
+        and workspace.update.assignments
+    ):
+        from .live_mapping import read_mapping
+
+        try:
+            mapping = read_mapping(workspace.repo)
+        except subprocess.TimeoutExpired as exc:
+            raise RuntimeError(
+                "Timed out validating the local firmware mapping"
+            ) from exc
+    else:
+        mapping = settings.mapping
     from .settings import read_runtime_settings
 
     saved_profile = read_runtime_settings(settings.path)

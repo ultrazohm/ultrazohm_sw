@@ -561,9 +561,13 @@ class LiveController:
             self._command_generation += 1
             while True:
                 try:
-                    self.commands.get_nowait()
+                    _, operation, _ = self.commands.get_nowait()
                 except Empty:
                     break
+                if operation == "flash":
+                    # This request will never reach the worker's finally block.
+                    # A dequeued/running flash remains the worker's responsibility.
+                    self.flashing = False
 
     def send_stop(self, endpoint=None):
         """Finish an in-flight command before Stop, independently of data reads."""

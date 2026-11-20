@@ -350,3 +350,67 @@ def test_old_poll_cannot_replace_new_service_catalog():
         release.set()
         poll.join(2)
         controller.stop_event.set()
+
+
+@pytest.mark.parametrize("cancel", ["stop", "shutdown", "cancel_pending"])
+def test_canceling_queued_flash_releases_busy_state(monkeypatch, cancel):
+    from live_support import wait_for
+
+    from ultrazohm_dataviewer.live import LiveController
+
+    release, executed = threading.Event(), threading.Event()
+
+    class Client:
+        def __init__(self, endpoint):
+            pass
+
+        def stop(self):
+            pass
+
+        def shutdown(self):
+            pass
+
+    controller = LiveController(client_factory=Client)
+    controller.endpoint = "test"
+    controller.attached = True
+    original_work = controller._work
+
+    def delayed_work():
+        assert release.wait(5)
+        original_work()
+
+    calls = []
+
+    def command(operation, kwargs):
+        calls.append(operation)
+        executed.set()
+
+    monkeypatch.setattr(controller, "_work", delayed_work)
+    monkeypatch.setattr(controller, "_command", command)
+    monkeypatch.setattr(controller, "_poll", lambda: None)
+    try:
+        controller.submit("flash", endpoint="test")
+        if cancel == "cancel_pending":
+            controller.cancel_pending_commands()  # GUI Stop takes this path.
+        else:
+            controller.submit(cancel)
+        wait_for(lambda: controller._pending_controls == 0)
+        assert controller.commands.empty()
+        assert not controller.flashing
+        assert not calls
+        controller.submit("flash", endpoint="test")
+        release.set()
+        assert executed.wait(2)
+        wait_for(lambda: not controller.flashing)
+        assert calls == ["flash"]
+    finally:
+        release.set()
+        controller.stop_event.set()
+        for thread in (
+            controller.thread,
+            controller.control_thread,
+            controller.poll_thread,
+        ):
+            if thread is not None:
+                thread.join(2)
+                assert not thread.is_alive()

@@ -154,3 +154,101 @@ def test_save_live_button_writes_settings(gui_frame, app_state, monkeypatch, tmp
         assert "Live settings saved" in panel.settings_notice
     finally:
         panel.close()
+
+
+def test_attached_service_cannot_save_incompatible_local_startup_channels(tmp_path):
+    import pytest
+
+    panel = workspace(tmp_path)
+    try:
+        directory = save(panel)
+        paths = [directory / "settings.json", directory / "live_view.json"]
+        before = [path.read_bytes() for path in paths]
+        for assignment in (
+            {"channel": 1, "name": "REMOTE_ONLY"},
+            {"channel": 21, "name": "a"},
+        ):
+            panel.update = replace(
+                panel.update,
+                attached=True,
+                catalog={
+                    "channels": 32,
+                    "observables": {"REMOTE_ONLY": 1, "a": 2},
+                    "sample_period_us": 50.0,
+                },
+                assignments=(assignment,),
+            )
+            with pytest.raises(
+                ValueError, match="absent from the selected firmware mapping"
+            ):
+                save(panel)
+            assert [path.read_bytes() for path in paths] == before
+    finally:
+        panel.close()
+
+
+def test_save_refreshes_local_repository_mapping_after_firmware_changes(
+    tmp_path, monkeypatch
+):
+    from ultrazohm_dataviewer.settings import load_workspace_settings
+
+    panel = workspace(tmp_path)
+    try:
+        panel._repository_settings = load_workspace_settings(
+            panel.mapping, panel.user_directory()
+        )
+        assert "NEW_SIGNAL" not in panel._repository_settings.mapping["observables"]
+        requested = []
+
+        def read_mapping(repo):
+            requested.append(repo)
+            return {"channels": 20, "observables": {"NEW_SIGNAL": 1}}
+
+        monkeypatch.setattr(
+            "ultrazohm_dataviewer.live_mapping.read_mapping", read_mapping
+        )
+        panel.update = replace(
+            panel.update,
+            attached=True,
+            catalog={
+                "channels": 20,
+                "observables": {"NEW_SIGNAL": 1},
+                "sample_period_us": 50.0,
+            },
+            assignments=({"channel": 1, "name": "NEW_SIGNAL"},),
+        )
+        directory = save(panel)
+        assert requested == [str(tmp_path)]
+        assert json.loads((directory / "settings.json").read_text())[
+            "initial_channels"
+        ] == {"1": "NEW_SIGNAL"}
+    finally:
+        panel.close()
+
+
+def test_local_mapping_timeout_preserves_saved_settings(tmp_path, monkeypatch):
+    import subprocess
+
+    from ultrazohm_dataviewer.settings import load_workspace_settings
+
+    panel = workspace(tmp_path)
+    try:
+        directory = save(panel)
+        paths = [directory / "settings.json", directory / "live_view.json"]
+        before = [path.read_bytes() for path in paths]
+        panel._repository_settings = load_workspace_settings(panel.mapping, directory)
+        panel.update = replace(
+            panel.update, attached=True, assignments=({"channel": 1, "name": "b"},)
+        )
+
+        def timeout(repo):
+            raise subprocess.TimeoutExpired("channel-mapping", 60)
+
+        monkeypatch.setattr("ultrazohm_dataviewer.live_mapping.read_mapping", timeout)
+        panel.save_live_settings()
+        assert (
+            "Timed out validating the local firmware mapping" in panel.settings_notice
+        )
+        assert [path.read_bytes() for path in paths] == before
+    finally:
+        panel.close()

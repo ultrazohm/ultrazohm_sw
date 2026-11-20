@@ -1392,6 +1392,9 @@ kernel = ctypes.WinDLL("kernel32", use_last_error=True)
 kernel.FreeConsole()
 if not kernel.AttachConsole(int(sys.argv[1])):
     raise ctypes.WinError(ctypes.get_last_error())
+processes = (ctypes.c_ulong * 16)()
+count = kernel.GetConsoleProcessList(processes, len(processes))
+print("Ctrl-C console processes:", list(processes)[:count], flush=True)
 if not kernel.SetConsoleCtrlHandler(None, True):
     raise ctypes.WinError(ctypes.get_last_error())
 if not kernel.GenerateConsoleCtrlEvent(0, 0):

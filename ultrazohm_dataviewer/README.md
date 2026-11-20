@@ -24,7 +24,7 @@ Run `ultrazohm-dataviewer --help` for application commands.
 
 ## Settings
 
-Click **Settings** in the menu bar to open a non-modal window:
+Choose **UltraZohm Data Viewer → Settings** to open the settings window:
 
 - **General:** log browser directory and startup visibility of Application log and Python.
 - **Data loading:** backend, loading mode, and disk cache for newly opened recordings.

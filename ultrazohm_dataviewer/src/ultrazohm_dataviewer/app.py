@@ -248,9 +248,11 @@ class DataViewerApp:
         self._show_load_dialog()
         self.settings_panel.render()
 
-    def _show_menus(self) -> None:
+    def _show_app_menu_items(self) -> None:
         if imgui.menu_item("Settings", "", False)[0]:
             self.settings_panel.visible = True
+
+    def _show_menus(self) -> None:
         # Append to Hello ImGui's existing menu, including its hidden ID
         # (docking_details.cpp::ShowViewMenu), rather than drawing a second View.
         if imgui.begin_menu("View##kdsflmkdflm"):
@@ -641,6 +643,7 @@ class DataViewerApp:
         params.docking_params.layout_name = "UltraZohm"
 
         params.callbacks.pre_new_frame = self._pre_new_frame
+        params.callbacks.show_app_menu_items = self._show_app_menu_items
         params.callbacks.show_menus = self._show_menus
         params.callbacks.show_gui = self._show_gui
         params.callbacks.show_status = self._show_status

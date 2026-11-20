@@ -12,6 +12,9 @@ from contextlib import contextmanager
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from uz_environment import environment_lock  # noqa: E402
+
 WINDOWS = os.name == "nt"
 APP = "cli"
 PROJECT = "ultrazohm_cli"
@@ -90,6 +93,13 @@ def cli_task(task, *arguments):
 
 @contextmanager
 def replace_environment():
+    with environment_lock(ROOT):
+        with _replace_environment():
+            yield
+
+
+@contextmanager
+def _replace_environment():
     """Restore on failure; retain the backup if recovery itself fails."""
     environment = ROOT / ".venv"
     directory = Path(tempfile.mkdtemp(prefix=".uz-backup-", dir=ROOT))
@@ -255,8 +265,9 @@ def setup_task(args):
             )
         raise
     if args.task == "shell":
-        run(
-            executable("python"),
-            Path(__file__).with_name("env_shell.py"),
-            interactive=True,
-        )
+        with environment_lock(ROOT, use=True):
+            run(
+                executable("python"),
+                Path(__file__).with_name("env_shell.py"),
+                interactive=True,
+            )

@@ -8,8 +8,16 @@ import sys
 import tempfile
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from uz_environment import environment_lock  # noqa: E402
+
 
 def main():
+    with environment_lock(Path(sys.prefix).parent, use=True):
+        return shell()
+
+
+def shell():
     venv = Path(sys.prefix)
     if sys.prefix == sys.base_prefix:
         raise RuntimeError("Launch this module using the target virtual environment")

@@ -1,12 +1,16 @@
 """Minimal checks for project dispatch and child exit codes."""
 
 import sys
+import subprocess
+import io
 import tempfile
+import time
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
 import uz
+from uz_environment import environment_lock
 
 
 class DispatchTest(unittest.TestCase):
@@ -22,7 +26,9 @@ class DispatchTest(unittest.TestCase):
                         setup = load.return_value
                         setup.saved_setup.return_value = {"source": saved}
                         uz.main([app] + ([flag] if flag else []))
-                        project = uz.PROJECTS["viewer" if app == "dataviewer" else "cli"]
+                        project = uz.PROJECTS[
+                            "viewer" if app == "dataviewer" else "cli"
+                        ]
                         load.assert_called_once_with(f"{project}.tools.setup_env")
                         setup.setup.assert_called_once_with(
                             None if saved == source else source, reuse=True
@@ -36,13 +42,20 @@ class DispatchTest(unittest.TestCase):
         with (
             patch.object(uz.importlib, "import_module") as load,
             patch.object(uz.subprocess, "Popen") as start,
+            patch.object(uz.socket, "socket"),
+            patch.object(uz, "wait_for_viewer") as ready,
         ):
             setup = load.return_value
             setup.saved_setup.return_value = {}
             setup.executable.side_effect = lambda name: Path("/environment") / name
             uz.main(["dataviewer", "--interactive", "--local"])
             setup.setup.assert_called_once_with("local", reuse=True)
-            self.assertEqual(start.call_args.args[0], ["/environment/ultrazohm-dataviewer"])
+            self.assertEqual(
+                start.call_args.args[0][-1], "/environment/ultrazohm-dataviewer"
+            )
+            ready.assert_called_once_with(
+                start.return_value, Path("/environment/python")
+            )
             self.assertEqual(start.call_args.kwargs["stdin"], uz.subprocess.DEVNULL)
             setup.run.assert_called_once_with(
                 Path("/environment/python"),
@@ -50,13 +63,132 @@ class DispatchTest(unittest.TestCase):
                 interactive=True,
             )
 
-    def test_shortcut_failure_does_not_launch(self):
+    def test_cli_keeps_viewer_installation(self):
         with patch.object(uz.importlib, "import_module") as load:
+            setup = load.return_value
+            setup.saved_setup.return_value = {"app": "viewer", "source": "local"}
+            uz.main(["cli", "--local"])
+            self.assertEqual(
+                load.call_args.args[0], "ultrazohm_dataviewer.tools.setup_env"
+            )
+            setup.setup.assert_called_once_with(None, reuse=True)
+
+    def test_readiness_rejects_early_exit_and_timeout(self):
+        from unittest.mock import Mock
+
+        child = Mock()
+        child.poll.return_value = 7
+        with self.assertRaisesRegex(RuntimeError, "exit code 7"):
+            uz.wait_for_viewer(child, "python")
+        child.poll.return_value = None
+        with self.assertRaisesRegex(RuntimeError, "not ready"):
+            uz.wait_for_viewer(child, "python", timeout=0)
+
+    def test_startup_failure_closes_child_without_opening_shell(self):
+        with (
+            patch.object(uz.importlib, "import_module") as load,
+            patch.object(uz.socket, "socket"),
+            patch.object(uz.subprocess, "Popen") as start,
+            patch.object(
+                uz, "wait_for_viewer", side_effect=RuntimeError("startup failed")
+            ),
+            patch.object(uz, "stop_background") as stop,
+        ):
+            load.return_value.saved_setup.return_value = {}
+            load.return_value.executable.return_value = Path("python")
+            with self.assertRaises(SystemExit):
+                uz.main(["dataviewer", "--interactive", "--local"])
+            stop.assert_called_once_with(start.return_value)
+            load.return_value.run.assert_not_called()
+
+    def test_environment_lease_blocks_replacement_across_processes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            script = (
+                "import sys; from uz_environment import environment_lock; "
+                "lock=environment_lock(sys.argv[1], use=True); lock.__enter__(); "
+                "print('ready', flush=True); sys.stdin.read(); lock.__exit__(None,None,None)"
+            )
+            with subprocess.Popen(
+                [sys.executable, "-c", script, directory],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                text=True,
+            ) as child:
+                try:
+                    self.assertEqual(child.stdout.readline().strip(), "ready")
+                    with environment_lock(root, use=True):
+                        pass  # Multiple applications can share an installation.
+                    with self.assertRaisesRegex(RuntimeError, "in use"):
+                        with environment_lock(root):
+                            self.fail("replacement acquired an active environment")
+                finally:
+                    child.stdin.close()
+                    child.wait(timeout=10)
+            with environment_lock(root):
+                pass
+
+    def test_background_supervisor_holds_lease_until_application_exits(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            ready = root / "ready"
+            script = (
+                "import sys; from pathlib import Path; "
+                "Path(sys.argv[1]).touch(); sys.stdin.read()"
+            )
+            with subprocess.Popen(
+                [
+                    sys.executable,
+                    str(uz.ROOT / "uz_environment.py"),
+                    directory,
+                    sys.executable,
+                    "-c",
+                    script,
+                    str(ready),
+                ],
+                stdin=subprocess.PIPE,
+            ) as child:
+                try:
+                    deadline = time.monotonic() + 10
+                    while not ready.exists() and time.monotonic() < deadline:
+                        self.assertIsNone(child.poll())
+                        time.sleep(0.01)
+                    self.assertTrue(ready.exists())
+                    with self.assertRaisesRegex(RuntimeError, "in use"):
+                        with environment_lock(root):
+                            self.fail("background application lost its lease")
+                finally:
+                    child.stdin.close()
+                    child.wait(timeout=10)
+            self.assertEqual(child.returncode, 0)
+            with environment_lock(root):
+                pass
+
+    def test_clear_refuses_active_environment(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / ".venv").mkdir()
+            with patch.object(uz, "ROOT", root), environment_lock(root, use=True):
+                with self.assertRaisesRegex(RuntimeError, "in use"):
+                    uz.clear_venv()
+                self.assertTrue((root / ".venv").exists())
+
+    def test_shortcut_failure_does_not_launch(self):
+        with (
+            patch.object(uz.importlib, "import_module") as load,
+            patch.object(sys, "stderr", new_callable=io.StringIO) as stderr,
+        ):
             setup = load.return_value
             setup.setup.side_effect = uz.subprocess.CalledProcessError(7, "setup")
             with self.assertRaises(SystemExit) as error:
                 uz.main(["cli"])
             self.assertEqual(error.exception.code, 7)
+            self.assertIn(
+                "./uz cli --prerelease"
+                if uz.os.name != "nt"
+                else "uz.ps1 cli --prerelease",
+                stderr.getvalue(),
+            )
             setup.run.assert_not_called()
 
     def test_shortcut_rejects_conflicting_flags(self):

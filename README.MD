@@ -102,8 +102,13 @@ Start an application directly:
 Both shortcuts accept mutually exclusive `--stable` (default), `--prerelease`,
 and `--local` flags. They reuse a matching environment or prepare the selected
 application and source as needed. Their default is always stable, independent of
-the previous setup selection. Changing application or source replaces the managed
-environment. With `dataviewer --interactive`, run commands such as
+the previous setup selection. CLI launches reuse a matching viewer installation, which
+already includes the CLI. Changes that require replacing the managed environment, and
+`clear_venv`, are blocked while launcher-managed applications or shells are using it.
+Close those applications and shells before switching sources. If stable setup fails,
+the launcher prints the explicit `--prerelease` command; it never silently changes channels.
+With `dataviewer --interactive`, the launcher waits for the viewer control API before
+opening the shell. Startup failure or timeout is reported without opening a shell. Run commands such as
 `ultrazohm-dataviewer status` or `ultrazohm-cli` in the activated shell.
 Exiting that shell leaves the viewer running.
 

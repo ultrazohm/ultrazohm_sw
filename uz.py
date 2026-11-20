@@ -5,15 +5,25 @@ import importlib
 import json
 import os
 import shutil
+import signal
+import socket
+import time
 import subprocess
 import sys
 from pathlib import Path
+
+from uz_environment import environment_lock
 
 ROOT = Path(__file__).resolve().parent
 PROJECTS = {"cli": "ultrazohm_cli", "viewer": "ultrazohm_dataviewer"}
 
 
 def clear_venv():
+    with environment_lock(ROOT):
+        _clear_venv()
+
+
+def _clear_venv():
     """Remove only this checkout's managed environment and setup selection."""
     venv = ROOT / ".venv"
     if venv.is_symlink():
@@ -35,28 +45,118 @@ def selected_app():
         return "viewer"
 
 
+def wait_for_viewer(child, python, timeout=30):
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        code = child.poll()
+        if code is not None:
+            raise RuntimeError(f"DataViewer exited during startup (exit code {code}).")
+        try:
+            result = subprocess.run(
+                [
+                    str(python),
+                    "-c",
+                    "from ultrazohm_dataviewer import Client; "
+                    "Client(timeout=1).status()",
+                ],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                timeout=2,
+            )
+            if result.returncode == 0 and child.poll() is None:
+                return
+        except subprocess.TimeoutExpired:
+            pass
+        time.sleep(0.1)
+    raise RuntimeError(
+        f"DataViewer control API was not ready within {timeout} seconds."
+    )
+
+
+def stop_background(child):
+    if child.poll() is not None:
+        return
+    if os.name == "nt":
+        subprocess.run(["taskkill", "/PID", str(child.pid), "/T", "/F"], check=True)
+    else:
+        os.killpg(child.pid, signal.SIGTERM)
+    child.wait(timeout=10)
+    if os.name != "nt":
+        # The supervisor may exit before a child that handles SIGTERM.
+        try:
+            os.killpg(child.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+
+
 def launch_app(args):
     project = "viewer" if args.command == "dataviewer" else "cli"
     setup = importlib.import_module(f"{PROJECTS[project]}.tools.setup_env")
-    # Reuse matching installations, while making stable the shortcut default
-    # regardless of the last source selected with setup/shell.
-    source = None if setup.saved_setup().get("source") == args.source else args.source
-    setup.setup(source, reuse=True)
-    executable = setup.executable(f"ultrazohm-{args.command}")
-    if getattr(args, "interactive", False):
+    state = setup.saved_setup()
+    # A viewer installation already contains the CLI. Validate it using its owner.
+    if (
+        project == "cli"
+        and state.get("app") == "viewer"
+        and state.get("source") == args.source
+    ):
+        setup = importlib.import_module("ultrazohm_dataviewer.tools.setup_env")
+    source = None if state.get("source") == args.source else args.source
+    try:
+        setup.setup(source, reuse=True)
+    except subprocess.CalledProcessError:
+        if args.source == "stable":
+            launcher = ".\\uz.ps1" if os.name == "nt" else "./uz"
+            print(
+                f"Stable setup failed. To explicitly allow prereleases, run: "
+                f"{launcher} {args.command} --prerelease",
+                file=sys.stderr,
+            )
+        raise
+    marker = ROOT / ".venv/.uz-setup.json"
+    expected = marker.read_bytes() if marker.exists() else None
+    with environment_lock(ROOT, use=True):
+        if expected is not None and marker.read_bytes() != expected:
+            raise RuntimeError(
+                "The environment changed during launch; retry the command."
+            )
+        executable = setup.executable(f"ultrazohm-{args.command}")
+        if not getattr(args, "interactive", False):
+            setup.run(executable, interactive=True)
+            return
+        endpoint = os.environ.get("UZ_DATAVIEWER_ENDPOINT", "127.0.0.1:19741")
+        host, port = endpoint.rsplit(":", 1)
+        with socket.socket() as listener:
+            try:
+                listener.bind((host, int(port)))
+            except OSError as error:
+                raise RuntimeError(
+                    f"DataViewer endpoint {endpoint} is already in use."
+                ) from error
         options = (
             {"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP}
             if os.name == "nt"
             else {"start_new_session": True}
         )
-        subprocess.Popen([str(executable)], stdin=subprocess.DEVNULL, **options)
+        child = subprocess.Popen(
+            [
+                sys.executable,
+                str(ROOT / "uz_environment.py"),
+                str(ROOT),
+                str(executable),
+            ],
+            stdin=subprocess.DEVNULL,
+            **options,
+        )
+        try:
+            wait_for_viewer(child, setup.executable("python"))
+        except BaseException:
+            stop_background(child)
+            raise
         setup.run(
             setup.executable("python"),
             ROOT / PROJECTS[project] / "tools/env_shell.py",
             interactive=True,
         )
-    else:
-        setup.run(executable, interactive=True)
 
 
 def main(argv=None):
@@ -187,13 +287,15 @@ They do not require running setup first; build tools may still be required.""",
             launch_app(args)
         except subprocess.CalledProcessError as error:
             raise SystemExit(error.returncode or 1) from None
+        except RuntimeError as error:
+            parser.exit(1, f"{error}\n")
         except KeyboardInterrupt:
             raise SystemExit(130) from None
         return
     if args.command == "clear_venv":
         try:
             clear_venv()
-        except OSError as error:
+        except (OSError, RuntimeError) as error:
             parser.exit(1, f"Could not clear {ROOT / '.venv'}: {error}\n")
         return
     if args.command in ("setup", "shell"):

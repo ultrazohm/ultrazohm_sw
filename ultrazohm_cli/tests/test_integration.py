@@ -18,6 +18,7 @@ import threading
 import time
 import unittest
 from pathlib import Path
+from unittest.mock import Mock, patch
 
 ROOT = Path(__file__).resolve().parents[2]
 BIN = Path(
@@ -105,6 +106,34 @@ def repository_fixture(root):
         destination = root / name
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / name, destination)
+
+
+def cleanup_directory(directory, seconds=10):
+    """Allow Windows a bounded interval to release exited children's file handles."""
+    deadline = time.monotonic() + seconds
+    while True:
+        try:
+            directory.cleanup()
+            return
+        except PermissionError:
+            if time.monotonic() >= deadline:
+                raise
+            time.sleep(0.1)
+
+
+class FixtureCleanupTest(unittest.TestCase):
+    def test_transient_lock_is_retried(self):
+        directory = Mock()
+        directory.cleanup.side_effect = [PermissionError("locked"), None]
+        with patch.object(time, "sleep"):
+            cleanup_directory(directory)
+        self.assertEqual(directory.cleanup.call_count, 2)
+
+    def test_persistent_lock_remains_a_failure(self):
+        directory = Mock()
+        directory.cleanup.side_effect = PermissionError("still locked")
+        with self.assertRaisesRegex(PermissionError, "still locked"):
+            cleanup_directory(directory, seconds=0)
 
 
 class SimulatorTest(unittest.TestCase):
@@ -207,7 +236,7 @@ class PythonCLITest(unittest.TestCase):
 class IntegrationTest(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
-        self.addCleanup(self.tmp.cleanup)
+        self.addCleanup(cleanup_directory, self.tmp)
         # Default-output and failed-start paths may create parent directories.
         # Give every test a firmware fixture so these writes never reach the checkout.
         repository_fixture(Path(self.tmp.name))
@@ -222,21 +251,39 @@ class IntegrationTest(unittest.TestCase):
             self.endpoint = f"127.0.0.1:{service.getsockname()[1]}"
             self.device_port = device.getsockname()[1]
         self.processes = []
+        self.outputs = []
         self.addCleanup(self.cleanup_processes)
 
     def cleanup_processes(self):
-        for p in reversed(self.processes):
-            if p.poll() is None:
-                p.terminate()
-            try:
-                p.wait(timeout=8)
-            except subprocess.TimeoutExpired:
-                p.kill()
-                p.wait()
+        try:
+            service = getattr(self, "service", None)
+            if service is not None and service.poll() is None:
+                try:
+                    self.cli("shutdown")
+                    service.wait(timeout=FINALIZE_SECONDS)
+                except (RuntimeError, subprocess.TimeoutExpired):
+                    pass
+            for process in reversed(self.processes):
+                if process.poll() is None:
+                    process.terminate()
+                try:
+                    process.wait(timeout=8)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait(timeout=8)
+                for stream in (process.stdin, process.stdout, process.stderr):
+                    if stream is not None:
+                        stream.close()
+        finally:
+            for output in self.outputs:
+                output.close()
+            self.processes.clear()
+            self.service = None
+            self.server = None
 
     def spawn(self, args):
         output = tempfile.TemporaryFile(mode="w+t", encoding="utf-8")
-        self.addCleanup(output.close)
+        self.outputs.append(output)
         p = subprocess.Popen([str(x) for x in args], stdout=output, stderr=output)
         p.test_output = output
         self.processes.append(p)
@@ -361,8 +408,8 @@ class IntegrationTest(unittest.TestCase):
             self.interactive_stderr = tempfile.TemporaryFile(
                 mode="w+t", encoding="utf-8"
             )
-            self.addCleanup(self.interactive_stdout.close)
-            self.addCleanup(self.interactive_stderr.close)
+            self.outputs.append(self.interactive_stdout)
+            self.outputs.append(self.interactive_stderr)
             self.service = subprocess.Popen(
                 [str(x) for x in [*args, "--interactive"]],
                 creationflags=subprocess.CREATE_NEW_CONSOLE if windows_console else 0,
@@ -372,7 +419,6 @@ class IntegrationTest(unittest.TestCase):
                 text=True,
             )
             self.processes.append(self.service)
-            self.addCleanup(self.service.stdin.close)
         else:
             self.service = self.spawn(args)
         self.wait_for_process(
@@ -2323,6 +2369,7 @@ kernel.FreeConsole()
         root = Path(self.tmp.name)
         code = r"""import json, sys, time
 from pathlib import Path
+from unittest.mock import Mock, patch
 import ultrazohm_cli
 endpoint, device, root = sys.argv[1], sys.argv[2], Path(sys.argv[3])
 def measure(output):
@@ -2438,6 +2485,7 @@ raise SystemExit(3)
         wait_for(ready)
         code = r"""import json, sys, time
 from pathlib import Path
+from unittest.mock import Mock, patch
 import ultrazohm_cli
 endpoint, device_port = sys.argv[1:]
 a = ultrazohm_cli.Acquisition(endpoint=endpoint)

@@ -14,6 +14,7 @@ on:
       - 'uz'
       - 'uz.ps1'
       - 'uz.py'
+      - 'uz_environment.py'
       - 'test_uz.py'
       - 'ultrazohm_cli/**'
       - 'ultrazohm_dataviewer/**'
@@ -30,6 +31,7 @@ on:
       - 'uz'
       - 'uz.ps1'
       - 'uz.py'
+      - 'uz_environment.py'
       - 'test_uz.py'
       - 'ultrazohm_cli/**'
       - 'ultrazohm_dataviewer/**'
@@ -78,13 +80,16 @@ jobs:
       - run: ./uz task ${{ matrix.project }} format-check
 
   launcher-check:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: '0.13.1'
-      - run: uv tool run --from ruff==0.17.2 ruff check --isolated --select F uz.py test_uz.py
+      - run: uv tool run --from ruff==0.17.2 ruff check --isolated --select F uz.py uz_environment.py test_uz.py
       - run: uv run --no-project --python 3.12 -m unittest test_uz -v
 
   image:

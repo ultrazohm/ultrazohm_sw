@@ -1,0 +1,8 @@
+/target/
+*.so
+*.pyd
+__pycache__/
+/.venv/
+/dist/
+/.venv-host/
+/.venv-container/

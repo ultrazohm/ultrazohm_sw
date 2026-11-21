@@ -1,0 +1,431 @@
+use crate::{
+    live::DataOptions,
+    profile::Profile,
+    service::{self, Config, Operation},
+    storage::Format,
+};
+use pyo3::{exceptions::PyRuntimeError, prelude::*, types::PyBytes};
+use std::{
+    path::PathBuf,
+    sync::{
+        Arc, Mutex,
+        atomic::{AtomicBool, Ordering},
+        mpsc,
+    },
+    thread,
+};
+fn error(e: impl std::fmt::Display) -> PyErr {
+    PyRuntimeError::new_err(e.to_string())
+}
+/// RuntimeError carrying a stable error `code`: the service's code, or
+/// `connection_refused`, `timeout` or `transport` (None when uncoded).
+fn api_error(py: Python<'_>, e: anyhow::Error) -> PyErr {
+    let err = PyRuntimeError::new_err(format!("{e:#}"));
+    let _ = err
+        .value(py)
+        .setattr("code", service::client_error_code(&e));
+    err
+}
+
+/// One persistent connection to an acquisition service; requests are sequential.
+#[pyclass]
+struct Connection(Mutex<service::Connection>);
+
+#[pymethods]
+impl Connection {
+    #[new]
+    fn new(endpoint: String) -> Self {
+        Self(Mutex::new(service::Connection::new(&endpoint)))
+    }
+
+    fn request(&self, py: Python<'_>, command_json: String) -> PyResult<String> {
+        let op: Operation = serde_json::from_str(&command_json).map_err(error)?;
+        if matches!(op, Operation::ReadData { .. }) {
+            return Err(error("use data_query for binary sample responses"));
+        }
+        let reply = py
+            .detach(|| self.0.lock().unwrap().exchange(op, false))
+            .map_err(|e| api_error(py, e))?;
+        serde_json::to_string(&reply.0).map_err(error)
+    }
+
+    /// Query metadata and Arrow payload together so cursors describe exactly these rows.
+    fn data_query<'py>(
+        &self,
+        py: Python<'py>,
+        command_json: String,
+    ) -> PyResult<(String, Bound<'py, PyBytes>)> {
+        let op: Operation = serde_json::from_str(&command_json).map_err(error)?;
+        if !matches!(op, Operation::ReadData { .. }) {
+            return Err(error("expected read_data operation"));
+        }
+        let (reply, bytes) = py
+            .detach(|| self.0.lock().unwrap().exchange(op, true))
+            .map_err(|e| api_error(py, e))?;
+        Ok((
+            serde_json::to_string(&reply).map_err(error)?,
+            PyBytes::new(py, &bytes),
+        ))
+    }
+
+    /// Drop the socket; the next request reconnects.
+    fn close(&self) {
+        self.0.lock().unwrap().reset();
+    }
+}
+#[pyfunction]
+fn recording_info(py: Python<'_>, path: String) -> PyResult<String> {
+    py.detach(move || {
+        let reader = crate::backend::open(std::path::Path::new(&path)).map_err(error)?;
+        serde_json::to_string(&reader.info().map_err(error)?).map_err(error)
+    })
+}
+#[pyfunction]
+#[pyo3(signature=(path, start, stop, channels=None))]
+fn recording_data(
+    py: Python<'_>,
+    path: String,
+    start: u64,
+    stop: u64,
+    channels: Option<Vec<String>>,
+) -> PyResult<Bound<'_, PyBytes>> {
+    let bytes = py.detach(move || -> PyResult<Vec<u8>> {
+        use polars::prelude::*;
+        let reader = crate::backend::open(std::path::Path::new(&path)).map_err(error)?;
+        let info = reader.info().map_err(error)?;
+        let projection =
+            crate::backend::query_projection(&info.fields, channels.as_deref()).map_err(error)?;
+        if start > stop || stop - start > crate::data::max_rows(&info.fields, 256) {
+            return Err(error(
+                "range is invalid or exceeds response limit; use iter_batches",
+            ));
+        }
+        let mut df = reader
+            .read_projected_range(start, stop, projection.as_deref())
+            .map_err(error)?;
+        let mut bytes = Vec::new();
+        IpcStreamWriter::new(&mut bytes)
+            .finish(&mut df)
+            .map_err(error)?;
+        if bytes.len() > crate::live::MAX_SNAPSHOT_BYTES {
+            return Err(error("snapshot exceeds response limit"));
+        }
+        Ok(bytes)
+    })?;
+    Ok(PyBytes::new(py, &bytes))
+}
+
+/// One interactive-prompt command against a running service; returns its output.
+#[pyfunction]
+fn console_command(py: Python<'_>, endpoint: String, line: String) -> PyResult<String> {
+    py.detach(move || crate::cli::console_command(&endpoint, &line))
+        .map_err(|e| api_error(py, e))
+}
+
+/// Run the same CLI as the standalone binary, without requiring that binary.
+#[pyfunction]
+fn cli_main(py: Python<'_>, argv: Vec<String>) -> i32 {
+    py.detach(move || crate::cli::run(argv))
+}
+
+/// Optional embedded Rust service. External `ultrazohm_cli serve` survives Python exit.
+#[pyclass(subclass)]
+struct Acquisition {
+    output: Arc<Mutex<PathBuf>>,
+    stop: Arc<AtomicBool>,
+    worker: Option<thread::JoinHandle<anyhow::Result<()>>>,
+}
+#[pymethods]
+impl Acquisition {
+    #[new]
+    #[allow(clippy::too_many_arguments)] // Python keyword options plus the GIL token.
+    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="parquet".to_string(), ack=false, channel_mapping=None, *, repo=None, xsct=None, buffer_samples=None, segment_rows=1_000_000, flush_interval_ms=60_000, recording_backend="parquet", queue_seconds=crate::live::DEFAULT_QUEUE_SECONDS))]
+    fn new(
+        py: Python<'_>,
+        device: Option<String>,
+        endpoint: String,
+        output: Option<String>,
+        profile: Option<String>,
+        format: String,
+        ack: bool,
+        channel_mapping: Option<String>,
+        repo: Option<String>,
+        xsct: Option<String>,
+        buffer_samples: Option<usize>,
+        segment_rows: usize,
+        flush_interval_ms: u64,
+        recording_backend: &str,
+        queue_seconds: f64,
+    ) -> PyResult<Self> {
+        if recording_backend != "parquet" {
+            return Err(error("unsupported recording backend"));
+        }
+        let data = DataOptions {
+            recording_backend: Default::default(),
+            buffer_samples,
+            segment_rows,
+            flush_interval_ms,
+            queue_seconds,
+        };
+        data.validate().map_err(error)?;
+        let repo = repo
+            .map(PathBuf::from)
+            .map(|path| crate::vitis::repository(Some(&path)))
+            .transpose()
+            .map_err(error)?;
+        let xsct = xsct
+            .map(PathBuf::from)
+            .map(|path| crate::preferences::validate_xsct(&path))
+            .transpose()
+            .map_err(error)?;
+        let profile = Profile::load_repository(
+            profile.as_deref().map(std::path::Path::new),
+            channel_mapping.as_deref().map(std::path::Path::new),
+            repo.as_deref(),
+        )
+        .map_err(error)?;
+        let format = match format.as_str() {
+            "csv" => Format::Csv,
+            "parquet" => Format::Parquet,
+            _ => return Err(error("format must be csv or parquet")),
+        };
+        let output =
+            service::session_output_for_repository(output.map(PathBuf::from), repo.as_deref())
+                .map_err(error)?;
+        let output = Arc::new(Mutex::new(output));
+        let worker_output = output.lock().unwrap().clone();
+        let current_output = output.clone();
+        let (ready_tx, ready_rx) = mpsc::sync_channel(1);
+        let stop = Arc::new(AtomicBool::new(false));
+        let signal = stop.clone();
+        let worker = thread::spawn(move || {
+            service::serve_with_ready(
+                Config {
+                    launch_id: None,
+                    current_output: Some(current_output),
+                    repo,
+                    xsct,
+                    data,
+                    device,
+                    endpoint,
+                    output: Some(worker_output),
+                    profile,
+                    format,
+                    ack,
+                },
+                signal,
+                move || {
+                    let _ = ready_tx.send(());
+                },
+            )
+        });
+        // Dropping the readiness sender on an early return/panic wakes the
+        // constructor too. Surface startup failures here, not on a later close().
+        if py.detach(move || ready_rx.recv()).is_err() {
+            let result = py
+                .detach(move || worker.join())
+                .map_err(|_| error("acquisition thread panicked during startup"))?;
+            return match result {
+                Err(e) => Err(error(format!("{e:#}"))),
+                Ok(()) => Err(error("acquisition ended before startup completed")),
+            };
+        }
+        Ok(Self {
+            output,
+            stop,
+            worker: Some(worker),
+        })
+    }
+    /// The session directory, including automatically generated defaults.
+    #[getter]
+    fn output(&self) -> String {
+        self.output.lock().unwrap().to_string_lossy().into_owned()
+    }
+    fn close(&mut self, py: Python<'_>) -> PyResult<()> {
+        self.stop.store(true, Ordering::SeqCst);
+        if let Some(worker) = self.worker.take() {
+            py.detach(move || {
+                worker
+                    .join()
+                    .map_err(|_| error("acquisition thread panicked"))?
+                    .map_err(error)
+            })?;
+        }
+        Ok(())
+    }
+    fn is_finished(&self) -> bool {
+        self.worker.as_ref().is_none_or(|w| w.is_finished())
+    }
+    #[pyo3(signature=(stream="fast", recording=1))]
+    fn recording_handle_path(&self, stream: &str, recording: u64) -> PyResult<String> {
+        if self.worker.is_some() {
+            return Err(error("call acquisition.close() before reading recordings"));
+        }
+        if !matches!(stream, "fast" | "slow") || recording == 0 {
+            return Err(error(
+                "stream must be fast or slow; recording must be positive",
+            ));
+        }
+        let base = if recording == 1 {
+            "data".to_string()
+        } else {
+            format!("data_{recording:04}")
+        };
+        let id = if stream == "slow" {
+            format!("{base}_slow_data")
+        } else {
+            base
+        };
+        let path = crate::backend::index_path(&self.output.lock().unwrap(), &id);
+        let reader = crate::backend::open(&path).map_err(error)?;
+        if !reader.info().map_err(error)?.complete {
+            return Err(error(
+                "recording is not complete; inspect its metadata for errors",
+            ));
+        }
+        Ok(path.to_string_lossy().into_owned())
+    }
+    /// Resolve only a successfully completed compatibility export from this acquisition.
+    #[pyo3(signature=(stream="fast", recording=1))]
+    fn recording_path(&self, stream: &str, recording: u32) -> PyResult<String> {
+        if self.worker.is_some() {
+            return Err(error("call acquisition.close() before reading recordings"));
+        }
+        if !matches!(stream, "fast" | "slow") || recording == 0 {
+            return Err(error(
+                "stream must be fast or slow; recording must be positive",
+            ));
+        }
+        let base = if recording == 1 {
+            "data".into()
+        } else {
+            format!("data_{recording:04}")
+        };
+        let stem = if stream == "slow" {
+            format!("{base}_slow_data")
+        } else {
+            base
+        };
+        let summary = crate::backend::read_metadata(&crate::backend::index_path(
+            &self.output.lock().unwrap(),
+            &stem,
+        ))
+        .map_err(error)?
+        .unwrap_or_default();
+        if summary["complete"] != true {
+            return Err(error(
+                "recording is not complete; inspect its metadata for errors",
+            ));
+        }
+        let path = self.output.lock().unwrap().join(format!("{stem}.parquet"));
+        if !path.is_file() {
+            return Err(error("completed recording file is missing"));
+        }
+        Ok(path.to_string_lossy().into_owned())
+    }
+}
+impl Drop for Acquisition {
+    /// An acquisition that is garbage collected without close() still sends
+    /// device Stop and finalizes its recordings before the object goes away;
+    /// the service thread never needs the GIL, so joining it cannot deadlock.
+    fn drop(&mut self) {
+        self.stop.store(true, Ordering::SeqCst);
+        if let Some(worker) = self.worker.take() {
+            match worker.join() {
+                Ok(Ok(())) => {}
+                Ok(Err(error)) => {
+                    eprintln!("UltraZohm acquisition closed with an error: {error:#}")
+                }
+                Err(_) => eprintln!("UltraZohm acquisition thread panicked"),
+            }
+        }
+    }
+}
+/// Offline configuration helpers share validation with service startup.
+#[pyfunction]
+#[pyo3(signature=(operation, payload=None, repo=None))]
+fn configuration(
+    py: Python<'_>,
+    operation: String,
+    payload: Option<String>,
+    repo: Option<PathBuf>,
+) -> PyResult<String> {
+    py.detach(move || -> anyhow::Result<String> {
+        use crate::profile::{ChannelMapping, ProfileSettings};
+        let value = match operation.as_str() {
+            "job_progress" => {
+                let value: serde_json::Value =
+                    serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
+                crate::jobs::progress(value["offset"].as_u64().unwrap_or(0), &value["reply"])?
+            }
+            "directory" => serde_json::to_value(crate::preferences::directory(repo.as_deref())?)?,
+            "xsct" => {
+                let value: serde_json::Value =
+                    serde_json::from_str(payload.as_deref().unwrap_or("{}"))?;
+                let explicit = value["path"].as_str().map(std::path::Path::new);
+                serde_json::to_value(crate::preferences::resolve_xsct(explicit, repo.as_deref())?)?
+            }
+            "saved_xsct" => serde_json::to_value(crate::preferences::saved_xsct(repo.as_deref())?)?,
+            "save_xsct" => {
+                let path: PathBuf = serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
+                serde_json::to_value(crate::preferences::save_xsct(&path, repo.as_deref())?)?
+            }
+            "seed_profile" | "save_profile" => {
+                let value: serde_json::Value =
+                    serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
+                let path: PathBuf = serde_json::from_value(value["path"].clone())?;
+                let mapping: ChannelMapping = serde_json::from_value(value["mapping"].clone())?;
+                if operation == "seed_profile" {
+                    serde_json::to_value(crate::preferences::load_or_seed(&path, &mapping)?)?
+                } else {
+                    let settings: ProfileSettings =
+                        serde_json::from_value(value["profile"].clone())?;
+                    crate::preferences::save_profile(&path, &settings, &mapping)?;
+                    serde_json::Value::Null
+                }
+            }
+            "mapping" => {
+                serde_json::to_value(ChannelMapping::load_repository(None, repo.as_deref())?)?
+            }
+            "defaults" => {
+                let settings = if repo.is_some() {
+                    let mapping = ChannelMapping::load_repository(None, repo.as_deref())?;
+                    ProfileSettings::for_mapping(None, &mapping)?
+                } else {
+                    ProfileSettings::load(None)?
+                };
+                serde_json::to_value(settings)?
+            }
+            "validate" => {
+                let settings: ProfileSettings =
+                    serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
+                settings.validate()?;
+                serde_json::to_value(settings)?
+            }
+            "remap" => {
+                let value: serde_json::Value =
+                    serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
+                let settings: ProfileSettings = serde_json::from_value(value["profile"].clone())?;
+                let mapping: ChannelMapping = serde_json::from_value(value["mapping"].clone())?;
+                let (settings, removed) = settings.remap(&mapping)?;
+                Profile::from_mapping(settings.clone(), mapping)?;
+                serde_json::json!({"profile": settings, "removed": removed})
+            }
+            _ => anyhow::bail!("unknown configuration operation"),
+        };
+        Ok(serde_json::to_string(&value)?)
+    })
+    .map_err(|e| error(format!("{e:#}")))
+}
+
+#[pymodule]
+fn _native(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(configuration, m)?)?;
+    m.add_class::<Connection>()?;
+    m.add_function(wrap_pyfunction!(recording_info, m)?)?;
+    m.add_function(wrap_pyfunction!(recording_data, m)?)?;
+    m.add_function(wrap_pyfunction!(cli_main, m)?)?;
+    m.add_function(wrap_pyfunction!(console_command, m)?)?;
+    m.add_class::<Acquisition>()?;
+    Ok(())
+}

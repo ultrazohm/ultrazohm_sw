@@ -1,0 +1,130 @@
+//! Local Vitis operations; independent of the acquisition service.
+use anyhow::{Context, Result, bail, ensure};
+use std::{
+    env,
+    path::{Path, PathBuf},
+    process::Command,
+};
+
+include!(concat!(env!("OUT_DIR"), "/firmware_resources.rs"));
+
+// Called under the firmware checkout lock. Content-addressed paths preserve
+// incremental-build signatures across processes and survive GUI termination.
+fn entry_script(root: &Path) -> Result<PathBuf> {
+    if let Some(directory) = env::var_os("UZ_CLI_TCL_DIR") {
+        let path = std::path::absolute(PathBuf::from(directory).join("vitis_headless.tcl"))?;
+        ensure!(
+            path.is_file(),
+            "Vitis entry script not found: {}",
+            path.display()
+        );
+        return Ok(path);
+    }
+    let directory = root
+        .join("artifacts/cli-tools")
+        .join(RESOURCE_ID)
+        .join("tcl_scripts");
+    for (name, contents) in RESOURCES {
+        let path = directory.join(name);
+        if std::fs::read(&path).ok().as_deref() != Some(*contents) {
+            std::fs::create_dir_all(path.parent().unwrap())?;
+            std::fs::write(&path, contents)?;
+        }
+    }
+    Ok(directory.join("vitis_headless.tcl"))
+}
+
+fn is_repository(path: &Path) -> bool {
+    path.join("vitis/software/Baremetal/src/include/javascope.h")
+        .is_file()
+}
+
+pub fn repository(explicit: Option<&Path>) -> Result<PathBuf> {
+    if let Some(path) = explicit {
+        let root = std::path::absolute(path)
+            .with_context(|| format!("cannot access repository {}", path.display()))?;
+        ensure!(
+            is_repository(&root),
+            "{} is not an UltraZohm repository with vitis/software/Baremetal/src/include/javascope.h",
+            root.display()
+        );
+        return Ok(root);
+    }
+    let cwd = env::current_dir().context("cannot determine current directory")?;
+    for path in cwd.ancestors() {
+        if is_repository(path) {
+            return Ok(path.to_path_buf());
+        }
+    }
+    bail!(
+        "UltraZohm repository not found above {}; run from the checkout or pass --repo PATH",
+        cwd.display()
+    )
+}
+
+pub(crate) fn xsct() -> Result<PathBuf> {
+    #[cfg(windows)]
+    let names = ["xsct.exe", "xsct.cmd", "xsct.bat"];
+    #[cfg(not(windows))]
+    let names = ["xsct"];
+    for dir in env::split_paths(&env::var_os("PATH").unwrap_or_default()) {
+        for name in names {
+            let path = dir.join(name);
+            if crate::preferences::validate_xsct(&path).is_ok() {
+                // Resolve relative PATH entries before changing the child's cwd.
+                return std::path::absolute(path).context("cannot resolve XSCT launcher");
+            }
+        }
+    }
+    bail!(
+        "Vitis XSCT (xsct) not found on PATH. Load the Vitis 2022.2 environment (settings64.sh on Linux or a Vitis command prompt on Windows), then retry. These commands require XSCT, not only the Vitis GUI."
+    )
+}
+
+pub fn run(action: &str, repo: Option<&Path>, profile: Option<&str>) -> Result<()> {
+    let root = repository(repo)?;
+    let artifacts = root.join("artifacts");
+    std::fs::create_dir_all(&artifacts)?;
+    let lock = std::fs::OpenOptions::new()
+        .create(true)
+        .truncate(false)
+        .read(true)
+        .write(true)
+        .open(artifacts.join("firmware.lock"))?;
+    lock.try_lock().context("firmware workspace is in use")?;
+    execute(action, Some(&root), profile, None, None)
+}
+
+pub(crate) fn execute(
+    action: &str,
+    repo: Option<&Path>,
+    profile: Option<&str>,
+    log: Option<&std::fs::File>,
+    xsct_override: Option<&Path>,
+) -> Result<()> {
+    let root = repository(repo)?;
+    let script = entry_script(&root)?;
+    let executable = crate::preferences::resolve_xsct(xsct_override, Some(&root))?;
+    eprintln!("Vitis {action}: repository {}", root.display());
+    let mut command = Command::new(&executable);
+    command
+        .current_dir(&root)
+        .arg("-nodisp")
+        .env("UZ_WORKSPACE_ROOT", &root)
+        .arg(script)
+        .arg(action);
+    if let Some(profile) = profile {
+        command.arg(profile);
+    }
+    if let Some(log) = log {
+        command.stdout(log.try_clone()?).stderr(log.try_clone()?);
+    }
+    let status = command
+        .status()
+        .with_context(|| format!("failed to start Vitis XSCT at {}", executable.display()))?;
+    ensure!(
+        status.success(),
+        "Vitis {action} failed ({status}); see XSCT output above"
+    );
+    Ok(())
+}

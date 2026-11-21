@@ -68,7 +68,7 @@ def test_client_registry_contract():
     from ultrazohm_dataviewer.commands import CommandRegistry
 
     registry = CommandRegistry()
-    types = {"plot": "int", "run": "RunHandle", "node": "NodeHandle", "fwindow": "int"}
+    types = {"plot": "int", "run": "RunHandle", "node": "NodeHandle", "fwindow": "str"}
     for name, method in inspect.getmembers(ViewerMethods, inspect.isfunction):
         command = registry.get(name)
         assert command is not None, name

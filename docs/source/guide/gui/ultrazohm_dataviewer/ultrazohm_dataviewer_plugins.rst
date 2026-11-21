@@ -85,6 +85,15 @@ A working example is located at ``ultrazohm_sw/ultrazohm_dataviewer/examples/plu
      - list of ``ParamSpec`` describing the editable params (see below)
    * - ``unit``
      - optional unit string for the derived signal (default ``""``)
+   * - ``input_domain``
+     - required input domain: ``"time"`` or ``"frequency"``; default ``None`` accepts either. A callable taking ``params`` may return the requirement.
+   * - ``output_domain``
+     - output axis domain: ``"time"`` or ``"frequency"``; default ``None`` preserves the input domain. Domain-changing transforms must declare it.
+
+For example, declare a spectrum-producing transform with
+``@transform("spectrum", input_domain="time", output_domain="frequency")``.
+Its returned axis contains frequencies. Downstream axis-preserving transforms
+keep that domain, and time-only transforms reject it before computation.
 
 ``ParamSpec`` widgets
 ---------------------
@@ -96,7 +105,7 @@ Each renders a widget that writes back to ``params[key]``; read it in your funct
 Rules & tips
 ============
 
-- Output an ``(out_time, out_y, info)`` tuple. ``out_time`` is the independent axis of the derived signal and must preserve the input domain. Only the built-in FFT changes a time axis to frequency.
+- Output an ``(out_time, out_y, info)`` tuple. ``out_time`` is the independent axis of the derived signal; its meaning must match ``output_domain`` or preserve the input domain when that argument is omitted.
   Raise a normal exception with a clear message on bad input — it's caught, shown on the node, and the rest of the graph keeps working.
 - The result is materialized as a **derived run** named after the node, so it appears in Navigation and is draggable into plots / FFT / Histogram.
 - Plugins can import any package installed in the viewer's environment; the standalone bundle provides NumPy, pandas, PyArrow and Polars.
@@ -110,7 +119,8 @@ Plugin API version 2 makes inputs read-only array views.
 Allocate a separate working array before mutating samples.
 Returned arrays are validated, converted to float64 axes and float32 values, and copied into owned output buffers before publication.
 Invalid outputs fail only their node; independent graph branches continue evaluating.
-Plugins preserve the independent-axis domain of their inputs.
+Plugins preserve the independent-axis domain of their inputs unless they declare
+``output_domain``. Inputs to a multi-input transform must have the same domain.
 Registration validates lowercase kind identifiers, callable implementations, input arity (0–1,024), unique parameter keys, declared widget types, nonempty unique enum choices, and typed defaults.
 Invalid declarations roll back the plugin import.
 Input arrays must be one-dimensional and paired with equal-length axes; output diagnostic text must be a string.

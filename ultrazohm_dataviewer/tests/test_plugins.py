@@ -68,6 +68,50 @@ def test_missing_directory_is_safe(clean_registry):
     assert load_plugins(["/no/such/uz/plugin/dir"]) == ()  # no error, nothing loaded
 
 
+@pytest.mark.parametrize("detached", [False, True])
+def test_plugin_axis_domains_propagate_and_reject_invalid_chains(
+    tmp_path, clean_registry, app_state, detached
+):
+    from ultrazohm_dataviewer.node_jobs import capture, publish
+
+    (tmp_path / "spectrum.py").write_text(
+        _PLUGIN
+        + """
+@transform("spectrum", input_domain="time", output_domain="frequency")
+def spectrum(inputs, params):
+    t, y = inputs[0]
+    return np.fft.rfftfreq(len(t), t[1] - t[0]), np.abs(np.fft.rfft(y)), "spectrum"
+"""
+    )
+    assert set(load_plugins([str(tmp_path)])) == {"double", "spectrum"}
+    run = app_state.registry.add_run(
+        "input", "", np.arange(16) * 0.01, {"a": np.ones(16)}, {}
+    )
+    graph = app_state.nodes
+    source = graph.add("source", ref=(run.id, "a"))
+    spectrum = graph.add("spectrum")
+    preserved = graph.add("double")
+    rejected_plugin = graph.add("spectrum")
+    rejected_fft = graph.add("fft")
+    graph.link(source.id, spectrum.id)
+    graph.link(spectrum.id, preserved.id)
+    for node in (rejected_plugin, rejected_fft):
+        graph.link(preserved.id, node.id)
+
+    state = capture(app_state) if detached else app_state
+    assert nodes.evaluate(state) == 2
+    if detached:
+        assert publish(app_state, state) == 2
+    for node in (spectrum, preserved):
+        output = app_state.registry.get(node.out_run_id)
+        assert output.axis_domain == "frequency"
+        np.testing.assert_allclose(output.time, np.fft.rfftfreq(16, 0.01))
+    np.testing.assert_allclose(preserved.out_y, spectrum.out_y * 2)
+    for node in (rejected_plugin, rejected_fft):
+        assert "requires time-domain inputs" in node.error
+        assert node.out_y is None
+
+
 def test_partial_plugin_registration_is_rolled_back(tmp_path, clean_registry):
     before = dict(REGISTRY)
     modules = set(sys.modules)
@@ -231,6 +275,8 @@ def test_plugin_node_renders_headless(tmp_path, clean_registry, gui_frame):
         'ui=[ParamSpec.float("x"), ParamSpec.int("x")]',
         'params={"x": "nan"}, ui=[ParamSpec.float("x")]',
         'params={"x": "other"}, ui=[ParamSpec.enum("x", ["valid"])]',
+        'input_domain="invalid"',
+        'output_domain="invalid"',
     ],
 )
 def test_invalid_plugin_declarations_roll_back(tmp_path, clean_registry, declaration):

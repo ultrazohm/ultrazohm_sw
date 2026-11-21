@@ -74,7 +74,7 @@ class ViewerMethods:
         "Export the FFT spectra to CSV."
         return self._invoke("fft_export", {"path": path})
 
-    def fft_follow(self, target: int):
+    def fft_follow(self, target: str | int):
         "Set the FFT time window source (custom / full / plot_N)."
         return self._invoke("fft_follow", {"target": target})
 
@@ -122,7 +122,7 @@ class ViewerMethods:
         "Export the histogram bins to CSV."
         return self._invoke("hist_export", {"path": path})
 
-    def hist_follow(self, target: int):
+    def hist_follow(self, target: str | int):
         "Set the Histogram time window source (custom / full / plot_N)."
         return self._invoke("hist_follow", {"target": target})
 

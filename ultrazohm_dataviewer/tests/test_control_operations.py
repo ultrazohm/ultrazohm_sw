@@ -154,6 +154,27 @@ def test_terminal_commands_control_existing_state(app_state, tmp_path):
         code, output, error = command("status")
         assert code == 0, error
         assert json.loads(output)["grid"] == [2, 3]
+        for operation, config in (
+            ("fft-follow", app_state.fft),
+            ("hist-follow", app_state.histogram),
+        ):
+            for target, expected in (
+                ("full", -1),
+                ("custom", 0),
+                ("plot_2", 2),
+                ("-1", -1),
+                ("0", 0),
+                ("2", 2),
+            ):
+                code, output, error = command(operation, target)
+                assert code == 0, error
+                assert config.follow_plot == expected
+            code, output, error = command(operation, "invalid")
+            assert code == 1
+            assert (
+                "Expected custom/full/plot_N" in json.loads(error)["error"]["message"]
+            )
+            assert config.follow_plot == 2
         code, output, error = command("load", str(tmp_path / "missing.csv"))
         assert code == 1
         assert json.loads(error)["error"]["message"]

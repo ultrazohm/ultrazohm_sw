@@ -38,7 +38,7 @@ spy,Tools,Toggle the spy (drag-rect zoom inset) on a subplot.,"``viewer.spy(plot
 fft,FFT window,Recompute and focus the FFT window.,``viewer.fft()``
 fft_clear,FFT window,Remove all signals from the FFT window.,``viewer.fft_clear()``
 fft_export,FFT window,Export the FFT spectra to CSV.,``viewer.fft_export(path: 'str')``
-fft_follow,FFT window,Set the FFT time window source (custom / full / plot_N).,``viewer.fft_follow(target: 'int')``
+fft_follow,FFT window,Set the FFT time window source (custom / full / plot_N).,``viewer.fft_follow(target: 'str | int')``
 fft_hann,FFT window,Toggle the FFT Hann window.,``viewer.fft_hann(on: 'bool')``
 fft_logx,FFT window,Toggle the FFT log X axis.,``viewer.fft_logx(on: 'bool')``
 fft_logy,FFT window,Toggle the FFT log Y axis.,``viewer.fft_logy(on: 'bool')``
@@ -50,7 +50,7 @@ fft_xlim,FFT window,Set the FFT plot's X-axis view limits.,"``viewer.fft_xlim(mi
 hist_bins,Histogram window,Set the Histogram bin count (1..100000).,``viewer.hist_bins(n: 'int')``
 hist_clear,Histogram window,Remove all signals from the Histogram window.,``viewer.hist_clear()``
 hist_export,Histogram window,Export the histogram bins to CSV.,``viewer.hist_export(path: 'str')``
-hist_follow,Histogram window,Set the Histogram time window source (custom / full / plot_N).,``viewer.hist_follow(target: 'int')``
+hist_follow,Histogram window,Set the Histogram time window source (custom / full / plot_N).,``viewer.hist_follow(target: 'str | int')``
 hist_range,Histogram window,Set the Histogram custom time window.,"``viewer.hist_range(min: 'float', max: 'float')``"
 hist_remove,Histogram window,Remove a signal from the Histogram window.,"``viewer.hist_remove(run: 'RunHandle', signal: 'str')``"
 hist_source,Histogram window,Add a signal to the Histogram window (it can show several at once).,"``viewer.hist_source(run: 'RunHandle', signal: 'str')``"

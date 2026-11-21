@@ -381,7 +381,7 @@ def test_canceling_queued_flash_releases_busy_state(monkeypatch, cancel):
 
     calls = []
 
-    def command(operation, kwargs):
+    def command(operation, kwargs, **options):
         calls.append(operation)
         executed.set()
 

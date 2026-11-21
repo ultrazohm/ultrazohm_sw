@@ -81,6 +81,7 @@ class FakeClient:
 
     def shutdown(self, *, service_id=None):
         self.calls.append(("shutdown",))
+        return {"service_id": "test-service"}
 
     def stop(self):
         self.calls.append(("stop",))

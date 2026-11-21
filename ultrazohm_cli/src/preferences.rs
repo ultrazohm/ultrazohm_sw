@@ -60,7 +60,7 @@ pub fn write_json(path: &Path, value: &impl serde::Serialize, overwrite: bool) -
         if overwrite {
             fs::rename(&temporary, path)?;
         } else {
-            match fs::hard_link(&temporary, path) {
+            match crate::backend::publish_new(&temporary, path) {
                 Ok(()) => (),
                 Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => (),
                 Err(e) => return Err(e.into()),
@@ -170,4 +170,23 @@ pub fn save_xsct(path: &Path, repo: Option<&Path>) -> Result<PathBuf> {
     value["xsct"] = serde_json::to_value(&launcher)?;
     write_json(&settings, &value, true)?;
     Ok(launcher)
+}
+
+#[cfg(test)]
+mod publication_tests {
+    use super::*;
+    #[test]
+    fn publication_preserves_existing_preferences() {
+        let dir =
+            std::env::temp_dir().join(format!("uz-preferences-review-{}", std::process::id()));
+        fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("settings.json");
+        write_json(&path, &serde_json::json!({"saved": true}), true).unwrap();
+        write_json(&path, &serde_json::json!({"saved": false}), false).unwrap();
+        assert_eq!(
+            serde_json::from_slice::<Value>(&fs::read(&path).unwrap()).unwrap()["saved"],
+            true
+        );
+        fs::remove_dir_all(dir).unwrap();
+    }
 }

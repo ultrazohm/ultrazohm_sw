@@ -198,7 +198,9 @@ class FirmwareServiceTest(unittest.TestCase):
         self.assertLess(time.monotonic() - started, 0.5)
         with self.assertRaisesRegex(RuntimeError, "another firmware"):
             self.submit(endpoint, request_id="other")
+        identity = self.request(endpoint, "status")["service_id"]
         response = self.request(endpoint, "shutdown")
+        self.assertEqual(response["service_id"], identity)
         self.assertTrue(response["deferred"])
         self.assertEqual(
             self.request(endpoint, "job", id=job["id"])["job"]["state"], "running"

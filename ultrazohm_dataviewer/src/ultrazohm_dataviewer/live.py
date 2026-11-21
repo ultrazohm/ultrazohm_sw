@@ -495,17 +495,21 @@ class LiveController:
                     from ultrazohm_cli import Client
 
                     client = (self.client_factory or Client)(endpoint)
-                    getattr(client, operation)()
+                    reply = getattr(client, operation)()
                     if operation == "shutdown":
                         self._flash_shutdown.set()
-                        self.owned.acknowledge_shutdown(endpoint)
+                        self.owned.acknowledge_shutdown(
+                            endpoint, reply.get("service_id")
+                        )
                         self.attached = False
                         self._reset()
                         self._status, self._catalog, self._assignments = {}, {}, ()
                         self._poll_error = ""
                         self._error = ""
                         if self._await_shutdown(
-                            "Stopping device and finalizing recordings…", external=False
+                            "Stopping device and finalizing recordings…",
+                            external=False,
+                            service_id=reply.get("service_id"),
                         ):
                             self._notice = "Service shut down; recordings finalized"
                         else:
@@ -691,9 +695,9 @@ class LiveController:
             cancel=self.stop_event, progress=lambda: self._progress(description)
         )
 
-    def _command(self, operation, kwargs):
+    def _command(self, operation, kwargs, *, generation=None):
         if operation == "flash":
-            self._flash(kwargs)
+            self._flash(kwargs, generation=generation)
         elif operation in ("attach", "connect"):
             self._progress("Checking acquisition service…")
             self._make_client(kwargs["endpoint"])
@@ -830,12 +834,14 @@ class LiveController:
                 f"{operation}: request sent (device commands have no acknowledgment)"
             )
             if operation == "shutdown":
-                self.owned.acknowledge_shutdown(self.endpoint)
+                self.owned.acknowledge_shutdown(self.endpoint, reply.get("service_id"))
                 self.attached = False
                 self._reset()
                 self._status, self._catalog, self._assignments = {}, {}, ()
                 if self._await_shutdown(
-                    "Stopping device and finalizing recordings…", external=False
+                    "Stopping device and finalizing recordings…",
+                    external=False,
+                    service_id=reply.get("service_id"),
                 ):
                     self._notice = "Service shut down; recordings finalized"
                 else:
@@ -844,12 +850,16 @@ class LiveController:
             del reply
         self._status_at = 0.0
 
-    def _await_shutdown(self, description, *, external):
+    def _await_shutdown(self, description, *, external, service_id=None):
         """Wait after a shutdown request; the service itself sends device Stop and
         finalizes both recordings. A viewer-owned service is awaited until it exits
         and its exit code checked. Return whether completion was observed."""
         self._progress(description)
-        if self.owned.has_process(self.endpoint):
+        if (
+            service_id is not None
+            and service_id == self.owned.service_id
+            and self.owned.has_process(self.endpoint)
+        ):
             code = self._wait_owned(description)
             if code:
                 raise RuntimeError(
@@ -883,9 +893,14 @@ class LiveController:
             self.stop_event.wait(0.1)
         raise RuntimeError(f"Timed out waiting for {description}")
 
-    def _flash(self, kwargs):
+    def _flash(self, kwargs, *, generation=None):
         from .flashing import connection_refused
 
+        with self.lock:
+            if generation is None:
+                generation = self._command_generation
+            if generation != self._command_generation or self.stop_event.is_set():
+                return
         self._make_client(kwargs["endpoint"])
         try:
             status = self.client.status()
@@ -907,7 +922,14 @@ class LiveController:
                 if ":" in host
                 else f"{host}:{kwargs['port']}"
             )
-        job = self.client.firmware("flash", device=device)
+        # Serialize acceptance with Stop/close, but leave slow preparation and
+        # job following outside this lock so lifecycle controls stay responsive.
+        with self._command_lock:
+            with self.lock:
+                canceled = generation != self._command_generation
+            if canceled or self.stop_event.is_set() or self._flash_shutdown.is_set():
+                return
+            job = self.client.firmware("flash", device=device)
         self._message("info", f"Firmware job {job['id']} accepted by {self.endpoint}")
         from ultrazohm_cli.jobs import FirmwareJob
 
@@ -1055,7 +1077,7 @@ class LiveController:
                         with self.lock:
                             current = generation == self._command_generation
                         if current and not self.stop_event.is_set():
-                            self._command(operation, kwargs)
+                            self._command(operation, kwargs, generation=generation)
                     self._error = ""
                 except Exception as exc:
                     if operation in ("stop", "shutdown"):

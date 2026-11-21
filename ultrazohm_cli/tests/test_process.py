@@ -36,6 +36,15 @@ class ProcessTest(unittest.TestCase):
         owner.shutdown(client)
         client.shutdown.assert_called_once_with(service_id="owned")
 
+    def test_shutdown_acknowledgement_requires_owned_identity(self):
+        child = Mock()
+        child.poll.return_value = None
+        owner = ServiceProcess(process=child, endpoint="endpoint", service_id="owned")
+        owner.acknowledge_shutdown("endpoint", "replacement")
+        self.assertFalse(owner.shutdown_requested)
+        owner.acknowledge_shutdown("endpoint", "owned")
+        self.assertTrue(owner.shutdown_requested)
+
     def test_external_service_lifetime_without_viewer(self):
         with tempfile.TemporaryDirectory() as directory:
             with socket.socket() as reserve:

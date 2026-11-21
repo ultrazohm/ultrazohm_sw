@@ -231,6 +231,7 @@ def test_flash_control_requests_do_not_block_gui(operation, fails):
         assert release.wait(3)
         if fails:
             raise RuntimeError("service unavailable")
+        return {"service_id": "external"}
 
     getattr(client, operation).side_effect = request
     controller = LiveController(lambda _: client)
@@ -263,6 +264,8 @@ def test_flash_shutdown_detaches_and_marks_owned_service(monkeypatch):
     client = Mock()
     controller = LiveController(lambda _: client)
     controller.endpoint = controller.owned.endpoint = "127.0.0.1:19740"
+    controller.owned.service_id = "owned"
+    client.shutdown.return_value = {"service_id": "owned"}
     controller.owned.process = Mock()
     controller.owned.process.poll.return_value = None
     controller.attached = controller.flashing = True
@@ -345,5 +348,64 @@ def test_control_success_preserves_other_failure_and_newer_command_error(monkeyp
         controller.submit("set_variable", name="send_field_1", value=1)
         wait_for(lambda: controller.latest().completed_commands == 2)
         assert "new variable failure" in controller.latest().error
+    finally:
+        controller.close()
+
+
+@pytest.mark.parametrize("operation", ["close", "stop"])
+def test_flash_preparation_cannot_submit_after_lifecycle_control(operation):
+    import threading
+
+    entered, release, stopped = (threading.Event() for _ in range(3))
+    client = Mock()
+
+    def status():
+        entered.set()
+        assert release.wait(5)
+        return {"firmware_available": True, "state": {"device": "127.0.0.1:12345"}}
+
+    client.status.side_effect = status
+    client.stop.side_effect = stopped.set
+    controller = LiveController(lambda _: client)
+    controller.endpoint = "127.0.0.1:19740"
+    controller.client = client
+    controller.attached = True
+    try:
+        controller.submit("flash", endpoint=controller.endpoint)
+        assert entered.wait(2)
+        if operation == "close":
+            controller.close()
+        else:
+            controller.submit("stop")
+        assert stopped.wait(2)
+        release.set()
+        from live_support import wait_for
+
+        wait_for(lambda: not controller.flashing)
+        client.firmware.assert_not_called()
+    finally:
+        release.set()
+        controller.close()
+
+
+@pytest.mark.parametrize(
+    "identity,finalized", [("replacement", False), ("owned", True)]
+)
+def test_shutdown_completion_uses_reply_identity(identity, finalized):
+    client = Mock()
+    client.shutdown.return_value = {"service_id": identity}
+    controller = LiveController(lambda _: client)
+    controller.endpoint = controller.owned.endpoint = "127.0.0.1:19740"
+    controller.client = client
+    controller.attached = True
+    controller.owned.service_id = "owned"
+    controller.owned.process = Mock()
+    controller.owned.process.poll.return_value = 0
+    controller.owned.process.returncode = 0
+    try:
+        controller._command("shutdown", {})
+        assert ("recordings finalized" in controller._notice) is finalized
+        if not finalized:
+            assert "finalization continues" in controller._notice
     finally:
         controller.close()

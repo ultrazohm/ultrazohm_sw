@@ -458,3 +458,7 @@ Automatic owner cleanup sends `{"op":"owned_shutdown","service_id":"ID"}`.
 The service compares the expected ID before setting shutdown flags or sending
 Stop. A mismatch fails without shutdown side effects. Explicit operator shutdown
 continues to use `{"op":"shutdown"}` for both attached and owned services.
+
+Shutdown replies include `service_id`, identifying the service that accepted the request.
+Clients must match this identity before using an owned process exit to confirm finalization.
+Both ordinary and guarded shutdown requests survive acquisition session replacement.

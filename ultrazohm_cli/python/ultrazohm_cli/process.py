@@ -177,9 +177,14 @@ class ServiceProcess:
         client.shutdown(service_id=self.service_id)
         self.shutdown_requested = True
 
-    def acknowledge_shutdown(self, endpoint):
+    def acknowledge_shutdown(self, endpoint, service_id):
         """Record an explicit user shutdown, independent of automatic ownership cleanup."""
-        if endpoint == self.endpoint and self.running:
+        if (
+            endpoint == self.endpoint
+            and self.running
+            and service_id is not None
+            and service_id == self.service_id
+        ):
             self.shutdown_requested = True
 
     def has_process(self, endpoint):

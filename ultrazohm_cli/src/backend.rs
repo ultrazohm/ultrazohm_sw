@@ -198,7 +198,7 @@ pub(crate) fn replace_file(source: &Path, target: &Path) -> std::io::Result<()> 
 /// Publish `source` as `target` only if `target` does not exist yet. Hard links
 /// make this atomic; file systems without them (FAT, exFAT, some network
 /// shares) use an exclusive OS rename.
-fn publish_new(source: &Path, target: &Path) -> std::io::Result<()> {
+pub(crate) fn publish_new(source: &Path, target: &Path) -> std::io::Result<()> {
     publish_new_with(source, target, |source, target| {
         fs::hard_link(source, target)
     })

@@ -227,11 +227,12 @@ pub(super) fn run(
                             _ => unreachable!(),
                         };
                         reply["shutdown_requested"] = json!(true);
+                        reply["service_id"] = json!(service_id);
                         reply["deferred"] = json!(busy);
                         return Ok(Reply::Json(reply));
                     }
                     Ok(Reply::Json(ok_reply(
-                        json!({"shutdown_requested":true,"deferred":busy}),
+                        json!({"shutdown_requested":true,"deferred":busy,"service_id":service_id}),
                     )))
                 }
                 Operation::Stop => {

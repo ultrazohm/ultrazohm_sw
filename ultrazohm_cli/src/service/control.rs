@@ -262,7 +262,10 @@ impl ControlServer {
             !p.request.command.read_only()
                 && !matches!(
                     p.request.command,
-                    Operation::Stop | Operation::Shutdown | Operation::Firmware { .. }
+                    Operation::Stop
+                        | Operation::Shutdown
+                        | Operation::OwnedShutdown { .. }
+                        | Operation::Firmware { .. }
                 )
         });
         state.pending = keep.into();
@@ -380,5 +383,31 @@ mod tests {
                 .is_err()
         );
         assert!(queue.next(WAIT).is_none());
+    }
+}
+
+#[cfg(test)]
+mod lifecycle_regressions {
+    use super::*;
+    #[test]
+    fn guarded_shutdown_survives_session_replacement() {
+        let queue = Arc::new(RequestQueue::default());
+        let server = ControlServer {
+            queue: queue.clone(),
+            shutdown: Arc::new(AtomicBool::new(false)),
+            worker: None,
+        };
+        let guarded = queue.submit(Request {
+            api_version: API_VERSION,
+            command: Operation::OwnedShutdown {
+                service_id: "owned".into(),
+            },
+        });
+        server.invalidate_session();
+        assert!(matches!(guarded.try_recv(), Err(mpsc::TryRecvError::Empty)));
+        assert!(matches!(
+            queue.next(Duration::ZERO).unwrap().request.command,
+            Operation::OwnedShutdown { .. }
+        ));
     }
 }

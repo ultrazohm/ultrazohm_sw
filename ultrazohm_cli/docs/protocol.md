@@ -207,7 +207,7 @@ The Python client also sets a code for requests that got no reply, so callers ne
 | `transport` | Any other socket failure, for example a connection closed mid-reply |
 
 Status returns counters, last status word, ACK policy, terminal error, `software_version` (also in `run.json` and `ultrazohm_cli --version`) and `logging.fast` / `logging.slow` with phase, Parquet path and recording error.
-Operations: firmware, jobs, job, connect, status, catalog, observables, recordings, data_info, read_data, stop, enable_system, enable_control, set_variable, set_observable, button, send_ack, start_logging, stop_logging, pause_logging, resume_logging, shutdown.
+Operations: firmware, jobs, job, connect, status, catalog, observables, recordings, data_info, read_data, stop, enable_system, enable_control, set_variable, set_observable, button, send_ack, start_logging, stop_logging, pause_logging, resume_logging, shutdown, owned_shutdown.
 The four logging operations take an optional `stream` field (`"fast"`, the default, or `"slow"`).
 Error_Reset is not an operation because its firmware case is empty; the CLI `error-reset` command explains this locally.
 Unknown operations/fields and unsupported versions fail without sending bytes.
@@ -446,3 +446,15 @@ mapping even if session reconstruction fails. A partial programming failure or c
 headers leaves the running firmware unknown: the job fails explicitly and no network
 Stop is guessed. Inspect the hardware and retry programming with verified inputs.
 Shutdown waits for programming and, when its mapping is known, bounded Stop delivery.
+
+### Process ownership guard
+
+A launcher supplies a unique `serve --launch-id ID` and verifies that status reports
+that ID as `service_id` before treating the process as owned. Without a supplied
+ID, the service generates its own identifier. IDs distinguish service lifetimes;
+they are not authentication credentials.
+
+Automatic owner cleanup sends `{"op":"owned_shutdown","service_id":"ID"}`.
+The service compares the expected ID before setting shutdown flags or sending
+Stop. A mismatch fails without shutdown side effects. Explicit operator shutdown
+continues to use `{"op":"shutdown"}` for both attached and owned services.

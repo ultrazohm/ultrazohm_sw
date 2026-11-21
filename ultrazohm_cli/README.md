@@ -368,11 +368,50 @@ See [architecture](docs/architecture.md) for the storage invariants.
 
 ## Vitis workspace, build and JTAG programming
 
+### Which Tcl scripts run
+
+CLI commands and DataViewer's **Flash UZ** use the scripts embedded in the CLI
+executable or Python wheel. Published stable and prerelease packages contain the
+scripts from that release. Local development builds, including `./uz venv dev`
+and the dev-container setup, embed the checkout's scripts at CLI build time.
+Editing `tcl_scripts/` afterward does not change an installed or running CLI:
+rebuild/reinstall the CLI and restart the service, or reopen `./uz venv dev`.
+
+Before execution, the CLI extracts its scripts to
+`artifacts/cli-tools/<content-id>/tcl_scripts` under the selected firmware checkout.
+Unchanged resources retain their timestamps for incremental builds. Selecting a
+checkout with `--repo` selects firmware sources, not a different set of Tcl scripts.
+
+To read scripts directly from a directory at runtime, explicitly set
+`UZ_CLI_TCL_DIR` before starting the service or DataViewer. For example, from the
+checkout root:
+
+```sh
+export UZ_CLI_TCL_DIR="$PWD/tcl_scripts"
+```
+
+In PowerShell:
+
+```powershell
+$env:UZ_CLI_TCL_DIR = (Resolve-Path ./tcl_scripts).Path
+```
+
+The directory must contain `vitis_headless.tcl` and its supporting scripts. Restart
+an existing service to inherit the variable. Development mode does not set this
+override automatically; remove it to return to the embedded scripts.
+
+Vitis IDE **Run/Debug** is intentionally separate: its launch configurations use
+the checkout's `tcl_scripts/` files. Those scripts may differ from the installed
+CLI's embedded version. CLI/DataViewer flashing and Vitis IDE Run/Debug do not
+need to use the same script version.
+
+### Service commands
+
 Start the service on the machine with the firmware checkout, Vitis/XSCT, and JTAG access:
 
 ```sh
 ultrazohm-cli serve --repo /path/to/ultrazohm_sw --device 192.168.1.233:1000
-# Optional: --xsct /path/to/Vitis/bin/xsct instead of loading settings64.sh / PATH.
+# Optional: --xsct /path/to/Vitis/bin/xsct overrides saved preferences and PATH.
 ```
 
 Other terminals and DataViewers use the same endpoint (default `127.0.0.1:19740`):
@@ -550,10 +589,37 @@ The caller decides when to stop or shut down a device. Creating a helper or atta
 an ordinary `Client` does not transfer ownership of an existing service.
 
 CLI native executables and Python wheels embed the firmware Tcl scripts and launch
-templates. Before execution, scripts are materialized under the checkout's
-`artifacts/cli-tools/<content-id>/tcl_scripts`, under the firmware workspace lock.
-Unchanged resources retain their timestamps for incremental builds. DataViewer uses
-these CLI-owned resources in both source and frozen mode.
+templates. DataViewer uses these CLI-owned resources in both source and frozen mode.
+See [which Tcl scripts run](#which-tcl-scripts-run) for development rebuilds, the
+explicit runtime override, and the separate Vitis IDE Run/Debug path.
 
 `status.state.user_buttons` contains eight decoded booleans in button order 1–8.
 Clients should use them instead of interpreting JavaScope wire-status bit positions.
+
+### Shared startup preferences and job monitoring
+
+CLI service startup selects an explicit `--profile`, then the selected checkout's
+`artifacts/_user/settings.json`, then built-in defaults. Existing profiles are
+validated strictly, never silently rewritten. Python `load_or_seed_profile(path,
+mapping)` seeds missing defaults atomically; `save_profile(path, profile, mapping)`
+validates against firmware before replacing the file. DataViewer uses these same
+helpers; view preferences remain independent.
+
+XSCT selection uses an explicit launcher, then the workspace's saved `tools.json`
+selection, then PATH. A missing or invalid saved launcher reports an error rather
+than silently selecting another installation. Python `save_xsct`, `saved_xsct`,
+and `resolve_xsct` in `ultrazohm_cli.configuration` share the native CLI's logic.
+Saving or inspecting a launcher does not change the caller's PATH. A running
+service's explicit `--xsct` continues to take precedence over saved preferences.
+
+`ultrazohm_cli.jobs.FirmwareJob(client, job_id, offset=0)` tracks log offsets.
+Call `poll()` at the application's chosen interval and display the returned log
+and job metadata. `complete` becomes true after final logs have drained;
+`raise_for_status()` then reports job failure. Stopping polling never cancels the
+service job. Another client can resume with its ID and last offset.
+
+A `ServiceProcess` launch uses a unique identifier to verify the child answering
+its endpoint. Automatic cleanup sends that identity with the shutdown request;
+the service rejects a mismatch before any shutdown side effects. Explicit user
+shutdown remains available for attached services. `wait(timeout=...)` bounds
+finalization waiting without killing a service still writing recordings.

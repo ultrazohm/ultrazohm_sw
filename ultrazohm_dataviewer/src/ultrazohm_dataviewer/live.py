@@ -498,8 +498,7 @@ class LiveController:
                     getattr(client, operation)()
                     if operation == "shutdown":
                         self._flash_shutdown.set()
-                        if endpoint == self.owned.endpoint:
-                            self.owned.shutdown_requested = True
+                        self.owned.acknowledge_shutdown(endpoint)
                         self.attached = False
                         self._reset()
                         self._status, self._catalog, self._assignments = {}, {}, ()
@@ -659,12 +658,9 @@ class LiveController:
         # and CLI arguments belong to the CLI package.
         if not profile:
             if repo:
-                from .user_paths import data_directory
+                from ultrazohm_cli.configuration import startup_profile_path
 
-                directory = (
-                    Path(user_directory) if user_directory else data_directory(repo)
-                )
-                saved = directory / "settings.json"
+                saved = startup_profile_path(repo, user_directory)
                 if saved.is_file():
                     profile = saved
             elif mapping:
@@ -834,8 +830,7 @@ class LiveController:
                 f"{operation}: request sent (device commands have no acknowledgment)"
             )
             if operation == "shutdown":
-                if self.endpoint == self.owned.endpoint:
-                    self.owned.shutdown_requested = True
+                self.owned.acknowledge_shutdown(self.endpoint)
                 self.attached = False
                 self._reset()
                 self._status, self._catalog, self._assignments = {}, {}, ()
@@ -854,7 +849,7 @@ class LiveController:
         finalizes both recordings. A viewer-owned service is awaited until it exits
         and its exit code checked. Return whether completion was observed."""
         self._progress(description)
-        if self.endpoint == self.owned.endpoint and self.owned.process is not None:
+        if self.owned.has_process(self.endpoint):
             code = self._wait_owned(description)
             if code:
                 raise RuntimeError(
@@ -914,10 +909,12 @@ class LiveController:
             )
         job = self.client.firmware("flash", device=device)
         self._message("info", f"Firmware job {job['id']} accepted by {self.endpoint}")
-        offset = 0
+        from ultrazohm_cli.jobs import FirmwareJob
+
+        monitor = FirmwareJob(self.client, job["id"])
         while not self.stop_event.is_set() and not self._flash_shutdown.is_set():
             try:
-                reply = self.client.job(job["id"], offset)
+                reply = monitor.poll()
             except (OSError, RuntimeError):
                 if self._flash_shutdown.is_set():
                     return
@@ -926,16 +923,13 @@ class LiveController:
                 return
             if reply["log"]:
                 self._message("info", reply["log"])
-            next_offset = reply["next_offset"]
             self._progress(f"Flash UZ: {reply['job']['phase']}")
-            if reply["job"]["state"] != "running" and next_offset == offset:
-                if reply["job"]["state"] != "succeeded":
-                    raise RuntimeError(f"Firmware job failed: {reply['job']['result']}")
+            if monitor.complete:
+                monitor.raise_for_status()
                 self._reset()
                 self._status_at = 0
                 self._notice = "Flash completed; service session replaced"
                 return
-            offset = next_offset
             self.stop_event.wait(0.1)
 
     def _poll_client_for(self, endpoint):
@@ -1122,7 +1116,7 @@ class LiveController:
                 try:
                     self.owned.shutdown(factory(owned_endpoint))
                     try:
-                        code = self.owned.process.wait(timeout=CLOSE_FINALIZE_TIMEOUT)
+                        code = self.owned.wait(timeout=CLOSE_FINALIZE_TIMEOUT)
                     except subprocess.TimeoutExpired:
                         # The service runs in its own session and keeps finalizing.
                         print(

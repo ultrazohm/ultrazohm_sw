@@ -7,6 +7,7 @@ import subprocess
 import sys
 import threading
 import time
+import uuid
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -28,7 +29,9 @@ class ServiceProcess:
         return self.process is not None and self.process.poll() is None
 
     def owns(self, endpoint):
-        return self.endpoint == endpoint and self.running
+        return (
+            self.endpoint == endpoint and self.running and self.service_id is not None
+        )
 
     def start(
         self,
@@ -100,8 +103,16 @@ class ServiceProcess:
                 | subprocess.CREATE_NEW_PROCESS_GROUP,
             }
         )
+        launch_id = str(uuid.uuid4())
+        self.service_id = None
+        args += ["--launch-id", launch_id]
         with log_path.open("ab") as log:
-            self.process = subprocess.Popen(args, stdout=log, stderr=log, **options)
+            self.process = subprocess.Popen(
+                args,
+                stdout=log,
+                stderr=log,
+                **options,
+            )
             self.endpoint = endpoint
             self.repo = Path(repo).expanduser().resolve() if repo else None
             self.mapping = Path(mapping).expanduser().resolve() if mapping else None
@@ -112,8 +123,12 @@ class ServiceProcess:
             if self.process.poll() is not None:
                 raise RuntimeError(f"Service failed; see {log_path}")
             try:
-                self.service_id = client.status()["service_id"]
-                return
+                identity = client.status()["service_id"]
+                if identity == launch_id:
+                    self.service_id = identity
+                    return
+                self.terminate_startup()
+                raise ValueError("Another service answered the selected endpoint")
             except (OSError, RuntimeError):
                 cancel.wait(0.1)
         # A service that never answered must not block later Connect attempts.
@@ -131,10 +146,15 @@ class ServiceProcess:
             process.kill()
             process.wait()
 
-    def wait(self, *, cancel=None, progress=None):
+    def wait(self, *, cancel=None, progress=None, timeout=None):
         """Wait for exit, or return None if the caller hands off finalization."""
+        if cancel is None and progress is None and self.process is not None:
+            return self.process.wait(timeout=timeout)
         cancel = cancel or threading.Event()
+        deadline = None if timeout is None else time.monotonic() + timeout
         while self.running:
+            if deadline is not None and time.monotonic() >= deadline:
+                raise subprocess.TimeoutExpired("acquisition service", timeout)
             if cancel.is_set():
                 return None
             if progress:
@@ -150,9 +170,17 @@ class ServiceProcess:
             from . import Client
 
             client = Client(self.endpoint)
-        if self.service_id and client.status()["service_id"] != self.service_id:
+        if not self.service_id or client.status()["service_id"] != self.service_id:
             raise RuntimeError(
                 "Owned service was replaced; refusing to shut down its replacement"
             )
-        client.shutdown()
+        client.shutdown(service_id=self.service_id)
         self.shutdown_requested = True
+
+    def acknowledge_shutdown(self, endpoint):
+        """Record an explicit user shutdown, independent of automatic ownership cleanup."""
+        if endpoint == self.endpoint and self.running:
+            self.shutdown_requested = True
+
+    def has_process(self, endpoint):
+        return endpoint == self.endpoint and self.process is not None

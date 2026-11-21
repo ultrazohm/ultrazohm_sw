@@ -180,3 +180,16 @@ it delegates process startup/readiness and identity-checked shutdown to the CLI 
 View preference saving is independent of firmware configuration and local checkouts.
 The CLI build embeds firmware scripts, including in the native library used by frozen
 viewers, so GUI packaging does not select or distribute a separate Tcl implementation.
+Local development builds also embed the checkout's scripts at build time; there is
+no automatic runtime switch to checkout scripts. `UZ_CLI_TCL_DIR` is an explicit
+runtime override. The firmware checkout selected by `--repo` supplies sources and
+headers, independently of script selection. Vitis IDE Run/Debug intentionally uses
+checkout scripts through its launch configurations and remains a separate tooling
+path. See [script selection](../README.md#which-tcl-scripts-run).
+
+Vendor-tool resolution and atomic startup-profile persistence live in the Rust
+preferences module and are exposed through Python configuration helpers. The
+viewer chooses when to save, displays errors, and owns file dialogs; it does not
+modify PATH to configure a service. Native and Python job followers share log
+completion rules; the viewer owns polling cadence and presentation. Automatic
+process cleanup uses a launch identity validated by the service on shutdown.

@@ -262,6 +262,9 @@ pub enum Operation {
         #[serde(default)]
         stream: Stream,
     },
+    OwnedShutdown {
+        service_id: String,
+    },
     Shutdown,
 }
 impl Operation {
@@ -300,6 +303,7 @@ pub struct Request {
 }
 #[derive(Clone, Debug)]
 pub struct Config {
+    pub launch_id: Option<String>,
     pub current_output: Option<Arc<Mutex<PathBuf>>>,
     pub repo: Option<PathBuf>,
     pub xsct: Option<PathBuf>,
@@ -851,6 +855,9 @@ impl Session {
             }
             Operation::EnableControl => {
                 wire = Some((self.config.profile.command("Enable_Control")?, 0.0))
+            }
+            Operation::OwnedShutdown { .. } => {
+                bail!("owned shutdown must be handled by service controller")
             }
             Operation::ReadData { .. }
             | Operation::DataInfo { .. }

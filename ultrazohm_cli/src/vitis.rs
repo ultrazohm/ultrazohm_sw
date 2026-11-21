@@ -70,7 +70,7 @@ pub(crate) fn xsct() -> Result<PathBuf> {
     for dir in env::split_paths(&env::var_os("PATH").unwrap_or_default()) {
         for name in names {
             let path = dir.join(name);
-            if path.is_file() {
+            if crate::preferences::validate_xsct(&path).is_ok() {
                 // Resolve relative PATH entries before changing the child's cwd.
                 return std::path::absolute(path).context("cannot resolve XSCT launcher");
             }
@@ -104,7 +104,7 @@ pub(crate) fn execute(
 ) -> Result<()> {
     let root = repository(repo)?;
     let script = entry_script(&root)?;
-    let executable = selected_xsct(xsct_override)?;
+    let executable = crate::preferences::resolve_xsct(xsct_override, Some(&root))?;
     eprintln!("Vitis {action}: repository {}", root.display());
     let mut command = Command::new(&executable);
     command
@@ -127,16 +127,4 @@ pub(crate) fn execute(
         "Vitis {action} failed ({status}); see XSCT output above"
     );
     Ok(())
-}
-
-pub(crate) fn selected_xsct(path: Option<&Path>) -> Result<PathBuf> {
-    if let Some(path) = path {
-        ensure!(
-            path.is_file(),
-            "XSCT launcher not found: {}",
-            path.display()
-        );
-        return std::path::absolute(path).context("resolve XSCT launcher");
-    }
-    xsct()
 }

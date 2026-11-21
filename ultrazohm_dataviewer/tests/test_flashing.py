@@ -121,9 +121,7 @@ def test_confirmation_only_submits_after_ok(gui_frame, app_state, monkeypatch, a
 def test_xsct_detection_and_disabled_flash_button(
     gui_frame, app_state, monkeypatch, present, prepared
 ):
-    monkeypatch.setattr(
-        flashing.shutil, "which", lambda name: "/tools/xsct" if present else None
-    )
+    monkeypatch.setattr(flashing, "xsct_available", lambda repo=None: present)
     assert flashing.xsct_available() is present
     workspace = LiveWorkspace(LiveController())
     workspace.available = True
@@ -265,6 +263,8 @@ def test_flash_shutdown_detaches_and_marks_owned_service(monkeypatch):
     client = Mock()
     controller = LiveController(lambda _: client)
     controller.endpoint = controller.owned.endpoint = "127.0.0.1:19740"
+    controller.owned.process = Mock()
+    controller.owned.process.poll.return_value = None
     controller.attached = controller.flashing = True
     controller._status = {"session_id": "old"}
     monkeypatch.setattr(controller, "_await_shutdown", lambda *a, **kw: True)

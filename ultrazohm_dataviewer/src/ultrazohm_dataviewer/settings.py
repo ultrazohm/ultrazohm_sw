@@ -36,12 +36,12 @@ def load_workspace_settings(mapping_path, user_directory=None):
         else mapping_path.parent
     )
     directory.mkdir(parents=True, exist_ok=True)
-    settings_path = directory / "settings.json"
-    if not settings_path.exists():
-        defaults, _ = profile_for_mapping(mapping, default_profile(), None)
-        write_json(settings_path, defaults, overwrite=False)
-    settings = read_runtime_settings(settings_path)
-    write_json(directory / "tools.json", {"xsct": None}, overwrite=False)
+    from ultrazohm_cli.configuration import startup_profile_path
+
+    settings_path = startup_profile_path(directory=directory)
+    from ultrazohm_cli.configuration import load_or_seed_profile
+
+    settings = load_or_seed_profile(settings_path, mapping)
     (directory / "logs").mkdir(exist_ok=True)
     return WorkspaceSettings(settings_path, mapping, settings)
 
@@ -53,11 +53,12 @@ def load_repository_settings(repo):
 
     mapping = _check_mapping(read_mapping(repo))
     directory = data_directory(repo)
-    settings_path = directory / "settings.json"
-    if not settings_path.exists():
-        write_json(settings_path, default_profile(repo), overwrite=False)
-    settings = read_runtime_settings(settings_path)
-    write_json(directory / "tools.json", {"xsct": None}, overwrite=False)
+    from ultrazohm_cli.configuration import startup_profile_path
+
+    settings_path = startup_profile_path(directory=directory)
+    from ultrazohm_cli.configuration import load_or_seed_profile
+
+    settings = load_or_seed_profile(settings_path, mapping)
     (directory / "logs").mkdir(exist_ok=True)
     return WorkspaceSettings(settings_path, mapping, settings)
 

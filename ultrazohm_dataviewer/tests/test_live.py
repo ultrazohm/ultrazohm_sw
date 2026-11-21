@@ -40,6 +40,7 @@ class FakeClient:
 
     def status(self):
         return {
+            "service_id": "test-service",
             "state": {
                 "connected": self.connected,
                 "platform_state": "idle",
@@ -78,7 +79,7 @@ class FakeClient:
             info={"run_id": "fake", "generation": self.generation},
         )
 
-    def shutdown(self):
+    def shutdown(self, *, service_id=None):
         self.calls.append(("shutdown",))
 
     def stop(self):
@@ -158,7 +159,7 @@ def test_worker_incremental_bound_recovery_and_persistent_command_error():
 )
 def test_disconnect_after_service_exit_releases_attachment(error):
     class ExitedClient(FakeClient):
-        def shutdown(self):
+        def shutdown(self, *, service_id=None):
             raise error
 
     controller = LiveController(lambda endpoint: ExitedClient(), hz=100)
@@ -177,7 +178,7 @@ def test_disconnect_after_service_exit_releases_attachment(error):
 
 def test_disconnect_other_errors_preserve_attachment():
     class FailingClient(FakeClient):
-        def shutdown(self):
+        def shutdown(self, *, service_id=None):
             raise RuntimeError("request timed out")
 
     controller = LiveController(lambda endpoint: FailingClient(), hz=100)
@@ -531,7 +532,10 @@ def test_connect_verifies_existing_device(device, ip, port, matches):
     controller = LiveController(lambda _: Client())
     try:
         controller.owned.endpoint = "fake"
-        controller.owned.process = SimpleNamespace(poll=lambda: None, wait=lambda: 0)
+        controller.owned.service_id = "test-service"
+        controller.owned.process = SimpleNamespace(
+            poll=lambda: None, wait=lambda **kwargs: 0
+        )
         request = {"endpoint": "fake", "ip": ip, "port": port}
         if matches:
             controller._command("connect", request)
@@ -906,7 +910,10 @@ def test_connect_click_reports_progress_and_completion(
     controller = LiveController(lambda endpoint: SlowClient())
     controller.owned.endpoint = "127.0.0.1:19740"
     controller.owned.repo = tmp_path
-    controller.owned.process = SimpleNamespace(poll=lambda: None, wait=lambda: 0)
+    controller.owned.service_id = "test-service"
+    controller.owned.process = SimpleNamespace(
+        poll=lambda: None, wait=lambda **kwargs: 0
+    )
     workspace = LiveWorkspace(controller)
     workspace.repo, workspace.mapping = str(tmp_path), "mapping.json"
     workspace.available = True
@@ -952,8 +959,9 @@ def test_connect_failure_clears_busy_and_reports_error(gui_frame, app_state, tmp
     workspace = LiveWorkspace(LiveController(lambda endpoint: BrokenClient()))
     workspace.repo, workspace.mapping = str(tmp_path), "mapping.json"
     workspace.controller.owned.endpoint = workspace.endpoint
+    workspace.controller.owned.service_id = "test-service"
     workspace.controller.owned.process = SimpleNamespace(
-        poll=lambda: None, wait=lambda: 0
+        poll=lambda: None, wait=lambda **kwargs: 0
     )
     workspace.available = True
     try:
@@ -1440,7 +1448,10 @@ def test_close_shuts_down_owned_service_even_when_detached(attached):
     calls = []
 
     class Client:
-        def shutdown(self):
+        def status(self):
+            return {"service_id": "test-service"}
+
+        def shutdown(self, *, service_id=None):
             calls.append("shutdown")
 
     class Process:
@@ -1452,6 +1463,7 @@ def test_close_shuts_down_owned_service_even_when_detached(attached):
             return 0
 
     controller = LiveController(lambda endpoint: Client())
+    controller.owned.service_id = "test-service"
     controller.owned.process = Process()
     controller.endpoint = controller.owned.endpoint = "127.0.0.1:19740"
     controller.attached = attached
@@ -1477,6 +1489,9 @@ def test_close_handles_both_services_independently(fail_stop):
     calls = []
 
     class Client:
+        def status(self):
+            return {"service_id": "test-service"}
+
         def __init__(self, endpoint):
             self.endpoint = endpoint
 
@@ -1485,7 +1500,7 @@ def test_close_handles_both_services_independently(fail_stop):
             if fail_stop:
                 raise RuntimeError("stop failure")
 
-        def shutdown(self):
+        def shutdown(self, *, service_id=None):
             calls.append((self.endpoint, "shutdown"))
 
     class Process:
@@ -1499,6 +1514,7 @@ def test_close_handles_both_services_independently(fail_stop):
     controller = LiveController(Client)
     controller.endpoint = "external"
     controller.owned.endpoint = "owned"
+    controller.owned.service_id = "test-service"
     controller.owned.process = Process()
     controller.attached = True
     controller._status = {"state": {"connected": True}}

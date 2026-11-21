@@ -73,6 +73,8 @@ enum Command {
     },
     /// Run the control service until Ctrl-C or shutdown; starts disconnected by default. Run as an OS service for unattended use.
     Serve {
+        #[arg(long, hide = true)]
+        launch_id: Option<String>,
         /// XSCT launcher on the service machine; otherwise use its PATH.
         #[arg(long)]
         xsct: Option<PathBuf>,
@@ -250,6 +252,7 @@ pub fn run(argv: impl IntoIterator<Item = String>) -> i32 {
 
 fn dispatch(args: Args) -> Result<()> {
     let command = args.command.unwrap_or_else(|| Command::Serve {
+        launch_id: None,
         xsct: None,
         data: DataOptions::default(),
         device: None,
@@ -263,6 +266,7 @@ fn dispatch(args: Args) -> Result<()> {
     });
     match command {
         Command::Serve {
+            launch_id,
             xsct,
             data,
             device,
@@ -302,6 +306,7 @@ fn dispatch(args: Args) -> Result<()> {
             let stopped = shutdown.clone();
             service::serve_with_ready(
                 Config {
+                    launch_id,
                     current_output: None,
                     repo: repo.clone(),
                     xsct,
@@ -718,12 +723,13 @@ fn follow_job(endpoint: &str, id: &str, follow: bool) -> Result<()> {
         )?;
         print!("{}", reply["log"].as_str().unwrap_or(""));
         io::stdout().flush()?;
-        let next = reply["next_offset"].as_u64().unwrap_or(offset as u64) as usize;
+        let progress = crate::jobs::progress(offset as u64, &reply)?;
+        let next = progress["next_offset"].as_u64().unwrap() as usize;
         if !follow {
             println!("{}", serde_json::to_string_pretty(&reply["job"])?);
             return Ok(());
         }
-        if reply["job"]["state"] != "running" && next == offset {
+        if progress["complete"] == true {
             anyhow::ensure!(
                 reply["job"]["state"] == "succeeded",
                 "firmware job failed: {}",

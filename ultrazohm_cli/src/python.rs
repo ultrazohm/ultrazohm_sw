@@ -175,7 +175,7 @@ impl Acquisition {
             .map_err(error)?;
         let xsct = xsct
             .map(PathBuf::from)
-            .map(|path| crate::vitis::selected_xsct(Some(&path)))
+            .map(|path| crate::preferences::validate_xsct(&path))
             .transpose()
             .map_err(error)?;
         let profile = Profile::load_repository(
@@ -201,6 +201,7 @@ impl Acquisition {
         let worker = thread::spawn(move || {
             service::serve_with_ready(
                 Config {
+                    launch_id: None,
                     current_output: Some(current_output),
                     repo,
                     xsct,
@@ -352,6 +353,37 @@ fn configuration(
     py.detach(move || -> anyhow::Result<String> {
         use crate::profile::{ChannelMapping, ProfileSettings};
         let value = match operation.as_str() {
+            "job_progress" => {
+                let value: serde_json::Value =
+                    serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
+                crate::jobs::progress(value["offset"].as_u64().unwrap_or(0), &value["reply"])?
+            }
+            "directory" => serde_json::to_value(crate::preferences::directory(repo.as_deref())?)?,
+            "xsct" => {
+                let value: serde_json::Value =
+                    serde_json::from_str(payload.as_deref().unwrap_or("{}"))?;
+                let explicit = value["path"].as_str().map(std::path::Path::new);
+                serde_json::to_value(crate::preferences::resolve_xsct(explicit, repo.as_deref())?)?
+            }
+            "saved_xsct" => serde_json::to_value(crate::preferences::saved_xsct(repo.as_deref())?)?,
+            "save_xsct" => {
+                let path: PathBuf = serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
+                serde_json::to_value(crate::preferences::save_xsct(&path, repo.as_deref())?)?
+            }
+            "seed_profile" | "save_profile" => {
+                let value: serde_json::Value =
+                    serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
+                let path: PathBuf = serde_json::from_value(value["path"].clone())?;
+                let mapping: ChannelMapping = serde_json::from_value(value["mapping"].clone())?;
+                if operation == "seed_profile" {
+                    serde_json::to_value(crate::preferences::load_or_seed(&path, &mapping)?)?
+                } else {
+                    let settings: ProfileSettings =
+                        serde_json::from_value(value["profile"].clone())?;
+                    crate::preferences::save_profile(&path, &settings, &mapping)?;
+                    serde_json::Value::Null
+                }
+            }
             "mapping" => {
                 serde_json::to_value(ChannelMapping::load_repository(None, repo.as_deref())?)?
             }

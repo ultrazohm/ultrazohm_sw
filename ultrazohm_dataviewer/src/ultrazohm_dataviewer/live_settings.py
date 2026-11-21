@@ -114,9 +114,12 @@ def save_startup_profile(workspace):
         "sample_period_us", profile["sample_period_us"]
     )
     # Disconnected saves preserve the existing startup selections.
-    write_json(
-        directory / "settings.json",
+    from ultrazohm_cli.configuration import save_profile, startup_profile_path
+
+    save_profile(
+        startup_profile_path(directory=directory),
         profile if assignments is not None else saved_profile,
+        mapping,
     )
     return directory
 

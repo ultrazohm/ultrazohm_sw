@@ -466,9 +466,16 @@ Saving while disconnected preserves the existing startup assignments.
 The viewer saves view preferences separately in `live_view.json` and restores them without connecting or writing to the device.
 
 Use **Browse for XSCT** to select the Vitis launcher if it is missing from PATH.
-The viewer stores the selection in `tools.json` and adds its directory to its own PATH.
+The CLI stores the selection in `tools.json`. Explicit service `--xsct` overrides
+that selection; PATH is the fallback when no selection is saved. Selecting a
+launcher does not change the viewer's PATH. Attached viewers use the service's tool capabilities.
 Firmware operations require Vitis 2022.2, the workspace and its hardware export, and JTAG access.
 Generate the Vitis workspace before using **Flash UZ**.
+**Flash UZ** uses the CLI's embedded Tcl scripts, including in development builds,
+which capture local scripts when the CLI is built. Later script edits require a
+CLI rebuild and service restart unless `UZ_CLI_TCL_DIR` is explicitly set before
+service startup. Vitis IDE Run/Debug independently uses checkout scripts. See
+[script selection and the runtime override](../ultrazohm_cli/README.md#which-tcl-scripts-run).
 See the [CLI firmware guide](../ultrazohm_cli/README.md#vitis-workspace-build-and-jtag-programming) and the [viewer build guide](../docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer_build.rst) for details.
 
 ## Python linting and formatting

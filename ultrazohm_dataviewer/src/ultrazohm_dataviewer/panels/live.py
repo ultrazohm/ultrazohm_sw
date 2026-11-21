@@ -208,7 +208,7 @@ class LiveWorkspace:
             restore_xsct(repo)
         except (OSError, ValueError, KeyError) as exc:
             self.tool_error = str(exc)
-        self.flash_available = xsct_available()
+        self.flash_available = xsct_available(self.repo)
         self.follow = True
         self.paused = False
         self.window_seconds = 2.0
@@ -287,7 +287,7 @@ class LiveWorkspace:
             self.load_live_settings()
             try:
                 restore_xsct(root)
-                self.flash_available = xsct_available()
+                self.flash_available = xsct_available(self.repo)
                 self.tool_error = ""
             except (OSError, ValueError, KeyError) as exc:
                 self.tool_error = str(exc)
@@ -382,7 +382,7 @@ class LiveWorkspace:
         self.flash_available = (
             bool(update.status.get("firmware_available"))
             if update.attached
-            else xsct_available()
+            else xsct_available(self.repo)
         )
         if self._xsct_dialog is not None and self._xsct_dialog.ready():
             selected = self._xsct_dialog.result()
@@ -390,7 +390,7 @@ class LiveWorkspace:
             if selected:
                 try:
                     select_xsct(selected[0], self.repo)
-                    self.flash_available = xsct_available()
+                    self.flash_available = xsct_available(self.repo)
                     self.tool_error = ""
                 except (OSError, ValueError) as exc:
                     self.tool_error = str(exc)

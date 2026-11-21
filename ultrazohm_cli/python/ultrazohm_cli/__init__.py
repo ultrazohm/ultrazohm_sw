@@ -323,7 +323,9 @@ class Client:
             raise TypeError("enabled must be bool")
         return self._call("send_ack", enabled=enabled)
 
-    def shutdown(self):
+    def shutdown(self, *, service_id=None):
+        if service_id is not None:
+            return self._call("owned_shutdown", service_id=service_id)
         return self._call("shutdown")
 
 

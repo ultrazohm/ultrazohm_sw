@@ -366,7 +366,8 @@ impl Profile {
         repo: Option<&Path>,
     ) -> Result<Self> {
         let mapping = ChannelMapping::load_repository(mapping, repo)?;
-        let settings = ProfileSettings::for_mapping(profile, &mapping)?;
+        let selected = crate::preferences::selected_profile(profile, repo)?;
+        let settings = ProfileSettings::for_mapping(selected.as_deref(), &mapping)?;
         Self::from_mapping(settings, mapping)
     }
     pub fn from_mapping(settings: ProfileSettings, mapping: ChannelMapping) -> Result<Self> {

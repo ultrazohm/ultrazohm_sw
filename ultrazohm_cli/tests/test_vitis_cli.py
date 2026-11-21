@@ -88,7 +88,10 @@ class VitisCommandTest(unittest.TestCase):
                 self.assertEqual(call["args"][0], "-nodisp")
                 script = Path(call["args"][1]).resolve()
                 self.assertTrue(
-                    script.is_relative_to(self.repo / "artifacts/cli-tools")
+                    script.is_relative_to(
+                        (self.repo / "artifacts/cli-tools").resolve()
+                    ),
+                    f"{script!s} is outside {(self.repo / 'artifacts/cli-tools').resolve()!s}",
                 )
                 self.assertEqual(
                     script.read_bytes(),

@@ -133,18 +133,18 @@ def test_xsct_selection_is_remembered_and_restored_for_child_processes(
     tool.chmod(0o755)
     monkeypatch.setenv("PATH", "")
     flashing.select_xsct(tool, tmp_path)
-    assert flashing.xsct_available()
+    assert flashing.xsct_available(tmp_path)
     assert json.loads(
         (tmp_path / "artifacts" / "_user" / "tools.json").read_text()
     ) == {"xsct": str(tool)}
     monkeypatch.setenv("PATH", "")
     flashing.restore_xsct(tmp_path)
-    assert Path(os.environ["PATH"].split(os.pathsep)[0]) == tool.parent
-    assert flashing.xsct_available()
+    assert os.environ["PATH"] == ""
+    assert flashing.xsct_available(tmp_path)
     with pytest.raises(ValueError, match="XSCT launcher"):
         flashing.select_xsct(tool.with_name("vitis.exe"), tmp_path)
     tool.unlink()
-    with pytest.raises(ValueError, match="no longer exists"):
+    with pytest.raises(ValueError, match="XSCT launcher not found"):
         flashing.restore_xsct(tmp_path)
 
 
@@ -165,6 +165,7 @@ def test_service_launch_passes_filtered_settings_profile(tmp_path, monkeypatch):
             "initial_channels": {"3": "JSO_lifecheck", "4": "JSO_theta_mech"},
         },
     )
+    monkeypatch.setattr("ultrazohm_cli.process.uuid.uuid4", lambda: "test-service")
     calls = []
 
     def launch(args, **kwargs):
@@ -325,7 +326,7 @@ def test_malformed_tool_preferences_report_a_validation_error(
 )
 def test_invalid_runtime_preferences_are_rejected_without_rewriting(tmp_path, change):
     mapping = tmp_path / "mapping.json"
-    mapping.write_text(json.dumps({"channels": 20, "observables": {}}))
+    mapping.write_text(json.dumps(contract({})))
     value = {
         "schema_version": 1,
         "name": "user",
@@ -488,6 +489,7 @@ def test_repository_service_passes_repo_and_preserves_explicit_profile(
                 }
             )
         )
+    monkeypatch.setattr("ultrazohm_cli.process.uuid.uuid4", lambda: "test-service")
     calls = []
     monkeypatch.setattr(
         "ultrazohm_dataviewer.live.subprocess.Popen",
@@ -521,6 +523,7 @@ def test_changed_repository_requires_restarting_owned_service(tmp_path):
     client = SimpleNamespace(status=lambda: {"service_id": "test-service"})
     controller = LiveController(lambda endpoint: client)
     controller.owned.endpoint = "test-endpoint"
+    controller.owned.service_id = "test-service"
     controller.owned.process = SimpleNamespace(poll=lambda: None)
     controller.owned.repo = tmp_path / "previous"
     with pytest.raises(RuntimeError, match="different firmware repository"):
@@ -546,7 +549,7 @@ def test_explicit_mapping_survives_connect_with_workspace(
     header.touch()
     directory = data_directory(root)
     mapping = directory / "selected.json"
-    mapping.write_text(json.dumps({"channels": 20, "observables": {"JSO_custom": 42}}))
+    mapping.write_text(json.dumps(contract({"JSO_custom": 42})))
     (directory / "settings.json").write_text(
         json.dumps(
             {
@@ -562,6 +565,7 @@ def test_explicit_mapping_survives_connect_with_workspace(
         live_mapping=str(mapping),
         live_repo=str(root) if explicit_repo else None,
     )
+    monkeypatch.setattr("ultrazohm_cli.process.uuid.uuid4", lambda: "test-service")
     requests, launches = [], []
     controller = app.live.controller
     try:
@@ -627,6 +631,7 @@ def test_changed_mapping_requires_restarting_owned_service(tmp_path):
         lambda endpoint: SimpleNamespace(status=lambda: {"service_id": "test-service"})
     )
     controller.owned.endpoint = "test-endpoint"
+    controller.owned.service_id = "test-service"
     controller.owned.process = SimpleNamespace(poll=lambda: None)
     controller.owned.mapping = tmp_path / "previous.json"
     with pytest.raises(RuntimeError, match="different channel mapping"):

@@ -27,7 +27,10 @@ pub(super) fn run(
     listener: TcpListener,
     ready: impl FnOnce(),
 ) -> Result<()> {
-    let service_id = format!("{}-{}", now_ns(), std::process::id());
+    let service_id = config
+        .launch_id
+        .clone()
+        .unwrap_or_else(|| format!("{}-{}", now_ns(), std::process::id()));
     let session_stop = Arc::new(AtomicBool::new(false));
     let mut session = Some(Session::new(config.clone(), session_stop)?);
     let health = Arc::new(Mutex::new(State::default()));
@@ -167,7 +170,11 @@ pub(super) fn run(
                     status["device_target"] = json!(config.device);
                     status["firmware_available"] = json!(
                         config.repo.is_some()
-                            && crate::vitis::selected_xsct(config.xsct.as_deref()).is_ok()
+                            && crate::preferences::resolve_xsct(
+                                config.xsct.as_deref(),
+                                config.repo.as_deref()
+                            )
+                            .is_ok()
                     );
                     status["active_job"] = jobs
                         .back()
@@ -202,7 +209,13 @@ pub(super) fn run(
                         json!({"job":job.status(),"log":String::from_utf8_lossy(&bytes),"next_offset":offset+bytes.len()}),
                     )))
                 }
-                Operation::Shutdown => {
+                Operation::Shutdown | Operation::OwnedShutdown { .. } => {
+                    if let Operation::OwnedShutdown {
+                        service_id: expected,
+                    } = &pending.request.command
+                    {
+                        ensure!(expected == &service_id, "service identity mismatch");
+                    }
                     stop_requested.store(true, Ordering::SeqCst);
                     shutdown.store(true, Ordering::SeqCst);
                     if let Some(s) = session.as_mut() {
@@ -258,7 +271,10 @@ pub(super) fn run(
                         crate::vitis::repository(Some(config.repo.as_ref().context(
                             "service has no firmware checkout; start serve --repo PATH",
                         )?))?;
-                    let xsct = crate::vitis::selected_xsct(config.xsct.as_deref())?;
+                    let xsct = crate::preferences::resolve_xsct(
+                        config.xsct.as_deref(),
+                        config.repo.as_deref(),
+                    )?;
                     let headers = crate::header_mapping::HEADERS
                         .iter()
                         .map(|p| fs::read(repo.join(p)).ok())

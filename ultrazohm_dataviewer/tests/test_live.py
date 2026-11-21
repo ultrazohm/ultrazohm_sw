@@ -1451,6 +1451,9 @@ def test_close_shuts_down_owned_service_even_when_detached(attached):
         def status(self):
             return {"service_id": "test-service"}
 
+        def stop(self):
+            calls.append("stop")
+
         def shutdown(self, *, service_id=None):
             calls.append("shutdown")
 
@@ -1469,9 +1472,9 @@ def test_close_shuts_down_owned_service_even_when_detached(attached):
     controller.attached = attached
     controller._status = {"state": {"connected": True}}
     controller.close()
-    assert calls == ["shutdown", "wait"]
+    assert calls == (["stop"] if attached else []) + ["shutdown", "wait"]
     controller.close()
-    assert calls == ["shutdown", "wait"]
+    assert calls == (["stop"] if attached else []) + ["shutdown", "wait"]
 
 
 def test_connect_rejects_external_service_without_changing_device():
@@ -1714,3 +1717,21 @@ def test_startup_timeout_terminates_unresponsive_service(tmp_path, monkeypatch):
         controller._start_service(tmp_path / "session", "")
     assert started[0].events == ["terminate"]
     assert not controller.owned.running
+
+
+def test_close_stops_replacement_at_owned_endpoint_without_shutting_it_down():
+    from unittest.mock import Mock
+
+    client = Mock()
+    client.status.return_value = {"service_id": "replacement"}
+    old_process = Mock()
+    old_process.poll.return_value = None
+    controller = LiveController(lambda endpoint: client)
+    controller.endpoint = controller.owned.endpoint = "same-endpoint"
+    controller.owned.process = old_process
+    controller.owned.service_id = "original"
+    controller.attached = True
+    controller.close()
+    client.stop.assert_called_once()
+    client.shutdown.assert_not_called()
+    old_process.terminate.assert_not_called()

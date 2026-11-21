@@ -1104,9 +1104,10 @@ class LiveController:
                 from ultrazohm_cli import Client
 
                 factory = Client
-            # Stop the attached external device first. Cleanup of an unrelated
-            # owned service must neither delay this Stop nor skip it on error.
-            if connected and (not owned_running or self.endpoint != owned_endpoint):
+            # Always Stop the attached device first, even if an older owned
+            # process is still finalizing at this endpoint. Ownership only
+            # controls shutdown, never whether the attached device receives Stop.
+            if connected:
                 try:
                     factory(self.endpoint).stop()
                 except Exception as exc:

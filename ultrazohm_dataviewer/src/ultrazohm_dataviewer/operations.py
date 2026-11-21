@@ -4,33 +4,11 @@ import threading
 import uuid
 from concurrent.futures import Future
 
+from .application_mutations import add_signal as add_signal
+from .application_mutations import link_x as link_x
+from .application_mutations import set_grid as set_grid
 from .client import ViewerError
-from .validation import boolean, bounded_int
-from .workers import CancellableExecutor, Cancellation
-
-
-def set_grid(state, rows: int, cols: int):
-    state.set_grid(rows, cols)
-
-
-def link_x(state, enabled: bool):
-    state.set_link_x(boolean(enabled))
-
-
-def add_signal(state, plot: int, run: int, signal: str):
-    plot = bounded_int(plot, 1, state.cell_count, "plot")
-    if state.registry.get_signal(run, signal) is None:
-        raise ValueError(f"run_{run} has no signal {signal!r}")
-    cell = state.cells[plot - 1]
-    domain = state.registry.get(run).axis_domain
-    if any(
-        state.registry.get(ref[0]).axis_domain != domain for ref in cell.active_refs
-    ):
-        raise ValueError("Cannot combine time and frequency axes in one plot")
-    if not cell.signals:
-        cell.pending_x_lim = cell.x_lim = None
-        state.plot_x_ranges.pop(plot, None)
-    cell.add((run, signal))
+from .workers import CancellableExecutor, Cancellation, cancellable_result
 
 
 class Operations:
@@ -154,8 +132,6 @@ class Operations:
         view.shutdown()
 
     def _registered(self, operation, arguments):
-        import inspect
-
         from .client_methods import ViewerMethods
 
         method = getattr(ViewerMethods, operation, None)
@@ -163,12 +139,13 @@ class Operations:
             raise ViewerError(
                 "unknown_operation", f"Unknown viewer operation: {operation}"
             )
-        bound = inspect.signature(method).bind(None, **arguments)
-        bound.apply_defaults()
         command = self.state.commands.get(operation)
+        if command is None:
+            raise ViewerError(
+                "unknown_operation", f"Unknown viewer operation: {operation}"
+            )
         values = []
-        for param in command.params:
-            value = bound.arguments[param.name]
+        for param, value in zip(command.params, command.bind(arguments), strict=True):
             if value is not None and param.kind in ("run", "node"):
                 if not isinstance(value, dict) or value.get("session") != self.session:
                     raise ViewerError(
@@ -316,17 +293,19 @@ class Operations:
         return self._submit(prepare, commit)
 
     def set_grid(self, rows, cols):
-        set_grid(self.state, rows, cols)
+        self.state.commands.invoke(self.state, "set_grid", rows=rows, cols=cols)
 
     def link_x(self, enabled):
-        link_x(self.state, enabled)
+        self.state.commands.invoke(self.state, "link_x", on=enabled)
 
     def add_signal(self, plot, run, signal):
         if not isinstance(run, dict) or run.get("session") != self.session:
             raise ViewerError("stale_handle", "Recording belongs to another session")
         if type(run.get("id")) is not int or self.state.registry.get(run["id"]) is None:
             raise ViewerError("stale_handle", "Recording is no longer loaded")
-        add_signal(self.state, plot, run["id"], signal)
+        self.state.commands.invoke(
+            self.state, "add_signal", plot=plot, run=run["id"], signal=signal
+        )
 
     def clear_session(self):
         from .session import clear_session
@@ -455,7 +434,6 @@ class Operations:
         return self._submit(prepare, commit)
 
     def _submit(self, prepare, commit):
-        from .sources import check
 
         target = Future()
         canceled = threading.Event()
@@ -463,14 +441,7 @@ class Operations:
 
         def work(cancel):
             token = Cancellation(cancel, canceled)
-            check(token)
-            result = prepare(token)
-            try:
-                check(token)
-            except BaseException:
-                self._dispose(result)
-                raise
-            return result
+            return cancellable_result(lambda: prepare(token), token, self._dispose)
 
         source = self.executor.submit(work, dispose=self._dispose)
         self.jobs.append((source, target, self.session, commit))

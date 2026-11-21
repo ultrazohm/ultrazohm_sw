@@ -16,7 +16,7 @@ from dataclasses import dataclass, field, fields, replace
 from .commands import CommandRegistry
 from .console import Console
 from .loader import ParsedRun, open_file
-from .model import DataRegistry, Run, Signal
+from .model import DataRegistry, Run
 from .nodes import NodeGraph
 from .requests import Requests
 from .validation import axis_limits, bounded_int, finite_float
@@ -627,34 +627,23 @@ class AppState(SessionData):
         self._report_loaded(run)
         return run
 
-    def upsert_derived_run(
-        self, label: str, time, signal_y, unit: str = "", *, run_id=None
-    ) -> int:
-        """Create or refresh the single-channel derived run a node materializes.
-
-        Refreshing *in place* (rather than remove + re-add) keeps the run id stable
-        so plots/analysis windows referencing this derived signal survive a
-        re-evaluation. Returns the derived run's id.
-        """
-        import numpy as np
-
-        time = np.ascontiguousarray(time, dtype=np.float64)
-        y = np.ascontiguousarray(signal_y, dtype=np.float32)
-        run = self.registry.get(run_id) if run_id is not None else None
-        if run is not None:
-            if not run.derived:
-                raise ValueError("Cannot overwrite a recording with a derived output")
-            run.label = label
-            run.time = time
-            run.time_raw = time
-            run.set_time_origin(run.time_origin)
-            run.signals = {"out": Signal("out", unit, y, run.id)}
-            return run.id
-        run = self.registry.add_run(
-            label, f"<derived:{label}>", time, {"out": y}, {"out": unit}
+    def upsert_derived_run(self, label, time, signal_y, unit="", *, run_id=None):
+        return self.registry.upsert_derived_run(
+            label, time, signal_y, unit, run_id=run_id
         )
-        run.derived = True
-        return run.id
+
+    def derived_domain_changed(self, run_id):
+        """Detach views whose independent axis no longer matches this output."""
+        for index, cell in enumerate(self.cells, 1):
+            if any(ref[0] == run_id for ref in cell.signals):
+                cell.signals = [ref for ref in cell.signals if ref[0] != run_id]
+                cell.y2_signals = [ref for ref in cell.y2_signals if ref[0] != run_id]
+                cell.x_lim = cell.pending_x_lim = None
+                self.plot_x_ranges.pop(index, None)
+            if cell.xy_source and cell.xy_source[0] == run_id:
+                cell.xy_source = None
+        for cfg in (self.fft, self.histogram):
+            cfg.sources = [ref for ref in cfg.sources if ref[0] != run_id]
 
     def remove_run(self, run_id: int) -> None:
         """Remove a run and drop any plot assignments that referenced it."""

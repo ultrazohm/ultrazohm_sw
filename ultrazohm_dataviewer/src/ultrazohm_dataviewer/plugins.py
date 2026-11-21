@@ -121,7 +121,7 @@ def load_plugins(dirs: list[str] | None = None, console=None) -> tuple[str, ...]
                 continue
             try:
                 _load_file(os.path.join(directory, fname))
-            except Exception as exc:  # noqa: BLE001 - one bad plugin must not break startup
+            except (Exception, SystemExit) as exc:  # noqa: BLE001 - isolate plugin failures
                 if console is not None:
                     console.error(f"plugin {fname}: {exc}")
     new = tuple(k for k in REGISTRY if k not in before)

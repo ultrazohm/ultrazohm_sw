@@ -50,7 +50,7 @@ def parser():
     gui.add_argument("files", nargs="*")
     gui.add_argument("--backend", choices=("pyarrow", "polars"))
     gui.add_argument("--loading-mode", choices=("memory", "lazy"))
-    gui.add_argument("--disk-cache", action="store_true")
+    gui.add_argument("--disk-cache", action="store_true", default=None)
     gui.add_argument("--live-repo")
     for name, method in public_methods().items():
         command = commands.add_parser(name.replace("_", "-"), help=method.__doc__)
@@ -91,15 +91,9 @@ def main(argv=None):
             stream.reconfigure(errors="backslashreplace")
     args = parser().parse_args(argv)
     if args.operation in (None, "gui"):
-        from .app import main as gui_main
+        from .app import run_gui
 
-        options = ["--endpoint", args.endpoint]
-        for name in ("backend", "loading_mode", "live_repo"):
-            if value := getattr(args, name, None):
-                options.extend(["--" + name.replace("_", "-"), value])
-        if getattr(args, "disk_cache", False):
-            options.append("--disk-cache")
-        return gui_main([*options, *getattr(args, "files", [])])
+        return run_gui(args)
     try:
         with Client(args.endpoint, timeout=args.timeout) as client:
             name = args.operation.replace("-", "_")

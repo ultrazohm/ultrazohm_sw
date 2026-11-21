@@ -234,6 +234,56 @@ class PythonCLITest(unittest.TestCase):
 
 @unittest.skipUnless(BIN.exists(), "build Rust CLI first")
 class IntegrationTest(unittest.TestCase):
+    def test_catalog_larger_than_request_limit_round_trips(self):
+        mapping = generated_mapping()
+        for index in range(4000):
+            mapping["observables"][f"JSO_EXTRA_SIGNAL_{index:05d}"] = 1000 + index
+        self.start(mapping=mapping, logging=False)
+        catalog = self.cli("catalog")
+        self.assertGreater(len(json.dumps(catalog)), 65536)
+        self.assertEqual(catalog["profile"]["observables"], mapping["observables"])
+        self.assertTrue(self.cli("status")["state"]["connected"])
+
+    def test_recording_pages_freeze_membership_and_validate_session(self):
+        self.start()
+
+        def page(cursor=None):
+            host, port = self.endpoint.rsplit(":", 1)
+            with socket.create_connection((host, int(port)), timeout=5) as connection:
+                connection.sendall(
+                    (
+                        json.dumps(
+                            {
+                                "api_version": 3,
+                                "command": {
+                                    "op": "recordings_page",
+                                    "cursor": cursor,
+                                    "limit": 1,
+                                },
+                            }
+                        )
+                        + "\n"
+                    ).encode()
+                )
+                with connection.makefile("rb") as reader:
+                    return json.loads(reader.readline())
+
+        first = page()
+        self.assertTrue(first["ok"], first)
+        self.assertEqual(len(first["recordings"]), 1)
+        cursor = first["next_cursor"]
+        self.assertIsNotNone(cursor)
+        self.cli("stop-logging")
+        wait_complete(lambda: self.cli("status"), "fast")
+        self.cli("start-logging")
+        last = page(cursor)
+        self.assertTrue(last["ok"], last)
+        self.assertEqual(last["recordings"][0]["stream"], "slow")
+        self.assertIsNone(last["next_cursor"])
+        self.assertEqual(len(self.cli("recordings")["recordings"]), 3)
+        cursor["run_id"] = "previous-session"
+        self.assertEqual(page(cursor)["code"], "cursor_expired")
+
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(cleanup_directory, self.tmp)

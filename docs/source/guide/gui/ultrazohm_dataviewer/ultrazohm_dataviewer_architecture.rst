@@ -565,3 +565,40 @@ In the application, explicit and automatic analysis requests use the same coordi
 Superseded requests are cancelled.
 Standalone panels without an application coordinator retain the headless request scheduler used by component tests.
 Client/registry contract tests validate names, parameter types, optional arguments, and view targeting, in addition to the generated documentation checks.
+
+Shared application contracts
+============================
+
+``Command`` specifications own named argument binding and local argument coercion.
+GUI/console callers and registered RPC operations use the same command handlers.
+``Operations`` retains transport handle validation, asynchronous preparation and
+application-thread publication. ``application_mutations`` contains synchronous
+mutations without depending on transport or worker ownership.
+
+``axis.SignalMetadata`` carries domain, unit, timestamp resolution and source
+identity. Source-node domains come from the loaded signal. ``TransformSpec``
+declares input-domain requirements and output-domain rules; imported spectra
+therefore retain their frequency domain, and time-only transforms reject them.
+Computational metadata changes invalidate derived outputs.
+
+``node_jobs.EvaluationState`` contains a detached graph, registry and diagnostic
+console. ``DataRegistry.detached`` owns the copy policy and shares immutable
+sample buffers. Derived-run creation lives in the registry; incompatible plot
+assignments are removed only when publishing to ``AppState``. No GUI runtime or
+application method is synthesized in the worker context.
+
+``workers.cancellable_result`` checks cancellation before and after computation
+and disposes unpublished canceled results. Sequential IO, coalescing requests
+and control preparation share this boundary. Their execution queues remain
+separate; publication still checks the owning session and computation fingerprint.
+
+``live.ServiceSnapshot`` refreshes status, catalog and assignments together. It
+checks service/session identity around the RPC reads and retries a changing
+session. Attach, connect and polling share the refresh; reconnect reads the new
+session's catalog. Urgent controls retain their independent execution path.
+
+The public CLI parses arguments once and passes options to ``app.run_gui``.
+The compatibility ``app.main`` entry point delegates to that parser. Conversion
+commands target an open viewer; numerical conversion remains available through
+the Python loader API. Plugin import failures, including ``SystemExit``, are
+logged and skipped after registration rollback.

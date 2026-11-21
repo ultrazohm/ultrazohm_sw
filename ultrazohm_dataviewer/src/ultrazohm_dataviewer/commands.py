@@ -1,4 +1,4 @@
-"""Internal operation metadata and GUI handlers during the typed API migration."""
+"""Application operation specifications shared by GUI, console and RPC adapters."""
 
 from __future__ import annotations
 
@@ -38,6 +38,22 @@ class Command:
 
     def signature(self) -> str:
         return f"{self.name}({', '.join(p.display() for p in self.params)})"
+
+    def bind(self, arguments):
+        """Bind named API arguments using the same specification as local calls."""
+        unknown = set(arguments) - {parameter.name for parameter in self.params}
+        if unknown:
+            raise CommandError(
+                f"Unexpected arguments for {self.name}: {', '.join(sorted(unknown))}"
+            )
+        missing = [
+            p.name for p in self.params if not p.optional and p.name not in arguments
+        ]
+        if missing:
+            raise CommandError(
+                f"Missing arguments for {self.name}: {', '.join(missing)}"
+            )
+        return [arguments.get(p.name) for p in self.params]
 
 
 Handler = Callable[["AppState", list], "str | None"]
@@ -275,6 +291,13 @@ class CommandRegistry:
             state.console.ok(message)
         return message
 
+    def invoke(self, state, name, **arguments):
+        """Named application entry point; all adapters share coercion and handlers."""
+        command = self.get(name)
+        if command is None:
+            raise CommandError(f"Unknown command: {name}")
+        return self.execute(state, name, command.bind(arguments))
+
     def echo(self, state: AppState, name: str, values: list) -> None:
         """Log a command without executing it (gesture already applied by ImPlot)."""
         cmd = self._commands.get(name)
@@ -394,7 +417,7 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
     )
 
     def set_grid(state, a):
-        from .operations import set_grid as apply
+        from .application_mutations import set_grid as apply
 
         apply(state, a[0], a[1])
 
@@ -406,7 +429,7 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
     )
 
     def link_x(state, a):
-        from .operations import link_x as apply
+        from .application_mutations import link_x as apply
 
         apply(state, a[0])
 
@@ -497,7 +520,7 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
 
     # -- per-plot ---------------------------------------------------------
     def add_signal(state, a):
-        from .operations import add_signal as apply
+        from .application_mutations import add_signal as apply
 
         try:
             apply(state, *a)

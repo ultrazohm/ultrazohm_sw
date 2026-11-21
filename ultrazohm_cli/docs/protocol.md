@@ -171,7 +171,9 @@ Default: off for this firmware.
 
 CLI and native Python bindings call the same Rust control client.
 The local transport is newline-terminated JSON over persistent loopback TCP connections: a client may send any number of requests on one connection, strictly one at a time, and receives each reply before sending the next.
-Each message is at most 64 KiB.
+Requests are limited to 64 KiB; JSON replies (including Arrow headers) are limited to 8 MiB.
+The service returns `response_too_large` before transmission when a reply exceeds its limit.
+No Arrow body is sent after a rejected header, so the persistent connection remains aligned.
 Requests and replies carry `api_version: 3`; any other version is rejected with an error and the connection is closed.
 Versions 1 and 2 are no longer accepted.
 `read_data` replies additionally carry a length-delimited binary Arrow body after the JSON header line, as specified below.
@@ -207,7 +209,7 @@ The Python client also sets a code for requests that got no reply, so callers ne
 | `transport` | Any other socket failure, for example a connection closed mid-reply |
 
 Status returns counters, last status word, ACK policy, terminal error, `software_version` (also in `run.json` and `ultrazohm_cli --version`) and `logging.fast` / `logging.slow` with phase, Parquet path and recording error.
-Operations: firmware, jobs, job, connect, status, catalog, observables, recordings, data_info, read_data, stop, enable_system, enable_control, set_variable, set_observable, button, send_ack, start_logging, stop_logging, pause_logging, resume_logging, shutdown, owned_shutdown.
+Operations: firmware, jobs, job, connect, status, catalog, observables, recordings, recordings_page, data_info, read_data, stop, enable_system, enable_control, set_variable, set_observable, button, send_ack, start_logging, stop_logging, pause_logging, resume_logging, shutdown, owned_shutdown.
 The four logging operations take an optional `stream` field (`"fast"`, the default, or `"slow"`).
 Error_Reset is not an operation because its firmware case is empty; the CLI `error-reset` command explains this locally.
 Unknown operations/fields and unsupported versions fail without sending bytes.
@@ -215,7 +217,7 @@ Unknown operations/fields and unsupported versions fail without sending bytes.
 Each connection is served by its own worker; commands from all connections execute sequentially on the service owner, which wakes as soon as a request is queued.
 There are at most 64 connected clients (an excess connection receives a `busy` error and is closed) and four concurrent data queries.
 Idle connections stay open until the client or service closes them; a request that has started must complete within two seconds.
-Clients drop a connection after any transport error and reconnect on the next request; only read-only operations (status, catalog, observables, recordings, data_info, read_data) are retried automatically, never device commands.
+Clients drop a connection after any transport error and reconnect on the next request; only read-only operations (status, catalog, observables, recordings, recordings_page, data_info, read_data) are retried automatically, never device commands.
 
 A complete, validated `stop` request cancels the device commands still queued (enable_system, enable_control, set_variable, set_observable, button and earlier stop) and becomes the next command to execute, ahead of everything still queued.
 Queued reads, logging control and shutdown keep their order behind it.
@@ -354,6 +356,14 @@ The local API adds `recordings`, `data_info` and `read_data`.
 `data_info` takes `source: {"stream":"fast"|"slow", "recording":null|positive_integer}`.
 Null selects the recent RAM ring; a number selects a recording, including pending data and older indexed chunks.
 `recordings` lists all sources in this service run, including recordings whose initialization failed.
+The native client (used by both CLI and Python) implements this call by collecting
+`recordings_page` replies. Raw clients should use `{"op":"recordings_page","cursor":null,"limit":100}`
+and pass each `next_cursor` unchanged until it is null. Limits must be 1..1000;
+pages also obey a byte budget. The first page fixes the recording membership;
+recordings created later are included in the next listing. Metadata within each
+page reflects its read time. A cursor belongs to one acquisition session and
+fails with `cursor_expired` after session replacement. The legacy raw `recordings`
+operation remains available, subject to the JSON response limit.
 Their metadata includes an `error` string; one failed recording does not prevent listing or reading the others.
 
 ```json

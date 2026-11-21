@@ -55,6 +55,21 @@ def source_backend(request, monkeypatch):
     monkeypatch.setattr(sys.modules[__name__], "AppState", BackendState)
 
 
+@pytest.mark.parametrize("nested_first", [True, False])
+def test_nested_parquet_fields_do_not_change_axis_extent(tmp_path, nested_first):
+    columns = {
+        "meta": pa.array([{"a": 100.0, "b": 200.0}, {"a": 101.0, "b": 201.0}]),
+        "time": [0.0, 1.0],
+        "value": [2.0, 3.0],
+    }
+    if not nested_first:
+        columns["meta"] = columns.pop("meta")
+    path = tmp_path / "nested.parquet"
+    pq.write_table(pa.table(columns), path, row_group_size=1)
+    source = ParquetSource(path)
+    assert source.metadata.time_range == (0.0, 1.0)
+
+
 @pytest.fixture
 def recording(tmp_path):
     t = np.arange(180123, dtype=np.float64) * 0.001 + 3

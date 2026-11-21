@@ -144,8 +144,9 @@ def test_no_plugins_leaves_builtins_intact(clean_registry):
     assert {"fft", "math", "filter", "shift"} <= set(transform_kinds())
 
 
-def test_broken_plugin_is_skipped_and_logged(tmp_path, clean_registry):
-    (tmp_path / "bad.py").write_text("raise RuntimeError('boom')\n")
+@pytest.mark.parametrize("failure", ["RuntimeError('boom')", "SystemExit(17)"])
+def test_broken_plugin_is_skipped_and_logged(tmp_path, clean_registry, failure):
+    (tmp_path / "bad.py").write_text(f"raise {failure}\n")
     (tmp_path / "good.py").write_text(_PLUGIN.replace('"double"', '"triple"'))
 
     class _Console:

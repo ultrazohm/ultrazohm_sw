@@ -7,15 +7,15 @@ import subprocess
 import sys
 import tempfile
 import tomllib
-import zipfile
 from contextlib import nullcontext
-from email.parser import BytesParser
+from functools import partial
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 CLI = HERE.parent / "ultrazohm_cli"
 sys.path.insert(0, str(HERE.parent))
-from uz_build import build_lock  # noqa: E402
+from uz_build import build_lock, single_wheel, venv_bin, wheel_version  # noqa: E402
+from uz_build import run as build_run  # noqa: E402
 
 WINDOWS = os.name == "nt"
 # The repository's single Python pin. uv reads .python-version only inside the
@@ -37,14 +37,9 @@ SYNC = [
 ]
 
 
-def run(*command, cwd=HERE, env=None):
-    command = [str(part) for part in command]
-    print("+", " ".join(command), flush=True)
-    subprocess.run(command, cwd=cwd, env=env, check=True)
+run = partial(build_run, cwd=HERE)
 
-
-def python_in(venv):
-    return venv / ("Scripts/python.exe" if WINDOWS else "bin/python")
+python_in = venv_bin
 
 
 def sync(venv):
@@ -59,13 +54,7 @@ def cli_tasks(*args):
     run(sys.executable, CLI / "tasks.py", *args)
 
 
-def built_wheel(directory):
-    wheels = sorted(directory.glob("ultrazohm_cli-*.whl"))
-    if len(wheels) != 1:
-        raise SystemExit(
-            f"Expected exactly one wheel in {directory}, found {len(wheels)}"
-        )
-    return wheels[0]
+built_wheel = single_wheel
 
 
 def install_packages(python, args, *, release=False):
@@ -80,11 +69,7 @@ def install_packages(python, args, *, release=False):
             )
     cli_wheel = args.cli_wheel
     cli_wheel = Path(cli_wheel).resolve()
-    with zipfile.ZipFile(cli_wheel) as archive:
-        metadata_path = next(
-            n for n in archive.namelist() if n.endswith(".dist-info/METADATA")
-        )
-        version = BytesParser().parsebytes(archive.read(metadata_path))["Version"]
+    version = wheel_version(cli_wheel)
     viewer_wheel = args.viewer_wheel
     with tempfile.TemporaryDirectory(prefix="viewer-wheel-") as directory:
         if viewer_wheel is None:

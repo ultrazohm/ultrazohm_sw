@@ -507,7 +507,7 @@ Run the same checks as CI from the repository root, on Linux (dev container) or 
 
 `check` builds a debug wheel, installs it into a fresh temporary environment and runs the integration tests twice: against the cargo-built executable and against the wheel's `ultrazohm-cli` command.
 On Linux, `release-wheel` links against glibc 2.28 using zig, so it needs no Docker build.
-Linux CI runs these tasks in the `ci` stage of `.devcontainer/Dockerfile` (published to GHCR by `.github/workflows/ci-image.yml`, tagged by the Dockerfile hash), so local and CI toolchains match.
+Linux CI runs these tasks in the `ci` stage of `.devcontainer/Dockerfile` (published to GHCR by `.github/workflows/ci-image.yml`, tagged by the Dockerfile, pinned build-tool requirements, and explicit refresh-revision hash), so local and CI toolchains match.
 Windows CI runs the same commands.
 
 Set `UZ_CLI_BIN` for another executable.
@@ -623,3 +623,16 @@ its endpoint. Automatic cleanup sends that identity with the shutdown request;
 the service rejects a mismatch before any shutdown side effects. Explicit user
 shutdown remains available for attached services. `wait(timeout=...)` bounds
 finalization waiting without killing a service still writing recordings.
+
+Firmware mappings must contain the mandatory `Stop` command. Validation rejects
+an incomplete lifecycle contract before opening a device connection.
+
+The Bash and PowerShell user/developer entry points share platform bootstrap
+helpers. `.uv-version` pins uv when installation is needed; `.python-version`
+selects Python. Application arguments can use the default stable channel directly:
+`./uz cli status` or `./uz cli -- status`. Use `./uz cli stable -- --help` for
+application help; `./uz cli --help` describes the launcher.
+
+Build tasks share environment paths, wheel inspection, subprocess execution,
+and release staging through `uz_build.py`. Staging never rewrites the checkout.
+See `.devcontainer/build-tools.txt` for exact build-tool pins.

@@ -1,46 +1,23 @@
-"""Stage release sources without changing checkout metadata or lockfiles."""
+"""Viewer release inputs and matching CLI dependency."""
 
 import re
-import shutil
-import tempfile
-import tomllib
+import sys
 from contextlib import contextmanager
 from pathlib import Path
 
-VERSION = re.compile(r"\d+\.\d+\.\d+(?:\.dev\d+)?")
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from uz_build import VERSION as VERSION  # noqa: E402
+from uz_build import staged_sources  # noqa: E402
 
 
 @contextmanager
 def staged_project(project, version=None):
-    project = Path(project)
-    metadata = tomllib.loads((project / "pyproject.toml").read_text())
-    version = version or metadata["project"]["version"]
-    if not VERSION.fullmatch(version):
-        raise ValueError(f"Invalid release version: {version!r}")
-    with tempfile.TemporaryDirectory(prefix="ultrazohm-release-") as directory:
-        stage = Path(directory) / project.name
-        stage.mkdir()
-        for name in ("pyproject.toml", "README.md", "src"):
-            source = project / name
-            if source.is_dir():
-                shutil.copytree(
-                    source,
-                    stage / name,
-                    ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "*.egg-info"),
-                )
-            elif source.is_file():
-                shutil.copy2(source, stage / name)
+    with staged_sources(project, ("pyproject.toml", "README.md", "src"), version) as (
+        stage,
+        version,
+    ):
         path = stage / "pyproject.toml"
-        text = path.read_text()
-        text, count = re.subn(
-            r'^version = "[^"]+"$',
-            f'version = "{version}"',
-            text,
-            count=1,
-            flags=re.MULTILINE,
-        )
-        if count != 1:
-            raise ValueError("Project version is missing")
+        text = path.read_text(encoding="utf-8")
         text, count = re.subn(
             r'"ultrazohm-cli==[^"]+"', f'"ultrazohm-cli=={version}"', text
         )

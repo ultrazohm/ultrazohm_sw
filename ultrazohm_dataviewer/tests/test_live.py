@@ -1736,3 +1736,57 @@ def test_close_stops_replacement_at_owned_endpoint_without_shutting_it_down():
     client.stop.assert_called_once()
     client.shutdown.assert_not_called()
     old_process.terminate.assert_not_called()
+
+
+def test_reconnect_refreshes_catalog_after_session_was_removed():
+    class Client(FakeClient):
+        connected = False
+
+        def __init__(self):
+            super().__init__()
+            self.connected = False
+
+        def status(self):
+            value = super().status()
+            value["session_id"] = "replacement" if self.connected else None
+            return value
+
+        def connect(self, ip, port):
+            self.connected = True
+
+    client = Client()
+    controller = LiveController(lambda _: client)
+    controller.owned.endpoint = "fake"
+    controller.owned.service_id = "test-service"
+    controller.owned.process = SimpleNamespace(poll=lambda: None, wait=lambda **kw: 0)
+    try:
+        controller._command(
+            "connect", {"endpoint": "fake", "ip": "192.168.1.233", "port": 1000}
+        )
+        controller._poll()
+        assert controller._catalog["observables"] == {"a": 1, "b": 2}
+        assert controller._status["session_id"] == "replacement"
+        assert controller._assignments
+    finally:
+        controller.close()
+
+
+def test_session_refresh_retries_when_identity_changes_between_reads():
+    from ultrazohm_dataviewer.live import ServiceSnapshot
+
+    class Client(FakeClient):
+        session = "old"
+
+        def status(self):
+            value = super().status()
+            value["session_id"] = self.session
+            return value
+
+        def catalog(self):
+            result = {"profile": {"session": self.session}}
+            self.session = "new"
+            return result
+
+    snapshot = ServiceSnapshot.read(Client())
+    assert snapshot.status["session_id"] == "new"
+    assert snapshot.catalog["session"] == "new"

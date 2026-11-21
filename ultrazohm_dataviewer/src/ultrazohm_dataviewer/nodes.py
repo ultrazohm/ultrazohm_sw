@@ -72,6 +72,15 @@ class TransformSpec:
     inputs: tuple[int, int] = (1, 1)  # (min, max) arity
     ui: tuple = ()  # ParamSpec list (for the generic plugin UI)
     unit: str = ""  # output unit for the derived run
+    input_domain: str | Callable | None = None
+    output_domain: str | None = None  # None preserves the input domain
+
+    def required_domain(self, params):
+        return (
+            self.input_domain(params)
+            if callable(self.input_domain)
+            else self.input_domain
+        )
 
 
 REGISTRY: dict[str, TransformSpec] = {}
@@ -93,6 +102,11 @@ def register_transform(spec: TransformSpec) -> None:
         )
     if not callable(spec.compute):
         raise ValueError("Transform compute must be callable")
+    if spec.output_domain not in (None, "time", "frequency") or (
+        not callable(spec.input_domain)
+        and spec.input_domain not in (None, "time", "frequency")
+    ):
+        raise ValueError("Invalid transform axis domain")
     if (
         not isinstance(spec.inputs, (tuple, list))
         or len(spec.inputs) != 2
@@ -227,6 +241,8 @@ register_transform(
         {"remove_dc": "true", "window": "true"},
         (1, 1),
         (ParamSpec.bool("remove_dc", "remove DC"), ParamSpec.bool("window", "Hann")),
+        input_domain="time",
+        output_domain="frequency",
     )
 )
 register_transform(
@@ -236,6 +252,9 @@ register_transform(
         {"op": "scale", "k": "1.0"},
         (1, 2),
         (ParamSpec.enum("op", transforms.MATH_OPS), ParamSpec.float("k", "##k")),
+        input_domain=lambda params: (
+            "time" if params.get("op") in {"derivative", "integral"} else None
+        ),
     )
 )
 register_transform(
@@ -250,11 +269,17 @@ register_transform(
             ParamSpec.float("cutoff2", "cutoff2 Hz"),
             ParamSpec.int("taps"),
         ),
+        input_domain="time",
     )
 )
 register_transform(
     TransformSpec(
-        "shift", _shift_compute, {"by": "0"}, (1, 1), (ParamSpec.float("by", "by (s)"),)
+        "shift",
+        _shift_compute,
+        {"by": "0"},
+        (1, 1),
+        (ParamSpec.float("by", "by (s)"),),
+        input_domain="time",
     )
 )
 
@@ -486,7 +511,11 @@ def _source_signature(registry, node: Node):
         return ("ref", None, window)
     run = registry.get(node.ref[0])
     signal = registry.get_signal(*node.ref)
-    sig = None if run is None or signal is None else (run.time_version, signal.version)
+    sig = (
+        None
+        if run is None or signal is None
+        else (run.time_version, signal.version, run.signal_metadata(signal.name))
+    )
     from .sources import validation_error
 
     error = (
@@ -590,7 +619,7 @@ def compute_node(
     return out_time, out_y, info, spec.unit
 
 
-def output_domain(graph, node, domains=None):
+def output_domain(graph, node, domains=None, *, registry=None):
     """Resolve shared inputs once, without recursion; cache only within an operation."""
     domains = {} if domains is None else domains
     pending = [(node.id, False)]
@@ -599,8 +628,19 @@ def output_domain(graph, node, domains=None):
         if nid in domains:
             continue
         current = graph.nodes[nid]
-        if current.kind in {"fft", "source"}:
-            domains[nid] = "frequency" if current.kind == "fft" else "time"
+        if current.kind == "source":
+            if current.ref is not None and registry is None:
+                raise ValueError("Source domain resolution requires a data registry")
+            run = registry.get(current.ref[0]) if current.ref is not None else None
+            domains[nid] = (
+                run.signal_metadata(current.ref[1]).domain
+                if run is not None
+                else "time"
+            )
+            continue
+        spec = REGISTRY.get(current.kind)
+        if spec is not None and spec.output_domain is not None:
+            domains[nid] = spec.output_domain
             continue
         inputs = {i for i in current.inputs if i in graph.nodes}
         if not ready:
@@ -616,25 +656,14 @@ def output_domain(graph, node, domains=None):
 
 def publish_output(state, node: Node, unit: str = "", *, domain=None) -> None:
     """Create/refresh a stable output, including an unavailable empty placeholder."""
-    domain = domain or output_domain(state.nodes, node)
+    domain = domain or output_domain(state.nodes, node, registry=state.registry)
     existing = (
         state.registry.get(node.out_run_id) if node.out_run_id is not None else None
     )
     if existing is not None and existing.axis_domain != domain:
         existing.time_origin = None
         existing.axis_domain = domain
-        for index, cell in enumerate(state.cells, 1):
-            if any(ref[0] == existing.id for ref in cell.signals):
-                cell.signals = [ref for ref in cell.signals if ref[0] != existing.id]
-                cell.y2_signals = [
-                    ref for ref in cell.y2_signals if ref[0] != existing.id
-                ]
-                cell.x_lim = cell.pending_x_lim = None
-                state.plot_x_ranges.pop(index, None)
-            if cell.xy_source and cell.xy_source[0] == existing.id:
-                cell.xy_source = None
-        for cfg in (state.fft, state.histogram):
-            cfg.sources = [ref for ref in cfg.sources if ref[0] != existing.id]
+        state.derived_domain_changed(existing.id)
     time = node.out_time if node.out_time is not None else np.empty(0, np.float64)
     values = node.out_y if node.out_y is not None else np.empty(0, np.float32)
     node.out_run_id = state.upsert_derived_run(
@@ -683,24 +712,27 @@ def evaluate(state, node_id: int | None = None, *, cancel=None) -> int:
             if any(i is None for i in node.inputs):
                 raise ValueError("Connect all input slots before evaluating")
             domains = {
-                output_domain(graph, graph.nodes[i], domain_cache) for i in node.inputs
+                output_domain(
+                    graph, graph.nodes[i], domain_cache, registry=state.registry
+                )
+                for i in node.inputs
             }
             if len(domains) > 1:
                 raise ValueError("Cannot combine time and frequency axes")
-            requires_time = node.kind in {"fft", "filter", "shift"} or (
-                node.kind == "math"
-                and node.params.get("op") in {"derivative", "integral"}
-            )
-            if requires_time and domains != {"time"}:
-                raise ValueError(f"{node.kind} requires time-domain inputs")
+            spec = REGISTRY.get(node.kind)
+            required = spec.required_domain(node.params) if spec is not None else None
+            if required is not None and domains != {required}:
+                raise ValueError(f"{node.kind} requires {required}-domain inputs")
             inputs = [_node_output(state, graph.nodes[i], cancel) for i in node.inputs]
-            input_runs = [
-                state.registry.get(up.ref[0] if up.kind == "source" else up.out_run_id)
+            input_metadata = [
+                state.registry.get(
+                    up.ref[0] if up.kind == "source" else up.out_run_id
+                ).signal_metadata(up.ref[1] if up.kind == "source" else "out")
                 for i in node.inputs
                 for up in [graph.nodes[i]]
             ]
             resolution = max(
-                (run.timestamp_resolution for run in input_runs if run is not None),
+                (metadata.timestamp_resolution for metadata in input_metadata),
                 default=0.0,
             )
             out_time, out_y, info, unit = compute_node(
@@ -721,7 +753,10 @@ def evaluate(state, node_id: int | None = None, *, cancel=None) -> int:
         node.error = ""
         node.eval_key = node_key(state.registry, graph, node)
         publish_output(
-            state, node, unit, domain=output_domain(graph, node, domain_cache)
+            state,
+            node,
+            unit,
+            domain=output_domain(graph, node, domain_cache, registry=state.registry),
         )
         # Built-ins preserve the timestamp grid except FFT. Plugins have no
         # precision contract, so their outputs revert to strict validation.

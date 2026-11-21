@@ -14,6 +14,7 @@ import subprocess
 import sys
 import tempfile
 from contextlib import nullcontext
+from functools import partial
 from pathlib import Path
 
 import tomllib
@@ -22,7 +23,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 TARGET = HERE / "target"
 sys.path.insert(0, str(ROOT))
-from uz_build import build_lock  # noqa: E402
+from uz_build import build_lock, single_wheel, venv_bin  # noqa: E402
+from uz_build import run as build_run  # noqa: E402
 
 WINDOWS = os.name == "nt"
 # Oldest glibc supported by published Linux wheels; zig links against it from any host.
@@ -31,10 +33,7 @@ STABLE_BRANCH = "main"
 PRERELEASE_BRANCHES = ("develop", "feature/uz_cli_dataviewer_testing")
 
 
-def run(*command, cwd=HERE, env=None):
-    command = [str(part) for part in command]
-    print("+", " ".join(command), flush=True)
-    subprocess.run(command, cwd=cwd, env=env, check=True)
+run = partial(build_run, cwd=HERE)
 
 
 def maturin():
@@ -47,14 +46,13 @@ def maturin():
         "--python",
         python,
         "--from",
-        "maturin[zig]>=1.9,<2" if not WINDOWS else "maturin>=1.9,<2",
+        tomllib.loads((HERE / "pyproject.toml").read_text())["build-system"][
+            "requires"
+        ][0],
+        "--with-requirements",
+        ROOT / ".devcontainer" / "build-tools.txt",
         "maturin",
     ]
-
-
-def venv_bin(venv, name):
-    scripts = venv / ("Scripts" if WINDOWS else "bin")
-    return scripts / (name + (".exe" if WINDOWS else ""))
 
 
 def fresh_venv(venv, *packages):
@@ -69,15 +67,6 @@ def fresh_venv(venv, *packages):
     python = venv_bin(venv, "python")
     run("uv", "pip", "install", "--quiet", "--python", python, *packages)
     return python
-
-
-def single_wheel(directory):
-    wheels = sorted(Path(directory).glob("ultrazohm_cli-*.whl"))
-    if len(wheels) != 1:
-        raise SystemExit(
-            f"Expected exactly one wheel in {directory}, found {len(wheels)}"
-        )
-    return wheels[0]
 
 
 def integration(python, command=None):

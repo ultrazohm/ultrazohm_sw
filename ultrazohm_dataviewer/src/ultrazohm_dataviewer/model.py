@@ -131,6 +131,16 @@ class Run:
     _source_version: object = field(default=None, repr=False, compare=False)
     output_validator: object = field(default=None, repr=False, compare=False)
 
+    def signal_metadata(self, name):
+        from .axis import SignalMetadata
+
+        return SignalMetadata(
+            self.axis_domain,
+            self.signals[name].unit,
+            self.timestamp_resolution,
+            self.data_source().metadata.identity,
+        )
+
     def data_source(self) -> DisplaySource:
         version = (
             self.time_version,
@@ -213,6 +223,50 @@ class DataRegistry:
         self._runs: dict[int, Run] = {}
         self._ids = itertools.count(1)
         self.cache = ByteCache()
+
+    def upsert_derived_run(
+        self, label: str, time, signal_y, unit: str = "", *, run_id=None
+    ) -> int:
+        """Create or refresh the single-channel derived run a node materializes.
+
+        Refreshing *in place* (rather than remove + re-add) keeps the run id stable
+        so plots/analysis windows referencing this derived signal survive a
+        re-evaluation. Returns the derived run's id.
+        """
+        import numpy as np
+
+        time = np.ascontiguousarray(time, dtype=np.float64)
+        y = np.ascontiguousarray(signal_y, dtype=np.float32)
+        run = self.get(run_id) if run_id is not None else None
+        if run is not None:
+            if not run.derived:
+                raise ValueError("Cannot overwrite a recording with a derived output")
+            run.label = label
+            run.time = time
+            run.time_raw = time
+            run.set_time_origin(run.time_origin)
+            run.signals = {"out": Signal("out", unit, y, run.id)}
+            return run.id
+        run = self.add_run(label, f"<derived:{label}>", time, {"out": y}, {"out": unit})
+        run.derived = True
+        return run.id
+
+    def detached(self):
+        """Copy mutable run metadata while sharing immutable sample buffers."""
+        from copy import copy
+
+        registry = DataRegistry()
+        registry.cache = self.cache
+        registry._ids = itertools.count(max(self._runs, default=0) + 1)
+        for key, original in self._runs.items():
+            run = copy(original)
+            run.signals = {
+                name: copy(signal) for name, signal in original.signals.items()
+            }
+            # Validation closures on array sources belong to the copied run.
+            run.source = copy(original.source)
+            registry._runs[key] = run
+        return registry
 
     def add_run(
         self,

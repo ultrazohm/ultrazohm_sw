@@ -39,6 +39,44 @@ def wheel(directory, name, version, dependencies=()):
 
 
 class UserCommandsTest(unittest.TestCase):
+    @unittest.skipIf(os.name == "nt", "Bash bootstrap contract")
+    def test_bootstrap_preserves_arguments_cwd_and_exit_status(self):
+        with tempfile.TemporaryDirectory(prefix="uz bootstrap ") as directory:
+            root = Path(directory)
+            executable = root / "uv"
+            executable.write_text('#!/bin/sh\npwd\nprintf "%s\\n" "$@"\nexit 7\n')
+            executable.chmod(0o755)
+            for launcher in ("uz", "uz_developer"):
+                result = subprocess.run(
+                    ["bash", str(uz.ROOT / launcher), "one argument", "--flag"],
+                    cwd=root,
+                    env={
+                        **os.environ,
+                        "PATH": str(root) + os.pathsep + os.environ["PATH"],
+                    },
+                    capture_output=True,
+                    text=True,
+                )
+                self.assertEqual(result.returncode, 7, result.stderr)
+                lines = result.stdout.splitlines()
+                self.assertEqual(lines[0], str(root))
+                self.assertEqual(
+                    lines[-3:],
+                    [str(uz.ROOT / (launcher + ".py")), "one argument", "--flag"],
+                )
+
+    def test_default_channel_forwards_application_arguments(self):
+        for arguments in (["status"], ["--", "status"], ["--version"]):
+            for app in uz.PACKAGES:
+                with (
+                    self.subTest(app=app, arguments=arguments),
+                    patch.object(uz, "run") as run,
+                ):
+                    uz.main([app, *arguments])
+                    command = run.call_args.args[0]
+                    self.assertIn("disallow", command)
+                    self.assertEqual(command[-2:], [uz.PACKAGES[app], arguments[-1]])
+
     def test_launch_channel_and_arguments(self):
         for app in uz.PACKAGES:
             for channel, policy in (("stable", "disallow"), ("prerelease", "allow")):

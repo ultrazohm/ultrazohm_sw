@@ -1,8 +1,51 @@
-"""Cross-process locks for shared build outputs, including bind-mounted checkouts."""
+"""Shared application build primitives; independent of either runtime package."""
 
 import os
+import re
+import subprocess
+import zipfile
 from contextlib import contextmanager
+from email.parser import BytesParser
 from pathlib import Path
+
+VERSION = re.compile(r"\d+\.\d+\.\d+(?:\.dev\d+)?")
+
+
+def run(*command, cwd=None, env=None):
+    command = [str(part) for part in command]
+    print("+", " ".join(command), flush=True)
+    subprocess.run(command, cwd=cwd, env=env, check=True)
+
+
+def venv_bin(venv, name="python"):
+    windows = os.name == "nt"
+    return (
+        Path(venv)
+        / ("Scripts" if windows else "bin")
+        / (name + (".exe" if windows else ""))
+    )
+
+
+def single_wheel(directory, package="ultrazohm_cli"):
+    wheels = sorted(Path(directory).glob(f"{package}-*.whl"))
+    if len(wheels) != 1:
+        raise SystemExit(
+            f"Expected exactly one wheel in {directory}, found {len(wheels)}"
+        )
+    return wheels[0]
+
+
+def wheel_version(path):
+    with zipfile.ZipFile(path) as archive:
+        metadata = [
+            name for name in archive.namelist() if name.endswith(".dist-info/METADATA")
+        ]
+        if len(metadata) != 1:
+            raise ValueError(f"Expected one wheel metadata file in {path}")
+        version = BytesParser().parsebytes(archive.read(metadata[0]))["Version"]
+        if not version:
+            raise ValueError(f"Wheel metadata is missing its version: {path}")
+        return version
 
 
 @contextmanager
@@ -36,3 +79,42 @@ def build_lock(root, project):
             else:
                 fcntl.flock(stream, fcntl.LOCK_UN)
     # Never unlink lock files: another process may already have one open.
+
+
+@contextmanager
+def staged_sources(project, files, version=None):
+    """Copy explicit release inputs and stamp metadata without editing the checkout."""
+    import shutil
+    import tempfile
+    import tomllib
+
+    project = Path(project)
+    metadata = tomllib.loads((project / "pyproject.toml").read_text(encoding="utf-8"))
+    version = version or metadata["project"]["version"]
+    if not VERSION.fullmatch(version):
+        raise ValueError(f"Invalid release version: {version!r}")
+    with tempfile.TemporaryDirectory(prefix="ultrazohm-release-") as directory:
+        stage = Path(directory) / project.name
+        stage.mkdir()
+        for name in files:
+            source = project / name
+            if source.is_dir():
+                shutil.copytree(
+                    source,
+                    stage / name,
+                    ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "*.egg-info"),
+                )
+            elif source.is_file():
+                shutil.copy2(source, stage / name)
+        path = stage / "pyproject.toml"
+        text, count = re.subn(
+            r'^version = "[^"]+"$',
+            f'version = "{version}"',
+            path.read_text(encoding="utf-8"),
+            count=1,
+            flags=re.MULTILINE,
+        )
+        if count != 1:
+            raise ValueError("Project version is missing")
+        path.write_text(text, encoding="utf-8")
+        yield stage, version

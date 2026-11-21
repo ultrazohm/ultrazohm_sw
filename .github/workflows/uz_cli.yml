@@ -29,7 +29,11 @@ on:
       - '.github/workflows/uz_cli.yml'
       - '.github/workflows/ci-image.yml'
       - '.devcontainer/Dockerfile'
+      - '.devcontainer/build-tools.txt'
+      - '.devcontainer/ci-image-revision'
       - '.python-version'
+      - '.uv-version'
+      - 'uz_bootstrap.*'
       - 'docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer_commands.csv'
   pull_request:
     paths:
@@ -51,7 +55,11 @@ on:
       - '.github/workflows/uz_cli.yml'
       - '.github/workflows/ci-image.yml'
       - '.devcontainer/Dockerfile'
+      - '.devcontainer/build-tools.txt'
+      - '.devcontainer/ci-image-revision'
       - '.python-version'
+      - '.uv-version'
+      - 'uz_bootstrap.*'
       - 'docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer_commands.csv'
   workflow_dispatch:
     inputs:
@@ -101,6 +109,16 @@ jobs:
           version: '0.13.1'
       - run: uv tool run --from ruff==0.17.2 ruff check --isolated --select F uz.py uz_developer.py uz_venv.py uz_build.py uz_shell.py test_uz.py test_uz_developer.py
       - run: uv run --no-project --python 3.12 -m unittest test_uz test_uz_developer -v
+      - name: Smoke test Bash entry points
+        if: runner.os == 'Linux'
+        run: |
+          ./uz --help
+          ./uz_developer --help
+      - name: Smoke test PowerShell entry points
+        if: runner.os == 'Windows'
+        run: |
+          .\uz.ps1 --help
+          .\uz_developer.ps1 --help
 
   image:
     uses: ./.github/workflows/ci-image.yml
@@ -257,6 +275,33 @@ jobs:
           python -m pip install minimum-wheel/*.whl polars
           export UZ_CLI_BIN="$(python -c 'import shutil; print(shutil.which("ultrazohm-cli"))')"
           python -m unittest discover -s ultrazohm_cli/tests -p test_integration.py -v
+          python -m unittest discover -s ultrazohm_cli/tests -p test_configuration.py -v
+          python -m unittest discover -s ultrazohm_cli/tests -p test_preferences.py -v
+          python -m unittest discover -s ultrazohm_cli/tests -p test_process.py -v
+
+  cli-linux-minimum:
+    needs: wheel-linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: wheel-linux
+          path: minimum-wheel
+      - name: Exercise installed wheel on glibc 2.28
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work \
+            quay.io/pypa/manylinux_2_28_x86_64@sha256:55a36963bc0504cdf004011001c1072306402f0b8b83be5a5eba7068f93eec53 \
+            bash -ec '
+              test "$(getconf GNU_LIBC_VERSION)" = "glibc 2.28"
+              export PATH="/opt/python/cp310-cp310/bin:$PATH"
+              git config --global --add safe.directory /work
+              python -m pip install minimum-wheel/*.whl polars
+              export UZ_CLI_BIN=/opt/python/cp310-cp310/bin/ultrazohm-cli
+              python -m unittest discover -s ultrazohm_cli/tests -p test_integration.py -v
+              python -m unittest discover -s ultrazohm_cli/tests -p test_configuration.py -v
+              python -m unittest discover -s ultrazohm_cli/tests -p test_process.py -v
+            '
 
   wheel-viewer:
     needs: version
@@ -372,7 +417,7 @@ jobs:
           retention-days: 30
 
   release:
-    needs: [version, verify-published, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, cli-python-minimum, python-style, launcher-check]
+    needs: [version, verify-published, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, cli-python-minimum, cli-linux-minimum, python-style, launcher-check]
     if: needs.version.outputs.publish == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -411,7 +456,7 @@ jobs:
           python3 ../ultrazohm_dataviewer/tools/verify_artifacts.py github . "$TAG" "$PRERELEASE"
 
   validate-artifacts:
-    needs: [version, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, cli-python-minimum, python-style, launcher-check]
+    needs: [version, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, cli-python-minimum, cli-linux-minimum, python-style, launcher-check]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

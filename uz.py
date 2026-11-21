@@ -39,7 +39,7 @@ def main(argv=None):
   {launcher} install {{dataviewer|cli}} [stable|prerelease]
 
 The channel defaults to stable. prerelease also allows development releases.
-Specify the channel before forwarding application arguments.
+Application arguments use the stable channel unless a channel is specified.
 venv stable/prerelease reuses a uv-managed cached environment.
 venv dev builds the checkout's CLI, installs editable local DataViewer, and opens
 an independent temporary environment each time. All shells include requirements.txt.
@@ -85,6 +85,12 @@ Use COMMAND --help for command details. For local source builds, use uz_develope
     argv = list(sys.argv[1:] if argv is None else argv)
     if argv == ["help"]:
         argv = ["--help"]
+    if (
+        len(argv) > 1
+        and argv[0] in PACKAGES
+        and argv[1] not in {"stable", "prerelease", "--help", "-h", "local"}
+    ):
+        argv[1:1] = ["stable"] if argv[1] == "--" else ["stable", "--"]
     args = parser.parse_args(argv or ["--help"])
     if args.command == "venv" and args.channel == "dev":
         from uz_venv import development_shell

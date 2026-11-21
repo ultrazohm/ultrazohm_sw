@@ -394,6 +394,10 @@ impl Profile {
     }
     pub fn validate(&self) -> Result<()> {
         validate_state_mapping(self.legacy_javascope_header, &self.platform_state)?;
+        // Every connected session must be able to stop the device, including
+        // cleanup after failed acquisition or firmware operations.
+        self.command("Stop")
+            .context("firmware mapping lacks mandatory lifecycle command")?;
         if let Some(metadata) = &self.javascope {
             metadata.validate(&self.commands, &self.variables, &self.slow_signals)?;
         }
@@ -503,6 +507,18 @@ impl Profile {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn missing_stop_is_rejected_before_creating_a_session() {
+        let repo = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .unwrap();
+        let mut mapping = ChannelMapping::load_repository(None, Some(repo)).unwrap();
+        let settings = ProfileSettings::for_mapping(None, &mapping).unwrap();
+        mapping.commands.remove("Stop");
+        let error = Profile::from_mapping(settings, mapping).unwrap_err();
+        assert!(format!("{error:#}").contains("command absent from profile: Stop"));
+    }
 
     #[test]
     fn remapping_preserves_runtime_choices_and_reports_removed_channels() {

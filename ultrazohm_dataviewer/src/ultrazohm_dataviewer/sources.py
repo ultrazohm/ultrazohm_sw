@@ -737,7 +737,14 @@ class ParquetSource(IndexedFileSource):
             else:
                 # Opening is metadata-only when Parquet has usable time statistics.
                 # Validate actual sample order on the first raw/display request.
-                index = pf.schema_arrow.names.index(self.time_col)
+                # Parquet statistics address physical leaves, whereas Arrow
+                # indexes top-level fields. Nested preceding fields expand to
+                # multiple leaves and must not shift the axis lookup.
+                index = next(
+                    i
+                    for i in range(len(pf.schema))
+                    if pf.schema.column(i).path == self.time_col
+                )
                 stats = [
                     pf.metadata.row_group(g).column(index).statistics
                     for g in range(pf.num_row_groups)

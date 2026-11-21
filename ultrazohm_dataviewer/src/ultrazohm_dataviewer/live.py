@@ -344,6 +344,42 @@ class LiveSource(MemorySource):
 
 
 @dataclass(frozen=True)
+class ServiceSnapshot:
+    """Configuration and status observed within one acquisition session."""
+
+    status: dict
+    catalog: dict
+    assignments: tuple
+
+    @staticmethod
+    def identity(status):
+        return status.get("service_id"), status.get("session_id")
+
+    @classmethod
+    def read(cls, client, previous=None):
+        # A session may change between RPCs (for example during flashing).
+        # Publish nothing until both surrounding status reads agree.
+        for _ in range(3):
+            status = client.status()
+            active = status.get("session_id", True)
+            same = previous is not None and cls.identity(status) == cls.identity(
+                previous.status
+            )
+            catalog = (
+                previous.catalog
+                if same and active
+                else client.catalog()["profile"]
+                if active
+                else {}
+            )
+            assignments = tuple(client.observables()["channels"]) if active else ()
+            latest = client.status()
+            if cls.identity(status) == cls.identity(latest):
+                return cls(latest, catalog, assignments)
+        raise RuntimeError("Acquisition session changed during configuration refresh")
+
+
+@dataclass(frozen=True)
 class LiveUpdate:
     revision: int = 0
     status: dict = field(default_factory=dict)
@@ -765,13 +801,12 @@ class LiveController:
                     )
                     self.client.connect(kwargs["ip"], kwargs["port"])
                     self._reset()
-            self._catalog = (
-                self.client.catalog()["profile"]
-                if status.get("session_id", True)
-                else {}
-            )
-            self.attached = True
-            self._status = self.client.status()
+            snapshot = ServiceSnapshot.read(self.client)
+            with self.lock:
+                self._status = snapshot.status
+                self._catalog = snapshot.catalog
+                self._assignments = snapshot.assignments
+                self.attached = True
             self._notice = f"Attached to acquisition service at {self.endpoint}"
             if mapping := kwargs.get("mapping"):
                 try:
@@ -972,7 +1007,7 @@ class LiveController:
     def _poll(self):
         with self.lock:
             generation, endpoint = self._reset_generation, self.endpoint
-            session_id = self._status.get("session_id")
+            previous = ServiceSnapshot(self._status, self._catalog, self._assignments)
         if generation != self._poll_reset_seen:
             self.cursor = self.cursor_stop = None
             if self.ring is not None:
@@ -980,17 +1015,10 @@ class LiveController:
             self._poll_reset_seen = generation
         client = self._poll_client_for(endpoint)
         if time.monotonic() >= self._status_at:
-            status = client.status()
-            assignments = (
-                tuple(client.observables()["channels"])
-                if status.get("session_id", True)
-                else ()
-            )
-            session_changed = status.get("session_id") != session_id
-            if session_changed:
-                catalog = (
-                    client.catalog()["profile"] if status.get("session_id") else {}
-                )
+            snapshot = ServiceSnapshot.read(client, previous)
+            session_changed = ServiceSnapshot.identity(
+                snapshot.status
+            ) != ServiceSnapshot.identity(previous.status)
             with self.lock:
                 if not self._current(generation) or endpoint != self.endpoint:
                     return
@@ -999,8 +1027,9 @@ class LiveController:
                     if self.ring is not None:
                         self.ring.reset()
                     self._last_source = None
-                    self._catalog = catalog
-                self._status, self._assignments = status, assignments
+                self._catalog = snapshot.catalog
+                self._status = snapshot.status
+                self._assignments = snapshot.assignments
                 self._status_at = time.monotonic() + 0.25
         status = self._status
         if not status.get("state", {}).get("connected"):

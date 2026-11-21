@@ -79,7 +79,7 @@ enum Command {
         #[arg(long)]
         xsct: Option<PathBuf>,
         #[command(flatten)]
-        data: DataOptions,
+        data: Box<DataOptions>,
         /// Connect immediately instead of waiting for the connect command.
         #[arg(long)]
         device: Option<String>,
@@ -254,7 +254,7 @@ fn dispatch(args: Args) -> Result<()> {
     let command = args.command.unwrap_or_else(|| Command::Serve {
         launch_id: None,
         xsct: None,
-        data: DataOptions::default(),
+        data: Box::default(),
         device: None,
         profile: None,
         channel_mapping: None,
@@ -310,7 +310,7 @@ fn dispatch(args: Args) -> Result<()> {
                     current_output: None,
                     repo: repo.clone(),
                     xsct,
-                    data,
+                    data: *data,
                     device,
                     endpoint: args.endpoint,
                     profile,

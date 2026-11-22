@@ -48,14 +48,24 @@ class VitisCommandTest(unittest.TestCase):
             "Path(os.environ['UZ_TEST_INVOCATION']).write_text(json.dumps({'args':sys.argv[1:], 'cwd':os.getcwd()}))\n"
             "sys.exit(int(os.environ.get('UZ_TEST_EXIT', '0')))\n"
         )
+        runner = self.bin / "runner.py"
+        runner.write_text(
+            "import os, runpy, sys\nfrom pathlib import Path\n"
+            "args = sys.argv[1:]\n"
+            "try:\n runpy.run_path(str(Path(__file__).with_name('fake.py')), run_name='__main__')\n"
+            "except SystemExit as error:\n if error.code not in (None, 0): raise\n"
+            "if not os.environ.get('UZ_TEST_SKIP_COMPLETION'):\n"
+            " action = next(args[i+1] for i, arg in enumerate(args) if arg.endswith('.tcl'))\n"
+            " Path(os.environ['UZ_VITIS_COMPLETION']).write_text(action)\n"
+        )
         if os.name == "nt":
             (self.bin / "xsct.bat").write_text(
-                f'@echo off\n"{sys.executable}" "{stub}" %*\n'
+                f'@echo off\n"{sys.executable}" "{runner}" %*\n'
             )
         else:
             launcher = self.bin / "xsct"
             launcher.write_text(
-                f'#!/bin/sh\nexec {shlex.quote(sys.executable)} {shlex.quote(str(stub))} "$@"\n'
+                f'#!/bin/sh\nexec {shlex.quote(sys.executable)} {shlex.quote(str(runner))} "$@"\n'
             )
             launcher.chmod(0o755)
 
@@ -68,6 +78,21 @@ class VitisCommandTest(unittest.TestCase):
             capture_output=True,
             timeout=10,
         )
+
+    def test_zero_exit_without_tcl_completion_is_failure(self):
+        artifacts = self.repo / "artifacts"
+        artifacts.mkdir()
+        (artifacts / "firmware-completed").write_text("generate")
+        result = self.cli(
+            "generate",
+            "--local",
+            "--repo",
+            str(self.repo),
+            env={**self.env, "UZ_TEST_SKIP_COMPLETION": "1"},
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("did not confirm completion", result.stderr)
+        self.assertFalse((artifacts / "firmware-completed").exists())
 
     def test_service_commands_never_fall_back_to_local_tools(self):
         result = self.cli("--endpoint", "127.0.0.1:1", "build")
@@ -85,8 +110,10 @@ class VitisCommandTest(unittest.TestCase):
                 self.assertEqual(result.returncode, 0, result.stderr)
                 call = json.loads(self.result.read_text())
                 self.assertEqual(Path(call["cwd"]).resolve(), self.repo.resolve())
-                self.assertEqual(call["args"][0], "-nodisp")
-                script = Path(call["args"][1]).resolve()
+                if os.name != "nt":
+                    self.assertEqual(call["args"].pop(0), "-norlwrap")
+                self.assertNotIn("-nodisp", call["args"])
+                script = Path(call["args"][0]).resolve()
                 self.assertTrue(
                     script.is_relative_to(
                         (self.repo / "artifacts/cli-tools").resolve()
@@ -100,11 +127,12 @@ class VitisCommandTest(unittest.TestCase):
                 self.assertTrue(
                     (script.parent / "launch/Run_UltraZohm.launch").is_file()
                 )
-                self.assertEqual(call["args"][2:], [action, *tail])
+                self.assertEqual(call["args"][1:], [action, *tail])
         result = self.cli("generate", "--local", "--open", "--repo", str(self.repo))
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(
-            json.loads(self.result.read_text())["args"][2:], ["generate-open"]
+            json.loads(self.result.read_text())["args"][1 if os.name == "nt" else 3 :],
+            ["generate-open"],
         )
 
     def test_embedded_scripts_work_without_checkout_scripts_and_preserve_timestamps(
@@ -113,7 +141,9 @@ class VitisCommandTest(unittest.TestCase):
         self.script.unlink()
         first = self.cli("build", "--local", "--repo", str(self.repo))
         self.assertEqual(first.returncode, 0, first.stderr)
-        script = Path(json.loads(self.result.read_text())["args"][1])
+        script = Path(
+            json.loads(self.result.read_text())["args"][0 if os.name == "nt" else 1]
+        )
         stamp = script.stat().st_mtime_ns
         second = self.cli("build", "--local", "--repo", str(self.repo))
         self.assertEqual(second.returncode, 0, second.stderr)
@@ -174,5 +204,7 @@ class VitisCommandTest(unittest.TestCase):
         result = self.cli("build", "--local", "--repo", str(self.repo))
         self.assertEqual(result.returncode, 0, result.stderr)
         call = json.loads(self.result.read_text())
-        self.assertEqual(Path(call["args"][1]).resolve(), script.resolve())
+        self.assertEqual(
+            Path(call["args"][0 if os.name == "nt" else 1]).resolve(), script.resolve()
+        )
         self.assertEqual(Path(call["cwd"]).resolve(), self.repo.resolve())

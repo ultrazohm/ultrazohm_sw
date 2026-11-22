@@ -1,7 +1,9 @@
 """Execute the real Tcl entry point with stubbed Vitis commands."""
 
+import os
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -11,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 @unittest.skipUnless(shutil.which("tclsh"), "Tcl interpreter required")
 class HeadlessBuildTest(unittest.TestCase):
-    def run_build(self, action, config="Debug", fail=False):
+    def run_build(self, action, config="Debug", fail=False, completion=None):
         with tempfile.TemporaryDirectory() as tmp:
             repo = Path(tmp)
             scripts = repo / "tcl_scripts"
@@ -41,10 +43,46 @@ source [file join [file dirname [info script]] vitis_headless.tcl]
 """)
             return subprocess.run(
                 ["tclsh", str(harness), action, config, str(int(fail))],
+                env={
+                    **os.environ,
+                    **({"UZ_VITIS_COMPLETION": str(completion)} if completion else {}),
+                },
                 capture_output=True,
                 text=True,
                 timeout=10,
             )
+
+    def test_completion_is_written_only_after_success(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            receipt = Path(tmp) / "completed"
+            result = self.run_build("build", completion=receipt)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(receipt.read_text(), "build")
+            receipt.unlink()
+            result = self.run_build("build", fail=True, completion=receipt)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertFalse(receipt.exists())
+
+    @unittest.skipUnless(sys.platform == "linux", "Linux display validation")
+    def test_gui_requires_desktop_before_creating_workspace(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            env = {
+                **os.environ,
+                "UZ_WORKSPACE_ROOT": tmp,
+                "DISPLAY": "",
+                "NO_DISP": "1",
+            }
+            for action in ("open", "generate-open"):
+                result = subprocess.run(
+                    ["tclsh", str(ROOT / "tcl_scripts/vitis_headless.tcl"), action],
+                    env=env,
+                    capture_output=True,
+                    text=True,
+                    timeout=10,
+                )
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("usable desktop DISPLAY", result.stderr)
+                self.assertFalse((Path(tmp) / "vitis/workspace").exists())
 
     def test_incremental_does_not_force_generation_or_configuration(self):
         result = self.run_build("build")
@@ -209,10 +247,8 @@ source [file join [file dirname [info script]] vitis_headless.tcl]
                 self.assertEqual(unchanged.returncode, 0, unchanged.stderr)
                 self.assertIn("no changes found", unchanged.stdout)
                 self.assertEqual("PROGRAMMED" in unchanged.stdout, action == "flash")
-            # An updated header must trigger a build even though source names are unchanged.
-            import os
-
-            elf = workspace / "Baremetal/Debug/Baremetal.elf"
+                # An updated header must trigger a build even though source names are unchanged.
+                elf = workspace / "Baremetal/Debug/Baremetal.elf"
             (workspace / "Baremetal/Debug/header.h").write_text("updated header")
             os.utime(elf, (1, 1))
             changed = run("flash")

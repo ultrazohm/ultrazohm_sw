@@ -121,6 +121,15 @@ class FirmwareServiceTest(unittest.TestCase):
         finally:
             os.chdir(original)
 
+    def test_launcher_zero_exit_does_not_advance_to_programming(self):
+        endpoint = self.start(UZ_TEST_SKIP_COMPLETION="1")
+        job = self.submit(endpoint, "flash")
+        result = self.finished(endpoint, job)
+        self.assertEqual(result["job"]["state"], "failed")
+        self.assertIn("did not confirm completion", result["job"]["result"]["error"])
+        call = json.loads(self.result.read_text())
+        self.assertEqual(call["args"][-1], "build")
+
     def test_flash_replaces_session_without_replacing_service(self):
         endpoint = self.start()
         before = self.request(endpoint, "status")
@@ -186,7 +195,7 @@ class FirmwareServiceTest(unittest.TestCase):
     def test_active_job_does_not_block_stop_and_shutdown_is_deferred(self):
         stub = self.bin / "fake.py"
         stub.write_text(
-            "import sys\nif sys.argv[3] == 'build': sys.exit(0)\nimport time\nprint('programming', flush=True)\ntime.sleep(1)\n"
+            "import sys\nif sys.argv[-1] == 'build': sys.exit(0)\nimport time\nprint('programming', flush=True)\ntime.sleep(1)\n"
         )
         endpoint = self.start()
         job = self.submit(endpoint, "flash")
@@ -330,7 +339,7 @@ class FirmwareServiceTest(unittest.TestCase):
         import struct
 
         (self.bin / "fake.py").write_text(
-            "import sys\nif sys.argv[3] == 'build': sys.exit(0)\nimport time\nprint('programming',flush=True)\ntime.sleep(0.3)\n"
+            "import sys\nif sys.argv[-1] == 'build': sys.exit(0)\nimport time\nprint('programming',flush=True)\ntime.sleep(0.3)\n"
         )
         endpoint = self.start()
         with socket.socket() as device:
@@ -373,7 +382,7 @@ class FirmwareServiceTest(unittest.TestCase):
 
     def test_shutdown_stop_failure_is_persisted_and_exits_nonzero(self):
         (self.bin / "fake.py").write_text(
-            "import sys\nif sys.argv[3] == 'build': sys.exit(0)\nimport time\nprint('programming',flush=True)\ntime.sleep(0.3)\n"
+            "import sys\nif sys.argv[-1] == 'build': sys.exit(0)\nimport time\nprint('programming',flush=True)\ntime.sleep(0.3)\n"
         )
         endpoint = self.start()
         with socket.socket() as device:

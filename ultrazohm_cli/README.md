@@ -636,3 +636,24 @@ application help; `./uz cli --help` describes the launcher.
 Build tasks share environment paths, wheel inspection, subprocess execution,
 and release staging through `uz_build.py`. Staging never rewrites the checkout.
 See `.devcontainer/build-tools.txt` for exact build-tool pins.
+
+Linux firmware display requirements
+----------------------------------
+
+Batch firmware operations require xlsclients and, without a usable display,
+Xvfb on the machine running XSCT. On Debian/Ubuntu install x11-utils and xvfb;
+dbus-x11 provides the optional dbus-launch helper. Acquisition alone does not
+need these tools. Native Windows needs no X11 packages or Linux launcher flags.
+An attached laptop needs none of these firmware-host dependencies.
+
+Use xsct -norlwrap for direct Linux batch execution. For Linux open and
+generate-open, use xsct -norlwrap -nodisp with an existing desktop display.
+The CLI and Make targets select these flags automatically. A temporary batch
+display cannot host a persistent Vitis GUI.
+
+Start the service normally over SSH after installing the dependencies; no
+xvfb-run wrapper is necessary. Rebuild the checkout CLI and restart its service
+to pick up launcher changes. Failed generation can leave a partial workspace:
+preserve it before retrying in an empty workspace. Inspect the job output and
+timestamp-matching vitis/workspace/IDE.log; Channel closed alone does not
+identify its cause.

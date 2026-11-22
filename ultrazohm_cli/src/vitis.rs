@@ -106,11 +106,28 @@ pub(crate) fn execute(
     let script = entry_script(&root)?;
     let executable = crate::preferences::resolve_xsct(xsct_override, Some(&root))?;
     eprintln!("Vitis {action}: repository {}", root.display());
+    // Every caller holds the checkout lock. Clear the previous receipt before
+    // each invocation: XSCT can exit zero before it even runs our Tcl script.
+    let completion = root.join("artifacts/firmware-completed");
+    match std::fs::remove_file(&completion) {
+        Ok(()) => (),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => (),
+        Err(error) => return Err(error.into()),
+    }
     let mut command = Command::new(&executable);
+    // Linux XSCT owns display validation and Xvfb lifecycle. -nodisp skips
+    // that setup; it is appropriate only when opening an existing desktop.
+    #[cfg(target_os = "linux")]
+    {
+        command.arg("-norlwrap");
+        if matches!(action, "open" | "generate-open") {
+            command.arg("-nodisp");
+        }
+    }
     command
         .current_dir(&root)
-        .arg("-nodisp")
         .env("UZ_WORKSPACE_ROOT", &root)
+        .env("UZ_VITIS_COMPLETION", &completion)
         .arg(script)
         .arg(action);
     if let Some(profile) = profile {
@@ -122,9 +139,16 @@ pub(crate) fn execute(
     let status = command
         .status()
         .with_context(|| format!("failed to start Vitis XSCT at {}", executable.display()))?;
+    let completed = std::fs::read_to_string(&completion).ok().as_deref() == Some(action);
+    let _ = std::fs::remove_file(&completion);
     ensure!(
         status.success(),
-        "Vitis {action} failed ({status}); see XSCT output above"
+        "Vitis {action} failed ({status}); see XSCT output above and {}/vitis/workspace/IDE.log (check timestamps). On Linux, batch firmware operations need xlsclients and, without a usable display, Xvfb on the service host.",
+        root.display()
+    );
+    ensure!(
+        completed,
+        "Vitis {action} did not confirm completion despite {status}; XSCT may have failed before running Tcl. See XSCT output and the firmware job log."
     );
     Ok(())
 }

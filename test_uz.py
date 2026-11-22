@@ -65,6 +65,18 @@ class UserCommandsTest(unittest.TestCase):
                     [str(uz.ROOT / (launcher + ".py")), "one argument", "--flag"],
                 )
 
+    def test_launch_diagnostic_keeps_stdout_machine_readable(self):
+        output, diagnostic = io.StringIO(), io.StringIO()
+        with (
+            contextlib.redirect_stdout(output),
+            contextlib.redirect_stderr(diagnostic),
+            patch("uz.subprocess.Popen") as popen,
+        ):
+            popen.return_value.__enter__.return_value.wait.return_value = 0
+            uz.run(["example", "status"])
+        self.assertEqual(output.getvalue(), "")
+        self.assertIn("+ example status", diagnostic.getvalue())
+
     def test_default_channel_forwards_application_arguments(self):
         for arguments in (["status"], ["--", "status"], ["--version"]):
             for app in uz.PACKAGES:

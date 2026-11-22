@@ -5,31 +5,18 @@ Usage guide
 ===========
 
 
-JavaScope interaction
-=====================
+Choose a workflow
+=================
 
-``ultrazohm_dataviewer`` is designed to work with the data logged by the UltraZohm hardware and the :ref:`JavaScope` software.
-:ref:`JavaScope` is for *running an experiment*: connect, trigger, observe live, tune parameters, and record.
-``ultrazohm_dataviewer`` is for *understanding the recording afterwards*: open one or many logs, arrange subplots, zoom into gigabyte-scale data, run FFTs.
+The viewer has two complementary modes sharing the same application:
 
-.. code-block:: text
+- :doc:`ultrazohm_dataviewer_analysis`: open recordings and analyse stable data.
+- :doc:`ultrazohm_dataviewer_live`: connect, control hardware, record and view recent samples.
+- :doc:`ultrazohm_dataviewer_workflows`: complete standalone, launcher, terminal and Python tutorials.
 
-      UltraZohm hardware
-           │  TCP :1000  (live stream, 20 ch)
-           ▼
-    ┌──────────────────────┐     commands / parameters
-    │  JavaScope (Java)     │ ───────────────────────────►  back to device
-    │  live scope + control │
-    └──────────┬───────────┘
-               │ writes
-               ▼
-         Log_*.csv  ──────────────┬───────────────► Matlab (JS_plot_data.m), Python (ultrazohm_dataviewer.read())
-                                  │
-                                  ▼
-                    ┌────────────────────────────┐
-                    │  (ultrazohm_dataviewer)           │  Data inspection, FFT, analysis
-                    └────────────────────────────┘
-
+The reference below describes analysis controls and viewer automation.
+Live data reaches the viewer through the Rust acquisition service; JavaScope is an alternative device client, not a required intermediary.
+Never connect JavaScope and the acquisition service to the same device simultaneously: the firmware's latest accepted connection replaces the previous client.
 
 Loading data
 ============
@@ -109,7 +96,8 @@ Local log browser
 -----------------
 
 The desktop **Log Browser** window is docked below Navigation in the default layout.
-It starts at the checkout's ``javascope/`` directory when available, otherwise at ``javascope/`` beneath the working directory.
+It starts at the selected checkout's ``artifacts/`` directory, otherwise at ``artifacts/`` beneath the working directory.
+A saved log-directory preference overrides this default.
 Use **Open directory...** to choose another root directory and **Refresh** to rescan it.
 The flat list includes only ``.csv`` and ``.parquet`` files from that directory and its subdirectories, with relative paths to distinguish duplicate filenames.
 Right-click a row and choose **Open lazy** or **Open in-memory** to select the mode for that file without changing the default loading mode.
@@ -260,7 +248,10 @@ Restoring a session replaces the currently loaded session.
 Version 1/2/3/4/5 snapshots and all generated session scripts must be recreated as JSON sessions.
 Generated script export has been removed.
 Histogram, FFT, export and node crop ranges include only samples inside the selected time window.
-FFT and FIR filters require strictly increasing, uniformly spaced timestamps (100 ppm tolerance plus floating-point roundoff).
+FFT and FIR filters require strictly increasing, uniformly spaced timestamps.
+Ordinary inputs use 100 ppm tolerance plus floating-point roundoff.
+JavaScope logs identified by raw CHn=n) headers use a uniform-grid check within their 10 ns timestamp resolution (±5 ns plus roundoff).
+Plain-array API calls must pass timestamp_resolution explicitly to retain that interpretation.
 Binary math requires matching time axes throughout both inputs.
 Unsupported sampling is rejected without interpolation.
 FFT export rejects an invalid selected channel with its name and reason before writing any output.

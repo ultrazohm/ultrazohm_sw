@@ -130,6 +130,9 @@ Documentation
    :maxdepth: 1
 
    ultrazohm_dataviewer_build
+   ultrazohm_dataviewer_analysis
+   ultrazohm_dataviewer_live
+   ultrazohm_dataviewer_workflows
    ultrazohm_dataviewer_usage
    ultrazohm_dataviewer_plugins
    ultrazohm_dataviewer_library

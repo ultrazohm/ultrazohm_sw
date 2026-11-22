@@ -5,6 +5,8 @@ It supports linked subplots, FFTs, histograms, and node transforms.
 Use `ultrazohm_dataviewer.Client` or the terminal commands to automate an open viewer.
 Save and restore your analysis as a JSON session.
 
+See the [analysis guide](../docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer_analysis.rst), [live guide](../docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer_live.rst), and [end-to-end workflows](../docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer_workflows.rst).
+
 ## Quick start
 
 Run `uvx ultrazohm-dataviewer` or extract the Windows ZIP and launch `ultrazohm-dataviewer.exe`.
@@ -96,7 +98,10 @@ Measurement caches stay in RAM by default; no automatic CSV conversion is writte
 Enable **Settings → Data loading → Disk cache**, pass `--disk-cache`, or use `viewer.disk_cache(True)` to persist indexes and summaries and convert lazy CSV inputs into reusable Parquet files.
 Reopen existing files to change their cache policy.
 JSON sessions preserve the setting for each file.
-When enabled, disk caches live in `~/.cache/ultrazohm_dataviewer` (Polars uses its `polars/` subdirectory), or the directory selected by `UZ_DATAVIEWER_CACHE`.
+In the GUI, disk caches live in `<checkout>/artifacts/_user/viewer_cache`, or in `viewer_cache` under the platform user-data directory when no checkout is selected.
+`UZ_DATAVIEWER_CACHE` overrides this path.
+Direct source-library use defaults to `~/.cache/ultrazohm_dataviewer`.
+Polars uses a `polars/` subdirectory.
 They are disposable and source-versioned; close the viewer before clearing that directory.
 Disabling disk caching leaves existing cache files untouched and does not read them.
 There is currently no automatic disk-cache size limit.
@@ -163,7 +168,7 @@ Import GUI entry points explicitly from `ultrazohm_dataviewer.app`; package-root
 | **[Plugins](../docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer_plugins.rst)** | Writing your own node transforms as Python plugins. |
 | **[Library](../docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer_library.rst)** | Using the data/analysis core headlessly as a Python library (load logs, FFT, node transforms) — no GUI. |
 | **[Roadmap](../docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer_roadmap.rst)** | Open ideas and the record of what's already shipped. |
-| **[Dataviewer V Javascope](../docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer.rst)** | How the live JavaScope and this offline viewer relate, and the legacy `dataviewer.py` it succeeds. |
+| **[Dataviewer V Javascope](../docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer.rst)** | Application overview, installation, and links to analysis and live workflows. |
 
 ## Project layout
 
@@ -173,7 +178,7 @@ ultrazohm_dataviewer/
 ├── src/ultrazohm_dataviewer/
 │   ├── app.py                # docking layout, runner, theme, Session menu
 │   ├── state.py              # AppState, SubplotCell, FFT/Histogram configs
-│   ├── commands.py           # command registry / parser / dispatcher (the script API)
+│   ├── commands.py           # internal command metadata and handlers (public automation uses Client)
 │   ├── console.py            # application activity log
 │   ├── model.py              # Run / Signal / DataRegistry (+ time normalization)
 │   ├── loader.py             # CSV/Parquet loading + channel-name parsing

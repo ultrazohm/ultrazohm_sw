@@ -72,10 +72,12 @@ The standalone executable and ``_internal`` contain application resources; they 
 Missing preferences are seeded from the CLI's bundled standard profile, restricted to the selected firmware's available observables.
 Existing preferences are preserved.
 Connect passes saved preferences to the CLI, which rejects unavailable explicit channel assignments.
-Flash generates a mapping snapshot and a separate session profile that drops unavailable assignments without rewriting saved preferences.
+Flash is a service-owned firmware job.
+It captures and validates headers, preserves compatible assignments, and replaces the acquisition session without rewriting saved startup preferences.
 
 ``tools.json`` remembers the selected XSCT launcher.
-Its directory is added to the application's process environment for child processes, without changing the system PATH.
+The CLI resolves XSCT from an explicit service option, then saved tools.json, then PATH.
+Saving a launcher does not modify PATH; an attached viewer uses the service machine's tools.
 ``viewer.ini`` holds the window layout, ``viewer_cache`` holds optional analysis caches (unless overridden by ``UZ_DATAVIEWER_CACHE``), and ``logs`` holds default session output.
 Explicit export, script, session and recording destinations remain user-selected.
 Script and CLI output capture also uses temporary directories.
@@ -84,7 +86,10 @@ The live controller tracks its launched service separately from the service to w
 Closing the viewer shuts down its owned service, which sends device Stop and finalizes recordings; the window waits up to ten seconds, after which the detached service completes finalization in the background (see its ``service.log`` and the ``end`` section of ``run.json``).
 For an attached external service it sends device Stop without shutting that service down.
 Script Stop invalidates queued manual commands and uses a control path independent of display reads.
-Flashing shuts the service down (which sends device Stop and finalizes recordings), then programs and reconnects.
+Flashing sends device Stop and finalizes recordings, then builds/programs and replaces the acquisition session.
+The service endpoint stays available.
+Clients refresh catalogs and discard old cursors when session identity changes.
+Logging restarts idle.
 
 Standalone execution uses its bundled worker entry point and requires no separately installed Python or Rust.
 The application log and Python editor are available on Windows and Linux.

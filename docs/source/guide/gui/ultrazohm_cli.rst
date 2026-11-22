@@ -39,3 +39,8 @@ services can use ``flash --device IP:PORT`` or ``flash --no-reconnect``.
 Closing a DataViewer always sends device Stop. A viewer that started the service also
 requests its shutdown; an attached viewer leaves the service running. Shutdown waits
 for programming already underway to finish. Other clients observe Stop or shutdown.
+
+Complete workflows
+------------------
+
+See :doc:`ultrazohm_dataviewer/ultrazohm_dataviewer_workflows` for launcher, standalone, multi-terminal, SSH and Python measurement tutorials.

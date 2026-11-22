@@ -347,7 +347,9 @@ Unlike JavaScope's UI fallbacks for malformed sections, generation fails rather 
 Older mappings without `javascope` remain loadable; no presentation metadata is invented when loading them.
 Updated readers validate metadata against the command/variable/slow-signal tables.
 Older CLI versions that reject unknown JSON fields cannot consume the new object.
-At this stage this object is retained in the mapping JSON only: the runtime profile/service catalog and viewer UI have not been extended to publish or use it.
+The runtime profile and service catalog expose this metadata.
+The viewer uses button captions in its Control pane, falling back to User N when absent.
+Metadata does not establish device readback.
 Generation requires no device connection.
 
 ## Range queries and recording backend handles

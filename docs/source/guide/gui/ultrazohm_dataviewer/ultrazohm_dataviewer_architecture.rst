@@ -65,8 +65,7 @@ Module map
      - ``read``, ``Dataset``, ``fft``, ``fft_frame``, ``node``, ``kinds``
    * - ``state.py``
      - The single app state, grid/cells, analysis configs, async load orchestration
-     - ``AppState``, ``SubplotCell``, ``PlotType``,
-       ``AnalysisConfig``/``FftConfig``/``HistogramConfig``
+     - ``AppState``, ``SubplotCell``, ``PlotType``, ``AnalysisConfig``/``FftConfig``/``HistogramConfig``
    * - ``commands.py``
      - Shared operation metadata, validation and GUI handlers
      - ``CommandRegistry``, ``Command``, ``Param``
@@ -81,8 +80,7 @@ Module map
      - ``Run``, ``Signal``, ``DataRegistry``
    * - ``loader.py``
      - CSV (Arrow) / Parquet loading, header cleaning, delimiter sniffing; lean large-log loading (float32-at-parse, CSV size guard, streaming Parquet, CSV→Parquet ``convert``) — see :ref:`ultrazohm_dataviewer_loader_large_logs`
-     - ``open_file``, ``parse_file``, ``ParsedRun``, ``parse_channel_name``,
-       ``convert_csv_to_parquet``
+     - ``open_file``, ``parse_file``, ``ParsedRun``, ``parse_channel_name``, ``convert_csv_to_parquet``
    * - ``sources.py``
      - Resident/lazy raw-sample access, timestamp indexes, persistent display summaries, shared byte-bounded cache
      - ``Source``, ``ArraySource``, ``ParquetSource``, ``SourceColumn``, ``ByteCache``
@@ -105,7 +103,7 @@ Module map
      - Load external transform-node plugins (``@transform``); robust to missing dirs/files
      - ``transform``, ``ParamSpec``, ``load_plugins``
    * - ``session.py``
-     - JSON save/restore, command-script execution, CSV exports
+     - JSON save/restore and CSV exports
      - ``to_dict``/``apply_dict``, ``export_*``
    * - ``panels/navigation.py``
      - Left tree, drag sources, file dialog, normalize menu
@@ -249,11 +247,20 @@ A small dataflow engine, built as a **derived-signal factory**: a transform node
 That derived signal then flows through the existing app unchanged — it shows in Navigation and is draggable into plots / FFT / Histogram.
 Nodes *produce* data; nothing else in the app needs to know they exist.
 
-- **Graph** (``NodeGraph``) of ``Node``s: a **source** wraps a ``(run, signal)`` ref; a **transform** (``fft`` / ``math`` / ``filter`` / ``shift``) pulls arrays from its inputs and computes. Links are validated against cycles; ids are persisted so derived-run labels (= node name) are stable across save/restore.
-- **On-demand evaluation** (``evaluate``): topological order; each transform reads its inputs (a source from the registry, an upstream transform from its cache), computes via ``transforms``/``analysis``, bumps a ``version``, and upserts its derived run **in place** (so plot references survive a re-eval). Per-node errors are logged and skipped, not fatal. A node is **stale** (``is_stale``) when its key — params + each input's version/identity — differs from the last evaluated key (the same idea as the analysis windows' ``_computed_key``).
-- **GUI-free + scriptable**: ``nodes.py``/``transforms.py`` import no GUI and raise plain ``ValueError``s, so the whole engine is driven and tested from command strings. The canvas (``panels/nodes.py``, ``imgui_node_editor``) is a thin layer that **only issues ``node_*`` commands** — drag-drop → ``node_source``, link → ``node_link``, a widget → ``node_set``, a drag → ``node_pos``, the button → ``node_eval``. The graph is automated through commands and restored through the JSON session.
-- **Transforms use NumPy** (windowed-sinc FIR filter). FFT reuses ``analysis.compute_fft``; its derived run's x-axis is frequency.
-- **Registry-driven.** Every transform (builtin *or* plugin) is a ``TransformSpec`` in ``REGISTRY``; the engine looks up available kinds, default params, input arity and the compute function there, so a plugin is indistinguishable from a builtin. External plugins (``plugins.py``, the ``@transform`` decorator) are loaded at startup from ``$UZ_DATAVIEWER_PLUGINS`` / ``~/.ultrazohm_dataviewer/nodes/`` — both optional; a missing dir, no files, or a broken plugin are all tolerated (the app runs with just the builtins). An unknown kind (plugin not installed) restores as a placeholder that keeps its params/links. See :doc:`ultrazohm_dataviewer_plugins`.
+- **Graph** (``NodeGraph``) of ``Node``s: a **source** wraps a ``(run, signal)`` ref; a **transform** (``fft`` / ``math`` / ``filter`` / ``shift``) pulls arrays from its inputs and computes.
+  Links are validated against cycles; ids are persisted so derived-run labels (= node name) are stable across save/restore.
+- **On-demand evaluation** (``evaluate``): topological order; each transform reads its inputs (a source from the registry, an upstream transform from its cache), computes via ``transforms``/``analysis``, bumps a ``version``, and upserts its derived run **in place** (so plot references survive a re-eval).
+  Per-node errors are logged and skipped, not fatal.
+  A node is **stale** (``is_stale``) when its key — params + each input's version/identity — differs from the last evaluated key (the same idea as the analysis windows' ``_computed_key``).
+- **GUI-free + scriptable**: ``nodes.py``/``transforms.py`` import no GUI and raise plain ``ValueError``s, so the whole engine is driven and tested through typed command dispatch.
+  The canvas (``panels/nodes.py``, ``imgui_node_editor``) is a thin layer that **only issues ``node_*`` commands** — drag-drop → ``node_source``, link → ``node_link``, a widget → ``node_set``, a drag → ``node_pos``, the button → ``node_eval``.
+  The graph is automated through commands and restored through the JSON session.
+- **Transforms use NumPy** (windowed-sinc FIR filter).
+  FFT reuses ``analysis.compute_fft``; its derived run's x-axis is frequency.
+- **Registry-driven.** Every transform (builtin *or* plugin) is a ``TransformSpec`` in ``REGISTRY``; the engine looks up available kinds, default params, input arity and the compute function there, so a plugin is indistinguishable from a builtin.
+  External plugins (``plugins.py``, the ``@transform`` decorator) are loaded at startup from ``$UZ_DATAVIEWER_PLUGINS`` / ``~/.ultrazohm_dataviewer/nodes/`` — both optional; a missing dir, no files, or a broken plugin are all tolerated (the app runs with just the builtins).
+  An unknown kind (plugin not installed) restores as a placeholder that keeps its params/links.
+  See :doc:`ultrazohm_dataviewer_plugins`.
 
 .. note::
 
@@ -430,8 +437,12 @@ Testing
 Tests are pure ``pytest``, no real window.
 Two patterns:
 
-- **Logic via commands** — dispatch command strings against an ``AppState`` and assert on state (e.g. ``test_commands.py``, ``test_session.py``).
-- **Headless rendering** — create an ImGui/ImPlot context, set a backend-textures flag, and drive a few frames calling ``panel.render(state)`` (e.g. ``test_plot_types.py``). This exercises the real ImPlot calls (begin/end pairing, Spec markers, drag tools) without a GPU window. Destroy the contexts in a ``finally`` so tests don't leak across modules.
+- **Logic via commands** — dispatch commands against an ``AppState`` and assert on state (e.g.
+  ``test_commands.py``, ``test_session.py``).
+- **Headless rendering** — create an ImGui/ImPlot context, set a backend-textures flag, and drive a few frames calling ``panel.render(state)`` (e.g.
+  ``test_plot_types.py``).
+  This exercises the real ImPlot calls (begin/end pairing, Spec markers, drag tools) without a GPU window.
+  Destroy the contexts in a ``finally`` so tests don't leak across modules.
 
 Run ``pytest`` from the project root.
 
@@ -535,7 +546,9 @@ Repository-owned service configuration
 --------------------------------------
 
 The CLI owns firmware configuration resolution.
-``serve --repo PATH`` reads the selected checkout's headers and filters only built-in initial-channel defaults.
+``serve --repo PATH`` reads the selected checkout's headers.
+Runtime settings use explicit ``--profile``, then workspace ``artifacts/_user/settings.json``, then built-in defaults.
+Only built-in defaults are filtered for unavailable observables.
 Explicit ``--profile`` settings remain strict.
 ``--channel-mapping`` is an alternative to ``--repo`` for standalone mapping files.
 The effective settings are exposed by ``catalog``; selecting another checkout requires restarting the service.
@@ -545,19 +558,22 @@ These commands return JSON directly; normal repository preparation writes no map
 Missing workspace preferences are seeded once.
 Connecting passes ``--repo`` and the saved ``settings.json`` directly, without a temporary filtered profile.
 Saved signal selections use the running service's catalog.
-The Flash UZ migration path still keeps its mapping and profile snapshots to preserve assignments across a restart.
+Flash UZ submits a CLI firmware job.
+The service captures headers and replaces its acquisition session while retaining its endpoint.
+The viewer monitors job progress and refreshes its catalog and live buffers.
 
 
 Dependency and mapping selection checks
 ---------------------------------------
 
-The viewer requires CLI 0.1.27.dev0 or newer for repository-based configuration.
-CI exercises the locked PyPI CLI's repository commands before replacing it with the checkout-built wheel for the full integration suite.
-This also covers the ordinary source launcher, which uses the lockfile rather than a development wheel.
+Published viewer packages require the matching CLI release version.
+CI tests candidate wheels together.
+``./uz`` application commands run published packages; ``./uz venv dev`` builds the checkout CLI and installs the local viewer editable into a temporary environment.
+``run.py`` only adds local viewer sources to the current interpreter; dependencies must already be installed.
 
 An explicit ``DataViewerApp(live_mapping=...)`` selects that mapping even when its workspace is inferred from the path or supplied through ``live_repo``.
 The workspace still owns preferences and recordings.
-Generated Flash UZ snapshots are distinguished from explicit selections; subsequent repository-based launches reread headers.
+Service-owned flash captures and validates repository headers before replacing the session.
 Service startup rejects simultaneous repository and mapping arguments, and changing either requires restarting an owned service.
 
 Analysis request construction and fingerprints live in ``analysis_service.py``; the operation coordinator does not import GUI panels.

@@ -83,6 +83,8 @@ arguments it opens the GUI and waits until it closes. Keep the runtime directory
 beside the executable. Linux uses the published Python wheels; no standalone
 Linux archives are provided. Downloads include `SHA256SUMS`.
 
+For complete [standalone, launcher, service and Python workflows](docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer_workflows.rst), see the DataViewer tutorials.
+
 ### Published applications
 
 Use `./uz` on Ubuntu or `.\uz.ps1` on Windows. Both bootstrap uv and the

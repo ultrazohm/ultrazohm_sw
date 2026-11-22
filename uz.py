@@ -14,7 +14,7 @@ PACKAGES = {"cli": "ultrazohm-cli", "dataviewer": "ultrazohm-dataviewer"}
 
 
 def run(command):
-    print("+", " ".join(map(str, command)), flush=True)
+    print("+", " ".join(map(str, command)), file=sys.stderr, flush=True)
     with subprocess.Popen([str(part) for part in command]) as child:
         while True:
             try:

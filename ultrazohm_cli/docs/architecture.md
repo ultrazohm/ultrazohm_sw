@@ -193,3 +193,19 @@ viewer chooses when to save, displays errors, and owns file dialogs; it does not
 modify PATH to configure a service. Native and Python job followers share log
 completion rules; the viewer owns polling cadence and presentation. Automatic
 process cleanup uses a launch identity validated by the service on shutdown.
+
+## Persistent service and firmware jobs
+
+`service/controller.rs` owns the persistent control endpoint and acquisition-session replacement.
+`jobs.rs` coordinates firmware jobs; `vitis.rs` invokes vendor tooling.
+A flash stops acquisition and finalizes recordings before build/programming, then reconstructs configuration and reconnects in a fresh session.
+The service identity and listener survive; session identity, recording counters and cursors do not.
+Clients refresh their catalog and live history on session replacement.
+Build-only jobs leave acquisition unchanged.
+Only one firmware job runs at a time, with a checkout lock also excluding independent builds.
+Shutdown waits for programming already underway and then performs bounded Stop delivery when the mapping is known.
+
+The viewer command worker submits and monitors jobs rather than invoking XSCT locally.
+Urgent Stop/shutdown requests use an independent connection.
+Attached viewers use service-side firmware/tool capabilities.
+Local XSCT preferences do not configure a service on another machine.

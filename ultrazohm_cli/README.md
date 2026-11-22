@@ -150,7 +150,11 @@ ultrazohm-cli serve --interactive --repo /path/to/firmware/ultrazohm_sw
 This reads that checkout's current headers, keeps only built-in default channel assignments available in the mapping, and puts default session output under that checkout's `artifacts/live_logs`.
 It does not require generating a JSON file first.
 `catalog` reports the effective configuration.
-The nominal sample period remains 100 microseconds unless overridden with `--profile`; it is not inferred from headers.
+Runtime settings use explicit `--profile`, then `<repo>/artifacts/_user/settings.json`, then built-in defaults.
+Saved viewer startup settings therefore also affect CLI sessions.
+Only built-in defaults are filtered; invalid saved assignments fail validation.
+Inspect `catalog` and correct the saved profile or supply an explicit profile.
+The built-in nominal sample period is 100 microseconds; it is not inferred from headers.
 
 Without `--repo` or `--channel-mapping`, headers are discovered from the current directory.
 `--repo` and `--channel-mapping` are mutually exclusive.

@@ -112,7 +112,12 @@ def service(tmp_path):
         if (root / name).is_file():
             shutil.copyfile(root / name, dest)
     stub = tmp_path / "fake_xsct.py"
-    stub.write_text("print('simulated programming complete')\n")
+    stub.write_text(
+        "import os, sys\nfrom pathlib import Path\n"
+        "action = next(sys.argv[i+1] for i, arg in enumerate(sys.argv) if arg.endswith('.tcl'))\n"
+        "print('simulated programming complete')\n"
+        "Path(os.environ['UZ_VITIS_COMPLETION']).write_text(action)\n"
+    )
     xsct = tmp_path / ("xsct.bat" if os.name == "nt" else "xsct")
     xsct.write_text(
         f'@echo off\n"{sys.executable}" "{stub}" %*\n'

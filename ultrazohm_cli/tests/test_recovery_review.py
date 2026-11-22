@@ -63,7 +63,7 @@ class RecoveryTest(unittest.TestCase):
             )
             (t.bin / "fake.py").write_text(
                 "import sys, os\nfrom pathlib import Path\n"
-                "action=sys.argv[3]\n"
+                "action=next(sys.argv[i+1] for i, arg in enumerate(sys.argv) if arg.endswith('.tcl'))\n"
                 "with Path(os.environ['UZ_TEST_INVOCATION']).open('a') as f: f.write(action+'\\n')\n"
                 f"failure={failure!r}\n"
                 "if (action, failure) in [('build','build-headers'), ('program-built','program-headers')]:\n"
@@ -117,7 +117,7 @@ class RecoveryTest(unittest.TestCase):
             # Programming succeeds, but the new session directory cannot be created.
             (t.bin / "fake.py").write_text(
                 "import sys\nfrom pathlib import Path\n"
-                f"if sys.argv[3] == 'program-built': Path({str(t.base)!r}).chmod(0o555)\n"
+                f"if 'program-built' in sys.argv: Path({str(t.base)!r}).chmod(0o555)\n"
             )
             with socket.socket() as device:
                 device.bind(("127.0.0.1", 0))

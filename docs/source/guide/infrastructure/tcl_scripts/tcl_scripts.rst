@@ -193,7 +193,7 @@ Ubuntu users can use the convenience Makefile:
 Close Vitis before modifying the workspace and do not run separate workspace operations concurrently.
 
 Linux firmware display requirements
-----------------------------------
+-----------------------------------
 
 Batch firmware operations require xlsclients and, without a usable display,
 Xvfb on the machine running XSCT. On Debian/Ubuntu install x11-utils and xvfb;

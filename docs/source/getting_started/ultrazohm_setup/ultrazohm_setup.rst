@@ -342,7 +342,7 @@ Javascope
 .. image:: https://images2.imgbox.com/99/98/KSNpOtWT_o.gif
 
 Linux firmware display requirements
-----------------------------------
+-----------------------------------
 
 Batch firmware operations require xlsclients and, without a usable display,
 Xvfb on the machine running XSCT. On Debian/Ubuntu install x11-utils and xvfb;

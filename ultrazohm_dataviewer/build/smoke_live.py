@@ -117,6 +117,8 @@ def main():
             stub = tools / "xsct_stub.py"
             stub.write_text(
                 "import json, os, sys\nfrom pathlib import Path\n"
+                "action = next(sys.argv[i+1] for i, arg in enumerate(sys.argv) if arg.endswith('.tcl'))\n"
+                "Path(os.environ['UZ_VITIS_COMPLETION']).write_text(action)\n"
                 "Path(os.environ['UZ_TEST_REPORT']).write_text(json.dumps({'args': sys.argv[1:], 'root': os.environ['UZ_WORKSPACE_ROOT']}))\n"
             )
             if os.name == "nt":
@@ -179,12 +181,15 @@ def main():
                 assert after["state"]["connected"], after
                 invocation = json.loads(report.read_text())
                 assert Path(invocation["root"]).samefile(firmware), invocation
-                bundled_script = Path(invocation["args"][1]).resolve()
+                arguments = invocation["args"]
+                if sys.platform == "linux":
+                    assert arguments.pop(0) == "-norlwrap"
+                bundled_script = Path(arguments[0]).resolve()
                 assert bundled_script.is_file()
                 assert bundled_script.is_relative_to(
                     (firmware / "artifacts/cli-tools").resolve()
                 )
-                assert invocation["args"][2:] == ["program-built", "Run_UltraZohm"]
+                assert arguments[1:] == ["program-built", "Run_UltraZohm"]
                 assert not (firmware / "tcl_scripts").exists()
                 recording = Path(after["output"])
                 script = directory / "script.py"

@@ -516,6 +516,7 @@ class LiveWorkspace:
             self._render_data(main_state)
         finally:
             imgui.end_disabled()
+        self._render_flash_confirmation()
 
     def user_directory(self):
         if self._user_directory is None:
@@ -719,7 +720,6 @@ class LiveWorkspace:
                 )
             imgui.end_disabled()
             imgui.end_disabled()
-        self._render_flash_confirmation()
         if imgui.collapsing_header("Service settings (used when launching)"):
             _, self.output = imgui.input_text("New session directory", self.output)
             if self.mapping_is_explicit:
@@ -1082,6 +1082,13 @@ class LiveWorkspace:
         )
 
     def _render_flash_confirmation(self):
+        # Wrapped text cannot determine an auto-sized window's width.
+        viewport = imgui.get_main_viewport()
+        width = min(36 * imgui.get_font_size(), max(1, viewport.work_size.x - 32))
+        imgui.set_next_window_size(imgui.ImVec2(width, 0))
+        imgui.set_next_window_pos(
+            viewport.get_center(), imgui.Cond_.appearing, imgui.ImVec2(0.5, 0.5)
+        )
         opened, _ = imgui.begin_popup_modal(
             "Flash UltraZohm?", flags=imgui.WindowFlags_.always_auto_resize
         )

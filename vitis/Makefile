@@ -4,15 +4,12 @@
 PROFILE ?= Run_UltraZohm
 XSCT ?= xsct
 # Invoke with make -C vitis <target> (or from the vitis directory).
-SCRIPT := ../tcl_scripts/vitis_headless.tcl
 ifeq ($(OS),Windows_NT)
-XSCT_FLAGS :=
-GUI_FLAGS :=
+CHECKED_XSCT := run_xsct_checked.bat
 else
-XSCT_FLAGS := -norlwrap
-# Keep the caller's display for the GUI; Tcl validates it before generation.
-GUI_FLAGS := -nodisp
+CHECKED_XSCT := bash ./run_xsct_checked.sh
 endif
+export XSCT
 
 .PHONY: help generate generate-open open build build-clean run flash build-run
 help:
@@ -25,15 +22,15 @@ help:
 	@echo 'run / build-run Aliases for flash'
 	@echo 'PROFILE=Run_UltraZohm (default; Debug profiles currently require GUI)'
 generate:
-	"$(XSCT)" $(XSCT_FLAGS) "$(SCRIPT)" generate
+	$(CHECKED_XSCT) generate
 generate-open:
-	"$(XSCT)" $(XSCT_FLAGS) $(GUI_FLAGS) "$(SCRIPT)" generate-open
+	$(CHECKED_XSCT) generate-open
 open:
-	"$(XSCT)" $(XSCT_FLAGS) $(GUI_FLAGS) "$(SCRIPT)" open
+	$(CHECKED_XSCT) open
 build:
-	"$(XSCT)" $(XSCT_FLAGS) "$(SCRIPT)" build
+	$(CHECKED_XSCT) build
 build-clean:
-	"$(XSCT)" $(XSCT_FLAGS) "$(SCRIPT)" build-clean
+	$(CHECKED_XSCT) build-clean
 flash:
-	"$(XSCT)" $(XSCT_FLAGS) "$(SCRIPT)" flash "$(PROFILE)"
+	$(CHECKED_XSCT) flash "$(PROFILE)"
 run build-run: flash

@@ -392,7 +392,8 @@ GUI command wrappers share an explicit success result.
 
 Runs without a backing file (live snapshots, arrays) cannot be saved in a reloadable session.
 Saving rejects them before opening the destination file.
-Export their data first.
+Exporting writes a file without changing the in-memory run's reloadable flag.
+Reopen the exported file, recreate plot and node-source references against it, and remove the memory-only run before saving.
 
 ``SubplotCell.y_lim`` and ``y2_lim`` record the last rendered primary and secondary Y ranges, separately from their one-shot pending limits.
 JSON persists pending limits when present, otherwise the live range.

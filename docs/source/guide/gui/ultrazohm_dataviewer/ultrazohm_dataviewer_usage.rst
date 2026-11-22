@@ -238,7 +238,10 @@ Session compatibility and analysis windows
 ------------------------------------------
 
 Failed restoration preserves the current session.
-Recordings without a backing file (live snapshots, node outputs) must be exported as data before saving a reloadable session.
+Live snapshots and other memory-only recordings must be exported before saving a reloadable session.
+Exporting does not attach the saved file to the existing snapshot.
+Open the exported file, recreate plot assignments and node sources using that recording, then remove the memory-only snapshot before saving the session.
+Node outputs derived from reloadable recordings are restored through their saved graph and do not require separate exports.
 Transforms must be chained through node links, not by creating source nodes from derived outputs.
 
 Python scripts obtain a derived recording handle with ``viewer.node_output(node)`` after evaluating the node.

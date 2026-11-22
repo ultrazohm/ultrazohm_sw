@@ -20,6 +20,9 @@ No acquisition service, firmware checkout or device is required.
 Files with a single ``time`` or ``frequency`` column select their axis automatically.
 Otherwise select the axis column and its domain when prompted.
 FFT and FIR filters require uniformly spaced time data; imported spectra cannot be processed as time data.
-Live snapshots must be exported before saving a reloadable session.
+Live snapshots and other memory-only recordings must be exported before saving a reloadable session.
+Exporting does not attach the saved file to the existing snapshot.
+Open the exported file, recreate plot assignments and node sources using that recording, then remove the memory-only snapshot before saving the session.
+Node outputs derived from reloadable recordings are restored through their saved graph and do not require separate exports.
 
 See :doc:`ultrazohm_dataviewer_usage` for the full panel and method reference, :doc:`ultrazohm_dataviewer_library` for headless numerical analysis, and :doc:`ultrazohm_dataviewer_workflows` for Python automation.

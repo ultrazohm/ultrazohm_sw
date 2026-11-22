@@ -116,7 +116,10 @@ Recreate version 1–5 snapshots and generated session scripts as version 6 JSON
 Plot windows, precise time ranges and inactive recordings survive JSON round trips. Restoring a session resets panel caches and canvas positions; Y fitting completes when lazy samples arrive. Both primary and secondary Y limits survive JSON saves, including mouse zoom.
 Removing a followed subplot switches its analysis windows to Full and discards the removed plot's cached range.
 Recomputing a node preserves its derived recording's selected time origin.
-Live snapshots and other runs without a backing file cannot be saved in a session; export their data first.
+Live snapshots and other memory-only recordings must be exported before saving a reloadable session.
+Exporting does not attach the saved file to the existing snapshot.
+Open the exported file, recreate plot assignments and node sources using that recording, then remove the memory-only snapshot before saving the session.
+Node outputs derived from reloadable recordings are restored through their saved graph and do not require separate exports.
 Chain transforms with node links; using derived outputs as new source nodes is no longer supported.
 Analysis and exports use exact time windows, while plotting retains edge padding. Full analysis covers all selected recordings regardless of selection order.
 Linked time ranges apply immediately to scripts, exports and analysis, including

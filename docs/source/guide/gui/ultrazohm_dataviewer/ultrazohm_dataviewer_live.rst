@@ -31,6 +31,7 @@ Connect and record
    Stop logging and wait for phase **complete** before opening its completed Parquet file.
 5. Use **Open completed log** for analysis mode.
    Alternatively, **Freeze plot 1 for analysis** copies a bounded live window into memory; export it to retain it.
+   To save a reloadable session, reopen the exported file, replace the snapshot's plot and node-source references with that recording, and remove the memory-only snapshot.
 
 Follow live keeps the newest samples visible.
 Panning, Shift-modified zoom, or unchecking Follow live enters Inspect with a frozen RAM snapshot.

@@ -1,6 +1,5 @@
 @echo off
 setlocal
 rem Create/build an empty workspace, then open Vitis.
-if not defined XSCT set "XSCT=xsct.bat"
-call "%XSCT%" "%~dp0..\tcl_scripts\vitis_headless.tcl" generate-open %*
+call "%~dp0run_xsct_checked.bat" generate-open %*
 exit /b %ERRORLEVEL%

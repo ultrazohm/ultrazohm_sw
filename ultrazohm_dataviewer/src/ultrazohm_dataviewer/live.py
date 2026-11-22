@@ -495,7 +495,15 @@ class LiveController:
             return
         if self.flashing and operation not in ("stop", "shutdown"):
             raise RuntimeError("Flash UZ is already running")
-        if operation in ("stop", "flash", "shutdown", "detach", "attach", "connect"):
+        if operation in (
+            "stop",
+            "flash",
+            "shutdown",
+            "detach",
+            "attach",
+            "connect",
+            "connect_device",
+        ):
             self.cancel_pending_commands()
         if operation == "flash":
             self._flash_shutdown.clear()
@@ -734,7 +742,13 @@ class LiveController:
     def _command(self, operation, kwargs, *, generation=None):
         if operation == "flash":
             self._flash(kwargs, generation=generation)
-        elif operation in ("attach", "connect"):
+        elif operation in ("attach", "connect", "connect_device"):
+            if operation == "connect_device" and not self.attached:
+                raise RuntimeError("Attach to a service first")
+            if operation == "connect_device" and kwargs["endpoint"] != self.endpoint:
+                raise RuntimeError(
+                    "Device connection must use the attached service endpoint"
+                )
             self._progress("Checking acquisition service…")
             self._make_client(kwargs["endpoint"])
             try:
@@ -777,7 +791,7 @@ class LiveController:
                     )
             self._progress("Reading service configuration…")
             status = self.client.status()
-            if operation == "connect":
+            if operation in ("connect", "connect_device"):
                 if status["state"]["connected"]:
                     requested = (
                         ipaddress.ip_address(kwargs["ip"]),
@@ -1096,7 +1110,7 @@ class LiveController:
                 self._error = ""
                 self._progress(
                     "Connecting…"
-                    if operation == "connect"
+                    if operation in ("connect", "connect_device")
                     else f"{operation}: working…"
                 )
                 try:

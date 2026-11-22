@@ -1790,3 +1790,86 @@ def test_session_refresh_retries_when_identity_changes_between_reads():
     snapshot = ServiceSnapshot.read(Client())
     assert snapshot.status["session_id"] == "new"
     assert snapshot.catalog["session"] == "new"
+
+
+@pytest.mark.parametrize("failure", [False, True])
+def test_attached_service_device_connect_never_launches_local_service(
+    monkeypatch, failure
+):
+    client = FakeClient()
+    client.connected = False
+
+    def connect(ip, port):
+        client.calls.append(("connect", ip, port))
+        client.connected = True
+
+    client.connect = connect
+    controller = LiveController(lambda _: client)
+
+    def unexpected_start(*args, **kwargs):
+        pytest.fail("Connecting an attached service must not start a local service")
+
+    monkeypatch.setattr(controller, "_start_service", unexpected_start)
+    arguments = {"endpoint": "127.0.0.1:19742", "ip": "192.168.1.233", "port": 1000}
+    try:
+        controller.submit("attach", endpoint=arguments["endpoint"])
+        wait_for(lambda: controller.latest().attached)
+        assert not controller.latest().status["state"]["connected"]
+        if failure:
+
+            def unavailable():
+                raise ConnectionRefusedError("remote service stopped")
+
+            client.status = unavailable
+            controller.submit("connect_device", **arguments)
+            wait_for(lambda: controller.latest().completed_commands == 2)
+            assert "remote service stopped" in controller.latest().error
+            assert not client.calls
+        else:
+            controller.submit("connect_device", **arguments)
+            wait_for(lambda: controller.latest().status["state"]["connected"])
+            assert client.calls == [("connect", "192.168.1.233", 1000)]
+            assert controller.latest().status["state"]["connected"]
+            assert not controller.owned.owns(controller.endpoint)
+    finally:
+        controller.attached = False
+        controller.close()
+
+
+def test_attached_disconnected_panel_connects_device_without_local_repository(
+    gui_frame, app_state, monkeypatch
+):
+    from imgui_bundle import imgui
+
+    controller = LiveController(lambda _: FakeClient())
+    controller.endpoint = "127.0.0.1:19742"
+    workspace = LiveWorkspace(controller)
+    workspace.available = True
+    workspace.update = replace(
+        workspace.update, attached=True, status={"state": {"connected": False}}
+    )
+    monkeypatch.setattr(LiveWorkspace, "repository_ready", property(lambda self: False))
+    sent, labels = [], []
+    monkeypatch.setattr(controller, "submit", lambda op, **kw: sent.append((op, kw)))
+
+    def button(label, *args, **kwargs):
+        labels.append(label)
+        return label == "Connect device"
+
+    monkeypatch.setattr(imgui, "button", button)
+    try:
+        gui_frame(SimpleNamespace(render=workspace.render_data), app_state)
+        assert "Disconnect" not in labels
+        assert sent == [
+            (
+                "connect_device",
+                {
+                    "endpoint": controller.endpoint,
+                    "ip": workspace.ip,
+                    "port": workspace.port,
+                },
+            )
+        ]
+        assert workspace.pending_message == "Connecting…"
+    finally:
+        workspace.close()

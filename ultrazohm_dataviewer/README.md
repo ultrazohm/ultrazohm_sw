@@ -448,6 +448,10 @@ viewer can process their requests; a failed startup script stops the sequence.
 
 **Connect** starts a viewer-managed service and connects to the selected device IP.
 If an external service already occupies that endpoint, use **Existing service → Attach**.
+When attached to a service whose device is disconnected, **Connect device** connects
+that service to the displayed Device IP and port. The address is resolved on the
+service machine. This also works through an SSH tunnel without a local firmware
+checkout. The attachment status and device connection status are shown separately.
 **Disconnect** sends shutdown (device Stop, recording finalization, and service exit) and leaves the GUI open.
 For a viewer-started service it waits for process exit before enabling Connect again.
 Each subsequent connection uses a fresh recording directory.

@@ -354,9 +354,9 @@ class LiveWorkspace:
                 self.scripts.stop()
                 self.error = ""
                 return
-            if operation in ("connect", "attach"):
+            if operation in ("connect", "connect_device", "attach"):
                 self.pending_message = (
-                    "Connecting…" if operation == "connect" else "Attaching to service…"
+                    "Attaching to service…" if operation == "attach" else "Connecting…"
                 )
                 self._pending_completion = (
                     self.controller.latest().completed_commands + 1
@@ -560,6 +560,8 @@ class LiveWorkspace:
             )
         else:
             imgui.text_disabled("Device disconnected")
+        if self.update.attached:
+            imgui.text_disabled(f"Attached to service at {self.controller.endpoint}")
         imgui.separator()
         imgui.begin_disabled(self.update.attached)
         _, self.endpoint = imgui.input_text("Service endpoint", self.endpoint)
@@ -568,11 +570,27 @@ class LiveWorkspace:
         _, port = imgui.input_int("Device port", self.port)
         self.port = max(1, min(65535, port))
         imgui.begin_disabled(bool(activity))
-        connection_label = "Disconnect" if self.update.attached else "Connect"
+        device_connected = self.update.status.get("state", {}).get("connected", False)
+        connection_label = "Connect"
+        connection_help = "Start a viewer-managed service and connect to the selected UltraZohm IP. For a service already running, use Existing service > Attach."
+        if self.update.attached:
+            if device_connected:
+                connection_label = "Disconnect"
+                connection_help = "Send device Stop, finalize recordings, and shut down the service. Keep the viewer open."
+            else:
+                connection_label = "Connect device"
+                connection_help = "Connect the attached service to the selected device IP and port on the service machine."
         imgui.begin_disabled(not self.update.attached and not self.repository_ready)
         if imgui.button(connection_label):
-            if self.update.attached:
+            if self.update.attached and device_connected:
                 self.send("shutdown")
+            elif self.update.attached:
+                self.send(
+                    "connect_device",
+                    endpoint=self.controller.endpoint,
+                    ip=self.ip,
+                    port=self.port,
+                )
             else:
                 self.send(
                     "connect",
@@ -586,11 +604,7 @@ class LiveWorkspace:
                 )
         imgui.end_disabled()
         if imgui.is_item_hovered(imgui.HoveredFlags_.allow_when_disabled):
-            imgui.set_tooltip(
-                "Send device Stop, finalize recordings, and shut down the service. Keep the viewer open."
-                if self.update.attached
-                else "Start a viewer-managed service and connect to the selected UltraZohm IP. For a service already running, use Existing service > Attach."
-            )
+            imgui.set_tooltip(connection_help)
 
         def next_button(label):
             # Keep the actions together, wrapping in narrow docked panels.

@@ -113,14 +113,14 @@ bsp config total_heap_size  200000000
 # .xsa re-import resets BSP settings)
 bsp config use_task_fpu_support 2
 platform write
-bsp regenerate
-# Re-apply FreeRTOS kernel settings that 'bsp regenerate' resets (see proc).
-uz_vitis_patch_freertos_bsp $WS_PATH
+# (again if it fails, and portMEMORY_BARRIER is inserted by
+# uz_vitis_generate_platform right before the platform build, see
+# vitis_patch_UltraZohm_freertos_bsp.tcl)
+uz_vitis_bsp_regenerate $WS_PATH FreeRTOS_domain
 
 #####################################################
 puts "Info (UltraZohm): Regenerate Baremetal_domain BSP"
-domain active Baremetal_domain
-bsp regenerate
+uz_vitis_bsp_regenerate $WS_PATH Baremetal_domain
 
 #####################################################
 #puts "Info (UltraZohm): Regenerate FSBL_domain BSP"
@@ -129,12 +129,9 @@ bsp regenerate
 
 #####################################################
 puts "Info (UltraZohm): generate Platform project"
-# Patch again right before the build (the FreeRTOS BSP sources may have been
-# generated after the first patch) and make sure the kernel library is built
-# with it.
-uz_vitis_patch_freertos_bsp $WS_PATH
-platform generate
-uz_vitis_verify_freertos_bsp $WS_PATH
+# Builds the platform with portMEMORY_BARRIER in the FreeRTOS kernel, also if
+# it could not be inserted at first (e.g. after a failed 'bsp regenerate').
+uz_vitis_generate_platform $WS_PATH
 
 #####################################################
 # clean up stale _ide folders - see Issue #353 in uz_sw
@@ -156,8 +153,10 @@ puts "==========================================================================
 puts "Info (UltraZohm): if Vitis stalls, restart Vitis and run this script again"
 puts "==========================================================================="
 
-# app_build
-app build -all
+# Build all applications, again if a build produced no ELF (see
+# vitis_patch_UltraZohm_freertos_bsp.tcl). This also links the FreeRTOS
+# application against the rebuilt kernel library.
+uz_vitis_build_apps $WS_PATH
 
 puts "==========================================================================="
 puts "Info (UltraZohm): vitis_update_platform.tcl script finished successfully"

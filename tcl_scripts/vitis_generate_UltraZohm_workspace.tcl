@@ -136,9 +136,10 @@ proc vitis_main {} {
 
   puts "Info (UltraZohm): regenerate FreeRTOS BSP"
   #regenerate board support package
-  bsp regenerate
-  # Re-apply FreeRTOS kernel settings that 'bsp regenerate' resets (see proc).
-  uz_vitis_patch_freertos_bsp $WS_PATH
+  # (again if it fails, and portMEMORY_BARRIER is inserted by
+  # uz_vitis_generate_platform right before each platform build, see
+  # vitis_patch_UltraZohm_freertos_bsp.tcl)
+  uz_vitis_bsp_regenerate $WS_PATH FreeRTOS_domain
 
 
   #Domain Baremetal R5_0
@@ -176,7 +177,7 @@ proc vitis_main {} {
   #Regenerate platform
   #####################################################
   puts "Info (UltraZohm): generate Platform project"
-  platform generate
+  uz_vitis_generate_platform $WS_PATH
 
 
   #Application Baremetal R5_0
@@ -256,13 +257,11 @@ proc vitis_main {} {
   platform clean
   app_clean
   puts "Info (UltraZohm): build platform and all application projects"
-  # Patch again: the FreeRTOS BSP sources may have been generated after the
-  # first patch (e.g. after a failed 'bsp regenerate'). Then make sure the
-  # kernel library is built with it before the applications are built.
-  uz_vitis_patch_freertos_bsp $WS_PATH
-  platform generate
-  uz_vitis_verify_freertos_bsp $WS_PATH
-  app_build
+  # Builds the platform with portMEMORY_BARRIER in the FreeRTOS kernel, also if
+  # it could not be inserted at first (e.g. after a failed 'bsp regenerate'),
+  # then the applications (again if a build produced no ELF).
+  uz_vitis_generate_platform $WS_PATH
+  uz_vitis_build_apps $WS_PATH
 
 
   puts "========================================"

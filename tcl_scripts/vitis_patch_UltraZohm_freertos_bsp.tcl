@@ -29,20 +29,30 @@
 # (kernel >= 10.5.1), where the port's portmacro.h defines it; the procs below
 # then leave the BSP alone.
 #
-# Why the checks: "bsp regenerate" writes FreeRTOSConfig.h without the define,
-# and a "bsp regenerate" that fails half-way (e.g. on a BSP file locked by
-# another process) leaves no FreeRTOSConfig.h to patch at all. Vitis then
-# generates the sources later, without the define. That happened once and only
-# showed up as a frozen A53 after minutes of network load. Therefore:
+# Why the checks: "bsp regenerate" writes FreeRTOSConfig.h without the define.
+# A "bsp regenerate" that fails half-way on a BSP file held open by another
+# process (e.g. a virus scanner or an indexer) only prints "Error in deleting
+# the directory" and leaves no FreeRTOSConfig.h to patch at all. The next
+# "platform generate" then generates the sources itself, after any patch, or
+# fails if the file is still held open. That happened once and only showed up
+# as a frozen A53 after minutes of network load. Therefore:
 #
+#   uz_vitis_generate_platform ws_path
+#       builds the active platform with the define, used by the workspace
+#       scripts instead of "platform generate": regenerates the FreeRTOS BSP
+#       sources if they are missing, patches them, builds the platform and
+#       checks the result. If any of this fails, it waits, cleans the platform
+#       and tries again, so that the scripts run through even if the define
+#       cannot be inserted at first.
+#   uz_vitis_bsp_regenerate ws_path domain, uz_vitis_build_app(s) ws_path ...
+#       "bsp regenerate" and "app build" for the workspace scripts, repeated
+#       if they fail on files held open by another process (see the procs).
 #   uz_vitis_patch_freertos_bsp ws_path
 #       inserts the define into every generated copy, or replaces an older
-#       define (idempotent). Call it after every FreeRTOS "bsp regenerate" and
-#       again right before the platform build ("platform generate").
+#       define (idempotent).
 #   uz_vitis_verify_freertos_bsp ws_path
-#       call it after the platform build. Stops with an error unless the
-#       headers have the define and the kernel library (BSP and exported copy)
-#       is compiled with it.
+#       stops with an error unless the headers have the define and the kernel
+#       library (BSP and exported copy) is compiled with it.
 #   uz_vitis_check_freertos_elf ws_path elf
 #       call it before the ELF is downloaded to the A53 (see
 #       vitis_debug_run_UltraZohm.tcl). Stops with an error unless the kernel
@@ -255,17 +265,15 @@ proc uz_vitis_freertos_fix_hint {ws_path} {
   if {[llength $bsps] > 0} {
     set platform [file tail [uz_vitis_freertos_platform_dir [lindex $bsps 0]]]
   }
-  # "app clean": the application does not relink when only libfreertos.a changed.
+  # uz_vitis_build_app links the application again, also when only
+  # libfreertos.a has changed.
   return [join [list \
       "Fix it in the XSCT console of Vitis:" \
       "  cd \[getws\]" \
       "  source {../../tcl_scripts/vitis_patch_UltraZohm_freertos_bsp.tcl}" \
       "  platform active $platform" \
-      "  uz_vitis_patch_freertos_bsp \[getws\]" \
-      "  platform generate" \
-      "  uz_vitis_verify_freertos_bsp \[getws\]" \
-      "  app clean -name FreeRTOS" \
-      "  app build -name FreeRTOS"] "\n"]
+      "  uz_vitis_generate_platform \[getws\]" \
+      "  uz_vitis_build_app \[getws\] FreeRTOS"] "\n"]
 }
 
 proc uz_vitis_patch_freertos_bsp {ws_path} {
@@ -282,8 +290,8 @@ proc uz_vitis_patch_freertos_bsp {ws_path} {
   }
   if {[llength $headers] == 0} {
     # Not fatal here: after a failed "bsp regenerate" Vitis generates the
-    # sources later. The call before the platform build patches them, and
-    # uz_vitis_verify_freertos_bsp checks the result.
+    # sources later. uz_vitis_verify_freertos_bsp reports the unpatched kernel,
+    # and uz_vitis_generate_platform patches and builds it again.
     puts "Warning (UltraZohm): portMEMORY_BARRIER patch: no FreeRTOSConfig.h under $ws_path yet"
     return
   }
@@ -376,6 +384,159 @@ proc uz_vitis_verify_freertos_bsp {ws_path} {
   }
   puts "Info (UltraZohm): the FreeRTOS kernel library and the exported headers\
       are built with portMEMORY_BARRIER"
+}
+
+# 1 if the generated sources of the BSP of 'domain' are there.
+proc uz_vitis_bsp_sources_present {ws_path domain} {
+  set bsps [glob -nocomplain -types d -- [file join $ws_path * * $domain bsp *]]
+  if {[llength $bsps] == 0} {
+    return 0
+  }
+  foreach bsp $bsps {
+    if {![file exists [file join $bsp include xparameters.h]]} {
+      return 0
+    }
+  }
+  if {$domain eq "FreeRTOS_domain"} {
+    return [uz_vitis_freertos_bsp_sources_present $ws_path]
+  }
+  return 1
+}
+
+# "bsp regenerate" of 'domain'. If another process holds a BSP file open, it
+# only prints "Error in deleting the directory", or stops with "permission
+# denied"; either way the sources are incomplete. Then it waits and tries
+# again. After the last attempt it only warns: uz_vitis_generate_platform
+# regenerates missing FreeRTOS sources, and "platform generate" the others.
+proc uz_vitis_bsp_regenerate {ws_path domain {attempts 4} {pause_ms 30000}} {
+  for {set attempt 1} {1} {incr attempt} {
+    set failed [catch {
+      domain active $domain
+      bsp regenerate
+    } msg]
+    if {!$failed && [uz_vitis_bsp_sources_present $ws_path $domain]} {
+      return
+    }
+    if {!$failed} {
+      set msg "the generated sources are incomplete"
+    }
+    set msg [lindex [split $msg \n] 0]
+    if {$attempt >= $attempts} {
+      puts "Warning (UltraZohm): bsp regenerate of $domain failed ($attempts attempts): $msg"
+      return
+    }
+    puts "Warning (UltraZohm): bsp regenerate of $domain failed (attempt $attempt of\
+        $attempts): $msg, trying again in [expr {$pause_ms / 1000}] s"
+    after $pause_ms
+  }
+}
+
+# 1 if the generated sources of the FreeRTOS BSP are there.
+proc uz_vitis_freertos_bsp_sources_present {ws_path} {
+  set bsps [uz_vitis_freertos_bsp_dirs $ws_path]
+  if {[llength $bsps] == 0} {
+    return 0
+  }
+  foreach bsp $bsps {
+    set src [file join $bsp libsrc freertos10_xilinx_* src FreeRTOSConfig.h]
+    if {[llength [glob -nocomplain -- $src]] == 0} {
+      return 0
+    }
+  }
+  return 1
+}
+
+# Builds the active platform with portMEMORY_BARRIER in the FreeRTOS kernel
+# (see the top of this file): regenerate the FreeRTOS BSP sources if they are
+# missing, patch, "platform generate", check. If any step fails, e.g. on a BSP
+# file held open by another process, or because Vitis generated the sources
+# only during the build (after the patch), wait, clean the platform and try
+# again with freshly regenerated sources. Stops with the last error after
+# 'attempts' attempts.
+proc uz_vitis_generate_platform {ws_path {attempts 4} {pause_ms 30000}} {
+  for {set attempt 1} {1} {incr attempt} {
+    set failed [catch {
+      # A retry starts from freshly generated sources, since a failed build
+      # can leave them incomplete without any of the files checked here missing.
+      if {$attempt > 1} {
+        puts "Info (UltraZohm): regenerating the FreeRTOS BSP sources"
+        uz_vitis_bsp_regenerate $ws_path FreeRTOS_domain 1
+      } elseif {![uz_vitis_bsp_sources_present $ws_path FreeRTOS_domain]} {
+        puts "Info (UltraZohm): the FreeRTOS BSP sources are missing, regenerating them"
+        uz_vitis_bsp_regenerate $ws_path FreeRTOS_domain 1
+      }
+      uz_vitis_patch_freertos_bsp $ws_path
+      platform generate
+      uz_vitis_verify_freertos_bsp $ws_path
+    } msg opts]
+    if {!$failed} {
+      return
+    }
+    if {$attempt >= $attempts} {
+      return -options $opts $msg
+    }
+    puts "Warning (UltraZohm): building the platform with portMEMORY_BARRIER failed\
+        (attempt $attempt of $attempts): [lindex [split $msg \n] 0]"
+    puts "Info (UltraZohm): cleaning the platform and trying again in [expr {$pause_ms / 1000}] s"
+    after $pause_ms
+    if {[catch {platform clean} clean_msg]} {
+      puts "Warning (UltraZohm): platform clean failed: [lindex [split $clean_msg \n] 0]"
+    }
+  }
+}
+
+# Names of the application projects of the workspace.
+proc uz_vitis_app_names {} {
+  set names {}
+  foreach line [split [app list] "\n"] {
+    # Skip the header and separator lines of the table.
+    if {[string match "*==*" $line] || [string match "*NAME*" $line]
+        || [string trim $line] eq ""} {
+      continue
+    }
+    lappend names [lindex $line 0]
+  }
+  return $names
+}
+
+# Builds the application project 'name' ("app build"), again if no ELF
+# results: "app build" rebuilds the BSPs first, and if that fails (e.g. on a
+# BSP header held open by another process while it is copied), it only prints
+# the error and builds nothing. After such a failure, "app build" does not
+# build the application again in the same XSCT session until the platform has
+# been generated again, so a retry builds the platform first (with pauses, to
+# let the other process finish). The ELF is deleted before each build, so that
+# it is linked again (the makefile of the FreeRTOS application does not track
+# the kernel library) and so that its existence shows that the build succeeded.
+proc uz_vitis_build_app {ws_path name {attempts 4} {pause_ms 30000}} {
+  set debug_dir [file join $ws_path $name Debug]
+  for {set attempt 1} {1} {incr attempt} {
+    foreach elf [glob -nocomplain -- [file join $debug_dir *.elf]] {
+      file delete -- $elf
+    }
+    if {[catch {app build -name $name} msg]} {
+      puts "Warning (UltraZohm): building $name: [lindex [split $msg \n] 0]"
+    }
+    if {[llength [glob -nocomplain -- [file join $debug_dir *.elf]]] > 0} {
+      puts "Info (UltraZohm): built the application $name"
+      return
+    }
+    if {$attempt >= $attempts} {
+      error "Error (UltraZohm): the application $name was not built\
+          ($attempts attempts), see the messages above."
+    }
+    puts "Warning (UltraZohm): building $name produced no ELF (attempt $attempt of\
+        $attempts), building the platform and $name again"
+    after $pause_ms
+    uz_vitis_generate_platform $ws_path
+    after $pause_ms
+  }
+}
+
+proc uz_vitis_build_apps {ws_path} {
+  foreach name [uz_vitis_app_names] {
+    uz_vitis_build_app $ws_path $name
+  }
 }
 
 # File in the workspace folder that lets uz_vitis_check_freertos_elf start a

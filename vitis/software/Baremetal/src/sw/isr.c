@@ -78,6 +78,7 @@ void ISR_Control(void *data)
      * exchange sweep (commands, queue drain -> OCM, cache flushes, IPI) runs
      * from the main loop via xcp_r5_background() — required headroom for
      * high control rates (100 kHz target). */
+    JavaScope_update_lifecheck(); /* lifecheck for XCP completeness checks, sampled below */
     xcp_r5_event();
 #else
     JavaScope_update(&Global_Data);

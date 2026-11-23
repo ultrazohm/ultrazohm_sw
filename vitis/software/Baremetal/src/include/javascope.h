@@ -277,5 +277,6 @@ enum gui_button_mapping {
 
 int JavaScope_initialize(DS_Data* data);
 void JavaScope_update(DS_Data* data);
+void JavaScope_update_lifecheck(void);
 
 #endif /* INCLUDE_JAVASCOPE_H_ */

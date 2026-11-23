@@ -106,6 +106,19 @@ int JavaScope_initialize(DS_Data* data)
 }
 
 
+/* lifecheck = control cycles since start modulo 1000. A recording that
+ * misses samples shows a jump (javascope/check_lifecheck.py). JavaScope
+ * builds refresh it in JavaScope_update(), XCP builds in ISR_Control right
+ * before the DAQ sampling (xcp_r5_event()). The 64-bit cycle count is
+ * reduced with 32-bit arithmetic (2^32 mod 1000 = 296), because a 64-bit
+ * modulo calls the library division __aeabi_uldivmod on the R5. */
+void JavaScope_update_lifecheck(void){
+	const uint64_t cycles = uz_SystemTime_GetInterruptCounter();
+	const uint32_t high = (uint32_t)(cycles >> 32) % 1000U;
+	const uint32_t low = (uint32_t)cycles % 1000U;
+	lifecheck = (float)((high * 296U + low) % 1000U);
+}
+
 void JavaScope_update(DS_Data* data){
 
 	// create pointer of type struct javascope_data_t named javascope_data located at MEM_SHARED_START_OCM_BANK_3_JAVASCOPE
@@ -126,7 +139,7 @@ void JavaScope_update(DS_Data* data){
 #endif
 
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
-	lifecheck 				= uz_SystemTime_GetInterruptCounter() % 1000;
+	JavaScope_update_lifecheck();
 	ISR_execution_time_us	= uz_SystemTime_GetIsrExectionTimeInUs();
 	ISR_period_us			= uz_SystemTime_GetIsrPeriodInUs();
 	System_UpTime_seconds   = uz_SystemTime_GetUptimeInSec();

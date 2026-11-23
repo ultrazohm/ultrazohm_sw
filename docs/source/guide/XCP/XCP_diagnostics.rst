@@ -29,6 +29,12 @@ Where data can wait or get lost
 A datagram that could not be sent (``xcp_gw_sendto_drop``) is the only loss inside the UltraZohm that the master sees as a gap in the transport counter.
 A gap with this counter unchanged was lost on the wire or in the PC.
 
+To check a recording itself for lost samples, measure ``lifecheck`` (in ``CANape/UZ_XCP/uz.A2L``) on the event ``DAQ_R5``.
+It counts the control cycles modulo 1000 and is refreshed right before the sampling, so consecutive samples differ by 1, from 999 back to 0.
+Any other step is a loss, wherever it happened.
+``javascope/check_lifecheck.py``, written for JavaScope logs, finds such steps in a CSV file with ``;`` as separator, ``.`` as decimal point, one header row and a column whose name contains ``lifecheck``.
+``interrupt_counter`` is the same count without the wrap.
+
 Reading the counters
 --------------------
 

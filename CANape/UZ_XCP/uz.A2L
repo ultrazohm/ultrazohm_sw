@@ -1216,7 +1216,13 @@ DUAL: on falling and rising edge*/
       SYMBOL_LINK "timingR5.isr_period_us" 0
     /end MEASUREMENT
 
-    /begin MEASUREMENT interrupt_counter "ISR tick counter, live from timingR5 (replaces dead lifecheck)"
+    /begin MEASUREMENT lifecheck "control cycles since start modulo 1000, refreshed every control cycle right before the DAQ_R5 sampling; a jump in a DAQ_R5 recording = lost samples (javascope/check_lifecheck.py)"
+      FLOAT32_IEEE NO_COMPU_METHOD 0 0 0 999
+      ECU_ADDRESS 0x400B8678
+      SYMBOL_LINK "lifecheck" 0
+    /end MEASUREMENT
+
+    /begin MEASUREMENT interrupt_counter "ISR tick counter, live from timingR5 (complete count, no wrap)"
       A_UINT64 NO_COMPU_METHOD 0 0 0 1.84467440737E+19
       ECU_ADDRESS 0x4005B2E0
       SYMBOL_LINK "timingR5.interrupt_counter" 0

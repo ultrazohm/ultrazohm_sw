@@ -209,6 +209,18 @@ class XcpUdp:
             raise RuntimeError("%s rejected (resp=0x%02X err=0x%02X)" % (name, resp[0], err))
         return resp
 
+    def daq_timestamp_tick_s(self):
+        """Duration of one DAQ timestamp tick in seconds, from
+        GET_DAQ_RESOLUTION_INFO: unit = bits 4-7 of the timestamp mode (0 =
+        1 ns ... 9 = 1 s, 10-12 = 1-100 ps), times the ticks per unit."""
+        resp = self._cmd_checked("GET_DAQ_RESOLUTION_INFO", bytes([0xD9]))
+        mode = resp[5]
+        ticks = struct.unpack_from("<H", resp, 6)[0]
+        unit = mode >> 4
+        if (mode & 0x07) != 4:
+            raise RuntimeError("DAQ timestamps are not 32-bit (mode 0x%02X)" % mode)
+        return ticks * 10.0 ** (unit - 9 if unit <= 9 else unit - 22)
+
     def daq_setup_single(self, address, size, ext=0, event=0):
         """Dynamic DAQ: 1 list / 1 ODT / 1 entry on `event`, timestamped.
         Returns the FIRST_PID of the DAQ list (DTO identification byte)."""
@@ -291,11 +303,14 @@ def run_daq(xcp, item, seconds, event=0):
     label, a, fmt, size = item
     print("[i] DAQ target: %s @ 0x%08X (%d bytes), event %d (%s), %gs" %
           (label, a, size, event, R5_EVENT_NAMES.get(event, "?"), seconds))
+    tick_s = xcp.daq_timestamp_tick_s()
     first_pid = xcp.daq_setup_single(a, size, event=event)
-    print("[+] DAQ RUNNING (first_pid=0x%02X) -- collecting ...\n" % first_pid)
+    print("[+] DAQ RUNNING (first_pid=0x%02X, timestamp tick %g s) -- collecting ...\n" %
+          (first_pid, tick_s))
     n = 0
     shown = 0
-    first_ts = last_ts = None
+    prev_ts = None
+    span_ticks = 0  # unwrapped: the 32-bit timestamp wraps (every 42.9 s at 10 ns)
     t_end = time.time() + seconds
     try:
         while time.time() < t_end:
@@ -310,9 +325,9 @@ def run_daq(xcp, item, seconds, event=0):
                     continue
                 ts = struct.unpack_from("<I", pkt, 4)[0]
                 val = struct.unpack_from(fmt, pkt, 8)[0]
-                if first_ts is None:
-                    first_ts = ts
-                last_ts = ts
+                if prev_ts is not None:
+                    span_ticks += (ts - prev_ts) & 0xFFFFFFFF
+                prev_ts = ts
                 n += 1
                 if shown < 10 or n % 5000 == 0:
                     print("    ts=%-12d  %s = %s" % (ts, label,
@@ -323,7 +338,7 @@ def run_daq(xcp, item, seconds, event=0):
     if n == 0:
         print("\n[x] no DTOs received -- DAQ path broken (check ctr/framing/event)")
         return 1
-    span_s = max(last_ts - first_ts, 1) / 1e6
+    span_s = max(span_ticks, 1) * tick_s
     print("\n[+] DAQ OK: %d samples in %.2fs of target time (~%.0f Hz)" %
           (n, span_s, (n - 1) / span_s if n > 1 else 0.0))
     return 0
@@ -647,16 +662,18 @@ def run_stress(xcp, args, max_dto):
     except OSError:
         pass
 
+    tick_s = xcp.daq_timestamp_tick_s()
     first_pid = xcp.daq_setup_stress(args.stress_base, odts,
                                      event=args.daq_event,
                                      prescaler=args.prescaler)
-    print("[+] DAQ RUNNING (first_pid=0x%02X, %d ODTs) -- collecting ...\n" %
-          (first_pid, len(odts)))
+    print("[+] DAQ RUNNING (first_pid=0x%02X, %d ODTs, timestamp tick %g s) -- collecting ...\n" %
+          (first_pid, len(odts), tick_s))
 
     buf = bytearray(4096)
     dgrams = frames = payload = cycles = 0
     ctr_check = CtrCheck()
-    first_ts = last_ts = None
+    prev_ts = None
+    span_ticks = 0  # unwrapped: the 32-bit timestamp wraps (every 42.9 s at 10 ns)
     t0 = time.monotonic()
     t_end = t0 + args.daq_seconds
     t_tick = t0 + 1.0
@@ -690,9 +707,9 @@ def run_stress(xcp, args, max_dto):
                 # ODT0 DTO: [odt u8][fill u8][daq u16][ts u32][data]
                 if buf[off + 4] == first_pid and dlc >= 8:
                     ts = struct.unpack_from("<I", buf, off + 8)[0]
-                    if first_ts is None:
-                        first_ts = ts
-                    last_ts = ts
+                    if prev_ts is not None:
+                        span_ticks += (ts - prev_ts) & 0xFFFFFFFF
+                    prev_ts = ts
                     cycles += 1
                 off += 4 + dlc
     finally:
@@ -716,8 +733,8 @@ def run_stress(xcp, args, max_dto):
     print("    DAQ payload      %10d B (%.2f Mbit/s; wire ~%.2f Mbit/s)" %
           (payload, payload * 8 / wall_s / 1e6,
            (payload + 4 * frames + 42 * dgrams) * 8 / wall_s / 1e6))
-    if cycles > 1 and last_ts is not None:
-        span_s = max((last_ts - first_ts) & 0xFFFFFFFF, 1) / 1e6
+    if cycles > 1:
+        span_s = max(span_ticks, 1) * tick_s
         print("    event cycles     %10d   (~%.0f Hz of target time)" %
               (cycles, (cycles - 1) / span_s))
     missing = ctr_check.missing()

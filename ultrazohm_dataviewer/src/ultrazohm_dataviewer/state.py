@@ -1,0 +1,813 @@
+"""Central application state shared across panels."""
+
+from __future__ import annotations
+
+import enum
+import math
+import os
+from concurrent.futures import Future
+from functools import partial
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import numpy as np
+from dataclasses import dataclass, field, fields, replace
+
+from .commands import CommandRegistry
+from .console import Console
+from .loader import ParsedRun, open_file
+from .model import DataRegistry, Run
+from .nodes import NodeGraph
+from .requests import Requests
+from .validation import axis_limits, bounded_int, finite_float
+from .workers import CancellableExecutor
+
+# Identifies a signal across runs: (run_id, signal_name).
+LARGE_CSV_BYTES = 1024**3
+
+
+@dataclass(frozen=True)
+class LoadRequest:
+    path: str
+    mode: str
+    backend: str
+    disk_cache: bool
+    axis_column: str | None = None
+    axis_domain: str | None = None
+    completion: Future = field(default_factory=Future, compare=False, repr=False)
+
+
+SignalRef = tuple[int, str]
+
+
+class PlotType(enum.Enum):
+    LINE = "Line"
+    SCATTER = "Scatter"
+    STAIRS = "Stairs"
+    XY = "XY"
+
+    @classmethod
+    def labels(cls) -> list[str]:
+        return [t.value for t in cls]
+
+
+class XyStyle(enum.Enum):
+    """How an XY (signal-vs-signal) cell is drawn."""
+
+    LINE = "Line"  # connected line, no markers (the original behaviour)
+    MARKERS = "Markers"  # markers only, no connecting line (scatter)
+    BOTH = "Both"  # connected line with a marker at every sample
+
+    @classmethod
+    def labels(cls) -> list[str]:
+        return [s.value for s in cls]
+
+
+@dataclass
+class SubplotCell:
+    """One cell of the plot grid and the signals dropped into it."""
+
+    signals: list[SignalRef] = field(default_factory=list)
+    plot_type: PlotType = PlotType.LINE
+    fit_pending: bool = True
+    """Request a one-shot auto-fit to the data extent on the next render.
+
+    Set whenever the signal set changes so the X axis snaps to the real time
+    range instead of ImPlot's default ``(0, 1)`` window.
+    """
+
+    show_samples: bool = False
+    """Draw a marker at every sample (line plots)."""
+
+    spy: bool = False
+    """Show a drag-rect zoom inset below the main plot (the 'spy' tool)."""
+
+    spy_rect: tuple[float, float, float, float] | None = None
+    """Persisted spy rectangle as ``(x_min, y_min, x_max, y_max)``."""
+
+    xy_source: SignalRef | None = None
+    """Signal used as the X axis when ``plot_type`` is :attr:`PlotType.XY`."""
+
+    xy_style: XyStyle = XyStyle.LINE
+    """How an XY cell draws its series (line / markers / both)."""
+
+    y2_signals: list[SignalRef] = field(default_factory=list)
+    """Signals drawn against the secondary (right) Y axis."""
+
+    cursors: bool = False
+    """Show two draggable vertical cursors with a Δx / frequency readout."""
+
+    cursor_x: tuple[float, float] | None = None
+    """Persisted cursor X positions as ``(x1, x2)``."""
+
+    export_relative: bool = False
+    """When exporting this cell, rebase the time column to start at 0."""
+
+    pending_x_lim: tuple[float, float] | None = None
+    """One-shot X-axis limits to apply next render (from ``set_x_lim``)."""
+
+    pending_y_lim: tuple[float, float] | None = None
+    """One-shot Y-axis limits to apply next render (from ``set_y_lim``)."""
+
+    pending_y2_lim: tuple[float, float] | None = None
+    y2_lim: tuple[float, float] | None = None
+    """Secondary Y range, including a one-shot restored view."""
+
+    y_lim: tuple[float, float] | None = None
+    """Last rendered primary Y range; persists after pending limits are consumed."""
+
+    x_lim: tuple[float, float] | None = None
+    """Last rendered X range, including XY coordinates (never linked as time)."""
+
+    @property
+    def active_refs(self) -> list[SignalRef]:
+        """Only visible inputs constrain the independent-axis domain."""
+        return self.signals + (
+            [self.xy_source] if self.plot_type is PlotType.XY and self.xy_source else []
+        )
+
+    def add(self, ref: SignalRef) -> bool:
+        if ref not in self.signals:
+            self.signals.append(ref)
+            self.fit_pending = True
+            return True
+        return False
+
+    def clear(self) -> None:
+        self.signals.clear()
+        self.y2_signals.clear()
+        self.xy_source = None
+        self.fit_pending = True
+
+    def set_secondary(self, ref: SignalRef, secondary: bool) -> None:
+        if ref not in self.signals:
+            raise ValueError(f"{ref[1]!r} is not assigned to this plot")
+        if secondary and ref not in self.y2_signals:
+            self.y2_signals.append(ref)
+        elif not secondary and ref in self.y2_signals:
+            self.y2_signals.remove(ref)
+        self.fit_pending = True
+
+    def set_limits(self, axis: str, lo: float, hi: float) -> None:
+        if axis not in ("x", "y", "y2"):
+            raise ValueError(f"Unknown axis: {axis}")
+        limits = axis_limits(lo, hi)
+        setattr(self, f"pending_{axis}_lim", limits)
+        setattr(self, f"{axis}_lim", limits)
+
+    def remove(self, ref: SignalRef) -> None:
+        if ref in self.signals:
+            self.signals.remove(ref)
+        if ref in self.y2_signals:
+            self.y2_signals.remove(ref)
+
+
+@dataclass
+class AnalysisConfig:
+    """Shared state for an analysis window (FFT, histogram, ...).
+
+    Each holds a set of source signals (dragged in from the tree or plots) and a
+    time window that either follows a chosen subplot or is entered manually.
+    """
+
+    sources: list[SignalRef] = field(default_factory=list)
+    follow_plot: int = 1
+    """Which subplot's X range to use as the window. ``0`` = *Custom*
+    (use ``x_min``/``x_max``); ``N`` = follow ``plot_N``."""
+    x_min: float = 0.0
+    x_max: float = 0.0
+    compute_requested: bool = False
+    """Set by drag-drop / a command so the window recomputes next frame."""
+    x_lim: tuple[float, float] | None = None
+    """Explicit view limits retained across asynchronous recomputation."""
+    pending_x_lim: tuple[float, float] | None = None
+    """One-shot X-axis view limits to apply next render (from ``*_xlim``)."""
+
+
+@dataclass
+class FftConfig(AnalysisConfig):
+    """FFT window: amplitude spectra of several signals at once."""
+
+    remove_dc: bool = True
+    window: bool = True
+    log_x: bool = False
+    log_y: bool = False
+
+
+@dataclass
+class HistogramConfig(AnalysisConfig):
+    """Histogram window: value distributions of several signals at once."""
+
+    bins: int = 50
+
+
+def default_data_settings():
+    return ("polars", "lazy")
+
+
+@dataclass
+class SessionData:
+    """Replaceable recording, graph and view state; owns no background workers."""
+
+    session_token: object = field(default_factory=object)
+    registry: DataRegistry = field(default_factory=DataRegistry)
+    backend: str = field(default_factory=lambda: default_data_settings()[0])
+    loading_mode: str = field(default_factory=lambda: default_data_settings()[1])
+    cache_dir: str | None = None
+    disk_cache: bool = False
+    rows: int = 1
+    cols: int = 1
+    row_ratios: list[float] = field(default_factory=lambda: [1.0])
+    col_ratios: list[float] = field(default_factory=lambda: [1.0])
+    cells: list[SubplotCell] = field(default_factory=lambda: [SubplotCell()])
+    link_x: bool = True
+    shared_x: tuple[float, float] | None = None
+    # Live time ranges, keyed by 1-based subplot number.
+    plot_x_ranges: dict[int, tuple[float, float]] = field(default_factory=dict)
+    max_points: int = 2000
+    downsampling_active: bool = False
+    fft: FftConfig = field(default_factory=FftConfig)
+    histogram: HistogramConfig = field(default_factory=HistogramConfig)
+    nodes: NodeGraph = field(default_factory=NodeGraph)
+    dragged_ref: SignalRef | None = None
+    dragged_log_path: str | None = None
+    focus_fft: bool = False
+    focus_histogram: bool = False
+    plot_views: dict = field(default_factory=dict)
+    next_view_id: int = 2
+
+
+@dataclass
+class RuntimeServices:
+    """Workers and pending IO owned by exactly one live AppState."""
+
+    # Several plot jobs run concurrently so one slow summary build does not block
+    # other subplots. Per-source summary locks and the shared cache are thread-safe.
+    display: Requests = field(
+        default_factory=lambda: Requests(workers=min(4, os.cpu_count() or 1))
+    )
+    validation_jobs: Requests = field(default_factory=lambda: Requests(workers=2))
+    analysis_jobs: Requests = field(default_factory=lambda: Requests())
+    completed_analysis: dict = field(default_factory=dict)
+    analysis_operations: dict = field(default_factory=dict)
+    analysis_displays: dict[str, Requests] = field(
+        default_factory=lambda: {name: Requests() for name in ("fft", "hist")}
+    )
+    executor: CancellableExecutor = field(default_factory=CancellableExecutor)
+    exports: list = field(default_factory=list)
+    pending: list[tuple[Future, str]] = field(default_factory=list)
+    large_csv_requests: list[LoadRequest] = field(default_factory=list)
+    axis_requests: list = field(default_factory=list)
+
+    def close(self) -> None:
+        self.validation_jobs.close()
+        self.display.close()
+        self.analysis_jobs.close()
+        for requests in self.analysis_displays.values():
+            requests.close()
+        self.executor.shutdown()
+        for future, _ in self.pending:
+            if request := getattr(future, "load_request", None):
+                request.completion.cancel()
+        for request in self.large_csv_requests:
+            request.completion.cancel()
+        for request, _, _ in self.axis_requests:
+            request.completion.cancel()
+        self.exports.clear()
+        self.pending.clear()
+        self.large_csv_requests.clear()
+        self.axis_requests.clear()
+
+
+class AppState(SessionData):
+    def __init__(self) -> None:
+        super().__init__()
+        self.services = RuntimeServices()
+        self.console = Console()
+        self.commands = CommandRegistry()
+
+    def replace_session(self, replacement: AppState) -> None:
+        """Transfer declared session data and services; retain console and commands.
+
+        The prepared replacement is consumed. Its shutdown becomes a no-op so it
+        cannot close workers or clear caches now owned by this application.
+        """
+        if replacement is self or replacement.services is None:
+            raise ValueError("Session replacement must be a live, distinct state")
+        self.console.extend_from(replacement.console)
+        self.shutdown()
+        for attribute in fields(SessionData):
+            setattr(self, attribute.name, getattr(replacement, attribute.name))
+        self.services = replacement.services
+        replacement.services = None
+        for view in self.plot_views.values():
+            view.console.parent = self.console
+
+    def create_plot_view(self):
+        from .plot_window import PlotWindowState
+
+        view = PlotWindowState(self, self.next_view_id)
+        self.plot_views[self.next_view_id] = view
+        self.next_view_id += 1
+        return view
+
+    # -- grid management ----------------------------------------------------
+    @property
+    def cell_count(self) -> int:
+        return self.rows * self.cols
+
+    def set_grid(self, rows: int, cols: int) -> None:
+        """Resize the grid, preserving the assignments of surviving cells."""
+        rows = bounded_int(rows, 1, 16, "Grid rows")
+        cols = bounded_int(cols, 1, 16, "Grid columns")
+        new_cells = [SubplotCell() for _ in range(rows * cols)]
+        for i in range(min(len(new_cells), len(self.cells))):
+            new_cells[i] = self.cells[i]
+        if rows != self.rows:
+            self.row_ratios = [1.0 / rows] * rows
+        if cols != self.cols:
+            self.col_ratios = [1.0 / cols] * cols
+        self.rows, self.cols, self.cells = rows, cols, new_cells
+        self.plot_x_ranges = {
+            i: limits
+            for i, limits in self.plot_x_ranges.items()
+            if 1 <= i <= len(new_cells)
+        }
+        for cfg in (self.fft, self.histogram):
+            if cfg.follow_plot > len(new_cells):
+                cfg.follow_plot = -1  # removed plot: use the full recording
+                cfg.compute_requested = bool(cfg.sources)
+
+    def set_grid_ratios(self, rows, cols) -> None:
+        """Validate and normalize splitter sizes before passing them to ImPlot."""
+
+        def normalized(values, count):
+            if not isinstance(values, (list, tuple)) or len(values) != count:
+                raise ValueError("Grid sizes must match the number of rows and columns")
+            values = [finite_float(v) for v in values]
+            if any(v <= 0 for v in values):
+                raise ValueError("Grid sizes must be positive")
+            # Scale first to avoid overflow while summing large valid weights.
+            largest = max(values)
+            scaled = [v / largest for v in values]
+            total = sum(scaled)
+            result = [v / total for v in scaled]
+            if min(result) < 1e-6:
+                raise ValueError("Grid sizes are too small to display")
+            return result
+
+        row_ratios = normalized(rows, self.rows)
+        col_ratios = normalized(cols, self.cols)
+        self.row_ratios, self.col_ratios = row_ratios, col_ratios
+
+    def validate_follow_plot(self, target: int) -> int:
+        if (
+            target > 0
+            and target <= self.cell_count
+            and self.plot_domain(self.cells[target - 1]) != "time"
+        ):
+            raise ValueError("Analysis cannot follow a frequency-domain plot")
+        if not -1 <= target <= self.cell_count:
+            raise ValueError(
+                f"Analysis window must be custom, full, or plot_1..plot_{self.cell_count}"
+            )
+        return target
+
+    def plot_domain(self, cell):
+        refs = cell.active_refs
+        domains = {
+            run.axis_domain
+            for ref in refs
+            if (run := self.registry.get(ref[0])) is not None
+        }
+        if len(domains) > 1:
+            raise ValueError("Cannot combine time and frequency axes in one plot")
+        return next(iter(domains), "time")
+
+    def is_time_plot(self, cell):
+        return cell.plot_type is not PlotType.XY and self.plot_domain(cell) == "time"
+
+    def plot_time_range(self, plot_n: int):
+        """Effective X window; only time-domain plots use the linked range."""
+        cell = self.cells[plot_n - 1]
+        if cell.plot_type is PlotType.XY:
+            return None
+        if self.link_x and self.is_time_plot(cell) and self.shared_x is not None:
+            return self.shared_x
+        return cell.pending_x_lim or self.plot_x_ranges.get(plot_n) or cell.x_lim
+
+    def set_link_x(self, enabled: bool) -> None:
+        self.link_x = enabled
+        if enabled:
+            window = self.shared_x
+            if window is None:
+                window = next(
+                    (
+                        cell.pending_x_lim or cell.x_lim
+                        for cell in self.cells
+                        if self.is_time_plot(cell)
+                        and (cell.pending_x_lim or cell.x_lim)
+                    ),
+                    None,
+                )
+            if window is not None:
+                for index, cell in enumerate(self.cells, 1):
+                    if self.is_time_plot(cell):
+                        self.set_plot_x_limits(index, *window)
+                        break
+
+    def set_plot_x_limits(self, plot_n: int, lo: float, hi: float) -> None:
+        cell = self.cells[plot_n - 1]
+        cell.set_limits("x", lo, hi)
+        if self.is_time_plot(cell):
+            self.plot_x_ranges[plot_n] = cell.pending_x_lim
+            if self.link_x:
+                self.shared_x = cell.pending_x_lim
+                # Explicit commands must also move the last hovered driver,
+                # whose axis is otherwise left free for interactive panning.
+                for index, linked in enumerate(self.cells, 1):
+                    if self.is_time_plot(linked):
+                        linked.set_limits("x", lo, hi)
+                        self.plot_x_ranges[index] = linked.pending_x_lim
+
+    def reset_plot_view(self, plot_n: int) -> None:
+        cell = self.cells[plot_n - 1]
+        cell.pending_x_lim = cell.pending_y_lim = cell.pending_y2_lim = None
+        cell.x_lim = cell.y_lim = cell.y2_lim = None
+        cell.fit_pending = True
+        if cell.plot_type is PlotType.XY:
+            return
+        self.plot_x_ranges.pop(plot_n, None)
+        fit_cells = (
+            [linked for linked in self.cells if self.is_time_plot(linked)]
+            if self.link_x and self.is_time_plot(cell)
+            else [cell]
+        )
+        runs = [
+            self.registry.get(ref[0]) for linked in fit_cells for ref in linked.signals
+        ]
+        runs = [run for run in runs if run is not None and run.active and run.n_rows]
+        if runs:
+            lo = min(float(run.time[0]) for run in runs)
+            hi = max(float(run.time[-1]) for run in runs)
+            if hi > lo:
+                self.set_plot_x_limits(plot_n, lo, hi)
+
+    # -- file loading (asynchronous) --------------------------------------
+    def request_load(
+        self,
+        path: str,
+        loading_mode: str | None = None,
+        *,
+        axis_column=None,
+        axis_domain=None,
+    ) -> Future:
+        """Return completion after registration, including any GUI prompts."""
+        mode = self.loading_mode if loading_mode is None else loading_mode
+        if mode not in {"memory", "lazy"}:
+            raise ValueError(f"Unknown loading mode: {mode}")
+        backend = self.backend
+        from .loader import validate_backend
+
+        validate_backend(backend)
+        path = os.path.abspath(path)
+        request = LoadRequest(
+            path, mode, backend, self.disk_cache, axis_column, axis_domain
+        )
+        if path.lower().endswith(".csv"):
+            try:
+                if os.path.getsize(path) > LARGE_CSV_BYTES:
+                    self.services.large_csv_requests.append(request)
+                    return request.completion
+            except OSError:
+                pass  # The normal loader reports missing or unreadable files.
+        self._submit_load(request)
+        return request.completion
+
+    def resolve_large_csv(self, choice: str) -> None:
+        """Resolve the oldest GUI prompt using the settings captured at selection."""
+        if choice not in {"csv", "convert", "existing", "cancel"}:
+            raise ValueError(f"Unknown large CSV action: {choice}")
+        request = self.services.large_csv_requests.pop(0)
+        if choice == "cancel":
+            request.completion.cancel()
+            return
+        if choice == "csv":
+            # Explicitly opening CSV bypasses automatic cached conversion.
+            self._submit_load(replace(request, disk_cache=False))
+            return
+        destination = os.path.splitext(request.path)[0] + ".parquet"
+        target = replace(request, path=destination)
+        self._submit_load(
+            target, convert_from=request.path if choice == "convert" else None
+        )
+
+    def resolve_axis(self, column=None, domain=None):
+        request, _, convert_from = self.services.axis_requests.pop(0)
+        if column is not None:
+            self._submit_load(
+                replace(request, axis_column=column, axis_domain=domain), convert_from
+            )
+        else:
+            request.completion.cancel()
+
+    def _submit_load(self, request: LoadRequest, convert_from=None) -> None:
+        if request.completion.cancelled():
+            return
+        path = request.path
+        settings = (
+            ("backend", request.backend, self.backend),
+            ("loading_mode", request.mode, self.loading_mode),
+            ("disk_cache", request.disk_cache, self.disk_cache),
+        )
+        for name, selected, current in settings:
+            if selected != current:
+                self.commands.echo(self, name, [selected])
+        if convert_from:
+            self.commands.echo(self, "convert", [convert_from, path])
+        self.commands.echo(self, "load", [path])
+        for name, selected, current in settings:
+            if selected != current:
+                self.commands.echo(self, name, [current])
+        self.console.info(
+            f"{'Converting and loading' if convert_from else 'Loading'} {os.path.basename(path)} ..."
+        )
+        if convert_from:
+            future = self.services.executor.submit(
+                self._convert_and_open, convert_from, request
+            )
+        else:
+            future = self.services.executor.submit(
+                partial(
+                    self._open_background,
+                    axis_column=request.axis_column,
+                    axis_domain=request.axis_domain,
+                )
+                if request.axis_column is not None or request.axis_domain is not None
+                else self._open_background,
+                path,
+                request.mode,
+                request.backend,
+                request.disk_cache,
+            )
+        future.load_request = request
+        future.convert_from = convert_from
+        self.services.pending.append((future, path))
+
+    def _convert_and_open(self, source: str, request: LoadRequest, cancel=None):
+        from .loader import convert_csv_to_parquet
+
+        convert_csv_to_parquet(
+            source,
+            request.path,
+            backend=request.backend,
+            cancel=cancel,
+            axis_column=request.axis_column,
+            axis_domain=request.axis_domain,
+        )
+        return self._open_background(
+            request.path,
+            request.mode,
+            request.backend,
+            request.disk_cache,
+            cancel=cancel,
+        )
+
+    def load_sync(
+        self, path: str, *, cancel=None, axis_column=None, axis_domain=None
+    ) -> Run | None:
+        """Load a file on the calling thread and report it.
+
+        Used by the ``load`` command and by session restore/replay so that any
+        commands that follow (``add_signal`` ...) can immediately resolve the
+        run. Errors are logged and return ``None``; command handlers convert that
+        result into a command failure.
+        """
+        from .sources import Cancelled, check
+
+        check(cancel)
+        path = os.path.abspath(path)
+        self.console.info(f"Loading {os.path.basename(path)} ...")
+        try:
+            run = open_file(
+                path,
+                self.loading_mode,
+                self.registry.cache,
+                self.cache_dir,
+                backend=self.backend,
+                disk_cache=self.disk_cache,
+                cancel=cancel,
+                axis_column=axis_column,
+                axis_domain=axis_domain,
+            ).register(self.registry)
+        except Cancelled:
+            raise
+        except Exception as exc:  # noqa: BLE001 - surfaced to the console
+            self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
+            return None
+        self._report_loaded(run)
+        return run
+
+    def add_run_from_arrays(
+        self,
+        label: str,
+        path: str,
+        time: np.ndarray,
+        signals: dict,
+        units: dict,
+    ) -> Run:
+        """Register a run from NumPy arrays that have no backing file."""
+        import numpy as np
+
+        from .loader import validate_time_axis
+
+        time = np.ascontiguousarray(time, dtype=np.float64)
+        validate_time_axis(time, path)  # same monotonic contract as the native loaders
+        run = self.registry.add_run(label, path, time, signals, units)
+        self._report_loaded(run)
+        return run
+
+    def upsert_derived_run(self, label, time, signal_y, unit="", *, run_id=None):
+        return self.registry.upsert_derived_run(
+            label, time, signal_y, unit, run_id=run_id
+        )
+
+    def derived_domain_changed(self, run_id):
+        """Detach views whose independent axis no longer matches this output."""
+        for index, cell in enumerate(self.cells, 1):
+            if any(ref[0] == run_id for ref in cell.signals):
+                cell.signals = [ref for ref in cell.signals if ref[0] != run_id]
+                cell.y2_signals = [ref for ref in cell.y2_signals if ref[0] != run_id]
+                cell.x_lim = cell.pending_x_lim = None
+                self.plot_x_ranges.pop(index, None)
+            if cell.xy_source and cell.xy_source[0] == run_id:
+                cell.xy_source = None
+        for cfg in (self.fft, self.histogram):
+            cfg.sources = [ref for ref in cfg.sources if ref[0] != run_id]
+
+    def remove_run(self, run_id: int) -> None:
+        """Remove a run and drop any plot assignments that referenced it."""
+        run = self.registry.get(run_id)
+        if run is None:
+            return
+        # Detach any node that materialized this run so a later eval re-creates it.
+        for node in self.nodes.nodes.values():
+            if node.out_run_id == run_id:
+                node.out_run_id = None
+                node.eval_key = None
+        for cell in self.cells:
+            for ref in list(cell.signals):
+                if ref[0] == run_id:
+                    cell.remove(ref)
+            if cell.xy_source is not None and cell.xy_source[0] == run_id:
+                cell.xy_source = None
+        for slot, cfg in (("fft", self.fft), ("hist", self.histogram)):
+            remaining = [ref for ref in cfg.sources if ref[0] != run_id]
+            if remaining != cfg.sources:
+                cfg.sources = remaining
+                self.services.analysis_jobs.forget(slot)
+                cfg.compute_requested = bool(remaining)
+        self.registry.remove_run(run_id)
+        self.console.info(f"Removed run {run.label}")
+
+    def _report_loaded(self, run: Run) -> None:
+        self.console.ok(
+            f"Loaded {run.label}: {run.n_rows:,} rows, "
+            f"{len(run.signals)} signals, {run.duration:.3f} {'Hz' if run.axis_domain == 'frequency' else 's'} span"
+        )
+        if run.skipped_columns:
+            self.console.info(
+                f"Skipped non-numeric columns in {run.label}: {', '.join(run.skipped_columns)}"
+            )
+
+    def poll_pending_loads(self) -> None:
+        """Finalise completed background loads; call once per frame.
+
+        The worker only *parsed*; the registry mutation (``register``) happens here on
+        the main thread, so the UI never reads a registry mid-write.
+        """
+        from .axis import AxisSelectionRequired
+        from .exports import poll
+
+        poll(self)
+        self.services.axis_requests[:] = [
+            item
+            for item in self.services.axis_requests
+            if not item[0].completion.cancelled()
+        ]
+        self.services.large_csv_requests[:] = [
+            request
+            for request in self.services.large_csv_requests
+            if not request.completion.cancelled()
+        ]
+        still_pending: list[tuple[Future[ParsedRun], str]] = []
+        for future, path in self.services.pending:
+            request = getattr(future, "load_request", None)
+            completion = request.completion if request is not None else None
+            if completion is not None and completion.cancelled():
+                future.cancel()
+                continue
+            if not future.done():
+                still_pending.append((future, path))
+                continue
+            try:
+                parsed = future.result()
+                run = parsed.register(self.registry)
+            except AxisSelectionRequired as exc:
+                self.services.axis_requests.append(
+                    (future.load_request, exc.columns, future.convert_from)
+                )
+                continue
+            except Exception as exc:  # noqa: BLE001 - surfaced to the console
+                self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
+                if completion is not None:
+                    completion.set_exception(exc)
+                continue
+            self._report_loaded(run)
+            if completion is not None:
+                completion.set_result(run)
+        self.services.pending = still_pending
+
+    @property
+    def is_loading(self) -> bool:
+        return bool(
+            self.services.pending
+            or self.services.axis_requests
+            or self.services.large_csv_requests
+        )
+
+    def resolve_x_window(
+        self, follow_plot: int, custom: tuple[float, float], signals: list[SignalRef]
+    ) -> tuple[float, float]:
+        """Resolve an FFT/analysis time window.
+
+        ``follow_plot``: ``0`` uses the explicit ``custom`` ``(min, max)``; ``-1``
+        (*Full*) covers all selected recordings; ``>= 1`` follows that
+        subplot's live X range (falling back to the full record if that plot has
+        no range yet).
+        """
+        if any(
+            run.axis_domain != "time"
+            for run_id, _ in signals
+            if (run := self.registry.get(run_id)) is not None
+        ):
+            raise ValueError("Analysis windows require a time-domain recording")
+        if follow_plot == 0:  # Custom
+            return custom
+
+        if follow_plot >= 1 and self.is_time_plot(self.cells[follow_plot - 1]):
+            rng = self.plot_time_range(follow_plot)
+            if (
+                rng is not None
+                and math.isfinite(rng[0])
+                and math.isfinite(rng[1])
+                and rng[1] > rng[0]
+            ):
+                return rng
+
+        # A shared extent includes every selected recording, independent of order.
+        runs = [self.registry.get(run_id) for run_id, _ in signals]
+        runs = [run for run in runs if run is not None and run.n_rows]
+        if runs:
+            return min(float(run.time[0]) for run in runs), max(
+                float(run.time[-1]) for run in runs
+            )
+        return custom
+
+    # -- signal assignment helpers -----------------------------------------
+    def signal_label(self, ref: SignalRef) -> str:
+        run = self.registry.get(ref[0])
+        if run is None:
+            return ref[1]
+        return f"{ref[1]} @ {run.label} [run_{run.id}]"
+
+    def _open_background(
+        self,
+        path,
+        mode,
+        backend,
+        disk_cache,
+        cancel=None,
+        *,
+        axis_column=None,
+        axis_domain=None,
+    ):
+        return open_file(
+            path,
+            mode,
+            self.registry.cache,
+            self.cache_dir,
+            backend=backend,
+            disk_cache=disk_cache,
+            cancel=cancel,
+            axis_column=axis_column,
+            axis_domain=axis_domain,
+        )
+
+    def shutdown(self) -> None:
+        if self.services is not None:
+            for view in self.plot_views.values():
+                view.shutdown()
+            self.services.close()
+            self.registry.cache.clear()
+            self.services = None

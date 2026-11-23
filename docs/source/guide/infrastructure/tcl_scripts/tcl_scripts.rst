@@ -123,26 +123,36 @@ Usage:
 Command-line workspace operations
 ---------------------------------
 
-``vitis_headless.tcl`` is the shared XSCT entry point for workspace generation,
-building, and JTAG programming. The Makefile and Windows batch wrappers in
-``vitis/`` delegate to it. It resolves the workspace relative to its own location, so callers
-can use an absolute script path from any working directory.
+``vitis_headless.tcl`` is the shared XSCT entry point for workspace generation, building, and JTAG programming.
+The Makefile and Windows batch wrappers in ``vitis/`` delegate to it.
+It resolves the workspace relative to its own location, so callers can use an absolute script path from any working directory.
 
 With Vitis 2022.2's ``xsct`` on ``PATH``, run from the repository root:
 
+On Linux (GUI opening requires an existing desktop display):
+
 .. code-block:: text
 
-   xsct -nodisp tcl_scripts/vitis_headless.tcl generate
-   xsct -nodisp tcl_scripts/vitis_headless.tcl build
-   xsct -nodisp tcl_scripts/vitis_headless.tcl flash Run_UltraZohm
-   xsct -nodisp tcl_scripts/vitis_headless.tcl open
+   xsct -norlwrap tcl_scripts/vitis_headless.tcl generate
+   xsct -norlwrap tcl_scripts/vitis_headless.tcl build
+   xsct -norlwrap tcl_scripts/vitis_headless.tcl flash Run_UltraZohm
+   xsct -norlwrap -nodisp tcl_scripts/vitis_headless.tcl open
 
-On Windows, use ``xsct.bat`` if required by the command shell. No Bash or Make
-installation is needed for direct XSCT invocation. Native Windows build and
-hardware programming still require validation.
+On native Windows:
 
-Windows convenience wrappers are also available. From the repository root in
-Command Prompt:
+.. code-block:: bat
+
+   xsct.bat tcl_scripts/vitis_headless.tcl generate
+   xsct.bat tcl_scripts/vitis_headless.tcl build
+   xsct.bat tcl_scripts/vitis_headless.tcl flash Run_UltraZohm
+   xsct.bat tcl_scripts/vitis_headless.tcl open
+
+On Windows, use ``xsct.bat`` if required by the command shell.
+No Bash or Make installation is needed for direct XSCT invocation.
+Native Windows build and hardware programming still require validation.
+
+Windows convenience wrappers are also available.
+From the repository root in Command Prompt:
 
 .. code-block:: bat
 
@@ -151,26 +161,23 @@ Command Prompt:
    vitis\build_and_flash.bat
 
 The first creates/builds an empty workspace and opens Vitis (``generate-open``).
-The second opens an existing workspace. The third incrementally builds, then
-programs and runs over JTAG (``flash``), defaulting to ``Run_UltraZohm``; this
-profile can also be passed explicitly. Close Vitis before building/flashing.
-The wrappers locate the Tcl script relative to themselves, forward its exit
-status, and require ``xsct.bat`` on ``PATH``. Set the ``XSCT`` environment
-variable to an alternative launcher path if needed. In PowerShell, prefix the
-commands with ``.\``.
+The second opens an existing workspace.
+The third incrementally builds, then programs and runs over JTAG (``flash``), defaulting to ``Run_UltraZohm``; this profile can also be passed explicitly.
+Close Vitis before building/flashing.
+The wrappers locate the Tcl script relative to themselves, forward its exit status, and require ``xsct.bat`` on ``PATH``.
+Set the ``XSCT`` environment variable to an alternative launcher path if needed.
+In PowerShell, prefix the commands with ``.\``.
 
-``generate`` creates and builds an empty workspace; only the placeholder file
-``create_Vitis_workspace_here.txt`` may already exist. ``generate-open`` also
-starts the GUI after successful generation. ``open`` launches the GUI for an
-existing workspace. Both GUI actions require ``vitis`` on ``PATH`` and return
-after launching it.
+``generate`` creates and builds an empty workspace; only the placeholder file ``create_Vitis_workspace_here.txt`` may already exist.
+``generate-open`` also starts the GUI after successful generation.
+``open`` launches the GUI for an existing workspace.
+Both GUI actions require ``vitis`` on ``PATH`` and return after launching it.
 
-``flash`` (also accepted as ``run``) incrementally builds first, then programs
-and runs through JTAG using the existing ``Run_UltraZohm`` profile. It does not
-write persistent flash storage. Debug profiles require the Vitis GUI. Build or
-programming failures return a nonzero status. Programming requires the vendor
-environment (including ``XILINX_VITIS``), JTAG drivers, and a local hardware
-server at ``127.0.0.1:3121``.
+``flash`` (also accepted as ``run``) incrementally builds first, then programs and runs through JTAG using the existing ``Run_UltraZohm`` profile.
+It does not write persistent flash storage.
+Debug profiles require the Vitis GUI.
+Build or programming failures return a nonzero status.
+Programming requires the vendor environment (including ``XILINX_VITIS``), JTAG drivers, and a local hardware server at ``127.0.0.1:3121``.
 
 Ubuntu users can use the convenience Makefile:
 
@@ -192,3 +199,26 @@ This deletes all workspace contents, including hidden metadata and build outputs
 except ``create_Vitis_workspace_here.txt``. Then run ``make -C vitis generate-open``.
 Close Vitis before modifying the workspace and do not run separate workspace
 operations concurrently.
+
+Linux firmware display requirements
+-----------------------------------
+
+Batch firmware operations require xlsclients and, without a usable display,
+Xvfb on the machine running XSCT. On Debian/Ubuntu install x11-utils and xvfb;
+dbus-x11 provides the optional dbus-launch helper. Acquisition alone does not
+need these tools. Native Windows needs no X11 packages or Linux launcher flags.
+An attached laptop needs none of these firmware-host dependencies.
+
+Use ``xsct -norlwrap`` for direct Linux batch execution. For GUI actions
+through the Tcl entry point, use ``xsct -norlwrap -nodisp`` with an existing
+desktop display. The CLI selects these flags automatically. The Linux Make
+targets use the checked XSCT wrapper for batch actions and the native Vitis
+launcher for the GUI. A temporary batch display cannot host a persistent
+Vitis GUI.
+
+Start the service normally over SSH after installing the dependencies; no
+xvfb-run wrapper is necessary. Rebuild the checkout CLI and restart its service
+to pick up launcher changes. Failed generation can leave a partial workspace:
+preserve it before retrying in an empty workspace. Inspect the job output and
+timestamp-matching vitis/workspace/IDE.log; Channel closed alone does not
+identify its cause.

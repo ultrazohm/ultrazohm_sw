@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools==84.2.1", "wheel==0.48.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ultrazohm-dataviewer"
+version = "0.1.0"
+description = "UltraZohm log data viewer built with Dear ImGui (imgui_bundle / ImPlot)"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "BSD-3-Clause" }
+authors = [{ name = "UltraZohm" }]
+# Versions validated by the lockfile and frozen builds.
+dependencies = [
+    "imgui-bundle==1.93.0",
+    "numpy==2.5.4",
+    "pandas==3.1.0",
+    "pyarrow==26.0.0",
+    "polars==2.0.0",
+    # Window file drag-drop (GLFW backend); a no-op if absent.
+    "glfw==2.11.0",
+    # Release builds stamp this to the shared release version.
+    "ultrazohm-cli==0.1.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "pyinstaller>=6.0", "ruff==0.17.2"]
+
+[project.scripts]
+ultrazohm-dataviewer = "ultrazohm_dataviewer.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+ultrazohm_dataviewer = ["assets/*.svg", "assets/app_settings/*.png", "assets/app_settings/*.ico"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+required-version = "==0.17.2"
+target-version = "py312"
+line-length = 88
+extend-exclude = ["target", "dist", "dist-wheels"]
+
+[tool.ruff.lint]
+select = ["F", "E4", "E7", "E9", "I", "B", "UP", "C4"]
+
+# Developer resolution uses the checkout; published wheel metadata retains
+# the exact version dependency and never includes this local source path.
+[tool.uv.sources]
+ultrazohm-cli = { path = "../ultrazohm_cli" }

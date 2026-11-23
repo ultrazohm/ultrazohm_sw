@@ -6,8 +6,8 @@
 import pathlib
 import sys
 
-# uz_dataviewer library API (uz_dataviewer.api does not import the GUI stack)
-sys.path.insert(0, str(pathlib.Path(__file__).parents[2] / "uz_dataviewer" / "src"))
+# ultrazohm_dataviewer library API (ultrazohm_dataviewer.api does not import the GUI stack)
+sys.path.insert(0, str(pathlib.Path(__file__).parents[2] / "ultrazohm_dataviewer" / "src"))
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -110,7 +110,7 @@ nitpick_ignore = [
     ("c:identifier", "uintptr_t"),
     ("c:identifier", "bool"),
     ("py:class", "numpy.ndarray"),
-    ("py:class", "uz_dataviewer.analysis.FftResult"),
+    ("py:class", "ultrazohm_dataviewer.analysis.FftResult"),
 ]
 
 tikz_latex_preamble = r"\newcommand\Foo[1]{Z}" # https://github.com/sphinx-contrib/tikz/issues/19

@@ -1,0 +1,75 @@
+Method,Group,Description,Signature
+backend,Data / runs,"IO backend for subsequent opens, exports and CSV conversion: pyarrow or polars (desktop only).",``viewer.backend(name: 'str')``
+cache_budget,Data / runs,Shared timestamp/summary RAM cache budget in MiB.,``viewer.cache_budget(mib: 'int')``
+clear_session,Data / runs,Clear session,``viewer.clear_session()``
+convert,Data / runs,Stream-convert CSV to Parquet using the selected backend; dst defaults to src with a .parquet extension. Existing destinations and empty inputs are rejected.,"``viewer.convert(src: 'str', dst: 'str | None' = None, *, axis_column: 'str | None' = None, axis_domain: 'str | None' = None)``"
+disk_cache,Data / runs,"Persist indexes, summaries and CSV conversions for subsequent opens (default: false).",``viewer.disk_cache(on: 'bool')``
+list_runs,Data / runs,List runs,``viewer.list_runs()``
+load,Data / runs,Load,"``viewer.load(path: str, start: float | None = None, *, axis_column: str | None = None, axis_domain: str | None = None)``"
+loading_mode,Data / runs,Storage policy for subsequent opens: memory or lazy.,``viewer.loading_mode(mode: 'str')``
+normalize_time,Data / runs,Shift a run so its first sample sits at start (default 0).,"``viewer.normalize_time(run: 'RunHandle', start: 'float | None' = None)``"
+remove_run,Data / runs,Remove a loaded run and its plots.,``viewer.remove_run(run: 'RunHandle')``
+reset_time,Data / runs,Restore a run's original (un-normalised) timestamps.,``viewer.reset_time(run: 'RunHandle')``
+set_active,Data / runs,Show/hide a run without removing it.,"``viewer.set_active(run: 'RunHandle', on: 'bool')``"
+close_view,Layout,Close view,``viewer.close_view(handle: ultrazohm_dataviewer.client.ViewHandle)``
+create_view,Layout,Create view,``viewer.create_view()``
+link_x,Layout,Link x,"``viewer.link_x(enabled: bool, *, view: ultrazohm_dataviewer.client.ViewHandle | None = None)``"
+list_plots,Layout,List plots,"``viewer.list_plots(*, view: ultrazohm_dataviewer.client.ViewHandle | None = None)``"
+list_views,Layout,List views,``viewer.list_views()``
+set_grid,Layout,Set grid,"``viewer.set_grid(rows: int, cols: int, *, view: ultrazohm_dataviewer.client.ViewHandle | None = None)``"
+set_max_points,Layout,Max points drawn per signal (downsample budget).,"``viewer.set_max_points(n: 'int', *, view: 'ViewHandle | None' = None)``"
+add_signal,Signals,Add signal,"``viewer.add_signal(plot: int, run: ultrazohm_dataviewer.client.RunHandle, signal: str, *, view: ultrazohm_dataviewer.client.ViewHandle | None = None)``"
+clear_plot,Signals,Remove all signals from a subplot.,"``viewer.clear_plot(plot: 'int', *, view: 'ViewHandle | None' = None)``"
+remove_signal,Signals,Remove a signal from a subplot.,"``viewer.remove_signal(plot: 'int', run: 'RunHandle', signal: 'str', *, view: 'ViewHandle | None' = None)``"
+set_axis,Signals,Assign a signal to the left or right Y axis of a subplot.,"``viewer.set_axis(plot: 'int', run: 'RunHandle', signal: 'str', side: 'str', *, view: 'ViewHandle | None' = None)``"
+set_plot_type,Signals,Set a subplot's type (line/scatter/stairs/xy).,"``viewer.set_plot_type(plot: 'int', type: 'str', *, view: 'ViewHandle | None' = None)``"
+set_xy,Signals,Use a signal as the X axis (XY plot) for a subplot.,"``viewer.set_xy(plot: 'int', run: 'RunHandle', signal: 'str', *, view: 'ViewHandle | None' = None)``"
+set_xy_style,Signals,"Set the XY plot draw style: Line, Markers, or Both.","``viewer.set_xy_style(plot: 'int', style: 'str', *, view: 'ViewHandle | None' = None)``"
+reset_view,View,Auto-fit a subplot to its data extent.,"``viewer.reset_view(plot: 'int', *, view: 'ViewHandle | None' = None)``"
+set_x_lim,View,Set a subplot's X-axis limits.,"``viewer.set_x_lim(plot: 'int', min: 'float', max: 'float', *, view: 'ViewHandle | None' = None)``"
+set_y_lim,View,Set a subplot's Y-axis limits.,"``viewer.set_y_lim(plot: 'int', min: 'float', max: 'float', *, view: 'ViewHandle | None' = None)``"
+cursors,Tools,Toggle two measurement cursors (Δx / frequency readout) on a subplot.,"``viewer.cursors(plot: 'int', on: 'bool', *, view: 'ViewHandle | None' = None)``"
+export_data,Tools,Export a subplot's signals to CSV (relative=true zeroes the start time).,"``viewer.export_data(plot: 'int', path: 'str', relative: 'bool | None' = None, *, view: 'ViewHandle | None' = None)``"
+set_cursors,Tools,Place the two cursors at x1 and x2 (enables cursors).,"``viewer.set_cursors(plot: 'int', x1: 'float', x2: 'float', *, view: 'ViewHandle | None' = None)``"
+set_export_relative,Tools,Toggle 'start time at 0' for a subplot's CSV export.,"``viewer.set_export_relative(plot: 'int', on: 'bool', *, view: 'ViewHandle | None' = None)``"
+set_spy_rect,Tools,Position the spy rectangle (enables spy).,"``viewer.set_spy_rect(plot: 'int', xmin: 'float', ymin: 'float', xmax: 'float', ymax: 'float', *, view: 'ViewHandle | None' = None)``"
+show_samples,Tools,Toggle per-sample markers on a subplot.,"``viewer.show_samples(plot: 'int', on: 'bool', *, view: 'ViewHandle | None' = None)``"
+spy,Tools,Toggle the spy (drag-rect zoom inset) on a subplot.,"``viewer.spy(plot: 'int', on: 'bool', *, view: 'ViewHandle | None' = None)``"
+fft,FFT window,Recompute and focus the FFT window.,``viewer.fft()``
+fft_clear,FFT window,Remove all signals from the FFT window.,``viewer.fft_clear()``
+fft_export,FFT window,Export the FFT spectra to CSV.,``viewer.fft_export(path: 'str')``
+fft_follow,FFT window,Set the FFT time window source (custom / full / plot_N).,``viewer.fft_follow(target: 'str | int')``
+fft_hann,FFT window,Toggle the FFT Hann window.,``viewer.fft_hann(on: 'bool')``
+fft_logx,FFT window,Toggle the FFT log X axis.,``viewer.fft_logx(on: 'bool')``
+fft_logy,FFT window,Toggle the FFT log Y axis.,``viewer.fft_logy(on: 'bool')``
+fft_range,FFT window,Set the FFT custom time window.,"``viewer.fft_range(min: 'float', max: 'float')``"
+fft_remove,FFT window,Remove a signal from the FFT window.,"``viewer.fft_remove(run: 'RunHandle', signal: 'str')``"
+fft_remove_dc,FFT window,Toggle FFT DC removal.,``viewer.fft_remove_dc(on: 'bool')``
+fft_source,FFT window,Add a signal to the FFT window (it can show several at once).,"``viewer.fft_source(run: 'RunHandle', signal: 'str')``"
+fft_xlim,FFT window,Set the FFT plot's X-axis view limits.,"``viewer.fft_xlim(min: 'float', max: 'float')``"
+hist_bins,Histogram window,Set the Histogram bin count (1..100000).,``viewer.hist_bins(n: 'int')``
+hist_clear,Histogram window,Remove all signals from the Histogram window.,``viewer.hist_clear()``
+hist_export,Histogram window,Export the histogram bins to CSV.,``viewer.hist_export(path: 'str')``
+hist_follow,Histogram window,Set the Histogram time window source (custom / full / plot_N).,``viewer.hist_follow(target: 'str | int')``
+hist_range,Histogram window,Set the Histogram custom time window.,"``viewer.hist_range(min: 'float', max: 'float')``"
+hist_remove,Histogram window,Remove a signal from the Histogram window.,"``viewer.hist_remove(run: 'RunHandle', signal: 'str')``"
+hist_source,Histogram window,Add a signal to the Histogram window (it can show several at once).,"``viewer.hist_source(run: 'RunHandle', signal: 'str')``"
+hist_xlim,Histogram window,Set the Histogram plot's X-axis view limits.,"``viewer.hist_xlim(min: 'float', max: 'float')``"
+histogram,Histogram window,Recompute and focus the Histogram window.,``viewer.histogram()``
+list_nodes,Nodes,List nodes,``viewer.list_nodes()``
+load_plugins,Nodes,Load external node plugins from a directory (or the configured defaults).,``viewer.load_plugins(dir: 'str | None' = None)``
+node_add,Nodes,"Add a transform node (fft, math, filter, shift, or an installed plugin kind).",``viewer.node_add(kind: 'str')``
+node_eval,Nodes,"Evaluate the graph (or one node + its inputs), materializing derived signals.",``viewer.node_eval(node: 'NodeHandle | None' = None)``
+node_link,Nodes,Connect to a zero-based input slot (default: first free slot).,"``viewer.node_link(src: 'NodeHandle', dst: 'NodeHandle', slot: 'int | None' = None)``"
+node_output,Nodes,Node output,``viewer.node_output(node: ultrazohm_dataviewer.client.NodeHandle)``
+node_pos,Nodes,Set a node's canvas position.,"``viewer.node_pos(node: 'NodeHandle', x: 'float', y: 'float')``"
+node_remove,Nodes,"Remove a node (and its derived run, if any).",``viewer.node_remove(node: 'NodeHandle')``
+node_rename,Nodes,Rename a node (its derived run takes the new name).,"``viewer.node_rename(node: 'NodeHandle', name: 'str')``"
+node_set,Nodes,"Set a transform node parameter (e.g. node_set(node_2, cutoff, 1000)).","``viewer.node_set(node: 'NodeHandle', key: 'str', value: 'str')``"
+node_source,Nodes,Add a source node wrapping a loaded signal (the graph's input).,"``viewer.node_source(run: 'RunHandle', signal: 'str')``"
+node_unlink,Nodes,Disconnect a node link at a zero-based slot (default: all matching slots).,"``viewer.node_unlink(src: 'NodeHandle', dst: 'NodeHandle', slot: 'int | None' = None)``"
+get_settings,Session,"Return saved application defaults, independent of the current session.",``viewer.get_settings()``
+load_session,Session,Load session,``viewer.load_session(path: str)``
+save_session,Session,Save session,``viewer.save_session(path: str)``
+set_setting,Session,Set an application default; booleans and numbers also accept JSON text.,"``viewer.set_setting(name: str, value: str)``"
+status,Session,Status,``viewer.status()``

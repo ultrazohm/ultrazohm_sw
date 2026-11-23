@@ -1,0 +1,1146 @@
+"""Application operation specifications shared by GUI, console and RPC adapters."""
+
+from __future__ import annotations
+
+import json
+import re
+from collections.abc import Callable
+from dataclasses import dataclass
+from typing import TYPE_CHECKING
+
+from .validation import finite_float
+
+if TYPE_CHECKING:  # pragma: no cover - typing only
+    from .state import AppState
+
+
+class CommandError(Exception):
+    """Raised when a command cannot be parsed, resolved or executed."""
+
+
+# -- model --------------------------------------------------------------------
+@dataclass
+class Param:
+    name: str
+    kind: str  # 'int' | 'float' | 'bool' | 'str' | 'plot' | 'run'
+    optional: bool = False
+
+    def display(self) -> str:
+        return f"[{self.name}]" if self.optional else self.name
+
+
+@dataclass
+class Command:
+    name: str
+    params: list[Param]
+    handler: Callable[[AppState, list], str | None]
+    help: str = ""
+
+    def signature(self) -> str:
+        return f"{self.name}({', '.join(p.display() for p in self.params)})"
+
+    def bind(self, arguments):
+        """Bind named API arguments using the same specification as local calls."""
+        unknown = set(arguments) - {parameter.name for parameter in self.params}
+        if unknown:
+            raise CommandError(
+                f"Unexpected arguments for {self.name}: {', '.join(sorted(unknown))}"
+            )
+        missing = [
+            p.name for p in self.params if not p.optional and p.name not in arguments
+        ]
+        if missing:
+            raise CommandError(
+                f"Missing arguments for {self.name}: {', '.join(missing)}"
+            )
+        return [arguments.get(p.name) for p in self.params]
+
+
+Handler = Callable[["AppState", list], "str | None"]
+
+
+_BARE_STR_RE = re.compile(r"^[\w./+\-:]+$")
+
+
+# -- coercion -----------------------------------------------------------------
+def _parse_bool(raw) -> bool:
+    from .validation import parse_bool
+
+    try:
+        return parse_bool(raw)
+    except ValueError as exc:
+        raise CommandError(str(exc)) from exc
+
+
+def _parse_fwindow(raw) -> int:
+    """Analysis time-source: ``custom`` -> 0, ``full`` -> -1, ``plot_N`` -> N."""
+    if isinstance(raw, int):
+        return raw
+    s = str(raw).strip().lower()
+    if s == "custom":
+        return 0
+    if s == "full":
+        return -1
+    if s.startswith("plot_"):
+        s = s[len("plot_") :]
+    try:
+        return int(s)
+    except ValueError as exc:  # noqa: TRY003
+        raise CommandError(f"Expected custom/full/plot_N, got {raw!r}") from exc
+
+
+def _plot_number(raw) -> int:
+    if isinstance(raw, int):
+        return raw
+    s = str(raw).strip()
+    if s.startswith("plot_"):
+        s = s[len("plot_") :]
+    try:
+        return int(s)
+    except ValueError as exc:  # noqa: TRY003
+        raise CommandError(f"Expected a plot reference (plot_1), got {raw!r}") from exc
+
+
+def _resolve_node(state: AppState, raw) -> int:
+    """Resolve a ``node_<id>`` token, a bare id, or a node *name* to a node id."""
+    graph = state.nodes
+    if isinstance(raw, int):
+        node_id = raw
+    else:
+        s = str(raw).strip()
+        body = s[len("node_") :] if s.startswith("node_") else s
+        if body.lstrip("-").isdigit():
+            node_id = int(body)
+        else:
+            node = graph.by_name(s)
+            if node is None:
+                raise CommandError(f"No node named {s!r}")
+            return node.id
+    if graph.get(node_id) is None:
+        raise CommandError(f"node_{node_id} does not exist")
+    return node_id
+
+
+def _resolve_run(state: AppState, raw) -> int:
+    if isinstance(raw, str) and raw.startswith("node_output_"):
+        node_id = _resolve_node(state, raw[len("node_output_") :])
+        run_id = state.nodes.get(node_id).out_run_id
+        if run_id is None or state.registry.get(run_id) is None:
+            raise CommandError(f"node_{node_id} has no evaluated output")
+        return run_id
+    if isinstance(raw, int):
+        run_id = raw
+    else:
+        s = str(raw).strip()
+        if s.startswith("run_"):
+            s = s[len("run_") :]
+        if s.lstrip("-").isdigit():
+            run_id = int(s)
+        else:
+            matches = [run.id for run in state.registry.runs if run.label == s]
+            if len(matches) > 1:
+                raise CommandError(f"Ambiguous run name {s!r}; use a run_N identifier")
+            if matches:
+                return matches[0]
+            raise CommandError(f"No loaded run named {s!r}")
+    if state.registry.get(run_id) is None:
+        raise CommandError(f"run_{run_id} is not loaded")
+    return run_id
+
+
+def _coerce_one(state: AppState, param: Param, raw):
+    kind = param.kind
+    if kind == "int":
+        return int(str(raw).strip())
+    if kind == "float":
+        return finite_float(raw)
+    if kind == "bool":
+        return _parse_bool(raw)
+    if kind == "str":
+        return str(raw)
+    if kind == "plot":
+        n = _plot_number(raw)
+        if not 1 <= n <= state.cell_count:
+            raise CommandError(f"plot_{n} out of range (1..{state.cell_count})")
+        return n
+    if kind == "run":
+        return _resolve_run(state, raw)
+    if kind == "node":
+        return _resolve_node(state, raw)
+    if kind == "fwindow":
+        try:
+            return state.validate_follow_plot(_parse_fwindow(raw))
+        except ValueError as exc:
+            raise CommandError(str(exc)) from exc
+    raise CommandError(f"Unknown parameter kind: {kind}")
+
+
+def _coerce_args(state: AppState, cmd: Command, args: list) -> list:
+    required = [p for p in cmd.params if not p.optional]
+    if len(args) < len(required):
+        raise CommandError(f"{cmd.name} expects {cmd.signature()}")
+    if len(args) > len(cmd.params):
+        raise CommandError(
+            f"{cmd.name} takes at most {len(cmd.params)} argument(s): {cmd.signature()}"
+        )
+    out = []
+    for i, param in enumerate(cmd.params):
+        if i < len(args):
+            out.append(
+                None
+                if param.optional and args[i] is None
+                else _coerce_one(state, param, args[i])
+            )
+        else:
+            out.append(None)
+    return out
+
+
+# -- canonical formatting (for the echo / script export) ----------------------
+def _fmt_float(v: float) -> str:
+    return repr(float(v))
+
+
+def _fmt_str(s: str) -> str:
+    return s if _BARE_STR_RE.fullmatch(s) else json.dumps(s, ensure_ascii=False)
+
+
+def format_call(cmd: Command, values: list) -> str:
+    parts: list[str] = []
+    for param, value in zip(cmd.params, values, strict=False):
+        if value is None:
+            continue
+        if param.kind == "plot":
+            parts.append(f"plot_{int(value)}")
+        elif param.kind == "run":
+            parts.append(f"run_{int(value)}")
+        elif param.kind == "node":
+            parts.append(f"node_{int(value)}")
+        elif param.kind == "fwindow":
+            v = int(value)
+            parts.append("custom" if v == 0 else "full" if v == -1 else f"plot_{v}")
+        elif param.kind == "bool":
+            parts.append("true" if value else "false")
+        elif param.kind == "float":
+            parts.append(_fmt_float(value))
+        elif param.kind == "int":
+            parts.append(str(int(value)))
+        else:
+            parts.append(_fmt_str(str(value)))
+    return f"{cmd.name}({', '.join(parts)})"
+
+
+# -- registry -----------------------------------------------------------------
+class CommandRegistry:
+    """Holds the command set and dispatches calls against an :class:`AppState`."""
+
+    def __init__(self) -> None:
+        self._commands: dict[str, Command] = {}
+        register_builtins(self)
+
+    def add(
+        self, name: str, params: list[Param], handler: Handler, help: str = ""
+    ) -> None:
+        self._commands[name] = Command(name, params, handler, help)
+
+    def get(self, name: str) -> Command | None:
+        return self._commands.get(name)
+
+    def names(self) -> list[str]:
+        return sorted(self._commands)
+
+    def all(self) -> list[Command]:
+        return [self._commands[n] for n in self.names()]
+
+    def execute(
+        self, state: AppState, name: str, args: list, *, echo: bool = True
+    ) -> str | None:
+        cmd = self._commands.get(name)
+        if cmd is None:
+            raise CommandError(f"Unknown command: {name}")
+        values = _coerce_args(state, cmd, args)
+        if echo:
+            state.console.command(format_call(cmd, values))
+        if getattr(state, "async_exports", False) and name in (
+            "export_data",
+            "fft_export",
+            "hist_export",
+        ):
+            from .exports import submit
+
+            message = submit(state, cmd.handler, values)
+        else:
+            message = cmd.handler(state, values)
+        from concurrent.futures import Future
+
+        if isinstance(message, Future):
+
+            def report(done):
+                if done.cancelled():
+                    return
+                try:
+                    result = done.result()["result"]
+                    if result:
+                        state.console.ok(str(result))
+                except Exception as exc:
+                    state.console.error(str(exc))
+
+            message.add_done_callback(report)
+            return message
+        if message:
+            state.console.ok(message)
+        return message
+
+    def invoke(self, state, name, **arguments):
+        """Named application entry point; all adapters share coercion and handlers."""
+        command = self.get(name)
+        if command is None:
+            raise CommandError(f"Unknown command: {name}")
+        return self.execute(state, name, command.bind(arguments))
+
+    def echo(self, state: AppState, name: str, values: list) -> None:
+        """Log a command without executing it (gesture already applied by ImPlot)."""
+        cmd = self._commands.get(name)
+        if cmd is not None:
+            state.console.command(format_call(cmd, values))
+
+
+# -- built-in commands --------------------------------------------------------
+def register_builtins(reg: CommandRegistry) -> None:
+    _register_data_and_plot_commands(reg)
+    _register_analysis_commands(reg)
+    _register_node_commands(reg)
+    _register_session_commands(reg)
+
+
+def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
+    # Imported lazily inside handlers to avoid a GUI/state import cycle.
+    from .state import PlotType, XyStyle
+    from .validation import cache_budget_mb, coordinates, display_budget, spy_rectangle
+
+    def _cell(state, plot_n):
+        return state.cells[plot_n - 1]
+
+    def _resolve_plot_type(token: str) -> PlotType:
+        for t in PlotType:
+            if (
+                t.value.lower() == str(token).lower()
+                or t.name.lower() == str(token).lower()
+            ):
+                return t
+        raise CommandError(f"Unknown plot type {token!r}; one of {PlotType.labels()}")
+
+    def reset_session(state, args):
+        from .session import clear_session
+
+        clear_session(state)
+
+    reg.add(
+        "clear_session",
+        [],
+        reset_session,
+        "Clear runs, plots and analysis before restoring a session.",
+    )
+
+    # -- data / layout ----------------------------------------------------
+    def load(state, a):
+        path, start, axis_column, axis_domain = a
+        run = state.load_sync(path, axis_column=axis_column, axis_domain=axis_domain)
+        if run is None:
+            raise CommandError(f"Failed to load {path}")
+        if start is not None:
+            run.set_time_origin(float(start))
+
+    reg.add(
+        "load",
+        [
+            Param("path", "str"),
+            Param("start", "float", optional=True),
+            Param("axis_column", "str", optional=True),
+            Param("axis_domain", "str", optional=True),
+        ],
+        load,
+        "Load a .csv/.parquet log; the optional start normalises the time origin.",
+    )
+
+    def convert(state, a):
+        from .loader import convert_csv_to_parquet
+
+        src, dst, axis_column, axis_domain = a
+        out = convert_csv_to_parquet(
+            src,
+            dst,
+            backend=state.backend,
+            axis_column=axis_column,
+            axis_domain=axis_domain,
+        )
+        state.console.info(f"converted {src} -> {out}")
+
+    reg.add(
+        "convert",
+        [
+            Param("src", "str"),
+            Param("dst", "str", optional=True),
+            Param("axis_column", "str", optional=True),
+            Param("axis_domain", "str", optional=True),
+        ],
+        convert,
+        "Stream-convert CSV to Parquet using the selected backend; "
+        "dst defaults to src with a .parquet extension. Existing destinations and empty inputs are rejected.",
+    )
+
+    def normalize_time(state, a):
+        run_id, start = a
+        run = state.registry.get(run_id)
+        if run is None:
+            raise CommandError(f"run_{run_id} is not loaded")
+        run.set_time_origin(0.0 if start is None else float(start))
+
+    reg.add(
+        "normalize_time",
+        [Param("run", "run"), Param("start", "float", optional=True)],
+        normalize_time,
+        "Shift a run so its first sample sits at start (default 0).",
+    )
+
+    def reset_time(state, a):
+        run = state.registry.get(a[0])
+        if run is None:
+            raise CommandError(f"run_{a[0]} is not loaded")
+        run.set_time_origin(None)
+
+    reg.add(
+        "reset_time",
+        [Param("run", "run")],
+        reset_time,
+        "Restore a run's original (un-normalised) timestamps.",
+    )
+
+    def set_grid(state, a):
+        from .application_mutations import set_grid as apply
+
+        apply(state, a[0], a[1])
+
+    reg.add(
+        "set_grid",
+        [Param("rows", "int"), Param("cols", "int")],
+        set_grid,
+        "Set the subplot grid to rows x cols.",
+    )
+
+    def link_x(state, a):
+        from .application_mutations import link_x as apply
+
+        apply(state, a[0])
+
+    reg.add(
+        "link_x",
+        [Param("on", "bool")],
+        link_x,
+        "Link/unlink the X axes across subplots.",
+    )
+
+    def backend(state, a):
+        from .loader import validate_backend
+
+        try:
+            validate_backend(a[0])
+        except ValueError as exc:
+            raise CommandError(str(exc)) from exc
+        state.backend = a[0]
+
+    reg.add(
+        "backend",
+        [Param("name", "str")],
+        backend,
+        "IO backend for subsequent opens, exports and CSV conversion: pyarrow or polars (desktop only).",
+    )
+
+    def loading_mode(state, a):
+        if a[0] not in ("memory", "lazy"):
+            raise CommandError("Expected memory or lazy")
+        state.loading_mode = a[0]
+
+    reg.add(
+        "loading_mode",
+        [Param("mode", "str")],
+        loading_mode,
+        "Storage policy for subsequent opens: memory or lazy.",
+    )
+
+    reg.add(
+        "disk_cache",
+        [Param("on", "bool")],
+        lambda state, a: setattr(state, "disk_cache", a[0]),
+        "Persist indexes, summaries and CSV conversions for subsequent opens (default: false).",
+    )
+
+    def cache_budget(state, a):
+        state.registry.cache.limit = cache_budget_mb(a[0]) * 1024**2
+        state.registry.cache.trim()
+
+    reg.add(
+        "cache_budget",
+        [Param("mib", "int")],
+        cache_budget,
+        "Shared timestamp/summary RAM cache budget in MiB.",
+    )
+
+    def set_max_points(state, a):
+        state.max_points = display_budget(a[0])
+
+    reg.add(
+        "set_max_points",
+        [Param("n", "int")],
+        set_max_points,
+        "Max points drawn per signal (downsample budget).",
+    )
+
+    def remove_run(state, a):
+        state.remove_run(a[0])
+
+    reg.add(
+        "remove_run",
+        [Param("run", "run")],
+        remove_run,
+        "Remove a loaded run and its plots.",
+    )
+
+    def set_active(state, a):
+        run = state.registry.get(a[0])
+        if run is not None:
+            run.active = a[1]
+
+    reg.add(
+        "set_active",
+        [Param("run", "run"), Param("on", "bool")],
+        set_active,
+        "Show/hide a run without removing it.",
+    )
+
+    # -- per-plot ---------------------------------------------------------
+    def add_signal(state, a):
+        from .application_mutations import add_signal as apply
+
+        try:
+            apply(state, *a)
+        except ValueError as exc:
+            raise CommandError(str(exc)) from exc
+
+    reg.add(
+        "add_signal",
+        [Param("plot", "plot"), Param("run", "run"), Param("signal", "str")],
+        add_signal,
+        "Add a signal to a subplot.",
+    )
+
+    def remove_signal(state, a):
+        plot_n, run_id, name = a
+        _cell(state, plot_n).remove((run_id, name))
+
+    reg.add(
+        "remove_signal",
+        [Param("plot", "plot"), Param("run", "run"), Param("signal", "str")],
+        remove_signal,
+        "Remove a signal from a subplot.",
+    )
+
+    def clear_plot(state, a):
+        _cell(state, a[0]).clear()
+
+    reg.add(
+        "clear_plot",
+        [Param("plot", "plot")],
+        clear_plot,
+        "Remove all signals from a subplot.",
+    )
+
+    def set_plot_type(state, a):
+        cell = _cell(state, a[0])
+        kind = _resolve_plot_type(a[1])
+        if kind is PlotType.XY and cell.xy_source:
+            domain = state.registry.get(cell.xy_source[0]).axis_domain
+            if any(
+                state.registry.get(ref[0]).axis_domain != domain for ref in cell.signals
+            ):
+                cell.xy_source = None
+        if cell.plot_type != kind:
+            cell.plot_type = kind
+            cell.x_lim = cell.y_lim = None
+            cell.pending_x_lim = cell.pending_y_lim = None
+            cell.fit_pending = True
+            state.plot_x_ranges.pop(a[0], None)
+
+    reg.add(
+        "set_plot_type",
+        [Param("plot", "plot"), Param("type", "str")],
+        set_plot_type,
+        "Set a subplot's type (line/scatter/stairs/xy).",
+    )
+
+    def set_xy_style(state, a):
+        plot_n, token = a
+        for s in XyStyle:
+            if (
+                s.value.lower() == str(token).lower()
+                or s.name.lower() == str(token).lower()
+            ):
+                _cell(state, plot_n).xy_style = s
+                return
+        raise CommandError(f"Unknown XY style {token!r}; one of {XyStyle.labels()}")
+
+    reg.add(
+        "set_xy_style",
+        [Param("plot", "plot"), Param("style", "str")],
+        set_xy_style,
+        "Set the XY plot draw style: Line, Markers, or Both.",
+    )
+
+    def set_x_lim(state, a):
+        plot_n, lo, hi = a
+        state.set_plot_x_limits(plot_n, lo, hi)
+
+    reg.add(
+        "set_x_lim",
+        [Param("plot", "plot"), Param("min", "float"), Param("max", "float")],
+        set_x_lim,
+        "Set a subplot's X-axis limits.",
+    )
+
+    def set_y_lim(state, a):
+        plot_n, lo, hi = a
+        _cell(state, plot_n).set_limits("y", lo, hi)
+
+    reg.add(
+        "set_y_lim",
+        [Param("plot", "plot"), Param("min", "float"), Param("max", "float")],
+        set_y_lim,
+        "Set a subplot's Y-axis limits.",
+    )
+
+    def reset_view(state, a):
+        state.reset_plot_view(a[0])
+
+    reg.add(
+        "reset_view",
+        [Param("plot", "plot")],
+        reset_view,
+        "Auto-fit a subplot to its data extent.",
+    )
+
+    def show_samples(state, a):
+        _cell(state, a[0]).show_samples = a[1]
+
+    reg.add(
+        "show_samples",
+        [Param("plot", "plot"), Param("on", "bool")],
+        show_samples,
+        "Toggle per-sample markers on a subplot.",
+    )
+
+    def spy(state, a):
+        cell = _cell(state, a[0])
+        if a[1] and not cell.spy:
+            cell.spy_rect = None  # re-center to 25/75% of the current view on enable
+        cell.spy = a[1]
+
+    reg.add(
+        "spy",
+        [Param("plot", "plot"), Param("on", "bool")],
+        spy,
+        "Toggle the spy (drag-rect zoom inset) on a subplot.",
+    )
+
+    def set_spy_rect(state, a):
+        plot_n, xmin, ymin, xmax, ymax = a
+        cell = _cell(state, plot_n)
+        rectangle = spy_rectangle((xmin, ymin, xmax, ymax))
+        cell.spy = True
+        cell.spy_rect = rectangle
+
+    reg.add(
+        "set_spy_rect",
+        [
+            Param("plot", "plot"),
+            Param("xmin", "float"),
+            Param("ymin", "float"),
+            Param("xmax", "float"),
+            Param("ymax", "float"),
+        ],
+        set_spy_rect,
+        "Position the spy rectangle (enables spy).",
+    )
+
+    def set_xy(state, a):
+        plot_n, run_id, name = a
+        if state.registry.get_signal(run_id, name) is None:
+            raise CommandError(f"run_{run_id} has no signal {name!r}")
+        cell = _cell(state, plot_n)
+        domain = state.registry.get(run_id).axis_domain
+        if any(
+            state.registry.get(ref[0]).axis_domain != domain for ref in cell.signals
+        ):
+            raise CommandError("XY signals must have the same axis domain")
+        set_plot_type(state, [plot_n, "XY"])
+        cell.xy_source = (run_id, name)
+        cell.fit_pending = True
+
+    reg.add(
+        "set_xy",
+        [Param("plot", "plot"), Param("run", "run"), Param("signal", "str")],
+        set_xy,
+        "Use a signal as the X axis (XY plot) for a subplot.",
+    )
+
+    def cursors(state, a):
+        cell = _cell(state, a[0])
+        if a[1] and not cell.cursors:
+            cell.cursor_x = None  # re-center to 25/75% of the current view on enable
+        cell.cursors = a[1]
+
+    reg.add(
+        "cursors",
+        [Param("plot", "plot"), Param("on", "bool")],
+        cursors,
+        "Toggle two measurement cursors (Δx / frequency readout) on a subplot.",
+    )
+
+    def set_cursors(state, a):
+        plot_n, x1, x2 = a
+        cell = _cell(state, plot_n)
+        cell.cursors = True
+        cell.cursor_x = coordinates((x1, x2), 2)
+
+    reg.add(
+        "set_cursors",
+        [Param("plot", "plot"), Param("x1", "float"), Param("x2", "float")],
+        set_cursors,
+        "Place the two cursors at x1 and x2 (enables cursors).",
+    )
+
+    def set_axis(state, a):
+        plot_n, run_id, name, side = a
+        ref = (run_id, name)
+        cell = _cell(state, plot_n)
+        side = str(side).lower()
+        if side not in ("right", "y2", "secondary", "left", "y1", "primary"):
+            raise CommandError("side must be 'left' or 'right'")
+        try:
+            cell.set_secondary(ref, side in ("right", "y2", "secondary"))
+        except ValueError as exc:
+            raise CommandError(str(exc)) from exc
+
+    reg.add(
+        "set_axis",
+        [
+            Param("plot", "plot"),
+            Param("run", "run"),
+            Param("signal", "str"),
+            Param("side", "str"),
+        ],
+        set_axis,
+        "Assign a signal to the left or right Y axis of a subplot.",
+    )
+
+    def export_data(state, a):
+        from .session import export_data as _export
+
+        plot_n, path, relative = a
+        n = _export(state, plot_n - 1, path, bool(relative))
+        return f"Exported {n} column(s) to {path}"
+
+    reg.add(
+        "export_data",
+        [
+            Param("plot", "plot"),
+            Param("path", "str"),
+            Param("relative", "bool", optional=True),
+        ],
+        export_data,
+        "Export a subplot's signals to CSV (relative=true zeroes the start time).",
+    )
+
+    def set_export_relative(state, a):
+        _cell(state, a[0]).export_relative = a[1]
+
+    reg.add(
+        "set_export_relative",
+        [Param("plot", "plot"), Param("on", "bool")],
+        set_export_relative,
+        "Toggle 'start time at 0' for a subplot's CSV export.",
+    )
+
+
+def _register_analysis_commands(reg: CommandRegistry) -> None:
+    from .validation import axis_limits, histogram_bins
+
+    # -- analysis windows (FFT, Histogram) --------------------------------
+    # The two windows share a control surface, so their common commands are
+    # registered from one factory; the transform-specific options (DC/Hann/log,
+    # bins) and the compute/export handlers are added per window below.
+    def _register_analysis_common(prefix: str, attr: str, noun: str) -> None:
+        def _cfg(state):
+            return getattr(state, attr)
+
+        def source(state, a):
+            run_id, name = a
+            if state.registry.get_signal(run_id, name) is None:
+                raise CommandError(f"run_{run_id} has no signal {name!r}")
+            if state.registry.get(run_id).axis_domain != "time":
+                raise CommandError("Analysis windows require a time-domain recording")
+            cfg = _cfg(state)
+            ref = (run_id, name)
+            if ref not in cfg.sources:
+                cfg.sources.append(ref)
+            cfg.compute_requested = True
+
+        reg.add(
+            f"{prefix}_source",
+            [Param("run", "run"), Param("signal", "str")],
+            source,
+            f"Add a signal to the {noun} window (it can show several at once).",
+        )
+
+        def clear(state, a):
+            _cfg(state).sources.clear()
+
+        reg.add(
+            f"{prefix}_clear", [], clear, f"Remove all signals from the {noun} window."
+        )
+
+        def remove(state, a):
+            cfg = _cfg(state)
+            ref = (a[0], a[1])
+            if ref in cfg.sources:
+                cfg.sources.remove(ref)
+            cfg.compute_requested = True
+
+        reg.add(
+            f"{prefix}_remove",
+            [Param("run", "run"), Param("signal", "str")],
+            remove,
+            f"Remove a signal from the {noun} window.",
+        )
+
+        def follow(state, a):
+            cfg = _cfg(state)
+            old = cfg.follow_plot
+            cfg.follow_plot = a[0]
+            if a[0] == 0:  # Custom: seed t-range from the window we were just on
+                cfg.x_min, cfg.x_max = state.resolve_x_window(
+                    old, (cfg.x_min, cfg.x_max), cfg.sources
+                )
+            elif a[0] >= 1:  # following a plot -> compute it; custom/full do not
+                cfg.compute_requested = True
+
+        reg.add(
+            f"{prefix}_follow",
+            [Param("target", "fwindow")],
+            follow,
+            f"Set the {noun} time window source (custom / full / plot_N).",
+        )
+
+        def rng(state, a):
+            cfg = _cfg(state)
+            cfg.x_min, cfg.x_max = a[0], a[1]
+
+        reg.add(
+            f"{prefix}_range",
+            [Param("min", "float"), Param("max", "float")],
+            rng,
+            f"Set the {noun} custom time window.",
+        )
+
+        def xlim(state, a):
+            cfg = _cfg(state)
+            cfg.x_lim = cfg.pending_x_lim = axis_limits(*a)
+
+        reg.add(
+            f"{prefix}_xlim",
+            [Param("min", "float"), Param("max", "float")],
+            xlim,
+            f"Set the {noun} plot's X-axis view limits.",
+        )
+
+    _register_analysis_common("fft", "fft", "FFT")
+    _register_analysis_common("hist", "histogram", "Histogram")
+
+    def fft(state, a):
+        state.focus_fft = True
+        if coordinator := getattr(state, "viewer_operations", None):
+            return coordinator.compute_analysis("fft")
+        state.fft.compute_requested = True
+
+    reg.add("fft", [], fft, "Recompute and focus the FFT window.")
+
+    def fft_remove_dc(state, a):
+        state.fft.remove_dc = a[0]
+        state.fft.compute_requested = True
+
+    reg.add(
+        "fft_remove_dc", [Param("on", "bool")], fft_remove_dc, "Toggle FFT DC removal."
+    )
+
+    def fft_hann(state, a):
+        state.fft.window = a[0]
+        state.fft.compute_requested = True
+
+    reg.add("fft_hann", [Param("on", "bool")], fft_hann, "Toggle the FFT Hann window.")
+
+    def fft_logx(state, a):
+        state.fft.log_x = a[0]
+
+    reg.add("fft_logx", [Param("on", "bool")], fft_logx, "Toggle the FFT log X axis.")
+
+    def fft_logy(state, a):
+        state.fft.log_y = a[0]
+
+    reg.add("fft_logy", [Param("on", "bool")], fft_logy, "Toggle the FFT log Y axis.")
+
+    def fft_export(state, a):
+        from .session import export_fft
+
+        n = export_fft(state, a[0])
+        return f"Exported {n} column(s) to {a[0]}"
+
+    reg.add(
+        "fft_export",
+        [Param("path", "str")],
+        fft_export,
+        "Export the FFT spectra to CSV.",
+    )
+
+    def histogram(state, a):
+        state.focus_histogram = True
+        if coordinator := getattr(state, "viewer_operations", None):
+            return coordinator.compute_analysis("hist")
+        state.histogram.compute_requested = True
+
+    reg.add("histogram", [], histogram, "Recompute and focus the Histogram window.")
+
+    def hist_bins(state, a):
+        state.histogram.bins = histogram_bins(a[0])
+        state.histogram.compute_requested = True
+
+    reg.add(
+        "hist_bins",
+        [Param("n", "int")],
+        hist_bins,
+        "Set the Histogram bin count (1..100000).",
+    )
+
+    def hist_export(state, a):
+        from .session import export_histogram
+
+        n = export_histogram(state, a[0])
+        return f"Exported {n} column(s) to {a[0]}"
+
+    reg.add(
+        "hist_export",
+        [Param("path", "str")],
+        hist_export,
+        "Export the histogram bins to CSV.",
+    )
+
+
+def _register_session_commands(reg: CommandRegistry) -> None:
+    def save_state(state, a):
+        from .session import save_state as _save
+
+        _save(state, a[0])
+        return f"Saved state to {a[0]}"
+
+    reg.add(
+        "save_state",
+        [Param("path", "str")],
+        save_state,
+        "Save the GUI state to a JSON file.",
+    )
+
+    def load_state(state, a):
+        from .session import load_state as _load
+
+        _load(state, a[0])
+        return f"Restored state from {a[0]}"
+
+    reg.add(
+        "load_state",
+        [Param("path", "str")],
+        load_state,
+        "Restore the GUI state from a JSON file.",
+    )
+
+    # -- console / help ---------------------------------------------------
+    def clear_console(state, a):
+        state.console.clear()
+
+    reg.add("clear_console", [], clear_console, "Clear the console log.")
+
+    def help_cmd(state, a):
+        name = a[0]
+        if name:
+            cmd = reg.get(str(name))
+            if cmd is None:
+                raise CommandError(f"Unknown command: {name}")
+            state.console.info(f"{cmd.signature()} -- {cmd.help}")
+        else:
+            for cmd in reg.all():
+                state.console.info(f"{cmd.signature()} -- {cmd.help}")
+
+    reg.add(
+        "help",
+        [Param("name", "str", optional=True)],
+        help_cmd,
+        "List commands, or show help for one.",
+    )
+
+
+def _register_node_commands(reg: CommandRegistry) -> None:
+    """Node graph operations shared by application callers."""
+    from .nodes import evaluate, transform_kinds
+
+    def node_source(state, a):
+        run_id, name = a
+        if state.registry.get_signal(run_id, name) is None:
+            raise CommandError(f"run_{run_id} has no signal {name!r}")
+        if state.registry.get(run_id).derived:
+            raise CommandError(
+                "Derived signals must be connected with node_link, not source nodes"
+            )
+        node = state.nodes.add("source", ref=(run_id, name))
+        return node.id
+
+    reg.add(
+        "node_source",
+        [Param("run", "run"), Param("signal", "str")],
+        node_source,
+        "Add a source node wrapping a loaded signal (the graph's input).",
+    )
+
+    def node_add(state, a):
+        kind = str(a[0]).lower()
+        kinds = transform_kinds()  # dynamic: includes any loaded plugins
+        if kind not in kinds:
+            raise CommandError(f"node_add kind must be one of {', '.join(kinds)}")
+        node = state.nodes.add(kind)
+        return node.id
+
+    reg.add(
+        "node_add",
+        [Param("kind", "str")],
+        node_add,
+        "Add a transform node (fft, math, filter, shift, or an installed plugin kind).",
+    )
+
+    def node_set(state, a):
+        node = state.nodes.get(a[0])
+        from .nodes import validate_parameter
+
+        validate_parameter(node.kind, str(a[1]), str(a[2]))
+        node.params[str(a[1])] = str(a[2])
+
+    reg.add(
+        "node_set",
+        [Param("node", "node"), Param("key", "str"), Param("value", "str")],
+        node_set,
+        "Set a transform node parameter (e.g. node_set(node_2, cutoff, 1000)).",
+    )
+
+    def node_link(state, a):
+        state.nodes.link(a[0], a[1], a[2])
+
+    reg.add(
+        "node_link",
+        [
+            Param("src", "node"),
+            Param("dst", "node"),
+            Param("slot", "int", optional=True),
+        ],
+        node_link,
+        "Connect to a zero-based input slot (default: first free slot).",
+    )
+
+    def node_unlink(state, a):
+        state.nodes.unlink(a[0], a[1], a[2])
+
+    reg.add(
+        "node_unlink",
+        [
+            Param("src", "node"),
+            Param("dst", "node"),
+            Param("slot", "int", optional=True),
+        ],
+        node_unlink,
+        "Disconnect a node link at a zero-based slot (default: all matching slots).",
+    )
+
+    def node_remove(state, a):
+        node = state.nodes.get(a[0])
+        if node is not None and node.out_run_id is not None:
+            state.remove_run(node.out_run_id)
+        state.nodes.remove(a[0])
+
+    reg.add(
+        "node_remove",
+        [Param("node", "node")],
+        node_remove,
+        "Remove a node (and its derived run, if any).",
+    )
+
+    def node_rename(state, a):
+        node, new = state.nodes.get(a[0]), str(a[1])
+        if state.nodes.by_name(new) not in (None, node):
+            raise CommandError(f"A node named {new!r} already exists")
+        if node.out_run_id is not None:
+            run = state.registry.get(node.out_run_id)
+            if run is not None:
+                run.label = new
+        node.name = new
+
+    reg.add(
+        "node_rename",
+        [Param("node", "node"), Param("name", "str")],
+        node_rename,
+        "Rename a node (its derived run takes the new name).",
+    )
+
+    def node_pos(state, a):
+        state.nodes.get(a[0]).pos = (float(a[1]), float(a[2]))
+
+    reg.add(
+        "node_pos",
+        [Param("node", "node"), Param("x", "float"), Param("y", "float")],
+        node_pos,
+        "Set a node's canvas position.",
+    )
+
+    def node_eval(state, a):
+        if coordinator := getattr(state, "viewer_operations", None):
+            return coordinator.evaluate_nodes(a[0])
+        n = evaluate(state, a[0])
+        return f"Evaluated {n} node(s)"
+
+    reg.add(
+        "node_eval",
+        [Param("node", "node", optional=True)],
+        node_eval,
+        "Evaluate the graph (or one node + its inputs), materializing derived signals.",
+    )
+
+    def load_plugins(state, a):
+        from .plugins import load_plugins as _load
+
+        dirs = [a[0]] if a[0] else None  # given dir, else the configured defaults
+        new = _load(dirs, console=state.console)
+        return (
+            f"Loaded {len(new)} plugin node kind(s)"
+            if new
+            else "No new plugin nodes found"
+        )
+
+    reg.add(
+        "load_plugins",
+        [Param("dir", "str", optional=True)],
+        load_plugins,
+        "Load external node plugins from a directory (or the configured defaults).",
+    )

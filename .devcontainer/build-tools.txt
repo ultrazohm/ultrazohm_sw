@@ -1,0 +1,6 @@
+# Shared by the CI image and local Rust wheel builds.
+uv==0.13.1
+maturin==1.16.0
+ziglang==0.17.1; sys_platform != 'win32'
+setuptools==84.2.1
+wheel==0.48.0

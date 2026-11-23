@@ -1,11 +1,11 @@
 # Two stages from one file:
-#   ci   CLI and data viewer toolchain. GitHub Actions runs the uz_cli and
-#        uz_dataviewer tasks in this stage (see .github/workflows/ci-image.yml).
+#   ci   CLI and data viewer toolchain. GitHub Actions runs the ultrazohm_cli and
+#        ultrazohm_dataviewer tasks in this stage (see .github/workflows/ci-image.yml).
 #   dev  The development container: the ci stage plus firmware, docs and Java tools.
 # Developers and CI therefore build and test with the same toolchain.
 
 # Debian trixie-based Python image.
-FROM docker.io/library/python:3.12-trixie AS ci
+FROM docker.io/library/python:3.12-trixie@sha256:5411fa1b302c43f510324381162b5f5d0d93b9ee2af538f09d944f0d290ee3cb AS ci
 
 # Build tools and GUI runtime libraries for headless ImGui tests.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
@@ -24,7 +24,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
                                                   libxcb1 \
      && rm -rf /var/lib/apt/lists/*
 
-# Rust CLI and native Python package. Pin the same toolchain as uz_cli.
+# Rust CLI and native Python package. Pin the same toolchain as ultrazohm_cli.
 ENV RUSTUP_HOME=/opt/rustup CARGO_HOME=/opt/cargo
 ENV PATH="/opt/cargo/bin:$PATH"
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o /tmp/rustup.sh \
@@ -32,7 +32,8 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o /tmp/rustup.sh 
     && rustup component add rustfmt clippy \
     && rm /tmp/rustup.sh
 # ziglang lets maturin link portable manylinux_2_28 wheels without a Docker build.
-RUN pip install --no-cache-dir 'maturin[zig]>=1.9,<2' 'uv==0.13.1' 'clang-format==19.1.7'
+COPY build-tools.txt /tmp/uz-build-tools.txt
+RUN pip install --no-cache-dir -r /tmp/uz-build-tools.txt 'clang-format==19.1.7'
 ENV UZ_DEVCONTAINER=1
 
 

@@ -234,11 +234,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_12):
-		data->av.snd_fld[12] = value;
+		data->av.tune_Kp_speed_control = value;
 			break;
 
 		case (Set_Send_Field_13):
-		data->av.snd_fld[13] = value;
+		data->av.tune_Ki_speed_control = value;
 			break;
 
 		case (Set_Send_Field_14):
@@ -344,8 +344,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6):
-				if (ultrazohm_state_machine_get_state() == error_state) {
-					acknowledge_error = true;
+				if (ultrazohm_state_machine_get_state() == idle_state) {
+					if (data->av.tune_speed_control_flag == false) {
+						data->av.tune_speed_control_flag =  true;
+					} else {
+						data->av.tune_speed_control_flag =  false;
+					}
+
 				}
 			break;
 
@@ -358,7 +363,9 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Error_Reset):
-
+				if (ultrazohm_state_machine_get_state() == error_state) {
+					acknowledge_error = true;
+				}
 			break;
 
 		case (0xFFFF):
@@ -432,10 +439,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	 }
 
 	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
+	 if (data->av.tune_speed_control_flag) {
+		js_status_BareToRTOS |= (1 << 9);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 9);
+	 }
 
 	/* Bit 10 - My_Button_7 */
-	// js_status_BareToRTOS &= ~(1 << 10);
+	 // js_status_BareToRTOS &= ~(1 << 10);
 
 	/* Bit 11 - My_Button_8 */
 	// js_status_BareToRTOS &= ~(1 << 11);

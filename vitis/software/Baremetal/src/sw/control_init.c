@@ -33,32 +33,32 @@ static struct uz_pmsm_control_configuration_t config_Beckhoff_AM8071 = {
     .theta_el_offset = 0.0f, // adjust!
     .sample_time = 1.0f / 10000.0f,
     .enable_speed_control = false,
-    .speed_controller_kp = 0.122, //adjust!
-    .speed_controller_ki = 0.0, //1.107, // adjust!
+    .speed_controller_kp = 2.0, //0.122, //adjust!
+    .speed_controller_ki = 4.0, //1.107, // adjust!
     .current_controller_d_kp = 3.667f,
     .current_controller_d_ki = 266.667f,
     .current_controller_q_kp = 3.667f,
     .current_controller_q_ki = 266.667f,
     .setpoint_limits = {
-        .speed_controller_torque_in_Nm = {.upper_bound = 2.0f, .lower_bound = -2.0f},
-        .i_d_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f},
-        .i_q_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f},
-        .speed_in_rpm = {.upper_bound = 500.0f, .lower_bound = -500.0f},
+        .speed_controller_torque_in_Nm = {.upper_bound = 22.0f, .lower_bound = -22.0f},
+        .i_d_in_A = {.upper_bound = 20.0f, .lower_bound = -20.0f},
+        .i_q_in_A = {.upper_bound = 28.0f, .lower_bound = -28.0f},
+        .speed_in_rpm = {.upper_bound = 1500.0f, .lower_bound = -1500.0f},
         .disturbance_input_in_Nm = {.upper_bound = 1.0f, .lower_bound = -1.0f}},
     .safe_operating_region = {
-        .speed_in_rpm = {.upper_bound = 500.0f, .lower_bound = -500.0f},
-        .i_d_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
-        .i_q_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
-        .i_abc_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
-        .v_dc_in_V = {.upper_bound = 50.0f, .lower_bound = -1.0f},
-        .i_dc_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f}},
+        .speed_in_rpm = {.upper_bound = 2000.0f, .lower_bound = -2000.0f},
+        .i_d_in_A = {.upper_bound = 22.0f, .lower_bound = -22.0f},
+        .i_q_in_A = {.upper_bound = 32.0f, .lower_bound = -32.0f},
+        .i_abc_in_A = {.upper_bound = 32.0f, .lower_bound = -32.0f},
+        .v_dc_in_V = {.upper_bound = 600.0f, .lower_bound = 40.0f},
+        .i_dc_in_A = {.upper_bound = 15.0f, .lower_bound = -15.0f}},
     .decoupling_method = linear_decoupling,
     .setpoint_filter_i_dq_cutoff_frequency = 0.0f,
     .setpoint_filter_speed_cutoff_frequency = 1.45f,
     .motor_type = SMPMSM,
     .enable_field_weakening = false,
     .relative_torque_tolerance = 0.1f,
-    .speed_actual_value_filter_cutoff_frequency = 0.0f,
+    .speed_actual_value_filter_cutoff_frequency = 50.0f,
     .theta_sampling_compensation = 0.0f,
     .theta_svm_delay_compensation = 1.5f,
     .voltage_theta_shift = 0.0f,
@@ -99,7 +99,7 @@ const struct uz_PMSM_t Hans_Mayer_PMSM_3ph = {
     .polePairs = 4.0f,
     .J_kg_m_squared = 0.00683f, // ?
     .I_max_Ampere = 35.0f,
-	.I_rated_Ampere = 8.5f,
+	.I_rated_Ampere = 12.09f,
 	.Torque_rated_Nm = 20.0f,
 	.Torque_max_Nm = 60.0f, // ?
 	.Torque_min_Nm = 0.0f,
@@ -116,32 +116,32 @@ static struct uz_pmsm_control_configuration_t config_HM_PMSM_3ph = {
     .theta_el_offset = 5.6f, // adjust!
     .sample_time = 1.0f / 10000.0f,
     .enable_speed_control = false,
-    .speed_controller_kp = 0.1, //adjust!
-    .speed_controller_ki = 0.0, //1.107, // adjust!
+    .speed_controller_kp = 1.5, //adjust!
+    .speed_controller_ki = 2.0, //1.107, // adjust!
     .current_controller_d_kp = 16.0f,
     .current_controller_d_ki = 1018.67f,
     .current_controller_q_kp = 63.33f,
     .current_controller_q_ki = 1018.67f,
     .setpoint_limits = {
         .speed_controller_torque_in_Nm = {.upper_bound = 20.0f, .lower_bound = -20.0f},
-        .i_d_in_A = {.upper_bound = 35.0f, .lower_bound = -35.0f},
-        .i_q_in_A = {.upper_bound = 35.0f, .lower_bound = -35.0f},
-        .speed_in_rpm = {.upper_bound = 5000.0f, .lower_bound = -5000.0f},
+        .i_d_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
+        .i_q_in_A = {.upper_bound = 13.0f, .lower_bound = -13.0f},
+        .speed_in_rpm = {.upper_bound = 1500.0f, .lower_bound = -1500.0f},
         .disturbance_input_in_Nm = {.upper_bound = 1.0f, .lower_bound = -1.0f}},
     .safe_operating_region = {
-        .speed_in_rpm = {.upper_bound = 500.0f, .lower_bound = -500.0f},
-        .i_d_in_A = {.upper_bound = 35.0f, .lower_bound = -35.0f},
-        .i_q_in_A = {.upper_bound = 35.0f, .lower_bound = -35.0f},
-        .i_abc_in_A = {.upper_bound = 35.0f, .lower_bound = -35.0f},
-        .v_dc_in_V = {.upper_bound = 540.0f, .lower_bound = -1.0f},
-        .i_dc_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f}},
+        .speed_in_rpm = {.upper_bound = 2000.0f, .lower_bound = -2000.0f},
+        .i_d_in_A = {.upper_bound = 13.0f, .lower_bound = -13.0f},
+        .i_q_in_A = {.upper_bound = 15.0f, .lower_bound = -15.0f},
+        .i_abc_in_A = {.upper_bound = 15.0f, .lower_bound = -15.0f},
+        .v_dc_in_V = {.upper_bound = 600.0f, .lower_bound = 40.0f},
+        .i_dc_in_A = {.upper_bound = 15.0f, .lower_bound = -15.0f}},
     .decoupling_method = linear_decoupling,
     .setpoint_filter_i_dq_cutoff_frequency = 0.0f,
-    .setpoint_filter_speed_cutoff_frequency = 0.0f,
+    .setpoint_filter_speed_cutoff_frequency = 0.32f,
     .motor_type = SMPMSM, // adjust
     .enable_field_weakening = false,
     .relative_torque_tolerance = 0.1f,
-    .speed_actual_value_filter_cutoff_frequency = 0.0f,
+    .speed_actual_value_filter_cutoff_frequency = 50.0f,
     .theta_sampling_compensation = 0.0f,
     .theta_svm_delay_compensation = 1.5f,
     .voltage_theta_shift = 0.0f,

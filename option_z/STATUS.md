@@ -234,17 +234,18 @@ analysis: IMPROVEMENTS.md 2.4 and 2.5.
 - Tried and reverted: prefetch in the R5 copy, head drop of a stuck
   backlog, at most 10 segments per DAQ exchange - none made the uncached
   copy cheaper (IMPROVEMENTS.md 2.4).
-- "ctr gaps" at 500 B/cycle in 4 of 24 runs (71, 48, 34, 2 frames) are
-  reordering in the PC, not loss: the stress tool counted them as "arrived
-  late" (net lost 0) and passed. The board sends in order (one tx task, one
-  GEM). Localised with the GEM's frames_txed counter (0xFF0E0108,
-  clear-on-read, read over JTAG without halting) against the received count
-  of the PC's adapter (a Realtek USB GbE): equal frame for frame in 15 of
-  16 runs, one frame short in one run (1 in ~4.1 M lost between the board
-  and the adapter). The new transport sends ~10 datagrams per burst, which
-  makes the reordering show more often; whether CANape reports late
-  datagrams as counter errors is not checked yet (a PCIe NIC on the PC
-  would avoid it).
+- "ctr gaps" at 500 B/cycle in 4 of 24 runs (71, 48, 34, 2 frames), read
+  at the time as reordering in the PC, not loss: the stress tool counted
+  them as "arrived late" (net lost 0) and passed. WRONG, see 2026-11-23:
+  the board sent some datagrams with the contents of a later one (transmit
+  buffer reused under the DMA), and the tool offset the duplicates against
+  the gaps. The GEM's frames_txed counter (0xFF0E0108, clear-on-read, read
+  over JTAG without halting) against the received count of the PC's
+  adapter (a Realtek USB GbE): equal frame for frame in 15 of 16 runs, one
+  frame short in one run (1 in ~4.1 M lost between the board and the
+  adapter). So every frame was sent, some with the wrong contents. The new
+  transport sends ~10 datagrams per burst, which queues more frames in the
+  GEM and makes the defect show more often.
 - Engine asserts A/B (XCP_R5_ENGINE_ASSERTS 0 vs 1, same build otherwise):
   xcp_r5_event() 1.21 / 1.99 / 2.85 us vs 1.23 / 2.20 / 3.06 us at
   8 / 500 / 1000 B/cycle, ~0.2 us per control cycle with a DAQ list
@@ -271,8 +272,9 @@ PC's adapter. Analysis and table: IMPROVEMENTS.md 2.6.
   (2.03 M commands) and at 1000 B/cycle (1.96 M commands): 0 timeouts,
   worst 1.9 / 2.1 ms, R5 queue lost +0. 1000 B/cycle no longer tips into
   the slow copy within a minute. 1100 / 1200 B/cycle are still overload.
-- Open: rare lost responses (3 of 8000 in one `cmd_latency.py` run, 0 of
-  4 M in the soaks), not reproduced in a captured run.
+- Rare lost responses (3 of 8000 in one `cmd_latency.py` run, 0 of 4 M in
+  the soaks), not reproduced in a captured run. Explained 2026-11-23: most
+  likely responses in datagrams that went out with other contents.
 
 ## Bench run 2026-11-18 afternoon: pacing on the control ISR count (`eda40099` flashed)
 
@@ -294,6 +296,8 @@ Analysis and table: IMPROVEMENTS.md 2.7.
   acknowledges of ~300 us in 13 of 20 measurements, 0-6 lost responses per
   soak and tips into overload at 1000 B/cycle in some runs. Another agent
   session was using the board at the time; see the re-test of 2026-11-19.
+  The lost responses were most likely the transmit-buffer defect found on
+  2026-11-23.
 
 ## Bench re-test 2026-11-19: pacing builds on a quiet bench (`eda40099`)
 
@@ -316,6 +320,26 @@ Analysis and tables: IMPROVEMENTS.md 2.7.
   did neither.
 - The ~300 us A53 acknowledges are older than the change and remain, rarely
   (4 of 32 measurements).
+
+## Bench run 2026-11-23: repeated and lost datagrams (`8fe168bf3` flashed)
+
+CANape session at 40 kHz, the first build with the CONNECT print and
+`lifecheck` (`837bb0178`, `212dff767`). Analysis: IMPROVEMENTS.md 2.8.
+
+- Symptom: "Ungültiger Zähler" in bursts, then a response timeout that
+  stopped the measurement, and 46,420 backward timestamps.
+- Cause: the A53 reused its transmit buffer while the GEM DMA still read it
+  (lwIP sends zero-copy). Datagrams queued in the GEM, for example behind a
+  pause frame from the PC's USB adapter, went out with the contents of a
+  later one. Present since CP7 (2026-07-10).
+- Fix: one transmit buffer per TX descriptor, plus one (513, 718 KB).
+- Verified: 10 min capture with 1.72 M datagrams, nothing repeated or lost,
+  while the GEM received 166 pause frames; gateway loss counters 0; CANape
+  1.5 h without a warning.
+- Withdrawn: "reordering in the PC" (2026-11-17/18 and July) and the PC as
+  the source of the rare lost responses. `xcp_poll.py` hid the defect by
+  offsetting duplicates against gaps; it now checks every counter value
+  (`a285f569d`).
 
 ## Changes after the July hardware run (2026-11-16/17)
 
@@ -358,8 +382,9 @@ First hardware bring-up succeeded and the endurance soak is passed:
 **1 hour @ 325.7 Mbit/s** (4000 B/cycle, 10 kHz, 622 million TL frames,
 149 GB) with the session alive and responsive throughout — zero R5-side
 drops over 36.6 M control cycles, command/response handshake perfect
-(65/65 generations, 0 CTO drops), net wire loss 0.00055 % attributed to the
-lab PC's NIC receive path (see TEST_PLAN "Interpreting ctr reordering").
+(65/65 generations, 0 CTO drops), net wire loss 0.00055 %, attributed at the
+time to the lab PC's NIC receive path; most likely the transmit-buffer
+defect found on 2026-11-23 (see TEST_PLAN "Interpreting the counter check").
 That is 2x the sibling hedrive rig's reference rate, which historically
 died randomly within 5 min–2 h — the CP7 exchange protocol holds.
 

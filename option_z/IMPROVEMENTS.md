@@ -249,11 +249,12 @@ ms apart); "back to back" is a 2 min soak at 900 B/cycle:
 - Not done: trigger 2 (another ~35-60 us for twice the A53 interrupt load).
   Responses in the middle of a DAQ exchange (2.4, option 5) would allow long
   chains without the command waiting for the copy.
-- Open: rare lost responses. One `cmd_latency.py` run lost 3 of 8000, while
-  the stress runs of the same minutes showed reordering on the PC. The
-  final build's soaks lost 0 of 4 M, and a captured run of 4000 commands
-  did not reproduce it. A first baseline run (trigger 8) had hung on one as
-  well. A captured run shows whether a missing response left the board.
+- Rare lost responses, explained 2026-11-23 (2.8). One `cmd_latency.py`
+  run lost 3 of 8000, the final build's soaks 0 of 4 M, and a captured run
+  of 4000 commands did not reproduce it; a first baseline run (trigger 8)
+  had hung on one as well. Most likely each was a response packed into a
+  datagram that went out with the contents of a later one (transmit buffer
+  reused under the DMA). The CANape timeout of 2026-11-23 was this.
 - Tool fix on the way: `xcp_poll.py` (`_command`) and `cmd_latency.py`
   waited forever for a lost response while DAQ ran, because every DAQ
   datagram restarted the socket timeout. Both have a deadline per attempt
@@ -336,6 +337,66 @@ runs of the chosen build. Median command round trip in us
   (Once the R5 has tipped into the slow copy, acknowledges are long anyway,
   because the chains are large.) Cause unknown. The R5 looks at least once
   per control period while it waits, so it is the A53 that answers late.
+
+### 2.8 Repeated and lost datagrams: transmit buffer reused under the DMA — RESOLVED 2026-11-23 (`8fe168bf3`)
+Symptom, in a CANape session at 40 kHz (the first with `lifecheck` on
+`DAQ_R5`): "Ungültiger Zähler im XCP-Transport-Layer-Header" in bursts,
+then "Timeout: Keine Response zur Request-Message empfangen!", which
+stopped the measurement, and 46,420 backward timestamps on the bus.
+Reconnecting worked.
+
+Cause: the A53 tx task packed each datagram into one static buffer
+(`batch[]`, since CP7 `fe1ebd1f6`) and refilled it as soon as
+`lwip_sendto()` returned. lwIP does not copy the payload. With
+`LWIP_NETIF_TX_SINGLE_PBUF` 0, `lwip_sendto()` wraps the caller's buffer in
+a PBUF_REF (`netbuf_ref`), and the Xilinx driver (`emacps_sgsend`) points
+the TX DMA descriptor at it. The GEM reads the payload when the frame
+reaches the head of its TX ring. While frames queue there, each queued
+datagram goes out with whatever the buffer holds at that moment. The UDP
+checksum is still correct, because the GEM computes it (TX checksum
+offload), so the PC accepts these frames.
+
+Trigger: pause frames from the PC's Realtek USB adapter. Each holds the
+GEM's transmitter, and frames queue meanwhile. The GEM received 166 in a
+10 min session (GEM3 statistics register 0xFF0E0164, clear-on-read, read
+over JTAG without halting).
+
+Evidence, from a 180 s capture (dumpcap on the PC's adapter) of the faulty
+session:
+- 515,447 board datagrams with consecutive IP IDs in capture order. lwIP
+  writes the IP ID into its own header pbuf, so this is the board's send
+  order: no reordering and no loss on the wire.
+- 160 datagrams carried the payload of another datagram, in 8 bursts. For
+  example IP IDs 52052-52059 all carry the payload that starts at CTR
+  55538, and the frames with CTR 55436-55537 never left the board.
+- This also fits the GEM frames_txed counter matching the adapter's
+  received count in the 2026-11-17/18 runs: every frame was sent, some with
+  the wrong contents.
+
+Fix: a ring of `XLWIP_CONFIG_N_TX_DESC + 1` (513) transmit buffers, 718 KB
+of `.bss`. Each datagram takes the next buffer; the ring advances only
+after a successful send. A queued datagram holds at least one TX
+descriptor until it has been sent, so a buffer comes round again only when
+its datagram is gone. Not chosen: `LWIP_NETIF_TX_SINGLE_PBUF` 1, where lwIP
+copies every datagram, because it changes the lwIP settings.
+
+Verified 2026-11-23, CANape session at 40 kHz:
+- 10 min capture, 1,717,812 board datagrams: IP IDs consecutive, 0
+  repeated payloads, counter continuous, while the GEM received the 166
+  pause frames above.
+- Gateway counters (JTAG): `sendto_drop`, `txq_dropped` and `master_lost`
+  0; `sendto_err` 1, delivered by the retry.
+- CANape: 1.5 h without a warning.
+
+This replaces earlier conclusions, all most likely this defect: the "ctr
+gaps ... reordering in the PC" of 2026-11-17/18 (STATUS), the rare lost
+responses (2.6), and the July "net wire loss 0.00055 %" put down to the PC
+NIC (STATUS, HARDWARE VALIDATED). `xcp_poll.py --stress` offset the
+duplicates against the gaps ("late, not lost") and so hid the loss. Since
+`a285f569d` it checks every counter value (missing, duplicated, late). On
+the capture of the faulty session the new check finds 2276 duplicated
+frames and as many missing ones; the old accounting found 5 "net lost",
+which are capture artefacts.
 
 ## 3. Safety scope — required before live calibration (Z5)
 

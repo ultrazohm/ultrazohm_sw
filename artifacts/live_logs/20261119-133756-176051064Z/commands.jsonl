@@ -1,0 +1,1 @@
+{"code":null,"error":"could not connect to device 192.168.1.233:1000: connection timed out","host_unix_ns":1795095479319070340,"outcome":"rejected","request":{"api_version":2,"command":{"ip":"192.168.1.233","op":"connect","port":1000}}}

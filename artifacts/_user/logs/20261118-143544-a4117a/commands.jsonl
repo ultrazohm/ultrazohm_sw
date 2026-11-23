@@ -1,0 +1,14 @@
+{"host_unix_ns":1795008965238241000,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":1,"name":"JSO_ISR_ExecTime_us","op":"set_observable"}},"source":"initial_channels","wire":[201,1.0]}
+{"host_unix_ns":1795008965238399700,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":2,"name":"JSO_ISR_Period_us","op":"set_observable"}},"source":"initial_channels","wire":[202,2.0]}
+{"host_unix_ns":1795008965238498900,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":3,"name":"JSO_lifecheck","op":"set_observable"}},"source":"initial_channels","wire":[203,3.0]}
+{"host_unix_ns":1795008965239211400,"outcome":"applied_locally","request":{"api_version":2,"command":{"ip":"192.168.1.233","op":"connect","port":1000}},"wire":null}
+{"host_unix_ns":1795008971188945500,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":4,"name":"JSO_DQN_PT1_REFERENCE","op":"set_observable"}},"wire":[204,47.0]}
+{"host_unix_ns":1795008979406266000,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":5,"name":"JSO_DQN_PT1_ACTUAL","op":"set_observable"}},"wire":[205,46.0]}
+{"host_unix_ns":1795008990961347800,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"name":"dqn_pt1_javascope_setpoint","op":"set_variable","value":1.0}},"wire":[4,1.0]}
+{"host_unix_ns":1795008998044188200,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"op":"enable_system"}},"wire":[1,0.0]}
+{"host_unix_ns":1795008998385986600,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"op":"enable_control"}},"wire":[2,0.0]}
+{"host_unix_ns":1795009004020451500,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"name":"dqn_pt1_javascope_setpoint","op":"set_variable","value":-1.0}},"wire":[4,-1.0]}
+{"host_unix_ns":1795009014267944900,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"name":"dqn_pt1_javascope_setpoint","op":"set_variable","value":0.5}},"wire":[4,0.5]}
+{"host_unix_ns":1795009018104975500,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"name":"dqn_pt1_javascope_setpoint","op":"set_variable","value":-0.5}},"wire":[4,-0.5]}
+{"host_unix_ns":1795009045265457400,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"op":"stop"}},"wire":[3,0.0]}
+{"host_unix_ns":1795009048525301300,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"op":"shutdown"}},"wire":[3,0.0]}

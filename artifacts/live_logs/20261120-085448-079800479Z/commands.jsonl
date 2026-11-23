@@ -1,0 +1,9 @@
+{"host_unix_ns":1795164888115006138,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":1,"name":"JSO_ISR_ExecTime_us","op":"set_observable"}},"source":"initial_channels","wire":[201,1.0]}
+{"host_unix_ns":1795164888115111838,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":2,"name":"JSO_ISR_Period_us","op":"set_observable"}},"source":"initial_channels","wire":[202,2.0]}
+{"host_unix_ns":1795164888115188029,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":3,"name":"JSO_lifecheck","op":"set_observable"}},"source":"initial_channels","wire":[203,3.0]}
+{"host_unix_ns":1795164888115531208,"outcome":"applied_locally","request":{"api_version":2,"command":{"ip":"192.168.1.233","op":"connect","port":1000}},"wire":null}
+{"host_unix_ns":1795164888116472232,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":4,"name":"JSO_DQN_PT1_ACTUAL","op":"set_observable"}},"wire":[204,46.0]}
+{"host_unix_ns":1795164888117435300,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":5,"name":"JSO_LAYER_IDX","op":"set_observable"}},"wire":[205,83.0]}
+{"host_unix_ns":1795164888118197138,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":6,"name":"JSO_PARAM_IDX","op":"set_observable"}},"wire":[206,84.0]}
+{"host_unix_ns":1795164888118898928,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":7,"name":"JSO_PARAM_VALUE","op":"set_observable"}},"wire":[207,85.0]}
+{"host_unix_ns":1795164888120028505,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":8,"name":"JSO_ALLOW_UPDATE","op":"set_observable"}},"wire":[208,86.0]}

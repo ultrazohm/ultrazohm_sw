@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "name": "standard",
+  "sample_period_us": 100.0,
+  "initial_channels": {
+    "1": "JSO_ISR_ExecTime_us",
+    "2": "JSO_ISR_Period_us",
+    "3": "JSO_lifecheck"
+  }
+}

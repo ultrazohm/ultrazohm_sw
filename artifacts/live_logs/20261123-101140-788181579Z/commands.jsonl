@@ -1,0 +1,5 @@
+{"host_unix_ns":1795428700825625555,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":1,"name":"JSO_ISR_ExecTime_us","op":"set_observable"}},"source":"initial_channels","wire":[201,1.0]}
+{"host_unix_ns":1795428700825770754,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":2,"name":"JSO_ISR_Period_us","op":"set_observable"}},"source":"initial_channels","wire":[202,2.0]}
+{"host_unix_ns":1795428700825815333,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":3,"name":"JSO_lifecheck","op":"set_observable"}},"source":"initial_channels","wire":[203,3.0]}
+{"host_unix_ns":1795428700826199228,"outcome":"applied_locally","request":{"api_version":2,"command":{"ip":"192.168.1.233","op":"connect","port":1000}},"wire":null}
+{"code":null,"error":"unknown observable: JSO_RL_DONE_FLAGJSO_RL_OBS0_PT1STATE","host_unix_ns":1795428700927752704,"outcome":"rejected","request":{"api_version":2,"command":{"channel":4,"name":"JSO_RL_DONE_FLAGJSO_RL_OBS0_PT1STATE","op":"set_observable"}}}

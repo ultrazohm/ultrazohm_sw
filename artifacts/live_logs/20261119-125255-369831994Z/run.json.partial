@@ -1,0 +1,136 @@
+{
+  "data_options": {
+    "buffer_samples": 300000,
+    "flush_interval_ms": 60000,
+    "queue_seconds": 3.0,
+    "recording_backend": "parquet",
+    "segment_rows": 1000000
+  },
+  "device": null,
+  "end": {
+    "complete": true,
+    "ended_unix_ns": 1795092905901659466,
+    "state": {
+      "ack_sent": 0,
+      "audit_error": null,
+      "commands_sent": 4,
+      "connected": false,
+      "device": "192.168.1.233:1000",
+      "error": null,
+      "frames": 74731,
+      "platform_state": null,
+      "samples": 1120965,
+      "status": 0
+    }
+  },
+  "format": "parquet",
+  "profile": {
+    "api_version": 1,
+    "channel_mapping_name": "generated-javascope",
+    "channels": 20,
+    "commands": {
+      "Enable_Control": 2,
+      "Enable_System": 1,
+      "Error_Reset": 32,
+      "GUI_BTN_ZEROVALUE": 0,
+      "My_Button_1": 24,
+      "My_Button_2": 25,
+      "My_Button_3": 26,
+      "My_Button_4": 27,
+      "My_Button_5": 28,
+      "My_Button_6": 29,
+      "My_Button_7": 30,
+      "My_Button_8": 31,
+      "Set_Send_Field_1": 4,
+      "Set_Send_Field_10": 13,
+      "Set_Send_Field_11": 14,
+      "Set_Send_Field_12": 15,
+      "Set_Send_Field_13": 16,
+      "Set_Send_Field_14": 17,
+      "Set_Send_Field_15": 18,
+      "Set_Send_Field_16": 19,
+      "Set_Send_Field_17": 20,
+      "Set_Send_Field_18": 21,
+      "Set_Send_Field_19": 22,
+      "Set_Send_Field_2": 5,
+      "Set_Send_Field_20": 23,
+      "Set_Send_Field_3": 6,
+      "Set_Send_Field_4": 7,
+      "Set_Send_Field_5": 8,
+      "Set_Send_Field_6": 9,
+      "Set_Send_Field_7": 10,
+      "Set_Send_Field_8": 11,
+      "Set_Send_Field_9": 12,
+      "Stop": 3
+    },
+    "initial_channels": {
+      "1": "JSO_ISR_ExecTime_us",
+      "2": "JSO_ISR_Period_us",
+      "3": "JSO_lifecheck"
+    },
+    "javascope": {
+      "buttons": [
+        {
+          "command": "My_Button_1",
+          "label": "PT1_Eval_Profile",
+          "slot": 1
+        },
+        {
+          "command": "My_Button_2",
+          "label": "MyButton2",
+          "slot": 2
+        },
+        {
+          "command": "My_Button_3",
+          "label": "MyButton3",
+          "slot": 3
+        },
+        {
+          "command": "My_Button_4",
+          "label": "MyButton4",
+          "slot": 4
+        },
+        {
+          "command": "My_Button_5",
+          "label": "MyButton5",
+          "slot": 5
+        },
+        {
+          "command": "My_Button_6",
+          "label": "MyButton6",
+          "slot": 6
+        },
+        {
+          "command": "My_Button_7",
+          "label": "MyButton7",
+          "slot": 7
+        },
+        {
+          "command": "My_Button_8",
+          "label": "MyButton8",
+          "slot": 8
+        }
+      ],
+      "receive_fields": [
+        {
+          "label": "SecondsSinceSystemStart",
+          "signal": "JSSD_FLOAT_SecondsSinceSystemStart",
+          "slot": 1,
+          "unit": "s"
+        },
+        {
+          "label": "ISR_ExecTime",
+          "signal": "JSSD_FLOAT_ISR_ExecTime_us",
+          "slot": 2,
+          "unit": "us"
+        },
+        {
+          "label": "ISR_PeriodTime",
+          "signal": "JSSD_FLOAT_ISR_Period_us",
+          "slot": 3,
+          "unit": "us"
+        },
+        {
+          "label": "MillisecondsTimer",
+          "signal": "JSSD_FLOAT_Milliseconds",
+          "

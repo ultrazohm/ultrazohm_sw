@@ -1,0 +1,12 @@
+{"host_unix_ns":1795170403841486446,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":1,"name":"JSO_ISR_ExecTime_us","op":"set_observable"}},"source":"initial_channels","wire":[201,1.0]}
+{"host_unix_ns":1795170403841660666,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":2,"name":"JSO_ISR_Period_us","op":"set_observable"}},"source":"initial_channels","wire":[202,2.0]}
+{"host_unix_ns":1795170403841720205,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":3,"name":"JSO_lifecheck","op":"set_observable"}},"source":"initial_channels","wire":[203,3.0]}
+{"host_unix_ns":1795170403842180640,"outcome":"applied_locally","request":{"api_version":2,"command":{"ip":"192.168.1.233","op":"connect","port":1000}},"wire":null}
+{"host_unix_ns":1795170403843842615,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":4,"name":"JSO_DQN_PT1_ACTUAL","op":"set_observable"}},"wire":[204,46.0]}
+{"host_unix_ns":1795170403844856675,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":5,"name":"JSO_LAYER_IDX","op":"set_observable"}},"wire":[205,83.0]}
+{"host_unix_ns":1795170403845905716,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":6,"name":"JSO_PARAM_IDX","op":"set_observable"}},"wire":[206,84.0]}
+{"host_unix_ns":1795170403847023119,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":7,"name":"JSO_PARAM_VALUE","op":"set_observable"}},"wire":[207,85.0]}
+{"host_unix_ns":1795170403848378681,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":8,"name":"JSO_ALLOW_UPDATE","op":"set_observable"}},"wire":[208,86.0]}
+{"host_unix_ns":1795170403849876027,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":9,"name":"JSO_DQN_PT1_JAVASCOPE_SETPOINT","op":"set_observable"}},"wire":[209,48.0]}
+{"host_unix_ns":1795170403865240082,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"op":"enable_system"}},"wire":[1,0.0]}
+{"host_unix_ns":1795170403866318958,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"op":"enable_control"}},"wire":[2,0.0]}

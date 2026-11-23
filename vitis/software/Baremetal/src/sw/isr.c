@@ -117,7 +117,9 @@ void ISR_Control(void *data)
 #if (UZ_APP == UZ_APP_DESKBENCH)
         deskbench_control_step(&Global_Data);
 #else
-            pt1_control_step(&Global_Data);
+        pt1_control_step(&Global_Data);
+        
+
 #endif
         /* Project Wizard BEGIN: control_state isr_actions */
         /* Project Wizard END: control_state isr_actions */

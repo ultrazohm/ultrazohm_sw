@@ -254,19 +254,23 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_17):
-		data->av.snd_fld[17] = value;
+			data->av.snd_fld[17] = value;
+			data->rasv.RL_layer_idx = value;
 			break;
 
 		case (Set_Send_Field_18):
-		data->av.snd_fld[18] = value;
+			data->av.snd_fld[18] = value;
+			data->rasv.RL_param_idx = value;
 			break;
 
 		case (Set_Send_Field_19):
-		data->av.snd_fld[19] = value;
+			data->av.snd_fld[19] = value;
+			data->rasv.RL_param_value = value;
 			break;
 
 		case (Set_Send_Field_20):
-		data->av.snd_fld[20] = value;
+			data->av.snd_fld[20] = value;
+			data->rasv.RL_allow_update = value;
 			break;
 
 		case (My_Button_1):

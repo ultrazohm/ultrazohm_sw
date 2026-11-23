@@ -33,10 +33,7 @@ typedef struct _actualValues_ {
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 	float d3_input_loopback_uint32;
-	float dqn_pt1_actual;
-	float dqn_pt1_reference;
 	float dqn_pt1_javascope_setpoint;
-	float dqn_pt1_action;
 	float dqn_pt1_eval_profile_episode;
 	float deskbench_dut_i_a_A;
 	float deskbench_dut_i_b_A;
@@ -139,6 +136,12 @@ typedef struct _actualValues_ {
 	uint32_t incremental_encoder_d5_3_position_w_offset;
 	uint32_t incremental_encoder_d5_3_index_found;
 /* Project Wizard END: actualValues */
+	float RL_training_completion;
+	bool RL_done_flag;
+	float RL_obs0_PT1state;
+	float RL_obs1_PT1ref;
+	float RL_act0_PT1input;
+	float RL_reward;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -154,6 +157,11 @@ typedef struct _referenceAndSetValues_ {
 	float pwm_3L_0_halfBridgeDutyCycle_2;
 	float pwm_3L_0_halfBridgeDutyCycle_3;
 /* Project Wizard END: referenceAndSetValues */
+/* Neural Network Online Updating */
+	uint32_t RL_layer_idx; // zero based
+	uint32_t RL_param_idx; // zero based
+	float RL_param_value;
+	bool RL_allow_update;
 } referenceAndSetValues;
 
 typedef struct{

@@ -1,0 +1,490 @@
+{
+  "data_options": {
+    "buffer_samples": 300000,
+    "flush_interval_ms": 60000,
+    "queue_seconds": 3.0,
+    "recording_backend": "parquet",
+    "segment_rows": 1000000
+  },
+  "device": null,
+  "format": "parquet",
+  "profile": {
+    "api_version": 1,
+    "channel_mapping_name": "generated-javascope",
+    "channels": 20,
+    "commands": {
+      "Enable_Control": 2,
+      "Enable_System": 1,
+      "Error_Reset": 32,
+      "GUI_BTN_ZEROVALUE": 0,
+      "My_Button_1": 24,
+      "My_Button_2": 25,
+      "My_Button_3": 26,
+      "My_Button_4": 27,
+      "My_Button_5": 28,
+      "My_Button_6": 29,
+      "My_Button_7": 30,
+      "My_Button_8": 31,
+      "Set_Send_Field_1": 4,
+      "Set_Send_Field_10": 13,
+      "Set_Send_Field_11": 14,
+      "Set_Send_Field_12": 15,
+      "Set_Send_Field_13": 16,
+      "Set_Send_Field_14": 17,
+      "Set_Send_Field_15": 18,
+      "Set_Send_Field_16": 19,
+      "Set_Send_Field_17": 20,
+      "Set_Send_Field_18": 21,
+      "Set_Send_Field_19": 22,
+      "Set_Send_Field_2": 5,
+      "Set_Send_Field_20": 23,
+      "Set_Send_Field_3": 6,
+      "Set_Send_Field_4": 7,
+      "Set_Send_Field_5": 8,
+      "Set_Send_Field_6": 9,
+      "Set_Send_Field_7": 10,
+      "Set_Send_Field_8": 11,
+      "Set_Send_Field_9": 12,
+      "Stop": 3
+    },
+    "initial_channels": {
+      "1": "JSO_ISR_ExecTime_us",
+      "2": "JSO_ISR_Period_us",
+      "3": "JSO_lifecheck"
+    },
+    "javascope": {
+      "buttons": [
+        {
+          "command": "My_Button_1",
+          "label": "PT1_Eval_Profile",
+          "slot": 1
+        },
+        {
+          "command": "My_Button_2",
+          "label": "MyButton2",
+          "slot": 2
+        },
+        {
+          "command": "My_Button_3",
+          "label": "MyButton3",
+          "slot": 3
+        },
+        {
+          "command": "My_Button_4",
+          "label": "MyButton4",
+          "slot": 4
+        },
+        {
+          "command": "My_Button_5",
+          "label": "MyButton5",
+          "slot": 5
+        },
+        {
+          "command": "My_Button_6",
+          "label": "MyButton6",
+          "slot": 6
+        },
+        {
+          "command": "My_Button_7",
+          "label": "MyButton7",
+          "slot": 7
+        },
+        {
+          "command": "My_Button_8",
+          "label": "MyButton8",
+          "slot": 8
+        }
+      ],
+      "receive_fields": [
+        {
+          "label": "SecondsSinceSystemStart",
+          "signal": "JSSD_FLOAT_SecondsSinceSystemStart",
+          "slot": 1,
+          "unit": "s"
+        },
+        {
+          "label": "ISR_ExecTime",
+          "signal": "JSSD_FLOAT_ISR_ExecTime_us",
+          "slot": 2,
+          "unit": "us"
+        },
+        {
+          "label": "ISR_PeriodTime",
+          "signal": "JSSD_FLOAT_ISR_Period_us",
+          "slot": 3,
+          "unit": "us"
+        },
+        {
+          "label": "MillisecondsTimer",
+          "signal": "JSSD_FLOAT_Milliseconds",
+          "slot": 4,
+          "unit": "ms"
+        },
+        {
+          "label": "receive_field_5",
+          "signal": "JSSD_ZEROVALUE",
+          "slot": 5,
+          "unit": "-"
+        },
+        {
+          "label": "receive_field_6",
+          "signal": "JSSD_ZEROVALUE",
+          "slot": 6,
+          "unit": "-"
+        },
+        {
+          "label": "receive_field_7",
+          "signal": "JSSD_ZEROVALUE",
+          "slot": 7,
+          "unit": "-"
+        },
+        {
+          "label": "receive_field_8",
+          "signal": "JSSD_ZEROVALUE",
+          "slot": 8,
+          "unit": "-"
+        },
+        {
+          "label": "receive_field_9",
+          "signal": "JSSD_ZEROVALUE",
+          "slot": 9,
+          "unit": "-"
+        },
+        {
+          "label": "receive_field_10",
+          "signal": "JSSD_ZEROVALUE",
+          "slot": 10,
+          "unit": "-"
+        },
+        {
+          "label": "receive_field_11",
+          "signal": "JSSD_ZEROVALUE",
+          "slot": 11,
+          "unit": "-"
+        },
+        {
+          "label": "receive_field_12",
+          "signal": "JSSD_ZEROVALUE",
+          "slot": 12,
+          "unit": "-"
+        },
+        {
+          "label": "receive_field_13",
+          "signal": "JSSD_ZEROVALUE",
+          "slot": 13,
+          "unit": "-"
+        },
+        {
+          "label": "receive_field_14",
+          "signal": "JSSD_ZEROVALUE",
+          "slot": 14,
+          "unit": "-"
+        },
+        {
+          "label": "receive_field_15",
+          "signal": "JSSD_ZEROVALUE",
+          "slot": 15,
+          "unit": "-"
+        },
+        {
+          "label": "receive_field_16",
+          "signal": "JSSD_ZEROVALUE",
+          "slot": 16,
+          "unit": "-"
+        },
+        {
+          "label": "receive_field_17",
+          "signal": "JSSD_ZEROVALUE",
+          "slot": 17,
+          "unit": "-"
+        },
+        {
+          "label": "receive_field_18",
+          "signal": "JSSD_ZEROVALUE",
+          "slot": 18,
+          "unit": "-"
+        },
+        {
+          "label": "receive_field_19",
+          "signal": "JSSD_ZEROVALUE",
+          "slot": 19,
+          "unit": "-"
+        },
+        {
+          "label": "receive_field_20",
+          "signal": "JSSD_ZEROVALUE",
+          "slot": 20,
+          "unit": "-"
+        }
+      ],
+      "send_fields": [
+        {
+          "command": "Set_Send_Field_1",
+          "label": "dqn_pt1_javascope_setpoint",
+          "slot": 1,
+          "unit": "-"
+        },
+        {
+          "command": "Set_Send_Field_2",
+          "label": "deskbench_prime_mover_n_ref_rpm",
+          "slot": 2,
+          "unit": "rpm"
+        },
+        {
+          "command": "Set_Send_Field_3",
+          "label": "deskbench_dut_i_q_ref_A",
+          "slot": 3,
+          "unit": "A"
+        },
+        {
+          "command": "Set_Send_Field_4",
+          "label": "deskbench_dut_i_d_ref_A",
+          "slot": 4,
+          "unit": "A"
+        },
+        {
+          "command": "Set_Send_Field_5",
+          "label": "d1_theta_m_offset",
+          "slot": 5,
+          "unit": "rad"
+        },
+        {
+          "command": "Set_Send_Field_6",
+          "label": "d2_theta_m_offset",
+          "slot": 6,
+          "unit": "rad"
+        },
+        {
+          "command": "Set_Send_Field_7",
+          "label": "send_field_7",
+          "slot": 7,
+          "unit": "-"
+        },
+        {
+          "command": "Set_Send_Field_8",
+          "label": "send_field_8",
+          "slot": 8,
+          "unit": "-"
+        },
+        {
+          "command": "Set_Send_Field_9",
+          "label": "send_field_9",
+          "slot": 9,
+          "unit": "-"
+        },
+        {
+          "command": "Set_Send_Field_10",
+          "label": "send_field_10",
+          "slot": 10,
+          "unit": "-"
+        },
+        {
+          "command": "Set_Send_Field_11",
+          "label": "send_field_11",
+          "slot": 11,
+          "unit": "-"
+        },
+        {
+          "command": "Set_Send_Field_12",
+          "label": "send_field_12",
+          "slot": 12,
+          "unit": "-"
+        },
+        {
+          "command": "Set_Send_Field_13",
+          "label": "send_field_13",
+          "slot": 13,
+          "unit": "-"
+        },
+        {
+          "command": "Set_Send_Field_14",
+          "label": "send_field_14",
+          "slot": 14,
+          "unit": "-"
+        },
+        {
+          "command": "Set_Send_Field_15",
+          "label": "send_field_15",
+          "slot": 15,
+          "unit": "-"
+        },
+        {
+          "command": "Set_Send_Field_16",
+          "label": "send_field_16",
+          "slot": 16,
+          "unit": "-"
+        },
+        {
+          "command": "Set_Send_Field_17",
+          "label": "layer_idx",
+          "slot": 17,
+          "unit": "-"
+        },
+        {
+          "command": "Set_Send_Field_18",
+          "label": "param_idx",
+          "slot": 18,
+          "unit": "-"
+        },
+        {
+          "command": "Set_Send_Field_19",
+          "label": "param_value",
+          "slot": 19,
+          "unit": "-"
+        },
+        {
+          "command": "Set_Send_Field_20",
+          "label": "allow_update",
+          "slot": 20,
+          "unit": "-"
+        }
+      ],
+      "slow_signal_types": {
+        "JSSD_FLOAT_Error_Code": "float32",
+        "JSSD_FLOAT_ISR_ExecTime_us": "float32",
+        "JSSD_FLOAT_ISR_Period_us": "float32",
+        "JSSD_FLOAT_Milliseconds": "float32",
+        "JSSD_FLOAT_SecondsSinceSystemStart": "float32",
+        "JSSD_ZEROVALUE": "uint32"
+      },
+      "unused_slow_data_display": [
+        "JSSD_FLOAT_Error_Code"
+      ]
+    },
+    "legacy_javascope_header": true,
+    "name": "standard",
+    "observables": {
+      "JSO_ADC_A1_CH0": 4,
+      "JSO_ADC_A1_CH1": 5,
+      "JSO_ADC_A1_CH2": 6,
+      "JSO_ADC_A1_CH3": 7,
+      "JSO_ADC_A1_CH4": 8,
+      "JSO_ADC_A1_CH5": 9,
+      "JSO_ADC_A1_CH6": 10,
+      "JSO_ADC_A1_CH7": 11,
+      "JSO_ADC_A2_CH0": 12,
+      "JSO_ADC_A2_CH1": 13,
+      "JSO_ADC_A2_CH2": 14,
+      "JSO_ADC_A2_CH3": 15,
+      "JSO_ADC_A2_CH4": 16,
+      "JSO_ADC_A2_CH5": 17,
+      "JSO_ADC_A2_CH6": 18,
+      "JSO_ADC_A2_CH7": 19,
+      "JSO_ADC_A3_CH0": 20,
+      "JSO_ADC_A3_CH1": 21,
+      "JSO_ADC_A3_CH2": 22,
+      "JSO_ADC_A3_CH3": 23,
+      "JSO_ADC_A3_CH4": 24,
+      "JSO_ADC_A3_CH5": 25,
+      "JSO_ADC_A3_CH6": 26,
+      "JSO_ADC_A3_CH7": 27,
+      "JSO_ALLOW_UPDATE": 86,
+      "JSO_D3_INPUT_LOOPBACK_UINT32": 82,
+      "JSO_DESKBENCH_DUT_I_A_A": 51,
+      "JSO_DESKBENCH_DUT_I_B_A": 52,
+      "JSO_DESKBENCH_DUT_I_C_A": 53,
+      "JSO_DESKBENCH_DUT_I_D_A": 54,
+      "JSO_DESKBENCH_DUT_I_D_REF_A": 66,
+      "JSO_DESKBENCH_DUT_I_Q_A": 55,
+      "JSO_DESKBENCH_DUT_I_Q_REF_A": 67,
+      "JSO_DESKBENCH_DUT_MEAN_TEMP_DEGC": 61,
+      "JSO_DESKBENCH_DUT_PMSM_MODEL_I_D_A": 62,
+      "JSO_DESKBENCH_DUT_PMSM_MODEL_I_Q_A": 63,
+      "JSO_DESKBENCH_DUT_PMSM_MODEL_OMEGA_MECH_RAD_S": 65,
+      "JSO_DESKBENCH_DUT_PMSM_MODEL_TORQUE_NM": 64,
+      "JSO_DESKBENCH_DUT_SPEED_RPM": 59,
+      "JSO_DESKBENCH_DUT_THETA_EL_RAD": 60,
+      "JSO_DESKBENCH_DUT_V_DC_V": 56,
+      "JSO_DESKBENCH_DUT_V_D_V": 57,
+      "JSO_DESKBENCH_DUT_V_Q_V": 58,
+      "JSO_DESKBENCH_PRIME_MOVER_I_A_A": 68,
+      "JSO_DESKBENCH_PRIME_MOVER_I_B_A": 69,
+      "JSO_DESKBENCH_PRIME_MOVER_I_C_A": 70,
+      "JSO_DESKBENCH_PRIME_MOVER_I_D_A": 71,
+      "JSO_DESKBENCH_PRIME_MOVER_I_Q_A": 72,
+      "JSO_DESKBENCH_PRIME_MOVER_MEAN_TEMP_DEGC": 78,
+      "JSO_DESKBENCH_PRIME_MOVER_M_REF_NM": 81,
+      "JSO_DESKBENCH_PRIME_MOVER_N_REF_RPM": 79,
+      "JSO_DESKBENCH_PRIME_MOVER_N_REF_RPM_FILTERED": 80,
+      "JSO_DESKBENCH_PRIME_MOVER_SPEED_RPM": 76,
+      "JSO_DESKBENCH_PRIME_MOVER_THETA_EL_RAD": 77,
+      "JSO_DESKBENCH_PRIME_MOVER_V_DC_V": 73,
+      "JSO_DESKBENCH_PRIME_MOVER_V_D_V": 74,
+      "JSO_DESKBENCH_PRIME_MOVER_V_Q_V": 75,
+      "JSO_DQN_PT1_ACTION": 49,
+      "JSO_DQN_PT1_ACTUAL": 46,
+      "JSO_DQN_PT1_EVAL_PROFILE_EPISODE": 50,
+      "JSO_DQN_PT1_JAVASCOPE_SETPOINT": 48,
+      "JSO_DQN_PT1_REFERENCE": 47,
+      "JSO_ISR_ExecTime_us": 1,
+      "JSO_ISR_Period_us": 2,
+      "JSO_LAYER_IDX": 83,
+      "JSO_PARAM_IDX": 84,
+      "JSO_PARAM_VALUE": 85,
+      "JSO_RESOLVER_PL_D4_CH1_N_MECH_RPM": 31,
+      "JSO_RESOLVER_PL_D4_CH1_OMEGA_EL_RAD_S": 32,
+      "JSO_RESOLVER_PL_D4_CH1_OMEGA_MECH_RAD_S": 30,
+      "JSO_RESOLVER_PL_D4_CH1_POS_EL_2PI": 29,
+      "JSO_RESOLVER_PL_D4_CH1_POS_MECH_2PI": 28,
+      "JSO_RESOLVER_PL_D4_CH1_REVOLUTION_COUNTER": 33,
+      "JSO_RESOLVER_PL_D4_CH2_N_MECH_RPM": 37,
+      "JSO_RESOLVER_PL_D4_CH2_OMEGA_EL_RAD_S": 38,
+      "JSO_RESOLVER_PL_D4_CH2_OMEGA_MECH_RAD_S": 36,
+      "JSO_RESOLVER_PL_D4_CH2_POS_EL_2PI": 35,
+      "JSO_RESOLVER_PL_D4_CH2_POS_MECH_2PI": 34,
+      "JSO_RESOLVER_PL_D4_CH2_REVOLUTION_COUNTER": 39,
+      "JSO_RESOLVER_PL_D4_CH3_N_MECH_RPM": 43,
+      "JSO_RESOLVER_PL_D4_CH3_OMEGA_EL_RAD_S": 44,
+      "JSO_RESOLVER_PL_D4_CH3_OMEGA_MECH_RAD_S": 42,
+      "JSO_RESOLVER_PL_D4_CH3_POS_EL_2PI": 41,
+      "JSO_RESOLVER_PL_D4_CH3_POS_MECH_2PI": 40,
+      "JSO_RESOLVER_PL_D4_CH3_REVOLUTION_COUNTER": 45,
+      "JSO_ZEROVALUE": 0,
+      "JSO_lifecheck": 3
+    },
+    "platform_state": null,
+    "repository": {
+      "commit": "4a6203c8615d9ae36ac3feb3e6be20cc9e92acf7-dirty",
+      "name": "ultrazohm/ultrazohm_sw"
+    },
+    "sample_period_us": 100.0,
+    "samples_per_packet": 15,
+    "slow_signals": {
+      "JSSD_FLOAT_Error_Code": 5,
+      "JSSD_FLOAT_ISR_ExecTime_us": 2,
+      "JSSD_FLOAT_ISR_Period_us": 3,
+      "JSSD_FLOAT_Milliseconds": 4,
+      "JSSD_FLOAT_SecondsSinceSystemStart": 1,
+      "JSSD_ZEROVALUE": 0
+    },
+    "variables": {
+      "allow_update": 23,
+      "d1_theta_m_offset": 8,
+      "d2_theta_m_offset": 9,
+      "deskbench_dut_i_d_ref_A": 7,
+      "deskbench_dut_i_q_ref_A": 6,
+      "deskbench_prime_mover_n_ref_rpm": 5,
+      "dqn_pt1_javascope_setpoint": 4,
+      "layer_idx": 20,
+      "param_idx": 21,
+      "param_value": 22,
+      "send_field_10": 13,
+      "send_field_11": 14,
+      "send_field_12": 15,
+      "send_field_13": 16,
+      "send_field_14": 17,
+      "send_field_15": 18,
+      "send_field_16": 19,
+      "send_field_7": 10,
+      "send_field_8": 11,
+      "send_field_9": 12
+    }
+  },
+  "run_id": "1795191367431564463-30163",
+  "schema_version": 5,
+  "software_version": "0.1.57.dev0",
+  "source": "ultrazohm_cli",
+  "started_unix_ns": 1795191367431587489,
+  "storage_layout": "consolidated_recordings",
+  "time_basis": "seconds from acquisition start; configured sample period; gaps unknown"
+}

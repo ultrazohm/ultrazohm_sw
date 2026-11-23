@@ -3,7 +3,7 @@
 
 // Hardware version of the UltraZohm
 /* Project Wizard BEGIN: hardware_version */
-#define UZ_HARDWARE_VERSION 4U
+#define UZ_HARDWARE_VERSION 3U
 /* Project Wizard END: hardware_version */
 
 // If Hardware version is v4 and the external STOP should be used, this define has to be set to 1. Otherwise, the external stop does nothing.

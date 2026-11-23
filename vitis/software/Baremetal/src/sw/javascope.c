@@ -117,10 +117,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_RESOLVER_PL_D4_CH3_OMEGA_EL_RAD_S] = &project_wizard_visualization_data.viz_resolver_pl_interface_d4_3_omega_el_rad_s;
 	js_ch_observable[JSO_RESOLVER_PL_D4_CH3_REVOLUTION_COUNTER] = &project_wizard_visualization_data.viz_resolver_pl_interface_d4_3_revolution_counter;
 /* Project Wizard END: javascope_observable_pointers */
-	js_ch_observable[JSO_DQN_PT1_ACTUAL] = &data->av.dqn_pt1_actual;
-	js_ch_observable[JSO_DQN_PT1_REFERENCE] = &data->av.dqn_pt1_reference;
-	js_ch_observable[JSO_DQN_PT1_JAVASCOPE_SETPOINT] = &data->av.dqn_pt1_javascope_setpoint;
-	js_ch_observable[JSO_DQN_PT1_ACTION] = &data->av.dqn_pt1_action;
 	js_ch_observable[JSO_DQN_PT1_EVAL_PROFILE_EPISODE] = &data->av.dqn_pt1_eval_profile_episode;
 	js_ch_observable[JSO_DESKBENCH_DUT_I_A_A] = &data->av.deskbench_dut_i_a_A;
 	js_ch_observable[JSO_DESKBENCH_DUT_I_B_A] = &data->av.deskbench_dut_i_b_A;
@@ -154,6 +150,20 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_N_REF_RPM_FILTERED] = &data->rasv.deskbench_prime_mover_n_ref_rpm_filtered;
 	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_M_REF_NM] = &data->rasv.deskbench_prime_mover_M_ref_Nm;
 	js_ch_observable[JSO_D3_INPUT_LOOPBACK_UINT32] = &data->av.d3_input_loopback_uint32;
+
+	js_ch_observable[JSO_DQN_PT1_JAVASCOPE_SETPOINT] = &data->av.dqn_pt1_javascope_setpoint;
+
+	js_ch_observable[JSO_RL_TRAINING_COMPLETION] = &data->av.RL_training_completion;
+	js_ch_observable[JSO_RL_DONE_FLAG] = &data->av.RL_done_flag;
+	js_ch_observable[JSO_RL_OBS0_PT1STATE] = &data->av.RL_obs0_PT1state;
+	js_ch_observable[JSO_RL_OBS1_PT1REF] = &data->av.RL_obs1_PT1ref;
+	js_ch_observable[JSO_RL_ACT0_PT1INPUT] = &data->av.RL_act0_PT1input;
+	js_ch_observable[JSO_RL_REWARD] = &data->av.RL_reward;
+
+	js_ch_observable[JSO_RL_LAYER_IDX] = &data->rasv.RL_layer_idx;
+	js_ch_observable[JSO_RL_PARAM_IDX] = &data->rasv.RL_param_idx;
+	js_ch_observable[JSO_RL_PARAM_VALUE] = &data->rasv.RL_param_value;
+	js_ch_observable[JSO_RL_ALLOW_UPDATE] = &data->rasv.RL_allow_update;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

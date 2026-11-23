@@ -66,7 +66,7 @@ static struct uz_nn_layer_config ddpg_layers[PT1_DDPG_NUMBER_OF_LAYERS] = {
            .weights = ddpg_layer2_weights,
            .bias = ddpg_layer2_bias,
            .output = ddpg_layer2_output},
-    [2] = {.activation_function = activation_tanh,
+    [2] = {.activation_function = activation_linear, //activation_tanh,
            .number_of_neurons = PT1_DDPG_NUMBER_OF_OUTPUTS,
            .number_of_inputs = PT1_DDPG_NEURONS_IN_SECOND_LAYER,
            .length_of_weights = UZ_MATRIX_SIZE(ddpg_layer3_weights),
@@ -181,10 +181,10 @@ void pt1_control_init(DS_Data *data)
     data->objects.dqn_agent = uz_dqn_agent_init(dqn_config);
 #endif
 
-    data->av.dqn_pt1_actual = 0.0f;
-    data->av.dqn_pt1_reference = PT1_CONTROL_INITIAL_SETPOINT;
+    data->av.RL_obs0_PT1state = 0.0f;
+    data->av.RL_obs1_PT1ref = PT1_CONTROL_INITIAL_SETPOINT;
     data->av.dqn_pt1_javascope_setpoint = PT1_CONTROL_INITIAL_SETPOINT;
-    data->av.dqn_pt1_action = 0.0f;
+    data->av.RL_act0_PT1input = 0.0f;
     finish_eval_profile(data);
 
     struct uz_plantPT1_config_t config = {
@@ -224,33 +224,51 @@ void pt1_control_step(DS_Data *data)
         prepare_eval_profile_episode(data);
     }
 
-    data->av.dqn_pt1_actual = uz_plantPT1_read_output(data->objects.plant_pt1);
+    data->av.RL_obs0_PT1state = uz_plantPT1_read_output(data->objects.plant_pt1);
     set_reference_value(data);
 
 #if (PT1_CONTROL_AGENT == PT1_CONTROL_AGENT_DDPG)
     uz_assert_not_NULL(data->objects.ddpg_agent);
-    data->av.dqn_pt1_action = uz_ddpg_agent_step(
+
+    if (data->rasv.RL_allow_update)
+    {
+        if (data->rasv.RL_param_idx >= ddpg_layers[data->rasv.RL_layer_idx].length_of_bias)
+        {
+            ddpg_layers[data->rasv.RL_layer_idx].weights[data->rasv.RL_param_idx-ddpg_layers[data->rasv.RL_layer_idx].length_of_bias] = data->rasv.RL_param_value;
+        } else {
+            ddpg_layers[data->rasv.RL_layer_idx].bias[data->rasv.RL_param_idx] = data->rasv.RL_param_value;
+        }
+    }
+
+
+    data->av.RL_act0_PT1input = uz_ddpg_agent_step(
         data->objects.ddpg_agent,
-        data->av.dqn_pt1_actual,
-        data->av.dqn_pt1_reference);
+        data->av.RL_obs0_PT1state,
+        data->av.RL_obs1_PT1ref);
 #else
     uz_assert_not_NULL(data->objects.dqn_agent);
-    data->av.dqn_pt1_action = uz_dqn_agent_step(
+    data->av.RL_act0_PT1input = uz_dqn_agent_step(
         data->objects.dqn_agent,
-        data->av.dqn_pt1_actual,
-        data->av.dqn_pt1_reference);
+        data->av.RL_obs0_PT1state,
+        data->av.RL_obs1_PT1ref);
 #endif
-    uz_plantPT1_set_input(data->objects.plant_pt1, data->av.dqn_pt1_action);
+    uz_plantPT1_set_input(data->objects.plant_pt1, data->av.RL_act0_PT1input);
     advance_eval_profile(data);
+
+    // write some values for the training
+    data->av.RL_training_completion = 0.99;
+    data->av.RL_done_flag = false;
+    data->av.RL_reward = 1.337;
 }
+
 
 void pt1_control_stop(DS_Data *data)
 {
     finish_eval_profile(data);
     uz_assert_not_NULL(data->objects.plant_pt1);
-    data->av.dqn_pt1_action = 0.0f;
-    data->av.dqn_pt1_actual = uz_plantPT1_read_output(data->objects.plant_pt1);
-    data->av.dqn_pt1_reference = data->av.dqn_pt1_javascope_setpoint;
+    data->av.RL_act0_PT1input = 0.0f;
+    data->av.RL_obs0_PT1state = uz_plantPT1_read_output(data->objects.plant_pt1);
+    data->av.RL_obs1_PT1ref = data->av.dqn_pt1_javascope_setpoint;
     uz_plantPT1_set_input(data->objects.plant_pt1, 0.0f);
 }
 
@@ -286,7 +304,7 @@ static void prepare_eval_profile_episode(DS_Data *data)
         return;
     }
 
-    data->av.dqn_pt1_action = 0.0f;
+    data->av.RL_act0_PT1input = 0.0f;
     uz_plantPT1_set_input(data->objects.plant_pt1, 0.0f);
     uz_plantPT1_reset_integrator(data->objects.plant_pt1);
     pt1_eval_profile_reset_pending = false;
@@ -296,13 +314,13 @@ static void set_reference_value(DS_Data *data)
 {
     if (!pt1_eval_profile_active)
     {
-        data->av.dqn_pt1_reference = data->av.dqn_pt1_javascope_setpoint;
+        data->av.RL_obs1_PT1ref = data->av.dqn_pt1_javascope_setpoint;
         data->av.dqn_pt1_eval_profile_episode = 0.0f;
         return;
     }
 
     uz_assert(pt1_eval_profile_episode_index < PT1_EVAL_PROFILE_LENGTH);
-    data->av.dqn_pt1_reference = pt1_eval_profile_references[pt1_eval_profile_episode_index];
+    data->av.RL_obs1_PT1ref = pt1_eval_profile_references[pt1_eval_profile_episode_index];
     data->av.dqn_pt1_eval_profile_episode = (float)(pt1_eval_profile_episode_index + 1U);
 }
 
@@ -323,7 +341,7 @@ static void advance_eval_profile(DS_Data *data)
     if ((pt1_eval_profile_episode_index + 1U) >= PT1_EVAL_PROFILE_LENGTH)
     {
         finish_eval_profile(data);
-        data->av.dqn_pt1_reference = data->av.dqn_pt1_javascope_setpoint;
+        data->av.RL_obs1_PT1ref = data->av.dqn_pt1_javascope_setpoint;
         return;
     }
 

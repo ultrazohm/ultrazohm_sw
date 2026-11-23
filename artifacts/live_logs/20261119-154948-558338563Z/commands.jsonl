@@ -1,0 +1,16 @@
+{"host_unix_ns":1795103388605714051,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":1,"name":"JSO_ISR_ExecTime_us","op":"set_observable"}},"source":"initial_channels","wire":[201,1.0]}
+{"host_unix_ns":1795103388605907231,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":2,"name":"JSO_ISR_Period_us","op":"set_observable"}},"source":"initial_channels","wire":[202,2.0]}
+{"host_unix_ns":1795103388605951370,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":3,"name":"JSO_lifecheck","op":"set_observable"}},"source":"initial_channels","wire":[203,3.0]}
+{"host_unix_ns":1795103388606357668,"outcome":"applied_locally","request":{"api_version":2,"command":{"ip":"192.168.1.233","op":"connect","port":1000}},"wire":null}
+{"host_unix_ns":1795103388607582466,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":4,"name":"JSO_DQN_PT1_ACTUAL","op":"set_observable"}},"wire":[204,46.0]}
+{"host_unix_ns":1795103388609002909,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":5,"name":"JSO_LAYER_IDX","op":"set_observable"}},"wire":[205,83.0]}
+{"host_unix_ns":1795103388610528222,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":6,"name":"JSO_PARAM_IDX","op":"set_observable"}},"wire":[206,84.0]}
+{"host_unix_ns":1795103388611764273,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":7,"name":"JSO_PARAM_VALUE","op":"set_observable"}},"wire":[207,85.0]}
+{"host_unix_ns":1795103388612957267,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":8,"name":"JSO_ALLOW_UPDATE","op":"set_observable"}},"wire":[208,86.0]}
+{"host_unix_ns":1795103388614028576,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"op":"enable_system"}},"wire":[1,0.0]}
+{"host_unix_ns":1795103388615458047,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"op":"enable_control"}},"wire":[2,0.0]}
+{"host_unix_ns":1795103389116665150,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"name":"layer_idx","op":"set_variable","value":2.0}},"wire":[21,2.0]}
+{"host_unix_ns":1795103389117727951,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"name":"param_idx","op":"set_variable","value":32.0}},"wire":[22,32.0]}
+{"host_unix_ns":1795103389118562273,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"name":"param_value","op":"set_variable","value":1.0}},"wire":[23,1.0]}
+{"code":null,"error":"unknown writable variable: allow_update","host_unix_ns":1795103389119557558,"outcome":"rejected","request":{"api_version":2,"command":{"name":"allow_update","op":"set_variable","value":1.0}}}
+{"host_unix_ns":1795103389120475959,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"op":"stop"}},"wire":[3,0.0]}

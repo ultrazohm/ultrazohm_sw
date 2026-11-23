@@ -1,0 +1,9 @@
+{"host_unix_ns":1795097635566373770,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":1,"name":"JSO_ISR_ExecTime_us","op":"set_observable"}},"source":"initial_channels","wire":[201,1.0]}
+{"host_unix_ns":1795097635566508653,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":2,"name":"JSO_ISR_Period_us","op":"set_observable"}},"source":"initial_channels","wire":[202,2.0]}
+{"host_unix_ns":1795097635566531158,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":3,"name":"JSO_lifecheck","op":"set_observable"}},"source":"initial_channels","wire":[203,3.0]}
+{"host_unix_ns":1795097635566948784,"outcome":"applied_locally","request":{"api_version":2,"command":{"ip":"192.168.1.233","op":"connect","port":1000}},"wire":null}
+{"host_unix_ns":1795097635568134604,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":4,"name":"JSO_DQN_PT1_ACTUAL","op":"set_observable"}},"wire":[204,4.0]}
+{"host_unix_ns":1795097635572970993,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"op":"enable_system"}},"wire":[1,0.0]}
+{"host_unix_ns":1795097635574063604,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"op":"enable_control"}},"wire":[2,0.0]}
+{"code":null,"error":"unknown writable variable: layer_idx","host_unix_ns":1795097636075880669,"outcome":"rejected","request":{"api_version":2,"command":{"name":"layer_idx","op":"set_variable","value":1.0}}}
+{"host_unix_ns":1795097636077558545,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"op":"stop"}},"wire":[3,0.0]}

@@ -68,10 +68,7 @@ enum JS_OberservableData {
 	JSO_RESOLVER_PL_D4_CH3_OMEGA_EL_RAD_S,
 	JSO_RESOLVER_PL_D4_CH3_REVOLUTION_COUNTER,
 /* Project Wizard END: javascope_observables */
-	JSO_DQN_PT1_ACTUAL,
-	JSO_DQN_PT1_REFERENCE,
 	JSO_DQN_PT1_JAVASCOPE_SETPOINT,
-	JSO_DQN_PT1_ACTION,
 	JSO_DQN_PT1_EVAL_PROFILE_EPISODE,
 	JSO_DESKBENCH_DUT_I_A_A,
 	JSO_DESKBENCH_DUT_I_B_A,
@@ -105,6 +102,19 @@ enum JS_OberservableData {
 	JSO_DESKBENCH_PRIME_MOVER_N_REF_RPM_FILTERED,
 	JSO_DESKBENCH_PRIME_MOVER_M_REF_NM,
 	JSO_D3_INPUT_LOOPBACK_UINT32,
+/* Reinforcement Learning I/O */
+	JSO_RL_TRAINING_COMPLETION,
+	JSO_RL_DONE_FLAG,
+	JSO_RL_OBS0_PT1STATE,
+	JSO_RL_OBS1_PT1REF,
+	JSO_RL_ACT0_PT1INPUT,
+	JSO_RL_REWARD,
+
+	JSO_RL_LAYER_IDX,
+	JSO_RL_PARAM_IDX,
+	JSO_RL_PARAM_VALUE,
+	JSO_RL_ALLOW_UPDATE,
+	
 	JSO_ENDMARKER
 };
 
@@ -189,10 +199,10 @@ enum gui_button_mapping {
 	send_field_14,
 	send_field_15,
 	send_field_16,
-	send_field_17,
-	send_field_18,
-	send_field_19,
-	send_field_20,
+	layer_idx,
+	param_idx,
+	param_value,
+	allow_update,
 	SND_FLD_ENDMARKER
 
 

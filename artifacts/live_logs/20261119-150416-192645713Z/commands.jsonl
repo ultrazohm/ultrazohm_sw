@@ -1,0 +1,11 @@
+{"host_unix_ns":1795100656242163392,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":1,"name":"JSO_ISR_ExecTime_us","op":"set_observable"}},"source":"initial_channels","wire":[201,1.0]}
+{"host_unix_ns":1795100656242377194,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":2,"name":"JSO_ISR_Period_us","op":"set_observable"}},"source":"initial_channels","wire":[202,2.0]}
+{"host_unix_ns":1795100656242438558,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":3,"name":"JSO_lifecheck","op":"set_observable"}},"source":"initial_channels","wire":[203,3.0]}
+{"host_unix_ns":1795100656242869129,"outcome":"applied_locally","request":{"api_version":2,"command":{"ip":"192.168.1.233","op":"connect","port":1000}},"wire":null}
+{"host_unix_ns":1795100656244148765,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"channel":4,"name":"JSO_DQN_PT1_ACTUAL","op":"set_observable"}},"wire":[204,46.0]}
+{"host_unix_ns":1795100656245082012,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"op":"enable_system"}},"wire":[1,0.0]}
+{"host_unix_ns":1795100656246310096,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"op":"enable_control"}},"wire":[2,0.0]}
+{"host_unix_ns":1795100656748216131,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"name":"layer_idx","op":"set_variable","value":2.0}},"wire":[21,2.0]}
+{"host_unix_ns":1795100656749280443,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"name":"param_idx","op":"set_variable","value":0.0}},"wire":[22,0.0]}
+{"code":null,"error":"unknown writable variable: param_malue","host_unix_ns":1795100656750378103,"outcome":"rejected","request":{"api_version":2,"command":{"name":"param_malue","op":"set_variable","value":1.0}}}
+{"host_unix_ns":1795100656751254615,"outcome":"sent_unconfirmed","request":{"api_version":2,"command":{"op":"stop"}},"wire":[3,0.0]}

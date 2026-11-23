@@ -205,6 +205,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_hm_ref_duty_c]=&data->hm_pmsm_reference_values->duty_cycle.DutyCycle_C;
 /* Project Wizard END: javascope_observable_pointers */
 	js_ch_observable[JSO_D3_INPUT_LOOPBACK_UINT32] = &data->av.d3_input_loopback_uint32;
+	js_ch_observable[JSO_speed_ki] = &data->av.tune_Ki_speed_control;
+	js_ch_observable[JSO_speed_kp] = &data->av.tune_Kp_speed_control;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

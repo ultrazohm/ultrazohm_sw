@@ -120,6 +120,7 @@ void ISR_Control(void *data)
     case REAL:
         get_real_measurements(dut_motor);
         get_real_measurements(load_motor);
+
         // speed for JSO
         if (dut_motor == UZ_MOTOR_HM) {
             Global_Data.av.speed_n_rpm_DUT = Global_Data.av.speed_n_rpm_HM;
@@ -636,9 +637,21 @@ static struct uz_pmsm_measurement_values get_real_measurement_values(uz_motor_id
     measurements.v_abc_in_V.c = scale_adc_value(
         get_adc_value(motor, adc_config->voltage_channels.phase_c),
         adc_config->voltage_scaling.phase_c_gain, adc_config->voltage_scaling.phase_c_offset);
-    measurements.v_dc_in_V = scale_adc_value(
-        get_adc_value(motor, adc_config->voltage_channels.dc_link),
-        adc_config->voltage_scaling.dc_link_gain, adc_config->voltage_scaling.dc_link_offset);
+    if (motor_config->inverter == UZ_INVERTER_DHG) {
+        uz_motor_id_t ws_motor = get_load_motor(motor);
+        const uz_testbench_adc_config_t *ws_adc =
+            &uz_testbench_get_inverter_config(UZ_INVERTER_WS)->adc;
+
+        uz_assert(uz_testbench_get_motor_config(ws_motor)->inverter == UZ_INVERTER_WS);
+        // Temporary workaround for the DHG DC-link voltage measurement.
+        measurements.v_dc_in_V = scale_adc_value(
+            get_adc_value(ws_motor, ws_adc->voltage_channels.dc_link),
+            ws_adc->voltage_scaling.dc_link_gain, ws_adc->voltage_scaling.dc_link_offset);
+    } else {
+        measurements.v_dc_in_V = scale_adc_value(
+            get_adc_value(motor, adc_config->voltage_channels.dc_link),
+            adc_config->voltage_scaling.dc_link_gain, adc_config->voltage_scaling.dc_link_offset);
+    }
     measurements.theta_mech = uz_signals_wrap(direction * theta_mech, 2.0f * UZ_PIf);
     measurements.omega_mech_rad_per_sec = direction * omega_mech;
 
@@ -686,6 +699,10 @@ static void perform_one_controller_step(uz_motor_id_t dutmotor, enum dut_control
         // enable/disable speed control
         if (control_mode == speed) {
             uz_pmsm_control_enable_speed_control(Global_Data.objects.pmsm_control_HM, true);
+    		if (Global_Data.av.tune_speed_control_flag == true) {
+    			uz_pmsm_control_speed_control_set_Kp_speed(Global_Data.objects.pmsm_control_HM, Global_Data.av.tune_Kp_speed_control);
+    			uz_pmsm_control_speed_control_set_Ki_speed(Global_Data.objects.pmsm_control_HM, Global_Data.av.tune_Ki_speed_control);
+    		}
         } else {
             uz_pmsm_control_enable_speed_control(Global_Data.objects.pmsm_control_HM, false);
         }
@@ -724,6 +741,10 @@ static void perform_one_controller_step(uz_motor_id_t dutmotor, enum dut_control
         // enable/disable speed control
         if (control_mode == speed) {
             uz_pmsm_control_enable_speed_control(Global_Data.objects.pmsm_control_Beckhoff_AM8071, true);
+    		if (Global_Data.av.tune_speed_control_flag == true) {
+    			uz_pmsm_control_speed_control_set_Kp_speed(Global_Data.objects.pmsm_control_Beckhoff_AM8071, Global_Data.av.tune_Kp_speed_control);
+    			uz_pmsm_control_speed_control_set_Ki_speed(Global_Data.objects.pmsm_control_Beckhoff_AM8071, Global_Data.av.tune_Ki_speed_control);
+    		}
         } else {
             uz_pmsm_control_enable_speed_control(Global_Data.objects.pmsm_control_Beckhoff_AM8071, false);
         }

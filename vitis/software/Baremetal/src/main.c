@@ -100,6 +100,7 @@ int main(void)
             Global_Data.hm_pmsm_actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.pmsm_control_HM);
             Global_Data.hm_pmsm_measurement_values = uz_pmsm_control_get_pmsm_measurement_values(Global_Data.objects.pmsm_control_HM);
             Global_Data.hm_pmsm_reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.pmsm_control_HM);
+            Global_Data.av.tune_speed_control_flag = 0;
             JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;

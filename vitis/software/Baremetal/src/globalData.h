@@ -73,6 +73,9 @@ typedef struct _actualValues_ {
 	float speed_n_rpm_HM;
 	float theta_el_HM;
 	float speed_n_rpm_DUT;
+	float tune_Kp_speed_control;
+	float tune_Ki_speed_control;
+	bool tune_speed_control_flag;
 	/* Project Wizard BEGIN: actualValues */
 	float adc_ltc2311_a1_ch0;
 	float adc_ltc2311_a1_ch1;

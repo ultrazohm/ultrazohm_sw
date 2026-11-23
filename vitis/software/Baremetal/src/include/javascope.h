@@ -149,6 +149,8 @@ enum JS_OberservableData {
 	JSO_RESOLVER_PL_D4_CH3_REVOLUTION_COUNTER,
 /* Project Wizard END: javascope_observables */
 	JSO_D3_INPUT_LOOPBACK_UINT32,
+	JSO_speed_ki,
+	JSO_speed_kp,
 	JSO_ENDMARKER
 };
 
@@ -235,8 +237,8 @@ enum gui_button_mapping {
 	dutycycle_A_Beckhoff,
 	dutycycle_B_Beckhoff,
 	dutycycle_C_Beckhoff
-	send_field_12,
-	send_field_13,
+	tune_Kp_speed,
+	tune_Ki_speed,
 	send_field_14,
 	send_field_15,
 	send_field_16,
@@ -336,7 +338,7 @@ enum gui_button_mapping {
 	DUT_HM,
 	speed_current_dutycycle,
 	reset_dhg_inv,
-	reset_error,
+	tune_speed_control,
 	MyButton_7,
 	MyButton_8,
 	MYBUTTONS_LABELS_ENDMARKER

@@ -15,8 +15,15 @@
 #undef  OPTION_DEFAULT_DBG_LEVEL
 #undef  OPTION_MAX_DBG_LEVEL
 #define OPTION_FIXED_DBG_LEVEL 1
+/* DAQ clock: uz_SystemTime's 64-bit AXI timer at 100 MHz, 10 ns per tick
+ * (clockGet in platform_baremetal.c, which checks the rate against the BSP).
+ * The engine reports it as UNIT_1NS with 10 ticks per unit (A2L
+ * TIMESTAMP_SUPPORTED 0x0A UNIT_1NS). The 32-bit DTO timestamp wraps every
+ * 42.9 s. Was OPTION_CLOCK_TICKS_1US, truncated to whole microseconds. */
 #undef  OPTION_CLOCK_TICKS_1NS
-#define OPTION_CLOCK_TICKS_1US
+#undef  OPTION_CLOCK_TICKS_1US
+#undef  CLOCK_TICKS_PER_S
+#define CLOCK_TICKS_PER_S 100000000UL
 #undef  OPTION_CLOCK_EPOCH_PTP
 #define OPTION_CLOCK_EPOCH_ARB
 #undef  OPTION_QUEUE_64_VAR_SIZE

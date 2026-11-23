@@ -176,7 +176,7 @@ def build_a2l(items, ip, port, struct_blocks=""):
         0xF0
         NO_OVERLOAD_INDICATION
         /begin TIMESTAMP_SUPPORTED
-          0x1 SIZE_DWORD UNIT_1US TIMESTAMP_FIXED
+          0x0A SIZE_DWORD UNIT_1NS TIMESTAMP_FIXED
         /end TIMESTAMP_SUPPORTED
 {events}
       /end DAQ

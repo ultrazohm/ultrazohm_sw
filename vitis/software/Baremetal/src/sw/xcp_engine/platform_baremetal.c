@@ -16,8 +16,14 @@
 #include <stdio.h>   /* snprintf */
 #include <stdint.h>
 
-/* uz_SystemTime free-running 1 us uptime clock (UZ Baremetal lib). */
-extern uint64_t uz_SystemTime_GetUptimeInUs(void);
+#include "xparameters.h" /* XPAR_UZ_SYSTEM_TIMER_UPTIME_64BIT_CLOCK_FREQ_HZ */
+
+/* uz_SystemTime's free-running 64-bit AXI timer (UZ Baremetal lib). */
+extern uint64_t uz_AxiTimer64Bit_ReadValue64Bit(void);
+
+#if CLOCK_TICKS_PER_S != XPAR_UZ_SYSTEM_TIMER_UPTIME_64BIT_CLOCK_FREQ_HZ
+#error "CLOCK_TICKS_PER_S (xcplib_r5_cfg.h) must be the frequency of uz_SystemTime's AXI timer"
+#endif
 
 /**************************************************************************/
 /* Mutex == IRQ critical section (ARMv7-R), nesting-safe                   */
@@ -53,15 +59,18 @@ void mutexDestroy(MUTEX *m) {
 }
 
 /**************************************************************************/
-/* Clock — 1 us, arbitrary epoch, from uz_SystemTime                       */
+/* Clock — 10 ns AXI timer ticks, epoch = timer start at boot              */
 /**************************************************************************/
 
 bool clockInit(void) {
     return true; /* uz_SystemTime is initialised by the Baremetal app */
 }
 
+/* The live timer value. GET_DAQ_CLOCK (the master's time synchronisation)
+ * and the DAQ start read it here. The DAQ samples carry the start of their
+ * control ISR instead (xcp_r5_event, XcpEventAt). */
 uint64_t clockGet(void) {
-    return uz_SystemTime_GetUptimeInUs();
+    return uz_AxiTimer64Bit_ReadValue64Bit();
 }
 
 char *clockGetString(char *s, uint32_t l, uint64_t c) {

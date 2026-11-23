@@ -164,7 +164,7 @@ Settings that an A2L file for the UltraZohm must contain:
    * - Identification field
      - ``RELATIVE_WORD_ALIGNED``
    * - Time stamp
-     - 4 bytes (``SIZE_DWORD``), resolution 1 µs
+     - 4 bytes (``SIZE_DWORD``), resolution 10 ns (``0x0A UNIT_1NS``), wraps every 42.9 s
    * - Events
      - 0 ``DAQ_R5``, 1 ``daq_1ms``, 2 ``daq_10ms``, 3 ``daq_100ms``, 4 ``daq_1s``
    * - Command timeout ``T1``
@@ -175,6 +175,10 @@ Measure
 
 Assign every signal to the slowest raster that is sufficient.
 A measurement on ``DAQ_R5`` produces one sample per control cycle; 2000 bytes per cycle at 10 kHz are already 160 Mbit/s.
+
+Every sample carries the start of its control interrupt, read from the 100 MHz system timer of ``uz_SystemTime``.
+Consecutive samples on ``DAQ_R5`` are therefore one control period apart, give or take the interrupt latency.
+CANape converts the time of the UltraZohm to the clock of the PC, so the times in a recording also contain the drift between the two clocks (about 17 ppm on the test bench).
 
 In July 2026 an earlier version of this data path ran on hardware for one hour with 325 Mbit/s of measurement data (4000 bytes per cycle at 10 kHz).
 The XCP session stayed alive, and the data of about 0.003 % of the control cycles was lost at the exchange between the processors.

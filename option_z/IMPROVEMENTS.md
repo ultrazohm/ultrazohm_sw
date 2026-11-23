@@ -455,8 +455,10 @@ explicit `OPTION_DAQ_EVENT_LIST` / `OPTION_SECTION_REGISTRATION` split (we use
 the run-time event list, no linker sections). Behavioural change to note:
 `GET_DAQ_RESOLUTION_INFO` now reports the 1 µs clock as `UNIT_1NS` with 1000
 ticks per unit instead of `UNIT_1US` with 1 tick (same resolution; the A2L
-keeps `0x1 SIZE_DWORD UNIT_1US TIMESTAMP_FIXED`, which is what upstream's
-own A2L writer still emits).
+kept `0x1 SIZE_DWORD UNIT_1US TIMESTAMP_FIXED`, which is what upstream's
+own A2L writer still emits). Since 2026-11-23 the DAQ clock is the 100 MHz
+AXI timer of `uz_SystemTime` (`CLOCK_TICKS_PER_S` 100000000, reported as
+`UNIT_1NS` with 10 ticks; A2L `0x0A SIZE_DWORD UNIT_1NS`), see STATUS.
 
 Local patches on top of upstream, every one marked `UZ` in the source and
 default-off where it touches engine behaviour (re-apply after the next

@@ -343,6 +343,17 @@ CANape session at 40 kHz, the first build with the CONNECT print and
   of the 900 B run: 2,400,121 board datagrams, the same as the GEM's
   frames_txed, consecutive IP IDs, no repeats. Only 2 pause frames in that
   run, so the soak above is the test of the fix under pause frames.
+- DAQ timestamps (built, NOT yet on hardware). A CANape recording of
+  `lifecheck` on `DAQ_R5` (190 s, 7.6 M samples, none missing) had steps of
+  23-27 us instead of 25 us. The control period itself is exact: the
+  board's timestamps add up to 25 us per sample. They were the ISR start
+  truncated to whole microseconds, so a few ns of interrupt latency near a
+  microsecond boundary showed as +1 us (5.55 % of the samples, a share that
+  changes with every boot), +2 us for 0.05 %. Now every sample of a cycle
+  carries the ISR start in 10 ns ticks of the AXI timer (`XcpEventAt`), and
+  `GET_DAQ_CLOCK` reads the timer live instead of the last ISR start.
+  CANape still converts to PC time (-17.35 ppm in that recording, wandering
+  by up to 135 us around the line).
 - Withdrawn: "reordering in the PC" (2026-11-17/18 and July) and the PC as
   the source of the rare lost responses. `xcp_poll.py` hid the defect by
   offsetting duplicates against gaps; it now checks every counter value

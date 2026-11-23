@@ -12,6 +12,7 @@ void uz_SystemTime_ISR_Toc(); // stop the stopwatch
 float uz_SystemTime_GetIsrPeriodInUs();
 float uz_SystemTime_GetIsrExectionTimeInUs();
 uint64_t uz_SystemTime_GetInterruptCounter();
+uint64_t uz_SystemTime_GetIsrStartTicks(); // timer value at the start of the current (or last) ISR, in ticks of UZ_AXI_TIMER_CLOCK_FREQ
 uint64_t uz_SystemTime_GetUptimeInUs();
 unsigned int uz_SystemTime_GetUptimeInMs();
 unsigned int uz_SystemTime_GetUptimeInSec();

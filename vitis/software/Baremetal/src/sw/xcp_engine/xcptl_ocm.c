@@ -70,7 +70,7 @@
 #define XCP_R5_QUEUE_SIZE_BYTES (128u * 1024u)
 
 #include "xparameters.h" /* XPAR_CPU_CORTEXR5_0_CPU_CLK_FREQ_HZ */
-#include "../../uz/uz_SystemTime/uz_SystemTime.h" /* uz_SystemTime_GetInterruptCounter */
+#include "../../uz/uz_SystemTime/uz_SystemTime.h" /* uz_SystemTime_GetInterruptCounter, _GetIsrStartTicks */
 
 /* Time base of the main-loop pacing: the control ISRs counted by
  * uz_SystemTime (uz_SystemTime_ISR_Tic(), the first call in ISR_Control).
@@ -528,13 +528,17 @@ void xcp_r5_event(void) {
     const uint32_t c0 = xcp_r5_cycles();
 #endif
     xcp_r5_cycle_count++;
-    XcpEvent(xcp_r5_daq_event);
+    /* Every sample of this control cycle carries the cycle's start: the timer
+     * value uz_SystemTime_ISR_Tic() latched at ISR entry (10 ns ticks, the DAQ
+     * clock of xcplib_r5_cfg.h), not the time this call happens to run. */
+    const uint64_t cycle_start = uz_SystemTime_GetIsrStartTicks();
+    XcpEventAt(xcp_r5_daq_event, cycle_start);
 
     /* Named time slices derived from the control-ISR rate. */
     for (uint32_t i = 0u; i < XCP_R5_SLICE_COUNT; i++) {
         if (++gSliceCnt[i] >= kXcpR5Slice[i].divider) {
             gSliceCnt[i] = 0u;
-            XcpEvent(xcp_r5_daq_slice_event[i]);
+            XcpEventAt(xcp_r5_daq_slice_event[i], cycle_start);
         }
     }
 #if XCP_R5_PROFILE

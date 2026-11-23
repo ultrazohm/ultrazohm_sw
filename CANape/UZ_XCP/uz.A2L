@@ -1014,9 +1014,9 @@ DUAL: on falling and rising edge*/
         0xF0
         NO_OVERLOAD_INDICATION
         /begin TIMESTAMP_SUPPORTED
-          0x01
+          0x0A
           SIZE_DWORD
-          UNIT_1US
+          UNIT_1NS
           TIMESTAMP_FIXED
         /end TIMESTAMP_SUPPORTED
         /begin EVENT

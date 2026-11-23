@@ -372,7 +372,7 @@ This Tutorial was conducted using CANape 24.0.
 	:align: center
 
 
-20. Specify 1 µs as time stamp resolution. For the UltraZohm set the size of the time stamp to DWORD (4 bytes). The screenshot shows WORD.
+20. Specify 10 ns as time stamp resolution (unit 1 ns, 10 ticks per unit, as in the A2L file). For the UltraZohm set the size of the time stamp to DWORD (4 bytes). The screenshot shows an older setting (1 µs, WORD).
 
 .. _CANape_project_20:
 

@@ -159,31 +159,39 @@ are refused with ERR_OUT_OF_RANGE.
 
 The report verifies the CP7 mechanisms directly:
 - **frames/datagram** ≫ 1 → the gateway TX batching works (B1);
-- **ctr gaps = 0** → nothing was lost after the A53 stamped the counter
-  (send drop, wire, PC-side rx). The A53 stamps the CTR at transmission
-  time, so a drop BEFORE that point (R5 queue, OCM overwrite, A53 DAQ queue)
-  never shows up as a gap — those are in the counter deltas below;
+- **ctr missing = 0 and ctr duplicated = 0** → every frame the A53 stamped
+  arrived exactly once (send drop, wire, PC-side rx). The check follows
+  every counter value: a value that never arrives is missing, one that
+  arrives twice is duplicated, one that arrives after a later one is late.
+  The A53 stamps the CTR at transmission time, so a drop BEFORE that point
+  (R5 queue, OCM overwrite, A53 DAQ queue) never shows up here — those are
+  in the counter deltas below;
 - **event cycles ~ control rate** (from ODT0 target timestamps);
 - **R5 and A53 counter deltas** (`ocm_xcp_w_dropped`, `xcp_r5_queue_lost`,
   `xcp_gw_txq_dropped`, … read via SHORT_UPLOAD before/after, the A53 ones
   through the OCM mirror) — the "must stay 0" set is flagged.
 
-Exit code: 0 = clean (pure reordering passes), 2 = ran with net loss (then
-check the A53 counters in the report — `xcp_gw_sendto_drop`/`xcp_gw_sendto_err`
-attribute it: >0 = ECU lwIP; 0 = wire/PC receive path).
+Exit code: 0 = every counter value arrived once (late frames are listed but
+pass), 2 = frames missing or duplicated (then check the A53 counters in the
+report — `xcp_gw_sendto_drop`/`xcp_gw_sendto_err` attribute missing frames:
+>0 = ECU lwIP; 0 = wire/PC receive path).
 Escalation sequence for a soak: `--stress --daq-seconds 600`, then
 `--stress-bytes 4000 --daq-seconds 600`, then overnight.
 
-**Interpreting "ctr reordering"**: the board serializes datagrams through a
-single GEM queue, so UDP reordering on a direct link can only happen in the
-PC's receive path (NIC RSS/DPC scheduling). Reordered frames arrived — the
-report's "net lost" is the real loss. Hardware baseline (2026-07-10, CP9,
-60 s @ 320 Mbit/s): `sendto_err/drop = 0` (ECU clean), ~128 net lost frames
-(0.0013 %) + 193 late frames, all PC-side. NB: CANape checks the transport
-counter too and may log "Ungültiger Zähler" on a reordering PC NIC even with
-zero loss — that is a PC/NIC-driver artifact (try: disable interrupt
-moderation/RSS on the adapter, raise its receive buffers, prefer a PCIe
-Intel NIC over USB adapters), not an ECU defect.
+**Interpreting the counter check**: the board sends every datagram through
+one tx task and one GEM queue, in counter order. Duplicated frames are a
+board defect. Until 2026-11-23 (`8fe168bf3`) the gateway reused its
+transmit buffer while the GEM DMA still read it (lwIP sends zero-copy), so
+datagrams queued in the GEM went out with the contents of a later one: the
+later contents twice, the earlier ones never. Pause frames from the PC's
+adapter queue datagrams and set it off. Until that date this report offset
+the backward steps against the gaps ("late, not lost") and so reported
+these losses as reordering in the PC; the July baseline (CP9, 60 s @
+320 Mbit/s: ~128 "net lost" + 193 "late" frames) and CANape's "Ungültiger
+Zähler" warnings were most likely this defect, not the PC NIC. A 10 min
+capture after the fix showed no late frames; on a direct link they could
+only come from the PC's receive path. CANape logs every counter step other
+than +1 as "Ungültiger Zähler", late frames included.
 
 ## Test 4 — CANape (optional)
 

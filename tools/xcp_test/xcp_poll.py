@@ -533,10 +533,79 @@ def print_prof(p):
                  p["ack_n"], p["daq_waits"], p["polls"] / (elapsed / 1e6)))
 
 
+class CtrCheck:
+    """Exact check of the XCP transport counter of the received frames.
+
+    The A53 stamps the counter on every frame when it sends the datagram, one
+    step per frame, so a clean path delivers every value exactly once and in
+    order. The check keeps the last WINDOW values: a value that leaves the
+    window without having arrived is missing, one that arrives a second time
+    is a duplicate, one that arrives behind a later value is late.
+
+    Duplicates must not be offset against gaps: a datagram sent with the
+    contents of a later one (the A53 transmit buffer reused before the DMA
+    read it, fixed 2026-11-23) shows up as a gap followed by a backward step,
+    and counting the backward frames as "late, not lost" hid the loss.
+    A 16-bit counter cannot place a value more than half its range away, so
+    the window is 2^15 values.
+    """
+    WINDOW = 1 << 15
+
+    def __init__(self):
+        self._mask = self.WINDOW - 1
+        # 1 = arrived; the slots start as "arrived" because the values before
+        # the first frame are not expected.
+        self._seen = bytearray(b"\x01") * self.WINDOW
+        self.hi = None     # newest counter value, unwrapped
+        self.lost = 0      # left the window without arriving
+        self.dup = 0       # arrived a second time
+        self.late = 0      # arrived after a later value
+        self.too_old = 0   # further back than the window: late or duplicate
+
+    def add(self, ctr):
+        hi = self.hi
+        if hi is None:
+            self.hi = ctr
+            return
+        seen = self._seen
+        mask = self._mask
+        d = (ctr - hi) & 0xFFFF
+        if d == 1:  # the normal case
+            i = (hi + 1) & mask
+            if not seen[i]:
+                self.lost += 1  # value hi + 1 - WINDOW never arrived
+            seen[i] = 1
+            self.hi = hi + 1
+        elif d and d < 0x8000:  # forward with d - 1 values skipped
+            for s in range(hi + 1, hi + d + 1):
+                i = s & mask
+                if not seen[i]:
+                    self.lost += 1
+                seen[i] = 0
+            seen[(hi + d) & mask] = 1
+            self.hi = hi + d
+        else:  # the newest value again, or backwards
+            back = (hi - ctr) & 0xFFFF
+            if back >= self.WINDOW:
+                self.too_old += 1
+                return
+            i = (hi - back) & mask
+            if seen[i]:
+                self.dup += 1
+            else:
+                seen[i] = 1
+                self.late += 1
+
+    def missing(self):
+        """Values that have not arrived: lost for good plus those still open
+        in the window (counted as lost at the end of a run)."""
+        return self.lost + self._seen.count(0)
+
+
 def run_stress(xcp, args, max_dto):
     """DAQ throughput stress: one wide multi-ODT list on args.daq_event (by
     default the full control rate). Verifies the CP7 gateway path under load: UDP batching
-    (frames/datagram), transport-CTR continuity (gaps = lost records), and the
+    (frames/datagram), the transport CTR of every frame (CtrCheck), and the
     R5-side drop counters. hedrive reference: 160 Mbit/s sustained."""
     odts = stress_geometry(args.stress_bytes, max_dto)
     per_cycle = sum(sum(entries) for entries in odts)
@@ -586,9 +655,7 @@ def run_stress(xcp, args, max_dto):
 
     buf = bytearray(4096)
     dgrams = frames = payload = cycles = 0
-    ctr_gap_events = ctr_gap_frames = 0
-    ctr_reorder = 0
-    last_ctr = None
+    ctr_check = CtrCheck()
     first_ts = last_ts = None
     t0 = time.monotonic()
     t_end = t0 + args.daq_seconds
@@ -601,9 +668,10 @@ def run_stress(xcp, args, max_dto):
             if now >= t_end:
                 break
             if now >= t_tick:
-                print("    %5.1fs  %6d dgrams/s  %7.2f Mbit/s payload  ctr_gaps=%d" %
+                print("    %5.1fs  %6d dgrams/s  %7.2f Mbit/s payload  ctr missing=%d dup=%d" %
                       (now - t0, dgrams - tick_dgrams,
-                       (payload - tick_payload) * 8 / 1e6, ctr_gap_frames))
+                       (payload - tick_payload) * 8 / 1e6,
+                       ctr_check.missing(), ctr_check.dup))
                 t_tick += 1.0
                 tick_payload, tick_dgrams = payload, dgrams
             try:
@@ -618,21 +686,7 @@ def run_stress(xcp, args, max_dto):
                     break  # padding / malformed tail
                 frames += 1
                 payload += dlc
-                if last_ctr is not None:
-                    delta = (ctr - last_ctr) & 0xFFFF
-                    if delta == 1:
-                        last_ctr = ctr
-                    elif delta > 0x8000:
-                        # CTR went backwards: a late/reordered datagram, not a
-                        # loss (its frames were already booked as a small gap
-                        # when they were skipped). Keep the high-water mark.
-                        ctr_reorder += 1
-                    else:
-                        ctr_gap_events += 1
-                        ctr_gap_frames += delta - 1
-                        last_ctr = ctr
-                else:
-                    last_ctr = ctr
+                ctr_check.add(ctr)
                 # ODT0 DTO: [odt u8][fill u8][daq u16][ts u32][data]
                 if buf[off + 4] == first_pid and dlc >= 8:
                     ts = struct.unpack_from("<I", buf, off + 8)[0]
@@ -666,16 +720,19 @@ def run_stress(xcp, args, max_dto):
         span_s = max((last_ts - first_ts) & 0xFFFFFFFF, 1) / 1e6
         print("    event cycles     %10d   (~%.0f Hz of target time)" %
               (cycles, (cycles - 1) / span_s))
-    net_lost = ctr_gap_frames - ctr_reorder
-    print("    ctr gaps         %10d frames skipped in %d gaps%s" %
-          (ctr_gap_frames, ctr_gap_events,
-           "  <-- loss at/after sendto (lwIP pbuf, wire, PC rx)"
-           if ctr_gap_frames else ""))
-    if ctr_reorder:
-        print("    ctr reordering   %10d of those arrived late (PC rx path "
-              "reorders; late, not lost)" % ctr_reorder)
-        print("    net lost         %10d frames (%.5f%%)  <-- the real loss" %
-              (net_lost, 100.0 * net_lost / frames if frames else 0.0))
+    missing = ctr_check.missing()
+    bad = missing + ctr_check.dup + ctr_check.too_old
+    print("    ctr missing      %10d frames (%.5f%%)%s" %
+          (missing, 100.0 * missing / frames if frames else 0.0,
+           "  <-- lost at/after sendto (lwIP, wire, PC rx)" if missing else ""))
+    print("    ctr duplicated   %10d frames%s" %
+          (ctr_check.dup, "  <-- sent twice: the A53 transmit path" if ctr_check.dup else ""))
+    if ctr_check.late:
+        print("    ctr late        %10d frames (arrived after a later one; CANape counts "
+              "these as counter errors too)" % ctr_check.late)
+    if ctr_check.too_old:
+        print("    ctr too old      %10d frames (more than %d values back: late or "
+              "duplicated)  <-- investigate" % (ctr_check.too_old, CtrCheck.WINDOW))
     if pre and post:
         print("    R5 counter deltas over the run:")
         for name in R5_DIAG_COUNTERS:
@@ -703,7 +760,7 @@ def run_stress(xcp, args, max_dto):
                                   "xcp_gw_sendto_drop"):
                     flag = "  <-- investigate"
                 print("      %-26s +%d%s" % (name, d, flag))
-        print("    (on ctr gaps: xcp_gw_sendto_drop > 0 = ECU dropped it after retries, "
+        print("    (on missing frames: xcp_gw_sendto_drop > 0 = ECU dropped it after retries, "
               "0 = wire/PC-side loss)")
     else:
         print("    (A53 gateway counters not readable: gateway older than the XCP_IN mirror?)")
@@ -713,11 +770,12 @@ def run_stress(xcp, args, max_dto):
     if frames == 0:
         print("\n[x] no DTOs received -- stress FAILED")
         return 1
-    if net_lost < 0:
-        net_lost = 0  # duplicated datagrams can over-count reordering
-    print("\n[+] stress %s" % ("PASSED (no wire loss)" if net_lost == 0
-                               else "completed WITH LOSS -- see counters"))
-    return 0 if net_lost == 0 else 2
+    if bad:
+        print("\n[+] stress completed WITH MISSING OR DUPLICATED FRAMES -- see counters")
+        return 2
+    print("\n[+] stress PASSED (every counter value once%s)" %
+          (", %d late" % ctr_check.late if ctr_check.late else ", in order"))
+    return 0
 
 
 def main():

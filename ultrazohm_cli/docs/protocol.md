@@ -426,7 +426,7 @@ Timestamps retain omitted intervals.
 ### Legacy JavaScope headers
 
 When `javascope_status.h` is absent, mapping generation sets `"legacy_javascope_header": true` and `"platform_state": null`.
-Commands, streaming, and logging remain available; service status returns `state.platform_state: null`, shown as **unavailable** by the Data Viewer.
+Commands, streaming, and logging remain available; service status returns `state.platform_state: null`, shown as **unavailable** by the Dataviewer.
 The raw status word is retained.
 An existing but invalid status header is an error, not a legacy fallback.
 Modern mappings set the marker to `false` and include the state mask and codes.

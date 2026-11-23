@@ -1,6 +1,6 @@
 # Acquisition architecture
 
-The CLI, Python API and native Data Viewer share a Rust acquisition service.
+The CLI, Python API and native Dataviewer share a Rust acquisition service.
 This document describes implementation ownership and invariants.
 User commands, file layouts and configuration examples live in the [usage guide](../README.md); the device and local API contracts live in [protocol.md](protocol.md).
 

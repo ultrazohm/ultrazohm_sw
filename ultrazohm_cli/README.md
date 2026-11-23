@@ -1,7 +1,7 @@
 # UltraZohm CLI and Python API
 
 Rust acquisition, control and CSV/Parquet logging for JavaScope firmware on Linux and Windows.
-The CLI, Python API and native [Data Viewer](../ultrazohm_dataviewer/README.md) use the same Rust service.
+The CLI, Python API and native [Dataviewer](../ultrazohm_dataviewer/README.md) use the same Rust service.
 The standalone CLI executable needs no Python or GUI.
 
 This guide covers setup and usage.
@@ -214,7 +214,7 @@ See the [header contract](docs/protocol.md#generating-a-mapping-from-firmware-he
 Generating a file does not reconfigure a running service.
 The optional `javascope` JSON object also records slow-signal float/integer types.
 This metadata is included in the service profile/catalog.
-The data viewer uses its button captions in the Control pane, falling back to `User N` when a caption is absent.
+The Dataviewer uses its button captions in the Control pane, falling back to `User N` when a caption is absent.
 Existing mappings without this metadata remain supported.
 
 ## Python
@@ -523,7 +523,7 @@ Linux/Windows CI and hardware validation remain separate from local test results
 
 ## Publishing
 
-One [workflow](../.github/workflows/uz_cli.yml) checks the CLI on Linux and Windows, builds and tests the release wheels, tests the data viewer against them and builds its bundles, one version per run: `MAJOR.MINOR` from `pyproject.toml` plus the workflow run number, with `.dev0` except for pushes to `main`.
+One [workflow](../.github/workflows/uz_cli.yml) checks the CLI on Linux and Windows, builds and tests the release wheels, tests the Dataviewer against them and builds its bundles, one version per run: `MAJOR.MINOR` from `pyproject.toml` plus the workflow run number, with `.dev0` except for pushes to `main`.
 The wheels are stamped and built once; the bundles contain exactly those wheels.
 
 Pushes to `main` (stable) and `develop` (prereleases) publish one GitHub release `ultrazohm-v<VERSION>` with three Python wheels, two Windows ZIPs and `SHA256SUMS`, and upload the wheels to PyPI as `ultrazohm-cli` and `ultrazohm-dataviewer` through trusted publishing.

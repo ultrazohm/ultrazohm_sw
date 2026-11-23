@@ -1,6 +1,6 @@
-# UltraZohm Data Viewer (`ultrazohm_dataviewer`)
+# UltraZohm Dataviewer (`ultrazohm_dataviewer`)
 
-The UltraZohm Data Viewer opens CSV and Parquet recordings and plots live measurements on Windows and Linux.
+The UltraZohm Dataviewer opens CSV and Parquet recordings and plots live measurements on Windows and Linux.
 It supports linked subplots, FFTs, histograms, and node transforms.
 Use `ultrazohm_dataviewer.Client` or the terminal commands to automate an open viewer.
 Save and restore your analysis as a JSON session.
@@ -26,7 +26,7 @@ Run `ultrazohm-dataviewer --help` for application commands.
 
 ## Settings
 
-Choose **UltraZohm Data Viewer → Settings** to open the settings window:
+Choose **UltraZohm Dataviewer → Settings** to open the settings window:
 
 - **General:** log browser directory and startup visibility of Application log and Python.
 - **Data loading:** backend, loading mode, and disk cache for newly opened recordings.

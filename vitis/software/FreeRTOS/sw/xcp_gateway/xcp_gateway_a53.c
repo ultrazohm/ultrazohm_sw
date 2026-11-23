@@ -50,6 +50,7 @@
 #include "xparameters.h" /* XPAR_CPU_CORTEXA53_0_TIMESTAMP_CLK_FREQ */
 #endif
 #include "xil_printf.h"
+#include "xlwipconfig.h" /* XLWIP_CONFIG_N_TX_DESC */
 
 #define XCP_GW_FRAME_MAX     OCM_XCP_RECORD_MAX /* one R5 queue segment = one datagram */
 #define XCP_TL_HEADER_LEN    4    /* [dlc:u16][ctr:u16]                          */
@@ -98,6 +99,24 @@
 #if XCP_GW_BATCH_BUF_SIZE < XCP_GW_FRAME_MAX
 #error "a datagram must hold the largest R5 record"
 #endif
+
+/* Transmit buffers: one per datagram, from a ring longer than the GEM's
+ * TX descriptor ring. lwip_sendto() does not copy the payload
+ * (LWIP_NETIF_TX_SINGLE_PBUF 0: netbuf_ref), and the GEM driver points its
+ * DMA descriptor at it (emacps_sgsend). The DMA reads the buffer when the
+ * frame reaches the head of the TX ring, which can be long after
+ * lwip_sendto() returned, for example while the link partner pauses the
+ * GEM. A single reused buffer then sent the content of a later datagram in
+ * all queued frames: repeated datagrams and lost ones on the wire, with
+ * valid checksums (TX checksum offload). CANape reported "invalid counter",
+ * backward timestamps, and a command timeout when a response was
+ * overwritten (bench 2026-11-23). A queued datagram holds at least one TX
+ * descriptor until its transmission completed, so with more buffers than
+ * descriptors a buffer comes round again only when its datagram is gone. */
+#ifndef XLWIP_CONFIG_N_TX_DESC
+#error "xlwipconfig.h must define XLWIP_CONFIG_N_TX_DESC"
+#endif
+#define XCP_GW_TX_BUFS (XLWIP_CONFIG_N_TX_DESC + 1)
 
 /* Bounded send retry (hedrive "bounded sends", UDP flavor): lwip_sendto()
  * fails transiently under burst load (pbuf/TX-BD exhaustion at 40k
@@ -736,7 +755,8 @@ static void xcp_gw_master_lost_disconnect(const char *why) {
 static void xcp_gw_tx_task(void *arg) {
     (void)arg;
     static xcp_gw_frame_t f;                       /* only this task uses them */
-    static uint8_t batch[XCP_GW_BATCH_BUF_SIZE];
+    static uint8_t tx_bufs[XCP_GW_TX_BUFS][XCP_GW_BATCH_BUF_SIZE];
+    uint32_t tx_buf = 0;                           /* next free transmit buffer */
     uint32_t my_master_gen = 0;
     uint32_t send_fail_run = 0;                    /* consecutive dropped datagrams */
 
@@ -751,6 +771,7 @@ static void xcp_gw_tx_task(void *arg) {
             send_fail_run = 0;
         }
 
+        uint8_t *const batch = tx_bufs[tx_buf];
         uint32_t fill = 0;
 #if XCP_GW_PROFILE
         const uint64_t tb0 = xcp_gw_ticks();
@@ -779,7 +800,7 @@ static void xcp_gw_tx_task(void *arg) {
             } else {
                 break;
             }
-            if (fill + f.len > sizeof(batch)) {
+            if (fill + f.len > XCP_GW_BATCH_BUF_SIZE) {
                 break; /* datagram full; the rest goes into the next one */
             }
             (void)xQueueReceive(q, &f, 0); /* single consumer: same item as peeked */
@@ -827,6 +848,9 @@ static void xcp_gw_tx_task(void *arg) {
             xcp_gw_sendto_drop++; /* stamped frames lost -> wire CTR gap */
             send_fail_run++;
         } else {
+            /* Queued: the DMA may read this buffer until the frame is sent.
+             * A failed send left no descriptor on it, so it is reused. */
+            tx_buf = (tx_buf + 1u) % XCP_GW_TX_BUFS;
             send_fail_run = 0;
         }
         /* Master supervision: nothing has been sendable for a while, or (if

@@ -2,9 +2,9 @@
 
 Option Z ran on hardware on 2026-07-10/11 (bring-up and a 1 h soak at
 325 Mbit/s, see `STATUS.md`). The changes of 2026-11-16 (engine V2.3.4, OCM
-layout v3 with the consumption handshake, master supervision, write gate) are
-**compiled but not yet run on hardware**: repeat tests 1 to 4 after flashing
-both apps. Test incrementally:
+layout v3 with the consumption handshake, master supervision, write gate) have
+run on hardware since 2026-11-17 (bench runs in `STATUS.md`). After a change
+to the exchange, repeat tests 1 to 4 with both apps flashed. Test incrementally:
 each step isolates one layer so a failure points at a specific place. If you get
 stuck, the **fallback** (bottom) returns you to JavaScope.
 
@@ -294,13 +294,13 @@ Inspect these via the JTAG debugger (the R5 keeps stats):
 
 ### Known residual risks (accepted for bring-up)
 
-- **DAQ frames of a missed sweep (resolved 2026-11-16, not yet on
-  hardware)**: until then the R5 rewound the XCP_OUT chain every sweep, so
+- **DAQ frames of a missed sweep (resolved 2026-11-16, on hardware since
+  2026-11-17)**: until then the R5 rewound the XCP_OUT chain every sweep, so
   the DAQ frames of a sweep no IPI read were lost (943 of 36.6 M cycles in
-  the 1 h soak). Now the R5 keeps an unacknowledged chain in place for up to
-  50 sweeps (consumption handshake): a late, torn or skipped IPI read costs
-  latency, not data. Only a gateway that stays silent for 5 ms loses chains
-  (`xcp_r5_out_overwritten`).
+  the 1 h soak). Now the R5 keeps an unacknowledged chain in place
+  (consumption handshake): a late, torn or skipped IPI read costs latency,
+  not data. Only a gateway that stays silent for 5 ms loses chains
+  (`xcp_r5_out_overwritten`; until 2026-11-18 the limit was 50 sweeps).
 - **ISR budget**: the exchange moved to the main loop in CP11 (see
   Debugging above); the remaining ISR cost of `xcp_r5_event()` is still to
   be measured.

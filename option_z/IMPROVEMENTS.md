@@ -63,7 +63,7 @@ five lists.
 
 ## 2. Design debt — fix only if symptoms appear
 
-### 2.1 DAQ frames of a missed cycle — RESOLVED 2026-11-16 (consumption handshake, not yet on hardware)
+### 2.1 DAQ frames of a missed cycle — RESOLVED 2026-11-16 (consumption handshake, on hardware since 2026-11-17)
 What CP7 fixed (hedrive T8): a late/overlapping A53 IPI can no longer kill the
 session or corrupt data — command **responses** ride the acknowledged CTO
 mailbox, **commands** ride the XCP_IN generation handshake

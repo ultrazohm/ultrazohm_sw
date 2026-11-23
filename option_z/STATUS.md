@@ -368,11 +368,13 @@ tests 1 to 4.
   overload limit did not move (R5-bound, see above). Counter meanings:
   `xcp_gw_ocm_skipped_writing` = header copy unusable, `xcp_gw_ocm_torn` =
   chain really rewritten mid-read
-- 2026-11-17, NOT yet on hardware: R5 time profile `xcp_r5_prof` (PMU cycle
+- 2026-11-17, on hardware since that evening (profile build 93f74de): R5
+  time profile `xcp_r5_prof` (PMU cycle
   counter: exchange phases refresh/commands/copy/flush with the ISR time
   inside them, the XCP part of the ISR, the R5 time split); printed by
   `xcp_poll.py --stress`. Switch `XCP_R5_PROFILE` (xcp_r5.h, default 1)
-- 2026-11-17, NOT yet on hardware: `XCP_R5_ENGINE_ASSERTS` (xcplib_r5_cfg.h,
+- 2026-11-17, measured 2026-11-17/18 (asserts A/B above):
+  `XCP_R5_ENGINE_ASSERTS` (xcplib_r5_cfg.h,
   default 1 = upstream asserts active in the Debug build) to measure and
   optionally drop the engine asserts in the ISR path
 
@@ -429,7 +431,7 @@ What remains is Vitis assembly + on-hardware bring-up (see "Integration").
 
 | Milestone | State |
 |-----------|-------|
-| Z1 engine on armr5 | ✅ engine (`xcplite/queue32/util/xcpappl`) compiles unchanged for armr5 + `_BAREMETAL` platform branch — upstream **V2.3.4** since 2026-11-16 (was V2.1.0; see IMPROVEMENTS §4b, not yet hardware-tested) |
+| Z1 engine on armr5 | ✅ engine (`xcplite/queue32/util/xcpappl`) compiles unchanged for armr5 + `_BAREMETAL` platform branch — upstream **V2.3.4** since 2026-11-16 (was V2.1.0; see IMPROVEMENTS §4b; on hardware since 2026-11-17) |
 | Z2 R5 transport | ✅ `xcptl_ocm.c` (engine TL + `xcp_r5_init/event/background/poll`) + `ocm_xcp_fifo.c` — R5 stack links to **only `uz_SystemTime`** (~36 KB) |
 | Z3 A53 gateway | ✅ `xcp_gateway_a53.c` (UDP ⇄ OCM, IPI-ISR + 2 tasks) — compiles against the A53 BSP, no unexpected unresolved syms |
 | Z1b Vitis wiring | ✅ integrated in-tree and brought up on hardware (2026-07-10), see "Integration" below |

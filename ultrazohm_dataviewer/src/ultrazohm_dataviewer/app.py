@@ -109,6 +109,7 @@ class DataViewerApp:
                 self.live.prepare_repository(workspace)
         from .panels.python import PythonPanel
 
+        self.operations.bind_live(self.live)
         self.python_panel = PythonPanel(self)
         # Pending Session-menu file dialogs: (dialog, command_name, is_multi).
         self._session_dialog: tuple = ()

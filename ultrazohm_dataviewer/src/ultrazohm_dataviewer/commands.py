@@ -158,6 +158,8 @@ def _coerce_one(state: AppState, param: Param, raw):
         return _parse_bool(raw)
     if kind == "str":
         return str(raw)
+    if kind == "weights":
+        return json.loads(raw) if isinstance(raw, str) else raw
     if kind == "plot":
         n = _plot_number(raw)
         if not 1 <= n <= state.cell_count:
@@ -271,6 +273,15 @@ class CommandRegistry:
             message = submit(state, cmd.handler, values)
         else:
             message = cmd.handler(state, values)
+        if workspace := getattr(state, "live_workspace", None):
+            if name in (
+                "set_grid",
+                "set_grid_ratios",
+                "link_x",
+                "set_max_points",
+            ) or any(p.kind == "plot" for p in cmd.params):
+                # Explicit layout edits supersede preferences waiting for live data.
+                workspace._pending_plot_setup = None
         from concurrent.futures import Future
 
         if isinstance(message, Future):
@@ -426,6 +437,13 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
         [Param("rows", "int"), Param("cols", "int")],
         set_grid,
         "Set the subplot grid to rows x cols.",
+    )
+
+    reg.add(
+        "set_grid_ratios",
+        [Param("rows", "weights"), Param("cols", "weights")],
+        lambda state, a: state.set_grid_ratios(*a),
+        "Set positive relative row and column sizes; lengths must match the grid.",
     )
 
     def link_x(state, a):
@@ -598,6 +616,11 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
 
     def set_x_lim(state, a):
         plot_n, lo, hi = a
+        from .validation import axis_limits
+
+        axis_limits(lo, hi)
+        if workspace := getattr(state, "live_workspace", None):
+            workspace.inspect()
         state.set_plot_x_limits(plot_n, lo, hi)
 
     reg.add(
@@ -618,8 +641,17 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
         "Set a subplot's Y-axis limits.",
     )
 
+    reg.add(
+        "set_y2_lim",
+        [Param("plot", "plot"), Param("min", "float"), Param("max", "float")],
+        lambda state, a: _cell(state, a[0]).set_limits("y2", a[1], a[2]),
+        "Set a subplot's secondary (right) Y-axis limits.",
+    )
+
     def reset_view(state, a):
         state.reset_plot_view(a[0])
+        if workspace := getattr(state, "live_workspace", None):
+            workspace.resume_live()
 
     reg.add(
         "reset_view",

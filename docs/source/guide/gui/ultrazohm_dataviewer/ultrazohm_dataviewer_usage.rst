@@ -246,12 +246,46 @@ Public method reference
 =======================
 
 Methods accept ordinary Python values and session-scoped handles.
-The table is generated from the client signatures with ``python -m ultrazohm_dataviewer.command_doc``.
+The reference below is generated directly from the Python implementation by Sphinx autodoc.
 
-.. csv-table:: DataViewer Python API
-   :file: ultrazohm_dataviewer_commands.csv
-   :header-rows: 1
-   :widths: 18 14 40 28
+Live plots use an explicit view handle, while omitted ``view`` arguments target the main offline grid:
+
+.. code-block:: python
+
+   live = viewer.live_view()
+   viewer.set_grid(2, 1, view=live)
+   viewer.set_grid_ratios([2, 1], [1], view=live)
+   runs = viewer.list_runs(view=live)
+   if runs:
+       run = runs[0]
+       viewer.add_signal(1, run["handle"], run["signals"][0], view=live)
+   viewer.live_time_depth(1.0)
+   viewer.live_follow(True)
+
+Live recording handles belong to a separate registry and cannot be used in offline plots.
+Use ``viewer.live_freeze()`` to obtain an offline copy of the visible live interval.
+Live support must be enabled in the viewer; ``live_attach(endpoint)`` attaches to an existing acquisition service without starting it or connecting the device.
+Device control and logging remain available through ``ultrazohm_cli.Client``.
+``live_detach()`` leaves acquisition and logging running.
+``live_follow(False)`` freezes the displayed snapshot for inspection; it does not pause acquisition.
+Setting explicit live X limits enters inspection, and resetting a live plot resumes following.
+``save_live_view()`` and ``load_live_view()`` persist presentation preferences separately from offline sessions and device startup profiles.
+
+For inspection, ``get_view()`` returns current layout settings, ``list_plots()`` returns plot assignments and limits, and ``get_analysis("fft")`` / ``get_analysis("histogram")`` return analysis configuration.
+``get_session_settings()`` describes current IO/cache settings; ``get_settings()`` describes saved application defaults.
+
+.. autoclass:: ultrazohm_dataviewer.Client
+   :members:
+   :inherited-members:
+   :undoc-members:
+
+.. autoclass:: ultrazohm_dataviewer.RunHandle
+
+.. autoclass:: ultrazohm_dataviewer.NodeHandle
+
+.. autoclass:: ultrazohm_dataviewer.ViewHandle
+
+.. autoexception:: ultrazohm_dataviewer.ViewerError
 
 Session compatibility and analysis windows
 ------------------------------------------

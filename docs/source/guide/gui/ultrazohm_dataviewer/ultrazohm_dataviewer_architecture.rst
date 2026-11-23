@@ -71,9 +71,9 @@ Module map
    * - ``commands.py``
      - Shared operation metadata, validation and GUI handlers
      - ``CommandRegistry``, ``Command``, ``Param``
-   * - ``command_doc.py``
-     - Generates the docs command reference (CSV) from public Python client signatures — see :ref:`ultrazohm_dataviewer_generated_command_reference`
-     - ``build_csv``, ``group_for``, ``GROUP_ORDER``
+   * - ``client.py`` / ``client_methods.py``
+     - Public Python control API, documented directly with Sphinx autodoc
+     - ``Client``, ``RunHandle``, ``NodeHandle``, ``ViewHandle``
    * - ``console.py``
      - Scrolling selectable application log
      - ``Console``
@@ -214,13 +214,17 @@ Save supported state through JSON session snapshots.
 
 .. _ultrazohm_dataviewer_generated_command_reference:
 
-Generated Python API reference (``command_doc.py``)
----------------------------------------------------
+Python API reference
+--------------------
 
-``command_doc.build_csv`` renders public client signatures, documentation and operation groups into ``ultrazohm_dataviewer_commands.csv``.
-The usage guide includes this committed file, so documentation builds do not require the GUI runtime.
-Regenerate with ``python -m ultrazohm_dataviewer.command_doc``.
-The documentation test checks both the committed output and complete method grouping.
+The usage guide uses Sphinx autodoc to document ``Client``, its inherited methods, handles and exceptions directly.
+Importing the client requires only the standard library, so no GUI runtime is needed to generate this reference.
+Contract tests check client methods against command metadata; integration tests check routing and state changes.
+
+The live workspace has a separate recording registry and is exposed as view 0; the main offline view is 1.
+Additional offline views share the main registry, while live run handles carry ``view=0`` to prevent accidental cross-registry references.
+Live presentation operations delegate to the same workspace methods used by the GUI.
+Attachment completes asynchronously on the live controller thread; publication of the API response belongs to the application thread.
 
 Plots panel internals (``panels/plots.py``)
 ===========================================

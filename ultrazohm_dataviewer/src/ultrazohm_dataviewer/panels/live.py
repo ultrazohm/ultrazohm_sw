@@ -43,7 +43,6 @@ class LivePlotsPanel(PlotsPanel):
         super()._reset_view(state, plot_n)
         if self.workspace is not None:
             self._selection = None
-            self.workspace.resume_live()
 
     def _apply_pending_limits(self, state, cell, data_min, data_max):
         if self.workspace is not None:
@@ -183,6 +182,7 @@ class LiveWorkspace:
     def __init__(self, controller=None, repo=None):
         self.controller = controller or LiveController()
         self.state = AppState()
+        self.state.live_workspace = self
         self.state.async_exports = True
         self.state.registry.cache.limit = 64 * 1024**2
         self.plots = LivePlotsPanel(self)
@@ -294,13 +294,14 @@ class LiveWorkspace:
         except Exception as exc:
             self.repo_error = f"Could not prepare ultrazohm_sw root directory: {exc}"
 
-    def load_live_settings(self):
+    def load_live_settings(self, *, strict=False):
         from ..live_settings import read_view
 
         self.settings_notice = ""
-        self._pending_plot_setup = None
         try:
             saved = read_view(self.user_directory() / "live_view.json")
+            if saved is None and strict:
+                raise FileNotFoundError("No saved live view preferences")
             if saved is not None:
                 for key in (
                     "endpoint",
@@ -317,8 +318,56 @@ class LiveWorkspace:
                 self._pending_plot_setup = saved["plots"]
                 if saved.get("output_parent"):
                     self.output = new_output_directory(parent=saved["output_parent"])
+                self._restore_plot_setup()
         except (OSError, ValueError, KeyError, TypeError) as exc:
+            if strict:
+                raise
             self.settings_notice = f"Could not load live settings: {exc}"
+
+    def _restore_plot_setup(self):
+        if self._pending_plot_setup is None:
+            return
+        from ..live_settings import restore_plots
+
+        restore_plots(
+            self.state,
+            self._pending_plot_setup,
+            lambda name: (
+                (self.run.id, name)
+                if self.run is not None and name in self.run.signals
+                else None
+            ),
+        )
+        if self.run is not None:
+            self._pending_plot_setup = None
+            # An inspect preference freezes the first available snapshot, rather
+            # than blocking its arrival or silently continuing to refresh it.
+            self.paused = not self.follow
+            self.state.following_live = self.follow
+
+    def presentation_status(self):
+        update = self.controller.latest()
+        return {
+            "attached": update.attached,
+            "endpoint": self.controller.endpoint,
+            "follow": self.follow and not self.paused,
+            "paused": self.paused,
+            "window_seconds": self.window_seconds,
+            "maximum_depth": self.maximum_depth(),
+            "has_data": self.run is not None,
+            "error": update.error or self.error,
+        }
+
+    def request_attachment(self, operation, **kwargs):
+        if operation not in ("attach", "detach"):
+            raise ValueError("Expected attach or detach")
+        if operation == "attach" and self._repo_future is not None:
+            raise RuntimeError(
+                "Wait for ultrazohm_sw root directory preparation to finish."
+            )
+        if reason := self.block_reason(operation):
+            raise RuntimeError(reason)
+        return self.controller.request_attachment(operation, **kwargs)
 
     def save_live_settings(self, *, startup=False):
         from ..live_settings import save_startup_profile, save_view_preferences
@@ -361,7 +410,10 @@ class LiveWorkspace:
                 self._pending_completion = (
                     self.controller.latest().completed_commands + 1
                 )
-            self.controller.submit(operation, **kwargs)
+            if operation in ("attach", "detach"):
+                self.request_attachment(operation, **kwargs)
+            else:
+                self.controller.submit(operation, **kwargs)
             if operation == "shutdown":
                 self.output = new_output_directory(
                     parent=Path(self.output).expanduser().resolve().parent
@@ -474,15 +526,7 @@ class LiveWorkspace:
             item["channel"]: item["name"] for item in update.assignments
         }
         self._source = source
-        if self._pending_plot_setup is not None:
-            from ..live_settings import restore_plots
-
-            restore_plots(
-                self.state,
-                self._pending_plot_setup,
-                lambda name: (self.run.id, name) if name in self.run.signals else None,
-            )
-            self._pending_plot_setup = None
+        self._restore_plot_setup()
 
     def freeze(self, target):
         """Copy the visible live window to the ordinary offline-analysis registry."""
@@ -509,6 +553,7 @@ class LiveWorkspace:
         target.console.info(
             f"Frozen {len(t):,} live samples for analysis (not saved to disk)"
         )
+        return run
 
     def render_data(self, main_state):
         imgui.begin_disabled(bool(self.block_reason()))
@@ -1143,6 +1188,28 @@ class LiveWorkspace:
         self.pump()
         self._follow_live_limits()
 
+    def set_follow(self, enabled):
+        from ..validation import boolean
+
+        self.resume_live() if boolean(enabled) else self.inspect()
+
+    def set_time_depth(self, seconds):
+        from ..validation import finite_float
+
+        seconds = finite_float(seconds)
+        if not 0.001 <= seconds <= self.maximum_depth():
+            raise ValueError(
+                "Time depth must be between 0.001 seconds and the live buffer capacity"
+            )
+        self.window_seconds = seconds
+        if not self.follow or self.paused:
+            for cell in self.state.cells:
+                if self.state.is_time_plot(cell) and cell.x_lim is not None:
+                    center = sum(cell.x_lim) / 2
+                    cell.pending_x_lim = (center - seconds / 2, center + seconds / 2)
+            self.state.shared_x = None
+        self._follow_live_limits()
+
     def _follow_live_limits(self):
         self.state.following_live = self.follow and not self.paused
         if self.run is not None and self.state.following_live:
@@ -1159,7 +1226,7 @@ class LiveWorkspace:
     def render_plots(self, main_state):
         changed, follow = imgui.checkbox("Follow live", self.follow and not self.paused)
         if changed:
-            self.resume_live() if follow else self.inspect()
+            self.set_follow(follow)
         imgui.same_line()
         imgui.begin_disabled(self.run is None)
         if imgui.button("Freeze plot 1 for analysis"):
@@ -1178,21 +1245,14 @@ class LiveWorkspace:
             maximum,
             "%.3f s",
         )
-        self.window_seconds = max(0.001, min(maximum, seconds))
+        seconds = max(0.001, min(maximum, seconds))
+        if changed or seconds != self.window_seconds:
+            self.set_time_depth(seconds)
         if not self.follow or self.paused:
             imgui.text_disabled("Inspect — snapshot frozen; acquisition continues")
         imgui.text_disabled(
             "Zoom: follow  |  Pan / Shift+zoom: inspect  |  Double-click: reset + follow"
         )
-        if changed and not self.follow:
-            for cell in self.state.cells:
-                if self.state.is_time_plot(cell) and cell.x_lim is not None:
-                    center = sum(cell.x_lim) / 2
-                    cell.pending_x_lim = (
-                        center - self.window_seconds / 2,
-                        center + self.window_seconds / 2,
-                    )
-            self.state.shared_x = None
         self._follow_live_limits()
         if not self.run:
             imgui.text_wrapped(

@@ -314,6 +314,14 @@ class ViewerMethods:
         "Toggle per-sample markers on a subplot."
         return self._invoke("show_samples", {"plot": plot, "on": on, "view": view})
 
+    def set_y2_lim(
+        self, plot: int, min: float, max: float, *, view: ViewHandle | None = None
+    ):
+        """Set the secondary (right) Y-axis limits of a 1-based subplot."""
+        return self._invoke(
+            "set_y2_lim", {"plot": plot, "min": min, "max": max, "view": view}
+        )
+
     def spy(self, plot: int, on: bool, *, view: ViewHandle | None = None):
         "Toggle the spy (drag-rect zoom inset) on a subplot."
         return self._invoke("spy", {"plot": plot, "on": on, "view": view})

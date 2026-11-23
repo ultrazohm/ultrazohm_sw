@@ -25,6 +25,8 @@ def parameter_kind(parameter):
         return "str"
     if isinstance(annotation, type):
         return annotation.__name__
+    if str(annotation).startswith("list["):
+        return "json"
     return str(annotation).split(" | ")[0].replace("ultrazohm_dataviewer.client.", "")
 
 
@@ -63,6 +65,7 @@ def parser():
                     "RunHandle": int,
                     "NodeHandle": int,
                     "ViewHandle": int,
+                    "json": json.loads,
                 }.get(kind, str)
             }
             if kind == "bool":
@@ -114,6 +117,8 @@ def main(argv=None):
                         "NodeHandle": NodeHandle,
                         "ViewHandle": ViewHandle,
                     }[kind](client.session, value)
+                    if kind == "RunHandle" and getattr(args, "view", None) == 0:
+                        value = RunHandle(value.session, value.id, view=0)
                 elif value is not None and kind == "bool":
                     value = value == "true"
                 arguments[parameter.name] = value

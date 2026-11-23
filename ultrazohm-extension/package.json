@@ -1,0 +1,224 @@
+{
+  "name": "ultrazohm-extension",
+  "displayName": "ultrazohm-extension",
+  "description": "UltraZohm DataViewer, interactive CLI, Python environment and firmware tools.",
+  "publisher": "ultrazohm-local",
+  "version": "0.1.9",
+  "engines": {
+    "vscode": "^1.93.0"
+  },
+  "main": "./extension.js",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ultrazohm/ultrazohm_sw.git",
+    "directory": "ultrazohm-extension"
+  },
+  "extensionKind": [
+    "ui"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    },
+    "virtualWorkspaces": false
+  },
+  "activationEvents": [
+    "onView:ultrazohm.setup",
+    "onView:ultrazohm.softwareBuild",
+    "onView:ultrazohm.control"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "ultrazohm.launch",
+        "title": "ultrazohm-extension: Launch DataViewer"
+      },
+      {
+        "command": "ultrazohm.channel",
+        "title": "ultrazohm-extension: Select Release Channel"
+      },
+      {
+        "command": "ultrazohm.terminal",
+        "title": "ultrazohm-extension: Select Terminal Visibility"
+      },
+      {
+        "command": "ultrazohm.cli",
+        "title": "ultrazohm-extension: Open Interactive CLI"
+      },
+      {
+        "command": "ultrazohm.venv",
+        "title": "ultrazohm-extension: Open Python Environment"
+      },
+      {
+        "command": "ultrazohm.generate",
+        "title": "ultrazohm-extension: Generate Vitis Workspace"
+      },
+      {
+        "command": "ultrazohm.build",
+        "title": "ultrazohm-extension: Build Firmware"
+      },
+      {
+        "command": "ultrazohm.build-clean",
+        "title": "ultrazohm-extension: Clean and Build Firmware"
+      },
+      {
+        "command": "ultrazohm.repository",
+        "title": "ultrazohm-extension: Find ultrazohm_sw directory"
+      },
+      {
+        "command": "ultrazohm.xsct",
+        "title": "ultrazohm-extension: Select Vitis Settings or XSCT Launcher"
+      },
+      {
+        "command": "ultrazohm.xsctPath",
+        "title": "ultrazohm-extension: Use XSCT from PATH"
+      },
+      {
+        "command": "ultrazohm.refresh",
+        "title": "ultrazohm-extension: Refresh Launcher",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "ultrazohm.launcherSource",
+        "title": "ultrazohm-extension: Select Launcher Source"
+      },
+      {
+        "command": "ultrazohm.flash",
+        "title": "ultrazohm-extension: Flash UZ"
+      }
+    ],
+    "views": {
+      "ultrazohm": [
+        {
+          "id": "ultrazohm.setup",
+          "name": "Setup"
+        },
+        {
+          "id": "ultrazohm.softwareBuild",
+          "name": "Software build"
+        },
+        {
+          "id": "ultrazohm.control",
+          "name": "Control"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "ultrazohm-extension",
+      "properties": {
+        "ultrazohm.dataviewer.channel": {
+          "type": "string",
+          "enum": [
+            "stable",
+            "prerelease"
+          ],
+          "default": "stable",
+          "scope": "resource",
+          "description": "Package release channel for all UltraZohm launcher actions."
+        },
+        "ultrazohm.dataviewer.terminal": {
+          "type": "string",
+          "enum": [
+            "visible",
+            "hidden"
+          ],
+          "default": "visible",
+          "scope": "resource",
+          "description": "Whether launching DataViewer automatically shows its task terminal. Hidden output remains accessible in the Terminal panel."
+        },
+        "ultrazohm.repository": {
+          "type": "string",
+          "default": "",
+          "scope": "resource",
+          "description": "UltraZohm checkout to use instead of the VS Code folder. Set with Find ultrazohm_sw directory."
+        },
+        "ultrazohm.cli.endpoint": {
+          "type": "string",
+          "default": "127.0.0.1:19740",
+          "scope": "resource",
+          "description": "Local endpoint for the interactive CLI service."
+        },
+        "ultrazohm.launcher.source": {
+          "type": "string",
+          "enum": [
+            "bundled",
+            "local"
+          ],
+          "default": "bundled",
+          "scope": "resource",
+          "description": "Use bundled launcher scripts (standalone) or the selected checkout scripts. Both use bundled uv/Python and private storage."
+        },
+        "ultrazohm.vitis.settingsScript": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "Persistent Vitis setup script: settings64.sh on Linux or settings64.bat on Windows. Its environment is applied only to extension-launched processes."
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ultrazohm",
+          "title": "ultrazohm-extension",
+          "icon": "media/ultrazohm.svg"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "ultrazohm.refresh",
+          "when": "view == ultrazohm.setup || view == ultrazohm.softwareBuild",
+          "group": "navigation"
+        }
+      ]
+    },
+    "taskDefinitions": [
+      {
+        "type": "ultrazohm",
+        "required": [
+          "action",
+          "repository"
+        ],
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "operation": {
+            "type": "string"
+          },
+          "repository": {
+            "type": "string"
+          }
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "check": "node --check extension.js && node --check tools.js && node --check service.js && node --check cli-capabilities.js && node --check runtime-env.js && node --check vitis-env.js",
+    "test": "node --test test/*.test.js",
+    "package": "vsce package --no-dependencies",
+    "bundle:launcher": "node tools/bundle-launcher.js",
+    "vscode:prepublish": "npm run bundle:launcher && npm run check",
+    "test:host": "node tools/test-host.js"
+  },
+  "devDependencies": {
+    "@vscode/test-electron": "3.1.0",
+    "@vscode/vsce": "3.6.2"
+  },
+  "icon": "media/icon.png",
+  "bugs": {
+    "url": "https://github.com/ultrazohm/ultrazohm_sw/issues"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "ultrazohm",
+    "vitis",
+    "firmware",
+    "dataviewer"
+  ]
+}

@@ -1,0 +1,64 @@
+# ultrazohm-extension
+
+Install the platform VSIX using **Extensions: Install from VSIX…**, then open the **UZ** Activity Bar button. Use a trusted native Linux or Windows window. The navigation button follows your VS Code sidebar placement. The sidebar has three independently collapsible sections, like Explorer’s Outline and Timeline: **Setup** (directory, launcher, XSCT, release channel, terminal), **Software build** (generate, build, flash, clean/build), and **Control** (DataViewer, interactive CLI, Python environment).
+
+Open an UltraZohm checkout directly, or click **Find ultrazohm_sw directory…** to select one while keeping your current folder open. The selection is saved for this VS Code workspace. The selected checkout supplies firmware sources and repository arguments. **Launcher: bundled/local** chooses where the `uz` / `uz.ps1` scripts come from. Bundled is the default and also works with any unrelated local folder open: DataViewer and the Python environment do not require a checkout. Interactive CLI and firmware actions still require one: the published CLI generates its channel mapping from firmware sources. In an empty window, the picker opens the selected checkout. With multiple folders, select the checkout explicitly.
+
+| Control | Behavior |
+| --- | --- |
+| Launch DataViewer | Open the native viewer with the selected checkout. |
+| Open interactive CLI | Open the CLI prompt and its acquisition service in a visible task terminal. Exit/Ctrl-C ends the service. |
+| Open Python environment | Open an activated Bash/PowerShell shell with published packages and the checkout's requirements. Type `exit` to close it. |
+| Generate Vitis workspace | Run the CLI's local `generate` command. |
+| Build firmware | Run the CLI's local `build` command. |
+| Clean and build firmware | Run the CLI's local `build-clean` command. |
+| Flash UZ | Confirm, then build, program via JTAG and run using the standalone CLI flash command. |
+| Vitis / XSCT | Select `settings64.sh` on Linux or `settings64.bat` on Windows; direct XSCT selection is also supported. |
+| Launcher | Use scripts bundled in the VSIX (default), or the selected checkout's scripts. |
+| Release channel | Choose stable or prerelease for all actions. Stable is the default. |
+| Terminal | Choose whether DataViewer automatically shows/focuses its terminal. Other actions always show theirs. |
+
+The setup-script path is stored in the machine-specific VS Code user setting `ultrazohm.vitis.settingsScript`. It survives VS Code restarts and reboots and is shared across workspaces on this machine. The extension sources the script in Bash on Linux or calls it through CMD on Windows, discovers XSCT from the resulting PATH, and applies that environment to its tasks. Private uv/Python settings are reapplied afterward. The script must expose XSCT before a picker selection is saved; a missing/broken configured script disables firmware actions. Refresh rechecks the script.
+
+Firmware buttons are grey and nonclickable until XSCT is found. Without a setup script, detection uses the checkout's saved `artifacts/_user/tools.json` choice, then PATH when no choice is saved. Direct XSCT selection updates this shared file. With a setup script selected, launching an action updates the checkout's saved XSCT path to match the discovered launcher, preserving other preferences. Use **ultrazohm-extension: Use XSCT from PATH** in the Command Palette to clear both the setup script and the selected checkout's saved XSCT choice. The toolbar refresh button rechecks availability. The extension does not install Vitis; finding XSCT does not verify the Vitis version or a successful firmware build.
+
+Repeated clicks reveal an existing task instead of starting another. Generate/build/clean/flash share one task slot per checkout. There is no background-service button or automatic service startup when launching DataViewer. The interactive CLI uses `ultrazohm.cli.endpoint` (default `127.0.0.1:19740`); an occupied port prevents a second start. Separate worktrees can use separate endpoints. Existing services are never stopped or replaced by the extension.
+
+Hidden DataViewer output remains accessible through the Terminal panel. Changing the setting does not hide an already visible terminal. Channel and repository changes apply to subsequent tasks; they do not restart or retarget running applications.
+
+## Flash UZ
+
+Flash UZ runs `./uz cli <channel> -- flash --repo <selected-directory> --profile Run_UltraZohm` through the chosen launcher. It requires the repository and XSCT, shares the firmware task slot and always opens a visible terminal. The confirmation identifies the selected directory/channel and explains that acquisition/recording must be stopped by the user: this command does not coordinate recording finalization or automatic reconnection. It builds, programs over JTAG and starts the system; it does not write persistent flash memory. No CLI service is started automatically.
+
+The extension checks the published command's help first. Releases that expose only service-managed flashing are rejected rather than silently changing this behavior. No DataViewer, CLI application or Tcl code is changed for this action.
+
+## Runtime and packages
+
+The VSIX bundles uv and CPython 3.12. First use downloads application packages from PyPI. Caches, tool environments, temporary files and extension-launched shell history use extension storage. There is no global uv/Python installation, registry registration, PATH modification or repository `.venv` creation. Local mode requires a checkout with this branch's bundled-runtime bootstrap and private-shell support. Bundled mode includes those scripts in the VSIX. DataViewer preferences and measurements retain their usual locations.
+
+Bundled mode uses its packaged `requirements.txt`; local mode uses the checkout's file. Both currently add `matplotlib>=3.9` alongside DataViewer/CLI dependencies. Changing source affects the next task, not already running tasks.
+
+The selected channel is passed to the chosen launcher; package resolution and updates remain its responsibility. CLI help is checked before launching interactive or firmware commands because PyPI releases can lag behind this checkout: newer packages accept `--local` and `serve --xsct`, while older packages use local firmware commands directly and find the selected XSCT through task PATH.
+
+Application code always comes from PyPI. `venv dev`, user-command installation, device controls, recording and advanced CLI options have no dedicated extension buttons. Use the existing launcher, CLI prompt or DataViewer for these workflows. The private Linux Bash shell provides a green user/host prompt, blue working directory and automatic `ls` colors without loading `~/.bashrc`. It respects `NO_COLOR` and disables colors for `TERM=dumb` or nonterminal output. Environment activation still adds its prefix. The Python shell is an ordinary shell, not a sandbox for commands you type.
+
+## Build and test
+
+Use Node 22+ and Python 3.14+ in `ultrazohm-extension/` (build tools are not required by extension users):
+
+```sh
+npm ci
+npm run check
+npm test
+python -m unittest discover -s tools -p 'test_*.py'
+python tools/bundle.py --target linux-x64
+npm run package -- --target linux-x64 --pre-release --out ultrazohm-extension-linux-x64-0.1.9.vsix
+```
+
+Use `win32-x64` on Windows. `runtime-lock.json` pins upstream downloads and SHA-256 checksums; bundling includes redistribution notices. Pass `--replace` to rebuild an existing generated runtime. `vscode:prepublish` snapshots the shared root launcher scripts and requirements into `launcher/` each time you package.
+
+For development, use `.vscode/launch.json`. `npm run test:host` runs hardware-free task fixtures in an isolated real VS Code window. CI tests the actual packaged extension on Linux and Windows, using both minimum supported and current stable VS Code, and starts published applications with `--help` using the bundled runtime.
+
+See [RELEASING.md](RELEASING.md) in the source repository for CI, release tags, artifact verification and local testing. Real Vitis builds and attached hardware require manual testing.
+
+If upgrading the earlier prototype, uninstall `ultrazohm-local.ultrazohm` before installing `ultrazohm-local.ultrazohm-extension`. The `ultrazohm.*` settings remain compatible; the renamed extension gets fresh private storage. GitHub VSIX updates are installed manually. The temporary publisher is `ultrazohm-local`; Marketplace publication is not configured yet.

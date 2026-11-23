@@ -1,6 +1,13 @@
 $ErrorActionPreference = 'Stop'
 $uzEntryPoint = $args[0]
 $uzArguments = @($args | Select-Object -Skip 1)
+if ($env:UZ_BUNDLED_RUNTIME) {
+    $uv = Join-Path $env:UZ_BUNDLED_RUNTIME 'bin\uv.exe'
+    if (-not (Test-Path $uv) -or -not (Test-Path $env:UZ_BUNDLED_PYTHON)) { throw 'Bundled runtime missing' }
+    $env:PATH = (Split-Path $uv) + [IO.Path]::PathSeparator + $env:PATH
+    & $env:UZ_BUNDLED_PYTHON -B (Join-Path $PSScriptRoot $uzEntryPoint) @uzArguments
+    exit $LASTEXITCODE
+}
 $uzUvVersion = (Get-Content -Raw (Join-Path $PSScriptRoot '.uv-version')).Trim()
 
 try {

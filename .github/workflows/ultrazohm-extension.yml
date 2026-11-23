@@ -1,0 +1,162 @@
+name: ultrazohm-extension
+
+on:
+  push:
+    branches: [main, develop, feature/vscode-extension]
+    tags: ['ultrazohm-extension-v*']
+    paths:
+      - 'ultrazohm-extension/**'
+      - 'uz'
+      - 'uz.ps1'
+      - 'uz.py'
+      - 'uz_bootstrap.*'
+      - 'uz_shell.py'
+      - 'test_uz_shell.py'
+      - 'uz_venv.py'
+      - 'requirements.txt'
+      - '.python-version'
+      - '.uv-version'
+      - '.github/workflows/ultrazohm-extension.yml'
+  pull_request:
+    paths:
+      - 'ultrazohm-extension/**'
+      - 'uz'
+      - 'uz.ps1'
+      - 'uz.py'
+      - 'uz_bootstrap.*'
+      - 'uz_shell.py'
+      - 'test_uz_shell.py'
+      - 'uz_venv.py'
+      - 'requirements.txt'
+      - '.python-version'
+      - '.uv-version'
+      - '.github/workflows/ultrazohm-extension.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ultrazohm-extension-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ultrazohm-extension
+
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+
+jobs:
+  build:
+    name: Build and test (${{ matrix.target }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            target: linux-x64
+          - os: windows-2022
+            target: win32-x64
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          lfs: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22.23.5'
+          cache: npm
+          cache-dependency-path: ultrazohm-extension/package-lock.json
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.14'
+      - name: Validate version and tag
+        id: meta
+        run: python tools/release.py metadata >> "$GITHUB_OUTPUT"
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+      - run: python -m unittest discover -s tools -p "test_*.py"
+      - run: python -m unittest discover -s .. -p "test_uz_shell.py"
+      - name: Fetch verified runtime and notices
+        env:
+          TARGET: ${{ matrix.target }}
+        run: python tools/bundle.py --target "$TARGET"
+      - name: Package platform VSIX
+        env:
+          TARGET: ${{ matrix.target }}
+          VERSION: ${{ steps.meta.outputs.version }}
+          PRE_RELEASE: ${{ steps.meta.outputs.prerelease }}
+        run: |
+          mkdir -p dist
+          flags=()
+          if [[ "$PRE_RELEASE" == true ]]; then flags+=(--pre-release); fi
+          npm run package -- --target "$TARGET" --out "dist/ultrazohm-extension-$TARGET-$VERSION.vsix" "${flags[@]}"
+      - name: Verify packaged runtime and published applications
+        env:
+          TARGET: ${{ matrix.target }}
+          VERSION: ${{ steps.meta.outputs.version }}
+          PRE_RELEASE: ${{ steps.meta.outputs.prerelease }}
+        run: |
+          channel=stable
+          if [[ "$PRE_RELEASE" == true ]]; then channel=prerelease; fi
+          python tools/release.py verify --target "$TARGET" --vsix "dist/ultrazohm-extension-$TARGET-$VERSION.vsix" --extract .package-test --smoke-channel "$channel"
+      - name: Test packaged extension (minimum supported VS Code)
+        env:
+          VSCODE_TEST_VERSION: '1.93.0'
+          UZ_EXTENSION_TEST_PATH: .package-test/extension
+        run: |
+          if [[ "$RUNNER_OS" == Linux ]]; then xvfb-run -a npm run test:host; else npm run test:host; fi
+      - name: Test packaged extension (stable VS Code)
+        env:
+          VSCODE_TEST_VERSION: stable
+          UZ_EXTENSION_TEST_PATH: .package-test/extension
+        run: |
+          if [[ "$RUNNER_OS" == Linux ]]; then xvfb-run -a npm run test:host; else npm run test:host; fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ultrazohm-extension-${{ matrix.target }}
+          path: ultrazohm-extension/dist/*
+          if-no-files-found: error
+          retention-days: 14
+
+  release:
+    name: GitHub Release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/ultrazohm-extension-v')
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.14'
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: ultrazohm-extension-*
+          merge-multiple: true
+          path: ultrazohm-extension/dist
+      - id: meta
+        run: python tools/release.py metadata >> "$GITHUB_OUTPUT"
+      - run: python tools/release.py manifest dist
+      - name: Publish complete release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ steps.meta.outputs.tag }}
+          VERSION: ${{ steps.meta.outputs.version }}
+          PRE_RELEASE: ${{ steps.meta.outputs.prerelease }}
+        run: |
+          flags=()
+          if [[ "$PRE_RELEASE" == true ]]; then flags+=(--prerelease); fi
+          # Create the draft with both assets, then publish. Never replace published assets.
+          gh release create "$TAG" --verify-tag --draft "${flags[@]}" --title "ultrazohm-extension $VERSION" --notes-file dist/release-notes.md dist/*.vsix dist/SHA256SUMS dist/release-manifest.json
+          gh release edit "$TAG" --draft=false

@@ -1,0 +1,152 @@
+"""Verify platform VSIXs and assemble GitHub Release assets; never publish applications."""
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+import tempfile
+import zipfile
+
+ROOT = Path(__file__).resolve().parents[1]
+TARGETS = ['linux-x64', 'win32-x64']
+
+
+def digest(file):
+    with file.open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+
+def metadata():
+    package = json.loads((ROOT / 'package.json').read_text())
+    version = package['version']
+    if package['name'] != 'ultrazohm-extension' or not re.fullmatch(r'\d+\.\d+\.\d+', version):
+        raise ValueError('Expected ultrazohm-extension and numeric extension version')
+    tag = 'ultrazohm-extension-v' + version
+    ref = os.environ.get('GITHUB_REF', '')
+    if ref.startswith('refs/tags/') and ref != 'refs/tags/' + tag:
+        raise ValueError(f'Tag must match package.json: {tag}')
+    return {'version': version, 'tag': tag, 'prerelease': bool(int(version.split('.')[1]) % 2)}
+
+
+def verify(target, vsix, unpack, channel):
+    info = metadata()
+    if vsix.name != f'ultrazohm-extension-{target}-{info["version"]}.vsix':
+        raise ValueError('VSIX filename does not match version/target')
+    if unpack.exists():
+        raise ValueError('Use a fresh extraction directory')
+    with zipfile.ZipFile(vsix) as archive:
+        if archive.testzip():
+            raise ValueError('Corrupt VSIX')
+        names = archive.namelist()
+        manifest = archive.read('extension.vsixmanifest').decode()
+        if f'TargetPlatform="{target}"' not in manifest:
+            raise ValueError('Incorrect VSIX target')
+        package = json.loads(archive.read('extension/package.json'))
+        if package['name'] != 'ultrazohm-extension' or package['version'] != info['version']:
+            raise ValueError('Incorrect extension identity/version')
+        if any(name.startswith(('extension/test/', 'extension/node_modules/', 'extension/tools/')) for name in names):
+            raise ValueError('Development-only files leaked into VSIX')
+        required = ['extension/launcher/uz.py', 'extension/launcher/requirements.txt', 'extension/runtime/licenses/LICENSE.cpython.txt', 'extension/runtime/licenses/uv-LICENSE-MIT.txt']
+        if any(name not in names for name in required):
+            raise ValueError('Runtime, launcher or license files missing')
+        for member in archive.infolist():
+            output = (unpack / member.filename).resolve()
+            if not output.is_relative_to(unpack.resolve()):
+                raise ValueError('Invalid archive path')
+            archive.extract(member, unpack)
+            if os.name != 'nt' and member.external_attr >> 16:
+                output.chmod((member.external_attr >> 16) & 0o777)
+    extension = unpack / 'extension'
+    runtime = extension / 'runtime'
+    bundled = json.loads((runtime / 'manifest.json').read_text())
+    lock = json.loads((ROOT / 'runtime-lock.json').read_text())
+    if bundled['target'] != target or bundled['sources'] != lock['targets'][target]:
+        raise ValueError('Runtime does not match lock')
+    windows = target == 'win32-x64'
+    if windows != (os.name == 'nt'):
+        raise ValueError('Runtime smoke tests must run on the native OS')
+    with tempfile.TemporaryDirectory(prefix='uz-package-smoke-') as directory:
+        storage = Path(directory)
+        env = {k: v for k, v in os.environ.items() if not re.match(r'UV_|PYTHON|VIRTUAL_ENV$|CONDA_PREFIX$', k)}
+        path_key = next((key for key in env if key.lower() == 'path'), 'PATH')
+        env[path_key] = str(runtime / 'bin') + os.pathsep + env.get(path_key, '')
+        python = runtime / bundled['python']
+        env.update(UZ_BUNDLED_RUNTIME=str(runtime), UZ_BUNDLED_PYTHON=str(python),
+            UV_PYTHON_INSTALL_DIR=str(runtime / 'python'), UV_PYTHON_PREFERENCE='only-managed',
+            UV_PYTHON_DOWNLOADS='never', UV_NO_CONFIG='1', UV_PYTHON_NO_REGISTRY='1',
+            UV_PYTHON_INSTALL_REGISTRY='0', UV_PYTHON_INSTALL_BIN='0',
+            UV_CACHE_DIR=str(storage / 'cache'), UV_TOOL_DIR=str(storage / 'tools'), UV_TOOL_BIN_DIR=str(storage / 'bin'),
+            PYTHONDONTWRITEBYTECODE='1', PYTHONNOUSERSITE='1', TMPDIR=str(storage), TEMP=str(storage), TMP=str(storage))
+        def run(args):
+            return subprocess.check_output([str(a) for a in args], cwd=storage, env=env, text=True, timeout=300).strip()
+        assert run([python, '-c', 'import sys,ssl,sqlite3,ctypes; print(sys.version.split()[0])']) == bundled['python_version']
+        uv = runtime / 'bin' / ('uv.exe' if windows else 'uv')
+        assert run([uv, '--version']).split()[1] == bundled['uv_version']
+        launcher = extension / 'launcher'
+        command = [Path(os.environ['SystemRoot']) / 'System32/WindowsPowerShell/v1.0/powershell.exe', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', launcher / 'uz.ps1'] if windows else ['/bin/bash', launcher / 'uz']
+        run([*command, '--help'])
+        resolved = {}
+        if channel:
+            for application in ['cli', 'dataviewer']:
+                run([*command, application, channel, '--', '--help'])
+            result = run([uv, 'tool', 'run', '--isolated', '--python', '3.12', '--prerelease', 'allow' if channel == 'prerelease' else 'disallow',
+                '--with-requirements', launcher / 'requirements.txt', '--from', 'ultrazohm-dataviewer', 'python', '-c',
+                'import json,matplotlib; from importlib.metadata import version; print(json.dumps({p:version(p) for p in ["ultrazohm-cli","ultrazohm-dataviewer","matplotlib"]}))'])
+            resolved = json.loads(result)
+    receipt = {**info, 'target': target, 'file': vsix.name, 'sha256': digest(vsix), 'bytes': vsix.stat().st_size,
+        'commit': os.environ.get('GITHUB_SHA') or subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
+        'runtime': bundled, 'tested_channel': channel, 'tested_packages': resolved}
+    vsix.with_suffix('.json').write_text(json.dumps(receipt, indent=2) + '\n')
+    print(f'Verified {vsix.name}; extracted to {extension}')
+
+
+def aggregate(directory):
+    info = metadata()
+    receipts = [json.loads(p.read_text()) for p in directory.glob('*.json') if p.name != 'release-manifest.json']
+    if sorted(r['target'] for r in receipts) != sorted(TARGETS):
+        raise ValueError('Both tested platform receipts are required')
+    for receipt in receipts:
+        if receipt['version'] != info['version'] or receipt['sha256'] != digest(directory / receipt['file']):
+            raise ValueError('Artifact changed after verification')
+        if not receipt['tested_packages'] or not receipt['tested_channel']:
+            raise ValueError('Published-package smoke tests required for release')
+    if len({r['commit'] for r in receipts}) != 1:
+        raise ValueError('Both packages must come from the same commit')
+    manifest = {**info, 'artifacts': sorted(receipts, key=lambda r: r['target'])}
+    (directory / 'release-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+    (directory / 'SHA256SUMS').write_text(''.join(f'{r["sha256"]}  {r["file"]}\n' for r in manifest['artifacts']))
+    (directory / 'release-notes.md').write_text(f'''ultrazohm-extension {info['version']}
+
+Download the VSIX for Linux x64 or Windows x64. In VS Code, use **Extensions: Install from VSIX…**, then reload the window.
+
+This extension bundles uv, Python and launcher scripts. Application packages download from PyPI on first use. Runtime and tested application versions are recorded in `release-manifest.json`.
+
+Setup, Software build and Control sections provide the UltraZohm tools. Vitis remains an external prerequisite. Flash UZ performs standalone JTAG programming without stopping acquisition or reconnecting automatically.
+
+Uninstall the old `ultrazohm-local.ultrazohm` prototype before installing this renamed extension to avoid duplicate controls. The extension ID is `ultrazohm-local.ultrazohm-extension`; Marketplace publisher setup is still pending. Existing `ultrazohm.*` settings are retained, but the renamed extension uses a fresh private cache.
+
+GitHub VSIX updates are installed manually. Neither real hardware programming nor a real Vitis installation is exercised by CI.
+''')
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    commands = parser.add_subparsers(dest='command', required=True)
+    commands.add_parser('metadata')
+    check = commands.add_parser('verify')
+    check.add_argument('--target', choices=TARGETS, required=True)
+    check.add_argument('--vsix', type=Path, required=True)
+    check.add_argument('--extract', type=Path, required=True)
+    check.add_argument('--smoke-channel', choices=['stable', 'prerelease'])
+    manifest = commands.add_parser('manifest')
+    manifest.add_argument('directory', type=Path)
+    args = parser.parse_args()
+    if args.command == 'metadata':
+        for key, value in metadata().items():
+            print(f'{key}={str(value).lower() if isinstance(value, bool) else value}')
+    elif args.command == 'verify':
+        verify(args.target, args.vsix.resolve(), args.extract.resolve(), args.smoke_channel)
+    else:
+        aggregate(args.directory.resolve())

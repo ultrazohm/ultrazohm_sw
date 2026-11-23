@@ -1,13 +1,13 @@
 .. _ultrazohm_dataviewer:
 
 ====================
-ultrazohm-dataviewer
+ultrazohm-DataViewer
 ====================
 
 .. youtube:: JLRGM1H9AhQ
 
 
-The UltraZohm Dataviewer opens CSV and Parquet (preferred) recordings for analysis.
+The DataViewer opens CSV and Parquet (preferred) recordings for analysis.
 It supports JavaScope CSV logs and recordings from :doc:`../ultrazohm_cli`.
 In addition, there is a experimental live mode, that replaced the functionality of the Javascope, i.e., control the UltraZohm during operation with live plotting.
 The ``ultrazohm_dataviewer`` is available as a desktop application for Windows and Linux and can be used as a standalone application or using start-scripts from ``ultrazohm_sw``.
@@ -23,27 +23,29 @@ Features
 - Subplot grid, drag-and-drop signals, adjust layout at runtime, multiple plot types (line/scatter/stairs/*XY*), linked X axes, secondary Y axis, cursors, spy zoom inset, show samples, per-cell ``.csv`` export
 - Range-aware downsampling for smooth multi-GB logs
 - FFT & Histogram, optional locked time window to time plot, optional logarithmic axes, ``.csv`` export of FFT and histogram data
-- Calculation nodes for applying transforms (FFT / math / filter / shift) to signals where the result becomes a new signal. Nodes can be extended with custom Python code for user-specific nodes (:doc:`ultrazohm_dataviewer_plugins`)
-- Python automation: control an open viewer through ``ultrazohm_dataviewer.Client`` from a terminal or the Python panel. Save and restore sessions as JSON.
+- Calculation nodes for applying transforms (FFT / math / filter / shift) to signals where the result becomes a new signal.
+  Nodes can be extended with custom Python code for user-specific nodes (:doc:`ultrazohm_dataviewer_plugins`)
+- Python automation: control an open DataViewer through ``ultrazohm_dataviewer.Client`` from a terminal or the Python panel.
+  Save and restore sessions as JSON.
 
-Starting the Data Viewer
-========================
+Starting the DataViewer
+=======================
 
 The Python package and terminal command are named ``ultrazohm-dataviewer``, python scripts import ``ultrazohm_dataviewer``.
-Installing the Dataviewer also installs the matching ``ultrazohm-cli`` dependency.
+Installing the DataViewer also installs the matching ``ultrazohm-cli`` dependency.
 
 .. tab-set::
 
     .. tab-item:: Python and uv (Linux and Windows)
 
-       Run the published viewer directly:
+       Run the published DataViewer directly:
 
        .. code-block:: bash
 
           uvx --python 3.12 ultrazohm-dataviewer
           uvx --python 3.12 ultrazohm-dataviewer gui measurement.csv
 
-       ``gui measurement.csv`` starts the Dataviewer and loads measurement.csv.
+       ``gui measurement.csv`` starts the DataViewer and loads measurement.csv.
        For persistent commands, install both applications into a tool environment:
 
        .. code-block:: bash
@@ -56,11 +58,11 @@ Installing the Dataviewer also installs the matching ``ultrazohm-cli`` dependenc
     .. tab-item:: Windows standalone ZIP
 
        Download ``ultrazohm-dataviewer-VERSION-windows-x86_64.zip`` from the `GitHub release <https://github.com/ultrazohm/ultrazohm_sw/releases>`_ and extract the archive.
-       Double-click ``ultrazohm-dataviewer.exe`` to open the Dataviewer.
+       Double-click ``ultrazohm-dataviewer.exe`` to open the DataViewer.
        Keep the ``_internal`` runtime directory beside the executable.
        The same ZIP includes ``ultrazohm-cli.exe`` for hardware control without the GUI.
 
-       Alternatively, from an existing PowerShell terminal, use the wrapper to wait for the viewer and retain the calling shell:
+       Alternatively, from an existing PowerShell terminal, use the wrapper to wait for the DataViewer and retain the calling shell:
 
        .. code-block:: powershell
 
@@ -79,15 +81,15 @@ Installing the Dataviewer also installs the matching ``ultrazohm-cli`` dependenc
           ./uz install dataviewer prerelease
           ./uz venv prerelease
 
-       Use ``.\uz.ps1`` on Windows. Channels default to stable.
+       Use ``.\uz.ps1`` on Windows.
+       Channels default to stable.
        These commands use uv-managed environments, independently of the checkout's ``.venv``.
        Inside the activated shell, run ``ultrazohm-dataviewer``, ``ultrazohm-cli``, or Python scripts.
        Use ``exit`` to leave the shell.
 
        For local development, run ``./uz venv dev``, then ``ultrazohm-dataviewer``.
        On Windows, use ``.\uz.ps1 venv dev``.
-       Every invocation builds the local CLI and installs the viewer editable into
-       a fresh temporary environment; Rust and a C/C++ toolchain are required.
+       Every invocation builds the local ultrazohm-cli and installs the DataViewer editable into a fresh temporary environment; Rust and a C/C++ toolchain are required.
        Close applications before leaving the shell: its environment is deleted on exit.
        All shell modes include dependencies from root ``requirements.txt``.
        See :ref:`ultrazohm_dataviewer_build` for build and test tasks.
@@ -118,7 +120,7 @@ Settings of the window control (2) are global for the complete window.
 The subplot setup (4) controls individual subplots and gives access to settings such as the plot type (line, scatter, stairs, XY), or secondary y-axis.
 The Application log (5) is read-only and hidden by default.
 Open it from **View → Application log**.
-Use the Python panel or a terminal to automate the viewer.
+Use the Python panel or a terminal to automate the DataViewer.
 The settings (6) give access to application settings, such import and export of current application state (session) and settings the view (view), e.g., reset to default view.
 
 For all plots, the following interactions are available: Mouse wheel zooms in and out, right-click and drag creates a zoom rectangle, right-click while holding shift only zooms the x-axis, while holding Alt only zooms the y-axis.
@@ -130,12 +132,4 @@ Documentation
 .. toctree::
    :maxdepth: 1
 
-   ultrazohm_dataviewer_build
-   ultrazohm_dataviewer_analysis
-   ultrazohm_dataviewer_live
-   ultrazohm_dataviewer_workflows
-   ultrazohm_dataviewer_usage
-   ultrazohm_dataviewer_plugins
-   ultrazohm_dataviewer_library
-   ultrazohm_dataviewer_architecture
-   ultrazohm_dataviewer_roadmap
+   ultrazohm_dataviewer_build ultrazohm_dataviewer_analysis ultrazohm_dataviewer_live ultrazohm_dataviewer_workflows ultrazohm_dataviewer_usage ultrazohm_dataviewer_plugins ultrazohm_dataviewer_library ultrazohm_dataviewer_architecture ultrazohm_dataviewer_roadmap

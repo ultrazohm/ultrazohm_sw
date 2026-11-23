@@ -335,7 +335,14 @@ CANape session at 40 kHz, the first build with the CONNECT print and
 - Fix: one transmit buffer per TX descriptor, plus one (513, 718 KB).
 - Verified: 10 min capture with 1.72 M datagrams, nothing repeated or lost,
   while the GEM received 166 pause frames; gateway loss counters 0; CANape
-  1.5 h without a warning.
+  1.5 h without a warning (the GEM received 249 more pause frames in the
+  rest of that soak).
+- `xcp_poll.py --stress` with the new counter check: 500 B/cycle for 20 s
+  (800,012 frames) and 900 B/cycle for 60 s (2,400,035 frames, 289 Mbit/s)
+  passed, nothing missing, duplicated or late, all loss counters 0. Capture
+  of the 900 B run: 2,400,121 board datagrams, the same as the GEM's
+  frames_txed, consecutive IP IDs, no repeats. Only 2 pause frames in that
+  run, so the soak above is the test of the fix under pause frames.
 - Withdrawn: "reordering in the PC" (2026-11-17/18 and July) and the PC as
   the source of the rare lost responses. `xcp_poll.py` hid the defect by
   offsetting duplicates against gaps; it now checks every counter value

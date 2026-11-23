@@ -13,7 +13,7 @@ DEFAULTS = {
     "cache_budget": 1024,
     "max_points": 2000,
     "log_directory": "",
-    "show_application_log": False,
+    "show_application_log": True,
     "show_python": False,
 }
 COMMANDS = {

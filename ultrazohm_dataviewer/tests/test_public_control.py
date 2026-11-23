@@ -216,3 +216,66 @@ def test_terminal_grid_ratios_and_live_scope(monkeypatch, capsys):
     assert calls[-1][1]["view"].id == 0
     assert cli.main(["add-signal", "1", "1", "a", "--view", "0"]) == 0
     assert calls[-1][1]["run"].view == 0
+
+
+def test_reconnect_gap_preserves_bindings_and_user_clear(live_control):
+    from dataclasses import replace
+
+    _, live, client, call, publish = live_control
+    publish()
+    view = call(client.live_view)
+    run = call(client.list_runs, view=view)[0]["handle"]
+    call(client.set_grid, 2, 1, view=view)
+    for plot in (1, 2):
+        call(client.add_signal, plot, run, "a", view=view)
+    call(client.set_axis, 1, run, "a", "right", view=view)
+    live.controller.update = replace(
+        live.update, revision=live.update.revision + 1, source=None, epoch=None
+    )
+    live.pump()
+    call(client.clear_plot, 2, view=view)
+    call(client.set_grid_ratios, [1, 3], [1], view=view)
+    publish("new")
+    assert live.state.cells[0].signals == [(live.run.id, "a")]
+    assert live.state.cells[0].y2_signals == [(live.run.id, "a")]
+    assert live.state.cells[1].signals == []
+    assert live.state.row_ratios == [0.25, 0.75]
+
+
+def test_reconnect_waits_for_samples_and_drops_absent_names(live_control):
+    from dataclasses import replace
+
+    _, live, client, call, publish = live_control
+    publish()
+    view = call(client.live_view)
+    run = call(client.list_runs, view=view)[0]["handle"]
+    call(client.add_signal, 1, run, "a", view=view)
+    call(client.set_xy, 1, run, "a", view=view)
+    live.controller.update = replace(
+        live.update,
+        revision=live.update.revision + 1,
+        epoch=("replacement", 0),
+        catalog={"observables": {"a": 1}},
+        source=LiveSource(pl.DataFrame({"time": [0.0, 1.0], "other": [1.0, 2.0]})),
+    )
+    live.pump()
+    assert live._reconnect_signals
+    call(client.save_live_view)
+    import json
+
+    saved = json.loads((live.user_directory() / "live_view.json").read_text())
+    assert saved["plots"]["cells"][0]["signals"] == ["a"]
+    publish("replacement")
+    assert live.state.cells[0].xy_source == (live.run.id, "a")
+    assert not live._reconnect_signals
+    live.controller.update = replace(
+        live.update,
+        revision=live.update.revision + 1,
+        epoch=("removed", 0),
+        catalog={"observables": {"other": 1}},
+        source=LiveSource(pl.DataFrame({"time": [0.0, 1.0], "other": [1.0, 2.0]})),
+    )
+    live.pump()
+    assert not live.state.cells[0].signals
+    assert live.state.cells[0].xy_source is None
+    assert not live._reconnect_signals

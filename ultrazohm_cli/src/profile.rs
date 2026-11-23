@@ -29,6 +29,7 @@ impl ProfileSettings {
         self.validate()?;
         let mut selected = std::collections::BTreeMap::new();
         let mut removed = Vec::new();
+        let mut displaced = Vec::new();
         for (channel, name) in &self.initial_channels {
             let canonical = if mapping.observables.contains_key(name) {
                 name.clone()
@@ -40,9 +41,21 @@ impl ProfileSettings {
                 && mapping.observables.contains_key(&canonical)
             {
                 selected.insert(*channel, canonical);
+            } else if mapping.observables.contains_key(&canonical) {
+                displaced.push((name.clone(), canonical));
             } else {
                 removed.push(name.clone());
             }
+        }
+        for (original, name) in displaced {
+            let free = (1..=mapping.channels as u32).find(|slot| !selected.contains_key(slot));
+            if !selected.values().any(|existing| existing == &name) {
+                if let Some(slot) = free {
+                    selected.insert(slot, name);
+                    continue;
+                }
+            }
+            removed.push(original);
         }
         if selected.is_empty()
             && !self.initial_channels.is_empty()
@@ -540,6 +553,25 @@ mod tests {
         assert_eq!(updated.sample_period_us, 50.0);
         assert_eq!(updated.initial_channels, [(1, name)].into());
         assert_eq!(removed.len(), 2);
+    }
+
+    #[test]
+    fn remapping_relocates_surviving_observable_to_free_slot() {
+        let repo = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .unwrap();
+        let mut mapping = ChannelMapping::load_repository(None, Some(repo)).unwrap();
+        let name = mapping.observables.keys().next().unwrap().clone();
+        mapping.channels = 1;
+        let settings = ProfileSettings {
+            schema_version: 1,
+            name: "test".into(),
+            sample_period_us: 100.0,
+            initial_channels: [(5, name.clone())].into(),
+        };
+        let (updated, removed) = settings.remap(&mapping).unwrap();
+        assert_eq!(updated.initial_channels, [(1, name)].into());
+        assert!(removed.is_empty());
     }
 
     fn state_mapping() -> PlatformStateMapping {

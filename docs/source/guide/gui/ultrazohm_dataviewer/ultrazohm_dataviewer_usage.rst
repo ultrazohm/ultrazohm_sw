@@ -15,6 +15,9 @@ The DataViewer has two complementary modes sharing the same application:
 - :doc:`ultrazohm_dataviewer_workflows`: complete standalone, launcher, terminal and Python tutorials.
 
 The reference below describes analysis controls and DataViewer automation.
+The desktop viewer starts maximized.
+The default layout places Navigation / Live Data above Log Browser / Control on the left (30% width), and plots above the visible Application log on the right.
+The lower panes occupy 40% of the height. Saved docking layouts and explicit startup visibility preferences remain in effect.
 Live data reaches the DataViewer through the ultrazohm-cli process; JavaScope is an alternative device client, not a required intermediary.
 Never connect JavaScope and the ultrazohm-cli process to the same device simultaneously: the firmware's latest accepted connection replaces the previous client.
 
@@ -267,6 +270,9 @@ Use ``viewer.live_freeze()`` to obtain an offline copy of the visible live inter
 Live support must be enabled in the viewer; ``live_attach(endpoint)`` attaches to an existing acquisition service without starting it or connecting the device.
 Device control and logging remain available through ``ultrazohm_cli.Client``.
 ``live_detach()`` leaves acquisition and logging running.
+After flashing or reconnecting, surviving observable names are rebound to the new live recording in their original subplots, including right-axis and XY assignments.
+Assignments survive the interval without samples; observables absent from the replacement firmware catalog are reported in the Application log.
+Clearing a subplot during reconnect prevents its old assignments from returning.
 ``live_follow(False)`` freezes the displayed snapshot for inspection; it does not pause acquisition.
 Setting explicit live X limits enters inspection, and resetting a live plot resumes following.
 ``save_live_view()`` and ``load_live_view()`` persist presentation preferences separately from offline sessions and device startup profiles.
@@ -278,6 +284,7 @@ For inspection, ``get_view()`` returns current layout settings, ``list_plots()``
    :members:
    :inherited-members:
    :undoc-members:
+   :no-show-inheritance:
 
 .. autoclass:: ultrazohm_dataviewer.RunHandle
 

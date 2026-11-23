@@ -227,6 +227,7 @@ class LiveWorkspace:
         self._pending_completion = 0
         self._last_feedback = None
         self._pending_plot_setup = None
+        self._reconnect_signals = {}
         self.settings_notice = ""
         self.available = importlib.util.find_spec("ultrazohm_cli") is not None
         self.scripts = ScriptRunner(send_stop=self.controller.send_stop)
@@ -469,6 +470,7 @@ class LiveWorkspace:
             self._last_feedback = feedback
         if not self.paused and update.source is None and update.epoch != self._epoch:
             if self.run is not None:
+                self._remember_live_signals()
                 self.state.remove_run(self.run.id)
             self.run = self._source = None
             self._epoch = update.epoch
@@ -481,6 +483,7 @@ class LiveWorkspace:
         source = update.source
         if self.run is None or self._epoch is None or self._epoch[0] != update.epoch[0]:
             if self.run is not None:
+                self._remember_live_signals()
                 self.state.remove_run(self.run.id)
             self.run = self.state.registry.add_source("Live UltraZohm", "", source)
             self.run.reloadable = False
@@ -527,6 +530,55 @@ class LiveWorkspace:
         }
         self._source = source
         self._restore_plot_setup()
+        self._rebind_live_signals()
+
+    def _remember_live_signals(self):
+        for cell in self.state.cells:
+            if id(cell) in self._reconnect_signals:
+                continue
+            self._reconnect_signals[id(cell)] = (
+                cell,
+                [name for _, name in cell.signals],
+                [name for _, name in cell.y2_signals],
+                cell.xy_source[1] if cell.xy_source else None,
+            )
+
+    def _rebind_live_signals(self):
+        cells = {id(cell) for cell in self.state.cells}
+        catalog = self.update.catalog.get("observables")
+        removed = set()
+        for key, (cell, signals, secondary, xy) in list(
+            self._reconnect_signals.items()
+        ):
+            if key not in cells:
+                del self._reconnect_signals[key]
+                continue
+            available = self.run.signals
+            cell.signals = [
+                (self.run.id, name) for name in signals if name in available
+            ]
+            cell.y2_signals = [
+                (self.run.id, name) for name in secondary if name in available
+            ]
+            cell.xy_source = (self.run.id, xy) if xy in available else None
+            names = set(signals) | set(secondary) | ({xy} if xy else set())
+            missing = names - set(available)
+            absent = missing - set(catalog) if catalog is not None else set()
+            removed.update(absent)
+            if not (missing - absent):
+                del self._reconnect_signals[key]
+            else:
+                self._reconnect_signals[key] = (
+                    cell,
+                    [n for n in signals if n not in absent],
+                    [n for n in secondary if n not in absent],
+                    xy if xy not in absent else None,
+                )
+        if removed:
+            self.controller._message(
+                "info",
+                "Live observables no longer available: " + ", ".join(sorted(removed)),
+            )
 
     def freeze(self, target):
         """Copy the visible live window to the ordinary offline-analysis registry."""

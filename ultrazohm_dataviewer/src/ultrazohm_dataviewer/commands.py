@@ -275,11 +275,44 @@ class CommandRegistry:
             message = cmd.handler(state, values)
         if workspace := getattr(state, "live_workspace", None):
             if name in (
+                "clear_plot",
+                "add_signal",
+                "remove_signal",
+                "set_axis",
+                "set_xy",
+            ):
+                cell = state.cells[values[0] - 1]
+                pending = workspace._reconnect_signals.get(id(cell))
+                if pending is not None:
+                    _, signals, secondary, xy = pending
+                    if name == "clear_plot":
+                        workspace._reconnect_signals.pop(id(cell), None)
+                    else:
+                        signal = values[2]
+                        if name == "add_signal" and signal not in signals:
+                            signals.append(signal)
+                        elif name == "remove_signal":
+                            signals = [n for n in signals if n != signal]
+                            secondary = [n for n in secondary if n != signal]
+                            xy = None if xy == signal else xy
+                        elif name == "set_axis":
+                            secondary = [n for n in secondary if n != signal]
+                            if (values[1], signal) in cell.y2_signals:
+                                secondary.append(signal)
+                        elif name == "set_xy":
+                            xy = signal
+                        workspace._reconnect_signals[id(cell)] = (
+                            cell,
+                            signals,
+                            secondary,
+                            xy,
+                        )
+            if name in (
                 "set_grid",
                 "set_grid_ratios",
                 "link_x",
                 "set_max_points",
-            ) or any(p.kind == "plot" for p in cmd.params):
+            ) or (name != "export_data" and any(p.kind == "plot" for p in cmd.params)):
                 # Explicit layout edits supersede preferences waiting for live data.
                 workspace._pending_plot_setup = None
         from concurrent.futures import Future

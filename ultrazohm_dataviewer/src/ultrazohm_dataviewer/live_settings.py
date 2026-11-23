@@ -112,6 +112,17 @@ def save_startup_profile(workspace):
             if item["name"]
         }
     profile, removed = profile_for_mapping(mapping, saved_profile, assignments)
+    if assignments is not None:
+        # Reconnect may relocate surviving signals when channel capacity shrinks.
+        # An explicit startup save must instead preserve the selected slot numbers.
+        removed = sorted(
+            set(removed)
+            | {
+                name
+                for channel, name in assignments.items()
+                if not 1 <= int(channel) <= mapping["channels"]
+            }
+        )
     if assignments is not None and removed:
         raise ValueError(
             "Cannot save channels absent from the selected firmware mapping: "

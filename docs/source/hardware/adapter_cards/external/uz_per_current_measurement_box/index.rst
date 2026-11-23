@@ -72,7 +72,7 @@ Revisions
 Downloads
 ---------
 
-- `Altium project repository <https://bitbucket.org/ultrazohm/uz_per_external_current_sensing/src/master/>`_
+- `Altium project repository <https://github.com/ultrazohm/uz_per_external_current_sensing/src/master/>`_
 - :download:`Current sensor evaluation report <Report_current_sensor_evaluation.pdf>`
 - :download:`Current sensor evaluation presentation <Presentation_current_sensor_evalution.pdf>`
 - :download:`Sensitec CAS5000-Series data sheet <SENSITEC_CAS5000-Series_DSE.pdf>`

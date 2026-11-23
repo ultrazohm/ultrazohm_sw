@@ -13,7 +13,7 @@ Deskbench terminal PCB Rev01
 Source
 ******
 
-- `uz_per_deskbench_terminal PCB repository <https://bitbucket.org/ultrazohm/uz_per_deskbench_terminal/>`_
+- `uz_per_deskbench_terminal PCB repository <https://github.com/ultrazohm/uz_per_deskbench_terminal/>`_
 
 General description
 *******************

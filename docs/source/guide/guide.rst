@@ -63,7 +63,7 @@ The following requirements are derived from the development goals of the UltraZo
 Overview of the project
 ***********************
 
-The UltraZohm project is hosted on a Bitbucket `repository <https://bitbucket.org/ultrazohm/ultrazohm_sw>`_.
+The UltraZohm project is hosted on a Github `repository <https://github.com/ultrazohm/ultrazohm_sw>`_.
 The repository is structured in the following way, with some important files highlighted.
 The source of this documentation is located in ``ultrazohm_sw/docs/source/``.
 The online version (docs.ultrazohm.com) is always the documentation of the current state of the ``main`` branch.
@@ -192,6 +192,7 @@ Interfaces of Cabinet
    gui/install
    gui/network
    gui/javascope
+   gui/uz_dataviewer/uz_dataviewer
    gui/dataviewer/dataviewer
 
 .. toctree::

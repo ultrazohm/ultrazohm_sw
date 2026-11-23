@@ -46,7 +46,7 @@ The UZP behaves differently depending on the UltraZohm version:
 
 Given these dependencies, the adapter card identification UZP is disabled by default and has to be activated manually (cf. below).
 The other UZP features are enabled by default but depend on ``UZ_HARDWARE_VERSION`` define in ``uz_global_configuration.h`` (see :ref:`global_configuration`) for systems that have no full UZP features available (see list above).
-On Rev04 UltraZohm systems and older, the UZP relies on the external ":ref:`I²C/SSD/S²C Extension Board <carrier_retrofits_i2cssds2c>`" (either in Rev02 with `EEPROM retrofit <https://bitbucket.org/ultrazohm/uz_per_rtc_mac/issues/10/>`_ or in Rev03 ff.).
+On Rev04 UltraZohm systems and older, the UZP relies on the external ":ref:`I²C/SSD/S²C Extension Board <carrier_retrofits_i2cssds2c>`" (either in Rev02 with `EEPROM retrofit <https://github.com/ultrazohm/uz_per_rtc_mac/issues/10/>`_ or in Rev03 ff.).
 If such older systems are used without the external board (i.e., as shipped), the software defaults to the revision hard-coded in the RPU software, i.e., the known integer value ``UZ_HARDWARE_VERSION`` in ``/Baremetal/src/uz/uz_global_configuration.h``.
 
 Furthermore, only for Rev04 UltraZohm systems and older versions, the adapter card identification feature depends on the PCB tweak described in :ref:`carrier_retrofits_cardid`, which users can apply themselves.
@@ -80,7 +80,7 @@ The activation of the adapter card identification feature depends on the ``UZ_PL
 .. note::
    Please take care to increase ``UZ_IIC_MAX_BUSINSTANCES`` in ``/FreeRTOS/src/uz/uz_IIC/uz_iic.c`` to at least ``2`` when enabling the adapter card identification functionality using ``UZ_PLATFORM_CARDID``.
    Otherwise, the IIC subsystem will ``assert()`` during initialization due to a lack of available bus instances.
-   With `commit b373877 <https://bitbucket.org/ultrazohm/ultrazohm_sw/commits/b373877a641d1a1b1cb76fa67a14573c4d6e57dc>`_ in mid-2025, this now is the default.
+   With `commit b373877 <https://github.com/ultrazohm/ultrazohm_sw/commits/b373877a641d1a1b1cb76fa67a14573c4d6e57dc>`_ in mid-2025, this now is the default.
 
 .. _uzpA53_cardid:
 
@@ -204,7 +204,7 @@ D cards
   * ``UZP_HWGROUP_ADCARD_DIGOPT_18TX`` (18 TX),
   * ``UZP_HWGROUP_ADCARD_DIGOPT_18RX`` (18 RX),
   * ``UZP_HWGROUP_ADCARD_DIGOPT_14TX4RX`` (14 TX / 4 RX), and
-  * for the "two-storey variants" using the `UZ_D_Optical_Daugther <https://bitbucket.org/ultrazohm/uz_d_optical_daugther_12tx>`_\board
+  * for the "two-storey variants" using the `UZ_D_Optical_Daugther <https://github.com/ultrazohm/uz_d_optical_daugther_12tx>`_\board
 
     * ``UZP_HWGROUP_ADCARD_DIGOPT_18TX12TX`` (18 TX + 12 TX), and
     * ``UZP_HWGROUP_ADCARD_DIGOPT_18RX12RX`` (18 RX + 12 RX).
@@ -223,5 +223,5 @@ See also
 --------
 
 * the :ref:`carrier_retrofits_i2cssds2c` docs,
-* the `uz_per_rtc_mac <https://bitbucket.org/ultrazohm/uz_per_rtc_mac/src/master/>`_ repository for the I²C/SSD extension board, and
+* the `uz_per_rtc_mac <https://github.com/ultrazohm/uz_per_rtc_mac/src/master/>`_ repository for the I²C/SSD extension board, and
 * the :ref:`carrier_retrofits_cardid` for modifying pre-Rev05 carrier boards to support the adapter card identification feature.

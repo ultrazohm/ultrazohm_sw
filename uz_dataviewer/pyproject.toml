@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "uz_dataviewer"
+version = "0.1.0"
+description = "UltraZohm log data viewer built with Dear ImGui (imgui_bundle / ImPlot)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "BSD-3-Clause" }
+authors = [{ name = "UltraZohm" }]
+dependencies = [
+    "imgui-bundle>=1.6",
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "pyarrow>=12.0",
+    # Native-only window file drag-drop (GLFW backend); a no-op if absent.
+    "glfw>=2.5; platform_system != 'Emscripten'",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "pyinstaller>=6.0"]
+
+[project.scripts]
+uz-dataviewer = "uz_dataviewer.app:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

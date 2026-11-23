@@ -11,7 +11,7 @@ IsoJTAG_Adapter
 Source
 ******
 
-- `UZ IsoJTAG Adapter repository <https://bitbucket.org/ultrazohm/uz_per_jtag/>`_
+- `UZ IsoJTAG Adapter repository <https://github.com/ultrazohm/uz_per_jtag/>`_
 
 Functionality
 -------------

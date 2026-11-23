@@ -7,7 +7,7 @@ Digital Optical
 Source
 ------
 
-- `Digital optical repository <https://bitbucket.org/ultrazohm/uz_d_optical/src/master/>`_
+- `Digital optical repository <https://github.com/ultrazohm/uz_d_optical/src/master/>`_
 
 
 ..	toctree::

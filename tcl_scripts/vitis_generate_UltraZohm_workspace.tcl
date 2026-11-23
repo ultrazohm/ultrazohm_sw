@@ -137,9 +137,8 @@ proc vitis_main {} {
   puts "Info (UltraZohm): regenerate FreeRTOS BSP"
   #regenerate board support package
   bsp regenerate
-  # Patch portMEMORY_BARRIER into the generated FreeRTOSConfig.h.
-  # bsp regenerate overwrites the file, so the patch must follow it.
-  uz_vitis_patch_freertos_bsp
+  # Re-apply FreeRTOS kernel settings that 'bsp regenerate' resets (see proc).
+  uz_vitis_patch_freertos_bsp $WS_PATH
 
 
   #Domain Baremetal R5_0

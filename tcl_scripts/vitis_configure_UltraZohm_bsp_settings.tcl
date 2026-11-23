@@ -75,12 +75,9 @@ proc uz_vitis_apply_freertos_bsp_settings {enable_dhcp} {
   bsp config n_tx_descriptors 512
   # increase heap size of freertos, to fix javascope glitches
   bsp config total_heap_size 200000000
-  # Enable NEON/FPU context save for ALL tasks (value 2).
-  # Value 1 only saves for tasks that opt-in; value 2 saves unconditionally.
-  # Without this, a task preempted mid-FPU instruction corrupts the FPU
-  # register file of whichever task runs next → silent data errors or hard
-  # faults under load.  XCPlite tasks use FPU via math/atomics; this must
-  # be set before bsp regenerate.  Fixed upstream in embeddedsw >= 2023.1.
+  # Save FPU/NEON context for ALL tasks (default 1 only covers tasks that call
+  # vPortTaskUsesFPU(), but aarch64 GCC uses NEON Q-registers inside ordinary
+  # memcpy -> a task preempted mid-copy would resume with corrupted registers).
   bsp config use_task_fpu_support 2
   platform write
 }

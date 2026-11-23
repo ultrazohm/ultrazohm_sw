@@ -5,8 +5,7 @@ Contribution Workflow
 =====================
 
 The UltraZohm community uses the git-flow branching model since it is easy to apply (more info: `Atlassian <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>`_, `Gitflow cheat sheet <https://danielkummer.github.io/git-flow-cheatsheet/index.html>`_).
-In addition to the git-flow model, :ref:`bitbucket_pull_request` is used for all merges.
-See the `Atlassian tutorial <https://www.atlassian.com/en/git/tutorials/making-a-pull-request>`_ for additional information.
+In addition to the git-flow model, pull requests are used for all merges.
 It is not possible to merge into the ``main`` or ``develop`` branches without a pull request.
 
 UltraZohm Workflow

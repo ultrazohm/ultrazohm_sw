@@ -3,6 +3,12 @@
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+import pathlib
+import sys
+
+# uz_dataviewer library API (uz_dataviewer.api does not import the GUI stack)
+sys.path.insert(0, str(pathlib.Path(__file__).parents[2] / "uz_dataviewer" / "src"))
+
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
@@ -20,12 +26,20 @@ extensions = [
     "sphinx_copybutton",
     "sphinxcontrib.tikz",
     "sphinx.ext.mathjax",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",
     "breathe",
     "sphinx_plotly_directive", # https://matplotlib.org/stable/api/sphinxext_plot_directive_api.html#module-matplotlib.sphinxext.plot_directive
     "bokeh.sphinxext.bokeh_plot",
     "matplotlib.sphinxext.plot_directive",
     "sphinx_design"
 ]
+
+autodoc_default_options = {
+    "members": True,
+    "show-inheritance": True,
+}
+autodoc_member_order = "bysource"
 
 plotly_pre_code = """
 import plotly.io as pio
@@ -43,9 +57,9 @@ breathe_domain_by_extension = {
     "h": "c",
 }
 
-issues_uri = "https://bitbucket.org/ultrazohm/ultrazohm_sw/issues/{issue}"
-issues_pr_uri = "https://bitbucket.org/ultrazohm/ultrazohm_sw/pull-requests/{pr}"
-issues_commit_uri = "https://bitbucket.org/ultrazohm/ultrazohm_sw/commits/{commit}"
+issues_uri = "https://github.com/ultrazohm/ultrazohm_sw/issues/{issue}"
+issues_pr_uri = "https://github.com/ultrazohm/ultrazohm_sw/pull-requests/{pr}"
+issues_commit_uri = "https://github.com/ultrazohm/ultrazohm_sw/commits/{commit}"
 
 latex_engine = "lualatex"
 
@@ -54,17 +68,17 @@ latex_engine = "lualatex"
 
 html_theme = 'pydata_sphinx_theme'
 html_theme_options = {
-    "navigation_with_keys":"True"
+    "navigation_with_keys": True,
+    "use_edit_page_button": True,
 }
 
 # html_static_path = ['_static']
 
 html_context = {
-    "display_bitbucket": True,  # Integrate Bitbucket
-    "bitbucket_user": "ultrazohm",  # Username
-    "bitbucket_repo": "ultrazohm_sw",  # Repo name
-    "bitbucket_version": "main",  # Version
-    "conf_py_path": "/docs/source/",  # Path in the checkout to the docs root
+    "github_user": "ultrazohm",  # Username
+    "github_repo": "ultrazohm_sw",  # Repo name
+    "github_version": "main",  # Version
+    "doc_path": "docs/source",  # Path in the checkout to the docs root
 }
 
 
@@ -95,6 +109,8 @@ nitpick_ignore = [
     ("c:identifier", "size_t"),
     ("c:identifier", "uintptr_t"),
     ("c:identifier", "bool"),
+    ("py:class", "numpy.ndarray"),
+    ("py:class", "uz_dataviewer.analysis.FftResult"),
 ]
 
 tikz_latex_preamble = r"\newcommand\Foo[1]{Z}" # https://github.com/sphinx-contrib/tikz/issues/19

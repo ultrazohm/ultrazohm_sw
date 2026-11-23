@@ -49,11 +49,11 @@ impl ProfileSettings {
         }
         for (original, name) in displaced {
             let free = (1..=mapping.channels as u32).find(|slot| !selected.contains_key(slot));
-            if !selected.values().any(|existing| existing == &name) {
-                if let Some(slot) = free {
-                    selected.insert(slot, name);
-                    continue;
-                }
+            if !selected.values().any(|existing| existing == &name)
+                && let Some(slot) = free
+            {
+                selected.insert(slot, name);
+                continue;
             }
             removed.push(original);
         }

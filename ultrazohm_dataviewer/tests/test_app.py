@@ -137,10 +137,7 @@ def test_live_panels_are_opt_in(use_live, monkeypatch):
         windows = app._dockable_windows()
         labels = {window.label for window in windows}
         if use_live:
-            assert all(
-                w.is_visible == (w.label != "Python")
-                for w in windows
-            )
+            assert all(w.is_visible == (w.label != "Python") for w in windows)
         live_labels = {"Live Data", "Live Plots", "Control"}
         assert "Python" in labels
         assert labels & live_labels == (live_labels if use_live else set())

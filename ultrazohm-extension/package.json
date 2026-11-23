@@ -3,7 +3,7 @@
   "displayName": "ultrazohm-extension",
   "description": "UltraZohm DataViewer, interactive CLI, Python environment and firmware tools.",
   "publisher": "ultrazohm-local",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "engines": {
     "vscode": "^1.93.0"
   },
@@ -86,6 +86,10 @@
       {
         "command": "ultrazohm.flash",
         "title": "ultrazohm-extension: Flash UZ"
+      },
+      {
+        "command": "ultrazohm.updatePackages",
+        "title": "ultrazohm-extension: Update Python packages"
       }
     ],
     "views": {

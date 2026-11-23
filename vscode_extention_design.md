@@ -1,6 +1,6 @@
 # ultrazohm-extension design
 
-Status: prototype 0.1.9 implemented in `ultrazohm-extension/`, on the
+Status: prototype 0.1.10 implemented in `ultrazohm-extension/`, on the
 `feature/vscode-extension` worktree. This design supersedes earlier proposals;
 the original issue remains unchanged at the end.
 
@@ -252,7 +252,7 @@ validation.
 ## Installation and distribution
 
 The Linux test artifact is
-`ultrazohm-extension/dist/ultrazohm-extension-linux-x64-0.1.9.vsix`. Install it with
+`ultrazohm-extension/dist/ultrazohm-extension-linux-x64-0.1.10.vsix`. Install it with
 **Extensions: Install from VSIX…**, or `code --install-extension <vsix>`.
 A tester needs no npm or Marketplace account. Open the UZ pane and select this
 worktree with **Find ultrazohm_sw directory…** if necessary. Choose a channel published
@@ -294,6 +294,18 @@ runtime/application verification manifest. Odd minor versions are prereleases;
 even minor versions are stable. This is independent of the user-selected PyPI
 channel. Marketplace publishing is deferred. See
 `ultrazohm-extension/RELEASING.md` for installation and release procedures.
+
+## Explicit package updates
+
+Setup includes **Update Python packages**. Normal launches reuse uv's cached
+environments. Updating explicitly refreshes CLI, DataViewer and the Python-shell
+environment for the selected channel, using bundled uv/Python and private storage.
+It uses bundled/local launcher requirements according to the selected source.
+A visible task terminal reports progress, resolved versions and errors. Running
+UltraZohm tasks must be closed first; new tasks are blocked in this window while
+updating. Other windows must be stopped manually. Failures may leave some of the
+three environments updated; retry after resolving the reported cause. This does
+not update the VSIX, Python or uv, and does not modify application/launcher code.
 
 ## Original issue (historical reference)
 

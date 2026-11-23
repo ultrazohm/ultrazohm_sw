@@ -245,3 +245,37 @@ test('Flash UZ pending confirmation prevents concurrent firmware starts', async 
  assert.equal(s.state.confirmations.length,1);assert.equal(s.tasks().length,0);
  accept('Flash UZ');await pending;assert.equal(s.tasks().length,1);
 });
+
+test('Setup package update uses private tooling, selected requirements and visible terminal without XSCT', async () => {
+  const s = setup('hidden');
+  s.settings['launcher.source'] = 'bundled';
+  s.v.workspace.workspaceFolders[0].uri.fsPath = '/unrelated';
+  s.settings['dataviewer.channel'] = 'stable';
+  const rows = await s.events.providers['ultrazohm.setup'].getChildren();
+  assert(rows.some(row => row.command?.command === 'ultrazohm.updatePackages'));
+  await Promise.all([s.run('updatePackages'), s.run('updatePackages')]);
+  await s.run('updatePackages');
+  assert.equal(s.tasks().length, 1);
+  const task = s.tasks()[0];
+  assert.equal(task.execution.command, '/extension/runtime/python/bin/python3');
+  assert.deepEqual(Array.from(task.execution.args), ['-B', '/extension/update-packages.py', '--uv', '/extension/runtime/bin/uv', '--channel', 'stable', '--requirements', '/extension/launcher/requirements.txt']);
+  assert.equal(task.execution.options.env.UV_CACHE_DIR, '/private/cache');
+  assert.equal(task.presentationOptions.reveal, 1);
+  assert(s.reveals() > 0);
+  await s.run('launch');
+  assert.equal(s.tasks().length, 1);
+  assert.match(s.errors.at(-1), /Wait for Update/);
+  s.v.tasks.taskExecutions = [];
+  await s.run('launch');
+  assert.equal(s.tasks()[0].definition.action, 'viewer');
+});
+
+test('package update refuses running tasks and respects local requirements', async () => {
+  const s = setup();
+  await s.run('venv'); await s.run('updatePackages');
+  assert.equal(s.tasks().length, 1);
+  assert.match(s.errors.at(-1), /Close running/);
+  s.v.tasks.taskExecutions = [];
+  await s.run('updatePackages');
+  assert(s.tasks()[0].execution.args.includes('/checkout with spaces/requirements.txt'));
+});

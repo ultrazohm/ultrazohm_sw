@@ -48,7 +48,7 @@ def verify(target, vsix, unpack, channel):
             raise ValueError('Incorrect extension identity/version')
         if any(name.startswith(('extension/test/', 'extension/node_modules/', 'extension/tools/')) for name in names):
             raise ValueError('Development-only files leaked into VSIX')
-        required = ['extension/launcher/uz.py', 'extension/launcher/requirements.txt', 'extension/runtime/licenses/LICENSE.cpython.txt', 'extension/runtime/licenses/uv-LICENSE-MIT.txt']
+        required = ['extension/update-packages.py', 'extension/launcher/uz.py', 'extension/launcher/requirements.txt', 'extension/runtime/licenses/LICENSE.cpython.txt', 'extension/runtime/licenses/uv-LICENSE-MIT.txt']
         if any(name not in names for name in required):
             raise ValueError('Runtime, launcher or license files missing')
         for member in archive.infolist():
@@ -87,6 +87,9 @@ def verify(target, vsix, unpack, channel):
         launcher = extension / 'launcher'
         command = [Path(os.environ['SystemRoot']) / 'System32/WindowsPowerShell/v1.0/powershell.exe', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', launcher / 'uz.ps1'] if windows else ['/bin/bash', launcher / 'uz']
         run([*command, '--help'])
+        # Validate refresh/cache behavior using local fixture wheels, without PyPI.
+        subprocess.run([str(python), '-B', str(ROOT / 'tools/test_update_packages.py')],
+            cwd=storage, env={**env, 'UZ_TEST_UV': str(uv), 'UZ_TEST_UPDATE_SCRIPT': str(extension / 'update-packages.py')}, check=True, timeout=180)
         resolved = {}
         if channel:
             for application in ['cli', 'dataviewer']:

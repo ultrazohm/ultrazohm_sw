@@ -15,6 +15,7 @@ Open an UltraZohm checkout directly, or click **Find ultrazohm_sw directory…**
 | Flash UZ | Confirm, then build, program via JTAG and run using the standalone CLI flash command. |
 | Vitis / XSCT | Select `settings64.sh` on Linux or `settings64.bat` on Windows; direct XSCT selection is also supported. |
 | Launcher | Use scripts bundled in the VSIX (default), or the selected checkout's scripts. |
+| Update Python packages | Refresh CLI, DataViewer and the Python environment for the selected channel, with progress in a visible task terminal. Close running UltraZohm tasks first. |
 | Release channel | Choose stable or prerelease for all actions. Stable is the default. |
 | Terminal | Choose whether DataViewer automatically shows/focuses its terminal. Other actions always show theirs. |
 
@@ -38,6 +39,8 @@ The VSIX bundles uv and CPython 3.12. First use downloads application packages f
 
 Bundled mode uses its packaged `requirements.txt`; local mode uses the checkout's file. Both currently add `matplotlib>=3.9` alongside DataViewer/CLI dependencies. Changing source affects the next task, not already running tasks.
 
+Normal launches reuse cached packages. **Update Python packages** explicitly checks PyPI, refreshes the three cached environments using private bundled uv/Python, and prints their resolved versions. It uses the chosen launcher’s requirements file without changing its scripts. It does not update the extension, Python or uv. Updates may partially succeed before a failure; fix the reported error and retry. Close UltraZohm tasks in other VS Code windows before updating too. The pane’s Refresh icon only rechecks setup.
+
 The selected channel is passed to the chosen launcher; package resolution and updates remain its responsibility. CLI help is checked before launching interactive or firmware commands because PyPI releases can lag behind this checkout: newer packages accept `--local` and `serve --xsct`, while older packages use local firmware commands directly and find the selected XSCT through task PATH.
 
 Application code always comes from PyPI. `venv dev`, user-command installation, device controls, recording and advanced CLI options have no dedicated extension buttons. Use the existing launcher, CLI prompt or DataViewer for these workflows. The private Linux Bash shell provides a green user/host prompt, blue working directory and automatic `ls` colors without loading `~/.bashrc`. It respects `NO_COLOR` and disables colors for `TERM=dumb` or nonterminal output. Environment activation still adds its prefix. The Python shell is an ordinary shell, not a sandbox for commands you type.
@@ -52,7 +55,7 @@ npm run check
 npm test
 python -m unittest discover -s tools -p 'test_*.py'
 python tools/bundle.py --target linux-x64
-npm run package -- --target linux-x64 --pre-release --out ultrazohm-extension-linux-x64-0.1.9.vsix
+npm run package -- --target linux-x64 --pre-release --out ultrazohm-extension-linux-x64-0.1.10.vsix
 ```
 
 Use `win32-x64` on Windows. `runtime-lock.json` pins upstream downloads and SHA-256 checksums; bundling includes redistribution notices. Pass `--replace` to rebuild an existing generated runtime. `vscode:prepublish` snapshots the shared root launcher scripts and requirements into `launcher/` each time you package.

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.10
+
+- Add Update Python packages to Setup, refreshing the selected PyPI channel using private bundled tooling.
+
 ## 0.1.9
 
 - Name the extension and its platform VSIXs consistently `ultrazohm-extension`.

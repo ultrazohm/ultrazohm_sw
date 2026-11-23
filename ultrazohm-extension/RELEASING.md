@@ -25,7 +25,7 @@ release. In particular, stop acquisition before Flash UZ.
 Install with **Extensions: Install from VSIX…** or:
 
 ```sh
-code --install-extension ultrazohm-extension-linux-x64-0.1.9.vsix
+code --install-extension ultrazohm-extension-linux-x64-0.1.10.vsix
 ```
 
 Uninstall the earlier `ultrazohm-local.ultrazohm` prototype to avoid duplicate
@@ -47,8 +47,8 @@ npm test
 python -m unittest discover -s tools -p 'test_*.py'
 python tools/bundle.py --target linux-x64
 mkdir -p dist
-npm run package -- --target linux-x64 --pre-release --out dist/ultrazohm-extension-linux-x64-0.1.9.vsix
-python tools/release.py verify --target linux-x64 --vsix dist/ultrazohm-extension-linux-x64-0.1.9.vsix --extract .package-test --smoke-channel prerelease
+npm run package -- --target linux-x64 --pre-release --out dist/ultrazohm-extension-linux-x64-0.1.10.vsix
+python tools/release.py verify --target linux-x64 --vsix dist/ultrazohm-extension-linux-x64-0.1.10.vsix --extract .package-test --smoke-channel prerelease
 ```
 
 On Windows replace `linux-x64` with `win32-x64`; create `dist` using PowerShell's
@@ -71,7 +71,7 @@ versions tested, not a permanent application dependency lock.
 ## Publish a GitHub Release
 
 1. Update `package.json` and `package-lock.json` together, and add release notes
-   to `CHANGELOG.md`. Use numeric versions. Odd minor versions (such as `0.1.9`)
+   to `CHANGELOG.md`. Use numeric versions. Odd minor versions (such as `0.1.10`)
    are prereleases; even minor versions (such as `0.2.0`) are stable. This policy
    is separate from the application's stable/prerelease selector.
 2. Commit and push the release commit. Verify both platform builds and manual
@@ -79,8 +79,8 @@ versions tested, not a permanent application dependency lock.
 3. Explicitly create and push the matching tag:
 
    ```sh
-   git tag -a ultrazohm-extension-v0.1.9 -m 'ultrazohm-extension 0.1.9'
-   git push origin ultrazohm-extension-v0.1.9
+   git tag -a ultrazohm-extension-v0.1.10 -m 'ultrazohm-extension 0.1.10'
+   git push origin ultrazohm-extension-v0.1.10
    ```
 
 The tag workflow rebuilds/tests both targets. It rejects mismatched versions,

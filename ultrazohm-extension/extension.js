@@ -8,6 +8,7 @@ const { settingsEnvironment } = require('./vitis-env');
 const { readHelp } = require('./cli-capabilities');
 
 const actions = {
+  updatePackages: { label: 'Update Python packages', name: 'UltraZohm Update Python Packages', group: 'packages', icon: 'cloud-download' },
   launch: { label: 'Launch DataViewer', name: 'UltraZohm DataViewer', group: 'viewer', icon: 'graph' },
   cli: { label: 'Open interactive CLI', name: 'UltraZohm Interactive CLI', group: 'cli', icon: 'terminal' },
   venv: { label: 'Open Python environment', name: 'UltraZohm Python Environment', group: 'venv', icon: 'terminal' },
@@ -137,6 +138,7 @@ function activate(context) {
             tooltip: xsct.script || xsct.path || xsct.reason || reason,
             command: { command: 'ultrazohm.xsct', title: 'Select Vitis settings or XSCT' } },
           { label: 'Release channel: ' + channel(), command: { command: 'ultrazohm.channel', title: 'Select channel' } },
+          row('updatePackages'),
           { label: 'Terminal: ' + (visible() ? 'visible' : 'hidden'), tooltip: 'DataViewer only. CLI, environment, and firmware terminals are always visible.',
             command: { command: 'ultrazohm.terminal', title: 'Select terminal visibility' } },
         ];
@@ -222,15 +224,22 @@ function activate(context) {
     const { root, cwd, launcherRoot, source, scope } = launchContext(key);
     const identity = root || '';
     const show = key !== 'launch' || visible();
-    const token = identity + '\0' + action.group;
+    const token = key === 'updatePackages' ? 'packages' : identity + '\0' + action.group;
     if (pending.has(token)) { if (show) reveal(pending.get(token)); return; }
-    const active = running(identity, action.group);
+    const packageTask = vscode.tasks.taskExecutions.find(e => e.task.definition.type === 'ultrazohm' && e.task.definition.action === 'packages');
+    const active = key === 'updatePackages' ? packageTask : running(identity, action.group);
     if (active) { if (show) reveal(active.task.name); return; }
+    if (key === 'updatePackages' && (pending.size || vscode.tasks.taskExecutions.some(e => e.task.definition.type === 'ultrazohm'))) {
+      throw new Error('Close running UltraZohm tasks before updating Python packages.');
+    }
+    if (key !== 'updatePackages' && (pending.has('packages') || packageTask)) {
+      throw new Error('Wait for Update Python packages to finish before launching another UltraZohm task.');
+    }
     pending.set(token, action.name);
     try {
       const selected = channel();
       if (!['stable', 'prerelease'].includes(selected)) throw new Error('Invalid release channel.');
-      const xsct = await vitis(root);
+      const xsct = key === 'updatePackages' ? { env: process.env } : await vitis(root);
       if (xsct.script && xsct.reason && (key === 'cli' || action.group === 'firmware')) throw new Error(xsct.reason);
       if (xsct.script && xsct.path && root) saveXsct(root, xsct.path);
       if (action.group === 'firmware' && !xsct.path) throw new Error(xsct.reason);
@@ -244,7 +253,7 @@ function activate(context) {
       env.UZ_BUNDLED_PYTHON = path.join(base, runtime.python);
       env.UZ_PRIVATE_SHELL_DIR = path.join(storage, 'shell');
       const windows = process.platform === 'win32';
-      const executable = windows ? path.join(process.env.SystemRoot, 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe') : '/bin/bash';
+      const executable = key === 'updatePackages' ? env.UZ_BUNDLED_PYTHON : windows ? path.join(process.env.SystemRoot, 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe') : '/bin/bash';
       const launcher = path.join(launcherRoot, windows ? 'uz.ps1' : 'uz');
       const invoke = args => windows ? ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', launcher, ...args] : [launcher, ...args];
       if (xsct.path) {
@@ -262,7 +271,10 @@ function activate(context) {
         if (root && !capabilities.repo) throw new Error('This CLI package does not support selecting a repository. Choose a compatible release channel.');
       }
       let args;
-      if (key === 'launch') args = ['dataviewer', selected, '--', 'gui', ...(root ? ['--live-repo', root] : [])];
+      if (key === 'updatePackages') args = ['-B', path.join(context.extensionPath, 'update-packages.py'),
+        '--uv', path.join(base, 'bin', windows ? 'uv.exe' : 'uv'), '--channel', selected,
+        '--requirements', path.join(launcherRoot, 'requirements.txt')];
+      else if (key === 'launch') args = ['dataviewer', selected, '--', 'gui', ...(root ? ['--live-repo', root] : [])];
       else if (key === 'venv') args = ['venv', selected];
       else if (key === 'cli') {
         const address = endpoint();
@@ -275,7 +287,7 @@ function activate(context) {
         if (choice !== 'Flash UZ') return;
         args = ['cli', selected, '--', 'flash', ...(capabilities.local ? ['--local'] : []), '--repo', root, '--profile', 'Run_UltraZohm'];
       } else args = ['cli', selected, '--', key, ...(capabilities.local ? ['--local'] : []), '--repo', root];
-      const invocation = invoke(args);
+      const invocation = key === 'updatePackages' ? args : invoke(args);
       const task = new vscode.Task({ type: 'ultrazohm', action: action.group, operation: key, repository: identity, launcherSource: source }, scope,
         action.name, 'UltraZohm', new vscode.ProcessExecution(executable, invocation, { cwd, env }), []);
       task.presentationOptions = { reveal: show ? vscode.TaskRevealKind.Always : vscode.TaskRevealKind.Never,

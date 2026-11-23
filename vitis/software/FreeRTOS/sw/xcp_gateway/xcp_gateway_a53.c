@@ -49,10 +49,13 @@
 #if XCP_GW_PROFILE
 #include "xparameters.h" /* XPAR_CPU_CORTEXA53_0_TIMESTAMP_CLK_FREQ */
 #endif
+#include "xil_printf.h"
 
 #define XCP_GW_FRAME_MAX     OCM_XCP_RECORD_MAX /* one R5 queue segment = one datagram */
 #define XCP_TL_HEADER_LEN    4    /* [dlc:u16][ctr:u16]                          */
 #define XCP_PID_CTO_MIN      0xFCu
+#define XCP_GW_CC_CONNECT    0xFFu /* command codes the gateway reports */
+#define XCP_GW_CC_DISCONNECT 0xFEu
 /* Largest XCP command the R5 engine accepts (XCPTL_MAX_CTO_SIZE, set by
  * xcplib_r5_cfg.h). The engine asserts on anything bigger, so a datagram
  * carrying such a frame is refused here already (see xcp_gw_rx_frames_valid). */
@@ -598,6 +601,38 @@ static int xcp_gw_rx_frames_valid(const uint8_t *d, uint16_t n) {
     return off == n;
 }
 
+/* Session lines on the serial console: CONNECT and DISCONNECT from the
+ * master, and a session the gateway closes itself (master supervision).
+ * Task context only, never inside a critical section. A CONNECT or
+ * DISCONNECT line fits the 64-byte UART TX FIFO, so the rx task does not
+ * wait for the wire; the longer supervision line waits ~2 ms in the tx task,
+ * once per closed session. */
+#define XCP_GW_SEEN_CONNECT    1u
+#define XCP_GW_SEEN_DISCONNECT 2u
+
+/* Command codes of a datagram already checked by xcp_gw_rx_frames_valid(). */
+static unsigned xcp_gw_rx_session_cmds(const uint8_t *d, uint16_t n) {
+    unsigned seen = 0u;
+    uint16_t off = 0;
+    while ((uint16_t)(off + XCP_TL_HEADER_LEN) < n) {
+        const uint16_t dlc = (uint16_t)(d[off] | ((uint16_t)d[off + 1] << 8));
+        const uint8_t cmd = d[off + XCP_TL_HEADER_LEN];
+        if (cmd == XCP_GW_CC_CONNECT) {
+            seen |= XCP_GW_SEEN_CONNECT;
+        } else if (cmd == XCP_GW_CC_DISCONNECT) {
+            seen |= XCP_GW_SEEN_DISCONNECT;
+        }
+        off = (uint16_t)(off + XCP_TL_HEADER_LEN + dlc);
+    }
+    return seen;
+}
+
+static void xcp_gw_print_master(const char *what, const struct sockaddr_in *m) {
+    const uint8_t *ip = (const uint8_t *)&m->sin_addr.s_addr; /* network order = a.b.c.d */
+    xil_printf("APU: XCP %s %d.%d.%d.%d:%d\r\n", what, ip[0], ip[1], ip[2], ip[3],
+               (int)lwip_ntohs(m->sin_port));
+}
+
 static void xcp_gw_rx_task(void *arg) {
     (void)arg;
     static xcp_gw_frame_t f; /* only this task uses it */
@@ -628,10 +663,19 @@ static void xcp_gw_rx_task(void *arg) {
             taskEXIT_CRITICAL();
         }
         gMasterLastRxTick = xTaskGetTickCount(); /* master supervision: it is alive */
+        const unsigned seen = xcp_gw_rx_session_cmds(f.data, (uint16_t)n);
         f.len = (uint16_t)n;
         (void)xQueueSendToBack(gRxQueue, &f, 0); /* drop if full; master retries */
         if (!gCtoAdoptPending) {
             xcp_gw_offer_commands(); /* else the next IPI adopts first, then offers */
+        }
+        /* Printed after the hand-over, so the command does not wait for it.
+         * Whether the R5 accepts the CONNECT shows on the master's side. */
+        if (seen & XCP_GW_SEEN_CONNECT) {
+            xcp_gw_print_master("CONNECT from", &src);
+        }
+        if (seen & XCP_GW_SEEN_DISCONNECT) {
+            xcp_gw_print_master("DISCONNECT from", &src);
         }
     }
 }
@@ -673,17 +717,20 @@ static int xcp_gw_restamp_ctr(xcp_gw_frame_t *f) {
  * the command path (generation handshake = guaranteed delivery); it stops
  * DAQ and answers, and that answer is discarded here because the endpoint
  * is forgotten first. Task context only (tx task). */
-static void xcp_gw_master_lost_disconnect(void) {
+static void xcp_gw_master_lost_disconnect(const char *why) {
     static const xcp_gw_frame_t disconnect = {
         .len = XCP_TL_HEADER_LEN + 1,
-        .data = {0x01, 0x00, 0x00, 0x00, 0xFE}, /* [dlc=1][ctr=0][DISCONNECT] */
+        .data = {0x01, 0x00, 0x00, 0x00, XCP_GW_CC_DISCONNECT}, /* [dlc=1][ctr=0][DISCONNECT] */
     };
+    struct sockaddr_in master;
     taskENTER_CRITICAL();
+    master = gMaster;
     gMasterValid = 0; /* ISR drops staged DAQ, tx task sends nothing */
     taskEXIT_CRITICAL();
     xcp_gw_master_lost++;
     (void)xQueueSendToBack(gRxQueue, &disconnect, pdMS_TO_TICKS(100));
     xQueueReset(gTxQueue); /* the backlog has no receiver any more */
+    xcp_gw_print_master(why, &master);
 }
 
 static void xcp_gw_tx_task(void *arg) {
@@ -784,15 +831,18 @@ static void xcp_gw_tx_task(void *arg) {
         }
         /* Master supervision: nothing has been sendable for a while, or (if
          * enabled) the master has been silent too long while we stream. */
-        int lost = (send_fail_run >= (uint32_t)XCP_GATEWAY_SEND_FAIL_LIMIT);
+        const char *lost = NULL;
+        if (send_fail_run >= (uint32_t)XCP_GATEWAY_SEND_FAIL_LIMIT) {
+            lost = "session closed, sends to the master keep failing:";
+        }
 #if XCP_GATEWAY_MASTER_TIMEOUT_MS > 0
         if ((TickType_t)(xTaskGetTickCount() - gMasterLastRxTick) > pdMS_TO_TICKS(XCP_GATEWAY_MASTER_TIMEOUT_MS)) {
-            lost = 1;
+            lost = "session closed, master silent too long:";
         }
 #endif
-        if (lost && gMasterValid) {
+        if (lost != NULL && gMasterValid) {
             send_fail_run = 0;
-            xcp_gw_master_lost_disconnect();
+            xcp_gw_master_lost_disconnect(lost);
         }
         /* Let lwIP's tcpip thread and the rx task run between datagrams.
          * They run at this task's priority, FreeRTOS does not preempt between

@@ -211,7 +211,7 @@ Troubleshooting
    * - Symptom
      - Check
    * - No response to ``CONNECT``
-     - Serial console: is the XCP banner printed, is there a logging path mismatch warning? Does the master use UDP and port 5556? Is the port blocked by a firewall on the PC? Were both applications flashed?
+     - Serial console: is the XCP banner printed, is there a logging path mismatch warning? Does ``APU: XCP CONNECT from ...`` appear? If not, the command does not reach the board. Does the master use UDP and port 5556? Is the port blocked by a firewall on the PC? Were both applications flashed?
    * - ``CONNECT`` works, reading a variable gives ``ERR_ACCESS_DENIED``
      - The address is outside the memory of the R5. The A2L file or the ELF file does not belong to the firmware on the board.
    * - A write gives ``ERR_WRITE_PROTECTED``

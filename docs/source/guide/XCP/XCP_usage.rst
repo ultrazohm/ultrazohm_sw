@@ -67,6 +67,16 @@ The A53 prints the XCP endpoint on the serial console when the network is up (11
     APU: XCPlite slave (UDP) at 192.168.1.233:5556
     APU:   test with  python tools/xcp_test/xcp_poll.py --ip 192.168.1.233
 
+It also prints a line for every ``CONNECT`` and ``DISCONNECT`` it receives, with the address and port of the master:
+
+.. code-block:: text
+
+    APU: XCP CONNECT from 192.168.1.10:54321
+    APU: XCP DISCONNECT from 192.168.1.10:54321
+
+The line shows that the command reached the board, not that the R5 accepted it; the master reports that.
+If the gateway closes a session itself because the master can no longer be reached (master supervision, see :doc:`XCP_architecture`), it prints ``APU: XCP session closed, ...`` with the reason and the address.
+
 Check the connection without CANape
 -----------------------------------
 

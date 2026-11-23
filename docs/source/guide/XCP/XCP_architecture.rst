@@ -310,6 +310,7 @@ Master supervision
 UDP has no connection that could break.
 The gateway therefore ends an XCP session itself when it concludes that the master is gone: it sends a regular XCP ``DISCONNECT`` to the R5 engine, which stops the measurement, and it forgets the address of the master.
 The next ``CONNECT`` starts a new session.
+The A53 prints ``APU: XCP session closed, ...`` on the serial console with the reason and the address of the master.
 
 - Always active: 20 datagrams in a row could not be handed to the network, each after five retries. This is the case when the Ethernet link of the UltraZohm is down, and it takes one to two seconds. It does **not** detect a master that crashed or was unplugged behind a switch, because sending still succeeds then.
 - Optional: the master did not send anything for ``XCP_GATEWAY_MASTER_TIMEOUT_MS`` (``xcp_gateway_a53.h``) while the gateway was sending. This covers the second case. It is switched off by default (value 0), because the XCP standard does not oblige a master to send anything during a measurement.

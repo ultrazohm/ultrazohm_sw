@@ -28,15 +28,15 @@ static const uz_testbench_config_t testbench_config = {
                     .phase_a_gain = 40.0f, .phase_b_gain = 40.0f,
                     .phase_c_gain = 40.0f, .dc_link_gain = 40.0f,
                     .phase_a_offset = -0.15f, .phase_b_offset = 0.1f,
-                    .phase_c_offset = -0.05f, .dc_link_offset = -0.3f
+                    .phase_c_offset = -0.05f, .dc_link_offset = 0.15f
                 },
                 .voltage_scaling = {
                     .phase_a_gain = 363.6f, .phase_b_gain = 363.6f,
-                    .phase_c_gain = 37.037f, .dc_link_gain = 142.3f,
+                    .phase_c_gain = 37.037f, .dc_link_gain = 967.53f,
                     .phase_a_offset = -0.0033f * 363.6f,
                     .phase_b_offset = -0.001f * 363.6f,
                     .phase_c_offset = -0.0017f * 37.037f,
-                    .dc_link_offset = 0.0005f * 142.3f
+                    .dc_link_offset = 0.17115//0.0005f * 142.3f
                 }
             }
         },
@@ -56,11 +56,11 @@ static const uz_testbench_config_t testbench_config = {
                 },
                 .voltage_scaling = {
                     .phase_a_gain = 1.0f, .phase_b_gain = 1.0f,
-                    .phase_c_gain = 1.0f, .dc_link_gain = 1.0f / 0.003764f,
+                    .phase_c_gain = 1.0f, .dc_link_gain = 267.39f, //1.0f / 0.003764f,
                     .phase_a_offset = 0.0f,
                     .phase_b_offset = 0.0f,
                     .phase_c_offset = 0.0f,
-                    .dc_link_offset = -3.0f
+                    .dc_link_offset = -3.6f
                 }
             }
         }

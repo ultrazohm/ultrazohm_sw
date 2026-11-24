@@ -96,7 +96,7 @@ jobs:
           flags=()
           if [[ "$PRE_RELEASE" == true ]]; then flags+=(--pre-release); fi
           npm run package -- --target "$TARGET" --out "dist/ultrazohm-extension-$TARGET-$VERSION.vsix" "${flags[@]}"
-      - name: Verify packaged runtime and published applications
+      - name: Verify runtime and published command contracts
         env:
           TARGET: ${{ matrix.target }}
           VERSION: ${{ steps.meta.outputs.version }}

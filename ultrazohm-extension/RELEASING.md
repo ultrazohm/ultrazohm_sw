@@ -17,15 +17,14 @@ CI checks JavaScript, launcher and release-tool tests, downloads SHA-256-verifie
 runtime archives, packages the extension, checks its archive contents and runs
 the shipped Python/uv. It exercises PyPI CLI/DataViewer help and dependency
 imports in fresh private storage, then launches fixture tasks in the packaged
-extension in VS Code 1.93.0 and current stable VS Code. Fixture tests do not
-program hardware. Test a real DataViewer GUI, interactive CLI, Python shell,
+extension in VS Code 1.93.0 and current stable VS Code. Published-command tests check every exposed command and exercise a real interactive CLI service with fake XSCT, including checkout mismatch, flash success and failure propagation. No automated tests program hardware. Test a real DataViewer GUI, interactive CLI, Python shell,
 Vitis setup and firmware operations on suitable test machines before a public
-release. In particular, stop acquisition before Flash UZ.
+release. Verify recording finalization and reconnect behavior during Flash UZ.
 
 Install with **Extensions: Install from VSIX…** or:
 
 ```sh
-code --install-extension ultrazohm-extension-linux-x64-0.1.10.vsix
+code --install-extension ultrazohm-extension-linux-x64-0.1.11.vsix
 ```
 
 Uninstall the earlier `ultrazohm-local.ultrazohm` prototype to avoid duplicate
@@ -47,8 +46,8 @@ npm test
 python -m unittest discover -s tools -p 'test_*.py'
 python tools/bundle.py --target linux-x64
 mkdir -p dist
-npm run package -- --target linux-x64 --pre-release --out dist/ultrazohm-extension-linux-x64-0.1.10.vsix
-python tools/release.py verify --target linux-x64 --vsix dist/ultrazohm-extension-linux-x64-0.1.10.vsix --extract .package-test --smoke-channel prerelease
+npm run package -- --target linux-x64 --pre-release --out dist/ultrazohm-extension-linux-x64-0.1.11.vsix
+python tools/release.py verify --target linux-x64 --vsix dist/ultrazohm-extension-linux-x64-0.1.11.vsix --extract .package-test --smoke-channel prerelease
 ```
 
 On Windows replace `linux-x64` with `win32-x64`; create `dist` using PowerShell's
@@ -71,7 +70,7 @@ versions tested, not a permanent application dependency lock.
 ## Publish a GitHub Release
 
 1. Update `package.json` and `package-lock.json` together, and add release notes
-   to `CHANGELOG.md`. Use numeric versions. Odd minor versions (such as `0.1.10`)
+   to `CHANGELOG.md`. Use numeric versions. Odd minor versions (such as `0.1.11`)
    are prereleases; even minor versions (such as `0.2.0`) are stable. This policy
    is separate from the application's stable/prerelease selector.
 2. Commit and push the release commit. Verify both platform builds and manual
@@ -79,8 +78,8 @@ versions tested, not a permanent application dependency lock.
 3. Explicitly create and push the matching tag:
 
    ```sh
-   git tag -a ultrazohm-extension-v0.1.10 -m 'ultrazohm-extension 0.1.10'
-   git push origin ultrazohm-extension-v0.1.10
+   git tag -a ultrazohm-extension-v0.1.11 -m 'ultrazohm-extension 0.1.11'
+   git push origin ultrazohm-extension-v0.1.11
    ```
 
 The tag workflow rebuilds/tests both targets. It rejects mismatched versions,

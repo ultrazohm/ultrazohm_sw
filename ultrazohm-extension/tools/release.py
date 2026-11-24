@@ -48,7 +48,7 @@ def verify(target, vsix, unpack, channel):
             raise ValueError('Incorrect extension identity/version')
         if any(name.startswith(('extension/test/', 'extension/node_modules/', 'extension/tools/')) for name in names):
             raise ValueError('Development-only files leaked into VSIX')
-        required = ['extension/update-packages.py', 'extension/launcher/uz.py', 'extension/launcher/requirements.txt', 'extension/runtime/licenses/LICENSE.cpython.txt', 'extension/runtime/licenses/uv-LICENSE-MIT.txt']
+        required = ['extension/flash.py', 'extension/update-packages.py', 'extension/launcher/uz.py', 'extension/launcher/requirements.txt', 'extension/runtime/licenses/LICENSE.cpython.txt', 'extension/runtime/licenses/uv-LICENSE-MIT.txt']
         if any(name not in names for name in required):
             raise ValueError('Runtime, launcher or license files missing')
         for member in archive.infolist():
@@ -94,6 +94,11 @@ def verify(target, vsix, unpack, channel):
         if channel:
             for application in ['cli', 'dataviewer']:
                 run([*command, application, channel, '--', '--help'])
+            viewer_help = run([*command, 'dataviewer', channel, '--', 'gui', '--help'])
+            if '--live-repo' not in viewer_help:
+                raise ValueError('Published DataViewer no longer supports --live-repo')
+            print(run([uv, 'tool', 'run', '--isolated', '--python', '3.12', '--prerelease', 'allow' if channel == 'prerelease' else 'disallow',
+                '--from', 'ultrazohm-cli', 'python', ROOT / 'tools/published-contract.py', '--extension', extension, '--repository', ROOT.parent]))
             result = run([uv, 'tool', 'run', '--isolated', '--python', '3.12', '--prerelease', 'allow' if channel == 'prerelease' else 'disallow',
                 '--with-requirements', launcher / 'requirements.txt', '--from', 'ultrazohm-dataviewer', 'python', '-c',
                 'import json,matplotlib; from importlib.metadata import version; print(json.dumps({p:version(p) for p in ["ultrazohm-cli","ultrazohm-dataviewer","matplotlib"]}))'])
@@ -126,7 +131,7 @@ Download the VSIX for Linux x64 or Windows x64. In VS Code, use **Extensions: In
 
 This extension bundles uv, Python and launcher scripts. Application packages download from PyPI on first use. Runtime and tested application versions are recorded in `release-manifest.json`.
 
-Setup, Software build and Control sections provide the UltraZohm tools. Vitis remains an external prerequisite. Flash UZ performs standalone JTAG programming without stopping acquisition or reconnecting automatically.
+Setup, Software build and Control sections provide the UltraZohm tools. Vitis remains an external prerequisite. Flash UZ uses the CLI service to finalize recordings, program via JTAG and reconnect when a device target is known. It opens an interactive CLI if needed and verifies the selected checkout.
 
 Uninstall the old `ultrazohm-local.ultrazohm` prototype before installing this renamed extension to avoid duplicate controls. The extension ID is `ultrazohm-local.ultrazohm-extension`; Marketplace publisher setup is still pending. Existing `ultrazohm.*` settings are retained, but the renamed extension uses a fresh private cache.
 

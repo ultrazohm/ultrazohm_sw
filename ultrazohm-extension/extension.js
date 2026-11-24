@@ -265,10 +265,10 @@ function activate(context) {
         if (key === 'cli' && await portInUse(endpoint())) throw new Error(`A service already occupies ${endpoint()}. Use its existing console or choose another ultrazohm.cli.endpoint. No service was stopped.`);
         capabilities = await vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title: 'Preparing UltraZohm CLI…' },
           () => readHelp(executable, invoke(['cli', selected, '--', key === 'cli' ? 'serve' : key, '--help']), { cwd, env }));
-        if (key === 'flash' && (!capabilities.repo || !capabilities.profile || capabilities.noReconnect)) {
-          throw new Error('This CLI release does not expose the standalone flash --repo --profile command. Flash UZ cannot use its service-managed workflow; select a compatible release channel or use DataViewer.');
+        if (key === 'flash' && !capabilities.noReconnect) {
+          throw new Error('Flash UZ requires a current CLI with service-managed flashing. Use Update Python packages for the selected channel.');
         }
-        if (root && !capabilities.repo) throw new Error('This CLI package does not support selecting a repository. Choose a compatible release channel.');
+        if (key !== 'flash' && root && !capabilities.repo) throw new Error('This CLI package does not support selecting a repository. Choose a compatible release channel.');
       }
       let args;
       if (key === 'updatePackages') args = ['-B', path.join(context.extensionPath, 'update-packages.py'),
@@ -283,13 +283,21 @@ function activate(context) {
         if (xsct.path && capabilities.xsct) args.push('--xsct', xsct.path);
       } else if (key === 'flash') {
         const choice = await vscode.window.showWarningMessage('Flash UZ?', { modal: true,
-          detail: `Build firmware, program via JTAG and start UltraZohm. This does not write persistent flash memory.\n\nDirectory: ${root}\nRelease channel: ${selected}\n\nAcquisition and recordings are not stopped or finalized automatically, and there is no automatic reconnect. Stop acquisition and recording yourself before continuing.` }, 'Flash UZ');
+          detail: `Build firmware, program via JTAG and start UltraZohm. This does not write persistent flash memory.\n\nDirectory: ${root}\nRelease channel: ${selected}\n\nThe CLI service stops acquisition and finalizes recordings before programming. It reconnects if a device target is known; otherwise it programs without reconnecting. An interactive CLI is opened if needed. Closing the flash terminal does not cancel an accepted firmware job.` }, 'Flash UZ');
         if (choice !== 'Flash UZ') return;
-        args = ['cli', selected, '--', 'flash', ...(capabilities.local ? ['--local'] : []), '--repo', root, '--profile', 'Run_UltraZohm'];
+        const address = endpoint();
+        const startService = !(await portInUse(address));
+        if (startService) {
+          await vscode.commands.executeCommand('ultrazohm.cli');
+          if (!running(identity, 'cli')) throw new Error('Could not open the interactive CLI. Check its terminal before retrying Flash UZ.');
+        }
+        args = ['tool', 'run', '--isolated', '--python', '3.12', '--prerelease', selected === 'prerelease' ? 'allow' : 'disallow',
+          '--from', 'ultrazohm-cli', 'python', path.join(context.extensionPath, 'flash.py'),
+          '--endpoint', address, '--repo', root, '--wait-service', startService ? '30' : '0'];
       } else args = ['cli', selected, '--', key, ...(capabilities.local ? ['--local'] : []), '--repo', root];
-      const invocation = key === 'updatePackages' ? args : invoke(args);
+      const invocation = key === 'updatePackages' || key === 'flash' ? args : invoke(args);
       const task = new vscode.Task({ type: 'ultrazohm', action: action.group, operation: key, repository: identity, launcherSource: source }, scope,
-        action.name, 'UltraZohm', new vscode.ProcessExecution(executable, invocation, { cwd, env }), []);
+        action.name, 'UltraZohm', new vscode.ProcessExecution(key === 'flash' ? path.join(base, 'bin', windows ? 'uv.exe' : 'uv') : executable, invocation, { cwd, env }), []);
       task.presentationOptions = { reveal: show ? vscode.TaskRevealKind.Always : vscode.TaskRevealKind.Never,
         focus: show, panel: vscode.TaskPanelKind.Dedicated, close: false };
       await vscode.tasks.executeTask(task);

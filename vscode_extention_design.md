@@ -1,6 +1,6 @@
 # ultrazohm-extension design
 
-Status: prototype 0.1.10 implemented in `ultrazohm-extension/`, on the
+Status: prototype 0.1.11 implemented in `ultrazohm-extension/`, on the
 `feature/vscode-extension` worktree. This design supersedes earlier proposals;
 the original issue remains unchanged at the end.
 
@@ -81,7 +81,7 @@ separately through `ProcessExecution`, including paths containing spaces.
 | Open Python environment | `./uz venv C` | Always visible activated OS shell. |
 | Generate Vitis workspace | `./uz cli C -- generate --local --repo R` | Always visible. |
 | Build firmware | `./uz cli C -- build --local --repo R` | Always visible. |
-| Flash UZ | `./uz cli C -- flash --repo R --profile Run_UltraZohm` | Always visible, after confirmation. |
+| Flash UZ | Published CLI service firmware API, verified against R | Always visible, after confirmation. |
 | Clean and build firmware | `./uz cli C -- build-clean --local --repo R` | Always visible. |
 
 Before CLI/firmware launch, run that published command's `--help` through the
@@ -198,21 +198,22 @@ preferences, recordings and firmware build outputs retain their usual locations.
 
 ## Flash UZ
 
-Expose **Flash UZ** as a firmware action with a visible task terminal. Reuse the
-selected directory, package channel, launcher source and Vitis environment.
-Require XSCT and serialize with generate/build/build-clean. Before execution,
-show a modal confirmation identifying the directory/channel and explaining that
-acquisition/recording are not stopped or finalized automatically and no automatic
-reconnection is performed. The user stops acquisition/recording before proceeding.
-Cancellation starts no flash task; repeated clicks reuse the pending/running action.
+Flash UZ confirms the selected checkout/channel, then uses the published CLI's
+service-managed firmware API. It opens an interactive CLI if the configured local
+endpoint is unused, or reuses the listening service after checking its reported
+repository and firmware availability. Mismatched services are never retargeted.
+The CLI owns acquisition shutdown, recording finalization, build/programming and
+reconnection. A known device target is preserved; an initially disconnected
+service with no target flashes without reconnecting. The flash terminal follows
+job logs and reports errors, but closing it does not cancel an accepted job.
+The interactive CLI remains available. Older standalone-only CLI versions are
+rejected with an instruction to update packages. No application or Tcl changes
+are required. Generate/build/clean remain explicit local operations.
 
-Invoke the existing standalone CLI command `flash --repo R --profile Run_UltraZohm`
-(`--local` only if advertised). It builds, programs through JTAG and runs; persistent
-flash memory is not written. Do not start an interactive/background service for
-this standalone operation. Probe published help and require the repo/profile
-contract; reject service-managed variants instead of changing the behavior.
-DataViewer, CLI application code, Tcl scripts and root launcher helpers are not
-modified for this feature. Coordinated stop/finalize/reconnect remains in DataViewer.
+CI checks published subcommand flags and the DataViewer GUI repository option.
+It exercises local firmware commands and the packaged flash helper against a real
+published interactive service and fake XSCT, including wrong-checkout rejection,
+successful disconnected flashing and failed-job propagation. No hardware is used.
 
 ## Commands without dedicated buttons
 
@@ -252,7 +253,7 @@ validation.
 ## Installation and distribution
 
 The Linux test artifact is
-`ultrazohm-extension/dist/ultrazohm-extension-linux-x64-0.1.10.vsix`. Install it with
+`ultrazohm-extension/dist/ultrazohm-extension-linux-x64-0.1.11.vsix`. Install it with
 **Extensions: Install from VSIX…**, or `code --install-extension <vsix>`.
 A tester needs no npm or Marketplace account. Open the UZ pane and select this
 worktree with **Find ultrazohm_sw directory…** if necessary. Choose a channel published

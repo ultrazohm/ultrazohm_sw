@@ -12,7 +12,7 @@ Open an UltraZohm checkout directly, or click **Find ultrazohm_sw directory…**
 | Generate Vitis workspace | Run the CLI's local `generate` command. |
 | Build firmware | Run the CLI's local `build` command. |
 | Clean and build firmware | Run the CLI's local `build-clean` command. |
-| Flash UZ | Confirm, then build, program via JTAG and run using the standalone CLI flash command. |
+| Flash UZ | Confirm, then build, program via JTAG and run through the CLI service. |
 | Vitis / XSCT | Select `settings64.sh` on Linux or `settings64.bat` on Windows; direct XSCT selection is also supported. |
 | Launcher | Use scripts bundled in the VSIX (default), or the selected checkout's scripts. |
 | Update Python packages | Refresh CLI, DataViewer and the Python environment for the selected channel, with progress in a visible task terminal. Close running UltraZohm tasks first. |
@@ -29,9 +29,11 @@ Hidden DataViewer output remains accessible through the Terminal panel. Changing
 
 ## Flash UZ
 
-Flash UZ runs `./uz cli <channel> -- flash --repo <selected-directory> --profile Run_UltraZohm` through the chosen launcher. It requires the repository and XSCT, shares the firmware task slot and always opens a visible terminal. The confirmation identifies the selected directory/channel and explains that acquisition/recording must be stopped by the user: this command does not coordinate recording finalization or automatic reconnection. It builds, programs over JTAG and starts the system; it does not write persistent flash memory. No CLI service is started automatically.
+Flash UZ uses the published CLI's service API. After confirmation it reuses the configured local endpoint or opens an interactive CLI if none is listening. Before submitting a job, it checks that the service reports the selected checkout and usable XSCT. A service for another checkout is rejected; it is never stopped or retargeted automatically.
 
-The extension checks the published command's help first. Releases that expose only service-managed flashing are rejected rather than silently changing this behavior. No DataViewer, CLI application or Tcl code is changed for this action.
+The CLI stops acquisition, finalizes recordings, builds and programs via JTAG. An existing device target is reconnected afterward; a newly started disconnected service programs without reconnecting. Logging remains idle and system/control enable are not requested automatically. This does not write persistent flash memory. The visible flash terminal follows job logs and reports failure; closing it does not cancel a job already accepted by the service. The interactive CLI remains open for inspection or reuse.
+
+Flash requires the current service-managed CLI API; use **Update Python packages** if an older CLI is cached. Generate/build/clean still use local CLI operations. DataViewer, CLI application code and Tcl scripts are unchanged.
 
 ## Runtime and packages
 
@@ -55,7 +57,7 @@ npm run check
 npm test
 python -m unittest discover -s tools -p 'test_*.py'
 python tools/bundle.py --target linux-x64
-npm run package -- --target linux-x64 --pre-release --out ultrazohm-extension-linux-x64-0.1.10.vsix
+npm run package -- --target linux-x64 --pre-release --out ultrazohm-extension-linux-x64-0.1.11.vsix
 ```
 
 Use `win32-x64` on Windows. `runtime-lock.json` pins upstream downloads and SHA-256 checksums; bundling includes redistribution notices. Pass `--replace` to rebuild an existing generated runtime. `vscode:prepublish` snapshots the shared root launcher scripts and requirements into `launcher/` each time you package.

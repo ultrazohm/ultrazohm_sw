@@ -30,13 +30,13 @@ exports.run = async function () {
   fs.writeFileSync(path.join(root, '.uv-version'), '0.13.1\n');
   fs.writeFileSync(path.join(root, 'uz'), `#!/bin/bash
 if [[ " $* " == *" --help "* ]]; then
-  echo '--local --xsct --repo --interactive --profile'
+  echo '--local --xsct --repo --interactive --no-reconnect'
   exit 0
 fi
 printf '%s\\n' "$PWD" "$*" "$UV_CACHE_DIR" >> '${base}/commands.log'
 sleep 120
 `, { mode: 0o755 });
-  fs.writeFileSync(path.join(root, 'uz.ps1'), `if ($args -contains '--help') { Write-Output '--local --xsct --repo --interactive --profile'; exit 0 }\nStart-Sleep -Seconds 120\n`);
+  fs.writeFileSync(path.join(root, 'uz.ps1'), `if ($args -contains '--help') { Write-Output '--local --xsct --repo --interactive --no-reconnect'; exit 0 }\nStart-Sleep -Seconds 120\n`);
   const xsct = path.join(base, windows ? 'xsct.bat' : 'xsct');
   fs.writeFileSync(xsct, windows ? '@exit /b 0\r\n' : '#!/bin/sh\nexit 0\n', { mode: 0o755 });
   const settingsScript = path.join(base, windows ? 'settings64.bat' : 'settings64.sh');
@@ -44,6 +44,16 @@ sleep 120
   const started = new Set();
   const startListener = vscode.tasks.onDidStartTaskProcess(e => started.add(e.execution));
   const active = () => vscode.tasks.taskExecutions.filter(e => e.task.definition.type === 'ultrazohm');
+  // Firmware API integration is tested separately against a real published service.
+  const originalExecuteTask = vscode.tasks.executeTask;
+  vscode.tasks.executeTask = async task => {
+    if (task.definition.operation === 'flash') {
+      assert(task.execution.args.includes(path.join(extensionPath, 'flash.py')));
+      task.execution = new vscode.ProcessExecution(windows ? path.join(process.env.SystemRoot, 'System32/WindowsPowerShell/v1.0/powershell.exe') : '/bin/bash', windows ? ['-NoProfile', '-File', path.join(root, 'uz.ps1')] : [path.join(root, 'uz')], task.execution.options);
+    }
+    return originalExecuteTask(task);
+  };
+  const extensionPath = vscode.extensions.getExtension('ultrazohm-local.ultrazohm-extension').extensionPath;
   const originalConfirmation = vscode.window.showWarningMessage;
   let flashConfirmations = 0;
   vscode.window.showWarningMessage = async (message, options, ...items) => {
@@ -79,11 +89,17 @@ sleep 120
     fs.writeFileSync(path.join(root, 'artifacts/_user/tools.json'), JSON.stringify({ xsct }));
     await vscode.commands.executeCommand('ultrazohm.refresh');
     for (const operation of ['generate', 'build', 'build-clean', 'flash']) {
+      if (operation === 'flash') {
+        const cli = active().find(e => e.task.definition.action === 'cli');
+        await until(() => started.has(cli)); cli.terminate();
+        await until(() => !active().includes(cli));
+      }
       await vscode.commands.executeCommand('ultrazohm.' + operation);
+      if (operation === 'flash') assert(active().some(e => e.task.definition.action === 'cli'));
       const build = active().find(e => e.task.definition.action === 'firmware');
       assert(build); assert.equal(build.task.execution.options.env.XILINX_VITIS, base); assert.equal(build.task.definition.operation, operation);
-      assert(build.task.execution.args.includes('--local'));
-      if (operation === 'flash') assert.equal(build.task.execution.args.at(-1), 'Run_UltraZohm');
+      if (operation !== 'flash') assert(build.task.execution.args.includes('--local'));
+
       await vscode.commands.executeCommand('ultrazohm.build');
       assert.equal(active().filter(e => e.task.definition.action === 'firmware').length, 1);
       await until(() => started.has(build));
@@ -103,6 +119,7 @@ sleep 120
     await until(() => active().length === 0);
     startListener.dispose();
     vscode.window.showWarningMessage = originalConfirmation;
+    vscode.tasks.executeTask = originalExecuteTask;
   }
   fs.writeFileSync(output, JSON.stringify({ passed: true, actions: ['viewer', 'cli', 'venv', 'generate', 'build', 'build-clean', 'flash'], selectedRepository: root }));
 };

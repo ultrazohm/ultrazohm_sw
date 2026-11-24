@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.11
+
+- Adapt Flash UZ to the current CLI service API with interactive startup, checkout validation and job-log following.
+- Test published command contracts and real CLI service flashing with fake XSCT on Linux and Windows.
+
 ## 0.1.10
 
 - Add Update Python packages to Setup, refreshing the selected PyPI channel using private bundled tooling.

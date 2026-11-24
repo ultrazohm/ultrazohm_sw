@@ -39,7 +39,7 @@ function setup(mode = 'visible') {
     },
     commands: {
       registerCommand: (id, fn) => { commands[id] = fn; return disposable; },
-      executeCommand: async (...args) => { events.executed = args; },
+      executeCommand: async (...args) => { events.executed = args; if (commands[args[0]]) return commands[args[0]](); },
     },
     tasks: {
       registerTaskProvider: () => disposable, taskExecutions: [], onDidEndTask: () => disposable,
@@ -214,31 +214,34 @@ test('Vitis setup selection persists at user scope and supplies task environment
  await s.run('xsctPath'); assert.equal(s.settings['vitis.settingsScript'],'');
 });
 
-test('Flash UZ uses the published raw CLI command after explicit confirmation', async () => {
- const s=setup('hidden'); s.state.xsct={path:'/Vitis bin/xsct'};
- s.state.capabilities={repo:true,profile:true,local:false};s.state.confirmation='Flash UZ';
- await s.run('flash');assert.deepEqual(s.errors,[]);
- const task=s.tasks()[0];
- assert.deepEqual(Array.from(task.execution.args).slice(1),['cli','prerelease','--','flash','--repo','/checkout with spaces','--profile','Run_UltraZohm']);
- assert.equal(task.presentationOptions.reveal,1);
- assert.equal(task.definition.action,'firmware');
- assert.equal(s.state.confirmations[0][1].modal,true);
- assert.match(s.state.confirmations[0][1].detail,/not stopped or finalized automatically/);
- await s.run('build');await s.run('flash');assert.equal(s.tasks().length,1);assert.equal(s.state.confirmations.length,1);
+test('Flash UZ opens an interactive CLI then validates and follows its service job', async () => {
+ const s=setup('hidden');s.state.xsct={path:'/Vitis/xsct'};
+ s.state.capabilities={repo:true,xsct:true,noReconnect:true};s.state.confirmation='Flash UZ';
+ await s.run('flash');assert.deepEqual(s.errors,[]);assert.equal(s.tasks().length,2);
+ assert.equal(s.tasks()[0].definition.action,'cli');
+ const task=s.tasks()[1];assert.equal(task.execution.command,'/extension/runtime/bin/uv');
+ assert(task.execution.args.includes('/extension/flash.py'));
+ assert(task.execution.args.includes('/checkout with spaces'));
+ assert.equal(task.execution.args.at(-1),'30');assert.equal(task.presentationOptions.reveal,1);
+ assert.match(s.state.confirmations[0][1].detail,/finalizes recordings/);
+ await s.run('build');await s.run('flash');assert.equal(s.tasks().length,2);
 });
-test('cancelled Flash UZ starts no process and releases its firmware slot', async () => {
- const s=setup();s.state.xsct={path:'/Vitis/xsct'};s.state.capabilities={repo:true,profile:true};
+test('Flash reuses a listening service and passes the configured endpoint to validation', async () => {
+ const s=setup();s.state.xsct={path:'/Vitis/xsct'};s.state.occupied=true;
+ s.state.capabilities={noReconnect:true};s.state.confirmation='Flash UZ';s.settings['cli.endpoint']='127.0.0.1:19800';
+ await s.run('flash');assert.deepEqual(s.errors,[]);assert.equal(s.tasks().length,1);
+ assert(s.tasks()[0].execution.args.includes('127.0.0.1:19800'));assert.equal(s.tasks()[0].execution.args.at(-1),'0');
+});
+test('cancelled Flash starts neither service nor job', async () => {
+ const s=setup();s.state.xsct={path:'/Vitis/xsct'};s.state.capabilities={noReconnect:true};
  await s.run('flash');assert.equal(s.tasks().length,0);
- s.state.confirmation='Flash UZ';await s.run('flash');assert.equal(s.tasks().length,1);
 });
-test('Flash UZ rejects service-managed CLI versions without sending a command', async () => {
- const s=setup();s.state.xsct={path:'/Vitis/xsct'};s.state.confirmation='Flash UZ';
- s.state.capabilities={repo:false,profile:false,noReconnect:true};
- await s.run('flash');assert.equal(s.tasks().length,0);assert.equal(s.state.confirmations.length,0);
- assert.match(s.errors[0],/standalone flash/);
-});
-test('Flash UZ pending confirmation prevents concurrent firmware starts', async () => {
+test('Flash rejects obsolete standalone CLI before starting anything', async () => {
  const s=setup();s.state.xsct={path:'/Vitis/xsct'};s.state.capabilities={repo:true,profile:true};
+ await s.run('flash');assert.equal(s.tasks().length,0);assert.match(s.errors[0],/current CLI/);
+});
+test('Flash pending confirmation prevents concurrent firmware starts', async () => {
+ const s=setup();s.state.xsct={path:'/Vitis/xsct'};s.state.capabilities={noReconnect:true};s.state.occupied=true;
  let accept;let opened;const ready=new Promise(resolve=>opened=resolve);
  s.state.confirmation=()=>new Promise(resolve=>{accept=resolve;opened();});
  const pending=s.run('flash');await ready;await s.run('flash');await s.run('build');

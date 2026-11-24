@@ -54,7 +54,19 @@ static bool manual_mode = false;
 static float manual_reference = 0.0f;
 static uint32_t sample = 0U;
 static struct uz_actor_pt1_update_state update = {
-        .active = false, .target_valid = true, .dqn_ready = true, .ddpg_ready = true, .target = UZ_PT1_REPLAY_DQN, .error = UZ_ACTOR_PT1_UPDATE_OK, .layer = 0U, .kind = UZ_ACTOR_PT1_PARAMETER_WEIGHTS, .index = 0U, .next_field = UZ_ACTOR_PT1_UPDATE_FIELD_LAYER, .received = 0U, .expected = 0U};
+        .active = false,
+        .target_valid = true,
+        .dqn_ready = true,
+        .ddpg_ready = true,
+        .target = UZ_PT1_REPLAY_DQN,
+        .error = UZ_ACTOR_PT1_UPDATE_OK,
+        .layer = 0U,
+        .kind = UZ_ACTOR_PT1_PARAMETER_WEIGHTS,
+        .index = 0U,
+        .next_field = UZ_ACTOR_PT1_UPDATE_FIELD_LAYER,
+        .received = 0U,
+        .expected = 0U,
+};
 
 /* JavaScope/uz_cli require writable float storage; these are output mirrors. */
 struct uz_actor_pt1_replay_signals uz_actor_pt1_replay_signals = {0};
@@ -66,10 +78,13 @@ static uint32_t uz_actor_pt1_count_parameters(const struct uz_exported_actor_con
 static bool uz_actor_pt1_parameters_are_ready(enum uz_actor_pt1_replay_actor actor);
 static void uz_actor_pt1_set_parameters_ready(bool ready);
 static bool uz_actor_pt1_selector_is_valid(float value, uint32_t count);
+static uint32_t uz_actor_pt1_selector_count(uint32_t field);
+static uint32_t uz_actor_pt1_parameter_position(void);
 static void uz_actor_pt1_update_target(float value);
 static void uz_actor_pt1_update_selector(uint32_t field, float value);
 static void uz_actor_pt1_write_parameter(float value);
 static void uz_actor_pt1_publish_sample(uz_actor_pt1_example_t *example, uint32_t episode, uint32_t step, float reference);
+static void uz_actor_pt1_publish_action(const uz_exported_actor_t *actor);
 static void uz_actor_pt1_step_active(void);
 
 static const struct uz_exported_actor_config *uz_actor_pt1_get_update_config(void) {
@@ -150,37 +165,26 @@ static void uz_actor_pt1_set_parameters_ready(bool ready) {
 static bool uz_actor_pt1_selector_is_valid(float value, uint32_t count) {
 	bool valid = false;
 	uz_assert(count <= UZ_ACTOR_PT1_MAX_PARAMETER_COUNT);
-	if (isfinite(value) != 0) {
-		if ((value >= 0.0f) && (value < (float)count)) {
-			/* Nonnegative, integral and bounded before float-to-index conversion. */
-			valid = !(floorf(value) < value);
-		}
+	if ((isfinite(value) != 0) && (value >= 0.0f) && (value < (float)count)) {
+		/* Nonnegative, integral and bounded before float-to-index conversion. */
+		valid = !(floorf(value) < value);
 	}
 	return valid;
 }
 
 static void uz_actor_pt1_update_target(float value) {
 	if (!update.active) {
-		update.target_valid = false;
-		if (uz_actor_pt1_selector_is_valid(value, 3U)) {
-			const uint32_t selector = (uint32_t)value;
-			if (selector == 1U) {
-				update.target = UZ_PT1_REPLAY_DQN;
-				update.target_valid = true;
-			} else if (selector == 2U) {
-				update.target = UZ_PT1_REPLAY_DDPG;
-				update.target_valid = true;
-			} else {
-				/* Target zero is idle, not an upload destination. */
-			}
-		}
-		if (!update.target_valid) {
+		/* Only integral selectors 1 (DQN) and 2 (DDPG) identify upload targets. */
+		update.target_valid = uz_actor_pt1_selector_is_valid(value, 3U) && (value >= 1.0f);
+		if (update.target_valid) {
+			update.target = (value < 2.0f) ? UZ_PT1_REPLAY_DQN : UZ_PT1_REPLAY_DDPG;
+		} else {
 			update.error = UZ_ACTOR_PT1_UPDATE_INVALID_SELECTOR;
 		}
 	}
 }
 
-static void uz_actor_pt1_update_selector(uint32_t field, float value) {
+static uint32_t uz_actor_pt1_selector_count(uint32_t field) {
 	const struct uz_exported_actor_config *config = uz_actor_pt1_get_update_config();
 	uint32_t count = config->layer_count;
 	if (field == UZ_ACTOR_PT1_UPDATE_FIELD_TYPE) {
@@ -191,7 +195,13 @@ static void uz_actor_pt1_update_selector(uint32_t field, float value) {
 	} else {
 		/* The next-field state machine only admits the layer field here. */
 	}
+	return count;
+}
+
+static void uz_actor_pt1_update_selector(uint32_t field, float value) {
+	const uint32_t count = uz_actor_pt1_selector_count(field);
 	if (uz_actor_pt1_selector_is_valid(value, count)) {
+		/* The protocol carries integer selectors as floats; validation precedes conversion. */
 		const uint32_t selector = (uint32_t)value;
 		switch (field) {
 		case UZ_ACTOR_PT1_UPDATE_FIELD_LAYER:
@@ -213,7 +223,7 @@ static void uz_actor_pt1_update_selector(uint32_t field, float value) {
 	}
 }
 
-static void uz_actor_pt1_write_parameter(float value) {
+static uint32_t uz_actor_pt1_parameter_position(void) {
 	const struct uz_exported_actor_config *config = uz_actor_pt1_get_update_config();
 	const struct uz_nn_layer_config *layer = &config->layers[update.layer];
 	uint32_t position = update.index;
@@ -223,8 +233,15 @@ static void uz_actor_pt1_write_parameter(float value) {
 	if (update.kind == UZ_ACTOR_PT1_PARAMETER_BIAS) {
 		position += layer->length_of_weights;
 	}
+	return position;
+}
+
+static void uz_actor_pt1_write_parameter(float value) {
+	const uint32_t position = uz_actor_pt1_parameter_position();
 	/* Count only ordered unique writes, never duplicate/skipped parameters. */
 	if ((position == update.received) && (update.received < update.expected)) {
+		const struct uz_exported_actor_config *config = uz_actor_pt1_get_update_config();
+		const struct uz_nn_layer_config *layer = &config->layers[update.layer];
 		float *values = (update.kind == UZ_ACTOR_PT1_PARAMETER_WEIGHTS) ? layer->weights : layer->bias;
 		values[update.index] = value;
 		++update.received;
@@ -254,7 +271,7 @@ void uz_actor_pt1_update_field(uint32_t field, float value) {
 	if (field == UZ_ACTOR_PT1_UPDATE_FIELD_TARGET) {
 		uz_actor_pt1_update_target(value);
 	} else if (update.active && (update.error == UZ_ACTOR_PT1_UPDATE_OK)) {
-		if (!isfinite(value)) {
+		if (isfinite(value) == 0) {
 			update.error = UZ_ACTOR_PT1_UPDATE_NONFINITE;
 		} else if (field != update.next_field) {
 			update.error = UZ_ACTOR_PT1_UPDATE_WRONG_ORDER;
@@ -299,12 +316,10 @@ void uz_actor_pt1_replay_init(float control_frequency_hz) {
 
 void uz_actor_pt1_replay_start(enum uz_actor_pt1_replay_actor actor) {
 	const bool ready = uz_actor_pt1_parameters_are_ready(actor);
-	if ((!update.active) && ready) {
-		if (manual_mode || (active_actor == UZ_PT1_REPLAY_IDLE)) {
-			selected_actor = actor;
-			active_actor = actor;
-			sample = 0U;
-		}
+	if ((!update.active) && ready && (manual_mode || (active_actor == UZ_PT1_REPLAY_IDLE))) {
+		selected_actor = actor;
+		active_actor = actor;
+		sample = 0U;
 	}
 }
 
@@ -345,6 +360,21 @@ enum uz_actor_pt1_replay_actor uz_actor_pt1_replay_get_active_actor(void) {
 	return active_actor;
 }
 
+static void uz_actor_pt1_publish_action(const uz_exported_actor_t *actor) {
+	uz_actor_pt1_replay_signals.action_value = actor->requested[0];
+	uz_actor_pt1_replay_signals.action_index = 0.0f;
+	for (uint32_t i = 0U; i < UZ_ACTOR_PT1_Q_VALUE_COUNT; ++i) {
+		uz_actor_pt1_replay_signals.q_values[i] = 0.0f;
+	}
+	if (active_actor == UZ_PT1_REPLAY_DQN) {
+		const uz_matrix_t *output = uz_nn_get_output_data(actor->network);
+		uz_actor_pt1_replay_signals.action_index = (float)actor->action_index;
+		for (uint32_t i = 0U; i < UZ_ACTOR_PT1_Q_VALUE_COUNT; ++i) {
+			uz_actor_pt1_replay_signals.q_values[i] = uz_matrix_get_element_zero_based(output, 0U, i);
+		}
+	}
+}
+
 static void uz_actor_pt1_publish_sample(uz_actor_pt1_example_t *example, uint32_t episode, uint32_t step, float reference) {
 	const float previous_output = example->output;
 	const float output = uz_actor_pt1_example_step(example, reference);
@@ -360,20 +390,9 @@ static void uz_actor_pt1_publish_sample(uz_actor_pt1_example_t *example, uint32_
 	uz_actor_pt1_replay_signals.y = previous_output;
 	uz_actor_pt1_replay_signals.reference = reference;
 	uz_actor_pt1_replay_signals.error = reference - previous_output;
-	uz_actor_pt1_replay_signals.action_value = example->actor.requested[0];
 	uz_actor_pt1_replay_signals.reward = -error_after * error_after;
 	uz_actor_pt1_replay_signals.done = ((!manual_mode) && ((step + 1U) == UZ_ACTOR_PT1_STEPS_PER_EPISODE)) ? 1.0f : 0.0f;
-	uz_actor_pt1_replay_signals.action_index = 0.0f;
-	for (uint32_t i = 0U; i < UZ_ACTOR_PT1_Q_VALUE_COUNT; ++i) {
-		uz_actor_pt1_replay_signals.q_values[i] = 0.0f;
-	}
-	if (active_actor == UZ_PT1_REPLAY_DQN) {
-		const uz_matrix_t *raw = uz_nn_get_output_data(example->actor.network);
-		uz_actor_pt1_replay_signals.action_index = (float)example->actor.action_index;
-		for (uint32_t i = 0U; i < UZ_ACTOR_PT1_Q_VALUE_COUNT; ++i) {
-			uz_actor_pt1_replay_signals.q_values[i] = uz_matrix_get_element_zero_based(raw, 0U, i);
-		}
-	}
+	uz_actor_pt1_publish_action(&example->actor);
 }
 
 static void uz_actor_pt1_step_active(void) {

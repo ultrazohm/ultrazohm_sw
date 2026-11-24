@@ -29,6 +29,27 @@ class ReleaseTest(unittest.TestCase):
             with patch.dict(os.environ, {**base, **extra}, clear=True):
                 self.assertFalse(release.metadata()['publish'])
 
+    def test_explicit_manual_prerelease_is_restricted_and_never_stable(self):
+        base = {'GITHUB_RUN_NUMBER': '44', 'GITHUB_REPOSITORY': 'ultrazohm/ultrazohm_sw',
+                'GITHUB_EVENT_NAME': 'workflow_dispatch', 'UZ_EXTENSION_PUBLISH_PRERELEASE': 'true'}
+        for branch in ['develop', 'feature/vscode-extension']:
+            with patch.dict(os.environ, {**base, 'GITHUB_REF': 'refs/heads/' + branch}, clear=True):
+                info = release.metadata()
+                self.assertTrue(info['publish'])
+                self.assertTrue(info['prerelease'])
+                self.assertEqual(info['version'], '0.1.44')
+                with patch.dict(os.environ, {'GITHUB_REPOSITORY': 'someone/fork'}):
+                    self.assertFalse(release.metadata()['publish'])
+                with patch.dict(os.environ, {'UZ_EXTENSION_PUBLISH_PRERELEASE': 'false'}):
+                    self.assertFalse(release.metadata()['publish'])
+        for ref in ['refs/heads/main', 'refs/heads/another-feature', 'refs/tags/v1']:
+            with patch.dict(os.environ, {**base, 'GITHUB_REF': ref}, clear=True):
+                with self.assertRaisesRegex(ValueError, 'restricted'):
+                    release.metadata()
+        for event in ['push', 'pull_request']:
+            with patch.dict(os.environ, {**base, 'GITHUB_EVENT_NAME': event, 'GITHUB_REF': 'refs/heads/feature/vscode-extension'}, clear=True):
+                self.assertFalse(release.metadata()['publish'])
+
     def test_version_stamping_is_idempotent_and_reruns_keep_version(self):
         with tempfile.TemporaryDirectory() as temp, patch.object(release, 'ROOT', Path(temp)):
             root = Path(temp)
@@ -58,7 +79,7 @@ class ReleaseTest(unittest.TestCase):
                 tested_channel='prerelease', tested_packages={'example': '1.0'})))
 
     def test_manifest_requires_both_unchanged_platforms_from_same_commit(self):
-        with tempfile.TemporaryDirectory() as temp, patch.dict(os.environ, {'GITHUB_REF': ''}):
+        with tempfile.TemporaryDirectory() as temp, patch.dict(os.environ, {'GITHUB_REF': '', 'UZ_EXTENSION_PUBLISH_PRERELEASE': ''}):
             directory = Path(temp)
             self.fixture(directory)
             release.aggregate(directory)

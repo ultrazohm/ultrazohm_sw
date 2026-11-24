@@ -10,8 +10,8 @@ on first use. Vitis remains an external prerequisite for firmware operations.
 
 Pushes to `feature/vscode-extension`, `main`, `develop`, relevant pull requests,
 and manual workflow runs build both native platforms. Matching-path pushes to `main` publish stable releases; pushes to `develop`
-publish prereleases after checks pass. Feature branches, PRs and manual runs only
-validate. Tags are not triggers. Download the two artifacts from the Actions run,
+publish prereleases after checks pass. Feature-branch pushes and PRs only
+validate; manual runs validate unless the explicit prerelease option is selected. Tags are not triggers. Download the two artifacts from the Actions run,
 unzip each artifact and select the VSIX matching the test machine.
 
 CI checks JavaScript, launcher and release-tool tests, downloads SHA-256-verified
@@ -74,8 +74,9 @@ versions tested, not a permanent application dependency lock.
 The extension follows the CLI/DataViewer branch policy: matching-path pushes to
 `main` publish stable releases, and matching-path pushes to `develop` publish
 prereleases. Both native platform checks must pass. The existing path filters
-limit which pushes start the workflow. PRs, feature-branch pushes and manual
-workflow runs build/test only; fork repositories cannot publish.
+limit which pushes start the workflow. PRs and feature-branch pushes build/test only; fork repositories cannot publish.
+Manual runs build/test by default, with an explicit prerelease publishing option
+for `develop` and `feature/vscode-extension` only.
 
 CI stamps `MAJOR.MINOR.<GITHUB_RUN_NUMBER>` into `package.json` and
 `package-lock.json` in the runner checkout only. With the current base this is
@@ -102,6 +103,27 @@ before retrying its job. Do not rebuild and replace an already published version
 a new matching-path push gets a fresh run number. Checksums detect changed bytes
 but are not independent signatures.
 
+## Publish a feature-branch prerelease for testing
+
+In Actions, open **ultrazohm-extension**, choose **Run workflow**, select
+`feature/vscode-extension`, and enable **Publish prerelease**. Equivalently:
+
+```sh
+gh workflow run ultrazohm-extension.yml \
+  --repo ultrazohm/ultrazohm_sw \
+  --ref feature/vscode-extension \
+  -f publish_prerelease=true
+```
+
+This publishes a real prerelease to GitHub Releases and Marketplace after the
+same Linux/Windows checks pass. It does not bypass tests or publish a stable
+version. Each new dispatch gets a new run-number version. Leaving the option
+unchecked only produces test artifacts. Manual publication from `main`, other
+feature branches, tags, or forks is not allowed. The same option is available
+on `develop`. The workflow must be available on the repository's default branch
+for GitHub's manual workflow UI to offer it. Until then, use the CLI command
+above: this workflow is already registered by its feature-branch push runs.
+
 ## Marketplace publication
 
 The publisher ID is `ZohmControlGmbH`; the extension ID is
@@ -112,7 +134,7 @@ matches repository owner `ultrazohm`, repository `ultrazohm_sw`, and workflow
 After both native builds pass and the GitHub Release succeeds, the Marketplace
 job downloads those same artifacts, verifies the build receipts and hashes, and
 publishes both VSIXs with pinned `vsce` using `--oidc`. The branch release rules
-above select stable/prerelease. No release is published by PR or manual runs.
+above select stable/prerelease. PRs never publish; manual publishing requires the explicit prerelease option.
 
 If Marketplace publishing fails after one platform is accepted, rerun the failed
 job: `--skip-duplicate` skips the accepted package and publishes the missing one.

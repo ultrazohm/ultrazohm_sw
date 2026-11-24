@@ -33,8 +33,12 @@ def metadata(stamp=False):
     ref = os.environ.get('GITHUB_REF', '')
     branch_run = (os.environ.get('GITHUB_EVENT_NAME') == 'push'
                   and ref in {'refs/heads/main', 'refs/heads/develop'})
+    manual = (os.environ.get('GITHUB_EVENT_NAME') == 'workflow_dispatch'
+              and os.environ.get('UZ_EXTENSION_PUBLISH_PRERELEASE') == 'true')
+    if manual and ref not in {'refs/heads/develop', 'refs/heads/feature/vscode-extension'}:
+        raise ValueError('Manual publication is restricted to develop and feature/vscode-extension')
     prerelease = not (branch_run and ref == 'refs/heads/main')
-    publish = bool(run and branch_run and os.environ.get('GITHUB_REPOSITORY') == 'ultrazohm/ultrazohm_sw')
+    publish = bool(run and (branch_run or manual) and os.environ.get('GITHUB_REPOSITORY') == 'ultrazohm/ultrazohm_sw')
     if stamp:
         package['version'] = version
         package_path.write_text(json.dumps(package, indent=2) + '\n')

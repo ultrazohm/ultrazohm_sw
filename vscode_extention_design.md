@@ -292,8 +292,9 @@ Distribution uses the same tested platform VSIXs for GitHub Releases and
 Marketplace. The publisher is `ZohmControlGmbH`; its active Trusted Publishing
 policy matches `ultrazohm/ultrazohm_sw` and `ultrazohm-extension.yml`, with no
 GitHub environment. Matching-path pushes to main/develop publish stable/prerelease
-to GitHub first, then Marketplace through OIDC. PRs, feature branches and manual
-workflow runs produce test artifacts only.
+to GitHub first, then Marketplace through OIDC. PRs and feature-branch pushes produce test artifacts only. Manual runs do too
+unless `publish_prerelease` is explicitly enabled on develop or
+feature/vscode-extension. That option publishes a prerelease after all checks.
 Account creation and trust-policy administration remain outside the repository.
 
 ## Automated extension releases
@@ -311,7 +312,8 @@ package metadata without committing it; reruns retain that version. The branch
 selects the Marketplace prerelease flag; numeric versions do not use `.dev0` or
 odd/even minor rules. The GitHub Release creates its version tag at the exact
 commit automatically and includes both VSIXs, SHA256SUMS and a verification
-manifest. PR, feature-branch and manual runs never publish. This is independent
+manifest. PRs and feature-branch pushes never publish. Manual runs can explicitly
+publish a prerelease only from develop or feature/vscode-extension. This is independent
 of the user-selected PyPI
 channel. Marketplace publishing uses GitHub OIDC Trusted Publishing for
 `ZohmControlGmbH`, after the GitHub Release succeeds. It uploads the same verified

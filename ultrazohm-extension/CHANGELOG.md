@@ -2,6 +2,8 @@
 
 ## 0.1.12
 
+- Add an explicit manual prerelease publishing option for develop and feature/vscode-extension, keeping all release checks.
+
 - Automatically version and publish tested main/develop pushes as stable/prerelease to Marketplace using GitHub OIDC Trusted Publishing and pinned vsce 4.1.1.
 
 - Set the Marketplace publisher to `ZohmControlGmbH`; uninstall local-publisher prototypes when switching.

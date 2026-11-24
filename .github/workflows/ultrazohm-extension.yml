@@ -32,6 +32,11 @@ on:
       - '.uv-version'
       - '.github/workflows/ultrazohm-extension.yml'
   workflow_dispatch:
+    inputs:
+      publish_prerelease:
+        description: Publish a prerelease from develop or feature/vscode-extension after all checks pass
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -47,6 +52,7 @@ defaults:
 
 env:
   PYTHONDONTWRITEBYTECODE: '1'
+  UZ_EXTENSION_PUBLISH_PRERELEASE: ${{ inputs.publish_prerelease }}
 
 jobs:
   build:
@@ -130,7 +136,11 @@ jobs:
   release:
     name: GitHub Release
     needs: build
-    if: github.repository == 'ultrazohm/ultrazohm_sw' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    if: >-
+      github.repository == 'ultrazohm/ultrazohm_sw' &&
+      ((github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')) ||
+       (github.event_name == 'workflow_dispatch' && inputs.publish_prerelease &&
+        (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/feature/vscode-extension')))
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     permissions:
@@ -167,7 +177,11 @@ jobs:
   marketplace:
     name: VS Code Marketplace
     needs: release
-    if: github.repository == 'ultrazohm/ultrazohm_sw' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    if: >-
+      github.repository == 'ultrazohm/ultrazohm_sw' &&
+      ((github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')) ||
+       (github.event_name == 'workflow_dispatch' && inputs.publish_prerelease &&
+        (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/feature/vscode-extension')))
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     permissions:

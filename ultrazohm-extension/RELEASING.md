@@ -10,7 +10,7 @@ on first use. Vitis remains an external prerequisite for firmware operations.
 
 Pushes to `feature/vscode-extension`, `main`, `develop`, relevant pull requests,
 and manual workflow runs build both native platforms. No release is published by
-a branch push or manual run. Download the two artifacts from the Actions run,
+a branch push or manual run. Tagged releases publish to GitHub and then Marketplace. Download the two artifacts from the Actions run,
 unzip each artifact and select the VSIX matching the test machine.
 
 CI checks JavaScript, launcher and release-tool tests, downloads SHA-256-verified
@@ -96,17 +96,24 @@ creation, inspect that draft; remove only the incomplete draft before rerunning
 the release job, or finish publishing its verified complete assets manually.
 Do not reuse published versions or move published tags. Fix with a new version.
 
-## Later Marketplace publication
+## Marketplace publication
 
-The publisher ID in `package.json` is `ZohmControlGmbH`. The extension ID is
-`ZohmControlGmbH.ultrazohm-extension`; migration from the local publisher is
-described above. Configure Trusted Publishing for repository owner `ultrazohm`,
-repository `ultrazohm_sw`, and workflow `ultrazohm-extension.yml`. The pinned
-`vsce` must be upgraded to an OIDC-capable version before adding `--oidc` publishing.
-Keep the name `ultrazohm-extension`. Publish both tested platform VSIXs from the
-same release; do not rebuild them inside a publishing step. Configure Marketplace
-authentication/trusted publishing separately and review the then-current `vsce`
-requirements. GitHub Actions currently publishes only to GitHub Releases.
+The publisher ID is `ZohmControlGmbH`; the extension ID is
+`ZohmControlGmbH.ultrazohm-extension`. The registered Trusted Publishing policy
+matches repository owner `ultrazohm`, repository `ultrazohm_sw`, and workflow
+`ultrazohm-extension.yml`. It has no GitHub environment. No PAT secret is required.
+
+After both native builds pass and the GitHub Release succeeds, the Marketplace
+job downloads those same artifacts, verifies the build receipts and hashes, and
+publishes both VSIXs with pinned `vsce` using `--oidc`. The existing odd/even minor
+version policy selects prerelease/stable. Branch pushes and manual runs cannot
+publish. Use the matching version tag described above to trigger publication.
+
+If Marketplace publishing fails after one platform is accepted, rerun the failed
+job: `--skip-duplicate` skips the accepted package and publishes the missing one.
+Marketplace availability can lag behind the upload while processing completes.
+Changing the repository, workflow filename or adding a GitHub environment also
+requires updating the publisher's trust policy.
 
 References: [VS Code publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension),
 [extension testing](https://code.visualstudio.com/api/working-with-extensions/testing-extension),

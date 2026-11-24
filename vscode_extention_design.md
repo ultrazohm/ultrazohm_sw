@@ -288,14 +288,12 @@ versions for shared VSIXs, independently of CLI/DataViewer package versions.
 Bundled uv/Python updates require a new VSIX. The in-extension stable/prerelease
 choice affects application packages, not extension update channels.
 
-Start distribution with tested platform VSIXs as release attachments. Before
-Marketplace publication, configure Trusted Publishing for `ZohmControlGmbH`,
-validate Windows and Linux packages, runtime licenses and README
-assets, and configure publisher access. Upload the tested platform artifacts
-through Marketplace publisher management; automate subsequent releases after
-publisher access and credentials/trusted publishing are configured. Public
-publication, account creation and credential changes are not part of this
-implementation.
+Distribution uses the same tested platform VSIXs for GitHub Releases and
+Marketplace. The publisher is `ZohmControlGmbH`; its active Trusted Publishing
+policy matches `ultrazohm/ultrazohm_sw` and `ultrazohm-extension.yml`, with no
+GitHub environment. Tagged releases publish to GitHub first, then Marketplace
+through OIDC. Branch pushes and manual workflow runs produce test artifacts only.
+Account creation and trust-policy administration remain outside the repository.
 
 ## Automated extension releases
 
@@ -310,7 +308,9 @@ Branch/PR/manual builds upload downloadable workflow artifacts. Only an explicit
 Release after both platforms pass. It includes both VSIXs, SHA256SUMS and a
 runtime/application verification manifest. Odd minor versions are prereleases;
 even minor versions are stable. This is independent of the user-selected PyPI
-channel. Marketplace publishing is deferred. See
+channel. Marketplace publishing uses GitHub OIDC Trusted Publishing for
+`ZohmControlGmbH`, after the GitHub Release succeeds. It uploads the same verified
+platform VSIXs with pinned `vsce`, without rebuilding or storing a PAT. See
 `ultrazohm-extension/RELEASING.md` for installation and release procedures.
 
 ## Explicit package updates

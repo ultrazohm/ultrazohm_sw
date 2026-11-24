@@ -5,6 +5,8 @@ const { environment } = require('./runtime-env');
 const { resolveXsct, saveXsct } = require('./tools');
 const { portInUse } = require('./service');
 const { settingsEnvironment } = require('./vitis-env');
+const { bridge } = require('./debug-tools');
+const { controller } = require('./debug-controller');
 const { readHelp } = require('./cli-capabilities');
 
 const actions = {
@@ -14,6 +16,8 @@ const actions = {
   venv: { label: 'Open Python environment', name: 'UltraZohm Python Environment', group: 'venv', icon: 'terminal' },
   generate: { label: 'Generate Vitis workspace', name: 'UltraZohm Generate', group: 'firmware', icon: 'new-folder' },
   build: { label: 'Build firmware', name: 'UltraZohm Build', group: 'firmware', icon: 'tools' },
+  debug: { label: 'Debug', name: 'UltraZohm Debug', group: 'firmware', icon: 'debug-alt' },
+  attach: { label: 'Attach debugger', name: 'UltraZohm Attach', group: 'firmware', icon: 'debug-disconnect' },
   flash: { label: 'Flash UZ', name: 'UltraZohm Flash UZ', group: 'firmware', icon: 'zap' },
   'build-clean': { label: 'Clean and build firmware', name: 'UltraZohm Clean Build', group: 'firmware', icon: 'tools' },
 };
@@ -21,6 +25,7 @@ const actions = {
 function activate(context) {
   const pending = new Map();
   const changed = new vscode.EventEmitter();
+  const debuggerControl = controller(context, () => changed.fire());
   let watcher;
   let settingsCache;
   const config = () => vscode.workspace.getConfiguration('ultrazohm', vscode.workspace.workspaceFolders?.[0]?.uri);
@@ -142,7 +147,7 @@ function activate(context) {
           { label: 'Terminal: ' + (visible() ? 'visible' : 'hidden'), tooltip: 'DataViewer only. CLI, environment, and firmware terminals are always visible.',
             command: { command: 'ultrazohm.terminal', title: 'Select terminal visibility' } },
         ];
-        const keys = section === 'softwareBuild' ? ['generate', 'build', 'flash', 'build-clean'] : ['launch', 'cli', 'venv'];
+        const keys = section === 'softwareBuild' ? ['generate', 'build', 'flash', 'debug', 'attach', 'build-clean'] : ['launch', 'cli', 'venv'];
         return keys.map(key => {
           try { launchContext(key); return row(key, actions[key].group === 'firmware' ? xsct.reason : undefined); }
           catch (error) { return row(key, error.message); }
@@ -235,6 +240,9 @@ function activate(context) {
     if (key !== 'updatePackages' && (pending.has('packages') || packageTask)) {
       throw new Error('Wait for Update Python packages to finish before launching another UltraZohm task.');
     }
+    if ((action.group === 'firmware' || key === 'updatePackages') && debuggerControl.active()) {
+      throw new Error('Disconnect the UltraZohm debugger sessions before building, flashing, attaching or updating packages.');
+    }
     pending.set(token, action.name);
     try {
       const selected = channel();
@@ -260,15 +268,23 @@ function activate(context) {
         const pathKey = Object.keys(env).find(k => k.toLowerCase() === 'path') || 'PATH';
         env[pathKey] = path.dirname(xsct.path) + path.delimiter + (env[pathKey] || '');
       }
+      let debugTools;
+      if (key === 'debug' || key === 'attach') debugTools = await debuggerControl.prepare(xsct, config());
+      if (key === 'attach') {
+        const choice = await vscode.window.showWarningMessage('Attach to UltraZohm?', { modal: true, detail: 'Connect debuggers to R5 and A53 without building or programming. The cores may pause. Use the ELF files from the exact firmware currently running on the board. Stop acquisition first and use a safe hardware state.' }, 'Attach');
+        if (choice === 'Attach') await debuggerControl.attach({ root, scope, tools: debugTools, env, python: env.UZ_BUNDLED_PYTHON });
+        return;
+      }
       let capabilities;
+      let debugBridge;
       if (key === 'cli' || action.group === 'firmware') {
         if (key === 'cli' && await portInUse(endpoint())) throw new Error(`A service already occupies ${endpoint()}. Use its existing console or choose another ultrazohm.cli.endpoint. No service was stopped.`);
         capabilities = await vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title: 'Preparing UltraZohm CLI…' },
-          () => readHelp(executable, invoke(['cli', selected, '--', key === 'cli' ? 'serve' : key, '--help']), { cwd, env }));
-        if (key === 'flash' && !capabilities.noReconnect) {
+          () => readHelp(executable, invoke(['cli', selected, '--', key === 'cli' ? 'serve' : key === 'debug' ? 'flash' : key, '--help']), { cwd, env }));
+        if ((key === 'flash' || key === 'debug') && !capabilities.noReconnect) {
           throw new Error('Flash UZ requires a current CLI with service-managed flashing. Use Update Python packages for the selected channel.');
         }
-        if (key !== 'flash' && root && !capabilities.repo) throw new Error('This CLI package does not support selecting a repository. Choose a compatible release channel.');
+        if (key !== 'flash' && key !== 'debug' && root && !capabilities.repo) throw new Error('This CLI package does not support selecting a repository. Choose a compatible release channel.');
       }
       let args;
       if (key === 'updatePackages') args = ['-B', path.join(context.extensionPath, 'update-packages.py'),
@@ -280,27 +296,50 @@ function activate(context) {
         const address = endpoint();
         if (await portInUse(address)) throw new Error(`A service already occupies ${address}. Use its existing console or choose another ultrazohm.cli.endpoint. No service was stopped.`);
         args = ['cli', selected, '--', '--endpoint', address, 'serve', '--interactive', ...(root ? ['--repo', root] : [])];
-        if (xsct.path && capabilities.xsct) args.push('--xsct', xsct.path);
-      } else if (key === 'flash') {
-        const choice = await vscode.window.showWarningMessage('Flash UZ?', { modal: true,
-          detail: `Build firmware, program via JTAG and start UltraZohm. This does not write persistent flash memory.\n\nDirectory: ${root}\nRelease channel: ${selected}\n\nThe CLI service stops acquisition and finalizes recordings before programming. It reconnects if a device target is known; otherwise it programs without reconnecting. An interactive CLI is opened if needed. Closing the flash terminal does not cancel an accepted firmware job.` }, 'Flash UZ');
-        if (choice !== 'Flash UZ') return;
+        if (xsct.path && capabilities.xsct) {
+          debugBridge = bridge(context.extensionPath, storage, env.UZ_BUNDLED_PYTHON, root, xsct.path, address);
+          args.push('--xsct', debugBridge.launcher);
+        }
+      } else if (key === 'flash' || key === 'debug') {
+        const choice = await vscode.window.showWarningMessage(key === 'debug' ? 'Debug UltraZohm?' : 'Flash UZ?', { modal: true,
+          detail: key === 'debug' ? `Build and program through the CLI Flash workflow, stopping acquisition and finalizing recordings. Both A53 and R5 stop on a hardware breakpoint at main; you resume each core in VS Code. The service stays disconnected until you reconnect after resuming both cores.\n\nDirectory: ${root}\nAn interactive CLI started by this extension is required. Closing this terminal does not cancel the programming job.` : `Build firmware, program via JTAG and start UltraZohm. This does not write persistent flash memory.\n\nDirectory: ${root}\nRelease channel: ${selected}\n\nThe CLI service stops acquisition and finalizes recordings before programming. It reconnects if a device target is known; otherwise it programs without reconnecting. An interactive CLI is opened if needed. Closing the flash terminal does not cancel an accepted firmware job.` }, key === 'debug' ? 'Debug' : 'Flash UZ');
+        if (choice !== (key === 'debug' ? 'Debug' : 'Flash UZ')) return;
         const address = endpoint();
         const startService = !(await portInUse(address));
         if (startService) {
           await vscode.commands.executeCommand('ultrazohm.cli');
           if (!running(identity, 'cli')) throw new Error('Could not open the interactive CLI. Check its terminal before retrying Flash UZ.');
         }
+        const cliTask = running(identity, 'cli')?.task;
+        if (key === 'debug' && (!cliTask?.definition.debugBridge || cliTask.definition.cliEndpoint !== address || cliTask.definition.debugXsct !== xsct.path)) {
+          throw new Error('Debug needs an interactive CLI opened by this extension with the current Vitis tools and endpoint. Close the existing service yourself, then use Open interactive CLI and retry. No service was stopped.');
+        }
         args = ['tool', 'run', '--isolated', '--python', '3.12', '--prerelease', selected === 'prerelease' ? 'allow' : 'disallow',
           '--from', 'ultrazohm-cli', 'python', path.join(context.extensionPath, 'flash.py'),
           '--endpoint', address, '--repo', root, '--wait-service', startService ? '30' : '0'];
+        if (key === 'debug') args.push('--debug-config', cliTask.definition.debugBridge);
       } else args = ['cli', selected, '--', key, ...(capabilities.local ? ['--local'] : []), '--repo', root];
-      const invocation = key === 'updatePackages' || key === 'flash' ? args : invoke(args);
-      const task = new vscode.Task({ type: 'ultrazohm', action: action.group, operation: key, repository: identity, launcherSource: source }, scope,
-        action.name, 'UltraZohm', new vscode.ProcessExecution(key === 'flash' ? path.join(base, 'bin', windows ? 'uv.exe' : 'uv') : executable, invocation, { cwd, env }), []);
+      const invocation = key === 'updatePackages' || key === 'flash' || key === 'debug' ? args : invoke(args);
+      const task = new vscode.Task({ type: 'ultrazohm', action: action.group, operation: key, repository: identity, launcherSource: source, ...(debugBridge ? { debugBridge: debugBridge.config, cliEndpoint: endpoint(), debugXsct: xsct.path } : {}) }, scope,
+        action.name, 'UltraZohm', new vscode.ProcessExecution(key === 'flash' || key === 'debug' ? path.join(base, 'bin', windows ? 'uv.exe' : 'uv') : executable, invocation, { cwd, env }), []);
       task.presentationOptions = { reveal: show ? vscode.TaskRevealKind.Always : vscode.TaskRevealKind.Never,
         focus: show, panel: vscode.TaskPanelKind.Dedicated, close: false };
-      await vscode.tasks.executeTask(task);
+      if (key === 'debug') {
+        // The CLI owns the accepted job; attach only after its monitor confirms
+        // success and the XSCT wrapper confirms both stops at main.
+        let execution;
+        const listener = vscode.tasks.onDidEndTaskProcess(async event => {
+          if (event.execution !== execution) return;
+          listener.dispose();
+          if (event.exitCode !== 0) return;
+          pending.set(token, action.name);
+          try { await debuggerControl.attach({ root, scope, tools: debugTools, env, python: env.UZ_BUNDLED_PYTHON, atMain: true }); }
+          catch (error) { vscode.window.showErrorMessage('UltraZohm: ' + error.message); }
+          finally { pending.delete(token); refresh(); }
+        });
+        context.subscriptions.push(listener);
+        try { execution = await vscode.tasks.executeTask(task); } catch (error) { listener.dispose(); throw error; }
+      } else await vscode.tasks.executeTask(task);
     } finally { pending.delete(token); refresh(); }
   });
   context.subscriptions.push(vscode.tasks.registerTaskProvider('ultrazohm', { provideTasks: () => [], resolveTask: task => task.execution ? task : undefined }));

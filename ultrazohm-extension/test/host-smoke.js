@@ -68,6 +68,8 @@ sleep 120
   try {
     const extension = vscode.extensions.getExtension('ultrazohm-local.ultrazohm-extension');
     assert(extension); await extension.activate();
+    const commands = await vscode.commands.getCommands(true);
+    for (const name of ['ultrazohm.debug', 'ultrazohm.attach']) assert(commands.includes(name), name + ' missing');
     const config = vscode.workspace.getConfiguration('ultrazohm', opened.uri);
     for (const [key, value] of Object.entries({ repository: root, 'launcher.source': 'local', 'dataviewer.channel': 'prerelease',
       'cli.endpoint': await unusedEndpoint(), 'dataviewer.terminal': 'hidden' })) {

@@ -108,3 +108,27 @@ requirements. GitHub Actions currently publishes only to GitHub Releases.
 References: [VS Code publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension),
 [extension testing](https://code.visualstudio.com/api/working-with-extensions/testing-extension),
 [GitHub release CLI](https://cli.github.com/manual/gh_release_create).
+
+## Hardware debugger acceptance
+
+CI uses fake XSCT and exercises the published service, wrapper job selection,
+stop receipts, adapter teardown and task guards. It cannot certify JTAG behavior.
+Before calling Debug hardware-validated, test on native Linux and Windows with
+Vitis and Microsoft C/C++ installed:
+
+1. Open the extension's interactive CLI. Click **Debug** with one UZ connected.
+   Confirm both `UltraZohm R5` and `UltraZohm A53` stop in `main`, and that the
+   service stays disconnected with recordings finalized.
+2. Continue each core explicitly. Confirm firmware operation and reconnect from
+   the CLI/DataViewer after both have resumed.
+3. Stop each debugger; confirm detach does not reset or reprogram firmware. Run
+   **Attach debugger** against the matching ELFs and inspect both cores again.
+4. Check a missing JTAG cable, unavailable main symbol, failed build, second
+   connected board and an occupied external CLI endpoint. Failures must not be
+   reported as a successful Debug handoff.
+5. After closing the debugger sessions, run ordinary **Flash UZ**. Confirm it
+   follows its existing reconnect behavior and does not stop at main.
+
+Debug supports the default local hw_server layout with one R5 #0 and one A53 #0,
+each GDB processor ID 1. Do not operate another debugger or firmware programmer
+against that board concurrently.

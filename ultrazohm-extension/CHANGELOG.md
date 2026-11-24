@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.12
+
+- Add Attach debugger for R5 and A53 through Vitis GDB and Microsoft C/C++.
+- Add Debug: service-managed Flash with both cores stopped at main before debugger attachment.
+- Keep the CLI disconnected while debugging; preserve the existing CLI, DataViewer and repository Tcl sources.
+- Test debug-job isolation, Tcl breakpoint sequencing and the published CLI handoff with fake XSCT. Hardware validation remains required.
+
 ## 0.1.11
 
 - Adapt Flash UZ to the current CLI service API with interactive startup, checkout validation and job-log following.

@@ -215,6 +215,21 @@ It exercises local firmware commands and the packaged flash helper against a rea
 published interactive service and fake XSCT, including wrong-checkout rejection,
 successful disconnected flashing and failed-job propagation. No hardware is used.
 
+## Debugger design (0.1.12)
+
+Install **Microsoft C/C++** (`ms-vscode.cpptools`) and select your Vitis installation in Setup. The extension discovers Vitis's R5 and A53 GDB executables; optional `ultrazohm.debug.r5Gdb` and `ultrazohm.debug.a53Gdb` settings override those paths. GDB and Vitis are supplied by your Vitis installation, not bundled or downloaded by this extension.
+
+- **Attach debugger** opens independent R5/Baremetal and A53/FreeRTOS sessions for the existing firmware. It does not build, reset or download firmware. Both `vitis/workspace/<application>/Debug/<application>.elf` files must match the firmware running on the board. Attaching may pause the cores; stop acquisition and put the hardware in a safe state first.
+- **Debug** submits the same service-managed Flash job as **Flash UZ**, including acquisition shutdown, recording finalization and building. An extension-owned XSCT wrapper intercepts the two application starts, sets a hardware breakpoint at `main`, runs each core to it and verifies the program counter. It then opens both debugger sessions. The service remains disconnected while the cores are stopped. Select **UltraZohm R5** and **UltraZohm A53** in Run and Debug and press **Continue** for each. After both are running, reconnect through the interactive CLI or DataViewer.
+
+Debug requires the interactive CLI opened by this version of the extension. If an external or older service occupies the endpoint, close it yourself and use **Open interactive CLI**, then retry. The extension never replaces a running service. Changing the Vitis selection requires restarting that CLI. Ordinary Flash jobs retain their normal behavior: the wrapper selects only the exact Debug request and service identity. It sources the CLI package's original scripts without modifying them. No CLI or DataViewer application changes are needed.
+
+One locally connected UltraZohm board is supported. The extension uses local `hw_server` ports 3121 (XSCT), 3000 (R5) and 3001 (A53); it checks for exactly one core #0 of each architecture, with the default GDB processor ID 1. Other target layouts are rejected. If necessary it opens **UltraZohm Hardware Server** as a visible task. A small extension-owned adapter forwards to Microsoft C/C++ and forces detach on Stop; its connection commands neither run nor download an application. Disconnecting a debugger uses GDB detach and can resume that core; it does not reset/reflash the board or stop a shared hardware server. Close the server terminal yourself when finished.
+
+Build/flash/package updates are blocked while this window owns UltraZohm debugger sessions. Other VS Code windows, Vitis and external clients are not coordinated; do not program or debug the same board concurrently. If programming or attachment fails, inspect the terminals and any already opened sessions. A core may already be stopped, and successful sessions remain open rather than being automatically detached. Closing the Debug task does not cancel its accepted firmware job; use Attach afterward if needed.
+
+Tests cover the service job, request isolation and breakpoint sequence with fake XSCT. **The dual-core handoff still needs validation on real UltraZohm hardware on Linux and Windows.**
+
 ## Commands without dedicated buttons
 
 | Command/family | Where it remains available / why omitted |

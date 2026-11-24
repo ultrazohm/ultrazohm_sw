@@ -3,7 +3,7 @@
   "displayName": "ultrazohm-extension",
   "description": "UltraZohm DataViewer, interactive CLI, Python environment and firmware tools.",
   "publisher": "ultrazohm-local",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "engines": {
     "vscode": "^1.93.0"
   },
@@ -26,7 +26,8 @@
   "activationEvents": [
     "onView:ultrazohm.setup",
     "onView:ultrazohm.softwareBuild",
-    "onView:ultrazohm.control"
+    "onView:ultrazohm.control",
+    "onDebug:ultrazohm-gdb"
   ],
   "contributes": {
     "commands": [
@@ -90,6 +91,14 @@
       {
         "command": "ultrazohm.updatePackages",
         "title": "ultrazohm-extension: Update Python packages"
+      },
+      {
+        "command": "ultrazohm.debug",
+        "title": "ultrazohm-extension: Debug"
+      },
+      {
+        "command": "ultrazohm.attach",
+        "title": "ultrazohm-extension: Attach debugger"
       }
     ],
     "views": {
@@ -158,6 +167,18 @@
           "default": "",
           "scope": "machine",
           "description": "Persistent Vitis setup script: settings64.sh on Linux or settings64.bat on Windows. Its environment is applied only to extension-launched processes."
+        },
+        "ultrazohm.debug.r5Gdb": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "Optional R5 Vitis GDB executable override. Empty discovers it from the selected Vitis installation."
+        },
+        "ultrazohm.debug.a53Gdb": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "Optional A53 Vitis GDB executable override. Empty discovers it from the selected Vitis installation."
         }
       }
     },
@@ -198,10 +219,33 @@
           }
         }
       }
+    ],
+    "debuggers": [
+      {
+        "type": "ultrazohm-gdb",
+        "label": "UltraZohm (Vitis GDB)",
+        "languages": [
+          "c",
+          "cpp"
+        ],
+        "configurationAttributes": {
+          "launch": {
+            "required": [
+              "program"
+            ],
+            "properties": {
+              "program": {
+                "type": "string",
+                "description": "ELF selected by the UltraZohm Debug or Attach button."
+              }
+            }
+          }
+        }
+      }
     ]
   },
   "scripts": {
-    "check": "node --check extension.js && node --check tools.js && node --check service.js && node --check cli-capabilities.js && node --check runtime-env.js && node --check vitis-env.js",
+    "check": "node --check extension.js && node --check tools.js && node --check service.js && node --check cli-capabilities.js && node --check runtime-env.js && node --check vitis-env.js && node --check debug-tools.js && node --check debug-controller.js && node --check debug-rsp.js",
     "test": "node --test test/*.test.js",
     "package": "vsce package --no-dependencies",
     "bundle:launcher": "node tools/bundle-launcher.js",

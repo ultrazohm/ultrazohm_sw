@@ -54,15 +54,21 @@ def main():
         tools.mkdir()
         report = tools / 'actions.jsonl'
         failure = tools / 'fail'
+        no_proof = tools / 'no-proof'
         stub = tools / 'xsct.py'
         stub.write_text('import os,sys,json\nfrom pathlib import Path\n'
             'action=next(sys.argv[i+1] for i,a in enumerate(sys.argv) if a.endswith(".tcl"))\n'
             f'with open({str(report)!r},"a") as f: f.write(json.dumps(action)+"\\n")\n'
             f'if Path({str(failure)!r}).exists(): sys.exit(7)\n'
-            'Path(os.environ["UZ_VITIS_COMPLETION"]).write_text(action)\n')
+            'Path(os.environ["UZ_VITIS_COMPLETION"]).write_text(action)\n'
+            f'if "UZ_DEBUG_PROOF" in os.environ and not Path({str(no_proof)!r}).exists(): Path(os.environ["UZ_DEBUG_PROOF"]).write_text(os.environ["UZ_DEBUG_REQUEST"])\n')
         xsct = tools / ('xsct.cmd' if os.name == 'nt' else 'xsct')
         xsct.write_text(f'@echo off\n"{sys.executable}" "{stub}" %*\n' if os.name == 'nt' else f'#!/bin/sh\nexec {shlex.quote(sys.executable)} {shlex.quote(str(stub))} "$@"\n')
         xsct.chmod(0o755)
+        bridge_config = tools / 'bridge.json'
+        proxy = tools / ('debug-xsct.cmd' if os.name == 'nt' else 'debug-xsct')
+        proxy.write_text(f'@echo off\n"{sys.executable}" "{args.extension / "debug-xsct.py"}" "{bridge_config}" %*\n' if os.name == 'nt' else f'#!/bin/sh\nexec {shlex.quote(sys.executable)} {shlex.quote(str(args.extension / "debug-xsct.py"))} {shlex.quote(str(bridge_config))} "$@"\n')
+        proxy.chmod(0o755)
         env = dict(os.environ)
         env.pop('UZ_CLI_TCL_DIR', None)
         path_key = next((k for k in env if k.lower() == 'path'), 'PATH')
@@ -74,12 +80,13 @@ def main():
         with socket.socket() as sock:
             sock.bind(('127.0.0.1', 0))
             endpoint = f'127.0.0.1:{sock.getsockname()[1]}'
+        bridge_config.write_text(json.dumps({'root': str(root), 'endpoint': endpoint, 'xsct': str(xsct), 'ticket': str(tools / 'request.json'), 'proof': str(tools / 'stopped.json')}))
         with (base / 'service.log').open('w+') as log:
             # On Windows use console handles, as in a VS Code task terminal.
             # A blocked synchronous stdin pipe can stall child handle inheritance
             # when the interactive CLI starts XSCT; it is not a terminal fixture.
             io = {'creationflags': subprocess.CREATE_NEW_CONSOLE} if os.name == 'nt' else {'stdin': subprocess.PIPE, 'stdout': log, 'stderr': log}
-            process = subprocess.Popen([cli, '--endpoint', endpoint, 'serve', '--repo', str(root), '--xsct', str(xsct), '--interactive'], env=env, **io)
+            process = subprocess.Popen([cli, '--endpoint', endpoint, 'serve', '--repo', str(root), '--xsct', str(proxy), '--interactive'], env=env, **io)
             client = Client(endpoint)
             try:
                 deadline = time.monotonic() + 30
@@ -104,6 +111,13 @@ def main():
                 assert success.returncode == 0, success.stdout + success.stderr
                 assert 'without reconnecting' in success.stdout
                 assert [json.loads(line) for line in report.read_text().splitlines()][-2:] == ['build', 'program-built']
+                debug = run(*helper, '--repo', root, '--debug-config', bridge_config, check=False)
+                assert debug.returncode == 0 and 'both cores stopped at main' in debug.stdout, debug.stdout + debug.stderr
+                assert not (tools / 'request.json').exists()
+                no_proof.touch()
+                rejected = run(*helper, '--repo', root, '--debug-config', bridge_config, check=False)
+                assert rejected.returncode != 0 and 'did not confirm both cores' in rejected.stdout + rejected.stderr, rejected.stdout + rejected.stderr
+                no_proof.unlink()
                 failure.touch()
                 failed = run(*helper, '--repo', root, check=False)
                 assert failed.returncode != 0 and 'failed' in failed.stderr.lower(), failed.stdout + failed.stderr

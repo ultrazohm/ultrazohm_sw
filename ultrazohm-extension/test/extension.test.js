@@ -8,7 +8,7 @@ function setup(mode = 'visible') {
   const settings = { 'launcher.source': 'local', 'dataviewer.channel': 'prerelease', 'dataviewer.terminal': mode };
   const commands = {}, errors = [], events = { providers: {} }, updates = [], saved = [];
   const folder = { uri: { scheme: 'file', fsPath: '/checkout with spaces' } };
-  const state = { confirmation: undefined, confirmations: [], capabilities: { local: true, xsct: true, repo: true }, xsct: { reason: 'XSCT not found' }, occupied: false, picked: undefined, quickPick: 'hidden', validRoots: new Set(['/checkout with spaces', '/selected uz']) };
+  const state = { confirmation: undefined, confirmations: [], capabilities: { local: true, xsct: true, repo: true }, xsct: { reason: 'XSCT not found' }, occupied: false, debugActive: false, attaches: [], picked: undefined, quickPick: 'hidden', validRoots: new Set(['/checkout with spaces', '/selected uz']) };
   let reveals = 0;
   const disposable = { dispose() {} };
   const watcher = { ...disposable, onDidCreate: () => disposable, onDidChange: () => disposable, onDidDelete: () => disposable };
@@ -43,6 +43,7 @@ function setup(mode = 'visible') {
     },
     tasks: {
       registerTaskProvider: () => disposable, taskExecutions: [], onDidEndTask: () => disposable,
+      onDidEndTaskProcess: fn => { events.taskEnd = fn; return disposable; },
       executeTask: async task => {
         const execution = { task };
         v.tasks.taskExecutions.push(execution);
@@ -65,7 +66,7 @@ function setup(mode = 'visible') {
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../runtime-env.js'), 'utf8'), { module: runtimeModule, require: () => path.posix });
   const exports = {};
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../extension.js'), 'utf8'), {
-    exports, require: n => n === 'vscode' ? v : n === 'node:fs' ? mockFs : n === 'node:path' ? path.posix : n === './vitis-env' ? { settingsEnvironment: async () => ({ PATH: '/Vitis/bin', XILINX_VITIS: '/Vitis', UV_CACHE_DIR: '/bad-cache' }) } : n === './runtime-env' ? runtimeModule.exports : n === './tools' ? tools : n === './cli-capabilities' ? { readHelp: async () => state.capabilities } : n === './service' ? { portInUse: async () => state.occupied } : require(n),
+    exports, require: n => n === 'vscode' ? v : n === 'node:fs' ? mockFs : n === 'node:path' ? path.posix : n === './debug-controller' ? { controller: () => ({ active: () => state.debugActive, prepare: async () => ({}), attach: async options => state.attaches.push(options) }) } : n === './debug-tools' ? { bridge: () => ({ launcher: '/private/debug/xsct', config: '/private/debug/bridge.json' }) } : n === './vitis-env' ? { settingsEnvironment: async () => ({ PATH: '/Vitis/bin', XILINX_VITIS: '/Vitis', UV_CACHE_DIR: '/bad-cache' }) } : n === './runtime-env' ? runtimeModule.exports : n === './tools' ? tools : n === './cli-capabilities' ? { readHelp: async () => state.capabilities } : n === './service' ? { portInUse: async () => state.occupied } : require(n),
     process: { platform: 'linux', arch: 'x64', env: { PATH: '/usr/bin' } },
   });
   exports.activate({ subscriptions: [], extensionPath: '/extension', globalStorageUri: { fsPath: '/private' } });
@@ -151,7 +152,7 @@ test('XSCT picker saves shared preferences in selected checkout and can reset to
   const s = setup(); s.settings.repository = '/selected uz'; s.state.picked = [{ fsPath: '/Vitis bin/xsct' }];
   await s.run('xsct'); assert.deepEqual(s.saved, [{ root: '/selected uz', selected: '/Vitis bin/xsct' }]);
   assert.ok((await s.events.providers['ultrazohm.softwareBuild'].getChildren()).find(row => row.id === 'build').command);
-  await s.run('cli'); assert.equal(s.tasks()[0].execution.args.at(-1), '/Vitis bin/xsct');
+  await s.run('cli'); assert.equal(s.tasks()[0].execution.args.at(-1), '/private/debug/xsct');
   await s.run('xsctPath'); assert.equal(s.saved.at(-1).selected, null);
   s.state.picked = [{ fsPath: '/Vitis/vitis' }]; await s.run('xsct'); assert.equal(s.saved.length, 2);
 });
@@ -281,4 +282,35 @@ test('package update refuses running tasks and respects local requirements', asy
   s.v.tasks.taskExecutions = [];
   await s.run('updatePackages');
   assert(s.tasks()[0].execution.args.includes('/checkout with spaces/requirements.txt'));
+});
+
+test('Attach starts both debugger sessions without a CLI or firmware task', async () => {
+ const s=setup();s.state.xsct={path:'/Vitis/xsct'};s.state.confirmation='Attach';
+ await s.run('attach');assert.deepEqual(s.errors,[]);assert.equal(s.tasks().length,0);
+ assert.equal(s.state.attaches.length,1);assert.equal(s.state.attaches[0].root,'/checkout with spaces');
+});
+test('Debug starts a capable CLI, requests service-managed programming and attaches only on success', async () => {
+ const s=setup();s.state.xsct={path:'/Vitis/xsct'};s.state.capabilities={repo:true,xsct:true,noReconnect:true};s.state.confirmation='Debug';
+ await s.run('debug');assert.deepEqual(s.errors,[]);assert.equal(s.tasks().length,2);
+ assert.equal(s.tasks()[0].definition.debugBridge,'/private/debug/bridge.json');
+ const task=s.tasks()[1];assert(task.execution.args.includes('--debug-config'));
+ assert.equal(task.execution.args.at(-1),'/private/debug/bridge.json');
+ assert.equal(s.state.attaches.length,0);
+ await s.events.taskEnd({execution:s.v.tasks.taskExecutions[1],exitCode:0});
+ assert.equal(s.state.attaches.length,1);assert.equal(s.state.attaches[0].atMain,true);
+});
+test('failed/cancelled Debug never attaches, and an external service is not replaced', async () => {
+ for (const code of [1,undefined]) {
+  const s=setup();s.state.xsct={path:'/Vitis/xsct'};s.state.capabilities={repo:true,xsct:true,noReconnect:true};s.state.confirmation='Debug';
+  await s.run('debug');await s.events.taskEnd({execution:s.v.tasks.taskExecutions[1],exitCode:code});
+  assert.equal(s.state.attaches.length,0);
+ }
+ const s=setup();s.state.xsct={path:'/Vitis/xsct'};s.state.capabilities={noReconnect:true};s.state.confirmation='Debug';s.state.occupied=true;
+ await s.run('debug');assert.equal(s.tasks().length,0);assert.match(s.errors[0],/interactive CLI opened by this extension/);
+});
+test('active debugger blocks firmware commands and package updates but allows control tools', async () => {
+ const s=setup();s.state.xsct={path:'/Vitis/xsct'};s.state.debugActive=true;
+ for(const key of ['build','generate','build-clean','flash','debug','attach','updatePackages']) await s.run(key);
+ assert.equal(s.tasks().length,0);assert.equal(s.errors.length,7);
+ await s.run('venv');assert.equal(s.tasks().length,1);
 });

@@ -1,6 +1,6 @@
 # ultrazohm-extension
 
-Install the platform VSIX using **Extensions: Install from VSIX…**, then open the **UZ** Activity Bar button. Use a trusted native Linux or Windows window. The navigation button follows your VS Code sidebar placement. The sidebar has three independently collapsible sections, like Explorer’s Outline and Timeline: **Setup** (directory, launcher, XSCT, release channel, terminal), **Software build** (generate, build, flash, clean/build), and **Control** (DataViewer, interactive CLI, Python environment).
+Install the platform VSIX using **Extensions: Install from VSIX…**, then open the **UZ** Activity Bar button. Use a trusted native Linux or Windows window. The navigation button follows your VS Code sidebar placement. The sidebar has three independently collapsible sections, like Explorer’s Outline and Timeline: **Setup** (directory, launcher, XSCT, release channel, terminal), **Software build** (generate, build, flash, debug, attach, clean/build), and **Control** (DataViewer, interactive CLI, Python environment).
 
 Open an UltraZohm checkout directly, or click **Find ultrazohm_sw directory…** to select one while keeping your current folder open. The selection is saved for this VS Code workspace. The selected checkout supplies firmware sources and repository arguments. **Launcher: bundled/local** chooses where the `uz` / `uz.ps1` scripts come from. Bundled is the default and also works with any unrelated local folder open: DataViewer and the Python environment do not require a checkout. Interactive CLI and firmware actions still require one: the published CLI generates its channel mapping from firmware sources. In an empty window, the picker opens the selected checkout. With multiple folders, select the checkout explicitly.
 
@@ -23,7 +23,7 @@ The setup-script path is stored in the machine-specific VS Code user setting `ul
 
 Firmware buttons are grey and nonclickable until XSCT is found. Without a setup script, detection uses the checkout's saved `artifacts/_user/tools.json` choice, then PATH when no choice is saved. Direct XSCT selection updates this shared file. With a setup script selected, launching an action updates the checkout's saved XSCT path to match the discovered launcher, preserving other preferences. Use **ultrazohm-extension: Use XSCT from PATH** in the Command Palette to clear both the setup script and the selected checkout's saved XSCT choice. The toolbar refresh button rechecks availability. The extension does not install Vitis; finding XSCT does not verify the Vitis version or a successful firmware build.
 
-Repeated clicks reveal an existing task instead of starting another. Generate/build/clean/flash share one task slot per checkout. There is no background-service button or automatic service startup when launching DataViewer. The interactive CLI uses `ultrazohm.cli.endpoint` (default `127.0.0.1:19740`); an occupied port prevents a second start. Separate worktrees can use separate endpoints. Existing services are never stopped or replaced by the extension.
+Repeated clicks reveal an existing task instead of starting another. Generate/build/clean/flash/debug/attach share one task slot per checkout. There is no background-service button or automatic service startup when launching DataViewer. The interactive CLI uses `ultrazohm.cli.endpoint` (default `127.0.0.1:19740`); an occupied port prevents a second start. Separate worktrees can use separate endpoints. Existing services are never stopped or replaced by the extension.
 
 Hidden DataViewer output remains accessible through the Terminal panel. Changing the setting does not hide an already visible terminal. Channel and repository changes apply to subsequent tasks; they do not restart or retarget running applications.
 
@@ -33,7 +33,22 @@ Flash UZ uses the published CLI's service API. After confirmation it reuses the 
 
 The CLI stops acquisition, finalizes recordings, builds and programs via JTAG. An existing device target is reconnected afterward; a newly started disconnected service programs without reconnecting. Logging remains idle and system/control enable are not requested automatically. This does not write persistent flash memory. The visible flash terminal follows job logs and reports failure; closing it does not cancel a job already accepted by the service. The interactive CLI remains open for inspection or reuse.
 
-Flash requires the current service-managed CLI API; use **Update Python packages** if an older CLI is cached. Generate/build/clean still use local CLI operations. DataViewer, CLI application code and Tcl scripts are unchanged.
+Flash requires the current service-managed CLI API; use **Update Python packages** if an older CLI is cached. Generate/build/clean still use local CLI operations. DataViewer, CLI application code and existing repository Tcl scripts are unchanged.
+
+## Debug and Attach
+
+Install **Microsoft C/C++** (`ms-vscode.cpptools`) and select your Vitis installation in Setup. The extension discovers Vitis's R5 and A53 GDB executables; optional `ultrazohm.debug.r5Gdb` and `ultrazohm.debug.a53Gdb` settings override those paths. GDB and Vitis are supplied by your Vitis installation, not bundled or downloaded by this extension.
+
+- **Attach debugger** opens independent R5/Baremetal and A53/FreeRTOS sessions for the existing firmware. It does not build, reset or download firmware. Both `vitis/workspace/<application>/Debug/<application>.elf` files must match the firmware running on the board. Attaching may pause the cores; stop acquisition and put the hardware in a safe state first.
+- **Debug** submits the same service-managed Flash job as **Flash UZ**, including acquisition shutdown, recording finalization and building. An extension-owned XSCT wrapper intercepts the two application starts, sets a hardware breakpoint at `main`, runs each core to it and verifies the program counter. It then opens both debugger sessions. The service remains disconnected while the cores are stopped. Select **UltraZohm R5** and **UltraZohm A53** in Run and Debug and press **Continue** for each. After both are running, reconnect through the interactive CLI or DataViewer.
+
+Debug requires the interactive CLI opened by this version of the extension. If an external or older service occupies the endpoint, close it yourself and use **Open interactive CLI**, then retry. The extension never replaces a running service. Changing the Vitis selection requires restarting that CLI. Ordinary Flash jobs retain their normal behavior: the wrapper selects only the exact Debug request and service identity. It sources the CLI package's original scripts without modifying them. No CLI or DataViewer application changes are needed.
+
+One locally connected UltraZohm board is supported. The extension uses local `hw_server` ports 3121 (XSCT), 3000 (R5) and 3001 (A53); it checks for exactly one core #0 of each architecture, with the default GDB processor ID 1. Other target layouts are rejected. If necessary it opens **UltraZohm Hardware Server** as a visible task. A small extension-owned adapter forwards to Microsoft C/C++ and forces detach on Stop; its connection commands neither run nor download an application. Disconnecting a debugger uses GDB detach and can resume that core; it does not reset/reflash the board or stop a shared hardware server. Close the server terminal yourself when finished.
+
+Build/flash/package updates are blocked while this window owns UltraZohm debugger sessions. Other VS Code windows, Vitis and external clients are not coordinated; do not program or debug the same board concurrently. If programming or attachment fails, inspect the terminals and any already opened sessions. A core may already be stopped, and successful sessions remain open rather than being automatically detached. Closing the Debug task does not cancel its accepted firmware job; use Attach afterward if needed.
+
+Tests cover the service job, request isolation and breakpoint sequence with fake XSCT. **The dual-core handoff still needs validation on real UltraZohm hardware on Linux and Windows.**
 
 ## Runtime and packages
 

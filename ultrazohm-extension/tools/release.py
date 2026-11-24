@@ -49,7 +49,7 @@ def verify(target, vsix, unpack, channel):
             raise ValueError('Incorrect extension identity/version')
         if any(name.startswith(('extension/test/', 'extension/node_modules/', 'extension/tools/')) for name in names):
             raise ValueError('Development-only files leaked into VSIX')
-        required = ['extension/flash.py', 'extension/update-packages.py', 'extension/launcher/uz.py', 'extension/launcher/requirements.txt', 'extension/runtime/licenses/LICENSE.cpython.txt', 'extension/runtime/licenses/uv-LICENSE-MIT.txt']
+        required = ['extension/debug-adapter.py', 'extension/debug-controller.js', 'extension/debug-tools.js', 'extension/debug-rsp.js', 'extension/debug-main.tcl', 'extension/debug-xsct.py', 'extension/debug-server.py', 'extension/flash.py', 'extension/update-packages.py', 'extension/launcher/uz.py', 'extension/launcher/requirements.txt', 'extension/runtime/licenses/LICENSE.cpython.txt', 'extension/runtime/licenses/uv-LICENSE-MIT.txt']
         if any(name not in names for name in required):
             raise ValueError('Runtime, launcher or license files missing')
         for member in archive.infolist():

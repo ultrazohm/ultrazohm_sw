@@ -52,6 +52,22 @@ def full_archive(file):
             yield archive
 
 
+def bundle_serial(runtime, cache, spec):
+    cache.mkdir(parents=True, exist_ok=True)
+    wheel = download(spec, cache)
+    destination = runtime / 'serial'
+    destination.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(wheel) as archive:
+        for name in archive.namelist():
+            if name.startswith('serial/') and not name.endswith('/'):
+                file = destination / name
+                file.parent.mkdir(parents=True, exist_ok=True)
+                file.write_bytes(archive.read(name))
+        notices = runtime / 'licenses'
+        notices.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(download(spec['license'], cache), notices / 'pyserial-LICENSE.txt')
+
+
 def build(target, cache, replace=False):
     lock = json.loads((ROOT / 'runtime-lock.json').read_text())
     if (ROOT.parent / '.uv-version').read_text().strip() != lock['uv_version']:
@@ -100,11 +116,12 @@ def build(target, cache, replace=False):
                         shutil.copyfileobj(source, sink)
         if not (notices / 'LICENSE.cpython.txt').is_file():
             raise ValueError('Upstream Python license notices missing')
+        bundle_serial(runtime, cache, lock['pyserial'])
         manifest = {
             'platform': 'win32' if target == 'win32-x64' else 'linux', 'arch': 'x64', 'target': target,
             'python': executable.relative_to(runtime).as_posix(), 'uv_version': lock['uv_version'],
             'python_version': lock['python_version'], 'python_build': lock['python_build'],
-            'sources': spec, 'uv_licenses': lock['uv_licenses'],
+            'sources': spec, 'uv_licenses': lock['uv_licenses'], 'pyserial': lock['pyserial'],
         }
         (runtime / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
         if destination.exists():

@@ -82,3 +82,15 @@ For development, use `.vscode/launch.json`. `npm run test:host` runs hardware-fr
 See [RELEASING.md](RELEASING.md) in the source repository for CI, automatic branch releases, artifact verification and local testing. Real Vitis builds and attached hardware require manual testing.
 
 When upgrading a local prototype, uninstall `ultrazohm-local.ultrazohm` or `ultrazohm-local.ultrazohm-extension` before installing `ZohmControlGmbH.ultrazohm-extension` to avoid duplicate controls. The `ultrazohm.*` settings remain compatible; the new publisher identity gets fresh private storage. GitHub VSIX updates are installed manually. The publisher is `ZohmControlGmbH`; matching-path pushes to `main` publish stable versions and to `develop` publish prereleases, after both native builds and the GitHub Release succeed. CI assigns `0.1.<run number>` automatically; PRs only validate. Manual runs validate by default; enable `publish_prerelease` on `develop` or `feature/vscode-extension` to publish a tested prerelease.
+
+### Serial terminal (prototype)
+
+The **Serial** section below Control opens the SoM UART in a VS Code terminal. Click **Select serial port…**, choose the UART interface, then **Connect**. Defaults match the UltraZohm guide: 115200 baud, 8 data bits, no parity, 1 stop bit, no flow control. Device name, USB identity, matching mode, baud/framing, flow control, Enter line ending and local echo are clickable in this section. Settings are stored on this machine and survive restarts.
+
+USB identity matching follows a device when its COM/tty number changes. Composite adapters may expose several channels: choose the UART interface, not JTAG. Missing or ambiguous matches prompt for selection; devices without a serial identity use the saved device name. **Device name** also supports manual entry.
+
+pySerial is bundled with the private Python runtime, so serial use needs no package download, other extension, Vitis, CLI service or checkout. The host still needs its USB serial driver and permission to access the port (on Linux, commonly the appropriate device-access group). Close other applications using the same UART. Errors appear in the terminal. Closing the terminal or clicking **Disconnect** releases the port. Unplugging ends the session; reconnect explicitly. Reloading VS Code does not automatically reconnect. Settings can be changed after disconnecting.
+
+This is a text terminal using UTF-8, with local echo off by default. It forwards terminal output and keyboard input; it is not a CLI service console. On hardware, verify both supported adapters' channel identification, firmware output, reconnect after unplugging, and port release alongside JTAG debugging on Linux and Windows.
+
+On first connection, a uniquely identified UltraZohm USB interface **02** (channel C, typically `/dev/ttyUSB2`) is selected automatically. Saved selections take precedence. Multiple adapters or missing interface metadata still require selection.

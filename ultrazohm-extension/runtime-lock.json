@@ -41,5 +41,14 @@
       "url": "https://raw.githubusercontent.com/astral-sh/uv/0.13.1/LICENSE-MIT",
       "sha256": "860e3d7a86b84e6a7012c7a635fc64df475cebc6cce34dfeb73a5982ec58176c"
     }
+  },
+  "pyserial": {
+    "version": "3.5",
+    "url": "https://files.pythonhosted.org/packages/07/bc/587a445451b253b285629263eb51c2d8e9bcea4fc97826266d186f96f558/pyserial-3.5-py2.py3-none-any.whl",
+    "sha256": "c4451db6ba391ca6ca299fb3ec7bae67a5c55dde170964c7a14ceefec02f2cf0",
+    "license": {
+      "url": "https://raw.githubusercontent.com/pyserial/pyserial/v3.5/LICENSE.txt",
+      "sha256": "f91cb9813de6a5b142b8f7f2dede630b5134160aedaeaf55f4d6a7e2593ca3f3"
+    }
   }
 }

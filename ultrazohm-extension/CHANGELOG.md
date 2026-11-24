@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.18
+
+- Default to the unique UltraZohm USB interface 02 (channel C / SoM UART) on first connection when interface metadata is available. Preserve saved selections and prompt for ambiguous devices.
+
+## 0.1.17
+
+- Add Serial below Control with a VS Code pseudoterminal, port/USB identity selection, persistent machine settings and explicit disconnect.
+- Bundle checksum-pinned pySerial with its license for offline native Linux/Windows UART access; no CLI, Vitis or checkout required.
+
 ## 0.1.16
 
 - Route Baremetal source breakpoints only to R5 and FreeRTOS source breakpoints only to A53, preventing same-filename collisions such as isr.c. Shared-source breakpoints remain available to both cores.

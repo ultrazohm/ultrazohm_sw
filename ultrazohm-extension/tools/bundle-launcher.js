@@ -7,3 +7,5 @@ fs.mkdirSync(target, { recursive: true });
 for (const name of ['uz', 'uz.ps1', 'uz.py', 'uz_bootstrap.sh', 'uz_bootstrap.ps1', 'uz_shell.py', 'uz_venv.py', '.python-version', '.uv-version', 'requirements.txt']) {
   fs.copyFileSync(path.join(root, name), path.join(target, name));
 }
+
+if (!fs.existsSync(path.resolve(__dirname, '../runtime/serial/serial/__init__.py'))) throw new Error('Bundled pySerial missing; run tools/bundle.py before packaging.');

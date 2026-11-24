@@ -69,14 +69,25 @@ sleep 120
     const extension = vscode.extensions.getExtension('ZohmControlGmbH.ultrazohm-extension');
     assert(extension); await extension.activate();
     const commands = await vscode.commands.getCommands(true);
-    for (const name of ['ultrazohm.debug', 'ultrazohm.attach']) assert(commands.includes(name), name + ' missing');
+    for (const name of ['ultrazohm.debug', 'ultrazohm.attach', 'ultrazohm.serial.connect', 'ultrazohm.serial.select']) assert(commands.includes(name), name + ' missing');
     const config = vscode.workspace.getConfiguration('ultrazohm', opened.uri);
     for (const [key, value] of Object.entries({ repository: root, 'launcher.source': 'local', 'dataviewer.channel': 'prerelease',
       'cli.endpoint': await unusedEndpoint(), 'dataviewer.terminal': 'hidden' })) {
       await config.update(key, value, vscode.ConfigurationTarget.WorkspaceFolder);
     }
     await config.update('vitis.settingsScript', settingsScript, vscode.ConfigurationTarget.Global);
-    for (const section of ['setup', 'softwareBuild', 'control']) {
+    // Exercise a real Pseudoterminal and bundled helper without opening hardware.
+    const absentPort = path.join(base, 'nonexistent-uart');
+    await config.update('serial.matchBy', 'device', vscode.ConfigurationTarget.Global);
+    await config.update('serial.device', absentPort, vscode.ConfigurationTarget.Global);
+    await vscode.commands.executeCommand('ultrazohm.serial.connect');
+    await until(() => vscode.window.terminals.some(t => t.name === `UltraZohm Serial: ${absentPort}`));
+    const serialTerminal = vscode.window.terminals.find(t => t.name === `UltraZohm Serial: ${absentPort}`);
+    await until(() => serialTerminal.exitStatus !== undefined);
+    assert.equal(serialTerminal.exitStatus.code, 1);
+    serialTerminal.dispose();
+
+    for (const section of ['setup', 'softwareBuild', 'control', 'serial']) {
       await vscode.commands.executeCommand('ultrazohm.' + section + '.focus');
     }
     await vscode.commands.executeCommand('ultrazohm.launch');

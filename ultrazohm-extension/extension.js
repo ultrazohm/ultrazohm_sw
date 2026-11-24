@@ -9,6 +9,7 @@ const { settingsEnvironment } = require('./vitis-env');
 const { bridge } = require('./debug-tools');
 const { controller } = require('./debug-controller');
 const { readHelp } = require('./cli-capabilities');
+const { activateSerial } = require('./serial-controller');
 
 const actions = {
   updatePackages: { label: 'Update Python packages', name: 'UltraZohm Update Python Packages', group: 'packages', icon: 'cloud-download' },
@@ -24,6 +25,7 @@ const actions = {
 };
 
 function activate(context) {
+  activateSerial(context);
   const pending = new Map();
   const debugOutput = vscode.window.createOutputChannel('UltraZohm Debug');
   context.subscriptions.push(debugOutput);

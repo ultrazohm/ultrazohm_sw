@@ -68,7 +68,7 @@ def verify(target, vsix, unpack, channel):
             raise ValueError('Incorrect extension identity/version')
         if any(name.startswith(('extension/test/', 'extension/node_modules/', 'extension/tools/')) for name in names):
             raise ValueError('Development-only files leaked into VSIX')
-        required = ['extension/debug-adapter.py', 'extension/debug-controller.js', 'extension/debug-tools.js', 'extension/debug-rsp.js', 'extension/debug-main.tcl', 'extension/debug-xsct.py', 'extension/debug-server.py', 'extension/flash.py', 'extension/update-packages.py', 'extension/launcher/uz.py', 'extension/launcher/requirements.txt', 'extension/runtime/licenses/LICENSE.cpython.txt', 'extension/runtime/licenses/uv-LICENSE-MIT.txt']
+        required = ['extension/serial-terminal.py', 'extension/serial-controller.js', 'extension/serial-tools.js', 'extension/runtime/serial/serial/__init__.py', 'extension/runtime/licenses/pyserial-LICENSE.txt', 'extension/debug-adapter.py', 'extension/debug-controller.js', 'extension/debug-tools.js', 'extension/debug-rsp.js', 'extension/debug-main.tcl', 'extension/debug-xsct.py', 'extension/debug-server.py', 'extension/flash.py', 'extension/update-packages.py', 'extension/launcher/uz.py', 'extension/launcher/requirements.txt', 'extension/runtime/licenses/LICENSE.cpython.txt', 'extension/runtime/licenses/uv-LICENSE-MIT.txt']
         if any(name not in names for name in required):
             raise ValueError('Runtime, launcher or license files missing')
         for member in archive.infolist():
@@ -82,7 +82,7 @@ def verify(target, vsix, unpack, channel):
     runtime = extension / 'runtime'
     bundled = json.loads((runtime / 'manifest.json').read_text())
     lock = json.loads((ROOT / 'runtime-lock.json').read_text())
-    if bundled['target'] != target or bundled['sources'] != lock['targets'][target]:
+    if bundled['target'] != target or bundled['sources'] != lock['targets'][target] or bundled.get('pyserial') != lock['pyserial']:
         raise ValueError('Runtime does not match lock')
     windows = target == 'win32-x64'
     if windows != (os.name == 'nt'):
@@ -106,6 +106,7 @@ def verify(target, vsix, unpack, channel):
                 print(error.output, file=sys.stderr)
                 raise
         assert run([python, '-c', 'import sys,ssl,sqlite3,ctypes; print(sys.version.split()[0])']) == bundled['python_version']
+        assert run([python, '-I', '-B', extension / 'serial-terminal.py', 'self-test']) == 'Bundled pySerial loopback passed'
         uv = runtime / 'bin' / ('uv.exe' if windows else 'uv')
         assert run([uv, '--version']).split()[1] == bundled['uv_version']
         launcher = extension / 'launcher'

@@ -95,6 +95,8 @@ jobs:
         env:
           TARGET: ${{ matrix.target }}
         run: python tools/bundle.py --target "$TARGET"
+      - name: Test bundled serial transport
+        run: python -m unittest discover -s tools -p "test_serial.py"
       - name: Package platform VSIX
         env:
           TARGET: ${{ matrix.target }}

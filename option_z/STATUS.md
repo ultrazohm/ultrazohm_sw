@@ -321,6 +321,30 @@ Analysis and tables: IMPROVEMENTS.md 2.7.
 - The ~300 us A53 acknowledges are older than the change and remain, rarely
   (4 of 32 measurements).
 
+## Bench run 2026-11-24: control-ISR jitter (`6dd56602d` flashed)
+
+40 kHz, `tools/xcp_test/isr_jitter.py`, 10 s per run, the load of the
+CANape configuration in use: 217 B/cycle on `DAQ_R5` and 23 diagnostic
+counters (92 B in 9 pieces) on `daq_1ms`. Sections, PMU counts and the
+main-loop phase come from `UZ_ISR_DIAG 1` (`fe3e2fdd1`). Analysis:
+IMPROVEMENTS.md 2.9.
+
+- Execution time p50 15.99 us, p99 18.2 us without the diagnostics; with
+  them 0.7-0.9 us more. The PWM section alone takes 9.8 us.
+- The spike once per ms (+2.2 us) is the `daq_1ms` event. With an empty
+  `daq_1ms` list +0.3 us, with 92 B in one piece +1.3 us.
+- The smaller bumps (2 cycles later and around the middle of the ms) are
+  ISRs that interrupt the main loop's DAQ copy: 19-26 % of those are slow,
+  < 1 % otherwise, with about twice the D-cache misses and +340 LSU stall
+  cycles. A DAQ exchange starts at 4 segments (~5.6 KB), here every 20-24
+  cycles.
+- Period jitter: `Xil_DCacheFlushRange` masked interrupts while the main
+  loop flushed the DAQ chain (55 % of the ISRs hitting the flush were late,
+  up to 2 us). Fixed by `6dd56602d`: start delay p99 0.88 -> 0.29 us, max
+  1.71 -> 1.06 us.
+- Loads: 48 B/cycle gives exec p99 16.8 us and start delay p99 0.18 us;
+  648 B/cycle gives exec p99 20.0 us.
+
 ## Bench run 2026-11-23: repeated and lost datagrams (`8fe168bf3` flashed)
 
 CANape session at 40 kHz, the first build with the CONNECT print and
@@ -343,7 +367,8 @@ CANape session at 40 kHz, the first build with the CONNECT print and
   of the 900 B run: 2,400,121 board datagrams, the same as the GEM's
   frames_txed, consecutive IP IDs, no repeats. Only 2 pause frames in that
   run, so the soak above is the test of the fix under pause frames.
-- DAQ timestamps (built, NOT yet on hardware). A CANape recording of
+- DAQ timestamps (on hardware since 2026-11-23: `xcp_poll.py --stress`
+  reads a tick of 1e-08 s; CANape after a restart, see below). A CANape recording of
   `lifecheck` on `DAQ_R5` (190 s, 7.6 M samples, none missing) had steps of
   23-27 us instead of 25 us. The control period itself is exact: the
   board's timestamps add up to 25 us per sample. They were the ISR start
@@ -354,6 +379,9 @@ CANape session at 40 kHz, the first build with the CONNECT print and
   `GET_DAQ_CLOCK` reads the timer live instead of the last ISR start.
   CANape still converts to PC time (-17.35 ppm in that recording, wandering
   by up to 135 us around the line).
+  A CANape that had loaded the A2L before the change kept 1 us ticks:
+  receive buffer overflows from 23 s on, then a command timeout. A restart
+  of CANape fixed it (2026-11-24).
 - Withdrawn: "reordering in the PC" (2026-11-17/18 and July) and the PC as
   the source of the rare lost responses. `xcp_poll.py` hid the defect by
   offsetting duplicates against gaps; it now checks every counter value

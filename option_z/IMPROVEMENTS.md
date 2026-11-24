@@ -398,6 +398,50 @@ the capture of the faulty session the new check finds 2276 duplicated
 frames and as many missing ones; the old accounting found 5 "net lost",
 which are capture artefacts.
 
+### 2.9 Control-ISR jitter from the XCP load — measured 2026-11-24, flush part RESOLVED (`6dd56602d`)
+
+`ISR_period_us` and `ISR_execution_time_us` in a CANape recording (40 kHz,
+~78 Mbit/s) showed a spike of ~2 us once per ms, smaller bumps and ~1 us of
+period jitter. Measured with `tools/xcp_test/isr_jitter.py` and
+`UZ_ISR_DIAG 1` (`fe3e2fdd1`, R5 cycle counter per ISR section, PMU
+counts, main-loop phase at the interrupt); numbers in STATUS.md, bench run
+2026-11-24.
+
+Causes:
+
+1. **`daq_1ms` event (the 1 ms spike).** A time-slice event with a DAQ
+   list costs about 1 us, plus about 0.1 us per extra ODT entry in a cold
+   cache line. The 23 diagnostic counters of the CANape project sit in 9
+   places (DDR and OCM): +2.2 us every 40th cycle. An empty slice event
+   costs 0.3 us.
+2. **Cache flush with interrupts masked (period jitter).** RESOLVED:
+   `Xil_DCacheFlushRange` masks IRQ/FIQ over the range and its DSB; the
+   main loop flushed the DAQ chain with it in 1 KB pieces, and the ISR
+   started up to 2 us late. The chain is now flushed line by line with
+   interrupts enabled.
+3. **ISR interrupting the DAQ copy (the smaller bumps).** The copy into the
+   OCM leaves write-backs in flight and evicts ISR data. The ISR then has
+   about twice the D-cache misses, and its accesses to the PL wait longer:
+   the BSP maps 0x80000000-0xBFFFFFFF (all PL IP cores) as strongly
+   ordered (`mpu.c`), so every PL access waits until all earlier writes
+   are complete. +0.3 us median, up to +1.5 us.
+
+Open, for a decision:
+
+- Put slow diagnostic counters on `daq_100ms` or `daq_1s`; the spike stays
+  ~2 us but comes 100 or 1000 times less often.
+- The PL range as Device instead of strongly ordered memory. 9.1 us of the
+  16 us ISR are LSU stall cycles; the 15 PWM register writes alone take
+  9.8 us (~650 ns each, each waiting for its write response). Device
+  writes are posted, and Device accesses do not wait for earlier writes to
+  normal memory, which would also remove most of cause 3. Platform-wide
+  change: a PL write is then no longer complete when the next instruction
+  runs, and PL accesses are no longer ordered against normal-memory
+  accesses; whether any IP core driver relies on that has to be checked.
+  Not tried.
+- Remaining start delay: p99 0.5 us, max 1.1 us when the ISR hits the copy
+  (queue lock, timer read behind write-backs); < 0.2 us p99 otherwise.
+
 ## 3. Safety scope — required before live calibration (Z5)
 
 ### 3.1 `DOWNLOAD` could write anywhere in the allow-list — including code

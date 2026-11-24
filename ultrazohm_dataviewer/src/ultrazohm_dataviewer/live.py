@@ -468,6 +468,16 @@ class LiveController:
         self._flash_shutdown = threading.Event()
         self.messages = Queue(maxsize=2000)
 
+    def request_attachment(self, operation, **kwargs):
+        """Return a completion future for an attach/detach request."""
+        from concurrent.futures import Future
+
+        if operation not in ("attach", "detach"):
+            raise ValueError("Expected attach or detach")
+        completion = Future()
+        self.submit(operation, _completion=completion, **kwargs)
+        return completion
+
     def submit(self, operation, **kwargs):
         if self.stop_event.is_set():
             raise RuntimeError("Live controller is closed")
@@ -589,13 +599,15 @@ class LiveController:
             self._command_generation += 1
             while True:
                 try:
-                    _, operation, _ = self.commands.get_nowait()
+                    _, operation, kwargs = self.commands.get_nowait()
                 except Empty:
                     break
                 if operation == "flash":
                     # This request will never reach the worker's finally block.
                     # A dequeued/running flash remains the worker's responsibility.
                     self.flashing = False
+                if completion := kwargs.get("_completion"):
+                    completion.cancel()
 
     def send_stop(self, endpoint=None):
         """Finish an in-flight command before Stop, independently of data reads."""
@@ -1104,7 +1116,10 @@ class LiveController:
                 generation, operation, kwargs = self.commands.get(timeout=self.interval)
             except Empty:
                 continue
+            completion = kwargs.pop("_completion", None)
             if self.stop_event.is_set():
+                if completion is not None:
+                    completion.cancel()
                 break
             if operation is not None:
                 self._error = ""
@@ -1120,9 +1135,18 @@ class LiveController:
                         with self.lock:
                             current = generation == self._command_generation
                         if current and not self.stop_event.is_set():
+                            if (
+                                completion is not None
+                                and not completion.set_running_or_notify_cancel()
+                            ):
+                                continue
                             self._command(operation, kwargs, generation=generation)
+                        elif completion is not None:
+                            completion.cancel()
                     self._error = ""
                 except Exception as exc:
+                    if completion is not None and not completion.done():
+                        completion.set_exception(exc)
                     if operation in ("stop", "shutdown"):
                         self._control_failed(operation, self.endpoint, exc)
                     else:
@@ -1133,6 +1157,8 @@ class LiveController:
                     self._activity = ""
                     self._completed_commands += 1
                     self._publish()
+                    if completion is not None and not completion.done():
+                        completion.set_result(None)
 
     def _poll_work(self):
         """Poll status and samples at a fixed rate while attached, never during Flash UZ."""

@@ -211,14 +211,13 @@ An attached laptop needs none of these firmware-host dependencies.
 
 Use ``xsct -norlwrap`` for direct Linux batch execution. For GUI actions
 through the Tcl entry point, use ``xsct -norlwrap -nodisp`` with an existing
-desktop display. The CLI selects these flags automatically. The Linux Make
+desktop display. ``ultrazohm-cli`` selects these flags automatically. The Linux Make
 targets use the checked XSCT wrapper for batch actions and the native Vitis
 launcher for the GUI. A temporary batch display cannot host a persistent
 Vitis GUI.
 
-Start the service normally over SSH after installing the dependencies; no
-xvfb-run wrapper is necessary. Rebuild the checkout CLI and restart its service
-to pick up launcher changes. Failed generation can leave a partial workspace:
-preserve it before retrying in an empty workspace. Inspect the job output and
-timestamp-matching vitis/workspace/IDE.log; Channel closed alone does not
-identify its cause.
+Start ``ultrazohm-cli`` directly over SSH after installing the dependencies.
+Rebuild the CLI from the checkout and restart the process to pick up launcher
+changes. If generation fails, preserve any partial workspace before retrying
+in an empty workspace. Check the job output and the matching timestamps in
+``vitis/workspace/IDE.log`` to diagnose errors such as ``Channel closed``.

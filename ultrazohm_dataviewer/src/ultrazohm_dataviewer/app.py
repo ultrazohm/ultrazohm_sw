@@ -1,7 +1,7 @@
 """Application entry point and docking layout.
 
-Default layout: Navigation above the Log Browser / Console tabs on the left,
-with plots and analysis in the center. Log Browser is selected at startup.
+Default layout: Navigation / Live Data above Log Browser / Control on the left,
+with plots and analysis above the Application log on the right.
 """
 
 from __future__ import annotations
@@ -30,6 +30,7 @@ except Exception:  # pragma: no cover
 MAIN_DOCK = "MainDockSpace"
 LEFT_DOCK = "LeftSpace"
 LOG_DOCK = "LogBrowserSpace"
+CONSOLE_DOCK = "ApplicationLogSpace"
 
 
 class DataViewerApp:
@@ -109,6 +110,7 @@ class DataViewerApp:
                 self.live.prepare_repository(workspace)
         from .panels.python import PythonPanel
 
+        self.operations.bind_live(self.live)
         self.python_panel = PythonPanel(self)
         # Pending Session-menu file dialogs: (dialog, command_name, is_multi).
         self._session_dialog: tuple = ()
@@ -133,7 +135,7 @@ class DataViewerApp:
         left.initial_dock = MAIN_DOCK
         left.new_dock = LEFT_DOCK
         left.direction = imgui.Dir_.left
-        left.ratio = 0.22
+        left.ratio = 0.30
 
         logs = hello_imgui.DockingSplit()
         logs.initial_dock = LEFT_DOCK
@@ -141,7 +143,13 @@ class DataViewerApp:
         logs.direction = imgui.Dir_.down
         logs.ratio = 0.4
 
-        return [left, logs]
+        console = hello_imgui.DockingSplit()
+        console.initial_dock = MAIN_DOCK
+        console.new_dock = CONSOLE_DOCK
+        console.direction = imgui.Dir_.down
+        console.ratio = 0.4
+
+        return [left, logs, console]
 
     def _dockable_windows(self) -> list[hello_imgui.DockableWindow]:
         nav = hello_imgui.DockableWindow()
@@ -171,7 +179,7 @@ class DataViewerApp:
 
         console = hello_imgui.DockableWindow()
         console.label = "Application log"
-        console.dock_space_name = LOG_DOCK
+        console.dock_space_name = CONSOLE_DOCK
         console.gui_function = lambda: self.state.console.render(self.state)
 
         logs = hello_imgui.DockableWindow()
@@ -616,6 +624,10 @@ class DataViewerApp:
         self._runner_params = params
         params.app_window_params.window_title = "UltraZohm Data Viewer"
         params.app_window_params.window_geometry.size = (1500, 900)
+        params.app_window_params.window_geometry.window_size_state = (
+            hello_imgui.WindowSizeState.maximized
+        )
+        params.app_window_params.restore_previous_geometry = False
         params.imgui_window_params.default_imgui_window_type = (
             hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
         )

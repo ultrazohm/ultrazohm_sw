@@ -20,7 +20,18 @@ from .client import Client, NodeHandle, RunHandle, ViewerError, ViewHandle
 
 
 def __getattr__(name):
-    if name in {"Dataset", "fft", "fft_frame", "kinds", "node", "read"}:
+    if name in {
+        "Dataset",
+        "FftResult",
+        "fft",
+        "fft_frame",
+        "filter",
+        "math",
+        "kinds",
+        "load_plugins",
+        "node",
+        "read",
+    }:
         from . import api
 
         value = getattr(api, name)
@@ -43,4 +54,8 @@ __all__ = [
     "fft_frame",
     "node",
     "kinds",
+    "FftResult",
+    "filter",
+    "math",
+    "load_plugins",
 ]

@@ -11,6 +11,13 @@ from .validation import axis_limits, boolean, bounded_int, display_budget, finit
 
 
 def plot_setup(state):
+    cells = plot_cells_to_list(state, lambda ref: ref[1] if ref else None)
+    workspace = getattr(state, "live_workspace", None)
+    pending = getattr(workspace, "_reconnect_signals", {})
+    for cell, saved in zip(state.cells, cells, strict=True):
+        if recovery := pending.get(id(cell)):
+            _, signals, secondary, xy = recovery
+            saved.update(signals=list(signals), y2=list(secondary), xy_source=xy)
     return {
         "grid": [state.rows, state.cols],
         "row_ratios": list(state.row_ratios),
@@ -18,7 +25,7 @@ def plot_setup(state):
         "link_x": state.link_x,
         "shared_x": state.shared_x,
         "max_points": state.max_points,
-        "cells": plot_cells_to_list(state, lambda ref: ref[1] if ref else None),
+        "cells": cells,
     }
 
 
@@ -105,6 +112,17 @@ def save_startup_profile(workspace):
             if item["name"]
         }
     profile, removed = profile_for_mapping(mapping, saved_profile, assignments)
+    if assignments is not None:
+        # Reconnect may relocate surviving signals when channel capacity shrinks.
+        # An explicit startup save must instead preserve the selected slot numbers.
+        removed = sorted(
+            set(removed)
+            | {
+                name
+                for channel, name in assignments.items()
+                if not 1 <= int(channel) <= mapping["channels"]
+            }
+        )
     if assignments is not None and removed:
         raise ValueError(
             "Cannot save channels absent from the selected firmware mapping: "

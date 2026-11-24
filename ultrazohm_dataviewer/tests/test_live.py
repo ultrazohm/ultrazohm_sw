@@ -254,7 +254,7 @@ def test_live_panels_follow_pause_freeze_and_generation(gui_frame, app_state):
         )
         workspace.pump()
         assert workspace.run.id != run.id
-        assert workspace.state.cells[0].signals == []
+        assert workspace.state.cells[0].signals == [(workspace.run.id, "a")]
     finally:
         workspace.close()
 

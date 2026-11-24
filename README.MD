@@ -22,11 +22,11 @@ Having a common platform enables the active research community to focus on publi
 - More information on [ultrazohm.com](ultrazohm.com)
 - Check the [docs](https://docs.ultrazohm.com/) 
 
-## CLI and Data Viewer
+## ultrazohm-cli and DataViewer
 
 The two applications are `ultrazohm-cli` and `ultrazohm-dataviewer`.
 Python imports use `ultrazohm_cli` and `ultrazohm_dataviewer`.
-Installing the viewer also installs its matching CLI dependency.
+Installing the DataViewer also installs its matching ultrazohm-cli dependency.
 
 ### Python and uv (Linux and Windows)
 
@@ -54,23 +54,24 @@ pip install ultrazohm-cli
 pip install ultrazohm-dataviewer
 ```
 
-The CLI requires Python 3.10+; the viewer requires Python 3.12+.
-Published native CLI wheels support Windows x86-64 and Linux x86-64 (glibc 2.28+).
-GUI use requires a desktop display and graphics libraries. No Rust compiler is
-needed for published wheels. With uv, use `--python 3.12` to select Python explicitly.
+The ultrazohm-cli requires Python 3.10+; the DataViewer requires Python 3.12+.
+Published native ultrazohm-cli wheels support Windows x86-64 and Linux x86-64 (glibc 2.28+).
+GUI use requires a desktop display and graphics libraries.
+No Rust compiler is needed for published wheels.
+With uv, use `--python 3.12` to select Python explicitly.
 Use `--prerelease allow` to include development releases, or `==VERSION` for an exact release.
-A viewer release depends on the CLI with the same version.
+A DataViewer release depends on the ultrazohm-cli with the same version.
 
 ### Windows standalone downloads
 
-GitHub releases provide two ZIPs: `ultrazohm-cli-VERSION-windows-x86_64.zip`
-and `ultrazohm-dataviewer-VERSION-windows-x86_64.zip`.
-Extract the entire archive before running it. Neither needs installed Python or uv.
+GitHub releases provide two ZIPs: `ultrazohm-cli-VERSION-windows-x86_64.zip` and `ultrazohm-dataviewer-VERSION-windows-x86_64.zip`.
+Extract the entire archive before running it.
+Neither needs installed Python or uv.
 
-The CLI ZIP contains `ultrazohm-cli.exe`. The viewer ZIP contains
-`ultrazohm-dataviewer.exe`, its runtime files, `ultrazohm-cli.exe`, and the
-`ultrazohm-dataviewer.ps1` terminal wrapper. Double-click the viewer executable
-for a GUI without a console. From PowerShell:
+The ultrazohm-cli ZIP contains `ultrazohm-cli.exe`.
+The DataViewer ZIP contains `ultrazohm-dataviewer.exe`, its runtime files, `ultrazohm-cli.exe`, and the `ultrazohm-dataviewer.ps1` terminal wrapper.
+Double-click the DataViewer executable for a GUI without a console.
+From PowerShell:
 
 ```powershell
 .\ultrazohm-dataviewer.ps1
@@ -78,18 +79,19 @@ for a GUI without a console. From PowerShell:
 .\ultrazohm-dataviewer.ps1 status
 ```
 
-The wrapper waits for the operation and leaves the calling shell open. With no
-arguments it opens the GUI and waits until it closes. Keep the runtime directory
-beside the executable. Linux uses the published Python wheels; no standalone
-Linux archives are provided. Downloads include `SHA256SUMS`.
+The wrapper waits for the operation and leaves the calling shell open.
+With no arguments it opens the GUI and waits until it closes.
+Keep the runtime directory beside the executable.
+Linux uses the published Python wheels; no standalone Linux archives are provided.
+Downloads include `SHA256SUMS`.
 
-For complete [standalone, launcher, service and Python workflows](docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer_workflows.rst), see the DataViewer tutorials.
+For complete [standalone, launcher, ultrazohm-cli process and Python workflows](docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer_workflows.rst), see the DataViewer tutorials.
 
 ### Published applications
 
-Use `./uz` on Ubuntu or `.\uz.ps1` on Windows. Both bootstrap uv and the
-Python version pinned in `.python-version` when needed. First use requires
-internet access; Ubuntu needs curl or wget to bootstrap uv.
+Use `./uz` on Ubuntu or `.\uz.ps1` on Windows.
+Both bootstrap uv and the Python version pinned in `.python-version` when needed.
+First use requires internet access; Ubuntu needs curl or wget to bootstrap uv.
 
 ```sh
 ./uz dataviewer stable
@@ -99,20 +101,20 @@ internet access; Ubuntu needs curl or wget to bootstrap uv.
 ./uz venv prerelease
 ```
 
-The channel is optional and defaults to `stable`. Stable never silently permits
-prereleases. Application arguments follow the channel, for example
-`./uz dataviewer prerelease -- gui --live-repo /path/to/checkout`.
+The channel is optional and defaults to `stable`.
+Stable never silently permits prereleases.
+Application arguments follow the channel, for example `./uz dataviewer prerelease -- gui --live-repo /path/to/checkout`.
 Applications run through `uv tool run` in isolated cached environments.
-`install` uses `uv tool install` to expose the selected application command on your
-user PATH; follow uv's PATH instructions if needed. These commands never use or
-change the repository `.venv`. DataViewer includes the CLI Python library.
+`install` uses `uv tool install` to expose the selected application command on your user PATH; follow uv's PATH instructions if needed.
+These commands never use or change the repository `.venv`.
+DataViewer includes the ultrazohm-cli Python library.
 
-`venv` opens an activated shell with both published libraries and commands in a
-uv-managed cached environment. Use `python measurement.py`, `ultrazohm-cli`, or
-`ultrazohm-dataviewer` there; use `exit` to return. Multiple shells can share it.
-Extra shell dependencies are declared in root `requirements.txt` and installed
-for all shell modes. Edit that file instead of manually installing into a cached
-environment. It is a dependency list, not an exact version lock.
+`venv` opens an activated shell with both published libraries and commands in a uv-managed cached environment.
+Use `python measurement.py`, `ultrazohm-cli`, or `ultrazohm-dataviewer` there; use `exit` to return.
+Multiple shells can share it.
+Extra shell dependencies are declared in root `requirements.txt` and installed for all shell modes.
+Edit that file instead of manually installing into a cached environment.
+It is a dependency list, not an exact version lock.
 
 ### Local development
 
@@ -127,37 +129,36 @@ python measurement.py
 exit
 ```
 
-On Windows, use `.\uz.ps1 venv dev`. Each invocation builds the local CLI,
-installs the local DataViewer editable and adds `requirements.txt` dependencies
-into its own temporary environment. Rust and a C/C++ toolchain are required.
-Neither application is downloaded from PyPI in dev mode; external dependencies
-and build tools may be downloaded. Open a new dev shell after CLI or dependency
-changes; restart the viewer after Python source changes.
+On Windows, use `.\uz.ps1 venv dev`.
+Each invocation builds the local ultrazohm-cli, installs the local DataViewer editable and adds `requirements.txt` dependencies into its own temporary environment.
+Rust and a C/C++ toolchain are required.
+Neither application is downloaded from PyPI in dev mode; external dependencies and build tools may be downloaded.
+Open a new dev shell after ultrazohm-cli or dependency changes; restart the DataViewer after Python source changes.
 
-Separate dev shells have separate environments. Close their applications before
-exiting: the environment is deleted when its shell exits, including after failure.
-Builds reuse compilation/download caches. Simultaneous builds targeting the same
-shared outputs fail with a retry message; existing shells remain usable.
+Separate dev shells have separate environments.
+Close their applications before exiting: the environment is deleted when its shell exits, including after failure.
+Builds reuse compilation/download caches.
+Simultaneous builds targeting the same shared outputs fail with a retry message; existing shells remain usable.
 No launcher creates, replaces or activates the repository `.venv`.
 
 Host and container environments remain separate, including on Windows.
-Inside the dev container, run `ultrazohm-cli`, `ultrazohm-dataviewer`, or `python`
-directly. Container creation installs local applications into container Python;
-refresh with `bash .devcontainer/post-create.sh`. You may also use
-`./uz venv dev` for a fresh temporary shell inside the container.
+Inside the dev container, run `ultrazohm-cli`, `ultrazohm-dataviewer`, or `python` directly.
+Container creation installs local applications into container Python; refresh with `bash .devcontainer/post-create.sh`.
+You may also use `./uz venv dev` for a fresh temporary shell inside the container.
 The GUI requires display forwarding if run inside the container.
 
-Application installation is independent of firmware selection. For example:
+Application installation is independent of firmware selection.
+For example:
 
 ```sh
 ultrazohm-cli create-json-from-javascope-h --repo /path/to/ultrazohm_sw --output mapping.json
 ultrazohm-dataviewer gui --live-repo /path/to/ultrazohm_sw
 ```
 
-Vitis operations require a firmware checkout and an external Vitis installation. Firmware
-commands normally execute through the selected CLI service, on its machine. Start it
-with `ultrazohm-cli serve --repo PATH`, then use `build`, `flash`, or the viewer's
-Flash UZ action. Offline builds require `build --local --repo PATH`.
+Vitis operations require a firmware checkout and an external Vitis installation.
+Firmware commands normally execute through the selected ultrazohm-cli process, on its machine.
+Start it with `ultrazohm-cli serve --repo PATH`, then use `build`, `flash`, or the DataViewer's Flash UZ action.
+Offline builds require `build --local --repo PATH`.
 See [firmware tooling](ultrazohm_cli/README.md) for job progress and lifecycle details.
 
 ### Building and testing
@@ -174,12 +175,12 @@ Windows also supports `.\uz_developer.ps1 build viewer` and `.\uz_developer.ps1 
 Build/test Python environments are temporary per invocation and cleaned up on exit.
 Build artifacts remain at their documented output paths.
 CI builds each release wheel once and uses those wheels for testing and bundling.
-`--cli-wheel PATH` and `--viewer-wheel PATH` select candidate wheels for viewer checks
-and builds. Paths are relative to the calling terminal.
+`--cli-wheel PATH` and `--viewer-wheel PATH` select candidate wheels for DataViewer checks and builds.
+Paths are relative to the calling terminal.
 
-The devcontainer installs local applications, documentation, and example dependencies
-into container Python. The GUI still needs a display.
-See [CLI usage](ultrazohm_cli/README.md) and [viewer usage](ultrazohm_dataviewer/README.md).
+The devcontainer installs local applications, documentation, and example dependencies into container Python.
+The GUI still needs a display.
+See [ultrazohm-cli usage](ultrazohm_cli/README.md) and [DataViewer usage](ultrazohm_dataviewer/README.md).
 
 ## Research 
 
@@ -206,15 +207,12 @@ We are working on streamlining the contribution process since we aim to welcome 
 
 ### Repository task ownership
 
-`uz` / `uz.ps1` call `uz.py` for published tools. `uz_developer` /
-`uz_developer.ps1` call `uz_developer.py` for local development and dispatch build
-and test commands to each project's `tasks.py`. Both bootstrap uv and Python.
-Fresh local shell installation is owned by `uz_venv.py`;
-`uz_build.py` coordinates shared build outputs;
-`uz_shell.py` only opens an activated shell. Project build helpers and release
-checks remain in each project's `tools/` directory.
-Run launcher/environment tests with
-`python -m unittest test_uz test_uz_developer`.
+`uz` / `uz.ps1` call `uz.py` for published tools.
+`uz_developer` / `uz_developer.ps1` call `uz_developer.py` for local development and dispatch build and test commands to each project's `tasks.py`.
+Both bootstrap uv and Python.
+Fresh local shell installation is owned by `uz_venv.py`; `uz_build.py` coordinates shared build outputs; `uz_shell.py` only opens an activated shell.
+Project build helpers and release checks remain in each project's `tools/` directory.
+Run launcher/environment tests with `python -m unittest test_uz test_uz_developer`.
 
 ## C formatting
 

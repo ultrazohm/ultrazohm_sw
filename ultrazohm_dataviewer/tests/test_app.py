@@ -100,7 +100,7 @@ def test_session_menu_uses_background_transactional_operations(tmp_path, monkeyp
     ],
 )
 def test_detached_windows_supported_platforms(monkeypatch, platform, session, expected):
-    from imgui_bundle import immapp
+    from imgui_bundle import hello_imgui, immapp
 
     monkeypatch.setattr(
         "ultrazohm_dataviewer.plugins.load_plugins", lambda **kwargs: None
@@ -118,6 +118,11 @@ def test_detached_windows_supported_platforms(monkeypatch, platform, session, ex
             monkeypatch.setenv("XDG_SESSION_TYPE", session)
         app.run()
         assert captured[0].imgui_window_params.enable_viewports is expected
+        assert (
+            captured[0].app_window_params.window_geometry.window_size_state
+            == hello_imgui.WindowSizeState.maximized
+        )
+        assert not captured[0].app_window_params.restore_previous_geometry
     finally:
         app._shutdown()
 
@@ -132,10 +137,7 @@ def test_live_panels_are_opt_in(use_live, monkeypatch):
         windows = app._dockable_windows()
         labels = {window.label for window in windows}
         if use_live:
-            assert all(
-                w.is_visible == (w.label not in {"Python", "Application log"})
-                for w in windows
-            )
+            assert all(w.is_visible == (w.label != "Python") for w in windows)
         live_labels = {"Live Data", "Live Plots", "Control"}
         assert "Python" in labels
         assert labels & live_labels == (live_labels if use_live else set())

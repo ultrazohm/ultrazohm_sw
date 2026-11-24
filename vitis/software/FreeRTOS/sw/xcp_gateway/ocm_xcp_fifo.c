@@ -171,9 +171,23 @@ static volatile size_t cto_frame_addr = XCP_OUT_CTO_FRAME_ADDR;
 #define XCP_WRITE_CTO_RESERVE 0u
 #endif
 
-/* R5: largest piece of the chain flushed with interrupts masked (see
- * ocm_xcp_fifo_cache_flush_after_write). A multiple of the 32-byte line. */
-#define XCP_OUT_FLUSH_CHUNK 1024u
+#ifdef OCM_XCP_RPU
+/* Write the lines of [a, end) back to the OCM and drop them from the R5 data
+ * cache (clean + invalidate to the point of coherency, what
+ * Xil_DCacheFlushRange() does) WITHOUT masking interrupts.
+ * Xil_DCacheFlushRange() masks IRQ/FIQ over the whole range and its final
+ * DSB; on the DAQ chain, flushed by the main loop underneath the control ISR,
+ * that delayed the ISR start by up to 2 us even in 1 KB pieces (bench
+ * 2026-11-24, tools/xcp_test/isr_jitter.py). The control ISR never touches
+ * XCP_OUT, so it may run between two lines. The DSB completes the write-back
+ * before the caller publishes a sequence word. */
+static void ocm_xcp_flush_range_irq_on(size_t a, size_t end) {
+    for (a &= ~(size_t)31u; a < end; a += 32u) {
+        __asm__ volatile("mcr p15, 0, %0, c7, c14, 1" ::"r"(a) : "memory"); /* DCCIMVAC */
+    }
+    __asm__ volatile("dsb" ::: "memory");
+}
+#endif
 
 #define XCP_FRAME_PID_OFFSET 4u   /* [0..1] len, [2..3] ctr, [4] = XCP PID */
 #define XCP_FRAME_PID_CTO_MIN 0xFCu
@@ -234,22 +248,9 @@ void ocm_xcp_fifo_cache_flush_after_write(void) {
     /* Publish order matters: payload first, sequence word last. A reader that
      * sees the new (even) cycle_seq must also see the chain content it
      * describes; flushing the header before the chain would break that.
-     * The chain is flushed in 1 KB pieces: Xil_DCacheFlushRange() masks
-     * IRQ/FIQ for the whole range it is given, and this runs in the main
-     * loop underneath the control ISR - one 32 KB call would hold the ISR
-     * off for the entire window. */
-    {
-        size_t a = addr_w_start;
-        const size_t end = addr_w + 4u;
-        while (a < end) {
-            size_t n = end - a;
-            if (n > XCP_OUT_FLUSH_CHUNK) {
-                n = XCP_OUT_FLUSH_CHUNK;
-            }
-            Xil_DCacheFlushRange(a, n);
-            a += n;
-        }
-    }
+     * The chain (up to 32 KB) is flushed with interrupts enabled, see
+     * ocm_xcp_flush_range_irq_on(). */
+    ocm_xcp_flush_range_irq_on(addr_w_start, addr_w + 4u);
     if (chain_seq_publish) {
         /* The chain bytes are in the OCM (the flush above ends with a DSB):
          * only now may the chain become valid. */

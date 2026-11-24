@@ -60,7 +60,7 @@ class DeveloperTest(unittest.TestCase):
                 uz_venv.development_shell(root, run)
                 uz_venv.development_shell(root, run)
                 self.assertEqual(run.call_count, 2)
-                run.assert_called_with([python, root / "uz_shell.py"])
+                run.assert_called_with([python.resolve(), root / "uz_shell.py"])
                 self.assertTrue(python.exists())
 
     def test_shell_requires_build(self):

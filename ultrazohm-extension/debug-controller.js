@@ -27,7 +27,8 @@ function controller(context, refresh) {
     if (!fs.existsSync(adapter)) throw new Error('Microsoft C/C++ debug adapter is missing. Reinstall that extension.');
     return { ...toolsForDebug(xsct, config), adapter };
   }
-  async function attach({ root, scope, tools, env, python, atMain = false }) {
+  async function attach({ root, scope, tools, env, python, atMain = false, report = () => {} }) {
+    report('Checking firmware files and hardware server.');
     if (active()) throw new Error('Disconnect the existing UltraZohm debugger sessions first.');
     // Check both ELFs before starting a hardware server or attaching either core.
     tools.cores.forEach(core => configuration(core, root, 1));
@@ -40,6 +41,7 @@ function controller(context, refresh) {
       task.presentationOptions = { reveal: vscode.TaskRevealKind.Always, focus: false, panel: vscode.TaskPanelKind.Dedicated };
       await vscode.tasks.executeTask(task);
     }
+    report('Waiting for hw_server GDB ports 3000/3001.');
     const deadline = Date.now() + 15000;
     while (!(await portInUse('127.0.0.1:3000')) || !(await portInUse('127.0.0.1:3001'))) {
       if (Date.now() > deadline) throw new Error('hw_server GDB ports 3000/3001 are unavailable. Check the Hardware Server terminal and close other debuggers.');
@@ -47,10 +49,14 @@ function controller(context, refresh) {
     }
     environments.set(root, { python, env, adapter: tools.adapter });
     const configs = [];
-    for (const core of tools.cores) configs.push(configuration(core, root, processorId(await processors(core.port), core.id)));
+    for (const core of tools.cores) {
+      report(`Querying ${core.id} processors on port ${core.port}.`);
+      configs.push(configuration(core, root, processorId(await processors(core.port), core.id)));
+    }
     const started = [];
     try {
       for (const config of configs) {
+        report(`Starting ${config.name} debugger.`);
         if (!await vscode.debug.startDebugging(scope, config)) throw new Error(`Could not attach ${config.name}. See the Debug Console.`);
         const session = [...sessions.values()].find(s => s.configuration.ultrazohmRepository === root && s.configuration.ultrazohmCore === config.ultrazohmCore);
         if (!session) throw new Error(`The ${config.name} debugger did not start.`);
@@ -60,6 +66,7 @@ function controller(context, refresh) {
         // Verify the handoff too: an unexpected adapter resume must not be
         // reported as successful stop-at-main debugging.
         for (const session of started) {
+          report(`Verifying ${session.name} is stopped at main.`);
           let frame;
           const end = Date.now() + 10000;
           while (Date.now() < end) {
@@ -74,6 +81,7 @@ function controller(context, refresh) {
           if (!frame || !/^main(?:\b|\()/u.test(frame.name)) throw new Error(`${session.name} is not confirmed stopped in main. Keep the sessions open and inspect the Debug Console.`);
         }
       }
+      report('Both debugger sessions are attached.');
       await vscode.window.showInformationMessage(atMain
         ? 'R5 and A53 are stopped at main. Select each session in Run and Debug and press Continue to resume that core. Reconnect the CLI/DataViewer after both cores are running.'
         : 'Attached to R5 and A53. Select each session in Run and Debug to inspect or resume that core.');

@@ -4,12 +4,13 @@ The remote target is already programmed. Custom GDB launch commands give us a
 paused connection; DAP's default launch teardown would otherwise kill it.
 """
 import json
+import os
 import subprocess
 import sys
 import threading
 
 
-def forward_requests(source, destination):
+def messages(source):
     while True:
         header = source.readline()
         if not header:
@@ -25,24 +26,73 @@ def forward_requests(source, destination):
         body = source.read(length)
         if len(body) != length:
             return
-        message = json.loads(body)
+        yield json.loads(body)
+
+
+def write_message(destination, message):
+    body = json.dumps(message).encode('utf-8')
+    destination.write(b'Content-Length: ' + str(len(body)).encode('ascii') + b'\r\n\r\n' + body)
+    destination.flush()
+
+
+def foreign_source(source, root, core):
+    """Only exclude files known to belong exclusively to the other application."""
+    if not source or not root or core not in ('R5', 'A53'):
+        return False
+    other = 'FreeRTOS' if core == 'R5' else 'Baremetal'
+    canonical = lambda value: os.path.normcase(os.path.realpath(value))
+    source = canonical(source)
+    for directory in ('software', 'workspace'):
+        prefix = canonical(os.path.join(root, 'vitis', directory, other))
+        if source.startswith(prefix + os.sep):
+            return True
+    return False
+
+
+def forward_requests(source, destination, respond=None):
+    root = core = None
+    for message in messages(source):
         if message.get('type') == 'request':
-            if message.get('command') == 'initialize':
-                message.setdefault('arguments', {})['adapterID'] = 'cppdbg'
-            elif message.get('command') == 'launch':
-                message.setdefault('arguments', {})['type'] = 'cppdbg'
-            elif message.get('command') == 'disconnect':
-                message.setdefault('arguments', {})['terminateDebuggee'] = False
-        body = json.dumps(message).encode('utf-8')
-        destination.write(b'Content-Length: ' + str(len(body)).encode('ascii') + b'\r\n\r\n' + body)
-        destination.flush()
+            command = message.get('command')
+            args = message.setdefault('arguments', {})
+            if command == 'initialize':
+                args['adapterID'] = 'cppdbg'
+            elif command == 'launch':
+                root = args.get('ultrazohmRepository')
+                core = args.get('ultrazohmCore')
+                args['type'] = 'cppdbg'
+            elif command == 'disconnect':
+                args['terminateDebuggee'] = False
+            elif command == 'setBreakpoints' and respond is not None:
+                if foreign_source(args.get('source', {}).get('path'), root, core):
+                    # Do not even forward an empty request: GDB may match the
+                    # basename and remove this core's legitimate breakpoints.
+                    respond({'type': 'response', 'request_seq': message['seq'],
+                             'command': command, 'success': True,
+                             'body': {'breakpoints': [
+                                 {'verified': False, 'line': bp.get('line'),
+                                  'message': 'Source belongs to the other UltraZohm core.'}
+                                 for bp in args.get('breakpoints', [])]}})
+                    continue
+        write_message(destination, message)
 
 
 def main():
     adapter = subprocess.Popen([sys.argv[1]], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=sys.stderr.buffer)
+    output_lock = threading.Lock()
+    sequence = 0
+    def respond(message):
+        nonlocal sequence
+        with output_lock:
+            # Preserve adapter sequence IDs (VS Code may reply to its requests).
+            # Synthetic responses use a separate range.
+            if 'seq' not in message:
+                sequence -= 1
+                message['seq'] = sequence
+            write_message(sys.stdout.buffer, message)
     def incoming():
         try:
-            forward_requests(sys.stdin.buffer, adapter.stdin)
+            forward_requests(sys.stdin.buffer, adapter.stdin, respond)
         except (OSError, ValueError) as error:
             print('UltraZohm debugger: ' + str(error), file=sys.stderr)
         finally:
@@ -50,9 +100,8 @@ def main():
     thread = threading.Thread(target=incoming, daemon=True)
     thread.start()
     try:
-        while data := adapter.stdout.read1(65536):
-            sys.stdout.buffer.write(data)
-            sys.stdout.buffer.flush()
+        for message in messages(adapter.stdout):
+            respond(message)
         return adapter.wait()
     finally:
         if adapter.poll() is None:

@@ -32,7 +32,8 @@ function setup(mode = 'visible') {
       registerTreeDataProvider: (id, provider) => { events.providers[id] = provider; return disposable; },
       registerFileDecorationProvider: provider => { events.decorations = provider; return disposable; },
       onDidChangeWindowState: () => disposable, terminals: [],
-      withProgress: async (_, task) => task(),
+      createOutputChannel: () => ({ appendLine() {}, show() {}, dispose() {} }),
+      withProgress: async (_, task) => task({ report() {} }),
       showWarningMessage: async (...args) => { state.confirmations.push(args); return typeof state.confirmation === 'function' ? state.confirmation() : state.confirmation; },
       showOpenDialog: async () => state.picked,
       showQuickPick: async () => state.quickPick, showErrorMessage: m => errors.push(m),
@@ -296,8 +297,25 @@ test('Debug starts a capable CLI, requests service-managed programming and attac
  const task=s.tasks()[1];assert(task.execution.args.includes('--debug-config'));
  assert.equal(task.execution.args.at(-1),'/private/debug/bridge.json');
  assert.equal(s.state.attaches.length,0);
+ // VS Code may reconstruct task objects; correlate the serialized run ID.
+ await s.events.taskEnd({execution:{task:JSON.parse(JSON.stringify(task))},exitCode:0});
  await s.events.taskEnd({execution:s.v.tasks.taskExecutions[1],exitCode:0});
  assert.equal(s.state.attaches.length,1);assert.equal(s.state.attaches[0].atMain,true);
+});
+test('Debug completion before executeTask resolves attaches once and ignores unrelated tasks', async () => {
+ const s=setup();s.state.xsct={path:'/Vitis/xsct'};s.state.capabilities={repo:true,xsct:true,noReconnect:true};s.state.confirmation='Debug';
+ const execute=s.v.tasks.executeTask;
+ s.v.tasks.executeTask=async task=>{
+  const execution=await execute(task);
+  if(task.definition.operation==='debug') {
+   await s.events.taskEnd({execution:{task:{definition:{debugRun:'another-run'}}},exitCode:0});
+   assert.equal(s.state.attaches.length,0);
+   await s.events.taskEnd({execution:{task:JSON.parse(JSON.stringify(task))},exitCode:0});
+  }
+  return execution;
+ };
+ await s.run('debug');
+ assert.deepEqual(s.errors,[]);assert.equal(s.state.attaches.length,1);
 });
 test('failed/cancelled Debug never attaches, and an external service is not replaced', async () => {
  for (const code of [1,undefined]) {

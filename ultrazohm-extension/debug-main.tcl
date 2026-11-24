@@ -27,20 +27,22 @@ proc ::con {args} {
     set file $::uz_debug::pending
     set ::uz_debug::pending ""
     set bp [bpadd -addr &main -type hw]
-    try {
+    # Vitis 2022.2 uses Tcl 8.5, which has no try/finally command.
+    set code [catch {
         ::uz_debug::original_con -block -timeout 30
         set at_main [dict values [print -dict {((unsigned long)$pc & ~1) == ((unsigned long)&main & ~1)}]]
         if {[llength $at_main] != 1 || [lindex $at_main 0] ni {1 true}} {
             error "$file stopped outside main; Debug cancelled"
         }
-        lappend ::uz_debug::stopped $file
-        puts "UltraZohm Debug: $file stopped at main; waiting for VS Code."
-    } on error {message options} {
-        catch {stop}
-        return -options $options $message
-    } finally {
-        bpremove $bp
-    }
+    } message options]
+    if {$code != 0} { catch {stop} }
+    # Always remove our temporary breakpoint. Preserve the original resume/PC
+    # failure if cleanup also fails, and do not confirm a stop after either error.
+    set cleanup_code [catch {bpremove $bp} cleanup_message cleanup_options]
+    if {$code != 0} { return -options $options $message }
+    if {$cleanup_code != 0} { return -options $cleanup_options $cleanup_message }
+    lappend ::uz_debug::stopped $file
+    puts "UltraZohm Debug: $file stopped at main; waiting for VS Code."
 }
 proc ::exit {{code 0}} {
     if {$code == 0} {

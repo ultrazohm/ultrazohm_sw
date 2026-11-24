@@ -26,6 +26,38 @@ test('hw_server processor query handles split packets, verifies checksums and ne
   assert(!requests.join('').match(/vAttach|vCont|qRcmd,7265736574/));
  } finally { await new Promise(resolve=>server.close(resolve)); }
 });
+test('Vitis monitor ps accepts final hex output without waiting for OK', async () => {
+ const captured='313a20436f727465782d52352023302028486172647761726520427265616b706f696e74290a';
+ for (const prefix of ['', '2: Cortex-R5 #1 (Reset)\n']) {
+  const server=net.createServer(socket=>socket.on('data',data=>{
+   const request=data.toString();
+   if(request.includes('qSupported:')) socket.write('+'+packet('PacketSize=4000'));
+   else if(request.includes('qRcmd,7073')) {
+    const response=(prefix ? packet('O'+Buffer.from(prefix).toString('hex')) : '')+packet(captured);
+    socket.write('+'+response.slice(0,7));
+    setImmediate(()=>socket.write(response.slice(7)));
+    // No OK or EOF: the hex output itself completes the command.
+   }
+  }));
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  try {
+   const list=await processors(server.address().port);
+   assert.equal(list,prefix+'1: Cortex-R5 #0 (Hardware Breakpoint)\n');
+   assert.equal(processorId(list,'R5'),1);
+  } finally { await new Promise(resolve=>server.close(resolve)); }
+ }
+});
+test('monitor ps rejects error, malformed hex and corrupt checksum replies', async () => {
+ for(const response of [packet('E01'),packet('313'),packet('31zz'),packet(''), '$313a#00']) {
+  const server=net.createServer(socket=>socket.on('data',data=>{
+   if(data.toString().includes('qSupported:')) socket.write('+'+packet('PacketSize=4000'));
+   else if(data.toString().includes('qRcmd,7073')) socket.write('+'+response);
+  }));
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  try { await assert.rejects(processors(server.address().port),/does not support monitor ps|checksum/); }
+  finally { await new Promise(resolve=>server.close(resolve)); }
+ }
+});
 test('ambiguous/missing processors are rejected instead of selecting the first board',()=>{
  assert.throws(()=>processorId('1: Cortex-A53 #0 (Stopped)\n5: Cortex-A53 #0 (Running)','A53'),/found 2/);
  assert.throws(()=>processorId('1: Cortex-A53 #1','A53'),/found 0/);

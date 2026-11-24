@@ -1,6 +1,7 @@
 const vscode = require('vscode');
 const fs = require('node:fs');
 const path = require('node:path');
+const { randomUUID } = require('node:crypto');
 const { environment } = require('./runtime-env');
 const { resolveXsct, saveXsct } = require('./tools');
 const { portInUse } = require('./service');
@@ -24,6 +25,9 @@ const actions = {
 
 function activate(context) {
   const pending = new Map();
+  const debugOutput = vscode.window.createOutputChannel('UltraZohm Debug');
+  context.subscriptions.push(debugOutput);
+  const logDebug = message => debugOutput.appendLine(`${new Date().toISOString()} ${message}`);
   const changed = new vscode.EventEmitter();
   const debuggerControl = controller(context, () => changed.fire());
   let watcher;
@@ -272,8 +276,14 @@ function activate(context) {
       if (key === 'debug' || key === 'attach') debugTools = await debuggerControl.prepare(xsct, config());
       if (key === 'attach') {
         const choice = await vscode.window.showWarningMessage('Attach to UltraZohm?', { modal: true, detail: 'Connect debuggers to R5 and A53 without building or programming. The cores may pause. Use the ELF files from the exact firmware currently running on the board. Stop acquisition first and use a safe hardware state.' }, 'Attach');
-        if (choice === 'Attach') await debuggerControl.attach({ root, scope, tools: debugTools, env, python: env.UZ_BUNDLED_PYTHON });
+        if (choice === 'Attach') await attachDebugger(false);
         return;
+      }
+      async function attachDebugger(atMain) {
+        debugOutput.show(true);
+        return vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title: 'Attaching UltraZohm debuggers…' },
+          progress => debuggerControl.attach({ root, scope, tools: debugTools, env, python: env.UZ_BUNDLED_PYTHON, atMain,
+            report: message => { logDebug(message); progress.report({ message }); } }));
       }
       let capabilities;
       let debugBridge;
@@ -320,25 +330,33 @@ function activate(context) {
         if (key === 'debug') args.push('--debug-config', cliTask.definition.debugBridge);
       } else args = ['cli', selected, '--', key, ...(capabilities.local ? ['--local'] : []), '--repo', root];
       const invocation = key === 'updatePackages' || key === 'flash' || key === 'debug' ? args : invoke(args);
-      const task = new vscode.Task({ type: 'ultrazohm', action: action.group, operation: key, repository: identity, launcherSource: source, ...(debugBridge ? { debugBridge: debugBridge.config, cliEndpoint: endpoint(), debugXsct: xsct.path } : {}) }, scope,
+      const debugRun = key === 'debug' ? randomUUID() : undefined;
+      const task = new vscode.Task({ ...(debugRun ? { debugRun } : {}), type: 'ultrazohm', action: action.group, operation: key, repository: identity, launcherSource: source, ...(debugBridge ? { debugBridge: debugBridge.config, cliEndpoint: endpoint(), debugXsct: xsct.path } : {}) }, scope,
         action.name, 'UltraZohm', new vscode.ProcessExecution(key === 'flash' || key === 'debug' ? path.join(base, 'bin', windows ? 'uv.exe' : 'uv') : executable, invocation, { cwd, env }), []);
       task.presentationOptions = { reveal: show ? vscode.TaskRevealKind.Always : vscode.TaskRevealKind.Never,
         focus: show, panel: vscode.TaskPanelKind.Dedicated, close: false };
       if (key === 'debug') {
         // The CLI owns the accepted job; attach only after its monitor confirms
         // success and the XSCT wrapper confirms both stops at main.
-        let execution;
+        let completed = false;
+        logDebug(`Debug ${debugRun}: starting programming task for ${root}.`);
         const listener = vscode.tasks.onDidEndTaskProcess(async event => {
-          if (event.execution !== execution) return;
+          if (completed || event.execution.task.definition.debugRun !== debugRun) return;
+          completed = true;
           listener.dispose();
-          if (event.exitCode !== 0) return;
+          logDebug(`Debug ${debugRun}: programming task exited with ${event.exitCode}.`);
+          if (event.exitCode !== 0) {
+            debugOutput.show(true);
+            vscode.window.showErrorMessage('UltraZohm: Debug programming did not complete successfully. See its task terminal.');
+            return;
+          }
           pending.set(token, action.name);
-          try { await debuggerControl.attach({ root, scope, tools: debugTools, env, python: env.UZ_BUNDLED_PYTHON, atMain: true }); }
-          catch (error) { vscode.window.showErrorMessage('UltraZohm: ' + error.message); }
+          try { await attachDebugger(true); }
+          catch (error) { logDebug(error.stack || error.message); debugOutput.show(true); vscode.window.showErrorMessage('UltraZohm: ' + error.message); }
           finally { pending.delete(token); refresh(); }
         });
         context.subscriptions.push(listener);
-        try { execution = await vscode.tasks.executeTask(task); } catch (error) { listener.dispose(); throw error; }
+        try { await vscode.tasks.executeTask(task); } catch (error) { listener.dispose(); throw error; }
       } else await vscode.tasks.executeTask(task);
     } finally { pending.delete(token); refresh(); }
   });

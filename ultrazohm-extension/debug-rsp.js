@@ -38,7 +38,12 @@ function processors(port, timeout = 5000) {
         }
         if (payload === 'OK') return finish();
         if (/^O(?:[0-9a-f]{2})*$/i.test(payload)) output += Buffer.from(payload.slice(1), 'hex').toString('utf8');
-        else return finish(new Error('hw_server does not support monitor ps: ' + payload));
+        else if (/^(?:[0-9a-f]{2})+$/i.test(payload)) {
+          // qRcmd may return a final hex-encoded OUTPUT response instead of
+          // intermediate O packets followed by OK (Vitis 2022.2 uses this).
+          output += Buffer.from(payload, 'hex').toString('utf8');
+          return finish();
+        } else return finish(new Error('hw_server does not support monitor ps: ' + payload));
       }
     });
   });

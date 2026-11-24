@@ -25,6 +25,14 @@ const { runTests } = require('@vscode/test-electron');
     extensionDevelopmentPath: extension,
     extensionTestsPath: testPath, launchArgs,
   }); } finally { fs.rmSync(testDirectory, { recursive: true, force: true }); }
-  assert.equal(JSON.parse(fs.readFileSync(path.join(workspace, 'host-smoke-result.json'))).passed, true);
+  const result = JSON.parse(fs.readFileSync(path.join(workspace, 'host-smoke-result.json')));
+  assert.equal(result.passed, true);
+  console.log(`Verified VS Code ${result.vscodeVersion}`);
+  if (process.env.UZ_TEST_RECEIPT) {
+    const receiptPath = path.resolve(process.env.UZ_TEST_RECEIPT);
+    const receipt = JSON.parse(fs.readFileSync(receiptPath));
+    receipt.vscode_tests = [...new Set([...(receipt.vscode_tests || []), result.vscodeVersion])];
+    fs.writeFileSync(receiptPath, JSON.stringify(receipt, null, 2) + '\n');
+  }
   console.log('Packaged extension host smoke test passed.');
 })().catch(error => { console.error(error); process.exitCode = 1; });

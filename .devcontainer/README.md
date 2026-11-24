@@ -17,3 +17,36 @@ configuration, preferences and owned service processes. A separate pinned
 manylinux image verifies the Linux wheel on glibc 2.28. Release artifact validation
 depends on this compatibility check as well as the existing Linux/Windows tests.
 Use workflow dispatch with `publish_prerelease=false` for validation-only runs.
+
+The shared `ci` stage also includes Node/npm, Tcl, zstd, Xvfb and Electron system
+libraries for extension packaging and tests. Node's source image is digest-pinned.
+The reusable image workflow returns an immutable repository digest for CI jobs.
+The `dev` stage inherits these tools, so rebuild/reopen the dev container after
+Dockerfile changes and run the same Make targets that CI uses:
+
+```sh
+make                                      # Package Linux and Windows VSIXs
+make extension-build TARGET=linux-x64      # Package one target
+make extension-test                       # Linux package + runtime/VS Code tests
+```
+
+Run from `ultrazohm-extension/` (or use `make -C ultrazohm-extension` from the
+repository root). Make calls the Python build driver directly; it
+never launches Docker, detects containers, or installs host tools. VS Code starts
+the dev container, and GitHub Actions starts the CI container. Windows developers
+use the same commands inside the Linux dev container. Windows execution tests
+still require a native Windows runner.
+
+The dev image adds tools and is built locally; sharing a Dockerfile does not
+promise byte-identical image rebuilds. To reproduce a CI environment exactly,
+start the published digest reported by the CI image job and run the same Make
+target inside it. For an unpublished Dockerfile change, a local test is:
+
+```sh
+docker build --target ci -t ultrazohm-ci-local .devcontainer
+docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp \
+  -v "$PWD:/work" -w /work/ultrazohm-extension ultrazohm-ci-local make
+```
+
+Only this external setup uses Docker. The Make targets assume a prepared
+environment. No Docker socket is needed inside the dev or CI container.

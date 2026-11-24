@@ -15,3 +15,7 @@ RELEASING.md
 **/__pycache__/**
 .gitattributes
 .host-tests/**
+
+.build-cache/**
+
+Makefile

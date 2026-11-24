@@ -64,7 +64,9 @@ Application code always comes from PyPI. `venv dev`, user-command installation, 
 
 ## Build and test
 
-Use Node 22+ and Python 3.14+ in `ultrazohm-extension/` (build tools are not required by extension users):
+Rebuild/reopen the dev container, then run `make` from `ultrazohm-extension/` inside it to package both platforms, or `make extension-test` for Linux verification. Linux CI calls the same Make targets inside the shared image. Make assumes the tools are installed and never launches Docker. See [RELEASING.md](RELEASING.md#container-build-workflow) for Windows and CI migration details.
+
+For a direct native build, use Node 22+ and Python 3.14+ (or Python 3.12 with zstd) in `ultrazohm-extension/` (build tools are not required by extension users):
 
 ```sh
 npm ci

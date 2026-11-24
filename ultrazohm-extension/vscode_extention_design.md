@@ -397,3 +397,25 @@ For devcontainers, launch the GUI on the desktop and run build/test tasks in the
 
 
 </details>
+
+
+## Shared container build and release implementation
+
+The extension reuses `.devcontainer/Dockerfile`'s `ci` stage and the existing
+input-hashed GHCR image workflow. The dev container and Linux CI run the same
+`ultrazohm-extension/Makefile` (run from that directory): `make` packages both platforms, `make extension-build TARGET=...`
+packages one, and `make extension-test` builds and verifies Linux. Make calls the
+Python driver directly and assumes a prepared environment. VS Code or GitHub
+Actions starts the container; there are no host build wrappers or nested Docker
+calls. Isolated source snapshots include current edits and avoid changing the
+checkout. Runtime pins and npm lockfiles remain authoritative.
+
+Linux can package both targets, but Windows must verify its own runtime and
+VS Code behavior natively. During migration, native Windows packaging remains
+the release source, with a separate required check for Linux-produced Windows
+VSIXs. Remove that duplicate packaging only after the gate passes in CI.
+
+Publication preserves main stable/develop prerelease and explicit feature
+prerelease dispatch. GitHub retries verify existing bytes; Marketplace uploads
+the tested packages and separately reports public availability for both targets.
+See `ultrazohm-extension/RELEASING.md` for commands and operational details.

@@ -5,6 +5,9 @@ on:
   push:
     branches: [main, develop, feature/vscode-extension]
     paths:
+      - '.devcontainer/**'
+      - '.github/workflows/ci-image.yml'
+      - '.gitattributes'
       - 'ultrazohm-extension/**'
       - 'uz'
       - 'uz.ps1'
@@ -19,6 +22,9 @@ on:
       - '.github/workflows/ultrazohm-extension.yml'
   pull_request:
     paths:
+      - '.devcontainer/**'
+      - '.github/workflows/ci-image.yml'
+      - '.gitattributes'
       - 'ultrazohm-extension/**'
       - 'uz'
       - 'uz.ps1'
@@ -55,14 +61,59 @@ env:
   UZ_EXTENSION_PUBLISH_PRERELEASE: ${{ inputs.publish_prerelease }}
 
 jobs:
-  build:
+  image:
+    uses: ./.github/workflows/ci-image.yml
+    permissions:
+      contents: read
+      packages: write
+
+  package_cross_windows:
+    needs: image
+    runs-on: ubuntu-22.04
+    container:
+      image: ${{ needs.image.outputs.image }}
+    env:
+      UZ_BUILD_IMAGE: ${{ needs.image.outputs.image }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - run: make extension-build TARGET=win32-x64
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: cross-win32-x64
+          path: ultrazohm-extension/dist/*.vsix
+          if-no-files-found: error
+
+  build_linux:
+    name: Build and test (linux-x64)
+    needs: image
+    runs-on: ubuntu-22.04
+    container:
+      image: ${{ needs.image.outputs.image }}
+    env:
+      UZ_BUILD_IMAGE: ${{ needs.image.outputs.image }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          lfs: false
+      - name: Package and verify in isolated build directory
+        run: make extension-test
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ultrazohm-extension-linux-x64
+          path: ultrazohm-extension/dist/*
+          if-no-files-found: error
+          retention-days: 14
+
+  build_windows:
     name: Build and test (${{ matrix.target }})
     strategy:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-22.04
-            target: linux-x64
           - os: windows-2022
             target: win32-x64
     runs-on: ${{ matrix.os }}
@@ -85,9 +136,6 @@ jobs:
         run: python tools/release.py metadata --stamp >> "$GITHUB_OUTPUT"
       - run: npm ci
       - run: npm run check
-      - name: Install Tcl for programming-wrapper tests
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y tcl
       - run: npm test
       - run: python -m unittest discover -s tools -p "test_*.py"
       - run: python -m unittest discover -s .. -p "test_uz_shell.py"
@@ -120,14 +168,14 @@ jobs:
         env:
           VSCODE_TEST_VERSION: '1.93.0'
           UZ_EXTENSION_TEST_PATH: .package-test/extension
-        run: |
-          if [[ "$RUNNER_OS" == Linux ]]; then xvfb-run -a npm run test:host; else npm run test:host; fi
+          UZ_TEST_RECEIPT: dist/ultrazohm-extension-${{ matrix.target }}-${{ steps.meta.outputs.version }}.json
+        run: npm run test:host
       - name: Test packaged extension (stable VS Code)
         env:
           VSCODE_TEST_VERSION: stable
           UZ_EXTENSION_TEST_PATH: .package-test/extension
-        run: |
-          if [[ "$RUNNER_OS" == Linux ]]; then xvfb-run -a npm run test:host; else npm run test:host; fi
+          UZ_TEST_RECEIPT: dist/ultrazohm-extension-${{ matrix.target }}-${{ steps.meta.outputs.version }}.json
+        run: npm run test:host
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ultrazohm-extension-${{ matrix.target }}
@@ -135,9 +183,69 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  verify_cross_windows:
+    name: Verify Linux-produced Windows VSIX
+    needs: [package_cross_windows, image]
+    env:
+      UZ_BUILD_IMAGE: ${{ needs.image.outputs.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-2022
+            target: win32-x64
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          lfs: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22.23.5'
+          cache: npm
+          cache-dependency-path: ultrazohm-extension/package-lock.json
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.14'
+      - name: Stamp version for this workflow run
+        id: meta
+        run: python tools/release.py metadata --stamp >> "$GITHUB_OUTPUT"
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+      - run: python -m unittest discover -s tools -p "test_*.py"
+      - run: python -m unittest discover -s .. -p "test_uz_shell.py"
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+        with:
+          name: cross-win32-x64
+          path: ultrazohm-extension/dist
+      - name: Verify runtime and published command contracts
+        env:
+          TARGET: ${{ matrix.target }}
+          VERSION: ${{ steps.meta.outputs.version }}
+          PRE_RELEASE: ${{ steps.meta.outputs.prerelease }}
+        run: |
+          channel=stable
+          if [[ "$PRE_RELEASE" == true ]]; then channel=prerelease; fi
+          python tools/release.py verify --target "$TARGET" --vsix "dist/ultrazohm-extension-$TARGET-$VERSION.vsix" --extract .package-test --smoke-channel "$channel"
+      - name: Test packaged extension (minimum supported VS Code)
+        env:
+          VSCODE_TEST_VERSION: '1.93.0'
+          UZ_EXTENSION_TEST_PATH: .package-test/extension
+          UZ_TEST_RECEIPT: dist/ultrazohm-extension-${{ matrix.target }}-${{ steps.meta.outputs.version }}.json
+        run: npm run test:host
+      - name: Test packaged extension (stable VS Code)
+        env:
+          VSCODE_TEST_VERSION: stable
+          UZ_EXTENSION_TEST_PATH: .package-test/extension
+          UZ_TEST_RECEIPT: dist/ultrazohm-extension-${{ matrix.target }}-${{ steps.meta.outputs.version }}.json
+        run: npm run test:host
+
   release:
     name: GitHub Release
-    needs: build
+    needs: [build_linux, build_windows, verify_cross_windows]
     if: >-
       github.repository == 'ultrazohm/ultrazohm_sw' &&
       ((github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')) ||
@@ -169,12 +277,7 @@ jobs:
           TAG: ${{ steps.meta.outputs.tag }}
           VERSION: ${{ steps.meta.outputs.version }}
           PRE_RELEASE: ${{ steps.meta.outputs.prerelease }}
-        run: |
-          flags=()
-          if [[ "$PRE_RELEASE" == true ]]; then flags+=(--prerelease); fi
-          # Create the draft with both assets, then publish. Never replace published assets.
-          gh release create "$TAG" --target "$GITHUB_SHA" --latest=false --draft "${flags[@]}" --title "ultrazohm-extension $VERSION" --notes-file dist/release-notes.md dist/*.vsix dist/SHA256SUMS dist/release-manifest.json
-          gh release edit "$TAG" --draft=false
+        run: python tools/publish-release.py
 
   marketplace:
     name: VS Code Marketplace
@@ -219,3 +322,6 @@ jobs:
           # Upload the tested VSIXs; do not package again during publishing.
           # A failed job can be retried if one platform was already accepted.
           npx --no-install vsce publish --oidc --skip-duplicate "${flags[@]}" --packagePath dist/*.vsix
+
+      - name: Check public availability for both targets
+        run: python tools/check-marketplace.py

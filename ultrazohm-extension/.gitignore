@@ -8,3 +8,5 @@ launcher/
 dist/
 __pycache__/
 .host-tests/
+
+.build-cache/

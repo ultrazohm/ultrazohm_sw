@@ -50,7 +50,7 @@ def metadata(stamp=False):
             'prerelease': prerelease, 'publish': publish}
 
 
-def verify(target, vsix, unpack, channel):
+def inspect_archive(target, vsix, unpack):
     info = metadata()
     if vsix.name != f'ultrazohm-extension-{target}-{info["version"]}.vsix':
         raise ValueError('VSIX filename does not match version/target')
@@ -64,7 +64,7 @@ def verify(target, vsix, unpack, channel):
         if f'TargetPlatform="{target}"' not in manifest:
             raise ValueError('Incorrect VSIX target')
         package = json.loads(archive.read('extension/package.json'))
-        if package['name'] != 'ultrazohm-extension' or package['version'] != info['version']:
+        if package['name'] != 'ultrazohm-extension' or package['publisher'] != 'ZohmControlGmbH' or package['version'] != info['version']:
             raise ValueError('Incorrect extension identity/version')
         if any(name.startswith(('extension/test/', 'extension/node_modules/', 'extension/tools/')) for name in names):
             raise ValueError('Development-only files leaked into VSIX')
@@ -84,6 +84,13 @@ def verify(target, vsix, unpack, channel):
     lock = json.loads((ROOT / 'runtime-lock.json').read_text())
     if bundled['target'] != target or bundled['sources'] != lock['targets'][target] or bundled.get('pyserial') != lock['pyserial']:
         raise ValueError('Runtime does not match lock')
+    return extension, bundled
+
+
+def verify(target, vsix, unpack, channel):
+    extension, bundled = inspect_archive(target, vsix, unpack)
+    runtime = extension / 'runtime'
+    info = metadata()
     windows = target == 'win32-x64'
     if windows != (os.name == 'nt'):
         raise ValueError('Runtime smoke tests must run on the native OS')
@@ -130,7 +137,7 @@ def verify(target, vsix, unpack, channel):
             resolved = json.loads(result)
     receipt = {**info, 'target': target, 'file': vsix.name, 'sha256': digest(vsix), 'bytes': vsix.stat().st_size,
         'commit': os.environ.get('GITHUB_SHA') or subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
-        'runtime': bundled, 'tested_channel': channel, 'tested_packages': resolved}
+        'builder_image': os.environ.get('UZ_BUILD_IMAGE'), 'runtime': bundled, 'tested_channel': channel, 'tested_packages': resolved}
     vsix.with_suffix('.json').write_text(json.dumps(receipt, indent=2) + '\n')
     print(f'Verified {vsix.name}; extracted to {extension}')
 
@@ -173,12 +180,18 @@ if __name__ == '__main__':
     check.add_argument('--vsix', type=Path, required=True)
     check.add_argument('--extract', type=Path, required=True)
     check.add_argument('--smoke-channel', choices=['stable', 'prerelease'])
+    inspect = commands.add_parser('inspect')
+    inspect.add_argument('--target', choices=TARGETS, required=True)
+    inspect.add_argument('--vsix', type=Path, required=True)
+    inspect.add_argument('--extract', type=Path, required=True)
     manifest = commands.add_parser('manifest')
     manifest.add_argument('directory', type=Path)
     args = parser.parse_args()
     if args.command == 'metadata':
         for key, value in metadata(args.stamp).items():
             print(f'{key}={str(value).lower() if isinstance(value, bool) else value}')
+    elif args.command == 'inspect':
+        inspect_archive(args.target, args.vsix.resolve(), args.extract.resolve())
     elif args.command == 'verify':
         verify(args.target, args.vsix.resolve(), args.extract.resolve(), args.smoke_channel)
     else:

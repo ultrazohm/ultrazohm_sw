@@ -169,3 +169,52 @@ Vitis and Microsoft C/C++ installed:
 Debug supports the default local hw_server layout with one R5 #0 and one A53 #0,
 each GDB processor ID 1. Do not operate another debugger or firmware programmer
 against that board concurrently.
+
+## Container build workflow
+
+Rebuild/reopen the repository's dev container after Dockerfile changes. From the
+`ultrazohm-extension/` directory **inside the container**, use the same targets as Linux CI:
+
+```sh
+make                                      # Default: build both VSIXs
+make extension-build TARGET=linux-x64
+make extension-build TARGET=win32-x64
+make extension-test                       # Build and verify Linux
+```
+
+Windows developers run these commands inside the Linux dev container as well.
+The host needs the dev-container setup; it does not need Node/Python/Make for
+these builds. Make itself assumes the tools are already installed and directly
+calls `tools/build.py`. It does not start Docker or detect its environment.
+VS Code and GitHub Actions manage container startup. See
+[the shared image guide](../.devcontainer/README.md) for an explicit `docker run`
+example and using an exact published CI image digest.
+
+Builds snapshot current extension sources, root launchers and test fixtures into
+separate temporary directories. Local edits are included; source versions,
+node_modules and generated runtimes are not modified. Outputs go to
+`ultrazohm-extension/dist`; override with `make OUTPUT=/some/output`. Runtime and
+npm downloads use `ultrazohm-extension/.build-cache`; override with
+`UZ_BUILD_CACHE=/some/cache`. Delete that directory to exercise a cold build.
+CI remains correct with empty caches. Network access is required.
+
+`extension-test` packages and verifies Linux, including published-package
+contracts and minimum/current stable VS Code host tests under Xvfb. CI calls
+this complete target instead of duplicating its steps in YAML. Windows
+packaging does not execute Windows binaries inside Linux. Native Windows
+verification remains mandatory in CI.
+
+Migration is deliberately staged: Linux CI uses the shared image and build
+entry point. The existing native Windows build remains the released Windows
+artifact. An additional job builds Windows in Linux and a native Windows job
+verifies that VSIX; releases require this check as well. Only after a successful
+run should native Windows packaging be removed and the cross-produced artifact
+promoted to the release. No claim of Windows validation is made by a local Linux
+build alone.
+
+Archive inspection is available as `tools/release.py inspect`; `verify` adds
+native runtime checks. Receipts record the builder image when supplied. GitHub
+release retries verify existing assets and only fill missing draft assets;
+conflicting published assets are rejected. Marketplace uploads reuse tested
+VSIXs, then check both targets for up to roughly two minutes. Pending processing
+is reported separately and never causes repackaging.

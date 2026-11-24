@@ -12,6 +12,7 @@ import subprocess
 import tarfile
 import tempfile
 import urllib.request
+import uuid
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,7 +28,7 @@ def download(spec, cache):
     if destination.exists() and sha256(destination) == spec['sha256']:
         return destination
     request = urllib.request.Request(spec['url'], headers={'User-Agent': 'ultrazohm-extension-build'})
-    temporary = destination.with_suffix('.part')
+    temporary = destination.with_suffix('.' + uuid.uuid4().hex + '.part')
     with urllib.request.urlopen(request, timeout=120) as response, temporary.open('wb') as stream:
         shutil.copyfileobj(response, stream)
     if sha256(temporary) != spec['sha256']:

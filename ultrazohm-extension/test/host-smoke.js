@@ -140,5 +140,5 @@ sleep 120
     vscode.window.showErrorMessage = originalError;
     vscode.tasks.executeTask = originalExecuteTask;
   }
-  fs.writeFileSync(output, JSON.stringify({ passed: true, actions: ['viewer', 'cli', 'venv', 'generate', 'build', 'build-clean', 'flash'], selectedRepository: root }));
+  fs.writeFileSync(output, JSON.stringify({ passed: true, vscodeVersion: vscode.version, actions: ['viewer', 'cli', 'venv', 'generate', 'build', 'build-clean', 'flash'], selectedRepository: root }));
 };

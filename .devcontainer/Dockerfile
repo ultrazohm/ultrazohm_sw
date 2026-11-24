@@ -4,12 +4,19 @@
 #   dev  The development container: the ci stage plus firmware, docs and Java tools.
 # Developers and CI therefore build and test with the same toolchain.
 
+FROM node:22.23.5-bookworm-slim@sha256:be979e5523c76fa4d5ca4ebd3099078f220aa47ec39c48ad5b5df9314debd6eb AS node_tools
+
 # Debian trixie-based Python image.
 FROM docker.io/library/python:3.12-trixie@sha256:5411fa1b302c43f510324381162b5f5d0d93b9ee2af538f09d944f0d290ee3cb AS ci
 
+COPY --from=node_tools /usr/local/bin/node /usr/local/bin/node
+COPY --from=node_tools /usr/local/lib/node_modules /usr/local/lib/node_modules
+RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
+ && ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
+
 # Build tools and GUI runtime libraries for headless ImGui tests.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-     && apt-get -y install --no-install-recommends build-essential \
+     && apt-get -y install --no-install-recommends build-essential tcl zstd xvfb xauth libgtk-3-0 libnss3 libasound2t64 libgbm1 libxss1 libatk-bridge2.0-0 \
                                                   make \
                                                   git \
                                                   curl \

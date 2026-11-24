@@ -33,6 +33,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../include/isr_diag.h"
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -44,6 +45,57 @@ extern DS_Data Global_Data;
 static void ReadAllADC();
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 
+#if UZ_ISR_DIAG
+// Timing diagnostics of ISR_Control, see include/isr_diag.h
+volatile uz_isr_diag_t uz_isr_diag = {.pmu_events = UZ_ISR_DIAG_PMU_EVENTS_DEFAULT};
+volatile uint8_t uz_isr_diag_main_phase = UZ_ISR_DIAG_MAIN_OTHER;
+volatile uint32_t uz_isr_diag_xcp_base = 0U;
+volatile uint32_t uz_isr_diag_xcp_slices = 0U;
+static uint32_t uz_isr_diag_events_applied = 0xFFFFFFFFU; // programs the PMU events in the first ISR
+
+static inline void uz_isr_diag_pmu_select(uint32_t counter)
+{
+    __asm volatile("mcr p15, 0, %0, c9, c12, 5" ::"r"(counter) : "memory"); // PMSELR
+    __asm volatile("isb" ::: "memory");
+}
+
+static inline uint32_t uz_isr_diag_pmu_read(uint32_t counter)
+{
+    uint32_t v;
+    uz_isr_diag_pmu_select(counter);
+    __asm volatile("mrc p15, 0, %0, c9, c13, 2" : "=r"(v)::"memory"); // PMXEVCNTR
+    return v;
+}
+
+static void uz_isr_diag_pmu_program(uint32_t events)
+{
+    for (uint32_t i = 0U; i < UZ_ISR_DIAG_PMU_COUNT; i++)
+    {
+        uz_isr_diag_pmu_select(i);
+        __asm volatile("mcr p15, 0, %0, c9, c13, 1" ::"r"((events >> (8U * i)) & 0xFFU) : "memory"); // PMXEVTYPER
+    }
+    __asm volatile("isb" ::: "memory");
+}
+
+// Cycle counter (every cycle) and event counters 0..2 on. xcp_r5_init()
+// enables the cycle counter as well (XCP_R5_PROFILE); both only set bits.
+static void uz_isr_diag_pmu_enable(void)
+{
+    uint32_t pmcr;
+    __asm volatile("mrc p15, 0, %0, c9, c12, 0" : "=r"(pmcr));
+    pmcr |= 1U;         // E: counters on
+    pmcr &= ~(1U << 3); // D: count every cycle, not every 64th
+    __asm volatile("mcr p15, 0, %0, c9, c12, 0" ::"r"(pmcr));
+    __asm volatile("mcr p15, 0, %0, c9, c12, 1" ::"r"((1U << 31) | ((1U << UZ_ISR_DIAG_PMU_COUNT) - 1U))); // PMCNTENSET
+    __asm volatile("isb" ::: "memory");
+}
+
+static inline uint16_t uz_isr_diag_u16(uint32_t v)
+{
+    return (v > 0xFFFFU) ? 0xFFFFU : (uint16_t)v;
+}
+#endif
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -52,9 +104,37 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 //----------------------------------------------------
 void ISR_Control(void *data)
 {
+#if UZ_ISR_DIAG
+    const uint32_t diag_entry = uz_isr_diag_cycles(); // one instruction ahead of the timer read
+#endif
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
+#if UZ_ISR_DIAG
+    const uint32_t diag_tic = uz_isr_diag_cycles();
+    uz_isr_diag.entry_main_phase = uz_isr_diag_main_phase;
+    const uint32_t diag_events = uz_isr_diag.pmu_events;
+    const bool diag_pmu_valid = (diag_events == uz_isr_diag_events_applied);
+    if (!diag_pmu_valid)
+    {
+        uz_isr_diag_pmu_program(diag_events);
+        uz_isr_diag_events_applied = diag_events;
+    }
+    uint32_t diag_pmu[UZ_ISR_DIAG_PMU_COUNT];
+    for (uint32_t i = 0U; i < UZ_ISR_DIAG_PMU_COUNT; i++)
+    {
+        diag_pmu[i] = uz_isr_diag_pmu_read(i);
+    }
+    uz_isr_diag_xcp_base = 0U;
+    uz_isr_diag_xcp_slices = 0U;
+    const uint32_t diag_adc_start = uz_isr_diag_cycles();
+#endif
     ReadAllADC();
+#if UZ_ISR_DIAG
+    const uint32_t diag_adc = uz_isr_diag_cycles();
+#endif
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+#if UZ_ISR_DIAG
+    const uint32_t diag_encoder = uz_isr_diag_cycles();
+#endif
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -71,7 +151,10 @@ void ISR_Control(void *data)
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
-    
+#if UZ_ISR_DIAG
+    const uint32_t diag_pwm = uz_isr_diag_cycles();
+#endif
+
 #if XCP_ENGINE_R5_ENABLE
     /* Option Z: XCPlite engine on the R5. ONLY the DAQ sampling copy runs in
      * this ISR (cost: ~sub-us idle, ~5 us per KB of measured payload). The
@@ -82,6 +165,26 @@ void ISR_Control(void *data)
     xcp_r5_event();
 #else
     JavaScope_update(&Global_Data);
+#endif
+#if UZ_ISR_DIAG
+    {
+        // Publish this cycle; the DAQ sample of the next cycle carries it.
+        const uint32_t diag_end = uz_isr_diag_cycles();
+        volatile uz_isr_diag_record_t *const r = &uz_isr_diag.last;
+        r->seq = (uint32_t)uz_SystemTime_GetInterruptCounter();
+        r->tic = uz_isr_diag_u16(diag_tic - diag_entry);
+        r->adc = uz_isr_diag_u16(diag_adc - diag_adc_start);
+        r->encoder = uz_isr_diag_u16(diag_encoder - diag_adc);
+        r->pwm = uz_isr_diag_u16(diag_pwm - diag_encoder);
+        r->xcp = uz_isr_diag_u16(diag_end - diag_pwm);
+        r->xcp_base = uz_isr_diag_u16(uz_isr_diag_xcp_base);
+        r->xcp_slices = uz_isr_diag_u16(uz_isr_diag_xcp_slices);
+        r->total = uz_isr_diag_u16(diag_end - diag_entry);
+        for (uint32_t i = 0U; i < UZ_ISR_DIAG_PMU_COUNT; i++)
+        {
+            r->pmu[i] = diag_pmu_valid ? uz_isr_diag_u16(uz_isr_diag_pmu_read(i) - diag_pmu[i]) : 0xFFFFU;
+        }
+    }
 #endif
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
@@ -114,6 +217,10 @@ int Initialize_ISR()
         xil_printf("RPU: Error: GIC initialization failed\r\n");
         return XST_FAILURE;
     }
+
+#if UZ_ISR_DIAG
+    uz_isr_diag_pmu_enable();
+#endif
 
     // Enable interrupt on CPU level
     Xil_ExceptionEnable();

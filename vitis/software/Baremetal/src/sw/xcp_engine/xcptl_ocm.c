@@ -71,6 +71,7 @@
 
 #include "xparameters.h" /* XPAR_CPU_CORTEXR5_0_CPU_CLK_FREQ_HZ */
 #include "../../uz/uz_SystemTime/uz_SystemTime.h" /* uz_SystemTime_GetInterruptCounter, _GetIsrStartTicks */
+#include "../../include/isr_diag.h" /* UZ_ISR_DIAG: split of xcp_r5_event(), main-loop phase */
 
 /* Time base of the main-loop pacing: the control ISRs counted by
  * uz_SystemTime (uz_SystemTime_ISR_Tic(), the first call in ISR_Control).
@@ -532,7 +533,13 @@ void xcp_r5_event(void) {
      * value uz_SystemTime_ISR_Tic() latched at ISR entry (10 ns ticks, the DAQ
      * clock of xcplib_r5_cfg.h), not the time this call happens to run. */
     const uint64_t cycle_start = uz_SystemTime_GetIsrStartTicks();
+#if UZ_ISR_DIAG
+    const uint32_t diag_c0 = uz_isr_diag_cycles();
+#endif
     XcpEventAt(xcp_r5_daq_event, cycle_start);
+#if UZ_ISR_DIAG
+    const uint32_t diag_c1 = uz_isr_diag_cycles();
+#endif
 
     /* Named time slices derived from the control-ISR rate. */
     for (uint32_t i = 0u; i < XCP_R5_SLICE_COUNT; i++) {
@@ -541,6 +548,10 @@ void xcp_r5_event(void) {
             XcpEventAt(xcp_r5_daq_slice_event[i], cycle_start);
         }
     }
+#if UZ_ISR_DIAG
+    uz_isr_diag_xcp_base = diag_c1 - diag_c0;
+    uz_isr_diag_xcp_slices = uz_isr_diag_cycles() - diag_c1;
+#endif
 #if XCP_R5_PROFILE
     {
         const uint32_t d = xcp_r5_cycles() - c0;
@@ -671,6 +682,7 @@ static void xcp_r5_prof_ack(uint32_t us) {
  * A53 has not acknowledged (or still reads) the chain. Needs a fresh XCP_IN
  * header (ocm_xcp_in_refresh_header()); the caller signals the A53 (IPI). */
 static void xcp_r5_exchange(int daq) {
+    UZ_ISR_DIAG_MAIN_PHASE(UZ_ISR_DIAG_MAIN_XCP_COMMANDS);
 #if XCP_R5_PROFILE
     uint32_t pc[5];
     uint32_t pi[5];
@@ -767,6 +779,7 @@ static void xcp_r5_exchange(int daq) {
     XCP_R5_PROF_MARK(2);
 #endif
 
+    UZ_ISR_DIAG_MAIN_PHASE(UZ_ISR_DIAG_MAIN_XCP_COPY);
     if (daq) {
         xcp_r5_tx_pump();
         /* Covers segments written from within XcpCommand too
@@ -777,7 +790,9 @@ static void xcp_r5_exchange(int daq) {
     XCP_R5_PROF_MARK(3);
 #endif
 
+    UZ_ISR_DIAG_MAIN_PHASE(UZ_ISR_DIAG_MAIN_XCP_FLUSH);
     ocm_xcp_fifo_cache_flush_after_write(); /* chain, then header + even seq */
+    UZ_ISR_DIAG_MAIN_PHASE(UZ_ISR_DIAG_MAIN_XCP_PACING);
 #if XCP_R5_PROFILE
     XCP_R5_PROF_MARK(4);
     xcp_r5_prof_account(pc, pi, !daq);
@@ -814,7 +829,16 @@ void xcp_r5_poll(void) {
  * quiet interval. Keeping the exchanges out of ISR_Control removes their
  * cost (~10 us base + ~10 us/KB, measured 2026-07-11) from the control ISR;
  * only the XcpEvent sampling copy remains there. */
+static int xcp_r5_background_sweep(void);
+
 int xcp_r5_background(void) {
+    UZ_ISR_DIAG_MAIN_PHASE(UZ_ISR_DIAG_MAIN_XCP_PACING);
+    const int r = xcp_r5_background_sweep();
+    UZ_ISR_DIAG_MAIN_PHASE(UZ_ISR_DIAG_MAIN_OTHER);
+    return r;
+}
+
+static int xcp_r5_background_sweep(void) {
     static uint32_t last_call_isr = 0u;
     static int first_call = 1;
     if (gQueue == NULL) {

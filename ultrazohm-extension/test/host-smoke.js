@@ -54,7 +54,7 @@ sleep 120
     }
     return originalExecuteTask(task);
   };
-  const extensionPath = vscode.extensions.getExtension('ultrazohm-local.ultrazohm-extension').extensionPath;
+  const extensionPath = vscode.extensions.getExtension('ZohmControlGmbH.ultrazohm-extension').extensionPath;
   const errors = [];
   const originalError = vscode.window.showErrorMessage;
   vscode.window.showErrorMessage = async message => { errors.push(message); console.error(message); };
@@ -66,7 +66,7 @@ sleep 120
     flashConfirmations++; return 'Flash UZ';
   };
   try {
-    const extension = vscode.extensions.getExtension('ultrazohm-local.ultrazohm-extension');
+    const extension = vscode.extensions.getExtension('ZohmControlGmbH.ultrazohm-extension');
     assert(extension); await extension.activate();
     const commands = await vscode.commands.getCommands(true);
     for (const name of ['ultrazohm.debug', 'ultrazohm.attach']) assert(commands.includes(name), name + ' missing');

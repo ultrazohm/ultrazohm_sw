@@ -281,14 +281,16 @@ For development, run `npm ci`, `npm run check` and `npm test` under
 Use the supplied `.vscode/launch.json` Extension Development Host configuration
 for iteration; no TypeScript compile step is required.
 
-The temporary local identity is `ultrazohm-local.ultrazohm-extension`. Increment extension
+The publisher is `ZohmControlGmbH` and the extension identity is
+`ZohmControlGmbH.ultrazohm-extension`. Uninstall local-publisher prototypes when
+switching; settings remain compatible but private storage starts fresh. Increment extension
 versions for shared VSIXs, independently of CLI/DataViewer package versions.
 Bundled uv/Python updates require a new VSIX. The in-extension stable/prerelease
 choice affects application packages, not extension update channels.
 
 Start distribution with tested platform VSIXs as release attachments. Before
-Marketplace publication, establish an UltraZohm-controlled publisher and final
-extension ID, validate Windows and Linux packages, runtime licenses and README
+Marketplace publication, configure Trusted Publishing for `ZohmControlGmbH`,
+validate Windows and Linux packages, runtime licenses and README
 assets, and configure publisher access. Upload the tested platform artifacts
 through Marketplace publisher management; automate subsequent releases after
 publisher access and credentials/trusted publishing are configured. Public

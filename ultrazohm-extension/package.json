@@ -2,7 +2,7 @@
   "name": "ultrazohm-extension",
   "displayName": "ultrazohm-extension",
   "description": "UltraZohm DataViewer, interactive CLI, Python environment and firmware tools.",
-  "publisher": "ultrazohm-local",
+  "publisher": "ZohmControlGmbH",
   "version": "0.1.12",
   "engines": {
     "vscode": "^1.93.0"

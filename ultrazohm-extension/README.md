@@ -81,4 +81,4 @@ For development, use `.vscode/launch.json`. `npm run test:host` runs hardware-fr
 
 See [RELEASING.md](RELEASING.md) in the source repository for CI, release tags, artifact verification and local testing. Real Vitis builds and attached hardware require manual testing.
 
-If upgrading the earlier prototype, uninstall `ultrazohm-local.ultrazohm` before installing `ultrazohm-local.ultrazohm-extension`. The `ultrazohm.*` settings remain compatible; the renamed extension gets fresh private storage. GitHub VSIX updates are installed manually. The temporary publisher is `ultrazohm-local`; Marketplace publication is not configured yet.
+When upgrading a local prototype, uninstall `ultrazohm-local.ultrazohm` or `ultrazohm-local.ultrazohm-extension` before installing `ZohmControlGmbH.ultrazohm-extension` to avoid duplicate controls. The `ultrazohm.*` settings remain compatible; the new publisher identity gets fresh private storage. GitHub VSIX updates are installed manually. The publisher is `ZohmControlGmbH`; Marketplace CI publishing is not configured yet.

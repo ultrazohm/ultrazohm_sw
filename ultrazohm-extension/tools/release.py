@@ -138,7 +138,7 @@ This extension bundles uv, Python and launcher scripts. Application packages dow
 
 Setup, Software build and Control sections provide the UltraZohm tools. Vitis remains an external prerequisite. Flash UZ uses the CLI service to finalize recordings, program via JTAG and reconnect when a device target is known. It opens an interactive CLI if needed and verifies the selected checkout.
 
-Uninstall the old `ultrazohm-local.ultrazohm` prototype before installing this renamed extension to avoid duplicate controls. The extension ID is `ultrazohm-local.ultrazohm-extension`; Marketplace publisher setup is still pending. Existing `ultrazohm.*` settings are retained, but the renamed extension uses a fresh private cache.
+Uninstall either local prototype (`ultrazohm-local.ultrazohm` or `ultrazohm-local.ultrazohm-extension`) before installing this extension to avoid duplicate controls. The extension ID is `ZohmControlGmbH.ultrazohm-extension`; Marketplace CI publishing is not configured yet. Existing `ultrazohm.*` settings are retained, but the renamed extension uses a fresh private cache.
 
 GitHub VSIX updates are installed manually. Neither real hardware programming nor a real Vitis installation is exercised by CI.
 ''')

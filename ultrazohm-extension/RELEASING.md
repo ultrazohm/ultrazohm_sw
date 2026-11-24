@@ -27,8 +27,9 @@ Install with **Extensions: Install from VSIX…** or:
 code --install-extension ultrazohm-extension-linux-x64-0.1.11.vsix
 ```
 
-Uninstall the earlier `ultrazohm-local.ultrazohm` prototype to avoid duplicate
-panes. The new ID is `ultrazohm-local.ultrazohm-extension`. Existing `ultrazohm.*`
+Uninstall either earlier prototype (`ultrazohm-local.ultrazohm` or
+`ultrazohm-local.ultrazohm-extension`) to avoid duplicate panes. The new ID is
+`ZohmControlGmbH.ultrazohm-extension`. Existing `ultrazohm.*`
 settings remain valid, but private storage starts fresh. GitHub VSIX installations
 receive updates by manually installing a newer VSIX. Keep a previous release for
 manual rollback.
@@ -97,9 +98,11 @@ Do not reuse published versions or move published tags. Fix with a new version.
 
 ## Later Marketplace publication
 
-First establish an UltraZohm-controlled Marketplace publisher and set its ID in
-`package.json`; the temporary `ultrazohm-local` ID is not claimed to be registered.
-Changing publisher changes the extension ID and needs a documented migration.
+The publisher ID in `package.json` is `ZohmControlGmbH`. The extension ID is
+`ZohmControlGmbH.ultrazohm-extension`; migration from the local publisher is
+described above. Configure Trusted Publishing for repository owner `ultrazohm`,
+repository `ultrazohm_sw`, and workflow `ultrazohm-extension.yml`. The pinned
+`vsce` must be upgraded to an OIDC-capable version before adding `--oidc` publishing.
 Keep the name `ultrazohm-extension`. Publish both tested platform VSIXs from the
 same release; do not rebuild them inside a publishing step. Configure Marketplace
 authentication/trusted publishing separately and review the then-current `vsce`

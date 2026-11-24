@@ -2,6 +2,8 @@
 
 ## 0.1.12
 
+- Set the Marketplace publisher to `ZohmControlGmbH`; uninstall local-publisher prototypes when switching.
+
 - Add Attach debugger for R5 and A53 through Vitis GDB and Microsoft C/C++.
 - Add Debug: service-managed Flash with both cores stopped at main before debugger attachment.
 - Keep the CLI disconnected while debugging; preserve the existing CLI, DataViewer and repository Tcl sources.

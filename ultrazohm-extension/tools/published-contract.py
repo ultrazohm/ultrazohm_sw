@@ -22,7 +22,11 @@ def main():
     cli = shutil.which('ultrazohm-cli')
     assert cli, 'Published CLI executable missing'
     def run(*argv, check=True):
-        return subprocess.run([str(a) for a in argv], text=True, capture_output=True, timeout=90, check=check)
+        try:
+            return subprocess.run([str(a) for a in argv], text=True, capture_output=True, timeout=90, check=check)
+        except subprocess.TimeoutExpired as error:
+            print(f'Timed out: {argv}\nstdout={error.stdout!r}\nstderr={error.stderr!r}', flush=True)
+            raise
     expected = {
         'serve': ['--repo', '--xsct', '--interactive', '--endpoint'],
         'generate': ['--local', '--repo'], 'build': ['--local', '--repo'],
@@ -114,6 +118,7 @@ def main():
                     process.wait()
                 log.seek(0)
                 print(log.read())
+                print('XSCT actions:', report.read_text() if report.exists() else 'none', flush=True)
     print('Published CLI contract and service flash passed: ' + version('ultrazohm-cli'))
 
 

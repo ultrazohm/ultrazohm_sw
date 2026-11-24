@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import sys
 import tempfile
 import zipfile
 
@@ -80,7 +81,11 @@ def verify(target, vsix, unpack, channel):
             UV_CACHE_DIR=str(storage / 'cache'), UV_TOOL_DIR=str(storage / 'tools'), UV_TOOL_BIN_DIR=str(storage / 'bin'),
             PYTHONDONTWRITEBYTECODE='1', PYTHONNOUSERSITE='1', TMPDIR=str(storage), TEMP=str(storage), TMP=str(storage))
         def run(args):
-            return subprocess.check_output([str(a) for a in args], cwd=storage, env=env, text=True, timeout=300).strip()
+            try:
+                return subprocess.check_output([str(a) for a in args], cwd=storage, env=env, text=True, timeout=300).strip()
+            except subprocess.CalledProcessError as error:
+                print(error.output, file=sys.stderr)
+                raise
         assert run([python, '-c', 'import sys,ssl,sqlite3,ctypes; print(sys.version.split()[0])']) == bundled['python_version']
         uv = runtime / 'bin' / ('uv.exe' if windows else 'uv')
         assert run([uv, '--version']).split()[1] == bundled['uv_version']

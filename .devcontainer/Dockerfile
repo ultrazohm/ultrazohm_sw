@@ -16,6 +16,9 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
                                                   ca-certificates \
                                                   pkg-config \
                                                   libssl-dev \
+                                                  xvfb \
+                                                  xauth \
+                                                  libgl1-mesa-dri \
                                                   libgl1 \
                                                   libx11-6 \
                                                   libxext6 \
@@ -89,3 +92,6 @@ ENV PIP_USER=yes
 
 ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 ENV PATH="$JAVA_HOME/bin:$PATH"
+
+ENV UZ_DEVELOPMENT_ENVIRONMENT=/opt/ultrazohm/development
+ENV PATH="/opt/ultrazohm/development/bin:$PATH"

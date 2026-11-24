@@ -12,7 +12,7 @@
 		"vscode": {
 			"settings": {
 				"terminal.integrated.shell.linux": "/bin/bash",
-				"python.defaultInterpreterPath": "/usr/local/bin/python",
+				"python.defaultInterpreterPath": "/opt/ultrazohm/development/bin/python",
 				"ceedlingExplorer.shellPath": "/bin/bash",
 				"ceedlingExplorer.debugConfiguration": "Ceedling Test Explorer Debug",
 				"ceedlingExplorer.projectPath": "vitis/software/Baremetal/"

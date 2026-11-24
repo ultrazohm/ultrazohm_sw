@@ -588,7 +588,8 @@ Dependency and mapping selection checks
 
 Published DataViewer packages require the matching ultrazohm-cli release version.
 CI tests candidate wheels together.
-``./uz`` application commands run published packages; ``./uz venv dev`` builds the checkout ultrazohm-cli and installs the local DataViewer editable into a temporary environment.
+``./uz`` application commands run published packages.
+``./uz_developer build linux_wheels`` builds and installs both checkout applications from CI-format wheels into a persistent environment; ``./uz venv dev`` activates it without rebuilding.
 ``run.py`` only adds local DataViewer sources to the current interpreter; dependencies must already be installed.
 
 An explicit ``DataViewerApp(live_mapping=...)`` selects that mapping even when its workspace is inferred from the path or supplied through ``live_repo``.

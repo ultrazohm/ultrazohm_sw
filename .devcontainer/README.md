@@ -1,6 +1,6 @@
 # Application build environment
 
-The `ci` stage supplies the CLI/viewer toolchain; `dev` adds firmware, Java and
+The `ci` stage supplies the CLI/DataViewer toolchain; `dev` adds firmware, Java and
 documentation tools. The Python base image is pinned by digest, and
 `build-tools.txt` pins uv, Maturin, Zig, setuptools and wheel. Local Rust wheel
 tasks consume the same requirements. Package build-system metadata also pins
@@ -17,3 +17,17 @@ configuration, preferences and owned service processes. A separate pinned
 manylinux image verifies the Linux wheel on glibc 2.28. Release artifact validation
 depends on this compatibility check as well as the existing Linux/Windows tests.
 Use workflow dispatch with `publish_prerelease=false` for validation-only runs.
+
+## Developer workflow
+
+Post-create runs `./uz_developer build linux_wheels`, then installs documentation dependencies.
+Both wheel-installed applications, Python APIs, development and example dependencies live in
+`/opt/ultrazohm/development`, which is on PATH and selected by VS Code.
+Run the build command again after source changes, then restart running applications.
+`./uz_developer shell` (also `./uz venv dev`) activates this existing environment without rebuilding.
+A plain Docker invocation must run `bash .devcontainer/post-create.sh` once.
+
+`./uz_developer check linux_wheels` runs local Linux checks against the built pair.
+The shared `ci` stage includes Xvfb, xauth and Mesa; GUI smoke tests start Xvfb
+when no display is configured. Interactive GUI use requires host display forwarding.
+The repository `.venv` is never used.

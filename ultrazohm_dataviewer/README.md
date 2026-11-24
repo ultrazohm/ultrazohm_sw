@@ -211,14 +211,14 @@ Documentation lives in `../docs/source/guide/gui/ultrazohm_dataviewer/`.
 Run the same checks as CI, on Linux (dev container) or Windows:
 
 ```bash
-./uz_developer check viewer                  # ruff and the full pytest suite, with a CLI wheel from this checkout
-./uz_developer build viewer                 # PyInstaller bundle in dist/
-./uz_developer task viewer bundle-smoke           # its smoke tests
+./uz_developer check dataviewer                  # ruff and the full pytest suite, with a CLI wheel from this checkout
+./uz_developer build linux_wheels           # build/install both applications
+./uz_developer check linux_wheels           # includes GUI startup checks
 ```
 
-Each task uses a fresh temporary Python environment, cleaned up when it finishes.
+Checks use temporary environments; developer builds update the persistent development environment.
 `check` builds a debug ultrazohm-cli wheel from `../ultrazohm_cli` unless `--cli-wheel PATH` is given, so the live tests run against the same commit.
-`./uz_developer check viewer` forwards to the same task implementation.
+`./uz_developer check dataviewer` forwards to the same task implementation.
 Linux CI runs it in the `ci` stage of `.devcontainer/Dockerfile`; Linux is distributed through Python wheels.
 Windows standalone packaging copies the build system's libraries.
 
@@ -296,7 +296,7 @@ JSON schema 6 snapshots preserve recording references, node graphs, analysis set
 Recording paths are relative to the JSON file where possible.
 Saves replace files atomically; failed restoration leaves the existing workspace intact.
 Python variables, processes, and interpreter state are not persisted.
-Source builds use the project venv; frozen builds run scripts using bundled modules.
+Wheel installations use their Python environment; frozen builds run scripts using bundled modules.
 An external Python environment can also attach to either.
 Choosing **Load state** manually stops app-owned scripts and clears pending startup automation before loading.
 External scripts retain ownership of their processes; their old session handles are rejected after replacement.
@@ -330,8 +330,8 @@ Restart the ultrazohm-cli process to select a different repository.
 Select the checkout in the DataViewer, or pass `ultrazohm-dataviewer gui --live-repo PATH`.
 
 `./uz venv stable|prerelease` opens a cached shell with both published applications.
-`./uz venv dev` rebuilds the local ultrazohm-cli and installs the local DataViewer editable into a fresh temporary shell.
-Open a new dev shell after ultrazohm-cli changes.
+`./uz venv dev` activates the persistent development environment.
+Run `./uz_developer build linux_wheels` after source changes and restart applications.
 All shell modes include dependencies declared in root `requirements.txt`.
 
 **Flash UZ** submits a firmware job to the selected ultrazohm-cli process after confirmation.
@@ -487,9 +487,9 @@ These tasks run Ruff in an isolated tool environment and do not build or install
 Run from the repository root:
 
 ```bash
-./uz_developer task viewer lint
-./uz_developer task viewer format
-./uz_developer task viewer format-check
+./uz_developer task dataviewer lint
+./uz_developer task dataviewer format
+./uz_developer task dataviewer format-check
 ```
 
 On Windows, use `.\uz_developer.ps1` with the same arguments.

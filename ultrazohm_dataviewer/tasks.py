@@ -42,11 +42,11 @@ run = partial(build_run, cwd=HERE)
 python_in = venv_bin
 
 
-def sync(venv):
+def sync(venv, *, inexact=False):
     """Install the locked dependencies into ``venv`` and return its interpreter."""
     env = os.environ.copy()
     env["UV_PROJECT_ENVIRONMENT"] = str(venv)
-    run(*SYNC, env=env)
+    run(*SYNC, *(["--inexact"] if inexact else []), env=env)
     return python_in(venv)
 
 
@@ -70,9 +70,9 @@ def install_packages(python, args, *, release=False):
     cli_wheel = args.cli_wheel
     cli_wheel = Path(cli_wheel).resolve()
     version = wheel_version(cli_wheel)
-    viewer_wheel = args.viewer_wheel
-    with tempfile.TemporaryDirectory(prefix="viewer-wheel-") as directory:
-        if viewer_wheel is None:
+    dataviewer_wheel = args.dataviewer_wheel
+    with tempfile.TemporaryDirectory(prefix="dataviewer-wheel-") as directory:
+        if dataviewer_wheel is None:
             run(
                 sys.executable,
                 HERE / "tasks.py",
@@ -81,7 +81,7 @@ def install_packages(python, args, *, release=False):
                 directory,
                 env={**os.environ, "UZ_CLI_RELEASE_VERSION": version},
             )
-            (viewer_wheel,) = Path(directory).glob("*.whl")
+            (dataviewer_wheel,) = Path(directory).glob("*.whl")
         run(
             "uv",
             "pip",
@@ -91,7 +91,7 @@ def install_packages(python, args, *, release=False):
             "--reinstall",
             "--no-deps",
             cli_wheel,
-            Path(viewer_wheel).resolve(),
+            Path(dataviewer_wheel).resolve(),
         )
     run("uv", "pip", "check", "--python", python)
     # Import from outside the checkout to catch absent package data/imports.
@@ -140,7 +140,10 @@ def test(args):
         install_packages(python, args)
         run(python, "-m", "pytest", "-q", env={**os.environ, "UZ_TEST_INSTALLED": "1"})
         if getattr(args, "gui_smoke", False):
-            run(python, HERE / "build/smoke_gui.py")
+            if sys.platform == "linux" and not os.environ.get("DISPLAY"):
+                run("xvfb-run", "-a", python, HERE / "build/smoke_gui.py")
+            else:
+                run(python, HERE / "build/smoke_gui.py")
 
 
 def check(args):
@@ -156,6 +159,8 @@ def wheel(args):
     from release_build import staged_project
 
     output = args.out.resolve() if args.out else HERE / "dist-wheels"
+    if args.out is None:
+        shutil.rmtree(output, ignore_errors=True)
     with staged_project(HERE, os.environ.get("UZ_CLI_RELEASE_VERSION")) as (
         stage,
         _version,
@@ -205,16 +210,16 @@ def bundle_smoke(_args):
 def _invocation():
     prefix = ".\\uz_developer.ps1" if WINDOWS else "./uz_developer"
     return lambda task, args="": (
-        f"{prefix} task viewer {task}" + (f" {args}" if args else "")
+        f"{prefix} task dataviewer {task}" + (f" {args}" if args else "")
     )
 
 
 def overview():
     print(
-        "Viewer build tasks: lint, format, format-check, test, check, wheel, bundle, bundle-smoke"
+        "DataViewer build tasks: lint, format, format-check, test, check, wheel, bundle, bundle-smoke"
     )
     print(
-        "Use ./uz venv dev to run both applications; ./uz_developer task viewer TASK --help for details."
+        "Use ./uz venv dev to run both applications; ./uz_developer task dataviewer TASK --help for details."
     )
 
 
@@ -239,9 +244,9 @@ def main(argv=None):
         if wheel:
             task.add_argument("--cli-wheel", type=Path, help="matching CLI wheel")
             task.add_argument(
-                "--viewer-wheel",
+                "--dataviewer-wheel",
                 type=Path,
-                help="matching viewer wheel; otherwise build it",
+                help="matching DataViewer wheel; otherwise build it",
             )
         if name in ("test", "check"):
             task.add_argument(
@@ -274,7 +279,7 @@ def main(argv=None):
         shared = args.task in ("bundle", "bundle-smoke") or (
             args.task == "wheel" and args.out is None
         )
-        with build_lock(HERE.parent, "viewer") if shared else nullcontext():
+        with build_lock(HERE.parent, "dataviewer") if shared else nullcontext():
             args.function(args)
     except RuntimeError as error:
         raise SystemExit(str(error)) from None

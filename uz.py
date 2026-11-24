@@ -41,9 +41,9 @@ def main(argv=None):
 The channel defaults to stable. prerelease also allows development releases.
 Application arguments use the stable channel unless a channel is specified.
 venv stable/prerelease reuses a uv-managed cached environment.
-venv dev builds the checkout's CLI, installs editable local DataViewer, and opens
-an independent temporary environment each time. All shells include requirements.txt.
-Exit closes the shell; close its applications first. No repository .venv is used.
+venv dev activates the persistent checkout environment; build it first using
+uz_developer build linux_wheels. All shells include requirements.txt.
+Exit closes the shell. No repository .venv is used.
 
 Examples:
   {launcher} dataviewer prerelease
@@ -58,7 +58,7 @@ Use COMMAND --help for command details. For local source builds, use uz_develope
     descriptions = {
         "cli": "Run the published CLI",
         "dataviewer": "Run the published DataViewer",
-        "venv": "Open a shell with published libraries or freshly built local code (dev)",
+        "venv": "Open a shell with published libraries or the existing development environment (dev)",
         "install": "Install a published application command for your user account",
     }
     for name in (*PACKAGES, "venv", "install"):

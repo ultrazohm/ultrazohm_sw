@@ -16,7 +16,8 @@ uvx ultrazohm-cli
 # For Python scripts in your virtual environment:
 pip install ultrazohm-cli
 # For local development of both applications:
-./uz venv dev
+./uz_developer build cli
+./uz_developer shell
 ```
 
 Python imports use `ultrazohm_cli`; `python -m ultrazohm_cli` runs the ultrazohm-cli.
@@ -25,10 +26,10 @@ Python imports use `ultrazohm_cli`; `python -m ultrazohm_cli` runs the ultrazohm
 
 Source builds require Rust 1.90.0 and a native C/C++ toolchain (Linux: `build-essential`; Windows: Visual Studio Build Tools with C++ development).
 The devcontainer supplies Rust, Maturin and uv.
-Its post-create script installs both applications and example dependencies into container Python, independently of the host `.venv`.
+Its post-create script installs both applications and example dependencies into the container development environment, independently of the host `.venv`.
 Run the application commands directly inside the container.
 Both `ultrazohm-cli` and `ultrazohm-dataviewer` are available in new container terminals.
-Re-run `bash .devcontainer/post-create.sh` to refresh the installation.
+Run `./uz_developer build linux_wheels` to refresh both applications.
 Container-built wheels require a compatible Linux host; Windows needs its own wheel.
 
 Builds and checks run through `tasks.py`, which uses only the Python standard library and behaves the same on Linux, Windows and in CI.
@@ -36,7 +37,7 @@ From the repository root:
 
 | Task | Output |
 |---|---|
-| `./uz_developer build cli` | Optimized wheel for this machine in `target/wheels`, including native extension and ultrazohm-cli entry point |
+| `./uz_developer build cli` | Portable CLI and DataViewer wheels, installed into the development environment |
 | `./uz_developer task cli debug-wheel` | Unoptimized wheel for tests in `target/wheels-debug` |
 | `./uz_developer task cli release-wheel` | Portable release wheel in `target/wheels-release` |
 
@@ -45,7 +46,7 @@ Maturin and Zig run together through `uv tool run`, independently of the launche
 The standalone executable is `cargo build --release --locked --bin ultrazohm-cli`.
 
 `cargo install --path . --locked` installs the standalone ultrazohm-cli.
-For Python source development, install Maturin into a virtual environment and run `maturin develop`.
+For application development, use `./uz_developer build linux_wheels` and `./uz_developer shell`.
 Rebuild/reinstall after Rust changes.
 Native Linux ARM64 builds are possible; these are Linux applications, not executables for the R5 baremetal environment.
 
@@ -375,8 +376,8 @@ See [architecture](docs/architecture.md) for the storage invariants.
 
 ultrazohm-cli commands and DataViewer's **Flash UZ** use the scripts embedded in the ultrazohm-cli executable or Python wheel.
 Published stable and prerelease packages contain the scripts from that release.
-Local development builds, including `./uz venv dev` and the dev-container setup, embed the checkout's scripts at ultrazohm-cli build time.
-Editing `tcl_scripts/` afterward does not change an installed or running ultrazohm-cli: rebuild/reinstall the ultrazohm-cli and restart the ultrazohm-cli process, or reopen `./uz venv dev`.
+Local development builds, including the developer build command and the dev-container setup, embed the checkout's scripts at ultrazohm-cli build time.
+Editing `tcl_scripts/` afterward does not change an installed or running ultrazohm-cli: rebuild/reinstall the ultrazohm-cli and restart the ultrazohm-cli process, using `./uz_developer build cli`.
 
 Before execution, the ultrazohm-cli extracts its scripts to `artifacts/cli-tools/<content-id>/tcl_scripts` under the selected firmware checkout.
 Unchanged resources retain their timestamps for incremental builds.

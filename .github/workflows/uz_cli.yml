@@ -94,7 +94,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [cli, viewer]
+        project: [cli, dataviewer]
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
@@ -213,8 +213,13 @@ jobs:
         with:
           workspaces: ultrazohm_cli
           key: release-linux
-      - run: ./uz_developer task cli release-wheel
+      - run: ./uz_developer build linux_wheels
       - run: ./uz_developer task cli release-check
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheel-dataviewer
+          path: ultrazohm_dataviewer/dist-wheels/*.whl
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
           name: wheel-linux
@@ -311,26 +316,9 @@ jobs:
               python -m unittest discover -s ultrazohm_cli/tests -p test_process.py -v
             '
 
-  wheel-viewer:
-    needs: version
-    runs-on: ubuntu-latest
-    env:
-      UZ_CLI_RELEASE_VERSION: ${{ needs.version.outputs.version }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9
-        with:
-          version: '0.13.1'
-      - run: ./uz_developer task viewer wheel
-      - uses: actions/upload-artifact@v4
-        with:
-          name: wheel-viewer
-          path: ultrazohm_dataviewer/dist-wheels/*.whl
-          if-no-files-found: error
-
   # Lint and the full suite, including live tests, against this run's wheel.
-  viewer-test-linux:
-    needs: [image, wheel-linux, wheel-viewer]
+  dataviewer-test-linux:
+    needs: [image, wheel-linux]
     runs-on: ubuntu-latest
     container:
       image: ${{ needs.image.outputs.image }}
@@ -349,14 +337,12 @@ jobs:
           path: cli-wheel
       - uses: actions/download-artifact@v4
         with:
-          name: wheel-viewer
-          path: viewer-wheel
-      - name: Install virtual display for GUI startup check
-        run: apt-get update -qq && apt-get install -y --no-install-recommends xvfb xauth libgl1-mesa-dri
-      - run: xvfb-run -a ./uz_developer check viewer --gui-smoke --cli-wheel cli-wheel/*.whl --viewer-wheel viewer-wheel/*.whl
+          name: wheel-dataviewer
+          path: dataviewer-wheel
+      - run: ./uz_developer check dataviewer --gui-smoke --cli-wheel cli-wheel/*.whl --dataviewer-wheel dataviewer-wheel/*.whl
 
-  viewer-test-windows:
-    needs: [wheel-windows, wheel-viewer]
+  dataviewer-test-windows:
+    needs: [wheel-windows, wheel-linux]
     runs-on: windows-2022
     timeout-minutes: 30
     steps:
@@ -374,17 +360,17 @@ jobs:
           path: cli-wheel
       - uses: actions/download-artifact@v4
         with:
-          name: wheel-viewer
-          path: viewer-wheel
+          name: wheel-dataviewer
+          path: dataviewer-wheel
       # Hosted Windows runners have no OpenGL-capable graphics driver.
       - uses: pyvista/setup-headless-display-action@9c1c7435d9635423c90d2c37489588c81673274a # v3
         with:
           pyvista: false
           mesa3d-release: '24.3.0'
-      - run: .\uz_developer.ps1 check viewer --gui-smoke --cli-wheel (Get-ChildItem cli-wheel/*.whl).FullName --viewer-wheel (Get-ChildItem viewer-wheel/*.whl).FullName
+      - run: .\uz_developer.ps1 check dataviewer --gui-smoke --cli-wheel (Get-ChildItem cli-wheel/*.whl).FullName --dataviewer-wheel (Get-ChildItem dataviewer-wheel/*.whl).FullName
 
   bundle-windows:
-    needs: [viewer-test-windows, wheel-windows, wheel-viewer, version]
+    needs: [dataviewer-test-windows, wheel-windows, wheel-linux, version]
     runs-on: windows-2022
     timeout-minutes: 30
     steps:
@@ -402,10 +388,10 @@ jobs:
           path: cli-wheel
       - uses: actions/download-artifact@v4
         with:
-          name: wheel-viewer
-          path: viewer-wheel
-      - run: .\uz_developer.ps1 build viewer --cli-wheel (Get-ChildItem cli-wheel/*.whl).FullName --viewer-wheel (Get-ChildItem viewer-wheel/*.whl).FullName
-      - run: .\uz_developer.ps1 task viewer bundle-smoke
+          name: wheel-dataviewer
+          path: dataviewer-wheel
+      - run: .\uz_developer.ps1 task dataviewer bundle --cli-wheel (Get-ChildItem cli-wheel/*.whl).FullName --dataviewer-wheel (Get-ChildItem dataviewer-wheel/*.whl).FullName
+      - run: .\uz_developer.ps1 task dataviewer bundle-smoke
       - uses: actions/download-artifact@v4
         with:
           name: native-cli-windows
@@ -425,7 +411,7 @@ jobs:
           retention-days: 30
 
   release:
-    needs: [version, verify-published, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, cli-python-minimum, cli-linux-minimum, python-style, launcher-check]
+    needs: [version, verify-published, dataviewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, cli-python-minimum, cli-linux-minimum, python-style, launcher-check]
     if: needs.version.outputs.publish == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -464,7 +450,7 @@ jobs:
           python3 ../ultrazohm_dataviewer/tools/verify_artifacts.py github . "$TAG" "$PRERELEASE"
 
   validate-artifacts:
-    needs: [version, viewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, cli-python-minimum, cli-linux-minimum, python-style, launcher-check]
+    needs: [version, dataviewer-test-linux, bundle-windows, cli-check-linux, cli-check-windows, cli-python-minimum, cli-linux-minimum, python-style, launcher-check]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

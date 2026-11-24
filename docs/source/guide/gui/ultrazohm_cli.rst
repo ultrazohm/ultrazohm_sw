@@ -3,8 +3,8 @@ ultrazohm-cli
 
 Use ``ultrazohm-cli`` to acquire live data, record measurements, and send commands to an UltraZohm.
 Install the published ultrazohm-cli with ``uv tool install ultrazohm-cli``, or extract the standalone Windows ZIP from a release.
-To try this checkout, run ``./uz venv dev`` followed by ``ultrazohm-cli`` on Linux.
-On Windows, use ``.\uz.ps1 venv dev``.
+To try this checkout, run ``./uz_developer build cli``, ``./uz_developer shell``, then ``ultrazohm-cli``.
+On Windows, use ``.\uz_developer.ps1`` with the same arguments.
 
 Run ``ultrazohm-cli`` from the firmware checkout to open a disconnected prompt.
 From another directory, use ``ultrazohm-cli serve --interactive --repo PATH`` to select the matching firmware checkout.

@@ -62,6 +62,7 @@ int main(void)
         {
         case init_assertions:
             uz_rpu_assert_configuration();
+            uz_pl_device_memory_init(); // memory type of the PL range (UZ_PL_DEVICE_MEMORY), before the first PL access
             initialization_chain = wait_for_apu_handshake;
             break;
         case wait_for_apu_handshake:

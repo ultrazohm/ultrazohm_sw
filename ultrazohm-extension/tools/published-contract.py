@@ -75,7 +75,11 @@ def main():
             sock.bind(('127.0.0.1', 0))
             endpoint = f'127.0.0.1:{sock.getsockname()[1]}'
         with (base / 'service.log').open('w+') as log:
-            process = subprocess.Popen([cli, '--endpoint', endpoint, 'serve', '--repo', str(root), '--xsct', str(xsct), '--interactive'], stdin=subprocess.PIPE, stdout=log, stderr=log, env=env)
+            # On Windows use console handles, as in a VS Code task terminal.
+            # A blocked synchronous stdin pipe can stall child handle inheritance
+            # when the interactive CLI starts XSCT; it is not a terminal fixture.
+            io = {'creationflags': subprocess.CREATE_NEW_CONSOLE} if os.name == 'nt' else {'stdin': subprocess.PIPE, 'stdout': log, 'stderr': log}
+            process = subprocess.Popen([cli, '--endpoint', endpoint, 'serve', '--repo', str(root), '--xsct', str(xsct), '--interactive'], env=env, **io)
             client = Client(endpoint)
             try:
                 deadline = time.monotonic() + 30
@@ -110,7 +114,8 @@ def main():
                 except (OSError, RuntimeError):
                     pass
                 client.close()
-                process.stdin.close()
+                if process.stdin is not None:
+                    process.stdin.close()
                 try:
                     process.wait(timeout=20)
                 except subprocess.TimeoutExpired:

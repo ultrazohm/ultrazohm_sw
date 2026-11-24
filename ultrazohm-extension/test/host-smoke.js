@@ -48,12 +48,16 @@ sleep 120
   const originalExecuteTask = vscode.tasks.executeTask;
   vscode.tasks.executeTask = async task => {
     if (task.definition.operation === 'flash') {
-      assert(task.execution.args.includes(path.join(extensionPath, 'flash.py')));
+      const expected = path.join(extensionPath, 'flash.py');
+      assert(task.execution.args.some(arg => windows ? arg.toLowerCase() === expected.toLowerCase() : arg === expected), JSON.stringify(task.execution.args));
       task.execution = new vscode.ProcessExecution(windows ? path.join(process.env.SystemRoot, 'System32/WindowsPowerShell/v1.0/powershell.exe') : '/bin/bash', windows ? ['-NoProfile', '-File', path.join(root, 'uz.ps1')] : [path.join(root, 'uz')], task.execution.options);
     }
     return originalExecuteTask(task);
   };
   const extensionPath = vscode.extensions.getExtension('ultrazohm-local.ultrazohm-extension').extensionPath;
+  const errors = [];
+  const originalError = vscode.window.showErrorMessage;
+  vscode.window.showErrorMessage = async message => { errors.push(message); console.error(message); };
   const originalConfirmation = vscode.window.showWarningMessage;
   let flashConfirmations = 0;
   vscode.window.showWarningMessage = async (message, options, ...items) => {
@@ -96,6 +100,7 @@ sleep 120
       }
       await vscode.commands.executeCommand('ultrazohm.' + operation);
       if (operation === 'flash') assert(active().some(e => e.task.definition.action === 'cli'));
+      assert.deepEqual(errors, [], 'Launcher errors: ' + errors.join('; '));
       const build = active().find(e => e.task.definition.action === 'firmware');
       assert(build); assert.equal(build.task.execution.options.env.XILINX_VITIS, base); assert.equal(build.task.definition.operation, operation);
       if (operation !== 'flash') assert(build.task.execution.args.includes('--local'));
@@ -119,6 +124,7 @@ sleep 120
     await until(() => active().length === 0);
     startListener.dispose();
     vscode.window.showWarningMessage = originalConfirmation;
+    vscode.window.showErrorMessage = originalError;
     vscode.tasks.executeTask = originalExecuteTask;
   }
   fs.writeFileSync(output, JSON.stringify({ passed: true, actions: ['viewer', 'cli', 'venv', 'generate', 'build', 'build-clean', 'flash'], selectedRepository: root }));

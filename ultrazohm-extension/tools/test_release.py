@@ -12,10 +12,40 @@ import release
 
 
 class ReleaseTest(unittest.TestCase):
-    def test_tag_must_match_version(self):
-        with patch.dict(os.environ, {'GITHUB_REF': 'refs/tags/ultrazohm-extension-v999.0.0'}):
-            with self.assertRaisesRegex(ValueError, 'Tag must match'):
-                release.metadata()
+    def test_branch_channels_and_publication_gates(self):
+        base = {'GITHUB_RUN_NUMBER': '42', 'GITHUB_REPOSITORY': 'ultrazohm/ultrazohm_sw'}
+        for event in ['push', 'workflow_dispatch']:
+            for branch in ['main', 'develop', 'feature/vscode-extension']:
+                with self.subTest(event=event, branch=branch), patch.dict(os.environ, {**base, 'GITHUB_EVENT_NAME': event, 'GITHUB_REF': 'refs/heads/' + branch}, clear=True):
+                    info = release.metadata()
+                    self.assertEqual(info['version'], '0.1.42')
+                    self.assertEqual(info['publish'], event == 'push' and branch in ['main', 'develop'])
+                    self.assertEqual(info['prerelease'], not (event == 'push' and branch == 'main'))
+        for extra in [
+            {'GITHUB_EVENT_NAME': 'pull_request', 'GITHUB_REF': 'refs/heads/main'},
+            {'GITHUB_EVENT_NAME': 'push', 'GITHUB_REF': 'refs/tags/ultrazohm-extension-v0.1.42'},
+            {'GITHUB_EVENT_NAME': 'push', 'GITHUB_REF': 'refs/heads/main', 'GITHUB_REPOSITORY': 'someone/fork'},
+        ]:
+            with patch.dict(os.environ, {**base, **extra}, clear=True):
+                self.assertFalse(release.metadata()['publish'])
+
+    def test_version_stamping_is_idempotent_and_reruns_keep_version(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(release, 'ROOT', Path(temp)):
+            root = Path(temp)
+            (root/'package.json').write_text(json.dumps({'name': 'ultrazohm-extension', 'version': '0.1.12'}))
+            (root/'package-lock.json').write_text(json.dumps({'version': '0.1.12', 'packages': {'': {'version': '0.1.12'}}}))
+            with patch.dict(os.environ, {'GITHUB_RUN_NUMBER': '43'}, clear=True):
+                self.assertEqual(release.metadata(True)['version'], '0.1.43')
+                self.assertEqual(release.metadata(True)['version'], '0.1.43')
+                with patch.dict(os.environ, {'GITHUB_RUN_ATTEMPT': '2'}):
+                    self.assertEqual(release.metadata()['version'], '0.1.43')
+                self.assertEqual(json.loads((root/'package-lock.json').read_text())['packages']['']['version'], '0.1.43')
+            for value in ['0', '-1', 'oops']:
+                with patch.dict(os.environ, {'GITHUB_RUN_NUMBER': value}, clear=True):
+                    with self.assertRaisesRegex(ValueError, 'run number'):
+                        release.metadata()
+            with patch.dict(os.environ, {}, clear=True):
+                self.assertFalse(release.metadata()['publish'])
 
     def fixture(self, directory):
         version = release.metadata()['version']

@@ -291,8 +291,9 @@ choice affects application packages, not extension update channels.
 Distribution uses the same tested platform VSIXs for GitHub Releases and
 Marketplace. The publisher is `ZohmControlGmbH`; its active Trusted Publishing
 policy matches `ultrazohm/ultrazohm_sw` and `ultrazohm-extension.yml`, with no
-GitHub environment. Tagged releases publish to GitHub first, then Marketplace
-through OIDC. Branch pushes and manual workflow runs produce test artifacts only.
+GitHub environment. Matching-path pushes to main/develop publish stable/prerelease
+to GitHub first, then Marketplace through OIDC. PRs, feature branches and manual
+workflow runs produce test artifacts only.
 Account creation and trust-policy administration remain outside the repository.
 
 ## Automated extension releases
@@ -303,11 +304,15 @@ native runners. It runs unit tests, verifies checksum-pinned bundled runtimes
 and redistribution notices, smoke-tests published PyPI applications, and runs
 fixture tasks in minimum-supported and current stable VS Code hosts.
 
-Branch/PR/manual builds upload downloadable workflow artifacts. Only an explicit
-`ultrazohm-extension-v<version>` tag matching `package.json` publishes a GitHub
-Release after both platforms pass. It includes both VSIXs, SHA256SUMS and a
-runtime/application verification manifest. Odd minor versions are prereleases;
-even minor versions are stable. This is independent of the user-selected PyPI
+Every build uploads downloadable workflow artifacts. After both platforms pass,
+matching-path main pushes publish stable releases and develop pushes publish
+prereleases. CI stamps `MAJOR.MINOR.<workflow run number>` into the runner's
+package metadata without committing it; reruns retain that version. The branch
+selects the Marketplace prerelease flag; numeric versions do not use `.dev0` or
+odd/even minor rules. The GitHub Release creates its version tag at the exact
+commit automatically and includes both VSIXs, SHA256SUMS and a verification
+manifest. PR, feature-branch and manual runs never publish. This is independent
+of the user-selected PyPI
 channel. Marketplace publishing uses GitHub OIDC Trusted Publishing for
 `ZohmControlGmbH`, after the GitHub Release succeeds. It uploads the same verified
 platform VSIXs with pinned `vsce`, without rebuilding or storing a PAT. See

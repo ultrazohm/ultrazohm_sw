@@ -19,16 +19,31 @@ def digest(file):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
-def metadata():
-    package = json.loads((ROOT / 'package.json').read_text())
-    version = package['version']
-    if package['name'] != 'ultrazohm-extension' or not re.fullmatch(r'\d+\.\d+\.\d+', version):
+def metadata(stamp=False):
+    package_path = ROOT / 'package.json'
+    package = json.loads(package_path.read_text())
+    base = package['version']
+    match = re.fullmatch(r'(\d+)\.(\d+)\.\d+', base)
+    if package['name'] != 'ultrazohm-extension' or not match:
         raise ValueError('Expected ultrazohm-extension and numeric extension version')
-    tag = 'ultrazohm-extension-v' + version
+    run = os.environ.get('GITHUB_RUN_NUMBER')
+    if run is not None and (not run.isdecimal() or int(run) < 1):
+        raise ValueError('Invalid workflow run number')
+    version = f'{match[1]}.{match[2]}.{int(run)}' if run else base
     ref = os.environ.get('GITHUB_REF', '')
-    if ref.startswith('refs/tags/') and ref != 'refs/tags/' + tag:
-        raise ValueError(f'Tag must match package.json: {tag}')
-    return {'version': version, 'tag': tag, 'prerelease': bool(int(version.split('.')[1]) % 2)}
+    branch_run = (os.environ.get('GITHUB_EVENT_NAME') == 'push'
+                  and ref in {'refs/heads/main', 'refs/heads/develop'})
+    prerelease = not (branch_run and ref == 'refs/heads/main')
+    publish = bool(run and branch_run and os.environ.get('GITHUB_REPOSITORY') == 'ultrazohm/ultrazohm_sw')
+    if stamp:
+        package['version'] = version
+        package_path.write_text(json.dumps(package, indent=2) + '\n')
+        lock_path = ROOT / 'package-lock.json'
+        lock = json.loads(lock_path.read_text())
+        lock['version'] = lock['packages']['']['version'] = version
+        lock_path.write_text(json.dumps(lock, indent=2) + '\n')
+    return {'version': version, 'tag': 'ultrazohm-extension-v' + version,
+            'prerelease': prerelease, 'publish': publish}
 
 
 def verify(target, vsix, unpack, channel):
@@ -138,7 +153,7 @@ This extension bundles uv, Python and launcher scripts. Application packages dow
 
 Setup, Software build and Control sections provide the UltraZohm tools. Vitis remains an external prerequisite. Flash UZ uses the CLI service to finalize recordings, program via JTAG and reconnect when a device target is known. It opens an interactive CLI if needed and verifies the selected checkout.
 
-Uninstall either local prototype (`ultrazohm-local.ultrazohm` or `ultrazohm-local.ultrazohm-extension`) before installing this extension to avoid duplicate controls. The extension ID is `ZohmControlGmbH.ultrazohm-extension`; Marketplace publication follows the GitHub Release in the tagged workflow. Existing `ultrazohm.*` settings are retained, but the renamed extension uses a fresh private cache.
+Uninstall either local prototype (`ultrazohm-local.ultrazohm` or `ultrazohm-local.ultrazohm-extension`) before installing this extension to avoid duplicate controls. The extension ID is `ZohmControlGmbH.ultrazohm-extension`; Marketplace publication follows the GitHub Release for successful main/develop branch runs. Existing `ultrazohm.*` settings are retained, but the renamed extension uses a fresh private cache.
 
 GitHub VSIX updates are installed manually. Neither real hardware programming nor a real Vitis installation is exercised by CI.
 ''')
@@ -147,7 +162,7 @@ GitHub VSIX updates are installed manually. Neither real hardware programming no
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='command', required=True)
-    commands.add_parser('metadata')
+    commands.add_parser('metadata').add_argument('--stamp', action='store_true')
     check = commands.add_parser('verify')
     check.add_argument('--target', choices=TARGETS, required=True)
     check.add_argument('--vsix', type=Path, required=True)
@@ -157,7 +172,7 @@ if __name__ == '__main__':
     manifest.add_argument('directory', type=Path)
     args = parser.parse_args()
     if args.command == 'metadata':
-        for key, value in metadata().items():
+        for key, value in metadata(args.stamp).items():
             print(f'{key}={str(value).lower() if isinstance(value, bool) else value}')
     elif args.command == 'verify':
         verify(args.target, args.vsix.resolve(), args.extract.resolve(), args.smoke_channel)

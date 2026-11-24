@@ -9,8 +9,9 @@ on first use. Vitis remains an external prerequisite for firmware operations.
 ## CI and testing before a release
 
 Pushes to `feature/vscode-extension`, `main`, `develop`, relevant pull requests,
-and manual workflow runs build both native platforms. No release is published by
-a branch push or manual run. Tagged releases publish to GitHub and then Marketplace. Download the two artifacts from the Actions run,
+and manual workflow runs build both native platforms. Matching-path pushes to `main` publish stable releases; pushes to `develop`
+publish prereleases after checks pass. Feature branches, PRs and manual runs only
+validate. Tags are not triggers. Download the two artifacts from the Actions run,
 unzip each artifact and select the VSIX matching the test machine.
 
 CI checks JavaScript, launcher and release-tool tests, downloads SHA-256-verified
@@ -68,33 +69,38 @@ root by `vscode:prepublish`, not maintained separately. PyPI packages remain
 floating according to the selected channel; a release receipt records the exact
 versions tested, not a permanent application dependency lock.
 
-## Publish a GitHub Release
+## Automatic branch releases
 
-1. Update `package.json` and `package-lock.json` together, and add release notes
-   to `CHANGELOG.md`. Use numeric versions. Odd minor versions (such as `0.1.11`)
-   are prereleases; even minor versions (such as `0.2.0`) are stable. This policy
-   is separate from the application's stable/prerelease selector.
-2. Commit and push the release commit. Verify both platform builds and manual
-   smoke tests. Review changes to runtime pins and bundled launcher scripts.
-3. Explicitly create and push the matching tag:
+The extension follows the CLI/DataViewer branch policy: matching-path pushes to
+`main` publish stable releases, and matching-path pushes to `develop` publish
+prereleases. Both native platform checks must pass. The existing path filters
+limit which pushes start the workflow. PRs, feature-branch pushes and manual
+workflow runs build/test only; fork repositories cannot publish.
 
-   ```sh
-   git tag -a ultrazohm-extension-v0.1.11 -m 'ultrazohm-extension 0.1.11'
-   git push origin ultrazohm-extension-v0.1.11
-   ```
+CI stamps `MAJOR.MINOR.<GITHUB_RUN_NUMBER>` into `package.json` and
+`package-lock.json` in the runner checkout only. With the current base this is
+`0.1.<run>`. No version-bump commits are needed. Both platforms and publishing
+jobs derive the same version, and rerunning a job retains that version. Keep
+the workflow filename unchanged so its run-number counter and trust policy
+remain valid. The extension's counter is independent of the CLI/viewer counter.
 
-The tag workflow rebuilds/tests both targets. It rejects mismatched versions,
-missing platform verification receipts and changed artifact hashes. A release
-job with narrowly scoped `contents: write` creates a draft, attaches both VSIXs,
-`SHA256SUMS` and `release-manifest.json`, then publishes it. No PAT is needed;
-it uses the workflow's GitHub token. Checksums detect changed downloads and are
-not independent signatures. GitHub organization policy must permit the release
-job to use its declared write permission.
+The branch selects the channel; odd/even minor numbers no longer select it.
+Marketplace versions are numeric, so prereleases use the same numeric format
+with `--pre-release`, rather than Python's `.dev0`. Prerelease users can receive
+a newer stable version and remain opted in to later prereleases. The extension's
+in-app Python-package channel setting remains independent.
 
-The workflow never overwrites published assets. If publication fails after draft
-creation, inspect that draft; remove only the incomplete draft before rerunning
-the release job, or finish publishing its verified complete assets manually.
-Do not reuse published versions or move published tags. Fix with a new version.
+After verification, the GitHub Release job creates
+`ultrazohm-extension-v<version>` at the exact build commit automatically, creates
+a draft with both VSIXs, `SHA256SUMS` and `release-manifest.json`, then publishes
+it. No manually pushed tag or PAT is required. Tags identify releases; they do
+not initiate builds. The job rejects missing receipts or altered artifact hashes.
+
+Published assets are never overwritten. Rerun only failed jobs when possible.
+If a GitHub draft was left incomplete, inspect/remove that incomplete draft
+before retrying its job. Do not rebuild and replace an already published version;
+a new matching-path push gets a fresh run number. Checksums detect changed bytes
+but are not independent signatures.
 
 ## Marketplace publication
 
@@ -105,9 +111,8 @@ matches repository owner `ultrazohm`, repository `ultrazohm_sw`, and workflow
 
 After both native builds pass and the GitHub Release succeeds, the Marketplace
 job downloads those same artifacts, verifies the build receipts and hashes, and
-publishes both VSIXs with pinned `vsce` using `--oidc`. The existing odd/even minor
-version policy selects prerelease/stable. Branch pushes and manual runs cannot
-publish. Use the matching version tag described above to trigger publication.
+publishes both VSIXs with pinned `vsce` using `--oidc`. The branch release rules
+above select stable/prerelease. No release is published by PR or manual runs.
 
 If Marketplace publishing fails after one platform is accepted, rerun the failed
 job: `--skip-duplicate` skips the accepted package and publishes the missing one.

@@ -31,6 +31,7 @@ const { runTests } = require('@vscode/test-electron');
   if (process.env.UZ_TEST_RECEIPT) {
     const receiptPath = path.resolve(process.env.UZ_TEST_RECEIPT);
     const receipt = JSON.parse(fs.readFileSync(receiptPath));
+    receipt.host_checks = { ...(receipt.host_checks || {}), [process.env.VSCODE_TEST_VERSION || 'stable']: result.vscodeVersion };
     receipt.vscode_tests = [...new Set([...(receipt.vscode_tests || []), result.vscodeVersion])];
     fs.writeFileSync(receiptPath, JSON.stringify(receipt, null, 2) + '\n');
   }

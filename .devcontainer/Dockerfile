@@ -16,7 +16,7 @@ RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
 
 # Build tools and GUI runtime libraries for headless ImGui tests.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-     && apt-get -y install --no-install-recommends build-essential tcl zstd xvfb xauth libgtk-3-0 libnss3 libasound2t64 libgbm1 libxss1 libatk-bridge2.0-0 \
+     && apt-get -y install --no-install-recommends build-essential gdb gdbserver tcl zstd xvfb xauth libgtk-3-0 libnss3 libasound2t64 libgbm1 libxss1 libatk-bridge2.0-0 \
                                                   make \
                                                   git \
                                                   curl \

@@ -90,9 +90,12 @@ def main():
                 sequence -= 1
                 message['seq'] = sequence
             write_message(sys.stdout.buffer, message)
+    # The reader may still block when the adapter exits. An unbuffered duplicate
+    # avoids holding Python stdin's buffered lock during interpreter shutdown.
+    input_stream = os.fdopen(os.dup(sys.stdin.fileno()), 'rb', buffering=0)
     def incoming():
         try:
-            forward_requests(sys.stdin.buffer, adapter.stdin, respond)
+            forward_requests(input_stream, adapter.stdin, respond)
         except (OSError, ValueError) as error:
             print('UltraZohm debugger: ' + str(error), file=sys.stderr)
         finally:

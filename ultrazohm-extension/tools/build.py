@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import release
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -38,9 +39,19 @@ def build(target, output, test=False):
                 env['GITHUB_SHA'] = 'local-unresolved'
 
         def run(*args):
-            subprocess.run(args, cwd=extension, env=env, check=True)
+            try:
+                subprocess.run(args, cwd=extension, env=env, check=True)
+            except Exception:
+                diagnostics = output / 'diagnostics' / target
+                diagnostics.mkdir(parents=True, exist_ok=True)
+                (diagnostics / 'failed-command.json').write_text(json.dumps(list(args), indent=2))
+                # Preserve VS Code profiles, including extension-host logs.
+                for profile in Path(tempfile.gettempdir()).glob('ultrazohm-extension-test-*'):
+                    shutil.copytree(profile, diagnostics / profile.name, dirs_exist_ok=True)
+                raise
         run(sys.executable, 'tools/release.py', 'metadata', '--stamp')
-        version = json.loads((extension / 'package.json').read_text())['version']
+        info = release.metadata()
+        version = info['version']
         run('npm', 'ci')
         run('npm', 'run', 'check')
         run('npm', 'test')
@@ -49,18 +60,21 @@ def build(target, output, test=False):
         run(sys.executable, 'tools/bundle.py', '--target', target, *(['--cache', str(cache / target)] if cache else []))
         run(sys.executable, '-m', 'unittest', 'discover', '-s', 'tools', '-p', 'test_serial.py')
         vsix = extension / f'ultrazohm-extension-{target}-{version}.vsix'
-        flags = [] if env.get('GITHUB_EVENT_NAME') == 'push' and env.get('GITHUB_REF') == 'refs/heads/main' else ['--pre-release']
+        flags = ['--pre-release'] if info['prerelease'] else []
         run('npm', 'run', 'package', '--', '--target', target, '--out', str(vsix), *flags)
         run(sys.executable, 'tools/release.py', 'inspect', '--target', target, '--vsix', str(vsix), '--extract', '.archive-test')
         if test:
             if target != 'linux-x64':
                 raise ValueError('Windows runtime verification requires a Windows host')
             run(sys.executable, 'tools/release.py', 'verify', '--target', target, '--vsix', str(vsix), '--extract', '.package-test', '--smoke-channel', 'prerelease' if flags else 'stable')
+            run(sys.executable, 'tools/debug-integration.py')
             env['UZ_EXTENSION_TEST_PATH'] = '.package-test/extension'
             env['UZ_TEST_RECEIPT'] = str(vsix.with_suffix('.json'))
             for version in ['1.93.0', 'stable']:
                 env['VSCODE_TEST_VERSION'] = version
                 run('xvfb-run', '-a', 'npm', 'run', 'test:host')
+        # An unverified rebuild must never retain a previous verification receipt.
+        (output / vsix.with_suffix('.json').name).unlink(missing_ok=True)
         shutil.copy2(vsix, output / vsix.name)
         receipt = vsix.with_suffix('.json')
         if receipt.exists():

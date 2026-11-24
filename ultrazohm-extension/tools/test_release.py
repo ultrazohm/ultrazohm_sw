@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import tempfile
 import unittest
+import zipfile
 from unittest.mock import patch
 
 import bundle
@@ -75,8 +76,8 @@ class ReleaseTest(unittest.TestCase):
             file.write_bytes(target.encode())
             file.with_suffix('.json').write_text(json.dumps(dict(
                 version=version, target=target, file=file.name,
-                sha256=release.digest(file), commit='same-commit',
-                tested_channel='prerelease', tested_packages={'example': '1.0'})))
+                sha256=release.digest(file), commit=os.environ.get('GITHUB_SHA', 'same-commit'),
+                tested_channel='prerelease', prerelease=True, host_checks={'1.93.0':'1.93.0','stable':'1.147.0'}, tested_packages={'example': '1.0'})))
 
     def test_manifest_requires_both_unchanged_platforms_from_same_commit(self):
         with tempfile.TemporaryDirectory() as temp, patch.dict(os.environ, {'GITHUB_REF': '', 'UZ_EXTENSION_PUBLISH_PRERELEASE': ''}):
@@ -88,7 +89,7 @@ class ReleaseTest(unittest.TestCase):
             data = json.loads(receipt.read_text())
             data['commit'] = 'different'
             receipt.write_text(json.dumps(data))
-            with self.assertRaisesRegex(ValueError, 'same commit'):
+            with self.assertRaisesRegex(ValueError, 'same commit|current commit'):
                 release.aggregate(directory)
             self.fixture(directory)
             receipt.with_suffix('.vsix').write_bytes(b'altered')
@@ -98,6 +99,27 @@ class ReleaseTest(unittest.TestCase):
             receipt.unlink()
             with self.assertRaisesRegex(ValueError, 'Both tested platform'):
                 release.aggregate(directory)
+
+    def test_release_rejects_wrong_commit_channel_and_missing_host_checks(self):
+        with tempfile.TemporaryDirectory() as temp, patch.dict(os.environ, {'GITHUB_REF':'', 'GITHUB_SHA':'same-commit'}):
+            directory = Path(temp)
+            for field, value, message in [('commit','old','current commit'), ('prerelease',False,'channel mismatch'), ('tested_channel','stable','channel mismatch'), ('host_checks',{},'host checks')]:
+                self.fixture(directory)
+                receipt = next(directory.glob('*.json'))
+                data = json.loads(receipt.read_text())
+                data[field] = value
+                receipt.write_text(json.dumps(data))
+                with self.assertRaisesRegex(ValueError, message):
+                    release.aggregate(directory)
+
+    def test_archive_channel_must_match_release_metadata(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(release, 'metadata', return_value={'version':'0.1.9','prerelease':False}):
+            root = Path(temp)
+            vsix = root/'ultrazohm-extension-linux-x64-0.1.9.vsix'
+            with zipfile.ZipFile(vsix,'w') as archive:
+                archive.writestr('extension.vsixmanifest', '<Package TargetPlatform="linux-x64"><Property Id="Microsoft.VisualStudio.Code.PreRelease" Value="true"/></Package>')
+            with self.assertRaisesRegex(ValueError, 'release channel'):
+                release.inspect_archive('linux-x64',vsix,root/'unpacked')
 
     def test_download_checks_content_and_cache(self):
         with tempfile.TemporaryDirectory() as temp:

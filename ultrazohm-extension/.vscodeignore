@@ -19,3 +19,5 @@ RELEASING.md
 .build-cache/**
 
 Makefile
+
+vscode_extention_design.md

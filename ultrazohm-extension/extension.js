@@ -296,7 +296,8 @@ function activate(context) {
         if ((key === 'flash' || key === 'debug') && !capabilities.noReconnect) {
           throw new Error('Flash UZ requires a current CLI with service-managed flashing. Use Update Python packages for the selected channel.');
         }
-        if (key !== 'flash' && key !== 'debug' && root && !capabilities.repo) throw new Error('This CLI package does not support selecting a repository. Choose a compatible release channel.');
+        if (key === 'cli' && (!capabilities.repo || !capabilities.xsct)) throw new Error('CLI requires serve --repo and --xsct. Use Update Python packages.');
+        if (['generate', 'build', 'build-clean'].includes(key) && (!capabilities.repo || !capabilities.local)) throw new Error('CLI requires local firmware commands with --repo and --local. Use Update Python packages.');
       }
       let args;
       if (key === 'updatePackages') args = ['-B', path.join(context.extensionPath, 'update-packages.py'),
@@ -308,7 +309,7 @@ function activate(context) {
         const address = endpoint();
         if (await portInUse(address)) throw new Error(`A service already occupies ${address}. Use its existing console or choose another ultrazohm.cli.endpoint. No service was stopped.`);
         args = ['cli', selected, '--', '--endpoint', address, 'serve', '--interactive', ...(root ? ['--repo', root] : [])];
-        if (xsct.path && capabilities.xsct) {
+        if (xsct.path) {
           debugBridge = bridge(context.extensionPath, storage, env.UZ_BUNDLED_PYTHON, root, xsct.path, address);
           args.push('--xsct', debugBridge.launcher);
         }
@@ -330,7 +331,7 @@ function activate(context) {
           '--from', 'ultrazohm-cli', 'python', path.join(context.extensionPath, 'flash.py'),
           '--endpoint', address, '--repo', root, '--wait-service', startService ? '30' : '0'];
         if (key === 'debug') args.push('--debug-config', cliTask.definition.debugBridge);
-      } else args = ['cli', selected, '--', key, ...(capabilities.local ? ['--local'] : []), '--repo', root];
+      } else args = ['cli', selected, '--', key, '--local', '--repo', root];
       const invocation = key === 'updatePackages' || key === 'flash' || key === 'debug' ? args : invoke(args);
       const debugRun = key === 'debug' ? randomUUID() : undefined;
       const task = new vscode.Task({ ...(debugRun ? { debugRun } : {}), type: 'ultrazohm', action: action.group, operation: key, repository: identity, launcherSource: source, ...(debugBridge ? { debugBridge: debugBridge.config, cliEndpoint: endpoint(), debugXsct: xsct.path } : {}) }, scope,

@@ -46,6 +46,7 @@ on:
 
 permissions:
   contents: read
+  packages: read
 
 concurrency:
   group: ultrazohm-extension-${{ github.workflow }}-${{ github.ref }}
@@ -61,6 +62,17 @@ env:
   UZ_EXTENSION_PUBLISH_PRERELEASE: ${{ inputs.publish_prerelease }}
 
 jobs:
+  metadata:
+    runs-on: ubuntu-22.04
+    outputs:
+      publish: ${{ steps.meta.outputs.publish }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - id: meta
+        run: python3 tools/release.py metadata >> "$GITHUB_OUTPUT"
+
   image:
     uses: ./.github/workflows/ci-image.yml
     permissions:
@@ -72,6 +84,9 @@ jobs:
     runs-on: ubuntu-22.04
     container:
       image: ${{ needs.image.outputs.image }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     env:
       UZ_BUILD_IMAGE: ${{ needs.image.outputs.image }}
     steps:
@@ -79,6 +94,13 @@ jobs:
         with:
           persist-credentials: false
       - run: make extension-build TARGET=win32-x64
+      - name: Preserve failed build diagnostics
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: diagnostics-cross-windows
+          path: ultrazohm-extension/dist/diagnostics
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: cross-win32-x64
@@ -91,6 +113,9 @@ jobs:
     runs-on: ubuntu-22.04
     container:
       image: ${{ needs.image.outputs.image }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     env:
       UZ_BUILD_IMAGE: ${{ needs.image.outputs.image }}
     timeout-minutes: 30
@@ -101,6 +126,13 @@ jobs:
           lfs: false
       - name: Package and verify in isolated build directory
         run: make extension-test
+      - name: Preserve failed build diagnostics
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: diagnostics-linux
+          path: ultrazohm-extension/dist/diagnostics
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ultrazohm-extension-linux-x64
@@ -245,12 +277,8 @@ jobs:
 
   release:
     name: GitHub Release
-    needs: [build_linux, build_windows, verify_cross_windows]
-    if: >-
-      github.repository == 'ultrazohm/ultrazohm_sw' &&
-      ((github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')) ||
-       (github.event_name == 'workflow_dispatch' && inputs.publish_prerelease &&
-        (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/feature/vscode-extension')))
+    needs: [metadata, build_linux, build_windows, verify_cross_windows]
+    if: needs.metadata.outputs.publish == 'true'
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     permissions:
@@ -281,12 +309,8 @@ jobs:
 
   marketplace:
     name: VS Code Marketplace
-    needs: release
-    if: >-
-      github.repository == 'ultrazohm/ultrazohm_sw' &&
-      ((github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')) ||
-       (github.event_name == 'workflow_dispatch' && inputs.publish_prerelease &&
-        (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/feature/vscode-extension')))
+    needs: [metadata, release]
+    if: needs.metadata.outputs.publish == 'true'
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     permissions:

@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Authenticate shared CI image pulls; validate release commit, channel and VS Code test receipts.
+- Centralize release decisions, preserve failed-build diagnostics, and discard stale local receipts.
+- Require the current CLI command contract instead of legacy firmware fallbacks.
+- Exercise the real C/C++ adapter against a local GDB target and fix proxy shutdown while stdin remains open.
+- Exclude the internal design document from packaged extensions.
+
 ## 0.1.18
 
 - Default to the unique UltraZohm USB interface 02 (channel C / SoM UART) on first connection when interface metadata is available. Preserve saved selections and prompt for ambiguous devices.

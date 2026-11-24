@@ -164,12 +164,12 @@ test('visibility selector still persists per workspace', async () => {
   assert.ok((await s.events.providers['ultrazohm.setup'].getChildren()).some(row => row.label === 'Terminal: hidden'));
 });
 
-test('older PyPI CLI uses local firmware commands without --local and gets XSCT through task PATH', async () => {
+test('unsupported CLI contract requests a package update without launching tasks', async () => {
   const s = setup(); s.state.capabilities = { local: false, xsct: false, repo: true }; s.state.xsct = { path: '/Vitis bin/xsct' };
-  await s.run('generate'); const task = s.tasks()[0];
-  assert.equal(task.execution.args.includes('--local'), false);
-  assert.ok(task.execution.options.env.PATH.startsWith('/Vitis bin:'));
-  await s.run('cli'); assert.equal(s.tasks()[1].execution.args.includes('--xsct'), false);
+  await s.run('generate'); await s.run('cli');
+  assert.equal(s.tasks().length, 0);
+  assert.equal(s.errors.length, 2);
+  assert(s.errors.every(message => message.includes('Update Python packages')));
 });
 
  test('bundled apps run in an unrelated folder without a checkout', async () => {

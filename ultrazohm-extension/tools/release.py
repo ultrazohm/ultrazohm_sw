@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import zipfile
+import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGETS = ['linux-x64', 'win32-x64']
@@ -63,6 +64,10 @@ def inspect_archive(target, vsix, unpack):
         manifest = archive.read('extension.vsixmanifest').decode()
         if f'TargetPlatform="{target}"' not in manifest:
             raise ValueError('Incorrect VSIX target')
+        document = ET.fromstring(manifest)
+        properties = {element.get('Id'): element.get('Value') for element in document.iter() if element.tag.split('}')[-1] == 'Property'}
+        if (properties.get('Microsoft.VisualStudio.Code.PreRelease') == 'true') != info['prerelease']:
+            raise ValueError('VSIX release channel does not match intended release')
         package = json.loads(archive.read('extension/package.json'))
         if package['name'] != 'ultrazohm-extension' or package['publisher'] != 'ZohmControlGmbH' or package['version'] != info['version']:
             raise ValueError('Incorrect extension identity/version')
@@ -150,6 +155,14 @@ def aggregate(directory):
     for receipt in receipts:
         if receipt['version'] != info['version'] or receipt['sha256'] != digest(directory / receipt['file']):
             raise ValueError('Artifact changed after verification')
+        expected_commit = os.environ.get('GITHUB_SHA')
+        if expected_commit and receipt['commit'] != expected_commit:
+            raise ValueError('Artifact does not match the current commit')
+        channel = 'prerelease' if info['prerelease'] else 'stable'
+        if receipt.get('prerelease') != info['prerelease'] or receipt.get('tested_channel') != channel:
+            raise ValueError('Artifact release channel mismatch')
+        if not all(receipt.get('host_checks', {}).get(label) for label in ('1.93.0', 'stable')):
+            raise ValueError('Both VS Code host checks are required')
         if not receipt['tested_packages'] or not receipt['tested_channel']:
             raise ValueError('Published-package smoke tests required for release')
     if len({r['commit'] for r in receipts}) != 1:

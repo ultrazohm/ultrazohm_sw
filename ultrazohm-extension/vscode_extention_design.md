@@ -419,3 +419,17 @@ Publication preserves main stable/develop prerelease and explicit feature
 prerelease dispatch. GitHub retries verify existing bytes; Marketplace uploads
 the tested packages and separately reports public availability for both targets.
 See `ultrazohm-extension/RELEASING.md` for commands and operational details.
+
+### Review hardening
+
+The image-consuming jobs explicitly authenticate to GHCR with package-read
+permission. Publication eligibility is computed by `release.py metadata`.
+Release aggregation requires the current commit, matching prerelease/channel
+metadata, and successful minimum/current VS Code host checks. Plain builds
+invalidate prior verification receipts. Internal design history is not shipped.
+
+The supported CLI contract requires local firmware options and service XSCT
+selection; older command shapes are rejected with an update instruction.
+Linux integration now exercises the real Microsoft C/C++ 1.35.6 adapter through
+our proxy against a disposable gdbserver target. Hardware and native Windows
+acceptance remain separate. Failed isolated builds preserve diagnostics in dist.

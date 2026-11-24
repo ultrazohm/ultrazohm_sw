@@ -218,3 +218,21 @@ release retries verify existing assets and only fill missing draft assets;
 conflicting published assets are rejected. Marketplace uploads reuse tested
 VSIXs, then check both targets for up to roughly two minutes. Pending processing
 is reported separately and never causes repackaging.
+
+## Release verification and integration checks
+
+Release decisions come from `tools/release.py metadata`. Receipts must match the
+current commit and channel and record both minimum/current VS Code host checks.
+An unverified rebuild removes any old receipt. Failed isolated builds export
+VS Code profiles and the failed command under `dist/diagnostics`; CI uploads
+these on failure. The internal design document is excluded from VSIXs.
+
+Linux `make extension-test` also downloads Microsoft C/C++ 1.35.6 and exercises
+the real adapter through our proxy against a disposable local gdbserver target.
+It checks initialization, launch, foreign-source breakpoint filtering and detach
+without terminating the target. This requires gcc, gdb and gdbserver (included
+in the shared image) and does not access Vitis or hardware. Native Windows
+adapter/hardware acceptance remains separate.
+
+Native Windows packaging remains until the cross-produced VSIX passes native
+Windows CI. This migration gate must not be bypassed just to remove duplicate jobs.

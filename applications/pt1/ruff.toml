@@ -1,0 +1,26 @@
+# Keep the uploader checks independent of neighboring application scripts.
+include = ["update_parameters_prototype.py", "update_parameters_prototype_fast.py"]
+line-length = 88
+target-version = "py310"
+
+[format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "lf"
+
+[lint]
+select = [
+    "E", "F", "W", # pycodestyle and Pyflakes
+    "I",           # import sorting
+    "N",           # naming
+    "UP",          # modern Python
+    "B",           # bugbear
+    "C4",          # comprehensions
+    "SIM",         # simplifications
+    "PIE",         # redundant code
+    "RET",         # return statements
+    "ARG",         # unused arguments
+    "PTH",         # pathlib
+    "RUF",         # Ruff-specific checks
+]

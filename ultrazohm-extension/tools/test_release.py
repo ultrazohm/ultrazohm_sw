@@ -80,7 +80,7 @@ class ReleaseTest(unittest.TestCase):
                 tested_channel='prerelease', prerelease=True, host_checks={'1.93.0':'1.93.0','stable':'1.147.0'}, tested_packages={'example': '1.0'})))
 
     def test_manifest_requires_both_unchanged_platforms_from_same_commit(self):
-        with tempfile.TemporaryDirectory() as temp, patch.dict(os.environ, {'GITHUB_REF': '', 'UZ_EXTENSION_PUBLISH_PRERELEASE': ''}):
+        with tempfile.TemporaryDirectory() as temp, patch.dict(os.environ, {}, clear=True):
             directory = Path(temp)
             self.fixture(directory)
             release.aggregate(directory)
@@ -101,7 +101,7 @@ class ReleaseTest(unittest.TestCase):
                 release.aggregate(directory)
 
     def test_release_rejects_wrong_commit_channel_and_missing_host_checks(self):
-        with tempfile.TemporaryDirectory() as temp, patch.dict(os.environ, {'GITHUB_REF':'', 'GITHUB_SHA':'same-commit'}):
+        with tempfile.TemporaryDirectory() as temp, patch.dict(os.environ, {'GITHUB_SHA': 'same-commit'}, clear=True):
             directory = Path(temp)
             for field, value, message in [('commit','old','current commit'), ('prerelease',False,'channel mismatch'), ('tested_channel','stable','channel mismatch'), ('host_checks',{},'host checks')]:
                 self.fixture(directory)

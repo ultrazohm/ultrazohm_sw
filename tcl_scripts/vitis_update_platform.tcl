@@ -26,55 +26,6 @@
 set ::uz_vitis_script_dir [file dirname [file normalize [info script]]]
 
 
-proc app_clean {{name *}} {
-  set tmplist [app list]
-  set tmplist [split $tmplist "\n"]
-  set index 0
-  foreach element $tmplist {
-    if {[catch {
-      if {![string match "*==*" $element] && ! [string match "*NAME*" $element]  && ! [string match "" $element]} {
-        set tmpname [lindex [split $element " "] 1];
-        if {[string match $name $tmpname]} {
-          app clean $tmpname
-          puts "clean -name $tmpname "
-        } else {
-          puts "skip $tmpname"
-        }
-      } else {
-        puts "Debug: (UZ) $element"
-      }
-    } result]} {
-      puts "Error:(UZ) Script (app_clean) failed failed at $element with: $result."
-    }
-    incr index
-  }
-}
-
-proc app_build {{name *}} {
-  set tmplist [app list]
-  set tmplist [split $tmplist "\n"]
-  set index 0
-  foreach element $tmplist {
-    if {[catch {
-      if {![string match "*==*" $element] && ! [string match "*NAME*" $element]  && ! [string match "" $element]} {
-        set tmpname [lindex [split $element " "] 1];
-        if {[string match $name $tmpname]} {
-          app build $tmpname
-          puts "build $tmpname "
-        } else {
-          puts "skip $tmpname"
-        }
-      } else {
-        puts "Debug: (UZ) $element"
-      }
-    } result]} {
-      puts "Error:(UZ) Script (app_build) failed at $element with: $result."
-    }
-    incr index
-  }
-}
-
-
 proc vitis_main {} {
 
 set WS_PATH [getws]

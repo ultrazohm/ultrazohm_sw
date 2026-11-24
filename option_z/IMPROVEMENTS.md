@@ -418,7 +418,11 @@ Causes:
    `Xil_DCacheFlushRange` masks IRQ/FIQ over the range and its DSB; the
    main loop flushed the DAQ chain with it in 1 KB pieces, and the ISR
    started up to 2 us late. The chain is now flushed line by line with
-   interrupts enabled.
+   interrupts enabled (the loop of `Xil_DCacheFlushRange` without its
+   lock). Not a fix: `Xil_DCacheFlushRange` in 128 or 32 B pieces. Same
+   start delay, but every call waits for its own write-back: flush CPU time
+   2.36 and 4.07 us/KB instead of 1.29, the exchanges took 19.9 and 30.5 %
+   of the R5 instead of 16.1 % (900 B/cycle).
 3. **ISR interrupting the DAQ copy (the smaller bumps).** The copy into the
    OCM leaves write-backs in flight and evicts ISR data. The ISR then has
    about twice the D-cache misses, and its accesses to the PL wait longer:

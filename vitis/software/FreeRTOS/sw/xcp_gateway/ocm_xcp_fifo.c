@@ -106,6 +106,10 @@
 #define OCM_XCP_APU
 #endif
 
+#ifdef OCM_XCP_RPU
+#include "xpseudo_asm.h" /* mtcp(), dsb(), XREG_CP15_CLEAN_INVAL_DC_LINE_MVA_POC */
+#endif
+
 /* OCM regions in bank 3 (0xFFFF0000, 64 KB). JavaScope, which is off under
  * XCP, only uses the first bytes of the bank (its data struct and the boot
  * version words), so the rest is free:
@@ -172,20 +176,27 @@ static volatile size_t cto_frame_addr = XCP_OUT_CTO_FRAME_ADDR;
 #endif
 
 #ifdef OCM_XCP_RPU
-/* Write the lines of [a, end) back to the OCM and drop them from the R5 data
- * cache (clean + invalidate to the point of coherency, what
- * Xil_DCacheFlushRange() does) WITHOUT masking interrupts.
- * Xil_DCacheFlushRange() masks IRQ/FIQ over the whole range and its final
- * DSB; on the DAQ chain, flushed by the main loop underneath the control ISR,
- * that delayed the ISR start by up to 2 us even in 1 KB pieces (bench
- * 2026-11-24, tools/xcp_test/isr_jitter.py). The control ISR never touches
- * XCP_OUT, so it may run between two lines. The DSB completes the write-back
- * before the caller publishes a sequence word. */
-static void ocm_xcp_flush_range_irq_on(size_t a, size_t end) {
-    for (a &= ~(size_t)31u; a < end; a += 32u) {
-        __asm__ volatile("mcr p15, 0, %0, c7, c14, 1" ::"r"(a) : "memory"); /* DCCIMVAC */
+/* Xil_DCacheFlushRange() without its interrupt lock.
+ *
+ * Writes the cache lines of [a, end) back to the OCM and removes them from
+ * the R5 data cache, with the same loop and the same final DSB as the BSP
+ * function (xil_cache.c). The BSP function also disables IRQ and FIQ until
+ * its DSB has completed, i.e. until the whole range is in the OCM.
+ *
+ * Why not Xil_DCacheFlushRange(): the main loop flushes the DAQ chain (up to
+ * 32 KB) underneath the control ISR. In 1 KB pieces the lock delayed the ISR
+ * start by up to 2 us. Pieces of 128 or 32 bytes keep the delay small, but
+ * every call waits for its own write-back, which made the flush 1.8 and 3.2
+ * times slower (bench 2026-11-24, tools/xcp_test/isr_jitter.py), and the R5's
+ * copy work is what limits the DAQ throughput.
+ *
+ * The lock is not needed here: the control ISR never touches XCP_OUT, so it
+ * may run between two lines. */
+static void ocm_xcp_dcache_flush_range_no_irq_lock(size_t a, size_t end) {
+    for (a &= ~(size_t)31u; a < end; a += 32u) { /* 32-byte cache lines */
+        mtcp(XREG_CP15_CLEAN_INVAL_DC_LINE_MVA_POC, a);
     }
-    __asm__ volatile("dsb" ::: "memory");
+    dsb(); /* complete the write-back before the caller publishes a sequence word */
 }
 #endif
 
@@ -248,9 +259,9 @@ void ocm_xcp_fifo_cache_flush_after_write(void) {
     /* Publish order matters: payload first, sequence word last. A reader that
      * sees the new (even) cycle_seq must also see the chain content it
      * describes; flushing the header before the chain would break that.
-     * The chain (up to 32 KB) is flushed with interrupts enabled, see
-     * ocm_xcp_flush_range_irq_on(). */
-    ocm_xcp_flush_range_irq_on(addr_w_start, addr_w + 4u);
+     * The chain is flushed without the interrupt lock of
+     * Xil_DCacheFlushRange(), see ocm_xcp_dcache_flush_range_no_irq_lock(). */
+    ocm_xcp_dcache_flush_range_no_irq_lock(addr_w_start, addr_w + 4u);
     if (chain_seq_publish) {
         /* The chain bytes are in the OCM (the flush above ends with a DSB):
          * only now may the chain become valid. */

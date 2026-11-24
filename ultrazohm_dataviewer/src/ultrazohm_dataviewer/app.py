@@ -147,7 +147,7 @@ class DataViewerApp:
         console.initial_dock = MAIN_DOCK
         console.new_dock = CONSOLE_DOCK
         console.direction = imgui.Dir_.down
-        console.ratio = 0.4
+        console.ratio = 0.2
 
         return [left, logs, console]
 

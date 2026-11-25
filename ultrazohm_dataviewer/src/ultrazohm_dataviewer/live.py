@@ -546,10 +546,13 @@ class LiveController:
                     # A dead service cannot acknowledge shutdown. Release the local
                     # attachment so the user can change repositories and reconnect.
                     self._flash_shutdown.set()
-                    self._clear_attachment()
-                    self._poll_error = self._error = ""
+                    prefix = (
+                        "Detached"
+                        if self._release_attachment(endpoint)
+                        else f"Shutdown of {endpoint}"
+                    )
                     self._notice = (
-                        "Detached: acquisition service unavailable; device Stop and "
+                        f"{prefix}: acquisition service unavailable; device Stop and "
                         "recording finalization could not be confirmed. Check service.log."
                     )
                     self._control_succeeded(operation, endpoint)
@@ -559,7 +562,6 @@ class LiveController:
             try:
                 if operation == "shutdown":
                     self._flash_shutdown.set()
-                    self._poll_error = self._error = ""
                     self._finish_shutdown(endpoint, reply)
                 else:
                     self._notice = f"{operation}: request sent (device commands have no acknowledgment)"
@@ -571,17 +573,26 @@ class LiveController:
             self._control_succeeded(operation, endpoint)
 
     def _finish_shutdown(self, endpoint, reply):
-        """Release an attachment whose service accepted shutdown, then await it."""
-        self.owned.acknowledge_shutdown(endpoint, reply.get("service_id"))
-        self._clear_attachment()
-        if self._await_shutdown(
-            "Stopping device and finalizing recordings…",
-            external=False,
-            service_id=reply.get("service_id"),
-        ):
-            self._notice = "Service shut down; recordings finalized"
+        """Release the attachment to a service that accepted shutdown, then await it."""
+        service_id = reply.get("service_id")
+        self.owned.acknowledge_shutdown(endpoint, service_id)
+        where = "" if self._release_attachment(endpoint) else f" at {endpoint}"
+        if self._await_shutdown(endpoint, service_id):
+            self._notice = f"Service{where} shut down; recordings finalized"
         else:
-            self._notice = "Service shutdown accepted; finalization continues in the external service"
+            self._notice = f"Service{where} shutdown accepted; finalization continues in the external service"
+
+    def _release_attachment(self, endpoint):
+        """Forget the attachment only if it still belongs to ``endpoint``.
+
+        A queued shutdown can complete after the user attached another service.
+        That attachment stays, including its device Stop when the viewer closes.
+        """
+        if endpoint != self.endpoint:
+            return False
+        self._clear_attachment()
+        self._poll_error = self._error = ""
+        return True
 
     def _new_client(self, endpoint):
         if self.client_factory is not None:
@@ -876,48 +887,27 @@ class LiveController:
             )
         self._status_at = 0.0
 
-    def _await_shutdown(self, description, *, external, service_id=None):
-        """Wait after a shutdown request; the service itself sends device Stop and
-        finalizes both recordings. A viewer-owned service is awaited until it exits
-        and its exit code checked. Return whether completion was observed."""
+    def _await_shutdown(self, endpoint, service_id):
+        """Wait until the viewer-owned service at ``endpoint`` exits after shutdown.
+
+        The service itself sends device Stop and finalizes both recordings; its
+        exit code is checked. An external service is not awaited. Return whether
+        completion was observed.
+        """
+        description = "Stopping device and finalizing recordings…"
         self._progress(description)
         if (
-            service_id is not None
-            and service_id == self.owned.service_id
-            and self.owned.has_process(self.endpoint)
+            service_id is None
+            or service_id != self.owned.service_id
+            or not self.owned.has_process(endpoint)
         ):
-            code = self._wait_owned(description)
-            if code:
-                raise RuntimeError(
-                    f"Service shutdown failed (exit {code}); check service.log"
-                )
-            return code is not None
-        if not external:
             return False
-        from .flashing import connection_refused
-
-        def stopped():
-            try:
-                self.client.status()
-            except (OSError, RuntimeError) as exc:
-                return connection_refused(exc)
-            return False
-
-        # An external service stops listening before it finishes writing files;
-        # its finalization does not involve the device.
-        self._wait_for(stopped, 15, "the acquisition service to stop")
-        return True
-
-    def _wait_for(self, condition, timeout, description):
-        deadline = time.monotonic() + timeout
-        while time.monotonic() < deadline:
-            if self.stop_event.is_set():
-                raise RuntimeError("Viewer closed; flash preparation stopped")
-            if condition():
-                return
-            self._publish()
-            self.stop_event.wait(0.1)
-        raise RuntimeError(f"Timed out waiting for {description}")
+        code = self._wait_owned(description)
+        if code:
+            raise RuntimeError(
+                f"Service shutdown failed (exit {code}); check service.log"
+            )
+        return code is not None
 
     def _flash(self, kwargs, *, generation=None):
         from .flashing import connection_refused

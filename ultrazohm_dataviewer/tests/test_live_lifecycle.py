@@ -367,6 +367,66 @@ def test_shutdown_releases_the_attachment():
         controller.close()
 
 
+def _attached_elsewhere(clients):
+    """A controller attached to B while a shutdown for A is still pending."""
+    from ultrazohm_dataviewer.live import LiveController
+
+    controller = LiveController(clients.__getitem__)
+    controller.endpoint, controller.client, controller.attached = (
+        "B",
+        clients["B"],
+        True,
+    )
+    return controller
+
+
+@pytest.mark.parametrize("available", [True, False])
+def test_shutdown_of_another_service_keeps_the_current_attachment(available):
+    from unittest.mock import Mock
+
+    clients = {"A": Mock(), "B": Mock()}
+    if available:
+        clients["A"].shutdown.return_value = {"service_id": "service-a"}
+    else:
+        refused = RuntimeError("connection refused")
+        refused.code = "connection_refused"
+        clients["A"].shutdown.side_effect = refused
+    controller = _attached_elsewhere(clients)
+    try:
+        controller._urgent("shutdown", "A")
+        clients["A"].shutdown.assert_called_once_with()
+        assert (controller.endpoint, controller.attached) == ("B", True)
+        expected = (
+            "Service at A shutdown accepted"
+            if available
+            else "Shutdown of A: acquisition service unavailable"
+        )
+        assert expected in controller._notice
+    finally:
+        controller.close()
+    # B is still attached, so closing the viewer still stops its device.
+    clients["B"].stop.assert_called_once_with()
+    clients["A"].stop.assert_not_called()
+
+
+def test_owned_shutdown_is_awaited_after_attaching_elsewhere():
+    from unittest.mock import Mock
+
+    clients = {"A": Mock(), "B": Mock()}
+    clients["A"].shutdown.return_value = {"service_id": "owned"}
+    controller = _attached_elsewhere(clients)
+    controller.owned.endpoint, controller.owned.service_id = "A", "owned"
+    controller.owned.process = Mock()
+    controller.owned.process.poll.return_value = 0
+    controller.owned.process.returncode = 0
+    try:
+        controller._urgent("shutdown", "A")
+        assert "Service at A shut down; recordings finalized" in controller._notice
+        assert controller.attached
+    finally:
+        controller.close()
+
+
 @pytest.mark.parametrize("operation", ["stop", "shutdown"])
 def test_lifecycle_request_without_attachment_reports_an_error(operation):
     from unittest.mock import Mock

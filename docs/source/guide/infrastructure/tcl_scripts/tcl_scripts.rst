@@ -124,33 +124,19 @@ Usage:
 vitis_patch_UltraZohm_freertos_bsp.tcl
 --------------------------------------
 
-Inserts ``portMEMORY_BARRIER`` into the generated ``FreeRTOSConfig.h`` of the FreeRTOS BSP.
-The FreeRTOS port of Vitis 2022.2 for the A53 does not define it, and without it the A53 can freeze under network load.
-``vitis_generate_UltraZohm_workspace.tcl`` and ``vitis_update_platform.tcl`` build the platform with ``uz_vitis_generate_platform`` from this script.
-It inserts the define right before the build and checks afterwards that the FreeRTOS kernel library and the exported headers were built with it.
+The FreeRTOS port of Vitis 2022.2 for the A53 lacks ``portMEMORY_BARRIER``, and without it the A53 can freeze under network load.
+The same bug on the MicroBlaze port is described in `this FreeRTOS forum thread <https://forums.freertos.org/t/should-the-microblaze-freertos-port-define-portmemory-barrier/16704>`_ and fixed in `FreeRTOS-Kernel #621 <https://github.com/FreeRTOS/FreeRTOS-Kernel/pull/621>`_: without the barrier, the compiler may optimize ``xTaskResumeAll`` so that it loops forever.
+This script adds the define to the FreeRTOS BSP.
+You do not need to run it yourself: ``vitis_generate_UltraZohm_workspace.tcl`` and ``vitis_update_platform.tcl`` use it.
 
-Sometimes the define cannot be inserted at first: a ``bsp regenerate`` that fails on a file held open by another process (e.g. an indexer or a virus scanner) prints ``Error in deleting the directory`` or stops with ``permission denied``, and leaves the BSP without sources.
-Vitis then generates them during the next build, after the patch, or the build fails if the file is still held open.
-Therefore the scripts repeat a failed ``bsp regenerate`` (``uz_vitis_bsp_regenerate``), and if the platform build fails or the check after it, ``uz_vitis_generate_platform`` cleans the platform, regenerates the FreeRTOS BSP sources, inserts the define and builds the platform again (up to four attempts each, 30 seconds apart), so the scripts run through.
-They only stop with an error if the platform is still not built with the define after the fourth attempt.
+Regenerating the BSP removes the define again, e.g. after changing the BSP settings in the Vitis GUI.
+You then get one of these errors:
 
-The applications are built the same way with ``uz_vitis_build_apps``: ``app build`` rebuilds the BSPs first and, if that fails on such a file (``Permission denied`` while copying a header), only prints the error and builds nothing.
-Therefore the ELF file of each application is deleted before the build, and the build is repeated until the ELF file exists.
-Before each repetition, the platform is built again, since XSCT does not build the application again after such an error otherwise.
-Deleting the ELF file also links the FreeRTOS application against the rebuilt kernel library.
-If the scripts report such errors often, exclude ``vitis/workspace`` from tools that read all files of the repository, e.g. the C/C++ extension of VS Code (``C_Cpp.files.exclude``), which re-reads every header that a BSP build copies.
+- The FreeRTOS application does not compile: ``FreeRTOS BSP without portMEMORY_BARRIER``.
+- The launch (``vitis_debug_run_UltraZohm.tcl``) stops before programming the UltraZohm, because ``FreeRTOS.elf`` is built without the define.
 
-Every regeneration of the BSP removes the define again, also a change of the BSP settings in the Vitis GUI.
-The FreeRTOS application therefore does not compile against a BSP without the define and stops with the message ``FreeRTOS BSP without portMEMORY_BARRIER``.
-Before the UltraZohm is programmed, ``vitis_debug_run_UltraZohm.tcl`` checks that the kernel in ``FreeRTOS.elf`` is built with the define, and stops without touching the UltraZohm otherwise.
-This also catches an outdated ``FreeRTOS.elf``, e.g. if the last build of the FreeRTOS application failed.
-
-The checks read the compiled files, not their dates, so they do not report errors for files that are only older than others.
-For this, the patch adds one byte in the section ``.uz_freertos_memory_barrier`` to every kernel object file.
-The section is not loaded to the UltraZohm, and the kernel code is the same as with the define alone.
-A workspace patched by an older version of the script has the define without this section, and the checks report it until the fix below has been applied once.
-
-To fix it, type the following commands in the XSCT console (or run ``vitis_update_platform.tcl``):
+Workspaces generated with an older version of the scripts show the same error once.
+To fix it, run ``vitis_update_platform.tcl``, or type in the XSCT console:
 
 ::
 
@@ -160,13 +146,9 @@ To fix it, type the following commands in the XSCT console (or run ``vitis_updat
    uz_vitis_generate_platform [getws]
    uz_vitis_build_app [getws] FreeRTOS
 
-``uz_vitis_build_app`` deletes ``FreeRTOS.elf`` before the build, because the application is not linked again if only the kernel library has changed.
-
-To start the UltraZohm anyway, e.g. to test something before the workspace is fixed, create an empty file ``uz_start_without_memory_barrier.txt`` in the workspace folder (``ultrazohm_sw/vitis/workspace``).
-The launch then prints a warning instead of stopping, and the A53 can freeze under network load.
-As long as the file exists, the launch does not stop for a missing ``portMEMORY_BARRIER``, so delete it once the workspace is fixed (the launch reminds you).
-The file is not tracked by git, and a newly generated workspace starts without it.
-It only affects the launch: a FreeRTOS application built against a BSP without the define still fails to compile.
+To start the UltraZohm anyway, create an empty file ``uz_start_without_memory_barrier.txt`` in ``ultrazohm_sw/vitis/workspace``.
+The launch then only warns, and the A53 can freeze.
+Delete the file once the workspace is fixed.
 
 
 Startup scripts

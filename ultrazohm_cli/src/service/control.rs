@@ -7,7 +7,10 @@
 use super::{
     Operation,
     session::{Reply, State, serve_data_query},
-    wire::{Request, coded, decode_request, error_reply, ok_reply, read_message, write_reply},
+    wire::{
+        Request, coded, decode_request, error_reply, finish_after_reply, ok_reply, read_message,
+        write_reply,
+    },
 };
 use anyhow::{Result, anyhow};
 use std::{
@@ -25,6 +28,9 @@ use std::{
 
 const MAX_CLIENTS: usize = 64;
 const MAX_DATA_QUERIES: usize = 4;
+// How long a final reply may wait for the client to read it before its socket
+// closes; bounds the acceptor thread for rejected clients.
+const FINAL_REPLY_LINGER: Duration = Duration::from_millis(100);
 
 pub(super) struct Pending {
     pub request: Request,
@@ -160,6 +166,7 @@ fn serve_client(
             Err((id, error)) => {
                 // Framing is lost after an invalid message: report it and close.
                 write_reply(&mut writer, &error_reply(id, &error))?;
+                finish_after_reply(&writer, FINAL_REPLY_LINGER);
                 return Ok(());
             }
         };
@@ -192,14 +199,11 @@ fn serve_client(
 fn reject(mut socket: TcpStream) {
     // Best effort and bounded: never block the acceptor on an overloaded client.
     let _ = socket.set_nonblocking(false);
-    let _ = socket.set_write_timeout(Some(Duration::from_millis(100)));
-    let _ = write_reply(
-        &mut socket,
-        &error_reply(
-            None,
-            &coded("busy", format!("too many clients (limit {MAX_CLIENTS})")),
-        ),
-    );
+    let _ = socket.set_write_timeout(Some(FINAL_REPLY_LINGER));
+    let busy = coded("busy", format!("too many clients (limit {MAX_CLIENTS})"));
+    if write_reply(&mut socket, &error_reply(None, &busy)).is_ok() {
+        finish_after_reply(&socket, FINAL_REPLY_LINGER);
+    }
 }
 
 pub(super) struct ControlServer {
@@ -317,12 +321,47 @@ impl Drop for ControlServer {
 mod tests {
     use super::*;
     use serde_json::json;
+    use std::io::{Read, Write};
 
     fn request(command: Operation) -> Request {
         Request { id: 1, command }
     }
 
     const WAIT: Duration = Duration::from_millis(10);
+
+    #[test]
+    fn rejected_client_receives_busy() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let endpoint = listener.local_addr().unwrap().to_string();
+        let server = thread::spawn(move || reject(listener.accept().unwrap().0));
+        let error = crate::service::request(&endpoint, Operation::Status).unwrap_err();
+        server.join().unwrap();
+        assert_eq!(crate::service::client_error_code(&error), Some("busy"));
+        assert!(error.to_string().contains("too many clients"));
+    }
+
+    #[test]
+    fn rejection_ends_with_a_clean_close() {
+        // The rejected request is never read. Closing a socket with unread
+        // input sends a reset, and Windows clients then discard the reply
+        // they already received; Linux shows the reset on the next read.
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let mut client = TcpStream::connect(listener.local_addr().unwrap()).unwrap();
+        client
+            .write_all(b"{\"version\":4,\"id\":1,\"op\":\"status\"}\n")
+            .unwrap();
+        reject(listener.accept().unwrap().0);
+        let mut reader = BufReader::new(client);
+        let mut line = String::new();
+        reader.read_line(&mut line).unwrap();
+        let reply: serde_json::Value = serde_json::from_str(&line).unwrap();
+        assert_eq!(reply["error"]["code"], "busy");
+        let end = reader.read(&mut [0u8; 1]);
+        assert!(
+            matches!(end, Ok(0)),
+            "expected end of stream, not a reset: {end:?}"
+        );
+    }
 
     #[test]
     fn concurrent_stops_are_all_executed() {

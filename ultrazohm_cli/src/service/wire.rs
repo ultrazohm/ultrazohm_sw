@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value, json};
 use std::{
     io::{BufRead, BufReader, Read, Write},
-    net::{SocketAddr, TcpStream},
+    net::{Shutdown, SocketAddr, TcpStream},
     sync::atomic::{AtomicBool, Ordering},
     time::{Duration, Instant},
 };
@@ -189,6 +189,27 @@ pub(crate) fn write_reply(socket: &mut impl Write, reply: &Value) -> std::io::Re
         encode_reply(&error_reply(reply["id"].as_u64(), &error)).expect("bounded transport error")
     });
     socket.write_all(&line)
+}
+
+/// End a connection after its final reply without losing that reply.
+/// Closing a socket that still holds unread input sends a reset, and Windows
+/// clients then discard the reply they already received. Send end of output
+/// first, then discard input until the client closes or `limit` elapses; the
+/// caller drops the socket afterwards.
+pub(crate) fn finish_after_reply(socket: &TcpStream, limit: Duration) {
+    let _ = socket.shutdown(Shutdown::Write);
+    let deadline = Instant::now() + limit;
+    let mut input = socket;
+    let mut discard = [0u8; 4096];
+    loop {
+        let remaining = deadline.saturating_duration_since(Instant::now());
+        if remaining.is_zero() || socket.set_read_timeout(Some(remaining)).is_err() {
+            return;
+        }
+        if !matches!(input.read(&mut discard), Ok(read) if read > 0) {
+            return;
+        }
+    }
 }
 
 pub(crate) fn local_address(s: &str) -> Result<SocketAddr> {
@@ -553,21 +574,6 @@ mod tests {
             .unwrap()
             .is_none()
         );
-    }
-
-    #[test]
-    fn unmatched_error_replies_keep_their_code() {
-        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
-        let endpoint = listener.local_addr().unwrap().to_string();
-        let server = std::thread::spawn(move || {
-            let (mut socket, _) = listener.accept().unwrap();
-            let error = coded("busy", "too many clients (limit 64)");
-            write_reply(&mut socket, &error_reply(None, &error)).unwrap();
-        });
-        let error = request(&endpoint, Operation::Status).unwrap_err();
-        server.join().unwrap();
-        assert_eq!(client_error_code(&error), Some("busy"));
-        assert!(error.to_string().contains("too many clients"));
     }
 
     #[test]

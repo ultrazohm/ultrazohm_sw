@@ -64,30 +64,6 @@ proc app_clean {{name *}} {
   }
 }
 
-proc app_build {{name *}} {
-  set tmplist [app list]
-  set tmplist [split $tmplist "\n"]
-  set index 0
-  foreach element $tmplist {
-    if {[catch {
-      if {![string match "*==*" $element] && ! [string match "*NAME*" $element] && ! [string match "" $element]} {
-        set tmpname [lindex [split $element " "] 1];
-        if {[string match $name $tmpname]} {
-          app build $tmpname
-          puts "build $tmpname "
-        } else {
-          puts "skip $tmpname"
-        }
-      } else {
-        puts "Debug: (UZ) $element"
-      }
-    } result]} {
-      puts "Error:(UZ) Script (app_build) failed at $element with: $result."
-    }
-    incr index
-  }
-}
-
 
 proc vitis_main {} {
 
@@ -136,9 +112,10 @@ proc vitis_main {} {
 
   puts "Info (UltraZohm): regenerate FreeRTOS BSP"
   #regenerate board support package
-  bsp regenerate
-  # Re-apply FreeRTOS kernel settings that 'bsp regenerate' resets (see proc).
-  uz_vitis_patch_freertos_bsp $WS_PATH
+  # (again if it fails, and portMEMORY_BARRIER is inserted by
+  # uz_vitis_generate_platform right before each platform build, see
+  # vitis_patch_UltraZohm_freertos_bsp.tcl)
+  uz_vitis_bsp_regenerate $WS_PATH FreeRTOS_domain
 
 
   #Domain Baremetal R5_0
@@ -176,7 +153,7 @@ proc vitis_main {} {
   #Regenerate platform
   #####################################################
   puts "Info (UltraZohm): generate Platform project"
-  platform generate
+  uz_vitis_generate_platform $WS_PATH
 
 
   #Application Baremetal R5_0
@@ -256,8 +233,11 @@ proc vitis_main {} {
   platform clean
   app_clean
   puts "Info (UltraZohm): build platform and all application projects"
-  platform generate
-  app_build
+  # Builds the platform with portMEMORY_BARRIER in the FreeRTOS kernel, also if
+  # it could not be inserted at first (e.g. after a failed 'bsp regenerate'),
+  # then the applications (again if a build produced no ELF).
+  uz_vitis_generate_platform $WS_PATH
+  uz_vitis_build_apps $WS_PATH
 
 
   puts "========================================"

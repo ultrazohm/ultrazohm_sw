@@ -72,7 +72,20 @@ echo %WORKSPACE%
 echo ========================================
 pushd "%WORKSPACE%"
 %ComSpec% /d /c call "%XSCT%" -eval "setws {%WORKSPACE%}; source {%SCRIPT%}"
+set "UZ_XSCT_EXIT=%ERRORLEVEL%"
 popd
+
+if not "%UZ_XSCT_EXIT%"=="0" (
+    echo.
+    echo ========================================
+    echo ERROR: XSCT stopped with exit code %UZ_XSCT_EXIT%, the workspace is not complete.
+    echo        See the error message above. To fix it in the XSCT console of Vitis,
+    echo        open the workspace with open_workspace.bat.
+    echo ========================================
+    if not defined UZ_WORKSPACE_LOG pause
+    endlocal
+    exit /b %UZ_XSCT_EXIT%
+)
 
 echo.
 echo ========================================

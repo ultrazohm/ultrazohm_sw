@@ -26,55 +26,6 @@
 set ::uz_vitis_script_dir [file dirname [file normalize [info script]]]
 
 
-proc app_clean {{name *}} {
-  set tmplist [app list]
-  set tmplist [split $tmplist "\n"]
-  set index 0
-  foreach element $tmplist {
-    if {[catch {
-      if {![string match "*==*" $element] && ! [string match "*NAME*" $element]  && ! [string match "" $element]} {
-        set tmpname [lindex [split $element " "] 1];
-        if {[string match $name $tmpname]} {
-          app clean $tmpname
-          puts "clean -name $tmpname "
-        } else {
-          puts "skip $tmpname"
-        }
-      } else {
-        puts "Debug: (UZ) $element"
-      }
-    } result]} {
-      puts "Error:(UZ) Script (app_clean) failed failed at $element with: $result."
-    }
-    incr index
-  }
-}
-
-proc app_build {{name *}} {
-  set tmplist [app list]
-  set tmplist [split $tmplist "\n"]
-  set index 0
-  foreach element $tmplist {
-    if {[catch {
-      if {![string match "*==*" $element] && ! [string match "*NAME*" $element]  && ! [string match "" $element]} {
-        set tmpname [lindex [split $element " "] 1];
-        if {[string match $name $tmpname]} {
-          app build $tmpname
-          puts "build $tmpname "
-        } else {
-          puts "skip $tmpname"
-        }
-      } else {
-        puts "Debug: (UZ) $element"
-      }
-    } result]} {
-      puts "Error:(UZ) Script (app_build) failed at $element with: $result."
-    }
-    incr index
-  }
-}
-
-
 proc vitis_main {} {
 
 set WS_PATH [getws]
@@ -113,14 +64,14 @@ bsp config total_heap_size  200000000
 # .xsa re-import resets BSP settings)
 bsp config use_task_fpu_support 2
 platform write
-bsp regenerate
-# Re-apply FreeRTOS kernel settings that 'bsp regenerate' resets (see proc).
-uz_vitis_patch_freertos_bsp $WS_PATH
+# (again if it fails, and portMEMORY_BARRIER is inserted by
+# uz_vitis_generate_platform right before the platform build, see
+# vitis_patch_UltraZohm_freertos_bsp.tcl)
+uz_vitis_bsp_regenerate $WS_PATH FreeRTOS_domain
 
 #####################################################
 puts "Info (UltraZohm): Regenerate Baremetal_domain BSP"
-domain active Baremetal_domain
-bsp regenerate
+uz_vitis_bsp_regenerate $WS_PATH Baremetal_domain
 
 #####################################################
 #puts "Info (UltraZohm): Regenerate FSBL_domain BSP"
@@ -129,7 +80,9 @@ bsp regenerate
 
 #####################################################
 puts "Info (UltraZohm): generate Platform project"
-platform generate
+# Builds the platform with portMEMORY_BARRIER in the FreeRTOS kernel, also if
+# it could not be inserted at first (e.g. after a failed 'bsp regenerate').
+uz_vitis_generate_platform $WS_PATH
 
 #####################################################
 # clean up stale _ide folders - see Issue #353 in uz_sw
@@ -151,8 +104,10 @@ puts "==========================================================================
 puts "Info (UltraZohm): if Vitis stalls, restart Vitis and run this script again"
 puts "==========================================================================="
 
-# app_build
-app build -all
+# Build all applications, again if a build produced no ELF (see
+# vitis_patch_UltraZohm_freertos_bsp.tcl). This also links the FreeRTOS
+# application against the rebuilt kernel library.
+uz_vitis_build_apps $WS_PATH
 
 puts "==========================================================================="
 puts "Info (UltraZohm): vitis_update_platform.tcl script finished successfully"

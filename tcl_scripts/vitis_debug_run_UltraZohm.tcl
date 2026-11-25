@@ -6,6 +6,8 @@
 set BIT_DIR "UltraZohm/hw"          ;# adjust as needed
 set XSA_DIR "UltraZohm/hw"          ;# adjust as needed
 
+set ::uz_vitis_script_dir [file dirname [file normalize [info script]]]
+
 set VITIS_PATH $::env(XILINX_VITIS)
 set VITIS_UTIL_PATH [file join $VITIS_PATH scripts/vitis/util]
 set PATH_zynqmp_utils [file join $VITIS_UTIL_PATH zynqmp_utils.tcl]
@@ -26,12 +28,99 @@ proc _find_one {dir pattern} {
 proc bitstream {dir} { _find_one $dir "*.bit" }
 proc xsa       {dir} { _find_one $dir "*.xsa" }
 
+# Which bitstream the FPGA holds: Vivado writes the build time into the
+# USR_ACCESS register of the bitstream (BITSTREAM.CONFIG.USR_ACCESS TIMESTAMP,
+# see vivado/constraints/te0808/_i_bitgen.xdc). The value from the .bit file is
+# compared with the one read from the FPGA over JTAG.
+
+# USR_ACCESS value in a .bit file, or "" if it has none.
+proc uz_bitfile_usr_access {bit_file} {
+    set fp [open $bit_file r]
+    fconfigure $fp -translation binary
+    set data [read $fp 4096]   ;# the configuration header comes first
+    close $fp
+    # Type 1 packet "write 1 word to AXSS" (= USR_ACCESS), followed by the value.
+    set idx [string first [binary format I 0x3001A001] $data]
+    # Only in the configuration header, i.e. before the frame data (FDRI write).
+    set fdri [string first [binary format I 0x30004000] $data]
+    if {$idx < 0 || ($fdri >= 0 && $fdri < $idx) ||
+        [binary scan $data @[expr {$idx + 4}]Iu value] != 1} {
+        return ""
+    }
+    return $value
+}
+
+# USR_ACCESS value of the FPGA, read over JTAG. Errors if it cannot be read.
+proc uz_fpga_usr_access {} {
+    set nodes {}
+    foreach t [jtag targets -target-properties] {
+        # The FPGA itself, not the debug cores (bscan-switch, debug-hub) behind it.
+        if {[dict exists $t is_fpga] && [dict get $t is_fpga]
+            && [dict get $t level] == 1} {
+            lappend nodes [dict get $t target_ctx]
+        }
+    }
+    if {[llength $nodes] != 1} {
+        error "expected one FPGA in the JTAG chain, found [llength $nodes]"
+    }
+    # The same hw_server request that 'fpga -cor0-status' uses for COR0; XSCT
+    # has no option for USR_ACCESS.
+    set node [lindex $nodes 0]
+    set reply [tcf send_command [::xsdb::getcurchan] Xicom_v1.00 getUserAccess s * [list $node]]
+    # Reply: error, number of bits, value, field names.
+    if {[lindex $reply 0] ne ""} {
+        error [lindex $reply 0]
+    }
+    set value [lindex $reply 2]
+    if {[llength $reply] < 3 || ![string is wideinteger -strict $value]} {
+        error "unexpected reply: $reply"
+    }
+    return [expr {$value & 0xFFFFFFFF}]
+}
+
+# Build time stored in a USR_ACCESS value.
+# Bits: day 31..27, month 26..23, year-2000 22..17, hour 16..12, minute 11..6, second 5..0
+proc uz_usr_access_time {value} {
+    return [format "%04d-%02d-%02d %02d:%02d:%02d" \
+        [expr {2000 + (($value >> 17) & 0x3F)}] [expr {($value >> 23) & 0xF}] \
+        [expr {($value >> 27) & 0x1F}] [expr {($value >> 12) & 0x1F}] \
+        [expr {($value >> 6) & 0x3F}] [expr {$value & 0x3F}]]
+}
+
+# "" if the FPGA holds the bitstream 'bit_file', otherwise why not (or why
+# this cannot be confirmed).
+proc uz_fpga_holds_bitstream {bit_file} {
+    set state [fpga -state]
+    if {![string match "*FPGA is configured*" $state]} {
+        return $state
+    }
+    set expected [uz_bitfile_usr_access $bit_file]
+    if {$expected eq ""} {
+        return "[file tail $bit_file] has no USR_ACCESS build time,\
+            cannot tell which bitstream the FPGA holds"
+    }
+    if {[catch {uz_fpga_usr_access} actual]} {
+        return "cannot read USR_ACCESS of the FPGA ($actual)"
+    }
+    if {$actual != $expected} {
+        return "the FPGA holds a bitstream built [uz_usr_access_time $actual],\
+            [file tail $bit_file] was built [uz_usr_access_time $expected]"
+    }
+    return ""
+}
+
 
 puts "\n\n====================================================="
 puts "INFO: UZ_PROGRAMMING_MODE = $UZ_PROGRAMMING_MODE"
 puts "=====================================================\n\n"
 #####################################################
 cd [getws]
+# Refuse to program a FreeRTOS.elf whose kernel lacks portMEMORY_BARRIER (the
+# A53 freezes under load), unless the workspace folder holds the file
+# uz_start_without_memory_barrier.txt. Runs before the board is touched.
+source [file join $::uz_vitis_script_dir vitis_patch_UltraZohm_freertos_bsp.tcl]
+uz_vitis_check_freertos_elf [getws] [file join [getws] FreeRTOS Debug FreeRTOS.elf]
+#####################################################
 connect -url tcp:127.0.0.1:3121
 puts "INFO: Connected to target on host '127.0.0.1' and port '3121'."
 #####################################################
@@ -40,13 +129,21 @@ if {![info exists UZ_FPGA_FAST_RESTART_ACTIVATED]} {
     set UZ_FPGA_FAST_RESTART_ACTIVATED 0
 }
 #####################################################
-set UZ_FPGA_STATUS [fpga -state]
-if { [string match "*FPGA is configured*" $UZ_FPGA_STATUS] && $UZ_FPGA_FAST_RESTART_ACTIVATED == 1 } {
-    puts "INFO: $UZ_FPGA_STATUS and fast restart activated, skipping FPGA programming."
-    set UZ_FPGA_FAST_RESTART 1   ;# skip rst/bitstream/psu_init 
+set UZ_FPGA_FAST_RESTART 0   ;# full PS/PL init + FPGA reprogram
+if {$UZ_FPGA_FAST_RESTART_ACTIVATED == 1} {
+    # Skip the programming only if the FPGA holds the bitstream of this launch.
+    if {[catch {uz_fpga_holds_bitstream [lindex [bitstream $BIT_DIR] 0]} UZ_FPGA_MISMATCH]} {
+        set UZ_FPGA_MISMATCH "cannot compare the bitstreams ($UZ_FPGA_MISMATCH)"
+    }
+    if {$UZ_FPGA_MISMATCH eq ""} {
+        puts "INFO: FPGA holds the bitstream of $BIT_DIR and fast restart activated,\
+            skipping FPGA programming."
+        set UZ_FPGA_FAST_RESTART 1   ;# skip rst/bitstream/psu_init
+    } else {
+        puts "INFO: Fast restart activated, but $UZ_FPGA_MISMATCH: run full reset of UZ."
+    }
 } else {
-    puts "INFO: $UZ_FPGA_STATUS, run full reset of UZ."
-    set UZ_FPGA_FAST_RESTART 0   ;# full PS/PL init + FPGA reprogram
+    puts "INFO: [fpga -state], run full reset of UZ."
 }
 #####################################################
 source UltraZohm/hw/psu_init.tcl

@@ -119,6 +119,37 @@ Usage:
 
    source {../../tcl_scripts/vitis_generate_UltraZohm_workspace.tcl}
 
+.. _vitis_patch_freertos_bsp_tcl:
+
+vitis_patch_UltraZohm_freertos_bsp.tcl
+--------------------------------------
+
+The FreeRTOS port of Vitis 2022.2 for the A53 lacks ``portMEMORY_BARRIER``, and without it the A53 can freeze under network load.
+The same bug on the MicroBlaze port is described in `this FreeRTOS forum thread <https://forums.freertos.org/t/should-the-microblaze-freertos-port-define-portmemory-barrier/16704>`_ and fixed in `FreeRTOS-Kernel #621 <https://github.com/FreeRTOS/FreeRTOS-Kernel/pull/621>`_: without the barrier, the compiler may optimize ``xTaskResumeAll`` so that it loops forever.
+This script adds the define to the FreeRTOS BSP.
+You do not need to run it yourself: ``vitis_generate_UltraZohm_workspace.tcl`` and ``vitis_update_platform.tcl`` use it.
+
+Regenerating the BSP removes the define again, e.g. after changing the BSP settings in the Vitis GUI.
+You then get one of these errors:
+
+- The FreeRTOS application does not compile: ``FreeRTOS BSP without portMEMORY_BARRIER``.
+- The launch (``vitis_debug_run_UltraZohm.tcl``) stops before programming the UltraZohm, because ``FreeRTOS.elf`` is built without the define.
+
+Workspaces generated with an older version of the scripts show the same error once.
+To fix it, run ``vitis_update_platform.tcl``, or type in the XSCT console:
+
+::
+
+   cd [getws]
+   source {../../tcl_scripts/vitis_patch_UltraZohm_freertos_bsp.tcl}
+   platform active UltraZohm
+   uz_vitis_generate_platform [getws]
+   uz_vitis_build_app [getws] FreeRTOS
+
+To start the UltraZohm anyway, create an empty file ``uz_start_without_memory_barrier.txt`` in ``ultrazohm_sw/vitis/workspace``.
+The launch then only warns, and the A53 can freeze.
+Delete the file once the workspace is fixed.
+
 
 Startup scripts
 ---------------

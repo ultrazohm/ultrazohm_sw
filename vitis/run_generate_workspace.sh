@@ -43,7 +43,13 @@ echo "${WORKSPACE}"
 echo "========================================"
 
 cd "${WORKSPACE}"
-xsct -eval "setws {${WORKSPACE}}; source {${TCL_SCRIPT}}"
+if ! xsct -eval "setws {${WORKSPACE}}; source {${TCL_SCRIPT}}"; then
+    echo
+    echo "ERROR: XSCT stopped with an error, the workspace is not complete."
+    echo "       See the error message above. To fix it in the XSCT console of Vitis,"
+    echo "       open the workspace with open_vitis.sh."
+    exit 1
+fi
 
 echo
 echo "========================================"

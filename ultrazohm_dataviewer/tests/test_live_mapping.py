@@ -1,9 +1,7 @@
 """Fresh header mappings, cache provenance, and startup failure behavior."""
 
 import json
-import sys
 from pathlib import Path
-from types import SimpleNamespace
 
 import pytest
 
@@ -28,28 +26,18 @@ def test_generate_mapping_calls_cli_and_publishes_one_cache_per_commit(
         "observables": {"JSO_custom": 29},
     }
 
-    def run(args, **kwargs):
-        calls.append(args)
-        Path(args[args.index("--output") + 1]).write_text(json.dumps(mapping))
-        return SimpleNamespace(returncode=0)
+    def read(root):
+        calls.append(root)
+        return mapping
 
-    monkeypatch.setattr(live_mapping.subprocess, "run", run)
+    monkeypatch.setattr(live_mapping, "read_mapping", read)
     first = live_mapping.generate_mapping(repo)
     second = live_mapping.generate_mapping(repo)
     assert first == second
     assert first.parent == repo / "artifacts" / "_user"
     assert first.name == "javascope_" + "a" * 40 + "-dirty.json"
     assert json.loads(first.read_text()) == mapping
-    assert calls[0][:8] == [
-        sys.executable,
-        "-u",
-        "-m",
-        "ultrazohm_dataviewer.process_launcher",
-        "cli",
-        "create-json-from-javascope-h",
-        "--repo",
-        str(repo),
-    ]
+    assert calls == [repo, repo]
     assert list(first.parent.iterdir()) == [first]
 
 
@@ -58,11 +46,11 @@ def test_generation_failure_keeps_old_cache_but_never_reuses_it(repo, monkeypatc
     cache.mkdir(parents=True)
     old = cache / "old.json"
     old.write_text("old mapping")
-    monkeypatch.setattr(
-        live_mapping.subprocess,
-        "run",
-        lambda *a, **k: SimpleNamespace(returncode=1, stderr="Invalid enum", stdout=""),
-    )
+
+    def fail(root):
+        raise RuntimeError("Invalid enum")
+
+    monkeypatch.setattr(live_mapping, "read_mapping", fail)
     with pytest.raises(RuntimeError, match="Invalid enum"):
         live_mapping.generate_mapping(repo)
     assert list(cache.iterdir()) == [old]
@@ -138,15 +126,13 @@ def test_real_cli_generates_mapping_from_headers(tmp_path):
 def test_commit_cache_is_overwritten_with_fresh_headers(repo, monkeypatch):
     version = [1]
 
-    def run(args, **kwargs):
-        mapping = {
+    def read(root):
+        return {
             "repository": {"commit": "abc123-dirty"},
             "observables": {"changed": version[0]},
         }
-        Path(args[args.index("--output") + 1]).write_text(json.dumps(mapping))
-        return SimpleNamespace(returncode=0)
 
-    monkeypatch.setattr(live_mapping.subprocess, "run", run)
+    monkeypatch.setattr(live_mapping, "read_mapping", read)
     first = live_mapping.generate_mapping(repo)
     version[0] = 2
     second = live_mapping.generate_mapping(repo)

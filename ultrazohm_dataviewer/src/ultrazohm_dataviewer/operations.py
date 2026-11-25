@@ -4,33 +4,11 @@ import threading
 import uuid
 from concurrent.futures import Future
 
+from .application_mutations import add_signal as add_signal
+from .application_mutations import link_x as link_x
+from .application_mutations import set_grid as set_grid
 from .client import ViewerError
-from .validation import boolean, bounded_int
-from .workers import CancellableExecutor, Cancellation
-
-
-def set_grid(state, rows: int, cols: int):
-    state.set_grid(rows, cols)
-
-
-def link_x(state, enabled: bool):
-    state.set_link_x(boolean(enabled))
-
-
-def add_signal(state, plot: int, run: int, signal: str):
-    plot = bounded_int(plot, 1, state.cell_count, "plot")
-    if state.registry.get_signal(run, signal) is None:
-        raise ValueError(f"run_{run} has no signal {signal!r}")
-    cell = state.cells[plot - 1]
-    domain = state.registry.get(run).axis_domain
-    if any(
-        state.registry.get(ref[0]).axis_domain != domain for ref in cell.active_refs
-    ):
-        raise ValueError("Cannot combine time and frequency axes in one plot")
-    if not cell.signals:
-        cell.pending_x_lim = cell.x_lim = None
-        state.plot_x_ranges.pop(plot, None)
-    cell.add((run, signal))
+from .workers import CancellableExecutor, Cancellation, cancellable_result
 
 
 class Operations:
@@ -48,6 +26,19 @@ class Operations:
         self.session = uuid.uuid4().hex
         self.executor = CancellableExecutor("uz-viewer-control-io")
         self.jobs = []
+        self.live = None
+
+    def bind_live(self, workspace):
+        """Expose the application's live workspace without importing GUI modules."""
+        self.live = workspace
+
+    def _live(self):
+        if self.live is None:
+            raise ViewerError("live_unavailable", "Live support is not enabled")
+        return self.live
+
+    def _run_scope(self):
+        return 0 if self.live is not None and self.state is self.live.state else 1
 
     def _sync(self):
         if self._token is not self._root_state.session_token:
@@ -63,7 +54,22 @@ class Operations:
         return {"session": self.session, "result": result}
 
     def _run_handle(self, run):
-        return {"session": self.session, "id": run.id}
+        return {"session": self.session, "id": run.id, "view": self._run_scope()}
+
+    def _resolve_run(self, handle):
+        if (
+            not isinstance(handle, dict)
+            or handle.get("session") != self.session
+            or type(handle.get("view", 1)) is not int
+            or handle.get("view", 1) != self._run_scope()
+        ):
+            raise ViewerError(
+                "stale_handle", "Recording belongs to another session or registry"
+            )
+        key = handle.get("id")
+        if type(key) is not int or self.state.registry.get(key) is None:
+            raise ViewerError("stale_handle", "Recording is no longer loaded")
+        return key
 
     def dispatch(self, operation, arguments, session):
         self._sync()
@@ -90,6 +96,19 @@ class Operations:
             "convert": self.convert,
             "get_settings": self.get_settings,
             "set_setting": self.set_setting,
+            "live_view": self.live_view,
+            "get_view": self.get_view,
+            "get_session_settings": self.get_session_settings,
+            "get_analysis": self.get_analysis,
+            "set_grid_ratios": self.set_grid_ratios,
+            "live_status": self.live_status,
+            "live_attach": self.live_attach,
+            "live_detach": self.live_detach,
+            "live_follow": self.live_follow,
+            "live_time_depth": self.live_time_depth,
+            "live_freeze": self.live_freeze,
+            "save_live_view": self.save_live_view,
+            "load_live_view": self.load_live_view,
         }
         arguments = dict(arguments)
         view = arguments.pop("view", None)
@@ -101,6 +120,9 @@ class Operations:
                     "set_grid",
                     "link_x",
                     "set_max_points",
+                    "list_runs",
+                    "get_view",
+                    "set_grid_ratios",
                 ) and not (command and any(p.kind == "plot" for p in command.params)):
                     raise ValueError("This operation does not target a plot view")
                 self._target = self._resolve_view(view)
@@ -124,6 +146,8 @@ class Operations:
             raise ValueError("View id must be an integer")
         if key == 1:
             return self._root_state
+        if key == 0:
+            return self._live().state
         view = self._root_state.plot_views.get(key)
         if view is None:
             raise ViewerError("stale_handle", "View is no longer open")
@@ -138,24 +162,24 @@ class Operations:
         return [
             {
                 "handle": {"session": self.session, "id": key},
-                "grid": [state.rows, state.cols],
+                "kind": "live" if key == 0 else "offline",
+                **self._view_settings(state),
             }
             for key, state in [
                 (1, self._root_state),
                 *self._root_state.plot_views.items(),
+                *([(0, self.live.state)] if self.live is not None else []),
             ]
         ]
 
     def close_view(self, handle):
         view = self._resolve_view(handle)
-        if handle["id"] == 1:
-            raise ValueError("The main plot view cannot be closed")
+        if handle["id"] in (0, 1):
+            raise ValueError("The main and live plot views cannot be closed")
         del self._root_state.plot_views[handle["id"]]
         view.shutdown()
 
     def _registered(self, operation, arguments):
-        import inspect
-
         from .client_methods import ViewerMethods
 
         method = getattr(ViewerMethods, operation, None)
@@ -163,13 +187,17 @@ class Operations:
             raise ViewerError(
                 "unknown_operation", f"Unknown viewer operation: {operation}"
             )
-        bound = inspect.signature(method).bind(None, **arguments)
-        bound.apply_defaults()
         command = self.state.commands.get(operation)
+        if command is None:
+            raise ViewerError(
+                "unknown_operation", f"Unknown viewer operation: {operation}"
+            )
         values = []
-        for param in command.params:
-            value = bound.arguments[param.name]
+        for param, value in zip(command.params, command.bind(arguments), strict=True):
             if value is not None and param.kind in ("run", "node"):
+                if param.kind == "run":
+                    values.append(self._resolve_run(value))
+                    continue
                 if not isinstance(value, dict) or value.get("session") != self.session:
                     raise ViewerError(
                         "stale_handle", f"{param.kind} belongs to another session"
@@ -225,6 +253,103 @@ class Operations:
             "pending": len(self.jobs),
         }
 
+    @staticmethod
+    def _view_settings(state):
+        return {
+            "grid": [state.rows, state.cols],
+            "row_ratios": list(state.row_ratios),
+            "col_ratios": list(state.col_ratios),
+            "link_x": state.link_x,
+            "max_points": state.max_points,
+            "shared_x": state.shared_x,
+        }
+
+    def get_view(self):
+        return self._view_settings(self.state)
+
+    def get_session_settings(self):
+        state = self.state
+        return {
+            "backend": state.backend,
+            "loading_mode": state.loading_mode,
+            "disk_cache": state.disk_cache,
+            "cache_budget": state.registry.cache.limit // 1024**2,
+            "max_points": state.max_points,
+        }
+
+    def get_analysis(self, kind):
+        if kind not in ("fft", "histogram"):
+            raise ValueError("Analysis kind must be fft or histogram")
+        cfg = getattr(self.state, kind)
+        result = {
+            name: getattr(cfg, name)
+            for name in (
+                "follow_plot",
+                "x_min",
+                "x_max",
+                *(
+                    ("remove_dc", "window", "log_x", "log_y")
+                    if kind == "fft"
+                    else ("bins",)
+                ),
+            )
+        }
+        result["x_lim"] = cfg.pending_x_lim or cfg.x_lim
+        result["sources"] = [
+            {"run": self._run_handle(self.state.registry.get(key)), "signal": name}
+            for key, name in cfg.sources
+        ]
+        return result
+
+    def live_view(self):
+        self._live()
+        return {"session": self.session, "id": 0}
+
+    def live_status(self):
+        return self._live().presentation_status()
+
+    def _live_request(self, operation, **kwargs):
+        workspace = self._live()
+        source = workspace.request_attachment(operation, **kwargs)
+        target = Future()
+        target.add_done_callback(lambda _: source.cancel())
+
+        def commit(_):
+            workspace.pump()
+            return workspace.presentation_status()
+
+        self.jobs.append((source, target, self.session, commit))
+        return target
+
+    def live_attach(self, endpoint):
+        return self._live_request("attach", endpoint=endpoint)
+
+    def live_detach(self):
+        return self._live_request("detach")
+
+    def live_follow(self, enabled):
+        self._live().set_follow(enabled)
+        return self.live_status()
+
+    def live_time_depth(self, seconds):
+        self._live().set_time_depth(seconds)
+        return self.live_status()
+
+    def live_freeze(self):
+        run = self._live().freeze(self._root_state)
+        if run is None:
+            raise ViewerError("no_live_data", "No live data is available")
+        return self._run_handle(run)
+
+    def save_live_view(self):
+        from .live_settings import save_view_preferences
+
+        return str(save_view_preferences(self._live()) / "live_view.json")
+
+    def load_live_view(self):
+        self._live().load_live_settings(strict=True)
+        return self.live_status()
+
     def list_runs(self):
         return [
             {
@@ -234,6 +359,8 @@ class Operations:
                 "signals": list(run.signals),
                 "axis_column": run.axis_column,
                 "axis_domain": run.axis_domain,
+                "active": run.active,
+                "time_origin": run.time_origin,
             }
             for run in self.state.registry.runs
         ]
@@ -260,7 +387,10 @@ class Operations:
 
         def reference(ref):
             return (
-                {"run": {"session": self.session, "id": ref[0]}, "signal": ref[1]}
+                {
+                    "run": self._run_handle(self.state.registry.get(ref[0])),
+                    "signal": ref[1],
+                }
                 if ref
                 else None
             )
@@ -316,17 +446,19 @@ class Operations:
         return self._submit(prepare, commit)
 
     def set_grid(self, rows, cols):
-        set_grid(self.state, rows, cols)
+        self.state.commands.invoke(self.state, "set_grid", rows=rows, cols=cols)
 
     def link_x(self, enabled):
-        link_x(self.state, enabled)
+        self.state.commands.invoke(self.state, "link_x", on=enabled)
+
+    def set_grid_ratios(self, rows, cols):
+        self.state.commands.invoke(self.state, "set_grid_ratios", rows=rows, cols=cols)
 
     def add_signal(self, plot, run, signal):
-        if not isinstance(run, dict) or run.get("session") != self.session:
-            raise ViewerError("stale_handle", "Recording belongs to another session")
-        if type(run.get("id")) is not int or self.state.registry.get(run["id"]) is None:
-            raise ViewerError("stale_handle", "Recording is no longer loaded")
-        add_signal(self.state, plot, run["id"], signal)
+        key = self._resolve_run(run)
+        self.state.commands.invoke(
+            self.state, "add_signal", plot=plot, run=key, signal=signal
+        )
 
     def clear_session(self):
         from .session import clear_session
@@ -455,7 +587,6 @@ class Operations:
         return self._submit(prepare, commit)
 
     def _submit(self, prepare, commit):
-        from .sources import check
 
         target = Future()
         canceled = threading.Event()
@@ -463,14 +594,7 @@ class Operations:
 
         def work(cancel):
             token = Cancellation(cancel, canceled)
-            check(token)
-            result = prepare(token)
-            try:
-                check(token)
-            except BaseException:
-                self._dispose(result)
-                raise
-            return result
+            return cancellable_result(lambda: prepare(token), token, self._dispose)
 
         source = self.executor.submit(work, dispose=self._dispose)
         self.jobs.append((source, target, self.session, commit))
@@ -485,7 +609,7 @@ class Operations:
         self._sync()
         for source, target, session, commit in list(self.jobs):
             if (
-                getattr(target, "view_id", 1) != 1
+                getattr(target, "view_id", 1) not in (0, 1)
                 and target.view_id not in self._root_state.plot_views
             ):
                 if not target.done() and target.set_running_or_notify_cancel():

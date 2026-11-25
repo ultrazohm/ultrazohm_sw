@@ -6,7 +6,33 @@ use std::{
     process::Command,
 };
 
-const SCRIPT: &str = "tcl_scripts/vitis_headless.tcl";
+include!(concat!(env!("OUT_DIR"), "/firmware_resources.rs"));
+
+// Called under the firmware checkout lock. Content-addressed paths preserve
+// incremental-build signatures across processes and survive GUI termination.
+fn entry_script(root: &Path) -> Result<PathBuf> {
+    if let Some(directory) = env::var_os("UZ_CLI_TCL_DIR") {
+        let path = std::path::absolute(PathBuf::from(directory).join("vitis_headless.tcl"))?;
+        ensure!(
+            path.is_file(),
+            "Vitis entry script not found: {}",
+            path.display()
+        );
+        return Ok(path);
+    }
+    let directory = root
+        .join("artifacts/cli-tools")
+        .join(RESOURCE_ID)
+        .join("tcl_scripts");
+    for (name, contents) in RESOURCES {
+        let path = directory.join(name);
+        if std::fs::read(&path).ok().as_deref() != Some(*contents) {
+            std::fs::create_dir_all(path.parent().unwrap())?;
+            std::fs::write(&path, contents)?;
+        }
+    }
+    Ok(directory.join("vitis_headless.tcl"))
+}
 
 fn is_repository(path: &Path) -> bool {
     path.join("vitis/software/Baremetal/src/include/javascope.h")
@@ -36,7 +62,7 @@ pub fn repository(explicit: Option<&Path>) -> Result<PathBuf> {
     )
 }
 
-fn xsct() -> Result<PathBuf> {
+pub(crate) fn xsct() -> Result<PathBuf> {
     #[cfg(windows)]
     let names = ["xsct.exe", "xsct.cmd", "xsct.bat"];
     #[cfg(not(windows))]
@@ -44,7 +70,7 @@ fn xsct() -> Result<PathBuf> {
     for dir in env::split_paths(&env::var_os("PATH").unwrap_or_default()) {
         for name in names {
             let path = dir.join(name);
-            if path.is_file() {
+            if crate::preferences::validate_xsct(&path).is_ok() {
                 // Resolve relative PATH entries before changing the child's cwd.
                 return std::path::absolute(path).context("cannot resolve XSCT launcher");
             }
@@ -57,33 +83,72 @@ fn xsct() -> Result<PathBuf> {
 
 pub fn run(action: &str, repo: Option<&Path>, profile: Option<&str>) -> Result<()> {
     let root = repository(repo)?;
-    let script = env::var_os("UZ_CLI_TCL_DIR")
-        .map(|dir| PathBuf::from(dir).join("vitis_headless.tcl"))
-        .unwrap_or_else(|| root.join(SCRIPT));
-    let script = std::path::absolute(script)?;
-    ensure!(
-        script.is_file(),
-        "Vitis entry script not found: {}",
-        script.display()
-    );
-    let executable = xsct()?;
+    let artifacts = root.join("artifacts");
+    std::fs::create_dir_all(&artifacts)?;
+    let lock = std::fs::OpenOptions::new()
+        .create(true)
+        .truncate(false)
+        .read(true)
+        .write(true)
+        .open(artifacts.join("firmware.lock"))?;
+    lock.try_lock().context("firmware workspace is in use")?;
+    execute(action, Some(&root), profile, None, None)
+}
+
+pub(crate) fn execute(
+    action: &str,
+    repo: Option<&Path>,
+    profile: Option<&str>,
+    log: Option<&std::fs::File>,
+    xsct_override: Option<&Path>,
+) -> Result<()> {
+    let root = repository(repo)?;
+    let script = entry_script(&root)?;
+    let executable = crate::preferences::resolve_xsct(xsct_override, Some(&root))?;
     eprintln!("Vitis {action}: repository {}", root.display());
+    // Every caller holds the checkout lock. Clear the previous receipt before
+    // each invocation: XSCT can exit zero before it even runs our Tcl script.
+    let completion = root.join("artifacts/firmware-completed");
+    match std::fs::remove_file(&completion) {
+        Ok(()) => (),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => (),
+        Err(error) => return Err(error.into()),
+    }
     let mut command = Command::new(&executable);
+    // Linux XSCT owns display validation and Xvfb lifecycle. -nodisp skips
+    // that setup; it is appropriate only when opening an existing desktop.
+    #[cfg(target_os = "linux")]
+    {
+        command.arg("-norlwrap");
+        if matches!(action, "open" | "generate-open") {
+            command.arg("-nodisp");
+        }
+    }
     command
         .current_dir(&root)
-        .arg("-nodisp")
         .env("UZ_WORKSPACE_ROOT", &root)
+        .env("UZ_VITIS_COMPLETION", &completion)
         .arg(script)
         .arg(action);
     if let Some(profile) = profile {
         command.arg(profile);
     }
+    if let Some(log) = log {
+        command.stdout(log.try_clone()?).stderr(log.try_clone()?);
+    }
     let status = command
         .status()
         .with_context(|| format!("failed to start Vitis XSCT at {}", executable.display()))?;
+    let completed = std::fs::read_to_string(&completion).ok().as_deref() == Some(action);
+    let _ = std::fs::remove_file(&completion);
     ensure!(
         status.success(),
-        "Vitis {action} failed ({status}); see XSCT output above"
+        "Vitis {action} failed ({status}); see XSCT output above and {}/vitis/workspace/IDE.log (check timestamps). On Linux, batch firmware operations need xlsclients and, without a usable display, Xvfb on the service host.",
+        root.display()
+    );
+    ensure!(
+        completed,
+        "Vitis {action} did not confirm completion despite {status}; XSCT may have failed before running Tcl. See XSCT output and the firmware job log."
     );
     Ok(())
 }

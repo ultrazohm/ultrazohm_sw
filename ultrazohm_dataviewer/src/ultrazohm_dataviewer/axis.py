@@ -7,6 +7,20 @@ from dataclasses import dataclass
 KEY = "ultrazohm.axis"
 
 
+@dataclass(frozen=True)
+class SignalMetadata:
+    """Computational meaning and provenance of one signal's sample arrays."""
+
+    domain: str
+    unit: str
+    timestamp_resolution: float
+    source_identity: object
+
+    def __post_init__(self):
+        if self.domain not in ("time", "frequency"):
+            raise ValueError("axis domain must be time or frequency")
+
+
 class AxisSelectionRequired(ValueError):
     code = "axis_selection_required"
 

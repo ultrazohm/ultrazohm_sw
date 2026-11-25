@@ -12,6 +12,9 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
+from contextlib import nullcontext
+from functools import partial
 from pathlib import Path
 
 import tomllib
@@ -19,6 +22,10 @@ import tomllib
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 TARGET = HERE / "target"
+sys.path.insert(0, str(ROOT))
+from uz_build import build_lock, single_wheel, venv_bin  # noqa: E402
+from uz_build import run as build_run  # noqa: E402
+
 WINDOWS = os.name == "nt"
 # Oldest glibc supported by published Linux wheels; zig links against it from any host.
 MANYLINUX = "manylinux_2_28"
@@ -26,10 +33,7 @@ STABLE_BRANCH = "main"
 PRERELEASE_BRANCHES = ("develop", "feature/uz_cli_dataviewer_testing")
 
 
-def run(*command, cwd=HERE, env=None):
-    command = [str(part) for part in command]
-    print("+", " ".join(command), flush=True)
-    subprocess.run(command, cwd=cwd, env=env, check=True)
+run = partial(build_run, cwd=HERE)
 
 
 def maturin():
@@ -42,31 +46,27 @@ def maturin():
         "--python",
         python,
         "--from",
-        "maturin[zig]>=1.9,<2" if not WINDOWS else "maturin>=1.9,<2",
+        tomllib.loads((HERE / "pyproject.toml").read_text())["build-system"][
+            "requires"
+        ][0],
+        "--with-requirements",
+        ROOT / ".devcontainer" / "build-tools.txt",
         "maturin",
     ]
 
 
-def venv_bin(venv, name):
-    scripts = venv / ("Scripts" if WINDOWS else "bin")
-    return scripts / (name + (".exe" if WINDOWS else ""))
-
-
 def fresh_venv(venv, *packages):
-    shutil.rmtree(venv, ignore_errors=True)
-    run("uv", "venv", "--quiet", venv)
+    run(
+        "uv",
+        "venv",
+        "--quiet",
+        "--python",
+        (ROOT / ".python-version").read_text().strip(),
+        venv,
+    )
     python = venv_bin(venv, "python")
     run("uv", "pip", "install", "--quiet", "--python", python, *packages)
     return python
-
-
-def single_wheel(directory):
-    wheels = sorted(Path(directory).glob("ultrazohm_cli-*.whl"))
-    if len(wheels) != 1:
-        raise SystemExit(
-            f"Expected exactly one wheel in {directory}, found {len(wheels)}"
-        )
-    return wheels[0]
 
 
 def integration(python, command=None):
@@ -87,10 +87,13 @@ def integration(python, command=None):
     )
 
 
-def debug_wheel(_args):
+def debug_wheel(args):
     """Unoptimized wheel for tests; reuses the debug build of cargo test."""
-    wheels = TARGET / "wheels-debug"
-    shutil.rmtree(wheels, ignore_errors=True)
+    wheels = (
+        args.out.resolve() if getattr(args, "out", None) else TARGET / "wheels-debug"
+    )
+    if not getattr(args, "out", None):
+        shutil.rmtree(wheels, ignore_errors=True)
     run(*maturin(), "build", "--locked", "--out", wheels)
 
 
@@ -160,12 +163,14 @@ def check(args):
     run("cargo", "test", "--locked")
     run("cargo", "build", "--locked")
     debug_wheel(args)
-    python = fresh_venv(
-        TARGET / "ci-venv", single_wheel(TARGET / "wheels-debug"), "polars", "packaging"
-    )
-    # Once against the cargo-built executable, once against the wheel's console command.
-    integration(python)
-    integration(python, venv_bin(TARGET / "ci-venv", "ultrazohm-cli"))
+    with tempfile.TemporaryDirectory(prefix="uz-cli-test-") as directory:
+        venv = Path(directory) / "environment"
+        python = fresh_venv(
+            venv, single_wheel(TARGET / "wheels-debug"), "polars", "packaging"
+        )
+        # Once against cargo's executable, once against the installed wheel.
+        integration(python)
+        integration(python, venv_bin(venv, "ultrazohm-cli"))
 
 
 def wheel(args):
@@ -214,11 +219,12 @@ def standalone(_args):
 
 def release_check(args):
     built = single_wheel(args.wheel_dir or TARGET / "wheels-release")
-    venv = TARGET / "release-venv"
-    python = fresh_venv(venv, built, "polars", "packaging")
-    integration(python, venv_bin(venv, "ultrazohm-cli"))
-    if args.standalone:
-        integration(python, TARGET / "release" / "ultrazohm-cli.exe")
+    with tempfile.TemporaryDirectory(prefix="uz-cli-release-test-") as directory:
+        venv = Path(directory) / "environment"
+        python = fresh_venv(venv, built, "polars", "packaging")
+        integration(python, venv_bin(venv, "ultrazohm-cli"))
+        if args.standalone:
+            integration(python, TARGET / "release" / "ultrazohm-cli.exe")
 
 
 def release_version(base, branch, run_number):
@@ -267,7 +273,7 @@ def version(_args):
 
 
 def _invocation():
-    prefix = ".\\uz.ps1" if WINDOWS else "./uz"
+    prefix = ".\\uz_developer.ps1" if WINDOWS else "./uz_developer"
     return lambda task, args="": (
         f"{prefix} task cli {task}" + (f" {args}" if args else "")
     )
@@ -278,7 +284,7 @@ def overview():
         "CLI build tasks: lint, format, format-check, check, wheel, debug-wheel, release-wheel, release-check, version, standalone, install"
     )
     print(
-        "Use ./uz_developer shell to run both applications; ./uz_developer task cli TASK --help for details."
+        "Use ./uz venv dev to run both applications; ./uz_developer task cli TASK --help for details."
     )
 
 
@@ -290,7 +296,7 @@ DESCRIPTIONS = {
     "install": "Build an optimized wheel of this checkout for this machine and install it with "
     "'uv tool install --force', replacing an ultrazohm-cli installed from PyPI until you "
     "reinstall that.",
-    "check": "Formatting, clippy, Rust tests, then a debug wheel installed into target/ci-venv and "
+    "check": "Formatting, clippy, Rust tests, then a debug wheel installed into a temporary environment and "
     "the integration tests twice: against the cargo binary and the wheel's command.",
     "wheel": "Optimized wheel for this machine (not portable to older Linux systems).",
     "release-wheel": "Portable release wheel: manylinux_2_28 on Linux (linked with zig), native on Windows.",
@@ -315,7 +321,7 @@ def main(argv=None):
     add("format", format_code)
     add("format-check", format_check)
     add("check", check)
-    add("debug-wheel", debug_wheel)
+    add("debug-wheel", debug_wheel).add_argument("--out", type=Path)
     add("wheel", wheel).add_argument(
         "--out", type=Path, help="output directory (default: target/wheels)"
     )
@@ -339,7 +345,24 @@ def main(argv=None):
         return
     args = parser.parse_args(argv)
     try:
-        args.function(args)
+        lock = (
+            build_lock(ROOT, "cli")
+            if args.task
+            in (
+                "check",
+                "wheel",
+                "debug-wheel",
+                "release-wheel",
+                "release-check",
+                "install",
+                "standalone",
+            )
+            else nullcontext()
+        )
+        with lock:
+            args.function(args)
+    except RuntimeError as error:
+        raise SystemExit(str(error)) from None
     except subprocess.CalledProcessError as error:
         raise SystemExit(error.returncode or 1) from None
 

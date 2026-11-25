@@ -40,6 +40,7 @@ class FakeClient:
 
     def status(self):
         return {
+            "service_id": "test-service",
             "state": {
                 "connected": self.connected,
                 "platform_state": "idle",
@@ -78,8 +79,9 @@ class FakeClient:
             info={"run_id": "fake", "generation": self.generation},
         )
 
-    def shutdown(self):
+    def shutdown(self, *, service_id=None):
         self.calls.append(("shutdown",))
+        return {"service_id": "test-service"}
 
     def stop(self):
         self.calls.append(("stop",))
@@ -158,7 +160,7 @@ def test_worker_incremental_bound_recovery_and_persistent_command_error():
 )
 def test_disconnect_after_service_exit_releases_attachment(error):
     class ExitedClient(FakeClient):
-        def shutdown(self):
+        def shutdown(self, *, service_id=None):
             raise error
 
     controller = LiveController(lambda endpoint: ExitedClient(), hz=100)
@@ -177,7 +179,7 @@ def test_disconnect_after_service_exit_releases_attachment(error):
 
 def test_disconnect_other_errors_preserve_attachment():
     class FailingClient(FakeClient):
-        def shutdown(self):
+        def shutdown(self, *, service_id=None):
             raise RuntimeError("request timed out")
 
     controller = LiveController(lambda endpoint: FailingClient(), hz=100)
@@ -252,7 +254,7 @@ def test_live_panels_follow_pause_freeze_and_generation(gui_frame, app_state):
         )
         workspace.pump()
         assert workspace.run.id != run.id
-        assert workspace.state.cells[0].signals == []
+        assert workspace.state.cells[0].signals == [(workspace.run.id, "a")]
     finally:
         workspace.close()
 
@@ -531,7 +533,10 @@ def test_connect_verifies_existing_device(device, ip, port, matches):
     controller = LiveController(lambda _: Client())
     try:
         controller.owned.endpoint = "fake"
-        controller.owned.process = SimpleNamespace(poll=lambda: None, wait=lambda: 0)
+        controller.owned.service_id = "test-service"
+        controller.owned.process = SimpleNamespace(
+            poll=lambda: None, wait=lambda **kwargs: 0
+        )
         request = {"endpoint": "fake", "ip": ip, "port": port}
         if matches:
             controller._command("connect", request)
@@ -906,7 +911,10 @@ def test_connect_click_reports_progress_and_completion(
     controller = LiveController(lambda endpoint: SlowClient())
     controller.owned.endpoint = "127.0.0.1:19740"
     controller.owned.repo = tmp_path
-    controller.owned.process = SimpleNamespace(poll=lambda: None, wait=lambda: 0)
+    controller.owned.service_id = "test-service"
+    controller.owned.process = SimpleNamespace(
+        poll=lambda: None, wait=lambda **kwargs: 0
+    )
     workspace = LiveWorkspace(controller)
     workspace.repo, workspace.mapping = str(tmp_path), "mapping.json"
     workspace.available = True
@@ -952,8 +960,9 @@ def test_connect_failure_clears_busy_and_reports_error(gui_frame, app_state, tmp
     workspace = LiveWorkspace(LiveController(lambda endpoint: BrokenClient()))
     workspace.repo, workspace.mapping = str(tmp_path), "mapping.json"
     workspace.controller.owned.endpoint = workspace.endpoint
+    workspace.controller.owned.service_id = "test-service"
     workspace.controller.owned.process = SimpleNamespace(
-        poll=lambda: None, wait=lambda: 0
+        poll=lambda: None, wait=lambda **kwargs: 0
     )
     workspace.available = True
     try:
@@ -1440,7 +1449,13 @@ def test_close_shuts_down_owned_service_even_when_detached(attached):
     calls = []
 
     class Client:
-        def shutdown(self):
+        def status(self):
+            return {"service_id": "test-service"}
+
+        def stop(self):
+            calls.append("stop")
+
+        def shutdown(self, *, service_id=None):
             calls.append("shutdown")
 
     class Process:
@@ -1452,14 +1467,15 @@ def test_close_shuts_down_owned_service_even_when_detached(attached):
             return 0
 
     controller = LiveController(lambda endpoint: Client())
+    controller.owned.service_id = "test-service"
     controller.owned.process = Process()
     controller.endpoint = controller.owned.endpoint = "127.0.0.1:19740"
     controller.attached = attached
     controller._status = {"state": {"connected": True}}
     controller.close()
-    assert calls == ["shutdown", "wait"]
+    assert calls == (["stop"] if attached else []) + ["shutdown", "wait"]
     controller.close()
-    assert calls == ["shutdown", "wait"]
+    assert calls == (["stop"] if attached else []) + ["shutdown", "wait"]
 
 
 def test_connect_rejects_external_service_without_changing_device():
@@ -1477,6 +1493,9 @@ def test_close_handles_both_services_independently(fail_stop):
     calls = []
 
     class Client:
+        def status(self):
+            return {"service_id": "test-service"}
+
         def __init__(self, endpoint):
             self.endpoint = endpoint
 
@@ -1485,7 +1504,7 @@ def test_close_handles_both_services_independently(fail_stop):
             if fail_stop:
                 raise RuntimeError("stop failure")
 
-        def shutdown(self):
+        def shutdown(self, *, service_id=None):
             calls.append((self.endpoint, "shutdown"))
 
     class Process:
@@ -1499,6 +1518,7 @@ def test_close_handles_both_services_independently(fail_stop):
     controller = LiveController(Client)
     controller.endpoint = "external"
     controller.owned.endpoint = "owned"
+    controller.owned.service_id = "test-service"
     controller.owned.process = Process()
     controller.attached = True
     controller._status = {"state": {"connected": True}}
@@ -1559,18 +1579,18 @@ def test_control_button_labels_preserve_slot_commands(
 
 
 @pytest.mark.parametrize(
-    "status,frames,attached,error,expected",
+    "buttons,frames,attached,error,expected",
     [
-        (1 << 4, 1, True, "", ["ACT"] + ["—"] * 7),
-        (1 << 11, 1, True, "", ["—"] * 7 + ["ACT"]),
-        (0xF00F, 1, True, "", ["—"] * 8),
-        (0xFF0, 0, True, "", ["?"] * 8),
-        (0xFF0, 1, False, "", ["?"] * 8),
-        (0xFF0, 1, True, "Connection refused", ["?"] * 8),
+        ([True] + [False] * 7, 1, True, "", ["ACT"] + ["—"] * 7),
+        ([False] * 7 + [True], 1, True, "", ["—"] * 7 + ["ACT"]),
+        ([False] * 8, 1, True, "", ["—"] * 8),
+        ([True] * 8, 0, True, "", ["?"] * 8),
+        ([True] * 8, 1, False, "", ["?"] * 8),
+        ([True] * 8, 1, True, "Connection refused", ["?"] * 8),
     ],
 )
 def test_user_button_feedback_and_vertical_layout(
-    gui_frame, app_state, monkeypatch, status, frames, attached, error, expected
+    gui_frame, app_state, monkeypatch, buttons, frames, attached, error, expected
 ):
     from imgui_bundle import imgui
 
@@ -1580,7 +1600,14 @@ def test_user_button_feedback_and_vertical_layout(
         workspace.update,
         attached=attached,
         error=error,
-        status={"state": {"connected": True, "status": status, "frames": frames}},
+        status={
+            "state": {
+                "connected": True,
+                "status": 0,
+                "user_buttons": buttons,
+                "frames": frames,
+            }
+        },
     )
     indicators, positions = [], []
     original_button = imgui.button
@@ -1691,3 +1718,158 @@ def test_startup_timeout_terminates_unresponsive_service(tmp_path, monkeypatch):
         controller._start_service(tmp_path / "session", "")
     assert started[0].events == ["terminate"]
     assert not controller.owned.running
+
+
+def test_close_stops_replacement_at_owned_endpoint_without_shutting_it_down():
+    from unittest.mock import Mock
+
+    client = Mock()
+    client.status.return_value = {"service_id": "replacement"}
+    old_process = Mock()
+    old_process.poll.return_value = None
+    controller = LiveController(lambda endpoint: client)
+    controller.endpoint = controller.owned.endpoint = "same-endpoint"
+    controller.owned.process = old_process
+    controller.owned.service_id = "original"
+    controller.attached = True
+    controller.close()
+    client.stop.assert_called_once()
+    client.shutdown.assert_not_called()
+    old_process.terminate.assert_not_called()
+
+
+def test_reconnect_refreshes_catalog_after_session_was_removed():
+    class Client(FakeClient):
+        connected = False
+
+        def __init__(self):
+            super().__init__()
+            self.connected = False
+
+        def status(self):
+            value = super().status()
+            value["session_id"] = "replacement" if self.connected else None
+            return value
+
+        def connect(self, ip, port):
+            self.connected = True
+
+    client = Client()
+    controller = LiveController(lambda _: client)
+    controller.owned.endpoint = "fake"
+    controller.owned.service_id = "test-service"
+    controller.owned.process = SimpleNamespace(poll=lambda: None, wait=lambda **kw: 0)
+    try:
+        controller._command(
+            "connect", {"endpoint": "fake", "ip": "192.168.1.233", "port": 1000}
+        )
+        controller._poll()
+        assert controller._catalog["observables"] == {"a": 1, "b": 2}
+        assert controller._status["session_id"] == "replacement"
+        assert controller._assignments
+    finally:
+        controller.close()
+
+
+def test_session_refresh_retries_when_identity_changes_between_reads():
+    from ultrazohm_dataviewer.live import ServiceSnapshot
+
+    class Client(FakeClient):
+        session = "old"
+
+        def status(self):
+            value = super().status()
+            value["session_id"] = self.session
+            return value
+
+        def catalog(self):
+            result = {"profile": {"session": self.session}}
+            self.session = "new"
+            return result
+
+    snapshot = ServiceSnapshot.read(Client())
+    assert snapshot.status["session_id"] == "new"
+    assert snapshot.catalog["session"] == "new"
+
+
+@pytest.mark.parametrize("failure", [False, True])
+def test_attached_service_device_connect_never_launches_local_service(
+    monkeypatch, failure
+):
+    client = FakeClient()
+    client.connected = False
+
+    def connect(ip, port):
+        client.calls.append(("connect", ip, port))
+        client.connected = True
+
+    client.connect = connect
+    controller = LiveController(lambda _: client)
+
+    def unexpected_start(*args, **kwargs):
+        pytest.fail("Connecting an attached service must not start a local service")
+
+    monkeypatch.setattr(controller, "_start_service", unexpected_start)
+    arguments = {"endpoint": "127.0.0.1:19742", "ip": "192.168.1.233", "port": 1000}
+    try:
+        controller.submit("attach", endpoint=arguments["endpoint"])
+        wait_for(lambda: controller.latest().attached)
+        assert not controller.latest().status["state"]["connected"]
+        if failure:
+
+            def unavailable():
+                raise ConnectionRefusedError("remote service stopped")
+
+            client.status = unavailable
+            controller.submit("connect_device", **arguments)
+            wait_for(lambda: controller.latest().completed_commands == 2)
+            assert "remote service stopped" in controller.latest().error
+            assert not client.calls
+        else:
+            controller.submit("connect_device", **arguments)
+            wait_for(lambda: controller.latest().status["state"]["connected"])
+            assert client.calls == [("connect", "192.168.1.233", 1000)]
+            assert controller.latest().status["state"]["connected"]
+            assert not controller.owned.owns(controller.endpoint)
+    finally:
+        controller.attached = False
+        controller.close()
+
+
+def test_attached_disconnected_panel_connects_device_without_local_repository(
+    gui_frame, app_state, monkeypatch
+):
+    from imgui_bundle import imgui
+
+    controller = LiveController(lambda _: FakeClient())
+    controller.endpoint = "127.0.0.1:19742"
+    workspace = LiveWorkspace(controller)
+    workspace.available = True
+    workspace.update = replace(
+        workspace.update, attached=True, status={"state": {"connected": False}}
+    )
+    monkeypatch.setattr(LiveWorkspace, "repository_ready", property(lambda self: False))
+    sent, labels = [], []
+    monkeypatch.setattr(controller, "submit", lambda op, **kw: sent.append((op, kw)))
+
+    def button(label, *args, **kwargs):
+        labels.append(label)
+        return label == "Connect device"
+
+    monkeypatch.setattr(imgui, "button", button)
+    try:
+        gui_frame(SimpleNamespace(render=workspace.render_data), app_state)
+        assert "Disconnect" not in labels
+        assert sent == [
+            (
+                "connect_device",
+                {
+                    "endpoint": controller.endpoint,
+                    "ip": workspace.ip,
+                    "port": workspace.port,
+                },
+            )
+        ]
+        assert workspace.pending_message == "Connecting…"
+    finally:
+        workspace.close()

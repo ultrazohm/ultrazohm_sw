@@ -1,9 +1,6 @@
 """Generate a fresh firmware contract with the installed CLI, without device IO."""
 
-import json
 import re
-import subprocess
-import tempfile
 from pathlib import Path
 
 from .user_paths import HEADER, find_repository
@@ -24,64 +21,21 @@ def repository(explicit=None):
 
 
 def read_mapping(repo):
-    """Read the CLI's repository mapping without an intermediate JSON file."""
-    from .process_launcher import command
+    """Read the CLI's repository mapping without a subprocess or intermediate file."""
+    from ultrazohm_cli.configuration import channel_mapping
 
-    result = subprocess.run(
-        command("cli", "channel-mapping", "--repo", str(repo)),
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-        timeout=60,
-    )
-    if result.returncode:
-        raise RuntimeError(
-            "Channel mapping generation failed: "
-            + (result.stderr.strip() or result.stdout.strip())
-        )
-    return json.loads(result.stdout)
+    return channel_mapping(repo)
 
 
 def generate_mapping(repo=None):
-    """Regenerate ``javascope_<commit>.json``; one cache file per checkout commit."""
-    from .process_launcher import command
+    """Publish a fresh mapping obtained through the CLI configuration API."""
+    from .user_paths import data_directory, write_json
 
     root = repository(repo)
-    from .user_paths import data_directory
-
-    cache = data_directory(root)
-    cache.mkdir(parents=True, exist_ok=True)
-    # Only publish successful output; a parser error must never reuse stale data.
-    with tempfile.TemporaryDirectory(prefix=".generate-", dir=cache) as temporary:
-        generated = Path(temporary) / "javascope.json"
-        result = subprocess.run(
-            command(
-                "cli",
-                "create-json-from-javascope-h",
-                "--repo",
-                str(root),
-                "--output",
-                str(generated),
-            ),
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            timeout=60,
-        )
-        if result.returncode:
-            raise RuntimeError(
-                "Channel mapping generation failed: "
-                + (result.stderr.strip() or result.stdout.strip())
-            )
-        mapping = json.loads(generated.read_text(encoding="utf-8"))
-        commit = mapping["repository"]["commit"]
-        if not isinstance(commit, str) or not re.fullmatch(r"[A-Za-z0-9_-]+", commit):
-            raise ValueError(
-                "Generated channel mapping has an invalid repository commit"
-            )
-        destination = cache / f"javascope_{commit}.json"
-        generated.replace(destination)
-    print(f"Live channel mapping: {destination}", flush=True)
+    mapping = read_mapping(root)
+    commit = mapping["repository"]["commit"]
+    if not isinstance(commit, str) or not re.fullmatch(r"[A-Za-z0-9_-]+", commit):
+        raise ValueError("Generated channel mapping has an invalid repository commit")
+    destination = data_directory(root) / f"javascope_{commit}.json"
+    write_json(destination, mapping)
     return destination

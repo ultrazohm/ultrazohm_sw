@@ -1,8 +1,6 @@
 """Workspace runtime preferences and effective session profiles."""
 
 import json
-import math
-import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -10,57 +8,15 @@ from .user_paths import write_json
 
 
 def default_profile(repo=None):
-    from .process_launcher import command
+    from ultrazohm_cli.configuration import default_profile as cli_defaults
 
-    try:
-        result = subprocess.run(
-            command("cli", "profile", *(["--repo", str(repo)] if repo else [])),
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            check=True,
-            timeout=15,
-        )
-    except subprocess.CalledProcessError as exc:
-        raise RuntimeError(
-            "Could not load default runtime settings: "
-            + (exc.stderr or str(exc)).strip()
-        ) from exc
-    except subprocess.TimeoutExpired as exc:
-        raise RuntimeError("Timed out loading default runtime settings") from exc
-    return json.loads(result.stdout)
+    return cli_defaults(repo)
 
 
 def read_runtime_settings(path):
-    settings = json.loads(Path(path).read_text(encoding="utf-8"))
-    fields = {"schema_version", "name", "sample_period_us", "initial_channels"}
-    valid = isinstance(settings, dict) and not (settings.keys() - fields)
-    if valid:
-        period = settings.get("sample_period_us")
-        initial = settings.get("initial_channels", {})
-        valid = (
-            type(settings.get("schema_version")) is int
-            and settings["schema_version"] == 1
-            and isinstance(settings.get("name"), str)
-            and type(period) in (int, float)
-            and math.isfinite(period)
-            and period > 0
-            and isinstance(initial, dict)
-            and all(
-                isinstance(key, str)
-                and key.isascii()
-                and key.isdecimal()
-                and isinstance(value, str)
-                for key, value in initial.items()
-            )
-        )
-    if not valid:
-        raise ValueError(
-            f"Invalid runtime settings in {path}: expected schema_version 1, name, "
-            "positive sample_period_us and optional initial_channels object"
-        )
-    return settings
+    from ultrazohm_cli.configuration import read_profile
+
+    return read_profile(path)
 
 
 @dataclass(frozen=True)
@@ -80,12 +36,12 @@ def load_workspace_settings(mapping_path, user_directory=None):
         else mapping_path.parent
     )
     directory.mkdir(parents=True, exist_ok=True)
-    settings_path = directory / "settings.json"
-    if not settings_path.exists():
-        defaults, _ = profile_for_mapping(mapping, default_profile(), None)
-        write_json(settings_path, defaults, overwrite=False)
-    settings = read_runtime_settings(settings_path)
-    write_json(directory / "tools.json", {"xsct": None}, overwrite=False)
+    from ultrazohm_cli.configuration import startup_profile_path
+
+    settings_path = startup_profile_path(directory=directory)
+    from ultrazohm_cli.configuration import load_or_seed_profile
+
+    settings = load_or_seed_profile(settings_path, mapping)
     (directory / "logs").mkdir(exist_ok=True)
     return WorkspaceSettings(settings_path, mapping, settings)
 
@@ -97,11 +53,12 @@ def load_repository_settings(repo):
 
     mapping = _check_mapping(read_mapping(repo))
     directory = data_directory(repo)
-    settings_path = directory / "settings.json"
-    if not settings_path.exists():
-        write_json(settings_path, default_profile(repo), overwrite=False)
-    settings = read_runtime_settings(settings_path)
-    write_json(directory / "tools.json", {"xsct": None}, overwrite=False)
+    from ultrazohm_cli.configuration import startup_profile_path
+
+    settings_path = startup_profile_path(directory=directory)
+    from ultrazohm_cli.configuration import load_or_seed_profile
+
+    settings = load_or_seed_profile(settings_path, mapping)
     (directory / "logs").mkdir(exist_ok=True)
     return WorkspaceSettings(settings_path, mapping, settings)
 
@@ -135,26 +92,6 @@ def _check_mapping(mapping):
 
 
 def profile_for_mapping(mapping, previous, assignments):
-    _check_mapping(mapping)
-    settings = previous if previous else default_profile()
-    initial = (
-        assignments if assignments is not None else settings.get("initial_channels", {})
-    )
-    selected, removed = {}, []
-    for channel, name in initial.items():
-        canonical = name if name in mapping["observables"] else f"JSO_{name}"
-        if (
-            canonical in mapping["observables"]
-            and 1 <= int(channel) <= mapping["channels"]
-        ):
-            selected[str(channel)] = canonical
-        else:
-            removed.append(name)
-    if not selected and initial and "JSO_ZEROVALUE" in mapping["observables"]:
-        selected["1"] = "JSO_ZEROVALUE"
-    return {
-        "schema_version": 1,
-        "name": settings.get("name", "viewer-flash"),
-        "sample_period_us": settings["sample_period_us"],
-        "initial_channels": selected,
-    }, removed
+    from ultrazohm_cli.configuration import remap_profile
+
+    return remap_profile(mapping, previous, assignments)

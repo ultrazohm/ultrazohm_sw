@@ -129,12 +129,23 @@ It resolves the workspace relative to its own location, so callers can use an ab
 
 With Vitis 2022.2's ``xsct`` on ``PATH``, run from the repository root:
 
+On Linux (GUI opening requires an existing desktop display):
+
 .. code-block:: text
 
-   xsct -nodisp tcl_scripts/vitis_headless.tcl generate
-   xsct -nodisp tcl_scripts/vitis_headless.tcl build
-   xsct -nodisp tcl_scripts/vitis_headless.tcl flash Run_UltraZohm
-   xsct -nodisp tcl_scripts/vitis_headless.tcl open
+   xsct -norlwrap tcl_scripts/vitis_headless.tcl generate
+   xsct -norlwrap tcl_scripts/vitis_headless.tcl build
+   xsct -norlwrap tcl_scripts/vitis_headless.tcl flash Run_UltraZohm
+   xsct -norlwrap -nodisp tcl_scripts/vitis_headless.tcl open
+
+On native Windows:
+
+.. code-block:: bat
+
+   xsct.bat tcl_scripts/vitis_headless.tcl generate
+   xsct.bat tcl_scripts/vitis_headless.tcl build
+   xsct.bat tcl_scripts/vitis_headless.tcl flash Run_UltraZohm
+   xsct.bat tcl_scripts/vitis_headless.tcl open
 
 On Windows, use ``xsct.bat`` if required by the command shell.
 No Bash or Make installation is needed for direct XSCT invocation.
@@ -188,3 +199,22 @@ This deletes all workspace contents, including hidden metadata and build outputs
 except ``create_Vitis_workspace_here.txt``. Then run ``make -C vitis generate-open``.
 Close Vitis before modifying the workspace and do not run separate workspace
 operations concurrently.
+
+Linux firmware display requirements
+-----------------------------------
+
+Batch firmware operations require xlsclients and, without a usable display,
+Xvfb on the machine running XSCT. On Debian/Ubuntu install x11-utils and xvfb;
+dbus-x11 provides the optional dbus-launch helper. Acquisition alone does not
+need these tools. Native Windows needs no X11 packages or Linux launcher flags.
+An attached laptop needs none of these firmware-host dependencies.
+
+Use xsct -norlwrap for direct Linux batch execution. For Linux open and
+generate-open, use an existing desktop display.
+ultrazohm-cli and Make targets select these flags automatically.
+A temporary batch display cannot host a persistent Vitis GUI.
+
+Start the ultrazohm-cli process normally over SSH after installing the dependencies; no xvfb-run wrapper is necessary.
+Rebuild the checkout ultrazohm-cli and restart its ultrazohm-cli process to pick up launcher changes.
+Failed generation can leave a partial workspace: preserve it before retrying in an empty workspace.
+Inspect the job output and timestamp-matching vitis/workspace/IDE.log; Channel closed alone does not identify its cause.

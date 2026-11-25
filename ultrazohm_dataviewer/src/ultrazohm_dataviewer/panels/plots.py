@@ -1066,7 +1066,7 @@ class PlotsPanel(SessionPanel):
                     self._reset_view(state, plot_n)
             self._requested_resets.clear()
         if self._equal_sizes:
-            state.set_grid_ratios([1.0] * state.rows, [1.0] * state.cols)
+            self._emit(state, "set_grid_ratios", [1.0] * state.rows, [1.0] * state.cols)
             self._equal_sizes = False
         live_cells = {id(cell) for cell in state.cells}
         self._pending_fit = {
@@ -1110,8 +1110,9 @@ class PlotsPanel(SessionPanel):
                     self._render_cell(state, index, cell, imgui.ImVec2(-1, -1))
             finally:
                 implot.end_subplots()
-            state.row_ratios = list(ratios.row_ratios)
-            state.col_ratios = list(ratios.col_ratios)
+            rows, cols = list(ratios.row_ratios), list(ratios.col_ratios)
+            if rows != state.row_ratios or cols != state.col_ratios:
+                self._emit(state, "set_grid_ratios", rows, cols, echo=False)
         self._spy_windows(state)
 
         state.services.display.retain(self._used_slots)

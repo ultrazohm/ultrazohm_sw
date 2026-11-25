@@ -6,8 +6,8 @@ import threading
 from collections import OrderedDict
 from dataclasses import dataclass
 
-from .sources import Cancelled, check
-from .workers import join_worker
+from .sources import Cancelled
+from .workers import cancellable_result, join_worker
 
 
 @dataclass
@@ -150,9 +150,9 @@ class Requests:
                 self.active[slot] = job
             result = None
             try:
-                check(job.cancel)
-                result = job.function(job.cancel)
-                check(job.cancel)
+                result = cancellable_result(
+                    lambda job=job: job.function(job.cancel), job.cancel
+                )
                 with self.condition:
                     if self.wanted.get(slot) == job.key or (
                         job.continuous

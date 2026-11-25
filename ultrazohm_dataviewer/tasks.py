@@ -7,12 +7,16 @@ import subprocess
 import sys
 import tempfile
 import tomllib
-import zipfile
-from email.parser import BytesParser
+from contextlib import nullcontext
+from functools import partial
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 CLI = HERE.parent / "ultrazohm_cli"
+sys.path.insert(0, str(HERE.parent))
+from uz_build import build_lock, single_wheel, venv_bin, wheel_version  # noqa: E402
+from uz_build import run as build_run  # noqa: E402
+
 WINDOWS = os.name == "nt"
 # The repository's single Python pin. uv reads .python-version only inside the
 # project directory, so pass it explicitly.
@@ -33,21 +37,16 @@ SYNC = [
 ]
 
 
-def run(*command, cwd=HERE, env=None):
-    command = [str(part) for part in command]
-    print("+", " ".join(command), flush=True)
-    subprocess.run(command, cwd=cwd, env=env, check=True)
+run = partial(build_run, cwd=HERE)
+
+python_in = venv_bin
 
 
-def python_in(venv):
-    return venv / ("Scripts/python.exe" if WINDOWS else "bin/python")
-
-
-def sync(venv):
+def sync(venv, *, inexact=False):
     """Install the locked dependencies into ``venv`` and return its interpreter."""
     env = os.environ.copy()
     env["UV_PROJECT_ENVIRONMENT"] = str(venv)
-    run(*SYNC, env=env)
+    run(*SYNC, *(["--inexact"] if inexact else []), env=env)
     return python_in(venv)
 
 
@@ -55,19 +54,13 @@ def cli_tasks(*args):
     run(sys.executable, CLI / "tasks.py", *args)
 
 
-def built_wheel(directory):
-    wheels = sorted(directory.glob("ultrazohm_cli-*.whl"))
-    if len(wheels) != 1:
-        raise SystemExit(
-            f"Expected exactly one wheel in {directory}, found {len(wheels)}"
-        )
-    return wheels[0]
+built_wheel = single_wheel
 
 
 def install_packages(python, args, *, release=False):
-    if args.cli_wheel is None and release:
+    if args.cli_wheel is None:
         with tempfile.TemporaryDirectory(prefix="cli-release-wheel-") as directory:
-            cli_tasks("wheel", "--out", directory)
+            cli_tasks("wheel" if release else "debug-wheel", "--out", directory)
             from argparse import Namespace
 
             return install_packages(
@@ -75,18 +68,11 @@ def install_packages(python, args, *, release=False):
                 Namespace(**{**vars(args), "cli_wheel": built_wheel(Path(directory))}),
             )
     cli_wheel = args.cli_wheel
-    if cli_wheel is None:
-        cli_tasks("debug-wheel")
-        cli_wheel = built_wheel(CLI / "target" / "wheels-debug")
     cli_wheel = Path(cli_wheel).resolve()
-    with zipfile.ZipFile(cli_wheel) as archive:
-        metadata_path = next(
-            n for n in archive.namelist() if n.endswith(".dist-info/METADATA")
-        )
-        version = BytesParser().parsebytes(archive.read(metadata_path))["Version"]
-    viewer_wheel = args.viewer_wheel
-    with tempfile.TemporaryDirectory(prefix="viewer-wheel-") as directory:
-        if viewer_wheel is None:
+    version = wheel_version(cli_wheel)
+    dataviewer_wheel = args.dataviewer_wheel
+    with tempfile.TemporaryDirectory(prefix="dataviewer-wheel-") as directory:
+        if dataviewer_wheel is None:
             run(
                 sys.executable,
                 HERE / "tasks.py",
@@ -95,7 +81,7 @@ def install_packages(python, args, *, release=False):
                 directory,
                 env={**os.environ, "UZ_CLI_RELEASE_VERSION": version},
             )
-            (viewer_wheel,) = Path(directory).glob("*.whl")
+            (dataviewer_wheel,) = Path(directory).glob("*.whl")
         run(
             "uv",
             "pip",
@@ -105,7 +91,7 @@ def install_packages(python, args, *, release=False):
             "--reinstall",
             "--no-deps",
             cli_wheel,
-            Path(viewer_wheel).resolve(),
+            Path(dataviewer_wheel).resolve(),
         )
     run("uv", "pip", "check", "--python", python)
     # Import from outside the checkout to catch absent package data/imports.
@@ -149,9 +135,15 @@ def format_check(_args):
 
 def test(args):
     """Run pytest with a CLI wheel matching this checkout."""
-    python = sync(HERE / ".venv-ci")
-    install_packages(python, args)
-    run(python, "-m", "pytest", "-q", env={**os.environ, "UZ_TEST_INSTALLED": "1"})
+    with tempfile.TemporaryDirectory(prefix="uz-viewer-test-") as directory:
+        python = sync(Path(directory) / "environment")
+        install_packages(python, args)
+        run(python, "-m", "pytest", "-q", env={**os.environ, "UZ_TEST_INSTALLED": "1"})
+        if getattr(args, "gui_smoke", False):
+            if sys.platform == "linux" and not os.environ.get("DISPLAY"):
+                run("xvfb-run", "-a", python, HERE / "build/smoke_gui.py")
+            else:
+                run(python, HERE / "build/smoke_gui.py")
 
 
 def check(args):
@@ -167,6 +159,8 @@ def wheel(args):
     from release_build import staged_project
 
     output = args.out.resolve() if args.out else HERE / "dist-wheels"
+    if args.out is None:
+        shutil.rmtree(output, ignore_errors=True)
     with staged_project(HERE, os.environ.get("UZ_CLI_RELEASE_VERSION")) as (
         stage,
         _version,
@@ -180,32 +174,33 @@ def bundle(args):
         raise SystemExit(
             "Standalone bundles are Windows-only; use the Python wheel on Linux."
         )
-    python = sync(HERE / ".venv-build")
-    install_packages(python, args, release=True)
-    shutil.rmtree(HERE / "build" / "native", ignore_errors=True)
-    shutil.rmtree(HERE / "dist", ignore_errors=True)
-    run(
-        python,
-        "-m",
-        "PyInstaller",
-        "--noconfirm",
-        "--clean",
-        "--distpath",
-        "dist",
-        "--workpath",
-        Path("build") / "native",
-        Path("build") / "ultrazohm_dataviewer.spec",
-    )
-    shutil.copy2(
-        HERE / "build" / "ultrazohm-dataviewer.ps1",
-        HERE / "dist" / "ultrazohm-dataviewer",
-    )
-    print(f"Built: {HERE / 'dist' / 'ultrazohm-dataviewer'}", flush=True)
+    with tempfile.TemporaryDirectory(prefix="uz-viewer-build-") as directory:
+        python = sync(Path(directory) / "environment")
+        install_packages(python, args, release=True)
+        shutil.rmtree(HERE / "build" / "native", ignore_errors=True)
+        shutil.rmtree(HERE / "dist", ignore_errors=True)
+        run(
+            python,
+            "-m",
+            "PyInstaller",
+            "--noconfirm",
+            "--clean",
+            "--distpath",
+            "dist",
+            "--workpath",
+            Path("build") / "native",
+            Path("build") / "ultrazohm_dataviewer.spec",
+        )
+        shutil.copy2(
+            HERE / "build" / "ultrazohm-dataviewer.ps1",
+            HERE / "dist" / "ultrazohm-dataviewer",
+        )
+        print(f"Built: {HERE / 'dist' / 'ultrazohm-dataviewer'}", flush=True)
 
 
 def bundle_smoke(_args):
     """Start the bundle and its live workers headless."""
-    python = python_in(HERE / ".venv-build")
+    python = sys.executable  # Smoke drivers use only the standard library.
     executable = HERE / "dist" / "ultrazohm-dataviewer" / "ultrazohm-dataviewer.exe"
     run(python, Path("build") / "smoke_binary.py", executable)
     run(python, Path("build") / "smoke_live.py", executable)
@@ -213,25 +208,25 @@ def bundle_smoke(_args):
 
 
 def _invocation():
-    prefix = ".\\uz.ps1" if WINDOWS else "./uz"
+    prefix = ".\\uz_developer.ps1" if WINDOWS else "./uz_developer"
     return lambda task, args="": (
-        f"{prefix} task viewer {task}" + (f" {args}" if args else "")
+        f"{prefix} task dataviewer {task}" + (f" {args}" if args else "")
     )
 
 
 def overview():
     print(
-        "Viewer build tasks: lint, format, format-check, test, check, bundle, bundle-smoke"
+        "DataViewer build tasks: lint, format, format-check, test, check, wheel, bundle, bundle-smoke"
     )
     print(
-        "Use ./uz_developer shell to run both applications; ./uz_developer task viewer TASK --help for details."
+        "Use ./uz venv dev to run both applications; ./uz_developer task dataviewer TASK --help for details."
     )
 
 
 DESCRIPTIONS = {
-    "check": "Lint and run the full test suite in .venv-ci, as CI does. Without --cli-wheel, a debug "
+    "check": "Lint and run the full test suite in a temporary environment, as CI does. Without --cli-wheel, a debug "
     "CLI wheel is built from ../ultrazohm_cli so live tests use this checkout.",
-    "bundle": "Build the PyInstaller desktop bundle in dist/ from .venv-build. Without --cli-wheel, a "
+    "bundle": "Build the PyInstaller desktop bundle in dist/ from a temporary environment. Without --cli-wheel, a "
     "release CLI wheel is built from ../ultrazohm_cli. Standalone bundles are Windows-only; "
     "Linux uses Python wheels.",
 }
@@ -249,9 +244,15 @@ def main(argv=None):
         if wheel:
             task.add_argument("--cli-wheel", type=Path, help="matching CLI wheel")
             task.add_argument(
-                "--viewer-wheel",
+                "--dataviewer-wheel",
                 type=Path,
-                help="matching viewer wheel; otherwise build it",
+                help="matching DataViewer wheel; otherwise build it",
+            )
+        if name in ("test", "check"):
+            task.add_argument(
+                "--gui-smoke",
+                action="store_true",
+                help="Also launch the installed GUI (requires a display)",
             )
         task.set_defaults(function=function)
 
@@ -274,7 +275,14 @@ def main(argv=None):
         return
     args = parser.parse_args(argv)
     try:
-        args.function(args)
+        # Private wheel outputs need no shared lock (bundle may invoke wheel).
+        shared = args.task in ("bundle", "bundle-smoke") or (
+            args.task == "wheel" and args.out is None
+        )
+        with build_lock(HERE.parent, "dataviewer") if shared else nullcontext():
+            args.function(args)
+    except RuntimeError as error:
+        raise SystemExit(str(error)) from None
     except subprocess.CalledProcessError as error:
         raise SystemExit(error.returncode or 1) from None
 

@@ -117,6 +117,8 @@ def main():
             stub = tools / "xsct_stub.py"
             stub.write_text(
                 "import json, os, sys\nfrom pathlib import Path\n"
+                "action = next(sys.argv[i+1] for i, arg in enumerate(sys.argv) if arg.endswith('.tcl'))\n"
+                "Path(os.environ['UZ_VITIS_COMPLETION']).write_text(action)\n"
                 "Path(os.environ['UZ_TEST_REPORT']).write_text(json.dumps({'args': sys.argv[1:], 'root': os.environ['UZ_WORKSPACE_ROOT']}))\n"
             )
             if os.name == "nt":
@@ -134,25 +136,6 @@ def main():
                     + ' "$@"\n'
                 )
                 launcher.chmod(0o755)
-            subprocess.run(
-                [
-                    executable,
-                    "--internal-worker",
-                    "cli",
-                    "flash",
-                    "--repo",
-                    str(firmware),
-                ],
-                check=True,
-                timeout=30,
-                env={**os.environ, "PATH": str(tools), "UZ_TEST_REPORT": str(report)},
-            )
-            invocation = json.loads(report.read_text())
-            assert Path(invocation["root"]).samefile(firmware), invocation
-            bundled_script = Path(invocation["args"][1])
-            assert bundled_script.is_file() and "tcl_scripts" in bundled_script.parts
-            assert bundled_script.is_relative_to(Path(executable).parent)
-            assert not (firmware / "tcl_scripts").exists()
             with (directory / "service.log").open("w") as log:
                 service = subprocess.Popen(
                     [
@@ -164,14 +147,19 @@ def main():
                         "serve",
                         "--device",
                         f"127.0.0.1:{device_port}",
-                        "--channel-mapping",
-                        str(mapping),
+                        "--repo",
+                        str(firmware),
                         "--profile",
                         str(profile),
                         "--output",
                         str(directory / "recording"),
                     ],
                     cwd=tmp,
+                    env={
+                        **os.environ,
+                        "PATH": str(tools),
+                        "UZ_TEST_REPORT": str(report),
+                    },
                     stdout=log,
                     stderr=log,
                 )
@@ -185,6 +173,25 @@ def main():
                     time.sleep(0.05)
                 else:
                     raise AssertionError((directory / "service.log").read_text())
+                before = json.loads(cli("status"))
+                cli("flash")
+                after = json.loads(cli("status"))
+                assert after["service_id"] == before["service_id"]
+                assert after["session_id"] != before["session_id"]
+                assert after["state"]["connected"], after
+                invocation = json.loads(report.read_text())
+                assert Path(invocation["root"]).samefile(firmware), invocation
+                arguments = invocation["args"]
+                if sys.platform == "linux":
+                    assert arguments.pop(0) == "-norlwrap"
+                bundled_script = Path(arguments[0]).resolve()
+                assert bundled_script.is_file()
+                assert bundled_script.is_relative_to(
+                    (firmware / "artifacts/cli-tools").resolve()
+                )
+                assert arguments[1:] == ["program-built", "Run_UltraZohm"]
+                assert not (firmware / "tcl_scripts").exists()
+                recording = Path(after["output"])
                 script = directory / "script.py"
                 script.write_text(
                     'import argparse, time\nfrom ultrazohm_cli import Client\np=argparse.ArgumentParser()\np.add_argument("--endpoint")\nu=Client(p.parse_args().endpoint)\nu.start_logging()\ntime.sleep(.3)\nu.stop_logging()\nprint("SCRIPT_OK", flush=True)\n'
@@ -207,7 +214,7 @@ def main():
                 assert "SCRIPT_OK" in result.stdout
                 cli("shutdown")
                 assert service.wait(timeout=30) == 0
-                assert (directory / "recording/data.parquet").is_file()
+                assert (recording / "data.parquet").is_file()
         finally:
             for process in reversed(processes):
                 if process.poll() is None:

@@ -6,7 +6,12 @@ XSCT ?= xsct
 VITIS ?= vitis
 WORKSPACE := $(if $(UZ_WORKSPACE_ROOT),$(UZ_WORKSPACE_ROOT)/vitis/workspace,$(CURDIR)/workspace)
 # Invoke with make -C vitis <target> (or from the vitis directory).
-SCRIPT := ../tcl_scripts/vitis_headless.tcl
+ifeq ($(OS),Windows_NT)
+CHECKED_XSCT := run_xsct_checked.bat
+else
+CHECKED_XSCT := bash ./run_xsct_checked.sh
+endif
+export XSCT
 
 .PHONY: help generate generate-open open build build-clean clean-workspace run flash build-run
 help:
@@ -20,23 +25,23 @@ help:
 	@echo 'run / build-run Aliases for flash'
 	@echo 'PROFILE=Run_UltraZohm (default; Debug profiles currently require GUI)'
 generate:
-	"$(XSCT)" -nodisp "$(SCRIPT)" generate
+	$(CHECKED_XSCT) generate
 generate-open:
 	@command -v "$(VITIS)" >/dev/null 2>&1 || { echo 'ERROR: Vitis GUI launcher not found; load the Vitis environment or set VITIS=path/to/vitis.' >&2; exit 1; }
-	"$(XSCT)" -nodisp "$(SCRIPT)" generate
+	$(CHECKED_XSCT) generate
 	"$(VITIS)" -workspace "$(WORKSPACE)"
 open:
 	@test -d "$(WORKSPACE)" || { echo 'ERROR: Workspace not found; run make generate first.' >&2; exit 1; }
 	"$(VITIS)" -workspace "$(WORKSPACE)"
 build:
-	"$(XSCT)" -nodisp "$(SCRIPT)" build
+	$(CHECKED_XSCT) build
 build-clean:
-	"$(XSCT)" -nodisp "$(SCRIPT)" build-clean
+	$(CHECKED_XSCT) build-clean
 clean-workspace:
 	@case "$(WORKSPACE)" in */vitis/workspace) ;; *) echo 'ERROR: Refusing to clean a path outside vitis/workspace.' >&2; exit 1 ;; esac
 	@test ! -L "$(WORKSPACE)" || { echo 'ERROR: Refusing to clean a symlinked workspace.' >&2; exit 1; }
 	@cd "$(WORKSPACE)" && find . -mindepth 1 -maxdepth 1 ! -name create_Vitis_workspace_here.txt -exec rm -rf -- {} +
 	@echo 'Workspace cleaned; create_Vitis_workspace_here.txt preserved.'
 flash:
-	"$(XSCT)" -nodisp "$(SCRIPT)" flash "$(PROFILE)"
+	$(CHECKED_XSCT) flash "$(PROFILE)"
 run build-run: flash

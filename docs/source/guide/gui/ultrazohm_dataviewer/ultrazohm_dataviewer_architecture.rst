@@ -10,10 +10,12 @@ End-user documentation is in :doc:`ultrazohm_dataviewer_usage`; packaging is in 
 Core model
 ==========
 
-The viewer is **state-driven and command-routed**:
+The DataViewer is **state-driven and command-routed**:
 
-- A single source of truth, ``AppState`` (``state.py``). Panels are (almost) pure render functions: each frame they read ``AppState`` and draw it.
-- **Data and analysis controls use the command registry** (``commands.py``). A command mutates ``AppState`` *and* echoes its canonical call to the console.
+- A single source of truth, ``AppState`` (``state.py``).
+  Panels are (almost) pure render functions: each frame they read ``AppState`` and draw it.
+- **Data and analysis controls use the command registry** (``commands.py``).
+  A command mutates ``AppState`` *and* echoes its canonical call to the console.
 
 This model yields four properties:
 
@@ -65,14 +67,13 @@ Module map
      - ``read``, ``Dataset``, ``fft``, ``fft_frame``, ``node``, ``kinds``
    * - ``state.py``
      - The single app state, grid/cells, analysis configs, async load orchestration
-     - ``AppState``, ``SubplotCell``, ``PlotType``,
-       ``AnalysisConfig``/``FftConfig``/``HistogramConfig``
+     - ``AppState``, ``SubplotCell``, ``PlotType``, ``AnalysisConfig``/``FftConfig``/``HistogramConfig``
    * - ``commands.py``
      - Shared operation metadata, validation and GUI handlers
      - ``CommandRegistry``, ``Command``, ``Param``
-   * - ``command_doc.py``
-     - Generates the docs command reference (CSV) from public Python client signatures — see :ref:`ultrazohm_dataviewer_generated_command_reference`
-     - ``build_csv``, ``group_for``, ``GROUP_ORDER``
+   * - ``client.py`` / ``client_methods.py``
+     - Public Python control API, documented directly with Sphinx autodoc
+     - ``Client``, ``RunHandle``, ``NodeHandle``, ``ViewHandle``
    * - ``console.py``
      - Scrolling selectable application log
      - ``Console``
@@ -81,8 +82,7 @@ Module map
      - ``Run``, ``Signal``, ``DataRegistry``
    * - ``loader.py``
      - CSV (Arrow) / Parquet loading, header cleaning, delimiter sniffing; lean large-log loading (float32-at-parse, CSV size guard, streaming Parquet, CSV→Parquet ``convert``) — see :ref:`ultrazohm_dataviewer_loader_large_logs`
-     - ``open_file``, ``parse_file``, ``ParsedRun``, ``parse_channel_name``,
-       ``convert_csv_to_parquet``
+     - ``open_file``, ``parse_file``, ``ParsedRun``, ``parse_channel_name``, ``convert_csv_to_parquet``
    * - ``sources.py``
      - Resident/lazy raw-sample access, timestamp indexes, persistent display summaries, shared byte-bounded cache
      - ``Source``, ``ArraySource``, ``ParquetSource``, ``SourceColumn``, ``ByteCache``
@@ -105,7 +105,7 @@ Module map
      - Load external transform-node plugins (``@transform``); robust to missing dirs/files
      - ``transform``, ``ParamSpec``, ``load_plugins``
    * - ``session.py``
-     - JSON save/restore, command-script execution, CSV exports
+     - JSON save/restore and CSV exports
      - ``to_dict``/``apply_dict``, ``export_*``
    * - ``panels/navigation.py``
      - Left tree, drag sources, file dialog, normalize menu
@@ -135,14 +135,15 @@ Data model
   ``SourceColumn.read_rows`` selects a row interval; ``materialize()`` or explicit ``np.asarray`` reads a whole column.
   Implicit arithmetic, fancy indexing and reverse slicing are unsupported.
 - **``DataRegistry``** owns runs and hands out stable integer ids; ``SignalRef = (run_id, name)`` identifies a signal everywhere.
-- **Time normalization** is per-log: ``Run.set_time_origin(target)`` keeps the original ``time_raw`` and derives ``time = time_raw - time_raw[0] + target``. It is reversible (``target=None`` restores raw) and re-derives only on change, never per frame.
+- **Time normalization** is per-log: ``Run.set_time_origin(target)`` keeps the original ``time_raw`` and derives ``time = time_raw - time_raw[0] + target``.
+  It is reversible (``target=None`` restores raw) and re-derives only on change, never per frame.
 
 Channel headers like ``CH8=8)ia`` are cleaned to ``ia`` by ``parse_channel_name``, which also detects a trailing unit token (``_rpm``, ``_us``, …) for axis labels.
 
 .. _ultrazohm_dataviewer_loader_large_logs:
 
 Loading & large logs (``loader.py``)
-=====================================
+====================================
 
 ``open_file`` selects the storage policy for GUI uploads, native loads and commands.
 Memory loads dispatch through ``parse_file`` → ``parse_csv`` / ``parse_parquet`` and return a ``ParsedRun``; lazy loads return an ``OpenedSource``.
@@ -159,12 +160,27 @@ Readers check cancellation between batches; an in-flight native read may finish 
 
 The in-memory loaders reduce transient allocations; the complete recording and analysis scratch still need to fit in RAM:
 
-- **float32 at parse, no intermediate copy.** ``_csv_column_types`` feeds Arrow ``ConvertOptions(column_types=…)`` so channels parse straight to ``float32`` (time stays ``float64``), avoiding the float64→float32 re-cast that doubled channel memory. ``_named_signals`` shares one naming/dedup pass across every load path.
-- **Streaming CSV.** Both native backends stream numeric batches into the shared ``collect_csv_batches`` allocator. It checks actual rows and retained numeric capacity against ``MAX_CSV_NUMERIC_BYTES`` before allocating or growing arrays; the file-size estimate is only an initial admission check. Parser scratch and transient growth copies are additional memory. The former small-file bulk path and streaming-size threshold have been removed. ``csv_policy.NULL_VALUES`` defines the missing-value spellings used by both backends.
-- **Releasing Arrow's pool.** After every parse, ``parse_file`` calls ``_release_arrow_pool`` (``pa.default_memory_pool().release_unused()``): Arrow otherwise retains freed parse scratch rather than returning it to the OS, pinning RSS at the parse high-water mark (measured ~1.2 GB reclaimed on the 9M-row log, ~10 GB on the 75M).
-- **CSV size guard.** ``_guard_csv_size`` estimates the resident footprint from file size × column count and **refuses** a CSV above ``MAX_CSV_NUMERIC_BYTES``. Now that large CSVs stream, this is a **resident-RAM** ceiling (the full record must fit in memory), not a bulk-parse guard; it routes the user to lazy loading or ``convert(...)``. Actual capacity is checked independently during materialization.
-- **Streaming Parquet.** All eager PyArrow Parquet loads preallocate arrays from ``ParquetFile.metadata.num_rows`` and fill them with ``iter_batches``. There is one path for small and large files; lazy loads retain indexed sources.
-- **CSV→Parquet converter.** ``convert_csv_to_parquet`` stream-converts a CSV to Parquet with bounded memory (per-batch ``ParquetWriter.write_batch``), dropping JavaScope's empty trailing column and preserving raw headers so the result round-trips through the same name parsing. Exposed as the scriptable ``convert(src, [dst])`` command and the ``ultrazohm-dataviewer convert`` CLI.
+- **float32 at parse, no intermediate copy.**
+  ``_csv_column_types`` feeds Arrow ``ConvertOptions(column_types=…)`` so channels parse straight to ``float32`` (time stays ``float64``), avoiding the float64→float32 re-cast that doubled channel memory.
+  ``_named_signals`` shares one naming/dedup pass across every load path.
+- **Streaming CSV.**
+  Both native backends stream numeric batches into the shared ``collect_csv_batches`` allocator.
+  It checks actual rows and retained numeric capacity against ``MAX_CSV_NUMERIC_BYTES`` before allocating or growing arrays; the file-size estimate is only an initial admission check.
+  Parser scratch and transient growth copies are additional memory.
+  The former small-file bulk path and streaming-size threshold have been removed.
+  ``csv_policy.NULL_VALUES`` defines the missing-value spellings used by both backends.
+- **Releasing Arrow's pool.**
+  After every parse, ``parse_file`` calls ``_release_arrow_pool`` (``pa.default_memory_pool().release_unused()``): Arrow otherwise retains freed parse scratch rather than returning it to the OS, pinning RSS at the parse high-water mark (measured ~1.2 GB reclaimed on the 9M-row log, ~10 GB on the 75M).
+- **CSV size guard.**
+  ``_guard_csv_size`` estimates the resident footprint from file size × column count and **refuses** a CSV above ``MAX_CSV_NUMERIC_BYTES``.
+  Now that large CSVs stream, this is a **resident-RAM** ceiling (the full record must fit in memory), not a bulk-parse guard; it routes the user to lazy loading or ``convert(...)``.
+  Actual capacity is checked independently during materialization.
+- **Streaming Parquet.**
+  All eager PyArrow Parquet loads preallocate arrays from ``ParquetFile.metadata.num_rows`` and fill them with ``iter_batches``.
+  There is one path for small and large files; lazy loads retain indexed sources.
+- **CSV→Parquet converter.**
+  ``convert_csv_to_parquet`` stream-converts a CSV to Parquet with bounded memory (per-batch ``ParquetWriter.write_batch``), dropping JavaScope's empty trailing column and preserving raw headers so the result round-trips through the same name parsing.
+  Exposed as the scriptable ``convert(src, [dst])`` command and the ``ultrazohm-dataviewer convert`` terminal command.
   The shared converter owns temporary output, empty-recording validation, cancellation cleanup, and publication without overwriting existing destinations.
   GUI, Python control, and cache conversion use this same path; backend writers only fill unpublished temporary files.
 
@@ -198,16 +214,20 @@ Save supported state through JSON session snapshots.
 
 .. _ultrazohm_dataviewer_generated_command_reference:
 
-Generated Python API reference (``command_doc.py``)
----------------------------------------------------
+Python API reference
+--------------------
 
-``command_doc.build_csv`` renders public client signatures, documentation and operation groups into ``ultrazohm_dataviewer_commands.csv``.
-The usage guide includes this committed file, so documentation builds do not require the GUI runtime.
-Regenerate with ``python -m ultrazohm_dataviewer.command_doc``.
-The documentation test checks both the committed output and complete method grouping.
+The usage guide uses Sphinx autodoc to document ``Client``, its inherited methods, handles and exceptions directly.
+Importing the client requires only the standard library, so no GUI runtime is needed to generate this reference.
+Contract tests check client methods against command metadata; integration tests check routing and state changes.
+
+The live workspace has a separate recording registry and is exposed as view 0; the main offline view is 1.
+Additional offline views share the main registry, while live run handles carry ``view=0`` to prevent accidental cross-registry references.
+Live presentation operations delegate to the same workspace methods used by the GUI.
+Attachment completes asynchronously on the live controller thread; publication of the API response belongs to the application thread.
 
 Plots panel internals (``panels/plots.py``)
-============================================
+===========================================
 
 A runtime grid of ``SubplotCell``s.
 Cell types: ``line`` / ``scatter`` / ``stairs`` (time series) and ``xy`` (one signal vs another).
@@ -224,36 +244,50 @@ Per time-series cell, each frame:
 
 .. note::
 
-   **Cursor performance.** Cursor readouts originally used ``np.interp``, which up-casts the entire ``float32`` signal to ``float64`` on every call (~150 ms/frame on a 5 M-point log).
+   **Cursor performance.**
+   Cursor readouts originally used ``np.interp``, which up-casts the entire ``float32`` signal to ``float64`` on every call (~150 ms/frame on a 5 M-point log).
    It was replaced with an O(log n) ``searchsorted`` lookup (``_value_at``) that touches only the two bracketing samples.
 
 Analysis windows (``panels/analysis.py``)
-==========================================
+=========================================
 
 FFT and Histogram share ``AnalysisPanel``.
 Subclasses set a command ``prefix`` (``fft``/``hist``) and a ``compute_command``, then implement ``_make_request``, ``_draw``, ``_options_key``, and any ``_extra_controls``.
 The base provides:
 
 - A **sources list** fed by drag-drop (``*_source`` command) and the legend "Remove" (``*_remove``).
-- A **time-window selector** (``follow_combo``): ``Custom`` (``0``), ``Full`` (``-1``), or ``plot_N`` (``≥1``), resolved by ``AppState.resolve_x_window``. Switching to a plot computes immediately; switching to Custom/Full does **not** (the window can be the whole log).
-- **On-demand compute only** — never per frame. A compute happens on the *Compute* button, on a drag-in, or once when an input changes (``compute_requested``). Following a plot and then panning it goes **stale** rather than recomputing.
+- A **time-window selector** (``follow_combo``): ``Custom`` (``0``), ``Full`` (``-1``), or ``plot_N`` (``≥1``), resolved by ``AppState.resolve_x_window``.
+  Switching to a plot computes immediately; switching to Custom/Full does **not** (the window can be the whole log).
+- **On-demand compute only** — never per frame.
+  A compute happens on the *Compute* button, on a drag-in, or once when an input changes (``compute_requested``).
+  Following a plot and then panning it goes **stale** rather than recomputing.
 - A **stale indicator**: a ``_computed_key`` snapshot (sources + window + options) is compared to the current key each frame; mismatch shows "⚠ stale - press Compute".
 - **Shared analysis controls use commands** (``fft_follow``, ``fft_remove_dc``, ``hist_bins``, ``*_xlim`` on zoom, ``*_export``, …) and **Export** (OS save dialog).
 
 .. _ultrazohm_dataviewer_node_graph:
 
 Node graph (``nodes.py``, ``transforms.py``, ``panels/nodes.py``)
-==================================================================
+=================================================================
 
 A small dataflow engine, built as a **derived-signal factory**: a transform node, when evaluated, materializes its result as a *new run* in the registry (``Run.derived=True``) via ``AppState.upsert_derived_run``.
 That derived signal then flows through the existing app unchanged — it shows in Navigation and is draggable into plots / FFT / Histogram.
 Nodes *produce* data; nothing else in the app needs to know they exist.
 
-- **Graph** (``NodeGraph``) of ``Node``s: a **source** wraps a ``(run, signal)`` ref; a **transform** (``fft`` / ``math`` / ``filter`` / ``shift``) pulls arrays from its inputs and computes. Links are validated against cycles; ids are persisted so derived-run labels (= node name) are stable across save/restore.
-- **On-demand evaluation** (``evaluate``): topological order; each transform reads its inputs (a source from the registry, an upstream transform from its cache), computes via ``transforms``/``analysis``, bumps a ``version``, and upserts its derived run **in place** (so plot references survive a re-eval). Per-node errors are logged and skipped, not fatal. A node is **stale** (``is_stale``) when its key — params + each input's version/identity — differs from the last evaluated key (the same idea as the analysis windows' ``_computed_key``).
-- **GUI-free + scriptable**: ``nodes.py``/``transforms.py`` import no GUI and raise plain ``ValueError``s, so the whole engine is driven and tested from command strings. The canvas (``panels/nodes.py``, ``imgui_node_editor``) is a thin layer that **only issues ``node_*`` commands** — drag-drop → ``node_source``, link → ``node_link``, a widget → ``node_set``, a drag → ``node_pos``, the button → ``node_eval``. The graph is automated through commands and restored through the JSON session.
-- **Transforms use NumPy** (windowed-sinc FIR filter). FFT reuses ``analysis.compute_fft``; its derived run's x-axis is frequency.
-- **Registry-driven.** Every transform (builtin *or* plugin) is a ``TransformSpec`` in ``REGISTRY``; the engine looks up available kinds, default params, input arity and the compute function there, so a plugin is indistinguishable from a builtin. External plugins (``plugins.py``, the ``@transform`` decorator) are loaded at startup from ``$UZ_DATAVIEWER_PLUGINS`` / ``~/.ultrazohm_dataviewer/nodes/`` — both optional; a missing dir, no files, or a broken plugin are all tolerated (the app runs with just the builtins). An unknown kind (plugin not installed) restores as a placeholder that keeps its params/links. See :doc:`ultrazohm_dataviewer_plugins`.
+- **Graph** (``NodeGraph``) of ``Node``s: a **source** wraps a ``(run, signal)`` ref; a **transform** (``fft`` / ``math`` / ``filter`` / ``shift``) pulls arrays from its inputs and computes.
+  Links are validated against cycles; ids are persisted so derived-run labels (= node name) are stable across save/restore.
+- **On-demand evaluation** (``evaluate``): topological order; each transform reads its inputs (a source from the registry, an upstream transform from its cache), computes via ``transforms``/``analysis``, bumps a ``version``, and upserts its derived run **in place** (so plot references survive a re-eval).
+  Per-node errors are logged and skipped, not fatal.
+  A node is **stale** (``is_stale``) when its key — params + each input's version/identity — differs from the last evaluated key (the same idea as the analysis windows' ``_computed_key``).
+- **GUI-free + scriptable**: ``nodes.py``/``transforms.py`` import no GUI and raise plain ``ValueError``s, so the whole engine is driven and tested through typed command dispatch.
+  The canvas (``panels/nodes.py``, ``imgui_node_editor``) is a thin layer that **only issues ``node_*`` commands** — drag-drop → ``node_source``, link → ``node_link``, a widget → ``node_set``, a drag → ``node_pos``, the button → ``node_eval``.
+  The graph is automated through commands and restored through the JSON session.
+- **Transforms use NumPy** (windowed-sinc FIR filter).
+  FFT reuses ``analysis.compute_fft``; its derived run's x-axis is frequency.
+- **Registry-driven.**
+  Every transform (builtin *or* plugin) is a ``TransformSpec`` in ``REGISTRY``; the engine looks up available kinds, default params, input arity and the compute function there, so a plugin is indistinguishable from a builtin.
+  External plugins (``plugins.py``, the ``@transform`` decorator) are loaded at startup from ``$UZ_DATAVIEWER_PLUGINS`` / ``~/.ultrazohm_dataviewer/nodes/`` — both optional; a missing dir, no files, or a broken plugin are all tolerated (the app runs with just the builtins).
+  An unknown kind (plugin not installed) restores as a placeholder that keeps its params/links.
+  See :doc:`ultrazohm_dataviewer_plugins`.
 
 .. note::
 
@@ -263,7 +297,7 @@ Nodes *produce* data; nothing else in the app needs to know they exist.
 .. _ultrazohm_dataviewer_downsampling:
 
 Downsampling (``downsample.py``)
-=================================
+================================
 
 The time-series renderer consumes compact results from ``Source.read_plot``.
 Raw reads (``read_rows`` and ``iter_raw``) are separate and always return original samples in file order, including equal timestamps.
@@ -297,7 +331,7 @@ The shared timestamp/summary RAM cache is byte-bounded (1,024 MiB by default).
 Display buffers are bounded by trace/plot budgets.
 These are not total-process memory limits: decoded batches, summary-construction scratch, full FFTs and explicit array-based plugins/exports need additional memory.
 Indexes and summaries are kept in RAM by default, without reading or writing disk caches.
-Optional persistent caches have no automatic disk-size limit and can be removed while the viewer is closed.
+Optional persistent caches have no automatic disk-size limit and can be removed while the DataViewer is closed.
 The desktop stores disk caches in ``viewer_cache`` under ``<workspace>/artifacts/_user`` or the per-user data directory.
 Set ``UZ_DATAVIEWER_CACHE`` to override this path.
 Writes are atomic; invalid cache containers are rebuilt.
@@ -353,7 +387,7 @@ Array API calls can explicitly pass ``timestamp_resolution`` (available on ``Dat
 Derived-run refresh preserves the existing time normalization.
 
 Sessions (``session.py``)
-==========================
+=========================
 
 **JSON snapshot** (``save_state``/``load_state``) is the only session format.
 Schema version 6 includes additional plot views and reloads explicit per-run records and remaps recording/node keys, preserving duplicate names and repeated opens of the same path.
@@ -375,17 +409,18 @@ Staleness checks traverse each upstream node once per call, with a local visited
 Explicit FFT and histogram view limits are saved and restored alongside their analysis settings, then reapplied when the panels recompute.
 
 ``AppState`` inherits the explicitly declared ``SessionData`` fields and owns a separate ``RuntimeServices`` object at ``state.services``.
-Runtime services own display/analysis workers, the loading executor, pending loads and large-CSV prompts.
-``AppState.replace_session`` transfers only declared session fields and service ownership, after shutting down the old workers.
+DataViewer runtime components own display/analysis workers, the loading executor, pending loads and large-CSV prompts.
+``AppState.replace_session`` transfers only declared session fields and runtime-component ownership, after shutting down the old workers.
 It preserves the command registry and console, and installs a new session token.
-The consumed replacement no longer owns services; shutting it down cannot clear the transferred cache or stop the new workers.
+The consumed replacement no longer owns runtime components; shutting it down cannot clear the transferred cache or stop the new workers.
 ``SessionPanel`` resets view caches and dialogs on token changes, including analysis results and canvas positions.
 ``clear_session`` uses the same replacement lifecycle.
 GUI command wrappers share an explicit success result.
 
 Runs without a backing file (live snapshots, arrays) cannot be saved in a reloadable session.
 Saving rejects them before opening the destination file.
-Export their data first.
+Exporting writes a file without changing the in-memory run's reloadable flag.
+Reopen the exported file, recreate plot and node-source references against it, and remove the memory-only run before saving.
 
 ``SubplotCell.y_lim`` and ``y2_lim`` record the last rendered primary and secondary Y ranges, separately from their one-shot pending limits.
 JSON persists pending limits when present, otherwise the live range.
@@ -430,8 +465,10 @@ Testing
 Tests are pure ``pytest``, no real window.
 Two patterns:
 
-- **Logic via commands** — dispatch command strings against an ``AppState`` and assert on state (e.g. ``test_commands.py``, ``test_session.py``).
-- **Headless rendering** — create an ImGui/ImPlot context, set a backend-textures flag, and drive a few frames calling ``panel.render(state)`` (e.g. ``test_plot_types.py``). This exercises the real ImPlot calls (begin/end pairing, Spec markers, drag tools) without a GPU window. Destroy the contexts in a ``finally`` so tests don't leak across modules.
+- **Logic via commands** — dispatch commands against an ``AppState`` and assert on state (e.g. ``test_commands.py``, ``test_session.py``).
+- **Headless rendering** — create an ImGui/ImPlot context, set a backend-textures flag, and drive a few frames calling ``panel.render(state)`` (e.g. ``test_plot_types.py``).
+  This exercises the real ImPlot calls (begin/end pairing, Spec markers, drag tools) without a GPU window.
+  Destroy the contexts in a ``finally`` so tests don't leak across modules.
 
 Run ``pytest`` from the project root.
 
@@ -449,25 +486,19 @@ Design decisions
    * - Single ``AppState``, panels as renderers
      - One source of truth; trivial to serialise and test; no scattered widget state.
    * - Command layer is the only mutation path
-     - Scriptability, console transcript, command automation, and headless testing all
-       derive from it.
+     - Scriptability, console transcript, command automation, and headless testing all derive from it.
    * - Gestures **echo**, discrete actions **execute**
-     - Zoom/drag are continuous; echoing once on settle keeps the console readable while
-       recording understandable activity messages.
+     - Zoom/drag are continuous; echoing once on settle keeps the console readable while recording understandable activity messages.
    * - Shared min/max summaries for resident and lazy sources
      - Background workers build summaries and cache completed display requests.
        Raw analysis and exports use original samples, never display summaries.
    * - XY cells decimate by uniform **stride**, not min/max
-     - An XY/phase plot has no monotone time axis to bucket against; stride keeps it simple
-       but can alias a dense Lissajous figure (the one place range-aware downsampling does not
-       apply).
+     - An XY/phase plot has no monotone time axis to bucket against; stride keeps it simple but can alias a dense Lissajous figure (the one place range-aware downsampling does not apply).
    * - FFT/Histogram are windows, on-demand
-     - Per-frame transforms of a large window would tank the frame rate; explicit Compute
-       keeps it snappy.
-   * - Nodes are a **derived-signal factory** (not a new viewer)
-     - Transforms emit ordinary runs, so plots/FFT/Histogram consume them unchanged. The
-       engine is GUI-free and command-driven (scriptable and headless-testable); the
-       ``imgui_node_editor`` canvas only issues ``node_*`` commands.
+     - Per-frame transforms of a large window would tank the frame rate; explicit Compute keeps it snappy.
+   * - Nodes are a **derived-signal factory** (not a new DataViewer)
+     - Transforms emit ordinary runs, so plots/FFT/Histogram consume them unchanged.
+       The engine is GUI-free and command-driven (scriptable and headless-testable); the ``imgui_node_editor`` canvas only issues ``node_*`` commands.
    * - ``searchsorted`` not ``np.interp`` for cursors
      - ``np.interp`` up-casts the whole array each call — catastrophic per frame.
    * - Session refs by recording/node **identity**
@@ -525,43 +556,81 @@ Lazy source identity checks run on background workers at approximately 4 Hz; str
 Cached displays may therefore remain visible briefly until a file change is detected.
 In-memory graph validity is checked immediately.
 
-The Data Viewer must never use GUI idle throttling.
+The DataViewer must never use GUI idle throttling.
 Keep ``params.fps_idling.enable_idling = False`` globally, including live streaming, paused views, and offline analysis.
 Do not re-enable idling or rely on individual plots to opt out; rendering must not slow down because mouse or keyboard input stops.
 Actual FPS still depends on rendering workload and display synchronization.
 
 
-Repository-owned service configuration
---------------------------------------
+Repository-owned ultrazohm-cli process configuration
+----------------------------------------------------
 
-The CLI owns firmware configuration resolution.
-``serve --repo PATH`` reads the selected checkout's headers and filters only built-in initial-channel defaults.
+The ultrazohm-cli owns firmware configuration resolution.
+``serve --repo PATH`` reads the selected checkout's headers.
+Runtime settings use explicit ``--profile``, then workspace ``artifacts/_user/settings.json``, then built-in defaults.
+Only built-in defaults are filtered for unavailable observables.
 Explicit ``--profile`` settings remain strict.
 ``--channel-mapping`` is an alternative to ``--repo`` for standalone mapping files.
-The effective settings are exposed by ``catalog``; selecting another checkout requires restarting the service.
+The effective settings are exposed by ``catalog``; selecting another checkout requires restarting the ultrazohm-cli process.
 
-The viewer previews metadata with ``channel-mapping --repo`` and obtains initial preferences through ``profile --repo``.
+The DataViewer previews metadata with ``channel-mapping --repo`` and obtains initial preferences through ``profile --repo``.
 These commands return JSON directly; normal repository preparation writes no mapping snapshot.
 Missing workspace preferences are seeded once.
 Connecting passes ``--repo`` and the saved ``settings.json`` directly, without a temporary filtered profile.
-Saved signal selections use the running service's catalog.
-The Flash UZ migration path still keeps its mapping and profile snapshots to preserve assignments across a restart.
+Saved signal selections use the running ultrazohm-cli process's catalog.
+Flash UZ submits an ultrazohm-cli firmware job.
+The ultrazohm-cli process captures headers and replaces its acquisition session while retaining its endpoint.
+The DataViewer monitors job progress and refreshes its catalog and live buffers.
 
 
 Dependency and mapping selection checks
 ---------------------------------------
 
-The viewer requires CLI 0.1.27.dev0 or newer for repository-based configuration.
-CI exercises the locked PyPI CLI's repository commands before replacing it with the checkout-built wheel for the full integration suite.
-This also covers the ordinary source launcher, which uses the lockfile rather than a development wheel.
+Published DataViewer packages require the matching ultrazohm-cli release version.
+CI tests candidate wheels together.
+``./uz`` application commands run published packages.
+``./uz_developer build linux_wheels`` builds and installs both checkout applications from CI-format wheels into a persistent environment; ``./uz venv dev`` activates it without rebuilding.
+``run.py`` only adds local DataViewer sources to the current interpreter; dependencies must already be installed.
 
 An explicit ``DataViewerApp(live_mapping=...)`` selects that mapping even when its workspace is inferred from the path or supplied through ``live_repo``.
 The workspace still owns preferences and recordings.
-Generated Flash UZ snapshots are distinguished from explicit selections; subsequent repository-based launches reread headers.
-Service startup rejects simultaneous repository and mapping arguments, and changing either requires restarting an owned service.
+ultrazohm-cli-owned flash captures and validates repository headers before replacing the session.
+ultrazohm-cli process startup rejects simultaneous repository and mapping arguments, and changing either requires restarting an owned ultrazohm-cli process.
 
 Analysis request construction and fingerprints live in ``analysis_service.py``; the operation coordinator does not import GUI panels.
 In the application, explicit and automatic analysis requests use the same coordinator and per-kind completion state.
 Superseded requests are cancelled.
 Standalone panels without an application coordinator retain the headless request scheduler used by component tests.
 Client/registry contract tests validate names, parameter types, optional arguments, and view targeting, in addition to the generated documentation checks.
+
+Shared application contracts
+============================
+
+``Command`` specifications own named argument binding and local argument coercion.
+GUI/console callers and registered RPC operations use the same command handlers.
+``Operations`` retains transport handle validation, asynchronous preparation and application-thread publication.
+``application_mutations`` contains synchronous mutations without depending on transport or worker ownership.
+
+``axis.SignalMetadata`` carries domain, unit, timestamp resolution and source identity.
+Source-node domains come from the loaded signal.
+``TransformSpec`` declares input-domain requirements and output-domain rules; imported spectra therefore retain their frequency domain, and time-only transforms reject them.
+Computational metadata changes invalidate derived outputs.
+
+``node_jobs.EvaluationState`` contains a detached graph, registry and diagnostic console.
+``DataRegistry.detached`` owns the copy policy and shares immutable sample buffers.
+Derived-run creation lives in the registry; incompatible plot assignments are removed only when publishing to ``AppState``.
+No GUI runtime or application method is synthesized in the worker context.
+
+``workers.cancellable_result`` checks cancellation before and after computation and disposes unpublished canceled results.
+Sequential IO, coalescing requests and control preparation share this boundary.
+Their execution queues remain separate; publication still checks the owning session and computation fingerprint.
+
+``live.ServiceSnapshot`` refreshes status, catalog and assignments together.
+It checks ultrazohm-cli process/session identity around the RPC reads and retries a changing session.
+Attach, connect and polling share the refresh; reconnect reads the new session's catalog.
+Urgent controls retain their independent execution path.
+
+The ultrazohm-dataviewer command parses arguments once and passes options to ``app.run_gui``.
+The compatibility ``app.main`` entry point delegates to that parser.
+Conversion commands target an open DataViewer; numerical conversion remains available through the Python loader API.
+Plugin import failures, including ``SystemExit``, are logged and skipped after registration rollback.

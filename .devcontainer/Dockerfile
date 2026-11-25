@@ -5,7 +5,7 @@
 # Developers and CI therefore build and test with the same toolchain.
 
 # Debian trixie-based Python image.
-FROM docker.io/library/python:3.12-trixie AS ci
+FROM docker.io/library/python:3.12-trixie@sha256:5411fa1b302c43f510324381162b5f5d0d93b9ee2af538f09d944f0d290ee3cb AS ci
 
 # Build tools and GUI runtime libraries for headless ImGui tests.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
@@ -16,6 +16,9 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
                                                   ca-certificates \
                                                   pkg-config \
                                                   libssl-dev \
+                                                  xvfb \
+                                                  xauth \
+                                                  libgl1-mesa-dri \
                                                   libgl1 \
                                                   libx11-6 \
                                                   libxext6 \
@@ -32,7 +35,9 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o /tmp/rustup.sh 
     && rustup component add rustfmt clippy \
     && rm /tmp/rustup.sh
 # ziglang lets maturin link portable manylinux_2_28 wheels without a Docker build.
-RUN pip install --no-cache-dir 'maturin[zig]>=1.9,<2' 'uv==0.13.1' 'clang-format==19.1.7'
+COPY build-tools.txt /tmp/uz-build-tools.txt
+RUN pip install --no-cache-dir -r /tmp/uz-build-tools.txt
+RUN pip install --no-cache-dir 'clang-format==19.1.7'
 ENV UZ_DEVCONTAINER=1
 
 
@@ -89,3 +94,6 @@ ENV PIP_USER=yes
 
 ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 ENV PATH="$JAVA_HOME/bin:$PATH"
+
+ENV UZ_DEVELOPMENT_ENVIRONMENT=/opt/ultrazohm/development
+ENV PATH="/opt/ultrazohm/development/bin:$PATH"

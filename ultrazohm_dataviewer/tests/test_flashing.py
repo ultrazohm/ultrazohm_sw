@@ -1,259 +1,87 @@
-"""Managed flashing sequence and confirmation, without programming real hardware."""
+"""Service-owned firmware jobs and viewer ownership policy, without hardware."""
 
-import json
-import threading
-import time
-from copy import deepcopy
-from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import Mock
 
 import pytest
 from imgui_bundle import imgui
 
-from ultrazohm_dataviewer import flashing, live_mapping
-from ultrazohm_dataviewer import settings as runtime_settings
+from ultrazohm_dataviewer import flashing
 from ultrazohm_dataviewer.live import LiveController, LiveUpdate
 from ultrazohm_dataviewer.panels.live import LiveWorkspace
 
 
-@pytest.fixture
-def workflow(tmp_path, monkeypatch):
-    root = tmp_path / "repo"
-    monkeypatch.setattr(flashing, "xsct_available", lambda: True)
-    header = root / live_mapping.HEADER
-    header.parent.mkdir(parents=True)
-    header.touch()
-    monkeypatch.setattr(
-        runtime_settings,
-        "default_profile",
-        lambda: {
-            "name": "standard",
-            "sample_period_us": 100.0,
-            "initial_channels": {"1": "JSO_keep"},
+@pytest.mark.parametrize("success", [True, False])
+def test_flash_uses_service_without_local_tools_or_restart(monkeypatch, success):
+    client = Mock()
+    client.status.return_value = {
+        "firmware_available": True,
+        "state": {"device": "192.168.1.233:1000"},
+    }
+    client.firmware.return_value = {"id": "job-1"}
+    client.job.return_value = {
+        "job": {
+            "phase": "complete",
+            "state": "succeeded" if success else "failed",
+            "result": {"error": "build failed"},
         },
-    )
-    events, starts = [], []
-    mapping = {
-        "api_version": 1,
-        "channels": 20,
-        "samples_per_packet": 15,
-        "observables": {"JSO_ZEROVALUE": 0, "JSO_keep": 1, "JSO_added": 3},
-        "variables": {},
-        "commands": {},
-        "slow_signals": {},
-        "platform_state": {},
+        "log": "",
+        "next_offset": 0,
     }
-
-    class Client:
-        def __init__(self):
-            self.gone = False
-            self.retry = 0
-            self.profile = dict(
-                mapping, name="custom", sample_period_us=50.0, initial_channels={}
-            )
-            self.value = {
-                "state": {"connected": True, "device": "192.168.1.233:1000"},
-                "logging": {
-                    "fast": {"phase": "recording"},
-                    "slow": {"phase": "recording"},
-                },
-                "send_ack": True,
-                "data_options": {
-                    "buffer_samples": 123,
-                    "segment_rows": 999,
-                    "flush_interval_ms": 500,
-                    "recording_backend": "parquet",
-                },
-            }
-
-        def status(self):
-            if self.gone:
-                raise ConnectionRefusedError("not running")
-            return deepcopy(self.value)
-
-        def catalog(self):
-            return {"profile": self.profile}
-
-        def observables(self):
-            return {
-                "channels": [
-                    {"channel": 1, "name": "JSO_keep"},
-                    {"channel": 2, "name": "JSO_removed"},
-                ]
-            }
-
-        def stop(self):
-            events.append("stop")
-
-        def shutdown(self):
-            # Like the service: device Stop, finalize both recordings, then exit.
-            events.append("shutdown")
-            for v in self.value["logging"].values():
-                v["phase"] = "complete"
-            self.gone = True
-
-        def connect(self, ip, port):
-            if self.retry:
-                self.retry -= 1
-                raise ConnectionRefusedError("board starting")
-            events.append(("connect", ip, port))
-            self.value["state"]["connected"] = True
-
-    client = Client()
     controller = LiveController(lambda _: client)
-    path = root / "cached.json"
-
-    def generate(repo):
-        assert repo == root
-        events.append("mapping")
-        path.write_text(json.dumps(mapping))
-        return path
-
-    def program(repo, endpoint, stop_event, emit):
-        events.append("flash")
-        emit("info", "Programming output")
-        return True
-
-    def start(output, selected_mapping, profile, options, ack, *, repo=None):
-        assert repo == root
-        events.append("start")
-        starts.append((options, ack))
-        assert not Path(output).exists()
-        assert selected_mapping == ""
-        assert path.is_file()  # Retained snapshot is metadata, not a service override.
-        client.profile = dict(mapping, **json.loads(Path(profile).read_text()))
-        client.gone = False
-        client.value["state"]["connected"] = False
-        for v in client.value["logging"].values():
-            v["phase"] = "idle"
-        return None
-
-    monkeypatch.setattr(live_mapping, "generate_mapping", generate)
-    monkeypatch.setattr(flashing, "run_flash_cli", program)
+    monkeypatch.setattr(flashing, "xsct_available", lambda: False)
+    start = Mock(side_effect=AssertionError("must not restart attached service"))
     monkeypatch.setattr(controller, "_start_service", start)
-    request = {
-        "repo": str(root),
-        "endpoint": "127.0.0.1:19740",
-        "ip": "192.168.9.9",
-        "port": 2000,
-        "output": str(tmp_path / "measurements" / "previous"),
+    try:
+        if success:
+            controller._flash({"endpoint": "127.0.0.1:19740"})
+        else:
+            with pytest.raises(RuntimeError, match="build failed"):
+                controller._flash({"endpoint": "127.0.0.1:19740"})
+        client.firmware.assert_called_once_with("flash", device="192.168.1.233:1000")
+        client.shutdown.assert_not_called()
+        start.assert_not_called()
+    finally:
+        controller.close()
+    client.stop.assert_called_once()
+    client.shutdown.assert_not_called()
+
+
+def test_missing_service_capability_fails_before_submission():
+    client = Mock()
+    client.status.return_value = {"firmware_available": False}
+    controller = LiveController(lambda _: client)
+    try:
+        with pytest.raises(RuntimeError, match="selected service"):
+            controller._flash({"endpoint": "127.0.0.1:19740"})
+        client.firmware.assert_not_called()
+    finally:
+        controller.close()
+
+
+def test_closing_during_flash_stops_external_service_without_shutdown():
+    client = Mock()
+    client.status.return_value = {
+        "firmware_available": True,
+        "state": {"device": "192.168.1.233:1000"},
     }
-    try:
-        yield SimpleNamespace(
-            controller=controller,
-            client=client,
-            events=events,
-            root=root,
-            request=request,
-            mapping=mapping,
-            starts=starts,
-        )
-    finally:
-        controller.close()
+    client.firmware.return_value = {"id": "job-1"}
+    controller = LiveController(lambda _: client)
 
+    def progress(*_):
+        controller.stop_event.set()
+        return {
+            "job": {"phase": "flash", "state": "running"},
+            "log": "",
+            "next_offset": 0,
+        }
 
-def test_sequence_shuts_down_then_flashes_and_reconnects_with_new_profile(workflow):
-    w = workflow
-    w.client.retry = 1
-    w.controller._command("flash", w.request)
-    # Shutdown sends device Stop and finalizes recordings in the service itself.
-    assert w.events == [
-        "shutdown",
-        "mapping",
-        "flash",
-        "start",
-        ("connect", "192.168.1.233", 1000),
-    ]
-    assert w.controller.attached
-    assert w.client.profile["initial_channels"] == {"1": "JSO_keep"}
-    assert w.client.profile["sample_period_us"] == 50.0
-    assert w.starts == [
-        (
-            {
-                "buffer_samples": 123,
-                "segment_rows": 999,
-                "flush_interval_ms": 500,
-                "recording_backend": "parquet",
-            },
-            True,
-        )
-    ]
-    assert w.client.value["logging"]["fast"]["phase"] == "idle"
-    path, output = w.controller._flash_config
-    assert Path(path).is_file()
-    assert Path(output).parent == Path(w.request["output"]).parent
-    messages = []
-    while not w.controller.messages.empty():
-        messages.append(w.controller.messages.get_nowait())
-    assert any("JSO_removed" in text for _, text in messages)
-    assert any("Programming output" in text for _, text in messages)
-
-
-def test_no_running_service_can_flash_and_start_acquisition(workflow):
-    w = workflow
-    w.client.gone = True
-    w.controller._command("flash", w.request)
-    assert w.events[:3] == ["mapping", "flash", "start"]
-    assert w.client.profile["sample_period_us"] == 100.0
-    assert w.controller.attached
-
-
-def test_flash_preserves_saved_user_settings(workflow):
-    w = workflow
-    saved = w.root / "settings.json"
-    original = '{"schema_version":1,"name":"preferences","sample_period_us":75,"initial_channels":{}}\n'
-    saved.write_text(original)
-    before = saved.stat().st_mtime_ns
-    w.controller._command("flash", w.request)
-    assert saved.read_text() == original
-    assert saved.stat().st_mtime_ns == before
-    assert (
-        w.client.profile["sample_period_us"] == 50.0
-    )  # Effective reconnect preserves the live service.
-
-
-@pytest.mark.parametrize("stage", ["shutdown", "exit", "mapping", "flash"])
-def test_failures_abort_later_stages(workflow, monkeypatch, stage):
-    w = workflow
-
-    def fail(*args, **kwargs):
-        raise RuntimeError(stage + " failed")
-
-    if stage == "shutdown":
-        monkeypatch.setattr(w.client, "shutdown", fail)
-    elif stage == "exit":
-        monkeypatch.setattr(w.controller, "_wait_for", fail)
-    elif stage == "mapping":
-        monkeypatch.setattr(live_mapping, "generate_mapping", fail)
-    else:
-        monkeypatch.setattr(flashing, "run_flash_cli", fail)
-    with pytest.raises(RuntimeError, match=stage + " failed"):
-        w.controller._command("flash", w.request)
-    assert "start" not in w.events
-    if stage != "flash":
-        assert "flash" not in w.events
-    if stage in ("shutdown", "exit"):
-        assert "mapping" not in w.events
-
-
-def test_worker_clears_flash_lock_after_failure():
-    controller = LiveController()
-
-    def fail(kwargs):
-        raise RuntimeError("test failure")
-
-    controller._flash = fail
-    try:
-        controller.submit("flash")
-        deadline = time.monotonic() + 3
-        while (
-            controller.latest().completed_commands == 0 and time.monotonic() < deadline
-        ):
-            time.sleep(0.01)
-        assert "test failure" in controller.latest().error
-        assert not controller.flashing
-    finally:
-        controller.close()
+    client.job.side_effect = progress
+    controller._flash({"endpoint": "127.0.0.1:19740"})
+    controller.stop_event.clear()
+    controller.close()
+    client.stop.assert_called_once()
+    client.shutdown.assert_not_called()
 
 
 @pytest.mark.parametrize("action", ["OK", "Cancel"])
@@ -288,84 +116,12 @@ def test_confirmation_only_submits_after_ok(gui_frame, app_state, monkeypatch, a
         workspace.close()
 
 
-@pytest.mark.parametrize("code", [0, 2])
-def test_shared_cli_runner_streams_and_checks_exit(monkeypatch, tmp_path, code):
-    calls, messages = [], []
-
-    class Runner:
-        def __init__(self, output):
-            self.output = output
-
-        def submit_arguments(self, args, endpoint):
-            calls.append((args, endpoint))
-            self.job = SimpleNamespace(returncode=None)
-            return self.job
-
-        def poll(self):
-            self.output.info("JTAG progress")
-            self.job.returncode = code
-
-        def close(self):
-            pass
-
-    monkeypatch.setattr(flashing, "CliConsole", Runner)
-    if code:
-        with pytest.raises(RuntimeError, match="Flashing failed"):
-            flashing.run_flash_cli(
-                tmp_path,
-                "127.0.0.1:19740",
-                threading.Event(),
-                lambda *x: messages.append(x),
-            )
-    else:
-        assert flashing.run_flash_cli(
-            tmp_path,
-            "127.0.0.1:19740",
-            threading.Event(),
-            lambda *x: messages.append(x),
-        )
-    assert calls == [(["flash", "--repo", str(tmp_path)], "127.0.0.1:19740")]
-    assert ("info", "JTAG progress") in messages
-
-
-def test_retry_after_programming_failure_retains_previous_profile(
-    workflow, monkeypatch
-):
-    w = workflow
-
-    def failed(*args):
-        raise RuntimeError("build failed")
-
-    monkeypatch.setattr(flashing, "run_flash_cli", failed)
-    with pytest.raises(RuntimeError, match="build failed"):
-        w.controller._command("flash", w.request)
-    assert w.client.gone
-    monkeypatch.setattr(flashing, "run_flash_cli", lambda *args: True)
-    w.controller._command("flash", w.request)
-    assert w.client.profile["sample_period_us"] == 50.0
-    assert w.client.profile["initial_channels"] == {"1": "JSO_keep"}
-    assert w.controller._flash_context is None
-
-
-def test_closed_viewer_does_not_start_a_new_flash(monkeypatch, tmp_path):
-    monkeypatch.setattr(
-        flashing, "CliConsole", lambda *args: pytest.fail("Must not launch")
-    )
-    closed = threading.Event()
-    closed.set()
-    assert not flashing.run_flash_cli(
-        tmp_path, "127.0.0.1:19740", closed, lambda *args: None
-    )
-
-
 @pytest.mark.parametrize("present", [False, True])
 @pytest.mark.parametrize("prepared", [False, True])
 def test_xsct_detection_and_disabled_flash_button(
     gui_frame, app_state, monkeypatch, present, prepared
 ):
-    monkeypatch.setattr(
-        flashing.shutil, "which", lambda name: "/tools/xsct" if present else None
-    )
+    monkeypatch.setattr(flashing, "xsct_available", lambda repo=None: present)
     assert flashing.xsct_available() is present
     workspace = LiveWorkspace(LiveController())
     workspace.available = True
@@ -390,17 +146,6 @@ def test_xsct_detection_and_disabled_flash_button(
         }
     finally:
         workspace.close()
-
-
-def test_missing_xsct_aborts_before_device_or_logging_changes(monkeypatch):
-    monkeypatch.setattr(flashing, "xsct_available", lambda: False)
-    controller = LiveController(lambda _: pytest.fail("Must not contact the service"))
-    try:
-        with pytest.raises(RuntimeError, match="XSCT.*not on PATH"):
-            controller._command("flash", {})
-        assert controller.client is None
-    finally:
-        controller.close()
 
 
 def _coded(code, message):
@@ -430,3 +175,237 @@ def _coded(code, message):
 )
 def test_refused_connections_are_recognized_by_code(error, refused):
     assert flashing.connection_refused(error) is refused
+
+
+def test_disconnected_flash_uses_service_target():
+    client = Mock()
+    client.status.return_value = {
+        "firmware_available": True,
+        "state": {"connected": False},
+        "device_target": "192.168.55.233:1000",
+    }
+    client.firmware.return_value = {"id": "job"}
+    client.job.return_value = {
+        "job": {"state": "succeeded", "phase": "complete"},
+        "log": "",
+        "next_offset": 0,
+    }
+    controller = LiveController(lambda _: client)
+    controller._flash(
+        {"endpoint": "127.0.0.1:19740", "ip": "192.168.1.233", "port": 1000}
+    )
+    client.firmware.assert_called_once_with("flash", device="192.168.55.233:1000")
+    controller.close()
+
+
+def test_stop_and_shutdown_bypass_flash_monitor():
+    from ultrazohm_dataviewer.live import action_block_reason
+
+    client = Mock()
+    controller = LiveController(lambda _: client)
+    controller.endpoint = "127.0.0.1:19740"
+    controller.flashing = True
+    for action in ("stop", "shutdown"):
+        assert not action_block_reason(action, flashing=True)
+        controller.submit(action)
+        from live_support import wait_for
+
+        wait_for(lambda action=action: getattr(client, action).call_count == 1)
+        getattr(client, action).assert_called_once()
+    assert controller.commands.empty()
+    controller.close()
+
+
+@pytest.mark.parametrize("operation", ["stop", "shutdown"])
+@pytest.mark.parametrize("fails", [False, True])
+def test_flash_control_requests_do_not_block_gui(operation, fails):
+    import threading
+
+    from live_support import wait_for
+
+    entered, release = threading.Event(), threading.Event()
+    client = Mock()
+
+    def request():
+        entered.set()
+        assert release.wait(3)
+        if fails:
+            raise RuntimeError("service unavailable")
+        return {"service_id": "external"}
+
+    getattr(client, operation).side_effect = request
+    controller = LiveController(lambda _: client)
+    controller.endpoint = "127.0.0.1:19740"
+    controller.flashing = True
+    returned = threading.Event()
+    caller = threading.Thread(
+        target=lambda: (controller.submit(operation), returned.set())
+    )
+    try:
+        caller.start()
+        assert entered.wait(1)
+        assert returned.wait(0.3), "submit blocked on network IO"
+        release.set()
+        wait_for(lambda: controller.latest().completed_commands == 1)
+        if fails:
+            assert "service unavailable" in controller.latest().error
+        else:
+            assert not controller.latest().error
+    finally:
+        release.set()
+        caller.join(3)
+        controller.close()
+    assert not controller.control_thread.is_alive()
+
+
+def test_flash_shutdown_detaches_and_marks_owned_service(monkeypatch):
+    from live_support import wait_for
+
+    client = Mock()
+    controller = LiveController(lambda _: client)
+    controller.endpoint = controller.owned.endpoint = "127.0.0.1:19740"
+    controller.owned.service_id = "owned"
+    client.shutdown.return_value = {"service_id": "owned"}
+    controller.owned.process = Mock()
+    controller.owned.process.poll.return_value = None
+    controller.attached = controller.flashing = True
+    controller._status = {"session_id": "old"}
+    monkeypatch.setattr(controller, "_await_shutdown", lambda *a, **kw: True)
+    try:
+        controller.submit("shutdown")
+        wait_for(lambda: controller.latest().completed_commands == 1)
+        assert not controller.latest().attached
+        assert controller.latest().status == {}
+        assert controller.owned.shutdown_requested
+        assert controller._flash_shutdown.is_set()
+        assert "finalized" in controller.latest().notice
+    finally:
+        controller.close()
+
+
+@pytest.mark.parametrize("failure_path", ["worker", "normal", "independent"])
+@pytest.mark.parametrize("retry_path", ["worker", "normal", "independent"])
+def test_stop_retry_clears_matching_failure_across_paths(
+    monkeypatch, failure_path, retry_path
+):
+    from live_support import wait_for
+
+    client = Mock()
+    client.stop.side_effect = RuntimeError("temporary Stop failure")
+    controller = LiveController(lambda _: client)
+    controller.client = client
+    controller.endpoint = "127.0.0.1:19740"
+    controller.attached = True
+    monkeypatch.setattr(controller, "_poll_work", lambda: None)
+
+    def send(path, failing=False):
+        controller.flashing = path == "worker"
+        if path == "independent":
+            if failing:
+                with pytest.raises(RuntimeError, match="temporary Stop failure"):
+                    controller.send_stop()
+            else:
+                controller.send_stop()
+        else:
+            count = controller.latest().completed_commands
+            controller.submit("stop")
+            wait_for(lambda: controller.latest().completed_commands > count)
+
+    try:
+        send(failure_path, failing=True)
+        assert "temporary Stop failure" in controller.latest().error
+        # A success for a different endpoint must not erase this service's failure.
+        client.stop.side_effect = None
+        controller.send_stop("127.0.0.1:19741")
+        assert "temporary Stop failure" in controller.latest().error
+        send(retry_path)
+        assert not controller.latest().error
+        assert any(
+            "temporary Stop failure" in message
+            for _, message in controller.messages.queue
+        )
+    finally:
+        controller.close()
+
+
+def test_control_success_preserves_other_failure_and_newer_command_error(monkeypatch):
+    from live_support import wait_for
+
+    client = Mock()
+    client.shutdown.side_effect = RuntimeError("shutdown unavailable")
+    controller = LiveController(lambda _: client)
+    controller.endpoint = "127.0.0.1:19740"
+    controller.client = client
+    controller.attached = controller.flashing = True
+    monkeypatch.setattr(controller, "_poll_work", lambda: None)
+    try:
+        controller.submit("shutdown")
+        wait_for(lambda: controller.latest().completed_commands == 1)
+        controller.send_stop()
+        assert "shutdown unavailable" in controller.latest().error
+        controller.flashing = False
+        client.set_variable.side_effect = RuntimeError("new variable failure")
+        controller.submit("set_variable", name="send_field_1", value=1)
+        wait_for(lambda: controller.latest().completed_commands == 2)
+        assert "new variable failure" in controller.latest().error
+    finally:
+        controller.close()
+
+
+@pytest.mark.parametrize("operation", ["close", "stop"])
+def test_flash_preparation_cannot_submit_after_lifecycle_control(operation):
+    import threading
+
+    entered, release, stopped = (threading.Event() for _ in range(3))
+    client = Mock()
+
+    def status():
+        entered.set()
+        assert release.wait(5)
+        return {"firmware_available": True, "state": {"device": "127.0.0.1:12345"}}
+
+    client.status.side_effect = status
+    client.stop.side_effect = stopped.set
+    controller = LiveController(lambda _: client)
+    controller.endpoint = "127.0.0.1:19740"
+    controller.client = client
+    controller.attached = True
+    try:
+        controller.submit("flash", endpoint=controller.endpoint)
+        assert entered.wait(2)
+        if operation == "close":
+            controller.close()
+        else:
+            controller.submit("stop")
+        assert stopped.wait(2)
+        release.set()
+        from live_support import wait_for
+
+        wait_for(lambda: not controller.flashing)
+        client.firmware.assert_not_called()
+    finally:
+        release.set()
+        controller.close()
+
+
+@pytest.mark.parametrize(
+    "identity,finalized", [("replacement", False), ("owned", True)]
+)
+def test_shutdown_completion_uses_reply_identity(identity, finalized):
+    client = Mock()
+    client.shutdown.return_value = {"service_id": identity}
+    controller = LiveController(lambda _: client)
+    controller.endpoint = controller.owned.endpoint = "127.0.0.1:19740"
+    controller.client = client
+    controller.attached = True
+    controller.owned.service_id = "owned"
+    controller.owned.process = Mock()
+    controller.owned.process.poll.return_value = 0
+    controller.owned.process.returncode = 0
+    try:
+        controller._command("shutdown", {})
+        assert ("recordings finalized" in controller._notice) is finalized
+        if not finalized:
+            assert "finalization continues" in controller._notice
+    finally:
+        controller.close()

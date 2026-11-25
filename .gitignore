@@ -30,10 +30,8 @@ vitis/Packages/*
 *.slxc
 *cpAnnotation.mat
 
-# Keep JSON artifacts visible to Git at every depth.
-/artifacts/**
-!/artifacts/**/
-!/artifacts/**/*.json
+# Ignore generated artifacts.
+/artifacts/
 *.ini
 /ultrazohm_cli_channel_mappings/
 
@@ -47,3 +45,6 @@ ultrazohm_dataviewer/build/native/
 /__pycache__/
 
 /ultrazohm_dataviewer/dist-wheels/
+
+# Shared build output locks
+/.uz-build-locks/

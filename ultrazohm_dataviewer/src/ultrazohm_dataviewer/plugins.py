@@ -48,10 +48,23 @@ ENV_VAR = "UZ_DATAVIEWER_PLUGINS"
 DEFAULT_DIR = os.path.join(os.path.expanduser("~"), ".ultrazohm_dataviewer", "nodes")
 
 
-def transform(kind, *, params=None, inputs=(1, 1), ui=(), unit=""):
+def transform(
+    kind,
+    *,
+    params=None,
+    inputs=(1, 1),
+    ui=(),
+    unit="",
+    input_domain=None,
+    output_domain=None,
+):
     """Decorator: register ``fn(inputs, params) -> (out_time, out_y, info)`` as a
     transform node ``kind``. ``inputs`` is the ``(min, max)`` input arity; ``ui`` is
     a list of :class:`~ultrazohm_dataviewer.nodes.ParamSpec` for the generic canvas widgets.
+    ``input_domain`` requires ``"time"`` or ``"frequency"`` inputs (or accepts
+    either when None); it may also be a function of params returning that rule.
+    ``output_domain`` declares ``"time"`` or ``"frequency"`` output, or preserves
+    the input domain when None. Domain-changing transforms must declare it.
     """
 
     def decorator(fn):
@@ -63,6 +76,8 @@ def transform(kind, *, params=None, inputs=(1, 1), ui=(), unit=""):
                 inputs=tuple(inputs),
                 ui=tuple(ui),
                 unit=str(unit),
+                input_domain=input_domain,
+                output_domain=output_domain,
             )
         )
         return fn
@@ -121,7 +136,7 @@ def load_plugins(dirs: list[str] | None = None, console=None) -> tuple[str, ...]
                 continue
             try:
                 _load_file(os.path.join(directory, fname))
-            except Exception as exc:  # noqa: BLE001 - one bad plugin must not break startup
+            except (Exception, SystemExit) as exc:  # noqa: BLE001 - isolate plugin failures
                 if console is not None:
                     console.error(f"plugin {fname}: {exc}")
     new = tuple(k for k in REGISTRY if k not in before)

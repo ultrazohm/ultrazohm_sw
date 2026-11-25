@@ -1,12 +1,29 @@
 """Detached node evaluation with application-thread publication."""
 
-import itertools
 from copy import copy, deepcopy
-from types import MethodType, SimpleNamespace
+from dataclasses import dataclass, field
 
 from . import nodes
 from .console import Console
-from .state import AppState
+from .model import DataRegistry
+
+
+@dataclass
+class EvaluationState:
+    """Detached graph inputs and computed outputs, with no GUI runtime state."""
+
+    nodes: nodes.NodeGraph
+    registry: DataRegistry
+    console: Console = field(default_factory=Console)
+
+    def upsert_derived_run(self, label, time, signal_y, unit="", *, run_id=None):
+        return self.registry.upsert_derived_run(
+            label, time, signal_y, unit, run_id=run_id
+        )
+
+    def derived_domain_changed(self, run_id):
+        # View changes are applied only when publishing to the application.
+        pass
 
 
 def fingerprint(state):
@@ -37,27 +54,7 @@ def capture(state):
         node.params = deepcopy(original.params)
         node.inputs = list(original.inputs)
         graph.nodes[key] = node
-    registry = copy(state.registry)
-    registry._ids = itertools.count(max(state.registry._runs, default=0) + 1)
-    registry._runs = {}
-    for key, original in state.registry._runs.items():
-        run = copy(original)
-        run.signals = {name: copy(signal) for name, signal in original.signals.items()}
-        # ArraySource.validator is mutable; detached publication must not
-        # replace the live source's validation closure.
-        run.source = copy(original.source)
-        registry._runs[key] = run
-    snapshot = SimpleNamespace(
-        nodes=graph,
-        registry=registry,
-        console=Console(),
-        cells=[],
-        plot_x_ranges={},
-        fft=SimpleNamespace(sources=[]),
-        histogram=SimpleNamespace(sources=[]),
-    )
-    snapshot.upsert_derived_run = MethodType(AppState.upsert_derived_run, snapshot)
-    return snapshot
+    return EvaluationState(graph, state.registry.detached())
 
 
 def publish(state, snapshot):

@@ -28,6 +28,10 @@ struct Args {
 enum Command {
     /// Generate/build an empty Vitis workspace (optionally open the GUI).
     Generate {
+        #[arg(long)]
+        local: bool,
+        #[arg(long)]
+        no_wait: bool,
         /// Repository root; otherwise search upward from the current directory.
         #[arg(long)]
         repo: Option<PathBuf>,
@@ -37,24 +41,45 @@ enum Command {
     /// Incrementally build Baremetal and FreeRTOS (including platform dependencies).
     Build {
         #[arg(long)]
+        local: bool,
+        #[arg(long)]
+        no_wait: bool,
+        #[arg(long)]
         repo: Option<PathBuf>,
     },
     /// Clean the platform and applications, then rebuild both applications.
     BuildClean {
+        #[arg(long)]
+        local: bool,
+        #[arg(long)]
+        no_wait: bool,
         #[arg(long)]
         repo: Option<PathBuf>,
     },
     /// Build, then JTAG program and run. Does not write persistent flash memory.
     Flash {
         #[arg(long)]
-        repo: Option<PathBuf>,
-        #[arg(long, default_value = "Run_UltraZohm", value_parser = ["Run_UltraZohm"])]
-        profile: String,
+        device: Option<String>,
+        #[arg(long)]
+        no_reconnect: bool,
+        #[arg(long)]
+        no_wait: bool,
+    },
+    Jobs,
+    Job {
+        id: String,
+        #[arg(long)]
+        follow: bool,
     },
     /// Run the control service until Ctrl-C or shutdown; starts disconnected by default. Run as an OS service for unattended use.
     Serve {
+        #[arg(long, hide = true)]
+        launch_id: Option<String>,
+        /// XSCT launcher on the service machine; otherwise use its PATH.
+        #[arg(long)]
+        xsct: Option<PathBuf>,
         #[command(flatten)]
-        data: DataOptions,
+        data: Box<DataOptions>,
         /// Connect immediately instead of waiting for the connect command.
         #[arg(long)]
         device: Option<String>,
@@ -227,7 +252,9 @@ pub fn run(argv: impl IntoIterator<Item = String>) -> i32 {
 
 fn dispatch(args: Args) -> Result<()> {
     let command = args.command.unwrap_or_else(|| Command::Serve {
-        data: DataOptions::default(),
+        launch_id: None,
+        xsct: None,
+        data: Box::default(),
         device: None,
         profile: None,
         channel_mapping: None,
@@ -239,6 +266,8 @@ fn dispatch(args: Args) -> Result<()> {
     });
     match command {
         Command::Serve {
+            launch_id,
+            xsct,
             data,
             device,
             profile,
@@ -252,7 +281,14 @@ fn dispatch(args: Args) -> Result<()> {
             let repo = repo
                 .as_deref()
                 .map(|path| crate::vitis::repository(Some(path)))
-                .transpose()?;
+                .transpose()?
+                .or_else(|| {
+                    if channel_mapping.is_none() {
+                        crate::vitis::repository(None).ok()
+                    } else {
+                        None
+                    }
+                });
             let profile = Profile::load_repository(
                 profile.as_deref(),
                 channel_mapping.as_deref(),
@@ -270,7 +306,11 @@ fn dispatch(args: Args) -> Result<()> {
             let stopped = shutdown.clone();
             service::serve_with_ready(
                 Config {
-                    data,
+                    launch_id,
+                    current_output: None,
+                    repo: repo.clone(),
+                    xsct,
+                    data: *data,
                     device,
                     endpoint: args.endpoint,
                     profile,
@@ -464,7 +504,12 @@ enum Action {
 }
 
 fn classify(command: Command) -> Result<Action> {
+    if let Some((op, _)) = firmware_command(&command)? {
+        return Ok(Action::Service(op));
+    }
     let op = match command {
+        Command::Jobs => Operation::Jobs,
+        Command::Job { id, .. } => Operation::Job { id, offset: 0 },
         Command::Recordings => Operation::Recordings,
         Command::DataInfo { stream, recording } => Operation::DataInfo {
             source: Source { stream, recording },
@@ -573,16 +618,13 @@ fn classify(command: Command) -> Result<Action> {
 /// Run a command that does not talk to the service.
 fn run_local(command: Command) -> Result<()> {
     match command {
-        Command::Generate { repo, open } => crate::vitis::run(
+        Command::Generate { repo, open, .. } => crate::vitis::run(
             if open { "generate-open" } else { "generate" },
             repo.as_deref(),
             None,
         ),
-        Command::Build { repo } => crate::vitis::run("build", repo.as_deref(), None),
-        Command::BuildClean { repo } => crate::vitis::run("build-clean", repo.as_deref(), None),
-        Command::Flash { repo, profile } => {
-            crate::vitis::run("flash", repo.as_deref(), Some(&profile))
-        }
+        Command::Build { repo, .. } => crate::vitis::run("build", repo.as_deref(), None),
+        Command::BuildClean { repo, .. } => crate::vitis::run("build-clean", repo.as_deref(), None),
         Command::Serve { .. } => {
             bail!("serve cannot be started inside an existing interactive session")
         }
@@ -669,7 +711,119 @@ fn send_operation(op: Operation, endpoint: &str, out: &mut impl Write) -> Result
     Ok(())
 }
 
+fn follow_job(endpoint: &str, id: &str, follow: bool) -> Result<()> {
+    let mut offset = 0;
+    loop {
+        let reply = service::request(
+            endpoint,
+            Operation::Job {
+                id: id.into(),
+                offset,
+            },
+        )?;
+        print!("{}", reply["log"].as_str().unwrap_or(""));
+        io::stdout().flush()?;
+        let progress = crate::jobs::progress(offset as u64, &reply)?;
+        let next = progress["next_offset"].as_u64().unwrap() as usize;
+        if !follow {
+            println!("{}", serde_json::to_string_pretty(&reply["job"])?);
+            return Ok(());
+        }
+        if progress["complete"] == true {
+            anyhow::ensure!(
+                reply["job"]["state"] == "succeeded",
+                "firmware job failed: {}",
+                reply["job"]["result"]
+            );
+            return Ok(());
+        }
+        offset = next;
+        std::thread::sleep(std::time::Duration::from_millis(100));
+    }
+}
+
+fn firmware_command(command: &Command) -> Result<Option<(Operation, bool)>> {
+    let firmware = match command {
+        Command::Generate {
+            local: false,
+            repo,
+            open,
+            no_wait,
+        } => {
+            anyhow::ensure!(
+                repo.is_none() && !open,
+                "select --repo at serve startup; --open requires --local"
+            );
+            Some(("generate", *no_wait, None, false))
+        }
+        Command::Build {
+            local: false,
+            repo,
+            no_wait,
+        }
+        | Command::BuildClean {
+            local: false,
+            repo,
+            no_wait,
+        } => {
+            anyhow::ensure!(
+                repo.is_none(),
+                "select --repo at serve startup, or use --local"
+            );
+            Some((
+                if matches!(command, Command::Build { .. }) {
+                    "build"
+                } else {
+                    "build-clean"
+                },
+                *no_wait,
+                None,
+                false,
+            ))
+        }
+        Command::Flash {
+            device,
+            no_wait,
+            no_reconnect,
+        } => Some(("flash", *no_wait, device.clone(), *no_reconnect)),
+        _ => None,
+    };
+    if let Some((action, no_wait, device, no_reconnect)) = firmware {
+        let request_id = format!(
+            "{}-{}",
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)?
+                .as_nanos()
+        );
+        return Ok(Some((
+            Operation::Firmware {
+                action: action.into(),
+                request_id,
+                device,
+                no_reconnect,
+            },
+            no_wait,
+        )));
+    }
+    Ok(None)
+}
+
 fn execute(command: Command, endpoint: &str) -> Result<()> {
+    if let Command::Job { id, follow } = &command {
+        return follow_job(endpoint, id, *follow);
+    }
+    if let Some((operation, no_wait)) = firmware_command(&command)? {
+        let reply = service::request(endpoint, operation)?;
+        let id = reply["job"]["id"].as_str().unwrap();
+        println!("Job {id}");
+        return if no_wait {
+            Ok(())
+        } else {
+            follow_job(endpoint, id, true)
+        };
+    }
+
     match classify(command)? {
         Action::Service(op) => send_operation(op, endpoint, &mut io::stdout().lock()),
         Action::Local(command) => run_local(command),
@@ -678,7 +832,7 @@ fn execute(command: Command, endpoint: &str) -> Result<()> {
 
 /// Run one line of the interactive prompt's syntax against the service at
 /// `endpoint` and return what it prints. Only service commands are accepted:
-/// local tools (serve, build, flash, generate, mappings) belong in a terminal.
+/// firmware submissions return job metadata; local tools require a terminal.
 /// Help output is returned as text; parse errors and failed requests are errors.
 pub fn console_command(endpoint: &str, line: &str) -> Result<String> {
     let mut words = prompt_words(line)?;
@@ -699,7 +853,7 @@ pub fn console_command(endpoint: &str, line: &str) -> Result<String> {
         }
         Action::Local(_) => bail!(
             "this command runs local tools, not the service; run it in a terminal \
-             (in the viewer, Flash UZ has its own button)"
+             with explicit local execution"
         ),
     }
 }

@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import ipaddress
 import json
-import os
 import subprocess
 import sys
 import threading
@@ -345,6 +344,42 @@ class LiveSource(MemorySource):
 
 
 @dataclass(frozen=True)
+class ServiceSnapshot:
+    """Configuration and status observed within one acquisition session."""
+
+    status: dict
+    catalog: dict
+    assignments: tuple
+
+    @staticmethod
+    def identity(status):
+        return status.get("service_id"), status.get("session_id")
+
+    @classmethod
+    def read(cls, client, previous=None):
+        # A session may change between RPCs (for example during flashing).
+        # Publish nothing until both surrounding status reads agree.
+        for _ in range(3):
+            status = client.status()
+            active = status.get("session_id", True)
+            same = previous is not None and cls.identity(status) == cls.identity(
+                previous.status
+            )
+            catalog = (
+                previous.catalog
+                if same and active
+                else client.catalog()["profile"]
+                if active
+                else {}
+            )
+            assignments = tuple(client.observables()["channels"]) if active else ()
+            latest = client.status()
+            if cls.identity(status) == cls.identity(latest):
+                return cls(latest, catalog, assignments)
+        raise RuntimeError("Acquisition session changed during configuration refresh")
+
+
+@dataclass(frozen=True)
 class LiveUpdate:
     revision: int = 0
     status: dict = field(default_factory=dict)
@@ -359,26 +394,6 @@ class LiveUpdate:
     activity: str = ""
     completed_commands: int = 0
     variable_sends: dict = field(default_factory=dict)
-    flash_config: tuple | None = None
-
-
-@dataclass
-class OwnedService:
-    """The launched process remains owned even when the viewer attaches elsewhere."""
-
-    process: object = None
-    endpoint: str | None = None
-    shutdown_requested: bool = False
-    log: Path | None = None
-    repo: Path | None = None
-    mapping: Path | None = None
-
-    @property
-    def running(self):
-        return self.process is not None and self.process.poll() is None
-
-    def owns(self, endpoint):
-        return self.endpoint == endpoint and self.running
 
 
 def cursor_invalid(exc):
@@ -388,7 +403,7 @@ def cursor_invalid(exc):
 
 def action_block_reason(action, *, flashing=False, script_busy=False):
     """Shared interaction policy; connection and execution checks stay with their owners."""
-    if flashing:
+    if flashing and action not in ("stop", "shutdown"):
         return "Flash UZ is running"
     if script_busy and action not in ("stop", "cli"):
         return "Manual controls are locked while the script runs"
@@ -416,7 +431,13 @@ class LiveController:
         self.stop_event = threading.Event()
         self.thread = None
         self.poll_thread = None
-        self.owned = OwnedService()
+        self.control_thread = None
+        self.control_commands = Queue(maxsize=32)
+        self._pending_controls = 0
+        self._control_errors = {}
+        from ultrazohm_cli.process import ServiceProcess
+
+        self.owned = ServiceProcess()
         self.client = None
         self.endpoint = None
         self._poll_client = None
@@ -444,18 +465,58 @@ class LiveController:
         self._completed_commands = 0
         self._variable_sends = {}
         self.flashing = False
-        self._flash_config = None
-        self._flash_context = None
+        self._flash_shutdown = threading.Event()
         self.messages = Queue(maxsize=2000)
+
+    def request_attachment(self, operation, **kwargs):
+        """Return a completion future for an attach/detach request."""
+        from concurrent.futures import Future
+
+        if operation not in ("attach", "detach"):
+            raise ValueError("Expected attach or detach")
+        completion = Future()
+        self.submit(operation, _completion=completion, **kwargs)
+        return completion
 
     def submit(self, operation, **kwargs):
         if self.stop_event.is_set():
             raise RuntimeError("Live controller is closed")
-        if self.flashing:
+        if operation == "flash":
+            # A flash can finish before its concurrent shutdown reply arrives.
+            # Keep the next flash from reusing state that reply still updates.
+            with self.lock:
+                if self._pending_controls:
+                    raise RuntimeError("Wait for pending Stop or shutdown to finish")
+        if self.flashing and operation in ("stop", "shutdown"):
+            self.cancel_pending_commands()
+            try:
+                with self.lock:
+                    self.control_commands.put_nowait(
+                        (operation, kwargs.get("endpoint") or self.endpoint)
+                    )
+                    self._pending_controls += 1
+            except Full as exc:
+                raise RuntimeError("Control command queue is busy") from exc
+            if self.control_thread is None:
+                self.control_thread = threading.Thread(
+                    target=self._control_work, name="uz-live-control", daemon=True
+                )
+                self.control_thread.start()
+            return
+        if self.flashing and operation not in ("stop", "shutdown"):
             raise RuntimeError("Flash UZ is already running")
-        if operation in ("stop", "flash", "shutdown", "detach", "attach", "connect"):
+        if operation in (
+            "stop",
+            "flash",
+            "shutdown",
+            "detach",
+            "attach",
+            "connect",
+            "connect_device",
+        ):
             self.cancel_pending_commands()
         if operation == "flash":
+            self._flash_shutdown.clear()
             self.flashing = True
         if self.thread is None:
             self.thread = threading.Thread(
@@ -474,15 +535,79 @@ class LiveController:
                 self.flashing = False
             raise RuntimeError("Live command queue is busy") from exc
 
+    def _control_work(self):
+        """Lifecycle requests bypass flash monitoring without blocking the GUI."""
+        while not self.stop_event.is_set():
+            try:
+                operation, endpoint = self.control_commands.get(timeout=self.interval)
+            except Empty:
+                continue
+            with self._command_lock:
+                if self.stop_event.is_set():
+                    return
+                try:
+                    from ultrazohm_cli import Client
+
+                    client = (self.client_factory or Client)(endpoint)
+                    reply = getattr(client, operation)()
+                    if operation == "shutdown":
+                        self._flash_shutdown.set()
+                        self.owned.acknowledge_shutdown(
+                            endpoint, reply.get("service_id")
+                        )
+                        self.attached = False
+                        self._reset()
+                        self._status, self._catalog, self._assignments = {}, {}, ()
+                        self._poll_error = ""
+                        self._error = ""
+                        if self._await_shutdown(
+                            "Stopping device and finalizing recordings…",
+                            external=False,
+                            service_id=reply.get("service_id"),
+                        ):
+                            self._notice = "Service shut down; recordings finalized"
+                        else:
+                            self._notice = "Service shutdown accepted; finalization continues in the external service"
+                    self._control_succeeded(operation, endpoint)
+                except Exception as exc:
+                    self._control_failed(operation, endpoint, exc)
+                finally:
+                    self._completed_commands += 1
+                    self._publish()
+                    with self.lock:
+                        self._pending_controls -= 1
+
+    def _control_failed(self, operation, endpoint, error):
+        message = f"{operation} failed: {error}"
+        with self.lock:
+            key = (endpoint, operation)
+            self._control_errors.pop(key, None)
+            self._control_errors[key] = message
+        self._message("error", message)
+        self._publish()
+
+    def _control_succeeded(self, operation, endpoint):
+        # A retry on any transport clears only that operation's failure for
+        # that service. The Console retains the original diagnostic message.
+        with self.lock:
+            self._control_errors.pop((endpoint, operation), None)
+        self._publish()
+
     def cancel_pending_commands(self):
         """Invalidate even a command already dequeued but not yet executing."""
         with self.lock:
             self._command_generation += 1
             while True:
                 try:
-                    self.commands.get_nowait()
+                    _, operation, kwargs = self.commands.get_nowait()
                 except Empty:
                     break
+                if operation == "flash":
+                    # This request will never reach the worker's finally block.
+                    # A dequeued/running flash remains the worker's responsibility.
+                    self.flashing = False
+                if completion := kwargs.get("_completion"):
+                    completion.cancel()
 
     def send_stop(self, endpoint=None):
         """Finish an in-flight command before Stop, independently of data reads."""
@@ -494,7 +619,12 @@ class LiveController:
                 client = Client(endpoint)
             else:
                 client = self.client_factory(endpoint)
-            client.stop()
+            try:
+                client.stop()
+            except Exception as exc:
+                self._control_failed("stop", endpoint, exc)
+                raise
+            self._control_succeeded("stop", endpoint)
 
     def commands_idle(self):
         """Check without blocking the GUI; canceled commands cannot execute later."""
@@ -519,14 +649,24 @@ class LiveController:
                 self._assignments,
                 self._last_source,
                 self._epoch,
-                self._error or self._poll_error,
+                self._error
+                or self._poll_error
+                or next(
+                    (
+                        message
+                        for (endpoint, _), message in reversed(
+                            self._control_errors.items()
+                        )
+                        if endpoint == self.endpoint
+                    ),
+                    "",
+                ),
                 self._notice,
                 self.attached,
                 self._received_at,
                 self._activity,
                 self._completed_commands,
                 self._variable_sends.copy(),
-                self._flash_config,
             )
 
     def _message(self, level, text):
@@ -574,122 +714,53 @@ class LiveController:
         user_directory=None,
         repo=None,
     ):
-        if repo and mapping:
-            raise ValueError(
-                "Choose either a firmware repository or an explicit channel mapping"
-            )
-        self._progress("Starting local acquisition service…")
-        if self.owned.running:
-            raise RuntimeError(
-                "The launched service is still running; check its endpoint and service.log"
-            )
-        output = Path(output).expanduser().resolve()
-        # One output directory per service lifetime, never reuse an existing run.
-        output.parent.mkdir(parents=True, exist_ok=True)
-        if output.exists():
-            raise ValueError(
-                "Choose a new session directory; existing recordings are never overwritten"
-            )
-        log_path = output.with_name(output.name + ".service.log")
-        from .process_launcher import command
+        # Selecting saved preferences is application policy; process mechanics
+        # and CLI arguments belong to the CLI package.
+        if not profile:
+            if repo:
+                from ultrazohm_cli.configuration import startup_profile_path
 
-        args = command(
-            "cli",
-            "--endpoint",
-            self.endpoint,
-            "serve",
-            "--output",
-            str(output),
-            "--format",
-            "parquet",
-        )
-        if repo:
-            args += ["--repo", str(Path(repo).expanduser().resolve())]
-            if not profile:
-                from .user_paths import data_directory
-
-                directory = (
-                    Path(user_directory) if user_directory else data_directory(repo)
-                )
-                saved = directory / "settings.json"
+                saved = startup_profile_path(repo, user_directory)
                 if saved.is_file():
                     profile = saved
-        elif mapping:
-            args += ["--channel-mapping", str(Path(mapping).expanduser().resolve())]
-            if not profile:
+            elif mapping:
                 from .settings import load_workspace_settings
 
                 profile = load_workspace_settings(mapping, user_directory).path
-        if profile:
-            args += ["--profile", str(profile)]
-        if ack:
-            args += ["--ack", "on"]
-        for name in (
-            "buffer_samples",
-            "segment_rows",
-            "flush_interval_ms",
-            "queue_seconds",
-            "recording_backend",
-        ):
-            if (value := (data_options or {}).get(name)) is not None:
-                args += ["--" + name.replace("_", "-"), str(value)]
-        options = (
-            {"stdin": subprocess.DEVNULL, "start_new_session": True}
-            if os.name != "nt"
-            else {
-                "stdin": subprocess.DEVNULL,
-                "creationflags": subprocess.DETACHED_PROCESS
-                | subprocess.CREATE_NEW_PROCESS_GROUP,
-            }
+        from .process_launcher import command
+
+        self._progress("Starting local acquisition service…")
+        self.owned.start(
+            output,
+            mapping,
+            profile,
+            data_options,
+            ack,
+            repo=repo,
+            endpoint=self.endpoint,
+            client=self.client,
+            cancel=self.stop_event,
+            command_prefix=command("cli"),
         )
-        with log_path.open("ab") as log:
-            self.owned.process = subprocess.Popen(
-                args, stdout=log, stderr=log, **options
-            )
-            self.owned.endpoint = self.endpoint
-            self.owned.repo = Path(repo).expanduser().resolve() if repo else None
-            self.owned.mapping = (
-                Path(mapping).expanduser().resolve() if mapping else None
-            )
-            self.owned.shutdown_requested = False
-            self.owned.log = log_path
-        deadline = time.monotonic() + 8
-        while not self.stop_event.is_set() and time.monotonic() < deadline:
-            if self.owned.process.poll() is not None:
-                raise RuntimeError(f"Service failed; see {log_path}")
-            try:
-                self.client.status()
-                return
-            except (OSError, RuntimeError):
-                self.stop_event.wait(0.1)
-        # A service that never answered must not block later Connect attempts.
-        self._terminate_owned()
-        raise RuntimeError(f"Service startup timed out; see {log_path}")
 
     def _terminate_owned(self):
-        process = self.owned.process
-        if process is None or process.poll() is not None:
-            return
-        process.terminate()
-        try:
-            process.wait(timeout=5)
-        except subprocess.TimeoutExpired:
-            process.kill()
-            process.wait()
+        self.owned.terminate_startup()
 
     def _wait_owned(self, description):
-        """Wait for the owned service without blocking viewer shutdown."""
-        while self.owned.process.poll() is None:
-            if self.stop_event.is_set():
-                return None  # close() takes over waiting for finalization
-            self._progress(description)
-            self.stop_event.wait(0.2)
-        return self.owned.process.returncode
+        return self.owned.wait(
+            cancel=self.stop_event, progress=lambda: self._progress(description)
+        )
 
-    def _command(self, operation, kwargs):
+    def _command(self, operation, kwargs, *, generation=None):
         if operation == "flash":
-            self._flash(kwargs)
-        elif operation in ("attach", "connect"):
+            self._flash(kwargs, generation=generation)
+        elif operation in ("attach", "connect", "connect_device"):
+            if operation == "connect_device" and not self.attached:
+                raise RuntimeError("Attach to a service first")
+            if operation == "connect_device" and kwargs["endpoint"] != self.endpoint:
+                raise RuntimeError(
+                    "Device connection must use the attached service endpoint"
+                )
             self._progress("Checking acquisition service…")
             self._make_client(kwargs["endpoint"])
             try:
@@ -732,7 +803,7 @@ class LiveController:
                     )
             self._progress("Reading service configuration…")
             status = self.client.status()
-            if operation == "connect":
+            if operation in ("connect", "connect_device"):
                 if status["state"]["connected"]:
                     requested = (
                         ipaddress.ip_address(kwargs["ip"]),
@@ -756,9 +827,12 @@ class LiveController:
                     )
                     self.client.connect(kwargs["ip"], kwargs["port"])
                     self._reset()
-            self._catalog = self.client.catalog()["profile"]
-            self.attached = True
-            self._status = self.client.status()
+            snapshot = ServiceSnapshot.read(self.client)
+            with self.lock:
+                self._status = snapshot.status
+                self._catalog = snapshot.catalog
+                self._assignments = snapshot.assignments
+                self.attached = True
             self._notice = f"Attached to acquisition service at {self.endpoint}"
             if mapping := kwargs.get("mapping"):
                 try:
@@ -810,6 +884,8 @@ class LiveController:
                 self._status_at = 0.0
                 self._notice = "Detached: acquisition service unavailable; device Stop and recording finalization could not be confirmed. Check service.log."
                 return
+            if operation in ("stop", "shutdown"):
+                self._control_succeeded(operation, self.endpoint)
             if operation == "set_variable":
                 self._variable_sends[kwargs["name"]] = (
                     time.monotonic(),
@@ -819,13 +895,14 @@ class LiveController:
                 f"{operation}: request sent (device commands have no acknowledgment)"
             )
             if operation == "shutdown":
-                if self.endpoint == self.owned.endpoint:
-                    self.owned.shutdown_requested = True
+                self.owned.acknowledge_shutdown(self.endpoint, reply.get("service_id"))
                 self.attached = False
                 self._reset()
                 self._status, self._catalog, self._assignments = {}, {}, ()
                 if self._await_shutdown(
-                    "Stopping device and finalizing recordings…", external=False
+                    "Stopping device and finalizing recordings…",
+                    external=False,
+                    service_id=reply.get("service_id"),
                 ):
                     self._notice = "Service shut down; recordings finalized"
                 else:
@@ -834,12 +911,16 @@ class LiveController:
             del reply
         self._status_at = 0.0
 
-    def _await_shutdown(self, description, *, external):
+    def _await_shutdown(self, description, *, external, service_id=None):
         """Wait after a shutdown request; the service itself sends device Stop and
         finalizes both recordings. A viewer-owned service is awaited until it exits
         and its exit code checked. Return whether completion was observed."""
         self._progress(description)
-        if self.endpoint == self.owned.endpoint and self.owned.process is not None:
+        if (
+            service_id is not None
+            and service_id == self.owned.service_id
+            and self.owned.has_process(self.endpoint)
+        ):
             code = self._wait_owned(description)
             if code:
                 raise RuntimeError(
@@ -873,120 +954,66 @@ class LiveController:
             self.stop_event.wait(0.1)
         raise RuntimeError(f"Timed out waiting for {description}")
 
-    def _flash(self, kwargs):
-        from .flashing import connection_refused, run_flash_cli, xsct_available
-        from .live_mapping import generate_mapping, repository
-        from .settings import load_workspace_settings, profile_for_mapping
-        from .user_paths import write_json
+    def _flash(self, kwargs, *, generation=None):
+        from .flashing import connection_refused
 
-        if not xsct_available():
-            raise RuntimeError(
-                "Vitis XSCT (xsct) is not on PATH. Load the Vitis environment and restart the viewer."
-            )
-        root = repository(kwargs.get("repo") or None)
+        with self.lock:
+            if generation is None:
+                generation = self._command_generation
+            if generation != self._command_generation or self.stop_event.is_set():
+                return
         self._make_client(kwargs["endpoint"])
-        self._poll_error = ""
-        self._progress("Preparing Flash UZ…")
         try:
             status = self.client.status()
         except (OSError, RuntimeError) as exc:
             if not connection_refused(exc):
                 raise
-            status = None
-        previous, assignments = None, None
-        settings = status or {}
-        if (
-            status is None
-            and self._flash_context is not None
-            and self._flash_context[0] == self.endpoint
-        ):
-            _, previous, assignments, settings = self._flash_context
-        target_ip, target_port = kwargs["ip"], kwargs["port"]
-        if address := settings.get("state", {}).get("device"):
-            host, port = address.rsplit(":", 1)
-            target_ip, target_port = host.strip("[]"), int(port)
-        if status is not None:
-            previous = self.client.catalog()["profile"]
-            if status["state"].get("connected"):
-                assignments = {
-                    str(item["channel"]): item["name"]
-                    for item in self.client.observables()["channels"]
-                    if item["name"]
-                }
-            self._flash_context = (self.endpoint, previous, assignments, settings)
-            # Shutdown sends device Stop and finalizes both recordings itself.
-            self.attached = False
-            self.client.shutdown()
-            if self.endpoint == self.owned.endpoint:
-                self.owned.shutdown_requested = True
-            if not self._await_shutdown(
-                "Stopping device, finalizing recordings and shutting down the service…",
-                external=True,
-            ):
-                return  # The viewer closed; close() takes over waiting for the service.
-        self.attached = False
-        self._reset()
-        self._status, self._catalog, self._assignments = {}, {}, ()
-        if self.stop_event.is_set():
-            return
-        self._progress("Generating channel mapping…")
-        mapping_path = generate_mapping(root)
-        self._message("info", f"Channel mapping regenerated: {mapping_path}")
-        workspace = load_workspace_settings(mapping_path)
-        if previous is None:
-            previous = workspace.profile
-        profile, removed = profile_for_mapping(workspace.mapping, previous, assignments)
-        if removed:
-            self._message(
-                "warn",
-                "Removed channel assignments absent from the new mapping: "
-                + ", ".join(removed),
+            self._start_service(kwargs["output"], "", "", repo=kwargs.get("repo"))
+            status = self.client.status()
+        self.attached = True
+        if not status.get("firmware_available"):
+            raise RuntimeError(
+                "The selected service needs a firmware checkout and Vitis XSCT"
             )
-        output = Path(
-            new_output_directory(
-                parent=Path(kwargs["output"]).expanduser().resolve().parent
+        device = status.get("state", {}).get("device") or status.get("device_target")
+        if not device:
+            host = kwargs["ip"]
+            device = (
+                f"[{host}]:{kwargs['port']}"
+                if ":" in host
+                else f"{host}:{kwargs['port']}"
             )
-        )
-        output.parent.mkdir(parents=True, exist_ok=True)
-        profile_path = output.with_name(output.name + ".profile.json")
-        write_json(profile_path, profile)
-        self._flash_config = (str(mapping_path), str(output))
-        self._progress("Flashing UltraZohm; see Console for progress…")
-        if not run_flash_cli(root, self.endpoint, self.stop_event, self._message):
-            return
-        if self.stop_event.is_set():
-            return
-        self._progress("Reconnecting to UltraZohm…")
-        self._start_service(
-            str(output),
-            "",
-            str(profile_path),
-            settings.get("data_options"),
-            settings.get("send_ack", False),
-            repo=root,
-        )
-        last_error = ""
+        # Serialize acceptance with Stop/close, but leave slow preparation and
+        # job following outside this lock so lifecycle controls stay responsive.
+        with self._command_lock:
+            with self.lock:
+                canceled = generation != self._command_generation
+            if canceled or self.stop_event.is_set() or self._flash_shutdown.is_set():
+                return
+            job = self.client.firmware("flash", device=device)
+        self._message("info", f"Firmware job {job['id']} accepted by {self.endpoint}")
+        from ultrazohm_cli.jobs import FirmwareJob
 
-        def reconnected():
-            nonlocal last_error
+        monitor = FirmwareJob(self.client, job["id"])
+        while not self.stop_event.is_set() and not self._flash_shutdown.is_set():
             try:
-                if not self.client.status()["state"].get("connected"):
-                    self.client.connect(target_ip, target_port)
-                return True
-            except (OSError, RuntimeError) as exc:
-                last_error = str(exc)
-                return False
-
-        try:
-            self._wait_for(reconnected, 20, "UltraZohm to reconnect")
-        except RuntimeError as exc:
-            raise RuntimeError(f"{exc}: {last_error}") from exc
-        self._command(
-            "attach", {"endpoint": self.endpoint, "mapping": str(mapping_path)}
-        )
-        self._variable_sends = {}
-        self._flash_context = None
-        self._notice = "Flash completed; acquisition service restarted and connected"
+                reply = monitor.poll()
+            except (OSError, RuntimeError):
+                if self._flash_shutdown.is_set():
+                    return
+                raise
+            if self._flash_shutdown.is_set():
+                return
+            if reply["log"]:
+                self._message("info", reply["log"])
+            self._progress(f"Flash UZ: {reply['job']['phase']}")
+            if monitor.complete:
+                monitor.raise_for_status()
+                self._reset()
+                self._status_at = 0
+                self._notice = "Flash completed; service session replaced"
+                return
+            self.stop_event.wait(0.1)
 
     def _poll_client_for(self, endpoint):
         if self._poll_client is None or self._poll_endpoint != endpoint:
@@ -1006,6 +1033,7 @@ class LiveController:
     def _poll(self):
         with self.lock:
             generation, endpoint = self._reset_generation, self.endpoint
+            previous = ServiceSnapshot(self._status, self._catalog, self._assignments)
         if generation != self._poll_reset_seen:
             self.cursor = self.cursor_stop = None
             if self.ring is not None:
@@ -1013,13 +1041,22 @@ class LiveController:
             self._poll_reset_seen = generation
         client = self._poll_client_for(endpoint)
         if time.monotonic() >= self._status_at:
-            status = client.status()
-            assignments = tuple(client.observables()["channels"])
+            snapshot = ServiceSnapshot.read(client, previous)
+            session_changed = ServiceSnapshot.identity(
+                snapshot.status
+            ) != ServiceSnapshot.identity(previous.status)
             with self.lock:
-                if not self._current(generation):
+                if not self._current(generation) or endpoint != self.endpoint:
                     return
-                self._status, self._assignments = status, assignments
-            self._status_at = time.monotonic() + 0.25
+                if session_changed:
+                    self.cursor = self.cursor_stop = None
+                    if self.ring is not None:
+                        self.ring.reset()
+                    self._last_source = None
+                self._catalog = snapshot.catalog
+                self._status = snapshot.status
+                self._assignments = snapshot.assignments
+                self._status_at = time.monotonic() + 0.25
         status = self._status
         if not status.get("state", {}).get("connected"):
             return
@@ -1079,32 +1116,49 @@ class LiveController:
                 generation, operation, kwargs = self.commands.get(timeout=self.interval)
             except Empty:
                 continue
+            completion = kwargs.pop("_completion", None)
             if self.stop_event.is_set():
+                if completion is not None:
+                    completion.cancel()
                 break
             if operation is not None:
                 self._error = ""
                 self._progress(
                     "Connecting…"
-                    if operation == "connect"
+                    if operation in ("connect", "connect_device")
                     else f"{operation}: working…"
                 )
                 try:
-                    # Flash checks stop_event between its preparation stages and
-                    # may run a detached programmer; do not lock shutdown behind it.
+                    # Flash only follows a service job; shutdown must not wait for
+                    # the GUI-side progress loop.
                     with self._command_lock if operation != "flash" else nullcontext():
                         with self.lock:
                             current = generation == self._command_generation
                         if current and not self.stop_event.is_set():
-                            self._command(operation, kwargs)
+                            if (
+                                completion is not None
+                                and not completion.set_running_or_notify_cancel()
+                            ):
+                                continue
+                            self._command(operation, kwargs, generation=generation)
+                        elif completion is not None:
+                            completion.cancel()
                     self._error = ""
                 except Exception as exc:
-                    self._error = str(exc)
+                    if completion is not None and not completion.done():
+                        completion.set_exception(exc)
+                    if operation in ("stop", "shutdown"):
+                        self._control_failed(operation, self.endpoint, exc)
+                    else:
+                        self._error = str(exc)
                 finally:
                     if operation == "flash":
                         self.flashing = False
                     self._activity = ""
                     self._completed_commands += 1
                     self._publish()
+                    if completion is not None and not completion.done():
+                        completion.set_result(None)
 
     def _poll_work(self):
         """Poll status and samples at a fixed rate while attached, never during Flash UZ."""
@@ -1125,15 +1179,13 @@ class LiveController:
             return
         self.stop_event.set()
         self.cancel_pending_commands()
-        for thread in (self.thread, self.poll_thread):
+        for thread in (self.thread, self.poll_thread, self.control_thread):
             if thread is not None:
                 thread.join(timeout=1)
         # Commands observe stop_event; bound the wait so a stuck command cannot hang exit.
         locked = self._command_lock.acquire(timeout=35)
         try:
-            connected = self.attached and self._status.get("state", {}).get(
-                "connected", False
-            )
+            connected = self.attached
             owned_endpoint = self.owned.endpoint
             owned_running = self.owned.running
             if not connected and not (owned_running and owned_endpoint):
@@ -1143,9 +1195,10 @@ class LiveController:
                 from ultrazohm_cli import Client
 
                 factory = Client
-            # Stop the attached external device first. Cleanup of an unrelated
-            # owned service must neither delay this Stop nor skip it on error.
-            if connected and (not owned_running or self.endpoint != owned_endpoint):
+            # Always Stop the attached device first, even if an older owned
+            # process is still finalizing at this endpoint. Ownership only
+            # controls shutdown, never whether the attached device receives Stop.
+            if connected:
                 try:
                     factory(self.endpoint).stop()
                 except Exception as exc:
@@ -1153,11 +1206,9 @@ class LiveController:
                     print(f"Device Stop on viewer close failed: {exc}", file=sys.stderr)
             if owned_running and owned_endpoint:
                 try:
-                    if not self.owned.shutdown_requested:
-                        factory(owned_endpoint).shutdown()
-                        self.owned.shutdown_requested = True
+                    self.owned.shutdown(factory(owned_endpoint))
                     try:
-                        code = self.owned.process.wait(timeout=CLOSE_FINALIZE_TIMEOUT)
+                        code = self.owned.wait(timeout=CLOSE_FINALIZE_TIMEOUT)
                     except subprocess.TimeoutExpired:
                         # The service runs in its own session and keeps finalizing.
                         print(

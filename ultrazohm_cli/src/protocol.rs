@@ -4,6 +4,11 @@ use anyhow::{Result, ensure};
 /// Streaming channels in the firmware's shared-memory struct; not negotiable on the wire.
 pub const CHANNELS: usize = 20;
 
+/// JavaScope user buttons 1..8 are reported in status bits 4..11.
+pub fn user_buttons(status: u32) -> [bool; 8] {
+    std::array::from_fn(|index| status & (1 << (index + 4)) != 0)
+}
+
 #[derive(Clone, Debug)]
 pub struct Frame {
     pub status: u32,
@@ -63,6 +68,16 @@ pub fn decode_frame(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn button_feedback_excludes_other_status_bits() {
+        assert_eq!(user_buttons(0xffff_f00f), [false; 8]);
+        assert_eq!(user_buttons(0xff0), [true; 8]);
+        for button in 0..8 {
+            let mut expected = [false; 8];
+            expected[button] = true;
+            assert_eq!(user_buttons(1 << (button + 4)), expected);
+        }
+    }
     #[test]
     fn golden_command() {
         assert_eq!(

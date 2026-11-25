@@ -39,6 +39,56 @@ def wheel(directory, name, version, dependencies=()):
 
 
 class UserCommandsTest(unittest.TestCase):
+    @unittest.skipIf(os.name == "nt", "Bash bootstrap contract")
+    def test_bootstrap_preserves_arguments_cwd_and_exit_status(self):
+        with tempfile.TemporaryDirectory(prefix="uz bootstrap ") as directory:
+            root = Path(directory)
+            executable = root / "uv"
+            executable.write_text('#!/bin/sh\npwd\nprintf "%s\\n" "$@"\nexit 7\n')
+            executable.chmod(0o755)
+            for launcher in ("uz", "uz_developer"):
+                result = subprocess.run(
+                    ["bash", str(uz.ROOT / launcher), "one argument", "--flag"],
+                    cwd=root,
+                    env={
+                        **os.environ,
+                        "PATH": str(root) + os.pathsep + os.environ["PATH"],
+                    },
+                    capture_output=True,
+                    text=True,
+                )
+                self.assertEqual(result.returncode, 7, result.stderr)
+                lines = result.stdout.splitlines()
+                self.assertEqual(lines[0], str(root))
+                self.assertEqual(
+                    lines[-3:],
+                    [str(uz.ROOT / (launcher + ".py")), "one argument", "--flag"],
+                )
+
+    def test_launch_diagnostic_keeps_stdout_machine_readable(self):
+        output, diagnostic = io.StringIO(), io.StringIO()
+        with (
+            contextlib.redirect_stdout(output),
+            contextlib.redirect_stderr(diagnostic),
+            patch("uz.subprocess.Popen") as popen,
+        ):
+            popen.return_value.__enter__.return_value.wait.return_value = 0
+            uz.run(["example", "status"])
+        self.assertEqual(output.getvalue(), "")
+        self.assertIn("+ example status", diagnostic.getvalue())
+
+    def test_default_channel_forwards_application_arguments(self):
+        for arguments in (["status"], ["--", "status"], ["--version"]):
+            for app in uz.PACKAGES:
+                with (
+                    self.subTest(app=app, arguments=arguments),
+                    patch.object(uz, "run") as run,
+                ):
+                    uz.main([app, *arguments])
+                    command = run.call_args.args[0]
+                    self.assertIn("disallow", command)
+                    self.assertEqual(command[-2:], [uz.PACKAGES[app], arguments[-1]])
+
     def test_launch_channel_and_arguments(self):
         for app in uz.PACKAGES:
             for channel, policy in (("stable", "disallow"), ("prerelease", "allow")):
@@ -106,6 +156,8 @@ class UserCommandsTest(unittest.TestCase):
                     [f"ultrazohm-cli=={version}"],
                 )
             (root / ".python-version").write_text(sys.executable)
+            (root / "requirements.txt").write_text("shell-extra==1.0.0\n")
+            wheel(wheels, "shell-extra", "1.0.0")
             (root / ".venv").mkdir()
             sentinel = root / ".venv/host-environment"
             sentinel.write_text("untouched")
@@ -114,7 +166,7 @@ class UserCommandsTest(unittest.TestCase):
             (root / "uz_shell.py").write_text(
                 "import sys,json,importlib.metadata as m; from pathlib import Path; "
                 f"Path({str(report)!r}).write_text(json.dumps([sys.prefix, "
-                "m.version('ultrazohm-cli'),m.version('ultrazohm-dataviewer')]))"
+                "m.version('ultrazohm-cli'),m.version('ultrazohm-dataviewer'),m.version('shell-extra')]))"
             )
             config = root / "uv.toml"
             config.write_text(
@@ -137,7 +189,8 @@ class UserCommandsTest(unittest.TestCase):
                     uz.main(["cli", channel])
                     uz.main(["dataviewer", channel])
                     uz.main(["venv", channel])
-                    prefix, cli, viewer = json.loads(report.read_text())
+                    prefix, cli, viewer, extra = json.loads(report.read_text())
+                    self.assertEqual(extra, "1.0.0")
                     self.assertEqual((cli, viewer), (version, version))
                     self.assertNotEqual(Path(prefix), root / ".venv")
                 uz.main(["install", "cli", "prerelease"])

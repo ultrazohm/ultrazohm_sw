@@ -1,5 +1,6 @@
 """Release staging must produce matching packages without mutating sources."""
 
+import shutil
 import sys
 import tempfile
 import unittest
@@ -23,11 +24,24 @@ class StagingTest(unittest.TestCase):
             (project / "uv.lock").write_text("do not copy or alter")
             (project / "src").mkdir()
             (project / "src" / "asset.txt").write_text("asset")
+            root = Path(__file__).resolve().parents[2]
+            shutil.copytree(root / "tcl_scripts", project.parent / "tcl_scripts")
+            (project.parent / "vitis/software").mkdir(parents=True)
+            for source in (root / "vitis/software").glob("*.launch"):
+                shutil.copy2(source, project.parent / "vitis/software" / source.name)
+            shutil.copy2(root / "ultrazohm_cli/build.rs", project / "build.rs")
             with staged_project(project, "0.1.88.dev0") as (stage, version):
                 data = tomllib.loads((stage / "pyproject.toml").read_text())["project"]
                 self.assertEqual(data["version"], version)
                 self.assertEqual(data["dependencies"], [])
                 self.assertFalse((stage / "uv.lock").exists())
+                self.assertTrue((stage / "build.rs").is_file())
+                self.assertTrue(
+                    (stage / "firmware_resources/vitis_headless.tcl").is_file()
+                )
+                self.assertTrue(
+                    (stage / "firmware_resources/launch/Run_UltraZohm.launch").is_file()
+                )
                 self.assertEqual((stage / "src" / "asset.txt").read_text(), "asset")
             self.assertFalse(stage.exists())
             self.assertEqual((project / "pyproject.toml").read_text(), original)

@@ -131,7 +131,7 @@ fn cli_main(py: Python<'_>, argv: Vec<String>) -> i32 {
 /// Optional embedded Rust service. External `ultrazohm_cli serve` survives Python exit.
 #[pyclass(subclass)]
 struct Acquisition {
-    output: PathBuf,
+    output: Arc<Mutex<PathBuf>>,
     stop: Arc<AtomicBool>,
     worker: Option<thread::JoinHandle<anyhow::Result<()>>>,
 }
@@ -139,7 +139,7 @@ struct Acquisition {
 impl Acquisition {
     #[new]
     #[allow(clippy::too_many_arguments)] // Python keyword options plus the GIL token.
-    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="parquet".to_string(), ack=false, channel_mapping=None, *, buffer_samples=None, segment_rows=1_000_000, flush_interval_ms=60_000, recording_backend="parquet", queue_seconds=crate::live::DEFAULT_QUEUE_SECONDS))]
+    #[pyo3(signature=(device=None, endpoint="127.0.0.1:19740".to_string(), output=None, profile=None, format="parquet".to_string(), ack=false, channel_mapping=None, *, repo=None, xsct=None, buffer_samples=None, segment_rows=1_000_000, flush_interval_ms=60_000, recording_backend="parquet", queue_seconds=crate::live::DEFAULT_QUEUE_SECONDS))]
     fn new(
         py: Python<'_>,
         device: Option<String>,
@@ -149,6 +149,8 @@ impl Acquisition {
         format: String,
         ack: bool,
         channel_mapping: Option<String>,
+        repo: Option<String>,
+        xsct: Option<String>,
         buffer_samples: Option<usize>,
         segment_rows: usize,
         flush_interval_ms: u64,
@@ -166,9 +168,20 @@ impl Acquisition {
             queue_seconds,
         };
         data.validate().map_err(error)?;
-        let profile = Profile::load_files(
+        let repo = repo
+            .map(PathBuf::from)
+            .map(|path| crate::vitis::repository(Some(&path)))
+            .transpose()
+            .map_err(error)?;
+        let xsct = xsct
+            .map(PathBuf::from)
+            .map(|path| crate::preferences::validate_xsct(&path))
+            .transpose()
+            .map_err(error)?;
+        let profile = Profile::load_repository(
             profile.as_deref().map(std::path::Path::new),
             channel_mapping.as_deref().map(std::path::Path::new),
+            repo.as_deref(),
         )
         .map_err(error)?;
         let format = match format.as_str() {
@@ -176,14 +189,22 @@ impl Acquisition {
             "parquet" => Format::Parquet,
             _ => return Err(error("format must be csv or parquet")),
         };
-        let output = service::session_output(output.map(PathBuf::from)).map_err(error)?;
-        let worker_output = output.clone();
+        let output =
+            service::session_output_for_repository(output.map(PathBuf::from), repo.as_deref())
+                .map_err(error)?;
+        let output = Arc::new(Mutex::new(output));
+        let worker_output = output.lock().unwrap().clone();
+        let current_output = output.clone();
         let (ready_tx, ready_rx) = mpsc::sync_channel(1);
         let stop = Arc::new(AtomicBool::new(false));
         let signal = stop.clone();
         let worker = thread::spawn(move || {
             service::serve_with_ready(
                 Config {
+                    launch_id: None,
+                    current_output: Some(current_output),
+                    repo,
+                    xsct,
                     data,
                     device,
                     endpoint,
@@ -218,7 +239,7 @@ impl Acquisition {
     /// The session directory, including automatically generated defaults.
     #[getter]
     fn output(&self) -> String {
-        self.output.to_string_lossy().into_owned()
+        self.output.lock().unwrap().to_string_lossy().into_owned()
     }
     fn close(&mut self, py: Python<'_>) -> PyResult<()> {
         self.stop.store(true, Ordering::SeqCst);
@@ -255,7 +276,7 @@ impl Acquisition {
         } else {
             base
         };
-        let path = crate::backend::index_path(&self.output, &id);
+        let path = crate::backend::index_path(&self.output.lock().unwrap(), &id);
         let reader = crate::backend::open(&path).map_err(error)?;
         if !reader.info().map_err(error)?.complete {
             return Err(error(
@@ -285,16 +306,18 @@ impl Acquisition {
         } else {
             base
         };
-        let summary =
-            crate::backend::read_metadata(&crate::backend::index_path(&self.output, &stem))
-                .map_err(error)?
-                .unwrap_or_default();
+        let summary = crate::backend::read_metadata(&crate::backend::index_path(
+            &self.output.lock().unwrap(),
+            &stem,
+        ))
+        .map_err(error)?
+        .unwrap_or_default();
         if summary["complete"] != true {
             return Err(error(
                 "recording is not complete; inspect its metadata for errors",
             ));
         }
-        let path = self.output.join(format!("{stem}.parquet"));
+        let path = self.output.lock().unwrap().join(format!("{stem}.parquet"));
         if !path.is_file() {
             return Err(error("completed recording file is missing"));
         }
@@ -318,8 +341,86 @@ impl Drop for Acquisition {
         }
     }
 }
+/// Offline configuration helpers share validation with service startup.
+#[pyfunction]
+#[pyo3(signature=(operation, payload=None, repo=None))]
+fn configuration(
+    py: Python<'_>,
+    operation: String,
+    payload: Option<String>,
+    repo: Option<PathBuf>,
+) -> PyResult<String> {
+    py.detach(move || -> anyhow::Result<String> {
+        use crate::profile::{ChannelMapping, ProfileSettings};
+        let value = match operation.as_str() {
+            "job_progress" => {
+                let value: serde_json::Value =
+                    serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
+                crate::jobs::progress(value["offset"].as_u64().unwrap_or(0), &value["reply"])?
+            }
+            "directory" => serde_json::to_value(crate::preferences::directory(repo.as_deref())?)?,
+            "xsct" => {
+                let value: serde_json::Value =
+                    serde_json::from_str(payload.as_deref().unwrap_or("{}"))?;
+                let explicit = value["path"].as_str().map(std::path::Path::new);
+                serde_json::to_value(crate::preferences::resolve_xsct(explicit, repo.as_deref())?)?
+            }
+            "saved_xsct" => serde_json::to_value(crate::preferences::saved_xsct(repo.as_deref())?)?,
+            "save_xsct" => {
+                let path: PathBuf = serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
+                serde_json::to_value(crate::preferences::save_xsct(&path, repo.as_deref())?)?
+            }
+            "seed_profile" | "save_profile" => {
+                let value: serde_json::Value =
+                    serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
+                let path: PathBuf = serde_json::from_value(value["path"].clone())?;
+                let mapping: ChannelMapping = serde_json::from_value(value["mapping"].clone())?;
+                if operation == "seed_profile" {
+                    serde_json::to_value(crate::preferences::load_or_seed(&path, &mapping)?)?
+                } else {
+                    let settings: ProfileSettings =
+                        serde_json::from_value(value["profile"].clone())?;
+                    crate::preferences::save_profile(&path, &settings, &mapping)?;
+                    serde_json::Value::Null
+                }
+            }
+            "mapping" => {
+                serde_json::to_value(ChannelMapping::load_repository(None, repo.as_deref())?)?
+            }
+            "defaults" => {
+                let settings = if repo.is_some() {
+                    let mapping = ChannelMapping::load_repository(None, repo.as_deref())?;
+                    ProfileSettings::for_mapping(None, &mapping)?
+                } else {
+                    ProfileSettings::load(None)?
+                };
+                serde_json::to_value(settings)?
+            }
+            "validate" => {
+                let settings: ProfileSettings =
+                    serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
+                settings.validate()?;
+                serde_json::to_value(settings)?
+            }
+            "remap" => {
+                let value: serde_json::Value =
+                    serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
+                let settings: ProfileSettings = serde_json::from_value(value["profile"].clone())?;
+                let mapping: ChannelMapping = serde_json::from_value(value["mapping"].clone())?;
+                let (settings, removed) = settings.remap(&mapping)?;
+                Profile::from_mapping(settings.clone(), mapping)?;
+                serde_json::json!({"profile": settings, "removed": removed})
+            }
+            _ => anyhow::bail!("unknown configuration operation"),
+        };
+        Ok(serde_json::to_string(&value)?)
+    })
+    .map_err(|e| error(format!("{e:#}")))
+}
+
 #[pymodule]
 fn _native(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(configuration, m)?)?;
     m.add_class::<Connection>()?;
     m.add_function(wrap_pyfunction!(recording_info, m)?)?;
     m.add_function(wrap_pyfunction!(recording_data, m)?)?;

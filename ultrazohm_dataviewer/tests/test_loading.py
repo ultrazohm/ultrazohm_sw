@@ -10,6 +10,20 @@ from ultrazohm_dataviewer.state import AppState
 from ultrazohm_dataviewer.workers import CancellableExecutor
 
 
+def test_worker_exit_is_reported_without_terminating_consumer_or_worker():
+    worker = CancellableExecutor()
+
+    def exit_plugin(cancel):
+        raise SystemExit(17)
+
+    try:
+        with pytest.raises(RuntimeError, match="SystemExit: 17"):
+            worker.submit(exit_plugin).result(timeout=2)
+        assert worker.submit(lambda cancel: 42).result(timeout=2) == 42
+    finally:
+        worker.shutdown()
+
+
 def test_cleanup_error_completes_cancelled_worker_future():
     worker = CancellableExecutor()
     started, release = threading.Event(), threading.Event()

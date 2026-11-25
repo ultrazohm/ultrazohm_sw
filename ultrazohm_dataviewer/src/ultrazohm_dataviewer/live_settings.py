@@ -11,6 +11,13 @@ from .validation import axis_limits, boolean, bounded_int, display_budget, finit
 
 
 def plot_setup(state):
+    cells = plot_cells_to_list(state, lambda ref: ref[1] if ref else None)
+    workspace = getattr(state, "live_workspace", None)
+    pending = getattr(workspace, "_reconnect_signals", {})
+    for cell, saved in zip(state.cells, cells, strict=True):
+        if recovery := pending.get(id(cell)):
+            _, signals, secondary, xy = recovery
+            saved.update(signals=list(signals), y2=list(secondary), xy_source=xy)
     return {
         "grid": [state.rows, state.cols],
         "row_ratios": list(state.row_ratios),
@@ -18,7 +25,7 @@ def plot_setup(state):
         "link_x": state.link_x,
         "shared_x": state.shared_x,
         "max_points": state.max_points,
-        "cells": plot_cells_to_list(state, lambda ref: ref[1] if ref else None),
+        "cells": cells,
     }
 
 
@@ -74,18 +81,26 @@ def read_view(path):
     return data
 
 
-def save(workspace):
+def save_startup_profile(workspace):
     directory = workspace.user_directory()
     settings = (
         workspace._repository_settings
         if workspace._repository_settings is not None
         else load_workspace_settings(workspace.mapping, directory)
     )
-    # Use the actual service configuration after connecting; it may have been
-    # regenerated from newer headers than the repository preview.
-    mapping = (
-        workspace.update.catalog if workspace.update.attached else settings.mapping
-    )
+    # These preferences start a LOCAL service. An attached service's catalog
+    # does not establish compatibility with that local firmware checkout.
+    # Refresh repository metadata because the preview may predate a flash/edit.
+    if (
+        workspace._repository_settings is not None
+        and workspace.update.attached
+        and workspace.update.assignments
+    ):
+        from .live_mapping import read_mapping
+
+        mapping = read_mapping(workspace.repo)
+    else:
+        mapping = settings.mapping
     from .settings import read_runtime_settings
 
     saved_profile = read_runtime_settings(settings.path)
@@ -97,6 +112,17 @@ def save(workspace):
             if item["name"]
         }
     profile, removed = profile_for_mapping(mapping, saved_profile, assignments)
+    if assignments is not None:
+        # Reconnect may relocate surviving signals when channel capacity shrinks.
+        # An explicit startup save must instead preserve the selected slot numbers.
+        removed = sorted(
+            set(removed)
+            | {
+                name
+                for channel, name in assignments.items()
+                if not 1 <= int(channel) <= mapping["channels"]
+            }
+        )
     if assignments is not None and removed:
         raise ValueError(
             "Cannot save channels absent from the selected firmware mapping: "
@@ -105,6 +131,20 @@ def save(workspace):
     profile["sample_period_us"] = workspace.update.catalog.get(
         "sample_period_us", profile["sample_period_us"]
     )
+    # Disconnected saves preserve the existing startup selections.
+    from ultrazohm_cli.configuration import save_profile, startup_profile_path
+
+    save_profile(
+        startup_profile_path(directory=directory),
+        profile if assignments is not None else saved_profile,
+        mapping,
+    )
+    return directory
+
+
+def save_view_preferences(workspace):
+    """Save presentation preferences without requiring local firmware or a CLI profile."""
+    directory = workspace.user_directory()
     view = {
         key: getattr(workspace, key)
         for key in (
@@ -122,11 +162,6 @@ def save(workspace):
         version=1,
         output_parent=str(Path(workspace.output).expanduser().resolve().parent),
         plots=workspace._pending_plot_setup or plot_setup(workspace.state),
-    )
-    # Disconnected saves preserve the existing startup selections.
-    write_json(
-        directory / "settings.json",
-        profile if assignments is not None else saved_profile,
     )
     write_json(directory / "live_view.json", view)
     return directory

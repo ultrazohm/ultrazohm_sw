@@ -25,6 +25,8 @@ def parameter_kind(parameter):
         return "str"
     if isinstance(annotation, type):
         return annotation.__name__
+    if str(annotation).startswith("list["):
+        return "json"
     return str(annotation).split(" | ")[0].replace("ultrazohm_dataviewer.client.", "")
 
 
@@ -50,7 +52,7 @@ def parser():
     gui.add_argument("files", nargs="*")
     gui.add_argument("--backend", choices=("pyarrow", "polars"))
     gui.add_argument("--loading-mode", choices=("memory", "lazy"))
-    gui.add_argument("--disk-cache", action="store_true")
+    gui.add_argument("--disk-cache", action="store_true", default=None)
     gui.add_argument("--live-repo")
     for name, method in public_methods().items():
         command = commands.add_parser(name.replace("_", "-"), help=method.__doc__)
@@ -63,6 +65,7 @@ def parser():
                     "RunHandle": int,
                     "NodeHandle": int,
                     "ViewHandle": int,
+                    "json": json.loads,
                 }.get(kind, str)
             }
             if kind == "bool":
@@ -91,15 +94,9 @@ def main(argv=None):
             stream.reconfigure(errors="backslashreplace")
     args = parser().parse_args(argv)
     if args.operation in (None, "gui"):
-        from .app import main as gui_main
+        from .app import run_gui
 
-        options = ["--endpoint", args.endpoint]
-        for name in ("backend", "loading_mode", "live_repo"):
-            if value := getattr(args, name, None):
-                options.extend(["--" + name.replace("_", "-"), value])
-        if getattr(args, "disk_cache", False):
-            options.append("--disk-cache")
-        return gui_main([*options, *getattr(args, "files", [])])
+        return run_gui(args)
     try:
         with Client(args.endpoint, timeout=args.timeout) as client:
             name = args.operation.replace("-", "_")
@@ -120,6 +117,8 @@ def main(argv=None):
                         "NodeHandle": NodeHandle,
                         "ViewHandle": ViewHandle,
                     }[kind](client.session, value)
+                    if kind == "RunHandle" and getattr(args, "view", None) == 0:
+                        value = RunHandle(value.session, value.id, view=0)
                 elif value is not None and kind == "bool":
                     value = value == "true"
                 arguments[parameter.name] = value

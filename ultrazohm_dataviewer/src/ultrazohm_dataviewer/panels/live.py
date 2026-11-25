@@ -43,7 +43,6 @@ class LivePlotsPanel(PlotsPanel):
         super()._reset_view(state, plot_n)
         if self.workspace is not None:
             self._selection = None
-            self.workspace.resume_live()
 
     def _apply_pending_limits(self, state, cell, data_min, data_max):
         if self.workspace is not None:
@@ -183,13 +182,14 @@ class LiveWorkspace:
     def __init__(self, controller=None, repo=None):
         self.controller = controller or LiveController()
         self.state = AppState()
+        self.state.live_workspace = self
         self.state.async_exports = True
         self.state.registry.cache.limit = 64 * 1024**2
         self.plots = LivePlotsPanel(self)
         self.endpoint = "127.0.0.1:19740"
         self.ip = "192.168.1.233"
         self.port = 1000
-        self.output = new_output_directory(repo)
+        self.output = new_output_directory(repo)  # Next local service startup only.
         self.mapping = ""
         self.mapping_is_explicit = False
         self._repository_settings = None
@@ -208,8 +208,7 @@ class LiveWorkspace:
             restore_xsct(repo)
         except (OSError, ValueError, KeyError) as exc:
             self.tool_error = str(exc)
-        self.flash_available = xsct_available()
-        self._flash_config = None
+        self.flash_available = xsct_available(self.repo)
         self.follow = True
         self.paused = False
         self.window_seconds = 2.0
@@ -228,9 +227,11 @@ class LiveWorkspace:
         self._pending_completion = 0
         self._last_feedback = None
         self._pending_plot_setup = None
+        self._reconnect_signals = {}
         self.settings_notice = ""
         self.available = importlib.util.find_spec("ultrazohm_cli") is not None
         self.scripts = ScriptRunner(send_stop=self.controller.send_stop)
+        self.load_live_settings()
 
     def block_reason(self, action="manual"):
         return action_block_reason(
@@ -287,20 +288,21 @@ class LiveWorkspace:
             self.load_live_settings()
             try:
                 restore_xsct(root)
-                self.flash_available = xsct_available()
+                self.flash_available = xsct_available(self.repo)
                 self.tool_error = ""
             except (OSError, ValueError, KeyError) as exc:
                 self.tool_error = str(exc)
         except Exception as exc:
             self.repo_error = f"Could not prepare ultrazohm_sw root directory: {exc}"
 
-    def load_live_settings(self):
+    def load_live_settings(self, *, strict=False):
         from ..live_settings import read_view
 
         self.settings_notice = ""
-        self._pending_plot_setup = None
         try:
             saved = read_view(self.user_directory() / "live_view.json")
+            if saved is None and strict:
+                raise FileNotFoundError("No saved live view preferences")
             if saved is not None:
                 for key in (
                     "endpoint",
@@ -317,15 +319,66 @@ class LiveWorkspace:
                 self._pending_plot_setup = saved["plots"]
                 if saved.get("output_parent"):
                     self.output = new_output_directory(parent=saved["output_parent"])
+                self._restore_plot_setup()
         except (OSError, ValueError, KeyError, TypeError) as exc:
+            if strict:
+                raise
             self.settings_notice = f"Could not load live settings: {exc}"
 
-    def save_live_settings(self):
-        from ..live_settings import save
+    def _restore_plot_setup(self):
+        if self._pending_plot_setup is None:
+            return
+        from ..live_settings import restore_plots
+
+        restore_plots(
+            self.state,
+            self._pending_plot_setup,
+            lambda name: (
+                (self.run.id, name)
+                if self.run is not None and name in self.run.signals
+                else None
+            ),
+        )
+        if self.run is not None:
+            self._pending_plot_setup = None
+            # An inspect preference freezes the first available snapshot, rather
+            # than blocking its arrival or silently continuing to refresh it.
+            self.paused = not self.follow
+            self.state.following_live = self.follow
+
+    def presentation_status(self):
+        update = self.controller.latest()
+        return {
+            "attached": update.attached,
+            "endpoint": self.controller.endpoint,
+            "follow": self.follow and not self.paused,
+            "paused": self.paused,
+            "window_seconds": self.window_seconds,
+            "maximum_depth": self.maximum_depth(),
+            "has_data": self.run is not None,
+            "error": update.error or self.error,
+        }
+
+    def request_attachment(self, operation, **kwargs):
+        if operation not in ("attach", "detach"):
+            raise ValueError("Expected attach or detach")
+        if operation == "attach" and self._repo_future is not None:
+            raise RuntimeError(
+                "Wait for ultrazohm_sw root directory preparation to finish."
+            )
+        if reason := self.block_reason(operation):
+            raise RuntimeError(reason)
+        return self.controller.request_attachment(operation, **kwargs)
+
+    def save_live_settings(self, *, startup=False):
+        from ..live_settings import save_startup_profile, save_view_preferences
 
         try:
-            directory = save(self)
-            self.settings_notice = f"Live settings saved to {directory}"
+            directory = (
+                save_startup_profile(self) if startup else save_view_preferences(self)
+            )
+            label = "Startup profile" if startup else "View preferences"
+            self.settings_notice = f"{label} saved to {directory}"
         except (OSError, ValueError, KeyError, TypeError, RuntimeError) as exc:
             self.settings_notice = f"Could not save live settings: {exc}"
 
@@ -335,7 +388,10 @@ class LiveWorkspace:
                 raise RuntimeError(
                     "Wait for ultrazohm_sw root directory preparation to finish."
                 )
-            if operation in ("connect", "flash") and not self.repository_ready:
+            if (
+                operation == "connect"
+                or (operation == "flash" and not self.update.attached)
+            ) and not self.repository_ready:
                 raise RuntimeError(
                     "Select and prepare the ultrazohm_sw root directory first."
                 )
@@ -348,14 +404,17 @@ class LiveWorkspace:
                 self.scripts.stop()
                 self.error = ""
                 return
-            if operation in ("connect", "attach"):
+            if operation in ("connect", "connect_device", "attach"):
                 self.pending_message = (
-                    "Connecting…" if operation == "connect" else "Attaching to service…"
+                    "Attaching to service…" if operation == "attach" else "Connecting…"
                 )
                 self._pending_completion = (
                     self.controller.latest().completed_commands + 1
                 )
-            self.controller.submit(operation, **kwargs)
+            if operation in ("attach", "detach"):
+                self.request_attachment(operation, **kwargs)
+            else:
+                self.controller.submit(operation, **kwargs)
             if operation == "shutdown":
                 self.output = new_output_directory(
                     parent=Path(self.output).expanduser().resolve().parent
@@ -373,23 +432,21 @@ class LiveWorkspace:
         self.scripts.poll()
         update = self.controller.latest()
         self.update = update
+        self.flash_available = (
+            bool(update.status.get("firmware_available"))
+            if update.attached
+            else xsct_available(self.repo)
+        )
         if self._xsct_dialog is not None and self._xsct_dialog.ready():
             selected = self._xsct_dialog.result()
             self._xsct_dialog = None
             if selected:
                 try:
                     select_xsct(selected[0], self.repo)
-                    self.flash_available = xsct_available()
+                    self.flash_available = xsct_available(self.repo)
                     self.tool_error = ""
                 except (OSError, ValueError) as exc:
                     self.tool_error = str(exc)
-        if (
-            update.flash_config is not None
-            and update.flash_config != self._flash_config
-        ):
-            self.mapping, self.output = update.flash_config
-            self.mapping_is_explicit = False
-            self._flash_config = update.flash_config
         if main_state is not None:
             for _ in range(200):
                 try:
@@ -413,6 +470,7 @@ class LiveWorkspace:
             self._last_feedback = feedback
         if not self.paused and update.source is None and update.epoch != self._epoch:
             if self.run is not None:
+                self._remember_live_signals()
                 self.state.remove_run(self.run.id)
             self.run = self._source = None
             self._epoch = update.epoch
@@ -425,6 +483,7 @@ class LiveWorkspace:
         source = update.source
         if self.run is None or self._epoch is None or self._epoch[0] != update.epoch[0]:
             if self.run is not None:
+                self._remember_live_signals()
                 self.state.remove_run(self.run.id)
             self.run = self.state.registry.add_source("Live UltraZohm", "", source)
             self.run.reloadable = False
@@ -470,15 +529,56 @@ class LiveWorkspace:
             item["channel"]: item["name"] for item in update.assignments
         }
         self._source = source
-        if self._pending_plot_setup is not None:
-            from ..live_settings import restore_plots
+        self._restore_plot_setup()
+        self._rebind_live_signals()
 
-            restore_plots(
-                self.state,
-                self._pending_plot_setup,
-                lambda name: (self.run.id, name) if name in self.run.signals else None,
+    def _remember_live_signals(self):
+        for cell in self.state.cells:
+            if id(cell) in self._reconnect_signals:
+                continue
+            self._reconnect_signals[id(cell)] = (
+                cell,
+                [name for _, name in cell.signals],
+                [name for _, name in cell.y2_signals],
+                cell.xy_source[1] if cell.xy_source else None,
             )
-            self._pending_plot_setup = None
+
+    def _rebind_live_signals(self):
+        cells = {id(cell) for cell in self.state.cells}
+        catalog = self.update.catalog.get("observables")
+        removed = set()
+        for key, (cell, signals, secondary, xy) in list(
+            self._reconnect_signals.items()
+        ):
+            if key not in cells:
+                del self._reconnect_signals[key]
+                continue
+            available = self.run.signals
+            cell.signals = [
+                (self.run.id, name) for name in signals if name in available
+            ]
+            cell.y2_signals = [
+                (self.run.id, name) for name in secondary if name in available
+            ]
+            cell.xy_source = (self.run.id, xy) if xy in available else None
+            names = set(signals) | set(secondary) | ({xy} if xy else set())
+            missing = names - set(available)
+            absent = missing - set(catalog) if catalog is not None else set()
+            removed.update(absent)
+            if not (missing - absent):
+                del self._reconnect_signals[key]
+            else:
+                self._reconnect_signals[key] = (
+                    cell,
+                    [n for n in signals if n not in absent],
+                    [n for n in secondary if n not in absent],
+                    xy if xy not in absent else None,
+                )
+        if removed:
+            self.controller._message(
+                "info",
+                "Live observables no longer available: " + ", ".join(sorted(removed)),
+            )
 
     def freeze(self, target):
         """Copy the visible live window to the ordinary offline-analysis registry."""
@@ -505,6 +605,7 @@ class LiveWorkspace:
         target.console.info(
             f"Frozen {len(t):,} live samples for analysis (not saved to disk)"
         )
+        return run
 
     def render_data(self, main_state):
         imgui.begin_disabled(bool(self.block_reason()))
@@ -512,6 +613,7 @@ class LiveWorkspace:
             self._render_data(main_state)
         finally:
             imgui.end_disabled()
+        self._render_flash_confirmation()
 
     def user_directory(self):
         if self._user_directory is None:
@@ -556,6 +658,8 @@ class LiveWorkspace:
             )
         else:
             imgui.text_disabled("Device disconnected")
+        if self.update.attached:
+            imgui.text_disabled(f"Attached to service at {self.controller.endpoint}")
         imgui.separator()
         imgui.begin_disabled(self.update.attached)
         _, self.endpoint = imgui.input_text("Service endpoint", self.endpoint)
@@ -564,11 +668,27 @@ class LiveWorkspace:
         _, port = imgui.input_int("Device port", self.port)
         self.port = max(1, min(65535, port))
         imgui.begin_disabled(bool(activity))
-        connection_label = "Disconnect" if self.update.attached else "Connect"
+        device_connected = self.update.status.get("state", {}).get("connected", False)
+        connection_label = "Connect"
+        connection_help = "Start a viewer-managed service and connect to the selected UltraZohm IP. For a service already running, use Existing service > Attach."
+        if self.update.attached:
+            if device_connected:
+                connection_label = "Disconnect"
+                connection_help = "Send device Stop, finalize recordings, and shut down the service. Keep the viewer open."
+            else:
+                connection_label = "Connect device"
+                connection_help = "Connect the attached service to the selected device IP and port on the service machine."
         imgui.begin_disabled(not self.update.attached and not self.repository_ready)
         if imgui.button(connection_label):
-            if self.update.attached:
+            if self.update.attached and device_connected:
                 self.send("shutdown")
+            elif self.update.attached:
+                self.send(
+                    "connect_device",
+                    endpoint=self.controller.endpoint,
+                    ip=self.ip,
+                    port=self.port,
+                )
             else:
                 self.send(
                     "connect",
@@ -582,11 +702,7 @@ class LiveWorkspace:
                 )
         imgui.end_disabled()
         if imgui.is_item_hovered(imgui.HoveredFlags_.allow_when_disabled):
-            imgui.set_tooltip(
-                "Send device Stop, finalize recordings, and shut down the service. Keep the viewer open."
-                if self.update.attached
-                else "Start a viewer-managed service and connect to the selected UltraZohm IP. For a service already running, use Existing service > Attach."
-            )
+            imgui.set_tooltip(connection_help)
 
         def next_button(label):
             # Keep the actions together, wrapping in narrow docked panels.
@@ -601,19 +717,29 @@ class LiveWorkspace:
                 imgui.same_line()
 
         next_button("Flash UZ")
-        imgui.begin_disabled(not self.flash_available or not self.repository_ready)
+        imgui.begin_disabled(
+            not self.flash_available
+            or (not self.update.attached and not self.repository_ready)
+        )
         if imgui.button("Flash UZ"):
             imgui.open_popup("Flash UltraZohm?")
         imgui.end_disabled()
         if imgui.is_item_hovered(imgui.HoveredFlags_.allow_when_disabled):
             imgui.set_tooltip(
-                "Select the Vitis XSCT launcher with Browse for XSCT, or start the viewer from a Vitis command prompt."
+                (
+                    "Configure Vitis XSCT on the service machine and restart the service."
+                    if self.update.attached
+                    else "Select the Vitis XSCT launcher before starting the local service."
+                )
                 if not self.flash_available
-                else "Ask for confirmation, then send device Stop, finalize logging, shut down the service, regenerate the mapping, flash, and reconnect."
+                else "Ask for confirmation, then send device Stop, finalize logging, replace the acquisition session, flash, and reconnect on the service machine."
             )
         imgui.end_disabled()
         imgui.begin_disabled(
-            pfd is None or self._xsct_dialog is not None or bool(activity)
+            pfd is None
+            or self._xsct_dialog is not None
+            or bool(activity)
+            or self.update.attached
         )
         if imgui.button("Browse for XSCT"):
             self._xsct_dialog = pfd.open_file(
@@ -636,16 +762,19 @@ class LiveWorkspace:
                 "Select ultrazohm_sw root directory", self.repo or str(Path.cwd())
             )
         imgui.end_disabled()
-        next_button("Save live settings")
+        next_button("Save view preferences")
+        if imgui.button("Save view preferences"):
+            self.save_live_settings()
+        next_button("Save startup profile")
         imgui.begin_disabled(
             not self.repository_ready or bool(activity) or self.scripts.busy
         )
-        if imgui.button("Save live settings"):
-            self.save_live_settings()
+        if imgui.button("Save startup profile"):
+            self.save_live_settings(startup=True)
         imgui.end_disabled()
         if imgui.is_item_hovered(imgui.HoveredFlags_.allow_when_disabled):
             imgui.set_tooltip(
-                "Save startup channels and live plot preferences for this workspace. No device commands are sent."
+                "Save startup channels for the selected local firmware workspace. No device commands are sent."
             )
         if self.settings_notice:
             imgui.text_wrapped(self.settings_notice)
@@ -688,7 +817,6 @@ class LiveWorkspace:
                 )
             imgui.end_disabled()
             imgui.end_disabled()
-        self._render_flash_confirmation()
         if imgui.collapsing_header("Service settings (used when launching)"):
             _, self.output = imgui.input_text("New session directory", self.output)
             if self.mapping_is_explicit:
@@ -708,6 +836,10 @@ class LiveWorkspace:
         profile = self.update.catalog
         imgui.separator()
         if imgui.collapsing_header("Connection details"):
+            if self.update.attached and self.update.status.get("output"):
+                imgui.text_wrapped(
+                    "Service recording directory: " + self.update.status["output"]
+                )
             imgui.text_unformatted(
                 "Service: " + ("attached" if self.update.attached else "detached")
             )
@@ -886,7 +1018,10 @@ class LiveWorkspace:
         )
         imgui.begin_disabled(
             not self.scripts.busy
-            and (not self.update.attached or not state.get("connected"))
+            and (
+                not self.update.attached
+                or (not state.get("connected") and not self.controller.flashing)
+            )
         )
         for label, operation in [
             ("Enable System", "enable_system"),
@@ -924,9 +1059,9 @@ class LiveWorkspace:
             ):
                 self.send("button", number=number)
             imgui.same_line()
-            # JavaScope's fixed wire convention: user buttons 1..8 use bits 4..11.
-            active = bool(state.get("status", 0) & (1 << (number + 3)))
-            if not feedback_available:
+            buttons = state.get("user_buttons", ())
+            active = buttons[number - 1] if len(buttons) == 8 else False
+            if not feedback_available or len(buttons) != 8:
                 imgui.text_disabled("?")
             elif active:
                 imgui.text_colored((0.3, 0.9, 0.5, 1.0), "ACT")
@@ -1044,6 +1179,13 @@ class LiveWorkspace:
         )
 
     def _render_flash_confirmation(self):
+        # Wrapped text cannot determine an auto-sized window's width.
+        viewport = imgui.get_main_viewport()
+        width = min(36 * imgui.get_font_size(), max(1, viewport.work_size.x - 32))
+        imgui.set_next_window_size(imgui.ImVec2(width, 0))
+        imgui.set_next_window_pos(
+            viewport.get_center(), imgui.Cond_.appearing, imgui.ImVec2(0.5, 0.5)
+        )
         opened, _ = imgui.begin_popup_modal(
             "Flash UltraZohm?", flags=imgui.WindowFlags_.always_auto_resize
         )
@@ -1053,11 +1195,11 @@ class LiveWorkspace:
             "Send device Stop, finish fast and slow logging, flash the system, and reconnect?"
         )
         imgui.text_wrapped(
-            "The acquisition service will restart with a fresh channel mapping."
+            "The service stays running and replaces its acquisition session with a fresh channel mapping."
         )
         if imgui.button("OK"):
             if not self.flash_available:
-                self.error = "Vitis XSCT (xsct) is not on PATH"
+                self.error = "The selected service has no firmware tooling available"
             else:
                 endpoint = (
                     self.controller.endpoint if self.update.attached else self.endpoint
@@ -1098,6 +1240,28 @@ class LiveWorkspace:
         self.pump()
         self._follow_live_limits()
 
+    def set_follow(self, enabled):
+        from ..validation import boolean
+
+        self.resume_live() if boolean(enabled) else self.inspect()
+
+    def set_time_depth(self, seconds):
+        from ..validation import finite_float
+
+        seconds = finite_float(seconds)
+        if not 0.001 <= seconds <= self.maximum_depth():
+            raise ValueError(
+                "Time depth must be between 0.001 seconds and the live buffer capacity"
+            )
+        self.window_seconds = seconds
+        if not self.follow or self.paused:
+            for cell in self.state.cells:
+                if self.state.is_time_plot(cell) and cell.x_lim is not None:
+                    center = sum(cell.x_lim) / 2
+                    cell.pending_x_lim = (center - seconds / 2, center + seconds / 2)
+            self.state.shared_x = None
+        self._follow_live_limits()
+
     def _follow_live_limits(self):
         self.state.following_live = self.follow and not self.paused
         if self.run is not None and self.state.following_live:
@@ -1114,7 +1278,7 @@ class LiveWorkspace:
     def render_plots(self, main_state):
         changed, follow = imgui.checkbox("Follow live", self.follow and not self.paused)
         if changed:
-            self.resume_live() if follow else self.inspect()
+            self.set_follow(follow)
         imgui.same_line()
         imgui.begin_disabled(self.run is None)
         if imgui.button("Freeze plot 1 for analysis"):
@@ -1133,21 +1297,14 @@ class LiveWorkspace:
             maximum,
             "%.3f s",
         )
-        self.window_seconds = max(0.001, min(maximum, seconds))
+        seconds = max(0.001, min(maximum, seconds))
+        if changed or seconds != self.window_seconds:
+            self.set_time_depth(seconds)
         if not self.follow or self.paused:
             imgui.text_disabled("Inspect — snapshot frozen; acquisition continues")
         imgui.text_disabled(
             "Zoom: follow  |  Pan / Shift+zoom: inspect  |  Double-click: reset + follow"
         )
-        if changed and not self.follow:
-            for cell in self.state.cells:
-                if self.state.is_time_plot(cell) and cell.x_lim is not None:
-                    center = sum(cell.x_lim) / 2
-                    cell.pending_x_lim = (
-                        center - self.window_seconds / 2,
-                        center + self.window_seconds / 2,
-                    )
-            self.state.shared_x = None
         self._follow_live_limits()
         if not self.run:
             imgui.text_wrapped(

@@ -3,7 +3,9 @@ pub mod backend;
 pub mod cli;
 pub mod data;
 mod header_mapping;
+mod jobs;
 pub mod live;
+pub mod preferences;
 pub mod profile;
 pub mod protocol;
 #[cfg(feature = "python")]

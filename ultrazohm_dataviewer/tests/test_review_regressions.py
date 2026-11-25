@@ -186,3 +186,231 @@ def test_publication_race_has_exactly_one_winner(tmp_path, monkeypatch):
     winners = [winner for winner in winners if winner is not None]
     assert len(winners) == 1
     assert target.read_text() == winners[0]
+
+
+@pytest.mark.parametrize("shutdown_fails", [False, True])
+def test_next_flash_waits_for_pending_shutdown(shutdown_fails):
+    from live_support import wait_for
+
+    from ultrazohm_dataviewer.live import LiveController
+
+    entered, release, finish_first, started_second = (
+        threading.Event() for _ in range(4)
+    )
+
+    class Client:
+        def __init__(self, endpoint):
+            self.endpoint = endpoint
+
+        def shutdown(self):
+            entered.set()
+            assert release.wait(5)
+            if shutdown_fails:
+                raise RuntimeError("Shutdown rejected")
+
+        def status(self):
+            return {"firmware_available": True, "device_target": "localhost:1"}
+
+        def firmware(self, *args, **kwargs):
+            if self.endpoint == "second":
+                started_second.set()
+            return {"id": 1}
+
+        def job(self, *args):
+            finished = self.endpoint == "first" and finish_first.is_set()
+            return {
+                "log": "",
+                "next_offset": 0,
+                "job": {
+                    "phase": "build",
+                    "state": "succeeded" if finished else "running",
+                },
+            }
+
+    controller = LiveController(client_factory=Client)
+    controller._poll = lambda: None
+
+    def flash(endpoint):
+        controller.submit(
+            "flash", endpoint=endpoint, output="unused", ip="localhost", port=1
+        )
+
+    try:
+        flash("first")
+        wait_for(lambda: controller.attached)
+        controller.submit("shutdown", endpoint="first")
+        assert entered.wait(2)
+        finish_first.set()
+        wait_for(lambda: not controller.flashing)
+        with pytest.raises(RuntimeError, match="pending Stop or shutdown"):
+            flash("second")
+        assert not started_second.is_set()
+        release.set()
+        wait_for(lambda: controller._pending_controls == 0)
+        flash("second")
+        assert started_second.wait(2)
+        assert controller.endpoint == "second"
+        assert controller.attached
+        assert controller.flashing
+        assert not controller._flash_shutdown.is_set()
+    finally:
+        release.set()
+        controller.stop_event.set()
+        for thread in (
+            controller.thread,
+            controller.control_thread,
+            controller.poll_thread,
+        ):
+            if thread is not None:
+                thread.join(2)
+                assert not thread.is_alive()
+
+
+def test_shutdown_keeps_next_output_separate_from_service_output(tmp_path, monkeypatch):
+    from dataclasses import replace
+    from pathlib import Path
+
+    from ultrazohm_dataviewer.live import LiveController
+    from ultrazohm_dataviewer.panels.live import LiveWorkspace
+
+    controller = LiveController()
+    workspace = LiveWorkspace(controller)
+    old = tmp_path / "old-run"
+    old.mkdir()
+    workspace.output = str(old)
+    controller.update = replace(
+        controller.update, attached=True, status={"output": str(old)}
+    )
+    workspace.update = controller.update
+    monkeypatch.setattr(controller, "submit", lambda *args, **kwargs: None)
+    try:
+        workspace.send("shutdown")
+        next_output = workspace.output
+        assert next_output != str(old)
+        workspace.pump()  # The service is still reporting its old directory.
+        assert workspace.output == next_output
+        controller.update = replace(
+            controller.update, attached=False, status={}, revision=1
+        )
+        workspace.pump()
+        assert workspace.output == next_output
+        assert not Path(next_output).exists()
+        # Attaching to a remote service must not change local startup preferences.
+        controller.update = replace(
+            controller.update,
+            attached=True,
+            status={"output": "/remote/session"},
+            revision=2,
+        )
+        workspace.pump()
+        assert workspace.output == next_output
+    finally:
+        workspace.close()
+
+
+def test_old_poll_cannot_replace_new_service_catalog():
+    from ultrazohm_dataviewer.live import LiveController
+
+    entered, release = threading.Event(), threading.Event()
+
+    class Client:
+        def __init__(self, endpoint):
+            self.endpoint = endpoint
+
+        def status(self):
+            return {"session_id": self.endpoint, "state": {"connected": False}}
+
+        def observables(self):
+            return {"channels": []}
+
+        def catalog(self):
+            if self.endpoint == "old":
+                entered.set()
+                assert release.wait(5)
+            return {"profile": {"service": self.endpoint}}
+
+    controller = LiveController(client_factory=Client)
+    controller._make_client("old")
+    controller.attached = True
+    poll = threading.Thread(target=controller._poll)
+    poll.start()
+    try:
+        assert entered.wait(2)
+        controller._command("attach", {"endpoint": "new"})
+        assert controller._catalog == {"service": "new"}
+        release.set()
+        poll.join(2)
+        assert not poll.is_alive()
+        assert controller._catalog == {"service": "new"}
+        controller._status_at = 0
+        controller._poll()
+        assert controller._catalog == {"service": "new"}
+        assert controller._status["session_id"] == "new"
+    finally:
+        release.set()
+        poll.join(2)
+        controller.stop_event.set()
+
+
+@pytest.mark.parametrize("cancel", ["stop", "shutdown", "cancel_pending"])
+def test_canceling_queued_flash_releases_busy_state(monkeypatch, cancel):
+    from live_support import wait_for
+
+    from ultrazohm_dataviewer.live import LiveController
+
+    release, executed = threading.Event(), threading.Event()
+
+    class Client:
+        def __init__(self, endpoint):
+            pass
+
+        def stop(self):
+            pass
+
+        def shutdown(self):
+            pass
+
+    controller = LiveController(client_factory=Client)
+    controller.endpoint = "test"
+    controller.attached = True
+    original_work = controller._work
+
+    def delayed_work():
+        assert release.wait(5)
+        original_work()
+
+    calls = []
+
+    def command(operation, kwargs, **options):
+        calls.append(operation)
+        executed.set()
+
+    monkeypatch.setattr(controller, "_work", delayed_work)
+    monkeypatch.setattr(controller, "_command", command)
+    monkeypatch.setattr(controller, "_poll", lambda: None)
+    try:
+        controller.submit("flash", endpoint="test")
+        if cancel == "cancel_pending":
+            controller.cancel_pending_commands()  # GUI Stop takes this path.
+        else:
+            controller.submit(cancel)
+        wait_for(lambda: controller._pending_controls == 0)
+        assert controller.commands.empty()
+        assert not controller.flashing
+        assert not calls
+        controller.submit("flash", endpoint="test")
+        release.set()
+        assert executed.wait(2)
+        wait_for(lambda: not controller.flashing)
+        assert calls == ["flash"]
+    finally:
+        release.set()
+        controller.stop_event.set()
+        for thread in (
+            controller.thread,
+            controller.control_thread,
+            controller.poll_thread,
+        ):
+            if thread is not None:
+                thread.join(2)
+                assert not thread.is_alive()

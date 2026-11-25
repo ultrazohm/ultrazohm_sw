@@ -30,7 +30,7 @@ def test_bundle_builds_release_wheel_in_isolated_directory(monkeypatch, tmp_path
     monkeypatch.setattr(module, "run", lambda *args, **kwargs: calls.append(args))
     module.install_packages(
         tmp_path / "python",
-        argparse.Namespace(cli_wheel=None, viewer_wheel=tmp_path / "viewer.whl"),
+        argparse.Namespace(cli_wheel=None, dataviewer_wheel=tmp_path / "viewer.whl"),
         release=True,
     )
     assert len(builds) == 1
@@ -52,5 +52,31 @@ def test_bundle_selects_release_install(monkeypatch):
         "install_packages",
         lambda python, args, **kwargs: installs.append(kwargs),
     )
-    module.bundle(argparse.Namespace(cli_wheel=None, viewer_wheel=None))
+    module.bundle(argparse.Namespace(cli_wheel=None, dataviewer_wheel=None))
     assert installs == [{"release": True}]
+
+
+def test_test_environment_is_private_and_lives_through_gui_smoke(monkeypatch):
+    module = tasks()
+    environments, calls = [], []
+
+    def sync(venv):
+        assert venv.parent.is_dir()
+        environments.append(venv)
+        return venv / "python"
+
+    def run(*command, **kwargs):
+        assert environments[-1].parent.is_dir()
+        calls.append(command)
+
+    monkeypatch.setattr(module, "sync", sync)
+    monkeypatch.setattr(module, "install_packages", lambda *args: None)
+    monkeypatch.setattr(module, "run", run)
+    for _ in range(2):
+        module.test(argparse.Namespace(gui_smoke=True))
+        assert not environments[-1].parent.exists()
+    assert environments[0] != environments[1]
+    assert calls[1][-1] == module.HERE / "build/smoke_gui.py"
+    assert calls[0][0] in calls[1]
+    if module.sys.platform == "linux" and not module.os.environ.get("DISPLAY"):
+        assert calls[1][:2] == ("xvfb-run", "-a")

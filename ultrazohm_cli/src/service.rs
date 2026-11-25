@@ -23,6 +23,7 @@ use std::{
 };
 
 mod control;
+mod controller;
 
 // Bounded audit IO: slow storage must never hold up device Stop. Audit failure
 // is reported in status and in run.json's end section; it never ends
@@ -103,9 +104,22 @@ pub fn session_output_for_repository(
     Ok(parent.join(now.format("%Y%m%d-%H%M%S-%fZ").to_string()))
 }
 
+fn replacement_output(
+    previous: Option<&std::path::Path>,
+    repo: Option<&std::path::Path>,
+) -> Result<PathBuf> {
+    if let Some(parent) = previous.and_then(std::path::Path::parent) {
+        let now: chrono::DateTime<chrono::Utc> = std::time::SystemTime::now().into();
+        return Ok(parent.join(now.format("%Y%m%d-%H%M%S-%fZ").to_string()));
+    }
+    session_output_for_repository(None, repo)
+}
+
 const MAX_MESSAGE: usize = 65536;
-/// Local API version. v2: persistent connections and coded errors.
-pub const API_VERSION: u32 = 2;
+// Requests are small commands; catalogs and recording metadata can be larger.
+const MAX_REPLY: usize = 8 * 1024 * 1024;
+/// API v3: persistent controller, replaceable sessions and firmware jobs.
+pub const API_VERSION: u32 = 3;
 
 /// An error with a stable machine-readable `code`, carried in JSON error replies.
 #[derive(Debug)]
@@ -190,6 +204,19 @@ fn error_reply(error: &anyhow::Error) -> Value {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(tag = "op", rename_all = "snake_case", deny_unknown_fields)]
 pub enum Operation {
+    Firmware {
+        action: String,
+        request_id: String,
+        device: Option<String>,
+        #[serde(default)]
+        no_reconnect: bool,
+    },
+    Jobs,
+    Job {
+        id: String,
+        #[serde(default)]
+        offset: usize,
+    },
     Connect {
         ip: String,
         port: u16,
@@ -204,6 +231,11 @@ pub enum Operation {
         query: Query,
     },
     Recordings,
+    RecordingsPage {
+        #[serde(default)]
+        cursor: Option<RecordingListCursor>,
+        limit: usize,
+    },
     Stop,
     EnableSystem,
     EnableControl,
@@ -237,6 +269,9 @@ pub enum Operation {
         #[serde(default)]
         stream: Stream,
     },
+    OwnedShutdown {
+        service_id: String,
+    },
     Shutdown,
 }
 impl Operation {
@@ -245,11 +280,14 @@ impl Operation {
         matches!(
             self,
             Self::Status
+                | Self::Jobs
+                | Self::Job { .. }
                 | Self::Catalog
                 | Self::Observables
                 | Self::DataInfo { .. }
                 | Self::ReadData { .. }
                 | Self::Recordings
+                | Self::RecordingsPage { .. }
         )
     }
     /// Device commands that a later Stop supersedes while still queued.
@@ -273,6 +311,10 @@ pub struct Request {
 }
 #[derive(Clone, Debug)]
 pub struct Config {
+    pub launch_id: Option<String>,
+    pub current_output: Option<Arc<Mutex<PathBuf>>>,
+    pub repo: Option<PathBuf>,
+    pub xsct: Option<PathBuf>,
     pub device: Option<String>,
     pub endpoint: String,
     pub profile: Profile,
@@ -288,6 +330,7 @@ struct State {
     frames: u64,
     samples: u64,
     status: u32,
+    user_buttons: [bool; 8],
     platform_state: Option<String>,
     commands_sent: u64,
     ack_sent: u64,
@@ -315,6 +358,15 @@ fn read_message(
     reader: &mut impl BufRead,
     deadline: Duration,
     idle_stop: Option<&AtomicBool>,
+) -> Result<Option<Vec<u8>>> {
+    read_bounded_message(reader, deadline, idle_stop, MAX_MESSAGE)
+}
+
+fn read_bounded_message(
+    reader: &mut impl BufRead,
+    deadline: Duration,
+    idle_stop: Option<&AtomicBool>,
+    limit: usize,
 ) -> Result<Option<Vec<u8>>> {
     let mut data = Vec::new();
     let mut started: Option<Instant> = None;
@@ -368,10 +420,7 @@ fn read_message(
         let take = newline.unwrap_or(available.len());
         data.extend_from_slice(&available[..take]);
         reader.consume(take + usize::from(newline.is_some()));
-        ensure!(
-            data.len() <= MAX_MESSAGE,
-            "control message exceeds {MAX_MESSAGE} bytes"
-        );
+        ensure!(data.len() <= limit, "control message exceeds {limit} bytes");
         if newline.is_some() {
             return Ok(Some(data));
         }
@@ -447,6 +496,25 @@ impl Connection {
     }
 
     pub fn exchange(&mut self, command: Operation, binary: bool) -> Result<(Value, Vec<u8>)> {
+        if matches!(command, Operation::Recordings) {
+            let mut recordings = Vec::new();
+            let mut cursor = None;
+            loop {
+                let (page, _) =
+                    self.exchange(Operation::RecordingsPage { cursor, limit: 100 }, false)?;
+                recordings.extend(
+                    page["recordings"]
+                        .as_array()
+                        .context("invalid recording page")?
+                        .iter()
+                        .cloned(),
+                );
+                cursor = serde_json::from_value(page["next_cursor"].clone())?;
+                if cursor.is_none() {
+                    return Ok((ok_reply(json!({"recordings":recordings})), Vec::new()));
+                }
+            }
+        }
         let retry = command.read_only();
         let timeout =
             Duration::from_secs(if binary || matches!(command, Operation::Connect { .. }) {
@@ -480,12 +548,13 @@ impl Connection {
             socket.set_read_timeout(Some(timeout))?;
             socket.write_all(request)?;
             socket.write_all(b"\n")?;
-            let line = read_message(reader, timeout, None)?.ok_or_else(|| {
-                std::io::Error::new(
-                    std::io::ErrorKind::UnexpectedEof,
-                    "service closed the connection",
-                )
-            })?;
+            let line =
+                read_bounded_message(reader, timeout, None, MAX_REPLY)?.ok_or_else(|| {
+                    std::io::Error::new(
+                        std::io::ErrorKind::UnexpectedEof,
+                        "service closed the connection",
+                    )
+                })?;
             let reply: Value = serde_json::from_slice(&line)?;
             ensure!(
                 reply["api_version"] == API_VERSION,
@@ -546,15 +615,13 @@ pub fn serve_with_ready(
     // Claim the control endpoint before touching the device (new device clients replace old ones).
     let listener = TcpListener::bind(local_address(&config.endpoint)?)?;
     listener.set_nonblocking(true)?;
-    let service = Service::new(config, shutdown)?;
-    eprintln!("UltraZohm service listening on {}", service.config.endpoint);
-    ready();
-    service.run(listener)
+    controller::run(config, shutdown, listener, ready)
 }
 
 /// All mutable session ownership stays on the control thread. The connection
 /// context shares only the synchronized state needed by acquisition workers.
-struct Service {
+struct Session {
+    reconnect_error: Option<String>,
     config: Config,
     context: ConnectionContext,
     run_id: String,
@@ -566,13 +633,31 @@ struct Service {
     run_metadata: Value,
 }
 
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct RecordingListCursor {
+    run_id: String,
+    upper: [u64; 2],
+    offset: usize,
+}
+
 enum Reply {
     Json(Value),
     Data(Box<DataView>, Query),
 }
 
-impl Service {
-    fn new(config: Config, shutdown: Arc<AtomicBool>) -> Result<Self> {
+impl Session {
+    fn stop_device(&mut self) {
+        if let Err(error) = self.handle(Request {
+            api_version: API_VERSION,
+            command: Operation::Stop,
+        }) {
+            self.context.state.lock().unwrap().error = Some(format!("Stop failed: {error:#}"));
+        }
+    }
+
+    fn new(mut config: Config, shutdown: Arc<AtomicBool>) -> Result<Self> {
+        config.profile.validate()?;
+        config.data.resolve(config.profile.sample_period_us)?;
         if let Some(dir) = &config.output {
             ensure!(
                 !dir.exists(),
@@ -626,7 +711,11 @@ impl Service {
             routes: recordings.routes.clone(),
             ring,
         };
+        if let (Some(current), Some(output)) = (&config.current_output, &config.output) {
+            *current.lock().unwrap() = output.clone();
+        }
         let mut service = Self {
+            reconnect_error: None,
             config,
             context,
             run_id,
@@ -652,47 +741,9 @@ impl Service {
     fn connect(&mut self, device: &str) -> Result<()> {
         let (connection, selections) = self.context.connect(device, &self.events)?;
         self.connection = Some(connection);
+        self.reconnect_error = None;
         self.selections = selections;
         Ok(())
-    }
-
-    fn run(mut self, listener: TcpListener) -> Result<()> {
-        let control = match control::ControlServer::new(
-            listener,
-            self.context.shutdown.clone(),
-            self.context.state.clone(),
-        ) {
-            Ok(control) => control,
-            Err(error) => {
-                self.fail(format!("control transport: {error:#}"));
-                if let Err(finish) = self.finish() {
-                    eprintln!("Service finalization: {finish:#}");
-                }
-                return Err(error);
-            }
-        };
-        while !self.context.shutdown.load(Ordering::SeqCst) {
-            // A failed recording is reported in its status and at exit; it never
-            // ends acquisition or device control (optional exports included).
-            if self
-                .connection
-                .as_ref()
-                .is_some_and(|c| c.acquisition.is_finished())
-            {
-                self.context.shutdown.store(true, Ordering::SeqCst);
-                break;
-            }
-            // Wake on the next request; time out to recheck acquisition state.
-            if let Some(pending) = control.next(Duration::from_millis(50)) {
-                let response = self.handle(pending.request);
-                // A client that disconnected meanwhile no longer needs the reply.
-                let _ = pending.reply.send(response);
-            }
-        }
-        // Stop the device before waiting for any slow client or disk worker.
-        let result = self.finish();
-        let connections = control.finish();
-        result.and(connections)
     }
 
     fn handle(&mut self, req: Request) -> Result<Reply> {
@@ -711,6 +762,63 @@ impl Service {
                     infos.push(self.view(&source, None)?.info);
                 }
                 return Ok(Reply::Json(ok_reply(json!({"recordings":infos}))));
+            }
+            Operation::RecordingsPage { cursor, limit } => {
+                ensure!(
+                    (1..=1000).contains(limit),
+                    "recording page limit must be 1..1000"
+                );
+                let sources = self.recordings.sources();
+                let mut upper = [0; 2];
+                for source in &sources {
+                    let slot = usize::from(source.stream == Stream::Slow);
+                    upper[slot] = upper[slot].max(source.recording.unwrap());
+                }
+                let mut cursor = cursor.clone().unwrap_or(RecordingListCursor {
+                    run_id: self.run_id.clone(),
+                    upper,
+                    offset: 0,
+                });
+                if cursor.run_id != self.run_id
+                    || cursor
+                        .upper
+                        .iter()
+                        .zip(upper)
+                        .any(|(old, current)| *old > current)
+                {
+                    return Err(coded("cursor_expired", "recording list session changed"));
+                }
+                let sources: Vec<_> = sources
+                    .into_iter()
+                    .filter(|source| {
+                        source.recording.unwrap()
+                            <= cursor.upper[usize::from(source.stream == Stream::Slow)]
+                    })
+                    .collect();
+                ensure!(
+                    cursor.offset <= sources.len(),
+                    "invalid recording list offset"
+                );
+                let mut infos = Vec::new();
+                let mut bytes = 0;
+                for source in sources.iter().skip(cursor.offset).take(*limit) {
+                    let info = self.view(source, None)?.info;
+                    let size = serde_json::to_vec(&info)?.len();
+                    ensure!(
+                        size <= MAX_REPLY / 2,
+                        "individual recording metadata exceeds page limit"
+                    );
+                    if bytes + size > MAX_REPLY / 2 {
+                        break;
+                    }
+                    bytes += size;
+                    infos.push(info);
+                }
+                cursor.offset += infos.len();
+                let next = (cursor.offset < sources.len()).then_some(cursor);
+                return Ok(Reply::Json(ok_reply(
+                    json!({"recordings":infos,"next_cursor":next}),
+                )));
             }
             Operation::Status => {
                 let available = self.context.ring.lock().unwrap().available();
@@ -775,6 +883,9 @@ impl Service {
     fn apply(&mut self, command: &Operation) -> Result<Option<(u32, f32)>> {
         let mut wire = None;
         match command {
+            Operation::Firmware { .. } | Operation::Jobs | Operation::Job { .. } => {
+                unreachable!("controller operation")
+            }
             Operation::Connect { ip, port } => {
                 ensure!(self.connection.is_none(), "already connected");
                 ensure!(*port != 0, "port must be 1..65535");
@@ -843,9 +954,13 @@ impl Service {
             Operation::EnableControl => {
                 wire = Some((self.config.profile.command("Enable_Control")?, 0.0))
             }
+            Operation::OwnedShutdown { .. } => {
+                bail!("owned shutdown must be handled by service controller")
+            }
             Operation::ReadData { .. }
             | Operation::DataInfo { .. }
             | Operation::Recordings
+            | Operation::RecordingsPage { .. }
             | Operation::Status
             | Operation::Catalog
             | Operation::Observables => unreachable!("reads are answered in handle"),
@@ -986,9 +1101,22 @@ fn read_request(reader: &mut impl BufRead, stop: &AtomicBool) -> Result<Option<R
     Ok(Some(req))
 }
 
-fn write_reply(socket: &mut TcpStream, reply: &Value) -> std::io::Result<()> {
+fn encode_reply(reply: &Value) -> Result<Vec<u8>> {
     let mut line = serde_json::to_vec(reply)?;
+    if line.len() > MAX_REPLY {
+        return Err(coded(
+            "response_too_large",
+            "Control response exceeds 8 MiB; request a smaller page",
+        ));
+    }
     line.push(b'\n');
+    Ok(line)
+}
+
+fn write_reply(socket: &mut impl Write, reply: &Value) -> std::io::Result<()> {
+    let line = encode_reply(reply).unwrap_or_else(|error| {
+        encode_reply(&error_reply(&error)).expect("bounded transport error")
+    });
     socket.write_all(&line)
 }
 
@@ -1014,8 +1142,15 @@ fn serve_data_query(socket: &mut TcpStream, view: DataView, query: Query) -> std
         Ok(value) => value,
         Err(error) => (error_reply(&error), Vec::new()),
     };
-    write_reply(socket, &header)?;
-    socket.write_all(&body)
+    // Reject an oversized header before writing any Arrow bytes; otherwise the
+    // unread body would corrupt the next response on this persistent connection.
+    match encode_reply(&header) {
+        Ok(line) => {
+            socket.write_all(&line)?;
+            socket.write_all(&body)
+        }
+        Err(error) => write_reply(socket, &error_reply(&error)),
+    }
 }
 
 struct DeviceConnection {
@@ -1129,6 +1264,7 @@ impl ConnectionContext {
                         s.frames += 1;
                         s.samples += profile.samples_per_packet as u64;
                         s.status = frame.status;
+                        s.user_buttons = crate::protocol::user_buttons(frame.status);
                         s.platform_state = profile
                             .platform_state
                             .as_ref()
@@ -1184,6 +1320,52 @@ impl ConnectionContext {
 #[cfg(test)]
 mod transport_tests {
     use super::*;
+
+    #[test]
+    fn large_catalog_replies_fit_without_increasing_request_limit() {
+        let reply = ok_reply(json!({"profile":{"name":"x".repeat(MAX_MESSAGE * 2)}}));
+        let mut wire = Vec::new();
+        write_reply(&mut wire, &reply).unwrap();
+        let received = read_bounded_message(
+            &mut std::io::Cursor::new(&wire),
+            Duration::from_secs(1),
+            None,
+            MAX_REPLY,
+        )
+        .unwrap()
+        .unwrap();
+        assert_eq!(serde_json::from_slice::<Value>(&received).unwrap(), reply);
+        assert!(
+            read_message(
+                &mut std::io::Cursor::new(wire),
+                Duration::from_secs(1),
+                None
+            )
+            .is_err()
+        );
+    }
+
+    #[test]
+    fn oversized_reply_is_a_readable_error_and_preserves_next_message() {
+        let mut wire = Vec::new();
+        write_reply(&mut wire, &json!({"value":"x".repeat(MAX_REPLY)})).unwrap();
+        write_reply(&mut wire, &ok_reply(json!({"next":true}))).unwrap();
+        let mut reader = std::io::Cursor::new(wire);
+        let first = read_message(&mut reader, Duration::from_secs(1), None)
+            .unwrap()
+            .unwrap();
+        assert_eq!(
+            serde_json::from_slice::<Value>(&first).unwrap()["code"],
+            "response_too_large"
+        );
+        let second = read_message(&mut reader, Duration::from_secs(1), None)
+            .unwrap()
+            .unwrap();
+        assert_eq!(
+            serde_json::from_slice::<Value>(&second).unwrap()["next"],
+            true
+        );
+    }
 
     #[test]
     fn message_deadline_includes_successful_fragment_reads() {

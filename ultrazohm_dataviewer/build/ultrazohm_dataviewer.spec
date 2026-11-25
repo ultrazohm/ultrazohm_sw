@@ -18,13 +18,7 @@ from PyInstaller.utils.hooks import collect_all, collect_data_files, collect_sub
 import importlib.util
 PACKAGE = os.path.dirname(importlib.util.find_spec("ultrazohm_dataviewer").origin)
 
-from pathlib import Path
-script_root = Path(SPECPATH).resolve().parents[1] / 'tcl_scripts'
-datas = [(str(path), str(Path('tcl_scripts') / path.parent.relative_to(script_root)))
-         for path in script_root.rglob('*.tcl')]
-datas += [(str(script_root.parent / 'vitis/software' / name), 'tcl_scripts/launch')
-          for name in ('Debug_UltraZohm.launch', 'Run_UltraZohm.launch',
-                       'Debug_UltraZohm_fast_restart_PL_reset.launch')]
+datas = []
 binaries, hiddenimports = [], []
 for pkg in ("imgui_bundle", "pyarrow", "polars", "_polars_runtime_32", "ultrazohm_cli"):
     d, b, h = collect_all(pkg)

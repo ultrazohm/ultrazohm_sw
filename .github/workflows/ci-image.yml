@@ -1,7 +1,7 @@
 name: CI image
 
 # Builds the `ci` stage of the development container and publishes it to GHCR,
-# tagged by the Dockerfile's content hash. An unchanged Dockerfile reuses the
+# tagged by the build-input content hash. Unchanged build inputs reuses the
 # published image, so CLI and viewer jobs run in the same toolchain that
 # developers use in the dev container.
 on:
@@ -27,11 +27,11 @@ jobs:
         with:
           persist-credentials: false
           sparse-checkout: .devcontainer
-      - name: Derive image tag from the Dockerfile
+      - name: Derive image tag from pinned inputs and refresh revision
         id: tag
         shell: bash
         run: |
-          hash="$(sha256sum .devcontainer/Dockerfile | cut -c1-12)"
+          hash="$(sha256sum .devcontainer/Dockerfile .devcontainer/build-tools.txt .devcontainer/ci-image-revision | sha256sum | cut -c1-12)"
           owner="${GITHUB_REPOSITORY_OWNER,,}"
           echo "image=ghcr.io/${owner}/ultrazohm-ci:${hash}" >> "$GITHUB_OUTPUT"
       - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0

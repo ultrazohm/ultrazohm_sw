@@ -12,6 +12,14 @@ from ultrazohm_dataviewer import settings as runtime_settings
 from ultrazohm_dataviewer.user_paths import data_directory
 
 
+def contract(observables):
+    from ultrazohm_cli.configuration import channel_mapping
+
+    value = channel_mapping(Path(__file__).resolve().parents[2])
+    value["observables"] = observables
+    return value
+
+
 @pytest.mark.parametrize("explicit", [False, True])
 @pytest.mark.parametrize("frozen", [False, True])
 def test_data_is_under_repository_artifacts_in_both_modes(
@@ -72,11 +80,12 @@ def test_normal_connect_filters_bundled_defaults_and_loads_editable_settings(
     tmp_path, monkeypatch
 ):
     path = tmp_path / "mapping.json"
-    path.write_text(json.dumps({"channels": 20, "observables": {"JSO_lifecheck": 3}}))
+    path.write_text(json.dumps(contract({"JSO_lifecheck": 3})))
     monkeypatch.setattr(
         runtime_settings,
         "default_profile",
         lambda: {
+            "schema_version": 1,
             "name": "standard",
             "sample_period_us": 100,
             "initial_channels": {"3": "JSO_lifecheck", "4": "JSO_theta_mech"},
@@ -124,18 +133,18 @@ def test_xsct_selection_is_remembered_and_restored_for_child_processes(
     tool.chmod(0o755)
     monkeypatch.setenv("PATH", "")
     flashing.select_xsct(tool, tmp_path)
-    assert flashing.xsct_available()
+    assert flashing.xsct_available(tmp_path)
     assert json.loads(
         (tmp_path / "artifacts" / "_user" / "tools.json").read_text()
     ) == {"xsct": str(tool)}
     monkeypatch.setenv("PATH", "")
     flashing.restore_xsct(tmp_path)
-    assert Path(os.environ["PATH"].split(os.pathsep)[0]) == tool.parent
-    assert flashing.xsct_available()
+    assert os.environ["PATH"] == ""
+    assert flashing.xsct_available(tmp_path)
     with pytest.raises(ValueError, match="XSCT launcher"):
         flashing.select_xsct(tool.with_name("vitis.exe"), tmp_path)
     tool.unlink()
-    with pytest.raises(ValueError, match="no longer exists"):
+    with pytest.raises(ValueError, match="XSCT launcher not found"):
         flashing.restore_xsct(tmp_path)
 
 
@@ -145,18 +154,18 @@ def test_service_launch_passes_filtered_settings_profile(tmp_path, monkeypatch):
     from ultrazohm_dataviewer.live import LiveController
 
     mapping = tmp_path / "mapping.json"
-    mapping.write_text(
-        json.dumps({"channels": 20, "observables": {"JSO_lifecheck": 3}})
-    )
+    mapping.write_text(json.dumps(contract({"JSO_lifecheck": 3})))
     monkeypatch.setattr(
         runtime_settings,
         "default_profile",
         lambda: {
+            "schema_version": 1,
             "name": "standard",
             "sample_period_us": 100,
             "initial_channels": {"3": "JSO_lifecheck", "4": "JSO_theta_mech"},
         },
     )
+    monkeypatch.setattr("ultrazohm_cli.process.uuid.uuid4", lambda: "test-service")
     calls = []
 
     def launch(args, **kwargs):
@@ -165,7 +174,7 @@ def test_service_launch_passes_filtered_settings_profile(tmp_path, monkeypatch):
 
     monkeypatch.setattr("ultrazohm_dataviewer.live.subprocess.Popen", launch)
     controller = LiveController()
-    controller.client = SimpleNamespace(status=lambda: {})
+    controller.client = SimpleNamespace(status=lambda: {"service_id": "test-service"})
     controller._start_service(tmp_path / "logs" / "session", mapping)
     args = calls[0]
     settings = Path(args[args.index("--profile") + 1])
@@ -199,9 +208,7 @@ def test_frozen_app_retains_selected_firmware_workspace(tmp_path, monkeypatch):
 
 def test_initialize_and_connect_preserve_existing_preferences(tmp_path, monkeypatch):
     mapping = tmp_path / "mapping.json"
-    mapping.write_text(
-        json.dumps({"channels": 20, "observables": {"JSO_lifecheck": 3}})
-    )
+    mapping.write_text(json.dumps(contract({"JSO_lifecheck": 3})))
     settings = tmp_path / "settings.json"
     original = '{"schema_version":1,"name":"custom","sample_period_us":50,"initial_channels":{"3":"JSO_lifecheck","4":"JSO_theta_mech"}}\n'
     settings.write_text(original)
@@ -244,9 +251,7 @@ def test_workspace_startup_initializes_missing_preferences_once(
     monkeypatch.setattr(sys, "frozen", frozen, raising=False)
     user_dir = data_directory(tmp_path)
     mapping = user_dir / "mapping.json"
-    mapping.write_text(
-        json.dumps({"channels": 20, "observables": {"JSO_lifecheck": 3}})
-    )
+    mapping.write_text(json.dumps(contract({"JSO_lifecheck": 3})))
     monkeypatch.setattr(
         live_mapping, "read_mapping", lambda repo: json.loads(mapping.read_text())
     )
@@ -321,7 +326,7 @@ def test_malformed_tool_preferences_report_a_validation_error(
 )
 def test_invalid_runtime_preferences_are_rejected_without_rewriting(tmp_path, change):
     mapping = tmp_path / "mapping.json"
-    mapping.write_text(json.dumps({"channels": 20, "observables": {}}))
+    mapping.write_text(json.dumps(contract({})))
     value = {
         "schema_version": 1,
         "name": "user",
@@ -426,14 +431,13 @@ def test_external_mapping_keeps_preferences_in_selected_workspace(
     external = tmp_path / "external"
     external.mkdir()
     mapping = external / "mapping.json"
-    mapping.write_text(
-        json.dumps({"channels": 20, "observables": {"JSO_lifecheck": 3}})
-    )
+    mapping.write_text(json.dumps(contract({"JSO_lifecheck": 3})))
     user_dir = data_directory(tmp_path / "workspace")
     monkeypatch.setattr(
         runtime_settings,
         "default_profile",
         lambda: {
+            "schema_version": 1,
             "name": "standard",
             "sample_period_us": 100,
             "initial_channels": {"3": "JSO_lifecheck"},
@@ -445,15 +449,13 @@ def test_external_mapping_keeps_preferences_in_selected_workspace(
     assert (user_dir / "tools.json").is_file()
 
 
-def test_default_profile_worker_failure_has_actionable_error(monkeypatch):
-    import subprocess
+def test_default_profile_library_failure_has_actionable_error(monkeypatch):
+    import ultrazohm_cli.configuration as configuration
 
     def fail(*args, **kwargs):
-        raise subprocess.CalledProcessError(
-            1, ["profile"], stderr="native profile error"
-        )
+        raise RuntimeError("native profile error")
 
-    monkeypatch.setattr(runtime_settings.subprocess, "run", fail)
+    monkeypatch.setattr(configuration, "default_profile", fail)
     with pytest.raises(RuntimeError, match="native profile error"):
         runtime_settings.default_profile()
 
@@ -487,6 +489,7 @@ def test_repository_service_passes_repo_and_preserves_explicit_profile(
                 }
             )
         )
+    monkeypatch.setattr("ultrazohm_cli.process.uuid.uuid4", lambda: "test-service")
     calls = []
     monkeypatch.setattr(
         "ultrazohm_dataviewer.live.subprocess.Popen",
@@ -498,7 +501,7 @@ def test_repository_service_passes_repo_and_preserves_explicit_profile(
         lambda *args: pytest.fail("No temporary profile"),
     )
     controller = LiveController()
-    controller.client = SimpleNamespace(status=lambda: {})
+    controller.client = SimpleNamespace(status=lambda: {"service_id": "test-service"})
     controller._start_service(tmp_path / "session", "", repo=tmp_path)
     args = calls[0]
     assert args[args.index("--repo") + 1] == str(tmp_path)
@@ -517,9 +520,10 @@ def test_changed_repository_requires_restarting_owned_service(tmp_path):
 
     from ultrazohm_dataviewer.live import LiveController
 
-    client = SimpleNamespace(status=lambda: {})
+    client = SimpleNamespace(status=lambda: {"service_id": "test-service"})
     controller = LiveController(lambda endpoint: client)
     controller.owned.endpoint = "test-endpoint"
+    controller.owned.service_id = "test-service"
     controller.owned.process = SimpleNamespace(poll=lambda: None)
     controller.owned.repo = tmp_path / "previous"
     with pytest.raises(RuntimeError, match="different firmware repository"):
@@ -545,7 +549,7 @@ def test_explicit_mapping_survives_connect_with_workspace(
     header.touch()
     directory = data_directory(root)
     mapping = directory / "selected.json"
-    mapping.write_text(json.dumps({"channels": 20, "observables": {"JSO_custom": 42}}))
+    mapping.write_text(json.dumps(contract({"JSO_custom": 42})))
     (directory / "settings.json").write_text(
         json.dumps(
             {
@@ -561,6 +565,7 @@ def test_explicit_mapping_survives_connect_with_workspace(
         live_mapping=str(mapping),
         live_repo=str(root) if explicit_repo else None,
     )
+    monkeypatch.setattr("ultrazohm_cli.process.uuid.uuid4", lambda: "test-service")
     requests, launches = [], []
     controller = app.live.controller
     try:
@@ -580,7 +585,9 @@ def test_explicit_mapping_survives_connect_with_workspace(
         assert args["repo"] is None
         assert args["mapping"] == str(mapping)
         assert args["user_directory"] == str(directory)
-        controller.client = SimpleNamespace(status=lambda: {})
+        controller.client = SimpleNamespace(
+            status=lambda: {"service_id": "test-service"}
+        )
         monkeypatch.setattr(
             "ultrazohm_dataviewer.live.subprocess.Popen",
             lambda args, **kwargs: (
@@ -620,8 +627,11 @@ def test_changed_mapping_requires_restarting_owned_service(tmp_path):
 
     from ultrazohm_dataviewer.live import LiveController
 
-    controller = LiveController(lambda endpoint: SimpleNamespace(status=lambda: {}))
+    controller = LiveController(
+        lambda endpoint: SimpleNamespace(status=lambda: {"service_id": "test-service"})
+    )
     controller.owned.endpoint = "test-endpoint"
+    controller.owned.service_id = "test-service"
     controller.owned.process = SimpleNamespace(poll=lambda: None)
     controller.owned.mapping = tmp_path / "previous.json"
     with pytest.raises(RuntimeError, match="different channel mapping"):

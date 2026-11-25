@@ -441,11 +441,71 @@ def test_evaluation_reuses_domain_resolution(app_state, monkeypatch):
     original = nodes.output_domain
     caches = []
 
-    def resolve(graph, node, domains=None):
+    def resolve(graph, node, domains=None, *, registry=None):
         caches.append(domains)
-        return original(graph, node, domains)
+        return original(graph, node, domains, registry=registry)
 
     monkeypatch.setattr(nodes, "output_domain", resolve)
     assert nodes.evaluate(app_state) == 30
     assert caches and all(cache is caches[0] and cache is not None for cache in caches)
     assert len(caches[0]) == 31
+
+
+@pytest.mark.parametrize("detached", [False, True])
+@pytest.mark.parametrize(
+    "kind,op,rejected",
+    [
+        ("math", "scale", False),
+        ("math", "derivative", True),
+        ("math", "integral", True),
+        ("fft", None, True),
+        ("filter", None, True),
+        ("shift", None, True),
+    ],
+)
+def test_imported_spectrum_preserves_domain_and_rejects_time_operations(
+    app_state, tmp_path, kind, op, rejected, detached
+):
+    from ultrazohm_dataviewer import node_jobs
+
+    path = tmp_path / "spectrum.csv"
+    path.write_text("frequency,out\n0,1\n10,2\n20,3\n30,4\n40,5\n")
+    run = app_state.load_sync(str(path))
+    assert run.axis_domain == "frequency"
+    source = app_state.nodes.add("source", ref=(run.id, "out"))
+    target = app_state.nodes.add(kind)
+    if op is not None:
+        target.params["op"] = op
+    app_state.nodes.link(source.id, target.id)
+    state = node_jobs.capture(app_state) if detached else app_state
+    count = nodes.evaluate(state)
+    result = state.nodes.nodes[target.id]
+    if rejected:
+        assert count == 0
+        assert "requires time-domain inputs" in result.error
+    else:
+        assert count == 1
+        assert state.registry.get(result.out_run_id).axis_domain == "frequency"
+        if detached:
+            node_jobs.publish(app_state, state)
+            assert app_state.registry.get(target.out_run_id).axis_domain == "frequency"
+
+
+@pytest.mark.parametrize(
+    "attribute,value",
+    [
+        ("axis_domain", "frequency"),
+        ("timestamp_resolution", 0.001),
+    ],
+)
+def test_source_metadata_changes_invalidate_derived_output(app_state, attribute, value):
+    run = app_state.registry.add_run("input", "", np.arange(8.0), {"a": np.ones(8)}, {})
+    source = app_state.nodes.add("source", ref=(run.id, "a"))
+    transform = app_state.nodes.add("math")
+    app_state.nodes.link(source.id, transform.id)
+    assert nodes.evaluate(app_state) == 1
+    setattr(run, attribute, value)
+    assert nodes.is_stale(app_state.registry, app_state.nodes, transform)
+    assert nodes.evaluate(app_state) == 1
+    output = app_state.registry.get(transform.out_run_id)
+    assert getattr(output, attribute) == value

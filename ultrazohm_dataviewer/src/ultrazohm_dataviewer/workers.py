@@ -27,6 +27,19 @@ def join_worker(thread):
         thread.join(timeout=0.2)
 
 
+def cancellable_result(produce, cancel, dispose=None):
+    """Check both sides of computation; dispose results canceled before delivery."""
+    check(cancel)
+    result = produce()
+    try:
+        check(cancel)
+    except BaseException:
+        if dispose is not None:
+            dispose(result)
+        raise
+    return result
+
+
 class CancellableExecutor:
     def __init__(self, name="uz-loader"):
         self.name = name
@@ -57,9 +70,13 @@ class CancellableExecutor:
                 continue
             result = None
             try:
-                check(self.cancel)
-                result = function(*args, cancel=self.cancel)
-                check(self.cancel)
+                result = cancellable_result(
+                    lambda function=function, args=args: function(
+                        *args, cancel=self.cancel
+                    ),
+                    self.cancel,
+                    dispose,
+                )
                 future.set_result(result)
             except BaseException as exc:
                 error = exc
@@ -70,6 +87,10 @@ class CancellableExecutor:
                         # A cleanup failure must still complete the future;
                         # otherwise callers wait forever on a dead worker.
                         error = cleanup_error
+                # A worker's SystemExit/KeyboardInterrupt must not escape when
+                # the application thread retrieves the completed future.
+                if not isinstance(error, Exception):
+                    error = RuntimeError(f"{type(error).__name__}: {error}")
                 future.set_exception(error)
             finally:
                 item = future = function = args = result = None

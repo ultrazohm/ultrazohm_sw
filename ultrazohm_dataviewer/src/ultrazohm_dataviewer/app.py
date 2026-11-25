@@ -1,7 +1,7 @@
 """Application entry point and docking layout.
 
-Default layout: Navigation above the Log Browser / Console tabs on the left,
-with plots and analysis in the center. Log Browser is selected at startup.
+Default layout: Navigation / Live Data above Log Browser / Control on the left,
+with plots and analysis above the Application log on the right.
 """
 
 from __future__ import annotations
@@ -30,6 +30,7 @@ except Exception:  # pragma: no cover
 MAIN_DOCK = "MainDockSpace"
 LEFT_DOCK = "LeftSpace"
 LOG_DOCK = "LogBrowserSpace"
+CONSOLE_DOCK = "ApplicationLogSpace"
 
 
 class DataViewerApp:
@@ -109,6 +110,7 @@ class DataViewerApp:
                 self.live.prepare_repository(workspace)
         from .panels.python import PythonPanel
 
+        self.operations.bind_live(self.live)
         self.python_panel = PythonPanel(self)
         # Pending Session-menu file dialogs: (dialog, command_name, is_multi).
         self._session_dialog: tuple = ()
@@ -133,7 +135,7 @@ class DataViewerApp:
         left.initial_dock = MAIN_DOCK
         left.new_dock = LEFT_DOCK
         left.direction = imgui.Dir_.left
-        left.ratio = 0.22
+        left.ratio = 0.30
 
         logs = hello_imgui.DockingSplit()
         logs.initial_dock = LEFT_DOCK
@@ -141,7 +143,13 @@ class DataViewerApp:
         logs.direction = imgui.Dir_.down
         logs.ratio = 0.4
 
-        return [left, logs]
+        console = hello_imgui.DockingSplit()
+        console.initial_dock = MAIN_DOCK
+        console.new_dock = CONSOLE_DOCK
+        console.direction = imgui.Dir_.down
+        console.ratio = 0.2
+
+        return [left, logs, console]
 
     def _dockable_windows(self) -> list[hello_imgui.DockableWindow]:
         nav = hello_imgui.DockableWindow()
@@ -171,7 +179,7 @@ class DataViewerApp:
 
         console = hello_imgui.DockableWindow()
         console.label = "Application log"
-        console.dock_space_name = LOG_DOCK
+        console.dock_space_name = CONSOLE_DOCK
         console.gui_function = lambda: self.state.console.render(self.state)
 
         logs = hello_imgui.DockableWindow()
@@ -616,6 +624,10 @@ class DataViewerApp:
         self._runner_params = params
         params.app_window_params.window_title = "UltraZohm Data Viewer"
         params.app_window_params.window_geometry.size = (1500, 900)
+        params.app_window_params.window_geometry.window_size_state = (
+            hello_imgui.WindowSizeState.maximized
+        )
+        params.app_window_params.restore_previous_geometry = False
         params.imgui_window_params.default_imgui_window_type = (
             hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
         )
@@ -664,67 +676,22 @@ class DataViewerApp:
 
 
 def main(argv: list[str] | None = None) -> int:
-    argv = list(sys.argv[1:] if argv is None else argv)
+    """Compatibility entry point; all argument policy lives in cli.parser."""
+    from .cli import main as cli_main
+
+    return cli_main(["gui", *(sys.argv[1:] if argv is None else argv)])
+
+
+def run_gui(args) -> int:
+    """Launch from parsed options, resolving saved preferences only once."""
     from .preferences import Preferences
 
     defaults = Preferences().values
-    default_backend, default_mode = defaults["backend"], defaults["loading_mode"]
-    if argv and argv[0] == "convert":
-        # Headless CSV->Parquet conversion: `ultrazohm-dataviewer convert big.csv ...`.
-        import argparse
-
-        from .loader import convert_csv_to_parquet
-
-        converter = argparse.ArgumentParser(prog="ultrazohm-dataviewer convert")
-        converter.add_argument(
-            "--backend", choices=("pyarrow", "polars"), default=default_backend
-        )
-        converter.add_argument("files", nargs="+")
-        converter.add_argument("--axis-column")
-        converter.add_argument("--axis-domain", choices=("time", "frequency"))
-        options = converter.parse_args(argv[1:])
-        files = options.files
-        for src in files:
-            out = convert_csv_to_parquet(
-                src,
-                backend=options.backend,
-                axis_column=options.axis_column,
-                axis_domain=options.axis_domain,
-            )
-            print(f"converted {src} -> {out}")
-        return 0
-    import argparse
-
-    parser = argparse.ArgumentParser(description="UltraZohm Data Viewer")
-    parser.add_argument(
-        "--endpoint", default="127.0.0.1:19741", help="Local viewer control endpoint"
-    )
-    parser.add_argument(
-        "--loading-mode",
-        choices=("memory", "lazy"),
-        default=default_mode,
-        help=f"storage policy for opening recordings (default: {default_mode})",
-    )
-    parser.add_argument(
-        "--backend",
-        choices=("pyarrow", "polars"),
-        default=default_backend,
-        help=f"IO backend for file loading (default: {default_backend})",
-    )
-    parser.add_argument(
-        "--disk-cache",
-        action="store_true",
-        default=defaults["disk_cache"],
-        help="Persist measurement caches on disk (default: RAM only)",
-    )
-    parser.add_argument(
-        "--live-repo",
-        help="UltraZohm repository (default: checkout containing the launch directory)",
-    )
-    parser.add_argument(
-        "files", nargs="*", help="CSV, Parquet, JSON sessions, or Python files"
-    )
-    args = parser.parse_args(argv)
+    loading_mode = getattr(args, "loading_mode", None) or defaults["loading_mode"]
+    backend = getattr(args, "backend", None) or defaults["backend"]
+    disk_cache = getattr(args, "disk_cache", None)
+    if disk_cache is None:
+        disk_cache = defaults["disk_cache"]
     # Live panels are available wherever the CLI package is installed (a
     # dependency of the viewer on Windows and Linux x86-64, bundled when frozen).
     import importlib.util
@@ -732,15 +699,15 @@ def main(argv: list[str] | None = None) -> int:
     use_live = importlib.util.find_spec("ultrazohm_cli") is not None
     from .user_paths import find_repository
 
-    live_repo = args.live_repo
+    live_repo = getattr(args, "live_repo", None)
     if live_repo is None:
         detected = find_repository(Path.cwd())
         live_repo = str(detected) if detected is not None else None
     app = DataViewerApp(
-        initial_files=args.files,
-        loading_mode=args.loading_mode,
-        backend=args.backend,
-        disk_cache=args.disk_cache,
+        initial_files=getattr(args, "files", []),
+        loading_mode=loading_mode,
+        backend=backend,
+        disk_cache=disk_cache,
         use_live=use_live,
         live_repo=live_repo,
     )

@@ -22,10 +22,12 @@ void setUp(void) {
 		initialized = true;
 	}
 	uz_actor_pt1_replay_stop();
+	uz_actor_pt1_replay_set_epsilon(0.0f);
 }
 
 void tearDown(void) {
 	uz_actor_pt1_replay_stop();
+	uz_actor_pt1_replay_set_epsilon(0.0f);
 }
 
 void test_dqn_and_ddpg_replay_preserve_all_reference_samples_and_completion(void) {
@@ -83,4 +85,34 @@ void test_manual_mode_preserves_reference_switches_actor_and_stops(void) {
 	TEST_ASSERT_FALSE(uz_actor_pt1_replay_is_manual());
 	TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_actor_pt1_replay_signals.actor);
 }
+#if UZ_PT1_TRAINING == 1U
+void test_exploration_logs_the_action_actually_applied_and_complete_transition(void) {
+	uz_actor_pt1_replay_set_epsilon(1.0f);
+	uz_actor_pt1_replay_start(UZ_PT1_REPLAY_DQN);
+	/* Changes while running must be ignored. */
+	uz_actor_pt1_replay_set_epsilon(0.0f);
+	bool seen[3] = {false, false, false};
+	float previous_next = 0.0f;
+	for (uint32_t k = 0U; k < 500U; ++k) {
+		uz_actor_pt1_replay_step();
+		const struct uz_actor_pt1_replay_signals *s = &uz_actor_pt1_replay_signals;
+		TEST_ASSERT_EQUAL_FLOAT(1.0f, s->epsilon);
+		TEST_ASSERT_EQUAL_FLOAT(previous_next, s->y);
+		TEST_ASSERT_TRUE(s->action_index >= 0.0f && s->action_index <= 2.0f);
+		seen[(uint32_t)s->action_index] = true;
+		TEST_ASSERT_EQUAL_FLOAT(s->action_index - 1.0f, s->action_value);
+		const float expected = s->y + (-expm1f(-0.05f)) * (s->action_value - s->y);
+		TEST_ASSERT_FLOAT_WITHIN(1.0e-6f, expected, s->next_y);
+		const float error = s->reference - s->next_y;
+		TEST_ASSERT_FLOAT_WITHIN(1.0e-6f, -error * error, s->reward);
+		previous_next = s->next_y;
+	}
+	TEST_ASSERT_TRUE(seen[0] && seen[1] && seen[2]);
+	TEST_ASSERT_EQUAL_FLOAT(1.0f, uz_actor_pt1_replay_signals.done);
+	uz_actor_pt1_replay_step();
+	TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_actor_pt1_replay_signals.y);
+}
+
+#endif
+
 #endif

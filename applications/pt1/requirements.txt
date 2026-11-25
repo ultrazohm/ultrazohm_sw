@@ -1,0 +1,6 @@
+# Runtime dependencies for train_pt1_dqn.py and evaluate_pt1_dqn.py.
+# An already installed local ultrazohm_cli build satisfies this requirement.
+numpy
+polars>=1
+torch
+ultrazohm_cli

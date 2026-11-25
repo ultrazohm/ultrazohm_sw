@@ -29,7 +29,16 @@ def wait_for_replay(client, actor_id, timeout):
         phase = status["logging"]["fast"]["phase"]
         if phase == "failed":
             raise RuntimeError(f"Recording failed: {status['logging']['fast']}")
-        page = client.read_since(cursor, recording=1, limit=10000)
+        try:
+            page = client.read_since(cursor, recording=1, limit=10000)
+        except RuntimeError as error:
+            # start_logging installs the recording route before its background
+            # writer has initialized readable history. Its phase can already be
+            # "recording" here. Retry only this transient error, within deadline.
+            if str(error) != "recording is initializing":
+                raise
+            time.sleep(0.02)
+            continue
         cursor = page.cursor
         active = page.data.filter(page.data["JSO_pt1_actor"] == actor_id)
         samples += active.height

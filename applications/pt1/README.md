@@ -1,8 +1,8 @@
 # PT1 hardware recordings and comparison
 
 With this branch's `UZ_PT1_REPLAY=1` firmware running at 10 kHz, close other
-device clients and enter the shared repository environment with `./uz shell local`
-(build this checkout) or `./uz shell stable` (install the published release).
+device clients and enter the repository development environment with `./uz_developer shell`
+(after `./uz_developer setup`), or use `./uz venv` for published packages.
 From the repository root, record the actors independently:
 
 ```sh
@@ -145,3 +145,96 @@ leave a partial parameter set. The affected network remains blocked until a full
 upload succeeds or the firmware restarts. Beginning another upload restarts its
 count at zero. This prototype uses ordered counts and paced sends, with no
 checksum or rollback. It does not verify every received value by reading it back.
+
+## Minimal host DQN training
+
+`train_pt1_dqn.py` trains in Python while the actor **and simulated PT1 plant**
+execute at 10 kHz on R5. It follows `workshop_vv_dqn:workshop/train_pt1.py`:
+observations `[y, reference]`, actions `[-1, 0, 1]`, 2→32→32→3 ReLU network,
+reward `-(reference - next_y)^2`, Adam at 1e-4, gamma 0.99, batch size 32,
+Huber loss and gradient clipping. The small PyTorch loop replaces SB3's host
+`env.step()` loop; there is no host action command on each control tick.
+
+Build and deploy the updated `UZ_PT1_REPLAY=1` firmware first. Install the DQN
+runtime dependencies into the repository's persistent `.venv` (Python 3.12):
+
+```sh
+uv pip install --python .venv/bin/python -r applications/pt1/requirements.txt
+source .venv/bin/activate
+```
+
+If `.venv` does not exist, create it with `uv venv --python 3.12 .venv` first,
+or use `./uz_developer setup` to build the local CLI and DataViewer. Installing
+these requirements preserves an already installed local CLI build. Use this
+persistent environment for training; `./uz venv` opens a separate uv cache
+environment for published tools.
+
+The requirements are `torch`, `numpy`, `polars`, and `ultrazohm_cli`. CPU-only
+PyTorch is sufficient; SB3, Gymnasium and JAX are not required. `pytest` is an
+optional additional dependency for the tests. With the environment active, run:
+
+```sh
+python applications/pt1/train_pt1_dqn.py --output artifacts/pt1-training --rounds 20
+```
+
+Each round uploads the current network with the existing helper, sets
+`DQN-Epsilon` (send field 7), records six 500-step episodes, stops, and performs
+3,000 gradient updates on the host. Collection uses the existing six fixed
+references and zero initial plant state. Unlike the workshop's randomly sampled
+references, this deliberately reuses the firmware replay schedule. The replay
+buffer retains 100,000 transitions. The target network is copied every ten
+**gradient updates**. Epsilon decreases from 1 to 0.05 over the first 10% of
+rounds; R5 performs epsilon-greedy exploration with a deterministic xorshift32
+stream that persists across rounds (seed 1 at firmware restart). `--seed` seeds
+host initialization and replay sampling only. Epsilon defaults to zero at boot
+and can only be changed while the actor is stopped.
+
+One row contains the pre-action `y` and reference, selected action index, reward,
+`next_y`, episode/step, `done`, epsilon and ISR number. `done` marks the 500-step
+time limit, as in the workshop; the learner bootstraps from the explicit final
+observation and never from the following reset. This contract is specific to
+the PT1 simulation; a physical plant needs next-state/reward sampling on the
+following ISR and a separate termination definition.
+
+The full `uz_SystemTime_GetInterruptCounter()` value is logged as
+`JSO_pt1_isr_0` … `JSO_pt1_isr_3`, least-significant 16-bit limb first:
+`isr = limb0 + (limb1 << 16) + (limb2 << 32) + (limb3 << 48)`.
+Each limb is exact in JavaScope's float32 protocol. The trainer rejects incomplete,
+duplicate, reordered or skipped ISR data before adding anything to replay.
+All 3,000 rows must arrive without decimation. Slots 1–15 carry training data;
+the existing uploader temporarily assigns its feedback to slots 15–19.
+
+Round directories contain native acquisition recordings, directly readable by
+DataViewer. `network.pt` stores the latest network parameters; `export/` contains
+CSV files accepted by `update_parameters_prototype.py`. The final trained network
+is uploaded, epsilon is set to zero, and the controller remains stopped. Press
+PT1-DQN to evaluate. Uploads take roughly ten seconds each; this prototype is a
+collect/train/upload loop with pauses, not concurrent learning or a resumable
+training service. No new firmware transport or DataViewer API is needed.
+
+### Evaluate the saved agent on the host
+
+```sh
+python applications/pt1/evaluate_pt1_dqn.py artifacts/pt1-training/network.pt
+```
+
+This opens no hardware connection. It loads the saved weights into the same
+network and runs greedy actions (epsilon zero) in a float32 Python PT1 simulation
+with the firmware's six references, 500 steps per episode and reset to zero.
+It prints episode return, tracking RMSE and final output, and creates
+`host_evaluation.csv` beside the checkpoint. Use `--output PATH` for another new
+CSV filename. Existing output files are not overwritten. Only NumPy and PyTorch
+are required; neither SB3 nor the CLI package is needed for host evaluation.
+Host and R5 floating-point inference may differ slightly, especially at action
+ties; this evaluates the simulated task, not hardware timing or transport.
+
+## Firmware modes
+
+Select modes in `uz_global_configuration.h` or with compiler definitions:
+
+- `UZ_PT1_REPLAY=0`, `UZ_PT1_TRAINING=0`: normal ADC/encoder and control ISR.
+- `UZ_PT1_REPLAY=1`, `UZ_PT1_TRAINING=0`: deterministic PT1 DQN/DDPG replay and parameter uploads.
+- `UZ_PT1_REPLAY=1`, `UZ_PT1_TRAINING=1`: PT1 replay with host-training exploration and transition telemetry (current default).
+
+Training requires replay; invalid combinations fail preprocessing. JavaScope IDs
+remain stable across modes; disabled telemetry slots retain their zero values.

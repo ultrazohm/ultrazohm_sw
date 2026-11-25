@@ -20,7 +20,7 @@
 
 // Do not change the first (zero) and last (end) entries.
 enum JS_OberservableData {
-	JSO_ZEROVALUE=0,
+	JSO_ZEROVALUE = 0,
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
 	JSO_lifecheck,
@@ -68,13 +68,19 @@ enum JS_OberservableData {
 	JSO_nn_update_error,
 	JSO_nn_update_target,
 	JSO_nn_update_expected,
+	JSO_pt1_next_y,
+	JSO_pt1_epsilon,
+	JSO_pt1_isr_0,
+	JSO_pt1_isr_1,
+	JSO_pt1_isr_2,
+	JSO_pt1_isr_3,
 	JSO_ENDMARKER
 };
 
 // slowData Naming Convention: Use JSSD_FLOAT_ as prefix
 // Do not change the first (zero) and last (end) entries.
 enum JS_SlowData {
-	JSSD_ZEROVALUE=0,
+	JSSD_ZEROVALUE = 0,
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
@@ -100,7 +106,7 @@ enum JS_SlowData {
 // Do not change the first (zero) and last (end) entries.
 // Do not change names! They are hard coupled within the GUI!
 enum gui_button_mapping {
-	GUI_BTN_ZEROVALUE=0,
+	GUI_BTN_ZEROVALUE = 0,
 	Enable_System,
 	Enable_Control,
 	Stop,
@@ -136,7 +142,6 @@ enum gui_button_mapping {
 	GUI_BTN_ENDMARKER
 };
 
-
 /* Visualization Config for GUI*/
 // LEAVE IT COMMENTED OUT AS IT IS, the plain text below is parsed by the GUI!
 // Change entries according to your needs.
@@ -151,7 +156,7 @@ enum gui_button_mapping {
 	NN-Index,
 	NN-Value,
 	NN-Target,
-	send_field_7,
+	DQN-Epsilon,
 	send_field_8,
 	send_field_9,
 	send_field_10,
@@ -293,8 +298,7 @@ enum gui_button_mapping {
 	SLOWDAT_DISPLAY_ENDMARKER
 */
 
-
-int JavaScope_initialize(DS_Data* data);
-void JavaScope_update(DS_Data* data);
+int JavaScope_initialize(DS_Data *data);
+void JavaScope_update(DS_Data *data);
 
 #endif /* INCLUDE_JAVASCOPE_H_ */

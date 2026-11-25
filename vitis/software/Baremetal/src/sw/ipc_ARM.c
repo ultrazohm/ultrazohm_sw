@@ -40,157 +40,134 @@ static void ipc_pt1_set_status_bit(uint32_t bit, bool active) {
 }
 #endif
 
-void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
-{
+void ipc_Control_func(uint32_t msgId, float value, DS_Data *data) {
 	// HANDLE RECEIVED MESSAGE
-	if (msgId != 0)
-	{
+	if (msgId != 0) {
 		// GENERAL VARIABLES
-		switch (msgId)
-		{
+		switch (msgId) {
 
 		case (Stop): // Stop
 #if UZ_PT1_REPLAY == 1U
-	uz_actor_pt1_replay_stop();
+			uz_actor_pt1_replay_stop();
 #endif
 			ultrazohm_state_machine_set_stop(true);
 			break;
 		case (201): // SELECT_DATA_CH1_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[0] = js_ch_observable[(uint32_t)value];
 			}
 			break;
 
 		case (202): // SELECT_DATA_CH2_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[1] = js_ch_observable[(uint32_t)value];
 			}
 			break;
 
 		case (203): // SELECT_DATA_CH3_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[2] = js_ch_observable[(uint32_t)value];
 			}
 			break;
 
 		case (204): // SELECT_DATA_CH4_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[3] = js_ch_observable[(uint32_t)value];
 			}
 			break;
 
 		case (205): // SELECT_DATA_CH5_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[4] = js_ch_observable[(uint32_t)value];
 			}
 			break;
 
 		case (206): // SELECT_DATA_CH6_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[5] = js_ch_observable[(uint32_t)value];
 			}
 			break;
 
 		case (207): // SELECT_DATA_CH7_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[6] = js_ch_observable[(uint32_t)value];
 			}
 			break;
 
 		case (208): // SELECT_DATA_CH8_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[7] = js_ch_observable[(uint32_t)value];
 			}
 			break;
 
 		case (209): // SELECT_DATA_CH9_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[8] = js_ch_observable[(uint32_t)value];
 			}
 			break;
 
 		case (210): // SELECT_DATA_CH10_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[9] = js_ch_observable[(uint32_t)value];
 			}
 			break;
 
 		case (211): // SELECT_DATA_CH11_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[10] = js_ch_observable[(uint32_t)value];
 			}
 			break;
 
 		case (212): // SELECT_DATA_CH12_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[11] = js_ch_observable[(uint32_t)value];
 			}
 			break;
 
 		case (213): // SELECT_DATA_CH13_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[12] = js_ch_observable[(uint32_t)value];
 			}
 			break;
 
 		case (214): // SELECT_DATA_CH14_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[13] = js_ch_observable[(uint32_t)value];
 			}
 			break;
 
 		case (215): // SELECT_DATA_CH15_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[14] = js_ch_observable[(uint32_t)value];
 			}
 			break;
 
 		case (216): // SELECT_DATA_CH16_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[15] = js_ch_observable[(uint32_t)value];
 			}
 			break;
 
 		case (217): // SELECT_DATA_CH17_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[16] = js_ch_observable[(uint32_t)value];
 			}
 			break;
 
 		case (218): // SELECT_DATA_CH18_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[17] = js_ch_observable[(uint32_t)value];
 			}
 			break;
 
 		case (219): // SELECT_DATA_CH19_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[18] = js_ch_observable[(uint32_t)value];
 			}
 			break;
 
 		case (220): // SELECT_DATA_CH20_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
+			if (value >= 0 && value < JSO_ENDMARKER) {
 				js_ch_selected[19] = js_ch_observable[(uint32_t)value];
 			}
 			break;
@@ -207,99 +184,102 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (Set_Send_Field_1):
 			data->av.snd_fld[1] = value;
 #if UZ_PT1_REPLAY == 1U
-	uz_actor_pt1_replay_set_reference(value);
+			uz_actor_pt1_replay_set_reference(value);
 #endif
 			break;
 
 		case (Set_Send_Field_2):
 			data->av.snd_fld[2] = value;
 #if UZ_PT1_REPLAY == 1U
-	uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_LAYER, value);
+			uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_LAYER, value);
 #endif
 			break;
 
 		case (Set_Send_Field_3):
 			data->av.snd_fld[3] = value;
 #if UZ_PT1_REPLAY == 1U
-	uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_TYPE, value);
+			uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_TYPE, value);
 #endif
 			break;
 
 		case (Set_Send_Field_4):
 			data->av.snd_fld[4] = value;
 #if UZ_PT1_REPLAY == 1U
-	uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_INDEX, value);
+			uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_INDEX, value);
 #endif
 			break;
 
 		case (Set_Send_Field_5):
 			data->av.snd_fld[5] = value;
 #if UZ_PT1_REPLAY == 1U
-	uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_VALUE, value);
+			uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_VALUE, value);
 #endif
 			break;
 
 		case (Set_Send_Field_6):
 			data->av.snd_fld[6] = value;
 #if UZ_PT1_REPLAY == 1U
-	uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_TARGET, value);
+			uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_TARGET, value);
 #endif
 			break;
 
 		case (Set_Send_Field_7):
-		data->av.snd_fld[7] = value;
+			data->av.snd_fld[7] = value;
+#if UZ_PT1_TRAINING == 1U
+			uz_actor_pt1_replay_set_epsilon(value);
+#endif
 			break;
 
 		case (Set_Send_Field_8):
-		data->av.snd_fld[8] = value;
+			data->av.snd_fld[8] = value;
 			break;
 
 		case (Set_Send_Field_9):
-		data->av.snd_fld[9] = value;
+			data->av.snd_fld[9] = value;
 			break;
 
 		case (Set_Send_Field_10):
-		data->av.snd_fld[10] = value;
+			data->av.snd_fld[10] = value;
 			break;
 
 		case (Set_Send_Field_11):
-		data->av.snd_fld[11] = value;
+			data->av.snd_fld[11] = value;
 			break;
 
 		case (Set_Send_Field_12):
-		data->av.snd_fld[12] = value;
+			data->av.snd_fld[12] = value;
 			break;
 
 		case (Set_Send_Field_13):
-		data->av.snd_fld[13] = value;
+			data->av.snd_fld[13] = value;
 			break;
 
 		case (Set_Send_Field_14):
-		data->av.snd_fld[14] = value;
+			data->av.snd_fld[14] = value;
 			break;
 
 		case (Set_Send_Field_15):
-		data->av.snd_fld[15] = value;
+			data->av.snd_fld[15] = value;
 			break;
 
 		case (Set_Send_Field_16):
-		data->av.snd_fld[16] = value;
+			data->av.snd_fld[16] = value;
 			break;
 
 		case (Set_Send_Field_17):
-		data->av.snd_fld[17] = value;
+			data->av.snd_fld[17] = value;
 			break;
 
 		case (Set_Send_Field_18):
-		data->av.snd_fld[18] = value;
+			data->av.snd_fld[18] = value;
 			break;
 
 		case (Set_Send_Field_19):
-		data->av.snd_fld[19] = value;
+			data->av.snd_fld[19] = value;
 			break;
 
 		case (Set_Send_Field_20):
-		data->av.snd_fld[20] = value;
+			data->av.snd_fld[20] = value;
 			break;
 
 		case (My_Button_1):
@@ -316,31 +296,31 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (My_Button_4):
 #if UZ_PT1_REPLAY == 1U
-	uz_actor_pt1_replay_start(UZ_PT1_REPLAY_DQN);
+			uz_actor_pt1_replay_start(UZ_PT1_REPLAY_DQN);
 #endif
 			break;
 
 		case (My_Button_5):
 #if UZ_PT1_REPLAY == 1U
-	uz_actor_pt1_replay_start(UZ_PT1_REPLAY_DDPG);
+			uz_actor_pt1_replay_start(UZ_PT1_REPLAY_DDPG);
 #endif
 			break;
 
 		case (My_Button_6):
 #if UZ_PT1_REPLAY == 1U
-	uz_actor_pt1_replay_toggle_manual();
+			uz_actor_pt1_replay_toggle_manual();
 #endif
 			break;
 
 		case (My_Button_7):
 #if UZ_PT1_REPLAY == 1U
-	uz_actor_pt1_update_begin();
+			uz_actor_pt1_update_begin();
 #endif
 			break;
 
 		case (My_Button_8):
 #if UZ_PT1_REPLAY == 1U
-	uz_actor_pt1_update_finish();
+			uz_actor_pt1_update_finish();
 #endif
 			break;
 
@@ -353,7 +333,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		default:
-			break;		  // Default just breaks since now a lot of unused control worlds are sent from the javascope->a53 which are never handled here.
+			break;        // Default just breaks since now a lot of unused control worlds are sent from the javascope->a53 which are never handled here.
 			uz_assert(0); // unknown command -> throw error
 		}
 	}
@@ -362,14 +342,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// Feedback bits for controlling the status indicators in the GUI
 	/* Bit 0 - Ready LED */
 	if (ultrazohm_state_get_led_ready()) {
-	js_status_BareToRTOS |= 1 << 0;
+		js_status_BareToRTOS |= 1 << 0;
 	} else {
 		js_status_BareToRTOS &= ~(1 << 0);
 	}
 
 	/* Bit 1 - Running LED */
 	if (ultrazohm_state_get_led_running()) {
-	js_status_BareToRTOS |= 1 << 1;
+		js_status_BareToRTOS |= 1 << 1;
 	} else {
 		js_status_BareToRTOS &= ~(1 << 1);
 	}
@@ -377,16 +357,16 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	/* Bit 2 - Error LED */
 	if (ultrazohm_state_get_led_error()) {
 		js_status_BareToRTOS |= 1 << 2;
-		} else {
-			js_status_BareToRTOS &= ~(1 << 2);
-		}
+	} else {
+		js_status_BareToRTOS &= ~(1 << 2);
+	}
 
 	/* Bit 3 - User LED */
 	if (ultrazohm_state_get_led_user()) {
 		js_status_BareToRTOS |= 1 << 3;
-		} else {
-			js_status_BareToRTOS &= ~(1 << 3);
-		}
+	} else {
+		js_status_BareToRTOS &= ~(1 << 3);
+	}
 
 	/* Bit 4 - My_Button_1 */
 	// if (your condition == true) {
@@ -430,5 +410,4 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// } else {
 	//	js_status_BareToRTOS &= ~(1 << 12);
 	// }
-
 }

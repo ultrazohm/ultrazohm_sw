@@ -53,6 +53,27 @@ static enum uz_actor_pt1_replay_actor selected_actor = UZ_PT1_REPLAY_DQN;
 static bool manual_mode = false;
 static float manual_reference = 0.0f;
 static uint32_t sample = 0U;
+#if UZ_PT1_TRAINING == 1U
+static uint32_t random_uint32(void);
+
+static float dqn_epsilon = 0.0f;
+static uint32_t random_state = 1U;
+
+/* Deterministic xorshift32 stream, kept across collection batches. */
+static uint32_t random_uint32(void) {
+	random_state ^= random_state << 13;
+	random_state ^= random_state >> 17;
+	random_state ^= random_state << 5;
+	return random_state;
+}
+
+void uz_actor_pt1_replay_set_epsilon(float epsilon) {
+	if ((active_actor == UZ_PT1_REPLAY_IDLE) && isfinite(epsilon) &&
+	    (epsilon >= 0.0f) && (epsilon <= 1.0f)) {
+		dqn_epsilon = epsilon;
+	}
+}
+#endif
 static struct uz_actor_pt1_update_state update = {
         .active = false,
         .target_valid = true,
@@ -377,7 +398,25 @@ static void uz_actor_pt1_publish_action(const uz_exported_actor_t *actor) {
 
 static void uz_actor_pt1_publish_sample(uz_actor_pt1_example_t *example, uint32_t episode, uint32_t step, float reference) {
 	const float previous_output = example->output;
-	const float output = uz_actor_pt1_example_step(example, reference);
+	float output = uz_actor_pt1_example_step(example, reference);
+#if UZ_PT1_TRAINING == 1U
+	/* PT1 DQN has no delay or limiter. Replace the greedy command before
+	 * committing the plant transition; retain the network Q values. */
+	if ((active_actor == UZ_PT1_REPLAY_DQN) && (dqn_epsilon > 0.0f) &&
+	    ((float)(random_uint32() >> 8) * (1.0f / 16777216.0f) < dqn_epsilon)) {
+		const uint32_t action = random_uint32() % 3U;
+		const float command = (float)action - 1.0f;
+		example->actor.action_index = action;
+		example->actor.requested[0] = command;
+		example->actor.limited[0] = command;
+		example->actor.applied[0] = command;
+		example->actor.state.applied_voltage[0] = command;
+		output = previous_output + example->step_fraction * ((example->gain * command) - previous_output);
+		example->output = output;
+	}
+	uz_actor_pt1_replay_signals.next_y = output;
+	uz_actor_pt1_replay_signals.epsilon = (active_actor == UZ_PT1_REPLAY_DQN) ? dqn_epsilon : 0.0f;
+#endif
 	const float error_after = reference - output;
 	const uint32_t episode_number = episode + 1U;
 	uz_actor_pt1_replay_signals.actor = (active_actor == UZ_PT1_REPLAY_DQN) ? 1.0f : 2.0f;

@@ -52,34 +52,38 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 // - triggered from PL
 // - start of the control period
 //----------------------------------------------------
-void ISR_Control(void *data)
-{
-    uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
+void ISR_Control(void *data) {
+	uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
 #if UZ_PT1_REPLAY == 1U
 	uz_actor_pt1_replay_step();
-#else
-    ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
-
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
-    if (current_state==control_state)
-    {
-        // Start: Control algorithm - only if ultrazohm is in control state
-    }
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
-
-    // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+#if UZ_PT1_TRAINING == 1U
+	const uint64_t pt1_isr = uz_SystemTime_GetInterruptCounter();
+	for (uint32_t i = 0U; i < 4U; ++i) {
+		uz_actor_pt1_replay_signals.isr[i] = (float)((pt1_isr >> (16U * i)) & 0xffffU);
+	}
 #endif
-    JavaScope_update(&Global_Data);
-    // Read the timer value at the very end of the ISR to minimize measurement error
-    // This has to be the last function executed in the ISR!
-    uz_SystemTime_ISR_Toc();
+#else
+	ReadAllADC();
+	update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+	platform_state_t current_state = ultrazohm_state_machine_get_state();
+	if (current_state == control_state) {
+		// Start: Control algorithm - only if ultrazohm is in control state
+	}
+	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
+	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+
+	// Set duty cycles for three-level modulator
+	PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+	                    Global_Data.rasv.halfBridge2DutyCycle,
+	                    Global_Data.rasv.halfBridge3DutyCycle);
+#endif
+	JavaScope_update(&Global_Data);
+	// Read the timer value at the very end of the ISR to minimize measurement error
+	// This has to be the last function executed in the ISR!
+	uz_SystemTime_ISR_Toc();
 }
 
 //==============================================================================================================================================================
@@ -88,33 +92,29 @@ void ISR_Control(void *data)
 //----------------------------------------------------
 // INITIALIZE & SET THE INTERRUPTs and ISRs
 //----------------------------------------------------
-int Initialize_ISR()
-{
+int Initialize_ISR() {
 
-    int Status = 0;
+	int Status = 0;
 
-    // Initialize interrupt controller for the IPI -> Initialize RPU IPI
-    Status = Rpu_IpiInit(INTERRUPT_ID_IPI);
-    if (Status != XST_SUCCESS)
-    {
-        xil_printf("RPU: Error: IPI initialization failed\r\n");
-        return XST_FAILURE;
-    }
+	// Initialize interrupt controller for the IPI -> Initialize RPU IPI
+	Status = Rpu_IpiInit(INTERRUPT_ID_IPI);
+	if (Status != XST_SUCCESS) {
+		xil_printf("RPU: Error: IPI initialization failed\r\n");
+		return XST_FAILURE;
+	}
 
-    // Initialize interrupt controller for the GIC
-    Status = Rpu_GicInit(&GIC_instance, INTERRUPT_ID_SCUG);
-    if (Status != XST_SUCCESS)
-    {
-        xil_printf("RPU: Error: GIC initialization failed\r\n");
-        return XST_FAILURE;
-    }
+	// Initialize interrupt controller for the GIC
+	Status = Rpu_GicInit(&GIC_instance, INTERRUPT_ID_SCUG);
+	if (Status != XST_SUCCESS) {
+		xil_printf("RPU: Error: GIC initialization failed\r\n");
+		return XST_FAILURE;
+	}
 
-    // Enable interrupt on CPU level
-    Xil_ExceptionEnable();
+	// Enable interrupt on CPU level
+	Xil_ExceptionEnable();
 
-    return Status;
+	return Status;
 }
-
 
 /**
  * @brief Initialize the R5 GIC and connect/enable the PL-to-PS interrupt used by the RPU.
@@ -124,44 +124,42 @@ int Initialize_ISR()
  *
  * @return XST_SUCCESS on success. This implementation asserts on failures.
  */
-int Rpu_GicInit(XScuGic *GIC_instance_ptr, u16 DeviceId)
-{
-    XScuGic_Config *GIC_config;
-    int status;
+int Rpu_GicInit(XScuGic *GIC_instance_ptr, u16 DeviceId) {
+	XScuGic_Config *GIC_config;
+	int status;
 
-    // Disable all interrupts
-    Xil_ExceptionDisable();
+	// Disable all interrupts
+	Xil_ExceptionDisable();
 
-    GIC_config = XScuGic_LookupConfig(DeviceId);
+	GIC_config = XScuGic_LookupConfig(DeviceId);
 
-    uz_assert_not_NULL(GIC_config);
+	uz_assert_not_NULL(GIC_config);
 
-    status = XScuGic_CfgInitialize(GIC_instance_ptr, GIC_config, GIC_config->CpuBaseAddress);
+	status = XScuGic_CfgInitialize(GIC_instance_ptr, GIC_config, GIC_config->CpuBaseAddress);
 	uz_assert(status == XST_SUCCESS);
 
-    Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler)XScuGic_InterruptHandler, GIC_instance_ptr);
+	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler)XScuGic_InterruptHandler, GIC_instance_ptr);
 
-    // Clear latched active interrupt register - for UZ warm start
-    uz_r5_gic_reset_active_pl_interrupts(GIC_instance_ptr);
+	// Clear latched active interrupt register - for UZ warm start
+	uz_r5_gic_reset_active_pl_interrupts(GIC_instance_ptr);
 
-    // Configure trigger/priority
-    // XScuGic_SetPriorityTriggerType(XScuGic *InstancePtr, u32 Int_Id, u8 Priority, u8 Trigger)
-    XScuGic_SetPriorityTriggerType(GIC_instance_ptr, Interrupt_ISR_ID, 0x0, 0b11); // Trigger 0b11 = rising-edge, Trigger 0b01 = active-high
+	// Configure trigger/priority
+	// XScuGic_SetPriorityTriggerType(XScuGic *InstancePtr, u32 Int_Id, u8 Priority, u8 Trigger)
+	XScuGic_SetPriorityTriggerType(GIC_instance_ptr, Interrupt_ISR_ID, 0x0, 0b11); // Trigger 0b11 = rising-edge, Trigger 0b01 = active-high
 
-    // Connect handler
-    status = XScuGic_Connect(GIC_instance_ptr,
-                             Interrupt_ISR_ID,
-                             (Xil_ExceptionHandler)ISR_Control,
-                             NULL);
+	// Connect handler
+	status = XScuGic_Connect(GIC_instance_ptr,
+	                         Interrupt_ISR_ID,
+	                         (Xil_ExceptionHandler)ISR_Control,
+	                         NULL);
 	uz_assert(status == XST_SUCCESS);
 
-    // Enable only the connected interrupt
-    XScuGic_Enable(GIC_instance_ptr, Interrupt_ISR_ID);
+	// Enable only the connected interrupt
+	XScuGic_Enable(GIC_instance_ptr, Interrupt_ISR_ID);
 
-    xil_printf("RPU: Rpu_GicInit: Done\r\n");
-    return XST_SUCCESS;
+	xil_printf("RPU: Rpu_GicInit: Done\r\n");
+	return XST_SUCCESS;
 }
-
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -169,53 +167,44 @@ int Rpu_GicInit(XScuGic *GIC_instance_ptr, u16 DeviceId)
 //
 // @IpiInstPtr		Pointer to the IPI instance
 //----------------------------------------------------
-u32 Rpu_IpiInit(u16 DeviceId)
-{
-    XIpiPsu_Config *IPI_config;
-    int status;
+u32 Rpu_IpiInit(u16 DeviceId) {
+	XIpiPsu_Config *IPI_config;
+	int status;
 
-    // Interrupt controller configuration
-    IPI_config = XIpiPsu_LookupConfig(DeviceId);
-    if (IPI_config == NULL)
-    {
-        xil_printf("RPU: Error: Ipi Init failed\r\n");
-        return XST_FAILURE;
-    }
+	// Interrupt controller configuration
+	IPI_config = XIpiPsu_LookupConfig(DeviceId);
+	if (IPI_config == NULL) {
+		xil_printf("RPU: Error: Ipi Init failed\r\n");
+		return XST_FAILURE;
+	}
 
-    // Interrupt controller initialization
-    status = XIpiPsu_CfgInitialize(&IPI_instance, IPI_config, IPI_config->BaseAddress);
-    if (status != XST_SUCCESS)
-    {
-        xil_printf("RPU: Error: IPI Config failed\r\n");
-        return XST_FAILURE;
-    }
+	// Interrupt controller initialization
+	status = XIpiPsu_CfgInitialize(&IPI_instance, IPI_config, IPI_config->BaseAddress);
+	if (status != XST_SUCCESS) {
+		xil_printf("RPU: Error: IPI Config failed\r\n");
+		return XST_FAILURE;
+	}
 
-    XIpiPsu_InterruptEnable(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
+	XIpiPsu_InterruptEnable(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
 
-    xil_printf("RPU: Rpu_IpiInit: Done\r\n");
-    return XST_SUCCESS;
+	xil_printf("RPU: Rpu_IpiInit: Done\r\n");
+	return XST_SUCCESS;
 }
 
 #if UZ_PT1_REPLAY == 0U
-static void ReadAllADC(void)
-{
-    ADC_readCardALL(&Global_Data);
+static void ReadAllADC(void) {
+	ADC_readCardALL(&Global_Data);
 };
 #endif
 
+static inline bool uz_gic_is_active_id(XScuGic *Gic, u32 IntId) {
+	/* Active status is in Distributor ACTIVE banked registers */
+	const u32 reg = XSCUGIC_EN_DIS_OFFSET_CALC(XSCUGIC_ACTIVE_OFFSET, IntId); /* ACTIVE + (IntId/32)*4 */
+	const u32 bit = (u32)1U << (IntId % 32U);
 
-
-
-static inline bool uz_gic_is_active_id(XScuGic *Gic, u32 IntId)
-{
-    /* Active status is in Distributor ACTIVE banked registers */
-    const u32 reg = XSCUGIC_EN_DIS_OFFSET_CALC(XSCUGIC_ACTIVE_OFFSET, IntId); /* ACTIVE + (IntId/32)*4 */
-    const u32 bit = (u32)1U << (IntId % 32U);
-
-    const u32 act = XScuGic_DistReadReg(Gic, reg);
-    return ((act & bit) != 0U);
+	const u32 act = XScuGic_DistReadReg(Gic, reg);
+	return ((act & bit) != 0U);
 }
-
 
 /**
  * @brief Clears stuck ACTIVE PL interrupts by writing GICC_EOIR (End Of Interrupt Register)
@@ -226,22 +215,19 @@ static inline bool uz_gic_is_active_id(XScuGic *Gic, u32 IntId)
  * Call during GIC init, before enabling IRQ delivery on the R5.
  *
  */
-static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic)
-{
+static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic) {
 	// list of all PL Interrupt IDs
 	const uint16_t uz_fpga_spi_ids[] = {
-	    XPS_FPGA0_INT_ID,  XPS_FPGA1_INT_ID,  XPS_FPGA2_INT_ID,  XPS_FPGA3_INT_ID,
-	    XPS_FPGA4_INT_ID,  XPS_FPGA5_INT_ID,  XPS_FPGA6_INT_ID,  XPS_FPGA7_INT_ID,
-	    XPS_FPGA8_INT_ID,  XPS_FPGA9_INT_ID,  XPS_FPGA10_INT_ID, XPS_FPGA11_INT_ID,
-	    XPS_FPGA12_INT_ID, XPS_FPGA13_INT_ID, XPS_FPGA14_INT_ID, XPS_FPGA15_INT_ID
-	};
+	        XPS_FPGA0_INT_ID, XPS_FPGA1_INT_ID, XPS_FPGA2_INT_ID, XPS_FPGA3_INT_ID,
+	        XPS_FPGA4_INT_ID, XPS_FPGA5_INT_ID, XPS_FPGA6_INT_ID, XPS_FPGA7_INT_ID,
+	        XPS_FPGA8_INT_ID, XPS_FPGA9_INT_ID, XPS_FPGA10_INT_ID, XPS_FPGA11_INT_ID,
+	        XPS_FPGA12_INT_ID, XPS_FPGA13_INT_ID, XPS_FPGA14_INT_ID, XPS_FPGA15_INT_ID};
 
 	uz_assert_not_NULL(Gic);
 	uz_assert_not_NULL(Gic->Config);
 
-    // iterate over all PL interrupts
-	for (uint32_t i = 0U; i < (uint32_t)(sizeof(uz_fpga_spi_ids)/sizeof(uz_fpga_spi_ids[0])); ++i)
-	{
+	// iterate over all PL interrupts
+	for (uint32_t i = 0U; i < (uint32_t)(sizeof(uz_fpga_spi_ids) / sizeof(uz_fpga_spi_ids[0])); ++i) {
 		const uint32_t id = (uint32_t)uz_fpga_spi_ids[i];
 
 		// check if id-interrupt is stuck on active
@@ -250,10 +236,6 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic)
 			/* Writing IntId to EOIR to clear the stuck ACTIVE state */
 			XScuGic_CPUWriteReg(Gic, XSCUGIC_EOI_OFFSET, (id & XSCUGIC_EOI_INTID_MASK));
 			uz_printf("RPU: GIC Cleared ACTIVE for PL interrupt ID %u\r\n", (unsigned long)id);
-
 		}
-    }
+	}
 }
-
-
-

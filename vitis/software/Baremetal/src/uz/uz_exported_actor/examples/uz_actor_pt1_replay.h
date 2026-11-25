@@ -5,6 +5,7 @@
 #ifndef UZ_ACTOR_PT1_REPLAY_H
 #define UZ_ACTOR_PT1_REPLAY_H
 
+#include "../../uz_global_configuration.h"
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -33,6 +34,10 @@ struct uz_actor_pt1_replay_signals {
 	float action_index;
 	float q_values[3];
 	float done;
+	float next_y;
+	float epsilon;
+	/* Exact uint64 ISR number as four little-endian 16-bit limbs. */
+	float isr[4];
 };
 
 /* Read-only to consumers; writable storage is required by JavaScope. */
@@ -73,6 +78,10 @@ void uz_actor_pt1_replay_stop(void);
 void uz_actor_pt1_replay_toggle_manual(void);
 /** @brief Accept a finite manual reference; ignore nonfinite inputs. */
 void uz_actor_pt1_replay_set_reference(float reference);
+#if UZ_PT1_TRAINING == 1U
+/** @brief Set DQN epsilon in [0,1] while stopped; zero preserves greedy replay. */
+void uz_actor_pt1_replay_set_epsilon(float epsilon);
+#endif
 /** @brief Report manual mode from the internal boolean state. */
 bool uz_actor_pt1_replay_is_manual(void);
 /** @brief Return the actor currently executing, or idle. */

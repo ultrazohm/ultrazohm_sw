@@ -1,57 +1,8 @@
+"""Live controller lifecycle: Stop priority, flash and shutdown ordering."""
+
 import threading
-import time
 
 import pytest
-
-from ultrazohm_dataviewer.loader import numeric_columns
-from ultrazohm_dataviewer.requests import Requests
-from ultrazohm_dataviewer.user_paths import publish_new
-
-
-def test_first_timestamp_column_cannot_be_filtered_out():
-    with pytest.raises(ValueError, match="timestamp"):
-        numeric_columns([("timestamp", False), ("current", True), ("voltage", True)])
-
-
-def test_continuous_display_publishes_before_producer_stops():
-    requests = Requests()
-    started, release, release_next = (threading.Event() for _ in range(3))
-
-    def compute(cancel):
-        started.set()
-        release.wait(2)
-        return "first"
-
-    try:
-        requests.request("plot", 1, "recording", compute, continuous=True)
-        assert started.wait(2)
-        requests.request(
-            "plot", 2, "recording", lambda cancel: release_next.wait(2), continuous=True
-        )
-        release.set()
-        deadline = time.monotonic() + 2
-        while not requests.results and time.monotonic() < deadline:
-            time.sleep(0.005)
-        assert requests.results["plot"] == (1, "recording", "first")
-    finally:
-        release.set()
-        release_next.set()
-        requests.close()
-
-
-def test_exclusive_publication_fallback_preserves_existing_file(tmp_path, monkeypatch):
-    source, target = tmp_path / "temporary", tmp_path / "complete"
-    source.write_text("new")
-    target.write_text("existing")
-    monkeypatch.setattr(
-        "os.link", lambda *args: (_ for _ in ()).throw(OSError("unsupported"))
-    )
-    with pytest.raises(FileExistsError):
-        publish_new(source, target)
-    assert target.read_text() == "existing"
-    target.unlink()
-    publish_new(source, target)
-    assert target.read_text() == "new"
 
 
 def test_stop_bypasses_read_and_invalidates_queued_enable():
@@ -87,105 +38,6 @@ def test_stop_bypasses_read_and_invalidates_queued_enable():
         release.set()
         reader.join(timeout=2)
         app._shutdown()
-
-
-def test_gui_file_validation_is_background_but_raw_validation_is_strict(
-    tmp_path, monkeypatch
-):
-    from ultrazohm_dataviewer.sources import FileIdentity, validation_error
-
-    path = tmp_path / "recording"
-    path.write_text("original")
-    identity = FileIdentity.capture(path)
-    jobs = Requests()
-    entered, release = threading.Event(), threading.Event()
-    original = FileIdentity._validate
-
-    def slow_validate(self):
-        entered.set()
-        assert release.wait(2)
-        original(self)
-
-    monkeypatch.setattr(FileIdentity, "_validate", slow_validate)
-    try:
-        assert validation_error([identity], jobs) is None
-        assert entered.wait(2)
-        path.write_text("changed recording")
-        release.set()
-        deadline = time.monotonic() + 2
-        while not jobs.results and time.monotonic() < deadline:
-            time.sleep(0.005)
-        assert "Source changed" in validation_error([identity], jobs)
-        with pytest.raises(ValueError, match="Source changed"):
-            identity.validate()
-    finally:
-        release.set()
-        jobs.close()
-
-
-@pytest.mark.parametrize("forget", [False, True])
-def test_continuous_display_discards_canceled_identity(forget):
-    jobs = Requests()
-    entered, release, next_entered, next_release = (threading.Event() for _ in range(4))
-
-    def old(cancel):
-        entered.set()
-        assert release.wait(2)
-        return "obsolete"
-
-    def new(cancel):
-        next_entered.set()
-        assert next_release.wait(2)
-        return "current"
-
-    try:
-        jobs.request("plot", 1, "old", old, continuous=True)
-        assert entered.wait(2)
-        if forget:
-            jobs.forget("plot")
-        jobs.request("plot", 2, "new", new, continuous=True)
-        release.set()
-        assert next_entered.wait(2)
-        assert not jobs.results
-    finally:
-        release.set()
-        next_release.set()
-        jobs.close()
-
-
-def test_publication_race_has_exactly_one_winner(tmp_path, monkeypatch):
-    import os
-    from concurrent.futures import ThreadPoolExecutor
-
-    source_a, source_b, target = (tmp_path / name for name in ("a", "b", "target"))
-    source_a.write_text("a")
-    source_b.write_text("b")
-    monkeypatch.setattr(
-        os, "link", lambda *args: (_ for _ in ()).throw(OSError("unsupported"))
-    )
-    # Expose the former check-then-rename race deterministically. Exclusive OS
-    # publication needs no check and never enters this replacing rename on POSIX.
-    rename = os.rename
-    barrier = threading.Barrier(2)
-
-    def racing_rename(source, destination):
-        barrier.wait(timeout=2)
-        rename(source, destination)
-
-    monkeypatch.setattr(os, "rename", racing_rename)
-
-    def publish(source):
-        try:
-            publish_new(source, target)
-            return source.name
-        except FileExistsError:
-            return None
-
-    with ThreadPoolExecutor(max_workers=2) as executor:
-        winners = list(executor.map(publish, [source_a, source_b]))
-    winners = [winner for winner in winners if winner is not None]
-    assert len(winners) == 1
-    assert target.read_text() == winners[0]
 
 
 @pytest.mark.parametrize("shutdown_fails", [False, True])
@@ -414,3 +266,181 @@ def test_canceling_queued_flash_releases_busy_state(monkeypatch, cancel):
             if thread is not None:
                 thread.join(2)
                 assert not thread.is_alive()
+
+
+def test_stop_reaches_service_during_running_flash_and_busy_script():
+    """GUI Stop and a script's Stop are delivered while Flash UZ follows its job."""
+    from unittest.mock import Mock
+
+    from live_support import wait_for
+
+    from ultrazohm_dataviewer.live import LiveController
+
+    release = threading.Event()
+    polled = threading.Event()
+    client = Mock()
+    client.status.return_value = {
+        "firmware_available": True,
+        "state": {"device": "127.0.0.1:1000"},
+    }
+    client.firmware.return_value = {"id": "job"}
+
+    def job(job_id, offset):
+        polled.set()
+        state = "succeeded" if release.is_set() else "running"
+        return {
+            "log": "",
+            "next_offset": offset,
+            "job": {"state": state, "phase": "programming", "result": None},
+        }
+
+    client.job.side_effect = job
+    controller = LiveController(lambda _: client)
+    try:
+        controller.submit(
+            "flash",
+            endpoint="127.0.0.1:19740",
+            ip="127.0.0.1",
+            port=1000,
+            output="unused",
+        )
+        assert polled.wait(5)
+        assert controller.flashing
+        controller.submit("stop")  # GUI button: bypasses the flash monitor
+        script = threading.Thread(target=controller.send_stop)  # script runner
+        script.start()
+        script.join(5)
+        assert not script.is_alive(), "script Stop waited for the flash job"
+        wait_for(lambda: client.stop.call_count == 2)
+        assert controller.flashing, "Stops must not wait for the flash to finish"
+        release.set()
+        wait_for(lambda: not controller.flashing)
+    finally:
+        release.set()
+        controller.close()
+
+
+def _attached_controller(client):
+    from ultrazohm_dataviewer.live import LiveController
+
+    controller = LiveController(lambda endpoint: client)
+    controller.endpoint = "127.0.0.1:19740"
+    controller.client = client
+    controller.attached = True
+    return controller
+
+
+def test_gui_stop_without_flash_uses_the_control_path():
+    from unittest.mock import Mock
+
+    from live_support import wait_for
+
+    client = Mock()
+    controller = _attached_controller(client)
+    try:
+        controller.submit("stop")
+        wait_for(lambda: client.stop.called)
+        wait_for(lambda: controller.latest().completed_commands == 1)
+        # Never queued on the command worker.
+        assert controller.thread is None
+        assert controller.control_thread is not None
+        assert "stop: request sent" in controller.latest().notice
+        assert not controller.latest().error
+    finally:
+        controller.close()
+
+
+def test_shutdown_releases_the_attachment():
+    from unittest.mock import Mock
+
+    from live_support import wait_for
+
+    client = Mock()
+    client.shutdown.return_value = {"service_id": "external-service"}
+    controller = _attached_controller(client)
+    try:
+        controller.submit("shutdown")
+        wait_for(lambda: not controller.latest().attached)
+        wait_for(lambda: "finalization continues" in controller.latest().notice)
+        client.shutdown.assert_called_once_with()
+    finally:
+        controller.close()
+
+
+def _attached_elsewhere(clients):
+    """A controller attached to B while a shutdown for A is still pending."""
+    from ultrazohm_dataviewer.live import LiveController
+
+    controller = LiveController(clients.__getitem__)
+    controller.endpoint, controller.client, controller.attached = (
+        "B",
+        clients["B"],
+        True,
+    )
+    return controller
+
+
+@pytest.mark.parametrize("available", [True, False])
+def test_shutdown_of_another_service_keeps_the_current_attachment(available):
+    from unittest.mock import Mock
+
+    clients = {"A": Mock(), "B": Mock()}
+    if available:
+        clients["A"].shutdown.return_value = {"service_id": "service-a"}
+    else:
+        refused = RuntimeError("connection refused")
+        refused.code = "connection_refused"
+        clients["A"].shutdown.side_effect = refused
+    controller = _attached_elsewhere(clients)
+    try:
+        controller._urgent("shutdown", "A")
+        clients["A"].shutdown.assert_called_once_with()
+        assert (controller.endpoint, controller.attached) == ("B", True)
+        expected = (
+            "Service at A shutdown accepted"
+            if available
+            else "Shutdown of A: acquisition service unavailable"
+        )
+        assert expected in controller._notice
+    finally:
+        controller.close()
+    # B is still attached, so closing the viewer still stops its device.
+    clients["B"].stop.assert_called_once_with()
+    clients["A"].stop.assert_not_called()
+
+
+def test_owned_shutdown_is_awaited_after_attaching_elsewhere():
+    from unittest.mock import Mock
+
+    clients = {"A": Mock(), "B": Mock()}
+    clients["A"].shutdown.return_value = {"service_id": "owned"}
+    controller = _attached_elsewhere(clients)
+    controller.owned.endpoint, controller.owned.service_id = "A", "owned"
+    controller.owned.process = Mock()
+    controller.owned.process.poll.return_value = 0
+    controller.owned.process.returncode = 0
+    try:
+        controller._urgent("shutdown", "A")
+        assert "Service at A shut down; recordings finalized" in controller._notice
+        assert controller.attached
+    finally:
+        controller.close()
+
+
+@pytest.mark.parametrize("operation", ["stop", "shutdown"])
+def test_lifecycle_request_without_attachment_reports_an_error(operation):
+    from unittest.mock import Mock
+
+    from live_support import wait_for
+
+    from ultrazohm_dataviewer.live import LiveController
+
+    client = Mock()
+    controller = LiveController(lambda endpoint: client)
+    controller.endpoint = "127.0.0.1:19740"
+    try:
+        controller.submit(operation)
+        wait_for(lambda: "Attach to a service first" in controller.latest().error)
+        getattr(client, operation).assert_not_called()
+    finally:
+        controller.close()

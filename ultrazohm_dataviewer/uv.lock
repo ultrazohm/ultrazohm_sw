@@ -506,9 +506,7 @@ dependencies = [
     { name = "glfw" },
     { name = "imgui-bundle" },
     { name = "numpy" },
-    { name = "pandas" },
     { name = "polars" },
-    { name = "pyarrow" },
     { name = "ultrazohm-cli" },
 ]
 
@@ -518,18 +516,22 @@ dev = [
     { name = "pytest" },
     { name = "ruff" },
 ]
+pandas = [
+    { name = "pandas" },
+    { name = "pyarrow" },
+]
 
 [package.metadata]
 requires-dist = [
-    { name = "glfw", specifier = "==2.11.0" },
-    { name = "imgui-bundle", specifier = "==1.93.0" },
-    { name = "numpy", specifier = "==2.5.4" },
-    { name = "pandas", specifier = "==3.1.0" },
-    { name = "polars", specifier = "==2.0.0" },
-    { name = "pyarrow", specifier = "==26.0.0" },
+    { name = "glfw", specifier = ">=2.8,<3" },
+    { name = "imgui-bundle", specifier = ">=1.93,<2" },
+    { name = "numpy", specifier = ">=2.2,<3" },
+    { name = "pandas", marker = "extra == 'pandas'", specifier = ">=2.2" },
+    { name = "polars", specifier = ">=2.0,<3" },
+    { name = "pyarrow", marker = "extra == 'pandas'", specifier = ">=15" },
     { name = "pyinstaller", marker = "extra == 'dev'", specifier = ">=6.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7" },
     { name = "ruff", marker = "extra == 'dev'", specifier = "==0.17.2" },
     { name = "ultrazohm-cli", directory = "../ultrazohm_cli" },
 ]
-provides-extras = ["dev"]
+provides-extras = ["pandas", "dev"]

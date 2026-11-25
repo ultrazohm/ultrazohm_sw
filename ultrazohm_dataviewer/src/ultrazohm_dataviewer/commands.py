@@ -158,6 +158,8 @@ def _coerce_one(state: AppState, param: Param, raw):
         return _parse_bool(raw)
     if kind == "str":
         return str(raw)
+    if kind == "weights":
+        return json.loads(raw) if isinstance(raw, str) else raw
     if kind == "plot":
         n = _plot_number(raw)
         if not 1 <= n <= state.cell_count:
@@ -231,6 +233,71 @@ def format_call(cmd: Command, values: list) -> str:
 
 
 # -- registry -----------------------------------------------------------------
+# Operations exposed by the Python client (`client_methods.py` is generated from
+# their specifications: `uz_developer dataviewer generate`).
+PUBLIC_COMMANDS = frozenset(
+    (
+        "cache_budget",
+        "clear_plot",
+        "convert",
+        "cursors",
+        "disk_cache",
+        "export_data",
+        "fft",
+        "fft_clear",
+        "fft_export",
+        "fft_follow",
+        "fft_hann",
+        "fft_logx",
+        "fft_logy",
+        "fft_range",
+        "fft_remove",
+        "fft_remove_dc",
+        "fft_source",
+        "fft_xlim",
+        "hist_bins",
+        "hist_clear",
+        "hist_export",
+        "hist_follow",
+        "hist_range",
+        "hist_remove",
+        "hist_source",
+        "hist_xlim",
+        "histogram",
+        "load_plugins",
+        "loading_mode",
+        "node_add",
+        "node_eval",
+        "node_link",
+        "node_pos",
+        "node_remove",
+        "node_rename",
+        "node_set",
+        "node_source",
+        "node_unlink",
+        "normalize_time",
+        "remove_run",
+        "remove_signal",
+        "reset_time",
+        "reset_view",
+        "set_active",
+        "set_axis",
+        "set_cursors",
+        "set_export_relative",
+        "set_max_points",
+        "set_plot_type",
+        "set_spy_rect",
+        "set_x_lim",
+        "set_xy",
+        "set_xy_style",
+        "set_y2_lim",
+        "set_y_lim",
+        "show_samples",
+        "spy",
+    )
+)
+
+
 class CommandRegistry:
     """Holds the command set and dispatches calls against an :class:`AppState`."""
 
@@ -271,6 +338,48 @@ class CommandRegistry:
             message = submit(state, cmd.handler, values)
         else:
             message = cmd.handler(state, values)
+        if workspace := getattr(state, "live_workspace", None):
+            if name in (
+                "clear_plot",
+                "add_signal",
+                "remove_signal",
+                "set_axis",
+                "set_xy",
+            ):
+                cell = state.cells[values[0] - 1]
+                pending = workspace._reconnect_signals.get(id(cell))
+                if pending is not None:
+                    _, signals, secondary, xy = pending
+                    if name == "clear_plot":
+                        workspace._reconnect_signals.pop(id(cell), None)
+                    else:
+                        signal = values[2]
+                        if name == "add_signal" and signal not in signals:
+                            signals.append(signal)
+                        elif name == "remove_signal":
+                            signals = [n for n in signals if n != signal]
+                            secondary = [n for n in secondary if n != signal]
+                            xy = None if xy == signal else xy
+                        elif name == "set_axis":
+                            secondary = [n for n in secondary if n != signal]
+                            if (values[1], signal) in cell.y2_signals:
+                                secondary.append(signal)
+                        elif name == "set_xy":
+                            xy = signal
+                        workspace._reconnect_signals[id(cell)] = (
+                            cell,
+                            signals,
+                            secondary,
+                            xy,
+                        )
+            if name in (
+                "set_grid",
+                "set_grid_ratios",
+                "link_x",
+                "set_max_points",
+            ) or (name != "export_data" and any(p.kind == "plot" for p in cmd.params)):
+                # Explicit layout edits supersede preferences waiting for live data.
+                workspace._pending_plot_setup = None
         from concurrent.futures import Future
 
         if isinstance(message, Future):
@@ -370,7 +479,6 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
         out = convert_csv_to_parquet(
             src,
             dst,
-            backend=state.backend,
             axis_column=axis_column,
             axis_domain=axis_domain,
         )
@@ -385,7 +493,7 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
             Param("axis_domain", "str", optional=True),
         ],
         convert,
-        "Stream-convert CSV to Parquet using the selected backend; "
+        "Stream-convert CSV to Parquet; "
         "dst defaults to src with a .parquet extension. Existing destinations and empty inputs are rejected.",
     )
 
@@ -428,6 +536,13 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
         "Set the subplot grid to rows x cols.",
     )
 
+    reg.add(
+        "set_grid_ratios",
+        [Param("rows", "weights"), Param("cols", "weights")],
+        lambda state, a: state.set_grid_ratios(*a),
+        "Set positive relative row and column sizes; lengths must match the grid.",
+    )
+
     def link_x(state, a):
         from .application_mutations import link_x as apply
 
@@ -438,22 +553,6 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
         [Param("on", "bool")],
         link_x,
         "Link/unlink the X axes across subplots.",
-    )
-
-    def backend(state, a):
-        from .loader import validate_backend
-
-        try:
-            validate_backend(a[0])
-        except ValueError as exc:
-            raise CommandError(str(exc)) from exc
-        state.backend = a[0]
-
-    reg.add(
-        "backend",
-        [Param("name", "str")],
-        backend,
-        "IO backend for subsequent opens, exports and CSV conversion: pyarrow or polars (desktop only).",
     )
 
     def loading_mode(state, a):
@@ -598,6 +697,11 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
 
     def set_x_lim(state, a):
         plot_n, lo, hi = a
+        from .validation import axis_limits
+
+        axis_limits(lo, hi)
+        if workspace := getattr(state, "live_workspace", None):
+            workspace.inspect()
         state.set_plot_x_limits(plot_n, lo, hi)
 
     reg.add(
@@ -618,8 +722,17 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
         "Set a subplot's Y-axis limits.",
     )
 
+    reg.add(
+        "set_y2_lim",
+        [Param("plot", "plot"), Param("min", "float"), Param("max", "float")],
+        lambda state, a: _cell(state, a[0]).set_limits("y2", a[1], a[2]),
+        "Set the secondary (right) Y-axis limits of a 1-based subplot.",
+    )
+
     def reset_view(state, a):
         state.reset_plot_view(a[0])
+        if workspace := getattr(state, "live_workspace", None):
+            workspace.resume_live()
 
     reg.add(
         "reset_view",

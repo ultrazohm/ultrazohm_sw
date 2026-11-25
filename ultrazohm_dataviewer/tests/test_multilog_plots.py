@@ -11,7 +11,6 @@ from ultrazohm_dataviewer.panels.plots import PlotsPanel
 
 
 def load_logs(state, tmp_path, mode, offset):
-    state.backend = "pyarrow"
     state.loading_mode = mode
     for index in range(2):
         # Identical filenames and channels must still identify distinct runs.

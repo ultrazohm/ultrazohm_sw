@@ -23,7 +23,7 @@ Plugins location
    export UZ_DATAVIEWER_PLUGINS=/path/to/my/plugins
    ultrazohm-dataviewer
 
-Load plugins into an open viewer through the Python client.
+Load plugins into an open DataViewer through the Python client.
 Omit the directory to use the configured search paths.
 
 .. code-block:: python
@@ -35,9 +35,9 @@ Omit the directory to use the configured search paths.
 
 A missing folder or file is silently skipped.
 Import failures appear in the Application log.
-The viewer skips the failed plugin and rolls back its registrations and module entry.
+The DataViewer skips the failed plugin and rolls back its registrations and module entry.
 Node kinds cannot replace an existing plugin or builtin registration.
-Restart the viewer to load changes to an already registered kind.
+Restart the DataViewer to load changes to an already registered kind.
 This keeps cached node outputs consistent with the implementation that produced them.
 
 Plugin structure
@@ -86,14 +86,15 @@ A working example is located at ``ultrazohm_sw/ultrazohm_dataviewer/examples/plu
    * - ``unit``
      - optional unit string for the derived signal (default ``""``)
    * - ``input_domain``
-     - required input domain: ``"time"`` or ``"frequency"``; default ``None`` accepts either. A callable taking ``params`` may return the requirement.
+     - required input domain: ``"time"`` or ``"frequency"``; default ``None`` accepts either.
+       A callable taking ``params`` may return the requirement.
    * - ``output_domain``
-     - output axis domain: ``"time"`` or ``"frequency"``; default ``None`` preserves the input domain. Domain-changing transforms must declare it.
+     - output axis domain: ``"time"`` or ``"frequency"``; default ``None`` preserves the input domain.
+       Domain-changing transforms must declare it.
 
-For example, declare a spectrum-producing transform with
-``@transform("spectrum", input_domain="time", output_domain="frequency")``.
-Its returned axis contains frequencies. Downstream axis-preserving transforms
-keep that domain, and time-only transforms reject it before computation.
+For example, declare a spectrum-producing transform with ``@transform("spectrum", input_domain="time", output_domain="frequency")``.
+Its returned axis contains frequencies.
+Downstream axis-preserving transforms keep that domain, and time-only transforms reject it before computation.
 
 ``ParamSpec`` widgets
 ---------------------
@@ -105,10 +106,11 @@ Each renders a widget that writes back to ``params[key]``; read it in your funct
 Rules & tips
 ============
 
-- Output an ``(out_time, out_y, info)`` tuple. ``out_time`` is the independent axis of the derived signal; its meaning must match ``output_domain`` or preserve the input domain when that argument is omitted.
+- Output an ``(out_time, out_y, info)`` tuple.
+  ``out_time`` is the independent axis of the derived signal; its meaning must match ``output_domain`` or preserve the input domain when that argument is omitted.
   Raise a normal exception with a clear message on bad input — it's caught, shown on the node, and the rest of the graph keeps working.
 - The result is materialized as a **derived run** named after the node, so it appears in Navigation and is draggable into plots / FFT / Histogram.
-- Plugins can import any package installed in the viewer's environment; the standalone bundle provides NumPy, pandas, PyArrow and Polars.
+- Plugins can import any package installed in the DataViewer's environment; the standalone bundle provides NumPy and Polars.
 - Scripting & sessions: a graph stores only the node *kind* and its params, never your code, so JSON sessions preserve the graph and Python clients use the same registered kinds.
   Opening a session whose plugin isn't installed keeps the node as a greyed **"missing plugin"** placeholder (params + links preserved); install the plugin and re-evaluate to restore it.
 
@@ -119,8 +121,8 @@ Plugin API version 2 makes inputs read-only array views.
 Allocate a separate working array before mutating samples.
 Returned arrays are validated, converted to float64 axes and float32 values, and copied into owned output buffers before publication.
 Invalid outputs fail only their node; independent graph branches continue evaluating.
-Plugins preserve the independent-axis domain of their inputs unless they declare
-``output_domain``. Inputs to a multi-input transform must have the same domain.
+Plugins preserve the independent-axis domain of their inputs unless they declare ``output_domain``.
+Inputs to a multi-input transform must have the same domain.
 Registration validates lowercase kind identifiers, callable implementations, input arity (0–1,024), unique parameter keys, declared widget types, nonempty unique enum choices, and typed defaults.
 Invalid declarations roll back the plugin import.
 Input arrays must be one-dimensional and paired with equal-length axes; output diagnostic text must be a string.

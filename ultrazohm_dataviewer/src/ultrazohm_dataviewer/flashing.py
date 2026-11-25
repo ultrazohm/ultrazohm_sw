@@ -28,12 +28,4 @@ def connection_refused(error):
     code = getattr(error, "code", None)
     if code is not None:
         return code == "connection_refused"
-    if isinstance(error, ConnectionRefusedError):
-        return True
-    # CLI wheels without transport error codes report refusal only as text.
-    text = str(error).lower()
-    return (
-        "connection refused" in text
-        or "os error 10061" in text
-        or "actively refused" in text
-    )
+    return isinstance(error, ConnectionRefusedError)

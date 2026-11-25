@@ -30,10 +30,8 @@ vitis/Packages/*
 *.slxc
 *cpAnnotation.mat
 
-# Keep JSON artifacts visible to Git at every depth.
-/artifacts/**
-!/artifacts/**/
-!/artifacts/**/*.json
+# Ignore generated artifacts.
+/artifacts/
 *.ini
 /ultrazohm_cli_channel_mappings/
 

@@ -39,7 +39,35 @@ class ConfigurationTest(unittest.TestCase):
                     validate_profile({**default_profile(), **changes})
 
     def test_remapping_rejects_unsupported_profile_schema(self):
-        with self.assertRaisesRegex(RuntimeError, "schema_version"):
+        with self.assertRaisesRegex(ValueError, "schema_version"):
             remap_profile(
                 channel_mapping(ROOT), {**default_profile(), "schema_version": 2}
             )
+
+    def test_circular_input_raises_instead_of_crashing(self):
+        profile = default_profile(ROOT)
+        profile["extra"] = profile
+        with self.assertRaisesRegex(ValueError, "Circular reference"):
+            validate_profile(profile)
+
+    def test_integer_channel_keys_are_accepted(self):
+        profile = default_profile(ROOT)
+        numeric = {
+            **profile,
+            "initial_channels": {
+                int(channel): name
+                for channel, name in profile["initial_channels"].items()
+            },
+        }
+        self.assertEqual(validate_profile(numeric), validate_profile(profile))
+
+    def test_non_finite_numbers_are_rejected_before_sending(self):
+        from ultrazohm_cli import Client
+
+        for value in (float("nan"), float("inf"), -float("inf")):
+            with self.subTest(value=value):
+                with self.assertRaisesRegex(ValueError, "not JSON compliant"):
+                    validate_profile({**default_profile(), "sample_period_us": value})
+                # Rejected locally: no service listens on this endpoint.
+                with self.assertRaisesRegex(ValueError, "not JSON compliant"):
+                    Client("127.0.0.1:9").set_variable("send_field_1", value)

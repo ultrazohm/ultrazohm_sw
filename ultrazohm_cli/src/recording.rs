@@ -1,4 +1,5 @@
 //! Independent recording lifetimes. Disk finalization never blocks device control.
+use crate::service::Selections;
 use crate::{
     data::{History, Stream},
     live::{DataOptions, selected_columns},
@@ -8,7 +9,7 @@ use crate::{
 };
 use anyhow::{Context, Result, ensure};
 use serde::Serialize;
-use serde_json::{Value, json};
+use serde_json::json;
 use std::{
     path::PathBuf,
     sync::{
@@ -63,18 +64,33 @@ impl Route {
         ));
         drop(history);
         // The writer drains accepted frames and finalizes as after a stop.
-        let mut states = self.states.lock().unwrap();
-        if matches!(states[self.slot].phase, "recording" | "paused") {
-            states[self.slot].phase = "finalizing";
-        }
+        self.states.lock().unwrap()[self.slot].begin_finalizing();
         Ok(false)
     }
 }
 pub type Routes = Arc<Mutex<[Option<Route>; 2]>>;
 
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum RecordingPhase {
+    #[default]
+    Idle,
+    Recording,
+    Paused,
+    /// Stopped or overflowed; accepted frames drain and finalize.
+    Finalizing,
+    Complete,
+    Failed,
+}
+impl RecordingPhase {
+    fn active(self) -> bool {
+        matches!(self, Self::Recording | Self::Paused)
+    }
+}
+
 #[derive(Clone, Serialize)]
 pub struct RecordingState {
-    pub phase: &'static str,
+    pub phase: RecordingPhase,
     pub parquet: Option<PathBuf>,
     pub error: Option<String>,
     pub handle: Option<PathBuf>,
@@ -83,13 +99,27 @@ pub struct RecordingState {
 impl Default for RecordingState {
     fn default() -> Self {
         Self {
-            phase: "idle",
+            phase: RecordingPhase::Idle,
             parquet: None,
             error: None,
             handle: None,
             backend: "parquet",
         }
     }
+}
+impl RecordingState {
+    fn begin_finalizing(&mut self) {
+        if self.phase.active() {
+            self.phase = RecordingPhase::Finalizing;
+        }
+    }
+}
+
+/// Fast and slow recording state, as reported by `status`.
+#[derive(Clone, Serialize)]
+pub struct RecordingsStatus {
+    pub fast: RecordingState,
+    pub slow: RecordingState,
 }
 
 pub struct Recordings {
@@ -122,9 +152,9 @@ impl Recordings {
             format,
         }
     }
-    pub fn status(&self) -> Value {
-        let s = self.states.lock().unwrap();
-        json!({"fast":s[0], "slow":s[1]})
+    pub fn status(&self) -> RecordingsStatus {
+        let [fast, slow] = self.states.lock().unwrap().clone();
+        RecordingsStatus { fast, slow }
     }
     pub fn history(&self, stream: &Stream, recording: u64) -> Result<Arc<Mutex<History>>> {
         self.histories
@@ -157,12 +187,12 @@ impl Recordings {
             .collect();
         (!errors.is_empty()).then(|| errors.join("; "))
     }
-    pub fn start(&mut self, slow: bool, selections: &Value) -> Result<()> {
+    pub fn start(&mut self, slow: bool, selections: &Selections) -> Result<()> {
         let slot = usize::from(slow);
         ensure!(
             !matches!(
                 self.states.lock().unwrap()[slot].phase,
-                "recording" | "paused" | "finalizing"
+                RecordingPhase::Recording | RecordingPhase::Paused | RecordingPhase::Finalizing
             ),
             "this recording is already active or still finalizing; check status"
         );
@@ -229,7 +259,7 @@ impl Recordings {
         }));
         self.histories.insert((slow, n), history.clone());
         self.states.lock().unwrap()[slot] = RecordingState {
-            phase: "recording",
+            phase: RecordingPhase::Recording,
             parquet: Some(dir.join(format!("{stem}.parquet"))),
             error: None,
             // Reported once the writer has created the index (see below).
@@ -306,9 +336,9 @@ impl Recordings {
             writer_history.lock().unwrap().error = error.clone();
             let mut s = states.lock().unwrap();
             s[slot].phase = if error.is_some() {
-                "failed"
+                RecordingPhase::Failed
             } else {
-                "complete"
+                RecordingPhase::Complete
             };
             s[slot].error = error;
         }));
@@ -330,25 +360,25 @@ impl Recordings {
             .as_mut()
             .context("this recording is not active")?;
         let mut states = self.states.lock().unwrap();
-        let expected = if paused { "recording" } else { "paused" };
+        let (expected, next) = if paused {
+            (RecordingPhase::Recording, RecordingPhase::Paused)
+        } else {
+            (RecordingPhase::Paused, RecordingPhase::Recording)
+        };
         ensure!(
             states[slot].phase == expected,
-            "recording must be {expected} before this operation"
+            "recording must be {} before this operation",
+            if paused { "recording" } else { "paused" }
         );
         route.paused = paused;
-        states[slot].phase = if paused { "paused" } else { "recording" };
+        states[slot].phase = next;
         Ok(())
     }
     pub fn stop(&mut self, slow: bool) -> Result<()> {
         let slot = usize::from(slow);
         let mut routes = self.routes.lock().unwrap();
         ensure!(routes[slot].is_some(), "this recording is not active");
-        {
-            let mut states = self.states.lock().unwrap();
-            if matches!(states[slot].phase, "recording" | "paused") {
-                states[slot].phase = "finalizing";
-            }
-        }
+        self.states.lock().unwrap()[slot].begin_finalizing();
         routes[slot] = None; // Worker drains already accepted frames, then finalizes.
         Ok(())
     }
@@ -402,7 +432,7 @@ mod tests {
             slow: false,
         }));
         let states: Arc<Mutex<[RecordingState; 2]>> = Default::default();
-        states.lock().unwrap()[0].phase = "recording";
+        states.lock().unwrap()[0].phase = RecordingPhase::Recording;
         let route = Route {
             paused: false,
             tx,
@@ -431,7 +461,10 @@ mod tests {
         // Accepted samples stay; the rejected frame is not part of the recording.
         assert_eq!((history.start, history.stop), (Some(0), Some(15)));
         drop(history);
-        assert_eq!(route.states.lock().unwrap()[0].phase, "finalizing");
+        assert_eq!(
+            route.states.lock().unwrap()[0].phase,
+            RecordingPhase::Finalizing
+        );
         assert!(
             !route.send(30, frame())?,
             "an overflowed route stays retired"
@@ -468,7 +501,7 @@ mod tests {
         fs::create_dir(&dir)?;
         let result = (|| -> Result<()> {
             let profile = Profile::load(None)?;
-            let selections = serde_json::to_value(&profile.initial_channels)?;
+            let selections = profile.initial_channels.clone();
             let mut recordings = Recordings::new(
                 Some(dir.clone()),
                 profile,
@@ -485,7 +518,7 @@ mod tests {
             recordings.pause(false, false)?;
             recordings.pause(false, true)?;
             recordings.finish()?;
-            assert_eq!(recordings.status()["fast"]["phase"], "complete");
+            assert_eq!(recordings.status().fast.phase, RecordingPhase::Complete);
             assert!(dir.join("data.parquet").is_file());
             let info = crate::backend::open(&crate::backend::index_path(&dir, "data"))?.info()?;
             assert!(info.complete && info.start.is_none() && info.stop.is_none());

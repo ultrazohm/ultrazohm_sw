@@ -1,6 +1,6 @@
 """Firmware job monitoring without owning or cancelling the service job."""
 
-from .configuration import _stored
+from ._native import job_progress
 
 
 class FirmwareJob:
@@ -19,7 +19,7 @@ class FirmwareJob:
 
     def poll(self):
         reply = self.client.job(self.id, self.offset)
-        progress = _stored("job_progress", {"offset": self.offset, "reply": reply})
+        progress = job_progress(self.offset, reply)
         self.offset = progress["next_offset"]
         self.complete = progress["complete"]
         self.error = progress["error"]

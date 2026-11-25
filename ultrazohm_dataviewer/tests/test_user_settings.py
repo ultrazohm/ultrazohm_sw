@@ -246,7 +246,7 @@ def test_initialize_and_connect_preserve_existing_preferences(tmp_path, monkeypa
 def test_workspace_startup_initializes_missing_preferences_once(
     tmp_path, monkeypatch, frozen
 ):
-    from ultrazohm_dataviewer import app, live_mapping
+    from ultrazohm_dataviewer import app, cli, live_mapping
 
     monkeypatch.setattr(sys, "frozen", frozen, raising=False)
     user_dir = data_directory(tmp_path)
@@ -287,7 +287,7 @@ def test_workspace_startup_initializes_missing_preferences_once(
         lambda name: object() if name == "ultrazohm_cli" else None,
     )
     args = ["--endpoint", "127.0.0.1:0", "--live-repo", str(tmp_path)]
-    assert app.main(args) == 0
+    assert cli.main(["gui", *args]) == 0
     saved = user_dir / "settings.json"
     original = '{"schema_version":1,"name":"edited","sample_period_us":75,"initial_channels":{}}\n'
     saved.write_text(original)
@@ -296,7 +296,7 @@ def test_workspace_startup_initializes_missing_preferences_once(
         "default_profile",
         lambda repo=None: pytest.fail("Must not reapply defaults"),
     )
-    assert app.main(args) == 0
+    assert cli.main(["gui", *args]) == 0
     assert saved.read_text() == original
 
 

@@ -9,7 +9,7 @@ import numpy as np
 import pytest
 
 from ultrazohm_dataviewer import loader
-from ultrazohm_dataviewer.loader import open_file, parse_channel_name
+from ultrazohm_dataviewer.loader import numeric_columns, open_file, parse_channel_name
 from ultrazohm_dataviewer.model import DataRegistry
 
 SAMPLE = (
@@ -42,11 +42,11 @@ def test_load_csv(tmp_path):
 
 
 def test_load_parquet(tmp_path):
-    import pandas as pd
+    import polars as pl
 
-    df = pd.DataFrame({"time": [0.0, 1.0, 2.0], "ia": [1.0, 2.0, 3.0]})
+    df = pl.DataFrame({"time": [0.0, 1.0, 2.0], "ia": [1.0, 2.0, 3.0]})
     path = tmp_path / "Log_test.parquet"
-    df.to_parquet(path)
+    df.write_parquet(path)
 
     registry = DataRegistry()
     run = open_file(str(path)).register(registry)
@@ -184,10 +184,10 @@ def test_csv_streaming_rejects_decreasing_time(tmp_path):
 
 
 def test_parquet_streaming_preserves_all_row_groups(tmp_path):
-    import pandas as pd
+    import polars as pl
 
     n = 5000
-    df = pd.DataFrame(
+    df = pl.DataFrame(
         {
             "time": np.linspace(0.0, 1.0, n),
             "ia": np.sin(np.linspace(0.0, 10.0, n)).astype(np.float32),
@@ -196,7 +196,7 @@ def test_parquet_streaming_preserves_all_row_groups(tmp_path):
     )
     path = tmp_path / "Log_stream.parquet"
     # Many small row groups so iter_batches yields multiple batches.
-    df.to_parquet(path, row_group_size=512)
+    df.write_parquet(path, row_group_size=512)
 
     streamed = open_file(str(path)).register(DataRegistry())
     assert streamed.n_rows == n
@@ -205,14 +205,10 @@ def test_parquet_streaming_preserves_all_row_groups(tmp_path):
         np.testing.assert_array_equal(streamed.signals[name].y, df[name].to_numpy())
 
 
-@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
 @pytest.mark.parametrize("mode", ["memory", "lazy"])
 @pytest.mark.parametrize("extension", ["csv", "parquet"])
-def test_colliding_channels_preserve_raw_columns(
-    tmp_path, states, backend, mode, extension
-):
-    import pyarrow as pa
-    import pyarrow.parquet as pq
+def test_colliding_channels_preserve_raw_columns(tmp_path, states, mode, extension):
+    import polars as pl
 
     path = tmp_path / f"collision.{extension}"
     names = ["time", "CH1=1)a", "a", "a [2]", "CH2=2)time"]
@@ -224,29 +220,27 @@ def test_colliding_channels_preserve_raw_columns(
             + "\n".join(";".join(map(str, row)) for row in zip(*arrays, strict=False))
         )
     else:
-        pq.write_table(pa.table(dict(zip(names, arrays, strict=False))), path)
-    run = open_file(str(path), mode, backend=backend).register(states().registry)
+        pl.DataFrame(dict(zip(names, arrays, strict=False))).write_parquet(path)
+    run = open_file(str(path), mode).register(states().registry)
     assert len(run.signals) == 4 and "time" not in run.signals
     _, values = run.read_window(list(run.signals), 0, 1)
     for actual, expected in zip(values.values(), arrays[1:], strict=False):
         np.testing.assert_array_equal(actual, expected)
 
 
-@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
 @pytest.mark.parametrize("mode", ["memory", "lazy"])
-def test_native_quoted_csv_headers(tmp_path, states, backend, mode):
+def test_native_quoted_csv_headers(tmp_path, states, mode):
     path = tmp_path / "quoted.csv"
     path.write_text('time;"a,b,c";\n0;10;\n1;20;\n')
-    run = open_file(str(path), mode, backend=backend).register(states().registry)
+    run = open_file(str(path), mode).register(states().registry)
     assert list(run.signals) == ["a,b,c"]
     np.testing.assert_array_equal(
         run.read_window(["a,b,c"], 0, 1)[1]["a,b,c"], [10, 20]
     )
 
 
-@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
 @pytest.mark.parametrize("mode", ["memory", "lazy", "converted"])
-def test_csv_missing_values_have_one_policy(tmp_path, backend, mode):
+def test_csv_missing_values_have_one_policy(tmp_path, mode):
     import csv
 
     from ultrazohm_dataviewer.csv_policy import NULL_VALUES
@@ -257,10 +251,10 @@ def test_csv_missing_values_have_one_policy(tmp_path, backend, mode):
         writer.writerow(["time", "y"])
         writer.writerows(enumerate(NULL_VALUES))
     if mode == "converted":
-        path = Path(loader.convert_csv_to_parquet(str(path), backend=backend))
-    run = loader.open_file(
-        str(path), "lazy" if mode == "lazy" else "memory", backend=backend
-    ).register(DataRegistry())
+        path = Path(loader.convert_csv_to_parquet(str(path)))
+    run = loader.open_file(str(path), "lazy" if mode == "lazy" else "memory").register(
+        DataRegistry()
+    )
     t, values = run.read_window(["y"], 0, len(NULL_VALUES))
     assert len(t) == len(NULL_VALUES)
     assert np.isnan(values["y"]).all()
@@ -283,21 +277,19 @@ def test_registry_rejects_invalid_array_shapes_before_registration(time, values)
     assert run.id == 1
 
 
-def test_parquet_collectors_preserve_row_count_policy():
+def test_parquet_collector_rejects_changed_row_count():
     import pytest
 
     from ultrazohm_dataviewer.loader import collect_parquet_batches
 
     batches = [(np.array([0.0, 1.0]), {"a": np.array([2.0, 3.0], dtype=np.float32)})]
-    result = collect_parquet_batches("recording.parquet", ["time", "a"], 3, batches)
+    result = collect_parquet_batches("recording.parquet", ["time", "a"], 2, batches)
     np.testing.assert_array_equal(result.time, [0.0, 1.0])
     np.testing.assert_array_equal(result.signals["a"], [2.0, 3.0])
     with pytest.raises(ValueError, match="row count changed"):
-        collect_parquet_batches(
-            "recording.parquet",
-            ["time", "a"],
-            3,
-            batches,
-            backend="polars",
-            strict_rows=True,
-        )
+        collect_parquet_batches("recording.parquet", ["time", "a"], 3, batches)
+
+
+def test_first_timestamp_column_cannot_be_filtered_out():
+    with pytest.raises(ValueError, match="timestamp"):
+        numeric_columns([("timestamp", False), ("current", True), ("voltage", True)])

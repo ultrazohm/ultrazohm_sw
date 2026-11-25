@@ -14,10 +14,10 @@ class SessionPanel:
         self._session_token = state.session_token
         return changed
 
-    def _emit(self, state, name: str, *args) -> bool:
+    def _emit(self, state, name: str, *args, echo=True) -> bool:
         """Execute a GUI command; report errors and return explicit success."""
         try:
-            state.commands.execute(state, name, list(args))
+            state.commands.execute(state, name, list(args), echo=echo)
         except Exception as exc:  # GUI boundary: keep the application running
             state.console.error(str(exc))
             return False

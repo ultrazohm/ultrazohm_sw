@@ -161,14 +161,7 @@ def _coded(code, message):
         # A coded error is decided by its code, never by its text.
         (_coded("timeout", "connection refused while waiting"), False),
         (_coded("transport", "service closed the connection"), False),
-        # Older CLI wheels report refusal only as text.
-        (_coded(None, "Connection refused (os error 111)"), True),
-        (
-            RuntimeError(
-                "No connection could be made because the target machine actively refused it"
-            ),
-            True,
-        ),
+        (RuntimeError("Connection refused (os error 111)"), False),
         (ConnectionRefusedError(111, "Connection refused"), True),
         (RuntimeError("request timed out"), False),
     ],
@@ -403,7 +396,7 @@ def test_shutdown_completion_uses_reply_identity(identity, finalized):
     controller.owned.process.poll.return_value = 0
     controller.owned.process.returncode = 0
     try:
-        controller._command("shutdown", {})
+        controller._urgent("shutdown", controller.endpoint)
         assert ("recordings finalized" in controller._notice) is finalized
         if not finalized:
             assert "finalization continues" in controller._notice

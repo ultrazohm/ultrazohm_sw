@@ -1,10 +1,10 @@
 Analysis mode
 =============
 
-Use analysis mode for CSV/Parquet recordings, including JavaScope logs and completed CLI recordings.
-No acquisition service, firmware checkout or device is required.
+Use analysis mode for CSV/Parquet recordings, including JavaScope logs and completed ultrazohm-cli recordings.
+No ultrazohm-cli process, firmware checkout or device is required.
 
-1. Start the viewer and choose **Navigation → Open file(s)…**, or run ``ultrazohm-dataviewer gui measurement.parquet``.
+1. Start the DataViewer and choose **Navigation → Open file(s)…**, or run ``ultrazohm-dataviewer gui measurement.parquet``.
 2. Expand the recording and drag signals into Plots.
    Select a grid and zoom to the interval of interest.
    The default Polars + Lazy mode reads windows from disk; use Parquet for repeated access to large recordings.

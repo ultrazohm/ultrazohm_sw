@@ -21,7 +21,7 @@ def test_bundle_builds_release_wheel_in_isolated_directory(monkeypatch, tmp_path
     def build(*args):
         # Resolve while the directory exists: Windows may supply its 8.3 alias.
         builds.append(Path(args[2]).resolve())
-        assert args[:2] == ("wheel", "--out")
+        assert args[:2] == ("release-wheel", "--out")
         path = Path(args[2]) / "ultrazohm_cli-0.1.0-test.whl"
         with zipfile.ZipFile(path, "w") as archive:
             archive.writestr("test.dist-info/METADATA", "Version: 0.1.0\n")
@@ -30,13 +30,25 @@ def test_bundle_builds_release_wheel_in_isolated_directory(monkeypatch, tmp_path
     monkeypatch.setattr(module, "run", lambda *args, **kwargs: calls.append(args))
     module.install_packages(
         tmp_path / "python",
-        argparse.Namespace(cli_wheel=None, viewer_wheel=tmp_path / "viewer.whl"),
+        argparse.Namespace(cli_wheel=None, dataviewer_wheel=tmp_path / "viewer.whl"),
         release=True,
     )
     assert len(builds) == 1
     assert not builds[0].exists()
     install = next(c for c in calls if c[:3] == ("uv", "pip", "install"))
     assert Path(install[-2]).parent == builds[0]
+
+
+def test_cli_wheel_tasks_exist_and_accept_out():
+    module = tasks()
+    path = Path(__file__).resolve().parents[2] / "ultrazohm_cli" / "tasks.py"
+    spec = importlib.util.spec_from_file_location("cli_build_tasks", path)
+    cli = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(cli)
+    for name in module.CLI_WHEEL_TASKS.values():
+        parser = argparse.ArgumentParser()
+        cli.TASKS[name].arguments(parser)
+        assert parser.parse_args(["--out", "wheels"]).out == Path("wheels")
 
 
 def test_bundle_selects_release_install(monkeypatch):
@@ -52,7 +64,7 @@ def test_bundle_selects_release_install(monkeypatch):
         "install_packages",
         lambda python, args, **kwargs: installs.append(kwargs),
     )
-    module.bundle(argparse.Namespace(cli_wheel=None, viewer_wheel=None))
+    module.bundle(argparse.Namespace(cli_wheel=None, dataviewer_wheel=None))
     assert installs == [{"release": True}]
 
 
@@ -77,4 +89,6 @@ def test_test_environment_is_private_and_lives_through_gui_smoke(monkeypatch):
         assert not environments[-1].parent.exists()
     assert environments[0] != environments[1]
     assert calls[1][-1] == module.HERE / "build/smoke_gui.py"
-    assert calls[0][0] == calls[1][0]
+    assert calls[0][0] in calls[1]
+    if module.sys.platform == "linux" and not module.os.environ.get("DISPLAY"):
+        assert calls[1][:2] == ("xvfb-run", "-a")

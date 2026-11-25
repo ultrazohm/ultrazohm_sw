@@ -73,16 +73,15 @@ def recording(tmp_path_factory):
     return output
 
 
-@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
 @pytest.mark.parametrize("mode", ["memory", "lazy"])
 @pytest.mark.parametrize("name", list(FILES))
-def test_cli_recordings_open_in_the_viewer(recording, name, mode, backend):
+def test_cli_recordings_open_in_the_viewer(recording, name, mode):
     path = recording / name
     reference = (
         pl.read_parquet(path) if path.suffix == ".parquet" else pl.read_csv(path)
     )
     assert reference.height > 0
-    run = open_file(str(path), mode, backend=backend).register(DataRegistry())
+    run = open_file(str(path), mode).register(DataRegistry())
     skipped = FILES[name]
     assert run.n_rows == reference.height
     assert run.skipped_columns == skipped

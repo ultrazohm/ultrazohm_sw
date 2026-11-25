@@ -303,6 +303,7 @@ def test_stop_uses_independent_control_path_while_poll_blocks(tmp_path, service)
     class BlockedPoll:
         def status(self):
             return {
+                "session_id": "test-session",
                 "state": {"connected": True},
                 "data_options": {"buffer_samples": 100},
             }

@@ -10,20 +10,21 @@ readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "BSD-3-Clause" }
 authors = [{ name = "UltraZohm" }]
-# Versions validated by the lockfile and frozen builds.
+# Compatible ranges for library use; uv.lock pins the exact versions that
+# development, CI and the frozen desktop bundles use.
 dependencies = [
-    "imgui-bundle==1.93.0",
-    "numpy==2.5.4",
-    "pandas==3.1.0",
-    "pyarrow==26.0.0",
-    "polars==2.0.0",
+    "imgui-bundle>=1.93,<2",
+    "numpy>=2.2,<3",
+    "polars>=2.0,<3",
     # Window file drag-drop (GLFW backend); a no-op if absent.
-    "glfw==2.11.0",
-    # Release builds stamp this to the shared release version.
+    "glfw>=2.8,<3",
+    # Exact: release builds stamp both packages to the shared release version.
     "ultrazohm-cli==0.1.0",
 ]
 
 [project.optional-dependencies]
+# Dataset.to_dataframe().to_pandas() conversions.
+pandas = ["pandas>=2.2", "pyarrow>=15"]
 dev = ["pytest>=7", "pyinstaller>=6.0", "ruff==0.17.2"]
 
 [project.scripts]

@@ -73,7 +73,7 @@ def test_load_shutdown_cancels_active_and_queued_work():
     assert worker.thread.daemon
 
 
-def _slow_native_conversion(source, destination, backend, connection, axis=None):
+def _slow_native_conversion(source, destination, connection, axis=None):
     from pathlib import Path
 
     Path(destination).write_bytes(b"partial")
@@ -111,7 +111,7 @@ def test_cancel_conversion_stops_process_and_removes_temporary_file(
         state.shutdown()
 
 
-def _large_conversion_error(source, destination, backend, connection, axis=None):
+def _large_conversion_error(source, destination, connection, axis=None):
     connection.send((False, "large error " + "x" * 1_000_000))
     connection.close()
 
@@ -125,7 +125,7 @@ def test_conversion_drains_large_error_before_worker_exits(monkeypatch):
     watchdog.start()
     try:
         with pytest.raises(ValueError, match="large error"):
-            loading.convert_cancellable("unused", "unused", "pyarrow", cancel)
+            loading.convert_cancellable("unused", "unused", cancel)
         assert not cancel.is_set()
     finally:
         watchdog.cancel()
@@ -137,16 +137,15 @@ def test_async_load_preserves_captured_settings(states, tmp_path):
     state = states()
     path = tmp_path / "recording.csv"
     path.write_text("time,a\n0,10\n1,20\n")
-    state.backend = "polars"
     state.loading_mode = "lazy"
-    state._submit_load(LoadRequest(str(path), "memory", "pyarrow", False))
+    state._submit_load(LoadRequest(str(path), "memory", False))
     deadline = time.monotonic() + 5
     while state.is_loading and time.monotonic() < deadline:
         state.poll_pending_loads()
         time.sleep(0.001)
     run = state.registry.runs[0]
-    assert run.storage_mode == "memory" and run.backend == "pyarrow"
-    assert state.loading_mode == "lazy" and state.backend == "polars"
+    assert run.storage_mode == "memory"
+    assert state.loading_mode == "lazy"
 
 
 def test_cancelled_load_completion_prevents_registration(app_state, tmp_path):

@@ -8,6 +8,38 @@ use std::{
 
 include!(concat!(env!("OUT_DIR"), "/firmware_resources.rs"));
 
+/// Actions of `tcl_scripts/vitis_headless.tcl`.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum VitisAction {
+    Open,
+    Generate,
+    GenerateOpen,
+    Build,
+    BuildClean,
+    /// JTAG program and run the already built applications.
+    ProgramBuilt,
+}
+impl VitisAction {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Open => "open",
+            Self::Generate => "generate",
+            Self::GenerateOpen => "generate-open",
+            Self::Build => "build",
+            Self::BuildClean => "build-clean",
+            Self::ProgramBuilt => "program-built",
+        }
+    }
+    /// Only Linux XSCT distinguishes GUI actions (see `-nodisp` below).
+    #[cfg(target_os = "linux")]
+    fn opens_gui(self) -> bool {
+        matches!(self, Self::Open | Self::GenerateOpen)
+    }
+}
+
+/// Launch configuration used to program and run the firmware.
+pub const RUN_PROFILE: &str = "Run_UltraZohm";
+
 // Called under the firmware checkout lock. Content-addressed paths preserve
 // incremental-build signatures across processes and survive GUI termination.
 fn entry_script(root: &Path) -> Result<PathBuf> {
@@ -81,10 +113,11 @@ pub(crate) fn xsct() -> Result<PathBuf> {
     )
 }
 
-pub fn run(action: &str, repo: Option<&Path>, profile: Option<&str>) -> Result<()> {
+/// Run Vitis steps locally under the checkout lock, without a service.
+pub fn run(steps: &[(VitisAction, Option<&str>)], repo: Option<&Path>) -> Result<()> {
     let root = repository(repo)?;
     let artifacts = root.join("artifacts");
-    std::fs::create_dir_all(&artifacts)?;
+    crate::artifacts::ensure_ignore_file(&artifacts)?;
     let lock = std::fs::OpenOptions::new()
         .create(true)
         .truncate(false)
@@ -92,11 +125,14 @@ pub fn run(action: &str, repo: Option<&Path>, profile: Option<&str>) -> Result<(
         .write(true)
         .open(artifacts.join("firmware.lock"))?;
     lock.try_lock().context("firmware workspace is in use")?;
-    execute(action, Some(&root), profile, None, None)
+    for (action, profile) in steps {
+        execute(*action, Some(&root), *profile, None, None)?;
+    }
+    Ok(())
 }
 
 pub(crate) fn execute(
-    action: &str,
+    action: VitisAction,
     repo: Option<&Path>,
     profile: Option<&str>,
     log: Option<&std::fs::File>,
@@ -105,7 +141,7 @@ pub(crate) fn execute(
     let root = repository(repo)?;
     let script = entry_script(&root)?;
     let executable = crate::preferences::resolve_xsct(xsct_override, Some(&root))?;
-    eprintln!("Vitis {action}: repository {}", root.display());
+    eprintln!("Vitis {}: repository {}", action.as_str(), root.display());
     // Every caller holds the checkout lock. Clear the previous receipt before
     // each invocation: XSCT can exit zero before it even runs our Tcl script.
     let completion = root.join("artifacts/firmware-completed");
@@ -120,7 +156,7 @@ pub(crate) fn execute(
     #[cfg(target_os = "linux")]
     {
         command.arg("-norlwrap");
-        if matches!(action, "open" | "generate-open") {
+        if action.opens_gui() {
             command.arg("-nodisp");
         }
     }
@@ -129,7 +165,7 @@ pub(crate) fn execute(
         .env("UZ_WORKSPACE_ROOT", &root)
         .env("UZ_VITIS_COMPLETION", &completion)
         .arg(script)
-        .arg(action);
+        .arg(action.as_str());
     if let Some(profile) = profile {
         command.arg(profile);
     }
@@ -139,7 +175,8 @@ pub(crate) fn execute(
     let status = command
         .status()
         .with_context(|| format!("failed to start Vitis XSCT at {}", executable.display()))?;
-    let completed = std::fs::read_to_string(&completion).ok().as_deref() == Some(action);
+    let completed = std::fs::read_to_string(&completion).ok().as_deref() == Some(action.as_str());
+    let action = action.as_str();
     let _ = std::fs::remove_file(&completion);
     ensure!(
         status.success(),

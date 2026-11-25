@@ -1,23 +1,55 @@
-"""Fresh local-source shells; uv owns downloads and Rust owns compilation caches."""
+"""Container-owned development environment, installed from CI-format wheels."""
 
+import hashlib
 import os
 import sys
 import tempfile
 from pathlib import Path
 
+from uz_build import venv_bin
 
-def development_shell(root, run):
+
+def development_environment(root):
+    override = os.environ.get("UZ_DEVELOPMENT_ENVIRONMENT")
+    if override:
+        return Path(override).resolve()
+    identity = hashlib.sha256(str(Path(root).resolve()).encode()).hexdigest()[:12]
+    cache = Path(os.environ.get("LOCALAPPDATA", Path.home() / ".cache"))
+    return cache / "ultrazohm" / "development" / identity
+
+
+def build_development(root, run):
+    """Build the matching wheel pair and update the persistent environment."""
     root = Path(root)
-    with tempfile.TemporaryDirectory(prefix="uz-dev-") as directory:
-        directory = Path(directory)
-        wheels = directory / "wheels"
-        run([sys.executable, root / "ultrazohm_cli/tasks.py", "wheel", "--out", wheels])
-        built = list(wheels.glob("ultrazohm_cli-*.whl"))
-        if len(built) != 1:
-            raise RuntimeError(
-                f"Expected one locally built CLI wheel, found {len(built)}"
-            )
-        constraints = directory / "constraints.txt"
+    developer = root / "uz_developer.py"
+    run([sys.executable, developer, "cli", "release-wheel"])
+    run([sys.executable, developer, "dataviewer", "wheel"])
+    install_development(root, run)
+
+
+def install_development(root, run):
+    from argparse import Namespace
+    from importlib.util import module_from_spec, spec_from_file_location
+    from uz_build import single_wheel
+
+    root = Path(root)
+    spec = spec_from_file_location(
+        "dataviewer_tasks", root / "ultrazohm_dataviewer/tasks.py"
+    )
+    tasks = module_from_spec(spec)
+    spec.loader.exec_module(tasks)
+    python = tasks.sync(development_environment(root), inexact=True)
+    tasks.install_packages(
+        python,
+        Namespace(
+            cli_wheel=single_wheel(root / "ultrazohm_cli/target/wheels-release"),
+            dataviewer_wheel=single_wheel(
+                root / "ultrazohm_dataviewer/dist-wheels", "ultrazohm_dataviewer"
+            ),
+        ),
+    )
+    with tempfile.TemporaryDirectory(prefix="uz-development-") as directory:
+        constraints = Path(directory) / "constraints.txt"
         run(
             [
                 "uv",
@@ -25,28 +57,16 @@ def development_shell(root, run):
                 "--project",
                 root / "ultrazohm_dataviewer",
                 "--locked",
-                "--no-dev",
+                "--extra",
+                "dev",
                 "--no-emit-project",
                 "--no-emit-package",
                 "ultrazohm-cli",
                 "--no-hashes",
-                "--format",
-                "requirements.txt",
                 "--output-file",
                 constraints,
             ]
         )
-        venv = directory / "environment"
-        run(
-            [
-                "uv",
-                "venv",
-                "--python",
-                (root / ".python-version").read_text().strip(),
-                venv,
-            ]
-        )
-        python = venv / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
         run(
             [
                 "uv",
@@ -54,22 +74,17 @@ def development_shell(root, run):
                 "install",
                 "--python",
                 python,
-                "--no-sources",
                 "--constraint",
                 constraints,
-                "--only-binary",
-                "imgui-bundle",
-                built[0],
-                "--editable",
-                root / "ultrazohm_dataviewer",
-                "--requirements",
+                "-r",
                 root / "requirements.txt",
             ]
         )
-        run(["uv", "pip", "check", "--python", python])
-        print(
-            f"Local development environment: {venv}\n"
-            "Close applications before exiting this shell; its environment is temporary.",
-            flush=True,
-        )
-        run([python, root / "uz_shell.py"])
+    run(["uv", "pip", "check", "--python", python])
+
+
+def development_shell(root, run):
+    python = venv_bin(development_environment(root))
+    if not python.exists():
+        raise RuntimeError("Build first: ./uz_developer build")
+    run([python, Path(root) / "uz_shell.py"])

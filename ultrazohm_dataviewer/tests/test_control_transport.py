@@ -132,8 +132,8 @@ class TransportTests(unittest.TestCase):
 
     def test_wire_rejects_nonfinite_and_unsupported_messages(self):
         for data in [
-            b'{"version":1,"value":NaN}\n',
-            b'{"version":2}\n',
+            b'{"version":2,"value":NaN}\n',
+            b'{"version":1}\n',
             b'{"version":true}\n',
             b"[]\n",
         ]:
@@ -145,15 +145,7 @@ class TransportTests(unittest.TestCase):
         received = []
         connection = socket.create_connection(wire.address(self.server.endpoint))
         connection.sendall(
-            wire.encode(
-                {
-                    "version": 1,
-                    "id": 1,
-                    "operation": "load",
-                    "arguments": {},
-                    "token": self.server.token,
-                }
-            )
+            wire.encode(wire.request(1, "load", {}, token=self.server.token))
         )
 
         def handler(*args):
@@ -183,13 +175,7 @@ class TransportTests(unittest.TestCase):
 
         def request(number):
             return wire.encode(
-                {
-                    "version": 1,
-                    "id": number,
-                    "operation": "status",
-                    "arguments": {},
-                    "token": self.server.token,
-                }
+                wire.request(number, "status", {}, token=self.server.token)
             )
 
         def handler(*args):

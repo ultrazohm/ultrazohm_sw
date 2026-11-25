@@ -51,7 +51,7 @@ def test_xy_ranges_render_and_roundtrip_without_linking_time(
     from imgui_bundle import implot
 
     s = app_state
-    s.backend, s.loading_mode = "pyarrow", "memory"
+    s.loading_mode = "memory"
     path = tmp_path / "xy.csv"
     path.write_text("time;x;y\n" + "".join(f"{i};{i};{i * 2}\n" for i in range(8)))
     s.load_sync(str(path))

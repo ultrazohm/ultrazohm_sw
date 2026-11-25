@@ -1,9 +1,8 @@
 """File loading for the UltraZohm data viewer.
 
 Supports the JavaScope ``.csv`` (``;`` separated) and ``.parquet`` log formats.
-CSV parsing uses Apache Arrow's multi-threaded reader which keeps memory and
-load time reasonable; the JavaScope writes a trailing ``;`` that produces an
-empty column, which is dropped here.
+All file IO uses Polars streaming scans; the JavaScope writes a trailing ``;``
+that produces an empty column, which is dropped here.
 
 Channel headers look like ``CH8=8)ia`` -- the ``CHn=n)`` bookkeeping prefix is
 stripped to leave the friendly signal name, and a trailing unit token
@@ -28,9 +27,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 
 import numpy as np
-import pyarrow as pa
-import pyarrow.csv as pa_csv
-import pyarrow.parquet as pq
+import polars as pl
 
 from .axis import inspect_axis, select_column
 from .csv_policy import NULL_VALUES
@@ -52,7 +49,6 @@ class ParsedRun:
     time: np.ndarray
     signals: dict[str, np.ndarray]
     units: dict[str, str]
-    backend: str = "pyarrow"
     timestamp_resolution: float = 0.0
     skipped_columns: tuple[str, ...] = ()
     axis_column: str | None = None
@@ -64,7 +60,6 @@ class ParsedRun:
         )
         run.axis_column = self.axis_column
         run.axis_domain = self.axis_domain
-        run.backend = self.backend
         run.timestamp_resolution = self.timestamp_resolution
         run.skipped_columns = self.skipped_columns
         return run
@@ -133,18 +128,12 @@ def numeric_columns(fields, axis_column=None) -> tuple[list[str], tuple[str, ...
     return kept, tuple(skipped)
 
 
-def arrow_numeric_columns(
-    schema, axis_column=None
-) -> tuple[list[str], tuple[str, ...]]:
+def numeric_scan_columns(scan, axis_column=None):
+    """Plottable and skipped columns of a Polars scan."""
     return numeric_columns(
         (
-            (
-                field.name,
-                pa.types.is_integer(field.type)
-                or pa.types.is_floating(field.type)
-                or pa.types.is_boolean(field.type),
-            )
-            for field in schema
+            (name, dtype.is_numeric() or dtype == pl.Boolean)
+            for name, dtype in scan.collect_schema().items()
         ),
         axis_column,
     )
@@ -247,17 +236,43 @@ def _read_header(path: str, delimiter: str) -> list[str]:
     return [c for c in header if c.strip() != ""]
 
 
-def _csv_column_types(columns: list[str], axis_column=None) -> dict[str, pa.DataType]:
-    """Arrow ``column_types`` so channels parse straight to float32.
+def _csv_column_types(columns: list[str], axis_column=None) -> dict:
+    """Parse channels straight to float32 (time float64), avoiding a cast copy."""
+    time_col, _ = _split_time_columns(columns, axis_column)
+    return {c: pl.Float64 if c == time_col else pl.Float32 for c in columns}
 
-    The time column is read as float64; every other named column as float32. This
-    avoids Arrow inferring float64 for the channels and a later float64->float32
-    cast (a full extra copy) -- the dominant load-peak cost on big logs.
-    """
-    if not columns:
-        return {}
-    time_col = select_column(columns, axis_column)
-    return {c: (pa.float64() if c == time_col else pa.float32()) for c in columns}
+
+def scan_csv(path, axis_column=None):
+    """Lazy CSV scan of the named columns (JavaScope's trailing ``;`` dropped)."""
+    delimiter = _sniff_delimiter(path)
+    columns = _read_header(path, delimiter)
+    return pl.scan_csv(
+        path,
+        separator=delimiter,
+        schema_overrides=_csv_column_types(columns, axis_column),
+        glob=False,
+        null_values=NULL_VALUES,
+    ).select(columns)
+
+
+def _numeric_scan(scan, axis_column=None):
+    names, skipped = numeric_scan_columns(scan, axis_column)
+    time_col, columns = _split_time_columns(names, axis_column)
+    return scan.select(
+        pl.col(time_col).cast(pl.Float64),
+        *[pl.col(c).cast(pl.Float32) for c in columns],
+    ), skipped
+
+
+def _batches(scan, time_col, columns):
+    reader = scan.collect_batches(
+        chunk_size=65536, maintain_order=True, engine="streaming"
+    )
+    try:
+        for batch in reader:
+            yield batch[time_col].to_numpy(), {c: batch[c].to_numpy() for c in columns}
+    finally:
+        del reader
 
 
 def _estimate_csv_rows_and_bytes(path: str, columns: list[str]) -> tuple[int, int]:
@@ -293,9 +308,7 @@ def _grow(arr: np.ndarray, new_cap: int, used: int) -> np.ndarray:
     return out
 
 
-def collect_csv_batches(
-    path, columns, batches, cancel=None, *, backend="pyarrow", axis_column=None
-):
+def collect_csv_batches(path, columns, batches, cancel=None, *, axis_column=None):
     """Materialize numeric batches with a checked, shared allocation policy.
 
     The limit bounds retained numeric capacity, not parser scratch or transient
@@ -335,43 +348,22 @@ def collect_csv_batches(
         time,
         signals,
         units,
-        backend=backend,
         timestamp_resolution=timestamp_resolution(data_columns),
     )
 
 
 def parse_csv(path: str, cancel=None, *, axis_column=None) -> ParsedRun:
-    delimiter = _sniff_delimiter(path)
-    columns = _read_header(path, delimiter)
-    _guard_csv_size(path, columns)
+    _guard_csv_size(path, _read_header(path, _sniff_delimiter(path)))
+    scan = scan_csv(path, axis_column)
+    columns = scan.collect_schema().names()
     time_col, data_columns = _split_time_columns(columns, axis_column)
-    ordered = [time_col, *data_columns]
-    with pa_csv.open_csv(
+    return collect_csv_batches(
         path,
-        parse_options=pa_csv.ParseOptions(delimiter=delimiter),
-        read_options=pa_csv.ReadOptions(use_threads=True),
-        convert_options=pa_csv.ConvertOptions(
-            strings_can_be_null=True,
-            null_values=NULL_VALUES,
-            column_types=_csv_column_types(columns, axis_column),
-            include_columns=ordered,
-        ),
-    ) as reader:
-
-        def batches():
-            for batch in reader:
-                check(cancel)
-                yield (
-                    batch.column(0).to_numpy(zero_copy_only=False),
-                    {
-                        c: batch.column(i + 1).to_numpy(zero_copy_only=False)
-                        for i, c in enumerate(data_columns)
-                    },
-                )
-
-        return collect_csv_batches(
-            path, columns, batches(), cancel, axis_column=axis_column
-        )
+        columns,
+        _batches(scan, time_col, data_columns),
+        cancel,
+        axis_column=axis_column,
+    )
 
 
 def collect_parquet_batches(
@@ -381,12 +373,10 @@ def collect_parquet_batches(
     batches,
     cancel=None,
     *,
-    backend="pyarrow",
-    strict_rows=False,
     skipped_columns=(),
     axis_column=None,
 ):
-    """Fill contiguous arrays from numeric batches, retaining backend row-count policy."""
+    """Fill contiguous arrays from numeric batches of a known row count."""
     _, data_columns = _split_time_columns(columns, axis_column)
     time = np.empty(n_rows, dtype=np.float64)
     arrays = {raw: np.empty(n_rows, dtype=np.float32) for raw in data_columns}
@@ -399,10 +389,7 @@ def collect_parquet_batches(
             arrays[name][off:end] = values[name]
         off = end
     if off != n_rows:
-        if strict_rows:
-            raise ValueError("Parquet row count changed during loading")
-        time = time[:off]
-        arrays = {k: v[:off] for k, v in arrays.items()}
+        raise ValueError("Parquet row count changed during loading")
     validate_time_axis(time, path)
     signals, units = _named_signals(data_columns, arrays.__getitem__)
     return ParsedRun(
@@ -411,52 +398,34 @@ def collect_parquet_batches(
         time,
         signals,
         units,
-        backend=backend,
         timestamp_resolution=timestamp_resolution(data_columns),
         skipped_columns=tuple(skipped_columns),
     )
 
 
-def _parse_parquet_streaming(
-    pf: pq.ParquetFile, path: str, n_rows: int, cancel=None, *, axis_column=None
-) -> ParsedRun:
-    names, skipped = arrow_numeric_columns(pf.schema_arrow, axis_column)
-    time_col, columns = _split_time_columns(names, axis_column)
-
-    def batches():
-        for batch in pf.iter_batches(columns=[time_col, *columns]):
-            check(cancel)
-            yield (
-                batch.column(0).to_numpy(zero_copy_only=False),
-                {
-                    name: batch.column(i + 1).to_numpy(zero_copy_only=False)
-                    for i, name in enumerate(columns)
-                },
-            )
-
+def parse_parquet(path: str, cancel=None, *, axis_column=None) -> ParsedRun:
+    scan, skipped = _numeric_scan(pl.scan_parquet(path, glob=False), axis_column)
+    rows = scan.select(pl.len()).collect().item()
+    time_col, columns = _split_time_columns(scan.collect_schema().names(), axis_column)
     return collect_parquet_batches(
         path,
         [time_col, *columns],
-        n_rows,
-        batches(),
+        rows,
+        _batches(scan, time_col, columns),
         cancel,
-        skipped_columns=skipped,
         axis_column=axis_column,
+        skipped_columns=skipped,
     )
 
 
-def parse_parquet(path: str, cancel=None, *, axis_column=None) -> ParsedRun:
-    with pq.ParquetFile(path) as pf:
-        return _parse_parquet_streaming(
-            pf, path, pf.metadata.num_rows, cancel, axis_column=axis_column
-        )
+def parquet_rows(path) -> int:
+    return pl.scan_parquet(path, glob=False).select(pl.len()).collect().item()
 
 
 def convert_csv_to_parquet(
     src: str,
     dst: str | None = None,
     *,
-    backend="pyarrow",
     cancel=None,
     axis_column=None,
     axis_domain=None,
@@ -475,7 +444,6 @@ def convert_csv_to_parquet(
     src = os.fspath(src)
     dst = os.fspath(dst) if dst is not None else os.path.splitext(src)[0] + ".parquet"
     check(cancel)
-    validate_backend(backend)
     if not src.lower().endswith(".csv"):
         raise ValueError(f"convert expects a .csv file, got {src!r}")
     if os.path.lexists(dst):
@@ -491,13 +459,12 @@ def convert_csv_to_parquet(
         if cancel is not None:
             from .loading import convert_cancellable
 
-            convert_cancellable(src, temporary, backend, cancel, axis=axis)
+            convert_cancellable(src, temporary, cancel, axis=axis)
         else:
-            _write_csv_to_parquet(src, temporary, backend=backend, axis=axis)
+            _write_csv_to_parquet(src, temporary, axis=axis)
         check(cancel)
-        with pq.ParquetFile(temporary) as converted:
-            if converted.metadata.num_rows == 0:
-                raise ValueError("Cannot convert CSV: time column is empty")
+        if parquet_rows(temporary) == 0:
+            raise ValueError("Cannot convert CSV: time column is empty")
         check(cancel)
         # Publish only complete output, and never overwrite a destination created
         # while conversion was running. The parent owns cleanup on cancellation.
@@ -510,100 +477,41 @@ def convert_csv_to_parquet(
     return dst
 
 
-def _write_csv_to_parquet(src, dst, *, backend="pyarrow", axis=None):
-    """Backend writer for an unpublished temporary file owned by the caller."""
+def _write_csv_to_parquet(src, dst, *, axis=None):
+    """Stream to an unpublished temporary file; the caller validates and publishes."""
     axis = axis or inspect_axis(src)
-    axis_column = axis.column
-    if backend == "polars":
-        from .polars_io import _write_csv_to_parquet as write
-
-        return write(src, dst, axis=axis)
-    delimiter = _sniff_delimiter(src)
-    columns = _read_header(src, delimiter)
-    reader = pa_csv.open_csv(
-        src,
-        parse_options=pa_csv.ParseOptions(delimiter=delimiter),
-        read_options=pa_csv.ReadOptions(use_threads=True),
-        convert_options=pa_csv.ConvertOptions(
-            strings_can_be_null=True,
-            null_values=NULL_VALUES,
-            column_types=_csv_column_types(columns, axis_column),
-        ),
+    scan_csv(src, axis.column).sink_parquet(
+        dst,
+        compression="snappy",
+        metadata=axis.metadata(),
+        row_group_size=65536,
+        maintain_order=True,
+        engine="streaming",
     )
-    writer: pq.ParquetWriter | None = None
-    try:
-        for batch in reader:
-            batch = _drop_empty_columns(batch)
-            if writer is None:
-                writer = pq.ParquetWriter(
-                    dst, batch.schema.with_metadata(axis.metadata())
-                )
-            writer.write_batch(batch)
-    finally:
-        if writer is not None:
-            writer.close()
-        reader.close()
-    if writer is None:
-        raise ValueError("Cannot convert CSV: time column is empty")
     return dst
 
 
-def _drop_empty_columns(batch: pa.RecordBatch) -> pa.RecordBatch:
-    keep = [i for i, name in enumerate(batch.schema.names) if name.strip() != ""]
-    if len(keep) == batch.num_columns:
-        return batch
-    return batch.select(keep)
-
-
-def _release_arrow_pool() -> None:
-    """Hand Arrow's freed-but-retained buffers back to the OS after a parse.
-
-    Arrow's default memory pool keeps freed parse scratch around for reuse rather than
-    returning it, so process RSS stays at the parse high-water mark (measured ~2.9 GB on
-    the 0.71 GB 9M-row CSV) long after the table is gone. ``release_unused`` reclaims it
-    (~1.2 GB back there, ~10 GB on the 75M log). Only buffers with no live references are
-    freed, so the numpy arrays we just built are untouched.
-    """
-    pa.default_memory_pool().release_unused()
-
-
 def parse_file(
-    path: str, *, backend="pyarrow", cancel=None, axis_column=None, axis_domain=None
+    path: str, *, cancel=None, axis_column=None, axis_domain=None
 ) -> ParsedRun:
     axis = inspect_axis(path, axis_column, axis_domain)
-    parsed = _parse_file(path, backend=backend, cancel=cancel, axis_column=axis.column)
+    parsed = _parse_file(path, cancel=cancel, axis_column=axis.column)
     parsed.axis_column, parsed.axis_domain = axis.column, axis.domain
     return parsed
 
 
-def _parse_file(
-    path: str, *, backend="pyarrow", cancel=None, axis_column=None
-) -> ParsedRun:
+def _parse_file(path: str, *, cancel=None, axis_column=None) -> ParsedRun:
     """Parse ``path`` into a :class:`ParsedRun` without touching any registry.
 
     Safe to call off the main thread; the caller registers the result later.
     """
     check(cancel)
-    validate_backend(backend)
-    if backend == "polars":
-        from . import polars_io
-
-        ext = os.path.splitext(path)[1].lower()
-        if ext == ".csv":
-            return polars_io.parse_csv(path, cancel=cancel, axis_column=axis_column)
-        if ext == ".parquet":
-            return polars_io.parse_parquet(path, cancel=cancel, axis_column=axis_column)
-        raise ValueError(f'Unsupported file type "{ext}". Expected .csv or .parquet.')
     ext = os.path.splitext(path)[1].lower()
     if ext == ".csv":
-        parsed = parse_csv(path, cancel=cancel, axis_column=axis_column)
-    elif ext == ".parquet":
-        parsed = parse_parquet(path, cancel=cancel, axis_column=axis_column)
-    else:
-        raise ValueError(f'Unsupported file type "{ext}". Expected .csv or .parquet.')
-    check(cancel)
-    _release_arrow_pool()
-    return parsed
+        return parse_csv(path, cancel=cancel, axis_column=axis_column)
+    if ext == ".parquet":
+        return parse_parquet(path, cancel=cancel, axis_column=axis_column)
+    raise ValueError(f'Unsupported file type "{ext}". Expected .csv or .parquet.')
 
 
 def mark_cache_directory(directory):
@@ -624,22 +532,15 @@ def mark_cache_directory(directory):
 class OpenedSource:
     path: str
     source: IndexedFileSource
-    backend: str = "pyarrow"
     axis_column: str | None = None
     axis_domain: str = "time"
 
     def register(self, registry):
         run = registry.add_source(os.path.basename(self.path), self.path, self.source)
         run.axis_column, run.axis_domain = self.axis_column, self.axis_domain
-        run.backend = self.backend
         run.timestamp_resolution = self.source.timestamp_resolution
         run.skipped_columns = getattr(self.source, "skipped_columns", ())
         return run
-
-
-def validate_backend(backend):
-    if backend not in ("pyarrow", "polars"):
-        raise ValueError("backend must be pyarrow or polars")
 
 
 def open_file(
@@ -648,67 +549,35 @@ def open_file(
     cache=None,
     cache_dir=None,
     *,
-    backend="pyarrow",
     disk_cache=False,
     cancel=None,
     axis_column=None,
     axis_domain=None,
 ):
-    """Open using a selected storage policy. Existing parse_file stays eager."""
+    """Open in memory (eager arrays) or lazily (bounded file reads)."""
+    from .polars_source import PolarsSource
+
     check(cancel)
-    validate_backend(backend)
     if mode not in ("memory", "lazy"):
         raise ValueError("loading mode must be memory or lazy")
     axis = inspect_axis(path, axis_column, axis_domain)
     axis_column, axis_domain = axis.column, axis.domain
-    if mode == "memory":
+    if mode == "memory" or not path.lower().endswith((".csv", ".parquet")):
         return parse_file(
-            path,
-            backend=backend,
-            cancel=cancel,
-            axis_column=axis_column,
-            axis_domain=axis_domain,
+            path, cancel=cancel, axis_column=axis_column, axis_domain=axis_domain
         )
-    if backend == "polars":
-        from .polars_source import PolarsSource as SourceClass
-    else:
-        from .sources import ParquetSource as SourceClass
-    original = path
-    origin = None
-    if path.lower().endswith(".csv") and not disk_cache:
-        if backend == "pyarrow":
-            from .csv_source import CsvSource as SourceClass
-        return OpenedSource(
-            original,
-            SourceClass(
-                path,
-                cache,
-                cache_dir,
-                cancel=cancel,
-                disk_cache=False,
-                axis_column=axis_column,
-            ),
-            backend=backend,
-            axis_column=axis_column,
-            axis_domain=axis_domain,
-        )
-    if path.lower().endswith(".csv"):
+    original, origin = path, None
+    if path.lower().endswith(".csv") and disk_cache:
+        # Lazy CSV with a disk cache: read through a reusable Parquet conversion.
         import hashlib
         import tempfile
         from pathlib import Path
 
-        from .sources import FileIdentity
+        from .sources import FileIdentity, cache_root
 
         origin = FileIdentity.capture(path)
         identity = hashlib.sha256(repr((origin, axis)).encode()).hexdigest()
-        root = Path(
-            cache_dir
-            or os.environ.get(
-                "UZ_DATAVIEWER_CACHE", Path.home() / ".cache" / "ultrazohm_dataviewer"
-            )
-        )
-        if backend == "polars":
-            root = root / "polars"
+        root = cache_root(cache_dir)
         root.mkdir(parents=True, exist_ok=True)
         mark_cache_directory(root)
         destination = root / (identity + ".parquet")
@@ -718,7 +587,6 @@ def open_file(
                 convert_csv_to_parquet(
                     path,
                     temp,
-                    backend=backend,
                     cancel=cancel,
                     axis_column=axis_column,
                     axis_domain=axis_domain,
@@ -727,15 +595,7 @@ def open_file(
                 origin.validate()
                 os.replace(temp, destination)
         path = str(destination)
-    elif not path.lower().endswith(".parquet"):
-        return parse_file(
-            path,
-            backend=backend,
-            cancel=cancel,
-            axis_column=axis_column,
-            axis_domain=axis_domain,
-        )
-    source = SourceClass(
+    source = PolarsSource(
         path,
         cache,
         cache_dir,
@@ -746,9 +606,5 @@ def open_file(
     source.origin = origin
     source.validate()
     return OpenedSource(
-        original,
-        source,
-        backend=backend,
-        axis_column=axis_column,
-        axis_domain=axis_domain,
+        original, source, axis_column=axis_column, axis_domain=axis_domain
     )

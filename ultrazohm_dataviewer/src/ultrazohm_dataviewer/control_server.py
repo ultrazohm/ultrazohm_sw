@@ -68,8 +68,8 @@ class ControlServer:
             )
         if (
             type(request.get("id")) is not int
-            or not isinstance(request.get("operation"), str)
-            or not isinstance(request.get("arguments"), dict)
+            or not isinstance(request.get("op"), str)
+            or not isinstance(request.get("args", {}), dict)
             or request.get("session") is not None
             and not isinstance(request["session"], str)
         ):
@@ -112,7 +112,7 @@ class ControlServer:
                 continue
             try:
                 result = handler(
-                    request["operation"], request["arguments"], request.get("session")
+                    request["op"], request.get("args", {}), request.get("session")
                 )
                 if isinstance(result, Future):
                     target.add_done_callback(
@@ -163,7 +163,7 @@ class ControlServer:
             with connection.makefile("rb") as stream:
                 while not self._closed:
                     request = wire.read(stream)
-                    reply = {"version": wire.VERSION, "id": request.get("id")}
+                    id = request.get("id")
                     try:
                         future = self._submit(request)
                         completed = threading.Event()
@@ -177,25 +177,23 @@ class ControlServer:
                                     future.cancel()
                                     self._pending.discard(future)
                                 return
-                        result = future.result()
-                        reply.update(result)
+                        outcome = future.result()
+                        reply = wire.success(
+                            id, outcome.get("result"), session=outcome.get("session")
+                        )
                     except Exception as exc:
-                        reply["error"] = {
-                            "code": getattr(exc, "code", "operation_failed"),
-                            "message": str(exc),
-                        }
+                        reply = wire.failure(
+                            id, getattr(exc, "code", wire.FAILED), str(exc)
+                        )
                     try:
                         data = wire.encode(reply)
                     except (ValueError, TypeError):
                         data = wire.encode(
-                            {
-                                "version": wire.VERSION,
-                                "id": request.get("id"),
-                                "error": {
-                                    "code": "invalid_result",
-                                    "message": "Operation result cannot be transmitted",
-                                },
-                            }
+                            wire.failure(
+                                id,
+                                "invalid_result",
+                                "Operation result cannot be transmitted",
+                            )
                         )
                     connection.sendall(data)
         except (OSError, EOFError, ValueError):

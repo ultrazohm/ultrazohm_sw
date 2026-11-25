@@ -1,19 +1,16 @@
 """Build, test and install ultrazohm_cli; the same tasks on Linux, Windows and in CI.
 
-Standard library only. `./uz_developer task cli help` lists the tasks;
-`./uz_developer task cli TASK --help` explains one. The Python version comes from the
-repository's .python-version. Set UZ_CLI_RELEASE_VERSION while building so the
-binary reports the same version as the wheel.
+Standard library only. Run as ``./uz_developer cli TASK`` (``--help`` lists the
+tasks). The Python version comes from the repository's .python-version. Set
+UZ_CLI_RELEASE_VERSION while building so the binary reports the same version as
+the wheel.
 """
 
-import argparse
 import os
 import re
 import shutil
-import subprocess
 import sys
 import tempfile
-from contextlib import nullcontext
 from functools import partial
 from pathlib import Path
 
@@ -23,7 +20,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 TARGET = HERE / "target"
 sys.path.insert(0, str(ROOT))
-from uz_build import build_lock, single_wheel, venv_bin  # noqa: E402
+from uz_build import Task, single_wheel, venv_bin  # noqa: E402
 from uz_build import run as build_run  # noqa: E402
 
 WINDOWS = os.name == "nt"
@@ -31,6 +28,10 @@ WINDOWS = os.name == "nt"
 MANYLINUX = "manylinux_2_28"
 STABLE_BRANCH = "main"
 PRERELEASE_BRANCHES = ("develop", "feature/uz_cli_dataviewer_testing")
+# Release patch numbers are GITHUB_RUN_NUMBER + this offset. Run numbers restart
+# when the workflow file is renamed: raise the offset above the last published
+# patch number in that case so versions keep increasing.
+RUN_NUMBER_OFFSET = 0
 
 
 run = partial(build_run, cwd=HERE)
@@ -161,30 +162,25 @@ def check(args):
         "warnings",
     )
     run("cargo", "test", "--locked")
-    run("cargo", "build", "--locked")
     debug_wheel(args)
     with tempfile.TemporaryDirectory(prefix="uz-cli-test-") as directory:
         venv = Path(directory) / "environment"
         python = fresh_venv(
             venv, single_wheel(TARGET / "wheels-debug"), "polars", "packaging"
         )
-        # Once against cargo's executable, once against the installed wheel.
-        integration(python)
+        # The installed console command runs the same debug build as cargo test.
         integration(python, venv_bin(venv, "ultrazohm-cli"))
 
 
-def wheel(args):
-    # run() builds from HERE; resolve user paths before changing directory.
-    output = args.out.resolve() if args.out is not None else TARGET / "wheels"
-    run(*maturin(), "build", "--release", "--locked", "--out", output)
-
-
-def release_wheel(_args):
+def release_wheel(args):
     sys.path.insert(0, str(HERE / "tools"))
     from release_build import staged_project
 
-    output = TARGET / "wheels-release"
-    shutil.rmtree(output, ignore_errors=True)
+    if getattr(args, "out", None):
+        output = args.out.resolve()
+    else:
+        output = TARGET / "wheels-release"
+        shutil.rmtree(output, ignore_errors=True)
     portable = [] if WINDOWS else ["--zig", "--compatibility", MANYLINUX]
     with staged_project(HERE, os.environ.get("UZ_CLI_RELEASE_VERSION")) as (
         stage,
@@ -231,20 +227,22 @@ def release_version(base, branch, run_number):
     """One version per CI run: MAJOR.MINOR.<run>, with .dev0 outside main."""
     match = re.fullmatch(r"(\d+)\.(\d+)\.\d+", base)
     if not match:
-        raise ValueError("pyproject.toml must contain a three-part base version")
+        raise ValueError("Cargo.toml must contain a three-part base version")
     if run_number < 1:
         raise ValueError("invalid workflow run number")
-    version = f"{match[1]}.{match[2]}.{run_number}"
+    version = f"{match[1]}.{match[2]}.{run_number + RUN_NUMBER_OFFSET}"
     return version if branch == STABLE_BRANCH else version + ".dev0"
 
 
+def base_version():
+    """The single source of the release base version: the crate version."""
+    return tomllib.loads((HERE / "Cargo.toml").read_text(encoding="utf-8"))["package"][
+        "version"
+    ]
+
+
 def version(_args):
-    found = re.search(
-        r'^version = "([^"]+)"$',
-        (HERE / "pyproject.toml").read_text(encoding="utf-8"),
-        flags=re.MULTILINE,
-    )
-    base = found[1] if found else ""
+    base = base_version()
     branch = os.environ.get("GITHUB_REF_NAME", "")
     event = os.environ.get("GITHUB_EVENT_NAME")
     pushed = event == "push"
@@ -272,100 +270,62 @@ def version(_args):
             output.writelines(f"{key}={item}\n" for key, item in outputs.items())
 
 
-def _invocation():
-    prefix = ".\\uz_developer.ps1" if WINDOWS else "./uz_developer"
-    return lambda task, args="": (
-        f"{prefix} task cli {task}" + (f" {args}" if args else "")
-    )
-
-
-def overview():
-    print(
-        "CLI build tasks: lint, format, format-check, check, wheel, debug-wheel, release-wheel, release-check, version, standalone, install"
-    )
-    print(
-        "Use ./uz venv dev to run both applications; ./uz_developer task cli TASK --help for details."
-    )
-
-
-DESCRIPTIONS = {
-    "lint": lint.__doc__,
-    "format": format_code.__doc__,
-    "format-check": format_check.__doc__,
-    "standalone": "Build the Windows native CLI executable.",
-    "install": "Build an optimized wheel of this checkout for this machine and install it with "
-    "'uv tool install --force', replacing an ultrazohm-cli installed from PyPI until you "
-    "reinstall that.",
-    "check": "Formatting, clippy, Rust tests, then a debug wheel installed into a temporary environment and "
-    "the integration tests twice: against the cargo binary and the wheel's command.",
-    "wheel": "Optimized wheel for this machine (not portable to older Linux systems).",
-    "release-wheel": "Portable release wheel: manylinux_2_28 on Linux (linked with zig), native on Windows.",
-    "release-check": "Install the release wheel into a fresh environment and run the integration tests.",
-    "debug-wheel": "Unoptimized wheel for tests in target/wheels-debug.",
-    "version": "Print the release version for a CI run from the GITHUB_* variables.",
+ALWAYS = lambda args: True  # noqa: E731
+LOCK = "cli"
+TASKS = {
+    "install": Task(
+        install,
+        "Build an optimized wheel of this checkout for this machine and install it with "
+        "'uv tool install --force', replacing an ultrazohm-cli installed from PyPI until "
+        "you reinstall that.",
+        locked=ALWAYS,
+    ),
+    "lint": Task(lint, lint.__doc__),
+    "format": Task(format_code, format_code.__doc__),
+    "format-check": Task(format_check, format_check.__doc__),
+    "check": Task(
+        check,
+        "Formatting, clippy, Rust tests, then a debug wheel installed into a temporary "
+        "environment and the integration tests against the wheel's command.",
+        locked=ALWAYS,
+    ),
+    "debug-wheel": Task(
+        debug_wheel,
+        "Unoptimized wheel for tests in target/wheels-debug.",
+        lambda parser: parser.add_argument("--out", type=Path),
+        locked=ALWAYS,
+    ),
+    "release-wheel": Task(
+        release_wheel,
+        "Portable release wheel in target/wheels-release: manylinux_2_28 on Linux "
+        "(linked with zig), native on Windows.",
+        lambda parser: parser.add_argument("--out", type=Path),
+        locked=ALWAYS,
+    ),
+    "standalone": Task(
+        standalone,
+        "Build the Windows native CLI executable.",
+        locked=ALWAYS,
+    ),
+    "release-check": Task(
+        release_check,
+        "Install the release wheel into a fresh environment and run the integration "
+        "tests.",
+        lambda parser: (
+            parser.add_argument(
+                "--standalone",
+                action="store_true",
+                help="also test the Windows executable built by the standalone task",
+            ),
+            parser.add_argument(
+                "--wheel-dir",
+                type=Path,
+                help="directory holding the wheel (default: target/wheels-release)",
+            ),
+        ),
+        locked=ALWAYS,
+    ),
+    "version": Task(
+        version, "Print the release version for a CI run from the GITHUB_* variables."
+    ),
 }
-
-
-def main(argv=None):
-    call = _invocation()
-    parser = argparse.ArgumentParser(prog=call("").strip(), add_help=False)
-    tasks = parser.add_subparsers(dest="task")
-
-    def add(name, function):
-        task = tasks.add_parser(name, prog=call(name), description=DESCRIPTIONS[name])
-        task.set_defaults(function=function)
-        return task
-
-    add("install", install)
-    add("lint", lint)
-    add("format", format_code)
-    add("format-check", format_check)
-    add("check", check)
-    add("debug-wheel", debug_wheel).add_argument("--out", type=Path)
-    add("wheel", wheel).add_argument(
-        "--out", type=Path, help="output directory (default: target/wheels)"
-    )
-    add("release-wheel", release_wheel)
-    add("standalone", standalone)
-    release_parser = add("release-check", release_check)
-    release_parser.add_argument(
-        "--standalone",
-        action="store_true",
-        help="also test the Windows executable built by the standalone task",
-    )
-    release_parser.add_argument(
-        "--wheel-dir",
-        type=Path,
-        help="directory holding the wheel (default: target/wheels-release)",
-    )
-    add("version", version)
-    argv = list(sys.argv[1:] if argv is None else argv)
-    if not argv or argv[0] in ("-h", "--help", "help"):
-        overview()
-        return
-    args = parser.parse_args(argv)
-    try:
-        lock = (
-            build_lock(ROOT, "cli")
-            if args.task
-            in (
-                "check",
-                "wheel",
-                "debug-wheel",
-                "release-wheel",
-                "release-check",
-                "install",
-                "standalone",
-            )
-            else nullcontext()
-        )
-        with lock:
-            args.function(args)
-    except RuntimeError as error:
-        raise SystemExit(str(error)) from None
-    except subprocess.CalledProcessError as error:
-        raise SystemExit(error.returncode or 1) from None
-
-
-if __name__ == "__main__":
-    main()

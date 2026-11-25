@@ -202,7 +202,7 @@ def test_xy_rejects_changed_files_and_reads_lazy_data_off_thread(
     from imgui_bundle import implot
 
     state = app_state
-    state.backend, state.loading_mode = "pyarrow", "lazy"
+    state.loading_mode = "lazy"
     path = tmp_path / "xy.csv"
 
     def write(offset):
@@ -262,7 +262,7 @@ def test_xy_surfaces_read_errors_without_drawing_stale_data(
     from imgui_bundle import implot
 
     state = app_state
-    state.backend, state.loading_mode = "pyarrow", "lazy"
+    state.loading_mode = "lazy"
     path = tmp_path / "xy.csv"
     path.write_text("time;a;b\n" + "".join(f"{i};{i};{i + 10}\n" for i in range(8)))
     run = state.load_sync(str(path))

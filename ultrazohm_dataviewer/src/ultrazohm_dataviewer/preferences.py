@@ -7,17 +7,15 @@ from .user_paths import user_data_directory, write_json
 from .validation import boolean, cache_budget_mb, display_budget
 
 DEFAULTS = {
-    "backend": "polars",
     "loading_mode": "lazy",
     "disk_cache": False,
     "cache_budget": 1024,
     "max_points": 2000,
     "log_directory": "",
-    "show_application_log": False,
+    "show_application_log": True,
     "show_python": False,
 }
 COMMANDS = {
-    "backend": "backend",
     "loading_mode": "loading_mode",
     "disk_cache": "disk_cache",
     "cache_budget": "cache_budget",
@@ -25,7 +23,7 @@ COMMANDS = {
 }
 SECTIONS = {
     "General": ("log_directory", "show_application_log", "show_python"),
-    "Data loading": ("backend", "loading_mode", "disk_cache"),
+    "Data loading": ("loading_mode", "disk_cache"),
     "Performance": ("cache_budget", "max_points"),
 }
 
@@ -33,8 +31,8 @@ SECTIONS = {
 def validate(name, value):
     if name not in DEFAULTS:
         raise ValueError(f"Unknown setting: {name}")
-    if name in ("backend", "loading_mode"):
-        choices = ("pyarrow", "polars") if name == "backend" else ("memory", "lazy")
+    if name == "loading_mode":
+        choices = ("memory", "lazy")
         if value not in choices:
             raise ValueError(f"{name} must be one of {choices}")
     elif name in ("disk_cache", "show_application_log", "show_python"):
@@ -82,10 +80,6 @@ class Preferences:
     def update(self, changes):
         values = dict(self.values)
         values.update({name: validate(name, value) for name, value in changes.items()})
-        if "backend" in changes:
-            from .loader import validate_backend
-
-            validate_backend(values["backend"])
         self.path.parent.mkdir(parents=True, exist_ok=True)
         write_json(self.path, {"version": 1, "settings": values})
         self.values = values

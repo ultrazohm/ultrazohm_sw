@@ -19,7 +19,7 @@ For terminal automation, open PowerShell in the extracted directory:
    .\ultrazohm-dataviewer.ps1 --json list-runs
    .\ultrazohm-cli.exe status
 
-The last command requires an acquisition service, not just an offline viewer.
+The last command requires an ultrazohm-cli process, not just an offline DataViewer.
 Linux uses Python wheels instead of a standalone ZIP: ``uvx --python 3.12 --prerelease allow ultrazohm-dataviewer``.
 Omit the prerelease option to select stable releases only.
 
@@ -42,32 +42,33 @@ To run checkout code instead:
 
 .. code-block:: bash
 
-   ./uz venv dev
+   ./uz_developer build
+   ./uz_developer shell
    ultrazohm-dataviewer gui --live-repo .
 
-Dev mode requires Rust and a C/C++ toolchain, builds the CLI, and installs the viewer editable.
-Close applications before ``exit`` deletes the temporary environment.
-Reopen a dev shell after CLI changes; restart the viewer after Python changes.
+The build requires Rust and a C/C++ toolchain and installs both applications from their built wheels.
+The environment persists after ``exit``; opening a shell does not rebuild.
+Rebuild after source changes and restart applications. On Windows use ``.\uz_developer.ps1 build`` and ``.\uz_developer.ps1 shell``.
 ``./uz venv prerelease`` provides both published applications and Python libraries.
 All shell modes add root ``requirements.txt`` dependencies; application launch commands do not add those extra dependencies.
 
 ``./uz cli --help`` describes the launcher; ``./uz cli stable -- --help`` describes the application.
 Files require ``gui``: ``./uz dataviewer measurement.csv`` is invalid.
-Viewer global options such as ``--json`` and control ``--endpoint`` precede the subcommand.
+DataViewer global options such as ``--json`` and control ``--endpoint`` precede the subcommand.
 ``./uz cli dev`` is not a source mode.
 The launcher preserves the caller's working directory.
-Calling a checkout's absolute launcher path from elsewhere does not select that firmware checkout; pass ``--repo`` to CLI serve or ``--live-repo`` to viewer gui explicitly.
+Calling a checkout's absolute launcher path from elsewhere does not select that firmware checkout; pass ``--repo`` to ultrazohm-cli serve or ``--live-repo`` to DataViewer gui explicitly.
 
 For reproducible published versions, use exact package versions directly, e.g. ``uvx --python 3.12 ultrazohm-dataviewer==VERSION gui`` (replace VERSION).
-The viewer requires its matching CLI version.
-Use application ``--version`` and service ``status`` to inspect versions; upgrade clients and service together.
+The DataViewer requires its matching ultrazohm-cli version.
+Use application ``--version`` and ultrazohm-cli process ``status`` to inspect versions; upgrade clients and ultrazohm-cli process together.
 To refresh a published tool run, use ``uvx --refresh --prerelease allow ultrazohm-dataviewer``; for persistent installations use ``uv tool upgrade ultrazohm-dataviewer``.
-``./uz install dataviewer prerelease`` exposes the viewer command on user PATH; ``./uz venv prerelease`` exposes both commands within its shell.
+``./uz install dataviewer prerelease`` exposes the DataViewer command on user PATH; ``./uz venv prerelease`` exposes both commands within its shell.
 
-Service and terminal clients
-----------------------------
+ultrazohm-cli process and terminal clients
+------------------------------------------
 
-Start one service in terminal A; select headers matching the deployed firmware:
+Start one ultrazohm-cli process in terminal A; select headers matching the deployed firmware:
 
 .. code-block:: bash
 
@@ -84,17 +85,17 @@ In terminal B:
    ./uz cli prerelease -- stop-logging
    ./uz cli prerelease -- status
 
-Repeat status until ``logging.fast.phase`` is ``complete``; open the reported Parquet path in the viewer.
+Repeat status until ``logging.fast.phase`` is ``complete``; open the reported Parquet path in the DataViewer.
 Then ``./uz cli prerelease -- shutdown`` and wait for terminal A to exit.
 Stop-logging replies before finalization completes.
 Connecting does not enable the system or start recording automatically.
 An interactive alternative is ``./uz cli prerelease`` from the checkout; enter ``connect``, ``start-logging``, ``stop-logging`` and ``shutdown`` at its prompt.
 
-For a hardware-free trial, start ``python javascope/test_server.py --host 127.0.0.1 --port 1000`` in another terminal and replace the service device with ``127.0.0.1:1000``.
+For a hardware-free trial, start ``python javascope/test_server.py --host 127.0.0.1 --port 1000`` in another terminal and replace the ultrazohm-cli process device with ``127.0.0.1:1000``.
 Use an installed project environment for the simulator.
 It validates workflows, not physical interlocks or hardware readiness.
 
-For a remote service listening on its default loopback endpoint:
+For a remote ultrazohm-cli process listening on its default loopback endpoint:
 
 .. code-block:: bash
 
@@ -102,15 +103,15 @@ For a remote service listening on its default loopback endpoint:
    # In another local terminal:
    ./uz cli prerelease -- --endpoint 127.0.0.1:19750 status
 
-Set the viewer's **Live Data** service endpoint to ``127.0.0.1:19750`` and Attach.
-Viewer command-line ``--endpoint`` instead selects its own automation listener (default ``19741``); it does not select acquisition (default ``19740``).
+Set the DataViewer's **Live Data** ultrazohm-cli process endpoint to ``127.0.0.1:19750`` and Attach.
+DataViewer command-line ``--endpoint`` instead selects its own automation listener (default ``19741``); it does not select acquisition (default ``19740``).
 
 Python measurement and analysis
 -------------------------------
 
 Open ``./uz venv prerelease`` (or ``dev``), then save and run the following as ``python measurement.py`` from the firmware checkout.
 Choose an unused output name on each run.
-This example owns its service; no other service may use 19740.
+This example owns its ultrazohm-cli process; no other ultrazohm-cli process may use 19740.
 
 .. code-block:: python
 
@@ -130,13 +131,13 @@ This example owns its service; no other service may use 19740.
    data = acquisition.read_recording()
    print(data.shape)
 
-To control an existing service, create only ``Client``; do not create Acquisition.
-Closing Client closes its socket, not the service or device.
-Explicitly stop logging and poll completion, or request shutdown if you intend to end that service.
+To control an existing ultrazohm-cli process, create only ``Client``; do not create Acquisition.
+Closing Client closes its socket, not the ultrazohm-cli process or device.
+Explicitly stop logging and poll completion, or request shutdown if you intend to end that ultrazohm-cli process.
 
-For scripting from the viewer, open **View → Python**, save a Python file and run it.
+For scripting from the DataViewer, open **View → Python**, save a Python file and run it.
 The ordinary runner does not issue device Stop when stopping a script.
-**Managed device run** requires a connected service, locks manual controls and provides **Stop script + device**.
+**Managed device run** requires a connected ultrazohm-cli process, locks manual controls and provides **Stop script + device**.
 Use the supplied endpoints explicitly:
 
 .. code-block:: python
@@ -157,7 +158,7 @@ ViewerClient reads ``UZ_DATAVIEWER_ENDPOINT`` automatically.
 DeviceClient does not read ``UZ_ACQUISITION_ENDPOINT`` automatically; pass it as above, especially for non-default ports and SSH forwards.
 External scripts own their process lifetime.
 
-To automate analysis, keep a viewer open, then run this in its matching environment:
+To automate analysis, keep a DataViewer open, then run this in its matching environment:
 
 .. code-block:: python
 
@@ -172,4 +173,4 @@ To automate analysis, keep a viewer open, then run this in its matching environm
 Paths resolve from the script's working directory.
 Calls wait for completion; several calls are not a transaction.
 Obtain new handles after replacing a session.
-For numerical work without an open viewer, use ``ultrazohm_dataviewer.read`` and its analysis functions, documented in :doc:`ultrazohm_dataviewer_library`.
+For numerical work without an open DataViewer, use ``ultrazohm_dataviewer.read`` and its analysis functions, documented in :doc:`ultrazohm_dataviewer_library`.

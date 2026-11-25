@@ -1,4 +1,5 @@
-"""Polars scans with projection/slice pushdown and shared sample-preserving summaries."""
+"""Lazy CSV/Parquet source: Polars scans with projection/slice pushdown and
+shared sample-preserving summaries."""
 
 import numpy as np
 import polars as pl
@@ -17,18 +18,19 @@ class PolarsSource(IndexedFileSource):
         disk_cache=False,
         axis_column=None,
     ):
-        from .loader import _named_signals, _split_time_columns, timestamp_resolution
-
-        identity = self._initialize(
-            path, cache, cache_dir, disk_cache, "polars", axis_column
+        from .loader import (
+            _named_signals,
+            _split_time_columns,
+            numeric_scan_columns,
+            scan_csv,
+            timestamp_resolution,
         )
-        if self.path.suffix.lower() == ".csv":
-            from .polars_io import _scan_csv
 
-            self.scan = _scan_csv(str(self.path), axis_column)
+        identity = self._initialize(path, cache, cache_dir, disk_cache, axis_column)
+        if self.path.suffix.lower() == ".csv":
+            self.scan = scan_csv(str(self.path), axis_column)
         else:
             self.scan = pl.scan_parquet(self.path, glob=False)
-        from .polars_io import numeric_scan_columns
 
         names, self.skipped_columns = numeric_scan_columns(self.scan, axis_column)
         self.time_col, columns = _split_time_columns(names, axis_column)

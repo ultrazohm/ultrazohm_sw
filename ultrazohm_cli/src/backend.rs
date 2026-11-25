@@ -34,15 +34,11 @@ pub struct RecordingInfo {
     pub recording_id: String,
     pub stream: String,
     pub sample_period_us: f64,
-    #[serde(default = "acquisition_positions")]
     pub position_basis: String,
     pub fields: Vec<Field>,
     pub start: Option<u64>,
     pub stop: Option<u64>,
     pub complete: bool,
-}
-fn acquisition_positions() -> String {
-    "acquisition_samples".into()
 }
 impl RecordingInfo {
     pub fn empty(&self) -> Result<DataFrame> {

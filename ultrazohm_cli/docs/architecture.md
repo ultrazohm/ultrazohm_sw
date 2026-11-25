@@ -1,6 +1,6 @@
 # Acquisition architecture
 
-The CLI, Python API and native Data Viewer share a Rust acquisition service.
+The ultrazohm-cli command, ultrazohm_cli Python API and native DataViewer share the Rust acquisition backend provided by ultrazohm-cli.
 This document describes implementation ownership and invariants.
 User commands, file layouts and configuration examples live in the [usage guide](../README.md); the device and local API contracts live in [protocol.md](protocol.md).
 
@@ -8,10 +8,10 @@ User commands, file layouts and configuration examples live in the [usage guide]
 
 ```mermaid
 flowchart LR
-    CLI[CLI and interactive console] --> API[Local API]
+    CLI[ultrazohm-cli and interactive console] --> API[Local API]
     Python[Python Client] --> API
-    Viewer[Native viewer] --> API
-    API --> Service[Service owner]
+    Viewer[DataViewer] --> API
+    API --> Service[ultrazohm-cli acquisition owner]
     Device[UltraZohm TCP] <--> Codec[JavaScope adapter]
     Codec <--> Service
     Service --> Ring[Bounded frame ring]
@@ -24,15 +24,21 @@ flowchart LR
 
 | Module | Responsibility |
 |---|---|
-| `cli.rs`, `python.rs` | CLI/PyO3 adapters to the same service and query operations |
-| `service.rs` | Startup, session ownership, control dispatch and ordered shutdown |
+| `cli.rs`, `python.rs` | ultrazohm-cli/PyO3 adapters to the same ultrazohm-cli process and query operations |
+| `service.rs` | Operations, configuration and startup |
+| `service/wire.rs` | API v4 envelope, framing, error codes and the client `Connection` |
+| `service/control.rs` | Client connections and the serialized request queue (Stop priority) |
+| `service/controller.rs` | `Controller`: session replacement, firmware jobs (`FirmwareWork`), status and ordered shutdown |
+| `service/session.rs` | One acquisition session: device connection, live ring, recordings, audit |
+| `service/replies.rs` | Typed reply bodies |
+| `jobs.rs` | `FirmwareAction`, job phase/state and follower progress |
 | `protocol.rs`, `profile.rs`, `header_mapping.rs` | Wire codec, validated configuration and header parsing |
 | `live.rs`, `data.rs` | Bounded frame retention and captured range/query views |
 | `recording.rs` | Independent fast/slow recording lifecycles and routing |
 | `storage.rs`, `backend.rs` | Frame conversion, durable indexed chunks and derived exports |
 | `vitis.rs` | Local build/generation/JTAG tool invocation |
 
-`Service` owns configuration, connection, recordings, audit and query workers on the control thread.
+The `Controller` owns configuration, the current `Session`, firmware jobs and finalization on the control thread; a `Session` owns its connection, recordings, audit and query views.
 Its shared `ConnectionContext` contains synchronized state needed by acquisition.
 Binding the local endpoint precedes touching the device, whose firmware replaces an existing client when a new one connects.
 Initial observable selections complete before startup signals readiness.
@@ -44,25 +50,25 @@ Socket timeouts and the five-second no-progress timeout bound stalls; commands a
 
 ## Process and UI ownership
 
-The standalone CLI needs no Python runtime.
+The standalone ultrazohm-cli needs no Python runtime.
 `serve` owns acquisition independently of short-lived commands.
 Python `Client` releases the GIL during native socket calls.
-`Acquisition` runs the same service in a native thread and waits for startup readiness; its lifetime is bounded by Python.
+`Acquisition` runs the same ultrazohm-cli acquisition backend in a native thread and waits for startup readiness; its lifetime is bounded by Python.
 `close()` (or leaving a `with` block) joins finalizers and surfaces errors.
 An acquisition that is garbage collected or still open at interpreter exit is closed the same way, so device Stop is also sent when a script fails; its errors are then printed only.
-Use an external service when logging must outlive Python.
+Use an external ultrazohm-cli process when logging must outlive Python.
 
-The viewer uses the same API for source and frozen builds.
-Its controller owns background requests and a service process only when it launched that process; attaching does not transfer ownership.
+The DataViewer uses the same API for source and frozen builds.
+Its controller owns background requests and an ultrazohm-cli process only when it launched that process; attaching does not transfer ownership.
 Script documents/file dialogs, script workers and live controls have separate owners.
 Plotting and analysis share source/query abstractions with recorded measurements.
-See the [viewer README](../../ultrazohm_dataviewer/README.md) for its runtime boundaries.
+See the [DataViewer README](../../ultrazohm_dataviewer/README.md) for its runtime boundaries.
 
-Developer and frozen modes share <checkout>/artifacts/_user; outside a checkout the viewer uses a per-user data directory.
+Developer and frozen modes share <checkout>/artifacts/_user; outside a checkout the DataViewer uses a per-user data directory.
 A shared settings loader seeds missing files, reads the mapping and preferences once, and derives session profiles without rewriting saved choices.
 Bundled code and templates are read-only inputs.
-The CLI provides an interactive terminal on Windows and Linux.
-The viewer supports Python automation through its Python panel or an external script.
+The ultrazohm-cli provides an interactive terminal on Windows and Linux.
+The DataViewer supports Python automation through its Python panel or an external script.
 
 ## Recording and shutdown invariants
 
@@ -95,11 +101,11 @@ Samples are never silently skipped inside a recording.
 A recording whose writer or export fails also becomes `failed`.
 In both cases acquisition, device control, the live ring and the other stream continue.
 An audit queue overflow or write failure is recorded once as `state.audit_error`; later commands are not audited, acquisition and control continue, and the `end` section of `run.json` reports `complete: false`.
-All are reported in status and at service exit, never silent losses.
+All are reported in status and at ultrazohm-cli process exit, never silent losses.
 Each recording's history retains its error across later recording starts.
 Metadata and recording listings remain available even if backend initialization fails; sample queries require a backend reader.
 
-Every service exit path attempts device Stop before waiting for data queries, receiver completion, recording finalizers and audit draining.
+Every ultrazohm-cli process exit path attempts device Stop before waiting for data queries, receiver completion, recording finalizers and audit draining.
 A Stop failure is recorded while finalization continues.
 The shutdown reply acknowledges acceptance; process exit and the `end` section of `run.json` report completion and errors.
 This ordering applies to explicit shutdown, Ctrl-C, EOF, embedded close and acquisition failure.
@@ -134,8 +140,8 @@ Responses use Arrow IPC, with a 128 MiB cap; up to four background query workers
 Live positions count acquisition samples; recording positions count accepted rows, anchored at their first acquisition position.
 Cursors identify run, source, recording and live mapping generation.
 Paused intervals remain gaps in timestamps, not in recorded-row pagination.
-Durable `Recording` handles read indexed data without a running service, including committed prefixes of incomplete runs.
-Clients of a running service can additionally read pending samples.
+Durable `Recording` handles read indexed data without a running ultrazohm-cli process, including committed prefixes of incomplete runs.
+Clients of a running ultrazohm-cli process can additionally read pending samples.
 
 Canonical slow history stores rotating ID/value updates.
 Wide forward-filled slow Parquet/CSV files are derived exports: they wait for all observables, reset filling after pauses, and preserve received NaN/Inf.
@@ -154,58 +160,47 @@ Firmware provides no sample sequence counter, precise acquisition clock or comma
 Nominal time is derived from received samples and the configured period; packet arrival time is not the measurement clock.
 State feedback is the latest received mapped status, not a command acknowledgment.
 Legacy firmware headers without platform-state definitions remain supported with state unavailable.
-These limitations belong to the device adapter, not the CLI version.
+These limitations belong to the device adapter, not the ultrazohm-cli version.
 
 ## Deferred work
 
-- Live subscriptions require transport/backpressure benchmarks across native,
-  Windows and browser clients; reuse columnar data rather than per-value JSON.
-- Sparse slow exports need explicit null/update semantics, matching viewer
-  support and deliberate time-alignment/resampling policies for analysis.
-- Module-level Python build/flash/header-generation helpers should call existing
-  Rust tools, release the GIL, propagate failures and define workspace exclusion.
-- Ceedling/cloud adapters need provenance, resumable upload and authenticated API
-  access.
+- Live subscriptions require transport/backpressure benchmarks across native, Windows and browser clients; reuse columnar data rather than per-value JSON.
+- Sparse slow exports need explicit null/update semantics, matching DataViewer support and deliberate time-alignment/resampling policies for analysis.
+- Module-level Python build/flash/header-generation helpers should call existing Rust tools, release the GIL, propagate failures and define workspace exclusion.
+- Ceedling/cloud adapters need provenance, resumable upload and authenticated API access.
   Local recording must remain usable without cloud access.
-- Future firmware framing, sequence counters, clocks and command receipts can
-  improve integrity without replacing the named control/query API.
+- Future firmware framing, sequence counters, clocks and command receipts can improve integrity without replacing the named control/query API.
 
 ## Shared configuration and launcher boundary
 
-The CLI Python package exposes offline configuration through `configuration` and
-external service ownership through `process.ServiceProcess`. Rust owns runtime
-profile validation/remapping and user-button wire decoding. DataViewer owns plot
-preferences, choosing an explicit startup-profile destination, and its close policy;
-it delegates process startup/readiness and identity-checked shutdown to the CLI helper.
+The ultrazohm-cli Python package exposes offline configuration through `configuration` and external ultrazohm-cli process ownership through `process.ServiceProcess`.
+Rust owns runtime profile validation/remapping and user-button wire decoding.
+DataViewer owns plot preferences, choosing an explicit startup-profile destination, and its close policy; it delegates process startup/readiness and identity-checked shutdown to the ultrazohm-cli helper.
 View preference saving is independent of firmware configuration and local checkouts.
-The CLI build embeds firmware scripts, including in the native library used by frozen
-viewers, so GUI packaging does not select or distribute a separate Tcl implementation.
-Local development builds also embed the checkout's scripts at build time; there is
-no automatic runtime switch to checkout scripts. `UZ_CLI_TCL_DIR` is an explicit
-runtime override. The firmware checkout selected by `--repo` supplies sources and
-headers, independently of script selection. Vitis IDE Run/Debug intentionally uses
-checkout scripts through its launch configurations and remains a separate tooling
-path. See [script selection](../README.md#which-tcl-scripts-run).
+The ultrazohm-cli build embeds firmware scripts, including in the native library used by frozen DataViewers, so GUI packaging does not select or distribute a separate Tcl implementation.
+Local development builds also embed the checkout's scripts at build time; there is no automatic runtime switch to checkout scripts.
+`UZ_CLI_TCL_DIR` is an explicit runtime override.
+The firmware checkout selected by `--repo` supplies sources and headers, independently of script selection.
+Vitis IDE Run/Debug intentionally uses checkout scripts through its launch configurations and remains a separate tooling path.
+See [script selection](../README.md#which-tcl-scripts-run).
 
-Vendor-tool resolution and atomic startup-profile persistence live in the Rust
-preferences module and are exposed through Python configuration helpers. The
-viewer chooses when to save, displays errors, and owns file dialogs; it does not
-modify PATH to configure a service. Native and Python job followers share log
-completion rules; the viewer owns polling cadence and presentation. Automatic
-process cleanup uses a launch identity validated by the service on shutdown.
+Vendor-tool resolution and atomic startup-profile persistence live in the Rust preferences module and are exposed through Python configuration helpers.
+The DataViewer chooses when to save, displays errors, and owns file dialogs; it does not modify PATH to configure an ultrazohm-cli process.
+Native and Python job followers share log completion rules; the DataViewer owns polling cadence and presentation.
+Automatic process cleanup uses a launch identity validated by the ultrazohm-cli process on shutdown.
 
-## Persistent service and firmware jobs
+## Persistent ultrazohm-cli process and firmware jobs
 
 `service/controller.rs` owns the persistent control endpoint and acquisition-session replacement.
-`jobs.rs` coordinates firmware jobs; `vitis.rs` invokes vendor tooling.
+`controller.rs` coordinates firmware jobs (`jobs.rs` defines their vocabulary); `vitis.rs` invokes vendor tooling.
 A flash stops acquisition and finalizes recordings before build/programming, then reconstructs configuration and reconnects in a fresh session.
-The service identity and listener survive; session identity, recording counters and cursors do not.
+The ultrazohm-cli process identity and listener survive; session identity, recording counters and cursors do not.
 Clients refresh their catalog and live history on session replacement.
 Build-only jobs leave acquisition unchanged.
 Only one firmware job runs at a time, with a checkout lock also excluding independent builds.
 Shutdown waits for programming already underway and then performs bounded Stop delivery when the mapping is known.
 
-The viewer command worker submits and monitors jobs rather than invoking XSCT locally.
+The DataViewer command worker submits and monitors jobs rather than invoking XSCT locally.
 Urgent Stop/shutdown requests use an independent connection.
-Attached viewers use service-side firmware/tool capabilities.
-Local XSCT preferences do not configure a service on another machine.
+Attached DataViewers use ultrazohm-cli firmware/tool capabilities.
+Local XSCT preferences do not configure an ultrazohm-cli process on another machine.

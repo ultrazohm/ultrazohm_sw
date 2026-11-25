@@ -47,7 +47,7 @@ def test_fft_and_fft_frame_recover_tone(tmp_path):
 
     frame = uz.fft_frame(t, ia)
     assert list(frame.columns) == ["frequency", "amplitude"]
-    peak = frame.loc[frame["amplitude"].idxmax()]
+    peak = frame.row(frame["amplitude"].arg_max(), named=True)
     assert abs(float(peak["frequency"]) - 50.0) < 2.0
 
 
@@ -143,10 +143,9 @@ def test_headless_operations_do_not_import_gui(recording_csv):
 import sys
 import ultrazohm_dataviewer as uz
 from ultrazohm_dataviewer.loader import convert_csv_to_parquet
-for backend in ('pyarrow', 'polars'):
-    data = uz.read(sys.argv[1], backend=backend)
-    data.to_dataframe()
-    uz.fft_frame(data.time, data['a'], backend=backend)
+data = uz.read(sys.argv[1])
+data.to_dataframe()
+uz.fft_frame(data.time, data['a'])
 convert_csv_to_parquet(sys.argv[1])
 assert 'imgui_bundle' not in sys.modules
 """

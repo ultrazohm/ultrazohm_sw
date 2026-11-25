@@ -40,7 +40,6 @@ class PlotWindowState(AppState):
     def sync(self, parent):
         self.async_exports = getattr(parent, "async_exports", False)
         self.dragged_ref = parent.dragged_ref
-        self.backend = parent.backend
         domains = {run.id: run.axis_domain for run in self.registry.runs}
         changed = {
             key for key in self._domains if domains.get(key) != self._domains[key]

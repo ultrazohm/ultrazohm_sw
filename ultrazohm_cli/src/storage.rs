@@ -46,7 +46,7 @@ impl LogWriter {
         format: Format,
         stem: String,
         slow: bool,
-        selections: &serde_json::Value,
+        selections: &crate::service::Selections,
     ) -> Result<Self> {
         Self::new_for_backend(
             dir,
@@ -64,7 +64,7 @@ impl LogWriter {
         format: Format,
         stem: String,
         slow: bool,
-        selections: &serde_json::Value,
+        selections: &crate::service::Selections,
         kind: BackendKind,
     ) -> Result<Self> {
         Self::new_with_factory(
@@ -86,7 +86,7 @@ impl LogWriter {
         format: Format,
         stem: String,
         slow: bool,
-        selections: &serde_json::Value,
+        selections: &crate::service::Selections,
         factory: impl FnOnce(&Path, &str, bool, f64, &DataFrame) -> Result<Box<dyn RecordingBackend>>,
     ) -> Result<Self> {
         let fast_columns = profile.selected_columns(selections)?;
@@ -565,7 +565,7 @@ mod tests {
             Format::Parquet,
             "data".into(),
             false,
-            &serde_json::to_value(&profile.initial_channels)?,
+            &profile.initial_channels,
         )?;
         let frame_rows = profile.samples_per_packet;
         let segment_rows = log.segment_rows.div_ceil(frame_rows) * frame_rows;
@@ -609,7 +609,7 @@ mod tests {
                 format,
                 "data".into(),
                 false,
-                &serde_json::to_value(Profile::load(None)?.initial_channels)?,
+                &Profile::load(None)?.initial_channels,
             )?;
             let mut slow_log = LogWriter::new(
                 run.0.clone(),
@@ -617,7 +617,7 @@ mod tests {
                 format,
                 "data_slow_data".into(),
                 true,
-                &serde_json::to_value(Profile::load(None)?.initial_channels)?,
+                &Profile::load(None)?.initial_channels,
             )?;
             log.segment_rows = 4096;
             slow_log.segment_rows = 4096;
@@ -721,7 +721,7 @@ mod tests {
                 Format::Csv,
                 stem.into(),
                 slow,
-                &serde_json::to_value(&profile.initial_channels)?,
+                &profile.initial_channels,
             )?;
             let mut first = frame(0, 2);
             first.slow_ids = vec![0, 1];
@@ -772,7 +772,7 @@ mod tests {
                 Format::Csv,
                 stem.into(),
                 true,
-                &serde_json::json!({}),
+                &Default::default(),
             )?;
             let mut first = frame(0, 2);
             first.slow_ids = vec![1, 2];
@@ -826,7 +826,7 @@ mod tests {
             Format::Csv,
             "incomplete".into(),
             true,
-            &serde_json::json!({}),
+            &Default::default(),
         )?;
         incomplete.push(0, frame(0, 1))?;
         incomplete.finish()?;
@@ -846,7 +846,7 @@ mod tests {
                 Format::Csv,
                 "invalid".into(),
                 true,
-                &serde_json::json!({})
+                &Default::default()
             )
             .is_err()
         );
@@ -862,7 +862,7 @@ mod tests {
             Format::Csv,
             "data".into(),
             false,
-            &serde_json::to_value(Profile::load(None)?.initial_channels)?,
+            &Profile::load(None)?.initial_channels,
         )?
         .finish()?;
         LogWriter::new(
@@ -871,7 +871,7 @@ mod tests {
             Format::Csv,
             "data_slow_data".into(),
             true,
-            &serde_json::to_value(Profile::load(None)?.initial_channels)?,
+            &Profile::load(None)?.initial_channels,
         )?
         .finish()?;
         let df = read(run.0.join("data.parquet"))?;
@@ -908,7 +908,7 @@ mod tests {
                 Format::Csv,
                 stem.into(),
                 slow,
-                &serde_json::to_value(Profile::load(None)?.initial_channels)?,
+                &Profile::load(None)?.initial_channels,
             )?;
             log.push(150, frame(0, 15))?;
             log.flush()?;
@@ -943,7 +943,7 @@ mod tests {
                 Format::Parquet,
                 stem.into(),
                 slow,
-                &serde_json::to_value(&profile.initial_channels)?,
+                &profile.initial_channels,
             )?;
             log.segment_rows = 15;
             for i in 0..4 {
@@ -997,7 +997,7 @@ mod tests {
             Format::Csv,
             "data".into(),
             false,
-            &serde_json::to_value(Profile::load(None)?.initial_channels)?,
+            &Profile::load(None)?.initial_channels,
         )?;
         log.push(0, frame(0, 15))?;
         log.flush()?;
@@ -1067,7 +1067,7 @@ mod tests {
             Format::Parquet,
             "custom".into(),
             false,
-            &serde_json::to_value(&profile.initial_channels)?,
+            &profile.initial_channels,
             |_dir, id, _slow, period, schema| {
                 Ok(Box::new(MemoryBackend(Arc::new(std::sync::Mutex::new((
                     backend::RecordingInfo {

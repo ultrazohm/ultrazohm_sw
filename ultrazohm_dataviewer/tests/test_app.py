@@ -7,7 +7,7 @@ from ultrazohm_dataviewer.app import DataViewerApp
 
 @pytest.mark.parametrize("failure", ["bind", "run"])
 def test_main_releases_resources_after_startup_failure(monkeypatch, failure):
-    from ultrazohm_dataviewer import app
+    from ultrazohm_dataviewer import app, cli
 
     closed = []
 
@@ -27,7 +27,7 @@ def test_main_releases_resources_after_startup_failure(monkeypatch, failure):
 
     monkeypatch.setattr(app, "DataViewerApp", Viewer)
     with pytest.raises((OSError, RuntimeError)):
-        app.main([])
+        cli.main(["gui"])
     assert closed == [True]
 
 
@@ -100,7 +100,7 @@ def test_session_menu_uses_background_transactional_operations(tmp_path, monkeyp
     ],
 )
 def test_detached_windows_supported_platforms(monkeypatch, platform, session, expected):
-    from imgui_bundle import immapp
+    from imgui_bundle import hello_imgui, immapp
 
     monkeypatch.setattr(
         "ultrazohm_dataviewer.plugins.load_plugins", lambda **kwargs: None
@@ -118,6 +118,11 @@ def test_detached_windows_supported_platforms(monkeypatch, platform, session, ex
             monkeypatch.setenv("XDG_SESSION_TYPE", session)
         app.run()
         assert captured[0].imgui_window_params.enable_viewports is expected
+        assert (
+            captured[0].app_window_params.window_geometry.window_size_state
+            == hello_imgui.WindowSizeState.maximized
+        )
+        assert not captured[0].app_window_params.restore_previous_geometry
     finally:
         app._shutdown()
 
@@ -132,10 +137,7 @@ def test_live_panels_are_opt_in(use_live, monkeypatch):
         windows = app._dockable_windows()
         labels = {window.label for window in windows}
         if use_live:
-            assert all(
-                w.is_visible == (w.label not in {"Python", "Application log"})
-                for w in windows
-            )
+            assert all(w.is_visible == (w.label != "Python") for w in windows)
         live_labels = {"Live Data", "Live Plots", "Control"}
         assert "Python" in labels
         assert labels & live_labels == (live_labels if use_live else set())
@@ -160,9 +162,7 @@ def test_startup_recording_precedes_script(tmp_path, monkeypatch):
     script.write_text(
         'from ultrazohm_dataviewer import Client, RunHandle\nv = Client()\nv.status()\nv.add_signal(1, RunHandle(v.session, 1), "a")\n'
     )
-    app = DataViewerApp(
-        [str(recording), str(script)], backend="pyarrow", loading_mode="memory"
-    )
+    app = DataViewerApp([str(recording), str(script)], loading_mode="memory")
     try:
         _finish_startup(app)
         assert app.state.cells[0].signals == [(1, "a")]
@@ -368,7 +368,7 @@ def test_startup_axis_choice_waits_for_success(tmp_path, after_script, outcome):
     prefix = tmp_path / "first.py"
     prefix.write_text("pass\n")
     files = ([str(prefix)] if after_script else []) + [str(recording), str(script)]
-    app = DataViewerApp(files, backend="pyarrow", loading_mode="memory")
+    app = DataViewerApp(files, loading_mode="memory")
     choices = []
 
     def choose():
@@ -396,7 +396,7 @@ def test_startup_large_csv_choice_preserves_completion(tmp_path, monkeypatch, ch
     monkeypatch.setattr("ultrazohm_dataviewer.state.LARGE_CSV_BYTES", 1)
     recording = tmp_path / "large.csv"
     recording.write_text("seconds,value\n0,1\n1,2\n")
-    app = DataViewerApp([str(recording)], backend="pyarrow")
+    app = DataViewerApp([str(recording)])
     choices = []
     completion = []
 

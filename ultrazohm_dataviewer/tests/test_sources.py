@@ -1,18 +1,17 @@
 """Lazy/eager contract, persisted caches, raw-analysis parity and cancellation."""
 
 import os
-import sys
 import threading
 import time
 
 import numpy as np
-import pyarrow as pa
-import pyarrow.parquet as pq
+import polars as pl
 import pytest
 
 from ultrazohm_dataviewer.analysis import compute_fft
 from ultrazohm_dataviewer.loader import open_file
 from ultrazohm_dataviewer.model import DataRegistry
+from ultrazohm_dataviewer.polars_source import PolarsSource as ParquetSource
 from ultrazohm_dataviewer.requests import Requests
 from ultrazohm_dataviewer.session import (
     apply_dict,
@@ -25,47 +24,22 @@ from ultrazohm_dataviewer.sources import (
     ArraySource,
     ByteCache,
     Cancelled,
-    ParquetSource,
     SourceColumn,
 )
 from ultrazohm_dataviewer.state import AppState
 
 
-@pytest.fixture(params=["pyarrow", "polars"], autouse=True)
-def source_backend(request, monkeypatch):
-    """Exercise the same source contract and GUI regressions with both engines."""
-    if request.param == "polars":
-        from ultrazohm_dataviewer.polars_source import PolarsSource
-
-        module = sys.modules[__name__]
-        monkeypatch.setattr(module, "ParquetSource", PolarsSource)
-        original_open = open_file
-        monkeypatch.setattr(
-            module,
-            "open_file",
-            lambda *args, **kwargs: original_open(*args, **kwargs, backend="polars"),
-        )
-    original_state = AppState
-
-    class BackendState(original_state):
-        def __init__(self):
-            super().__init__()
-            self.backend = request.param
-
-    monkeypatch.setattr(sys.modules[__name__], "AppState", BackendState)
-
-
 @pytest.mark.parametrize("nested_first", [True, False])
 def test_nested_parquet_fields_do_not_change_axis_extent(tmp_path, nested_first):
     columns = {
-        "meta": pa.array([{"a": 100.0, "b": 200.0}, {"a": 101.0, "b": 201.0}]),
+        "meta": [{"a": 100.0, "b": 200.0}, {"a": 101.0, "b": 201.0}],
         "time": [0.0, 1.0],
         "value": [2.0, 3.0],
     }
     if not nested_first:
         columns["meta"] = columns.pop("meta")
     path = tmp_path / "nested.parquet"
-    pq.write_table(pa.table(columns), path, row_group_size=1)
+    pl.DataFrame(columns).write_parquet(path, row_group_size=1)
     source = ParquetSource(path)
     assert source.metadata.time_range == (0.0, 1.0)
 
@@ -78,8 +52,8 @@ def recording(tmp_path):
     y[1011], y[40001], y[120011] = 17, -23, 31
     y[70001:70006] = np.nan
     path = tmp_path / "samples.parquet"
-    pq.write_table(
-        pa.table({"time": t, "a": y, "b": y * 2}), path, row_group_size=70000
+    pl.DataFrame({"time": t, "a": y, "b": y * 2}).write_parquet(
+        path, row_group_size=70000
     )
     return path, t, y
 
@@ -167,7 +141,7 @@ def test_raw_fft_export_and_session_parity(tmp_path):
     t = np.arange(8192) / 1024.0
     y = np.sin(2 * np.pi * 32 * t).astype(np.float32)
     path = tmp_path / "tone.parquet"
-    pq.write_table(pa.table({"time": t, "a": y}), path, row_group_size=777)
+    pl.DataFrame({"time": t, "a": y}).write_parquet(path, row_group_size=777)
     states = []
     for mode in ("memory", "lazy"):
         state = AppState()
@@ -344,15 +318,12 @@ def test_auto_loading_is_rejected(tmp_path):
 def test_invalid_time_axis_is_rejected(tmp_path):
     for t in ([0.0, 1.0, 0.5], [0.0, float("nan"), 2.0], []):
         path = tmp_path / "bad.parquet"
-        pq.write_table(
-            pa.table(
-                {
-                    "time": np.asarray(t, dtype=np.float64),
-                    "a": np.zeros(len(t), dtype=np.float32),
-                }
-            ),
-            path,
-        )
+        pl.DataFrame(
+            {
+                "time": np.asarray(t, dtype=np.float64),
+                "a": np.zeros(len(t), dtype=np.float32),
+            }
+        ).write_parquet(path)
         with pytest.raises(ValueError):
             source = ParquetSource(path, cache_dir=tmp_path / "cache", disk_cache=True)
             source.bounds(0, 2)
@@ -396,7 +367,7 @@ def test_idle_worker_does_not_retain_source():
 def test_close_zoom_uses_raw_window_when_finest_summary_is_too_coarse(
     recording, tmp_path, monkeypatch, budget, backend
 ):
-    from ultrazohm_dataviewer.sources import envelope
+    from ultrazohm_dataviewer.extrema import envelope
 
     path, t, y = recording
     source = (
@@ -443,15 +414,12 @@ def test_summary_zoom_transition_keeps_interior_detail():
 
 def test_per_file_loading_mode_does_not_change_default(tmp_path):
     path = tmp_path / "mode.parquet"
-    pq.write_table(
-        pa.table(
-            {
-                "time": np.arange(10, dtype=np.float64),
-                "a": np.ones(10, dtype=np.float32),
-            }
-        ),
-        path,
-    )
+    pl.DataFrame(
+        {
+            "time": np.arange(10, dtype=np.float64),
+            "a": np.ones(10, dtype=np.float32),
+        }
+    ).write_parquet(path)
     state = AppState()
     state.cache_dir = tmp_path / "cache"
     state.loading_mode = "memory"

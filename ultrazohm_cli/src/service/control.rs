@@ -5,14 +5,17 @@
 //! requests reach the service owner. A Stop request cancels queued device
 //! commands under the same lock used to select the next command for execution.
 use super::{
-    API_VERSION, Operation, Reply, Request, State, coded, error_reply, read_request,
-    serve_data_query, write_reply,
+    Operation,
+    session::{Reply, State, serve_data_query},
+    wire::{
+        Request, coded, decode_request, error_reply, finish_after_reply, ok_reply, read_message,
+        write_reply,
+    },
 };
 use anyhow::{Result, anyhow};
-use serde_json::json;
 use std::{
     collections::VecDeque,
-    io::BufReader,
+    io::{BufRead, BufReader},
     net::{TcpListener, TcpStream},
     sync::{
         Arc, Condvar, Mutex,
@@ -25,6 +28,9 @@ use std::{
 
 const MAX_CLIENTS: usize = 64;
 const MAX_DATA_QUERIES: usize = 4;
+// How long a final reply may wait for the client to read it before its socket
+// closes; bounds the acceptor thread for rejected clients.
+const FINAL_REPLY_LINGER: Duration = Duration::from_millis(100);
 
 pub(super) struct Pending {
     pub request: Request,
@@ -99,6 +105,21 @@ impl RequestQueue {
     }
 }
 
+/// Read the next request line. Idle connections wait until `stop` is set; a
+/// started request must complete within two seconds. `Err` carries the request
+/// id when it could be read, for the error reply.
+#[allow(clippy::type_complexity)]
+fn read_request(
+    reader: &mut impl BufRead,
+    stop: &AtomicBool,
+) -> std::result::Result<Option<Request>, (Option<u64>, anyhow::Error)> {
+    match read_message(reader, Duration::from_secs(2), Some(stop)) {
+        Ok(None) => Ok(None),
+        Ok(Some(line)) => decode_request(&line).map(Some),
+        Err(error) => Err((None, error)),
+    }
+}
+
 // Hold a slot from request admission until the complete data response is sent.
 struct QuerySlot(Arc<AtomicUsize>);
 impl QuerySlot {
@@ -142,12 +163,14 @@ fn serve_client(
         let request = match read_request(&mut reader, stop) {
             Ok(Some(request)) => request,
             Ok(None) => return Ok(()),
-            Err(error) => {
+            Err((id, error)) => {
                 // Framing is lost after an invalid message: report it and close.
-                write_reply(&mut writer, &error_reply(&error))?;
+                write_reply(&mut writer, &error_reply(id, &error))?;
+                finish_after_reply(&writer, FINAL_REPLY_LINGER);
                 return Ok(());
             }
         };
+        let id = request.id;
         let result = (|| -> Result<(Reply, Option<QuerySlot>)> {
             let slot = matches!(request.command, Operation::ReadData { .. })
                 .then(|| QuerySlot::acquire(queries))
@@ -159,9 +182,11 @@ fn serve_client(
             Ok((reply, slot))
         })();
         match result {
-            Ok((Reply::Data(view, query), _slot)) => serve_data_query(&mut writer, *view, query)?,
-            Ok((Reply::Json(value), _)) => write_reply(&mut writer, &value)?,
-            Err(error) => write_reply(&mut writer, &error_reply(&error))?,
+            Ok((Reply::Data(view, query), _slot)) => {
+                serve_data_query(&mut writer, id, *view, query)?
+            }
+            Ok((Reply::Json(value), _)) => write_reply(&mut writer, &ok_reply(Some(id), value))?,
+            Err(error) => write_reply(&mut writer, &error_reply(Some(id), &error))?,
         }
         // A busy client never idles long enough to observe shutdown in
         // read_request; close after its current reply so the service can exit.
@@ -174,12 +199,11 @@ fn serve_client(
 fn reject(mut socket: TcpStream) {
     // Best effort and bounded: never block the acceptor on an overloaded client.
     let _ = socket.set_nonblocking(false);
-    let _ = socket.set_write_timeout(Some(Duration::from_millis(100)));
-    let _ = write_reply(
-        &mut socket,
-        &json!({"api_version":API_VERSION,"ok":false,"code":"busy",
-            "error":format!("too many clients (limit {MAX_CLIENTS})")}),
-    );
+    let _ = socket.set_write_timeout(Some(FINAL_REPLY_LINGER));
+    let busy = coded("busy", format!("too many clients (limit {MAX_CLIENTS})"));
+    if write_reply(&mut socket, &error_reply(None, &busy)).is_ok() {
+        finish_after_reply(&socket, FINAL_REPLY_LINGER);
+    }
 }
 
 pub(super) struct ControlServer {
@@ -258,16 +282,10 @@ impl ControlServer {
 
     pub fn invalidate_session(&self) {
         let mut state = self.queue.state.lock().unwrap();
-        let (cancel, keep) = state.pending.drain(..).partition::<Vec<_>, _>(|p| {
-            !p.request.command.read_only()
-                && !matches!(
-                    p.request.command,
-                    Operation::Stop
-                        | Operation::Shutdown
-                        | Operation::OwnedShutdown { .. }
-                        | Operation::Firmware { .. }
-                )
-        });
+        let (cancel, keep) = state
+            .pending
+            .drain(..)
+            .partition::<Vec<_>, _>(|p| !p.request.command.survives_session_replacement());
         state.pending = keep.into();
         for p in cancel {
             let _ = p.reply.send(Err(coded(
@@ -302,15 +320,67 @@ impl Drop for ControlServer {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serde_json::json;
+    use std::io::{Read, Write};
 
     fn request(command: Operation) -> Request {
-        Request {
-            api_version: API_VERSION,
-            command,
-        }
+        Request { id: 1, command }
     }
 
     const WAIT: Duration = Duration::from_millis(10);
+
+    #[test]
+    fn rejected_client_receives_busy() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let endpoint = listener.local_addr().unwrap().to_string();
+        let server = thread::spawn(move || reject(listener.accept().unwrap().0));
+        let error = crate::service::request(&endpoint, Operation::Status).unwrap_err();
+        server.join().unwrap();
+        assert_eq!(crate::service::client_error_code(&error), Some("busy"));
+        assert!(error.to_string().contains("too many clients"));
+    }
+
+    #[test]
+    fn rejection_ends_with_a_clean_close() {
+        // The rejected request is never read. Closing a socket with unread
+        // input sends a reset, and Windows clients then discard the reply
+        // they already received; Linux shows the reset on the next read.
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let mut client = TcpStream::connect(listener.local_addr().unwrap()).unwrap();
+        client
+            .write_all(b"{\"version\":4,\"id\":1,\"op\":\"status\"}\n")
+            .unwrap();
+        reject(listener.accept().unwrap().0);
+        let mut reader = BufReader::new(client);
+        let mut line = String::new();
+        reader.read_line(&mut line).unwrap();
+        let reply: serde_json::Value = serde_json::from_str(&line).unwrap();
+        assert_eq!(reply["error"]["code"], "busy");
+        let end = reader.read(&mut [0u8; 1]);
+        assert!(
+            matches!(end, Ok(0)),
+            "expected end of stream, not a reset: {end:?}"
+        );
+    }
+
+    #[test]
+    fn concurrent_stops_are_all_executed() {
+        let queue = RequestQueue::default();
+        let running = queue.submit(request(Operation::Status));
+        let in_flight = queue.next(WAIT).unwrap();
+        let first = queue.submit(request(Operation::Stop));
+        let second = queue.submit(request(Operation::Stop));
+        assert!(in_flight.reply.send(Ok(Reply::Json(json!({})))).is_ok());
+        assert!(running.recv().unwrap().is_ok());
+        for _ in 0..2 {
+            let next = queue.next(WAIT).unwrap();
+            assert!(matches!(next.request.command, Operation::Stop));
+            assert!(next.reply.send(Ok(Reply::Json(json!({})))).is_ok());
+        }
+        assert!(first.recv().unwrap().is_ok());
+        assert!(second.recv().unwrap().is_ok());
+        assert!(queue.next(WAIT).is_none());
+    }
 
     #[test]
     fn stop_jumps_ahead_cancels_device_commands_and_preserves_reads() {
@@ -318,7 +388,7 @@ mod tests {
         let running = queue.submit(request(Operation::Status));
         let in_flight = queue.next(WAIT).unwrap();
         let enable = queue.submit(request(Operation::EnableSystem));
-        let read = queue.submit(request(Operation::Recordings));
+        let read = queue.submit(request(Operation::Jobs));
         let logging = queue.submit(request(Operation::StopLogging {
             stream: crate::data::Stream::Fast,
         }));
@@ -342,7 +412,7 @@ mod tests {
         assert!(next.reply.send(Ok(Reply::Json(json!({})))).is_ok());
         assert!(stop.recv().unwrap().is_ok());
         let next = queue.next(WAIT).unwrap();
-        assert!(matches!(next.request.command, Operation::Recordings));
+        assert!(matches!(next.request.command, Operation::Jobs));
         assert!(next.reply.send(Ok(Reply::Json(json!({})))).is_ok());
         assert!(read.recv().unwrap().is_ok());
         let next = queue.next(WAIT).unwrap();
@@ -368,12 +438,9 @@ mod tests {
         let queue = RequestQueue::default();
         let first = queue.submit(request(Operation::Stop));
         let second = queue.submit(request(Operation::Stop));
-        assert!(first.recv().unwrap().is_err());
-        assert!(matches!(
-            queue.state.lock().unwrap().pending[0].request.command,
-            Operation::Stop
-        ));
+        assert_eq!(queue.state.lock().unwrap().pending.len(), 2);
         queue.close();
+        assert!(first.recv().unwrap().is_err());
         assert!(second.recv().unwrap().is_err());
         assert!(
             queue
@@ -398,7 +465,7 @@ mod lifecycle_regressions {
             worker: None,
         };
         let guarded = queue.submit(Request {
-            api_version: API_VERSION,
+            id: 1,
             command: Operation::OwnedShutdown {
                 service_id: "owned".into(),
             },

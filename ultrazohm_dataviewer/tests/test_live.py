@@ -41,6 +41,7 @@ class FakeClient:
     def status(self):
         return {
             "service_id": "test-service",
+            "session_id": "test-session",
             "state": {
                 "connected": self.connected,
                 "platform_state": "idle",
@@ -81,7 +82,7 @@ class FakeClient:
 
     def shutdown(self, *, service_id=None):
         self.calls.append(("shutdown",))
-        return {"service_id": "test-service"}
+        return {"service_id": "test-service", "session_id": None}
 
     def stop(self):
         self.calls.append(("stop",))
@@ -150,12 +151,17 @@ def test_worker_incremental_bound_recovery_and_persistent_command_error():
     assert not controller.thread.is_alive()
 
 
+def _refused(message):
+    error = RuntimeError(message)
+    error.code = "connection_refused"
+    return error
+
+
 @pytest.mark.parametrize(
     "error",
     [
         ConnectionRefusedError(111, "Connection refused"),
-        RuntimeError("Connection refused (os error 111)"),
-        RuntimeError("os error 10061"),
+        _refused("could not reach the service"),
     ],
 )
 def test_disconnect_after_service_exit_releases_attachment(error):
@@ -1450,7 +1456,7 @@ def test_close_shuts_down_owned_service_even_when_detached(attached):
 
     class Client:
         def status(self):
-            return {"service_id": "test-service"}
+            return {"service_id": "test-service", "session_id": None}
 
         def stop(self):
             calls.append("stop")
@@ -1494,7 +1500,7 @@ def test_close_handles_both_services_independently(fail_stop):
 
     class Client:
         def status(self):
-            return {"service_id": "test-service"}
+            return {"service_id": "test-service", "session_id": None}
 
         def __init__(self, endpoint):
             self.endpoint = endpoint
@@ -1873,3 +1879,38 @@ def test_attached_disconnected_panel_connects_device_without_local_repository(
         assert workspace.pending_message == "Connecting…"
     finally:
         workspace.close()
+
+
+def test_unchanged_configuration_revision_polls_status_only():
+    from ultrazohm_dataviewer.live import ServiceSnapshot
+
+    class Client(FakeClient):
+        revision = "run:1"
+
+        def status(self):
+            self.calls.append("status")
+            return {
+                **super().status(),
+                "session_id": "run",
+                "configuration_revision": self.revision,
+            }
+
+        def catalog(self):
+            self.calls.append("catalog")
+            return super().catalog()
+
+        def observables(self):
+            self.calls.append("observables")
+            return super().observables()
+
+    client = Client()
+    first = ServiceSnapshot.read(client)
+    assert client.calls == ["status", "catalog", "observables", "status"]
+    client.calls.clear()
+    second = ServiceSnapshot.read(client, first)
+    assert client.calls == ["status"]
+    assert second.assignments == first.assignments
+    client.calls.clear()
+    client.revision = "run:2"  # set_observable changed the assignments
+    ServiceSnapshot.read(client, second)
+    assert client.calls == ["status", "observables", "status"]

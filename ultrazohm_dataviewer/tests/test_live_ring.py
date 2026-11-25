@@ -143,18 +143,18 @@ def test_only_newly_completed_buckets_are_reduced(monkeypatch):
     from ultrazohm_dataviewer import live
 
     reduced, merged = [], []
-    extrema, merge = live.bucket_extrema, live.merge_extrema
+    extrema, merge = live.bucket_extremes, live.merge_extremes
 
-    def track_extrema(y):
+    def track_extrema(y, starts):
         reduced.append(len(y))
-        return extrema(y)
+        return extrema(y, starts)
 
-    def track_merge(y, mins, maxs, gaps):
+    def track_merge(y, mins, maxs, gaps, factor):
         merged.append(len(mins))
-        return merge(y, mins, maxs, gaps)
+        return merge(y, mins, maxs, gaps, factor)
 
-    monkeypatch.setattr(live, "bucket_extrema", track_extrema)
-    monkeypatch.setattr(live, "merge_extrema", track_merge)
+    monkeypatch.setattr(live, "bucket_extremes", track_extrema)
+    monkeypatch.setattr(live, "merge_extremes", track_merge)
     ring = LiveRing(100_000)
     # Cross boundaries at all three levels, but leave a partial bucket at each.
     stop = 9_009

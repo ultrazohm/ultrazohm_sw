@@ -121,9 +121,6 @@ class Run:
     """Globally-unique stamp bumped whenever :attr:`time` is reassigned (normalisation,
     derived-run refresh), so decimation caches that read ``time`` invalidate correctly."""
 
-    backend: str = "pyarrow"
-    """IO backend selected when this recording was opened."""
-
     skipped_columns: tuple = ()
     """Non-numeric file columns that are not available as signals."""
 

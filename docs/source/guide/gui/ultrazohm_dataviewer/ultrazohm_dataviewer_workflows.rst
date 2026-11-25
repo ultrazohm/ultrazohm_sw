@@ -42,13 +42,13 @@ To run checkout code instead:
 
 .. code-block:: bash
 
-   ./uz_developer build linux_wheels
+   ./uz_developer build
    ./uz_developer shell
    ultrazohm-dataviewer gui --live-repo .
 
 The build requires Rust and a C/C++ toolchain and installs both applications from their built wheels.
 The environment persists after ``exit``; opening a shell does not rebuild.
-Rebuild after source changes and restart applications. On Windows use ``.\uz_developer.ps1 build dataviewer`` and ``.\uz_developer.ps1 shell``.
+Rebuild after source changes and restart applications. On Windows use ``.\uz_developer.ps1 build`` and ``.\uz_developer.ps1 shell``.
 ``./uz venv prerelease`` provides both published applications and Python libraries.
 All shell modes add root ``requirements.txt`` dependencies; application launch commands do not add those extra dependencies.
 

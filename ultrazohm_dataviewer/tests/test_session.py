@@ -90,7 +90,7 @@ def _populated_state(csv_path):
 
 def test_export_relative_flag(tmp_path):
     """'start at 0' must rebase only when on; toggling on then off keeps real time."""
-    import pandas as pd
+    import polars as pl
 
     csv = tmp_path / "Log_export.csv"
     csv.write_text("time;CH8=8)ia;\n100.0;1.0;\n100.1;2.0;\n100.2;3.0;\n")
@@ -101,18 +101,18 @@ def test_export_relative_flag(tmp_path):
 
     # relative off -> keeps the real start time
     state.commands.execute(state, "export_data", ["plot_1", str(out), "false"])
-    assert float(pd.read_csv(out)["time"].iloc[0]) == 100.0
+    assert float(pl.read_csv(out)["time"][0]) == 100.0
 
     # toggling the flag on then off must NOT leave the export rebased
     state.commands.execute(state, "set_export_relative", ["plot_1", "on"])
     state.commands.execute(state, "set_export_relative", ["plot_1", "off"])
     assert state.cells[0].export_relative is False
     state.commands.execute(state, "export_data", ["plot_1", str(out), "false"])
-    assert float(pd.read_csv(out)["time"].iloc[0]) == 100.0
+    assert float(pl.read_csv(out)["time"][0]) == 100.0
 
     # relative on -> rebased to 0
     state.commands.execute(state, "export_data", ["plot_1", str(out), "true"])
-    assert float(pd.read_csv(out)["time"].iloc[0]) == 0.0
+    assert float(pl.read_csv(out)["time"][0]) == 0.0
 
 
 def test_json_roundtrip(tmp_path):
@@ -221,7 +221,7 @@ def test_rendered_y_limits_survive_round_trip(
     from ultrazohm_dataviewer.panels.plots import PlotsPanel
 
     state = app_state
-    state.backend, state.loading_mode = "pyarrow", "memory"
+    state.loading_mode = "memory"
     path = tmp_path / "limits.csv"
     path.write_text("time;a\n" + "".join(f"{i};{i + 10}\n" for i in range(8)))
     state.load_sync(str(path))
@@ -272,7 +272,7 @@ def test_restore_rejects_nonexistent_analysis_plot_transactionally(app_state):
 def test_json_preserves_hidden_view_and_analysis_settings(app_state, tmp_path):
     """Inactive controls survive restoration, including a former XY source."""
     state = app_state
-    state.backend, state.loading_mode = "pyarrow", "memory"
+    state.loading_mode = "memory"
     path = tmp_path / "data.csv"
     path.write_text(SAMPLE)
     state.load_sync(str(path))
@@ -310,7 +310,7 @@ def test_failed_graph_restores_assignments_and_recovers(
     from ultrazohm_dataviewer.panels.plots import PlotsPanel
 
     state = app_state
-    state.backend, state.loading_mode = "pyarrow", "memory"
+    state.loading_mode = "memory"
     path = tmp_path / "graph.csv"
     path.write_text("time;a\n" + "".join(f"{i};{i + 1}\n" for i in range(8)))
     state.load_sync(str(path))
@@ -384,7 +384,7 @@ def test_linked_range_survives_json_and_render(app_state, tmp_path, gui_frame):
     from ultrazohm_dataviewer.panels.plots import PlotsPanel
 
     state = app_state
-    state.backend, state.loading_mode = "pyarrow", "memory"
+    state.loading_mode = "memory"
     path = tmp_path / "linked.csv"
     path.write_text("time;a\n" + "".join(f"{i};{i}\n" for i in range(8)))
     state.load_sync(str(path))
@@ -722,7 +722,7 @@ def test_secondary_axis_zoom_survives_restore_and_delayed_fit(
     from imgui_bundle import implot
 
     state = app_state
-    state.backend, state.loading_mode = "pyarrow", mode
+    state.loading_mode = mode
     path = tmp_path / "axes.csv"
     path.write_text(
         "time;a;b\n" + "".join(f"{i};{i + 10};{i + 100}\n" for i in range(8))
@@ -878,19 +878,18 @@ def test_csv_export_preserves_existing_file_on_failure(
     app_state, tmp_path, monkeypatch
 ):
     s = app_state
-    s.backend = "pyarrow"
     s.registry.add_run("a", "a", np.arange(8.0), {"a": np.ones(8)}, {})
     s.cells[0].add((1, "a"))
     path = tmp_path / "previous.csv"
     path.write_text("previous successful export")
-    import pandas as pd
+    import polars as pl
 
     def fail(self, path, **kw):
         with open(path, "w") as f:
             f.write("time,a\n")
         raise OSError("disk full")
 
-    monkeypatch.setattr(pd.DataFrame, "to_csv", fail)
+    monkeypatch.setattr(pl.DataFrame, "write_csv", fail)
     with pytest.raises(OSError):
         session.export_data(s, 0, str(path))
     assert path.read_text() == "previous successful export"

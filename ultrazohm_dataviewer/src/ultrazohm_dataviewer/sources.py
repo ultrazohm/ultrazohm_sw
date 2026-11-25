@@ -23,6 +23,8 @@ from zipfile import BadZipFile
 
 import numpy as np
 
+from .extrema import envelope, group_starts, selected
+
 # Only GUI validity checks use background metadata IO. Nested derived-source
 # validators inherit this scope; raw reads and exports remain strict.
 _validation_jobs = ContextVar("validation_jobs", default=None)
@@ -251,40 +253,6 @@ class DisplaySource(SampleSource, Protocol):
     ) -> None: ...
 
 
-def envelope(t, y, indices, budget):
-    """Ordered min/max plus a gap marker per bucket, using original samples.
-
-    Budget targets finite extrema; gap markers can add up to half that count.
-    """
-    if len(y) <= budget:
-        return np.ascontiguousarray(t, dtype=np.float64), np.ascontiguousarray(
-            y, dtype=np.float64
-        )
-    groups = max(1, budget // 2)
-    # Sample-space buckets keep summaries and raw refinement on the same axis.
-    span = max(1, int(indices[-1]) - int(indices[0]) + 1)
-    group = (indices - indices[0]) * groups // span
-    starts = np.r_[0, np.flatnonzero(np.diff(group)) + 1]
-    lengths = np.diff(np.r_[starts, len(y)])
-    finite = np.isfinite(y)
-    low = np.minimum.reduceat(np.where(finite, y, np.inf), starts)
-    high = np.maximum.reduceat(np.where(finite, y, -np.inf), starts)
-    pos = np.arange(len(y))
-    mins = np.minimum.reduceat(
-        np.where(finite & (y == np.repeat(low, lengths)), pos, len(y)), starts
-    )
-    # First minimum / last maximum retain both ends of constant buckets.
-    maxs = np.maximum.reduceat(
-        np.where(finite & (y == np.repeat(high, lengths)), pos, -1), starts
-    )
-    gaps = np.minimum.reduceat(np.where(~finite, pos, len(y)), starts)
-    selected = np.unique(np.r_[mins, maxs, gaps])
-    selected = selected[(selected >= 0) & (selected < len(y))]
-    values = np.asarray(y[selected], dtype=np.float64).copy()
-    values[~np.isfinite(values)] = np.nan
-    return np.ascontiguousarray(t[selected], dtype=np.float64), values
-
-
 class MemorySource:
     def __init__(self, time, channels):
         self.time = time
@@ -323,29 +291,13 @@ class MemorySource:
 POINT = np.dtype([("i", "<i8"), ("t", "<f8"), ("y", "<f4")])
 BASE = 1024
 FACTOR = 8
-CACHE_VERSION = 4
+CACHE_VERSION = 5
 
 
 def summarize(points, bucket):
     if not len(points):
         return points
-    group = points["i"] // bucket
-    starts = np.r_[0, np.flatnonzero(np.diff(group)) + 1]
-    lengths = np.diff(np.r_[starts, len(points)])
-    y = points["y"]
-    finite = np.isfinite(y)
-    low = np.minimum.reduceat(np.where(finite, y, np.inf), starts)
-    high = np.maximum.reduceat(np.where(finite, y, -np.inf), starts)
-    pos = np.arange(len(y))
-    mins = np.minimum.reduceat(
-        np.where(finite & (y == np.repeat(low, lengths)), pos, len(y)), starts
-    )
-    maxs = np.maximum.reduceat(
-        np.where(finite & (y == np.repeat(high, lengths)), pos, -1), starts
-    )
-    gaps = np.minimum.reduceat(np.where(~finite, pos, len(y)), starts)
-    select = np.unique(np.r_[mins, maxs, gaps])
-    return points[select[(select >= 0) & (select < len(y))]]
+    return points[selected(points["y"], group_starts(points["i"] // bucket))]
 
 
 def raw_summary(t, y, offset, finite=False):
@@ -536,12 +488,20 @@ class ArraySource(SummarySource, MemorySource):
             self.validator()
 
 
-class IndexedFileSource(SummarySource):
-    """Backend-neutral file identity, timestamp index, raw windows and summaries."""
+def cache_root(cache_dir=None):
+    """Disk-cache directory: explicit, ``UZ_DATAVIEWER_CACHE`` or the user cache."""
+    return Path(
+        cache_dir
+        or os.environ.get(
+            "UZ_DATAVIEWER_CACHE", Path.home() / ".cache" / "ultrazohm_dataviewer"
+        )
+    )
 
-    def _initialize(
-        self, path, cache, cache_dir, disk_cache, backend, axis_column=None
-    ):
+
+class IndexedFileSource(SummarySource):
+    """File identity, timestamp index, raw windows and summaries."""
+
+    def _initialize(self, path, cache, cache_dir, disk_cache, axis_column=None):
         self.path = Path(path).resolve()
         self.file_identity = FileIdentity.capture(self.path)
         self.signature = self.file_identity.signature
@@ -549,16 +509,10 @@ class IndexedFileSource(SummarySource):
         self.disk_cache = disk_cache
         identity = hashlib.sha256(
             json.dumps(
-                [backend, str(self.path), self.signature, CACHE_VERSION, axis_column]
+                [str(self.path), self.signature, CACHE_VERSION, axis_column]
             ).encode()
         ).hexdigest()
-        root = Path(
-            cache_dir
-            or os.environ.get(
-                "UZ_DATAVIEWER_CACHE", Path.home() / ".cache" / "ultrazohm_dataviewer"
-            )
-        )
-        self.directory = (root / "polars" if backend == "polars" else root) / identity
+        self.directory = cache_root(cache_dir) / identity
         self.cache = cache if cache is not None else ByteCache()
         self.summary_lock = threading.Lock()
         self.index_lock = threading.Lock()
@@ -685,136 +639,6 @@ class IndexedFileSource(SummarySource):
             if padding
             else (start, stop)
         )
-
-
-class ParquetSource(IndexedFileSource):
-    def __init__(
-        self,
-        path,
-        cache=None,
-        cache_dir=None,
-        cancel=None,
-        *,
-        disk_cache=False,
-        axis_column=None,
-    ):
-        import pyarrow.parquet as pq
-
-        from .loader import (
-            _named_signals,
-            _split_time_columns,
-            arrow_numeric_columns,
-            timestamp_resolution,
-        )
-
-        identity = self._initialize(
-            path, cache, cache_dir, disk_cache, "pyarrow", axis_column
-        )
-        with pq.ParquetFile(self.path) as pf:
-            names, self.skipped_columns = arrow_numeric_columns(
-                pf.schema_arrow, axis_column
-            )
-            self.time_col, columns = _split_time_columns(names, axis_column)
-            named, self.units = _named_signals(
-                columns, lambda c: np.empty(0, np.float32)
-            )
-            self.timestamp_resolution = timestamp_resolution(columns)
-            self.columns = dict(zip(named, columns, strict=False))
-            self.offsets = np.r_[
-                0,
-                np.cumsum(
-                    [
-                        pf.metadata.row_group(i).num_rows
-                        for i in range(pf.num_row_groups)
-                    ]
-                ),
-            ]
-            self._rows = int(self.offsets[-1])
-            if self._rows == 0:
-                raise ValueError("time column is empty")
-            if self._restore_index():
-                extent = (float(self.first[0]), float(self.last[-1]))
-            else:
-                # Opening is metadata-only when Parquet has usable time statistics.
-                # Validate actual sample order on the first raw/display request.
-                # Parquet statistics address physical leaves, whereas Arrow
-                # indexes top-level fields. Nested preceding fields expand to
-                # multiple leaves and must not shift the axis lookup.
-                index = next(
-                    i
-                    for i in range(len(pf.schema))
-                    if pf.schema.column(i).path == self.time_col
-                )
-                stats = [
-                    pf.metadata.row_group(g).column(index).statistics
-                    for g in range(pf.num_row_groups)
-                    if pf.metadata.row_group(g).num_rows
-                ]
-                if all(
-                    v is not None and v.has_min_max and v.null_count == 0 for v in stats
-                ):
-                    extent = (
-                        min(float(v.min) for v in stats),
-                        max(float(v.max) for v in stats),
-                    )
-                    if not np.isfinite(extent).all():
-                        raise ValueError("time must be finite")
-                else:
-                    self._ensure_index(cancel)
-                    extent = (float(self.first[0]), float(self.last[-1]))
-        self.metadata = Metadata(identity, self._rows, tuple(self.columns), extent)
-
-    def _time_batches(self, cancel):
-        import pyarrow.parquet as pq
-
-        with pq.ParquetFile(self.path) as pf:
-            for batch in pf.iter_batches(
-                columns=[self.time_col], batch_size=65536, use_threads=False
-            ):
-                check(cancel)
-                yield batch.column(0).to_numpy(zero_copy_only=False)
-
-    def iter_raw(self, channels, start=0, stop=None, cancel=None):
-        import pyarrow.parquet as pq
-
-        self.validate()
-        self._ensure_index(cancel)
-        stop = self.metadata.rows if stop is None else min(stop, self.metadata.rows)
-        if start >= stop:
-            return
-        first = max(0, int(np.searchsorted(self.offsets, start, side="right")) - 1)
-        last = min(
-            len(self.offsets) - 2,
-            int(np.searchsorted(self.offsets, stop - 1, side="right")) - 1,
-        )
-        columns = [self.time_col] + [self.columns[c] for c in channels]
-        with pq.ParquetFile(self.path) as pf:
-            for g in range(first, last + 1):
-                offset = int(self.offsets[g])
-                for batch in pf.iter_batches(
-                    row_groups=[g], columns=columns, batch_size=65536, use_threads=False
-                ):
-                    check(cancel)
-                    end = offset + len(batch)
-                    a, b = max(start - offset, 0), min(stop - offset, len(batch))
-                    if a < b:
-                        batch = batch.slice(a, b - a)
-                        t = np.asarray(
-                            batch.column(0).to_numpy(zero_copy_only=False),
-                            dtype=np.float64,
-                        )
-                        ys = {
-                            c: np.asarray(
-                                batch.column(i + 1).to_numpy(zero_copy_only=False),
-                                dtype=np.float32,
-                            )
-                            for i, c in enumerate(channels)
-                        }
-                        yield t, ys
-                    offset = end
-                    if offset >= stop:
-                        break
-        self.validate()
 
 
 class SourceColumn:

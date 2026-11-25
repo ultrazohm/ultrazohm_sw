@@ -86,3 +86,47 @@ Configuration and files
 Without a checkout, DataViewer workspace data uses ``%LOCALAPPDATA%\UltraZohm\ultrazohm_dataviewer`` on Windows or ``${XDG_DATA_HOME:-~/.local/share}/ultrazohm/ultrazohm_dataviewer`` on Linux.
 Explicit recording directories must be new and their parent must exist.
 Save startup profile and Save view preferences are separate actions.
+
+Checkout preparation and firmware tools
+---------------------------------------
+
+Launching from an UltraZohm checkout or one of its subdirectories selects that checkout for live mode.
+Preparation asks the ultrazohm-cli for ``channel-mapping --repo PATH`` and, when preferences are missing, ``profile --repo PATH``.
+It runs in the background, creates no mapping cache file, and reports failures in **Live Data**.
+Connect and Flash UZ require successful preparation; attaching does not.
+Connect launches ``serve --repo PATH --profile settings.json``; the service validates the saved preferences and exposes the effective configuration through ``catalog``.
+Restart the service to select a different repository.
+
+Use **Browse for XSCT** when Vitis is missing from PATH; the selection is stored in ``tools.json``.
+Firmware operations need Vitis 2022.2, a generated workspace with its hardware export, and JTAG access.
+Flash UZ uses the Tcl scripts embedded when the ultrazohm-cli was built.
+Later script edits need an ultrazohm-cli rebuild and service restart, unless ``UZ_CLI_TCL_DIR`` is set before the service starts.
+
+Live Data panel
+---------------
+
+- **Connect** starts a DataViewer-owned service; **Existing service** offers Attach, Detach and Shutdown.
+  When the attached service is disconnected from the device, **Connect device** connects it to the displayed address, resolved on the machine running the service.
+  A new session directory must not exist; ``<session>.service.log`` holds service startup diagnostics.
+- The 20 channel slots show the requested assignments.
+  Double-click a slot for a case-insensitive fuzzy search (**Up/Down**, **Enter**, **Esc**).
+  Assignment is blocked while either stream records; a session change clears live plot assignments.
+- **Live Plots** reuses the ordinary plot renderer and mouse mapping.
+  Wheel and box zoom keep following and set **Time depth (s)**; Shift-modified zoom, horizontal panning or unchecking **Follow live** enters Inspect.
+  **Reset view** or double-click resumes following.
+- **Freeze plot 1 for analysis** copies the plot's window into a memory-only recording for FFT, histogram and nodes.
+- **Control** sends Enable System, Enable Control, Stop, user buttons 1–8 and variables (press **Enter** in a row to send).
+  Entered values are local, not device readbacks; inputs are disabled while a managed script runs.
+- Fast and slow logging have independent Start/Stop controls; **Open completed log** opens the final Parquet file.
+
+Live buffering
+--------------
+
+A polling worker calls ``Client.read_since()`` at up to 30 Hz and keeps at most the service's configured sample capacity (30 seconds by default).
+Commands run on a separate worker and connection, so plots keep updating; polling pauses only during Flash UZ.
+Stop and shutdown use their own control connection and never wait for queued commands.
+Each publication is an immutable snapshot with incrementally maintained per-bucket minima and maxima.
+The time-depth slider maximum follows the service capacity times its configured sample period.
+
+``build/benchmark_live.py --sample-rate 10000 --traces 3`` measures buffer appends and trace preparation without hardware.
+It reports CPU timings, not GUI FPS, and excludes the service, network and graphics driver.

@@ -56,10 +56,10 @@ Headless analysis quick start
    data = uz.read("Log.csv")              # -> Dataset (shared time axis + named signals)
    t, ia = data.time, data["ia"]
 
-   df = data.to_dataframe()               # pandas: column 'time' + one per signal
+   df = data.to_dataframe()               # Polars: column 'time' + one per signal
 
    spec = uz.fft(t, ia)                   # -> FftResult (.freqs, .mag, .info, .ok); full span
-   sdf  = uz.fft_frame(t, ia)             # -> pandas DataFrame [frequency, amplitude]
+   sdf  = uz.fft_frame(t, ia)             # -> Polars DataFrame [frequency, amplitude]
 
    # Node transforms — the exact calculations the GUI's node graph uses.
    print(uz.kinds())                      # ('fft', 'math', 'filter', 'shift')

@@ -119,8 +119,7 @@ def test_nonfinite_origin_is_rejected_before_mutation(
     np.testing.assert_array_equal(np.asarray(run.time), original)
 
 
-@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
-def test_normalized_full_window_preserves_all_samples(tmp_path, backend):
+def test_normalized_full_window_preserves_all_samples(tmp_path):
     p = tmp_path / "log.csv"
     p.write_text("time;a\n" + "".join(f"{i / 10};{i}\n" for i in range(1, 9)))
     from ultrazohm_dataviewer.loader import open_file
@@ -128,19 +127,16 @@ def test_normalized_full_window_preserves_all_samples(tmp_path, backend):
 
     results = []
     for mode in ("memory", "lazy"):
-        run = open_file(str(p), mode, backend=backend).register(DataRegistry())
+        run = open_file(str(p), mode).register(DataRegistry())
         run.set_time_origin(100)
         limits = (float(run.time[0]), float(run.time[-1]))
         results.append(run.read_window(["a"], *limits)[1]["a"].tolist())
     assert results == [list(range(1, 9)), list(range(1, 9))]
 
 
-@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
 @pytest.mark.parametrize("origin", [100.0, 1e16, -100.0, 0.1])
 @pytest.mark.parametrize("raw_origin", [0.0, 1e16])
-def test_displayed_selection_matches_resident_mask(
-    tmp_path, backend, origin, raw_origin
-):
+def test_displayed_selection_matches_resident_mask(tmp_path, origin, raw_origin):
     from ultrazohm_dataviewer.analysis import AnalysisInput, histogram_sources
     from ultrazohm_dataviewer.loader import open_file
     from ultrazohm_dataviewer.model import DataRegistry
@@ -151,7 +147,7 @@ def test_displayed_selection_matches_resident_mask(
     path.write_text("time,a\n" + "".join(f"{t},{i}\n" for i, t in enumerate(raw)))
     displayed = (raw - raw[0]) + origin
     for mode in ("memory", "lazy"):
-        run = open_file(str(path), mode, backend=backend).register(DataRegistry())
+        run = open_file(str(path), mode).register(DataRegistry())
         run.set_time_origin(origin)
         assert run.time[0] == origin
         selected = AnalysisInput.capture(DataRegistryWithRun(run), [(run.id, "a")])[0]

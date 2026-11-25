@@ -50,7 +50,6 @@ def parser():
         "--endpoint", default=argparse.SUPPRESS, help="Local viewer control endpoint"
     )
     gui.add_argument("files", nargs="*")
-    gui.add_argument("--backend", choices=("pyarrow", "polars"))
     gui.add_argument("--loading-mode", choices=("memory", "lazy"))
     gui.add_argument("--disk-cache", action="store_true", default=None)
     gui.add_argument("--live-repo")

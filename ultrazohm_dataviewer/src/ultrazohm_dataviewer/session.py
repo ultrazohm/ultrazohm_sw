@@ -23,7 +23,7 @@ from .validation import (
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from .state import AppState
 
-SCHEMA_VERSION = 6
+SCHEMA_VERSION = 7
 
 
 def ensure_extension(path: str, ext: str) -> str:
@@ -56,7 +56,7 @@ def _ref_to_saved(state, ref):
 def clear_session(state):
     """Reset recording identities and consumers before restoring a complete session."""
     replacement = _replacement_state(state)
-    for field in ("backend", "loading_mode", "disk_cache", "max_points", "link_x"):
+    for field in ("loading_mode", "disk_cache", "max_points", "link_x"):
         setattr(replacement, field, getattr(state, field))
     replacement.registry.cache.limit = state.registry.cache.limit
     state.replace_session(replacement)
@@ -168,14 +168,12 @@ def to_dict(state: AppState) -> dict:
         "max_points": state.max_points,
         "loading_mode": state.loading_mode,
         "disk_cache": state.disk_cache,
-        "backend": state.backend,
         "cache_budget_mb": state.registry.cache.limit // 1024**2,
         "runs": [
             {
                 "key": f"run:{r.id}",
                 "path": r.path,
                 "mode": r.storage_mode,
-                "backend": r.backend,
                 "disk_cache": getattr(r.source, "disk_cache", False),
                 "time_origin": r.time_origin,
                 "axis_column": r.axis_column,
@@ -270,10 +268,6 @@ def read_snapshot(path: str) -> dict:
     return data
 
 
-def _session_backend(state, backend):
-    return backend
-
-
 def _replacement_state(state):
     from .state import AppState
 
@@ -297,16 +291,10 @@ def _apply_dict(state: AppState, data: dict, *, cancel=None) -> None:
 
     check(cancel)
     if data.get("version") != SCHEMA_VERSION:
-        raise ValueError(
-            f"Unsupported session version; expected {SCHEMA_VERSION}. Recreate old sessions."
-        )
+        raise ValueError(f"Unsupported session version; expected {SCHEMA_VERSION}.")
     specs = data.get("runs", [])
     if len({r["key"] for r in specs}) != len(specs):
         raise ValueError("Duplicate run keys in session")
-    if "backend" in data:
-        state.commands.execute(
-            state, "backend", [_session_backend(state, data["backend"])]
-        )
     for command, field in (
         ("disk_cache", "disk_cache"),
         ("loading_mode", "loading_mode"),
@@ -315,21 +303,19 @@ def _apply_dict(state: AppState, data: dict, *, cancel=None) -> None:
         if field in data:
             state.commands.execute(state, command, [data[field]])
     run_ids = {}
-    mode, backend, disk_cache = state.loading_mode, state.backend, state.disk_cache
+    mode, disk_cache = state.loading_mode, state.disk_cache
     try:
         for spec in specs:
             check(cancel)
             state.loading_mode = spec["mode"]
-            state.backend = _session_backend(state, spec["backend"])
             state.disk_cache = boolean(spec["disk_cache"])
             from .axis import inspect_axis
 
             try:
                 axis = inspect_axis(
                     spec["path"],
-                    spec.get("axis_column"),
-                    spec.get("axis_domain"),
-                    legacy="axis_domain" not in spec,
+                    spec["axis_column"],
+                    spec["axis_domain"],
                 )
             except (OSError, ValueError) as error:
                 raise ValueError(
@@ -348,7 +334,7 @@ def _apply_dict(state: AppState, data: dict, *, cancel=None) -> None:
             run.active = boolean(spec.get("active", True))
             run_ids[spec["key"]] = run.id
     finally:
-        state.loading_mode, state.backend, state.disk_cache = mode, backend, disk_cache
+        state.loading_mode, state.disk_cache = mode, disk_cache
 
     rows, cols = data.get("grid", [state.rows, state.cols])
     state.set_grid(rows, cols)
@@ -513,7 +499,7 @@ def _check_reloadable(state):
 
 
 # -- data export --------------------------------------------------------------
-def _write_csv(columns, path, backend, cancel=None):
+def _write_csv(columns, path, cancel=None):
     import tempfile
 
     fd, temporary = tempfile.mkstemp(
@@ -521,14 +507,9 @@ def _write_csv(columns, path, backend, cancel=None):
     )
     os.close(fd)
     try:
-        if backend == "polars":
-            import polars as pl
+        import polars as pl
 
-            pl.DataFrame(columns).write_csv(temporary)
-        else:
-            import pandas as pd
-
-            pd.DataFrame(columns).to_csv(temporary, index=False)
+        pl.DataFrame(columns).write_csv(temporary)
         from .sources import check
 
         check(cancel)
@@ -544,8 +525,7 @@ def export_data(
     """Write a subplot's signals to a wide CSV (``time`` + one column per signal).
 
     Exports the currently visible time window (the linked range when set, else the
-    full extent). ``relative`` rebases the time column to start at 0 -- the legacy
-    viewer's "start time at 0" option. Signals whose run differs from the first
+    full extent). ``relative`` rebases the time column to start at 0. Signals whose run differs from the first
     signal's (different time base) are skipped with a warning.
     """
 
@@ -594,7 +574,7 @@ def export_data(
             # the "ia @ Log.csv" display label.
             columns[ref[1]] = values[ref[1]]
 
-    _write_csv(columns, path, state.backend, getattr(state, "_export_cancel", None))
+    _write_csv(columns, path, getattr(state, "_export_cancel", None))
     return len(columns)
 
 
@@ -662,7 +642,7 @@ def export_fft(state: AppState, path: str) -> int:
             acol[: len(mag)] = mag
             columns[unique_name(f"{name}_frequency", column_names)] = fcol
             columns[unique_name(name, column_names)] = acol
-    _write_csv(columns, path, state.backend, getattr(state, "_export_cancel", None))
+    _write_csv(columns, path, getattr(state, "_export_cancel", None))
     return len(columns)
 
 
@@ -692,5 +672,5 @@ def export_histogram(state: AppState, path: str) -> int:
         raise ValueError("no data to export")
     columns = {"bin_center": results[0][1]}
     columns.update({label: counts for label, _, counts, _ in results})
-    _write_csv(columns, path, state.backend, getattr(state, "_export_cancel", None))
+    _write_csv(columns, path, getattr(state, "_export_cancel", None))
     return len(columns)

@@ -1,9 +1,19 @@
-"""Build, install and validate checkout applications using the CI tasks."""
+"""Build, check and release the checkout applications with the CI tasks.
+
+Commands:
+  shell                         activate the persistent development environment
+  build [--bundle]              build the wheel pair and update that environment
+  cli TASK [ARGS]               ultrazohm-cli tasks (ultrazohm_cli/tasks.py)
+  dataviewer TASK [ARGS]        DataViewer tasks (ultrazohm_dataviewer/tasks.py)
+  verify {linux,windows} [ARGS] release checks of the built pair
+"""
 
 import argparse
 import os
 import subprocess
 import sys
+from contextlib import nullcontext
+from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 
 from uz import run
@@ -14,8 +24,18 @@ ROOT = Path(__file__).resolve().parent
 PROJECTS = {"cli": "ultrazohm_cli", "dataviewer": "ultrazohm_dataviewer"}
 
 
+def project_tasks(project):
+    """Import a project's task registry (``TASKS`` and ``LOCK``)."""
+    path = Path(__file__).resolve().parent / PROJECTS[project] / "tasks.py"
+    spec = spec_from_file_location(f"{project}_tasks", path)
+    module = module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def task(project, name, *arguments):
-    run([sys.executable, ROOT / PROJECTS[project] / "tasks.py", name, *arguments])
+    """Run a project task in a child process (its own lock and environment)."""
+    run([sys.executable, ROOT / "uz_developer.py", project, name, *arguments])
 
 
 def candidates():
@@ -27,59 +47,72 @@ def candidates():
     ]
 
 
-def main(argv=None):
-    launcher = ".\\uz_developer.ps1" if os.name == "nt" else "./uz_developer"
-    parser = argparse.ArgumentParser(
+def parser(launcher):
+    root = argparse.ArgumentParser(
         prog=launcher,
-        description="Build checkout wheels and update the persistent development environment.",
+        description=__doc__.split("\n\n")[0],
         epilog="Use shell (or ./uz venv dev) after building. Published tools use ./uz cli/dataviewer.",
     )
-    commands = parser.add_subparsers(dest="command", required=True)
+    commands = root.add_subparsers(dest="command", required=True)
     commands.add_parser(
         "shell", help="Activate the existing development environment without rebuilding"
     )
-    for name in ("build", "check", "task"):
-        command = commands.add_parser(name)
-        command.add_argument(
-            "project",
-            choices=list(PROJECTS)
-            + ([] if name == "task" else ["linux_wheels", "windows_bundle"]),
-        )
-        if name == "task":
-            command.add_argument("task")
-        command.add_argument("arguments", nargs=argparse.REMAINDER)
+    build = commands.add_parser(
+        "build",
+        help="Build the matching wheel pair and update the development environment",
+    )
+    build.add_argument(
+        "--bundle",
+        action="store_true",
+        help="also build the standalone CLI and the desktop bundle (Windows)",
+    )
+    for project in PROJECTS:
+        module = project_tasks(project)
+        command = commands.add_parser(project, help=f"{project} tasks")
+        names = command.add_subparsers(dest="task", required=True, metavar="TASK")
+        for name, definition in module.TASKS.items():
+            child = names.add_parser(
+                name, help=definition.help, description=definition.help
+            )
+            definition.arguments(child)
+            child.set_defaults(definition=definition, lock=module.LOCK)
+    verify = commands.add_parser(
+        "verify", help="Release checks of the built wheel pair or Windows bundle"
+    )
+    verify.add_argument("target", choices=("linux", "windows"))
+    verify.add_argument("arguments", nargs=argparse.REMAINDER)
+    return root
+
+
+def main(argv=None):
+    launcher = ".\\uz_developer.ps1" if os.name == "nt" else "./uz_developer"
     argv = list(sys.argv[1:] if argv is None else argv)
     if argv == ["help"]:
         argv = ["--help"]
-    args = parser.parse_args(argv or ["--help"])
+    commands = parser(launcher)
+    args = commands.parse_args(argv or ["--help"])
     try:
         if args.command == "shell":
             development_shell(ROOT, run)
-        elif args.command == "task":
-            task(args.project, args.task, *args.arguments)
         elif args.command == "build":
-            if args.arguments:
-                parser.error(
-                    "Build updates the development environment; use task for low-level artifact options"
-                )
-            if args.project == "linux_wheels" and sys.platform != "linux":
-                parser.error("linux_wheels must be built on Linux")
-            if args.project == "windows_bundle" and os.name != "nt":
-                parser.error("windows_bundle must be built on Windows")
-            # Both apps have an exact version relationship. Refresh the pair even
-            # when one application is named; Cargo reuses unchanged compilation.
+            if args.bundle and os.name != "nt":
+                commands.error("--bundle must be built on Windows")
+            # Both apps have an exact version relationship. Refresh the pair;
+            # Cargo reuses unchanged compilation.
             with build_lock(ROOT, "development"):
                 build_development(ROOT, run)
-                if args.project == "windows_bundle":
+                if args.bundle:
                     task("cli", "standalone")
-                    task("dataviewer", "bundle", *candidates())
-        elif args.project in PROJECTS:
-            task(args.project, "check", *args.arguments)
-        elif args.project == "linux_wheels":
+                    task("dataviewer", "bundle", *map(str, candidates()))
+        elif args.command in PROJECTS:
+            lock = args.definition.locked(args)
+            with build_lock(ROOT, args.lock) if lock else nullcontext():
+                args.definition.function(args)
+        elif args.target == "linux":
             if sys.platform != "linux":
-                parser.error("linux_wheels checks require Linux")
+                commands.error("linux verification requires Linux")
             with build_lock(ROOT, "development"):
-                wheels = candidates()
+                wheels = [str(item) for item in candidates()]
                 task("cli", "check")
                 task("cli", "release-check")
                 task("dataviewer", "check", "--gui-smoke", *wheels, *args.arguments)
@@ -95,13 +128,13 @@ def main(argv=None):
                 )
         else:
             if os.name != "nt":
-                parser.error("windows_bundle checks require Windows")
+                commands.error("windows verification requires Windows")
             task("cli", "release-check", "--standalone")
             task("dataviewer", "bundle-smoke", *args.arguments)
     except subprocess.CalledProcessError as error:
         raise SystemExit(error.returncode or 1) from None
     except (OSError, RuntimeError) as error:
-        parser.exit(1, f"{error}\n")
+        commands.exit(1, f"{error}\n")
     except KeyboardInterrupt:
         raise SystemExit(130) from None
 

@@ -9,8 +9,7 @@ It is not a commitment to add features.
 Implemented contracts
 ---------------------
 
-- The DataViewer defaults to Polars and lazy loading; PyArrow remains supported.
-  Both engines share naming and selection contracts.
+- The DataViewer uses Polars for all file IO and defaults to lazy loading.
 - FFT and histogram work runs through cancellable request workers.
 - Display summaries live in ``sources.py``.
   Raw window reads and exports do not use display decimation.
@@ -39,5 +38,25 @@ Deliberate limits
 Validation
 ----------
 
-The test suite covers both backends, memory/lazy loading, GUI contexts, exports, plugins, session restoration, cancellation and live acquisition against the simulator.
+The test suite covers memory/lazy loading, GUI contexts, exports, plugins, session restoration, cancellation and live acquisition against the simulator.
 Release builds additionally run the frozen-executable self-test.
+
+.. list-table:: Capability status
+   :header-rows: 1
+
+   * - Capability
+     - Maturity and validation
+   * - CSV/Parquet browsing, plotting and exports
+     - Implemented; memory/lazy modes and axis round trips covered by tests.
+   * - FFT, histogram and node analysis
+     - Implemented; domain constraints and session persistence covered by tests.
+   * - Python client, terminal control and Python panel
+     - Implemented; local control and startup ordering tested.
+   * - Live scope and fast/slow recording
+     - Implemented; simulator tests cover control, finalization and disconnects. Physical-device acceptance is pending.
+   * - Header discovery and Flash UZ
+     - Implemented; parser and fake-tooling tests pass. Vitis/JTAG acceptance is pending.
+   * - Windows desktop distribution
+     - Bundling and smoke checks run in Windows CI.
+   * - Full recording history during acquisition; cloud storage
+     - Future capabilities.

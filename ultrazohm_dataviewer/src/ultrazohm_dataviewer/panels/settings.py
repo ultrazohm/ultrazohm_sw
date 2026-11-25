@@ -78,7 +78,6 @@ class SettingsPanel:
             )
         elif self.section == "Data loading":
             for name, label, options, labels in [
-                ("backend", "Backend", ["pyarrow", "polars"], ["PyArrow", "Polars"]),
                 ("loading_mode", "Loading", ["memory", "lazy"], ["In memory", "Lazy"]),
             ]:
                 changed, index = imgui.combo(

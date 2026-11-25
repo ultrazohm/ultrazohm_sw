@@ -8,36 +8,33 @@ from ultrazohm_dataviewer import loader
 from ultrazohm_dataviewer.sources import Cancelled
 
 
-@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
-def test_existing_destination_is_never_overwritten(tmp_path, backend):
+def test_existing_destination_is_never_overwritten(tmp_path):
     source = tmp_path / "input.csv"
     source.write_text("time;a\n0;1\n1;2\n")
     destination = source.with_suffix(".parquet")
     destination.write_bytes(b"existing recording")
     with pytest.raises(FileExistsError):
-        loader.convert_csv_to_parquet(str(source), backend=backend)
+        loader.convert_csv_to_parquet(str(source))
     assert destination.read_bytes() == b"existing recording"
     assert not list(tmp_path.glob(".uz-convert-*"))
 
 
-@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
-def test_late_parse_failure_leaves_no_output(tmp_path, backend):
+def test_late_parse_failure_leaves_no_output(tmp_path):
     source = tmp_path / "input.csv"
     source.write_text("time;a\n" + "1;2\n" * 700_000 + "2;bad\n")
     original = source.read_bytes()
     with pytest.raises(Exception, match="bad"):
-        loader.convert_csv_to_parquet(str(source), backend=backend)
+        loader.convert_csv_to_parquet(str(source))
     assert source.read_bytes() == original
     assert not source.with_suffix(".parquet").exists()
     assert not list(tmp_path.glob(".uz-convert-*"))
 
 
-@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
-def test_empty_conversion_fails_without_output(tmp_path, backend):
+def test_empty_conversion_fails_without_output(tmp_path):
     source = tmp_path / "empty.csv"
     source.write_text("time;a\n")
     with pytest.raises(ValueError, match="empty"):
-        loader.convert_csv_to_parquet(str(source), backend=backend)
+        loader.convert_csv_to_parquet(str(source))
     assert not source.with_suffix(".parquet").exists()
     assert not list(tmp_path.glob(".uz-convert-*"))
 
@@ -66,8 +63,8 @@ def test_cancellation_before_publication_cleans_output(tmp_path, monkeypatch):
     source.write_text("time;a\n0;1\n1;2\n")
     cancel = threading.Event()
 
-    def cancelled_writer(src, dst, backend, event, *, axis=None):
-        loader._write_csv_to_parquet(src, dst, backend=backend)
+    def cancelled_writer(src, dst, event, *, axis=None):
+        loader._write_csv_to_parquet(src, dst)
         event.set()
 
     monkeypatch.setattr(loading, "convert_cancellable", cancelled_writer)

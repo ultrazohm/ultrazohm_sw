@@ -1,12 +1,13 @@
 use crate::{
     data::{Cursor, Query, Selection, Source, Stream},
+    jobs::FirmwareAction,
     live::DataOptions,
     profile::{ChannelMapping, Profile, ProfileSettings},
     service::{self, Config, Operation},
     storage::Format,
 };
 use anyhow::{Result, bail};
-use clap::{CommandFactory, Parser, Subcommand};
+use clap::{CommandFactory, Parser, Subcommand, ValueEnum};
 use rustyline::{completion::Completer, error::ReadlineError, history::DefaultHistory};
 use std::{
     io::{self, BufRead, IsTerminal, Write},
@@ -24,46 +25,60 @@ struct Args {
     #[command(subcommand)]
     command: Option<Command>,
 }
+/// Switch values of the terminal syntax.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, ValueEnum)]
+enum Toggle {
+    On,
+    Off,
+}
+impl From<Toggle> for bool {
+    fn from(value: Toggle) -> Self {
+        value == Toggle::On
+    }
+}
+
+#[derive(Debug, clap::Args)]
+struct FirmwareArgs {
+    /// Run Vitis on this machine instead of submitting a job to the service.
+    #[arg(long)]
+    local: bool,
+    /// Return once the service accepted the job (service jobs only).
+    #[arg(long, conflicts_with = "local")]
+    no_wait: bool,
+    /// Repository root for --local; otherwise search upward from the current
+    /// directory. Service jobs use the service's --repo.
+    #[arg(long, requires = "local")]
+    repo: Option<PathBuf>,
+}
+
 #[derive(Subcommand)]
 enum Command {
     /// Generate/build an empty Vitis workspace (optionally open the GUI).
     Generate {
-        #[arg(long)]
-        local: bool,
-        #[arg(long)]
-        no_wait: bool,
-        /// Repository root; otherwise search upward from the current directory.
-        #[arg(long)]
-        repo: Option<PathBuf>,
-        #[arg(long)]
+        #[command(flatten)]
+        firmware: FirmwareArgs,
+        #[arg(long, requires = "local")]
         open: bool,
     },
     /// Incrementally build Baremetal and FreeRTOS (including platform dependencies).
     Build {
-        #[arg(long)]
-        local: bool,
-        #[arg(long)]
-        no_wait: bool,
-        #[arg(long)]
-        repo: Option<PathBuf>,
+        #[command(flatten)]
+        firmware: FirmwareArgs,
     },
     /// Clean the platform and applications, then rebuild both applications.
     BuildClean {
-        #[arg(long)]
-        local: bool,
-        #[arg(long)]
-        no_wait: bool,
-        #[arg(long)]
-        repo: Option<PathBuf>,
+        #[command(flatten)]
+        firmware: FirmwareArgs,
     },
     /// Build, then JTAG program and run. Does not write persistent flash memory.
     Flash {
-        #[arg(long)]
+        #[command(flatten)]
+        firmware: FirmwareArgs,
+        /// Device to reconnect after programming (service jobs only).
+        #[arg(long, conflicts_with = "local")]
         device: Option<String>,
-        #[arg(long)]
+        #[arg(long, conflicts_with = "local")]
         no_reconnect: bool,
-        #[arg(long)]
-        no_wait: bool,
     },
     Jobs,
     Job {
@@ -98,8 +113,8 @@ enum Command {
         /// parquet: final Parquet only; csv: also convert the final Parquet to CSV.
         #[arg(long, value_enum, default_value = "parquet")]
         format: Format,
-        #[arg(long,default_value="off",value_parser=["on","off"])]
-        ack: String,
+        #[arg(long, value_enum, default_value = "off")]
+        ack: Toggle,
         /// Read commands at a prompt while acquisition runs. EOF ends the service.
         #[arg(long)]
         interactive: bool,
@@ -192,8 +207,8 @@ enum Command {
         number: u32,
     },
     SendAck {
-        #[arg(value_parser=["on","off"])]
-        enabled: String,
+        #[arg(value_enum)]
+        enabled: Toggle,
     },
     /// Send device Stop, end acquisition, finalize recordings, and exit the service.
     Shutdown,
@@ -261,7 +276,7 @@ fn dispatch(args: Args) -> Result<()> {
         repo: None,
         output: None,
         format: Format::Parquet,
-        ack: "off".into(),
+        ack: Toggle::Off,
         interactive: true,
     });
     match command {
@@ -316,7 +331,7 @@ fn dispatch(args: Args) -> Result<()> {
                     profile,
                     output: Some(output),
                     format,
-                    ack: ack == "on",
+                    ack: ack.into(),
                 },
                 shutdown,
                 move || {
@@ -497,20 +512,61 @@ fn prompt(endpoint: &str, shutdown: &AtomicBool) -> Result<()> {
     Ok(())
 }
 
-/// A parsed command is either a request to the service or a local tool run.
+/// A parsed command: a request to the service, a firmware job, or a local tool run.
 enum Action {
     Service(Operation),
+    Job { operation: Operation, wait: bool },
+    Recordings,
     Local(Command),
 }
 
+fn firmware(command: &Command) -> Option<(FirmwareAction, &FirmwareArgs)> {
+    match command {
+        Command::Generate { firmware, .. } => Some((FirmwareAction::Generate, firmware)),
+        Command::Build { firmware } => Some((FirmwareAction::Build, firmware)),
+        Command::BuildClean { firmware } => Some((FirmwareAction::BuildClean, firmware)),
+        Command::Flash { firmware, .. } => Some((FirmwareAction::Flash, firmware)),
+        _ => None,
+    }
+}
+
+fn request_id() -> Result<String> {
+    Ok(format!(
+        "{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)?
+            .as_nanos()
+    ))
+}
+
 fn classify(command: Command) -> Result<Action> {
-    if let Some((op, _)) = firmware_command(&command)? {
-        return Ok(Action::Service(op));
+    if let Some((action, args)) = firmware(&command) {
+        if args.local {
+            return Ok(Action::Local(command));
+        }
+        let (device, no_reconnect) = match &command {
+            Command::Flash {
+                device,
+                no_reconnect,
+                ..
+            } => (device.clone(), *no_reconnect),
+            _ => (None, false),
+        };
+        return Ok(Action::Job {
+            operation: Operation::Firmware {
+                action,
+                request_id: request_id()?,
+                device,
+                no_reconnect,
+            },
+            wait: !args.no_wait,
+        });
     }
     let op = match command {
         Command::Jobs => Operation::Jobs,
         Command::Job { id, .. } => Operation::Job { id, offset: 0 },
-        Command::Recordings => Operation::Recordings,
+        Command::Recordings => return Ok(Action::Recordings),
         Command::DataInfo { stream, recording } => Operation::DataInfo {
             source: Source { stream, recording },
         },
@@ -609,7 +665,7 @@ fn classify(command: Command) -> Result<Action> {
         Command::SetObservable { name, channel } => Operation::SetObservable { name, channel },
         Command::Button { number } => Operation::Button { number },
         Command::SendAck { enabled } => Operation::SendAck {
-            enabled: enabled == "on",
+            enabled: enabled.into(),
         },
     };
     Ok(Action::Service(op))
@@ -617,14 +673,20 @@ fn classify(command: Command) -> Result<Action> {
 
 /// Run a command that does not talk to the service.
 fn run_local(command: Command) -> Result<()> {
+    use crate::vitis::{RUN_PROFILE, VitisAction};
+    if let Some((action, args)) = firmware(&command) {
+        let open = matches!(command, Command::Generate { open: true, .. });
+        let steps: &[(VitisAction, Option<&str>)] = match action {
+            FirmwareAction::Generate if open => &[(VitisAction::GenerateOpen, None)],
+            FirmwareAction::Flash => &[
+                (VitisAction::Build, None),
+                (VitisAction::ProgramBuilt, Some(RUN_PROFILE)),
+            ],
+            action => &[(action.build_step(), None)],
+        };
+        return crate::vitis::run(steps, args.repo.as_deref());
+    }
     match command {
-        Command::Generate { repo, open, .. } => crate::vitis::run(
-            if open { "generate-open" } else { "generate" },
-            repo.as_deref(),
-            None,
-        ),
-        Command::Build { repo, .. } => crate::vitis::run("build", repo.as_deref(), None),
-        Command::BuildClean { repo, .. } => crate::vitis::run("build-clean", repo.as_deref(), None),
         Command::Serve { .. } => {
             bail!("serve cannot be started inside an existing interactive session")
         }
@@ -667,7 +729,29 @@ fn run_local(command: Command) -> Result<()> {
     }
 }
 
-/// Send one operation and write its reply: JSON, or a short table for data reads.
+/// All recordings of the current session, paging through `recordings_page`.
+fn recordings(endpoint: &str) -> Result<serde_json::Value> {
+    let mut connection = service::Connection::new(endpoint);
+    let mut recordings = Vec::new();
+    let mut cursor = None;
+    loop {
+        let (page, _) =
+            connection.exchange(Operation::RecordingsPage { cursor, limit: 100 }, false)?;
+        recordings.extend(
+            page["recordings"]
+                .as_array()
+                .ok_or_else(|| anyhow::anyhow!("invalid recording page"))?
+                .iter()
+                .cloned(),
+        );
+        cursor = serde_json::from_value(page["next_cursor"].clone())?;
+        if cursor.is_none() {
+            return Ok(serde_json::json!({"recordings": recordings}));
+        }
+    }
+}
+
+/// Send one operation and write its result: JSON, or a short table for data reads.
 fn send_operation(op: Operation, endpoint: &str, out: &mut impl Write) -> Result<()> {
     if matches!(op, Operation::ReadData { .. }) {
         use polars::prelude::*;
@@ -724,107 +808,48 @@ fn follow_job(endpoint: &str, id: &str, follow: bool) -> Result<()> {
         print!("{}", reply["log"].as_str().unwrap_or(""));
         io::stdout().flush()?;
         let progress = crate::jobs::progress(offset as u64, &reply)?;
-        let next = progress["next_offset"].as_u64().unwrap() as usize;
         if !follow {
             println!("{}", serde_json::to_string_pretty(&reply["job"])?);
             return Ok(());
         }
-        if progress["complete"] == true {
+        if progress.complete {
             anyhow::ensure!(
-                reply["job"]["state"] == "succeeded",
+                progress.error.is_none(),
                 "firmware job failed: {}",
                 reply["job"]["result"]
             );
             return Ok(());
         }
-        offset = next;
+        offset = progress.next_offset as usize;
         std::thread::sleep(std::time::Duration::from_millis(100));
     }
 }
 
-fn firmware_command(command: &Command) -> Result<Option<(Operation, bool)>> {
-    let firmware = match command {
-        Command::Generate {
-            local: false,
-            repo,
-            open,
-            no_wait,
-        } => {
-            anyhow::ensure!(
-                repo.is_none() && !open,
-                "select --repo at serve startup; --open requires --local"
-            );
-            Some(("generate", *no_wait, None, false))
-        }
-        Command::Build {
-            local: false,
-            repo,
-            no_wait,
-        }
-        | Command::BuildClean {
-            local: false,
-            repo,
-            no_wait,
-        } => {
-            anyhow::ensure!(
-                repo.is_none(),
-                "select --repo at serve startup, or use --local"
-            );
-            Some((
-                if matches!(command, Command::Build { .. }) {
-                    "build"
-                } else {
-                    "build-clean"
-                },
-                *no_wait,
-                None,
-                false,
-            ))
-        }
-        Command::Flash {
-            device,
-            no_wait,
-            no_reconnect,
-        } => Some(("flash", *no_wait, device.clone(), *no_reconnect)),
-        _ => None,
-    };
-    if let Some((action, no_wait, device, no_reconnect)) = firmware {
-        let request_id = format!(
-            "{}-{}",
-            std::process::id(),
-            std::time::SystemTime::now()
-                .duration_since(std::time::UNIX_EPOCH)?
-                .as_nanos()
-        );
-        return Ok(Some((
-            Operation::Firmware {
-                action: action.into(),
-                request_id,
-                device,
-                no_reconnect,
-            },
-            no_wait,
-        )));
-    }
-    Ok(None)
+fn submit_job(endpoint: &str, operation: Operation) -> Result<String> {
+    let reply = service::request(endpoint, operation)?;
+    reply["job"]["id"]
+        .as_str()
+        .map(str::to_owned)
+        .ok_or_else(|| anyhow::anyhow!("job reply has no id"))
 }
 
 fn execute(command: Command, endpoint: &str) -> Result<()> {
     if let Command::Job { id, follow } = &command {
         return follow_job(endpoint, id, *follow);
     }
-    if let Some((operation, no_wait)) = firmware_command(&command)? {
-        let reply = service::request(endpoint, operation)?;
-        let id = reply["job"]["id"].as_str().unwrap();
-        println!("Job {id}");
-        return if no_wait {
-            Ok(())
-        } else {
-            follow_job(endpoint, id, true)
-        };
-    }
-
     match classify(command)? {
+        Action::Job { operation, wait } => {
+            let id = submit_job(endpoint, operation)?;
+            println!("Job {id}");
+            if wait {
+                follow_job(endpoint, &id, true)?;
+            }
+            Ok(())
+        }
+        Action::Recordings => {
+            println!("{}", serde_json::to_string_pretty(&recordings(endpoint)?)?);
+            Ok(())
+        }
         Action::Service(op) => send_operation(op, endpoint, &mut io::stdout().lock()),
         Action::Local(command) => run_local(command),
     }
@@ -845,17 +870,22 @@ pub fn console_command(endpoint: &str, line: &str) -> Result<String> {
         Err(error) if error.use_stderr() => bail!("{}", error.render().to_string().trim_end()),
         Err(help) => return Ok(help.render().to_string()),
     };
+    let mut out = Vec::new();
     match classify(command)? {
-        Action::Service(op) => {
-            let mut out = Vec::new();
-            send_operation(op, endpoint, &mut out)?;
-            Ok(String::from_utf8_lossy(&out).into_owned())
+        Action::Service(operation) | Action::Job { operation, .. } => {
+            send_operation(operation, endpoint, &mut out)?
         }
+        Action::Recordings => writeln!(
+            out,
+            "{}",
+            serde_json::to_string_pretty(&recordings(endpoint)?)?
+        )?,
         Action::Local(_) => bail!(
             "this command runs local tools, not the service; run it in a terminal \
              with explicit local execution"
         ),
     }
+    Ok(String::from_utf8_lossy(&out).into_owned())
 }
 
 #[cfg(test)]
@@ -885,6 +915,35 @@ mod tests {
         assert!(!helper.candidates("", 0).1.contains(&"serve".into()));
         assert!(helper.candidates("connect ", 8).1.is_empty());
         assert!(helper.candidates("unknown", 7).1.is_empty());
+    }
+
+    #[test]
+    fn local_firmware_runs_reject_service_options() {
+        let parse =
+            |args: &[&str]| Args::try_parse_from(std::iter::once("x").chain(args.iter().copied()));
+        for valid in [
+            &["build", "--local"][..],
+            &["build", "--local", "--repo", "r"],
+            &["flash", "--local", "--repo", "r"],
+            &["flash", "--device", "127.0.0.1:1000", "--no-wait"],
+            &["generate", "--local", "--open"],
+        ] {
+            assert!(parse(valid).is_ok(), "{valid:?}");
+        }
+        for invalid in [
+            &["build", "--local", "--no-wait"][..],
+            &["build", "--repo", "r"],
+            &["flash", "--local", "--device", "127.0.0.1:1000"],
+            &["flash", "--local", "--no-reconnect"],
+            &["generate", "--open"],
+            &["serve", "--ack", "yes"],
+        ] {
+            assert!(parse(invalid).is_err(), "{invalid:?}");
+        }
+        let Some(Command::SendAck { enabled }) = parse(&["send-ack", "on"]).unwrap().command else {
+            panic!("expected send-ack");
+        };
+        assert!(bool::from(enabled));
     }
 
     #[test]

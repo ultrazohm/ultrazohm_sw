@@ -7,35 +7,43 @@ Build
 Tasks
 =====
 
-Builds and tests run through ``ultrazohm_dataviewer/tasks.py`` (and ``ultrazohm_cli/tasks.py`` for the ultrazohm-cli).
-The scripts use only the Python standard library and behave the same on Linux, on Windows and in CI.
+Builds and tests run through ``uz_developer``; ``ultrazohm_dataviewer/tasks.py`` and ``ultrazohm_cli/tasks.py`` define the tasks.
+They use only the Python standard library and behave the same on Linux, on Windows and in CI.
 The root launcher installs missing uv and the Python version pinned in ``.python-version``; the task implementation installs dependencies from ``uv.lock``.
 From the repository root:
 
 .. code-block:: bash
 
-   ./uz_developer check dataviewer        # lint, format check, and tests
-   ./uz_developer task dataviewer wheel   # Python wheel
+   ./uz_developer dataviewer check      # lint, format check, and tests
+   ./uz_developer dataviewer wheel      # Python wheel
+   ./uz_developer dataviewer generate   # regenerate client_methods.py after changing commands.py
 
 On Windows, use ``.\uz_developer.ps1`` with the same arguments.
 Build and test the Windows bundle in PowerShell.
 
 .. code-block:: powershell
 
-   .\uz_developer.ps1 build windows_bundle
-   .\uz_developer.ps1 task dataviewer bundle-smoke
+   .\uz_developer.ps1 build --bundle
+   .\uz_developer.ps1 dataviewer bundle-smoke
 
-``build linux_wheels`` builds CI-format CLI and DataViewer wheels and installs both into the persistent development environment.
-``build cli`` and ``build dataviewer`` also refresh the matching pair.
-``build windows_bundle`` performs this installation and creates the Windows desktop distribution.
+``build`` builds CI-format CLI and DataViewer wheels and installs both into the persistent development environment.
+``build --bundle`` (Windows) additionally creates the standalone CLI and the Windows desktop distribution.
 Use ``./uz_developer shell`` or ``./uz venv dev`` to activate the existing environment without rebuilding.
 Rebuild after source changes and restart running applications.
 
-``check linux_wheels`` validates the built pair, including Rust, Python and GUI smoke checks.
+``verify linux`` validates the built pair, including Rust, Python and GUI smoke checks.
 The shared container supplies the virtual display; the GUI task starts it automatically when no display is available.
 Checks use temporary environments, cleaned up on completion.
-Low-level ``task dataviewer check`` and ``task dataviewer bundle`` accept ``--cli-wheel PATH`` and ``--dataviewer-wheel PATH`` for CI artifact testing.
+``dataviewer check`` and ``dataviewer bundle`` accept ``--cli-wheel PATH`` and ``--dataviewer-wheel PATH`` for CI artifact testing.
 The repository ``.venv`` is not used.
+
+Python linting and formatting
+-----------------------------
+
+Each project owns its Ruff configuration and pinned version in ``pyproject.toml``.
+``lint``, ``format`` and ``format-check`` run Ruff in an isolated tool environment, for example ``./uz_developer cli lint`` or ``./uz_developer dataviewer format``.
+``format`` changes layout only; lint fixes and import sorting need explicit review.
+``check`` enforces both, locally and in CI.
 
 Native standalone executables (PyInstaller)
 ===========================================
@@ -46,14 +54,16 @@ The distributed executable does not require Python or uv on the target machine.
 PyInstaller builds the Windows bundle on Windows.
 Linux installations use Python wheels.
 
-The frozen smoke test checks native imports, Parquet reading with both backends in memory and lazy modes, downsampling and plot input; the live smoke test starts the bundled ultrazohm-cli workers against the simulator.
+The frozen smoke test checks native imports, Parquet reading in memory and lazy modes, downsampling and plot input; the live smoke test starts the bundled ultrazohm-cli workers against the simulator.
 CI also checks GUI startup on Linux and Windows using a headless display.
 
 Releases
 ========
 
 ``.github/workflows/uz_cli.yml`` checks the ultrazohm-cli, builds its wheels, tests the DataViewer against them and builds the Windows desktop bundle.
-Each run computes one version: ``MAJOR.MINOR`` from ``ultrazohm_cli/pyproject.toml`` plus the workflow run number, with ``.dev0`` outside ``main``.
+Each run computes one version: ``MAJOR.MINOR`` from ``ultrazohm_cli/Cargo.toml`` plus the workflow run number, with ``.dev0`` outside ``main``.
+Both packages declare the same version and the viewer pins the CLI exactly; ``ultrazohm_cli/tests/test_tasks.py`` checks that all declarations agree.
+Release targets are Windows x86-64 and Linux x86-64 ``manylinux_2_28`` (glibc 2.28+) with Python's 3.10+ stable ABI; CI runs the integration suite on Python 3.10 on both platforms.
 The wheels are stamped and built once; the tests and Windows DataViewer bundle use exactly those wheels, so ``ultrazohm-cli --version`` and ``run.json`` identify the build.
 Pull requests and other branches validate and keep the archives as workflow artifacts for 30 days.
 
@@ -63,6 +73,9 @@ Publication produces:
 
 - one GitHub release ``ultrazohm-v<version>`` with three wheels, two Windows ZIPs and ``SHA256SUMS``; it never replaces the repository's latest release designation;
 - the wheels on PyPI as ``ultrazohm-cli`` and ``ultrazohm-dataviewer`` through trusted publishing.
+
+Before either PyPI upload, every existing wheel at that version must match the candidate manifest's filename, size and SHA-256; no asset is ever overwritten.
+After publication, CI downloads and hashes every wheel and smoke-tests the installed packages on Linux and Windows.
 
 Linux users install the published Python wheels with uv or pip.
 Windows ZIPs provide ultrazohm-cli alone or DataViewer bundled with ultrazohm-cli, without requiring an installed Python.

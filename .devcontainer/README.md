@@ -20,14 +20,14 @@ Use workflow dispatch with `publish_prerelease=false` for validation-only runs.
 
 ## Developer workflow
 
-Post-create runs `./uz_developer build linux_wheels`, then installs documentation dependencies.
+Post-create runs `./uz_developer build`, then installs documentation dependencies.
 Both wheel-installed applications, Python APIs, development and example dependencies live in
 `/opt/ultrazohm/development`, which is on PATH and selected by VS Code.
 Run the build command again after source changes, then restart running applications.
 `./uz_developer shell` (also `./uz venv dev`) activates this existing environment without rebuilding.
 A plain Docker invocation must run `bash .devcontainer/post-create.sh` once.
 
-`./uz_developer check linux_wheels` runs local Linux checks against the built pair.
+`./uz_developer verify linux` runs local Linux checks against the built pair.
 The shared `ci` stage includes Xvfb, xauth and Mesa; GUI smoke tests start Xvfb
 when no display is configured. Interactive GUI use requires host display forwarding.
 The repository `.venv` is never used.

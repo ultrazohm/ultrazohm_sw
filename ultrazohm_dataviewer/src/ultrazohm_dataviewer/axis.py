@@ -56,18 +56,17 @@ class Axis:
         return {KEY: json.dumps({"column": self.column, "domain": self.domain})}
 
 
-def inspect_axis(path, axis_column=None, axis_domain=None, *, legacy=False):
+def inspect_axis(path, axis_column=None, axis_domain=None):
     from .loader import _read_header, _sniff_delimiter
 
     path = os.fspath(path)
     saved = {}
     if path.lower().endswith(".parquet"):
-        import pyarrow.parquet as pq
+        import polars as pl
 
-        with pq.ParquetFile(path) as parquet:
-            columns = parquet.schema_arrow.names
-            metadata = parquet.metadata.metadata or {}
-        if raw := metadata.get(KEY.encode()):
+        columns = pl.scan_parquet(path, glob=False).collect_schema().names()
+        metadata = pl.read_parquet_metadata(path)
+        if raw := metadata.get(KEY):
             saved = json.loads(raw)
             if not isinstance(saved, dict):
                 raise ValueError("Invalid Parquet axis metadata")
@@ -77,8 +76,6 @@ def inspect_axis(path, axis_column=None, axis_domain=None, *, legacy=False):
         raise ValueError("Expected a .csv or .parquet file")
     if axis_column is None:
         axis_column = saved.get("column")
-        if legacy and axis_column is None:
-            axis_column = "time" if "time" in columns else next(iter(columns), None)
     column = select_column(columns, axis_column)
     domain = (
         axis_domain
@@ -86,7 +83,7 @@ def inspect_axis(path, axis_column=None, axis_domain=None, *, legacy=False):
         else (saved.get("domain") if column == saved.get("column") else None)
     )
     if domain is None:
-        domain = "frequency" if column == "frequency" and not legacy else "time"
+        domain = "frequency" if column == "frequency" else "time"
     if domain not in ("time", "frequency"):
         raise ValueError("axis_domain must be time or frequency")
     return Axis(column, domain)

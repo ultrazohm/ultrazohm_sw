@@ -11,21 +11,16 @@ from ultrazohm_dataviewer.loader import convert_csv_to_parquet, open_file
 from ultrazohm_dataviewer.session import apply_dict, to_dict
 
 
-@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
 @pytest.mark.parametrize(
     "mode,cache", [("memory", False), ("lazy", False), ("lazy", True)]
 )
 @pytest.mark.parametrize("extension", ["csv", "parquet"])
-def test_spectrum_roundtrip(tmp_path, states, backend, mode, cache, extension):
+def test_spectrum_roundtrip(tmp_path, states, mode, cache, extension):
     csv = tmp_path / "fft.csv"
     csv.write_text("frequency,out\n0,1\n125,2\n250,3\n")
-    path = (
-        str(csv)
-        if extension == "csv"
-        else convert_csv_to_parquet(str(csv), backend=backend)
-    )
+    path = str(csv) if extension == "csv" else convert_csv_to_parquet(str(csv))
     state = states()
-    state.backend, state.loading_mode, state.disk_cache = backend, mode, cache
+    state.loading_mode, state.disk_cache = mode, cache
     run = state.load_sync(path)
     assert run.axis_domain == "frequency"
     assert run.axis_column == "frequency"
@@ -36,17 +31,16 @@ def test_spectrum_roundtrip(tmp_path, states, backend, mode, cache, extension):
         run.set_time_origin(0)
 
 
-@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
 @pytest.mark.parametrize(
     "mode,cache", [("memory", False), ("lazy", False), ("lazy", True)]
 )
-def test_explicit_axis_and_conversion(tmp_path, states, backend, mode, cache):
+def test_explicit_axis_and_conversion(tmp_path, states, mode, cache):
     csv = tmp_path / "custom.csv"
     csv.write_text("sample,seconds,value\n1,1700000000.001,3\n2,1700000000.002,4\n")
     state = states()
-    state.backend, state.loading_mode, state.disk_cache = backend, mode, cache
+    state.loading_mode, state.disk_cache = mode, cache
     with pytest.raises(AxisSelectionRequired):
-        open_file(str(csv), mode, backend=backend, disk_cache=cache)
+        open_file(str(csv), mode, disk_cache=cache)
     run = state.load_sync(str(csv), axis_column="seconds", axis_domain="time")
     assert run is not None
     np.testing.assert_array_equal(
@@ -56,8 +50,8 @@ def test_explicit_axis_and_conversion(tmp_path, states, backend, mode, cache):
     restored = states()
     apply_dict(restored, snapshot)
     assert restored.registry.runs[0].axis_column == "seconds"
-    path = convert_csv_to_parquet(str(csv), backend=backend, axis_column="seconds")
-    data = read(path, backend=backend)
+    path = convert_csv_to_parquet(str(csv), axis_column="seconds")
+    data = read(path)
     assert data.axis_column == "seconds"
     np.testing.assert_array_equal(data.time, [1700000000.001, 1700000000.002])
     assert "sample" in data.signals
@@ -77,7 +71,6 @@ def test_gui_selection_captures_request_and_cancel(tmp_path, app_state):
 
     finish()
     assert app_state.is_loading
-    app_state.backend = "pyarrow"
     app_state.resolve_axis("hz", "frequency")
     finish()
     assert app_state.registry.runs[0].axis_domain == "frequency"
@@ -98,17 +91,17 @@ def test_axis_changes_do_not_share_conversion_cache(tmp_path, states):
     assert first.source.path != second.source.path
 
 
-def test_old_session_keeps_first_column_selection(tmp_path, states):
+def test_session_run_without_axis_is_rejected(tmp_path, states):
     csv = tmp_path / "custom.csv"
     csv.write_text("stamp,value\n0,1\n1,2\n")
     state = states()
     state.load_sync(str(csv), axis_column="stamp")
     snapshot = to_dict(state)
-    del snapshot["runs"][0]["axis_column"]
     del snapshot["runs"][0]["axis_domain"]
     restored = states()
-    apply_dict(restored, snapshot)
-    assert restored.registry.runs[0].axis_column == "stamp"
+    with pytest.raises(KeyError):
+        apply_dict(restored, snapshot)
+    assert not restored.registry.runs
 
 
 def test_control_load_axis_and_failed_normalization(control_session, tmp_path):
@@ -152,7 +145,7 @@ def test_axis_dialog_renders(gui_frame, app_state, tmp_path):
 
     app_state.services.axis_requests.append(
         (
-            LoadRequest(str(tmp_path / "custom.csv"), "lazy", "polars", False),
+            LoadRequest(str(tmp_path / "custom.csv"), "lazy", False),
             ("hz", "value"),
             None,
         )
@@ -175,22 +168,6 @@ def test_control_ambiguous_axis_returns_actionable_error(control_session, tmp_pa
     assert error.value.code == "axis_selection_required"
     assert "stamp" in str(error.value)
     assert not state.registry.runs
-
-
-def test_old_frequency_named_session_preserves_time_normalization(tmp_path, states):
-    csv = tmp_path / "legacy.csv"
-    csv.write_text("frequency,value\n10,1\n20,2\n")
-    state = states()
-    run = state.load_sync(str(csv), axis_domain="time")
-    run.set_time_origin(0)
-    snapshot = to_dict(state)
-    del snapshot["runs"][0]["axis_column"]
-    del snapshot["runs"][0]["axis_domain"]
-    restored = states()
-    apply_dict(restored, snapshot)
-    run = restored.registry.runs[0]
-    assert run.axis_domain == "time"
-    np.testing.assert_array_equal(np.asarray(run.time), [0, 10])
 
 
 def test_custom_axis_does_not_overwrite_frequency_signal(tmp_path, states):

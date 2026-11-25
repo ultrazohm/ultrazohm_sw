@@ -15,7 +15,7 @@ name = "ultrazohm_cli_lib"
 crate-type = ["rlib", "cdylib"]
 
 [features]
-python = ["dep:pyo3"]
+python = ["dep:pyo3", "dep:pythonize"]
 
 [dependencies]
 anyhow = "1"
@@ -27,6 +27,7 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 polars = { version = "0.51", default-features = false, features = ["csv", "parquet", "ipc_streaming"] }
 pyo3 = { version = "0.26", optional = true, features = ["extension-module", "abi3-py310"] }
+pythonize = { version = "0.26", optional = true }
 
 [profile.dev]
 debug = 0

@@ -173,20 +173,24 @@ The local transport is newline-terminated JSON over persistent loopback TCP conn
 Requests are limited to 64 KiB; JSON replies (including Arrow headers) are limited to 8 MiB.
 The ultrazohm-cli process returns `response_too_large` before transmission when a reply exceeds its limit.
 No Arrow body is sent after a rejected header, so the persistent connection remains aligned.
-Requests and replies carry `api_version: 3`; any other version is rejected with an error and the connection is closed.
-Versions 1 and 2 are no longer accepted.
+Every message is one JSON envelope.
+A request names the operation in `op` and its arguments in `args` (omit `args` or pass `{}` for operations without arguments); `id` is chosen by the client and echoed in the reply.
+A successful reply carries `ok: true` and the operation's `result`; a failed one carries `ok: false` and `error: {code, message}`.
+The DataViewer control API (default endpoint `127.0.0.1:19741`) uses the same envelope with its own `version` (2) and an additional `token`.
+API version 4 is required; any other version is rejected with code `unsupported_version` and the connection is closed.
 `read_data` replies additionally carry a length-delimited binary Arrow body after the JSON header line, as specified below.
 The endpoint is restricted to numeric loopback addresses and has no multi-user authentication.
 Local users with access to it can control the attached device; remote/cloud control requires a separate authenticated boundary.
 
 ```json
-{"api_version":3,"command":{"op":"set_variable","name":"send_field_1","value":12.5}}
+{"version":4,"id":7,"op":"set_variable","args":{"name":"send_field_1","value":12.5}}
 ```
 
-Success: `{"api_version":3,"ok":true,"outcome":"sent_unconfirmed","logging":{...}}` for wire commands (`shutdown` while connected included, since it sends device Stop), or `applied_locally` for local operations such as `connect`, ACK policy and logging control.
-Errors have `ok:false`, an `error` message and a stable `code` (`null` when uncoded); the ultrazohm-cli exits nonzero and Python raises `RuntimeError` with the same `code` attribute.
+Success: `{"version":4,"id":7,"ok":true,"result":{"outcome":"sent_unconfirmed","logging":{...}}}` for wire commands, or outcome `applied_locally` for local operations such as `connect`, ACK policy and logging control (`shutdown` replies with `shutdown_requested`, `deferred`, `service_id` and the `outcome` of its device Stop).
+Errors: `{"version":4,"id":7,"ok":false,"error":{"code":"not_connected","message":"..."}}`; failures without a more specific code use `operation_failed`.
+The ultrazohm-cli exits nonzero and Python raises `RuntimeError` with the same `code` attribute; Python methods return the reply's `result`.
 
-Every command that reaches execution is appended to `commands.jsonl` with the request and an `outcome`: `sent_unconfirmed` (with the `wire` command), `applied_locally`, `rejected` (with `error` and `code`; nothing was written to the device), or `write_failed` (with `error`; the socket write failed after validation, so the device state is unknown).
+Every command that reaches execution is appended to `commands.jsonl` with the `command` (operation name and arguments, as `{"op": ..., ...}`) and an `outcome`: `sent_unconfirmed` (with the `wire` command), `applied_locally`, `rejected` (with `error` and `code`; nothing was written to the device), or `write_failed` (with `error`; the socket write failed after validation, so the device state is unknown).
 Reads are not audited, and requests canceled by Stop before execution never reach the audit.
 
 Error codes:
@@ -198,6 +202,11 @@ Error codes:
 | `not_connected` | The operation needs a device connection |
 | `busy` | Too many concurrent data queries or clients; retry later |
 | `shutting_down` | The ultrazohm-cli process is shutting down |
+| `session_replaced` | A queued command's acquisition session was replaced (flash) before execution |
+| `unknown_job` | The firmware job is unknown or no longer retained |
+| `unsupported_version` | The request uses another API version |
+| `response_too_large` | The reply exceeds the 8 MiB limit; request a smaller page |
+| `operation_failed` | Any other failure; see `message` |
 
 The Python client also sets a code for requests that got no reply, so callers never need to match error text:
 
@@ -208,7 +217,9 @@ The Python client also sets a code for requests that got no reply, so callers ne
 | `transport` | Any other socket failure, for example a connection closed mid-reply |
 
 Status returns counters, last status word, ACK policy, terminal error, `software_version` (also in `run.json` and `ultrazohm_cli --version`) and `logging.fast` / `logging.slow` with phase, Parquet path and recording error.
-Operations: firmware, jobs, job, connect, status, catalog, observables, recordings, recordings_page, data_info, read_data, stop, enable_system, enable_control, set_variable, set_observable, button, send_ack, start_logging, stop_logging, pause_logging, resume_logging, shutdown, owned_shutdown.
+It also reports `configuration_revision`, which changes whenever the catalog or the requested observables may have changed (new session, connect, `set_observable`): pollers refresh `catalog` and `observables` only when it differs, so steady-state polling is a single `status` request.
+`firmware_available` is re-evaluated at most every five seconds and after each firmware job.
+Operations: firmware, jobs, job, connect, status, catalog, observables, recordings_page, data_info, read_data, stop, enable_system, enable_control, set_variable, set_observable, button, send_ack, start_logging, stop_logging, pause_logging, resume_logging, shutdown, owned_shutdown.
 The four logging operations take an optional `stream` field (`"fast"`, the default, or `"slow"`).
 Error_Reset is not an operation because its firmware case is empty; the ultrazohm-cli `error-reset` command explains this locally.
 Unknown operations/fields and unsupported versions fail without sending bytes.
@@ -252,7 +263,7 @@ Stopping the device is independent of stopping acquisition or either logger.
 
 ## Channel assignment query
 
-`{"api_version":3,"command":{"op":"observables"}}` returns `channels`, an ordered array of 20 objects with `channel` (1..20), `name`, `id`, and `state`.
+`{"version":4,"id":1,"op":"observables"}` returns `channels`, an ordered array of 20 objects with `channel` (1..20), `name`, `id`, and `state`.
 Known entries use the canonical name and ID from the active channel mapping with state `sent_unconfirmed`.
 Untouched channels have null name/ID and state `unknown`.
 The reply includes `source: "service_requested_assignments"` and `device_readback: false`.
@@ -263,9 +274,9 @@ Only successful socket writes for accepted selections update it, never rejected 
 ## Configuration files and startup selection
 
 `--profile` loads runtime `schema_version: 1`, name, configured sample period, and `initial_channels` (1-based channel keys to observable names).
-`--channel-mapping` loads firmware `api_version: 1`, mapping name, repository name/commit, channel count, samples per packet, numeric ID maps, `legacy_javascope_header`, and a `platform_state` object (null for legacy mappings).
+`--channel-mapping` loads firmware `api_version: 1`, mapping name, repository name/commit, channel count, samples per packet, numeric ID maps, the `javascope` presentation metadata, `legacy_javascope_header`, and a `platform_state` object (null for legacy firmware headers). All of these fields are required.
 Its mask must select two adjacent bits at shift 0..30, and its `values` object must name all four codes (`"0"` through `"3"`) with nonempty strings.
-Older custom mappings must add this object; invalid mappings are rejected before device access.
+Invalid mappings are rejected before device access.
 Both flags also exist as Python constructor arguments `profile` and `channel_mapping`.
 The standard profile is embedded; firmware mappings are generated from checkout headers when omitted.
 Outside the checkout, use `--repo PATH` to select a firmware checkout or `--channel-mapping PATH` to use a saved mapping.
@@ -283,7 +294,7 @@ Repository provenance is user-supplied mapping metadata, not device discovery.
 ## Connection lifecycle
 
 Without `serve --device IP:PORT`, the control endpoint starts offline.
-The request `{"api_version":3,"command":{"op":"connect","ip":"192.168.1.233","port":1000}}` opens the device connection and applies configured initial observables.
+The request `{"version":4,"id":1,"op":"connect","args":{"ip":"192.168.1.233","port":1000}}` opens the device connection and applies configured initial observables.
 ultrazohm-cli and Python helpers supply these defaults; the JSON operation requires both fields.
 IP must be numeric IPv4/IPv6 and port must be 1..65535.
 A failed attempt returns an error and leaves the ultrazohm-cli process available for another attempt.
@@ -343,9 +354,7 @@ Present sections require unique, correctly ordered markers and the documented en
 The slow display section accepts 20 or the historical 21 entries.
 Unlike JavaScope's UI fallbacks for malformed sections, generation fails rather than silently substituting labels or signals.
 
-Older mappings without `javascope` remain loadable; no presentation metadata is invented when loading them.
-Updated readers validate metadata against the command/variable/slow-signal tables.
-Older ultrazohm-cli versions that reject unknown JSON fields cannot consume the new object.
+Readers require `javascope` and validate it against the command/variable/slow-signal tables.
 The runtime profile and ultrazohm-cli process catalog expose this metadata.
 The DataViewer uses button captions in its Control pane, falling back to User N when absent.
 Metadata does not establish device readback.
@@ -353,21 +362,20 @@ Generation requires no device connection.
 
 ## Range queries and recording backend handles
 
-The local API adds `recordings`, `data_info` and `read_data`.
+The local API adds `recordings_page`, `data_info` and `read_data`.
 `data_info` takes `source: {"stream":"fast"|"slow", "recording":null|positive_integer}`.
 Null selects the recent RAM ring; a number selects a recording, including pending data and older indexed chunks.
-`recordings` lists all sources in this ultrazohm-cli process run, including recordings whose initialization failed.
-The native client (used by both ultrazohm-cli and Python) implements this call by collecting `recordings_page` replies.
-Raw clients should use `{"op":"recordings_page","cursor":null,"limit":100}` and pass each `next_cursor` unchanged until it is null.
+`recordings_page` lists the sources of this acquisition session page by page, including recordings whose initialization failed.
+The ultrazohm-cli `recordings` command and Python `Client.recordings()` collect all pages.
+Raw clients send `{"op":"recordings_page","args":{"cursor":null,"limit":100}}` and pass each `next_cursor` unchanged until it is null.
 Limits must be 1..1000; pages also obey a byte budget.
 The first page fixes the recording membership; recordings created later are included in the next listing.
 Metadata within each page reflects its read time.
 A cursor belongs to one acquisition session and fails with `cursor_expired` after session replacement.
-The legacy raw `recordings` operation remains available, subject to the JSON response limit.
 Their metadata includes an `error` string; one failed recording does not prevent listing or reading the others.
 
 ```json
-{"api_version":3,"command":{"op":"read_data","query":{"source":{"stream":"fast","recording":1},"selection":{"kind":"range","start":100,"stop":200},"channels":["JSO_lifecheck"]}}}
+{"version":4,"id":2,"op":"read_data","args":{"query":{"source":{"stream":"fast","recording":1},"selection":{"kind":"range","start":100,"stop":200},"channels":["JSO_lifecheck"]}}}
 ```
 
 Selection alternatives are `{"kind":"tail","count":500}` and `{"kind":"since","cursor":null,"limit":10000}`.
@@ -377,7 +385,7 @@ Supply that object unchanged on the next since call.
 Expired or mismatched cursors fail with code `cursor_expired`.
 A source with no samples returns an empty page and an unset cursor position.
 
-Success returns a JSON line with `info`, `cursor`, actual `start`/`stop`, `rows`, `arrow_bytes`, and `mapping_confirmed:false`, followed by exactly that many bytes of Arrow IPC.
+Success returns a JSON reply whose `result` has `info`, `cursor`, actual `start`/`stop`, `rows`, `arrow_bytes`, and `mapping_confirmed:false`, followed by exactly that many bytes of Arrow IPC.
 The 128 MiB body cap and ordinary JSON-only errors apply.
 `info` contains available accepted range, `persisted_stop`, `complete`, schema/layout, and nominal sample period.
 Pending data is part of a recording's available range before flush.
@@ -393,7 +401,7 @@ They remain readable independently of ultrazohm-cli process finalization and req
 
 ### ultrazohm-cli process catalog
 
-`catalog` returns `{api_version, ok, profile, device_readback: false}`.
+`catalog` returns `{profile, device_readback: false}`.
 `profile` contains the validated firmware mapping and runtime settings loaded by this ultrazohm-cli process: observable, slow-signal, variable and command names/IDs, channel geometry, initial assignments, nominal sample period and platform-state decoding.
 Native DataViewers use it to populate selectors instead of maintaining a second mapping.
 It is ultrazohm-cli process configuration, not firmware readback.
@@ -418,7 +426,7 @@ Live acquisition is unaffected.
 
 Recording ranges/cursors address contiguous recorded rows (first position remains anchored at the first accepted acquisition position).
 Live ranges address acquisition samples.
-Data info and durable recording info include `position_basis` (`recorded_samples` or `acquisition_samples`); old durable handles without this field default to `acquisition_samples`.
+Data info and durable recording info include `position_basis` (`recorded_samples` or `acquisition_samples`); durable handles without it are rejected.
 Timestamps retain omitted intervals.
 
 ### Legacy JavaScope headers
@@ -428,7 +436,6 @@ Commands, streaming, and logging remain available; ultrazohm-cli process status 
 The raw status word is retained.
 An existing but invalid status header is an error, not a legacy fallback.
 Modern mappings set the marker to `false` and include the state mask and codes.
-Existing modern JSON without the marker continues to load (the marker defaults to `false`).
 
 This describes the headers used to generate the mapping, not detected firmware capabilities.
 Always generate from headers matching the programmed firmware.

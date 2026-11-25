@@ -16,7 +16,7 @@ uvx ultrazohm-cli
 # For Python scripts in your virtual environment:
 pip install ultrazohm-cli
 # For local development of both applications:
-./uz_developer build cli
+./uz_developer build
 ./uz_developer shell
 ```
 
@@ -29,7 +29,7 @@ The devcontainer supplies Rust, Maturin and uv.
 Its post-create script installs both applications and example dependencies into the container development environment, independently of the host `.venv`.
 Run the application commands directly inside the container.
 Both `ultrazohm-cli` and `ultrazohm-dataviewer` are available in new container terminals.
-Run `./uz_developer build linux_wheels` to refresh both applications.
+Run `./uz_developer build` to refresh both applications.
 Container-built wheels require a compatible Linux host; Windows needs its own wheel.
 
 Builds and checks run through `tasks.py`, which uses only the Python standard library and behaves the same on Linux, Windows and in CI.
@@ -37,16 +37,16 @@ From the repository root:
 
 | Task | Output |
 |---|---|
-| `./uz_developer build cli` | Portable CLI and DataViewer wheels, installed into the development environment |
-| `./uz_developer task cli debug-wheel` | Unoptimized wheel for tests in `target/wheels-debug` |
-| `./uz_developer task cli release-wheel` | Portable release wheel in `target/wheels-release` |
+| `./uz_developer build` | Portable CLI and DataViewer wheels, installed into the development environment |
+| `./uz_developer cli debug-wheel` | Unoptimized wheel for tests in `target/wheels-debug` |
+| `./uz_developer cli release-wheel` | Portable release wheel in `target/wheels-release` |
 
 On Windows, use `.\uz_developer.ps1` with the same arguments.
 Maturin and Zig run together through `uv tool run`, independently of the launcher's Python environment.
 The standalone executable is `cargo build --release --locked --bin ultrazohm-cli`.
 
 `cargo install --path . --locked` installs the standalone ultrazohm-cli.
-For application development, use `./uz_developer build linux_wheels` and `./uz_developer shell`.
+For application development, use `./uz_developer build` and `./uz_developer shell`.
 Rebuild/reinstall after Rust changes.
 Native Linux ARM64 builds are possible; these are Linux applications, not executables for the R5 baremetal environment.
 
@@ -268,25 +268,9 @@ for batch in handle.iter_batches(10000, channels=["JSO_lifecheck"]):
 ```
 
 `recording=None` selects the bounded live ring; positive recording numbers select that recording's history, including pending samples.
-Fast/slow numbering is independent; `stream="slow"` returns original rotating updates.
-`recordings()` lists sources.
-Durable `Recording` handles include only indexed, committed data.
-`acquisition.recording()` and `read_recording()` require successful close and backend completion; `recording_path()` resolves a completed merged export.
-
-Ranges are half-open `[start, stop)`.
-Live positions count acquisition samples; recording positions count recorded rows from their first accepted acquisition position.
-Check `position_basis`; use `time` for timestamps, especially after pauses.
-Cursors identify run/source/mapping generation and must be reused unchanged.
-Expired cursors, unknown channels, unavailable ranges and oversized tails fail explicitly.
-Empty pages preserve the cursor position.
-
-Results are independent Polars frames transported as Arrow IPC.
-`DataPage` provides `.data`, `.cursor`, `.start`, `.stop` and `.info`.
-Column selection keeps `time`/`status`, preserves requested order and removes duplicates; `channels=[]` selects only time/status.
-Disk projection occurs before decoding/transferring unrequested signals.
-Metadata distinguishes accepted and persisted ranges.
-Up to four background reads run concurrently; each response is capped at 128 MiB.
-Page large reads instead of materializing the full recording.
+Ranges are half-open `[start, stop)`, cursors must be reused unchanged, and each page is a Polars frame transported as Arrow IPC.
+Durable `Recording` handles read only indexed, committed data.
+See the [protocol](docs/protocol.md) for positions, cursors, column selection and limits.
 
 ultrazohm-cli equivalents print metadata and at most 20 preview rows:
 
@@ -299,7 +283,6 @@ ultrazohm-cli read-since --recording 1 --limit 10000
 ```
 
 Supply `--cursor '<previous cursor JSON>'` to continue.
-`tail` replaces the old `get-live-data` / `Client.get_live_data` interface; only the unified query path is supported.
 
 ## Recording outputs
 
@@ -351,204 +334,25 @@ Configure them with:
 ultrazohm-cli serve --buffer-samples 100000 --segment-rows 50000 --flush-interval-ms 1000 --queue-seconds 10
 ```
 
-`--queue-seconds` accepts values up to 600; queued frames are held in RAM.
-Python `Acquisition` accepts the same `queue_seconds` keyword.
-
 Settings are fixed for an acquisition session and reported in `status.data_options`.
-The ring retains at most one partial extra frame internally; queries respect its exact sample capacity.
-Observable changes clear live history and invalidate its cursors.
-Samples that leave RAM while logging is off cannot be recovered.
+If the disk cannot keep up and a logger queue overflows, only that recording ends as `failed`; acquisition, device control and the other stream continue.
+Committed chunks stay readable after disk or export failures.
+See [architecture](docs/architecture.md) for the storage invariants and failure behavior.
 
-Stopping flushes partial batches.
-If the disk cannot keep up and a logger queue overflows, only that recording ends: everything accepted so far is finalized and exported, its phase becomes `failed` with the overflow position, and acquisition, device control and the other stream continue.
-Start a new recording to continue logging.
-Disk and export failures are also explicit errors; committed chunks remain readable.
-If the command audit (`commands.jsonl`) cannot be written, `status.state.audit_error` reports it, later commands are not audited, and the `end` section of `run.json` marks the session incomplete; acquisition continues.
-Abrupt termination can lose uncommitted batches and pending writes.
-Incomplete indexed runs remain readable, but automatic repair/merge is not implemented.
-Optional export failure does not invalidate canonical data, though close/status still report the error.
-Firmware gaps and exact observable-switch boundaries cannot be recovered from this protocol.
-See [architecture](docs/architecture.md) for the storage invariants.
+## Development
 
-## Vitis workspace, build and JTAG programming
-
-### Which Tcl scripts run
-
-ultrazohm-cli commands and DataViewer's **Flash UZ** use the scripts embedded in the ultrazohm-cli executable or Python wheel.
-Published stable and prerelease packages contain the scripts from that release.
-Local development builds, including the developer build command and the dev-container setup, embed the checkout's scripts at ultrazohm-cli build time.
-Editing `tcl_scripts/` afterward does not change an installed or running ultrazohm-cli: rebuild/reinstall the ultrazohm-cli and restart the ultrazohm-cli process, using `./uz_developer build cli`.
-
-Before execution, the ultrazohm-cli extracts its scripts to `artifacts/cli-tools/<content-id>/tcl_scripts` under the selected firmware checkout.
-Unchanged resources retain their timestamps for incremental builds.
-Selecting a checkout with `--repo` selects firmware sources, not a different set of Tcl scripts.
-
-To read scripts directly from a directory at runtime, explicitly set `UZ_CLI_TCL_DIR` before starting the ultrazohm-cli process or DataViewer.
-For example, from the checkout root:
+From the repository root, on Linux (dev container) or Windows (`.\uz_developer.ps1`):
 
 ```sh
-export UZ_CLI_TCL_DIR="$PWD/tcl_scripts"
+./uz_developer cli check           # Ruff, fmt, clippy, Rust tests, integration tests against a debug wheel
+./uz_developer cli release-wheel   # portable release wheel in target/wheels-release
+./uz_developer cli release-check   # integration tests against that installed wheel
 ```
 
-In PowerShell:
-
-```powershell
-$env:UZ_CLI_TCL_DIR = (Resolve-Path ./tcl_scripts).Path
-```
-
-The directory must contain `vitis_headless.tcl` and its supporting scripts.
-Restart an existing ultrazohm-cli process to inherit the variable.
-Development mode does not set this override automatically; remove it to return to the embedded scripts.
-
-Vitis IDE **Run/Debug** is intentionally separate: its launch configurations use the checkout's `tcl_scripts/` files.
-Those scripts may differ from the installed ultrazohm-cli's embedded version.
-ultrazohm-cli/DataViewer flashing and Vitis IDE Run/Debug do not need to use the same script version.
-
-### ultrazohm-cli process commands
-
-Start the ultrazohm-cli process on the machine with the firmware checkout, Vitis/XSCT, and JTAG access:
-
-```sh
-ultrazohm-cli serve --repo /path/to/ultrazohm_sw --device 192.168.1.233:1000
-# Optional: --xsct /path/to/Vitis/bin/xsct overrides saved preferences and PATH.
-```
-
-Other terminals and DataViewers use the same endpoint (default `127.0.0.1:19740`):
-
-```sh
-ultrazohm-cli generate            # create/build an empty Vitis workspace
-ultrazohm-cli build               # incremental build on the service machine
-ultrazohm-cli build-clean         # clean and rebuild on the service machine
-ultrazohm-cli flash               # stop acquisition, build/program, reload and reconnect
-ultrazohm-cli flash --device 192.168.1.233:1000  # initially disconnected service
-ultrazohm-cli flash --no-reconnect # program without reconnecting
-ultrazohm-cli build --no-wait      # print the accepted job ID and return
-ultrazohm-cli jobs
-ultrazohm-cli job JOB_ID --follow
-```
-
-Commands wait for completion by default and propagate job failure as a nonzero exit.
-Interrupting a waiting client does not cancel the ultrazohm-cli process job.
-Job IDs allow another terminal to follow it.
-No request silently falls back to local execution.
-One firmware job is accepted at a time; a filesystem lock also protects the checkout against another ultrazohm-cli process or standalone build.
-Job logs remain under the ultrazohm-cli process checkout's `artifacts/` directory.
-The ultrazohm-cli process retains up to 64 job records in memory; restart clears that history and never replays jobs automatically.
-
-For offline workspace preparation/builds, explicitly select local execution:
-
-```sh
-ultrazohm-cli generate --local --open --repo /path/to/checkout
-ultrazohm-cli build --local --repo /path/to/checkout
-ultrazohm-cli build-clean --local --repo /path/to/checkout
-```
-
-`flash` always uses the ultrazohm-cli process.
-The former `flash --repo` and `flash --profile` interface is removed; select the checkout at ultrazohm-cli process startup.
-The supported launch profile is `Run_UltraZohm`.
-Flash means JTAG programming/execution, not persistent flash-memory writing.
-Build-only jobs leave the current acquisition session unchanged.
-
-During flashing, the control endpoint stays available.
-The ultrazohm-cli process sends device Stop, finishes recordings, builds, validates captured JavaScope headers, programs, validates retained channel assignments, and creates a fresh session/output directory.
-Logging starts idle; system and control enable are never requested automatically.
-Header changes during the operation are rejected.
-Build/programming failures leave acquisition disconnected and the ultrazohm-cli process available for inspection/retry.
-A reconnect failure is reported as a failed job even if programming succeeded.
-Invalid firmware configuration blocks Connect until a successful flash or an explicit restart with verified configuration.
-
-Building and programming are separate stages under the same checkout lock.
-A failed build does not program the device or send commands from the proposed firmware mapping.
-After successful programming, cleanup uses the captured new mapping.
-If programming fails partway or headers change during programming, the running firmware is unknown; the job reports that Stop could not safely be sent rather than guessing a command ID.
-The internal Tcl `program-built` action is used only after the ultrazohm-cli process's successful build and header validation; direct Tcl `flash` and `run` still build before programming.
-
-`status` includes `service_id`, `session_id`, `output`, `repository`, `firmware_available`, `lifecycle`, `active_job`, and `error`.
-Clients must refresh catalogs and discard old cursors when the session changes.
-API v3 replaces v2; upgrade clients and ultrazohm-cli process together.
-A Python `Acquisition.output` follows the current session after replacement, as does `Client.status()["output"]`.
-Previously acquired recording handles remain associated with their original files.
-
-```python
-from ultrazohm_cli import Client
-
-client = Client("127.0.0.1:19740")
-job = client.firmware("build")
-progress = client.job(job["id"])  # job metadata, log text, next_offset
-# Reuse an explicit request_id when recovering an uncertain submission.
-```
-
-Graceful shutdown waits for programming already in progress to finish and then exits; it does not forcibly kill XSCT.
-Stop remains responsive and never cancels a build.
-For remote access, forward this loopback endpoint through SSH.
-Checkout/tool paths and recording files belong to the machine running ultrazohm-cli; no shared filesystem is required for live viewing or job progress.
-File browsing and offline recording analysis still need access to those files.
-
-Incremental builds reuse generated Makefiles when inputs are unchanged, report whether work is needed, and refresh through Vitis when metadata/toolchain inputs change.
-`flash` programs even when no rebuild is needed.
-`build-clean` rebuilds platform/BSPs and applications while preserving sources/configuration.
-These commands do not generate SD-card BOOT.BIN images.
-Equivalent Make targets are `make -C vitis build` and `make -C vitis build-clean`.
-
-## Tests
-
-Run the same checks as CI from the repository root, on Linux (dev container) or Windows:
-
-```sh
-./uz_developer check cli           # fmt, clippy, Rust tests, Python integration tests
-./uz_developer task cli release-wheel   # portable release wheel in target/wheels-release
-./uz_developer task cli release-check   # integration tests against that installed wheel
-```
-
-`check` builds a debug wheel, installs it into a fresh temporary environment and runs the integration tests twice: against the cargo-built executable and against the wheel's `ultrazohm-cli` command.
-On Linux, `release-wheel` links against glibc 2.28 using zig, so it needs no Docker build.
-Linux CI runs these tasks in the `ci` stage of `.devcontainer/Dockerfile` (published to GHCR by `.github/workflows/ci-image.yml`, tagged by the Dockerfile, pinned build-tool requirements, and explicit refresh-revision hash), so local and CI toolchains match.
-Windows CI runs the same commands.
-
-Set `UZ_CLI_BIN` for another executable.
-Install the wheel and Polars to exercise Python bindings and independently read outputs.
+Set `UZ_CLI_BIN` to test another executable.
 Tests use loopback simulators, including `--legacy-ack`, and fake Vitis tooling; they do not program hardware.
 Manual simulation: `python javascope/test_server.py --host 127.0.0.1 --port 1000`.
-Synthetic dynamics do not model hardware interlocks or firmware queue races.
-Linux/Windows CI and hardware validation remain separate from local test results.
-
-## Publishing
-
-One [workflow](../.github/workflows/uz_cli.yml) checks the ultrazohm-cli on Linux and Windows, builds and tests the release wheels, tests the DataViewer against them and builds its bundles, one version per run: `MAJOR.MINOR` from `pyproject.toml` plus the workflow run number, with `.dev0` except for pushes to `main`.
-The wheels are stamped and built once; the bundles contain exactly those wheels.
-
-Pushes to `main` (stable) and `develop` (prereleases) publish one GitHub release `ultrazohm-v<VERSION>` with three Python wheels, two Windows ZIPs and `SHA256SUMS`, and upload the wheels to PyPI as `ultrazohm-cli` and `ultrazohm-dataviewer` through trusted publishing.
-Feature branches run the full pipeline on pull requests, avoiding a duplicate push run for the same change.
-Pushes to integration branches still validate the resulting branch state.
-Manual dispatch tests any branch; selecting `publish_prerelease` permits publication only from `develop` or `feature/uz_cli_dataviewer_testing`.
-
-Before either PyPI upload, every existing wheel at that version must match the candidate manifest's filename, size and SHA-256.
-After publication, CI downloads and hashes every wheel, then smoke-tests installed packages on Linux and Windows.
-GitHub release reruns verify existing assets, upload only missing draft assets, and reject mismatches or incomplete already-published releases.
-No asset is overwritten.
-The workflow filename and run-number version sequence remain unchanged.
-
-ultrazohm-cli release wheels also run the simulator integration suite on the minimum supported Python 3.10 on both platforms.
-Windows has a dedicated console Ctrl-C finalization fixture; the existing Unix SIGINT check remains.
-Release targets are Windows x86-64 and Linux x86-64 `manylinux_2_28` (glibc 2.28+), using Python's 3.10+ stable ABI.
-These releases never replace the repository's latest release.
-
-## Python linting and formatting
-
-This project owns its Ruff configuration and pinned version in `pyproject.toml`.
-These tasks run Ruff in an isolated tool environment and do not build or install either application.
-Run from the repository root:
-
-```bash
-./uz_developer task cli lint
-./uz_developer task cli format
-./uz_developer task cli format-check
-```
-
-On Windows, use `.\uz_developer.ps1` with the same arguments.
-`format` applies layout changes only; lint fixes and import sorting require explicit review.
-The enabled lint rules are `F`, `E4`, `E7`, `E9`, `I`, `B`, `UP`, and `C4`.
-The project's `check` task and CI enforce both lint and formatting.
+See the [build guide](../docs/source/guide/gui/ultrazohm_dataviewer/ultrazohm_dataviewer_build.rst) for linting, the CI pipeline and releases.
 
 ## Hardware acceptance (pending)
 

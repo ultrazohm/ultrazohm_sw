@@ -244,7 +244,7 @@ impl DataView {
         source: &Source,
         ring: &Mutex<LiveBuffer>,
         profile: &Profile,
-        selections: &serde_json::Value,
+        selections: &crate::service::Selections,
         selection: Option<&Selection>,
     ) -> Result<Self> {
         let slow = source.stream == Stream::Slow;

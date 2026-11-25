@@ -160,7 +160,6 @@ def test_linked_reset_updates_export_and_render(app_state, gui_frame, tmp_path):
     from ultrazohm_dataviewer.session import export_data, to_dict
 
     state = app_state
-    state.backend = "pyarrow"
     run = state.registry.add_run(
         "test", "test", np.arange(100.0), {"a": np.arange(100, dtype=np.float32)}, {}
     )

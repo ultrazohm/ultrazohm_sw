@@ -21,8 +21,9 @@ def development_environment(root):
 def build_development(root, run):
     """Build the matching wheel pair and update the persistent environment."""
     root = Path(root)
-    run([sys.executable, root / "ultrazohm_cli/tasks.py", "release-wheel"])
-    run([sys.executable, root / "ultrazohm_dataviewer/tasks.py", "wheel"])
+    developer = root / "uz_developer.py"
+    run([sys.executable, developer, "cli", "release-wheel"])
+    run([sys.executable, developer, "dataviewer", "wheel"])
     install_development(root, run)
 
 
@@ -85,5 +86,5 @@ def install_development(root, run):
 def development_shell(root, run):
     python = venv_bin(development_environment(root))
     if not python.exists():
-        raise RuntimeError("Build first: ./uz_developer build linux_wheels")
+        raise RuntimeError("Build first: ./uz_developer build")
     run([python, Path(root) / "uz_shell.py"])

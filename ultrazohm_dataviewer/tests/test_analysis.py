@@ -200,7 +200,7 @@ def test_export_fft_mixed_sample_rates_pairs_freq_with_amp(tmp_path):
     # Two runs at *different* sample rates -> different FFT frequency axes. The CSV
     # must keep each amplitude paired with its own frequency axis (per-signal
     # `<name>_frequency` columns), not collapse onto one shared frequency column.
-    import pandas as pd
+    import polars as pl
 
     state = AppState()
     t1 = np.linspace(0.0, 1.0, 1000, endpoint=False)  # fs = 1000 Hz -> 501 bins
@@ -223,13 +223,13 @@ def test_export_fft_mixed_sample_rates_pairs_freq_with_amp(tmp_path):
     state.commands.execute(state, "fft_source", ["run_2", "sb"])
     out = tmp_path / "fft_mixed.csv"
     session.export_fft(state, str(out))
-    df = pd.read_csv(out)
+    df = pl.read_csv(out)
     assert "frequency" not in df.columns  # mixed axes -> no single shared column
     assert {"sa_frequency", "sa", "sb_frequency", "sb"} <= set(df.columns)
-    sa = df[["sa_frequency", "sa"]].dropna().reset_index(drop=True)
-    sb = df[["sb_frequency", "sb"]].dropna().reset_index(drop=True)
-    assert abs(float(sa["sa_frequency"][int(sa["sa"].values.argmax())]) - 50.0) < 2.0
-    assert abs(float(sb["sb_frequency"][int(sb["sb"].values.argmax())]) - 123.0) < 2.0
+    sa = df.select("sa_frequency", "sa").drop_nulls()
+    sb = df.select("sb_frequency", "sb").drop_nulls()
+    assert abs(float(sa["sa_frequency"][int(sa["sa"].arg_max())]) - 50.0) < 2.0
+    assert abs(float(sb["sb_frequency"][int(sb["sb"].arg_max())]) - 123.0) < 2.0
 
 
 def test_export_histogram(tmp_path):
@@ -383,7 +383,7 @@ def test_grid_shrink_resets_removed_analysis_targets(app_state):
 def test_exports_preserve_duplicate_recordings(
     states, tmp_path, exporter, config, axis
 ):
-    import pandas as pd
+    import polars as pl
 
     state = states()
     for i in range(3):
@@ -397,20 +397,22 @@ def test_exports_preserve_duplicate_recordings(
     getattr(state, config).follow_plot = -1
     path = tmp_path / "analysis.csv"
     exporter(state, str(path))
-    frame = pd.read_csv(path)
+    frame = pl.read_csv(path)
     assert (
-        frame.columns[0] == axis and len(frame.columns) == 4 and frame.columns.is_unique
+        frame.columns[0] == axis
+        and len(frame.columns) == 4
+        and len(set(frame.columns)) == 4
     )
     assert len({state.signal_label(ref) for ref in getattr(state, config).sources}) == 3
     if config == "fft":
         np.testing.assert_allclose(
-            frame.iloc[:, 2], 2 * frame.iloc[:, 1], rtol=1e-6, atol=1e-6
+            frame.to_series(2), 2 * frame.to_series(1), rtol=1e-6, atol=1e-6
         )
         np.testing.assert_allclose(
-            frame.iloc[:, 3], 3 * frame.iloc[:, 1], rtol=1e-6, atol=1e-6
+            frame.to_series(3), 3 * frame.to_series(1), rtol=1e-6, atol=1e-6
         )
     else:
-        np.testing.assert_array_equal(frame.iloc[:, 1:].sum(axis=0), [8, 8, 8])
+        np.testing.assert_array_equal(frame[:, 1:].sum().row(0), [8, 8, 8])
 
 
 def test_analysis_remove_uses_reference_after_rename(
@@ -782,15 +784,14 @@ def test_zoom_issued_during_computation_survives_completion(
     assert (implot.ImAxis_.x1, 2, 5) in applied
 
 
-@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
 @pytest.mark.parametrize("mode", ["memory", "lazy"])
 @pytest.mark.parametrize("offset", [0, 10])
 @pytest.mark.parametrize("reverse", [False, True])
 def test_full_analysis_includes_all_recordings(
-    app_state, tmp_path, backend, mode, offset, reverse
+    app_state, tmp_path, mode, offset, reverse
 ):
     state = app_state
-    state.backend, state.loading_mode = backend, mode
+    state.loading_mode = mode
     runs = []
     for name, timestamps in [
         ("short", np.arange(4.0)),
@@ -916,12 +917,11 @@ def test_fft_rejects_unrepresentable_output():
     assert not result.ok and "output range" in result.info
 
 
-@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
 @pytest.mark.parametrize("mode", ["memory", "lazy"])
 @pytest.mark.parametrize("extension", ["csv", "parquet"])
 @pytest.mark.parametrize("fs", [30000, 60000])
 def test_javascope_quantized_logs_support_analysis_and_nodes(
-    tmp_path, app_state, backend, mode, extension, fs
+    tmp_path, app_state, mode, extension, fs
 ):
     from ultrazohm_dataviewer.analysis import AnalysisInput, compute_signal_fft
     from ultrazohm_dataviewer.loader import convert_csv_to_parquet, open_file
@@ -935,8 +935,8 @@ def test_javascope_quantized_logs_support_analysis_and_nodes(
         "time;CH1=1)ia;\n" + "".join(f"{a};{b};\n" for a, b in zip(t, y, strict=False))
     )
     if extension == "parquet":
-        path = convert_csv_to_parquet(str(path), backend=backend)
-    run = open_file(str(path), mode, backend=backend).register(app_state.registry)
+        path = convert_csv_to_parquet(str(path))
+    run = open_file(str(path), mode).register(app_state.registry)
     assert run.timestamp_resolution == 1e-8
     run.set_time_origin(0.1)
     lo, hi = float(run.time[0]), float(run.time[-1])

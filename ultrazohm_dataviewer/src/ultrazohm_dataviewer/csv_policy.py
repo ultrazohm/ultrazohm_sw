@@ -1,8 +1,8 @@
-"""Spellings of missing numeric CSV values, shared by both loader backends."""
+"""Spellings of missing numeric CSV values."""
 
 from itertools import product
 
-# Arrow's established spellings plus case-insensitive na/nan/null.
+# Common spellings (as established by Arrow) plus case-insensitive na/nan/null.
 NULL_VALUES = sorted(
     {
         "",

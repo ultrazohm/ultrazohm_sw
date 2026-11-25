@@ -1,4 +1,8 @@
-"""Explicit Python control methods. Metadata is verified against operation definitions."""
+"""Python control methods, generated from the command specifications.
+
+Do not edit: run ``uz_developer dataviewer generate`` after changing
+``commands.py``.
+"""
 
 from __future__ import annotations
 
@@ -9,10 +13,6 @@ if TYPE_CHECKING:
 
 
 class ViewerMethods:
-    def backend(self, name: str):
-        "IO backend for subsequent opens, exports and CSV conversion: pyarrow or polars (desktop only)."
-        return self._invoke("backend", {"name": name})
-
     def cache_budget(self, mib: int):
         "Shared timestamp/summary RAM cache budget in MiB."
         return self._invoke("cache_budget", {"mib": mib})
@@ -25,11 +25,10 @@ class ViewerMethods:
         self,
         src: str,
         dst: str | None = None,
-        *,
         axis_column: str | None = None,
         axis_domain: str | None = None,
     ):
-        "Stream-convert CSV to Parquet using the selected backend; dst defaults to src with a .parquet extension. Existing destinations and empty inputs are rejected."
+        "Stream-convert CSV to Parquet; dst defaults to src with a .parquet extension. Existing destinations and empty inputs are rejected."
         return self._invoke(
             "convert",
             {
@@ -302,6 +301,14 @@ class ViewerMethods:
             "set_xy_style", {"plot": plot, "style": style, "view": view}
         )
 
+    def set_y2_lim(
+        self, plot: int, min: float, max: float, *, view: ViewHandle | None = None
+    ):
+        "Set the secondary (right) Y-axis limits of a 1-based subplot."
+        return self._invoke(
+            "set_y2_lim", {"plot": plot, "min": min, "max": max, "view": view}
+        )
+
     def set_y_lim(
         self, plot: int, min: float, max: float, *, view: ViewHandle | None = None
     ):
@@ -313,14 +320,6 @@ class ViewerMethods:
     def show_samples(self, plot: int, on: bool, *, view: ViewHandle | None = None):
         "Toggle per-sample markers on a subplot."
         return self._invoke("show_samples", {"plot": plot, "on": on, "view": view})
-
-    def set_y2_lim(
-        self, plot: int, min: float, max: float, *, view: ViewHandle | None = None
-    ):
-        """Set the secondary (right) Y-axis limits of a 1-based subplot."""
-        return self._invoke(
-            "set_y2_lim", {"plot": plot, "min": min, "max": max, "view": view}
-        )
 
     def spy(self, plot: int, on: bool, *, view: ViewHandle | None = None):
         "Toggle the spy (drag-rect zoom inset) on a subplot."

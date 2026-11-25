@@ -171,9 +171,7 @@ pub struct ChannelMapping {
     pub variables: BTreeMap<String, u32>,
     pub commands: BTreeMap<String, u32>,
     /// Header presentation metadata, also exposed through the service profile/catalog.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub javascope: Option<JavascopeMetadata>,
-    #[serde(default)]
+    pub javascope: JavascopeMetadata,
     pub legacy_javascope_header: bool,
     pub platform_state: Option<PlatformStateMapping>,
 }
@@ -202,10 +200,8 @@ impl ChannelMapping {
     }
 
     fn validate_javascope(&self) -> Result<()> {
-        if let Some(metadata) = &self.javascope {
-            metadata.validate(&self.commands, &self.variables, &self.slow_signals)?;
-        }
-        Ok(())
+        self.javascope
+            .validate(&self.commands, &self.variables, &self.slow_signals)
     }
 }
 
@@ -348,9 +344,7 @@ pub struct Profile {
     pub slow_signals: BTreeMap<String, u32>,
     pub variables: BTreeMap<String, u32>,
     pub commands: BTreeMap<String, u32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub javascope: Option<JavascopeMetadata>,
-    #[serde(default)]
+    pub javascope: JavascopeMetadata,
     pub legacy_javascope_header: bool,
     pub platform_state: Option<PlatformStateMapping>,
 }
@@ -411,9 +405,8 @@ impl Profile {
         // cleanup after failed acquisition or firmware operations.
         self.command("Stop")
             .context("firmware mapping lacks mandatory lifecycle command")?;
-        if let Some(metadata) = &self.javascope {
-            metadata.validate(&self.commands, &self.variables, &self.slow_signals)?;
-        }
+        self.javascope
+            .validate(&self.commands, &self.variables, &self.slow_signals)?;
         ensure!(
             self.api_version == 1 && self.channels == crate::protocol::CHANNELS,
             "requires v1 profile and 20-channel firmware"
@@ -457,12 +450,12 @@ impl Profile {
     /// Resolve columns once for live queries and recording; callers decide whether empty is allowed.
     pub(crate) fn selected_columns(
         &self,
-        selections: &serde_json::Value,
+        selections: &crate::service::Selections,
     ) -> Result<Vec<(usize, String)>> {
         let mut columns = Vec::new();
         let mut seen = std::collections::BTreeSet::new();
         for channel in 1..=self.channels {
-            if let Some(requested) = selections[channel.to_string()].as_str() {
+            if let Some(requested) = selections.get(&(channel as u32)) {
                 let (_, value) = self.observable(requested, channel as u32)?;
                 let id = value as u32;
                 let canonical = if self.observables.contains_key(requested) {

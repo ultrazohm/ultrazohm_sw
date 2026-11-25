@@ -1,11 +1,11 @@
-"""Named API v3; all device IO and logging execute in Rust.
+"""Named API v4; all device IO and logging execute in Rust.
 
 Service errors raise RuntimeError with a ``code`` attribute (for example
 ``cursor_expired``, ``canceled_by_stop``, ``not_connected``, ``busy``).
+Methods return the reply's result dictionary.
 """
 
 import atexit
-import json
 import sys
 import weakref
 from dataclasses import dataclass
@@ -73,7 +73,7 @@ class Recording:
         self.info()  # Validate backend/version at open.
 
     def info(self):
-        return json.loads(_recording_info(self.path))
+        return _recording_info(self.path)
 
     def read_range(self, start, stop, *, channels=None):
         import polars as pl
@@ -159,10 +159,8 @@ class Client:
         """Close the connection; a later call reconnects."""
         self._connection.close()
 
-    def _call(self, op, **fields):
-        return json.loads(
-            self._connection.request(json.dumps({"op": op, **fields}, allow_nan=False))
-        )
+    def _call(self, op, **args):
+        return self._connection.request(op, args)
 
     def firmware(self, action, *, request_id=None, device=None, no_reconnect=False):
         """Submit a firmware job to this service's checkout; returns job metadata."""
@@ -221,7 +219,14 @@ class Client:
         return self._call("catalog")
 
     def recordings(self):
-        return self._call("recordings")["recordings"]
+        """All recordings of the current acquisition session (paged requests)."""
+        recordings, cursor = [], None
+        while True:
+            page = self._call("recordings_page", cursor=cursor, limit=100)
+            recordings.extend(page["recordings"])
+            cursor = page["next_cursor"]
+            if cursor is None:
+                return recordings
 
     def data_info(self, *, stream="fast", recording=None):
         """Available sample positions; stop is exclusive. See position_basis for live vs recorded rows."""
@@ -230,18 +235,15 @@ class Client:
     def _read(self, selection, *, stream, recording, channels):
         import polars as pl
 
-        command = {
-            "op": "read_data",
-            "query": {
-                "source": _source(stream, recording),
-                "selection": selection,
-                "channels": channels,
-            },
-        }
-        header, payload = self._connection.data_query(
-            json.dumps(command, allow_nan=False)
+        metadata, payload = self._connection.data_query(
+            {
+                "query": {
+                    "source": _source(stream, recording),
+                    "selection": selection,
+                    "channels": channels,
+                }
+            }
         )
-        metadata = json.loads(header)
         return DataPage(
             pl.read_ipc_stream(BytesIO(payload)),
             metadata["cursor"],

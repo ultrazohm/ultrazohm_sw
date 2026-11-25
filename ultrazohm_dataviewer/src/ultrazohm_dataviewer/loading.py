@@ -3,11 +3,11 @@
 from .sources import check
 
 
-def _convert_worker(source, destination, backend, connection, axis):
+def _convert_worker(source, destination, connection, axis):
     try:
         from .loader import _write_csv_to_parquet
 
-        result = _write_csv_to_parquet(source, destination, backend=backend, axis=axis)
+        result = _write_csv_to_parquet(source, destination, axis=axis)
         connection.send((True, result))
     except Exception as exc:
         connection.send((False, str(exc)))
@@ -15,7 +15,7 @@ def _convert_worker(source, destination, backend, connection, axis):
         connection.close()
 
 
-def convert_cancellable(source, destination, backend, cancel, *, axis=None):
+def convert_cancellable(source, destination, cancel, *, axis=None):
     """Isolate native streaming sinks so cancellation can stop their IO promptly."""
     import multiprocessing
 
@@ -23,7 +23,7 @@ def convert_cancellable(source, destination, backend, cancel, *, axis=None):
     receive, send = context.Pipe(duplex=False)
     process = context.Process(
         target=_convert_worker,
-        args=(source, destination, backend, send, axis),
+        args=(source, destination, send, axis),
         daemon=True,
     )
     try:

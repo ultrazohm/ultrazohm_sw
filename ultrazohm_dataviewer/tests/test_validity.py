@@ -14,16 +14,14 @@ def write_csv(path, value=1):
     path.write_text("time;y\n" + "".join(f"{i};{value + i}\n" for i in range(8)))
 
 
-@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
 @pytest.mark.parametrize("disk_cache", [False, True])
-def test_changed_csv_invalidates_all_reads(tmp_path, backend, disk_cache):
+def test_changed_csv_invalidates_all_reads(tmp_path, disk_cache):
     path = tmp_path / "data.csv"
     write_csv(path)
     run = open_file(
         str(path),
         "lazy",
         cache_dir=tmp_path / "cache",
-        backend=backend,
         disk_cache=disk_cache,
     ).register(DataRegistry())
     run.read_window(["y"], 0, 7)
@@ -36,7 +34,6 @@ def test_changed_csv_invalidates_all_reads(tmp_path, backend, disk_cache):
         str(path),
         "lazy",
         cache_dir=tmp_path / "cache",
-        backend=backend,
         disk_cache=disk_cache,
     ).register(DataRegistry())
     assert reopened.read_window(["y"], 0, 7)[1]["y"][0] == 99
@@ -71,7 +68,7 @@ def graph(state, run):
 
 def test_nodes_validate_source_before_reusing_results(app_state, tmp_path):
     state = app_state
-    state.backend, state.loading_mode = "pyarrow", "lazy"
+    state.loading_mode = "lazy"
     path = tmp_path / "data.csv"
     write_csv(path)
     a, b = graph(state, state.load_sync(str(path)))

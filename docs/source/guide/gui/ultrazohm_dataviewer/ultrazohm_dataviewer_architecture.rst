@@ -81,11 +81,17 @@ Module map
      - Loaded data + per-log time normalization
      - ``Run``, ``Signal``, ``DataRegistry``
    * - ``loader.py``
-     - CSV (Arrow) / Parquet loading, header cleaning, delimiter sniffing; lean large-log loading (float32-at-parse, CSV size guard, streaming Parquet, CSV→Parquet ``convert``) — see :ref:`ultrazohm_dataviewer_loader_large_logs`
+     - CSV / Parquet loading (Polars), header cleaning, delimiter sniffing; lean large-log loading (float32-at-parse, CSV size guard, streaming Parquet, CSV→Parquet ``convert``) — see :ref:`ultrazohm_dataviewer_loader_large_logs`
      - ``open_file``, ``parse_file``, ``ParsedRun``, ``parse_channel_name``, ``convert_csv_to_parquet``
    * - ``sources.py``
      - Resident/lazy raw-sample access, timestamp indexes, persistent display summaries, shared byte-bounded cache
-     - ``Source``, ``ArraySource``, ``ParquetSource``, ``SourceColumn``, ``ByteCache``
+     - ``Source``, ``ArraySource``, ``IndexedFileSource``, ``SourceColumn``, ``ByteCache``
+   * - ``polars_source.py``
+     - Lazy CSV/Parquet source over Polars scans with projection and slice pushdown
+     - ``PolarsSource``
+   * - ``extrema.py``
+     - Sample-preserving min/max reduction shared by summaries, the live ring and display sampling
+     - ``bucket_extremes``, ``merge_extremes``, ``envelope``
    * - ``requests.py``
      - Coalescing worker requests; cancellation and result publication without GUI calls
      - ``Requests``
@@ -148,7 +154,6 @@ Loading & large logs (``loader.py``)
 ``open_file`` selects the storage policy for GUI uploads, native loads and commands.
 Memory loads dispatch through ``parse_file`` → ``parse_csv`` / ``parse_parquet`` and return a ``ParsedRun``; lazy loads return an ``OpenedSource``.
 Both register through their ``register`` method.
-The redundant eager-only ``load_file`` wrapper has been removed.
 On native, interactive GUI loads run on the cancellable daemon worker in ``workers.py``.
 Recordings before the first startup Python file are prepared during startup.
 Python files and subsequent arguments run sequentially after the UI opens.
@@ -164,28 +169,47 @@ The in-memory loaders reduce transient allocations; the complete recording and a
   ``_csv_column_types`` feeds Arrow ``ConvertOptions(column_types=…)`` so channels parse straight to ``float32`` (time stays ``float64``), avoiding the float64→float32 re-cast that doubled channel memory.
   ``_named_signals`` shares one naming/dedup pass across every load path.
 - **Streaming CSV.**
-  Both native backends stream numeric batches into the shared ``collect_csv_batches`` allocator.
+  Polars streams numeric batches into the shared ``collect_csv_batches`` allocator.
   It checks actual rows and retained numeric capacity against ``MAX_CSV_NUMERIC_BYTES`` before allocating or growing arrays; the file-size estimate is only an initial admission check.
   Parser scratch and transient growth copies are additional memory.
-  The former small-file bulk path and streaming-size threshold have been removed.
-  ``csv_policy.NULL_VALUES`` defines the missing-value spellings used by both backends.
-- **Releasing Arrow's pool.**
-  After every parse, ``parse_file`` calls ``_release_arrow_pool`` (``pa.default_memory_pool().release_unused()``): Arrow otherwise retains freed parse scratch rather than returning it to the OS, pinning RSS at the parse high-water mark (measured ~1.2 GB reclaimed on the 9M-row log, ~10 GB on the 75M).
+  ``csv_policy.NULL_VALUES`` defines the accepted missing-value spellings.
 - **CSV size guard.**
   ``_guard_csv_size`` estimates the resident footprint from file size × column count and **refuses** a CSV above ``MAX_CSV_NUMERIC_BYTES``.
   Now that large CSVs stream, this is a **resident-RAM** ceiling (the full record must fit in memory), not a bulk-parse guard; it routes the user to lazy loading or ``convert(...)``.
   Actual capacity is checked independently during materialization.
 - **Streaming Parquet.**
-  All eager PyArrow Parquet loads preallocate arrays from ``ParquetFile.metadata.num_rows`` and fill them with ``iter_batches``.
+  All eager Parquet loads preallocate arrays from the scanned row count and fill them from Polars streaming batches.
   There is one path for small and large files; lazy loads retain indexed sources.
 - **CSV→Parquet converter.**
-  ``convert_csv_to_parquet`` stream-converts a CSV to Parquet with bounded memory (per-batch ``ParquetWriter.write_batch``), dropping JavaScope's empty trailing column and preserving raw headers so the result round-trips through the same name parsing.
+  ``convert_csv_to_parquet`` stream-converts a CSV to Parquet with bounded memory (a Polars streaming ``sink_parquet``), dropping JavaScope's empty trailing column and preserving raw headers so the result round-trips through the same name parsing.
   Exposed as the scriptable ``convert(src, [dst])`` command and the ``ultrazohm-dataviewer convert`` terminal command.
   The shared converter owns temporary output, empty-recording validation, cancellation cleanup, and publication without overwriting existing destinations.
-  GUI, Python control, and cache conversion use this same path; backend writers only fill unpublished temporary files.
+  GUI, Python control, and cache conversion use this same path; the writer only fills unpublished temporary files.
 
 In-memory mode retains the complete recording.
 Lazy mode reads raw windows and streams histogram batches without keeping the full recording resident; FFTs and node transforms still materialize their selected inputs.
+
+Responsiveness and memory
+-------------------------
+
+Plot preparation, first-use summaries, XY sampling, cursor reads, and GUI FFT and histogram computation run outside the rendering thread.
+The last completed plot stays visible during an update.
+Up to four plot requests run concurrently, so a slow first summary of one channel does not hold back other subplots; each request can hold its own decoded batches.
+Superseded display requests are cancelled or discarded.
+Main and spy plots reuse completed results; finite display budgets account for pixel width and trace count, and gap markers may add points beyond them.
+
+Opening reads only the first and last timestamps.
+The first sample query validates timestamp order and builds a persistent timestamp index; the first display of a channel builds its min/max summaries.
+Both stream through the file and can take seconds for large recordings; reopening reuses valid indexes.
+Lazy reads run on the worker even for short recordings.
+
+Cache budgets are **not** a process-RAM limit: decoded batches, index scratch, FFTs, NumPy conversions, exports and plugins allocate additional memory.
+A full-recording FFT needs its raw input and output arrays; histograms stream raw batches in two passes.
+Disk caches are disposable and source-versioned; close the DataViewer before clearing them.
+Direct library use stores them in ``~/.cache/ultrazohm_dataviewer``.
+There is no automatic disk-cache size limit.
+Read-only or full summary-cache storage falls back to RAM; lazy CSV conversion with disk caching enabled requires writable cache space.
+Disabling disk caching leaves existing cache files untouched and unread.
 
 The operation and transport layers
 ==================================
@@ -245,8 +269,7 @@ Per time-series cell, each frame:
 .. note::
 
    **Cursor performance.**
-   Cursor readouts originally used ``np.interp``, which up-casts the entire ``float32`` signal to ``float64`` on every call (~150 ms/frame on a 5 M-point log).
-   It was replaced with an O(log n) ``searchsorted`` lookup (``_value_at``) that touches only the two bracketing samples.
+   Cursor readouts use an O(log n) ``searchsorted`` lookup (``_value_at``) that touches only the two bracketing samples, instead of ``np.interp``, which would up-cast the entire ``float32`` signal to ``float64`` on every call.
 
 Analysis windows (``panels/analysis.py``)
 =========================================
@@ -304,9 +327,8 @@ Raw reads (``read_rows`` and ``iter_raw``) are separate and always return origin
 FFT, exports and nodes never consume display summaries.
 
 ``ArraySource`` wraps existing resident arrays.
-``ParquetSource`` opens footer metadata, projects selected columns, and reads batches of at most 65,536 rows.
-On the first query it validates the complete timestamp order and persists a small timestamp index.
-If footer time statistics are absent, that scan is needed at open.
+``PolarsSource`` scans CSV or Parquet, projects selected columns, and reads batches of at most 65,536 rows.
+Opening reads the first and last timestamps; the first query validates the complete timestamp order and persists a small timestamp index.
 Source identities include the resolved path, file size, nanosecond mtime/ctime, inode and cache format version.
 Changed files must be reopened.
 
@@ -337,8 +359,8 @@ Set ``UZ_DATAVIEWER_CACHE`` to override this path.
 Writes are atomic; invalid cache containers are rebuilt.
 
 ``loading_mode(memory|lazy)`` affects subsequent opens.
-The user explicitly selects resident or lazy loading; obsolete Auto sessions are rejected.
-Lazy CSV input is scanned directly by the selected backend by default.
+The user explicitly selects resident or lazy loading.
+Lazy CSV input is scanned directly by Polars by default.
 CSV navigation requires repeated text scanning and can be slower than Parquet.
 Enabling ``disk_cache(true)`` for subsequent opens persists indexes and summaries and converts lazy CSV input to a versioned Parquet cache.
 Existing cache files are left untouched when disk caching is disabled.
@@ -375,7 +397,7 @@ Both plot types share explicit axis-limit application and view capture.
 
 FFT and ordinary plots now share the ``ArraySource`` / ``SummarySource`` sampling engine.
 FFT summaries are constructed by the analysis worker, and unchanged spectrum views reuse their reduced arrays.
-``IndexedFileSource`` owns file identity, timestamp indexing, bounds and cache persistence for both backends.
+``IndexedFileSource`` owns file identity, timestamp indexing, bounds and cache persistence; ``PolarsSource`` reads CSV and Parquet through it.
 Analysis, export and node cropping select exact time windows; padding is reserved for display.
 FFT rejects duplicate or irregular timestamps instead of returning a misleading frequency axis.
 JavaScope's raw ``CHn=n)`` headers identify its 10 ns timestamp quantization, including in converted Parquet files.
@@ -390,13 +412,12 @@ Sessions (``session.py``)
 =========================
 
 **JSON snapshot** (``save_state``/``load_state``) is the only session format.
-Schema version 6 includes additional plot views and reloads explicit per-run records and remaps recording/node keys, preserving duplicate names and repeated opens of the same path.
+Schema version 7 includes additional plot views and reloads explicit per-run records and remaps recording/node keys, preserving duplicate names and repeated opens of the same path.
 Restoration uses a replacement state; failures leave the current session intact.
 
 Automation uses ordinary Python files and ``Client.load_session`` / ``Client.save_session``.
 Session files contain data, never executable scripts.
 Snapshot writes use atomic replacement; recording paths are relative to the snapshot directory where possible.
-The custom script language is removed.
 
 Failed or incomplete transforms with saved output assignments receive empty derived run placeholders.
 The same validity check used for stale outputs blocks their data from plots, analysis and exports.
@@ -589,7 +610,7 @@ Dependency and mapping selection checks
 Published DataViewer packages require the matching ultrazohm-cli release version.
 CI tests candidate wheels together.
 ``./uz`` application commands run published packages.
-``./uz_developer build linux_wheels`` builds and installs both checkout applications from CI-format wheels into a persistent environment; ``./uz venv dev`` activates it without rebuilding.
+``./uz_developer build`` builds and installs both checkout applications from CI-format wheels into a persistent environment; ``./uz venv dev`` activates it without rebuilding.
 ``run.py`` only adds local DataViewer sources to the current interpreter; dependencies must already be installed.
 
 An explicit ``DataViewerApp(live_mapping=...)`` selects that mapping even when its workspace is inferred from the path or supplied through ``live_repo``.

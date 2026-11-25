@@ -16,33 +16,61 @@ from uz_build import build_lock, venv_bin
 
 
 class DeveloperTest(unittest.TestCase):
-    def test_application_builds_refresh_pair(self):
-        for name in ("cli", "dataviewer", "linux_wheels"):
-            with (
-                tempfile.TemporaryDirectory() as directory,
-                patch.object(uz_developer, "ROOT", Path(directory)),
-                patch.object(uz_developer, "build_development") as build,
-                patch.object(sys, "platform", "linux"),
-            ):
-                uz_developer.main(["build", name])
-                build.assert_called_once_with(Path(directory), uz_developer.run)
+    def test_build_refreshes_pair(self):
+        with (
+            tempfile.TemporaryDirectory() as directory,
+            patch.object(uz_developer, "ROOT", Path(directory)),
+            patch.object(uz_developer, "build_development") as build,
+        ):
+            uz_developer.main(["build"])
+            build.assert_called_once_with(Path(directory), uz_developer.run)
 
-    def test_task_and_check_dispatch(self):
-        with patch.object(uz_developer, "run") as run:
-            uz_developer.main(["task", "cli", "wheel", "--out", "a path"])
-            self.assertEqual(run.call_args.args[0][-3:], ["wheel", "--out", "a path"])
-            uz_developer.main(["check", "dataviewer", "--gui-smoke"])
-            self.assertEqual(run.call_args.args[0][-2:], ["check", "--gui-smoke"])
+    def test_project_tasks_dispatch_in_process(self):
+        calls = []
+        tasks = uz_developer.project_tasks("cli")
+        with (
+            patch.dict(
+                tasks.TASKS,
+                {"lint": tasks.TASKS["lint"].__class__(calls.append, "lint")},
+            ),
+            patch.object(uz_developer, "project_tasks", return_value=tasks),
+        ):
+            uz_developer.main(["cli", "lint"])
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0].task, "lint")
+
+    def test_every_project_task_parses(self):
+        for project in uz_developer.PROJECTS:
+            tasks = uz_developer.project_tasks(project)
+            for name in tasks.TASKS:
+                with (
+                    contextlib.redirect_stdout(io.StringIO()),
+                    self.assertRaises(SystemExit) as exit,
+                ):
+                    uz_developer.main([project, name, "--help"])
+                self.assertEqual(exit.exception.code, 0)
+
+    def test_invalid_commands_are_rejected(self):
         for args in (
             ["build", "viewer"],
-            ["check", "viewer"],
-            ["task", "viewer", "wheel"],
+            ["viewer", "check"],
+            ["cli", "unknown"],
+            ["task", "cli", "wheel"],
+            ["verify", "macos"],
         ):
             with (
                 contextlib.redirect_stderr(io.StringIO()),
                 self.assertRaises(SystemExit),
             ):
                 uz_developer.main(args)
+
+    def test_tasks_run_in_child_processes(self):
+        with patch.object(uz_developer, "run") as run:
+            uz_developer.task("cli", "debug-wheel", "--out", "a path")
+        self.assertEqual(
+            run.call_args.args[0][1:],
+            [uz_developer.ROOT / "uz_developer.py", "cli", "debug-wheel", "--out", "a path"],
+        )
 
     def test_shell_reuses_environment_without_build_or_cleanup(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -78,6 +106,7 @@ class DeveloperTest(unittest.TestCase):
             calls = []
             uz_venv.build_development(Path("checkout"), calls.append)
             self.assertEqual([call[-1] for call in calls], ["release-wheel", "wheel"])
+            self.assertEqual([call[-2] for call in calls], ["cli", "dataviewer"])
             install.assert_called_once()
             install.reset_mock()
 

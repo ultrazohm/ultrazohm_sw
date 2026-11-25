@@ -242,7 +242,7 @@ class HeaderMappingTest(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
 
-    def test_old_mapping_without_presentation_metadata_still_loads(self):
+    def test_mapping_without_presentation_metadata_is_rejected(self):
         result = self.run_cli("create-json-from-javascope-h")
         self.assertEqual(result.returncode, 0, result.stderr)
         mapping = json.loads(self.output.read_text())
@@ -259,7 +259,8 @@ class HeaderMappingTest(unittest.TestCase):
             self.repo / "session",
             input="status\nshutdown\n",
         )
-        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("javascope", result.stderr)
 
     def test_missing_checkout_has_no_bundled_fallback(self):
         result = self.run_cli("channel-mapping", cwd=self.tmp.name)

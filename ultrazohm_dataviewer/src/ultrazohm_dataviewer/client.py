@@ -95,15 +95,15 @@ class Client(ViewerMethods):
                 self._socket.close()
             self._socket = self._stream = None
 
-    def _call(self, operation, **arguments):
+    def _call(self, op, **args):
         with self._lock:
             from dataclasses import asdict
 
-            arguments = {
+            args = {
                 key: asdict(value)
                 if isinstance(value, (RunHandle, NodeHandle, ViewHandle))
                 else value
-                for key, value in arguments.items()
+                for key, value in args.items()
             }
             self._sequence += 1
             if self._token is None:
@@ -111,14 +111,13 @@ class Client(ViewerMethods):
 
                 self._token = discover(self.endpoint)
             request = wire.encode(
-                {
-                    "version": wire.VERSION,
-                    "id": self._sequence,
-                    "operation": operation,
-                    "arguments": arguments,
-                    "session": self.session,
-                    "token": self._token,
-                }
+                wire.request(
+                    self._sequence,
+                    op,
+                    args,
+                    session=self.session,
+                    token=self._token,
+                )
             )
             try:
                 if self._socket is None:
@@ -131,7 +130,7 @@ class Client(ViewerMethods):
             except (OSError, EOFError, ValueError):
                 self.close()
                 raise
-            if "error" in reply:
+            if not reply.get("ok"):
                 error = reply["error"]
                 raise ViewerError(error["code"], error["message"])
             self.session = reply["session"]

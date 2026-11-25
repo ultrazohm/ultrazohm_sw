@@ -38,7 +38,6 @@ class DataViewerApp:
         self,
         initial_files: list[str] | None = None,
         loading_mode: str | None = None,
-        backend: str | None = None,
         disk_cache: bool | None = None,
         use_live: bool = False,
         live_mapping: str = "",
@@ -74,11 +73,6 @@ class DataViewerApp:
             self.state.disk_cache = disk_cache
         if loading_mode is not None:
             self.state.loading_mode = loading_mode
-        from .loader import validate_backend
-
-        if backend is not None:
-            self.state.backend = backend
-        validate_backend(self.state.backend)
         self.navigation = NavigationPanel()
         self.log_browser = LogBrowserPanel(
             Path(self.preferences.values["log_directory"])
@@ -124,8 +118,6 @@ class DataViewerApp:
         self._startup_scripts = list(initial_files or [])
         self._startup_pending = None
         self._startup_script = False
-        if any(path.lower().endswith(".uzscript") for path in self._startup_scripts):
-            raise ValueError(".uzscript is no longer supported; use Python files")
 
         self.state.async_exports = True
 
@@ -675,20 +667,12 @@ class DataViewerApp:
         immapp.run(params, addons)
 
 
-def main(argv: list[str] | None = None) -> int:
-    """Compatibility entry point; all argument policy lives in cli.parser."""
-    from .cli import main as cli_main
-
-    return cli_main(["gui", *(sys.argv[1:] if argv is None else argv)])
-
-
 def run_gui(args) -> int:
     """Launch from parsed options, resolving saved preferences only once."""
     from .preferences import Preferences
 
     defaults = Preferences().values
     loading_mode = getattr(args, "loading_mode", None) or defaults["loading_mode"]
-    backend = getattr(args, "backend", None) or defaults["backend"]
     disk_cache = getattr(args, "disk_cache", None)
     if disk_cache is None:
         disk_cache = defaults["disk_cache"]
@@ -706,7 +690,6 @@ def run_gui(args) -> int:
     app = DataViewerApp(
         initial_files=getattr(args, "files", []),
         loading_mode=loading_mode,
-        backend=backend,
         disk_cache=disk_cache,
         use_live=use_live,
         live_repo=live_repo,
@@ -717,7 +700,3 @@ def run_gui(args) -> int:
     finally:
         app._shutdown()
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

@@ -233,6 +233,71 @@ def format_call(cmd: Command, values: list) -> str:
 
 
 # -- registry -----------------------------------------------------------------
+# Operations exposed by the Python client (`client_methods.py` is generated from
+# their specifications: `uz_developer dataviewer generate`).
+PUBLIC_COMMANDS = frozenset(
+    (
+        "cache_budget",
+        "clear_plot",
+        "convert",
+        "cursors",
+        "disk_cache",
+        "export_data",
+        "fft",
+        "fft_clear",
+        "fft_export",
+        "fft_follow",
+        "fft_hann",
+        "fft_logx",
+        "fft_logy",
+        "fft_range",
+        "fft_remove",
+        "fft_remove_dc",
+        "fft_source",
+        "fft_xlim",
+        "hist_bins",
+        "hist_clear",
+        "hist_export",
+        "hist_follow",
+        "hist_range",
+        "hist_remove",
+        "hist_source",
+        "hist_xlim",
+        "histogram",
+        "load_plugins",
+        "loading_mode",
+        "node_add",
+        "node_eval",
+        "node_link",
+        "node_pos",
+        "node_remove",
+        "node_rename",
+        "node_set",
+        "node_source",
+        "node_unlink",
+        "normalize_time",
+        "remove_run",
+        "remove_signal",
+        "reset_time",
+        "reset_view",
+        "set_active",
+        "set_axis",
+        "set_cursors",
+        "set_export_relative",
+        "set_max_points",
+        "set_plot_type",
+        "set_spy_rect",
+        "set_x_lim",
+        "set_xy",
+        "set_xy_style",
+        "set_y2_lim",
+        "set_y_lim",
+        "show_samples",
+        "spy",
+    )
+)
+
+
 class CommandRegistry:
     """Holds the command set and dispatches calls against an :class:`AppState`."""
 
@@ -414,7 +479,6 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
         out = convert_csv_to_parquet(
             src,
             dst,
-            backend=state.backend,
             axis_column=axis_column,
             axis_domain=axis_domain,
         )
@@ -429,7 +493,7 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
             Param("axis_domain", "str", optional=True),
         ],
         convert,
-        "Stream-convert CSV to Parquet using the selected backend; "
+        "Stream-convert CSV to Parquet; "
         "dst defaults to src with a .parquet extension. Existing destinations and empty inputs are rejected.",
     )
 
@@ -489,22 +553,6 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
         [Param("on", "bool")],
         link_x,
         "Link/unlink the X axes across subplots.",
-    )
-
-    def backend(state, a):
-        from .loader import validate_backend
-
-        try:
-            validate_backend(a[0])
-        except ValueError as exc:
-            raise CommandError(str(exc)) from exc
-        state.backend = a[0]
-
-    reg.add(
-        "backend",
-        [Param("name", "str")],
-        backend,
-        "IO backend for subsequent opens, exports and CSV conversion: pyarrow or polars (desktop only).",
     )
 
     def loading_mode(state, a):
@@ -678,7 +726,7 @@ def _register_data_and_plot_commands(reg: CommandRegistry) -> None:
         "set_y2_lim",
         [Param("plot", "plot"), Param("min", "float"), Param("max", "float")],
         lambda state, a: _cell(state, a[0]).set_limits("y2", a[1], a[2]),
-        "Set a subplot's secondary (right) Y-axis limits.",
+        "Set the secondary (right) Y-axis limits of a 1-based subplot.",
     )
 
     def reset_view(state, a):

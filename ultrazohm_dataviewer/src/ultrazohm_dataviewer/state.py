@@ -30,7 +30,6 @@ LARGE_CSV_BYTES = 1024**3
 class LoadRequest:
     path: str
     mode: str
-    backend: str
     disk_cache: bool
     axis_column: str | None = None
     axis_domain: str | None = None
@@ -201,8 +200,8 @@ class HistogramConfig(AnalysisConfig):
     bins: int = 50
 
 
-def default_data_settings():
-    return ("polars", "lazy")
+def default_loading_mode():
+    return "lazy"
 
 
 @dataclass
@@ -211,8 +210,7 @@ class SessionData:
 
     session_token: object = field(default_factory=object)
     registry: DataRegistry = field(default_factory=DataRegistry)
-    backend: str = field(default_factory=lambda: default_data_settings()[0])
-    loading_mode: str = field(default_factory=lambda: default_data_settings()[1])
+    loading_mode: str = field(default_factory=default_loading_mode)
     cache_dir: str | None = None
     disk_cache: bool = False
     rows: int = 1
@@ -466,14 +464,8 @@ class AppState(SessionData):
         mode = self.loading_mode if loading_mode is None else loading_mode
         if mode not in {"memory", "lazy"}:
             raise ValueError(f"Unknown loading mode: {mode}")
-        backend = self.backend
-        from .loader import validate_backend
-
-        validate_backend(backend)
         path = os.path.abspath(path)
-        request = LoadRequest(
-            path, mode, backend, self.disk_cache, axis_column, axis_domain
-        )
+        request = LoadRequest(path, mode, self.disk_cache, axis_column, axis_domain)
         if path.lower().endswith(".csv"):
             try:
                 if os.path.getsize(path) > LARGE_CSV_BYTES:
@@ -516,7 +508,6 @@ class AppState(SessionData):
             return
         path = request.path
         settings = (
-            ("backend", request.backend, self.backend),
             ("loading_mode", request.mode, self.loading_mode),
             ("disk_cache", request.disk_cache, self.disk_cache),
         )
@@ -547,7 +538,6 @@ class AppState(SessionData):
                 else self._open_background,
                 path,
                 request.mode,
-                request.backend,
                 request.disk_cache,
             )
         future.load_request = request
@@ -560,7 +550,6 @@ class AppState(SessionData):
         convert_csv_to_parquet(
             source,
             request.path,
-            backend=request.backend,
             cancel=cancel,
             axis_column=request.axis_column,
             axis_domain=request.axis_domain,
@@ -568,7 +557,6 @@ class AppState(SessionData):
         return self._open_background(
             request.path,
             request.mode,
-            request.backend,
             request.disk_cache,
             cancel=cancel,
         )
@@ -594,7 +582,6 @@ class AppState(SessionData):
                 self.loading_mode,
                 self.registry.cache,
                 self.cache_dir,
-                backend=self.backend,
                 disk_cache=self.disk_cache,
                 cancel=cancel,
                 axis_column=axis_column,
@@ -785,7 +772,6 @@ class AppState(SessionData):
         self,
         path,
         mode,
-        backend,
         disk_cache,
         cancel=None,
         *,
@@ -797,7 +783,6 @@ class AppState(SessionData):
             mode,
             self.registry.cache,
             self.cache_dir,
-            backend=backend,
             disk_cache=disk_cache,
             cancel=cancel,
             axis_column=axis_column,

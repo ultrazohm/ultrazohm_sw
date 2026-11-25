@@ -21,7 +21,8 @@ from queue import Empty, Full, Queue
 
 import numpy as np
 
-from .sources import MemorySource, PlotData, check, envelope
+from .extrema import bucket_extremes, envelope, merge_extremes
+from .sources import MemorySource, PlotData, check
 
 # Closing the window waits this long for a viewer-owned service to finalize.
 # The service runs detached, so longer finalizations complete in the background
@@ -70,51 +71,6 @@ class RingSnapshot(dict):
     summary: dict
     offset: int = 0
     valid_end: int = 0
-
-
-def bucket_extrema(y):
-    """Positions of each bucket's first finite minimum, last finite maximum and
-    first non-finite sample (-1 when a bucket has none)."""
-    n = len(y)
-    starts = np.arange(0, n, LIVE_BUCKET)
-    lengths = np.diff(np.r_[starts, n])
-    finite = np.isfinite(y)
-    pos = np.arange(n)
-    low = np.minimum.reduceat(np.where(finite, y, np.inf), starts)
-    high = np.maximum.reduceat(np.where(finite, y, -np.inf), starts)
-    mins = np.minimum.reduceat(
-        np.where(finite & (y == np.repeat(low, lengths)), pos, n), starts
-    )
-    maxs = np.maximum.reduceat(
-        np.where(finite & (y == np.repeat(high, lengths)), pos, -1), starts
-    )
-    gaps = np.minimum.reduceat(np.where(~finite, pos, n), starts)
-    mins[mins == n] = -1
-    gaps[gaps == n] = -1
-    return mins, maxs, gaps
-
-
-def merge_extrema(y, mins, maxs, gaps):
-    """Combine LIVE_FACTOR child buckets into parents, keeping the first minimum,
-    last maximum and first non-finite position of each parent."""
-    groups = -(-len(mins) // LIVE_FACTOR)
-    pad = groups * LIVE_FACTOR - len(mins)
-
-    def grouped(values):
-        return np.r_[values, np.full(pad, -1, np.int64)].reshape(groups, LIVE_FACTOR)
-
-    mins, maxs, gaps = grouped(mins), grouped(maxs), grouped(gaps)
-    low = np.where(mins >= 0, y[np.maximum(mins, 0)], np.inf)
-    high = np.where(maxs >= 0, y[np.maximum(maxs, 0)], -np.inf)
-    rows = np.arange(groups)
-    # Children are ordered, so argmin picks the first minimum; reversed argmax the last maximum.
-    parent_min = mins[rows, low.argmin(axis=1)]
-    parent_max = maxs[rows, LIVE_FACTOR - 1 - high[:, ::-1].argmax(axis=1)]
-    parent_min[~np.isfinite(low.min(axis=1))] = -1
-    parent_max[~np.isfinite(high.max(axis=1))] = -1
-    parent_gap = np.where(gaps >= 0, gaps, np.iinfo(np.int64).max).min(axis=1)
-    parent_gap[parent_gap == np.iinfo(np.int64).max] = -1
-    return parent_min, parent_max, parent_gap
 
 
 class LiveRing:
@@ -222,9 +178,8 @@ class LiveRing:
             return
         for name, levels in self.summary.items():
             y = self.columns[name]
-            for target, values in zip(
-                levels[0], bucket_extrema(y[lo:stop]), strict=False
-            ):
+            reduced = bucket_extremes(y[lo:stop], np.arange(0, stop - lo, LIVE_BUCKET))
+            for target, values in zip(levels[0], reduced, strict=False):
                 target[bucket : bucket + len(values)] = np.where(
                     values >= 0, values + lo, -1
                 )
@@ -234,8 +189,10 @@ class LiveRing:
                 if parent == parent_stop:
                     break
                 start, child_stop = parent * LIVE_FACTOR, parent_stop * LIVE_FACTOR
-                merged = merge_extrema(
-                    y, *(values[start:child_stop] for values in levels[level - 1])
+                merged = merge_extremes(
+                    y,
+                    *(values[start:child_stop] for values in levels[level - 1]),
+                    LIVE_FACTOR,
                 )
                 for target, values in zip(levels[level], merged, strict=False):
                     target[parent : parent + len(values)] = values
@@ -355,26 +312,37 @@ class ServiceSnapshot:
     def identity(status):
         return status.get("service_id"), status.get("session_id")
 
+    @staticmethod
+    def revision(status):
+        """Catalog/assignment revision; None forces a refresh."""
+        revision = status.get("configuration_revision")
+        return None if revision is None else (status.get("service_id"), revision)
+
     @classmethod
     def read(cls, client, previous=None):
+        """One status request while the configuration revision is unchanged."""
         # A session may change between RPCs (for example during flashing).
         # Publish nothing until both surrounding status reads agree.
         for _ in range(3):
             status = client.status()
-            active = status.get("session_id", True)
+            revision = cls.revision(status)
+            if (
+                previous is not None
+                and revision is not None
+                and revision == cls.revision(previous.status)
+            ):
+                return cls(status, previous.catalog, previous.assignments)
+            if status["session_id"] is None:  # No acquisition session.
+                return cls(status, {}, ())
             same = previous is not None and cls.identity(status) == cls.identity(
                 previous.status
             )
-            catalog = (
-                previous.catalog
-                if same and active
-                else client.catalog()["profile"]
-                if active
-                else {}
-            )
-            assignments = tuple(client.observables()["channels"]) if active else ()
+            catalog = previous.catalog if same else client.catalog()["profile"]
+            assignments = tuple(client.observables()["channels"])
             latest = client.status()
-            if cls.identity(status) == cls.identity(latest):
+            if cls.identity(status) == cls.identity(
+                latest
+            ) and revision == cls.revision(latest):
                 return cls(latest, catalog, assignments)
         raise RuntimeError("Acquisition session changed during configuration refresh")
 
@@ -487,37 +455,34 @@ class LiveController:
             with self.lock:
                 if self._pending_controls:
                     raise RuntimeError("Wait for pending Stop or shutdown to finish")
-        if self.flashing and operation in ("stop", "shutdown"):
+        if operation in ("stop", "shutdown"):
+            # One path in every state: never queued behind viewer commands.
             self.cancel_pending_commands()
-            try:
-                with self.lock:
+            with self.lock:
+                # During Flash UZ the attachment is released; the job's service
+                # must still receive lifecycle requests.
+                attached = self.attached or self.flashing
+                try:
                     self.control_commands.put_nowait(
-                        (operation, kwargs.get("endpoint") or self.endpoint)
+                        (operation, kwargs.get("endpoint") or self.endpoint, attached)
                     )
-                    self._pending_controls += 1
-            except Full as exc:
-                raise RuntimeError("Control command queue is busy") from exc
+                except Full as exc:
+                    raise RuntimeError("Control command queue is busy") from exc
+                self._pending_controls += 1
             if self.control_thread is None:
                 self.control_thread = threading.Thread(
                     target=self._control_work, name="uz-live-control", daemon=True
                 )
                 self.control_thread.start()
             return
-        if self.flashing and operation not in ("stop", "shutdown"):
+        if self.flashing:
             raise RuntimeError("Flash UZ is already running")
-        if operation in (
-            "stop",
-            "flash",
-            "shutdown",
-            "detach",
-            "attach",
-            "connect",
-            "connect_device",
-        ):
+        if operation in ("flash", "detach", "attach", "connect", "connect_device"):
             self.cancel_pending_commands()
         if operation == "flash":
             self._flash_shutdown.clear()
-            self.flashing = True
+            with self.lock:
+                self.flashing = True
         if self.thread is None:
             self.thread = threading.Thread(
                 target=self._work, name="uz-live", daemon=True
@@ -532,50 +497,105 @@ class LiveController:
                 self.commands.put_nowait((self._command_generation, operation, kwargs))
         except Full as exc:
             if operation == "flash":
-                self.flashing = False
+                with self.lock:
+                    self.flashing = False
             raise RuntimeError("Live command queue is busy") from exc
 
     def _control_work(self):
         """Lifecycle requests bypass flash monitoring without blocking the GUI."""
         while not self.stop_event.is_set():
             try:
-                operation, endpoint = self.control_commands.get(timeout=self.interval)
+                operation, endpoint, attached = self.control_commands.get(
+                    timeout=self.interval
+                )
             except Empty:
                 continue
-            with self._command_lock:
-                if self.stop_event.is_set():
-                    return
-                try:
-                    from ultrazohm_cli import Client
+            try:
+                if not attached:
+                    error = RuntimeError("Attach to a service first")
+                    self._control_failed(operation, endpoint, error)
+                    continue
+                self._urgent(operation, endpoint, unless_closed=True)
+            except Exception:
+                pass  # Reported by _urgent.
+            finally:
+                if not self.flashing:
+                    # Flash UZ owns the activity line until its job ends.
+                    self._activity = ""
+                self._completed_commands += 1
+                self._publish()
+                with self.lock:
+                    self._pending_controls -= 1
 
-                    client = (self.client_factory or Client)(endpoint)
-                    reply = getattr(client, operation)()
-                    if operation == "shutdown":
-                        self._flash_shutdown.set()
-                        self.owned.acknowledge_shutdown(
-                            endpoint, reply.get("service_id")
-                        )
-                        self.attached = False
-                        self._reset()
-                        self._status, self._catalog, self._assignments = {}, {}, ()
-                        self._poll_error = ""
-                        self._error = ""
-                        if self._await_shutdown(
-                            "Stopping device and finalizing recordings…",
-                            external=False,
-                            service_id=reply.get("service_id"),
-                        ):
-                            self._notice = "Service shut down; recordings finalized"
-                        else:
-                            self._notice = "Service shutdown accepted; finalization continues in the external service"
+    def _urgent(self, operation, endpoint, *, unless_closed=False):
+        """Stop or shutdown on a fresh connection, never queued behind commands.
+
+        Waits only for a command already executing (serialized by the command
+        lock), never for data reads or queued commands; Flash UZ follows its job
+        outside the lock, so Stop and shutdown reach the service during a flash.
+        """
+        with self._command_lock:
+            if unless_closed and self.stop_event.is_set():
+                return
+            try:
+                reply = getattr(self._new_client(endpoint), operation)()
+            except Exception as exc:
+                from .flashing import connection_refused
+
+                if operation == "shutdown" and connection_refused(exc):
+                    # A dead service cannot acknowledge shutdown. Release the local
+                    # attachment so the user can change repositories and reconnect.
+                    self._flash_shutdown.set()
+                    self._clear_attachment()
+                    self._poll_error = self._error = ""
+                    self._notice = (
+                        "Detached: acquisition service unavailable; device Stop and "
+                        "recording finalization could not be confirmed. Check service.log."
+                    )
                     self._control_succeeded(operation, endpoint)
-                except Exception as exc:
-                    self._control_failed(operation, endpoint, exc)
-                finally:
-                    self._completed_commands += 1
-                    self._publish()
-                    with self.lock:
-                        self._pending_controls -= 1
+                    return
+                self._control_failed(operation, endpoint, exc)
+                raise
+            try:
+                if operation == "shutdown":
+                    self._flash_shutdown.set()
+                    self._poll_error = self._error = ""
+                    self._finish_shutdown(endpoint, reply)
+                else:
+                    self._notice = f"{operation}: request sent (device commands have no acknowledgment)"
+            except Exception as exc:
+                self._control_failed(operation, endpoint, exc)
+                raise
+            finally:
+                self._status_at = 0.0
+            self._control_succeeded(operation, endpoint)
+
+    def _finish_shutdown(self, endpoint, reply):
+        """Release an attachment whose service accepted shutdown, then await it."""
+        self.owned.acknowledge_shutdown(endpoint, reply.get("service_id"))
+        self._clear_attachment()
+        if self._await_shutdown(
+            "Stopping device and finalizing recordings…",
+            external=False,
+            service_id=reply.get("service_id"),
+        ):
+            self._notice = "Service shut down; recordings finalized"
+        else:
+            self._notice = "Service shutdown accepted; finalization continues in the external service"
+
+    def _new_client(self, endpoint):
+        if self.client_factory is not None:
+            return self.client_factory(endpoint)
+        from ultrazohm_cli import Client
+
+        return Client(endpoint)
+
+    def _clear_attachment(self):
+        """Forget the attached service; the poll thread discards its history."""
+        self._reset()
+        with self.lock:
+            self.attached = False
+            self._status, self._catalog, self._assignments = {}, {}, ()
 
     def _control_failed(self, operation, endpoint, error):
         message = f"{operation} failed: {error}"
@@ -610,21 +630,8 @@ class LiveController:
                     completion.cancel()
 
     def send_stop(self, endpoint=None):
-        """Finish an in-flight command before Stop, independently of data reads."""
-        with self._command_lock:
-            endpoint = endpoint or self.endpoint
-            if self.client_factory is None:
-                from ultrazohm_cli import Client
-
-                client = Client(endpoint)
-            else:
-                client = self.client_factory(endpoint)
-            try:
-                client.stop()
-            except Exception as exc:
-                self._control_failed("stop", endpoint, exc)
-                raise
-            self._control_succeeded("stop", endpoint)
+        """Send Stop now (used by scripts); see :meth:`_urgent`."""
+        self._urgent("stop", endpoint or self.endpoint)
 
     def commands_idle(self):
         """Check without blocking the GUI; canceled commands cannot execute later."""
@@ -692,16 +699,9 @@ class LiveController:
 
     def _make_client(self, endpoint):
         if endpoint != self.endpoint or self.client is None:
-            self._reset()
-            self._status, self._catalog, self._assignments = {}, {}, ()
+            self._clear_attachment()
             self._variable_sends = {}
-            self.attached = False
-            if self.client_factory is None:
-                from ultrazohm_cli import Client
-
-                self.client = Client(endpoint)
-            else:
-                self.client = self.client_factory(endpoint)
+            self.client = self._new_client(endpoint)
             self.endpoint = endpoint
 
     def _start_service(
@@ -742,9 +742,6 @@ class LiveController:
             cancel=self.stop_event,
             command_prefix=command("cli"),
         )
-
-    def _terminate_owned(self):
-        self.owned.terminate_startup()
 
     def _wait_owned(self, description):
         return self.owned.wait(
@@ -868,24 +865,7 @@ class LiveController:
         else:
             if not self.attached:
                 raise RuntimeError("Attach to a service first")
-            try:
-                reply = getattr(self.client, operation)(**kwargs)
-            except Exception as exc:
-                from .flashing import connection_refused
-
-                if operation != "shutdown" or not connection_refused(exc):
-                    raise
-                # A dead service cannot acknowledge shutdown. Release the local
-                # attachment so the user can change repositories and reconnect.
-                self.attached = False
-                self._reset()
-                self._status, self._catalog, self._assignments = {}, {}, ()
-                self._poll_error = ""
-                self._status_at = 0.0
-                self._notice = "Detached: acquisition service unavailable; device Stop and recording finalization could not be confirmed. Check service.log."
-                return
-            if operation in ("stop", "shutdown"):
-                self._control_succeeded(operation, self.endpoint)
+            getattr(self.client, operation)(**kwargs)
             if operation == "set_variable":
                 self._variable_sends[kwargs["name"]] = (
                     time.monotonic(),
@@ -894,21 +874,6 @@ class LiveController:
             self._notice = (
                 f"{operation}: request sent (device commands have no acknowledgment)"
             )
-            if operation == "shutdown":
-                self.owned.acknowledge_shutdown(self.endpoint, reply.get("service_id"))
-                self.attached = False
-                self._reset()
-                self._status, self._catalog, self._assignments = {}, {}, ()
-                if self._await_shutdown(
-                    "Stopping device and finalizing recordings…",
-                    external=False,
-                    service_id=reply.get("service_id"),
-                ):
-                    self._notice = "Service shut down; recordings finalized"
-                else:
-                    self._notice = "Service shutdown accepted; finalization continues in the external service"
-
-            del reply
         self._status_at = 0.0
 
     def _await_shutdown(self, description, *, external, service_id=None):
@@ -1017,12 +982,7 @@ class LiveController:
 
     def _poll_client_for(self, endpoint):
         if self._poll_client is None or self._poll_endpoint != endpoint:
-            if self.client_factory is None:
-                from ultrazohm_cli import Client
-
-                self._poll_client = Client(endpoint)
-            else:
-                self._poll_client = self.client_factory(endpoint)
+            self._poll_client = self._new_client(endpoint)
             self._poll_endpoint = endpoint
         return self._poll_client
 
@@ -1147,13 +1107,11 @@ class LiveController:
                 except Exception as exc:
                     if completion is not None and not completion.done():
                         completion.set_exception(exc)
-                    if operation in ("stop", "shutdown"):
-                        self._control_failed(operation, self.endpoint, exc)
-                    else:
-                        self._error = str(exc)
+                    self._error = str(exc)
                 finally:
                     if operation == "flash":
-                        self.flashing = False
+                        with self.lock:
+                            self.flashing = False
                     self._activity = ""
                     self._completed_commands += 1
                     self._publish()
@@ -1190,11 +1148,7 @@ class LiveController:
             owned_running = self.owned.running
             if not connected and not (owned_running and owned_endpoint):
                 return  # Unused live panels need no optional CLI backend to close.
-            factory = self.client_factory
-            if factory is None:
-                from ultrazohm_cli import Client
-
-                factory = Client
+            factory = self._new_client
             # Always Stop the attached device first, even if an older owned
             # process is still finalizing at this endpoint. Ownership only
             # controls shutdown, never whether the attached device receives Stop.

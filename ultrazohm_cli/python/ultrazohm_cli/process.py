@@ -11,6 +11,9 @@ import uuid
 from dataclasses import dataclass
 from pathlib import Path
 
+# Cold starts of frozen Windows builds can be delayed by on-access malware scans.
+STARTUP_TIMEOUT = 20.0
+
 
 @dataclass
 class ServiceProcess:
@@ -118,7 +121,7 @@ class ServiceProcess:
             self.mapping = Path(mapping).expanduser().resolve() if mapping else None
             self.shutdown_requested = False
             self.log = log_path
-        deadline = time.monotonic() + 8
+        deadline = time.monotonic() + STARTUP_TIMEOUT
         while not cancel.is_set() and time.monotonic() < deadline:
             if self.process.poll() is not None:
                 raise RuntimeError(f"Service failed; see {log_path}")

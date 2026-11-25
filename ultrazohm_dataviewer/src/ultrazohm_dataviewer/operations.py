@@ -180,10 +180,9 @@ class Operations:
         view.shutdown()
 
     def _registered(self, operation, arguments):
-        from .client_methods import ViewerMethods
+        from .commands import PUBLIC_COMMANDS
 
-        method = getattr(ViewerMethods, operation, None)
-        if method is None or operation.startswith("_"):
+        if operation not in PUBLIC_COMMANDS:
             raise ViewerError(
                 "unknown_operation", f"Unknown viewer operation: {operation}"
             )
@@ -270,7 +269,6 @@ class Operations:
     def get_session_settings(self):
         state = self.state
         return {
-            "backend": state.backend,
             "loading_mode": state.loading_mode,
             "disk_cache": state.disk_cache,
             "cache_budget": state.registry.cache.limit // 1024**2,
@@ -415,7 +413,7 @@ class Operations:
             state.registry.cache,
             state.cache_dir,
         )
-        backend, disk_cache = state.backend, state.disk_cache
+        disk_cache = state.disk_cache
         if start is not None:
             from .validation import finite_float
 
@@ -427,7 +425,6 @@ class Operations:
                 mode,
                 cache,
                 directory,
-                backend=backend,
                 disk_cache=disk_cache,
                 cancel=cancel,
                 axis_column=axis_column,
@@ -479,14 +476,11 @@ class Operations:
     def convert(self, src, dst=None, *, axis_column=None, axis_domain=None):
         from .loader import convert_csv_to_parquet
 
-        backend = self.state.backend
-
         def prepare(cancel):
             return str(
                 convert_csv_to_parquet(
                     src,
                     dst,
-                    backend=backend,
                     cancel=cancel,
                     axis_column=axis_column,
                     axis_domain=axis_domain,

@@ -2175,6 +2175,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "pythonize"
+version = "0.26.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "11e06e4cff9be2bbf2bddf28a486ae619172ea57e79787f856572878c62dcfe2"
+dependencies = [
+ "pyo3",
+ "serde",
+]
+
+[[package]]
 name = "quick-xml"
 version = "0.38.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3112,6 +3122,7 @@ dependencies = [
  "ctrlc",
  "polars",
  "pyo3",
+ "pythonize",
  "rustyline",
  "serde",
  "serde_json",

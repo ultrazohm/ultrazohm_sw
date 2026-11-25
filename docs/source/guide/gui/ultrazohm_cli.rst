@@ -3,7 +3,7 @@ ultrazohm-cli
 
 Use ``ultrazohm-cli`` to acquire live data, record measurements, and send commands to an UltraZohm.
 Install the published ultrazohm-cli with ``uv tool install ultrazohm-cli``, or extract the standalone Windows ZIP from a release.
-To try this checkout, run ``./uz_developer build cli``, ``./uz_developer shell``, then ``ultrazohm-cli``.
+To try this checkout, run ``./uz_developer build``, ``./uz_developer shell``, then ``ultrazohm-cli``.
 On Windows, use ``.\uz_developer.ps1`` with the same arguments.
 
 Run ``ultrazohm-cli`` from the firmware checkout to open a disconnected prompt.
@@ -30,7 +30,8 @@ Both DataViewer Flash UZ and terminal ``build``, ``build-clean``, and ``flash`` 
 ``--endpoint`` selects the ultrazohm-cli process; no command falls back to local execution.
 Use ``jobs`` and ``job JOB_ID --follow`` to inspect progress.
 ``--no-wait`` submits a job without waiting.
-Offline builds require ``build --local --repo PATH``.
+Offline builds require ``build --local --repo PATH``; ``flash --local`` builds and programs without a service.
+``--local`` runs are synchronous, so ``--no-wait`` and the service-only ``--device``/``--no-reconnect`` options are rejected with them.
 
 Flashing stops acquisition and finishes recordings, then builds/programs and replaces the session with new firmware configuration.
 The ultrazohm-cli process endpoint remains available.

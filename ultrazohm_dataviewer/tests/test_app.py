@@ -7,7 +7,7 @@ from ultrazohm_dataviewer.app import DataViewerApp
 
 @pytest.mark.parametrize("failure", ["bind", "run"])
 def test_main_releases_resources_after_startup_failure(monkeypatch, failure):
-    from ultrazohm_dataviewer import app
+    from ultrazohm_dataviewer import app, cli
 
     closed = []
 
@@ -27,7 +27,7 @@ def test_main_releases_resources_after_startup_failure(monkeypatch, failure):
 
     monkeypatch.setattr(app, "DataViewerApp", Viewer)
     with pytest.raises((OSError, RuntimeError)):
-        app.main([])
+        cli.main(["gui"])
     assert closed == [True]
 
 
@@ -162,9 +162,7 @@ def test_startup_recording_precedes_script(tmp_path, monkeypatch):
     script.write_text(
         'from ultrazohm_dataviewer import Client, RunHandle\nv = Client()\nv.status()\nv.add_signal(1, RunHandle(v.session, 1), "a")\n'
     )
-    app = DataViewerApp(
-        [str(recording), str(script)], backend="pyarrow", loading_mode="memory"
-    )
+    app = DataViewerApp([str(recording), str(script)], loading_mode="memory")
     try:
         _finish_startup(app)
         assert app.state.cells[0].signals == [(1, "a")]
@@ -370,7 +368,7 @@ def test_startup_axis_choice_waits_for_success(tmp_path, after_script, outcome):
     prefix = tmp_path / "first.py"
     prefix.write_text("pass\n")
     files = ([str(prefix)] if after_script else []) + [str(recording), str(script)]
-    app = DataViewerApp(files, backend="pyarrow", loading_mode="memory")
+    app = DataViewerApp(files, loading_mode="memory")
     choices = []
 
     def choose():
@@ -398,7 +396,7 @@ def test_startup_large_csv_choice_preserves_completion(tmp_path, monkeypatch, ch
     monkeypatch.setattr("ultrazohm_dataviewer.state.LARGE_CSV_BYTES", 1)
     recording = tmp_path / "large.csv"
     recording.write_text("seconds,value\n0,1\n1,2\n")
-    app = DataViewerApp([str(recording)], backend="pyarrow")
+    app = DataViewerApp([str(recording)])
     choices = []
     completion = []
 

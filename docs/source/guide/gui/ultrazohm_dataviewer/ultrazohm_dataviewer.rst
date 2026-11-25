@@ -87,7 +87,7 @@ Installing the DataViewer also installs the matching ``ultrazohm-cli`` dependenc
        Inside the activated shell, run ``ultrazohm-dataviewer``, ``ultrazohm-cli``, or Python scripts.
        Use ``exit`` to leave the shell.
 
-       For local development, run ``./uz_developer build dataviewer``, then ``./uz_developer shell`` and ``ultrazohm-dataviewer``.
+       For local development, run ``./uz_developer build``, then ``./uz_developer shell`` and ``ultrazohm-dataviewer``.
        On Windows, use ``.\uz_developer.ps1`` with the same arguments.
        Build installs both matching wheels into a persistent environment; shell only activates it. Rust and a C/C++ toolchain are required for building.
        Close applications before leaving the shell: its environment is deleted on exit.

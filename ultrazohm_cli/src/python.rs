@@ -1,12 +1,17 @@
 use crate::{
     live::DataOptions,
-    profile::Profile,
+    profile::{ChannelMapping, Profile, ProfileSettings},
     service::{self, Config, Operation},
     storage::Format,
 };
-use pyo3::{exceptions::PyRuntimeError, prelude::*, types::PyBytes};
+use pyo3::{
+    exceptions::{PyRuntimeError, PyValueError},
+    prelude::*,
+    types::PyBytes,
+};
+use serde::{Serialize, de::DeserializeOwned};
 use std::{
-    path::PathBuf,
+    path::{Path, PathBuf},
     sync::{
         Arc, Mutex,
         atomic::{AtomicBool, Ordering},
@@ -16,6 +21,10 @@ use std::{
 };
 fn error(e: impl std::fmt::Display) -> PyErr {
     PyRuntimeError::new_err(e.to_string())
+}
+/// Invalid user input or configuration.
+fn invalid(e: anyhow::Error) -> PyErr {
+    PyValueError::new_err(format!("{e:#}"))
 }
 /// RuntimeError carrying a stable error `code`: the service's code, or
 /// `connection_refused`, `timeout` or `transport` (None when uncoded).
@@ -27,9 +36,39 @@ fn api_error(py: Python<'_>, e: anyhow::Error) -> PyErr {
     err
 }
 
+/// Convert a Python object into a Rust value through Python's JSON encoder, the
+/// same rules as the wire format: NaN, infinity and circular references are
+/// rejected, and integer dictionary keys become strings.
+fn from_py<T: DeserializeOwned>(value: &Bound<'_, PyAny>) -> PyResult<T> {
+    let py = value.py();
+    let options = pyo3::types::PyDict::new(py);
+    options.set_item("allow_nan", false)?;
+    let text: String = py
+        .import("json")?
+        .call_method("dumps", (value,), Some(&options))
+        .map_err(|e| PyValueError::new_err(format!("value is not JSON-compatible: {e}")))?
+        .extract()?;
+    serde_json::from_str(&text).map_err(|e| PyValueError::new_err(e.to_string()))
+}
+
+fn to_py<'py>(py: Python<'py>, value: &impl Serialize) -> PyResult<Bound<'py, PyAny>> {
+    let value = serde_json::to_value(value).map_err(error)?;
+    pythonize::pythonize(py, &value).map_err(error)
+}
+
 /// One persistent connection to an acquisition service; requests are sequential.
 #[pyclass]
 struct Connection(Mutex<service::Connection>);
+
+impl Connection {
+    fn operation(op: &str, args: Option<&Bound<'_, PyAny>>) -> PyResult<Operation> {
+        let args = match args {
+            Some(args) => from_py(args)?,
+            None => serde_json::Map::new(),
+        };
+        Operation::from_wire(op, args).map_err(invalid)
+    }
+}
 
 #[pymethods]
 impl Connection {
@@ -38,34 +77,35 @@ impl Connection {
         Self(Mutex::new(service::Connection::new(&endpoint)))
     }
 
-    fn request(&self, py: Python<'_>, command_json: String) -> PyResult<String> {
-        let op: Operation = serde_json::from_str(&command_json).map_err(error)?;
+    /// Send operation `op` with `args`; return the reply's result.
+    #[pyo3(signature=(op, args=None))]
+    fn request<'py>(
+        &self,
+        py: Python<'py>,
+        op: &str,
+        args: Option<&Bound<'py, PyAny>>,
+    ) -> PyResult<Bound<'py, PyAny>> {
+        let op = Self::operation(op, args)?;
         if matches!(op, Operation::ReadData { .. }) {
             return Err(error("use data_query for binary sample responses"));
         }
-        let reply = py
+        let (result, _) = py
             .detach(|| self.0.lock().unwrap().exchange(op, false))
             .map_err(|e| api_error(py, e))?;
-        serde_json::to_string(&reply.0).map_err(error)
+        to_py(py, &result)
     }
 
     /// Query metadata and Arrow payload together so cursors describe exactly these rows.
     fn data_query<'py>(
         &self,
         py: Python<'py>,
-        command_json: String,
-    ) -> PyResult<(String, Bound<'py, PyBytes>)> {
-        let op: Operation = serde_json::from_str(&command_json).map_err(error)?;
-        if !matches!(op, Operation::ReadData { .. }) {
-            return Err(error("expected read_data operation"));
-        }
-        let (reply, bytes) = py
+        args: &Bound<'py, PyAny>,
+    ) -> PyResult<(Bound<'py, PyAny>, Bound<'py, PyBytes>)> {
+        let op = Self::operation("read_data", Some(args))?;
+        let (result, bytes) = py
             .detach(|| self.0.lock().unwrap().exchange(op, true))
             .map_err(|e| api_error(py, e))?;
-        Ok((
-            serde_json::to_string(&reply).map_err(error)?,
-            PyBytes::new(py, &bytes),
-        ))
+        Ok((to_py(py, &result)?, PyBytes::new(py, &bytes)))
     }
 
     /// Drop the socket; the next request reconnects.
@@ -74,11 +114,12 @@ impl Connection {
     }
 }
 #[pyfunction]
-fn recording_info(py: Python<'_>, path: String) -> PyResult<String> {
-    py.detach(move || {
-        let reader = crate::backend::open(std::path::Path::new(&path)).map_err(error)?;
-        serde_json::to_string(&reader.info().map_err(error)?).map_err(error)
-    })
+fn recording_info(py: Python<'_>, path: PathBuf) -> PyResult<Bound<'_, PyAny>> {
+    let info = py.detach(move || {
+        let reader = crate::backend::open(&path).map_err(error)?;
+        reader.info().map_err(error)
+    })?;
+    to_py(py, &info)
 }
 #[pyfunction]
 #[pyo3(signature=(path, start, stop, channels=None))]
@@ -91,7 +132,7 @@ fn recording_data(
 ) -> PyResult<Bound<'_, PyBytes>> {
     let bytes = py.detach(move || -> PyResult<Vec<u8>> {
         use polars::prelude::*;
-        let reader = crate::backend::open(std::path::Path::new(&path)).map_err(error)?;
+        let reader = crate::backend::open(Path::new(&path)).map_err(error)?;
         let info = reader.info().map_err(error)?;
         let projection =
             crate::backend::query_projection(&info.fields, channels.as_deref()).map_err(error)?;
@@ -341,86 +382,138 @@ impl Drop for Acquisition {
         }
     }
 }
-/// Offline configuration helpers share validation with service startup.
+// Offline configuration helpers share validation with service startup.
+// Invalid input or configuration raises ValueError.
+
+/// Parse the checkout's firmware headers without contacting a device.
 #[pyfunction]
-#[pyo3(signature=(operation, payload=None, repo=None))]
-fn configuration(
-    py: Python<'_>,
-    operation: String,
-    payload: Option<String>,
-    repo: Option<PathBuf>,
-) -> PyResult<String> {
-    py.detach(move || -> anyhow::Result<String> {
-        use crate::profile::{ChannelMapping, ProfileSettings};
-        let value = match operation.as_str() {
-            "job_progress" => {
-                let value: serde_json::Value =
-                    serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
-                crate::jobs::progress(value["offset"].as_u64().unwrap_or(0), &value["reply"])?
+fn channel_mapping(py: Python<'_>, repo: PathBuf) -> PyResult<Bound<'_, PyAny>> {
+    let mapping = py
+        .detach(|| ChannelMapping::load_repository(None, Some(&repo)))
+        .map_err(invalid)?;
+    to_py(py, &mapping)
+}
+
+/// Built-in startup preferences, filtered for a checkout if supplied.
+#[pyfunction]
+#[pyo3(signature=(repo=None))]
+fn default_profile(py: Python<'_>, repo: Option<PathBuf>) -> PyResult<Bound<'_, PyAny>> {
+    let settings = py
+        .detach(|| match &repo {
+            Some(repo) => {
+                let mapping = ChannelMapping::load_repository(None, Some(repo))?;
+                ProfileSettings::for_mapping(None, &mapping)
             }
-            "directory" => serde_json::to_value(crate::preferences::directory(repo.as_deref())?)?,
-            "xsct" => {
-                let value: serde_json::Value =
-                    serde_json::from_str(payload.as_deref().unwrap_or("{}"))?;
-                let explicit = value["path"].as_str().map(std::path::Path::new);
-                serde_json::to_value(crate::preferences::resolve_xsct(explicit, repo.as_deref())?)?
-            }
-            "saved_xsct" => serde_json::to_value(crate::preferences::saved_xsct(repo.as_deref())?)?,
-            "save_xsct" => {
-                let path: PathBuf = serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
-                serde_json::to_value(crate::preferences::save_xsct(&path, repo.as_deref())?)?
-            }
-            "seed_profile" | "save_profile" => {
-                let value: serde_json::Value =
-                    serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
-                let path: PathBuf = serde_json::from_value(value["path"].clone())?;
-                let mapping: ChannelMapping = serde_json::from_value(value["mapping"].clone())?;
-                if operation == "seed_profile" {
-                    serde_json::to_value(crate::preferences::load_or_seed(&path, &mapping)?)?
-                } else {
-                    let settings: ProfileSettings =
-                        serde_json::from_value(value["profile"].clone())?;
-                    crate::preferences::save_profile(&path, &settings, &mapping)?;
-                    serde_json::Value::Null
-                }
-            }
-            "mapping" => {
-                serde_json::to_value(ChannelMapping::load_repository(None, repo.as_deref())?)?
-            }
-            "defaults" => {
-                let settings = if repo.is_some() {
-                    let mapping = ChannelMapping::load_repository(None, repo.as_deref())?;
-                    ProfileSettings::for_mapping(None, &mapping)?
-                } else {
-                    ProfileSettings::load(None)?
-                };
-                serde_json::to_value(settings)?
-            }
-            "validate" => {
-                let settings: ProfileSettings =
-                    serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
-                settings.validate()?;
-                serde_json::to_value(settings)?
-            }
-            "remap" => {
-                let value: serde_json::Value =
-                    serde_json::from_str(payload.as_deref().unwrap_or("null"))?;
-                let settings: ProfileSettings = serde_json::from_value(value["profile"].clone())?;
-                let mapping: ChannelMapping = serde_json::from_value(value["mapping"].clone())?;
-                let (settings, removed) = settings.remap(&mapping)?;
-                Profile::from_mapping(settings.clone(), mapping)?;
-                serde_json::json!({"profile": settings, "removed": removed})
-            }
-            _ => anyhow::bail!("unknown configuration operation"),
-        };
-        Ok(serde_json::to_string(&value)?)
-    })
-    .map_err(|e| error(format!("{e:#}")))
+            None => ProfileSettings::load(None),
+        })
+        .map_err(invalid)?;
+    to_py(py, &settings)
+}
+
+/// Validate runtime preference structure; return normalized preferences.
+#[pyfunction]
+fn validate_profile<'py>(
+    py: Python<'py>,
+    profile: &Bound<'py, PyAny>,
+) -> PyResult<Bound<'py, PyAny>> {
+    let settings: ProfileSettings = from_py(profile)?;
+    settings.validate().map_err(invalid)?;
+    to_py(py, &settings)
+}
+
+/// Return (effective preferences, removed names) for a firmware mapping.
+#[pyfunction]
+fn remap_profile<'py>(
+    py: Python<'py>,
+    mapping: &Bound<'py, PyAny>,
+    profile: &Bound<'py, PyAny>,
+) -> PyResult<(Bound<'py, PyAny>, Vec<String>)> {
+    let mapping: ChannelMapping = from_py(mapping)?;
+    let settings: ProfileSettings = from_py(profile)?;
+    let (settings, removed) = settings.remap(&mapping).map_err(invalid)?;
+    Profile::from_mapping(settings.clone(), mapping).map_err(invalid)?;
+    Ok((to_py(py, &settings)?, removed))
+}
+
+/// The shared preferences directory; nothing is created.
+#[pyfunction]
+#[pyo3(signature=(repo=None))]
+fn preferences_directory(repo: Option<PathBuf>) -> PyResult<PathBuf> {
+    crate::preferences::directory(repo.as_deref()).map_err(invalid)
+}
+
+/// Resolve an explicit launcher, then the saved selection, then PATH.
+#[pyfunction]
+#[pyo3(signature=(path=None, repo=None))]
+fn resolve_xsct(path: Option<PathBuf>, repo: Option<PathBuf>) -> PyResult<PathBuf> {
+    crate::preferences::resolve_xsct(path.as_deref(), repo.as_deref()).map_err(invalid)
+}
+
+#[pyfunction]
+#[pyo3(signature=(repo=None))]
+fn saved_xsct(repo: Option<PathBuf>) -> PyResult<Option<PathBuf>> {
+    crate::preferences::saved_xsct(repo.as_deref()).map_err(invalid)
+}
+
+#[pyfunction]
+#[pyo3(signature=(path, repo=None))]
+fn save_xsct(path: PathBuf, repo: Option<PathBuf>) -> PyResult<PathBuf> {
+    crate::preferences::save_xsct(&path, repo.as_deref()).map_err(invalid)
+}
+
+/// Atomically seed missing defaults; preserve existing preferences.
+#[pyfunction]
+fn load_or_seed_profile<'py>(
+    py: Python<'py>,
+    path: PathBuf,
+    mapping: &Bound<'py, PyAny>,
+) -> PyResult<Bound<'py, PyAny>> {
+    let mapping: ChannelMapping = from_py(mapping)?;
+    let settings = crate::preferences::load_or_seed(&path, &mapping).map_err(invalid)?;
+    to_py(py, &settings)
+}
+
+/// Validate against a firmware mapping before atomically replacing preferences.
+#[pyfunction]
+fn save_profile(
+    path: PathBuf,
+    profile: &Bound<'_, PyAny>,
+    mapping: &Bound<'_, PyAny>,
+) -> PyResult<()> {
+    let settings: ProfileSettings = from_py(profile)?;
+    let mapping: ChannelMapping = from_py(mapping)?;
+    crate::preferences::save_profile(&path, &settings, &mapping).map_err(invalid)
+}
+
+/// Follower progress of a `job` reply polled from `offset`.
+#[pyfunction]
+fn job_progress<'py>(
+    py: Python<'py>,
+    offset: u64,
+    reply: &Bound<'py, PyAny>,
+) -> PyResult<Bound<'py, PyAny>> {
+    let reply: serde_json::Value = from_py(reply)?;
+    let progress = crate::jobs::progress(offset, &reply).map_err(invalid)?;
+    to_py(py, &progress)
 }
 
 #[pymodule]
 fn _native(m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(configuration, m)?)?;
+    for function in [
+        wrap_pyfunction!(channel_mapping, m)?,
+        wrap_pyfunction!(default_profile, m)?,
+        wrap_pyfunction!(validate_profile, m)?,
+        wrap_pyfunction!(remap_profile, m)?,
+        wrap_pyfunction!(preferences_directory, m)?,
+        wrap_pyfunction!(resolve_xsct, m)?,
+        wrap_pyfunction!(saved_xsct, m)?,
+        wrap_pyfunction!(save_xsct, m)?,
+        wrap_pyfunction!(load_or_seed_profile, m)?,
+        wrap_pyfunction!(save_profile, m)?,
+        wrap_pyfunction!(job_progress, m)?,
+    ] {
+        m.add_function(function)?;
+    }
     m.add_class::<Connection>()?;
     m.add_function(wrap_pyfunction!(recording_info, m)?)?;
     m.add_function(wrap_pyfunction!(recording_data, m)?)?;

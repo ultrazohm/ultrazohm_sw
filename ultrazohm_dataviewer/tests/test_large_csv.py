@@ -39,29 +39,24 @@ def test_threshold_and_queue(state, tmp_path, monkeypatch):
     assert len(submitted) == 1
     assert [r.mode for r in state.services.large_csv_requests] == ["memory", "lazy"]
     state.resolve_large_csv("cancel")
-    state.backend = "pyarrow"
     state.resolve_large_csv("csv")
-    assert submitted[-1].backend == "polars"
     assert submitted[-1].mode == "lazy"
     assert not state.services.large_csv_requests
 
 
-@pytest.mark.parametrize("backend", ["polars", "pyarrow"])
 @pytest.mark.parametrize("mode", ["memory", "lazy"])
-def test_convert_sibling_and_open(state, tmp_path, monkeypatch, backend, mode):
+def test_convert_sibling_and_open(state, tmp_path, monkeypatch, mode):
     monkeypatch.setattr("ultrazohm_dataviewer.state.LARGE_CSV_BYTES", 1)
     path = tmp_path / "large log.csv"
     path.write_text("time;a;\n0;1;\n1;2;\n2;3;\n")
     original = path.read_bytes()
-    state.backend, state.loading_mode = backend, mode
+    state.loading_mode = mode
     state.request_load(str(path))
-    state.backend = "pyarrow" if backend == "polars" else "polars"
     state.loading_mode = "lazy" if mode == "memory" else "memory"
     state.resolve_large_csv("convert")
     finish(state)
     run = state.registry.runs[0]
     assert run.path == str(path.with_suffix(".parquet"))
-    assert run.backend == backend
     assert isinstance(run.time, SourceColumn) == (mode == "lazy")
     np.testing.assert_array_equal(run.signals["a"].y[:], [1, 2, 3])
     assert path.read_bytes() == original
@@ -102,7 +97,7 @@ def test_failed_conversion_cleans_partial_file(state, tmp_path, monkeypatch):
     path = tmp_path / "input.csv"
     path.write_text("time;a\n0;1\n1;2\n")
 
-    def fail(src, dst, backend, cancel, *, axis=None):
+    def fail(src, dst, cancel, *, axis=None):
         Path(dst).write_bytes(b"partial")
         raise ValueError("invalid CSV")
 
@@ -115,10 +110,7 @@ def test_failed_conversion_cleans_partial_file(state, tmp_path, monkeypatch):
     assert not list(tmp_path.glob(".uz-convert-*"))
 
 
-@pytest.mark.parametrize("backend", ["pyarrow", "polars"])
-def test_actual_csv_budget_checked_before_overallocation(
-    tmp_path, monkeypatch, backend
-):
+def test_actual_csv_budget_checked_before_overallocation(tmp_path, monkeypatch):
     path = tmp_path / "short.csv"
     path.write_text("time,y\n" + "".join(f"{i},0\n" for i in range(100)))
     monkeypatch.setattr(loader, "MAX_CSV_NUMERIC_BYTES", 500)
@@ -133,8 +125,8 @@ def test_actual_csv_budget_checked_before_overallocation(
 
     monkeypatch.setattr(loader.np, "empty", empty)
     with pytest.raises(ValueError, match="numeric memory budget"):
-        loader.parse_file(str(path), backend=backend)
+        loader.parse_file(str(path))
     assert max(allocations) <= 500
     # The lazy path still supports the same file without resident materialization.
-    run = loader.open_file(str(path), "lazy", backend=backend).register(DataRegistry())
+    run = loader.open_file(str(path), "lazy").register(DataRegistry())
     assert run.n_rows == 100

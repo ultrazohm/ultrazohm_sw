@@ -1,6 +1,7 @@
 """Task orchestration and CI release versions; no packages are built or installed."""
 
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -15,6 +16,32 @@ from tasks import release_version
 
 
 class ReleaseVersionTest(unittest.TestCase):
+    def test_package_versions_agree(self):
+        import tomllib
+
+        root = Path(__file__).resolve().parents[2]
+
+        def load(path):
+            return tomllib.loads((root / path).read_text(encoding="utf-8"))
+
+        viewer = load("ultrazohm_dataviewer/pyproject.toml")["project"]
+        pins = [
+            re.fullmatch(r"ultrazohm-cli==(.+)", dependency)
+            for dependency in viewer["dependencies"]
+        ]
+        pins = [match[1] for match in pins if match]
+        self.assertEqual(len(pins), 1, "viewer must pin exactly one ultrazohm-cli")
+        versions = {
+            "Cargo.toml": load("ultrazohm_cli/Cargo.toml")["package"]["version"],
+            "ultrazohm_cli/pyproject.toml": load("ultrazohm_cli/pyproject.toml")[
+                "project"
+            ]["version"],
+            "ultrazohm_dataviewer/pyproject.toml": viewer["version"],
+            "viewer ultrazohm-cli pin": pins[0],
+        }
+        self.assertEqual(len(set(versions.values())), 1, versions)
+        self.assertEqual(tasks.base_version(), versions["Cargo.toml"])
+
     def test_versions_order_by_run_and_mark_prereleases(self):
         self.assertEqual(release_version("0.2.0", "main", 42), "0.2.42")
         self.assertEqual(release_version("0.2.0", "develop", 43), "0.2.43.dev0")
@@ -30,6 +57,18 @@ class ReleaseVersionTest(unittest.TestCase):
             Version(release_version("0.1.0", "develop", 5)),
             Version(release_version("0.1.0", "main", 5)),
         )
+
+    def test_packages_share_the_crate_base_version(self):
+        import tomllib
+
+        root = Path(__file__).resolve().parents[2]
+        for project in ("ultrazohm_cli", "ultrazohm_dataviewer"):
+            metadata = tomllib.loads((root / project / "pyproject.toml").read_text())
+            self.assertEqual(metadata["project"]["version"], tasks.base_version())
+
+    def test_run_number_offset_raises_patch_numbers(self):
+        with patch.object(tasks, "RUN_NUMBER_OFFSET", 100):
+            self.assertEqual(release_version("0.2.0", "main", 1), "0.2.101")
 
     def test_invalid_input(self):
         for base, run in (("0.2", 1), ("0.2.0", 0)):
@@ -67,7 +106,7 @@ class BuildTaskTest(unittest.TestCase):
                         tasks, "maturin", return_value=[sys.executable, str(builder)]
                     ),
                 ):
-                    tasks.wheel(SimpleNamespace(out=Path("output with spaces")))
+                    tasks.debug_wheel(SimpleNamespace(out=Path("output with spaces")))
                     sentinel = caller / "output with spaces" / "keep.txt"
                     sentinel.write_text("existing output")
                     tasks.debug_wheel(SimpleNamespace(out=Path("output with spaces")))

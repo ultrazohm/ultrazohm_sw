@@ -304,7 +304,7 @@ pub fn generate(root: &Path) -> Result<ChannelMapping> {
             "empty or duplicate send-field label {name:?}; variable names must be unique"
         );
     }
-    let javascope = Some(javascope_metadata(header, &labels, &slow_signals)?);
+    let javascope = javascope_metadata(header, &labels, &slow_signals)?;
     let platform_state = if let Some(status_header) = &texts[1] {
         let status_defines = defines(status_header)?;
         let mask = number("JAVASCOPE_PLATFORM_STATE_MASK", &status_defines, 0)?;
@@ -533,32 +533,26 @@ mod tests {
     }
 
     #[test]
-    fn mapping_metadata_reaches_profile_and_old_profiles_still_load() {
+    fn mapping_metadata_reaches_profile_and_is_required() {
         let mapping = generate(Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap()).unwrap();
         let json = serde_json::to_value(&mapping).unwrap();
         let decoded: ChannelMapping = serde_json::from_value(json.clone()).unwrap();
         assert_eq!(serde_json::to_value(decoded).unwrap(), json);
-        let mut old_json = json.clone();
-        old_json.as_object_mut().unwrap().remove("javascope");
-        let old: ChannelMapping = serde_json::from_value(old_json.clone()).unwrap();
-        assert!(old.javascope.is_none());
-        assert_eq!(serde_json::to_value(&old).unwrap(), old_json);
+        for field in ["javascope", "legacy_javascope_header"] {
+            let mut incomplete = json.clone();
+            incomplete.as_object_mut().unwrap().remove(field);
+            assert!(serde_json::from_value::<ChannelMapping>(incomplete).is_err());
+        }
         let mut settings = ProfileSettings::load(None).unwrap();
         settings.initial_channels.clear();
-        let old_profile = Profile::from_mapping(settings.clone(), old).unwrap();
-        let new_profile = Profile::from_mapping(settings.clone(), mapping).unwrap();
-        let old_profile_json = serde_json::to_value(old_profile).unwrap();
-        let mut new_profile_json = serde_json::to_value(new_profile).unwrap();
-        assert_eq!(new_profile_json["javascope"], json["javascope"]);
-        let roundtrip: Profile = serde_json::from_value(new_profile_json.clone()).unwrap();
+        let profile = Profile::from_mapping(settings.clone(), mapping).unwrap();
+        let profile_json = serde_json::to_value(profile).unwrap();
+        assert_eq!(profile_json["javascope"], json["javascope"]);
+        let roundtrip: Profile = serde_json::from_value(profile_json.clone()).unwrap();
         roundtrip.validate().unwrap();
-        new_profile_json
-            .as_object_mut()
-            .unwrap()
-            .remove("javascope");
-        assert_eq!(old_profile_json, new_profile_json);
-        let legacy: Profile = serde_json::from_value(old_profile_json).unwrap();
-        assert!(legacy.javascope.is_none());
+        let mut incomplete = profile_json;
+        incomplete.as_object_mut().unwrap().remove("javascope");
+        assert!(serde_json::from_value::<Profile>(incomplete).is_err());
         let mut bad = json;
         bad["javascope"]["receive_fields"][0]["signal"] = "JSSD_missing".into();
         let bad: ChannelMapping = serde_json::from_value(bad).unwrap();

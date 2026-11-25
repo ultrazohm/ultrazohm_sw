@@ -110,7 +110,7 @@ Rules & tips
   ``out_time`` is the independent axis of the derived signal; its meaning must match ``output_domain`` or preserve the input domain when that argument is omitted.
   Raise a normal exception with a clear message on bad input — it's caught, shown on the node, and the rest of the graph keeps working.
 - The result is materialized as a **derived run** named after the node, so it appears in Navigation and is draggable into plots / FFT / Histogram.
-- Plugins can import any package installed in the DataViewer's environment; the standalone bundle provides NumPy, pandas, PyArrow and Polars.
+- Plugins can import any package installed in the DataViewer's environment; the standalone bundle provides NumPy and Polars.
 - Scripting & sessions: a graph stores only the node *kind* and its params, never your code, so JSON sessions preserve the graph and Python clients use the same registered kinds.
   Opening a session whose plugin isn't installed keeps the node as a greyed **"missing plugin"** placeholder (params + links preserved); install the plugin and re-evaluate to restore it.
 

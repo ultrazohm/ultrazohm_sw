@@ -42,7 +42,7 @@ The channel defaults to stable. prerelease also allows development releases.
 Application arguments use the stable channel unless a channel is specified.
 venv stable/prerelease reuses a uv-managed cached environment.
 venv dev activates the persistent checkout environment; build it first using
-uz_developer build linux_wheels. All shells include requirements.txt.
+uz_developer build. All shells include requirements.txt.
 Exit closes the shell. No repository .venv is used.
 
 Examples:

@@ -1,11 +1,36 @@
-"""Small, bounded JSON wire contract shared by viewer and control clients."""
+"""Small, bounded JSON wire contract shared by viewer and control clients.
+
+The envelope matches the acquisition service API (ultrazohm-cli protocol v4):
+
+- request: ``{"version", "id", "op", "args", "token", "session"}``
+- reply: ``{"version", "id", "ok": true, "result", "session"}`` or
+  ``{"version", "id", "ok": false, "error": {"code", "message"}}``
+"""
 
 import ipaddress
 import json
 
-VERSION = 1
+VERSION = 2
 DEFAULT_ENDPOINT = "127.0.0.1:19741"
 MAX_MESSAGE = 1024 * 1024
+FAILED = "operation_failed"
+
+
+def request(id, op, args, **fields):
+    return {"version": VERSION, "id": id, "op": op, "args": args, **fields}
+
+
+def success(id, result, **fields):
+    return {"version": VERSION, "id": id, "ok": True, "result": result, **fields}
+
+
+def failure(id, code, message):
+    return {
+        "version": VERSION,
+        "id": id,
+        "ok": False,
+        "error": {"code": code, "message": message},
+    }
 
 
 def address(endpoint, *, bind=False):

@@ -254,12 +254,10 @@ class IntegrationTest(unittest.TestCase):
                     (
                         json.dumps(
                             {
-                                "api_version": 3,
-                                "command": {
-                                    "op": "recordings_page",
-                                    "cursor": cursor,
-                                    "limit": 1,
-                                },
+                                "version": 4,
+                                "id": 1,
+                                "op": "recordings_page",
+                                "args": {"cursor": cursor, "limit": 1},
                             }
                         )
                         + "\n"
@@ -270,6 +268,7 @@ class IntegrationTest(unittest.TestCase):
 
         first = page()
         self.assertTrue(first["ok"], first)
+        first = first["result"]
         self.assertEqual(len(first["recordings"]), 1)
         cursor = first["next_cursor"]
         self.assertIsNotNone(cursor)
@@ -278,11 +277,12 @@ class IntegrationTest(unittest.TestCase):
         self.cli("start-logging")
         last = page(cursor)
         self.assertTrue(last["ok"], last)
+        last = last["result"]
         self.assertEqual(last["recordings"][0]["stream"], "slow")
         self.assertIsNone(last["next_cursor"])
         self.assertEqual(len(self.cli("recordings")["recordings"]), 3)
         cursor["run_id"] = "previous-session"
-        self.assertEqual(page(cursor)["code"], "cursor_expired")
+        self.assertEqual(page(cursor)["error"]["code"], "cursor_expired")
 
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -536,16 +536,16 @@ class IntegrationTest(unittest.TestCase):
             # Let accept run before sending, then split the JSON and newline.
             # Windows inherits nonblocking mode from the listener unless reset.
             time.sleep(0.1)
-            sock.sendall(b'{"api_version":3,"command":')
+            sock.sendall(b'{"version":4,"id":1,')
             time.sleep(0.1)
-            sock.sendall(b'{"op":"status"}}')
+            sock.sendall(b'"op":"status"}')
             time.sleep(0.1)
             sock.sendall(b"\n")
             with sock.makefile("rb") as response:
                 reply = json.loads(response.readline())
             self.assertTrue(reply["ok"])
-            self.assertFalse(reply["state"]["connected"])
-        self.assertTrue(self.cli("status")["ok"])
+            self.assertFalse(reply["result"]["state"]["connected"])
+        self.assertIn("state", self.cli("status"))
 
     @unittest.skipUnless(
         importlib.util.find_spec("ultrazohm_cli"),
@@ -1500,7 +1500,7 @@ kernel.FreeConsole()
         shutdown = next(
             event
             for event in events
-            if event.get("request", {}).get("command", {}).get("op") == "shutdown"
+            if event.get("command", {}).get("op") == "shutdown"
         )
         self.assertEqual(
             shutdown["wire"], [generated_mapping()["commands"]["Stop"], 0.0]
@@ -1599,6 +1599,15 @@ kernel.FreeConsole()
         )
         self.assertFalse((self.run_dir / "data_0002.recording.json").exists())
 
+    def test_configuration_revision_tracks_assignments(self):
+        self.start(logging=False)
+        first = self.cli("status")["configuration_revision"]
+        self.assertEqual(self.cli("status")["configuration_revision"], first)
+        self.cli("stop")
+        self.assertEqual(self.cli("status")["configuration_revision"], first)
+        self.cli("set-observable", "lifecheck", "1")
+        self.assertNotEqual(self.cli("status")["configuration_revision"], first)
+
     def test_rejected_commands_are_audited(self):
         self.start(logging=False)
         with self.assertRaisesRegex(RuntimeError, "unknown writable variable"):
@@ -1615,7 +1624,7 @@ kernel.FreeConsole()
 
         events = wait_for(lambda: len(rejected()) == 2 and rejected())
         self.assertEqual(
-            [event["request"]["command"]["op"] for event in events],
+            [event["command"]["op"] for event in events],
             ["set_variable", "button"],
         )
         self.assertIn("no_such_variable", events[0]["error"])
@@ -2050,6 +2059,27 @@ kernel.FreeConsole()
         self.cli("shutdown")
         self.assertEqual(self.wait_for_service_exit(), 0)
 
+    @unittest.skipUnless(
+        importlib.util.find_spec("ultrazohm_cli"), "install native wheel"
+    )
+    def test_client_limit_reports_busy_code(self):
+        import ultrazohm_cli
+
+        self.start(logging=False)
+        address = ("127.0.0.1", int(self.endpoint.split(":")[1]))
+        clients = []
+        try:
+            for _ in range(64):
+                clients.append(socket.create_connection(address))
+            time.sleep(0.1)  # Let the service accept the idle connections.
+            with self.assertRaises(RuntimeError) as error:
+                ultrazohm_cli.Client(self.endpoint).status()
+            self.assertEqual(error.exception.code, "busy")
+        finally:
+            for client in clients:
+                client.close()
+        wait_for(lambda: self.cli("status"))
+
     def test_stop_is_not_blocked_by_idle_or_partial_control_requests(self):
         self.start(logging=False)
         clients = []
@@ -2059,10 +2089,10 @@ kernel.FreeConsole()
                 client = socket.create_connection(address)
                 clients.append(client)
                 if i % 2:
-                    client.sendall(b'{"api_version":3,"command":')
+                    client.sendall(b'{"version":4,"id":1,')
             time.sleep(0.05)  # Let the service accept the stalled connections.
             started = time.monotonic()
-            self.assertTrue(self.cli("stop")["ok"])
+            self.assertIn("outcome", self.cli("stop"))
             self.assertLess(time.monotonic() - started, 1.0)
             self.assertTrue(self.cli("status")["state"]["connected"])
         finally:
@@ -2074,7 +2104,7 @@ kernel.FreeConsole()
         with socket.create_connection(
             ("127.0.0.1", int(self.endpoint.split(":")[1]))
         ) as sock:
-            sock.sendall(b'{"api_version":1,"command":{"op":"stop"}}\n')
+            sock.sendall(b'{"version":1,"id":1,"op":"stop"}\n')
             reply = json.loads(sock.makefile("rb").readline())
             self.assertFalse(reply["ok"])
         # Duplicate owner must fail before replacing the device connection.
@@ -2179,7 +2209,7 @@ kernel.FreeConsole()
         wait_for(
             lambda: self.cli("status")["state"]["frames"] > frames
         )  # acquisition continues
-        self.assertTrue(self.cli("stop")["ok"])  # device control remains available
+        self.assertIn("outcome", self.cli("stop"))  # device control remains available
         self.cli("shutdown")
         self.assertNotEqual(self.wait_for_service_exit(), 0)
         end = json.loads((self.run_dir / "run.json").read_text())["end"]
@@ -2259,7 +2289,9 @@ kernel.FreeConsole()
                 self.cli("status")["state"]["frames"] > failed["state"]["frames"] + 2
             )
         )
-        self.assertTrue(self.cli("set-observable", "lifecheck", "1")["ok"])
+        self.assertEqual(
+            self.cli("set-observable", "lifecheck", "1")["outcome"], "sent_unconfirmed"
+        )
         self.assertEqual(
             self.cli("status")["logging"][stream]["error"],
             failed["logging"][stream]["error"],
@@ -2293,11 +2325,11 @@ kernel.FreeConsole()
                 with sock.makefile("rb") as replies:
                     reply = json.loads(replies.readline())
                 self.assertFalse(reply["ok"])
-                self.assertIn("deadline exceeded", reply["error"])
+                self.assertIn("deadline exceeded", reply["error"]["message"])
             finally:
                 stop.set()
                 sender.join(timeout=2)
-        self.assertTrue(self.cli("status")["ok"])
+        self.assertIn("state", self.cli("status"))
 
     def test_shutdown_completes_while_a_client_polls_continuously(self):
         self.start(logging=False)
@@ -2309,7 +2341,7 @@ kernel.FreeConsole()
             with socket.create_connection(address, timeout=3) as sock:
                 replies = sock.makefile("rb")
                 while not stop.is_set():
-                    sock.sendall(b'{"api_version":3,"command":{"op":"status"}}\n')
+                    sock.sendall(b'{"version":4,"id":1,"op":"status"}\n')
                     if not replies.readline():
                         return
                     time.sleep(0.02)
@@ -2330,18 +2362,21 @@ kernel.FreeConsole()
             ("127.0.0.1", int(self.endpoint.split(":")[1])), timeout=3
         ) as sock:
             replies = sock.makefile("rb")
-            for _ in range(3):
-                sock.sendall(b'{"api_version":3,"command":{"op":"status"}}\n')
-                self.assertTrue(json.loads(replies.readline())["ok"])
+            for id in range(3):
+                sock.sendall(b'{"version":4,"id":%d,"op":"status"}\n' % id)
+                reply = json.loads(replies.readline())
+                self.assertTrue(reply["ok"])
+                self.assertEqual(reply["id"], id)
             sock.sendall(
-                b'{"api_version":3,"command":{"op":"read_data","query":{"source":{"stream":"fast",'
+                b'{"version":4,"id":7,"op":"read_data","args":{"query":{"source":{"stream":"fast",'
                 b'"recording":null},"selection":{"kind":"since","cursor":{"run_id":"other",'
                 b'"stream":"fast","recording":null,"generation":0,"next_sample":0},"limit":5}}}}\n'
             )
             reply = json.loads(replies.readline())
             self.assertFalse(reply["ok"])
-            self.assertEqual(reply["code"], "cursor_expired")
-            sock.sendall(b'{"api_version":3,"command":{"op":"status"}}\n')
+            self.assertEqual(reply["id"], 7)
+            self.assertEqual(reply["error"]["code"], "cursor_expired")
+            sock.sendall(b'{"version":4,"id":8,"op":"status"}\n')
             self.assertTrue(json.loads(replies.readline())["ok"])
 
     @unittest.skipUnless(

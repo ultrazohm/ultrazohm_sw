@@ -25,14 +25,20 @@ flowchart LR
 | Module | Responsibility |
 |---|---|
 | `cli.rs`, `python.rs` | ultrazohm-cli/PyO3 adapters to the same ultrazohm-cli process and query operations |
-| `service.rs` | Startup, session ownership, control dispatch and ordered shutdown |
+| `service.rs` | Operations, configuration and startup |
+| `service/wire.rs` | API v4 envelope, framing, error codes and the client `Connection` |
+| `service/control.rs` | Client connections and the serialized request queue (Stop priority) |
+| `service/controller.rs` | `Controller`: session replacement, firmware jobs (`FirmwareWork`), status and ordered shutdown |
+| `service/session.rs` | One acquisition session: device connection, live ring, recordings, audit |
+| `service/replies.rs` | Typed reply bodies |
+| `jobs.rs` | `FirmwareAction`, job phase/state and follower progress |
 | `protocol.rs`, `profile.rs`, `header_mapping.rs` | Wire codec, validated configuration and header parsing |
 | `live.rs`, `data.rs` | Bounded frame retention and captured range/query views |
 | `recording.rs` | Independent fast/slow recording lifecycles and routing |
 | `storage.rs`, `backend.rs` | Frame conversion, durable indexed chunks and derived exports |
 | `vitis.rs` | Local build/generation/JTAG tool invocation |
 
-`Service` owns configuration, connection, recordings, audit and query workers on the control thread.
+The `Controller` owns configuration, the current `Session`, firmware jobs and finalization on the control thread; a `Session` owns its connection, recordings, audit and query views.
 Its shared `ConnectionContext` contains synchronized state needed by acquisition.
 Binding the local endpoint precedes touching the device, whose firmware replaces an existing client when a new one connects.
 Initial observable selections complete before startup signals readiness.
@@ -186,7 +192,7 @@ Automatic process cleanup uses a launch identity validated by the ultrazohm-cli 
 ## Persistent ultrazohm-cli process and firmware jobs
 
 `service/controller.rs` owns the persistent control endpoint and acquisition-session replacement.
-`jobs.rs` coordinates firmware jobs; `vitis.rs` invokes vendor tooling.
+`controller.rs` coordinates firmware jobs (`jobs.rs` defines their vocabulary); `vitis.rs` invokes vendor tooling.
 A flash stops acquisition and finalizes recordings before build/programming, then reconstructs configuration and reconnects in a fresh session.
 The ultrazohm-cli process identity and listener survive; session identity, recording counters and cursors do not.
 Clients refresh their catalog and live history on session replacement.

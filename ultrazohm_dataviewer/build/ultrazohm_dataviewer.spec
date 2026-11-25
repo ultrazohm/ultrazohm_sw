@@ -6,8 +6,7 @@
 #     pyinstaller build/ultrazohm_dataviewer.spec
 #
 # imgui_bundle ships compiled extensions plus fonts/assets that must be bundled,
-# so we collect the whole package. pyarrow carries native libraries which
-# PyInstaller's hooks pick up automatically.
+# so we collect the whole package, as are Polars' native runtime libraries.
 
 import os
 import sys
@@ -20,7 +19,7 @@ PACKAGE = os.path.dirname(importlib.util.find_spec("ultrazohm_dataviewer").origi
 
 datas = []
 binaries, hiddenimports = [], []
-for pkg in ("imgui_bundle", "pyarrow", "polars", "_polars_runtime_32", "ultrazohm_cli"):
+for pkg in ("imgui_bundle", "polars", "_polars_runtime_32", "ultrazohm_cli"):
     d, b, h = collect_all(pkg)
     datas += d
     binaries += b

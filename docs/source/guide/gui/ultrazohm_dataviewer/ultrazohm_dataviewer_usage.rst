@@ -48,15 +48,15 @@ Settings are stored in ``viewer_preferences.json`` in the platform user data dir
 Loading a session restores its own data and plot settings without changing saved defaults.
 The Python client exposes the same DataViewer settings API through ``viewer.get_settings()`` and ``viewer.set_setting("cache_budget", 512)``.
 
-Backend and loading mode
-------------------------
+Loading mode
+------------
 
-The **Backend** selector in **Settings → Data loading** chooses **PyArrow** or **Polars** for subsequently opened recordings.
-The independent **Loading** selector chooses **In memory** or **Lazy**.
-Changing either setting leaves already loaded recordings unchanged.
+All file IO uses Polars.
+The **Loading** selector in **Settings → Data loading** chooses **In memory** or **Lazy** for subsequently opened recordings.
+Changing it leaves already loaded recordings unchanged.
 CSV selections larger than 1 GiB show a conversion recommendation for drag-and-drop, the Log Browser and the file picker.
 **Open CSV** reads the original directly without automatic cached conversion.
-**Convert to Parquet** writes a sibling file with the same stem and a ``.parquet`` extension in the background, then opens it using the selected backend and loading mode.
+**Convert to Parquet** writes a sibling file with the same stem and a ``.parquet`` extension in the background, then opens it using the selected loading mode.
 Existing Parquet files are protected from overwriting; the dialog offers **Open existing Parquet** instead.
 **Cancel** skips the selected file, and multi-file selections are prompted individually.
 
@@ -66,12 +66,9 @@ The status bar shows retained RAM cache usage next to FPS.
 The DataViewer never uses GUI idle throttling: live, paused, and offline views continue rendering without mouse or keyboard input.
 An amber **cache limit hit** indication appears for five seconds after an entry is evicted or a result exceeds the cache capacity.
 Hover over it to see eviction and oversized-result counts since the last cache clear.
-Auto loading and the obsolete memory-budget controls have been removed; recreate old sessions with explicit loading settings.
-The application defaults to **Polars + Lazy**.
-The Log Browser's **Open lazy** and **Open in-memory** actions use the selected backend.
-A loaded run's context menu shows its backend.
-CSV conversion and CSV exports use the currently selected backend.
-JSON sessions retain the backend and storage mode for each file.
+The application defaults to **Lazy** loading.
+The Log Browser offers **Open lazy** and **Open in-memory** actions.
+JSON sessions retain the storage mode for each file.
 
 A single ``time`` or ``frequency`` column selects the independent axis automatically.
 FFT exports reopen with frequency semantics.
@@ -79,21 +76,21 @@ For other column names, or if both names are present, the GUI asks for the indep
 Python automation passes ``axis_column="seconds", axis_domain="time"`` to ``read()``, ``viewer.load()`` or ``viewer.convert()``.
 Terminal control uses ``ultrazohm-dataviewer load file.csv --axis-column seconds --axis-domain time``.
 Parquet conversion and JSON sessions preserve this choice.
-Existing schema-6 sessions without axis fields retain their former time/first-column choice.
+Cancelling the axis dialog skips that file; non-numeric axis columns are rejected.
+CSV plot exports use the canonical ``time`` or ``frequency`` header and reject signal-name collisions.
 
 
 .. code-block:: bash
 
-   ultrazohm-dataviewer gui --backend polars --loading-mode lazy
-   ultrazohm-dataviewer gui --backend pyarrow --loading-mode memory
+   ultrazohm-dataviewer gui --loading-mode lazy
+   ultrazohm-dataviewer gui --loading-mode memory
    # In a second terminal, control the running viewer:
-   ultrazohm-dataviewer backend polars
+   ultrazohm-dataviewer loading-mode lazy
    ultrazohm-dataviewer convert path/to/log.csv
 
-The Python client equivalents are ``viewer.backend("polars")``, ``viewer.loading_mode("lazy")`` and ``viewer.load("path/to/log.parquet")``.
-The headless library accepts ``uz.read(path, backend="polars")``; its dataframe conversion returns a Polars DataFrame when that backend is selected.
-The default library backend preserves the existing pandas DataFrame interface.
-Polars uses its native streaming reader and writer; CSV conversion can use more RAM than PyArrow.
+The Python client equivalents are ``viewer.loading_mode("lazy")`` and ``viewer.load("path/to/log.parquet")``.
+The headless library's ``uz.read(path).to_dataframe()`` returns a Polars DataFrame; call ``.to_pandas()`` on it for pandas (install the ``pandas`` extra).
+Polars uses its native streaming reader and writer.
 Disk caching is disabled by default; indexes and summaries stay in RAM, and lazy CSV files are scanned directly.
 Enable **Settings → Data loading → Disk cache**, ``--disk-cache`` or ``viewer.disk_cache(True)`` to reuse disk summaries and converted CSVs across restarts.
 The setting affects newly opened files; reopen existing files to apply it.
@@ -230,10 +227,21 @@ Python uses ``UZ_DATAVIEWER_ENDPOINT`` when no endpoint is specified.
 Handles identify recordings, nodes, and views within a session.
 Use ``view=viewer.create_view()`` to target an additional grid.
 
+Calls execute sequentially for each client; manual GUI changes can occur between calls.
+Client paths resolve from the caller's working directory.
+Mutations are never retried after a transport failure, because they may already have completed.
+Each DataViewer instance needs a distinct endpoint.
+It creates a random local credential that clients discover automatically in a private per-user directory; a restarted DataViewer requires a new client.
+The listener accepts only loopback connections and never executes Python code from requests.
+
 **View → Python** opens an editor for normal Python files, available without a device connection.
 Run saves and executes in a fresh process.
 Managed device runs also receive ``UZ_ACQUISITION_ENDPOINT`` and provide **Stop script + device**.
-The application log is read-only; the old command language and ``.uzscript`` are removed.
+Set **Arguments** and **Working directory** before running; arguments are passed without shell expansion.
+Ordinary **Stop script** terminates Python without a hardware Stop.
+Script completion terminates remaining child processes in its process group (on Windows, its job object).
+Startup Python files run sequentially after the GUI opens; a failed startup script stops the sequence.
+The application log is read-only.
 External terminals and IDEs use the same client API.
 
 Save and restore
@@ -294,8 +302,8 @@ For inspection, ``get_view()`` returns current layout settings, ``list_plots()``
 
 .. autoexception:: ultrazohm_dataviewer.ViewerError
 
-Session compatibility and analysis windows
-------------------------------------------
+Sessions and analysis windows
+-----------------------------
 
 Failed restoration preserves the current session.
 Live snapshots and other memory-only recordings must be exported before saving a reloadable session.
@@ -306,10 +314,8 @@ Transforms must be chained through node links, not by creating source nodes from
 
 Python scripts obtain a derived recording handle with ``viewer.node_output(node)`` after evaluating the node.
 
-Saved sessions use schema version 6 and preserve separate instances of logs with identical filenames or paths.
+Saved sessions use schema version 7 and preserve separate instances of logs with identical filenames or paths.
 Restoring a session replaces the currently loaded session.
-Version 1/2/3/4/5 snapshots and all generated session scripts must be recreated as JSON sessions.
-Generated script export has been removed.
 Histogram, FFT, export and node crop ranges include only samples inside the selected time window.
 FFT and FIR filters require strictly increasing, uniformly spaced timestamps.
 Ordinary inputs use 100 ppm tolerance plus floating-point roundoff.

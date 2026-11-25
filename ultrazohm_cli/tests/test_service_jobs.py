@@ -60,13 +60,13 @@ class FirmwareServiceTest(unittest.TestCase):
         host, port = endpoint.split(":")
         with socket.create_connection((host, int(port)), timeout=3) as connection:
             connection.sendall(
-                json.dumps({"api_version": 3, "command": {"op": op, **fields}}).encode()
+                json.dumps({"version": 4, "id": 1, "op": op, "args": fields}).encode()
                 + b"\n"
             )
             reply = json.loads(connection.makefile("rb").readline())
         if not reply["ok"]:
-            raise RuntimeError(reply["error"])
-        return reply
+            raise RuntimeError(reply["error"]["message"])
+        return reply["result"]
 
     def submit(self, endpoint, action="build", request_id="test", **kwargs):
         return self.request(

@@ -4,11 +4,24 @@ import os
 import re
 import subprocess
 import zipfile
+from collections.abc import Callable
 from contextlib import contextmanager
+from dataclasses import dataclass, field
 from email.parser import BytesParser
 from pathlib import Path
 
 VERSION = re.compile(r"\d+\.\d+\.\d+(?:\.dev\d+)?")
+
+
+@dataclass(frozen=True)
+class Task:
+    """A project task exposed as ``uz_developer PROJECT NAME``."""
+
+    function: Callable
+    help: str
+    arguments: Callable = field(default=lambda parser: None)
+    # Whether this invocation writes shared outputs and needs the project lock.
+    locked: Callable = field(default=lambda args: False)
 
 
 def run(*command, cwd=None, env=None):

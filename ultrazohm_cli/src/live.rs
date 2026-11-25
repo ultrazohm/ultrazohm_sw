@@ -2,7 +2,6 @@
 use crate::{profile::Profile, protocol::Frame};
 use anyhow::{Result, ensure};
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 use std::{collections::VecDeque, sync::Arc};
 
 // Bound an individual response independently of the configured history capacity.
@@ -174,7 +173,10 @@ impl LiveBuffer {
 }
 
 /// Canonical names in channel order, deduplicated by observable ID like recording columns.
-pub fn selected_columns(profile: &Profile, selections: &Value) -> Result<Vec<(usize, String)>> {
+pub fn selected_columns(
+    profile: &Profile,
+    selections: &crate::service::Selections,
+) -> Result<Vec<(usize, String)>> {
     let columns = profile.selected_columns(selections)?;
     ensure!(
         !columns.is_empty(),
@@ -208,7 +210,7 @@ mod tests {
             &query.source,
             &Mutex::new(copy),
             &profile,
-            &serde_json::json!({"1": name}),
+            &[(1, name.to_owned())].into(),
             Some(&query.selection),
         )?;
         Ok((view, query))
@@ -337,11 +339,11 @@ mod tests {
         let mut profile = Profile::load(None)?;
         let columns = selected_columns(
             &profile,
-            &serde_json::json!({"1":"lifecheck", "2":"JSO_lifecheck"}),
+            &[(1, "lifecheck".into()), (2, "JSO_lifecheck".into())].into(),
         )?;
         assert_eq!(columns, vec![(0, "JSO_lifecheck".into())]);
         profile.observables.insert("time".into(), 100);
-        assert!(selected_columns(&profile, &serde_json::json!({"1":"time"})).is_err());
+        assert!(selected_columns(&profile, &[(1, "time".into())].into()).is_err());
         Ok(())
     }
 

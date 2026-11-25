@@ -30,6 +30,8 @@ impl VitisAction {
             Self::ProgramBuilt => "program-built",
         }
     }
+    /// Only Linux XSCT distinguishes GUI actions (see `-nodisp` below).
+    #[cfg(target_os = "linux")]
     fn opens_gui(self) -> bool {
         matches!(self, Self::Open | Self::GenerateOpen)
     }

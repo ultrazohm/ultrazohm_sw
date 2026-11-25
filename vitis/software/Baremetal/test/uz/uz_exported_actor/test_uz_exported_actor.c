@@ -94,6 +94,28 @@ void test_clamping_integrator_reset_and_delay_queue(void) {
 	TEST_ASSERT_EQUAL_FLOAT(0.0f, actor.applied[0]);
 	TEST_ASSERT_EQUAL_FLOAT(0.0f, actor.state.queue[0][0]);
 }
+
+void test_axis_priority_preserves_zero_and_negative_secondary_requests(void) {
+	struct uz_exported_actor_config config = pmsm_td3_config;
+	config.voltage_limit = 10.0f;
+	config.limiter = UZ_ACTOR_AXIS_PRIORITY;
+	config.limiter_reference_current = false;
+	const struct uz_exported_actor_signals signals = {.current = {0.0f, 2.0f}, .speed_rpm = 100.0f};
+	float requested[2] = {20.0f, 0.0f};
+	float limited[2] = {0.0f};
+	bool saturated = false;
+	uz_exported_actor_limit(&config, &signals, requested, limited, &saturated);
+	TEST_ASSERT_TRUE(saturated);
+	TEST_ASSERT_EQUAL_FLOAT(9.5f, limited[0]);
+	TEST_ASSERT_EQUAL_FLOAT(0.0f, limited[1]);
+
+	requested[1] = -5.0f;
+	uz_exported_actor_limit(&config, &signals, requested, limited, &saturated);
+	TEST_ASSERT_TRUE(saturated);
+	TEST_ASSERT_EQUAL_FLOAT(9.5f, limited[0]);
+	TEST_ASSERT_FLOAT_WITHIN(1.0e-5f, -sqrtf(9.75f), limited[1]);
+}
+
 void test_invalid_actor_configuration_is_rejected_before_allocating_a_network(void) {
 	uz_exported_actor_t actor = {0};
 	struct uz_exported_actor_config config = pt1_dqn_config;

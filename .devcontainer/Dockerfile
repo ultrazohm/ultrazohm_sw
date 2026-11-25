@@ -36,8 +36,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o /tmp/rustup.sh 
     && rm /tmp/rustup.sh
 # ziglang lets maturin link portable manylinux_2_28 wheels without a Docker build.
 COPY build-tools.txt /tmp/uz-build-tools.txt
-RUN pip install --no-cache-dir -r /tmp/uz-build-tools.txt
-RUN pip install --no-cache-dir 'clang-format==19.1.7'
+RUN pip install --no-cache-dir -r /tmp/uz-build-tools.txt 'clang-format==19.1.7'
 ENV UZ_DEVCONTAINER=1
 
 

@@ -19,6 +19,10 @@ static void uz_exported_actor_limit_axes(const struct uz_exported_actor_config *
                                          float limited[UZ_EXPORTED_ACTOR_MAX_COMMANDS]);
 static void uz_exported_actor_select_action(uz_exported_actor_t *self, const uz_matrix_t *output,
                                             float action[UZ_EXPORTED_ACTOR_MAX_COMMANDS]);
+static uint32_t uz_exported_actor_find_best_action(const uz_matrix_t *output, uint32_t count);
+static void uz_exported_actor_observe(uz_exported_actor_t *self, const struct uz_exported_actor_signals *signals);
+static void uz_exported_actor_infer(uz_exported_actor_t *self);
+static void uz_exported_actor_apply_delay(uz_exported_actor_t *self);
 
 static int32_t uz_exported_actor_get_sign(float value) {
 	int32_t sign = 0;
@@ -110,8 +114,14 @@ static void uz_exported_actor_limit_axes(const struct uz_exported_actor_config *
 	const int32_t current_sign = uz_exported_actor_get_sign(iq);
 	const uint32_t priority = (speed_sign == current_sign) ? 0U : 1U;
 	const uint32_t other = 1U - priority;
-	const int32_t other_sign = uz_exported_actor_get_sign(requested[other]);
-	const float other_direction = (float)other_sign;
+	float other_direction = 0.0f;
+	if (requested[other] > 0.0f) {
+		other_direction = 1.0f;
+	} else if (requested[other] < 0.0f) {
+		other_direction = -1.0f;
+	} else {
+		/* A zero request must stay zero, even when voltage headroom remains. */
+	}
 	limited[priority] = fminf(fmaxf(requested[priority], -0.95f * maximum), 0.95f * maximum);
 	limited[other] = other_direction * sqrtf(fmaxf((maximum * maximum) - (limited[priority] * limited[priority]), 0.0f));
 }
@@ -146,21 +156,26 @@ void uz_exported_actor_limit(const struct uz_exported_actor_config *config,
 	}
 }
 
+static uint32_t uz_exported_actor_find_best_action(const uz_matrix_t *output, uint32_t count) {
+	uint32_t best = 0U;
+	for (uint32_t i = 1U; i < count; ++i) {
+		const float candidate = uz_matrix_get_element_zero_based(output, 0U, i);
+		const float previous = uz_matrix_get_element_zero_based(output, 0U, best);
+		/* Strict > preserves first-index tie breaking. */
+		if (candidate > previous) {
+			best = i;
+		}
+	}
+	return best;
+}
+
 static void uz_exported_actor_select_action(uz_exported_actor_t *self, const uz_matrix_t *output,
                                             float action[UZ_EXPORTED_ACTOR_MAX_COMMANDS]) {
 	const struct uz_exported_actor_config *config = self->config;
 	if (config->discrete_actions != NULL) {
-		uint32_t best = 0U;
-		for (uint32_t i = 1U; i < config->output_count; ++i) {
-			const float candidate = uz_matrix_get_element_zero_based(output, 0U, i);
-			const float previous = uz_matrix_get_element_zero_based(output, 0U, best);
-			if (candidate > previous) {
-				best = i;
-			}
-		}
-		self->action_index = best; /* Strict > preserves first-index tie breaking. */
+		self->action_index = uz_exported_actor_find_best_action(output, config->output_count);
 		for (uint32_t i = 0U; i < config->command_count; ++i) {
-			action[i] = config->discrete_actions[(best * config->command_count) + i];
+			action[i] = config->discrete_actions[(self->action_index * config->command_count) + i];
 		}
 	} else {
 		for (uint32_t i = 0U; i < config->command_count; ++i) {
@@ -169,17 +184,16 @@ static void uz_exported_actor_select_action(uz_exported_actor_t *self, const uz_
 	}
 }
 
-void uz_exported_actor_sample(uz_exported_actor_t *self, struct uz_exported_actor_signals signals) {
-	uz_assert_not_NULL(self);
+static void uz_exported_actor_observe(uz_exported_actor_t *self, const struct uz_exported_actor_signals *signals) {
 	const struct uz_exported_actor_config *config = self->config;
-	uz_assert_not_NULL(config);
-	for (uint32_t i = 0U; i < UZ_EXPORTED_ACTOR_MAX_COMMANDS; ++i) {
-		signals.applied_voltage[i] = self->state.applied_voltage[i];
-	}
-	config->observe(&signals, &self->state, config->observations);
+	config->observe(signals, &self->state, config->observations);
 	for (uint32_t i = 0U; i < config->input_count; ++i) {
 		uz_assert(isfinite(config->observations[i]));
 	}
+}
+
+static void uz_exported_actor_infer(uz_exported_actor_t *self) {
+	const struct uz_exported_actor_config *config = self->config;
 	uz_nn_ff(self->network, &self->input_matrix);
 	const uz_matrix_t *output = uz_nn_get_output_data(self->network);
 	for (uint32_t i = 0U; i < config->output_count; ++i) {
@@ -192,8 +206,10 @@ void uz_exported_actor_sample(uz_exported_actor_t *self, struct uz_exported_acto
 	for (uint32_t i = 0U; i < config->command_count; ++i) {
 		uz_assert(isfinite(self->requested[i]));
 	}
-	uz_exported_actor_limit(config, &signals, self->requested, self->limited, &self->saturated);
-	config->advance(&signals, &self->state, self->saturated);
+}
+
+static void uz_exported_actor_apply_delay(uz_exported_actor_t *self) {
+	const struct uz_exported_actor_config *config = self->config;
 	for (uint32_t i = 0U; i < config->command_count; ++i) {
 		if (config->delay_steps == 0U) {
 			self->applied[i] = self->limited[i];
@@ -204,5 +220,18 @@ void uz_exported_actor_sample(uz_exported_actor_t *self, struct uz_exported_acto
 		self->state.queue[0][i] = self->limited[i];
 		self->state.applied_voltage[i] = self->applied[i];
 	}
+}
+
+void uz_exported_actor_sample(uz_exported_actor_t *self, struct uz_exported_actor_signals signals) {
+	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(self->config);
+	for (uint32_t i = 0U; i < UZ_EXPORTED_ACTOR_MAX_COMMANDS; ++i) {
+		signals.applied_voltage[i] = self->state.applied_voltage[i];
+	}
+	uz_exported_actor_observe(self, &signals);
+	uz_exported_actor_infer(self);
+	uz_exported_actor_limit(self->config, &signals, self->requested, self->limited, &self->saturated);
+	self->config->advance(&signals, &self->state, self->saturated);
+	uz_exported_actor_apply_delay(self);
 }
 #endif

@@ -54,13 +54,15 @@ The trained exports available in this checkout are:
 - DQN: `vitis/software/Baremetal/src/uz/uz_exported_actor/examples/pt1_dqn/`
 - DDPG: `vitis/software/Baremetal/src/uz/uz_exported_actor/examples/pt1_ddpg/`
 
-For example, upload the DQN export from the repository root:
+From the repository root, enter the checkout's CLI environment and upload
+the bundled DQN export:
 
 ```sh
-python applications/pt1/update_parameters_prototype.py dqn vitis/software/Baremetal/src/uz/uz_exported_actor/examples/pt1_dqn
+./uz venv dev
+python applications/pt1/update_parameters_prototype.py dqn
 ```
 
-Using the environment with the released CLI installed:
+Use `ddpg` for the bundled DDPG export. To upload a custom export, pass its directory:
 
 ```sh
 python applications/pt1/update_parameters_prototype.py dqn path/to/export
@@ -71,6 +73,24 @@ The directory must contain each layer's `layerN_weights.csv` and
 `layerN_bias.csv`, numbered from 1. CSV values use the exporter storage order.
 Use `--device IP:PORT` for another board address. Close other acquisition clients.
 The script opens its own acquisition service, uploads once, and closes it.
+It prints elapsed time from sending Stop through firmware confirmation of the
+completed update. Acquisition startup, CSV loading, and feedback channel setup
+are outside that measurement.
+
+For a timed burst upload, close the CLI, Data Viewer, and any other clients
+connected to the board, then run:
+
+```sh
+python applications/pt1/update_parameters_prototype_fast.py ddpg
+```
+
+The fast uploader gets the firmware mapping from the CLI and then opens its
+own JavaScope TCP connection. It sends 32 parameters per burst by default and
+waits for the R5 to confirm each burst before sending the next. Use
+`--burst-size 16` or `--burst-size 48` to compare throughput. The reported time
+runs from sending Stop through firmware confirmation, including feedback
+channel assignment and excluding mapping generation, CSV loading, and TCP
+connection setup. The controller remains stopped after the update.
 
 For an existing acquisition service, import the helper:
 

@@ -27,12 +27,18 @@ help:
 generate:
 	$(CHECKED_XSCT) generate
 generate-open:
+ifeq ($(OS),Windows_NT)
+	$(CHECKED_XSCT) generate-open
+open:
+	$(CHECKED_XSCT) open
+else
 	@command -v "$(VITIS)" >/dev/null 2>&1 || { echo 'ERROR: Vitis GUI launcher not found; load the Vitis environment or set VITIS=path/to/vitis.' >&2; exit 1; }
 	$(CHECKED_XSCT) generate
 	"$(VITIS)" -workspace "$(WORKSPACE)"
 open:
 	@test -d "$(WORKSPACE)" || { echo 'ERROR: Workspace not found; run make generate first.' >&2; exit 1; }
 	"$(VITIS)" -workspace "$(WORKSPACE)"
+endif
 build:
 	$(CHECKED_XSCT) build
 build-clean:

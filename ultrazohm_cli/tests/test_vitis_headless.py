@@ -21,6 +21,7 @@ class NativeGuiHandoffTest(unittest.TestCase):
         self.workspace = self.vitis / "workspace"
         self.workspace.mkdir(parents=True)
         shutil.copy(ROOT / "vitis/Makefile", self.vitis)
+        shutil.copy(ROOT / "vitis/run_xsct_checked.sh", self.vitis)
         tools = self.root / "tools with spaces"
         tools.mkdir()
         self.xsct = tools / "xsct"
@@ -28,9 +29,14 @@ class NativeGuiHandoffTest(unittest.TestCase):
         self.xsct.write_text(f"#!{sys.executable}\n" + '''import atexit, os, sys
 from pathlib import Path
 workspace = Path(os.environ['UZ_TEST_WORKSPACE'])
-assert sys.argv[1:] == ['-nodisp', '../tcl_scripts/vitis_headless.tcl', 'generate']
+assert sys.argv[1] == '-norlwrap'
+assert Path(sys.argv[2]).name == 'vitis_headless.tcl'
+assert sys.argv[3:] == ['generate']
 (workspace / 'xsct-called').touch()
-sys.exit(7) if os.environ.get('UZ_TEST_FAIL') else None
+if os.environ.get('UZ_TEST_FAIL'):
+    sys.exit(7)
+if not os.environ.get('UZ_TEST_NO_RECEIPT'):
+    Path(os.environ['UZ_VITIS_COMPLETION']).write_text('generate')
 atexit.register(lambda: (workspace / 'xsct-exited').touch())
 print('GENERATION_FINISHED', flush=True)
 ''')
@@ -47,11 +53,11 @@ print('GUI_STARTED', flush=True)
         self.env = {**os.environ, "UZ_TEST_WORKSPACE": str(self.workspace)}
         self.env.pop("UZ_WORKSPACE_ROOT", None)
 
-    def make(self, target, gui=None, fail=False):
+    def make(self, target, gui=None, **env):
         return subprocess.run(
             ["make", "--no-print-directory", "-C", str(self.vitis), target,
              f"XSCT={self.xsct}", f"VITIS={gui or self.gui}"],
-            env={**self.env, **({"UZ_TEST_FAIL": "1"} if fail else {})},
+            env={**self.env, **env},
             text=True, capture_output=True, timeout=10)
 
     def test_generate_waits_for_xsct_before_native_gui_with_paths_containing_spaces(self):
@@ -60,8 +66,14 @@ print('GUI_STARTED', flush=True)
         self.assertLess(result.stdout.index("GENERATION_FINISHED"), result.stdout.index("GUI_STARTED"))
 
     def test_generation_failure_does_not_launch_gui(self):
-        result = self.make("generate-open", fail=True)
+        result = self.make("generate-open", UZ_TEST_FAIL="1")
         self.assertNotEqual(result.returncode, 0)
+        self.assertNotIn("GUI_STARTED", result.stdout)
+
+    def test_missing_completion_does_not_launch_gui(self):
+        result = self.make("generate-open", UZ_TEST_NO_RECEIPT="1")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("did not confirm completion", result.stderr)
         self.assertNotIn("GUI_STARTED", result.stdout)
 
     def test_open_launches_native_gui_without_xsct(self):

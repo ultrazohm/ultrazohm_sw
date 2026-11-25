@@ -21,8 +21,10 @@ jobs:
       - name: Install dependencies
         run: |
           uv pip install --system --python /usr/local/bin/python -e ./pyuzlib -r docs/requirements.txt
-      - name: Check generated catalogs
-        run: make -C docs check_all
+      - name: Check auto-generated machine catalog and flux/inductance headers are up-to-date
+        run: |
+          cd docs
+          make check_all PYTHON=/usr/local/bin/python
       - name: sphinx build
         run: |
           cd docs

@@ -27,6 +27,19 @@ extern float *js_ch_selected[JS_CHANNELS];
 
 extern uint32_t js_status_BareToRTOS;
 
+#if UZ_PT1_REPLAY == 1U
+static void ipc_pt1_set_status_bit(uint32_t bit, bool active);
+
+static void ipc_pt1_set_status_bit(uint32_t bit, bool active) {
+	const uint32_t mask = 1U << bit;
+	if (active) {
+		js_status_BareToRTOS |= mask;
+	} else {
+		js_status_BareToRTOS &= ~mask;
+	}
+}
+#endif
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -38,7 +51,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Stop): // Stop
 #if UZ_PT1_REPLAY == 1U
-			uz_actor_pt1_replay_stop();
+	uz_actor_pt1_replay_stop();
 #endif
 			ultrazohm_state_machine_set_stop(true);
 			break;
@@ -194,42 +207,42 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (Set_Send_Field_1):
 			data->av.snd_fld[1] = value;
 #if UZ_PT1_REPLAY == 1U
-			uz_actor_pt1_replay_set_reference(value);
+	uz_actor_pt1_replay_set_reference(value);
 #endif
 			break;
 
 		case (Set_Send_Field_2):
 			data->av.snd_fld[2] = value;
 #if UZ_PT1_REPLAY == 1U
-			uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_LAYER, value);
+	uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_LAYER, value);
 #endif
 			break;
 
 		case (Set_Send_Field_3):
 			data->av.snd_fld[3] = value;
 #if UZ_PT1_REPLAY == 1U
-			uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_TYPE, value);
+	uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_TYPE, value);
 #endif
 			break;
 
 		case (Set_Send_Field_4):
 			data->av.snd_fld[4] = value;
 #if UZ_PT1_REPLAY == 1U
-			uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_INDEX, value);
+	uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_INDEX, value);
 #endif
 			break;
 
 		case (Set_Send_Field_5):
 			data->av.snd_fld[5] = value;
 #if UZ_PT1_REPLAY == 1U
-			uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_VALUE, value);
+	uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_VALUE, value);
 #endif
 			break;
 
 		case (Set_Send_Field_6):
 			data->av.snd_fld[6] = value;
 #if UZ_PT1_REPLAY == 1U
-			uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_TARGET, value);
+	uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_TARGET, value);
 #endif
 			break;
 
@@ -303,31 +316,31 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (My_Button_4):
 #if UZ_PT1_REPLAY == 1U
-			uz_actor_pt1_replay_start(UZ_PT1_REPLAY_DQN);
+	uz_actor_pt1_replay_start(UZ_PT1_REPLAY_DQN);
 #endif
 			break;
 
 		case (My_Button_5):
 #if UZ_PT1_REPLAY == 1U
-			uz_actor_pt1_replay_start(UZ_PT1_REPLAY_DDPG);
+	uz_actor_pt1_replay_start(UZ_PT1_REPLAY_DDPG);
 #endif
 			break;
 
 		case (My_Button_6):
 #if UZ_PT1_REPLAY == 1U
-			uz_actor_pt1_replay_toggle_manual();
+	uz_actor_pt1_replay_toggle_manual();
 #endif
 			break;
 
 		case (My_Button_7):
 #if UZ_PT1_REPLAY == 1U
-			uz_actor_pt1_update_begin();
+	uz_actor_pt1_update_begin();
 #endif
 			break;
 
 		case (My_Button_8):
 #if UZ_PT1_REPLAY == 1U
-			uz_actor_pt1_update_finish();
+	uz_actor_pt1_update_finish();
 #endif
 			break;
 
@@ -390,38 +403,22 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 	/* Bit 7 - My_Button_4 */
 #if UZ_PT1_REPLAY == 1U
-	if (uz_actor_pt1_replay_get_active_actor() == UZ_PT1_REPLAY_DQN) {
-		js_status_BareToRTOS |= (1U << 7U);
-	} else {
-		js_status_BareToRTOS &= ~(1U << 7U);
-	}
+	ipc_pt1_set_status_bit(7U, uz_actor_pt1_replay_get_active_actor() == UZ_PT1_REPLAY_DQN);
 #endif
 
 	/* Bit 8 - My_Button_5 */
 #if UZ_PT1_REPLAY == 1U
-	if (uz_actor_pt1_replay_get_active_actor() == UZ_PT1_REPLAY_DDPG) {
-		js_status_BareToRTOS |= (1U << 8U);
-	} else {
-		js_status_BareToRTOS &= ~(1U << 8U);
-	}
+	ipc_pt1_set_status_bit(8U, uz_actor_pt1_replay_get_active_actor() == UZ_PT1_REPLAY_DDPG);
 #endif
 
 	/* Bit 9 - My_Button_6 */
 #if UZ_PT1_REPLAY == 1U
-	if (uz_actor_pt1_replay_is_manual()) {
-		js_status_BareToRTOS |= (1U << 9U);
-	} else {
-		js_status_BareToRTOS &= ~(1U << 9U);
-	}
+	ipc_pt1_set_status_bit(9U, uz_actor_pt1_replay_is_manual());
 #endif
 
 	/* Bit 10 - My_Button_7 */
 #if UZ_PT1_REPLAY == 1U
-	if (uz_actor_pt1_update_is_active()) {
-		js_status_BareToRTOS |= (1U << 10U);
-	} else {
-		js_status_BareToRTOS &= ~(1U << 10U);
-	}
+	ipc_pt1_set_status_bit(10U, uz_actor_pt1_update_is_active());
 #endif
 
 	/* Bit 11 - My_Button_8 */

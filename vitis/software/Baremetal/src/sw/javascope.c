@@ -52,6 +52,32 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 extern XIpiPsu IPI_instance;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
 
+#if UZ_PT1_REPLAY == 1U
+static void JavaScope_initialize_pt1(void);
+
+static void JavaScope_initialize_pt1(void) {
+	js_ch_observable[JSO_pt1_actor] = &uz_actor_pt1_replay_signals.actor;
+	js_ch_observable[JSO_pt1_time] = &uz_actor_pt1_replay_signals.time;
+	js_ch_observable[JSO_pt1_episode] = &uz_actor_pt1_replay_signals.episode;
+	js_ch_observable[JSO_pt1_episode_k] = &uz_actor_pt1_replay_signals.episode_k;
+	js_ch_observable[JSO_pt1_y] = &uz_actor_pt1_replay_signals.y;
+	js_ch_observable[JSO_pt1_reference] = &uz_actor_pt1_replay_signals.reference;
+	js_ch_observable[JSO_pt1_error] = &uz_actor_pt1_replay_signals.error;
+	js_ch_observable[JSO_pt1_action_value] = &uz_actor_pt1_replay_signals.action_value;
+	js_ch_observable[JSO_pt1_reward] = &uz_actor_pt1_replay_signals.reward;
+	js_ch_observable[JSO_pt1_action_index] = &uz_actor_pt1_replay_signals.action_index;
+	js_ch_observable[JSO_pt1_q_action_minus_1] = &uz_actor_pt1_replay_signals.q_values[0];
+	js_ch_observable[JSO_pt1_q_action_0] = &uz_actor_pt1_replay_signals.q_values[1];
+	js_ch_observable[JSO_pt1_q_action_plus_1] = &uz_actor_pt1_replay_signals.q_values[2];
+	js_ch_observable[JSO_pt1_done] = &uz_actor_pt1_replay_signals.done;
+	js_ch_observable[JSO_nn_update_active] = &uz_actor_pt1_update_status.active;
+	js_ch_observable[JSO_nn_update_received] = &uz_actor_pt1_update_status.received;
+	js_ch_observable[JSO_nn_update_error] = &uz_actor_pt1_update_status.error;
+	js_ch_observable[JSO_nn_update_target] = &uz_actor_pt1_update_status.target;
+	js_ch_observable[JSO_nn_update_expected] = &uz_actor_pt1_update_status.expected;
+}
+#endif
+
 int JavaScope_initialize(DS_Data* data)
 {
 	int Status = 0;
@@ -90,25 +116,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
 #if UZ_PT1_REPLAY == 1U
-	js_ch_observable[JSO_pt1_actor] = &uz_actor_pt1_replay_signals.actor;
-	js_ch_observable[JSO_pt1_time] = &uz_actor_pt1_replay_signals.time;
-	js_ch_observable[JSO_pt1_episode] = &uz_actor_pt1_replay_signals.episode;
-	js_ch_observable[JSO_pt1_episode_k] = &uz_actor_pt1_replay_signals.episode_k;
-	js_ch_observable[JSO_pt1_y] = &uz_actor_pt1_replay_signals.y;
-	js_ch_observable[JSO_pt1_reference] = &uz_actor_pt1_replay_signals.reference;
-	js_ch_observable[JSO_pt1_error] = &uz_actor_pt1_replay_signals.error;
-	js_ch_observable[JSO_pt1_action_value] = &uz_actor_pt1_replay_signals.action_value;
-	js_ch_observable[JSO_pt1_reward] = &uz_actor_pt1_replay_signals.reward;
-	js_ch_observable[JSO_pt1_action_index] = &uz_actor_pt1_replay_signals.action_index;
-	js_ch_observable[JSO_pt1_q_action_minus_1] = &uz_actor_pt1_replay_signals.q_values[0];
-	js_ch_observable[JSO_pt1_q_action_0] = &uz_actor_pt1_replay_signals.q_values[1];
-	js_ch_observable[JSO_pt1_q_action_plus_1] = &uz_actor_pt1_replay_signals.q_values[2];
-	js_ch_observable[JSO_pt1_done] = &uz_actor_pt1_replay_signals.done;
-	js_ch_observable[JSO_nn_update_active] = &uz_actor_pt1_update_status.active;
-	js_ch_observable[JSO_nn_update_received] = &uz_actor_pt1_update_status.received;
-	js_ch_observable[JSO_nn_update_error] = &uz_actor_pt1_update_status.error;
-	js_ch_observable[JSO_nn_update_target] = &uz_actor_pt1_update_status.target;
-	js_ch_observable[JSO_nn_update_expected] = &uz_actor_pt1_update_status.expected;
+	JavaScope_initialize_pt1();
 #endif
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

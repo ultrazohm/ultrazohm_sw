@@ -162,4 +162,21 @@ void test_upload_logic_uses_internal_state_instead_of_float_feedback_storage(voi
 	uz_actor_pt1_update_finish();
 	TEST_ASSERT_EQUAL_FLOAT(4.0f, uz_actor_pt1_update_status.error);
 }
+
+void test_upload_rejects_invalid_targets_and_recovers_with_a_valid_target(void) {
+	const float invalid_targets[] = {0.0f, -1.0f, 0.5f, 1.5f, 2.5f, 3.0f, INFINITY, -INFINITY, NAN};
+	uz_actor_pt1_replay_stop();
+	for (uint32_t i = 0U; i < (sizeof(invalid_targets) / sizeof(invalid_targets[0])); ++i) {
+		uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_TARGET, invalid_targets[i]);
+		uz_actor_pt1_update_begin();
+		TEST_ASSERT_FALSE(uz_actor_pt1_update_is_active());
+		TEST_ASSERT_EQUAL_FLOAT(1.0f, uz_actor_pt1_update_status.error);
+	}
+	uz_actor_pt1_update_field(UZ_ACTOR_PT1_UPDATE_FIELD_TARGET, 2.0f);
+	uz_actor_pt1_update_begin();
+	TEST_ASSERT_TRUE(uz_actor_pt1_update_is_active());
+	TEST_ASSERT_EQUAL_FLOAT(2.0f, uz_actor_pt1_update_status.target);
+	TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_actor_pt1_update_status.error);
+	TEST_ASSERT_EQUAL_FLOAT(1185.0f, uz_actor_pt1_update_status.expected);
+}
 #endif

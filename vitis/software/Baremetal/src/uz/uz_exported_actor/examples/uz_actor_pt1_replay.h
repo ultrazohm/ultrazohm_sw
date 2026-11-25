@@ -55,13 +55,17 @@ void uz_actor_pt1_update_begin(void);
 void uz_actor_pt1_update_finish(void);
 /** @brief Report update mode using the internal boolean state, not telemetry. */
 bool uz_actor_pt1_update_is_active(void);
-/* Fields 2..5 are layer (zero-based), type (0 weights / 1 bias), index, value.
- * Field 6 selects the target before beginning an upload. */
+/** @brief Receive one field of a serialized upload from the control ISR.
+ * @details Send layer (zero-based), type (0 weights / 1 bias), index, then value
+ * for every parameter, in layer order with weights before biases. Select the
+ * target before beginning. Values overwrite RAM immediately; an incomplete
+ * upload blocks inference until a complete upload or firmware restart.
+ */
 void uz_actor_pt1_update_field(uint32_t field, float value);
 
 /** @brief Initialize both networks once at the actual ISR frequency. */
 void uz_actor_pt1_replay_init(float control_frequency_hz);
-/* Controls called by the JavaScope command handler in the control ISR. */
+/** @brief Start a ready actor from the control ISR; ignore requests during uploads. */
 void uz_actor_pt1_replay_start(enum uz_actor_pt1_replay_actor actor);
 /** @brief Stop inference and invalidate any interrupted upload. */
 void uz_actor_pt1_replay_stop(void);
@@ -74,7 +78,7 @@ bool uz_actor_pt1_replay_is_manual(void);
 /** @brief Return the actor currently executing, or idle. */
 enum uz_actor_pt1_replay_actor uz_actor_pt1_replay_get_active_actor(void);
 
-/* Called immediately before publishing the scope sample in the control ISR. */
+/** @brief Advance the active actor before publishing the scope sample in the ISR. */
 void uz_actor_pt1_replay_step(void);
 
 #endif

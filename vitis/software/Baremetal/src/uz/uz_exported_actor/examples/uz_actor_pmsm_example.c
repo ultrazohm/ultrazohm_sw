@@ -9,6 +9,7 @@
 #include "uz_actor_pmsm_example.h"
 #include "../../uz_HAL.h"
 #include <math.h>
+
 void uz_actor_pmsm_example_init(uz_actor_pmsm_example_t *self, const struct uz_exported_actor_config *actor,
                                 struct uz_pmsm_swmodel_config_t plant, uint32_t oversampling) {
 	uz_assert_not_NULL(self);
@@ -28,6 +29,7 @@ void uz_actor_pmsm_example_init(uz_actor_pmsm_example_t *self, const struct uz_e
 	self->oversampling = oversampling;
 	uz_actor_pmsm_example_reset(self);
 }
+
 void uz_actor_pmsm_example_reset(uz_actor_pmsm_example_t *self) {
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(self->plant);
@@ -36,16 +38,17 @@ void uz_actor_pmsm_example_reset(uz_actor_pmsm_example_t *self) {
 	const struct uz_pmsm_swmodel_outputs_t reset_output = {0};
 	self->output = reset_output;
 }
-struct uz_pmsm_swmodel_outputs_t uz_actor_pmsm_example_step(uz_actor_pmsm_example_t *self, float id_reference,
-                                                            float iq_reference, float speed_rpm) {
+
+struct uz_pmsm_swmodel_outputs_t uz_actor_pmsm_example_step(uz_actor_pmsm_example_t *self, float id_reference_A,
+                                                            float iq_reference_A, float speed_rpm) {
 	uz_assert_not_NULL(self);
 	/* Keep this C99 constant independent of the nonstandard M_PI macro. */
 	static const float rpm_to_rad_per_second = 6.2831853071795864769f / 60.0f;
-	uz_assert(isfinite(id_reference));
-	uz_assert(isfinite(iq_reference));
+	uz_assert(isfinite(id_reference_A));
+	uz_assert(isfinite(iq_reference_A));
 	uz_assert(isfinite(speed_rpm));
 	const struct uz_exported_actor_signals signals = {.current = {self->output.i_dq_A.d, self->output.i_dq_A.q},
-	                                                  .reference = {id_reference, iq_reference},
+	                                                  .reference = {id_reference_A, iq_reference_A},
 	                                                  .speed_rpm = speed_rpm};
 	uz_exported_actor_sample(&self->actor, signals);
 	const struct uz_pmsm_swmodel_inputs_t inputs = {.v_dq_V = {.d = self->actor.applied[0], .q = self->actor.applied[1]},

@@ -41,6 +41,8 @@ enum uz_exported_actor_limiter {
  * @details Configuration and backing arrays must outlive the actor. Initialize
  * each configuration once; serialize all calls and parameter writes. Callbacks
  * and backing arrays are validated at initialization. No heap allocation occurs.
+ * The network references the layer weight/bias arrays directly. Stop inference
+ * before updating them, and resume only after the complete parameter set is valid.
  */
 struct uz_exported_actor_config {
 	uint32_t abi;
@@ -83,7 +85,7 @@ void uz_exported_actor_init(uz_exported_actor_t *self, const struct uz_exported_
                             float actual_frequency_hz);
 /** @brief Reset controller state; NULL initial selects generated defaults. */
 void uz_exported_actor_reset(uz_exported_actor_t *self, const struct uz_exported_actor_state *initial);
-/** @brief Execute observe -> network -> map -> limit -> advance once.
+/** @brief Observe, infer, map, limit, advance state, and apply actuator delay once.
  * applied is the command for THIS plant interval after the configured queue.
  * A hardware scheduler must not add this delay a second time.
  */

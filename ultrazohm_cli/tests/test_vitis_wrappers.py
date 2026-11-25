@@ -69,8 +69,6 @@ class FirmwareWrapperTest(unittest.TestCase):
                     (["make", "-C", str(ROOT / "vitis"), action], action)
                     for action in (
                         "generate",
-                        "generate-open",
-                        "open",
                         "build",
                         "build-clean",
                         "flash",

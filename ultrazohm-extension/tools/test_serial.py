@@ -3,9 +3,11 @@ import base64
 import json
 import os
 from pathlib import Path
+import queue
 import select
 import subprocess
 import sys
+import threading
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,9 +23,16 @@ class SerialTransportTest(unittest.TestCase):
             settings = dict(device=os.ttyname(slave), baud=115200, dataBits=8, parity='N', stopBits=1, flowControl='none')
             process = subprocess.Popen([sys.executable, '-I', '-B', str(ROOT / 'serial-terminal.py'), 'connect',
                                         '--settings', json.dumps(settings)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # Read lines on a thread: select() on the fd misses lines already
+            # held in the buffered reader when two events arrive together.
+            lines = queue.Queue()
+            reader = threading.Thread(target=lambda: [lines.put(line) for line in process.stdout], daemon=True)
+            reader.start()
             def event():
-                self.assertTrue(select.select([process.stdout], [], [], 5)[0], 'serial helper timed out')
-                return json.loads(process.stdout.readline())
+                try:
+                    return json.loads(lines.get(timeout=5))
+                except queue.Empty:
+                    self.fail('serial helper timed out')
             try:
                 self.assertEqual(event()['event'], 'connected')
                 os.write(master, b'firmware log\r\n')
@@ -46,6 +55,7 @@ class SerialTransportTest(unittest.TestCase):
                     self.assertEqual(process.wait(timeout=5), 0)
             finally:
                 if process.poll() is None: process.kill(); process.wait()
+                reader.join(timeout=5)
                 for stream in [process.stdin,process.stdout,process.stderr]: stream.close()
                 if master is not None: os.close(master)
                 os.close(slave)

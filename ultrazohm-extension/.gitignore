@@ -1,0 +1,12 @@
+node_modules/
+runtime/
+*.vsix
+launcher/
+.runtime-downloads/
+.package-test/
+.vscode-test/
+dist/
+__pycache__/
+.host-tests/
+
+.build-cache/

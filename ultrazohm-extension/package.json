@@ -1,0 +1,419 @@
+{
+  "name": "ultrazohm-extension",
+  "displayName": "ultrazohm-extension",
+  "description": "UltraZohm DataViewer, interactive CLI, Python environment and firmware tools.",
+  "publisher": "ZohmControlGmbH",
+  "version": "0.1.18",
+  "engines": {
+    "vscode": "^1.93.0"
+  },
+  "main": "./extension.js",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ultrazohm/ultrazohm_sw.git",
+    "directory": "ultrazohm-extension"
+  },
+  "extensionKind": [
+    "ui"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    },
+    "virtualWorkspaces": false
+  },
+  "activationEvents": [
+    "onView:ultrazohm.setup",
+    "onView:ultrazohm.softwareBuild",
+    "onView:ultrazohm.control",
+    "onDebug:ultrazohm-gdb",
+    "onView:ultrazohm.serial"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "ultrazohm.launch",
+        "title": "ultrazohm-extension: Launch DataViewer"
+      },
+      {
+        "command": "ultrazohm.channel",
+        "title": "ultrazohm-extension: Select Release Channel"
+      },
+      {
+        "command": "ultrazohm.terminal",
+        "title": "ultrazohm-extension: Select Terminal Visibility"
+      },
+      {
+        "command": "ultrazohm.cli",
+        "title": "ultrazohm-extension: Open Interactive CLI"
+      },
+      {
+        "command": "ultrazohm.venv",
+        "title": "ultrazohm-extension: Open Python Environment"
+      },
+      {
+        "command": "ultrazohm.generate",
+        "title": "ultrazohm-extension: Generate Vitis Workspace"
+      },
+      {
+        "command": "ultrazohm.build",
+        "title": "ultrazohm-extension: Build Firmware"
+      },
+      {
+        "command": "ultrazohm.build-clean",
+        "title": "ultrazohm-extension: Clean and Build Firmware"
+      },
+      {
+        "command": "ultrazohm.repository",
+        "title": "ultrazohm-extension: Find ultrazohm_sw directory"
+      },
+      {
+        "command": "ultrazohm.xsct",
+        "title": "ultrazohm-extension: Select Vitis Settings or XSCT Launcher"
+      },
+      {
+        "command": "ultrazohm.xsctPath",
+        "title": "ultrazohm-extension: Use XSCT from PATH"
+      },
+      {
+        "command": "ultrazohm.refresh",
+        "title": "ultrazohm-extension: Refresh Launcher",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "ultrazohm.launcherSource",
+        "title": "ultrazohm-extension: Select Launcher Source"
+      },
+      {
+        "command": "ultrazohm.flash",
+        "title": "ultrazohm-extension: Flash UZ"
+      },
+      {
+        "command": "ultrazohm.updatePackages",
+        "title": "ultrazohm-extension: Update Python packages"
+      },
+      {
+        "command": "ultrazohm.debug",
+        "title": "ultrazohm-extension: Debug"
+      },
+      {
+        "command": "ultrazohm.attach",
+        "title": "ultrazohm-extension: Attach debugger"
+      },
+      {
+        "command": "ultrazohm.serial.connect",
+        "title": "ultrazohm-extension: Connect serial terminal"
+      },
+      {
+        "command": "ultrazohm.serial.disconnect",
+        "title": "ultrazohm-extension: Disconnect serial terminal"
+      },
+      {
+        "command": "ultrazohm.serial.select",
+        "title": "ultrazohm-extension: Select serial port"
+      },
+      {
+        "command": "ultrazohm.serial.device",
+        "title": "ultrazohm-extension: Set serial device name"
+      },
+      {
+        "command": "ultrazohm.serial.matchBy",
+        "title": "ultrazohm-extension: Select serial matching mode"
+      },
+      {
+        "command": "ultrazohm.serial.baud",
+        "title": "ultrazohm-extension: Select serial baud rate"
+      },
+      {
+        "command": "ultrazohm.serial.dataBits",
+        "title": "ultrazohm-extension: Select serial data bits"
+      },
+      {
+        "command": "ultrazohm.serial.parity",
+        "title": "ultrazohm-extension: Select serial parity"
+      },
+      {
+        "command": "ultrazohm.serial.stopBits",
+        "title": "ultrazohm-extension: Select serial stop bits"
+      },
+      {
+        "command": "ultrazohm.serial.flowControl",
+        "title": "ultrazohm-extension: Select serial flow control"
+      },
+      {
+        "command": "ultrazohm.serial.lineEnding",
+        "title": "ultrazohm-extension: Select serial line ending"
+      },
+      {
+        "command": "ultrazohm.serial.localEcho",
+        "title": "ultrazohm-extension: Select serial local echo"
+      }
+    ],
+    "views": {
+      "ultrazohm": [
+        {
+          "id": "ultrazohm.setup",
+          "name": "Setup"
+        },
+        {
+          "id": "ultrazohm.softwareBuild",
+          "name": "Software build"
+        },
+        {
+          "id": "ultrazohm.control",
+          "name": "Control"
+        },
+        {
+          "id": "ultrazohm.serial",
+          "name": "Serial"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "ultrazohm-extension",
+      "properties": {
+        "ultrazohm.dataviewer.channel": {
+          "type": "string",
+          "enum": [
+            "stable",
+            "prerelease"
+          ],
+          "default": "stable",
+          "scope": "resource",
+          "description": "Package release channel for all UltraZohm launcher actions."
+        },
+        "ultrazohm.dataviewer.terminal": {
+          "type": "string",
+          "enum": [
+            "visible",
+            "hidden"
+          ],
+          "default": "visible",
+          "scope": "resource",
+          "description": "Whether launching DataViewer automatically shows its task terminal. Hidden output remains accessible in the Terminal panel."
+        },
+        "ultrazohm.repository": {
+          "type": "string",
+          "default": "",
+          "scope": "resource",
+          "description": "UltraZohm checkout to use instead of the VS Code folder. Set with Find ultrazohm_sw directory."
+        },
+        "ultrazohm.cli.endpoint": {
+          "type": "string",
+          "default": "127.0.0.1:19740",
+          "scope": "resource",
+          "description": "Local endpoint for the interactive CLI service."
+        },
+        "ultrazohm.launcher.source": {
+          "type": "string",
+          "enum": [
+            "bundled",
+            "local"
+          ],
+          "default": "bundled",
+          "scope": "resource",
+          "description": "Use bundled launcher scripts (standalone) or the selected checkout scripts. Both use bundled uv/Python and private storage."
+        },
+        "ultrazohm.vitis.settingsScript": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "Persistent Vitis setup script: settings64.sh on Linux or settings64.bat on Windows. Its environment is applied only to extension-launched processes."
+        },
+        "ultrazohm.debug.r5Gdb": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "Optional R5 Vitis GDB executable override. Empty discovers it from the selected Vitis installation."
+        },
+        "ultrazohm.debug.a53Gdb": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "Optional A53 Vitis GDB executable override. Empty discovers it from the selected Vitis installation."
+        },
+        "ultrazohm.serial.device": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "Native serial port name, such as COM9 or /dev/ttyUSB2."
+        },
+        "ultrazohm.serial.identity": {
+          "type": "object",
+          "default": {},
+          "scope": "machine",
+          "description": "Saved USB identity and interface for serial-port matching."
+        },
+        "ultrazohm.serial.matchBy": {
+          "type": "string",
+          "default": "identity",
+          "scope": "machine",
+          "description": "Match the saved USB identity or use the configured device name.",
+          "enum": [
+            "identity",
+            "device"
+          ]
+        },
+        "ultrazohm.serial.baud": {
+          "type": "integer",
+          "default": 115200,
+          "scope": "machine",
+          "description": "Serial baud rate.",
+          "minimum": 1,
+          "maximum": 4000000
+        },
+        "ultrazohm.serial.dataBits": {
+          "type": "integer",
+          "default": 8,
+          "scope": "machine",
+          "description": "Serial data bits.",
+          "enum": [
+            5,
+            6,
+            7,
+            8
+          ]
+        },
+        "ultrazohm.serial.parity": {
+          "type": "string",
+          "default": "N",
+          "scope": "machine",
+          "description": "Serial parity: none, even, odd, mark or space.",
+          "enum": [
+            "N",
+            "E",
+            "O",
+            "M",
+            "S"
+          ]
+        },
+        "ultrazohm.serial.stopBits": {
+          "type": "number",
+          "default": 1,
+          "scope": "machine",
+          "description": "Serial stop bits.",
+          "enum": [
+            1,
+            1.5,
+            2
+          ]
+        },
+        "ultrazohm.serial.flowControl": {
+          "type": "string",
+          "default": "none",
+          "scope": "machine",
+          "description": "Serial flow control.",
+          "enum": [
+            "none",
+            "rtscts",
+            "xonxoff"
+          ]
+        },
+        "ultrazohm.serial.lineEnding": {
+          "type": "string",
+          "default": "CR",
+          "scope": "machine",
+          "description": "Bytes sent when Enter is pressed.",
+          "enum": [
+            "CR",
+            "LF",
+            "CRLF"
+          ]
+        },
+        "ultrazohm.serial.localEcho": {
+          "type": "boolean",
+          "default": false,
+          "scope": "machine",
+          "description": "Echo typed characters in the serial terminal."
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ultrazohm",
+          "title": "ultrazohm-extension",
+          "icon": "media/ultrazohm.svg"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "ultrazohm.refresh",
+          "when": "view == ultrazohm.setup || view == ultrazohm.softwareBuild",
+          "group": "navigation"
+        }
+      ]
+    },
+    "taskDefinitions": [
+      {
+        "type": "ultrazohm",
+        "required": [
+          "action",
+          "repository"
+        ],
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "operation": {
+            "type": "string"
+          },
+          "repository": {
+            "type": "string"
+          }
+        }
+      }
+    ],
+    "debuggers": [
+      {
+        "type": "ultrazohm-gdb",
+        "label": "UltraZohm (Vitis GDB)",
+        "languages": [
+          "c",
+          "cpp"
+        ],
+        "configurationAttributes": {
+          "launch": {
+            "required": [
+              "program"
+            ],
+            "properties": {
+              "program": {
+                "type": "string",
+                "description": "ELF selected by the UltraZohm Debug or Attach button."
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "check": "node --check extension.js && node --check tools.js && node --check service.js && node --check cli-capabilities.js && node --check runtime-env.js && node --check vitis-env.js && node --check debug-tools.js && node --check debug-controller.js && node --check debug-rsp.js && node --check serial-controller.js && node --check serial-tools.js",
+    "test": "node --test test/*.test.js",
+    "package": "vsce package --no-dependencies",
+    "bundle:launcher": "node tools/bundle-launcher.js",
+    "vscode:prepublish": "npm run bundle:launcher && npm run check",
+    "test:host": "node tools/test-host.js"
+  },
+  "devDependencies": {
+    "@vscode/test-electron": "3.1.0",
+    "@vscode/vsce": "4.1.1"
+  },
+  "icon": "media/icon.png",
+  "bugs": {
+    "url": "https://github.com/ultrazohm/ultrazohm_sw/issues"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "ultrazohm",
+    "vitis",
+    "firmware",
+    "dataviewer"
+  ]
+}

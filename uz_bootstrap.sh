@@ -4,6 +4,12 @@ set -euo pipefail
 PROJECT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 UZ_ENTRY_POINT="$1"
 shift
+if [[ -n "${UZ_BUNDLED_RUNTIME:-}" ]]; then
+    test -x "$UZ_BUNDLED_RUNTIME/bin/uv"
+    test -x "$UZ_BUNDLED_PYTHON"
+    export PATH="$UZ_BUNDLED_RUNTIME/bin:$PATH"
+    exec "$UZ_BUNDLED_PYTHON" -B "$PROJECT_DIR/$UZ_ENTRY_POINT" "$@"
+fi
 UZ_UV_VERSION="$(cat "$PROJECT_DIR/.uv-version")"
 if ! command -v uv >/dev/null 2>&1; then
     UV_BIN_DIR="${UV_UNMANAGED_INSTALL:-${UV_INSTALL_DIR:-$HOME/.local/bin}}"

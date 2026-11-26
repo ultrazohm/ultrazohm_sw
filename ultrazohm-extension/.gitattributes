@@ -1,0 +1,2 @@
+# Keep the small extension icon in ordinary Git for standalone CI checkout.
+media/icon.png -filter -diff -merge -text

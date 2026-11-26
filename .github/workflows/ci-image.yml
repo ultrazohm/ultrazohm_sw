@@ -21,7 +21,7 @@ jobs:
       contents: read
       packages: write
     outputs:
-      image: ${{ steps.tag.outputs.image }}
+      image: ${{ steps.digest.outputs.image }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -73,3 +73,11 @@ jobs:
           tags: ${{ steps.tag.outputs.image }}
           cache-from: type=gha,scope=ci-image
           cache-to: type=gha,scope=ci-image,mode=max
+
+      - name: Resolve immutable image reference
+        id: digest
+        env:
+          IMAGE: ${{ steps.tag.outputs.image }}
+        run: |
+          docker pull "$IMAGE"
+          echo "image=$(docker inspect --format '{{index .RepoDigests 0}}' "$IMAGE")" >> "$GITHUB_OUTPUT"

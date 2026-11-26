@@ -63,8 +63,8 @@ void APU_IPI_ISR(void *data)
 #if LOGGING_PATH_XCP_R5_GATEWAY
 	/* Option Z gateway mode: ferry OCM <-> UDP only (no JavaScope/MEAS).
 	 * Clear the IPI status FIRST: a trigger arriving while we handle this one
-	 * then stays pending and re-fires. The R5 rewinds XCP_OUT every control
-	 * cycle, so a wiped trigger would drop that cycle's DAQ/response data. */
+	 * then stays pending and re-fires. A wiped trigger would leave a response
+	 * in the OCM ring until the next IPI. */
 	BaseType_t gw_woken = pdFALSE;
 	(void)data;
 	XIpiPsu_ClearInterruptStatus(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);

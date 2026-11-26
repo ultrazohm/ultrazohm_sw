@@ -135,12 +135,9 @@ int main(void)
         case infinite_loop:
             ultrazohm_state_machine_step();
 #if XCP_ENGINE_R5_ENABLE
-            /* Option Z: paced XCP exchange sweep (commands + DAQ drain -> OCM)
-             * runs here, off the control ISR. Returns 1 once per sweep period;
-             * the IPI then wakes the A53 gateway exactly as the ISR used to. */
-            if (xcp_r5_background()) {
-                XIpiPsu_TriggerIpi(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
-            }
+            /* Option Z: XCP commands (CMD ring -> XcpCommand -> RSP ring).
+             * DAQ goes from the control ISR straight to the A53. */
+            xcp_r5_background();
 #endif
             break;
         default:

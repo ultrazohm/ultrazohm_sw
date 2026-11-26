@@ -156,11 +156,10 @@ void ISR_Control(void *data)
 #endif
 
 #if XCP_ENGINE_R5_ENABLE
-    /* Option Z: XCPlite engine on the R5. ONLY the DAQ sampling copy runs in
-     * this ISR (cost: ~sub-us idle, ~5 us per KB of measured payload). The
-     * exchange sweep (commands, queue drain -> OCM, cache flushes, IPI) runs
-     * from the main loop via xcp_r5_background() — required headroom for
-     * high control rates (100 kHz target). */
+    /* Option Z: XCPlite engine on the R5. The DAQ sampling writes the DTOs
+     * straight into the OCM DAQ ring; xcp_r5_event() then cleans them from
+     * the D-cache (~1.3 us per KB), publishes them and signals the A53 when
+     * enough data waits. Commands run in the main loop (xcp_r5_background()). */
     JavaScope_update_lifecheck(); /* lifecheck for XCP completeness checks, sampled below */
     xcp_r5_event();
 #else

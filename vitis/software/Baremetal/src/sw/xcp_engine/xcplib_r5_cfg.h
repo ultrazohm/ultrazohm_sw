@@ -77,17 +77,20 @@ extern uint8_t xcp_r5_check_write(uint32_t addr, uint8_t size);
  * (~1000 signals total); a too-small value shows up as MEMORY_OVERFLOW when
  * CANape allocates the DAQ lists. */
 #define OPTION_DAQ_MEM_SIZE (1024 * 6)
-/* Message and segment sizes. One queue segment becomes one OCM record and
- * one UDP datagram of the A53 gateway, so the segment is bounded by
- * OCM_XCP_RECORD_MAX (1400, ocm_xcp_fifo.h; checked in xcptl_ocm.c), which
- * keeps the datagram plus UDP/IP headers below a 1500-byte MTU. Upstream
- * derives the segment from OPTION_MTU; here it is set directly (xcptl_cfg.h
- * honours the predefine, UZ patch).
+/* Message and segment sizes. Every DTO is one record of the OCM DAQ ring
+ * (at most OCM_XCP_DAQ_MAX_LEN, shared/ocm_xcp_ring.h; checked in
+ * xcptl_ocm.c); the A53 gateway packs them into datagrams of up to 1400
+ * bytes, which keeps the datagram plus UDP/IP headers below a 1500-byte
+ * MTU. The segment size is no longer used on the R5 (no queue32); it stays
+ * at the datagram size for the engine's own checks. Upstream derives the
+ * segment from OPTION_MTU; here it is set directly (xcptl_cfg.h honours the
+ * predefine, UZ patch).
  * DTO 1024 (upstream default): every ODT is one DAQ message, and each costs a
- * fixed ~0.6-0.8 us in ISR_Control (queue acquire/push, measured 2026-11-17),
+ * fixed ~0.6-0.8 us in ISR_Control (queue acquire/push, measured 2026-11-17
+ * with queue32),
  * so a bigger DTO means fewer ODTs for the same data. An ODT now carries up
  * to 1024 - 4 (ODT/DAQ header) - 4 (timestamp, first ODT) = 1016 bytes.
- * Commands stay at MAX_CTO 248 (OCM mailbox slot, XCP_IN batch sizing).
+ * Commands stay at MAX_CTO 248 (largest record of the OCM RSP ring).
  * CONNECT advertises MAX_CTO/MAX_DTO = 248/1024 (matches gen_a2l.py and
  * CANape/UZ_XCP/uz.A2L). Was 248/252 until 2026-11-17: the OCM records had an
  * 8-bit length. */

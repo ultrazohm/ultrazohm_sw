@@ -1,33 +1,32 @@
 /*----------------------------------------------------------------------------
 | xcp_gateway_a53.c
 |   Option Z — A53 (FreeRTOS/lwIP) Ethernet gateway for the R5 XCPlite engine.
-|   The A53 is a dumb pipe: it ferries XCP-on-UDP datagrams between CANape and
-|   the OCM FIFO; the XCP slave logic lives on the R5 (arbitrary addressing).
+|   The A53 is a dumb pipe: it moves XCP-on-UDP messages between CANape and
+|   the OCM rings (shared/ocm_xcp_ring.h); the XCP slave logic lives on the
+|   R5 (arbitrary addressing).
 |
-|   Data path (mirrors uz_sw_xcp_hedrive_andi OCM_eth_adapter, but UDP):
-|     CANape --UDP--> rx_task --queue--> XCP_IN --> R5 XcpCommand
-|                     (written by the rx task at once and re-offered by the
-|                      IPI ISR until the R5 acknowledges; the R5 polls XCP_IN)
-|     R5 XcpEvent/CRM --> XCP_OUT --> IPI ISR --queue--> tx_task --UDP--> CANape
+|   Data path:
+|     CANape --UDP--> rx_task --CMD ring--> R5 main loop: XcpCommand
+|     R5 XcpCommand --RSP ring--+
+|     R5 XcpEvent ----DAQ ring--+--> IPI ISR --queues--> tx_task --UDP--> CANape
 |
-|   Hard-learned rules ported from the hedrive hardware campaign
+|   Every ring has one producer and one consumer, and every record is written
+|   once and read once: a command or a response can neither be lost nor
+|   executed twice, and DAQ data waits in the ring until it is read (the R5
+|   counts what does not fit, xcp_r5_queue_lost). This replaces the seqlock,
+|   CTO mailbox, command generations and chain acknowledge of the former
+|   XCP_OUT/XCP_IN exchange (ocm_xcp_fifo.c, hedrive T8).
+|
+|   Rules kept from the hedrive hardware campaign
 |   (XCP_BOTTLENECK_ANALYSIS.md):
 |   - F1: the IPI ISR touches ONLY OCM + FreeRTOS queues (…FromISR). Sockets
 |     live in the tasks; never block/delay/print in ISR context.
-|   - T8: reads from XCP_OUT are staged locally and committed only when the
-|     content was stable — the header and the CTO mailbox under the seqlock,
-|     the DAQ chain by its own sequence number (ocm_xcp_fifo.c, mechanism
-|     5) — so torn frames never reach the network. Command responses arrive
-|     via the acknowledged CTO mailbox (exactly-once).
-|   - T8 addendum: commands are delivered via a generation handshake — the
-|     current batch is rewritten into XCP_IN every IPI until the R5
-|     acknowledges execution. A command can never be lost to IPI latency.
-|   - T1: CTO frames take a dedicated queue; they jump the DAQ backlog and
+|   - T1: responses take a dedicated queue; they jump the DAQ backlog and
 |     are never tail-dropped with it (a lost/late response kills the session).
 |   - T3: the transport-layer counter (CTR) is owned HERE, stamped at
-|     transmission time in transmission order — reordering (CTO bypass) and
-|     tail-drops are invisible to the master.
-|   - B1: frames are batched into one UDP datagram per sendto() (XCP-on-UDP
+|     transmission time in transmission order — reordering (response bypass)
+|     and tail-drops are invisible to the master.
+|   - B1: messages are batched into one UDP datagram per sendto() (XCP-on-UDP
 |     allows several TL messages per datagram) — socket calls are the
 |     throughput limiter, not bytes.
 |   - B5 (final form): the DAQ queue is a deep burst absorber with tail-drop
@@ -35,7 +34,6 @@
 |
 |   Copyright 2024 Eyke Liegmann, Apache-2.0.
  ----------------------------------------------------------------------------*/
-
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
@@ -43,7 +41,7 @@
 #include "lwip/sockets.h"
 #include "lwip/sys.h"   /* sys_thread_new */
 #include "xcp_gateway_a53.h"
-#include "ocm_xcp_fifo.h"
+#include "ocm_xcp_ring.h"
 #include <string.h>
 #include <stdint.h>
 #if XCP_GW_PROFILE
@@ -52,9 +50,7 @@
 #include "xil_printf.h"
 #include "xlwipconfig.h" /* XLWIP_CONFIG_N_TX_DESC */
 
-#define XCP_GW_FRAME_MAX     OCM_XCP_RECORD_MAX /* one R5 queue segment = one datagram */
 #define XCP_TL_HEADER_LEN    4    /* [dlc:u16][ctr:u16]                          */
-#define XCP_PID_CTO_MIN      0xFCu
 #define XCP_GW_CC_CONNECT    0xFFu /* command codes the gateway reports */
 #define XCP_GW_CC_DISCONNECT 0xFEu
 /* Largest XCP command the R5 engine accepts (XCPTL_MAX_CTO_SIZE, set by
@@ -62,43 +58,42 @@
  * carrying such a frame is refused here already (see xcp_gw_rx_frames_valid). */
 #define XCP_GW_MAX_CTO_SIZE  248u
 
-/* DAQ (DTO) queue: deep on purpose — it is the burst absorber between the
- * 10–20 kHz OCM drain and the UDP send rate, and measurement gaps hurt more
- * than backlog latency. Sized to bridge multi-second send stalls, matching
- * hedrive's final sizing (its rig saw ~2 s host receive pauses every few
- * minutes that a 140 ms queue could not absorb). Items are fixed-size
- * (XCP_GW_FRAME_MAX, one R5 segment of up to 1400 B since 2026-11-17, was
- * 256): 65536 x ~1.4 KB ≈ 92 MB of the 200 MB FreeRTOS heap. Under load the
- * R5 hands out mostly full segments, so that is ≈ 2 s of buffering at
- * 320 Mbit/s; with small records it is fewer seconds. The queue runs empty in steady state, so normal
- * latency is unaffected. NOTE: UDP has no backpressure — this queue covers
- * ECU-side stalls (lwIP pbuf/ARP, task starvation); PC-side receive pauses
- * must be absorbed by the receiver's socket buffer (xcp_poll.py sets 32 MB).
+/* TX batching: pack TL messages into one UDP datagram (several XCP messages
+ * per datagram are standard XCP-on-Ethernet; XCPlite's own PC transport does
+ * the same). 1400 keeps datagram + UDP/IP headers under a 1500-byte MTU — no
+ * IP fragmentation. The IPI ISR packs DAQ messages into segments of this
+ * size already, so a queued DAQ item is a ready datagram. */
+#define XCP_GW_BATCH_BUF_SIZE 1400
+#define XCP_GW_FRAME_MAX      XCP_GW_BATCH_BUF_SIZE
+#if (XCP_TL_HEADER_LEN + OCM_XCP_DAQ_MAX_LEN) > XCP_GW_FRAME_MAX
+#error "a datagram must hold the largest DTO"
+#endif
+#if OCM_XCP_CMD_MAX_LEN < XCP_GW_FRAME_MAX
+#error "the CMD ring must hold a whole received datagram"
+#endif
+
+/* DAQ queue: deep on purpose — it is the burst absorber between the OCM
+ * drain in the IPI ISR and the UDP send rate, and measurement gaps hurt more
+ * than backlog latency. The OCM DAQ ring itself covers only ~3 ms at
+ * 900 B/cycle (40 kHz), this queue covers seconds: hedrive's rig saw ~2 s
+ * host receive pauses every few minutes that a 140 ms queue could not
+ * absorb. Items are fixed-size (XCP_GW_FRAME_MAX): 65536 x ~1.4 KB ≈ 92 MB
+ * of the 200 MB FreeRTOS heap, ≈ 2 s at 320 Mbit/s. The queue runs empty in
+ * steady state, so normal latency is unaffected. NOTE: UDP has no
+ * backpressure — this queue covers ECU-side stalls (lwIP pbuf/ARP, task
+ * starvation); PC-side receive pauses must be absorbed by the receiver's
+ * socket buffer (xcp_poll.py sets 32 MB).
  * Overflow policy: tail-drop + count, never purge, never block from the ISR. */
 #define XCP_GW_TXQ_DEPTH     65536
-/* Dedicated queue for CTO frames (RES/ERR/EV/SERV): responses must never
+/* Dedicated queue for responses and events (RES/ERR/EV/SERV): they must never
  * wait behind — or be dropped with — the DAQ backlog (hedrive T1). */
 #define XCP_GW_CTOQ_DEPTH    16
-#define XCP_GW_RXQ_DEPTH     64
 
-/* Bound the IPI-ISR time: max records staged OCM -> queues per interrupt.
- * The 32 KB XCP_OUT window holds ~23 max-size records (the R5 queue hands
- * out accumulated segments of up to 1400 B); the cap only bites on many tiny
- * ones. A full window is rare - it means the R5 is working off a backlog. */
-#define XCP_GW_DRAIN_MAX_PER_IPI 128
-
-/* Command batch offered to the R5 per generation (bounded by the XCP_IN
- * chain: 3 x (4 + 255) + terminator < OCM_XCP_IN_CHAIN_LEN). */
-#define XCP_GW_IN_BATCH_MAX  3
-
-/* TX batching: pack queued TL frames into one UDP datagram (several XCP
- * messages per datagram are standard XCP-on-Ethernet; XCPlite's own PC
- * transport does the same). 1400 keeps datagram + UDP/IP headers under a
- * 1500-byte MTU — no IP fragmentation. */
-#define XCP_GW_BATCH_BUF_SIZE 1400
-#if XCP_GW_BATCH_BUF_SIZE < XCP_GW_FRAME_MAX
-#error "a datagram must hold the largest R5 record"
-#endif
+/* Bound the IPI-ISR time: DAQ bytes taken from the ring per interrupt. The
+ * R5 signals every XCP_R5_DAQ_NOTIFY_BYTES (4 KB), so the cap only bites
+ * when the A53 fell behind; the rest goes with the next IPI (at the latest
+ * 1 ms later) and the ring keeps it meanwhile. */
+#define XCP_GW_DRAIN_MAX_BYTES (32u * 1024u)
 
 /* Transmit buffers: one per datagram, from a ring longer than the GEM's
  * TX descriptor ring. lwip_sendto() does not copy the payload
@@ -128,30 +123,30 @@
  * (master gone, no route) cannot wedge the task: worst ~50 ms, then drop. */
 #define XCP_GW_SEND_RETRY_MAX 5
 
-/* One XCP-on-Ethernet record in transit between a task and the IPI ISR.
- * data may hold SEVERAL concatenated TL frames ([dlc][ctr][packet])+ —
- * queue32 segments on the R5 and CANape command bursts both pack frames. */
+/* One queued item: TL messages ([dlc][ctr][packet])+ for one datagram. */
 typedef struct {
     uint16_t len;
     uint8_t  data[XCP_GW_FRAME_MAX];
 } xcp_gw_frame_t;
 
-static QueueHandle_t gRxQueue    = NULL;     /* CANape -> R5 (commands)         */
-static QueueHandle_t gTxQueue    = NULL;     /* R5 -> CANape (DAQ)              */
+static QueueHandle_t gTxQueue    = NULL;     /* R5 -> CANape (DAQ segments)     */
 static QueueHandle_t gTxCtoQueue = NULL;     /* R5 -> CANape (responses/events) */
 /* "Frames queued" signal from the IPI ISR to the tx task. A binary semaphore
  * is enough: the task drains both queues completely after every take, and a
  * give that arrives while it is busy just makes the next take return at
  * once. Without it the task could only block on the DAQ queue, so a command
- * response arriving on an idle link waited out that timeout (up to two
- * 100 Hz ticks = 10-20 ms per command, i.e. every command of a CANape DAQ
- * setup). */
+ * response arriving on an idle link waited out that timeout. */
 static SemaphoreHandle_t gTxSignal = NULL;
 static int           gSock      = -1;
 
+/* The rings, A53 side (consumer of DAQ and RSP, producer of CMD). */
+static uz_ocm_ring_t gDaq;
+static uz_ocm_ring_t gRsp;
+static uz_ocm_ring_t gCmd;
+
 /* The IPI ISR is registered by initialize_ipi_runtime() long before this
- * gateway is initialised (network-up/DHCP), while the R5 fires an IPI every
- * control cycle from boot. Guard the ISR path until init completed. */
+ * gateway is initialised (network-up/DHCP). Guard the ISR path until init
+ * completed. */
 static volatile int gGwReady = 0;
 
 static struct sockaddr_in gMaster;           /* last master (CANape) endpoint   */
@@ -159,56 +154,49 @@ static volatile int       gMasterValid = 0;
 static volatile uint32_t  gMasterGen = 0;    /* bumped on endpoint change       */
 static volatile TickType_t gMasterLastRxTick = 0; /* last valid datagram from the master */
 
-/* Diagnostics (inspect via debugger; hedrive validation-checklist counters):
- *   xcp_gw_ocm_skipped_writing header copy unusable this IPI: the R5 was
- *                              mid-sweep (odd seqlock) or swept during the
- *                              copy. Mailbox and command ack are simply
- *                              taken with the next IPI; the DAQ chain is
- *                              read anyway (validated by chain_seq)
- *   xcp_gw_ocm_torn            DAQ chain rewritten while the A53 read it
- *                              (chain_seq changed); read discarded. Rare:
- *                              the R5 rewrites a non-empty chain only after
- *                              our ack or after the 50-sweep hold timeout
- *   xcp_gw_ocm_cycles_missed   R5 sweeps between two header copies
- *                              (All three are IPI latency indicators only:
- *                              the R5 keeps a DAQ chain in place until it
- *                              is acknowledged - xcp_r5_out_held - so none
- *                              of them loses data.)
- *   xcp_gw_ocm_capped          per-IPI drain cap hit with records left over
- *   xcp_gw_txq_dropped         DAQ queue full -> record tail-dropped
- *   xcp_gw_ctoq_dropped        CTO queue full -> frame dropped (must stay 0)
- *   xcp_gw_in_batches_sent     command batches (generations) offered to the R5
- *   xcp_gw_in_retry_cycles     IPIs spent re-offering an unconsumed batch
- *   xcp_gw_tx_malformed_drop   record failed the TL-frame walk on TX (must stay 0)
+/* Diagnostics (inspect via debugger; mirrored to the master, see below):
+ *   xcp_gw_ring_bad            DAQ/RSP ring resynchronisations after corrupt
+ *                              data (must stay 0)
+ *   xcp_gw_daq_level_max       fullest the DAQ ring was at a drain, bytes (of
+ *                              OCM_XCP_DAQ_DATA_LEN): how close the R5 came
+ *                              to xcp_r5_queue_lost
+ *   xcp_gw_cmd_dropped         command datagram dropped, CMD ring full (the
+ *                              R5 main loop does not take commands; the
+ *                              master retries)
+ *   xcp_gw_drain_capped        IPIs that left DAQ data in the ring because of
+ *                              XCP_GW_DRAIN_MAX_BYTES (latency, not loss)
+ *   xcp_gw_txq_dropped         DAQ queue full -> segment tail-dropped
+ *   xcp_gw_ctoq_dropped        CTO queue full -> response dropped (must stay 0)
+ *   xcp_gw_cmd_records         command datagrams handed to the R5
+ *   xcp_gw_daq_records         DTOs taken from the DAQ ring
+ *   xcp_gw_tx_malformed_drop   segment failed the TL-frame walk on TX (must stay 0)
  *   xcp_gw_rx_malformed_drop   datagram failed the TL-frame walk on RX (bad
  *                              dlc chain or a frame > XCP_GW_MAX_CTO_SIZE) and
  *                              was not forwarded to the R5. CANape never sends
  *                              these; non-zero = port scanner / broken client.
  *   xcp_gw_sendto_err          transient lwip_sendto() failures (pbuf/TX-BD
- *                              exhaustion under burst load; observed 74x in a
- *                              60 s 320 Mbit/s run). Retried, so err alone is
- *                              pressure, not loss.
+ *                              exhaustion under burst load). Retried, so err
+ *                              alone is pressure, not loss.
  *   xcp_gw_sendto_drop         batch still failing after the bounded retries —
  *                              the batch was already CTR-stamped, so each one
  *                              is a wire counter gap and the ONLY ECU-side
- *                              source of them. Gaps with this at 0 mean the
- *                              loss is wire/PC-side. Must stay 0.
- *   xcp_gw_ipi_count          IPIs handled (A53-side liveness; ~= R5 sweeps)
- *   xcp_gw_master_lost        sessions closed by the gateway because the
+ *                              source of them. Must stay 0.
+ *   xcp_gw_ipi_count           IPIs handled (A53-side liveness)
+ *   xcp_gw_master_lost         sessions closed by the gateway because the
  *                              master became unreachable (see
  *                              xcp_gateway_a53.h, master supervision)
- *   All of the above are mirrored every IPI into the XCP_IN header spare
- *   words (ocm_xcp_fifo.h, OCM_XCP_IN_DIAG_ADDR) together with the DAQ queue
- *   fill level, so CANape (uz.A2L xcp_gw_*) and xcp_poll.py --stress can
- *   read them over XCP; the debugger is no longer the only way. */
-volatile uint32_t xcp_gw_ocm_skipped_writing = 0;
-volatile uint32_t xcp_gw_ocm_torn = 0;
-volatile uint32_t xcp_gw_ocm_cycles_missed = 0;
-volatile uint32_t xcp_gw_ocm_capped = 0;
+ *   All of the above are mirrored every IPI to fixed OCM addresses
+ *   (ocm_xcp_ring.h, OCM_XCP_GW_DIAG_ADDR) together with the DAQ queue fill
+ *   level, so CANape (uz.A2L xcp_gw_*) and xcp_poll.py --stress can read
+ *   them over XCP. */
+volatile uint32_t xcp_gw_ring_bad = 0;
+volatile uint32_t xcp_gw_daq_level_max = 0;
+volatile uint32_t xcp_gw_cmd_dropped = 0;
+volatile uint32_t xcp_gw_drain_capped = 0;
 volatile uint32_t xcp_gw_txq_dropped = 0;
 volatile uint32_t xcp_gw_ctoq_dropped = 0;
-volatile uint32_t xcp_gw_in_batches_sent = 0;
-volatile uint32_t xcp_gw_in_retry_cycles = 0;
+volatile uint32_t xcp_gw_cmd_records = 0;
+volatile uint32_t xcp_gw_daq_records = 0;
 volatile uint32_t xcp_gw_tx_malformed_drop = 0;
 volatile uint32_t xcp_gw_rx_malformed_drop = 0;
 volatile uint32_t xcp_gw_ipi_count = 0;
@@ -288,256 +276,144 @@ static void xcp_gw_idle_probe_task(void *arg) {
 #endif
 
 /*--------------------------------------------------------------------------
- * IPI ISR — read phase (XCP_OUT -> queues): header and CTO mailbox under the
- * seqlock, DAQ chain validated by chain_seq (ocm_xcp_fifo.c, mechanism 5).
- * All buffers static: this runs only in the (non-reentrant) IPI ISR, and the
- * staging area is far too big for an ISR stack frame.
+ * IPI ISR: responses and DAQ from the rings into the queues.
+ * All buffers static: this runs only in the (non-reentrant) IPI ISR, and a
+ * segment is too big for an ISR stack frame.
  *------------------------------------------------------------------------*/
-static xcp_gw_frame_t gStage[XCP_GW_DRAIN_MAX_PER_IPI];
-static xcp_gw_frame_t gStageCto;
-static uint32_t gCtoLastSeq = 0;         /* last mailbox seq forwarded (acked)  */
-static uint32_t gInConsumed = 0;         /* R5 batch ack, valid under seqlock   */
-static uint32_t gOutChainLast = 0;       /* last XCP_OUT chain_seq consumed     */
-static uint32_t gPrevSeq = 0;
-static int      gPrevSeqValid = 0;
-/* Set at init and on master change: adopt the current mailbox seq without
- * forwarding, so a response parked before/during a session change is not
- * replayed into the next session. */
-static volatile int gCtoAdoptPending = 1;
+static xcp_gw_frame_t gIsrFrame; /* response being queued */
+static xcp_gw_frame_t gIsrSeg;   /* DAQ segment being packed */
 
-static void xcp_gw_read_out_phase(BaseType_t *woken) {
-    uint8_t  cto_len = 0;
-    uint32_t cto_seq = 0;
-    int      have_cto = 0;
-    int      header_ok = 0;
-    int      chain_ok = 0;
-    uint32_t n_staged = 0;
-    int      capped = 0;
-
-    /* 1. Header copy under the seqlock: command-batch ack, chain sequence and
-     * the CTO mailbox (it persists across sweeps until acknowledged). Short -
-     * one control line plus at most one 256-byte frame - so it rarely
-     * overlaps an R5 sweep, and if it does it is simply taken next IPI. */
-    uint32_t seq_begin = ocm_xcp_out_seq_read(); /* refreshes the control line */
-    uint32_t in_consumed_snap = ocm_xcp_in_consumed_read();
-    uint32_t chain_seq_snap = ocm_xcp_out_chain_seq_read();
-    if ((seq_begin & 1u) == 0u) {
-        if (ocm_xcp_cto_read(&cto_len, gStageCto.data, &cto_seq) && cto_seq != gCtoLastSeq) {
-            have_cto = 1;
-        }
-        header_ok = ocm_xcp_out_seq_unchanged(seq_begin);
-    }
-    if (!header_ok) {
-        xcp_gw_ocm_skipped_writing++;
-        have_cto = 0;
-    }
-
-    /* 2. DAQ chain, once per chain sequence, validated by chain_seq and not
-     * by the seqlock (ocm_xcp_fifo.c, mechanism 5): the R5 publishes a
-     * non-zero chain_seq only for a complete chain and zeroes it before a
-     * rewrite. A sweep that KEEPS an unacknowledged chain bumps the seqlock
-     * but not chain_seq, so this read may take longer than a sweep. */
-    if (chain_seq_snap != 0u && chain_seq_snap != gOutChainLast) {
-#if XCP_GW_PROFILE
-        const uint64_t tc0 = xcp_gw_ticks();
-#endif
-        ocm_xcp_fifo_prepare_read();
-        for (;;) {
-            uint16_t len;
-            uint8_t *data;
-            if (n_staged >= XCP_GW_DRAIN_MAX_PER_IPI) {
-                capped = 1; /* rest of this chain is lost: it is acknowledged as a whole */
-                break;
-            }
-            if (!ocm_xcp_fifo_read(&len, &data)) {
-                break; /* end of chain (or bounds guard tripped) */
-            }
-            gStage[n_staged].len = len;
-            memcpy(gStage[n_staged].data, data, len);
-            n_staged++;
-        }
-        if (ocm_xcp_out_chain_unchanged(chain_seq_snap)) {
-            chain_ok = 1;
-        } else {
-            /* The R5 rewrote the chain meanwhile (empty chain, or its hold
-             * timeout ran out): discard; the new chain is read next IPI. */
-            xcp_gw_ocm_torn++;
-        }
-#if XCP_GW_PROFILE
-        gProfChain += xcp_gw_ticks() - tc0;
-#endif
-    }
-
-    /* 3. Commit what was consistent. */
-    int enqueued = 0;
-    if (header_ok) {
-        gInConsumed = in_consumed_snap;
-        if (gPrevSeqValid) {
-            uint32_t delta = seq_begin - gPrevSeq; /* wrap-safe */
-            if (delta > 2u) {
-                xcp_gw_ocm_cycles_missed += (delta - 2u) / 2u;
-            }
-        }
-        gPrevSeq = seq_begin;
-        gPrevSeqValid = 1;
-
-        if (gCtoAdoptPending) {
-            /* Session change: whatever sits in the mailbox predates it. */
-            gCtoLastSeq = cto_seq;
-            gCtoAdoptPending = 0;
-            have_cto = 0;
-        }
-        if (have_cto) {
-            gCtoLastSeq = cto_seq; /* acked via the write phase this IPI */
-            gStageCto.len = cto_len;
-            if (xQueueSendToBackFromISR(gTxCtoQueue, &gStageCto, woken) == pdTRUE) {
-                enqueued = 1;
-            } else {
-                xcp_gw_ctoq_dropped++;
-            }
-        }
-    }
-    if (chain_ok) {
-#if XCP_GW_PROFILE
-        const uint64_t te0 = xcp_gw_ticks();
-        gProfRecords += n_staged;
-#endif
-        gOutChainLast = chain_seq_snap; /* acknowledged to the R5 by the write phase */
-        if (capped) {
-            xcp_gw_ocm_capped++;
-        }
-        if (gMasterValid) { /* no consumer yet: drop staged DAQ (the chain ack still advances) */
-            for (uint32_t i = 0; i < n_staged; i++) {
-                /* Defensive classify by XCP PID: CTO packets that travelled the chain
-                 * (EV/SERV from the R5 queue) jump the DAQ backlog too. */
-                if (gStage[i].len > XCP_TL_HEADER_LEN &&
-                    gStage[i].data[XCP_TL_HEADER_LEN] >= XCP_PID_CTO_MIN) {
-                    if (xQueueSendToBackFromISR(gTxCtoQueue, &gStage[i], woken) == pdTRUE) {
-                        enqueued = 1;
-                    } else {
-                        xcp_gw_ctoq_dropped++;
-                    }
-                    continue;
-                }
-                if (xQueueSendToBackFromISR(gTxQueue, &gStage[i], woken) == pdTRUE) {
-                    enqueued = 1;
-                } else {
-                    /* DAQ queue full: the UDP drain has stalled for longer than the
-                     * queue depth covers. Tail-drop and count. Never block, delay or
-                     * print here — ISR context (hedrive F1). */
-                    xcp_gw_txq_dropped++;
-                }
-            }
-        }
-#if XCP_GW_PROFILE
-        gProfEnq += xcp_gw_ticks() - te0;
-#endif
-    }
-    if (enqueued) {
-        (void)xSemaphoreGiveFromISR(gTxSignal, woken); /* wake the tx task (CTO or DAQ) */
-    }
+/* Copy one ring record (header + payload = one TL message) to dst. */
+static inline uint16_t xcp_gw_copy_msg(uint8_t *dst, const uint8_t *rec, uint16_t len) {
+    const uint16_t n = (uint16_t)(XCP_TL_HEADER_LEN + len);
+    memcpy(dst, rec, n);
+    return n;
 }
 
-/*--------------------------------------------------------------------------
- * IPI ISR — write phase (rx queue -> XCP_IN), generation handshake.
- * The in-flight batch is rewritten with IDENTICAL bytes every IPI until the
- * R5 acknowledges the generation, so a torn concurrent read on the R5 still
- * sees consistent content and no command is ever lost (hedrive T8 addendum:
- * "Timeout: Keine Response" with a clean wire capture — commands silently
- * eaten by IPI/cycle overlap).
- *------------------------------------------------------------------------*/
-static xcp_gw_frame_t gInBatch[XCP_GW_IN_BATCH_MAX];
-static xcp_gw_frame_t gInPeek;
-static uint8_t  gInBatchN = 0;
-static uint32_t gInGen = 0;              /* generation of the in-flight batch */
-
-static void xcp_gw_write_in_phase(BaseType_t *woken, int from_ipi) {
-    ocm_xcp_fifo_prepare_write();
-    /* Publish the last consumed mailbox sequence every cycle (idempotent);
-     * the R5 frees its CTO mailbox when this matches what it parked. */
-    ocm_xcp_cto_ack_write(gCtoLastSeq);
-    /* Same for the DAQ chain: the R5 rewinds XCP_OUT only after it sees the
-     * sequence of the chain we consumed. */
-    ocm_xcp_out_ack_write(gOutChainLast);
-
-    /* Current batch processed by the R5? Then it is done for good. */
-    if (gInBatchN != 0u && gInConsumed == gInGen) {
-        gInBatchN = 0u;
-    }
-
-    if (gInBatchN == 0u) {
-        /* Build the next batch from the RX queue (bounded by the chain space
-         * and the batch array; the rest stays queued for later generations). */
-        size_t space = OCM_XCP_IN_CHAIN_LEN - 4u; /* minus terminator */
-        while (gInBatchN < XCP_GW_IN_BATCH_MAX) {
-            if (xQueuePeekFromISR(gRxQueue, &gInPeek) != pdTRUE) {
-                break;
-            }
-            if (gInPeek.len == 0u || gInPeek.len > 255u) {
-                /* Corrupt entry: consume and drop — leaving it queued would
-                 * head-of-line block all future commands forever. */
-                (void)xQueueReceiveFromISR(gRxQueue, &gInPeek, woken);
-                continue;
-            }
-            if ((size_t)(4u + gInPeek.len) > space) {
-                break; /* batch full; remaining commands go into the next one */
-            }
-            space -= (size_t)(4u + gInPeek.len);
-            gInBatch[gInBatchN] = gInPeek;
-            gInBatchN++;
-            (void)xQueueReceiveFromISR(gRxQueue, &gInPeek, woken);
+static int xcp_gw_queue_seg(BaseType_t *woken) {
+    int enqueued = 0;
+    if (gIsrSeg.len != 0u && gMasterValid) { /* no consumer yet: drop */
+        if (xQueueSendToBackFromISR(gTxQueue, &gIsrSeg, woken) == pdTRUE) {
+            enqueued = 1;
+        } else {
+            /* DAQ queue full: the UDP drain has stalled for longer than the
+             * queue depth covers. Tail-drop and count. Never block, delay or
+             * print here — ISR context (hedrive F1). */
+            xcp_gw_txq_dropped++;
         }
-        if (gInBatchN != 0u) {
-            gInGen++;
-            if (gInGen == 0u) {
-                gInGen = 1u; /* 0 is reserved for "no batch ever" */
-            }
-            xcp_gw_in_batches_sent++;
-        }
-    } else if (from_ipi) {
-        xcp_gw_in_retry_cycles++;
-    }
-
-    /* (Re)write the in-flight batch — identical bytes every IPI until acked. */
-    for (uint8_t i = 0; i < gInBatchN; i++) {
-        if (!ocm_xcp_fifo_write(gInBatch[i].len, gInBatch[i].data)) {
-            break; /* cannot happen (batch sized to the region); defensive */
-        }
-    }
-    /* Mirror the gateway counters into the XCP_IN header spare words so the
-     * XCP master can read them by absolute address (ocm_xcp_fifo.h). 14 plain
-     * stores per IPI; they ride the header flush below. */
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_OCM_SKIPPED_WRITING, xcp_gw_ocm_skipped_writing);
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_OCM_TORN, xcp_gw_ocm_torn);
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_OCM_CYCLES_MISSED, xcp_gw_ocm_cycles_missed);
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_OCM_CAPPED, xcp_gw_ocm_capped);
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_TXQ_DROPPED, xcp_gw_txq_dropped);
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_CTOQ_DROPPED, xcp_gw_ctoq_dropped);
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_IN_BATCHES_SENT, xcp_gw_in_batches_sent);
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_IN_RETRY_CYCLES, xcp_gw_in_retry_cycles);
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_TX_MALFORMED_DROP, xcp_gw_tx_malformed_drop);
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_RX_MALFORMED_DROP, xcp_gw_rx_malformed_drop);
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_SENDTO_ERR, xcp_gw_sendto_err);
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_SENDTO_DROP, xcp_gw_sendto_drop);
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_IPI_COUNT, xcp_gw_ipi_count);
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_TXQ_LEVEL, (uint32_t)uxQueueMessagesWaitingFromISR(gTxQueue));
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_MASTER_LOST, xcp_gw_master_lost);
 #if XCP_GW_PROFILE
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_NOW_US, xcp_gw_ticks_to_us(xcp_gw_ticks()));
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_IDLE_US, xcp_gw_ticks_to_us(gProfIdle));
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_IPI_US, xcp_gw_ticks_to_us(gProfIpi));
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_IPI_MAX_US, xcp_gw_ticks_to_us(gProfIpiMax.last));
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_CHAIN_US, xcp_gw_ticks_to_us(gProfChain));
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_ENQ_US, xcp_gw_ticks_to_us(gProfEnq));
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_RECORDS, gProfRecords);
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_TX_US, xcp_gw_ticks_to_us(gProfTx));
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_SENDTO_US, xcp_gw_ticks_to_us(gProfSendto));
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_SENDTO_N, gProfSendtoN);
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_TX_KB, (uint32_t)(gProfTxBytes >> 10));
-    ocm_xcp_in_diag_write(OCM_XCP_DIAG_GW_PROF_SENDTO_MAX_US, xcp_gw_ticks_to_us(gProfSendtoMax.last));
+        gProfRecords++;
 #endif
-    ocm_xcp_in_gen_publish(gInGen);
-    ocm_xcp_fifo_cache_flush_after_write(); /* chain first, then header */
+    }
+    gIsrSeg.len = 0u;
+    return enqueued;
+}
+
+/* Responses first, every one as its own queue item (the tx task batches). */
+static int xcp_gw_drain_rsp(BaseType_t *woken) {
+    int enqueued = 0;
+    if (uz_ocm_ring_poll(&gRsp) == 0u) {
+        return 0;
+    }
+    const uint8_t *rec;
+    uint16_t len, aux;
+    while ((rec = uz_ocm_ring_next(&gRsp, &len, &aux)) != NULL) {
+        gIsrFrame.len = xcp_gw_copy_msg(gIsrFrame.data, rec, len);
+        if (xQueueSendToBackFromISR(gTxCtoQueue, &gIsrFrame, woken) == pdTRUE) {
+            enqueued = 1;
+        } else {
+            xcp_gw_ctoq_dropped++;
+        }
+    }
+    uz_ocm_ring_release(&gRsp);
+    return enqueued;
+}
+
+/* DAQ: pack consecutive DTOs into datagram-sized segments. */
+static int xcp_gw_drain_daq(BaseType_t *woken) {
+    int enqueued = 0;
+    const uint32_t avail = uz_ocm_ring_poll(&gDaq);
+    if (avail == 0u) {
+        return 0;
+    }
+    if (avail > xcp_gw_daq_level_max) {
+        xcp_gw_daq_level_max = avail;
+    }
+#if XCP_GW_PROFILE
+    const uint64_t tc0 = xcp_gw_ticks();
+    uint64_t tenq = 0u;
+#endif
+    uint32_t taken = 0u;
+    const uint8_t *rec;
+    uint16_t len, aux;
+    gIsrSeg.len = 0u;
+    while (taken < XCP_GW_DRAIN_MAX_BYTES && (rec = uz_ocm_ring_next(&gDaq, &len, &aux)) != NULL) {
+        const uint16_t n = (uint16_t)(XCP_TL_HEADER_LEN + len);
+        if ((uint32_t)gIsrSeg.len + n > XCP_GW_FRAME_MAX) {
+#if XCP_GW_PROFILE
+            const uint64_t te0 = xcp_gw_ticks();
+#endif
+            enqueued |= xcp_gw_queue_seg(woken);
+#if XCP_GW_PROFILE
+            tenq += xcp_gw_ticks() - te0;
+#endif
+        }
+        gIsrSeg.len = (uint16_t)(gIsrSeg.len + xcp_gw_copy_msg(&gIsrSeg.data[gIsrSeg.len], rec, len));
+        taken += (uint32_t)UZ_OCM_RING_HDR + UZ_OCM_RING_PAD4(len);
+        xcp_gw_daq_records++;
+    }
+    if (taken >= XCP_GW_DRAIN_MAX_BYTES && gDaq.r != gDaq.w_seen) {
+        xcp_gw_drain_capped++;
+    }
+#if XCP_GW_PROFILE
+    const uint64_t te0 = xcp_gw_ticks();
+#endif
+    enqueued |= xcp_gw_queue_seg(woken); /* the last, partly filled segment */
+    uz_ocm_ring_release(&gDaq);
+#if XCP_GW_PROFILE
+    const uint64_t te1 = xcp_gw_ticks();
+    tenq += te1 - te0;
+    gProfEnq += tenq;
+    gProfChain += (te1 - tc0) - tenq;
+#endif
+    return enqueued;
+}
+
+/* Mirror the gateway counters to their fixed OCM addresses (ocm_xcp_ring.h)
+ * so the XCP master can read them by absolute address. */
+static void xcp_gw_publish_diag(void) {
+    volatile uint32_t *const d = (volatile uint32_t *)(uintptr_t)OCM_XCP_GW_DIAG_ADDR;
+    xcp_gw_ring_bad = gDaq.bad + gRsp.bad;
+    d[OCM_XCP_DIAG_GW_RING_BAD] = xcp_gw_ring_bad;
+    d[OCM_XCP_DIAG_GW_DAQ_LEVEL_MAX] = xcp_gw_daq_level_max;
+    d[OCM_XCP_DIAG_GW_CMD_DROPPED] = xcp_gw_cmd_dropped;
+    d[OCM_XCP_DIAG_GW_DRAIN_CAPPED] = xcp_gw_drain_capped;
+    d[OCM_XCP_DIAG_GW_TXQ_DROPPED] = xcp_gw_txq_dropped;
+    d[OCM_XCP_DIAG_GW_CTOQ_DROPPED] = xcp_gw_ctoq_dropped;
+    d[OCM_XCP_DIAG_GW_CMD_RECORDS] = xcp_gw_cmd_records;
+    d[OCM_XCP_DIAG_GW_DAQ_RECORDS] = xcp_gw_daq_records;
+    d[OCM_XCP_DIAG_GW_TX_MALFORMED_DROP] = xcp_gw_tx_malformed_drop;
+    d[OCM_XCP_DIAG_GW_RX_MALFORMED_DROP] = xcp_gw_rx_malformed_drop;
+    d[OCM_XCP_DIAG_GW_SENDTO_ERR] = xcp_gw_sendto_err;
+    d[OCM_XCP_DIAG_GW_SENDTO_DROP] = xcp_gw_sendto_drop;
+    d[OCM_XCP_DIAG_GW_IPI_COUNT] = xcp_gw_ipi_count;
+    d[OCM_XCP_DIAG_GW_TXQ_LEVEL] = (uint32_t)uxQueueMessagesWaitingFromISR(gTxQueue);
+    d[OCM_XCP_DIAG_GW_MASTER_LOST] = xcp_gw_master_lost;
+#if XCP_GW_PROFILE
+    d[OCM_XCP_DIAG_GW_PROF_NOW_US] = xcp_gw_ticks_to_us(xcp_gw_ticks());
+    d[OCM_XCP_DIAG_GW_PROF_IDLE_US] = xcp_gw_ticks_to_us(gProfIdle);
+    d[OCM_XCP_DIAG_GW_PROF_IPI_US] = xcp_gw_ticks_to_us(gProfIpi);
+    d[OCM_XCP_DIAG_GW_PROF_IPI_MAX_US] = xcp_gw_ticks_to_us(gProfIpiMax.last);
+    d[OCM_XCP_DIAG_GW_PROF_CHAIN_US] = xcp_gw_ticks_to_us(gProfChain);
+    d[OCM_XCP_DIAG_GW_PROF_ENQ_US] = xcp_gw_ticks_to_us(gProfEnq);
+    d[OCM_XCP_DIAG_GW_PROF_RECORDS] = gProfRecords;
+    d[OCM_XCP_DIAG_GW_PROF_TX_US] = xcp_gw_ticks_to_us(gProfTx);
+    d[OCM_XCP_DIAG_GW_PROF_SENDTO_US] = xcp_gw_ticks_to_us(gProfSendto);
+    d[OCM_XCP_DIAG_GW_PROF_SENDTO_N] = gProfSendtoN;
+    d[OCM_XCP_DIAG_GW_PROF_TX_KB] = (uint32_t)(gProfTxBytes >> 10);
+    d[OCM_XCP_DIAG_GW_PROF_SENDTO_MAX_US] = xcp_gw_ticks_to_us(gProfSendtoMax.last);
+#endif
+    uz_ocm_ring_clean(d, 4u * OCM_XCP_GW_DIAG_COUNT);
 }
 
 /*--------------------------------------------------------------------------
@@ -552,8 +428,12 @@ void xcp_gateway_a53_on_ipi(BaseType_t *pxHigherPriorityTaskWoken) {
     const uint64_t t0 = xcp_gw_ticks();
 #endif
     xcp_gw_ipi_count++;
-    xcp_gw_read_out_phase(pxHigherPriorityTaskWoken);
-    xcp_gw_write_in_phase(pxHigherPriorityTaskWoken, 1);
+    int enqueued = xcp_gw_drain_rsp(pxHigherPriorityTaskWoken);
+    enqueued |= xcp_gw_drain_daq(pxHigherPriorityTaskWoken);
+    if (enqueued) {
+        (void)xSemaphoreGiveFromISR(gTxSignal, pxHigherPriorityTaskWoken); /* wake the tx task */
+    }
+    xcp_gw_publish_diag();
 #if XCP_GW_PROFILE
     const uint64_t t1 = xcp_gw_ticks();
     gProfIpi += t1 - t0;
@@ -561,53 +441,50 @@ void xcp_gateway_a53_on_ipi(BaseType_t *pxHigherPriorityTaskWoken) {
 #endif
 }
 
-/* Session change (rx task, inside its critical section): the response that
- * sits in the R5 mailbox now predates the new master's first command - take
- * it as consumed without forwarding it. This has to happen before that
- * command is offered: the R5 may answer it before the next IPI, and the IPI
- * read phase would then swallow the answer instead (every new session lost
- * its first response to a 1 s master timeout). Returns 0 while the R5 has
- * its header open (seqlock odd, e.g. during a long DAQ exchange); then the
- * next IPI read phase adopts and the same IPI's write phase offers the
- * command - the order of the original design. */
-static int xcp_gw_adopt_mailbox(void) {
-    for (int tries = 0; tries < 20; tries++) {
-        const uint32_t seq_begin = ocm_xcp_out_seq_read(); /* refreshes the control line */
-        if ((seq_begin & 1u) != 0u) {
-            continue;
-        }
-        const uint32_t cto_seq = ocm_xcp_out_cto_seq_read();
-        if (ocm_xcp_out_seq_unchanged(seq_begin)) {
-            gCtoLastSeq = cto_seq; /* acknowledged to the R5 by the next write phase */
-            gCtoAdoptPending = 0;
-            return 1;
-        }
+/* Hand one command datagram to the R5 (CMD ring). Task context; the
+ * critical section keeps the rx and tx tasks (both may write) and the IPI
+ * ISR out. Returns 0 when the ring is full. */
+static int xcp_gw_cmd_write(const uint8_t *d, uint16_t n) {
+    int ok = 0;
+    taskENTER_CRITICAL();
+    uint8_t *p = uz_ocm_ring_reserve(&gCmd, n, 0u);
+    if (p != NULL) {
+        memcpy(p, d, n);
+        (void)uz_ocm_ring_publish(&gCmd);
+        xcp_gw_cmd_records++;
+        ok = 1;
+    } else {
+        xcp_gw_cmd_dropped++;
     }
-    gCtoAdoptPending = 1;
-    return 0;
+    taskEXIT_CRITICAL();
+    return ok;
 }
 
-/* Offer queued commands to the R5 at once instead of at the next IPI: the R5
- * polls the XCP_IN header every few microseconds, but sends IPIs only with
- * its exchanges - when no DAQ runs, a heartbeat (about 1 ms) apart. Same
- * code as the IPI write phase; the critical section keeps the IPI ISR (same
- * core) out. Task context (rx task). */
-static void xcp_gw_offer_commands(void) {
-    BaseType_t woken = pdFALSE; /* set only if a task waited for gRxQueue space: none does */
+/* Session change (rx task): responses still in the RSP ring belong to the
+ * previous master - drop them so the new session does not see an answer to
+ * a command it never sent. The critical section keeps the IPI ISR (the
+ * other consumer of the same ring state) out. */
+static void xcp_gw_drop_stale_responses(void) {
     taskENTER_CRITICAL();
-    xcp_gw_write_in_phase(&woken, 0);
+    if (uz_ocm_ring_poll(&gRsp) != 0u) {
+        uint16_t len, aux;
+        while (uz_ocm_ring_next(&gRsp, &len, &aux) != NULL) {
+        }
+        uz_ocm_ring_release(&gRsp);
+    }
     taskEXIT_CRITICAL();
 }
 
 /*--------------------------------------------------------------------------
  * RX task: receive XCP-on-UDP datagrams from CANape, remember the master
- * endpoint, queue the frame (gRxQueue) and offer it to the R5 at once.
+ * endpoint and hand the datagram to the R5 at once (CMD ring; the R5 main
+ * loop looks at it on every pass).
  *------------------------------------------------------------------------*/
 /* Walk the packed TL frames of a received datagram: every frame must have
  * 1 <= dlc <= XCP_GW_MAX_CTO_SIZE and the chain must end exactly at the
  * datagram end (the same strictness as the TX restamp walk). The R5 parser
- * checks the bound again - this keeps junk from occupying a command
- * generation and from hijacking the master endpoint. */
+ * checks the bound again - this keeps junk out of the CMD ring and from
+ * hijacking the master endpoint. */
 static int xcp_gw_rx_frames_valid(const uint8_t *d, uint16_t n) {
     uint16_t off = 0;
     while ((uint16_t)(off + XCP_TL_HEADER_LEN) <= n) {
@@ -654,40 +531,36 @@ static void xcp_gw_print_master(const char *what, const struct sockaddr_in *m) {
 
 static void xcp_gw_rx_task(void *arg) {
     (void)arg;
-    static xcp_gw_frame_t f; /* only this task uses it */
+    static uint8_t dgram[XCP_GW_FRAME_MAX]; /* only this task uses it */
     struct sockaddr_in src;
     socklen_t slen;
     for (;;) {
         slen = sizeof(src);
-        int n = lwip_recvfrom(gSock, f.data, sizeof(f.data), 0, (struct sockaddr *)&src, &slen);
-        if (n <= 0 || n > 255) {
-            continue; /* command datagrams: XCP_IN batches are sized for <= 255 B records */
+        int n = lwip_recvfrom(gSock, dgram, sizeof(dgram), 0, (struct sockaddr *)&src, &slen);
+        if (n <= 0) {
+            continue;
         }
-        if (!xcp_gw_rx_frames_valid(f.data, (uint16_t)n)) {
+        if (!xcp_gw_rx_frames_valid(dgram, (uint16_t)n)) {
             xcp_gw_rx_malformed_drop++; /* before master adoption: junk must not start a session */
             continue;
         }
         if (!gMasterValid ||
             src.sin_addr.s_addr != gMaster.sin_addr.s_addr ||
             src.sin_port != gMaster.sin_port) {
-            /* New master endpoint = new session: fresh CTR sequence, drop the
-             * stale DAQ backlog (tx task), swallow a stale parked response
-             * (xcp_gw_adopt_mailbox). Critical section: the tx task copies
-             * gMaster, and the IPI ISR must not forward the stale response. */
+            /* New master endpoint = new session: fresh CTR sequence and no
+             * stale DAQ backlog (tx task), no stale response (dropped here,
+             * before the new master's first command reaches the R5).
+             * Critical section: the tx task copies gMaster. */
             taskENTER_CRITICAL();
             gMaster = src;
             gMasterValid = 1;
             gMasterGen++;
-            (void)xcp_gw_adopt_mailbox();
             taskEXIT_CRITICAL();
+            xcp_gw_drop_stale_responses();
         }
         gMasterLastRxTick = xTaskGetTickCount(); /* master supervision: it is alive */
-        const unsigned seen = xcp_gw_rx_session_cmds(f.data, (uint16_t)n);
-        f.len = (uint16_t)n;
-        (void)xQueueSendToBack(gRxQueue, &f, 0); /* drop if full; master retries */
-        if (!gCtoAdoptPending) {
-            xcp_gw_offer_commands(); /* else the next IPI adopts first, then offers */
-        }
+        const unsigned seen = xcp_gw_rx_session_cmds(dgram, (uint16_t)n);
+        (void)xcp_gw_cmd_write(dgram, (uint16_t)n); /* full: dropped, the master retries */
         /* Printed after the hand-over, so the command does not wait for it.
          * Whether the R5 accepts the CONNECT shows on the master's side. */
         if (seen & XCP_GW_SEEN_CONNECT) {
@@ -700,17 +573,17 @@ static void xcp_gw_rx_task(void *arg) {
 }
 
 /*--------------------------------------------------------------------------
- * TX task: batch frames produced by the IPI ISR into one UDP datagram and
- * send it to CANape. CTO frames first (they jump the DAQ backlog, hedrive
- * T1); the transport CTR is stamped here, at transmission time, in
- * transmission order (hedrive T3 — the R5's producer-side counter becomes
- * wrong on reordering/drops and CANape reports "Ungueltiger Zaehler").
+ * TX task: batch the queued messages into one UDP datagram and send it to
+ * CANape. Responses first (they jump the DAQ backlog, hedrive T1); the
+ * transport CTR is stamped here, at transmission time, in transmission
+ * order (hedrive T3 — a producer-side counter becomes wrong on reordering
+ * and drops, and CANape reports "Ungueltiger Zaehler").
  *------------------------------------------------------------------------*/
 static uint16_t gTxCtr = 0;
 
-/* Walk the packed TL frames of one record and stamp the transmission-order
+/* Walk the packed TL frames of one item and stamp the transmission-order
  * counter into each. Returns 0 (and counts) if the structure is malformed —
- * the seqlock upstream makes that impossible unless memory corrupts. */
+ * impossible unless memory corrupts. */
 static int xcp_gw_restamp_ctr(xcp_gw_frame_t *f) {
     uint16_t off = 0;
     while ((uint16_t)(off + XCP_TL_HEADER_LEN) <= f->len) {
@@ -733,21 +606,17 @@ static int xcp_gw_restamp_ctr(xcp_gw_frame_t *f) {
 
 /* Master supervision (see xcp_gateway_a53.h): close the session from the
  * gateway side. The R5 engine is told with a regular XCP DISCONNECT through
- * the command path (generation handshake = guaranteed delivery); it stops
- * DAQ and answers, and that answer is discarded here because the endpoint
- * is forgotten first. Task context only (tx task). */
+ * the CMD ring; it stops DAQ and answers, and that answer is discarded here
+ * because the endpoint is forgotten first. Task context only (tx task). */
 static void xcp_gw_master_lost_disconnect(const char *why) {
-    static const xcp_gw_frame_t disconnect = {
-        .len = XCP_TL_HEADER_LEN + 1,
-        .data = {0x01, 0x00, 0x00, 0x00, XCP_GW_CC_DISCONNECT}, /* [dlc=1][ctr=0][DISCONNECT] */
-    };
+    static const uint8_t disconnect[XCP_TL_HEADER_LEN + 1] = {0x01, 0x00, 0x00, 0x00, XCP_GW_CC_DISCONNECT};
     struct sockaddr_in master;
     taskENTER_CRITICAL();
     master = gMaster;
-    gMasterValid = 0; /* ISR drops staged DAQ, tx task sends nothing */
+    gMasterValid = 0; /* ISR drops DAQ, tx task sends nothing */
     taskEXIT_CRITICAL();
     xcp_gw_master_lost++;
-    (void)xQueueSendToBack(gRxQueue, &disconnect, pdMS_TO_TICKS(100));
+    (void)xcp_gw_cmd_write(disconnect, (uint16_t)sizeof(disconnect));
     xQueueReset(gTxQueue); /* the backlog has no receiver any more */
     xcp_gw_print_master(why, &master);
 }
@@ -777,10 +646,10 @@ static void xcp_gw_tx_task(void *arg) {
         const uint64_t tb0 = xcp_gw_ticks();
 #endif
 
-        /* Take pending CTOs first (they jump the DAQ backlog). With both queues
-         * empty, block on the ISR's "frames queued" signal so a response on an
-         * idle link goes out at once; the 20 ms fallback only keeps the
-         * master-change check above alive. */
+        /* Take pending responses first (they jump the DAQ backlog). With both
+         * queues empty, block on the ISR's "frames queued" signal so a
+         * response on an idle link goes out at once; the 20 ms fallback only
+         * keeps the master-change check above alive. */
         if (xQueueReceive(gTxCtoQueue, &f, 0) != pdTRUE && xQueueReceive(gTxQueue, &f, 0) != pdTRUE) {
             (void)xSemaphoreTake(gTxSignal, pdMS_TO_TICKS(20));
             continue;
@@ -790,7 +659,7 @@ static void xcp_gw_tx_task(void *arg) {
             fill += f.len;
         }
 
-        /* Top up the datagram without blocking: CTOs keep priority. */
+        /* Top up the datagram without blocking: responses keep priority. */
         for (;;) {
             QueueHandle_t q = NULL;
             if (xQueuePeek(gTxCtoQueue, &f, 0) == pdTRUE) {
@@ -884,16 +753,15 @@ static void xcp_gw_tx_task(void *arg) {
 }
 
 /*--------------------------------------------------------------------------
- * Init: UDP socket on XCP_GATEWAY_UDP_PORT, the three queues, and the tasks.
- * Call once the lwIP interface is up (like the JavaScope/XCPlite server).
+ * Init: UDP socket on XCP_GATEWAY_UDP_PORT, the queues, the rings and the
+ * tasks. Call once the lwIP interface is up (like the JavaScope server).
  * Returns 0 on success.
  *------------------------------------------------------------------------*/
 int xcp_gateway_a53_init(uint32_t thread_stack, uint32_t thread_prio) {
-    gRxQueue = xQueueCreate(XCP_GW_RXQ_DEPTH, sizeof(xcp_gw_frame_t));
     gTxQueue = xQueueCreate(XCP_GW_TXQ_DEPTH, sizeof(xcp_gw_frame_t));
     gTxCtoQueue = xQueueCreate(XCP_GW_CTOQ_DEPTH, sizeof(xcp_gw_frame_t));
     gTxSignal = xSemaphoreCreateBinary();
-    if (gRxQueue == NULL || gTxQueue == NULL || gTxCtoQueue == NULL || gTxSignal == NULL) {
+    if (gTxQueue == NULL || gTxCtoQueue == NULL || gTxSignal == NULL) {
         return -1;
     }
 
@@ -912,7 +780,11 @@ int xcp_gateway_a53_init(uint32_t thread_stack, uint32_t thread_prio) {
         return -3;
     }
 
-    ocm_xcp_fifo_init(); /* A53 initialises XCP_OUT (the region it reads)       */
+    /* Rings: start empty from wherever the R5 stands (uz_ocm_ring.h). */
+    ocm_xcp_ring_setup(&gDaq, &gRsp, &gCmd);
+    uz_ocm_ring_consumer_init(&gDaq);
+    uz_ocm_ring_consumer_init(&gRsp);
+    uz_ocm_ring_producer_init(&gCmd);
 
     if (sys_thread_new("xcp_gw_rx", xcp_gw_rx_task, NULL, thread_stack, thread_prio) == NULL) {
         return -4;
@@ -927,6 +799,6 @@ int xcp_gateway_a53_init(uint32_t thread_stack, uint32_t thread_prio) {
     (void)xTaskCreate(xcp_gw_idle_probe_task, "xcp_gw_idle", configMINIMAL_STACK_SIZE, NULL,
                       tskIDLE_PRIORITY, NULL);
 #endif
-    gGwReady = 1; /* from here on the IPI ISR may touch the queues/FIFO */
+    gGwReady = 1; /* from here on the IPI ISR may touch the queues and rings */
     return 0;
 }

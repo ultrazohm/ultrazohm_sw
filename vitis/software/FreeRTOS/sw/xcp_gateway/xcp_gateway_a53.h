@@ -38,10 +38,10 @@ extern "C" {
 #ifndef XCP_GATEWAY_SEND_FAIL_LIMIT
 #define XCP_GATEWAY_SEND_FAIL_LIMIT 20
 #endif
-/* A53 time profile: time in the IPI hook (chain copy, queue copies), in the
+/* A53 time profile: time in the IPI hook (ring copy, queue copies), in the
  * tx task and in lwip_sendto, plus an idle probe task at the idle priority,
  * measured with the A53 system counter and mirrored with the gateway counters
- * (ocm_xcp_fifo.h) for xcp_poll.py --stress. Costs a few counter reads per
+ * (ocm_xcp_ring.h) for xcp_poll.py --stress. Costs a few counter reads per
  * IPI and per datagram; the probe only uses CPU time nothing else wants.
  * 0 = off (the profile slots read 0). */
 #ifndef XCP_GW_PROFILE

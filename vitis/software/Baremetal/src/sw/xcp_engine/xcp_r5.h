@@ -5,19 +5,17 @@
  * Enable with XCP_ENGINE_R5_ENABLE in vitis/software/Baremetal/src/defines.h
  * (and select LOGGING_PATH_XCP_R5_GATEWAY on the A53).
  *
- *   xcp_r5_init()       : call once during init, after uz_SystemTime_init().
+ *   xcp_r5_init()       : call once during init, after uz_SystemTime_init()
+ *                         and before the control ISR is enabled.
  *   xcp_r5_event()      : call from ISR_Control to sample DAQ at the control
- *                         rate. This is the ONLY XCP call in the ISR; its cost
- *                         is the DAQ sample copy (~sub-us idle, ~5 us/KB).
- *                         It also serves the derived time slices (see below).
- *   xcp_r5_background() : call from the MAIN LOOP every iteration. Looks at
- *                         the XCP_IN header, executes new commands at once
- *                         and drains DAQ into the OCM once the A53 has
- *                         acknowledged the previous chain, with at most one
- *                         exchange per control period (see the pacing notes
- *                         in xcptl_ocm.c); returns 1 when the caller must
- *                         trigger the IPI to the A53.
- *   xcp_r5_poll()       : one unpaced exchange (special cases only).
+ *                         rate. The engine writes the DTOs straight into the
+ *                         DAQ ring in OCM; the call then publishes them (one
+ *                         cache clean, ~1.3 us/KB) and sends the IPI when
+ *                         enough data waits. It also serves the derived time
+ *                         slices (see below).
+ *   xcp_r5_background() : call from the MAIN LOOP every iteration. Executes
+ *                         new commands from the CMD ring; their responses go
+ *                         out at once (RSP ring + IPI).
  *
  * DAQ rasters (event channel numbers as declared in CANape/UZ_XCP/uz.A2L):
  *   0 DAQ_R5     control-ISR rate (UZ_PWM_FREQUENCY x trigger factor)
@@ -41,52 +39,37 @@
 #define XCP_R5_READ_ONLY 0
 #endif
 
-/* Exchange profile (diagnostics). 1 (default): the R5 times every exchange
- * sweep and every xcp_r5_event() call with its CPU cycle counter and keeps
- * the sums in xcp_r5_prof below, readable by the XCP master
+/* Transport profile (diagnostics). 1 (default): xcp_r5_event() and the
+ * command execution are timed with the CPU cycle counter; the sums in
+ * xcp_r5_prof below are readable by the XCP master
  * (tools/xcp_test/xcp_poll.py --stress prints them). Cost: a few cycle
- * counter reads per exchange and per control cycle. 0: compiled out. */
+ * counter reads per control cycle. 0: compiled out. */
 #ifndef XCP_R5_PROFILE
 #define XCP_R5_PROFILE 1
 #endif
 
 #include <stdint.h>
 
-/* Layout of xcp_r5_prof, version 2, 160 bytes, little endian (version 1 =
- * the first 136 bytes; there `keeps` counted sweeps that kept an
- * unacknowledged chain). *_cyc are R5 CPU cycles (cpu_hz per second), *_ns
- * come from uz_SystemTime. Wall time includes the control ISRs that
- * interrupted the main loop; isr_ns_* is that ISR time, so wall - isr = CPU
- * time of the phase. All values count from the last reset: write 1 to
- * `reset`, the next exchange clears everything. */
+/* Layout of xcp_r5_prof, version 3 (OCM rings), 88 bytes, little endian.
+ * *_cyc are R5 CPU cycles (cpu_hz per second), isr_ns_all comes from
+ * uz_SystemTime. All values count from the last reset: write 1 to `reset`,
+ * the next control cycle clears everything. */
 typedef struct {
-    uint32_t version;       /*   0  1                                          */
-    uint32_t cpu_hz;        /*   4  R5 clock                                   */
-    uint32_t reset;         /*   8  write 1 to clear                           */
-    uint32_t exchanges;     /*  12  exchanges counted                          */
-    uint32_t keeps;         /*  16  ... header-only (commands, heartbeat)      */
-    uint32_t event_calls;   /*  20  xcp_r5_event() calls = control cycles      */
-    uint32_t event_cyc_max; /*  24  longest xcp_r5_event()                     */
-    uint32_t copy_cyc_max;  /*  28  longest copy phase, wall                   */
-    uint32_t flush_cyc_max; /*  32  longest flush phase, wall                  */
-    uint32_t total_cyc_max; /*  36  longest exchange, wall                     */
-    uint64_t elapsed_cyc;   /*  40  wall time covered (exchange start to start) */
-    uint64_t chain_bytes;   /*  48  bytes written into the XCP_OUT chain       */
-    uint64_t cyc_refresh;   /*  56  XCP_IN cache refresh                       */
-    uint64_t cyc_commands;  /*  64  open the cycle, commands, response mailbox */
-    uint64_t cyc_copy;      /*  72  DAQ queue -> XCP_OUT chain (tx_pump)       */
-    uint64_t cyc_flush;     /*  80  chain + header cache flush, publish        */
-    uint64_t cyc_total;     /*  88  whole exchange                             */
-    uint64_t isr_ns_copy;   /*  96  control-ISR time inside the copy phases    */
-    uint64_t isr_ns_flush;  /* 104  control-ISR time inside the flush phases   */
-    uint64_t isr_ns_total;  /* 112  control-ISR time inside whole exchanges    */
-    uint64_t isr_ns_all;    /* 120  all control-ISR time                       */
-    uint64_t event_cyc;     /* 128  cycles in xcp_r5_event(), the XCP part of the ISR */
-    uint64_t ack_wait_us;   /* 136  sum: DAQ chain published -> A53 acknowledge */
-    uint32_t ack_n;         /* 144  acknowledges measured                      */
-    uint32_t ack_wait_max_us; /* 148  longest of them                          */
-    uint32_t daq_waits;     /* 152  DAQ exchanges due before the acknowledge   */
-    uint32_t polls;         /* 156  XCP_IN header polls                        */
+    uint32_t version;         /*  0  3                                          */
+    uint32_t cpu_hz;          /*  4  R5 clock                                   */
+    uint32_t reset;           /*  8  write 1 to clear                           */
+    uint32_t event_calls;     /* 12  xcp_r5_event() calls = control cycles      */
+    uint32_t event_cyc_max;   /* 16  longest xcp_r5_event()                     */
+    uint32_t publish_cyc_max; /* 20  longest publish of one cycle's DTOs        */
+    uint32_t ipis;            /* 24  IPIs from the control ISR                  */
+    uint32_t commands;        /* 28  commands executed                          */
+    uint64_t elapsed_cyc;     /* 32  wall time covered                          */
+    uint64_t event_cyc;       /* 40  cycles in xcp_r5_event(), the XCP part of the ISR */
+    uint64_t sample_cyc;      /* 48  of it: XcpEvent, DTOs into the ring        */
+    uint64_t publish_cyc;     /* 56  of it: cache clean + write position        */
+    uint64_t daq_bytes;       /* 64  bytes published into the DAQ ring          */
+    uint64_t isr_ns_all;      /* 72  all control-ISR time                       */
+    uint64_t cmd_cyc;         /* 80  main loop: command execution, wall         */
 } xcp_r5_prof_t;
 
 #ifdef __cplusplus
@@ -95,8 +78,7 @@ extern "C" {
 
 int  xcp_r5_init(const char *name, const char *epk);
 void xcp_r5_event(void);
-int  xcp_r5_background(void);
-void xcp_r5_poll(void);
+void xcp_r5_background(void);
 
 #if XCP_R5_PROFILE
 extern volatile xcp_r5_prof_t xcp_r5_prof;

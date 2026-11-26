@@ -1,3 +1,7 @@
+# Run from this directory in an isolated Python environment.
+# PyGWalker uses the Tornado server API from Streamlit before 1.57.
+# uv run --no-project --python 3.12 --with 'pygwalker>=0.5.0.1' \
+#   --with 'streamlit<1.57' streamlit run pywalker_test.py
 from pygwalker.api.streamlit import StreamlitRenderer
 import pandas as pd
 import streamlit as st

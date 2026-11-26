@@ -1,0 +1,265 @@
+"""Loading mode and disk caching are per file and survive session restore."""
+
+import json
+import subprocess
+import sys
+
+import numpy as np
+import polars as pl
+import pytest
+
+from ultrazohm_dataviewer import api
+from ultrazohm_dataviewer.commands import CommandError
+from ultrazohm_dataviewer.loader import convert_csv_to_parquet, open_file
+from ultrazohm_dataviewer.model import DataRegistry
+from ultrazohm_dataviewer.session import apply_dict, export_data, to_dict
+from ultrazohm_dataviewer.sources import ByteCache, SourceColumn
+from ultrazohm_dataviewer.state import AppState
+
+
+@pytest.fixture
+def logs(tmp_path):
+    paths = [tmp_path / "a.parquet", tmp_path / "b.parquet"]
+    t = np.arange(150000, dtype=np.float64) / 1000
+    for path in paths:
+        pl.DataFrame({"time": t, "a": np.sin(t).astype(np.float32)}).write_parquet(
+            path, row_group_size=7777
+        )
+    return paths
+
+
+@pytest.mark.parametrize("mode", ["memory", "lazy"])
+def test_loading_modes(logs, tmp_path, mode):
+    run = open_file(str(logs[0]), mode, cache_dir=tmp_path / "cache").register(
+        DataRegistry()
+    )
+    assert isinstance(run.time, SourceColumn) == (mode != "memory")
+    assert run.signals["a"].y[100] == np.float32(np.sin(0.1))
+
+
+def test_shared_cache_bounds_match_eager_reads(logs, tmp_path):
+    cache = ByteCache()
+    source = open_file(str(logs[0]), "lazy", cache, tmp_path / "cache").source
+    for lo, hi in [(70.0, 71.0), (130.0, 132.0), (2.0, 5.0)]:
+        expected = source.bounds(lo, hi)
+        t, _ = source.read_rows(["a"], *expected)
+        np.testing.assert_array_equal(t, np.arange(*expected) / 1000)
+
+
+def test_queued_load_captures_settings(logs, tmp_path):
+    state = AppState()
+    state.cache_dir = tmp_path / "cache"
+    try:
+        state.disk_cache = True
+        state.request_load(str(logs[0]), loading_mode="lazy")
+        state.disk_cache = False
+        state.request_load(str(logs[1]), loading_mode="memory")
+        for future, _ in state.services.pending:
+            future.result(timeout=10)
+        state.poll_pending_loads()
+        assert isinstance(state.registry.runs[0].time, SourceColumn)
+        assert state.registry.runs[0].source.disk_cache
+        assert isinstance(state.registry.runs[1].time, np.ndarray)
+    finally:
+        state.shutdown()
+
+
+def test_json_keeps_loading_mode_per_file(logs, tmp_path):
+    state, restored = AppState(), AppState()
+    try:
+        for s in [state, restored]:
+            s.cache_dir = tmp_path / "cache"
+        state.loading_mode = "lazy"
+        state.load_sync(str(logs[0]))
+        state.loading_mode = "memory"
+        state.load_sync(str(logs[1]))
+        saved = json.loads(json.dumps(to_dict(state)))
+        apply_dict(restored, saved)
+        assert isinstance(restored.registry.runs[0].time, SourceColumn)
+        assert isinstance(restored.registry.runs[1].time, np.ndarray)
+        assert restored.loading_mode == "memory"
+    finally:
+        for s in [state, restored]:
+            s.shutdown()
+
+
+def test_conversion_export_and_library(tmp_path):
+    path = tmp_path / "input.csv"
+    path.write_text("time;a;\n0;1;\n1;2;\n2;3;\n3;4;\n")
+    parquet = convert_csv_to_parquet(str(path))
+    data = api.read(parquet)
+    assert isinstance(data.to_dataframe(), pl.DataFrame)
+    state = AppState()
+    try:
+        run = state.load_sync(parquet)
+        state.cells[0].add((run.id, "a"))
+        export_data(state, 0, str(tmp_path / "export.csv"))
+        actual = api.read(tmp_path / "export.csv")
+        np.testing.assert_array_equal(actual["a"], data["a"])
+    finally:
+        state.shutdown()
+
+
+def test_io_never_imports_pandas_or_pyarrow(tmp_path):
+    path = tmp_path / "input.csv"
+    path.write_text("time;a\n0;1\n1;2\n")
+    code = f"""
+import sys
+import ultrazohm_dataviewer as uz
+from ultrazohm_dataviewer.loader import convert_csv_to_parquet, open_file
+from ultrazohm_dataviewer.model import DataRegistry
+parquet = convert_csv_to_parquet({str(path)!r})
+for mode in ("memory", "lazy"):
+    open_file(parquet, mode).register(DataRegistry())
+uz.read(parquet).to_dataframe()
+assert "pandas" not in sys.modules and "pyarrow" not in sys.modules
+"""
+    subprocess.run([sys.executable, "-c", code], check=True, timeout=60)
+
+
+def test_default_cache_and_removed_auto_controls():
+    state = AppState()
+    try:
+        assert state.registry.cache.limit == 1024 * 1024**2
+        assert "memory_budget" not in {command.name for command in state.commands.all()}
+        with pytest.raises(CommandError, match="memory or lazy"):
+            state.commands.execute(state, "loading_mode", ["auto"])
+        snapshot = to_dict(state)
+        assert "memory_budget_mb" not in snapshot
+    finally:
+        state.shutdown()
+
+
+def test_obsolete_sessions_are_rejected():
+    state = AppState()
+    try:
+        with pytest.raises(ValueError, match="Unsupported session version"):
+            apply_dict(state, {"version": 1, "loading_mode": "auto"})
+        with pytest.raises(CommandError):
+            state.commands.execute(state, "memory_budget", [512])
+    finally:
+        state.shutdown()
+
+
+def test_application_defaults():
+    from ultrazohm_dataviewer.app import DataViewerApp
+
+    app = DataViewerApp()
+    try:
+        assert app.state.loading_mode == "lazy"
+    finally:
+        app._shutdown()
+
+
+def test_cli_defaults_and_explicit_overrides(monkeypatch, tmp_path):
+    from ultrazohm_dataviewer import app, cli
+
+    # Outside a checkout there is no inferred repository; startup inside a
+    # checkout is covered by test_repository_selection.
+    monkeypatch.chdir(tmp_path)
+    captured = []
+
+    class Viewer:
+        def __init__(self, **kwargs):
+            captured.append(kwargs)
+
+        def run(self):
+            pass
+
+        def enable_control(self, endpoint):
+            pass
+
+        def _shutdown(self):
+            pass
+
+    monkeypatch.setattr(app, "DataViewerApp", Viewer)
+    mapping_calls = []
+
+    def generate(repo):
+        mapping_calls.append(repo)
+        return "cached-mapping.json"
+
+    monkeypatch.setattr("ultrazohm_dataviewer.live_mapping.generate_mapping", generate)
+    settings_calls = []
+    monkeypatch.setattr(
+        "ultrazohm_dataviewer.settings.load_workspace_settings", settings_calls.append
+    )
+    import importlib.util
+
+    cli.main(["gui"])
+    assert captured[-1]["disk_cache"] is False
+    # Live panels follow the installed CLI package; there is no flag.
+    assert captured[-1]["use_live"] is (
+        importlib.util.find_spec("ultrazohm_cli") is not None
+    )
+    assert not mapping_calls
+    assert captured[-1]["loading_mode"] == "lazy"
+    cli.main(["gui", "--loading-mode", "memory", "--disk-cache"])
+    assert captured[-1]["disk_cache"] is True
+    assert captured[-1]["loading_mode"] == "memory"
+    from types import SimpleNamespace
+
+    monkeypatch.setattr(
+        app,
+        "pfd",
+        SimpleNamespace(
+            select_folder=lambda *a: SimpleNamespace(
+                result=lambda: "/selected/workspace"
+            )
+        ),
+    )
+    assert captured[-1]["live_repo"] is None
+    assert not mapping_calls
+    assert not settings_calls
+    with pytest.raises(SystemExit):
+        cli.main(["gui", "--use-live"])
+    cli.main(["gui", "--live-repo", "/example/repository"])
+    assert captured[-1]["live_repo"] == "/example/repository"
+    assert not mapping_calls
+
+
+def test_disk_cache_session_settings(logs, tmp_path):
+    states = [AppState(), AppState()]
+    state, restored = states
+    try:
+        assert state.disk_cache is False
+        state.cache_dir = tmp_path / "cache"
+        state.disk_cache = True
+        run = state.load_sync(str(logs[0]))
+        assert run is not None and run.source.disk_cache
+        state.disk_cache = False
+        apply_dict(restored, to_dict(state))
+        for s in (restored,):
+            assert not s.disk_cache
+            assert s.registry.runs[0].source.disk_cache
+    finally:
+        for s in states:
+            s.shutdown()
+
+
+@pytest.mark.parametrize("mode", ["lazy", "memory"])
+def test_exact_windows_and_exports(tmp_path, mode):
+    from ultrazohm_dataviewer.api import read
+    from ultrazohm_dataviewer.session import export_data
+
+    state = AppState()
+    try:
+        path = tmp_path / "samples.csv"
+        path.write_text("time;a\n0;1\n1;2\n2;3\n")
+        state.loading_mode = mode
+        run = state.load_sync(str(path))
+        state.cells[0].signals = [(run.id, "a")]
+        t, values = run.read_window(["a"], 0.9, 1.1)
+        np.testing.assert_array_equal(t, [1])
+        np.testing.assert_array_equal(values["a"], [2])
+        state.plot_x_ranges[1] = (0.9, 1.1)
+        target = tmp_path / "export.csv"
+        export_data(state, 0, str(target))
+        np.testing.assert_array_equal(read(target)["a"], [2])
+        state.plot_x_ranges[1] = (10, 11)
+        export_data(state, 0, str(target), relative=True)
+        assert (
+            len(target.read_text().splitlines()) == 1
+        )  # Header, no samples outside window.
+    finally:
+        state.shutdown()

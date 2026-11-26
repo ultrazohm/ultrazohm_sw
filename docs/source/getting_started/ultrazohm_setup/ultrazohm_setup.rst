@@ -96,7 +96,9 @@ Generate Bitstream
 
 .. note::
 
-  More CPU jobs decrease the time Vivado needs to generate the bitstream. However, Vivado requires more RAM for a higher number of jobs. If you run out of RAM and your OS writes to the disk (paging file or swap), decrease the number of jobs!
+  More CPU jobs decrease the time Vivado needs to generate the bitstream.
+  However, Vivado requires more RAM for a higher number of jobs.
+  If you run out of RAM and your OS writes to the disk (paging file or swap), decrease the number of jobs!
 
 
 .. image:: ./img_gen_bitstream/1_gen_bitstream.png
@@ -200,11 +202,87 @@ Generate the Vitis workspace
 
 .. note:: After the script has finished and the workspace has been build, restart Vitis by clicking on ``File -> Restart`` . 
           This is recommended, because otherwise the pre-defined debug configurations are not visible.
-          This is only necessary after the **initial build** of the workspace. 
+          This is only necessary after the **initial build** of the workspace.
           For subsequent uses of the workspace, the debug configurations will be visible without additional steps.
  
           .. image:: ./img_vitis_import/7_restart.png  
 
+
+
+Headless Vitis workflow (Linux)
+*******************************
+
+Source the Vitis 2022.2 ``settings64.sh`` so that ``xsct``, ``vitis``, and ``hw_server`` are on ``PATH``.
+Run the following commands from the repository root.
+Close Vitis before modifying its workspace from the command line.
+
+.. code-block:: bash
+
+   # First use only: create and build an empty vitis/workspace, without a GUI.
+   make -C vitis generate
+
+   # Subsequent builds: platform/BSPs, all applications, and system projects.
+   make -C vitis build
+
+   # Start a local hardware server in another terminal if none is running.
+   hw_server
+
+   # Build, then program the FPGA and download/start both processor applications.
+   make -C vitis flash
+
+``build`` explicitly selects the ``Debug`` build configuration for Baremetal (R5_0) and FreeRTOS (A53_0), because the existing launch scripts load those ELF paths even in Run mode.
+It uses the existing exported hardware; it does not run Vivado synthesis.
+The workspace uses the checked-in FSBL binary, as configured by the workspace generator.
+
+``make -C vitis flash`` always runs an incremental build of the platform and applications, including R5/Baremetal and A53/FreeRTOS, before programming.
+Unchanged sources are not recompiled.
+``run`` and ``build-run`` are aliases for ``flash``; direct invocation of the Tcl ``flash`` or ``run`` action also builds first.
+It defaults to ``PROFILE=Run_UltraZohm`` and sources the same Tcl wrapper as ``vitis/software/Run_UltraZohm.launch``.
+This resets the board, programs the FPGA, initializes the PS, and downloads and starts FreeRTOS and Baremetal via the local JTAG hardware server at ``127.0.0.1:3121``.
+The download is volatile; it does not write QSPI flash or create an SD boot image.
+Use one connected UltraZohm, as assumed by the existing target-selection script.
+
+``Debug_UltraZohm`` and ``Debug_UltraZohm_fast_restart_PL_reset`` still require the Vitis GUI.
+The headless launcher rejects these profiles until debugger session handling is implemented; it never silently substitutes Run mode.
+
+``make -C vitis open`` opens the existing workspace.
+``generate-open`` preserves the original generate-and-open workflow.
+Generation refuses a nonempty workspace, except for ``create_Vitis_workspace_here.txt``.
+The Ubuntu Makefile is a convenience wrapper around a shared Tcl entry point; Bash wrappers are not required.
+Override ``XSCT`` to select an executable outside ``PATH``.
+
+On Ubuntu or Windows, call the same Tcl entry point through XSCT directly.
+From the repository root:
+
+On Linux (GUI opening requires an existing desktop display):
+
+.. code-block:: text
+
+   xsct -norlwrap tcl_scripts/vitis_headless.tcl generate
+   xsct -norlwrap tcl_scripts/vitis_headless.tcl build
+   xsct -norlwrap tcl_scripts/vitis_headless.tcl flash Run_UltraZohm
+   xsct -norlwrap -nodisp tcl_scripts/vitis_headless.tcl open
+
+On native Windows:
+
+.. code-block:: bat
+
+   xsct.bat tcl_scripts/vitis_headless.tcl generate
+   xsct.bat tcl_scripts/vitis_headless.tcl build
+   xsct.bat tcl_scripts/vitis_headless.tcl flash Run_UltraZohm
+   xsct.bat tcl_scripts/vitis_headless.tcl open
+
+Use ``xsct.bat`` if required by your Windows command shell.
+For other working directories, supply the absolute path to the Tcl script; workspace paths are resolved relative to that script.
+``generate-open`` generates the workspace and then starts Vitis.
+GUI actions require ``vitis`` on ``PATH`` and return after launching it; they do not wait for the GUI to close.
+
+These scripts target Vitis 2022.2.
+Programming also requires ``XILINX_VITIS`` to point to the installation containing its Tcl utility scripts.
+Use the vendor environment setup and installed JTAG drivers.
+Build and programming errors return a nonzero exit status; programming never proceeds after a failed build.
+Do not run multiple workspace operations concurrently, including from separate terminals.
+Native Windows build and hardware programming still require validation.
 
 
 Physical Setup of the UltraZohm
@@ -262,3 +340,22 @@ Javascope
 - Start the Javascope
 
 .. image:: https://images2.imgbox.com/99/98/KSNpOtWT_o.gif
+
+Linux firmware display requirements
+-----------------------------------
+
+Batch firmware operations require xlsclients and, without a usable display,
+Xvfb on the machine running XSCT. On Debian/Ubuntu install x11-utils and xvfb;
+dbus-x11 provides the optional dbus-launch helper. Acquisition alone does not
+need these tools. Native Windows needs no X11 packages or Linux launcher flags.
+An attached laptop needs none of these firmware-host dependencies.
+
+Use xsct -norlwrap for direct Linux batch execution. For Linux open and
+generate-open, use xsct -norlwrap -nodisp with an existing desktop display.
+ultrazohm-cli and Make targets select these flags automatically.
+A temporary batch display cannot host a persistent Vitis GUI.
+
+Start the ultrazohm-cli process normally over SSH after installing the dependencies; no xvfb-run wrapper is necessary.
+Rebuild the checkout ultrazohm-cli and restart its ultrazohm-cli process to pick up launcher changes.
+Failed generation can leave a partial workspace: preserve it before retrying in an empty workspace.
+Inspect the job output and timestamp-matching vitis/workspace/IDE.log; Channel closed alone does not identify its cause.

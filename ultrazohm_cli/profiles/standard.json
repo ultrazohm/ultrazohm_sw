@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "name": "standard",
+  "sample_period_us": 100.0,
+  "initial_channels": {
+    "1": "JSO_ISR_ExecTime_us",
+    "2": "JSO_ISR_Period_us",
+    "3": "JSO_lifecheck",
+    "4": "JSO_theta_mech",
+    "5": "JSO_ua",
+    "6": "JSO_ub",
+    "7": "JSO_uc",
+    "8": "JSO_ia",
+    "9": "JSO_ib",
+    "10": "JSO_ic",
+    "11": "JSO_id",
+    "12": "JSO_iq",
+    "13": "JSO_ud",
+    "14": "JSO_uq",
+    "15": "JSO_Speed_rpm",
+    "16": "JSO_el_Speed_rpm",
+    "17": "JSO_LoadSpeed_rpm",
+    "18": "JSO_volt_temp",
+    "19": "JSO_SoC_init",
+    "20": "JSO_Theta_el"
+  }
+}

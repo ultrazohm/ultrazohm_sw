@@ -1,4 +1,6 @@
 *.csv
+*.parquet
 *.mat
 dist/
 nbproject/private/
+__pycache__/

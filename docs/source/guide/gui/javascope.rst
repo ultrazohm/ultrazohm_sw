@@ -99,7 +99,7 @@ Logging
 - ``Logging OFF/ON`` starts or stops writing log files.
 - ``Log FastData`` includes fast scope samples in the log file.
 - ``Log SlowData`` includes ``SlowData`` values in the log file. All received ``SlowData`` is logged.
-- ``ext. log trigger`` allows the UltraZohm software to control logging via its status bit.
+- ``ext. log trigger`` allows the UltraZohm software to control logging via status bit 12.   In ``ipc_ARM.c``, replace the default ``false`` assignment for ``JAVASCOPE_STATUS_LOGGING_TRIGGER`` with your Boolean condition using ``uz_javascope_set_status_bit()`` and assign its return value.
 - ``Log every N`` reduces the logging rate of FastData by saving only every Nth sample group. If enabled, ``SlowData`` is logged at full rate.
 - ``Log state`` shows whether logging is active.
 - Each logging start creates a new ``Log_yyyy-mm-dd_hh-mm-ss.csv`` file.
@@ -116,6 +116,12 @@ Footer and connection area
    JavaScope footer and connection controls
 
 - ``Status`` shows 32-bit status register.
+  Bits 0 through 3 show the Ready, Running, Error, and User LED levels, including Ready blinking.
+  Bits 4 through 11 carry custom button feedback, and bit 12 controls external logging.
+  These optional flags are cleared by default in ``ipc_ARM.c``; replace the respective default assignments to supply application feedback.
+  Bits 13 through 19 are used by the ParameterID GUI extension; bits 20 through 29 are reserved.
+  Bits 31:30 encode the current platform state: ``00`` idle, ``01`` running (system enabled), ``10`` control (control enabled), and ``11`` error.
+  This state field is independent of the LED levels and is added by ``JavaScope_update()`` when preparing the outgoing frame.
 - ``Connection indicator`` moves when new data package arrives.
 - ``IP address`` shows the target device address.
 - ``connect`` opens the connection to the UltraZohm at the configured IP address.
@@ -186,7 +192,8 @@ The ``Control`` tab is the main interface for state-machine control, user inputs
 
    a. 20 values are available as references or setpoints for the user application.
 
-   b. After entering a value, press ``enter`` or the ``set`` button to send it to the R5. In ``ipc_ARM.c``, you can define how the value is used in the application.
+   b. After entering a value, press ``enter`` or the ``set`` button to send it to the R5.
+      In ``ipc_ARM.c``, you can define how the value is used in the application.
 
    .. _javascope_sendfields:
 
@@ -197,9 +204,11 @@ The ``Control`` tab is the main interface for state-machine control, user inputs
 
 #. The ``mybuttons``
 
-   a. In addition to the ``send_field`` values, eight user buttons are available. In ``ipc_ARM.c``, you can define what happens when the buttons are pressed.
+   a. In addition to the ``send_field`` values, eight user buttons are available.
+      In ``ipc_ARM.c``, you can define what happens when the buttons are pressed.
 
-   b. Each button has a status indicator below it. This indicator can also be set in ``ipc_ARM.c`` to provide feedback for button actions.
+   b. Each button has a status indicator below it.
+      This indicator can also be set in ``ipc_ARM.c`` to provide feedback for button actions.
       See ``/* Bit 4 - My_Button_1 */`` in the right picture below for an example.
 
    .. _javascope_mybuttons:
@@ -219,11 +228,11 @@ The ``Control`` tab is the main interface for state-machine control, user inputs
    b. To send error codes to the GUI for display in the ``error code`` field, use the ``SlowData`` variable ``JSSD_FLOAT_Error_Code``.
 
    .. warning::
-      Error detection and handling have to be implemented by the user. The GUI just provides an interface.
+      Error detection and handling have to be implemented by the user.
+      The GUI just provides an interface.
 
 
-Vitis-side user C-code integration is unchanged:
-``send_field_x`` values, ``receive_field_x`` mappings, error-code handling, button labels, and the eight ``my buttons`` are configured in ``javascope.h`` and ``javascope.c``.
+Vitis-side user C-code integration is unchanged: ``send_field_x`` values, ``receive_field_x`` mappings, error-code handling, button labels, and the eight ``my buttons`` are configured in ``javascope.h`` and ``javascope.c``.
 
 
 More Send and Receive tab

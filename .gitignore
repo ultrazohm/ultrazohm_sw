@@ -29,3 +29,22 @@ control_algorithms/uz_FOC.slxc
 vitis/Packages/*
 *.slxc
 *cpAnnotation.mat
+
+# Ignore generated artifacts.
+/artifacts/
+*.ini
+/ultrazohm_cli_channel_mappings/
+
+# Python/test tooling caches
+.pytest_cache/
+*.egg-info/
+ultrazohm_dataviewer/build/native/
+
+# Shared launcher environment
+/.venv/
+/__pycache__/
+
+/ultrazohm_dataviewer/dist-wheels/
+
+# Shared build output locks
+/.uz-build-locks/

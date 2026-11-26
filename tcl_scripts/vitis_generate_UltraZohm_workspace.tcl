@@ -270,9 +270,13 @@ proc vitis_main {} {
   puts stdout $filename_launches
 
 file mkdir $filename_launches
-set DebugAll_TCL [file join $EXPORT_FOLDER Debug_UltraZohm.launch]
-set RunAll_TCL [file join $EXPORT_FOLDER Run_UltraZohm.launch]
-set DebugFast_TCL [file join $EXPORT_FOLDER Debug_UltraZohm_fast_restart_PL_reset.launch]
+set launch_folder $EXPORT_FOLDER
+if {[file isdirectory [file join $::uz_vitis_script_dir launch]]} {
+  set launch_folder [file join $::uz_vitis_script_dir launch]
+}
+set DebugAll_TCL [file join $launch_folder Debug_UltraZohm.launch]
+set RunAll_TCL [file join $launch_folder Run_UltraZohm.launch]
+set DebugFast_TCL [file join $launch_folder Debug_UltraZohm_fast_restart_PL_reset.launch]
 #file copy ?-force? ?--? source ?source ...? targetDir
 #file copy -force -- $DebugBaremetal $filename_launches
 file copy -force -- $DebugAll_TCL $filename_launches

@@ -1,0 +1,93 @@
+.. _ultrazohm_dataviewer_library:
+
+==============
+Python library
+==============
+
+The data/analysis core runs without a window, i.e., headless.
+The library can load logs, compute FFTs, and run the node transforms from a Python script through the facade in ``ultrazohm_dataviewer.api``, which is re-exported at the package top level.
+
+.. note::
+
+   **Importing the package does not import the imgui GUI stack.**
+   ``import ultrazohm_dataviewer`` and ``from ultrazohm_dataviewer import Client`` use only the Python standard library.
+   Accessing the analysis API loads its numerical dependencies.
+   Reads, conversions, and analysis also avoid GUI imports.
+   GUI entry points must be imported explicitly from ``ultrazohm_dataviewer.app``.
+   The core is therefore usable on a headless server and ``import`` stays fast.
+
+Controlling an open DataViewer
+==============================
+
+Use ``Client`` when a script should change the running application.
+The DataViewer must already be open.
+The default endpoint is ``127.0.0.1:19741``; override it with ``Client("127.0.0.1:19742")`` or ``UZ_DATAVIEWER_ENDPOINT``.
+Each DataViewer instance must have its own endpoint.
+
+.. code-block:: python
+
+   from ultrazohm_dataviewer import Client
+
+   with Client() as viewer:
+       recording = viewer.load("Log.csv")
+       viewer.set_grid(2, 1)
+       viewer.add_signal(1, recording, "ia")
+       viewer.save_session("analysis.json")
+
+The script runs in its own Python process; the DataViewer owns the plot and session state.
+GUI interactions and Python requests share that state.
+Each client call waits for its result or raises an exception; several calls are not a transaction.
+After an unrelated session replacement, create a new client and obtain new recording/node/view handles.
+Do not reuse handles from the previous session.
+See :doc:`ultrazohm_dataviewer_usage` for the full client API and Python editor workflow.
+
+The DataViewer authenticates each request with a random per-instance credential.
+Clients discover it automatically from a private per-user directory under the OS temporary directory.
+For explicit connection management, ``Client`` also accepts a ``token=`` keyword argument.
+Create a new client after restarting the DataViewer; credentials are never automatically refreshed to retry mutations.
+
+Headless analysis quick start
+=============================
+
+.. code-block:: python
+
+   import ultrazohm_dataviewer as uz
+
+   data = uz.read("Log.csv")              # -> Dataset (shared time axis + named signals)
+   t, ia = data.time, data["ia"]
+
+   df = data.to_dataframe()               # Polars: column 'time' + one per signal
+
+   spec = uz.fft(t, ia)                   # -> FftResult (.freqs, .mag, .info, .ok); full span
+   sdf  = uz.fft_frame(t, ia)             # -> Polars DataFrame [frequency, amplitude]
+
+   # Node transforms — the exact calculations the GUI's node graph uses.
+   print(uz.kinds())                      # ('fft', 'math', 'filter', 'shift')
+   t2, y2, info = uz.node("filter", (t, ia), type="low", cutoff=40, taps=201)
+
+A runnable version is in ``examples/headless_example.py``.
+
+API reference
+=============
+
+The facade adds no compute logic of its own.
+The facade reuses the loader, FFT and node transforms used by the GUI.
+Thus, the results of library usage matches the results of the GUI.
+
+
+.. autoclass:: ultrazohm_dataviewer.api.Dataset
+   :members:
+
+.. autoclass:: ultrazohm_dataviewer.analysis.FftResult
+   :members:
+   :no-index:
+
+.. autofunction:: ultrazohm_dataviewer.api.read
+.. autofunction:: ultrazohm_dataviewer.api.fft
+.. autofunction:: ultrazohm_dataviewer.api.fft_frame
+.. autofunction:: ultrazohm_dataviewer.api.node
+.. autofunction:: ultrazohm_dataviewer.api.filter
+.. autofunction:: ultrazohm_dataviewer.api.math
+.. autofunction:: ultrazohm_dataviewer.api.kinds
+.. autofunction:: ultrazohm_dataviewer.api.load_plugins
+

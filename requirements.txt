@@ -1,0 +1,5 @@
+# Extra Python dependencies for ./uz venv stable, prerelease, and dev.
+# Both applications supply their own dependencies (NumPy, pandas, Polars, etc.).
+# Keep UltraZohm packages out of this file: the launcher selects published or local code.
+# This is a dependency list, not a lockfile. Add version pins if your scripts need them.
+matplotlib>=3.9

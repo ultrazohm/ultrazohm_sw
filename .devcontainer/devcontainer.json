@@ -1,15 +1,18 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.166.1/containers/ubuntu
 {
-	"name": "Python 3.12 Trixie",
+	"name": "Python 3.12 + Rust Trixie",
 	"build": {
-		"dockerfile": "Dockerfile"
+		"dockerfile": "Dockerfile",
+		// The ci stage is what GitHub Actions uses; dev adds firmware tools.
+		"target": "dev"
 	},
 
 	"customizations": {
 		"vscode": {
 			"settings": {
 				"terminal.integrated.shell.linux": "/bin/bash",
+				"python.defaultInterpreterPath": "/opt/ultrazohm/development/bin/python",
 				"ceedlingExplorer.shellPath": "/bin/bash",
 				"ceedlingExplorer.debugConfiguration": "Ceedling Test Explorer Debug",
 				"ceedlingExplorer.projectPath": "vitis/software/Baremetal/"
@@ -33,6 +36,7 @@
 				"trond-snekvik.simple-rst",
 				"ms-vscode.test-adapter-converter",
 				"ms-python.python",
+				"rust-lang.rust-analyzer",
 				"redhat.java",
 				"vscjava.vscode-java-debug",
 				"vscjava.vscode-java-dependency"
@@ -47,8 +51,9 @@
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "pip install -r docs/requirements.txt && chmod +x /workspaces/ultrazohm_sw/javascope/build.sh /workspaces/ultrazohm_sw/javascope/run_with_test_server.sh"
+	// Finish installing and checking the Python environment before VS Code connects.
+	"waitFor": "postCreateCommand",
+	"postCreateCommand": "bash .devcontainer/post-create.sh"
 	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	//"remoteUser": "vscode"
 }

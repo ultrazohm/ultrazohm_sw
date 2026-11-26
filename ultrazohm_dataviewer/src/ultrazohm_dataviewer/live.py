@@ -1,0 +1,1180 @@
+"""Native live acquisition adapter. Device IO stays in the independent CLI service.
+
+The worker publishes immutable, bounded snapshots. The GUI never performs network
+IO. Closing the viewer finalizes its owned service and sends Stop to an attached
+external device. The displayed history is bounded by the service RAM buffer.
+"""
+
+from __future__ import annotations
+
+import ipaddress
+import json
+import subprocess
+import sys
+import threading
+import time
+import uuid
+from contextlib import nullcontext
+from dataclasses import dataclass, field
+from pathlib import Path
+from queue import Empty, Full, Queue
+
+import numpy as np
+
+from .extrema import bucket_extremes, envelope, merge_extremes
+from .sources import MemorySource, PlotData, check
+
+# Closing the window waits this long for a viewer-owned service to finalize.
+# The service runs detached, so longer finalizations complete in the background
+# without freezing the closing window.
+CLOSE_FINALIZE_TIMEOUT = 10
+
+
+def fuzzy_names(names, query):
+    """Rank substring matches first, then ordered-subsequence matches."""
+    query = query.casefold().strip()
+    matches = []
+    for name in names:
+        text = name.casefold()
+        position, gaps = -1, 0
+        for char in query:
+            found = text.find(char, position + 1)
+            if found < 0:
+                break
+            gaps += found - position - 1
+            position = found
+        else:
+            matches.append(((query not in text, gaps, len(name), text), name))
+    return [name for _, name in sorted(matches)]
+
+
+# Rows per finest incremental display bucket kept by LiveRing for every channel;
+# each coarser level merges LIVE_FACTOR buckets of the level below.
+LIVE_BUCKET = 128
+LIVE_FACTOR = 8
+
+
+def bucket_size(level):
+    return LIVE_BUCKET * LIVE_FACTOR**level
+
+
+class RingSnapshot(dict):
+    """Column views of retained rows plus per-bucket extrema for display.
+
+    ``summary`` maps a channel to a list of levels; each level holds arrays of
+    buffer positions (min, max, first non-finite; -1 when absent) for buckets of
+    ``bucket_size(level)`` rows. Buckets are aligned to buffer positions;
+    ``offset`` converts them to row indices and only buckets ending at or before
+    ``valid_end`` are complete.
+    """
+
+    summary: dict
+    offset: int = 0
+    valid_end: int = 0
+
+
+class LiveRing:
+    """Bounded columnar history with amortised O(page) appends.
+
+    Columns live in buffers of twice the capacity. Appends write past every
+    published snapshot; when a buffer is full, the retained tail moves into newly
+    allocated buffers, so snapshots (including a frozen Inspect view) stay valid.
+    Per-bucket extrema are maintained alongside, so wide follow-live windows are
+    drawn from buckets instead of re-reducing every raw sample on each update.
+    """
+
+    def __init__(self, capacity):
+        self.capacity = max(1, int(capacity))
+        self.reset()
+
+    def reset(self):
+        self.columns, self.summary, self.end, self.length = None, None, 0, 0
+
+    def append(self, page):
+        names = list(page.columns)
+        n = page.height
+        if not n:
+            return
+        arrays = {name: page[name].to_numpy() for name in names}
+        if self.columns is None or list(self.columns) != names:
+            self.reset()
+            self._allocate(arrays)
+        if n >= self.capacity:
+            self._allocate(arrays)
+            for name, values in arrays.items():
+                self.columns[name][: self.capacity] = values[-self.capacity :]
+            self.end = self.length = self.capacity
+            self._summarize(0)
+            return
+        first = self.end
+        if self.end + n > len(next(iter(self.columns.values()))):
+            keep = min(self.length, self.capacity - n)
+            # Move from a position aligned to the coarsest bucket, so complete
+            # buckets keep their extrema and only shift instead of a full rescan.
+            # Tiny rings whose coarsest bucket exceeds the spare room rebuild instead.
+            coarsest = bucket_size(len(next(iter(self.summary.values()), [()])) - 1)
+            size = len(next(iter(self.columns.values())))
+            start = (self.end - keep) // coarsest * coarsest
+            aligned = self.end - start + n <= size
+            if not aligned:
+                start = self.end - keep
+            old, old_summary = self.columns, self.summary
+            self._allocate(arrays)
+            for name, values in old.items():
+                self.columns[name][: self.end - start] = values[start : self.end]
+            if aligned:
+                for name, levels in old_summary.items():
+                    for level, (old_arrays, new_arrays) in enumerate(
+                        zip(levels, self.summary[name], strict=False)
+                    ):
+                        shift = start // bucket_size(level)
+                        count = -(-(self.end - start) // bucket_size(level))
+                        for source, target in zip(old_arrays, new_arrays, strict=False):
+                            values = source[shift : shift + count]
+                            target[: len(values)] = np.where(
+                                values >= 0, values - start, -1
+                            )
+            self.end = self.end - start
+            first = self.end if aligned else 0
+            self.length = keep
+        for name, values in arrays.items():
+            self.columns[name][self.end : self.end + n] = values
+        self.end += n
+        self.length = min(self.length + n, self.capacity)
+        self._summarize(first)
+
+    def _allocate(self, arrays):
+        size = 2 * self.capacity
+        self.columns = {
+            name: np.empty(size, dtype=values.dtype) for name, values in arrays.items()
+        }
+        levels = 1
+        while size // bucket_size(levels) >= LIVE_FACTOR:
+            levels += 1
+        self.summary = {
+            name: [
+                tuple(
+                    np.full(size // bucket_size(level) + 1, -1, np.int64)
+                    for _ in range(3)
+                )
+                for level in range(levels)
+            ]
+            for name in arrays
+            if name not in ("time", "status")
+        }
+
+    def _summarize(self, first):
+        """Summarize only buckets completed by this append.
+
+        Readers use raw samples for unfinished buckets. Defer their reductions
+        until complete, especially at coarse levels which can span many polls.
+        Complete buckets below ``first`` never change, so published snapshots
+        that reference them stay consistent.
+        """
+        bucket = first // LIVE_BUCKET
+        lo = bucket * LIVE_BUCKET
+        stop = self.end // LIVE_BUCKET * LIVE_BUCKET
+        if lo == stop:
+            return
+        for name, levels in self.summary.items():
+            y = self.columns[name]
+            reduced = bucket_extremes(y[lo:stop], np.arange(0, stop - lo, LIVE_BUCKET))
+            for target, values in zip(levels[0], reduced, strict=False):
+                target[bucket : bucket + len(values)] = np.where(
+                    values >= 0, values + lo, -1
+                )
+            for level in range(1, len(levels)):
+                parent = first // bucket_size(level)
+                parent_stop = self.end // bucket_size(level)
+                if parent == parent_stop:
+                    break
+                start, child_stop = parent * LIVE_FACTOR, parent_stop * LIVE_FACTOR
+                merged = merge_extremes(
+                    y,
+                    *(values[start:child_stop] for values in levels[level - 1]),
+                    LIVE_FACTOR,
+                )
+                for target, values in zip(levels[level], merged, strict=False):
+                    target[parent : parent + len(values)] = values
+
+    def snapshot(self):
+        """Views of the retained rows; later appends never modify them."""
+        if self.columns is None or not self.length:
+            return None
+        start = self.end - self.length
+        result = RingSnapshot(
+            {name: values[start : self.end] for name, values in self.columns.items()}
+        )
+        result.summary, result.offset, result.valid_end = self.summary, start, self.end
+        return result
+
+
+def _column(frame, name):
+    column = frame[name]
+    return column.to_numpy() if hasattr(column, "to_numpy") else column
+
+
+class LiveSource(MemorySource):
+    """An immutable display snapshot; decimate only the visible window.
+
+    Accepts a Polars frame or a mapping of NumPy columns (a :class:`LiveRing`
+    snapshot). Ring snapshots also provide bucket extrema for wide windows.
+    """
+
+    def __init__(self, frame):
+        names = frame.columns if hasattr(frame, "columns") else list(frame)
+        t = _column(frame, "time")
+        channels = {n: _column(frame, n) for n in names if n not in ("time", "status")}
+        super().__init__(t, channels)
+        self.units = dict.fromkeys(channels, "")
+        self.timestamp_resolution = 0.0
+        self._summary = getattr(frame, "summary", None)
+        self._offset = getattr(frame, "offset", 0)
+        self._valid_end = getattr(frame, "valid_end", 0)
+        # MemorySource creates a unique identity, which invalidates display results
+        # even when the user keeps the same (paused) X-axis range while data grows.
+
+    def read_plot(
+        self, channel, lo, hi, budget, cancel=None, *, padding=True, offset=0.0
+    ):
+        check(cancel)
+        budget = max(2, int(budget))
+        a, b = self.bounds(lo, hi, cancel, padding=padding, offset=offset)
+        positions = self._candidates(channel, a, b, budget)
+        if positions is not None:
+            check(cancel)
+            t, y = self.time[positions], self.channels[channel][positions]
+            tx, values = envelope(t, y, positions, budget)
+            return PlotData(tx, values, b - a)
+        t, ys = self.read_rows([channel], a, b, cancel)
+        if not len(t):
+            return PlotData(t, ys[channel], 0)
+        tx, y = envelope(t, ys[channel], np.arange(a, b), budget)
+        return PlotData(tx, y, b - a)
+
+    def _candidates(self, channel, a, b, budget):
+        """Row indices of bucket extrema and raw edge rows, or None for raw reads.
+
+        Buckets are used only when every output bucket spans at least one ring
+        bucket, so each output min/max is still an original extreme sample.
+        """
+        if self._summary is None or channel not in self._summary:
+            return None
+        per_bucket = (b - a) / max(1, budget // 2)
+        if per_bucket < LIVE_BUCKET:
+            return None
+        levels = self._summary[channel]
+        level = 0
+        while level + 1 < len(levels) and bucket_size(level + 1) <= per_bucket:
+            level += 1
+        valid_end = self._valid_end
+
+        def collect(lo, hi, k):
+            """Buffer positions covering [lo, hi): full level-k buckets, finer edges."""
+            if lo >= hi:
+                return []
+            if k < 0:
+                return [np.arange(lo, hi)]
+            size = bucket_size(k)
+            first = -(-lo // size)
+            last = min(hi, valid_end) // size
+            if last <= first:
+                return collect(lo, hi, k - 1)
+            parts = collect(lo, first * size, k - 1)
+            inner = np.concatenate([values[first:last] for values in levels[k]])
+            parts.append(inner[inner >= 0])
+            parts.extend(collect(last * size, hi, k - 1))
+            return parts
+
+        # Window end rows keep lines reaching the plot edges, as with raw reads.
+        edges = np.array([a, b - 1], np.int64) + self._offset
+        positions = np.concatenate(
+            [edges, *collect(a + self._offset, b + self._offset, level)]
+        )
+        positions.sort()
+        # A constant bucket reports one sample as both minimum and maximum.
+        positions = positions[np.r_[True, positions[1:] != positions[:-1]]]
+        return positions - self._offset
+
+    def prepare_summary(self, channel, cancel=None):
+        check(cancel)
+
+
+@dataclass(frozen=True)
+class ServiceSnapshot:
+    """Configuration and status observed within one acquisition session."""
+
+    status: dict
+    catalog: dict
+    assignments: tuple
+
+    @staticmethod
+    def identity(status):
+        return status.get("service_id"), status.get("session_id")
+
+    @staticmethod
+    def revision(status):
+        """Catalog/assignment revision; None forces a refresh."""
+        revision = status.get("configuration_revision")
+        return None if revision is None else (status.get("service_id"), revision)
+
+    @classmethod
+    def read(cls, client, previous=None):
+        """One status request while the configuration revision is unchanged."""
+        # A session may change between RPCs (for example during flashing).
+        # Publish nothing until both surrounding status reads agree.
+        for _ in range(3):
+            status = client.status()
+            revision = cls.revision(status)
+            if (
+                previous is not None
+                and revision is not None
+                and revision == cls.revision(previous.status)
+            ):
+                return cls(status, previous.catalog, previous.assignments)
+            if status["session_id"] is None:  # No acquisition session.
+                return cls(status, {}, ())
+            same = previous is not None and cls.identity(status) == cls.identity(
+                previous.status
+            )
+            catalog = previous.catalog if same else client.catalog()["profile"]
+            assignments = tuple(client.observables()["channels"])
+            latest = client.status()
+            if cls.identity(status) == cls.identity(
+                latest
+            ) and revision == cls.revision(latest):
+                return cls(latest, catalog, assignments)
+        raise RuntimeError("Acquisition session changed during configuration refresh")
+
+
+@dataclass(frozen=True)
+class LiveUpdate:
+    revision: int = 0
+    status: dict = field(default_factory=dict)
+    catalog: dict = field(default_factory=dict)
+    assignments: tuple = ()
+    source: LiveSource | None = None
+    epoch: tuple | None = None
+    error: str = ""
+    notice: str = ""
+    attached: bool = False
+    received_at: float = 0.0
+    activity: str = ""
+    completed_commands: int = 0
+    variable_sends: dict = field(default_factory=dict)
+
+
+def cursor_invalid(exc):
+    """Whether a read failed because its cursor no longer addresses retained data."""
+    return getattr(exc, "code", None) == "cursor_expired"
+
+
+def action_block_reason(action, *, flashing=False, script_busy=False):
+    """Shared interaction policy; connection and execution checks stay with their owners."""
+    if flashing and action not in ("stop", "shutdown"):
+        return "Flash UZ is running"
+    if script_busy and action not in ("stop", "cli"):
+        return "Manual controls are locked while the script runs"
+    return ""
+
+
+class LiveController:
+    """Command worker and independent polling worker, latest snapshot publication.
+
+    Commands (connect, shutdown, flash, device controls) run on one thread and
+    data/status polling on another, each with its own service connection, so a
+    long command never freezes live plots. The polling thread exclusively owns
+    ``ring`` and ``cursor``; commands request a fresh history through ``_reset``.
+    """
+
+    def __init__(self, client_factory=None, hz=30):
+        self.client_factory = client_factory
+        self.interval = 1 / hz
+        self.commands = Queue(maxsize=32)
+        self.lock = threading.Lock()
+        # Serialize commands with the independent script Stop, never with reads.
+        self._command_lock = threading.Lock()
+        self._command_generation = 0
+        self.update = LiveUpdate()
+        self.stop_event = threading.Event()
+        self.thread = None
+        self.poll_thread = None
+        self.control_thread = None
+        self.control_commands = Queue(maxsize=32)
+        self._pending_controls = 0
+        self._control_errors = {}
+        from ultrazohm_cli.process import ServiceProcess
+
+        self.owned = ServiceProcess()
+        self.client = None
+        self.endpoint = None
+        self._poll_client = None
+        self._poll_endpoint = None
+        # Commands bump this; the polling thread discards older work and history.
+        self._reset_generation = 0
+        self._poll_reset_seen = 0
+        self.cursor = None
+        # Sample position after the last displayed page; cursors stay opaque.
+        self.cursor_stop = None
+        self.ring = None
+        self.attached = False
+        self.revision = 0
+        self._status_at = 0.0
+        self._last_source = None
+        self._epoch = None
+        self._status = {}
+        self._catalog = {}
+        self._assignments = ()
+        self._notice = ""
+        self._error = ""
+        self._poll_error = ""
+        self._received_at = 0.0
+        self._activity = ""
+        self._completed_commands = 0
+        self._variable_sends = {}
+        self.flashing = False
+        self._flash_shutdown = threading.Event()
+        self.messages = Queue(maxsize=2000)
+
+    def request_attachment(self, operation, **kwargs):
+        """Return a completion future for an attach/detach request."""
+        from concurrent.futures import Future
+
+        if operation not in ("attach", "detach"):
+            raise ValueError("Expected attach or detach")
+        completion = Future()
+        self.submit(operation, _completion=completion, **kwargs)
+        return completion
+
+    def submit(self, operation, **kwargs):
+        if self.stop_event.is_set():
+            raise RuntimeError("Live controller is closed")
+        if operation == "flash":
+            # A flash can finish before its concurrent shutdown reply arrives.
+            # Keep the next flash from reusing state that reply still updates.
+            with self.lock:
+                if self._pending_controls:
+                    raise RuntimeError("Wait for pending Stop or shutdown to finish")
+        if operation in ("stop", "shutdown"):
+            # One path in every state: never queued behind viewer commands.
+            self.cancel_pending_commands()
+            with self.lock:
+                # During Flash UZ the attachment is released; the job's service
+                # must still receive lifecycle requests.
+                attached = self.attached or self.flashing
+                try:
+                    self.control_commands.put_nowait(
+                        (operation, kwargs.get("endpoint") or self.endpoint, attached)
+                    )
+                except Full as exc:
+                    raise RuntimeError("Control command queue is busy") from exc
+                self._pending_controls += 1
+            if self.control_thread is None:
+                self.control_thread = threading.Thread(
+                    target=self._control_work, name="uz-live-control", daemon=True
+                )
+                self.control_thread.start()
+            return
+        if self.flashing:
+            raise RuntimeError("Flash UZ is already running")
+        if operation in ("flash", "detach", "attach", "connect", "connect_device"):
+            self.cancel_pending_commands()
+        if operation == "flash":
+            self._flash_shutdown.clear()
+            with self.lock:
+                self.flashing = True
+        if self.thread is None:
+            self.thread = threading.Thread(
+                target=self._work, name="uz-live", daemon=True
+            )
+            self.thread.start()
+            self.poll_thread = threading.Thread(
+                target=self._poll_work, name="uz-live-poll", daemon=True
+            )
+            self.poll_thread.start()
+        try:
+            with self.lock:
+                self.commands.put_nowait((self._command_generation, operation, kwargs))
+        except Full as exc:
+            if operation == "flash":
+                with self.lock:
+                    self.flashing = False
+            raise RuntimeError("Live command queue is busy") from exc
+
+    def _control_work(self):
+        """Lifecycle requests bypass flash monitoring without blocking the GUI."""
+        while not self.stop_event.is_set():
+            try:
+                operation, endpoint, attached = self.control_commands.get(
+                    timeout=self.interval
+                )
+            except Empty:
+                continue
+            try:
+                if not attached:
+                    error = RuntimeError("Attach to a service first")
+                    self._control_failed(operation, endpoint, error)
+                    continue
+                self._urgent(operation, endpoint, unless_closed=True)
+            except Exception:
+                pass  # Reported by _urgent.
+            finally:
+                if not self.flashing:
+                    # Flash UZ owns the activity line until its job ends.
+                    self._activity = ""
+                self._completed_commands += 1
+                self._publish()
+                with self.lock:
+                    self._pending_controls -= 1
+
+    def _urgent(self, operation, endpoint, *, unless_closed=False):
+        """Stop or shutdown on a fresh connection, never queued behind commands.
+
+        Waits only for a command already executing (serialized by the command
+        lock), never for data reads or queued commands; Flash UZ follows its job
+        outside the lock, so Stop and shutdown reach the service during a flash.
+        """
+        with self._command_lock:
+            if unless_closed and self.stop_event.is_set():
+                return
+            try:
+                reply = getattr(self._new_client(endpoint), operation)()
+            except Exception as exc:
+                from .flashing import connection_refused
+
+                if operation == "shutdown" and connection_refused(exc):
+                    # A dead service cannot acknowledge shutdown. Release the local
+                    # attachment so the user can change repositories and reconnect.
+                    self._flash_shutdown.set()
+                    prefix = (
+                        "Detached"
+                        if self._release_attachment(endpoint)
+                        else f"Shutdown of {endpoint}"
+                    )
+                    self._notice = (
+                        f"{prefix}: acquisition service unavailable; device Stop and "
+                        "recording finalization could not be confirmed. Check service.log."
+                    )
+                    self._control_succeeded(operation, endpoint)
+                    return
+                self._control_failed(operation, endpoint, exc)
+                raise
+            try:
+                if operation == "shutdown":
+                    self._flash_shutdown.set()
+                    self._finish_shutdown(endpoint, reply)
+                else:
+                    self._notice = f"{operation}: request sent (device commands have no acknowledgment)"
+            except Exception as exc:
+                self._control_failed(operation, endpoint, exc)
+                raise
+            finally:
+                self._status_at = 0.0
+            self._control_succeeded(operation, endpoint)
+
+    def _finish_shutdown(self, endpoint, reply):
+        """Release the attachment to a service that accepted shutdown, then await it."""
+        service_id = reply.get("service_id")
+        self.owned.acknowledge_shutdown(endpoint, service_id)
+        where = "" if self._release_attachment(endpoint) else f" at {endpoint}"
+        if self._await_shutdown(endpoint, service_id):
+            self._notice = f"Service{where} shut down; recordings finalized"
+        else:
+            self._notice = f"Service{where} shutdown accepted; finalization continues in the external service"
+
+    def _release_attachment(self, endpoint):
+        """Forget the attachment only if it still belongs to ``endpoint``.
+
+        A queued shutdown can complete after the user attached another service.
+        That attachment stays, including its device Stop when the viewer closes.
+        """
+        if endpoint != self.endpoint:
+            return False
+        self._clear_attachment()
+        self._poll_error = self._error = ""
+        return True
+
+    def _new_client(self, endpoint):
+        if self.client_factory is not None:
+            return self.client_factory(endpoint)
+        from ultrazohm_cli import Client
+
+        return Client(endpoint)
+
+    def _clear_attachment(self):
+        """Forget the attached service; the poll thread discards its history."""
+        self._reset()
+        with self.lock:
+            self.attached = False
+            self._status, self._catalog, self._assignments = {}, {}, ()
+
+    def _control_failed(self, operation, endpoint, error):
+        message = f"{operation} failed: {error}"
+        with self.lock:
+            key = (endpoint, operation)
+            self._control_errors.pop(key, None)
+            self._control_errors[key] = message
+        self._message("error", message)
+        self._publish()
+
+    def _control_succeeded(self, operation, endpoint):
+        # A retry on any transport clears only that operation's failure for
+        # that service. The Console retains the original diagnostic message.
+        with self.lock:
+            self._control_errors.pop((endpoint, operation), None)
+        self._publish()
+
+    def cancel_pending_commands(self):
+        """Invalidate even a command already dequeued but not yet executing."""
+        with self.lock:
+            self._command_generation += 1
+            while True:
+                try:
+                    _, operation, kwargs = self.commands.get_nowait()
+                except Empty:
+                    break
+                if operation == "flash":
+                    # This request will never reach the worker's finally block.
+                    # A dequeued/running flash remains the worker's responsibility.
+                    self.flashing = False
+                if completion := kwargs.get("_completion"):
+                    completion.cancel()
+
+    def send_stop(self, endpoint=None):
+        """Send Stop now (used by scripts); see :meth:`_urgent`."""
+        self._urgent("stop", endpoint or self.endpoint)
+
+    def commands_idle(self):
+        """Check without blocking the GUI; canceled commands cannot execute later."""
+        if not self._command_lock.acquire(blocking=False):
+            return False
+        self._command_lock.release()
+        return True
+
+    def latest(self):
+        with self.lock:
+            return self.update
+
+    def _publish(self):
+        if self.stop_event.is_set():
+            return
+        with self.lock:
+            self.revision += 1
+            self.update = LiveUpdate(
+                self.revision,
+                self._status,
+                self._catalog,
+                self._assignments,
+                self._last_source,
+                self._epoch,
+                self._error
+                or self._poll_error
+                or next(
+                    (
+                        message
+                        for (endpoint, _), message in reversed(
+                            self._control_errors.items()
+                        )
+                        if endpoint == self.endpoint
+                    ),
+                    "",
+                ),
+                self._notice,
+                self.attached,
+                self._received_at,
+                self._activity,
+                self._completed_commands,
+                self._variable_sends.copy(),
+            )
+
+    def _message(self, level, text):
+        try:
+            self.messages.put_nowait((level, text))
+        except Full:
+            try:
+                self.messages.get_nowait()
+            except Empty:
+                pass
+            self.messages.put_nowait((level, text))
+
+    def _progress(self, message):
+        self._activity = message
+        self._publish()
+
+    def _reset(self):
+        """Discard displayed history; the polling thread clears ring and cursor."""
+        with self.lock:
+            self._reset_generation += 1
+            self._last_source = self._epoch = None
+            self._received_at = 0.0
+
+    def _make_client(self, endpoint):
+        if endpoint != self.endpoint or self.client is None:
+            self._clear_attachment()
+            self._variable_sends = {}
+            self.client = self._new_client(endpoint)
+            self.endpoint = endpoint
+
+    def _start_service(
+        self,
+        output,
+        mapping,
+        profile=None,
+        data_options=None,
+        ack=False,
+        user_directory=None,
+        repo=None,
+    ):
+        # Selecting saved preferences is application policy; process mechanics
+        # and CLI arguments belong to the CLI package.
+        if not profile:
+            if repo:
+                from ultrazohm_cli.configuration import startup_profile_path
+
+                saved = startup_profile_path(repo, user_directory)
+                if saved.is_file():
+                    profile = saved
+            elif mapping:
+                from .settings import load_workspace_settings
+
+                profile = load_workspace_settings(mapping, user_directory).path
+        from .process_launcher import command
+
+        self._progress("Starting local acquisition service…")
+        self.owned.start(
+            output,
+            mapping,
+            profile,
+            data_options,
+            ack,
+            repo=repo,
+            endpoint=self.endpoint,
+            client=self.client,
+            cancel=self.stop_event,
+            command_prefix=command("cli"),
+        )
+
+    def _wait_owned(self, description):
+        return self.owned.wait(
+            cancel=self.stop_event, progress=lambda: self._progress(description)
+        )
+
+    def _command(self, operation, kwargs, *, generation=None):
+        if operation == "flash":
+            self._flash(kwargs, generation=generation)
+        elif operation in ("attach", "connect", "connect_device"):
+            if operation == "connect_device" and not self.attached:
+                raise RuntimeError("Attach to a service first")
+            if operation == "connect_device" and kwargs["endpoint"] != self.endpoint:
+                raise RuntimeError(
+                    "Device connection must use the attached service endpoint"
+                )
+            self._progress("Checking acquisition service…")
+            self._make_client(kwargs["endpoint"])
+            try:
+                self.client.status()
+            except (OSError, RuntimeError):
+                if operation != "connect":
+                    raise
+                self._start_service(
+                    kwargs["output"],
+                    kwargs.get("mapping", ""),
+                    kwargs.get("profile"),
+                    kwargs.get("data_options"),
+                    kwargs.get("ack", False),
+                    user_directory=kwargs.get("user_directory"),
+                    repo=kwargs.get("repo"),
+                )
+            else:
+                if operation == "connect" and not (self.owned.owns(self.endpoint)):
+                    raise RuntimeError(
+                        "A service is already running at this endpoint. Use Existing service > Attach."
+                    )
+                if (
+                    operation == "connect"
+                    and kwargs.get("repo")
+                    and Path(kwargs["repo"]).expanduser().resolve() != self.owned.repo
+                ):
+                    raise RuntimeError(
+                        "The running service uses a different firmware repository. "
+                        "Attach and shut it down before connecting with the selected repository."
+                    )
+                if (
+                    operation == "connect"
+                    and kwargs.get("mapping")
+                    and Path(kwargs["mapping"]).expanduser().resolve()
+                    != self.owned.mapping
+                ):
+                    raise RuntimeError(
+                        "The running service uses a different channel mapping. "
+                        "Attach and shut it down before connecting with the selected mapping."
+                    )
+            self._progress("Reading service configuration…")
+            status = self.client.status()
+            if operation in ("connect", "connect_device"):
+                if status["state"]["connected"]:
+                    requested = (
+                        ipaddress.ip_address(kwargs["ip"]),
+                        int(kwargs["port"]),
+                    )
+                    device = status["state"].get("device", "")
+                    host, _, port = device.rpartition(":")
+                    try:
+                        actual = (ipaddress.ip_address(host.strip("[]")), int(port))
+                    except ValueError:
+                        actual = None
+                    if actual != requested:
+                        raise RuntimeError(
+                            f"Service is already connected to {device or 'an unknown device'}; "
+                            f"requested {kwargs['ip']}:{kwargs['port']}. "
+                            "Use Attach service for that device or a separate service endpoint."
+                        )
+                else:
+                    self._progress(
+                        f"Connecting to UltraZohm at {kwargs['ip']}:{kwargs['port']}…"
+                    )
+                    self.client.connect(kwargs["ip"], kwargs["port"])
+                    self._reset()
+            snapshot = ServiceSnapshot.read(self.client)
+            with self.lock:
+                self._status = snapshot.status
+                self._catalog = snapshot.catalog
+                self._assignments = snapshot.assignments
+                self.attached = True
+            self._notice = f"Attached to acquisition service at {self.endpoint}"
+            if mapping := kwargs.get("mapping"):
+                try:
+                    expected = json.loads(
+                        Path(mapping).expanduser().read_text(encoding="utf-8")
+                    )
+                    fields = (
+                        "api_version",
+                        "channels",
+                        "samples_per_packet",
+                        "observables",
+                        "slow_signals",
+                        "variables",
+                        "commands",
+                        "platform_state",
+                        "legacy_javascope_header",
+                        "javascope",
+                    )
+                    if any(
+                        expected.get(key) != self._catalog.get(key) for key in fields
+                    ):
+                        self._notice += (
+                            f". The service uses a different channel mapping than {mapping}. "
+                            "Restart the service to apply the selected mapping."
+                        )
+                except (OSError, ValueError) as exc:
+                    self._notice += (
+                        f". Could not compare the selected channel mapping: {exc}"
+                    )
+        elif operation == "detach":
+            self.attached = False
+            self._notice = "Detached; the service and logging continue"
+        else:
+            if not self.attached:
+                raise RuntimeError("Attach to a service first")
+            getattr(self.client, operation)(**kwargs)
+            if operation == "set_variable":
+                self._variable_sends[kwargs["name"]] = (
+                    time.monotonic(),
+                    kwargs["value"],
+                )
+            self._notice = (
+                f"{operation}: request sent (device commands have no acknowledgment)"
+            )
+        self._status_at = 0.0
+
+    def _await_shutdown(self, endpoint, service_id):
+        """Wait until the viewer-owned service at ``endpoint`` exits after shutdown.
+
+        The service itself sends device Stop and finalizes both recordings; its
+        exit code is checked. An external service is not awaited. Return whether
+        completion was observed.
+        """
+        description = "Stopping device and finalizing recordings…"
+        self._progress(description)
+        if (
+            service_id is None
+            or service_id != self.owned.service_id
+            or not self.owned.has_process(endpoint)
+        ):
+            return False
+        code = self._wait_owned(description)
+        if code:
+            raise RuntimeError(
+                f"Service shutdown failed (exit {code}); check service.log"
+            )
+        return code is not None
+
+    def _flash(self, kwargs, *, generation=None):
+        from .flashing import connection_refused
+
+        with self.lock:
+            if generation is None:
+                generation = self._command_generation
+            if generation != self._command_generation or self.stop_event.is_set():
+                return
+        self._make_client(kwargs["endpoint"])
+        try:
+            status = self.client.status()
+        except (OSError, RuntimeError) as exc:
+            if not connection_refused(exc):
+                raise
+            self._start_service(kwargs["output"], "", "", repo=kwargs.get("repo"))
+            status = self.client.status()
+        self.attached = True
+        if not status.get("firmware_available"):
+            raise RuntimeError(
+                "The selected service needs a firmware checkout and Vitis XSCT"
+            )
+        device = status.get("state", {}).get("device") or status.get("device_target")
+        if not device:
+            host = kwargs["ip"]
+            device = (
+                f"[{host}]:{kwargs['port']}"
+                if ":" in host
+                else f"{host}:{kwargs['port']}"
+            )
+        # Serialize acceptance with Stop/close, but leave slow preparation and
+        # job following outside this lock so lifecycle controls stay responsive.
+        with self._command_lock:
+            with self.lock:
+                canceled = generation != self._command_generation
+            if canceled or self.stop_event.is_set() or self._flash_shutdown.is_set():
+                return
+            job = self.client.firmware("flash", device=device)
+        self._message("info", f"Firmware job {job['id']} accepted by {self.endpoint}")
+        from ultrazohm_cli.jobs import FirmwareJob
+
+        monitor = FirmwareJob(self.client, job["id"])
+        while not self.stop_event.is_set() and not self._flash_shutdown.is_set():
+            try:
+                reply = monitor.poll()
+            except (OSError, RuntimeError):
+                if self._flash_shutdown.is_set():
+                    return
+                raise
+            if self._flash_shutdown.is_set():
+                return
+            if reply["log"]:
+                self._message("info", reply["log"])
+            self._progress(f"Flash UZ: {reply['job']['phase']}")
+            if monitor.complete:
+                monitor.raise_for_status()
+                self._reset()
+                self._status_at = 0
+                self._notice = "Flash completed; service session replaced"
+                return
+            self.stop_event.wait(0.1)
+
+    def _poll_client_for(self, endpoint):
+        if self._poll_client is None or self._poll_endpoint != endpoint:
+            self._poll_client = self._new_client(endpoint)
+            self._poll_endpoint = endpoint
+        return self._poll_client
+
+    def _current(self, generation):
+        """Whether no command reset the live history since this poll started."""
+        return generation == self._reset_generation and not self.stop_event.is_set()
+
+    def _poll(self):
+        with self.lock:
+            generation, endpoint = self._reset_generation, self.endpoint
+            previous = ServiceSnapshot(self._status, self._catalog, self._assignments)
+        if generation != self._poll_reset_seen:
+            self.cursor = self.cursor_stop = None
+            if self.ring is not None:
+                self.ring.reset()
+            self._poll_reset_seen = generation
+        client = self._poll_client_for(endpoint)
+        if time.monotonic() >= self._status_at:
+            snapshot = ServiceSnapshot.read(client, previous)
+            session_changed = ServiceSnapshot.identity(
+                snapshot.status
+            ) != ServiceSnapshot.identity(previous.status)
+            with self.lock:
+                if not self._current(generation) or endpoint != self.endpoint:
+                    return
+                if session_changed:
+                    self.cursor = self.cursor_stop = None
+                    if self.ring is not None:
+                        self.ring.reset()
+                    self._last_source = None
+                self._catalog = snapshot.catalog
+                self._status = snapshot.status
+                self._assignments = snapshot.assignments
+                self._status_at = time.monotonic() + 0.25
+        status = self._status
+        if not status.get("state", {}).get("connected"):
+            return
+        capacity = status["data_options"]["buffer_samples"]
+        if self.ring is None or self.ring.capacity != capacity:
+            self.ring = LiveRing(capacity)
+        pages = []
+        try:
+            page = client.read_since(self.cursor, limit=min(capacity, 100_000))
+        except RuntimeError as exc:
+            # Only an invalid cursor (expired RAM window, reconnect, changed mapping)
+            # requires a new snapshot. Transient errors, including requests canceled
+            # by Stop, keep the displayed history and are reported by the caller.
+            if self.cursor is None or not cursor_invalid(exc):
+                raise
+            previous_stop = self.cursor_stop
+            self.cursor = self.cursor_stop = None
+            self.ring.reset()
+            page = client.read_since(limit=min(capacity, 100_000))
+            # Refresh through the previously displayed time before publishing;
+            # larger histories span multiple IPC pages and must not jump backward.
+            for _ in range((capacity + 99_999) // 100_000):
+                if (
+                    not page.data.height
+                    or previous_stop is None
+                    or page.stop >= previous_stop
+                    or self.stop_event.is_set()
+                ):
+                    break
+                pages.append(page)
+                page = client.read_since(page.cursor, limit=min(capacity, 100_000))
+            self._notice = "Live buffer resynchronized"
+        pages.append(page)
+        epoch = (page.info["run_id"], page.info["generation"])
+        if epoch != self._epoch:
+            self.ring.reset()
+        self.cursor, self.cursor_stop = page.cursor, page.stop
+        source = None
+        if any(part.data.height for part in pages):
+            for part in pages:
+                self.ring.append(part.data)
+            source = LiveSource(self.ring.snapshot())
+        with self.lock:
+            # A command (shutdown, reconnect, flash) reset the history meanwhile:
+            # never publish samples from the previous session.
+            if not self._current(generation):
+                return
+            self._epoch = epoch
+            if source is not None:
+                self._last_source = source
+                self._received_at = time.monotonic()
+
+    def _work(self):
+        """Command thread; polling continues independently on ``_poll_work``."""
+        while not self.stop_event.is_set():
+            try:
+                generation, operation, kwargs = self.commands.get(timeout=self.interval)
+            except Empty:
+                continue
+            completion = kwargs.pop("_completion", None)
+            if self.stop_event.is_set():
+                if completion is not None:
+                    completion.cancel()
+                break
+            if operation is not None:
+                self._error = ""
+                self._progress(
+                    "Connecting…"
+                    if operation in ("connect", "connect_device")
+                    else f"{operation}: working…"
+                )
+                try:
+                    # Flash only follows a service job; shutdown must not wait for
+                    # the GUI-side progress loop.
+                    with self._command_lock if operation != "flash" else nullcontext():
+                        with self.lock:
+                            current = generation == self._command_generation
+                        if current and not self.stop_event.is_set():
+                            if (
+                                completion is not None
+                                and not completion.set_running_or_notify_cancel()
+                            ):
+                                continue
+                            self._command(operation, kwargs, generation=generation)
+                        elif completion is not None:
+                            completion.cancel()
+                    self._error = ""
+                except Exception as exc:
+                    if completion is not None and not completion.done():
+                        completion.set_exception(exc)
+                    self._error = str(exc)
+                finally:
+                    if operation == "flash":
+                        with self.lock:
+                            self.flashing = False
+                    self._activity = ""
+                    self._completed_commands += 1
+                    self._publish()
+                    if completion is not None and not completion.done():
+                        completion.set_result(None)
+
+    def _poll_work(self):
+        """Poll status and samples at a fixed rate while attached, never during Flash UZ."""
+        while not self.stop_event.is_set():
+            started = time.monotonic()
+            if self.attached and not self.flashing:
+                try:
+                    self._poll()
+                    self._poll_error = ""
+                except Exception as exc:
+                    self._poll_error = str(exc)
+                self._publish()
+            self.stop_event.wait(max(0.0, self.interval - (time.monotonic() - started)))
+
+    def close(self):
+        """Shut down a viewer-owned service; only Stop an externally owned device."""
+        if self.stop_event.is_set():
+            return
+        self.stop_event.set()
+        self.cancel_pending_commands()
+        for thread in (self.thread, self.poll_thread, self.control_thread):
+            if thread is not None:
+                thread.join(timeout=1)
+        # Commands observe stop_event; bound the wait so a stuck command cannot hang exit.
+        locked = self._command_lock.acquire(timeout=35)
+        try:
+            connected = self.attached
+            owned_endpoint = self.owned.endpoint
+            owned_running = self.owned.running
+            if not connected and not (owned_running and owned_endpoint):
+                return  # Unused live panels need no optional CLI backend to close.
+            factory = self._new_client
+            # Always Stop the attached device first, even if an older owned
+            # process is still finalizing at this endpoint. Ownership only
+            # controls shutdown, never whether the attached device receives Stop.
+            if connected:
+                try:
+                    factory(self.endpoint).stop()
+                except Exception as exc:
+                    self._message("error", f"Device Stop on viewer close failed: {exc}")
+                    print(f"Device Stop on viewer close failed: {exc}", file=sys.stderr)
+            if owned_running and owned_endpoint:
+                try:
+                    self.owned.shutdown(factory(owned_endpoint))
+                    try:
+                        code = self.owned.wait(timeout=CLOSE_FINALIZE_TIMEOUT)
+                    except subprocess.TimeoutExpired:
+                        # The service runs in its own session and keeps finalizing.
+                        print(
+                            "The acquisition service is still finalizing recordings in the background; "
+                            f"see {self.owned.log or 'its service.log'} and the end section of run.json.",
+                            file=sys.stderr,
+                        )
+                        return
+                    if code:
+                        raise RuntimeError(
+                            f"Acquisition service exited with code {code}; check service.log"
+                        )
+                except Exception as exc:
+                    self._message("error", f"Owned service cleanup failed: {exc}")
+                    print(f"Owned service cleanup failed: {exc}", file=sys.stderr)
+        finally:
+            if locked:
+                self._command_lock.release()
+
+
+def new_output_directory(repo=None, *, parent=None):
+    from .user_paths import data_directory
+
+    root = Path(parent) if parent is not None else data_directory(repo) / "logs"
+    return str(root / (time.strftime("%Y%m%d-%H%M%S") + "-" + uuid.uuid4().hex[:6]))

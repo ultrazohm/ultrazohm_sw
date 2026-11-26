@@ -24,8 +24,8 @@ starlette # maybe required for sphinx-autobuild
 uvicorn # maybe required for sphinx-autobuild
 pydata-sphinx-theme
 pyarrow
+polars # ultrazohm_dataviewer library API (autodoc)
 plotly-resampler
-pygwalker
 streamlit
 trace_updater
 sphinx-design

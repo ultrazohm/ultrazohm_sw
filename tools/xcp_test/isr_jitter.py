@@ -55,10 +55,11 @@ PMU_NAMES = {0x01: "I-cache miss", 0x03: "D-cache miss", 0x04: "D-cache access",
              0x40: "instr stall cyc", 0x41: "data stall cyc", 0x42: "D-cache write-back",
              0x43: "ext mem request", 0x44: "LSU stall cyc", 0x45: "store buf drain",
              0x58: "I-cache access", 0x11: "cycles"}
-OCM_GW_DIAG = (0xFFFFC008, 60)  # xcp_gw_* slots 0..14 in the XCP_IN header mirror
-CANAPE_1MS_R5 = ["xcp_r5_write_denied", "xcp_r5_tx_oversize_drop", "xcp_r5_sweep_gap_max_us",
-                 "xcp_r5_queue_lost", "xcp_r5_out_overwritten", "xcp_r5_out_held",
-                 "xcp_r5_cto_dropped", "ocm_xcp_w_dropped"]
+OCM_GW_DIAG = (0xFFFFC008, 60)  # xcp_gw_* slots 0..14 of the A53 counter mirror (ocm_xcp_ring.h)
+# The 8 R5 counters of the CANape project (uz.A2L names since the OCM rings).
+CANAPE_1MS_R5 = ["xcp_r5_write_denied", "xcp_r5_cmd_records", "xcp_r5_sweep_gap_max_us",
+                 "xcp_r5_queue_lost", "xcp_r5_cmd_ring_bad", "xcp_r5_daq_ipis",
+                 "xcp_r5_cto_dropped", "xcp_r5_cmd_waits"]
 REC = struct.Struct("<IIff%ds" % DIAG_LEN)  # ts, counter low word, period, exec, diag
 MAGIC = b"ISRJITTER1\n"
 MAX_ENTRY = 240

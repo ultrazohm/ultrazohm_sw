@@ -12,6 +12,68 @@ on 2026-11-16; both are in git history up to commit c51d06c.
 User documentation: `docs/source/guide/XCP/` (usage, architecture with block
 diagrams, diagnostics). This file and its neighbours are the development log.
 
+## Bench run 2026-11-26: OCM rings vs. the main-loop exchange (feature/ocm_ring)
+
+Branch `feature/ocm_ring` (local) replaces the XCP_OUT/XCP_IN exchange by
+three rings in OCM banks 2+3 (`shared/ocm_xcp_ring.h`, `shared/uz_ocm_ring.h`):
+the engine writes the DTOs straight into the DAQ ring in the control ISR,
+which publishes them at the end of `xcp_r5_event()`; the main loop only runs
+commands. Compared against `bc6da2097` (A) with the same bench config, each
+variant flashed twice, interleaved A B B A; the two runs of a variant agree
+within 0.05 us. Both builds with `UZ_ISR_DIAG 1` for the ISR times (adds
+~0.8 us to every value), without it for throughput and commands. DAQ load:
+`isr_jitter.py --load-r5 N --load-symbol instances_ParaID_OnlineID` (DDR),
+30 s per point; payload per cycle = 48 B timing/diag + N.
+
+ISR_Control execution time [us], p50 / p99 / p99.9:
+
+| 40 kHz  | A (main-loop copy)    | B (rings)             |
+|---------|-----------------------|-----------------------|
+| 48 B    | 16.38 / 16.76 / 16.98 | 16.81 / 17.14 / 17.29 |
+| 248 B   | 16.81 / 17.54 / 18.01 | 17.34 / 17.77 / 17.99 |
+| 548 B   | 17.53 / 18.51 / 18.98 | 18.14 / 18.61 / 18.81 |
+| 948 B   | 18.22 / 19.76 / 20.50 | 19.02 / 19.48 / 19.68 |
+
+| 10 kHz  | A                     | B                     |
+|---------|-----------------------|-----------------------|
+| 48 B    | 16.41 / 16.87 / 17.08 | 16.81 / 17.14 / 17.35 |
+| 948 B   | 18.44 / 20.03 / 20.67 | 19.06 / 19.52 / 19.74 |
+| 2048 B  | 22.46 / 24.83 / 25.65 | 22.48 / 23.00 / 23.18 |
+| 3648 B  | 28.54 / 31.32 / 32.26 | 26.66 / 27.34 / 27.65 |
+
+- B costs 0.4-0.8 us more in the median at up to ~1 KB per cycle: the
+  publish (clean of the cycle's records + write position, ~1.3 us/KB plus
+  ~0.3 us fixed) moved into the ISR.
+- The spread is much smaller: p99.9 - p50 at 948 B is 0.66 us with B and
+  2.3 us (40 kHz) / 2.2 us (10 kHz) with A. A's slow cycles are the ones
+  that interrupt the main-loop copy (cause 3 of IMPROVEMENTS 2.9); B has
+  no such copy. At 2-3.6 KB per cycle (10 kHz) B is as fast or faster in
+  the median as well.
+- Start delay p99: B 0.18-0.19 us at every load (one run 0.37 us at
+  3648 B), A 0.18 us idle rising to 0.50 us at 948 B; max B 0.3-0.9 us,
+  A 0.8-1.3 us.
+
+Throughput and R5 budget (`xcp_poll.py --stress`, UZ_ISR_DIAG 0; all runs
+PASSED, every transport counter value once, no loss on R5 or A53):
+
+| run                     | A: R5 busy (ISR + exchanges) | B: R5 busy (ISR) | A53 idle A / B |
+|-------------------------|------------------------------|------------------|----------------|
+| 40 kHz, 500 B, 160 Mbit/s | 66.6 + 9.4 = 76.0 %        | 69.1 %           | 67.2 / 69.2 %  |
+| 40 kHz, 938 B, 300 Mbit/s | 69.7 + 16.5 = 86.2 %       | 73.0 %           | 38.1 / 40.0 %  |
+| 10 kHz, 3750 B, 300 Mbit/s | 26.2 + 13.4 = 39.6 %      | 26.4 %           | 36.0 / 42.7 %  |
+
+- B's R5 cost per KB: sampling into OCM ~2.6 us, publish 1.24 us; the copy
+  of A (3.1 us/KB CPU) and its flush (1.3 us/KB) disappear.
+- DAQ ring fill at most 4.6 % (40 kHz, 938 B) and 6.9 % (10 kHz, 3750 B)
+  of the 112 KB; the A53 got ~8000 IPIs/s (A: ~6800).
+- Command round trip (`cmd_latency.py`, SHORT_UPLOAD, 400 per point,
+  median / p99 us): about equal. 40 kHz idle A 222-241 / 389-486,
+  B 243-259 / 479-483; 900 B A 260-273 / 381-401, B 232-240 / 300-337.
+  10 kHz 3600 B A 216-217 / 292-314, B 213-215 / 319-331. The idle p99
+  values scatter by 100 us between runs of the same build (PC side).
+- Functional checks 26/26 on B (memory gate incl. the new OCM areas, DAQ
+  limits, 30 x connect / DAQ 320 Mbit/s / disconnect).
+
 ## Bench run 2026-11-17 (40 kHz control rate, MAX_DTO 248)
 
 The 2026-11-16 series below ran on hardware for the first time, stress tests

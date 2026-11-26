@@ -446,6 +446,30 @@ Open, for a decision:
 - Remaining start delay: p99 0.5 us, max 1.1 us when the ISR hits the copy
   (queue lock, timer read behind write-backs); < 0.2 us p99 otherwise.
 
+### 2.10 OCM rings instead of the main-loop exchange — prototype 2026-11-26 (`feature/ocm_ring`)
+Option 1 of 2.4 (a ring buffer in OCM), built on the JavaScope ring
+prototype (`feature/ipc_ring_buffer_v2`) generalised to variable-length
+records (`shared/uz_ocm_ring.h`). Three rings (`shared/ocm_xcp_ring.h`):
+DAQ (control ISR -> A53, the engine writes the DTOs in place), RSP (main
+loop -> A53, responses) and CMD (A53 -> main loop, commands). The OCM map
+changed with it: boot handshakes in bank 0, user data in bank 1, XCP in
+banks 2+3 (`APU_RPU_shared.h`).
+- Removed: queue32 (128 KB in DDR), the main-loop copy, the chain
+  acknowledge and its pacing (2.5, 2.7), the seqlock, the CTO mailbox and
+  the command generations (`ocm_xcp_fifo.c/.h` on both cores).
+- Measured (STATUS, bench run 2026-11-26): ISR median +0.4-0.8 us up to
+  ~1 KB/cycle, but the spread drops from up to 2.3 us to 0.7 us and the
+  start delay p99 stays at 0.19 us under load; the R5 has 13 points more
+  free time at 300 Mbit/s (40 kHz); no loss at 300 Mbit/s at 40 and 10 kHz;
+  commands unchanged.
+- The bistability of 2.4 (acknowledge waits, cold copy source) has no
+  mechanism left: the DTOs go to OCM in the cycle they are sampled.
+- Open: JavaScope on the same ring (separate PR); the publish's fixed part
+  (~0.3 us per cycle even at 48 B) could be saved by publishing only every
+  n-th cycle at low rates; `XCP_R5_DAQ_NOTIFY_BYTES` (4 KB) not tuned;
+  ring start-up assumes the two cores do not initialise at the same
+  instant (stale positions are reconciled, a simultaneous init is not).
+
 ## 3. Safety scope — required before live calibration (Z5)
 
 ### 3.1 `DOWNLOAD` could write anywhere in the allow-list — including code

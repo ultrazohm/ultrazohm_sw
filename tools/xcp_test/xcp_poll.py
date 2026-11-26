@@ -348,22 +348,22 @@ def run_daq(xcp, item, seconds, event=0):
 # from Baremetal.elf). The A53 gateway counters are read through their OCM
 # mirror (A53_DIAG_COUNTERS below).
 R5_DIAG_COUNTERS = [
-    "xcp_r5_cycle_count", "ocm_xcp_w_dropped", "ocm_xcp_r_overrun",
-    "xcp_r5_cto_sent", "xcp_r5_cto_dropped", "xcp_r5_in_generations",
-    "xcp_r5_in_resumed", "xcp_r5_tx_oversize_drop", "xcp_r5_tx_held",
-    "xcp_r5_out_held", "xcp_r5_out_overwritten",
-    "xcp_r5_queue_lost", "xcp_r5_cmd_oversize_drop",
+    "xcp_r5_cycle_count", "xcp_r5_queue_lost", "xcp_r5_cto_sent",
+    "xcp_r5_cto_dropped", "xcp_r5_cmd_records", "xcp_r5_cmd_waits",
+    "xcp_r5_cmd_oversize_drop", "xcp_r5_cmd_ring_bad", "xcp_r5_daq_ipis",
+    "xcp_r5_rsp_ipis",
 ]
+R5_DIAG_ALARMS = ("xcp_r5_cto_dropped", "xcp_r5_queue_lost", "xcp_r5_cmd_ring_bad")
 
 
-# A53 gateway counters, mirrored every IPI into the XCP_IN header spare words at
-# fixed OCM addresses (ocm_xcp_fifo.h enum ocm_xcp_in_diag_slot; keep in sync).
+# A53 gateway counters, mirrored every IPI to fixed OCM addresses
+# (shared/ocm_xcp_ring.h enum ocm_xcp_gw_diag_slot; keep in sync).
 # Readable through the R5 engine by absolute address, no ELF needed.
 A53_DIAG_ADDR = 0xFFFFC008
 A53_DIAG_COUNTERS = [
-    "xcp_gw_ocm_skipped_writing", "xcp_gw_ocm_torn", "xcp_gw_ocm_cycles_missed",
-    "xcp_gw_ocm_capped", "xcp_gw_txq_dropped", "xcp_gw_ctoq_dropped",
-    "xcp_gw_in_batches_sent", "xcp_gw_in_retry_cycles", "xcp_gw_tx_malformed_drop",
+    "xcp_gw_ring_bad", "xcp_gw_daq_level_max", "xcp_gw_cmd_dropped",
+    "xcp_gw_drain_capped", "xcp_gw_txq_dropped", "xcp_gw_ctoq_dropped",
+    "xcp_gw_cmd_records", "xcp_gw_daq_records", "xcp_gw_tx_malformed_drop",
     "xcp_gw_rx_malformed_drop", "xcp_gw_sendto_err", "xcp_gw_sendto_drop",
     "xcp_gw_ipi_count", "xcp_gw_txq_level", "xcp_gw_master_lost",
     # A53 time profile (gateway XCP_GW_PROFILE): microsecond sums and counts,
@@ -373,7 +373,12 @@ A53_DIAG_COUNTERS = [
     "xcp_gw_prof_records", "xcp_gw_prof_tx_us", "xcp_gw_prof_sendto_us",
     "xcp_gw_prof_sendto_n", "xcp_gw_prof_tx_kb", "xcp_gw_prof_sendto_max_us",
 ]
-A53_DIAG_GAUGES = ("xcp_gw_txq_level",)  # level, not a count: print the value, not a delta
+A53_DIAG_GAUGES = ("xcp_gw_txq_level", "xcp_gw_daq_level_max")  # levels: print the value, not a delta
+A53_DIAG_ALARMS = ("xcp_gw_txq_dropped", "xcp_gw_ctoq_dropped", "xcp_gw_tx_malformed_drop",
+                   "xcp_gw_rx_malformed_drop", "xcp_gw_sendto_drop", "xcp_gw_ring_bad",
+                   "xcp_gw_cmd_dropped")
+# OCM DAQ ring size (OCM_XCP_DAQ_DATA_LEN), for xcp_gw_daq_level_max.
+DAQ_RING_BYTES = 0x1C000
 
 
 def read_a53_diag(xcp):
@@ -418,8 +423,8 @@ def print_a53_prof(pre, post):
         print("      IPI hook               %d/s, avg %5.1f us, max %5.1f us (last full second)"
               % (ipis / (win / 1e6), ipi / ipis, post["xcp_gw_prof_ipi_max_us"]))
     if rec:
-        print("      per chain record       copy out of OCM %5.2f us, into the queues %5.2f us"
-              "   (%.1f records per IPI)"
+        print("      per DAQ segment        copy out of OCM %5.2f us, into the queue %5.2f us"
+              "   (%.1f segments per IPI)"
               % (d("xcp_gw_prof_chain_us") / rec, d("xcp_gw_prof_enq_us") / rec,
                  rec / ipis if ipis else 0.0))
     if sends:
@@ -470,82 +475,56 @@ def stress_geometry(target_bytes, max_dto):
     return odts
 
 
-# R5 exchange profile (struct xcp_r5_prof, xcp_r5.h XCP_R5_PROFILE). Layout
-# version 2: 10 x u32, 13 x u64, 4 x u32 = 160 bytes; version 1 = the first
-# 136 bytes. Keep in sync with xcp_r5.h.
-PROF_FMT_V1 = "<10I12Q"
-PROF_FMT = "<10I13Q4I"
-PROF_FIELDS_V1 = ("version cpu_hz reset exchanges keeps event_calls event_cyc_max "
-                  "copy_cyc_max flush_cyc_max total_cyc_max elapsed_cyc chain_bytes "
-                  "cyc_refresh cyc_commands cyc_copy cyc_flush cyc_total isr_ns_copy "
-                  "isr_ns_flush isr_ns_total isr_ns_all event_cyc").split()
-PROF_FIELDS = PROF_FIELDS_V1 + "ack_wait_us ack_n ack_wait_max_us daq_waits polls".split()
+# R5 transport profile (struct xcp_r5_prof, xcp_r5.h XCP_R5_PROFILE). Layout
+# version 3 (OCM rings): 8 x u32, 7 x u64 = 88 bytes. Keep in sync with xcp_r5.h.
+PROF_FMT = "<8I7Q"
+PROF_FIELDS = ("version cpu_hz reset event_calls event_cyc_max publish_cyc_max ipis "
+               "commands elapsed_cyc event_cyc sample_cyc publish_cyc daq_bytes "
+               "isr_ns_all cmd_cyc").split()
 
 
 def prof_reset(xcp, addr):
-    """Ask the R5 to restart its exchange profile (field `reset`, offset 8).
-    SET_MTA + DOWNLOAD; the R5 clears the sums at its next exchange."""
+    """Ask the R5 to restart its profile (field `reset`, offset 8). SET_MTA +
+    DOWNLOAD; the next control cycle clears the sums."""
     xcp._cmd_checked("SET_MTA", bytes([0xF6, 0, 0, 0]) + struct.pack("<I", addr + 8))
     xcp._cmd_checked("DOWNLOAD", bytes([0xF0, 4]) + struct.pack("<I", 1))
 
 
 def prof_read(xcp, addr):
     raw = xcp.short_upload(addr, struct.calcsize(PROF_FMT))
-    version = struct.unpack_from("<I", raw)[0]
-    if version == 2:
-        return dict(zip(PROF_FIELDS, struct.unpack(PROF_FMT, raw)))
-    if version == 1:
-        return dict(zip(PROF_FIELDS_V1, struct.unpack_from(PROF_FMT_V1, raw)))
-    return None
+    if struct.unpack_from("<I", raw)[0] != 3:
+        return None  # another transport generation: no profile
+    return dict(zip(PROF_FIELDS, struct.unpack(PROF_FMT, raw)))
 
 
 def print_prof(p):
-    """Where the R5 spends its time: exchange phases (wall and CPU time),
-    the split between control ISR, exchanges and the rest of the main loop,
-    and the XCP part of the ISR."""
+    """Where the R5 spends its XCP time: the XCP part of the control ISR
+    (sampling into the DAQ ring, publishing), the ISR in total, and the
+    command execution in the main loop."""
     hz = float(p["cpu_hz"])
-    n = p["exchanges"]
-    if not n or not hz or not p["elapsed_cyc"]:
-        print("    R5 exchange profile: no data")
+    calls = p["event_calls"]
+    if not calls or not hz or not p["elapsed_cyc"]:
+        print("    R5 transport profile: no data")
         return
 
     def us(cyc):
         return 1e6 * cyc / hz
 
     elapsed = us(p["elapsed_cyc"])
-    if p["version"] >= 2:
-        print("    R5 exchange profile while DAQ ran (%d exchanges = %.0f/s: %d DAQ, %d header-only):"
-              % (n, n / (elapsed / 1e6), n - p["keeps"], p["keeps"]))
-    else:
-        print("    R5 exchange profile while DAQ ran (%d exchanges = %.0f/s, %d kept the chain):"
-              % (n, n / (elapsed / 1e6), p["keeps"]))
-    print("      exchange, wall         avg %7.1f us   max %7.1f us"
-          % (us(p["cyc_total"]) / n, us(p["total_cyc_max"])))
-    print("      phases, avg wall       refresh %.1f   commands %.1f   copy %.1f   flush %.1f us"
-          % (us(p["cyc_refresh"]) / n, us(p["cyc_commands"]) / n,
-             us(p["cyc_copy"]) / n, us(p["cyc_flush"]) / n))
-    kb = p["chain_bytes"] / 1024.0
-    if kb > 0:
-        for name, cyc, isr_ns, mx in (("copy", p["cyc_copy"], p["isr_ns_copy"], p["copy_cyc_max"]),
-                                      ("flush", p["cyc_flush"], p["isr_ns_flush"], p["flush_cyc_max"])):
-            wall = us(cyc)
-            cpu = wall - isr_ns / 1000.0
-            print("      %-5s per KB           wall %6.2f us   CPU %6.2f us   (ISR share %4.1f %%, longest %.1f us)"
-                  % (name, wall / kb, cpu / kb, 100.0 * (isr_ns / 1000.0) / wall if wall else 0.0, us(mx)))
-        print("      chain data             %.1f MB in %.1f s = %.1f MB/s"
-              % (p["chain_bytes"] / 1e6, elapsed / 1e6, p["chain_bytes"] / elapsed))
     isr = p["isr_ns_all"] / 1000.0
-    exch_cpu = us(p["cyc_total"]) - p["isr_ns_total"] / 1000.0
-    print("      R5 time split          control ISR %5.1f %%   exchanges %5.1f %%   rest of the main loop %5.1f %%"
-          % (100.0 * isr / elapsed, 100.0 * exch_cpu / elapsed, 100.0 * (elapsed - isr - exch_cpu) / elapsed))
-    if p["event_calls"]:
-        print("      per control cycle      ISR %5.2f us, of it xcp_r5_event() avg %5.2f us, max %5.2f us"
-              % (isr / p["event_calls"], us(p["event_cyc"]) / p["event_calls"], us(p["event_cyc_max"])))
-    if p["version"] >= 2:
-        print("      A53 acknowledge        avg %5.1f us, max %5.0f us after the IPI (%d chains);"
-              " %d DAQ exchanges waited for it; %.0f XCP_IN polls/s"
-              % (p["ack_wait_us"] / p["ack_n"] if p["ack_n"] else 0.0, p["ack_wait_max_us"],
-                 p["ack_n"], p["daq_waits"], p["polls"] / (elapsed / 1e6)))
+    print("    R5 transport profile while DAQ ran (%.1f s, %d control cycles):" % (elapsed / 1e6, calls))
+    print("      per control cycle      ISR %5.2f us; xcp_r5_event() avg %5.2f us, max %5.2f us"
+          % (isr / calls, us(p["event_cyc"]) / calls, us(p["event_cyc_max"])))
+    print("        of it                sampling into the ring %5.2f us, publish %5.2f us (max %5.2f us)"
+          % (us(p["sample_cyc"]) / calls, us(p["publish_cyc"]) / calls, us(p["publish_cyc_max"])))
+    kb = p["daq_bytes"] / 1024.0
+    if kb > 0:
+        print("      DAQ ring               %.1f MB = %.1f MB/s; publish %5.2f us/KB; sampling %5.2f us/KB"
+              % (p["daq_bytes"] / 1e6, p["daq_bytes"] / elapsed, us(p["publish_cyc"]) / kb,
+                 us(p["sample_cyc"]) / kb))
+    print("      IPIs from the ISR      %d = %.0f/s" % (p["ipis"], p["ipis"] / (elapsed / 1e6)))
+    print("      R5 time split          control ISR %5.1f %%   commands %5.1f %% (%d commands)"
+          % (100.0 * isr / elapsed, 100.0 * us(p["cmd_cyc"]) / elapsed, p["commands"]))
 
 
 class CtrCheck:
@@ -624,12 +603,8 @@ def run_stress(xcp, args, max_dto):
     R5-side drop counters. hedrive reference: 160 Mbit/s sustained."""
     odts = stress_geometry(args.stress_bytes, max_dto)
     per_cycle = sum(sum(entries) for entries in odts)
-    # OCM ceiling: the 32 KB XCP_OUT window carries ~30 KB of DTO payload per
-    # 100 us exchange sweep (chain minus 512 B CTO reserve, record framing per
-    # segment of up to 1400 B). Above that the backlog stays in the R5 queue.
-    if per_cycle > 25000:
-        print("[!] %d B/cycle is near/above the OCM per-sweep ceiling (~30 KB): "
-              "expect xcp_r5_tx_held and then xcp_r5_queue_lost to climb" % per_cycle)
+    # The OCM DAQ ring holds 112 KB: what the A53 does not take in time is
+    # refused at the source and counted in xcp_r5_queue_lost.
     print("[i] stress: %d B/cycle in %d ODTs (MAX_DTO %d) @ base 0x%08X, event %d (%s), %gs" %
           (per_cycle, len(odts), max_dto, args.stress_base, args.daq_event,
            R5_EVENT_NAMES.get(args.daq_event, "?"), args.daq_seconds))
@@ -647,7 +622,7 @@ def run_stress(xcp, args, max_dto):
         try:
             prof_reset(xcp, prof_addr)
         except (TimeoutError, RuntimeError) as e:
-            print("[!] R5 exchange profile not resettable (%s) -- skipping it" % e)
+            print("[!] R5 transport profile not resettable (%s) -- skipping it" % e)
             prof_addr = None
 
     # A large kernel receive buffer so the flood is not dropped PC-side: at
@@ -756,31 +731,29 @@ def run_stress(xcp, args, max_dto):
             if name in pre and name in post:
                 d = (post[name] - pre[name]) & 0xFFFFFFFF
                 flag = ""
-                if d and name in ("ocm_xcp_w_dropped", "ocm_xcp_r_overrun",
-                                  "xcp_r5_cto_dropped", "xcp_r5_tx_oversize_drop",
-                                  "xcp_r5_out_overwritten", "xcp_r5_queue_lost"):
+                if d and name in R5_DIAG_ALARMS:
                     flag = "  <-- investigate"
                 print("      %-24s +%d%s" % (name, d, flag))
     if pre_a53 and post_a53:
-        print("    A53 gateway counter deltas over the run (XCP_IN header mirror):")
+        print("    A53 gateway counter deltas over the run (OCM mirror):")
         for name in A53_DIAG_COUNTERS:
             if name.startswith("xcp_gw_prof_"):
                 continue  # time profile: see print_a53_prof
             if name in pre_a53 and name in post_a53:
                 if name in A53_DIAG_GAUGES:
-                    print("      %-26s  %d (level now)" % (name, post_a53[name]))
+                    extra = (" (%.1f %% of the DAQ ring)" % (100.0 * post_a53[name] / DAQ_RING_BYTES)
+                             if name == "xcp_gw_daq_level_max" else " (level now)")
+                    print("      %-26s  %d%s" % (name, post_a53[name], extra))
                     continue
                 d = (post_a53[name] - pre_a53[name]) & 0xFFFFFFFF
                 flag = ""
-                if d and name in ("xcp_gw_txq_dropped", "xcp_gw_ctoq_dropped",
-                                  "xcp_gw_tx_malformed_drop", "xcp_gw_rx_malformed_drop",
-                                  "xcp_gw_sendto_drop"):
+                if d and name in A53_DIAG_ALARMS:
                     flag = "  <-- investigate"
                 print("      %-26s +%d%s" % (name, d, flag))
         print("    (on missing frames: xcp_gw_sendto_drop > 0 = ECU dropped it after retries, "
               "0 = wire/PC-side loss)")
     else:
-        print("    (A53 gateway counters not readable: gateway older than the XCP_IN mirror?)")
+        print("    (A53 gateway counters not readable)")
     if prof:
         print_prof(prof)
     print_a53_prof(pre_a53, a53_prof_post)
@@ -825,9 +798,9 @@ def main():
                     help="target DAQ payload bytes per control cycle (default 2000 "
                          "= 160 Mbit/s at 10 kHz; the OCM window carries ~30000 "
                          "per 100 us sweep, so Ethernet is the practical limit)")
-    ap.add_argument("--stress-base", type=lambda x: int(x, 0), default=0xFFFF0000,
-                    help="measurement block base address (default 0xFFFF0000, the "
-                         "unused-under-XCP JavaScope OCM bank, 64 KB, allow-listed)")
+    ap.add_argument("--stress-base", type=lambda x: int(x, 0), default=0xFFFC1000,
+                    help="measurement block base address (default 0xFFFC1000: OCM bank 0 "
+                         "behind the boot handshakes, 60 KB, unused at run time, allow-listed)")
     ap.add_argument("--prescaler", type=int, default=1,
                     help="DAQ event prescaler for --stress (default 1 = full rate)")
     args = ap.parse_args()

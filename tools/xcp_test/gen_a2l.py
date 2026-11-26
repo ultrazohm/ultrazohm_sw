@@ -64,26 +64,24 @@ R5_EVENTS = [
     ("daq_1s", 4, 0x64, 0x07),
 ]
 
-# A53 gateway counters, mirrored every IPI into the XCP_IN header spare words
-# (vitis/software/Baremetal/src/sw/xcp_engine/ocm_xcp_fifo.h, enum
-# ocm_xcp_in_diag_slot): fixed OCM addresses, independent of any build, read by
-# the master through the R5 engine. Keep in sync with that enum.
+# A53 gateway counters, mirrored every IPI to fixed OCM addresses
+# (vitis/software/shared/ocm_xcp_ring.h, enum ocm_xcp_gw_diag_slot),
+# independent of any build, read by the master through the R5 engine. Keep in
+# sync with that enum.
 A53_DIAG_ADDR = 0xFFFFC008
 A53_DIAG_COUNTERS = [
-    "xcp_gw_ocm_skipped_writing", "xcp_gw_ocm_torn", "xcp_gw_ocm_cycles_missed",
-    "xcp_gw_ocm_capped", "xcp_gw_txq_dropped", "xcp_gw_ctoq_dropped",
-    "xcp_gw_in_batches_sent", "xcp_gw_in_retry_cycles", "xcp_gw_tx_malformed_drop",
+    "xcp_gw_ring_bad", "xcp_gw_daq_level_max", "xcp_gw_cmd_dropped",
+    "xcp_gw_drain_capped", "xcp_gw_txq_dropped", "xcp_gw_ctoq_dropped",
+    "xcp_gw_cmd_records", "xcp_gw_daq_records", "xcp_gw_tx_malformed_drop",
     "xcp_gw_rx_malformed_drop", "xcp_gw_sendto_err", "xcp_gw_sendto_drop",
     "xcp_gw_ipi_count", "xcp_gw_txq_level", "xcp_gw_master_lost",
 ]
-# R5-side loss/health counters (u32 globals in xcptl_ocm.c / ocm_xcp_fifo.c),
-# added with --diag.
+# R5-side loss/health counters (u32 globals in xcptl_ocm.c), added with --diag.
 R5_DIAG_SYMBOLS = [
-    "ocm_xcp_w_dropped", "ocm_xcp_r_overrun", "xcp_r5_cto_dropped", "xcp_r5_cto_sent",
-    "xcp_r5_queue_lost", "xcp_r5_tx_held", "xcp_r5_out_held", "xcp_r5_out_overwritten",
-    "xcp_r5_cmd_oversize_drop", "xcp_r5_write_denied",
-    "xcp_r5_in_resumed", "xcp_r5_in_generations", "xcp_r5_tx_oversize_drop",
-    "xcp_r5_cycle_count", "xcp_r5_sweep_count", "xcp_r5_sweep_gap_max_us",
+    "xcp_r5_queue_lost", "xcp_r5_cto_dropped", "xcp_r5_cto_sent",
+    "xcp_r5_cmd_records", "xcp_r5_cmd_waits", "xcp_r5_cmd_oversize_drop",
+    "xcp_r5_cmd_ring_bad", "xcp_r5_daq_ipis", "xcp_r5_rsp_ipis",
+    "xcp_r5_write_denied", "xcp_r5_cycle_count", "xcp_r5_sweep_gap_max_us",
 ]
 
 
@@ -122,7 +120,7 @@ def build_a2l(items, ip, port, struct_blocks=""):
         meas.append(measurement(name, dtype, a, "R5 %s" % name, lo, hi, daq_event))
     for i, name in enumerate(A53_DIAG_COUNTERS):
         meas.append(measurement(name, "ULONG", A53_DIAG_ADDR + 4 * i,
-                                "A53 gateway counter (XCP_IN header mirror slot %d)" % i,
+                                "A53 gateway counter (OCM mirror slot %d)" % i,
                                 "0", "4294967295", daq_event))
     meas_block = "\n".join(meas)
     if struct_blocks:

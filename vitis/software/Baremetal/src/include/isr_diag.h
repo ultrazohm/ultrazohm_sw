@@ -35,13 +35,16 @@
  * device accesses such as the AXI registers in the PL). */
 #define UZ_ISR_DIAG_PMU_EVENTS_DEFAULT 0x00430301u
 
-/* What the main loop was doing (uz_isr_diag_main_phase). */
+/* What the main loop was doing (uz_isr_diag_main_phase). Since the OCM
+ * rings (2026-11-26) the main loop only executes commands; PACING, COPY and
+ * FLUSH belonged to the former main-loop exchange and stay reserved so
+ * older recordings keep their meaning. */
 typedef enum {
-    UZ_ISR_DIAG_MAIN_OTHER = 0,       /* state machine, loop, XCP not running */
-    UZ_ISR_DIAG_MAIN_XCP_PACING = 1,  /* xcp_r5_background(): header refresh, pacing */
-    UZ_ISR_DIAG_MAIN_XCP_COMMANDS = 2, /* exchange: invalidate, XcpCommand(), responses */
-    UZ_ISR_DIAG_MAIN_XCP_COPY = 3,    /* exchange: DAQ queue -> OCM copy */
-    UZ_ISR_DIAG_MAIN_XCP_FLUSH = 4,   /* exchange: cache flush of the chain (IRQ masked per 1 KB) */
+    UZ_ISR_DIAG_MAIN_OTHER = 0,       /* state machine, loop, waiting for a command */
+    UZ_ISR_DIAG_MAIN_XCP_PACING = 1,  /* (former exchange: header refresh, pacing) */
+    UZ_ISR_DIAG_MAIN_XCP_COMMANDS = 2, /* xcp_r5_background(): XcpCommand(), responses */
+    UZ_ISR_DIAG_MAIN_XCP_COPY = 3,    /* (former exchange: DAQ queue -> OCM copy) */
+    UZ_ISR_DIAG_MAIN_XCP_FLUSH = 4,   /* (former exchange: cache flush of the chain) */
 } uz_isr_diag_main_phase_t;
 
 /* One control cycle, in CPU cycles (2 ns) unless noted. Sections that do
@@ -52,7 +55,7 @@ typedef struct {
     uint16_t adc;        /* ReadAllADC() */
     uint16_t encoder;    /* update_speed_and_position_of_encoder_on_D5() */
     uint16_t pwm;        /* state machine, control algorithm, duty cycles */
-    uint16_t xcp;        /* JavaScope_update_lifecheck() + xcp_r5_event() (or JavaScope_update()) */
+    uint16_t xcp;        /* JavaScope_update_lifecheck() + xcp_r5_event() incl. publish (or JavaScope_update()) */
     uint16_t xcp_base;   /* part of xcp: the DAQ_R5 event */
     uint16_t xcp_slices; /* part of xcp: the time-slice events daq_1ms ... daq_1s */
     uint16_t total;      /* ISR_Control entry -> before uz_SystemTime_ISR_Toc() */

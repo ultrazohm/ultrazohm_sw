@@ -1228,127 +1228,127 @@ DUAL: on falling and rising edge*/
       SYMBOL_LINK "timingR5.interrupt_counter" 0
     /end MEASUREMENT
 
-    /begin MEASUREMENT ocm_xcp_w_dropped "R5: XCP_OUT window full, DAQ record dropped (must stay 0 since the hold-back fix; NOT visible as wire CTR gap)"
+    /begin MEASUREMENT xcp_r5_cmd_waits "R5: main-loop passes that left a command waiting for room in the RSP ring (latency, not loss)"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
-      ECU_ADDRESS 0x400B8C50
-      SYMBOL_LINK "ocm_xcp_w_dropped" 0
+      ECU_ADDRESS 0x400B7F88
+      SYMBOL_LINK "xcp_r5_cmd_waits" 0
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_gw_ocm_skipped_writing "A53: header copy unusable (R5 mid-sweep), mailbox and ack taken next IPI, DAQ chain read anyway (occasional ok) [fixed OCM address 0xFFFFC008, slot 0 of the XCP_IN header mirror]"
+    /begin MEASUREMENT xcp_gw_ring_bad "A53: DAQ/RSP ring resynchronisations after corrupt data (must stay 0) [fixed OCM address 0xFFFFC008, slot 0 of the A53 counter mirror]"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
       ECU_ADDRESS 0xFFFFC008
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_gw_ocm_torn "A53: DAQ chain rewritten during the read (chain number changed), read discarded (rare) [fixed OCM address 0xFFFFC00C, slot 1 of the XCP_IN header mirror]"
+    /begin MEASUREMENT xcp_gw_daq_level_max "A53: fullest the OCM DAQ ring was at a drain, bytes of 114688 (how close the R5 came to dropping DAQ) [fixed OCM address 0xFFFFC00C, slot 1 of the A53 counter mirror]"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
       ECU_ADDRESS 0xFFFFC00C
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_gw_ocm_cycles_missed "A53: R5 sweeps between two header copies = IPI latency indicator, not a loss [fixed OCM address 0xFFFFC010, slot 2 of the XCP_IN header mirror]"
+    /begin MEASUREMENT xcp_gw_cmd_dropped "A53: command datagrams dropped, CMD ring full (R5 main loop not taking commands; the master retries) [fixed OCM address 0xFFFFC010, slot 2 of the A53 counter mirror]"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
       ECU_ADDRESS 0xFFFFC010
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_gw_ocm_capped "A53: per-IPI drain cap hit, rest of the cycle lost [fixed OCM address 0xFFFFC014, slot 3 of the XCP_IN header mirror]"
+    /begin MEASUREMENT xcp_gw_drain_capped "A53: IPIs that left DAQ data in the ring because of the per-IPI cap (latency, not loss) [fixed OCM address 0xFFFFC014, slot 3 of the A53 counter mirror]"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
       ECU_ADDRESS 0xFFFFC014
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_gw_txq_dropped "A53: DAQ queue full, record tail-dropped (UDP drain slower than DAQ; NOT visible as wire CTR gap) [fixed OCM address 0xFFFFC018, slot 4 of the XCP_IN header mirror]"
+    /begin MEASUREMENT xcp_gw_txq_dropped "A53: DAQ queue full, segment tail-dropped (UDP drain slower than DAQ; NOT visible as wire CTR gap) [fixed OCM address 0xFFFFC018, slot 4 of the A53 counter mirror]"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
       ECU_ADDRESS 0xFFFFC018
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_gw_ctoq_dropped "A53: CTO queue full, response dropped (must stay 0) [fixed OCM address 0xFFFFC01C, slot 5 of the XCP_IN header mirror]"
+    /begin MEASUREMENT xcp_gw_ctoq_dropped "A53: CTO queue full, response dropped (must stay 0) [fixed OCM address 0xFFFFC01C, slot 5 of the A53 counter mirror]"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
       ECU_ADDRESS 0xFFFFC01C
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_gw_in_batches_sent "A53: command batches (generations) offered to the R5 [fixed OCM address 0xFFFFC020, slot 6 of the XCP_IN header mirror]"
+    /begin MEASUREMENT xcp_gw_cmd_records "A53: command datagrams handed to the R5 (CMD ring) [fixed OCM address 0xFFFFC020, slot 6 of the A53 counter mirror]"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
       ECU_ADDRESS 0xFFFFC020
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_gw_in_retry_cycles "A53: IPIs spent re-offering an unacknowledged command batch (normal under load) [fixed OCM address 0xFFFFC024, slot 7 of the XCP_IN header mirror]"
+    /begin MEASUREMENT xcp_gw_daq_records "A53: DTOs taken from the OCM DAQ ring [fixed OCM address 0xFFFFC024, slot 7 of the A53 counter mirror]"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
       ECU_ADDRESS 0xFFFFC024
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_gw_tx_malformed_drop "A53: record failed the TL-frame walk on TX (must stay 0) [fixed OCM address 0xFFFFC028, slot 8 of the XCP_IN header mirror]"
+    /begin MEASUREMENT xcp_gw_tx_malformed_drop "A53: segment failed the TL-frame walk on TX (must stay 0) [fixed OCM address 0xFFFFC028, slot 8 of the A53 counter mirror]"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
       ECU_ADDRESS 0xFFFFC028
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_gw_rx_malformed_drop "A53: datagram with broken TL framing or frame > 248 B dropped on RX (must stay 0 with CANape) [fixed OCM address 0xFFFFC02C, slot 9 of the XCP_IN header mirror]"
+    /begin MEASUREMENT xcp_gw_rx_malformed_drop "A53: datagram with broken TL framing or frame > 248 B dropped on RX (must stay 0 with CANape) [fixed OCM address 0xFFFFC02C, slot 9 of the A53 counter mirror]"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
       ECU_ADDRESS 0xFFFFC02C
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_gw_sendto_err "A53: transient lwip_sendto failures, retried (pressure, not loss) [fixed OCM address 0xFFFFC030, slot 10 of the XCP_IN header mirror]"
+    /begin MEASUREMENT xcp_gw_sendto_err "A53: transient lwip_sendto failures, retried (pressure, not loss) [fixed OCM address 0xFFFFC030, slot 10 of the A53 counter mirror]"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
       ECU_ADDRESS 0xFFFFC030
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_gw_sendto_drop "A53: batch dropped after bounded retries = the only ECU-side wire CTR gap source (must stay 0) [fixed OCM address 0xFFFFC034, slot 11 of the XCP_IN header mirror]"
+    /begin MEASUREMENT xcp_gw_sendto_drop "A53: batch dropped after bounded retries = the only ECU-side wire CTR gap source (must stay 0) [fixed OCM address 0xFFFFC034, slot 11 of the A53 counter mirror]"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
       ECU_ADDRESS 0xFFFFC034
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_gw_ipi_count "A53: IPIs handled (liveness; ~ R5 sweep count) [fixed OCM address 0xFFFFC038, slot 12 of the XCP_IN header mirror]"
+    /begin MEASUREMENT xcp_gw_ipi_count "A53: IPIs handled (liveness) [fixed OCM address 0xFFFFC038, slot 12 of the A53 counter mirror]"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
       ECU_ADDRESS 0xFFFFC038
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_gw_txq_level "A53: DAQ queue fill level (gauge: backlog waiting for UDP, 0 in steady state) [fixed OCM address 0xFFFFC03C, slot 13 of the XCP_IN header mirror]"
+    /begin MEASUREMENT xcp_gw_txq_level "A53: DAQ queue fill level (gauge: backlog waiting for UDP, 0 in steady state) [fixed OCM address 0xFFFFC03C, slot 13 of the A53 counter mirror]"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
       ECU_ADDRESS 0xFFFFC03C
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_gw_master_lost "A53: sessions closed by the gateway because the master became unreachable (send failures or silence timeout) [fixed OCM address 0xFFFFC040, slot 14 of the XCP_IN header mirror]"
+    /begin MEASUREMENT xcp_gw_master_lost "A53: sessions closed by the gateway because the master became unreachable (send failures or silence timeout) [fixed OCM address 0xFFFFC040, slot 14 of the A53 counter mirror]"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
       ECU_ADDRESS 0xFFFFC040
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_r5_cto_dropped "R5: command response dropped, pending FIFO full (must stay 0 since the batch-resume fix; master sees a timeout)"
+    /begin MEASUREMENT xcp_r5_cto_dropped "R5: command response refused by the RSP ring (must stay 0; master sees a timeout)"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
-      ECU_ADDRESS 0x400BB138
+      ECU_ADDRESS 0x400B7F04
       SYMBOL_LINK "xcp_r5_cto_dropped" 0
     /end MEASUREMENT
 
     /begin MEASUREMENT xcp_r5_write_denied "R5: calibration writes refused by the write gate (target outside the data sections, or measurement-only build)"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
-      ECU_ADDRESS 0x0
+      ECU_ADDRESS 0x400B7E94
       SYMBOL_LINK "xcp_r5_write_denied" 0
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_r5_out_held "R5: sweeps that kept the XCP_OUT chain in place waiting for the A53 acknowledge (latency, not loss)"
+    /begin MEASUREMENT xcp_r5_daq_ipis "R5: IPIs from the control ISR (DAQ data waiting for the A53)"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
-      ECU_ADDRESS 0x0
-      SYMBOL_LINK "xcp_r5_out_held" 0
+      ECU_ADDRESS 0x400B7F1C
+      SYMBOL_LINK "xcp_r5_daq_ipis" 0
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_r5_out_overwritten "R5: XCP_OUT chains overwritten unacknowledged after the hold timeout (DAQ data lost; must stay 0 while connected)"
+    /begin MEASUREMENT xcp_r5_cmd_ring_bad "R5: corrupt command records skipped (must stay 0)"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
-      ECU_ADDRESS 0x0
-      SYMBOL_LINK "xcp_r5_out_overwritten" 0
+      ECU_ADDRESS 0x400B7F84
+      SYMBOL_LINK "xcp_r5_cmd_ring_bad" 0
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_r5_queue_lost "DAQ samples dropped in R5 queue (must stay 0; NOT visible as wire CTR gap)"
+    /begin MEASUREMENT xcp_r5_queue_lost "R5: DTOs refused because the OCM DAQ ring was full (must stay 0; NOT visible as wire CTR gap)"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
-      ECU_ADDRESS 0x400B9FA8
+      ECU_ADDRESS 0x400B7F00
       SYMBOL_LINK "xcp_r5_queue_lost" 0
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_r5_sweep_gap_max_us "max gap between main-loop XCP sweeps [us] (queue headroom indicator)"
+    /begin MEASUREMENT xcp_r5_sweep_gap_max_us "R5: max gap between two main-loop passes [us] (how long a command can wait)"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
-      ECU_ADDRESS 0x400BA3D8
+      ECU_ADDRESS 0x400B7F40
       SYMBOL_LINK "xcp_r5_sweep_gap_max_us" 0
     /end MEASUREMENT
 
-    /begin MEASUREMENT xcp_r5_tx_oversize_drop "R5 TX frames dropped for oversize (must stay 0)"
+    /begin MEASUREMENT xcp_r5_cmd_records "R5: command datagrams executed"
       ULONG NO_COMPU_METHOD 0 0 0 4294967295
-      ECU_ADDRESS 0x400B9FAC
-      SYMBOL_LINK "xcp_r5_tx_oversize_drop" 0
+      ECU_ADDRESS 0x400B7F80
+      SYMBOL_LINK "xcp_r5_cmd_records" 0
     /end MEASUREMENT
 
     /begin COMPU_METHOD FOC_SCF_P.FOC_ENABLE_Idq_Ref.Conversion ""

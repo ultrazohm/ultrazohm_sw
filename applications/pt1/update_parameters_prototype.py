@@ -131,30 +131,55 @@ def parameter_fields(parameters):
                 )
 
 
-def uz_nn_update_weights(uz, parameters, info, *, command_interval=0.002, timeout=5.0):
+def uz_nn_update_weights(
+    uz,
+    parameters,
+    info,
+    *,
+    command_interval=0.002,
+    timeout=5.0,
+    assign_feedback=True,
+    timings=None,
+):
     """Pause, upload a complete parameter set, finish, and leave control stopped.
 
     uz is an ultrazohm_cli.Client connected to an acquisition service.
     info contains target ('dqn'/'ddpg') and layers with inputs and neurons.
-    Recording must be idle so feedback channel assignments can be changed.
+    Recording must be idle when assign_feedback is True. Pass False when all
+    feedback channels are already assigned, to preserve a continuous recording.
+    If timings is a dict, fill it with host wall-clock seconds by upload phase.
+    Validation and feedback channel assignment are outside the measured interval.
     """
-    if not math.isfinite(command_interval) or command_interval < 0.001:
-        raise ValueError("command_interval must be at least 0.001 seconds")
+    if not math.isfinite(command_interval) or command_interval < 0.0001:
+        raise ValueError("command_interval must be at least 0.0001 seconds")
     if not math.isfinite(timeout) or timeout <= 0:
         raise ValueError("timeout must be positive")
     total = validate_parameters(parameters, info)
 
     # These slots follow the fourteen PT1 replay signals.
-    for slot, name in enumerate(FEEDBACK, 15):
-        uz.set_observable(f"JSO_nn_update_{name}", slot)
+    if assign_feedback:
+        for slot, name in enumerate(FEEDBACK, 15):
+            uz.set_observable(f"JSO_nn_update_{name}", slot)
     target_id = {"dqn": 1, "ddpg": 2}[info["target"]]
+    buckets = {}
+
+    def measured(name, function, *args):
+        if timings is None:
+            return function(*args)
+        before = time.perf_counter()
+        try:
+            return function(*args)
+        finally:
+            buckets[name] = buckets.get(name, 0.0) + time.perf_counter() - before
+
     try:
-        started = time.monotonic()
-        uz.stop()
-        time.sleep(0.1)
-        uz.set_variable("NN-Target", target_id)
-        time.sleep(0.05)
-        uz.button(7)
+        started = time.perf_counter()
+        measured("startup_commands", uz.stop)
+        measured("startup_sleeps", time.sleep, 0.1)
+        measured("startup_commands", uz.set_variable, "NN-Target", target_id)
+        measured("startup_sleeps", time.sleep, 0.05)
+        measured("startup_commands", uz.button, 7)
+        begin_wait = time.perf_counter()
         # Begin clears any error left by a previous aborted upload.
         deadline = time.monotonic() + timeout
         while True:
@@ -174,22 +199,34 @@ def uz_nn_update_weights(uz, parameters, info, *, command_interval=0.002, timeou
                 raise TimeoutError(f"Board did not enter update mode: {state}")
             time.sleep(0.02)
 
+        buckets["begin_confirmation"] = time.perf_counter() - begin_wait
+
         for sent, fields in enumerate(parameter_fields(parameters), 1):
             for name, field in fields:
-                uz.set_variable(name, field)
-                time.sleep(command_interval)
+                measured("parameter_commands", uz.set_variable, name, field)
+                measured("parameter_sleeps", time.sleep, command_interval)
             if sent % 32 == 0 or sent == total:
-                wait_feedback(
-                    uz, lambda state, sent=sent: state["received"] == sent, timeout
+                measured(
+                    "receipt_checks",
+                    wait_feedback,
+                    uz,
+                    lambda state, sent=sent: state["received"] == sent,
+                    timeout,
                 )
                 print(f"Received {sent}/{total} parameters", flush=True)
-        uz.button(8)
-        result = wait_feedback(
+        measured("finish_command", uz.button, 8)
+        result = measured(
+            "finish_confirmation",
+            wait_feedback,
             uz,
             lambda state: state["active"] == 0 and state["received"] == total,
             timeout,
         )
-        elapsed = time.monotonic() - started
+        elapsed = time.perf_counter() - started
+        if timings is not None:
+            timings.update(buckets)
+            timings["other"] = elapsed - sum(buckets.values())
+            timings["total"] = elapsed
         print(
             f"Uploaded {total} parameters in {elapsed:.3f} s. "
             "Controller remains stopped.",

@@ -43,8 +43,11 @@ class DataViewerApp:
         use_live: bool = False,
         live_mapping: str = "",
         live_repo: str | None = None,
+        start_live: bool = False,
     ) -> None:
         from .user_paths import data_directory, find_repository
+
+        self._start_live = start_live
 
         mapping_path = (
             Path(live_mapping).expanduser().resolve() if live_mapping else None
@@ -456,13 +459,13 @@ class DataViewerApp:
             self.control_server.poll(self.operations.dispatch)
             if self.control_server.pending:
                 hello_imgui.request_refresh()
-        # Wait until restored docking/windows exist, then select Analysis once.
+        # Wait until restored docking/windows exist, then select the startup tabs.
         if (
             self._select_initial_tabs
             and hasattr(self, "_runner_params")
             and imgui.get_frame_count() >= 2
         ):
-            self._apply_window_mode(False)
+            self._apply_window_mode(self._start_live)
             self._select_initial_tabs = False
         if (
             self.operations.jobs
@@ -710,6 +713,7 @@ def run_gui(args) -> int:
         disk_cache=disk_cache,
         use_live=use_live,
         live_repo=live_repo,
+        start_live=getattr(args, "live", False),
     )
     try:
         app.enable_control(args.endpoint)

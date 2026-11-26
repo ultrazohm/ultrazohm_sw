@@ -54,6 +54,9 @@ def parser():
     gui.add_argument("--loading-mode", choices=("memory", "lazy"))
     gui.add_argument("--disk-cache", action="store_true", default=None)
     gui.add_argument("--live-repo")
+    gui.add_argument(
+        "--live", action="store_true", help="Select live plots and controls at startup"
+    )
     for name, method in public_methods().items():
         command = commands.add_parser(name.replace("_", "-"), help=method.__doc__)
         for parameter in list(inspect.signature(method).parameters.values())[1:]:

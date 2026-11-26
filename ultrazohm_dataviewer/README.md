@@ -245,6 +245,8 @@ Control commands attach to an existing application:
 
 ```bash
 ultrazohm-dataviewer --endpoint 127.0.0.1:19741 gui
+# Open directly on the live plots and controls (connection is still explicit):
+ultrazohm-dataviewer --endpoint 127.0.0.1:19741 gui --live
 # In another terminal:
 ultrazohm-dataviewer status
 ultrazohm-dataviewer load recording.csv

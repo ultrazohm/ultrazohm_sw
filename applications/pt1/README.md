@@ -228,6 +228,89 @@ are required; neither SB3 nor the CLI package is needed for host evaluation.
 Host and R5 floating-point inference may differ slightly, especially at action
 ties; this evaluates the simulated task, not hardware timing or transport.
 
+## Build, flash, train and watch live
+
+`train_pt1_live.py` runs the DQN learner with a single shared CLI acquisition
+service and an attached DataViewer. It first invokes CLI `flash`, which builds
+the firmware and programs/runs it through JTAG. Vitis/XSCT, JTAG, Ethernet and
+this checkout's training-enabled firmware configuration are required. Close
+other applications connected to the board and free ports 19740 and 19741.
+
+Build/install this checkout's CLI and DataViewer, including the new `gui --live`
+startup option, then run from the repository root:
+
+```sh
+./uz_developer build linux_wheels
+./uz_developer shell
+python -m pip install -r applications/pt1/requirements.txt
+python applications/pt1/train_pt1_live.py
+```
+
+If the environment has no pip, use `uv pip install --python "$(command -v python)" -r applications/pt1/requirements.txt`.
+The developer shell uses its persistent cached environment, not `.venv`.
+The launcher defaults to 20 rounds and `192.168.1.233:1000`. Options include
+`--device IP:PORT`, `--xsct /path/to/Vitis/bin/xsct`, `--rounds N`,
+`--gradient-steps N`, `--endpoint HOST:PORT`, `--viewer-endpoint HOST:PORT`, and
+`--output NEW_DIRECTORY`. By default it creates a timestamped directory under
+`artifacts/`.
+
+Six live plots show y/reference/next_y, action value/index, reward, epsilon,
+episode/step counters, and upload progress. Here y is the actual simulated plant
+output; next_y is its value after the action. The 15-second live view is set up
+once, then scrolls through all rounds and the final evaluation. The script does
+not reset your axes or plot assignments between rounds. Channels stay fixed,
+including all five upload feedback signals, so uploads do not clear the live
+history. To fit the 19 assignable slots, the redundant replay sample index and
+done flag are reconstructed from episode/step counters for learning; they are
+not separate columns in the native log. The launcher sends PT1-DQN automatically.
+
+The live trainer uses 0.2 ms pacing between parameter commands, retaining firmware
+count checks every 32 parameters. Single hardware uploads of 1,251 DQN parameters
+completed in 4.351 seconds at 0.5 ms and 2.335 seconds at 0.1 ms; 0.2 ms has not
+been measured separately. These are single-run measurements, not throughput
+guarantees. The standalone paced uploader still defaults to 2 ms; use
+`--command-interval 0.0002` to select the same pacing as the live trainer.
+
+To measure upload costs through the existing service after training completes:
+
+```sh
+python applications/pt1/profile_pt1_upload.py artifacts/YOUR_RUN/export
+```
+
+This uploads the supplied DQN weights three times each at 0.1 and 0.2 ms, alternating
+settings, without reflashing or changing channels. The service must remain
+connected with all five upload feedback signals assigned and recording idle.
+Use `--intervals-ms`, `--repeats`, and `--output` to customize the measurement.
+It saves raw JSONL and CSV timings under `artifacts/pt1-upload-timing-*`.
+Timings separate startup commands/delays, begin confirmation, parameter API
+calls, actual pacing sleeps, receipt checks, and finish confirmation. These are
+host wall-clock measurements; API calls include service/transport overhead, and
+feedback checks include polling sleeps. Acquisition startup, CSV loading,
+parameter validation, and channel assignment are outside the measured interval.
+
+The output contains `network.pt`, CSV `export/`, per-round `progress.jsonl`,
+`settings.json`, and `dataviewer.log`. **One native `data.parquet` records the
+entire run**, including uploads, collection, host-learning pauses, and evaluation.
+It lives in the CLI session directory; `recording.json` in the run directory
+points to its durable `data.recording.json` handle. Logging starts before the
+first upload and is finalized after evaluation (or on error/interruption).
+`progress.jsonl` identifies each round's half-open `[start, stop)` sample range
+in that same recording. Filter `JSO_pt1_actor == 1` within each range to select
+its 3,000 training transitions. Reward and loss summaries print in the terminal.
+
+After training the final weights are uploaded and exploration is disabled. The
+launcher automatically runs six 500-step evaluation episodes with no gradient
+updates or replay buffer additions. `evaluation.json` contains the evaluation
+range in the same recording, per-episode return, tracking RMSE (reference versus
+next_y), and final output. No separate evaluation Parquet file is created.
+Evaluation failure is reported as a failed run; the continuous recording remains
+available with the samples accepted before the failure.
+
+After evaluation the controller stays stopped, while DataViewer and acquisition stay open until you
+close the viewer or press Ctrl-C in the terminal. `--exit-after-training` closes
+both immediately. Cleanup stops the device and finalizes recordings on failure
+or interruption too. This workflow trains against the R5 simulated PT1 plant.
+
 ## Firmware modes
 
 Select modes in `uz_global_configuration.h` or with compiler definitions:

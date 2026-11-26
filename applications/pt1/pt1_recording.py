@@ -17,7 +17,7 @@ CHANNELS = (
 )
 
 
-def wait_for_replay(client, actor_id, timeout):
+def wait_for_replay(client, actor_id, timeout, recording=1):
     """Read recording history so a short replay cannot be missed between polls."""
     deadline = time.monotonic() + timeout
     cursor = None
@@ -30,7 +30,7 @@ def wait_for_replay(client, actor_id, timeout):
         if phase == "failed":
             raise RuntimeError(f"Recording failed: {status['logging']['fast']}")
         try:
-            page = client.read_since(cursor, recording=1, limit=10000)
+            page = client.read_since(cursor, recording=recording, limit=10000)
         except RuntimeError as error:
             # start_logging installs the recording route before its background
             # writer has initialized readable history. Its phase can already be

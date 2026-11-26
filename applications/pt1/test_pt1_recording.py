@@ -38,6 +38,15 @@ class ReplayStartupTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "disk failure"):
             wait_for_replay(client, 1, 10)
 
+    @patch("pt1_recording.time.sleep")
+    def test_later_round_reads_its_own_recording(self, sleep):
+        client = self.client()
+        page = MagicMock()
+        page.data.filter.return_value.height = 3000
+        client.read_since.return_value = page
+        wait_for_replay(client, 1, 10, recording=7)
+        client.read_since.assert_called_once_with(None, recording=7, limit=10000)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -125,8 +125,8 @@ void JavaScope_update(DS_Data* data){
 	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
 	struct APU_to_RPU_t Received_Data_from_A53 = {0};
 	// create pointers to user data variables located in OCM Bank 1 and 2
-	struct RPU_to_APU_user_data_t volatile * const rpu_to_apu_user_data = (struct RPU_to_APU_user_data_t*)MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU;
-	struct APU_to_RPU_user_data_t volatile * const apu_to_rpu_user_data = (struct APU_to_RPU_user_data_t*)MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU;
+	struct RPU_to_APU_user_data_t volatile * const rpu_to_apu_user_data = (struct RPU_to_APU_user_data_t*)MEM_SHARED_START_OCM_RPU_TO_APU;
+	struct APU_to_RPU_user_data_t volatile * const apu_to_rpu_user_data = (struct APU_to_RPU_user_data_t*)MEM_SHARED_START_OCM_APU_TO_RPU;
 	static int js_cnt_slowData=0;
 	int status = XST_SUCCESS;
 
@@ -135,7 +135,7 @@ void JavaScope_update(DS_Data* data){
 	rpu_to_apu_user_data->slowDataCounter = js_cnt_slowData; //just an example
 	// add further data...
 
-	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
+	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
 #endif
 
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
@@ -192,7 +192,7 @@ void JavaScope_update(DS_Data* data){
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	//invalidate cache and read data from a53 shared memory
-	Xil_DCacheInvalidateRange(MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
+	Xil_DCacheInvalidateRange(MEM_SHARED_START_OCM_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 	// get data from apu_to_rpu_user_data struct and use it
 	 data->av.slowDataCounter = apu_to_rpu_user_data->slowDataCounter; //just an example
 #endif

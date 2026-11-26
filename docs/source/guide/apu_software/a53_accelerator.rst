@@ -94,7 +94,7 @@ In the R5 project ``sw/javascope.c`` within the function ``JavaScope_update`` lo
    rpu_to_apu_user_data->your_shared_data = your_local_data_on_r5; //this is just an example
    //...add further data
    
-   Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
+   Xil_DCacheFlushRange(MEM_SHARED_START_OCM_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
    #endif
    
    
@@ -128,7 +128,7 @@ Still in the same function, write the results of your accelerated computations t
    apu_to_rpu_user_data->result_to_share = accelerated_computation_result;
    //...add further results to share here
    
-   Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
+   Xil_DCacheFlushRange( MEM_SHARED_START_OCM_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 
    /* ...until here */
 
@@ -142,7 +142,7 @@ Back on the R5 processor, in the ``JavaScope_update`` function, look for the lin
 
    #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
    // invalidate cache and read data from a53 shared memory
-   Xil_DCacheInvalidateRange(MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
+   Xil_DCacheInvalidateRange(MEM_SHARED_START_OCM_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
    local_results_of_accelerated_calculations = apu_to_rpu_user_data->result_to_share; // still just an example
    #endif
    

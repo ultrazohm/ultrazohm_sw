@@ -74,8 +74,8 @@ void APU_IPI_ISR(void *data)
 	// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START_OCM_BANK_3_JAVASCOPE
 	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
 	// create pointers to user data variables located in OCM Bank 1 and 2
-	struct RPU_to_APU_user_data_t volatile * const rpu_to_apu_user_data = (struct RPU_to_APU_user_data_t*)MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU;
-	struct APU_to_RPU_user_data_t volatile * const apu_to_rpu_user_data = (struct APU_to_RPU_user_data_t*)MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU;
+	struct RPU_to_APU_user_data_t volatile * const rpu_to_apu_user_data = (struct RPU_to_APU_user_data_t*)MEM_SHARED_START_OCM_RPU_TO_APU;
+	struct APU_to_RPU_user_data_t volatile * const apu_to_rpu_user_data = (struct APU_to_RPU_user_data_t*)MEM_SHARED_START_OCM_APU_TO_RPU;
 	int status;
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
@@ -120,7 +120,7 @@ void APU_IPI_ISR(void *data)
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// invalidate cache of shared memory before read
-	Xil_DCacheInvalidateRange( MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
+	Xil_DCacheInvalidateRange( MEM_SHARED_START_OCM_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
 
 	// get data from r5 from shared memory
 	// some_variable  = rpu_to_apu_user_data->...
@@ -130,7 +130,7 @@ void APU_IPI_ISR(void *data)
 	// write data to r5 in shared memory and flush cache
 	apu_to_rpu_user_data->slowDataCounter  = rpu_to_apu_user_data->slowDataCounter; //just an example
 
-	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
+	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 
 	/* ...until here */
 #endif

@@ -32,6 +32,8 @@ void setUp(void)
     config.config_iq.upper_limit = 10.0f;
     config.config_iq.lower_limit = -10.0f;
     config.Kp_adjustment_flag = false;
+    config.Kp_d_limit = 20.0f;
+    config.Kp_q_limit = 20.0f;
     i_actual_Ampere.d = 0.0f;
     i_actual_Ampere.q = 0.0f;
     i_actual_Ampere.zero = 0.0f;
@@ -221,6 +223,17 @@ void test_uz_CurrentControl_set_Kp_and_Ki_iq(void){
 void test_uz_CurrentControl_adjust_Kp_NULL(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_adjust_Kp(NULL,i_reference_Ampere,i_actual_Ampere,factor));
 }
+
+void test_uz_CurrentControl_init_kp_d_q_limit_assert(void) {
+    //test if the kp adjustment is written properly 
+    config.Kp_adjustment_flag = true;
+    config.Kp_d_limit = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_init(config));
+    config.Kp_d_limit = 20.0f;
+    config.Kp_q_limit = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_init(config));
+}
+
 void test_uz_CurrentControl_adjust_Kp(void){
     //test if the kp adjustment is written properly 
     config.Kp_adjustment_flag = true;
@@ -481,6 +494,30 @@ void test_uz_CurrentControl_set_Kp_adjustment_flag(void) {
     uz_CurrentControl_adjust_Kp(instance,i_reference_Ampere,i_actual_Ampere,factor);
     float result = uz_CurrentControl_get_Kp_iq(instance);
     TEST_ASSERT_FLOAT_WITHIN(1e-03f,7.5f,result);
+}
+
+void test_uz_CurrentControl_test_Kp_adjustment_limits(void) {
+    //Values for comparision from simulation 
+    config.Kp_adjustment_flag = true;
+    config.config_iq.samplingTime_sec = 0.0001f;
+    config.config_id.samplingTime_sec = 0.0001f;
+    uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
+    flux_approx_reference.q = 0.002f;
+    flux_approx_real.q = 0.0005f;
+    flux_approx_reference.d = 0.002f;
+    flux_approx_real.d = 0.0005f;
+    i_reference_Ampere.q = 1.0f;
+    i_actual_Ampere.q = 0.5f;
+    i_reference_Ampere.d = 1.0f;
+    i_actual_Ampere.d = 0.5f;
+    //Set factor to such a low value, so that Kp would be absurdly high to test the limits
+    factor = 0.0001f;
+    uz_CurrentControl_set_flux_approx(instance,flux_approx_real, flux_approx_reference);
+    uz_CurrentControl_adjust_Kp(instance,i_reference_Ampere,i_actual_Ampere,factor);
+    float result_iq = uz_CurrentControl_get_Kp_iq(instance);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f,config.Kp_q_limit,result_iq);
+    float result_id = uz_CurrentControl_get_Kp_id(instance);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f,config.Kp_d_limit,result_id);
 }
 
 void test_uz_CurrentControl_tune_magnitude_optimum(void){

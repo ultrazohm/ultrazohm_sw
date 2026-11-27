@@ -28,6 +28,8 @@ struct uz_CurrentControl_config {
 	uz_PMSM_t config_PMSM; /**< Configuration struct for PMSM parameters */
 	bool Kp_adjustment_flag; /**<Flag to turn the adjustment of Kp via nonlinear flux-maps (gain scheduling) on or off */
 	float max_modulation_index; /**< Max possible modulation index for the chosen modulation method. I.e. 1/sqrt(3) for Space-Vector-Modulation*/
+	float Kp_d_limit; /**< Limit for the highest Kp-value for the d-axis the gain-scheduling can output. Set Kp_limit to e.g. 2x the Kp value calculated with linear Ld*/
+	float Kp_q_limit; /**< Limit for the highest Kp-value for the q-axis the gain-scheduling can output. Set Kp_limit to e.g. 2x the Kp value calculated with linear Lq*/
 };
 
 /**

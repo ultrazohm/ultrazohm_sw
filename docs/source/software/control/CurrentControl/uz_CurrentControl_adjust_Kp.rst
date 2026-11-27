@@ -15,7 +15,9 @@ Example
 
   int main(void) {
     struct uz_CurrentControl_config config = {
-    config_iq.samplingTime_sec = 0.00001f
+    .config_iq.samplingTime_sec = 0.00001f
+    .Kp_d_limit = 20.0f;
+    .Kp_q_limit = 20.0f;
     };  //only this parameter is needed
     uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
     struct uz_3ph_dq_t i_actual_Ampere = {.d = 0.8f, .q = 0.8f, .zero = 0.0f};
@@ -35,17 +37,23 @@ It has to be used in conjunction with :ref:`uz_CurrentControl_set_flux_approx`.
 
 .. math::
 
-    \overline{L}_{dd} = \frac{\psi_{d}(i_{d}^*,i_{q})-\psi_{d}(i_{d},i_{q})}{i_{d}^*-i_{d}} \\
-    \overline{L}_{qq} = \frac{\psi_{q}(i_{d},i_{q}^*)-\psi_{q}(i_{d},i_{q})}{i_{q}^*-i_{q}}
+    \hat{L}_{dd} = \frac{\psi_{d}(i_{d}^*,i_{q})-\psi_{d}(i_{d},i_{q})}{i_{d}^*-i_{d}} \\
+    \hat{L}_{qq} = \frac{\psi_{q}(i_{d},i_{q}^*)-\psi_{q}(i_{d},i_{q})}{i_{q}^*-i_{q}}
+
+To prevent numerical instability, the previous value for :math:`\hat{L}_{dd}` and :math:`\hat{L}_{qq}` is used for further calculations, if the absolute error between the reference and actual current is less than 0.001.
 
 Then the new Kp parameters can be calculated:
 
 .. math::
 
-    K_{p,d} = \frac{\overline{L}_{dd}}{2\tau_\sigma}  \qquad \qquad \qquad K_{p,q} = \frac{\overline{L}{qq}}{2\tau_\sigma}
+    K_{p,d} = \frac{\hat{L}_{dd}}{2\tau_\sigma}  \qquad \qquad \qquad K_{p,q} = \frac{\hat{L}{qq}}{2\tau_\sigma}
 
 If the flag ``Kp_adjustment_flag`` is set to true in the ``uz_CurrentControl_config``, the calculated :math:`K_{p,d}` and :math:`K_{p,q}` are automatically written to the pi controllers.
 If false, no adjustment of :math:`K_{p,d}` and :math:`K_{p,q}` is done. 
+The config parameters ``Kp_d_limit`` and ``Kp_q_limit`` can be used to set a limit to the maximum allowed values of the adjusted Kp parameters.
+E.g. set the values to 2x the Kp value calculated with linear :math:`L_{d}` and :math:`L_{q}`.
+If the flag ``Kp_adjustment_flag`` is set to true, ``Kp_d_limit`` and ``Kp_q_limit`` must be larger than 0.
+
 
 .. [#Schroeder_Regelung] Elektrische Antriebe - Regelung von Antriebssystemen, Dierk Schröder, Joachim Böcker, Springer, 2021, 5. Edition (German)
 .. [#Gemassmer_Diss] Effiziente und dynamische Drehmomenteinprägung in hoch ausgenutzten Synchronmaschinen mit eingebetteten Magneten, Tobias Gemaßmer, KIT Scientific Publishing, ISBN: 978-3-7315-0366-8

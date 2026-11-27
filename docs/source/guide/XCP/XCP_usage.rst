@@ -88,7 +88,7 @@ A variable can also be given by its address (``0x...``) instead of its name.
 
 .. code-block:: bash
 
-    # connect only: proves Ethernet, gateway, OCM exchange and engine
+    # connect only: proves Ethernet, gateway, OCM rings and engine
     python tools/xcp_test/xcp_poll.py --ip 192.168.1.233
 
     # read any R5 variable by name (type u8, i8, u16, i16, u32, i32, f32 or f64)
@@ -101,11 +101,31 @@ A variable can also be given by its address (``0x...``) instead of its name.
     python tools/xcp_test/xcp_poll.py --ip 192.168.1.233 --stress
 
 The default of 2000 bytes per cycle is meant for a control rate of 10 kHz.
-At 40 kHz it would be 640 Mbit/s, so choose the load with ``--stress-bytes``, for example 1000 bytes for 320 Mbit/s.
-The data rate that the stress test prints at the start also assumes 10 kHz.
-The summary at the end shows the real one.
+At 40 kHz it exceeds the DAQ budget of the R5 (1250 bytes per cycle, see :ref:`xcp_architecture_budget`) and the start is refused, so choose the load with ``--stress-bytes``, for example 938 bytes for 300 Mbit/s.
+The stress test prints at the start how many bytes per cycle the budget counts for the chosen load.
+The data rate it prints at the start assumes 10 kHz; the summary at the end shows the real one.
 
-The stress test prints the data rate, the gaps in the transport counter and the change of the loss counters of :ref:`xcp_diagnostics` during the run.
+The stress test prints the data rate, the gaps in the transport counter and the change of the counters of :ref:`xcp_diagnostics` during the run.
+Its exit code tells the result:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 10 90
+
+   * - Code
+     - Result
+   * - 0
+     - passed: every transport counter value arrived once, and no buffer of the UltraZohm dropped data
+   * - 1
+     - no measurement data received
+   * - 2
+     - gaps or duplicates in the transport counter
+   * - 3
+     - data dropped inside the UltraZohm before the transport counter was stamped (``xcp_r5_queue_lost`` or ``xcp_gw_txq_dropped`` increased); the master cannot see such a loss as a counter gap
+   * - 4
+     - these loss counters could not be read, so a hidden loss is unknown; typically the main loop of the R5 had no time to execute commands
+   * - 5
+     - the start was refused by the DAQ budget of the R5
 
 A2L file
 --------
@@ -180,21 +200,15 @@ Every sample carries the start of its control interrupt, read from the 100 MHz s
 Consecutive samples on ``DAQ_R5`` are therefore one control period apart, give or take the interrupt latency.
 CANape converts the time of the UltraZohm to the clock of the PC, so the times in a recording also contain the drift between the two clocks (about 17 ppm on the test bench).
 
-In July 2026 an earlier version of this data path ran on hardware for one hour with 325 Mbit/s of measurement data (4000 bytes per cycle at 10 kHz).
-The XCP session stayed alive, and the data of about 0.003 % of the control cycles was lost at the exchange between the processors.
-The consumption handshake described in :ref:`xcp_architecture` was added afterwards to remove this loss.
+In November 2026 the current version, with the ring buffers in the OCM, was measured on the test bench:
 
-In November 2026 the current version was measured at a control rate of 40 kHz:
+- 300 Mbit/s ran without any loss, both at 40 kHz (938 bytes per cycle) and at 10 kHz (3750 bytes per cycle). At 40 kHz the control interrupt took 73 % of the time of the R5, and the A53 was idle 40 % of the time.
+- At 40 kHz, 1350 bytes per cycle (432 Mbit/s) ran without loss. From 1400 bytes per cycle on, the DTOs of one cycle no longer fit into one datagram, and the A53 dropped data in its DAQ queue, because it sends at most 60,000 to 70,000 datagrams per second.
+- From about 2800 bytes per cycle at 40 kHz, the main loop of the R5 no longer got enough time to execute commands. The DAQ budget now refuses such a measurement before it starts.
+- A command took about 0.22 to 0.26 ms from the PC back to the PC in the median, with and without a running measurement.
 
-- With DAQ messages of at most 248 bytes, nothing was lost up to about 160 Mbit/s. At 320 Mbit/s about a third of the control cycles were lost.
-- With the current messages of up to 1024 bytes, 320 Mbit/s (1000 bytes per cycle) ran without any loss. With XCP commands sent back to back at the same time, 900 bytes per cycle ran for 10 minutes without loss; at 1000 bytes per cycle the R5 fell behind and about 15 % of the samples were lost.
-- From 1100 bytes per cycle on, the R5 no longer kept up. ``xcp_r5_queue_lost`` counted lost samples, and the throughput fell to about 250 Mbit/s.
-- A command took about 0.24 ms from the PC back to the PC without a measurement and about 0.6 ms at 1000 bytes per cycle.
-
-At a high control rate the interrupt leaves little time for the main loop, and the main loop copies the measurement data into the OCM.
-The limit is then the R5, not Ethernet and not the A53, which was idle more than 40 % of the time at the limit.
-Overload does not degrade gracefully: once the R5 has fallen behind, it copies data that is no longer in its cache, which costs about twice as much, so the throughput sinks below the limit and stays there until the load drops.
-At 40 kHz, keep the data on ``DAQ_R5`` at or below about 900 bytes per cycle and put everything else on a slower raster. 1000 bytes per cycle work, but leave no reserve for disturbances.
+At 40 kHz, keep the data on ``DAQ_R5`` so small that the DTOs of one cycle fit into one datagram of 1400 bytes, which is about 1350 bytes in one DAQ list, and put everything else on a slower raster.
+The DAQ budget of 1250 bytes per cycle stays below this.
 Each ODT also costs time in the interrupt, see :ref:`xcp_architecture`.
 
 Calibrate
@@ -212,6 +226,9 @@ Use the address for them.
 .. warning::
    A calibration write changes a variable of the running control application immediately. The value is not checked. Only calibrate variables whose effect on your test bench you understand.
 
+Values of 1, 2, 4 and 8 bytes are written in one piece, so the control interrupt never sees half of a new value.
+Larger blocks, for example arrays, are not, and a set of several variables that are written with separate commands changes one variable after the other.
+
 A calibrated value is kept until the next reset.
 It is not stored permanently.
 
@@ -227,3 +244,4 @@ Limits
 - Both applications must always be built from the same state of the repository and flashed together.
 - Only memory of the R5 can be accessed. Variables of the A53 application and registers in the PL are not reachable.
 - The measurement configuration is limited by the DAQ tables of the R5 (6 KB, about 1000 signals in total). A larger configuration is refused with ``ERR_MEMORY_OVERFLOW``. The size is set with ``OPTION_DAQ_MEM_SIZE`` in ``xcplib_r5_cfg.h``.
+- The amount of measurement data per control cycle is limited by the DAQ budget (1250 bytes at 40 kHz, 5000 bytes at 10 kHz). A larger measurement is refused with ``ERR_DAQ_CONFIG``, see :ref:`xcp_architecture_budget`.

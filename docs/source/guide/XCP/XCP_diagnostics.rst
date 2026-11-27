@@ -16,18 +16,19 @@ Where data can wait or get lost
     :caption: Buffers on the way of the measurement data and the counter that belongs to each of them
 
     flowchart TB
-      isr["R5 ISR_Control"] --> q1["R5 DAQ queue, 128 KB"]
-      q1 --> out["XCP_OUT, 32 KB"]
-      out --> q2["A53 DAQ queue, 65536 records"]
+      isr["R5 ISR_Control"] --> ring["DAQ ring in the OCM, 112 KB"]
+      ring --> q2["A53 DAQ queue, 65536 segments"]
       q2 --> udp["UDP send"]
       udp --> pc["PC"]
-      q1 -. "full" .-> c1(["xcp_r5_queue_lost"])
-      out -. "no acknowledge<br>for 5 ms" .-> c2(["xcp_r5_out_overwritten"])
+      ring -. "full" .-> c1(["xcp_r5_queue_lost"])
       q2 -. "full" .-> c3(["xcp_gw_txq_dropped"])
       udp -. "failed after<br>all retries" .-> c4(["xcp_gw_sendto_drop"])
 
 A datagram that could not be sent (``xcp_gw_sendto_drop``) is the only loss inside the UltraZohm that the master sees as a gap in the transport counter.
 A gap with this counter unchanged was lost on the wire or in the PC.
+
+Commands take the opposite way through the CMD ring.
+A command datagram that does not fit into it is dropped and counted in ``xcp_gw_cmd_dropped``; the master repeats the command after its timeout.
 
 To check a recording itself for lost samples, measure ``lifecheck`` (in ``CANape/UZ_XCP/uz.A2L``) on the event ``DAQ_R5``.
 It counts the control cycles modulo 1000 and is refreshed right before the sampling, so consecutive samples differ by 1, from 999 back to 0.
@@ -38,12 +39,12 @@ Any other step is a loss, wherever it happened.
 Reading the counters
 --------------------
 
-- **CANape**: ``CANape/UZ_XCP/uz.A2L`` contains all counters of the A53 and the loss counters of the R5, for example ``xcp_r5_queue_lost`` and ``xcp_r5_out_overwritten``. The other R5 counters can be added from the ELF file like any other variable.
+- **CANape**: ``CANape/UZ_XCP/uz.A2L`` contains all counters of the A53 and the loss counters of the R5, for example ``xcp_r5_queue_lost``. The other R5 counters can be added from the ELF file like any other variable.
 - **xcp_poll.py**: ``--stress`` prints the change of all A53 counters and of most R5 counters over the run. A single R5 counter can be read with ``--watch <name>:u32``, a counter of the A53 with its address, for example ``--watch 0xFFFFC034:u32``.
 - **gen_a2l.py**: a generated A2L file always contains the counters of the A53. ``--diag`` adds those of the R5.
 
 The counters of the R5 are global variables of the Baremetal application.
-The counters of the A53 are copied on every interrupt and for every command into the header of ``XCP_IN`` at fixed addresses from ``0xFFFFC008`` and are read through the R5 like any other memory.
+The A53 writes its counters into the OCM at fixed addresses from ``0xFFFFC008`` on every IPI, and they are read through the R5 like any other memory.
 
 R5 counters
 -----------
@@ -61,45 +62,48 @@ R5 counters
    * - ``xcp_r5_cycle_count``
      - counts up
      - One count per call of ``ISR_Control``.
-   * - ``xcp_r5_sweep_count``
-     - counts up
-     - One count per exchange with the A53: measurement data, commands or the 1 ms heartbeat.
    * - ``xcp_r5_sweep_gap_max_us``
      - below 1000
-     - Longest time between two passes of the main loop through ``xcp_r5_background()`` since start-up, in microseconds, including the exchanges themselves. It is counted in whole control periods (25 µs steps at 40 kHz). A single slow pass raises it for good. A large value means that something blocks the main loop, and commands wait that long.
+     - Longest time between two passes of the main loop through ``xcp_r5_background()`` since start-up, in microseconds, including the commands themselves. It is counted in whole control periods (25 µs steps at 40 kHz). A single slow pass raises it for good. A large value means that something blocks the main loop, and commands wait that long.
    * - ``xcp_r5_queue_lost``
      - 0
-     - Measurement data dropped because the DAQ queue of the R5 was full. This is the loss counter for measurement data on the R5.
-   * - ``xcp_r5_tx_held``
-     - may count
-     - Exchanges that filled ``XCP_OUT`` completely. The rest waited in the queue. A steady increase means the measurement produces more data than the exchange can carry.
-   * - ``xcp_r5_out_held``
-     - may count
-     - Exchanges of measurement data that were due before the A53 had acknowledged the previous chain, counted once per chain. Delay, not loss.
-   * - ``xcp_r5_out_overwritten``
-     - 0
-     - Chains given up after 5 ms without acknowledge. Their data is lost. The gateway is not running or stalled.
+     - DTOs dropped because the DAQ ring was full: the A53 did not take the data fast enough. This is the loss counter for measurement data on the R5.
+   * - ``xcp_r5_daq_ipis``
+     - counts up
+     - IPIs from the control interrupt that announced measurement data.
+   * - ``xcp_r5_rsp_ipis``
+     - counts up
+     - IPIs from the main loop that announced responses.
    * - ``xcp_r5_cto_sent``
      - counts up
-     - Command responses handed to the mailbox.
+     - Command responses and events written into the RSP ring.
    * - ``xcp_r5_cto_dropped``
      - 0
-     - Responses that could not be stored. The master sees a timeout.
-   * - ``xcp_r5_in_generations``
+     - Responses that did not fit into the RSP ring. The master sees a timeout.
+   * - ``xcp_r5_cmd_records``
      - counts up
-     - Command batches executed.
-   * - ``xcp_r5_in_resumed``
+     - Command datagrams executed.
+   * - ``xcp_r5_cmd_waits``
      - may count
-     - Exchanges that had to interrupt a command batch because four responses were already waiting for the mailbox. The batch continues in the next exchange.
+     - Passes of the main loop that left a command waiting because the RSP ring had no room for its response yet. Delay, not loss.
    * - ``xcp_r5_cmd_oversize_drop``
      - 0
      - Commands longer than 248 bytes that were refused.
+   * - ``xcp_r5_cmd_ring_bad``
+     - 0
+     - Corrupt records in the CMD ring that were skipped.
    * - ``xcp_r5_write_denied``
      - 0
      - Calibration writes refused by the memory access rules.
-   * - ``ocm_xcp_w_dropped``, ``ocm_xcp_r_overrun``, ``xcp_r5_tx_oversize_drop``
+   * - ``xcp_r5_daq_budget_bytes``
+     - 1250 at 40 kHz
+     - The DAQ budget per control cycle, see :ref:`xcp_architecture_budget`. Not a counter.
+   * - ``xcp_r5_daq_cycle_bytes``
+     - below the budget
+     - Bytes of the worst control cycle of the last measurement start, accepted or not. Not a counter.
+   * - ``xcp_r5_daq_budget_refused``
      - 0
-     - Internal consistency checks of the OCM exchange.
+     - Measurement starts refused with ``ERR_DAQ_CONFIG`` because they exceeded the budget.
 
 A53 gateway counters
 --------------------
@@ -112,42 +116,42 @@ A53 gateway counters
      - Address
      - Expected
      - Meaning
-   * - ``xcp_gw_ocm_skipped_writing``
+   * - ``xcp_gw_ring_bad``
      - ``0xFFFFC008``
-     - may count
-     - The interrupt arrived while the R5 was writing, or the R5 changed the header during the copy. The response mailbox and the acknowledges are taken with the next interrupt. The DAQ chain is read anyway.
-   * - ``xcp_gw_ocm_torn``
-     - ``0xFFFFC00C``
-     - may count
-     - The R5 rewrote the DAQ chain while the A53 was reading it. The read is discarded, and the new chain is read with the next interrupt. Rare, because the R5 rewrites a chain with data only after the A53 confirmed it.
-   * - ``xcp_gw_ocm_cycles_missed``
-     - ``0xFFFFC010``
-     - may count
-     - Exchanges of the R5 that no interrupt read. Indicates interrupt latency on the A53, not a loss.
-   * - ``xcp_gw_ocm_capped``
-     - ``0xFFFFC014``
      - 0
-     - More than 128 records in one read. The rest of that chain is lost.
+     - Corrupt records in the DAQ or RSP ring that the gateway skipped.
+   * - ``xcp_gw_daq_level_max``
+     - ``0xFFFFC00C``
+     - well below 114688
+     - Highest fill level of the DAQ ring in bytes seen by an interrupt. It shows how close the R5 came to dropping measurement data. Not a counter.
+   * - ``xcp_gw_cmd_dropped``
+     - ``0xFFFFC010``
+     - 0
+     - Command datagrams dropped because the CMD ring was full. The R5 main loop does not take commands; the master repeats them.
+   * - ``xcp_gw_drain_capped``
+     - ``0xFFFFC014``
+     - may count
+     - Interrupts that left measurement data in the DAQ ring because of the limit of 32 KB per interrupt. The next interrupt takes it. Delay, not loss.
    * - ``xcp_gw_txq_dropped``
      - ``0xFFFFC018``
      - 0
-     - DAQ queue of the A53 full. The network is slower than the measurement.
+     - DAQ queue of the A53 full, a segment was dropped. The A53 or the network is slower than the measurement.
    * - ``xcp_gw_ctoq_dropped``
      - ``0xFFFFC01C``
      - 0
      - Response queue full. A response or an event was lost.
-   * - ``xcp_gw_in_batches_sent``
+   * - ``xcp_gw_cmd_records``
      - ``0xFFFFC020``
      - counts up
-     - Command batches offered to the R5.
-   * - ``xcp_gw_in_retry_cycles``
+     - Command datagrams handed to the R5.
+   * - ``xcp_gw_daq_records``
      - ``0xFFFFC024``
-     - may count
-     - Interrupts that offered a batch again.
+     - counts up
+     - DTOs taken from the DAQ ring.
    * - ``xcp_gw_tx_malformed_drop``
      - ``0xFFFFC028``
      - 0
-     - Record from the R5 with a broken frame structure.
+     - Segment with a broken frame structure before sending.
    * - ``xcp_gw_rx_malformed_drop``
      - ``0xFFFFC02C``
      - 0
@@ -167,7 +171,7 @@ A53 gateway counters
    * - ``xcp_gw_txq_level``
      - ``0xFFFFC03C``
      - 0 when idle
-     - Current fill level of the DAQ queue. Not a counter.
+     - Current fill level of the DAQ queue in segments. Not a counter.
    * - ``xcp_gw_master_lost``
      - ``0xFFFFC040``
      - 0
@@ -177,28 +181,27 @@ Time profile of the R5
 ----------------------
 
 The R5 also measures where its time goes.
-It times every exchange and every call of ``xcp_r5_event()`` with its CPU cycle counter and keeps the sums in the global structure ``xcp_r5_prof``.
+It times every call of ``xcp_r5_event()`` and the execution of commands with its CPU cycle counter and keeps the sums in the global structure ``xcp_r5_prof``.
 ``xcp_poll.py --stress`` clears the sums before a run, reads them at the end of the run while DAQ is still running, and prints:
 
-- the exchanges per second, how many of them carried measurement data and how many only commands, and the wall time of one exchange,
-- the wall time of each phase of an exchange: refreshing the command region, executing commands, copying DAQ data into ``XCP_OUT`` and flushing the cache,
-- the copy and flush time per KB of DAQ data, once as wall time and once as CPU time without the control interrupts that hit the phase,
-- how the time of the R5 splits into the control interrupt, the exchanges and the rest of the main loop,
-- the run time of the control interrupt per cycle and the part of it spent in ``xcp_r5_event()``,
-- how long the A53 took to acknowledge a chain of measurement data after the interrupt, and how often the R5 looked at ``XCP_IN``.
+- the run time of the control interrupt per cycle and the part of it spent in ``xcp_r5_event()``, on average and at most,
+- how this part splits into writing the DTOs into the DAQ ring and publishing them (cache clean and write position),
+- the data rate into the DAQ ring and the cost of sampling and publishing per KB,
+- the IPIs from the control interrupt per second,
+- how the time of the R5 splits into the control interrupt and the execution of commands.
 
-The profile costs a few reads of the cycle counter per exchange and per control cycle.
+The profile costs a few reads of the cycle counter per control cycle.
 It is switched off with ``XCP_R5_PROFILE`` set to ``0`` in ``xcp_r5.h``.
 
 Time profile of the A53
 -----------------------
 
-The gateway measures its own time with the system counter of the A53 and copies the sums into the last words of the counter area in ``XCP_IN``.
+The gateway measures its own time with the system counter of the A53 and writes the sums behind its counters into the OCM.
 ``xcp_poll.py --stress`` prints them next to the profile of the R5:
 
 - how the time of the A53 splits into idle time, the interrupt hook, the tx task and everything else (network stack, interrupts of the Ethernet controller, other tasks, and the task switch after every datagram of the tx task),
-- the time of the interrupt hook per interrupt and per record of measurement data,
-- the datagrams per second, their average size, and the time of one ``lwip_sendto()`` call.
+- the interrupts per second and the time of the interrupt hook, and per segment of measurement data the time to copy it out of the OCM and into the queue,
+- the datagrams per second, their average size, the time of one ``lwip_sendto()`` call and the time of the tx task per datagram.
 
 The idle time comes from a task at the idle priority that only runs when nothing else needs the processor.
 The profile is switched off with ``XCP_GW_PROFILE`` set to ``0`` in ``xcp_gateway_a53.h``.
@@ -223,7 +226,7 @@ Troubleshooting
    * - A write gives ``ERR_WRITE_PROTECTED``
      - The target is not a global or ``static`` variable (for example a constant), or the firmware was built with ``XCP_R5_READ_ONLY``.
    * - Measurement does not start, ``ERR_DAQ_CONFIG``
-     - The A2L file must limit ODT entries to 240 bytes.
+     - Either the measurement exceeds the DAQ budget (``xcp_r5_daq_budget_refused`` increased; compare ``xcp_r5_daq_cycle_bytes`` with ``xcp_r5_daq_budget_bytes``): measure less on ``DAQ_R5`` or move signals to a slower raster, see :ref:`xcp_architecture_budget`. Or the A2L file allows ODT entries larger than 240 bytes.
    * - Measurement does not start, ``ERR_MEMORY_OVERFLOW``
      - The measurement configuration is larger than the DAQ tables of the R5 (about 1000 signals). Measure fewer signals or raise ``OPTION_DAQ_MEM_SIZE`` in ``xcplib_r5_cfg.h``.
    * - A complete structure cannot be added in CANape
@@ -232,8 +235,12 @@ Troubleshooting
      - The addresses are stale. Load the CANape project again after building, or generate the A2L file again. For a complete structure also check that its description matches the current layout, see :ref:`xcp_usage`.
    * - Gaps in the measurement, no counter of the UltraZohm changed
      - Loss in the network or in the PC. Increase the receive buffer of the PC or reduce the data rate with a slower raster.
+   * - ``xcp_gw_txq_dropped`` increases
+     - The A53 cannot send the datagrams fast enough. At 40 kHz the DTOs of one control cycle must fit into one datagram of 1400 bytes; measure less on ``DAQ_R5`` or move signals to a slower raster.
    * - ``xcp_r5_queue_lost`` increases
-     - More data than the path can carry, or the main loop of the R5 is blocked (``xcp_r5_sweep_gap_max_us``).
+     - The A53 does not empty the DAQ ring: the gateway is stalled or not running, or more data arrives than it can carry (then ``xcp_gw_daq_level_max`` is close to 114688).
+   * - Commands are slow or time out during a measurement
+     - The main loop of the R5 gets too little time (``xcp_r5_sweep_gap_max_us``). Check that the DAQ budget was not raised.
    * - CANape reports a timeout during a running measurement
      - Use a command timeout ``T1`` of 5000 ms in the A2L file.
    * - Measurement stops by itself, ``xcp_gw_master_lost`` increased

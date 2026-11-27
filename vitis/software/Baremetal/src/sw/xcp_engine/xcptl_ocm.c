@@ -309,6 +309,19 @@ uint8_t xcp_r5_check_write(uint32_t addr, uint8_t size) {
 #endif
 }
 
+/* 8-byte write (XCP_WRITE64, xcplib_r5_cfg.h). A DOWNLOAD runs in the main
+ * loop, and a 64-bit store is two 32-bit accesses on the R5, so the control
+ * ISR could read a double or int64 with one half new and one half old. With
+ * IRQ and FIQ masked the copy completes before the ISR can run (a few
+ * instructions). memcpy because neither pointer is guaranteed to be 8-byte
+ * aligned: the command buffer is not, and LDRD/STRD would fault on it. */
+void xcp_r5_write64(uint8_t *dst, const uint8_t *src) {
+    uint32_t cpsr;
+    __asm__ volatile("mrs %0, cpsr\n\tcpsid if" : "=r"(cpsr)::"memory");
+    memcpy(dst, src, 8u);
+    __asm__ volatile("msr cpsr_c, %0" ::"r"(cpsr) : "memory");
+}
+
 /* --- transmit queue API (queue.h) on the OCM rings ------------------------ *
  * Replaces queue32.c. The engine uses only queueAcquire/queuePush (DAQ in
  * XcpEvent, events and SERV_TEXT in command context); queuePop/Peek/Release

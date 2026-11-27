@@ -556,7 +556,13 @@ uint8_t XcpWriteMta(uint8_t size, const uint8_t *data) {
             *(uint32_t *)local_mut.mta_ptr = *(uint32_t *)data;
             break;
         case 8:
+#ifdef XCP_WRITE64
+            // UZ patch (not in upstream V2.3.4): on a 32-bit core a 64-bit store is two accesses, and the
+            // DAQ event context could read a double or int64 half new, half old; the platform makes it atomic
+            XCP_WRITE64(local_mut.mta_ptr, data);
+#else
             *(uint64_t *)local_mut.mta_ptr = *(uint64_t *)data;
+#endif
             break;
         default:
             memcpy(local_mut.mta_ptr, data, size);

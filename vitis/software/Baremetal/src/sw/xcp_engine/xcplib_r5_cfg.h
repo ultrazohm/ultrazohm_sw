@@ -48,6 +48,14 @@
 #include <stdint.h>
 extern uint8_t xcp_r5_check_write(uint32_t addr, uint8_t size);
 #define XCP_MTA_WRITE_CHECK(addr, size) xcp_r5_check_write((addr), (size))
+/* 8-byte writes (UZ patch in xcplite.c XcpWriteMta case 8, not in upstream
+ * V2.3.4): on the R5 a 64-bit store is two 32-bit accesses, so the control
+ * ISR could read a double or int64 with one half new and one half old.
+ * xcp_r5_write64() (xcptl_ocm.c) copies the 8 bytes with IRQ and FIQ masked.
+ * 1-, 2- and 4-byte writes are single stores already; longer blocks are not
+ * atomic. */
+extern void xcp_r5_write64(uint8_t *dst, const uint8_t *src);
+#define XCP_WRITE64(dst, src) xcp_r5_write64((dst), (src))
 /* Largest BUILD_CHECKSUM block (UZ patch in xcplite.c calcChecksum): the
  * checksum loop runs inside the main-loop sweep, ~50 ns per byte with the
  * range check -> 64 KB caps one command at ~3 ms; bigger -> ERR_OUT_OF_RANGE. */

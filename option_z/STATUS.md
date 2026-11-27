@@ -12,6 +12,42 @@ on 2026-11-16; both are in git history up to commit c51d06c.
 User documentation: `docs/source/guide/XCP/` (usage, architecture with block
 diagrams, diagnostics). This file and its neighbours are the development log.
 
+## Bench run 2026-11-27: throughput limit, datagram size, DAQ budget (feature/ocm_ring)
+
+Ring build, 40 kHz, `UZ_ISR_DIAG 0`, `xcp_poll.py --stress` (one list on
+DAQ_R5), 20-30 s per point. Outputs in the session scratchpad
+(`canape/sweep40*`, `canape/budget`).
+
+| B/cycle | datagrams/s | delivered | A53 idle | ISR | result |
+|---------|-------------|-----------|----------|-----|--------|
+| 1250 | 40k (2 DTOs each) | 398 Mbit/s | 38 % | 19.5 us | clean |
+| 1350 | 40k (2 DTOs each) | 432 Mbit/s | 34 % | 19.9 us | clean |
+| 1400 | 73k (1 DTO each) | 410 Mbit/s | 0.3 % | 19.9 us | `xcp_gw_txq_dropped` |
+| 1563-2500 | 63-72k | 434-555 Mbit/s | ~0 % | 20.3-22.5 us | `xcp_gw_txq_dropped` |
+| 2813-3125 | ~65k | 370-410 Mbit/s | ~0 % | - | R5 main loop starved |
+
+- The A53 sets the limit: ~11.8 us per datagram + ~3.4 ns per byte (fit
+  over the saturated points, within 5 %), so ~60-70k datagrams/s. At 40 kHz
+  one datagram per cycle passes and two do not.
+- At 3125 B per cycle the STOP command never ran: DAQ kept running, the
+  CMD ring held 744 unread bytes, and only reprogramming recovered. This
+  led to the DAQ budget.
+- 1472-byte datagrams (`88c946107`): 1400 and 1450 B per cycle clean
+  (464 Mbit/s), 1460 B dropped as predicted (two datagrams per cycle). But
+  `lwip_sendto` took 5.9 us up to 1456-byte datagrams and 13.1 us from 1464
+  bytes on (bisected), leaving the A53 7 % idle at 1450 B instead of 34 %.
+  Back to 1400 (`2505516ec`).
+- DAQ budget (`14ade483d`, 1250 B per cycle at 40 kHz): 1200 B payload
+  (1220 B counted) PASSED; 1250 B (1272 B counted, the same on the R5)
+  refused with `ERR_DAQ_CONFIG`, `xcp_poll.py` exit 5.
+- 8-byte writes (`69ded3fc9`): DOWNLOADs at an aligned and an odd address
+  read back correctly. Functional checks 26/26, 938 B per cycle for 60 s
+  PASSED with the ISR at 18.15 us (18.25 us the day before).
+- Command round trip (`cmd_latency.py`, 400 per point, 0/500/900 B per
+  cycle): median 231-277 us, p99 349-550 us, max 404-628 us on a quiet PC.
+  A run while Sphinx and Edge were busy on the same PC had maxima of 13.7
+  and 23.6 ms, with the R5's worst main-loop gap at 0.9 ms: PC-side delays.
+
 ## Bench run 2026-11-26: OCM rings vs. the main-loop exchange (feature/ocm_ring)
 
 Branch `feature/ocm_ring` (local) replaces the XCP_OUT/XCP_IN exchange by

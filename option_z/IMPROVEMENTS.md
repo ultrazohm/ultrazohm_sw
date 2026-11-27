@@ -470,6 +470,29 @@ banks 2+3 (`APU_RPU_shared.h`).
   ring start-up assumes the two cores do not initialise at the same
   instant (stale positions are reconciled, a simultaneous init is not).
 
+### 2.11 Throughput limit and DAQ budget on the rings — 2026-11-27
+Sweep at 40 kHz with `xcp_poll.py --stress` (STATUS, bench run 2026-11-27):
+- Clean up to 1350 B per cycle (432 Mbit/s): the cycle's two DTOs share
+  one 1400-byte datagram, 40k datagrams/s, A53 34 % idle. From 1400 B per
+  cycle they need two datagrams, and the A53 manages only ~60-70k per
+  second (~11.8 us per datagram + ~3.4 ns per byte): `xcp_gw_txq_dropped`.
+  The A53, not the R5, sets the throughput limit.
+- 1472-byte datagrams raised the limit to 1450 B per cycle (464 Mbit/s),
+  but `lwip_sendto` took 13.1 us from 1464 bytes on instead of 5.9 us (cause
+  not found), so the size went back to 1400 (`2505516ec`).
+- The R5 locks itself out: at 2500 B per cycle the ISR took 22.5 of 25 us,
+  from ~2800 B the main loop starved, and at 3125 B the STOP command never
+  ran (only reprogramming recovered). **DAQ budget** (`14ade483d`): the
+  start of a DAQ setup whose worst control cycle exceeds
+  `xcp_r5_daq_budget_bytes` is refused with `ERR_DAQ_CONFIG`; default
+  400 Mbit/s divided by the control rate (1250 B at 40 kHz).
+- `xcp_poll.py` printed PASSED while the A53 dropped data before the
+  transport counter was stamped; it now fails on `xcp_r5_queue_lost` and
+  `xcp_gw_txq_dropped` (`43d4deadf`).
+- Open: denser packing would raise the A53 limit (DTOs sized to fill a
+  datagram, e.g. MAX_DTO ~692, cost more ODTs on the R5); the `lwip_sendto`
+  step at 1464 bytes is unexplained.
+
 ## 3. Safety scope — required before live calibration (Z5)
 
 ### 3.1 `DOWNLOAD` could write anywhere in the allow-list — including code
@@ -486,8 +509,14 @@ over UDP. **Done 2026-11-16:**
   every write. CONNECT still advertises CAL/PAG, so CANape shows the
   parameters and reports the refusal on the first write.
 
-Still open (full Z5 review): range checks per parameter, atomic adoption of
-multi-byte values against the control ISR, rollback.
+- **8-byte values** (2026-11-27): a `double` or `int64_t` is written with
+  IRQ and FIQ masked (`XCP_WRITE64`, UZ patch in `XcpWriteMta` case 8;
+  `xcp_r5_write64()` in `xcptl_ocm.c`). 1-, 2- and 4-byte values were single
+  stores already.
+
+Still open (full Z5 review): range checks per parameter, consistent
+adoption of values larger than 8 bytes or of several values together
+(proposed: upstream calibration segments), rollback.
 
 ### 3.2 Zero authentication
 `xcp_gw_rx_task` adopts whoever sends a datagram as master (`gMaster`), and
@@ -539,15 +568,20 @@ upgrade — the list is also in the session memory of the coding agent):
   critical-section mutex, no threads).
 - `xcpappl.c`: `_BAREMETAL` accepted as platform, base address 0.
 - `xcptl_cfg.h`: `XCPTL_MAX_DTO_SIZE` and `XCPTL_MAX_SEGMENT_SIZE` may be
-  predefined (the OCM record cap is 255 B, upstream's MTU formula rounds the
-  segment to a multiple of 8 — 256 would not fit; we set 252 = 4 + 248).
+  predefined (`xcplib_r5_cfg.h` sets 1024 and 1400, the datagram size of
+  the A53 gateway; upstream would derive 1472 from the MTU).
 - `xcplib_cfg.h`: includes `xcplib_r5_cfg.h` at the end.
 - `xcp_cfg.h`: `OPTION_DISABLE_DYN_ADDRESSING` switch (R5 has no
   `XcpEventExt` context to execute event-relative commands).
 - `xcplite.c`: `XCP_ENABLE_MTA_RANGE_CHECK` (size check on every
-  `XcpReadMta`/`XcpWriteMta`), `calcChecksum` size-0 error and
-  `XCP_CHECKSUM_MAX_SIZE` cap.
-- `queue32.c`: `packets_lost` read/reset under the queue lock.
+  `XcpReadMta`/`XcpWriteMta`), `XCP_MTA_WRITE_CHECK` (write gate, 3.1),
+  `calcChecksum` size-0 error and `XCP_CHECKSUM_MAX_SIZE` cap,
+  `XCP_WRITE64` (8-byte writes atomic against the ISR, 3.1, 2026-11-27),
+  `XCP_DAQ_START_CHECK` with `XcpGetDaqEventLoad()` (DAQ budget, 2.11,
+  2026-11-27).
+- `xcplite.h`: prototype of `XcpGetDaqEventLoad()`.
+- `queue32.c` is no longer in the tree: the OCM rings implement the queue
+  API in `xcptl_ocm.c` (2.10). Its `packets_lost` patch is obsolete.
 
 The A53 no longer carries an XCPlite copy of its own (the fallback server in
 `vitis/software/FreeRTOS/sw/xcp_lite/` was removed on 2026-11-16, see §4);

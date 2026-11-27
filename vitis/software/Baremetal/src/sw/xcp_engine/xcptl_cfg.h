@@ -55,8 +55,8 @@
 // Segment size is the maximum data buffer size given to socket send/sendTo; for UDP, it is the maximum UDP payload size.
 // Subtract the minimum IPv4 and UDP headers from the IP MTU, then align down as required by the transport layer.
 // Jumbo frames are supported, but it might be more efficient to use a smaller segment size.
-// UZ: may be predefined by the platform config (xcplib_r5_cfg.h sets 1472, the
-// UDP payload of the A53 gateway's datagrams at a 1500-byte MTU).
+// UZ: may be predefined by the platform config (xcplib_r5_cfg.h sets 1400, the
+// UDP payload of the A53 gateway's datagrams).
 #ifndef XCPTL_MAX_SEGMENT_SIZE
 #ifdef OPTION_MTU
 #define XCPTL_MAX_SEGMENT_SIZE ((OPTION_MTU - 20 - 8) & ~0x07U)

@@ -59,11 +59,11 @@
 
 /* Largest record payloads. A DTO is at most XCPTL_MAX_DTO_SIZE (1024,
  * xcplib_r5_cfg.h), a response XCPTL_MAX_CTO_SIZE (248). A command record
- * is a whole datagram: 1472, the largest UDP payload at a 1500-byte MTU,
- * like the DAQ datagrams the gateway sends (XCP_GW_BATCH_BUF_SIZE). */
+ * is a whole datagram: 1400, the size of the DAQ datagrams the gateway
+ * sends (XCP_GW_BATCH_BUF_SIZE), below a 1500-byte MTU. */
 #define OCM_XCP_DAQ_MAX_LEN    1024u
 #define OCM_XCP_RSP_MAX_LEN    248u
-#define OCM_XCP_CMD_MAX_LEN    1472u
+#define OCM_XCP_CMD_MAX_LEN    1400u
 
 /* Describe the three rings (local state of the calling core). */
 static inline void ocm_xcp_ring_setup(uz_ocm_ring_t *daq, uz_ocm_ring_t *rsp, uz_ocm_ring_t *cmd) {

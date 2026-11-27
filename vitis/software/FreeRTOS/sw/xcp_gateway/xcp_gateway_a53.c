@@ -60,17 +60,19 @@
 
 /* TX batching: pack TL messages into one UDP datagram (several XCP messages
  * per datagram are standard XCP-on-Ethernet; XCPlite's own PC transport does
- * the same). 1472 = 1500-byte MTU - 20 (IPv4) - 8 (UDP): the largest
- * datagram without IP fragmentation, as upstream XCPlite derives it from
- * OPTION_MTU. The IPI ISR packs DAQ messages into segments of this size
- * already, so a queued DAQ item is a ready datagram. Was 1400 until
- * 2026-11-27 (a round number from hedrive's TCP batching): with MAX_DTO 1024
- * the 72 bytes decide whether a full DTO and the rest of its cycle share a
- * datagram. At 40 kHz the A53 sends ~60-70k datagrams/s at most, so one
- * datagram per cycle passes and two do not (sweep 2026-11-27: 1350 B/cycle
- * clean, 1400 B/cycle dropped in the DAQ queue). The R5 engine's
- * XCPTL_MAX_SEGMENT_SIZE (xcplib_r5_cfg.h) carries the same value. */
-#define XCP_GW_BATCH_BUF_SIZE 1472
+ * the same). 1400 stays below the 1472 that a 1500-byte MTU allows without
+ * IP fragmentation. The IPI ISR packs DAQ messages into segments of this
+ * size already, so a queued DAQ item is a ready datagram. The R5 engine's
+ * XCPTL_MAX_SEGMENT_SIZE (xcplib_r5_cfg.h) carries the same value.
+ * Why not 1472 (measured 2026-11-27, 40 kHz, one stress list): the A53
+ * sends ~60-70k datagrams/s at most, so one datagram per control cycle
+ * passes and two do not, and with MAX_DTO 1024 the segment size decides
+ * whether a full DTO and the rest of its cycle share one. 1400: clean up to
+ * 1350 B/cycle (432 Mbit/s). 1472: clean up to 1450 B/cycle (464 Mbit/s),
+ * but lwip_sendto took 13 us per datagram from 1464 bytes on instead of
+ * 5.9 us up to 1456 bytes (cause not found), so every full datagram costs
+ * the A53 twice as much: 7 % idle instead of 34 %. */
+#define XCP_GW_BATCH_BUF_SIZE 1400
 #define XCP_GW_FRAME_MAX      XCP_GW_BATCH_BUF_SIZE
 #if (XCP_TL_HEADER_LEN + OCM_XCP_DAQ_MAX_LEN) > XCP_GW_FRAME_MAX
 #error "a datagram must hold the largest DTO"
@@ -84,7 +86,7 @@
  * than backlog latency. The OCM DAQ ring itself covers only ~3 ms at
  * 900 B/cycle (40 kHz), this queue covers seconds: hedrive's rig saw ~2 s
  * host receive pauses every few minutes that a 140 ms queue could not
- * absorb. Items are fixed-size (XCP_GW_FRAME_MAX): 65536 x ~1.5 KB ≈ 97 MB
+ * absorb. Items are fixed-size (XCP_GW_FRAME_MAX): 65536 x ~1.4 KB ≈ 92 MB
  * of the 200 MB FreeRTOS heap, ≈ 2 s at 320 Mbit/s. The queue runs empty in
  * steady state, so normal latency is unaffected. NOTE: UDP has no
  * backpressure — this queue covers ECU-side stalls (lwIP pbuf/ARP, task

@@ -35,6 +35,7 @@ function setup(mode = 'visible') {
       createOutputChannel: () => ({ appendLine() {}, show() {}, dispose() {} }),
       withProgress: async (_, task) => task({ report() {} }),
       showWarningMessage: async (...args) => { state.confirmations.push(args); return typeof state.confirmation === 'function' ? state.confirmation() : state.confirmation; },
+      showInformationMessage: async () => {},
       showOpenDialog: async () => state.picked,
       showQuickPick: async () => state.quickPick, showErrorMessage: m => errors.push(m),
     },
@@ -44,7 +45,11 @@ function setup(mode = 'visible') {
     },
     tasks: {
       registerTaskProvider: () => disposable, taskExecutions: [], onDidEndTask: () => disposable,
-      onDidEndTaskProcess: fn => { events.taskEnd = fn; return disposable; },
+      onDidEndTaskProcess: fn => {
+        const previous = events.taskEnd;
+        events.taskEnd = async event => { if (previous) await previous(event); await fn(event); };
+        return disposable;
+      },
       executeTask: async task => {
         const execution = { task };
         v.tasks.taskExecutions.push(execution);
@@ -57,7 +62,7 @@ function setup(mode = 'visible') {
     TaskScope: { Global: 1 }, ConfigurationTarget: { Global: 1, WorkspaceFolder: 3, Workspace: 2 }, TaskRevealKind: { Always: 1, Never: 3 }, TaskPanelKind: { Dedicated: 2 },
   };
   const mockFs = {
-    existsSync: f => [...state.validRoots].some(root => f.startsWith(root + '/')),
+    existsSync: f => [...state.validRoots].some(root => (f === root || f.startsWith(root + '/'))),
     mkdirSync() {}, statSync: () => ({ mtimeMs: 1 }),
     readFileSync: f => f.endsWith('.python-version') ? '3.12' : JSON.stringify({ platform: 'linux', arch: 'x64', python: 'python/bin/python3' }),
   };
@@ -263,7 +268,7 @@ test('Setup package update uses private tooling, selected requirements and visib
   assert.equal(s.tasks().length, 1);
   const task = s.tasks()[0];
   assert.equal(task.execution.command, '/extension/runtime/python/bin/python3');
-  assert.deepEqual(Array.from(task.execution.args), ['-B', '/extension/update-packages.py', '--uv', '/extension/runtime/bin/uv', '--channel', 'stable', '--requirements', '/extension/launcher/requirements.txt']);
+  assert.deepEqual(Array.from(task.execution.args), ['-B', '/extension/update-packages.py', '--uv', '/extension/runtime/bin/uv', '--channel', 'stable', '--requirements', '/extension/launcher/requirements.txt', '--cpld-channel', 'stable']);
   assert.equal(task.execution.options.env.UV_CACHE_DIR, '/private/cache');
   assert.equal(task.presentationOptions.reveal, 1);
   assert(s.reveals() > 0);
@@ -331,4 +336,106 @@ test('active debugger blocks firmware commands and package updates but allows co
  for(const key of ['build','generate','build-clean','flash','debug','attach','updatePackages']) await s.run(key);
  assert.equal(s.tasks().length,0);assert.equal(s.errors.length,7);
  await s.run('venv');assert.equal(s.tasks().length,1);
+});
+
+test('CPLD uses bundled launcher and private runtime independently of local checkout, Vitis and DataViewer channel', async () => {
+  const s = setup('hidden');
+  s.v.workspace.workspaceFolders[0].uri.fsPath = '/ordinary folder';
+  s.state.validRoots.add('/ordinary folder');
+  s.settings['cpld.channel'] = 'prerelease';
+  s.settings['dataviewer.channel'] = 'stable';
+  s.settings['vitis.settingsScript'] = '/unusable/settings64.sh';
+  await Promise.all([s.run('cpldLaunch'), s.run('cpldLaunch')]);
+  await s.run('cpldLaunch');
+  assert.deepEqual(s.errors, []);
+  assert.equal(s.tasks().length, 1);
+  const task = s.tasks()[0];
+  assert.equal(task.execution.command, '/extension/runtime/python/bin/python3');
+  assert.deepEqual(Array.from(task.execution.args), ['-B', '/extension/launcher/uz.py', 'cpld', 'prerelease', '--', 'programmer_gui']);
+  assert.equal(task.execution.options.env.UV_CACHE_DIR, '/private/cache');
+  assert.equal(task.execution.options.env.XILINX_VITIS, undefined);
+  assert.equal(task.execution.options.cwd, '/ordinary folder');
+  assert.equal(task.presentationOptions.reveal, 1);
+  await s.run('cpldDrivers');
+  assert.match(s.errors.at(-1), /Close the existing CPLD/);
+  assert.equal(s.tasks().length, 1);
+  await s.events.taskEnd({ execution: { task }, exitCode: 1 });
+  assert.match(s.errors.at(-1), /requires prerelease/);
+});
+
+test('CPLD diagnostics and USB setup always show terminals, preserve channels and reject remote windows', async () => {
+  const s = setup('hidden');
+  await s.run('cpldCheck');
+  assert(s.tasks()[0].execution.args.includes('/extension/cpld-check.py'));
+  assert.equal(s.tasks()[0].execution.args.at(-1), 'stable');
+  s.v.tasks.taskExecutions = [];
+  await s.run('cpldDrivers');
+  assert.equal(s.tasks()[0].execution.args.at(-1), 'setup_drivers');
+  assert.equal(s.tasks()[0].presentationOptions.reveal, 1);
+  s.v.tasks.taskExecutions = []; s.v.env.remoteName = 'ssh-remote';
+  await s.run('cpldLaunch');
+  assert.equal(s.tasks().length, 0);
+  assert.match(s.errors.at(-1), /trusted local/);
+});
+
+test('CPLD and Vitis hardware operations exclude each other including pending starts', async () => {
+  for (const cpld of ['cpldLaunch', 'cpldDrivers', 'cpldCheck']) {
+    const s = setup(); s.state.xsct = { path: '/Vitis/xsct' };
+    await s.run(cpld);
+    for (const key of ['flash', 'debug', 'attach']) await s.run(key);
+    assert.equal(s.tasks().length, 1);
+    assert.equal(s.errors.length, 3);
+    assert(s.errors.every(error => /Close the CPLD/.test(error)));
+  }
+  for (const action of ['firmware', 'debugserver']) {
+    const s = setup();
+    s.v.tasks.taskExecutions.push({ task: { definition: { type: 'ultrazohm', action, repository: '/another checkout' } } });
+    await s.run('cpldLaunch');
+    assert.match(s.errors.at(-1), /exclusive hardware/);
+  }
+  const s = setup(); s.state.debugActive = true;
+  await s.run('cpldDrivers'); assert.equal(s.tasks().length, 0);
+  s.state.debugActive = false; s.state.xsct = { path: '/Vitis/xsct' };
+  s.state.capabilities = { noReconnect: true }; s.state.occupied = true;
+  let accept, opened; const ready = new Promise(resolve => opened = resolve);
+  s.state.confirmation = () => new Promise(resolve => { accept = resolve; opened(); });
+  const flashing = s.run('flash'); await ready;
+  await s.run('cpldLaunch'); assert.match(s.errors.at(-1), /exclusive hardware/);
+  accept(undefined); await flashing;
+  await s.run('cpldLaunch'); assert.equal(s.tasks().length, 1);
+});
+
+test('CPLD channel selector and package update keep application channels independent', async () => {
+  const s = setup(); s.state.quickPick = 'prerelease';
+  s.settings['dataviewer.channel'] = 'stable';
+  await s.run('cpldChannel'); await s.run('updatePackages');
+  assert.equal(s.settings['dataviewer.channel'], 'stable');
+  assert.equal(s.settings['cpld.channel'], 'prerelease');
+  const args = s.tasks()[0].execution.args;
+  assert.equal(args[args.indexOf('--channel') + 1], 'stable');
+  assert.equal(args[args.indexOf('--cpld-channel') + 1], 'prerelease');
+});
+
+
+test('cancelled firmware monitor keeps CPLD blocked while its service can still own the job', async () => {
+  const s = setup(); s.state.xsct = { path: '/Vitis/xsct' };
+  s.state.capabilities = { noReconnect: true }; s.state.occupied = true; s.state.confirmation = 'Flash UZ';
+  await s.run('flash');
+  await s.events.taskEnd({ execution: s.v.tasks.taskExecutions[0], exitCode: undefined });
+  s.v.tasks.taskExecutions = [];
+  await s.run('cpldLaunch');
+  assert.equal(s.tasks().length, 0);
+  assert.match(s.errors.at(-1), /without confirming completion/);
+  s.state.occupied = false;
+  await s.run('cpldLaunch'); assert.equal(s.tasks().length, 1);
+});
+
+test('successful firmware monitor releases CPLD reservation even while CLI remains listening', async () => {
+  const s = setup(); s.state.xsct = { path: '/Vitis/xsct' };
+  s.state.capabilities = { noReconnect: true }; s.state.occupied = true; s.state.confirmation = 'Flash UZ';
+  await s.run('flash');
+  await s.events.taskEnd({ execution: s.v.tasks.taskExecutions[0], exitCode: 0 });
+  s.v.tasks.taskExecutions = [];
+  await s.run('cpldLaunch'); assert.equal(s.tasks().length, 1);
+  assert.deepEqual(s.errors, []);
 });

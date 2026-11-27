@@ -15,6 +15,13 @@ spec.loader.exec_module(updater)
 
 
 class UpdateTest(unittest.TestCase):
+    def test_cpld_channel_and_environment_are_independent(self):
+        commands = dict(updater.commands('uv', 'stable', 'requirements.txt', 'prerelease'))
+        self.assertIn('allow', commands['CPLD'])
+        self.assertIn('disallow', commands['DataViewer'])
+        self.assertNotIn('--with-requirements', commands['CPLD'])
+        self.assertIn('ultrazohm-cpld-user', commands['CPLD'])
+
     def test_failure_stops_before_other_environments(self):
         with patch.object(sys, 'argv', ['update', '--uv', 'uv', '--channel', 'stable', '--requirements', 'requirements.txt']), patch.object(updater.subprocess, 'run', side_effect=subprocess.CalledProcessError(7, 'uv')) as run:
             self.assertEqual(updater.main(), 7)
@@ -49,19 +56,19 @@ class UpdateTest(unittest.TestCase):
                 args = [*args[:3], '--no-index', *args[3:]]
                 return subprocess.check_output(args, env=env, text=True, timeout=120).strip()
 
-            for name in ['ultrazohm-cli', 'ultrazohm-dataviewer', 'matplotlib']:
+            for name in ['ultrazohm-cli', 'ultrazohm-dataviewer', 'matplotlib', 'ultrazohm-cpld-user']:
                 wheel(name, '1.0.0', '1.0.0' if name == 'ultrazohm-dataviewer' else None)
             normal = [uv, 'tool', 'run', '--isolated', '--python', '3.12', '--prerelease', 'allow']
-            for name in ['ultrazohm-cli', 'ultrazohm-dataviewer']:
+            for name in ['ultrazohm-cli', 'ultrazohm-dataviewer', 'ultrazohm-cpld-user']:
                 self.assertEqual(run([*normal, name]), '1.0.0')
             old_shell = updater.commands(uv, 'prerelease', str(requirements))[-1][1]
             old_shell.remove('--refresh')
             self.assertIn('matplotlib==1.0.0', run(old_shell))
-            for name in ['ultrazohm-cli', 'ultrazohm-dataviewer', 'matplotlib']:
+            for name in ['ultrazohm-cli', 'ultrazohm-dataviewer', 'matplotlib', 'ultrazohm-cpld-user']:
                 wheel(name, '2.0.0', '2.0.0' if name == 'ultrazohm-dataviewer' else None)
             for _, command in updater.commands(uv, 'prerelease', str(requirements)):
                 self.assertIn('2.0.0', run(command))
-            for name in ['ultrazohm-cli', 'ultrazohm-dataviewer']:
+            for name in ['ultrazohm-cli', 'ultrazohm-dataviewer', 'ultrazohm-cpld-user']:
                 self.assertEqual(run([*normal, name]), '2.0.0')
             shell = updater.commands(uv, 'prerelease', str(requirements))[-1][1]
             shell.remove('--refresh')

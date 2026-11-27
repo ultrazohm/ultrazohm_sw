@@ -28,7 +28,8 @@
     "onView:ultrazohm.softwareBuild",
     "onView:ultrazohm.control",
     "onDebug:ultrazohm-gdb",
-    "onView:ultrazohm.serial"
+    "onView:ultrazohm.serial",
+    "onView:ultrazohm.cpld"
   ],
   "contributes": {
     "commands": [
@@ -148,6 +149,22 @@
       {
         "command": "ultrazohm.serial.localEcho",
         "title": "ultrazohm-extension: Select serial local echo"
+      },
+      {
+        "command": "ultrazohm.cpldLaunch",
+        "title": "ultrazohm-extension: Launch CPLD Programmer"
+      },
+      {
+        "command": "ultrazohm.cpldDrivers",
+        "title": "ultrazohm-extension: Setup CPLD USB Access"
+      },
+      {
+        "command": "ultrazohm.cpldCheck",
+        "title": "ultrazohm-extension: Check CPLD Installation"
+      },
+      {
+        "command": "ultrazohm.cpldChannel",
+        "title": "ultrazohm-extension: Select CPLD Application Channel"
       }
     ],
     "views": {
@@ -167,6 +184,10 @@
         {
           "id": "ultrazohm.serial",
           "name": "Serial"
+        },
+        {
+          "id": "ultrazohm.cpld",
+          "name": "CPLD Programmer"
         }
       ]
     },
@@ -181,7 +202,7 @@
           ],
           "default": "stable",
           "scope": "resource",
-          "description": "Package release channel for all UltraZohm launcher actions."
+          "description": "Package release channel for CLI, DataViewer and the Python environment. CPLD has a separate application channel."
         },
         "ultrazohm.dataviewer.terminal": {
           "type": "string",
@@ -326,6 +347,16 @@
           "default": false,
           "scope": "machine",
           "description": "Echo typed characters in the serial terminal."
+        },
+        "ultrazohm.cpld.channel": {
+          "type": "string",
+          "enum": [
+            "stable",
+            "prerelease"
+          ],
+          "default": "stable",
+          "scope": "resource",
+          "description": "CPLD application package channel, independent of DataViewer and firmware selection in the GUI. Select prerelease for this prototype; a stable application is not yet available."
         }
       }
     },

@@ -73,7 +73,7 @@ def inspect_archive(target, vsix, unpack):
             raise ValueError('Incorrect extension identity/version')
         if any(name.startswith(('extension/test/', 'extension/node_modules/', 'extension/tools/')) for name in names):
             raise ValueError('Development-only files leaked into VSIX')
-        required = ['extension/serial-terminal.py', 'extension/serial-controller.js', 'extension/serial-tools.js', 'extension/runtime/serial/serial/__init__.py', 'extension/runtime/licenses/pyserial-LICENSE.txt', 'extension/debug-adapter.py', 'extension/debug-controller.js', 'extension/debug-tools.js', 'extension/debug-rsp.js', 'extension/debug-main.tcl', 'extension/debug-xsct.py', 'extension/debug-server.py', 'extension/flash.py', 'extension/update-packages.py', 'extension/launcher/uz.py', 'extension/launcher/requirements.txt', 'extension/runtime/licenses/LICENSE.cpython.txt', 'extension/runtime/licenses/uv-LICENSE-MIT.txt']
+        required = ['extension/serial-terminal.py', 'extension/serial-controller.js', 'extension/serial-tools.js', 'extension/runtime/serial/serial/__init__.py', 'extension/runtime/licenses/pyserial-LICENSE.txt', 'extension/debug-adapter.py', 'extension/debug-controller.js', 'extension/debug-tools.js', 'extension/debug-rsp.js', 'extension/debug-main.tcl', 'extension/debug-xsct.py', 'extension/debug-server.py', 'extension/flash.py', 'extension/update-packages.py', 'extension/cpld-check.py', 'extension/launcher/uz.py', 'extension/launcher/requirements.txt', 'extension/runtime/licenses/LICENSE.cpython.txt', 'extension/runtime/licenses/uv-LICENSE-MIT.txt']
         if any(name not in names for name in required):
             raise ValueError('Runtime, launcher or license files missing')
         for member in archive.infolist():

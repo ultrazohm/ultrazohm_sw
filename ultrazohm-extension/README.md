@@ -96,3 +96,56 @@ pySerial is bundled with the private Python runtime, so serial use needs no pack
 This is a text terminal using UTF-8, with local echo off by default. It forwards terminal output and keyboard input; it is not a CLI service console. On hardware, verify both supported adapters' channel identification, firmware output, reconnect after unplugging, and port release alongside JTAG debugging on Linux and Windows.
 
 On first connection, a uniquely identified UltraZohm USB interface **02** (channel C, typically `/dev/ttyUSB2`) is selected automatically. Saved selections take precedence. Multiple adapters or missing interface metadata still require selection.
+
+## CPLD Programmer prototype (local builds only)
+
+Open a trusted local folder on Linux x64 or Windows x64, then open **CPLD
+Programmer** in the UltraZohm sidebar. Select **Application channel → prerelease**
+(`ultrazohm.cpld.channel`) before launching; the published application currently
+requires prereleases. This setting is separate from the CLI/DataViewer package
+channel and from **stable/testing firmware** selection inside the CPLD GUI.
+Testing firmware requires a separate opt-in in that GUI.
+
+- **Launch CPLD Programmer** opens the existing GUI from `ultrazohm-cpld-user`.
+- **Setup CPLD USB Access** runs `setup_drivers` using the same private runtime.
+  This is usually needed once. Its terminal stays visible for Linux sudo prompts
+  or Windows elevation. Reconnect USB afterward on Linux.
+- **Check CPLD Installation** runs `doctor` and `programmer_gui --check`, showing
+  both results in its terminal. Opening the GUI is a separate real Tk-window test.
+- **Update Python packages** also refreshes CPLD using its own application channel.
+  Select prerelease first; stable cannot resolve until a stable package exists.
+
+CPLD always uses the extension's bundled launcher, uv and Python 3.12, even when
+other tools use local launcher scripts. It has its own isolated package environment
+and needs neither an UltraZohm checkout nor Vitis, Diamond or system Python. It uses
+the application's default persistent workspace; firmware, assignments and logs
+are not stored in the extension installation. No custom workspace override is
+exposed in this prototype.
+
+Repeated launch clicks reveal the existing task. Close the GUI before USB setup
+or diagnostics. CPLD tasks reserve hardware for their entire lifetime and block
+extension Flash UZ, Debug and Attach. Active Vitis tasks, debugger sessions and the
+extension Hardware Server task block CPLD launches. Close conflicting tasks
+explicitly; the extension never terminates them for you. Coordination is limited
+to this VS Code window and extension-managed tasks. A cancelled flash monitor
+can leave a service-owned programming job running: CPLD remains blocked until
+that CLI service exits. Wait for the job to finish, then close the service. This
+reservation is held in memory; do not reload VS Code to bypass it. Other windows or independently launched hardware tools must
+be coordinated manually. Remote/devcontainer windows remain unsupported.
+
+### Prototype acceptance checks
+
+Build both targets locally with `python tools/build.py --target all`; this does
+not publish. Before release, test each installed VSIX on its native OS without
+system Python or Diamond:
+
+- Run diagnostics and open/close a real Tk GUI; verify one GUI per selected folder.
+- Check prerelease resolution, updates, stable-channel errors and offline/download
+  failures; confirm the task terminal explains the underlying failure.
+- Test driver prompts, cancellation and Linux USB reconnection.
+- Confirm workspace data survives package and extension upgrades.
+- Program and verify real S3C and D-slot hardware; test conflicts in both directions,
+  including a pending Debug/Flash confirmation and a cancelled flash monitor.
+
+This branch is a prototype. Stable-by-default onboarding and embedded webview
+programming controls are deferred.

@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-PACKAGES = {"cli": "ultrazohm-cli", "dataviewer": "ultrazohm-dataviewer"}
+PACKAGES = {"cli": "ultrazohm-cli", "dataviewer": "ultrazohm-dataviewer", "cpld": "ultrazohm-cpld-user"}
 
 
 def run(command):
@@ -35,8 +35,9 @@ def main(argv=None):
         epilog=f"""Command syntax:
   {launcher} cli [stable|prerelease] [-- APPLICATION_ARGS...]
   {launcher} dataviewer [stable|prerelease] [-- APPLICATION_ARGS...]
+  {launcher} cpld [stable|prerelease] [-- APPLICATION_ARGS...]
   {launcher} venv [stable|prerelease|dev]
-  {launcher} install {{dataviewer|cli}} [stable|prerelease]
+  {launcher} install {{dataviewer|cli|cpld}} [stable|prerelease]
 
 The channel defaults to stable. prerelease also allows development releases.
 Application arguments use the stable channel unless a channel is specified.
@@ -58,6 +59,7 @@ Use COMMAND --help for command details. For local source builds, use uz_develope
     descriptions = {
         "cli": "Run the published CLI",
         "dataviewer": "Run the published DataViewer",
+        "cpld": "Run the published CPLD programmer",
         "venv": "Open a shell with published libraries or the existing development environment (dev)",
         "install": "Install a published application command for your user account",
     }

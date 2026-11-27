@@ -12,6 +12,9 @@ const { readHelp } = require('./cli-capabilities');
 const { activateSerial } = require('./serial-controller');
 
 const actions = {
+  cpldLaunch: { label: 'Launch CPLD Programmer', name: 'UltraZohm CPLD Programmer', group: 'cpld', icon: 'circuit-board' },
+  cpldDrivers: { label: 'Setup CPLD USB Access', name: 'UltraZohm CPLD USB Setup', group: 'cpld', icon: 'plug' },
+  cpldCheck: { label: 'Check CPLD Installation', name: 'UltraZohm CPLD Check', group: 'cpld', icon: 'checklist' },
   updatePackages: { label: 'Update Python packages', name: 'UltraZohm Update Python Packages', group: 'packages', icon: 'cloud-download' },
   launch: { label: 'Launch DataViewer', name: 'UltraZohm DataViewer', group: 'viewer', icon: 'graph' },
   cli: { label: 'Open interactive CLI', name: 'UltraZohm Interactive CLI', group: 'cli', icon: 'terminal' },
@@ -27,6 +30,9 @@ const actions = {
 function activate(context) {
   activateSerial(context);
   const pending = new Map();
+  // A cancelled task monitor does not cancel its service-owned firmware job.
+  // Retain a conservative reservation until success or the service exits.
+  const unconfirmedFirmware = new Set();
   const debugOutput = vscode.window.createOutputChannel('UltraZohm Debug');
   context.subscriptions.push(debugOutput);
   const logDebug = message => debugOutput.appendLine(`${new Date().toISOString()} ${message}`);
@@ -36,6 +42,7 @@ function activate(context) {
   let settingsCache;
   const config = () => vscode.workspace.getConfiguration('ultrazohm', vscode.workspace.workspaceFolders?.[0]?.uri);
   const channel = () => config().get('dataviewer.channel', 'stable'); // Preserve existing saved choices.
+  const cpldChannel = () => config().get('cpld.channel', 'stable');
   const visible = () => config().get('dataviewer.terminal', 'visible') !== 'hidden';
   const launcherSource = () => config().get('launcher.source', 'bundled');
   const endpoint = () => config().get('cli.endpoint', '127.0.0.1:19740');
@@ -66,6 +73,13 @@ function activate(context) {
   }
   function launchContext(key) {
     requireLocal();
+    if (actions[key].group === 'cpld') {
+      const folder = vscode.workspace.workspaceFolders?.[0];
+      if (!folder || folder.uri.scheme !== 'file') throw new Error('Open any local folder in VS Code to run CPLD tasks.');
+      const cwd = config().get('repository', '') || folder.uri.fsPath;
+      if (!path.isAbsolute(cwd) || !fs.existsSync(cwd)) throw new Error('Select an existing absolute workspace directory.');
+      return { cwd, launcherRoot: path.join(context.extensionPath, 'launcher'), source: 'bundled', scope: folder };
+    }
     const source = launcherSource();
     if (!['bundled', 'local'].includes(source)) throw new Error('Invalid launcher source.');
     let selected;
@@ -140,7 +154,7 @@ function activate(context) {
       getChildren: async () => {
         let selected, reason;
         try { selected = workspace(); } catch (e) { reason = e.message; }
-        const xsct = section === 'control' ? {} : await vitis(selected?.root);
+        const xsct = ['control', 'cpld'].includes(section) ? {} : await vitis(selected?.root);
         if (section === 'setup') return [
           { label: 'Find ultrazohm_sw directory…', description: selected?.root, tooltip: reason || selected?.root,
             command: { command: 'ultrazohm.repository', title: 'Find ultrazohm_sw directory' } },
@@ -152,6 +166,13 @@ function activate(context) {
           row('updatePackages'),
           { label: 'Terminal: ' + (visible() ? 'visible' : 'hidden'), tooltip: 'DataViewer only. CLI, environment, and firmware terminals are always visible.',
             command: { command: 'ultrazohm.terminal', title: 'Select terminal visibility' } },
+        ];
+        if (section === 'cpld') return [
+          { label: 'Application channel: ' + cpldChannel(), tooltip: 'Select prerelease for this prototype. Firmware stable/testing is selected separately inside the GUI.',
+            command: { command: 'ultrazohm.cpldChannel', title: 'Select CPLD application channel' } },
+          ...['cpldLaunch', 'cpldDrivers', 'cpldCheck'].map(key => {
+            try { launchContext(key); return row(key); } catch (error) { return row(key, error.message); }
+          }),
         ];
         const keys = section === 'softwareBuild' ? ['generate', 'build', 'flash', 'debug', 'attach', 'build-clean'] : ['launch', 'cli', 'venv'];
         return keys.map(key => {
@@ -167,7 +188,7 @@ function activate(context) {
     }));
   }
   context.subscriptions.push(changed,
-    ...['setup', 'softwareBuild', 'control'].map(section => vscode.window.registerTreeDataProvider('ultrazohm.' + section, viewProvider(section))),
+    ...['setup', 'softwareBuild', 'control', 'cpld'].map(section => vscode.window.registerTreeDataProvider('ultrazohm.' + section, viewProvider(section))),
     vscode.window.registerFileDecorationProvider({ provideFileDecoration: uri => uri.scheme === 'ultrazohm-disabled' ? { color: new vscode.ThemeColor('disabledForeground') } : undefined }),
     vscode.workspace.onDidChangeConfiguration(watchRoot), vscode.workspace.onDidChangeWorkspaceFolders(watchRoot),
     vscode.workspace.onDidGrantWorkspaceTrust(watchRoot),
@@ -223,8 +244,13 @@ function activate(context) {
   });
   command('channel', async () => {
     requireLocal();
-    const value = await vscode.window.showQuickPick(['stable', 'prerelease'], { placeHolder: 'Package channel for all UltraZohm actions' });
+    const value = await vscode.window.showQuickPick(['stable', 'prerelease'], { placeHolder: 'Package channel for CLI, DataViewer and Python environment' });
     if (value) await update('dataviewer.channel', value);
+  });
+  command('cpldChannel', async () => {
+    requireLocal();
+    const value = await vscode.window.showQuickPick(['stable', 'prerelease'], { placeHolder: 'CPLD application channel (select prerelease for the prototype); firmware is selected in the GUI' });
+    if (value) await update('cpld.channel', value);
   });
   command('terminal', async () => {
     requireLocal();
@@ -233,12 +259,15 @@ function activate(context) {
   });
   for (const [key, action] of Object.entries(actions)) command(key, async () => {
     const { root, cwd, launcherRoot, source, scope } = launchContext(key);
-    const identity = root || '';
+    const isCpld = action.group === 'cpld';
+    const identity = root || (isCpld ? cwd : '');
     const show = key !== 'launch' || visible();
     const token = key === 'updatePackages' ? 'packages' : identity + '\0' + action.group;
+    if (pending.has(token) && isCpld && pending.get(token) !== action.name) throw new Error('Wait for the pending CPLD task, then close it before starting another CPLD operation.');
     if (pending.has(token)) { if (show) reveal(pending.get(token)); return; }
     const packageTask = vscode.tasks.taskExecutions.find(e => e.task.definition.type === 'ultrazohm' && e.task.definition.action === 'packages');
     const active = key === 'updatePackages' ? packageTask : running(identity, action.group);
+    if (active && isCpld && active.task.definition.operation !== key) throw new Error('Close the existing CPLD task before starting another CPLD operation.');
     if (active) { if (show) reveal(active.task.name); return; }
     if (key === 'updatePackages' && (pending.size || vscode.tasks.taskExecutions.some(e => e.task.definition.type === 'ultrazohm'))) {
       throw new Error('Close running UltraZohm tasks before updating Python packages.');
@@ -249,11 +278,30 @@ function activate(context) {
     if ((action.group === 'firmware' || key === 'updatePackages') && debuggerControl.active()) {
       throw new Error('Disconnect the UltraZohm debugger sessions before building, flashing, attaching or updating packages.');
     }
+    // Reserve synchronously before any runtime preparation or confirmation awaits.
+    // Hardware is shared across repositories in this VS Code window.
+    const pendingGroup = group => [...pending.keys()].some(key => key.endsWith('\0' + group));
+    const taskGroup = group => vscode.tasks.taskExecutions.some(e => e.task.definition.type === 'ultrazohm' && e.task.definition.action === group);
+    if (isCpld && (debuggerControl.active() || pendingGroup('firmware') || taskGroup('firmware') || taskGroup('debugserver'))) {
+      throw new Error('CPLD needs exclusive hardware access. Finish Vitis tasks and disconnect debugger sessions; close the UltraZohm Hardware Server task before retrying.');
+    }
+    if (['flash', 'debug', 'attach'].includes(key) && (pendingGroup('cpld') || taskGroup('cpld'))) {
+      throw new Error('Close the CPLD Programmer, USB Setup or Check task before flashing or debugging. The CPLD GUI reserves hardware for its entire lifetime.');
+    }
+    if (isCpld && (pendingGroup('cpld') || taskGroup('cpld'))) {
+      throw new Error('Close the existing CPLD task before starting another CPLD operation in this window.');
+    }
     pending.set(token, action.name);
     try {
-      const selected = channel();
+      if (isCpld) {
+        for (const address of unconfirmedFirmware) {
+          if (await portInUse(address)) throw new Error('A Flash/Debug monitor ended without confirming completion. Wait for its firmware job to finish, then close the CLI service before opening CPLD.');
+          unconfirmedFirmware.delete(address);
+        }
+      }
+      const selected = isCpld ? cpldChannel() : channel();
       if (!['stable', 'prerelease'].includes(selected)) throw new Error('Invalid release channel.');
-      const xsct = key === 'updatePackages' ? { env: process.env } : await vitis(root);
+      const xsct = key === 'updatePackages' || isCpld ? { env: process.env } : await vitis(root);
       if (xsct.script && xsct.reason && (key === 'cli' || action.group === 'firmware')) throw new Error(xsct.reason);
       if (xsct.script && xsct.path && root) saveXsct(root, xsct.path);
       if (action.group === 'firmware' && !xsct.path) throw new Error(xsct.reason);
@@ -267,7 +315,7 @@ function activate(context) {
       env.UZ_BUNDLED_PYTHON = path.join(base, runtime.python);
       env.UZ_PRIVATE_SHELL_DIR = path.join(storage, 'shell');
       const windows = process.platform === 'win32';
-      const executable = key === 'updatePackages' ? env.UZ_BUNDLED_PYTHON : windows ? path.join(process.env.SystemRoot, 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe') : '/bin/bash';
+      const executable = key === 'updatePackages' || isCpld ? env.UZ_BUNDLED_PYTHON : windows ? path.join(process.env.SystemRoot, 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe') : '/bin/bash';
       const launcher = path.join(launcherRoot, windows ? 'uz.ps1' : 'uz');
       const invoke = args => windows ? ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', launcher, ...args] : [launcher, ...args];
       if (xsct.path) {
@@ -302,7 +350,13 @@ function activate(context) {
       let args;
       if (key === 'updatePackages') args = ['-B', path.join(context.extensionPath, 'update-packages.py'),
         '--uv', path.join(base, 'bin', windows ? 'uv.exe' : 'uv'), '--channel', selected,
-        '--requirements', path.join(launcherRoot, 'requirements.txt')];
+        '--requirements', path.join(launcherRoot, 'requirements.txt'), '--cpld-channel', cpldChannel()];
+      else if (isCpld) {
+        if (key === 'cpldDrivers') vscode.window.showInformationMessage('CPLD USB setup is usually needed once. Follow the terminal prompts for sudo on Linux or elevation on Windows. Reconnect USB afterward on Linux.');
+        args = key === 'cpldCheck'
+          ? ['-B', path.join(context.extensionPath, 'cpld-check.py'), '--uv', path.join(base, 'bin', windows ? 'uv.exe' : 'uv'), '--channel', selected]
+          : ['-B', path.join(launcherRoot, 'uz.py'), 'cpld', selected, '--', key === 'cpldLaunch' ? 'programmer_gui' : 'setup_drivers'];
+      }
       else if (key === 'launch') args = ['dataviewer', selected, '--', 'gui', ...(root ? ['--live-repo', root] : [])];
       else if (key === 'venv') args = ['venv', selected];
       else if (key === 'cli') {
@@ -332,13 +386,35 @@ function activate(context) {
           '--endpoint', address, '--repo', root, '--wait-service', startService ? '30' : '0'];
         if (key === 'debug') args.push('--debug-config', cliTask.definition.debugBridge);
       } else args = ['cli', selected, '--', key, '--local', '--repo', root];
-      const invocation = key === 'updatePackages' || key === 'flash' || key === 'debug' ? args : invoke(args);
-      const debugRun = key === 'debug' ? randomUUID() : undefined;
-      const task = new vscode.Task({ ...(debugRun ? { debugRun } : {}), type: 'ultrazohm', action: action.group, operation: key, repository: identity, launcherSource: source, ...(debugBridge ? { debugBridge: debugBridge.config, cliEndpoint: endpoint(), debugXsct: xsct.path } : {}) }, scope,
+      const invocation = isCpld || key === 'updatePackages' || key === 'flash' || key === 'debug' ? args : invoke(args);
+      const firmwareRun = ['flash', 'debug'].includes(key) ? randomUUID() : undefined;
+      const debugRun = key === 'debug' ? firmwareRun : undefined;
+      const task = new vscode.Task({ ...(debugRun ? { debugRun } : {}), ...(firmwareRun ? { firmwareRun } : {}), type: 'ultrazohm', action: action.group, operation: key, repository: identity, launcherSource: source, ...(debugBridge ? { debugBridge: debugBridge.config, cliEndpoint: endpoint(), debugXsct: xsct.path } : {}) }, scope,
         action.name, 'UltraZohm', new vscode.ProcessExecution(key === 'flash' || key === 'debug' ? path.join(base, 'bin', windows ? 'uv.exe' : 'uv') : executable, invocation, { cwd, env }), []);
       task.presentationOptions = { reveal: show ? vscode.TaskRevealKind.Always : vscode.TaskRevealKind.Never,
         focus: show, panel: vscode.TaskPanelKind.Dedicated, close: false };
-      if (key === 'debug') {
+      let firmwareListener;
+      const hardwareEndpoint = endpoint();
+      if (firmwareRun) {
+        unconfirmedFirmware.add(hardwareEndpoint);
+        firmwareListener = vscode.tasks.onDidEndTaskProcess(event => {
+          if (event.execution.task.definition.firmwareRun !== firmwareRun) return;
+          firmwareListener.dispose();
+          if (event.exitCode === 0) unconfirmedFirmware.delete(hardwareEndpoint);
+        });
+        context.subscriptions.push(firmwareListener);
+      }
+      if (isCpld) {
+        const runId = randomUUID();
+        task.definition.cpldRun = runId;
+        const listener = vscode.tasks.onDidEndTaskProcess(event => {
+          if (event.execution.task.definition.cpldRun !== runId) return;
+          listener.dispose();
+          if (event.exitCode !== 0 && event.exitCode !== undefined) vscode.window.showErrorMessage(`UltraZohm: ${action.label} failed (exit ${event.exitCode}). See its terminal for details. Check network access and the CPLD application channel; this prototype requires prerelease.`);
+        });
+        context.subscriptions.push(listener);
+        try { await vscode.tasks.executeTask(task); } catch (error) { listener.dispose(); throw error; }
+      } else if (key === 'debug') {
         // The CLI owns the accepted job; attach only after its monitor confirms
         // success and the XSCT wrapper confirms both stops at main.
         let completed = false;
@@ -359,8 +435,16 @@ function activate(context) {
           finally { pending.delete(token); refresh(); }
         });
         context.subscriptions.push(listener);
-        try { await vscode.tasks.executeTask(task); } catch (error) { listener.dispose(); throw error; }
-      } else await vscode.tasks.executeTask(task);
+        try { await vscode.tasks.executeTask(task); } catch (error) {
+          listener.dispose(); firmwareListener?.dispose(); unconfirmedFirmware.delete(hardwareEndpoint); throw error;
+        }
+      } else {
+        try { await vscode.tasks.executeTask(task); } catch (error) {
+          firmwareListener?.dispose();
+          if (firmwareRun) unconfirmedFirmware.delete(hardwareEndpoint);
+          throw error;
+        }
+      }
     } finally { pending.delete(token); refresh(); }
   });
   context.subscriptions.push(vscode.tasks.registerTaskProvider('ultrazohm', { provideTasks: () => [], resolveTask: task => task.execution ? task : undefined }));

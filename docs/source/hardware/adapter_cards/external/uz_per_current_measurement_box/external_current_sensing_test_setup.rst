@@ -41,7 +41,7 @@ Equipment
 - **Keysight E36313A Triple-Channel Power Supply:** Supplies 24 V DC for VIN input.
 
 - **Bode 100 Vector Network Analyzer:** 
-   - **Ouput:** AC sweep signal send to Amplifier (Spitzenberger&Spies)
+   - **Output:** AC sweep signal sent to Amplifier (Spitzenberger&Spies)
    - **CH1:** Measures input (primary side) current  (via CP1003B)
    - **CH2:** Measures differential output voltage  (via MOIP350P)
    - Computes impedance using :math:`Z = \frac{V}{I} = \frac{V_{\mathrm{CH2}}}{V_{\mathrm{CH1}}}`

@@ -15,7 +15,7 @@ Each point of this grid will be set and reference currents will be given to an e
 This state needs some sort of current controller to work properly. 
 It does **not** measure the needed signals to calculate the flux maps in each point. 
 It only controls the triggering of the operating points. 
-The necessary measurement vales can either be captured via the :ref:`JavaScope` or an external measurement device.
+The necessary measurement values can either be captured via the :ref:`JavaScope` or an external measurement device.
 For this purpose a trigger (when ``activeState = 403``) signals the point of time, at which the measurement of this operating point can take place. 
 
 During operation, it is possible to automatically determine the current winding temperature, via identifying the current stator resistance and comparing it to a reference value at a set temperature.

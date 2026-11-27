@@ -18,7 +18,7 @@ The power electronics part is modelled with six N-channel MOSFET from the Simsca
 Note that their electrical parameters are listed in the table below and can only be changed in the Simscape model but not after the IP core generation.
 The MOSFETs are placed to model three half bridges (HB) and each of the switches can be controlled individually.
 There is no logic implemented to prevent short circuits, if top and bottom switch of one HB are closed simultaneously.
-Because the physical references of the Simscape model will be lost after the IP core generation, the two controlled currents sources from phases ``a`` and ``b`` to phase ``c`` are placed.
+Because the physical references of the Simscape model will be lost after the IP core generation, the two controlled current sources from phases ``a`` and ``b`` to phase ``c`` are placed.
 The usage of the IP core demands the user to feed back the actual flowing currents in the current application to the inverter for it to determine the voltage drop across the switches and diodes.
 If the user does not feed back any currents or sets the feedback to zero, no voltage drops will be considered for the output voltage.
 The voltages are output as line-to-line voltages :math:`u_{ab},u_{bc},u_{ca}`.

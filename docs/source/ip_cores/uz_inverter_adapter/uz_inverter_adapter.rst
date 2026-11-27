@@ -132,7 +132,7 @@ Due to our interface using all 30 pins of one digital slot, make sure no other p
 
 Constraints
 -----------
-Third, the interface definition we connected in the step before uses specific names for the signals and pins. Those have to match the names of the respective constraint file of the respective digital slot. 
+Fourth, the interface definition we connected in the step before uses specific names for the signals and pins. Those have to match the names of the respective constraint file of the respective digital slot. 
 In the subfolder ``constraint_files`` inside the IP core sources (see :numref:`folder_structure_picture`) ready to use constraint files are prepared for this purpose:
 
 1. Open the respective constraint file (in our example the one for D1: ``Digital_D1_packed.xdc``)
@@ -306,7 +306,7 @@ way you can get the states of the status signals of the driver e.g. for assignin
 In order to enable the gates of the power electronics use the function ``uz_inverter_adapter_set_PWM_EN``. After power up, the gates are disabled by default.
 
 .. code-block:: c
-   :caption: Example usage of uz_inverter_adapter_PWM_EN function
+   :caption: Example usage of uz_inverter_adapter_set_PWM_EN function
 
     uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
 

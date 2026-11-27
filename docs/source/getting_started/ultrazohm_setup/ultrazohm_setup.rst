@@ -174,8 +174,8 @@ Generate the Vitis workspace
 
 - Open Vitis or launch Vitis from Vivado (``Tools -> Launch Vitis IDE``)
 - Choose the workspace
-- Path: ``~/ultrazohm_sw/vitis/workspace``
-- Open the XSCT Console in Vitis: ``Windows -> Show view... -> XSCT Console``
+- Path: ``~/ultrazohm/ultrazohm_sw/vitis/workspace``
+- Open the XSCT Console in Vitis: ``Window -> Show view... -> XSCT Console``
 - Type the following commands
 
 ::
@@ -200,7 +200,7 @@ Generate the Vitis workspace
 
 .. _vitis_restart_debug:
 
-.. note:: After the script has finished and the workspace has been build, restart Vitis by clicking on ``File -> Restart`` . 
+.. note:: After the script has finished and the workspace has been built, restart Vitis by clicking on ``File -> Restart`` . 
           This is recommended, because otherwise the pre-defined debug configurations are not visible.
           This is only necessary after the **initial build** of the workspace.
           For subsequent uses of the workspace, the debug configurations will be visible without additional steps.

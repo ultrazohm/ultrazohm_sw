@@ -247,7 +247,7 @@ External terminals and IDEs use the same client API.
 Save and restore
 ----------------
 
-JSON schema 6 captures recordings, nodes, analysis settings, and plot views.
+The JSON session file captures recordings, nodes, analysis settings, and plot views.
 Recording paths resolve relative to the snapshot.
 Saving is atomic and loading is transactional.
 Use ``viewer.save_session(path)`` and ``viewer.load_session(path)``.

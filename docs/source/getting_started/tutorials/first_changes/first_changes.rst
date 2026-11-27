@@ -78,7 +78,7 @@ Guideline
                case init_software:
                   Initialize_Timer();
                   uz_SystemTime_init();
-                  JavaScope_initalize(&Global_Data);
+                  JavaScope_initialize(&Global_Data);
                   initialization_chain = init_chirp;
                   break;
                case init_chirp:;
@@ -245,7 +245,7 @@ Guideline
 
   
 #. Add to the ``javascope.c`` file with the ``extern`` keyword the three chirp_output float variables from the ``isr.c``.
-#. In the ``JavaScope_initalize`` function, add the three new entries to the ``js_ch_observable`` array.
+#. In the ``JavaScope_initialize`` function, add the three new entries to the ``js_ch_observable`` array.
 
    * Here, the addresses of the variables are assigned to the specific elements in the ``js_ch_observable`` array corresponding to its enum.
    * The value of the variable itself will be automatically updated in the ``JavaScope_update`` function (no changes have to be made). 
@@ -262,7 +262,7 @@ Guideline
       extern float chirp_output2;
       extern float chirp_output3;
 
-      int JavaScope_initalize(DS_Data* data)
+      int JavaScope_initialize(DS_Data* data)
       {
          //.... 
          js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;

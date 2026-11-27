@@ -22,18 +22,18 @@ Nr, Rule, Example, Comment
 22, Check function arguments for validity,, Use assertions to communicate intend to the user of what the limits of function arguments are 
 23, Only one exit at the end of a function, no multiple ``return``, Requirement of MISRA [#misra]_ 
 24, "No unused code,  variables, ``typedef``, macros",,
-25, No use of the comma operator, "Non-complaint: ``int a, b, c;``", Forbidden by MISRA [#misra]_ 
+25, No use of the comma operator, "Non-compliant: ``int a, b, c;``", Forbidden by MISRA [#misra]_ 
 26, Do not compare for equality with ``float``,, Modern C [#modernC]_ takeaway 1.5.7.18
 27, No ``goto``,, Forbidden by MISRA rule 15.1 [#misra]_ 
 28, No recursion,, Forbidden by MISRA rule 17.2 [#misra]_ 
 29, No ``union``,, Forbidden by MISRA rule 19.2 [#misra]_ 
-30, No octal constants, Non-complaint: ``int i = 0042;``,
+30, No octal constants, Non-compliant: ``int i = 0042;``,
 31, No typecast,, Leads to bugs since the compailer can not help with types after the cast [#modernC]_
-32, No pointer arithmetic, "Non-complaint: ``int *ptr; ptr++;``", Forbidden by MISRA rule 18.4 [#misra]_
-33, No ``pointer pointer``, Non-complaint: ``int **ptrptr;``, Can be used in special cases - only use if really necessary 
-34, No ``pointer pointer pointer``, Non-complaint: ``int ***ptr``, Forbidden by MISRA rule 18.5 [#misra]_ 
+32, No pointer arithmetic, "Non-compliant: ``int *ptr; ptr++;``", Forbidden by MISRA rule 18.4 [#misra]_
+33, No ``pointer pointer``, Non-compliant: ``int **ptrptr;``, Can be used in special cases - only use if really necessary 
+34, No ``pointer pointer pointer``, Non-compliant: ``int ***ptr``, Forbidden by MISRA rule 18.5 [#misra]_ 
 35, No pointer to automatic storage objects, Non-Complaint (`link to godbolt <https://www.godbolt.org/z/hEYPGs188>`_): ``int* foo(void){int x=0; return (&x);}``, Automatic storage objects such as local variables of functions are allocated on the stack and not persistent and should not be leaked outside of their local scope by pointers
-36, No dynamic memory allocation, Non-complaint: ``malloc`` and friends, Forbidden by MISRA rule 21.3 [#misra]_ 
+36, No dynamic memory allocation, Non-compliant: ``malloc`` and friends, Forbidden by MISRA rule 21.3 [#misra]_ 
 37, Define loop variable in the initial part of the for loop, , Modern C [#modernC]_ takeaway 0.2.42
 38, Do not hide pointers in a typedef, , Modern C [#modernC]_ takeaway 2.11.2.1
 39, Favor *pure* functions for small tasks if possible, The return value of a *pure* functions only depend on the input arguments without any side effects of dependencies (e.g. ``sinf(x)``), Modern C [#modernC]_ takeaway 2.10.2.7

@@ -10,7 +10,7 @@ PT1 plant model
 
    G(s)=\frac{K}{Ts +1}
 
-With the gain :math:`K` and time constant `T`.
+With the gain :math:`K` and time constant :math:`T`.
 
 - Intended for HIL/SIL/xIL on the UltraZohm
 - PT1 is implemented in discrete time by using *zero order hold* transformation
@@ -65,7 +65,7 @@ Vivado
 Vitis
 *****
 
-- In a c-file that has `xparameters.h` included
+- In a c-file that has ``xparameters.h`` included
 - Initialize the instance and configure it
 
 .. code-block:: c
@@ -79,7 +79,7 @@ Vitis
    uz_plantPT1_t* pt1=uz_plantPT1_init(config);
    uz_plantPT1_set_input(pt1,0.0f);
 
-- Write the input and read the output of the block in the `isr.c`
+- Write the input and read the output of the block in the ``isr.c``
 - Add a PI controller to control the PT1 (for example)
 
 .. code-block:: c

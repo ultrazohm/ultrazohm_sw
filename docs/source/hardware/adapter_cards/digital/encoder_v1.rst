@@ -30,7 +30,7 @@ Detailed Description
 --------------------
 
 The UltraZohm Sensor Board features a variety of different industrial standard interfaces. This makes the board the perfect solution for flexible use in testing environments. 
-It supports incremental encoders, resolvers, analog and digital hall sensors as well es absolute encoders via serial connection.
+It supports incremental encoders, resolvers, analog and digital hall sensors as well as absolute encoders via serial connection.
 Most of the interfaces can be used simultaneously, which allows for either using many sensors in parallel or for evaluating different sensor systems at once. 
 With many placement options the sensor board can be customized to serve the needs of specific applications.
 
@@ -67,7 +67,7 @@ Resolver
    :height: 300
 
 The resolver interface is equipped with AD2S1210 from Analog Devices. It features excitation signal generation, 10-/12-/14-/16-bit resolution ADC, SPI or parallel interface (currently only SPI is supported), incremental encoder emulation and simple configuration by pull-up/pull-down choices.
-The devices works in one of three modes selectable by hardware inputs A0 and A1. In position mode, the corresponding data can be obtained directly by toggling the clock line without sending register addresses first. The same applies for velocity mode. Those two are also called normal modes. In the third mode, the configuration mode, allows for further access on the devices registers and configuration. In this mode it is possible to change the excitation frequency or also read back position and velocity data. Only in this mode the ADC resolution can be changed, ignoring the external resistor configuration.
+The device works in one of three modes selectable by hardware inputs A0 and A1. In position mode, the corresponding data can be obtained directly by toggling the clock line without sending register addresses first. The same applies for velocity mode. Those two are also called normal modes. In the third mode, the configuration mode, allows for further access on the devices registers and configuration. In this mode it is possible to change the excitation frequency or also read back position and velocity data. Only in this mode the ADC resolution can be changed, ignoring the external resistor configuration.
 
 .. figure:: encoder_v1/Position_Plot.png
   :width: 1000

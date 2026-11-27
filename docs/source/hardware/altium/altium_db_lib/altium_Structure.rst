@@ -44,7 +44,7 @@ The Top Sheet includes and connects the interfaces of the sheets below and gives
 
 The hierarchy can be designed as deep as the developer it defines, it must not end at the Middle Sheet (shown above). 
 
-To define this hierarchy, it is important that you add your necessary schematic sheets one a top sheet.
+To define this hierarchy, it is important that you add your necessary schematic sheets on a top sheet.
 On the top sheet there is often no information about the different components.
 Only information are included about the different schematic sheets, which should be connected.
 

@@ -23,7 +23,7 @@ Example
 Description
 ===========
 
-Calculates the values for a static nonlinear decoupling according to the following formulars:
+Calculates the values for a static nonlinear decoupling according to the following formulas:
 
 .. math::
 

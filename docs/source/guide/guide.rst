@@ -38,7 +38,7 @@ Hard real-time
 Modularity
  The UltraZohm is modular in terms of software and hardware.
  The system can be used with different devices within the UltraScale MPSoC family.
- Adapter cards are used as a flexible interface for analog and digital signals such as ADC's and gate signals for power electronics.
+ Adapter cards are used as a flexible interface for analog and digital signals such as ADCs and gate signals for power electronics.
  Software modularity is achieved by using encapsulated design patterns combined with IP cores on the FPGA.
 
 Usability
@@ -75,7 +75,7 @@ The online version (docs.ultrazohm.com) is always the documentation of the curre
     |   ├── source/ 
     |   ├── requirements.txt
     |   └── Makefile
-    ├── ip_core/
+    ├── ip_cores/
     ├── javascope/
     ├── tcl_scripts/
     |   ├── vivado_export_xsa.tcl

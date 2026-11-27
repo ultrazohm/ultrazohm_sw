@@ -9,9 +9,9 @@ ultrazohm-DataViewer
 
 The DataViewer opens CSV and Parquet (preferred) recordings for analysis.
 It supports JavaScope CSV logs and recordings from :doc:`../ultrazohm_cli`.
-In addition, there is a experimental live mode, that replaced the functionality of the Javascope, i.e., control the UltraZohm during operation with live plotting.
+In addition, there is an experimental live mode, that replaced the functionality of the Javascope, i.e., control the UltraZohm during operation with live plotting.
 The ``ultrazohm_dataviewer`` is available as a desktop application for Windows and Linux and can be used as a standalone application or using start-scripts from ``ultrazohm_sw``.
-In addition, ``ultrazohm_dataviewer`` is avialable as a Python package on Pypi.
+In addition, ``ultrazohm_dataviewer`` is available as a Python package on Pypi.
 
 - Standalone release: https://github.com/ultrazohm/ultrazohm_sw/releases
 - Pypi: https://pypi.org/project/ultrazohm-dataviewer/
@@ -121,7 +121,7 @@ The subplot setup (4) controls individual subplots and gives access to settings 
 The Application log (5) is read-only and hidden by default.
 Open it from **View → Application log**.
 Use the Python panel or a terminal to automate the DataViewer.
-The settings (6) give access to application settings, such import and export of current application state (session) and settings the view (view), e.g., reset to default view.
+The settings (6) give access to application settings, such as import and export of current application state (session) and setting the view (view), e.g., reset to default view.
 
 For all plots, the following interactions are available: Mouse wheel zooms in and out, right-click and drag creates a zoom rectangle, right-click while holding shift only zooms the x-axis, while holding Alt only zooms the y-axis.
 Right-clicking the x-axis or y-axis gives access to additional settings.

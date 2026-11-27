@@ -75,8 +75,8 @@ Please note that the installation steps for ``breathe`` (i.e., Doxygen) are not 
 
 .. youtube:: dxAlD-VzE0c
 
-This video shows how to change something in the documentation, add a new page, commit the changes and create a pull request in Bitbucket.
-Note that the repository is now hosted by Github.
+This video shows how to change something in the documentation, add a new page, commit the changes and create a pull request.
+Note that the video was recorded before the repository moved to GitHub. Pull requests are now created on GitHub; the workflow is the same.
 
 .. youtube:: pcG1XMzVDc8
 
@@ -84,7 +84,7 @@ Write the docs
 ==============
 
 See `write the docs <https://www.writethedocs.org/guide/>`_ as a great resource on how to write documentation.
-A good cheat sheet is located here: * `Example usage from Anaconda <https://docs.anaconda.com/restructuredtext/detailed/>`_ 
+A good cheat sheet is located here: `Example usage from Anaconda <https://docs.anaconda.com/restructuredtext/detailed/>`_ 
 
 
 Style
@@ -196,7 +196,7 @@ Reference:
 
 .. code-block:: rst
 
-    Reference ::numref:`labelName`.
+    Reference :numref:`labelName`.
 
 
 Math
@@ -348,12 +348,12 @@ All extensions are listed in ``ultrazohm_sw/docs/requirements.txt``.
   \draw[thick,rounded corners=8pt]
   (0,0)--(0,2)--(1,3.25)--(2,2)--(2,0)--(0,2)--(2,2)--(0,0)--(2,0);
 
-Alternative to using the Tikz extension for complicated tikz pictures: Create a standalone .tex document with the following boiler plate in an folder called ``img`` next the the .rst that includes the picture.
-Navigate the the folder of the .tex file using the terminal of the remote container and call ``pdflatex -shell-escape FILE.tex``.
+Alternative to using the Tikz extension for complicated tikz pictures: Create a standalone .tex document with the following boiler plate in a folder called ``img`` next to the .rst that includes the picture.
+Navigate to the folder of the .tex file using the terminal of the remote container and call ``pdflatex -shell-escape FILE.tex``.
 This generates a .svg from the .tex file that can be included as a regular figure.
 Add the .tex **and** the .svg to git since this is currently a manual process.
 
-.. code-block: tex
+.. code-block:: tex
 
    \documentclass[crop,tikz,convert={outext=.svg,command=\unexpanded{pdf2svg \infile\space\outfile}},multi=false]{standalone}[2012/04/13]
    \usepackage{tikz}
@@ -437,9 +437,9 @@ Compatibility issue with Notepad++ and .rst files
 
 .. warning:: This is not recommended! Use the :ref:`vscode_remote_container` instead!
 
-* If u edit ``.rst`` files in the UltraZohm documentation, an issue whilst using the tabulator key in Notepad++ can occur.
+* If you edit ``.rst`` files in the UltraZohm documentation, an issue whilst using the tabulator key in Notepad++ can occur.
 
-  - If you align the command with the tabulator key in Notepad++, everything looks as its supposed to.
+  - If you align the command with the tabulator key in Notepad++, everything looks as it's supposed to.
 
   .. image:: ./img/Notepad_tabulator.png
 
@@ -456,7 +456,7 @@ Compatibility issue with Notepad++ and .rst files
 * To fix this issue, you can do the following:
 
   1. In Notepad++ go to **Settings** → **Settings** → **Language**
-  2. On the right sight, check the box **Replace by space** (Durch Leerzeichen ersetzen) and set the **Tab size** to i.e. 4. 
+  2. On the right side, check the box **Replace by space** (Durch Leerzeichen ersetzen) and set the **Tab size** to e.g. 4. 
      4 spaces is the standard indentation size for different levels. 
 
   .. image:: ./img/Notepad_fix.png

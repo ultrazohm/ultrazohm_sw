@@ -61,7 +61,7 @@ Initial steps
 #. At the same time check, that the ``UZ_PWM_FREQUENCY`` is set to ``20.0e3f`` .
 #. In the ``main.h`` add the following includes.
 
-   * ``#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"``
+   * ``#include "IP_Cores/uz_pmsmmodel/uz_pmsmModel.h"``
    * ``#include "xparameters.h"``
    * ``#include "uz/uz_CurrentControl/uz_CurrentControl.h"``
 
@@ -109,7 +109,7 @@ Initial steps
                    case init_software:
                        Initialize_Timer();
                        uz_SystemTime_init();
-                       JavaScope_initalize(&Global_Data);
+                       JavaScope_initialize(&Global_Data);
                        initialization_chain = init_CurrentControl_pmsm;
                        break;
                    case init_CurrentControl_pmsm:;
@@ -292,7 +292,7 @@ Initial steps
 	  JSSD_FLOAT_Error_Code,
 	  SLOWDAT_DISPLAY_ENDMARKER
 
-#. In the javascope.c file add the pmsm input/outputs and replace the content of the ``JavaScope_initalize`` function.
+#. In the javascope.c file add the pmsm input/outputs and replace the content of the ``JavaScope_initialize`` function.
 
    .. code-block:: c
      :linenos:
@@ -303,7 +303,7 @@ Initial steps
       extern struct uz_pmsmModel_outputs_t pmsm_outputs;
       extern struct uz_pmsmModel_inputs_t pmsm_inputs;
 
-      int JavaScope_initalize(DS_Data* data)
+      int JavaScope_initialize(DS_Data* data)
       {
         //....
         // Store every observable signal into the Pointer-Array.

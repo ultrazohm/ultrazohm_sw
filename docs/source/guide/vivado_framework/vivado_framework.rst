@@ -1,4 +1,4 @@
-..  vivado_framework:
+.. _vivado_framework:
 
 ================
 Vivado Framework

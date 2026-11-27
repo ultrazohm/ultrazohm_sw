@@ -15,7 +15,7 @@ Create a new Altium Project
 
 3. Give a describing name for the project
 
-4. Choose a location for saving the project (often it is suitable to save the project in a folder with BitBucket reference)
+4. Choose a location for saving the project (often it is suitable to save the project in a folder of a git repository hosted on GitHub)
 
 5. Click ``Create``
 
@@ -43,10 +43,10 @@ Create a new Altium Project
 New schematic sheet was added.
 
 9. In general the symbol * marks that this sheet/ project is not saved.
-This can be done be clicking ``File`` --> ``save`` or ``save all``
+This can be done by clicking ``File`` --> ``save`` or ``save all``
 
 10. If you develop the PCB for the ELSYS institute the template A4_CoBo_THN should be used.
-It is also part of the BitBucket content and can be found under the following path (for working with BitBucket and Libraries look at the instruction for Altium DB Lib) …\pcb_libraries\templates\schematics\A4_CoBo_THN
+It is also part of the `altium_libraries repository <https://github.com/ultrazohm/altium_libraries>`_ and can be found under the following path (for working with the repository and libraries look at the instruction for Altium DB Lib) …\altium_libraries\templates\schematics\A4_CoBo_THN.SchDot
 
 11. To use the template in the schematic open the schematic click ``Design`` --> ``Templates`` --> ``Project Templates`` --> ``Choose a File``
 
@@ -247,7 +247,7 @@ To do this:
       Altium - Open PCB.
 
 
-2. Go to board planing mode by clicking ``1``
+2. Go to board planning mode by clicking ``1``
 
 3. ``Design`` --> ``move board shape`` --> ``move it to the x``
 

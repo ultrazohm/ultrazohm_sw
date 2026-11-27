@@ -536,7 +536,7 @@ Integration in Vitis
 1. Open Vitis
 2. (if not already done) Run the Tcl script to generate the workspace (:ref:`tcl_scripts`)
 3. Navigate to the Baremetal code
-4. Create the file ``uz_myIP_testebench.h`` in the ``include`` folder
+4. Create the file ``uz_myIP_testbench.h`` in the ``include`` folder
 
    .. code-block:: c
       :linenos:
@@ -546,7 +546,7 @@ Integration in Vitis
    
       void uz_myIP_testbench(void);
 
-5. Create the file ``uz_myIP_testebench.c`` in the ``sw`` folder. Note how the code is basically the same as the test ``test_uz_myIP2_test_A_times_B_equals_C`` without the assertions and ceedling function calls.
+5. Create the file ``uz_myIP_testbench.c`` in the ``sw`` folder. Note how the code is basically the same as the test ``test_uz_myIP2_test_A_times_B_equals_C`` without the assertions and ceedling function calls.
 
    .. code-block:: c
       :linenos:
@@ -581,5 +581,5 @@ Integration in Vitis
 6. Add ``#define UZ_MYIP_MAX_INSTANCES 1U`` between ``ifndef TEST`` and the first ``#endif`` to use one instance of the module in the software.
 7. Build the software.
 8. Include ``#include "include/uz_myIP_testbench.h"`` in ``main.c`` (Baremetal R5) and call ``uz_myIP_testbench();`` before the ISR is initialized!
-9. Connected the serial port to the Vitis Serial Terminal
+9. Connect the serial port to the Vitis Serial Terminal
 10. Run the UltraZohm. The success message should be printed to the Vitis Serial Terminal.

@@ -63,16 +63,16 @@ Additionally, the crimp contact
 `CC79L-2630-01-L <https://de.farnell.com/samtec/cc79l-2630-01-l/buchsenkontakt-30-26awg-ipd1-crimp/dp/2308509?ost=cc79l%E2%80%932630%E2%80%9301%E2%80%93l>`_
 is required.
 
-Alternatively, a twisted pair ribbon cable with a 1" pitch can be used. At a cabel length of about 1m, reflections start to be an issue. When using a different cable with a
+Alternatively, a twisted pair ribbon cable with a 1" pitch can be used. At a cable length of about 1m, reflections start to be an issue. When using a different cable with a
 different characteristic impedance, the termination resistor may be tuned. This can be done by connecting an open ended cable of about 2m and by measuring the output signal 
 at the termination resistor. The waveform below shows a typical signal of well compensated signal.
 
 .. image:: digital_voltage_3u/diff_47ohm.png
    :width: 500px
 
-It is recommended to use the PCB with a 100Ohm twisted pair cabel (e.g. CAT6). 
-Concerning the termination, the PCB has been tested with an open ended CAT5 cabel with a characteristic impedance of 100Ohms. 
-The following values for the serial have been termination resistors have been found:
+It is recommended to use the PCB with a 100Ohm twisted pair cable (e.g. CAT6). 
+Concerning the termination, the PCB has been tested with an open ended CAT5 cable with a characteristic impedance of 100Ohms. 
+The following values for the serial termination resistors have been found:
 
 * 91Ohm for 5V single ended output (only group (6) must be mounted in this case)
 * 47Ohm for differential transmission ((6) and (7) must be mounted for differential transmission)
@@ -110,12 +110,12 @@ Technical background
 
 In order to control reflections on the transmission lines between the driver and the receiver, controlled impedance routing has been performed in this project.
 In the draftsman output in the :download:`ZIP file <digital_voltage_3u/UltraZohm_DigitalVoltage_2v01_public_docs.zip>`, the layer stack is shown.
-The impedance of the traces on th PCB must match the impedance of the cabel that connects the adapter board with the input of the receiver. This is achieved by
+The impedance of the traces on the PCB must match the impedance of the cable that connects the adapter board with the input of the receiver. This is achieved by
 controlling the dimensions of the dielectric material between the signal layer and the ground reference plane.
 
 In order to avoid multiple reflections, termination must be applied, if the leads between the driver and the receiver exceed a certain length, which depends on the
 steepness of the slopes induced by the driver. In this project this length is about 1m for the level shifter from 3.3V to 5V and for the RS422 drivers. The 15V drivers
-are less critical because the have lower steepness.
+are less critical because they have lower steepness.
 
 Since the adapter board is mainly designed for point to point connections and because the operational frequencies are relatively low, the simple serial termination
 technique can be applied. With serial termination the signal gets reflected at the far end of the transmission line and it is absorbed by a resistor 
@@ -148,7 +148,7 @@ Slots D1 to D4 can be used without limitations
 See also
 """"""""
 
-* `CPLD software git <https://github.com/ultrazohm/cpld_lattice/>`_
+* `CPLD software git <https://github.com/ultrazohm/uz_cpld/>`_
 * :ref:`label_cpld_programming`
 
 Appendix

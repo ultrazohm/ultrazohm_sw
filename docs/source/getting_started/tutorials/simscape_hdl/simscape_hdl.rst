@@ -90,7 +90,7 @@ Software
            case init_software:
                Initialize_Timer();
                uz_SystemTime_init();
-               JavaScope_initalize(&Global_Data);
+               JavaScope_initialize(&Global_Data);
                initialization_chain = init_ip_cores;
                break;
            case init_ip_cores:

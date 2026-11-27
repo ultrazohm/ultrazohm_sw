@@ -64,8 +64,8 @@ Next, attach them to the respective pads of X9 as shown below.
 
 A proper software driver for toggling the PHY reset pins is shipped by default with ultrazohm_sw ``v1.0.2`` and newer.
 
-This issues is present in version ``1v5`` to ``Rev04`` and is resolved in revisions newer than that.
-For further technical details, see `Carrier Board Issue 122 <https://github.com/ultrazohm/uz_carrierboard/issues/122/gpio-to-toggle-phy-reset-might-solve-phy>`_
+This issue is present in version ``1v5`` to ``Rev04`` and is resolved in revisions newer than that.
+For further technical details, see `Carrier Board Issue 122 <https://github.com/ultrazohm/uz_carrierboard/issues/122>`_
 
 
 Manual Reset (MR) pin (≤ 3v0)
@@ -88,8 +88,8 @@ Cut off the MR pin from the JTAG adapter ``X8-11``, as shown below.
 .. image:: pictures/MR_pin_1.jpg
    :width: 600
 
-This issues is present in version ``1v5`` to ``3v0`` and is resolved in ``4v0``.
-For further technical details, see `Carrier Board Issue 46 <https://github.com/ultrazohm/uz_carrierboard/issues/46/remove-mr-manual-reset-pin-from-jtag>`_
+This issue is present in version ``1v5`` to ``3v0`` and is resolved in ``4v0``.
+For further technical details, see `Carrier Board Issue 46 <https://github.com/ultrazohm/uz_carrierboard/issues/46>`_
 
 
 Bent pins in adapter card connectors X5 and X6 (≤ 3v0)
@@ -122,8 +122,8 @@ We noticed that this can happen for **two** reasons:
 .. image:: pictures/bend_pins_HTEC8.png
    :width: 600
 
-This issues is present in version ``1v5`` to ``3v0`` and is resolved in ``4v0``.
-For further technical details, see `Carrier Board Issue 17 <https://github.com/ultrazohm/uz_carrierboard/issues/17/pins-on-the-analog-and-digital-connectors>`_
+This issue is present in version ``1v5`` to ``3v0`` and is resolved in ``4v0``.
+For further technical details, see `Carrier Board Issue 17 <https://github.com/ultrazohm/uz_carrierboard/issues/17>`_
 
 Level-Shifter not working (≤ 3v0)
 ---------------------------------
@@ -137,8 +137,8 @@ In the schematic, some resistors are connected at the wrong position.
 Replace resistors **R149**, **R211**, and **R225**  with 0 Ohm resistor.
 
 
-This issues is present in version ``3v0`` and is resolved in ``4v0``.
-For further technical details, see `Carrier Board Issue 36 <https://github.com/ultrazohm/uz_carrierboard/issues/36/test-solutions-of-new-level-shifter-u14>`_
+This issue is present in version ``3v0`` and is resolved in ``4v0``.
+For further technical details, see `Carrier Board Issue 36 <https://github.com/ultrazohm/uz_carrierboard/issues/36>`_
 
 
 Issues on Carrier Board 1v5

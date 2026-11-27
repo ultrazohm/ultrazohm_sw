@@ -32,7 +32,7 @@ Tightly Coupled Memory (TCM)
 - The global address is used in Vivado
 - ATCM (64 KB) starts at address 0x0000_0000 and ends at 0x0000_FFFF for usage in software
 - BTCM (64 KB) starts at address 0x0002_0000 and ends at 0x0002_FFFF for usage in software
-- Note that ATCM for R_0 starts at 0x000_0000 to 0x0000_FFFF, then there is a 64 KB gap (`see figure in TRM <https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf#G6.381515>`_).
+- Note that ATCM for R5_0 starts at 0x0000_0000 to 0x0000_FFFF, then there is a 64 KB gap (`see figure in TRM <https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf#G6.381515>`_).
 
 IP core
 =======

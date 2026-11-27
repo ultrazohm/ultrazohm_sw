@@ -24,7 +24,7 @@ The following diagrams show the signal flow of all communication interfaces.
 I2C0
 ^^^^^^^^^^^^^^^^^^
 
-	* I2C0 is shared over all Digital- and Analog-Adapter-Sockets --> this is in order to read out errors after the "Collective Fault" switched of in an error case!
+	* I2C0 is shared over all Digital- and Analog-Adapter-Sockets --> this is in order to read out errors after the "Collective Fault" switched off in an error case!
 	* I2C0 is also used to configure the PLL chip Si5345 during start-up, which sets up all clocks. See `the Trenz-Elektronik Wiki <https://wiki.trenz-electronic.de/display/PD/Si5345>`_
 	  
 .. mermaid::

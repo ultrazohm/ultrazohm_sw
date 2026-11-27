@@ -23,7 +23,7 @@ https://www.multi-circuit-boards.eu/leiterplatten-design-hilfe/lagenaufbau/stand
 To configure this information in Altium
 ========================================
 
-1. Open the layer stack manager (only possible if you select a PCB Dokument ".PcbDoc") by clicking ``Design`` --> ``Layer Stack Manager``
+1. Open the layer stack manager (only possible if you select a PCB Document ".PcbDoc") by clicking ``Design`` --> ``Layer Stack Manager``
 
 .. _154_Layer_Stack:
 

@@ -26,7 +26,7 @@ Use this IP core to test read/write operations by AXI between PL and PS using th
    :width: 800
    :align: center
 
-   Top view of the Module.
+   Inner view of the Module.
 
 
 .. csv-table:: Interfaces of the AXI test IP

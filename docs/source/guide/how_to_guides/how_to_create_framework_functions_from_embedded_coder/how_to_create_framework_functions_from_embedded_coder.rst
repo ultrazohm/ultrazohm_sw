@@ -255,5 +255,5 @@ Create framework function
 28. Implement tests and interface for the chirp functionality
 29. Write documentation for the software module
 
-.. note::  The source Simulink model that is used for generating the code should be supplied in the same folder as the generated code. Do not commit anything expect ``.slx``, ``.c``, and ``.h`` files after the code generation, i.e., no Simulink cache or other build artifacts!
+.. note::  The source Simulink model that is used for generating the code should be supplied in the same folder as the generated code. Do not commit anything except ``.slx``, ``.c``, and ``.h`` files after the code generation, i.e., no Simulink cache or other build artifacts!
 

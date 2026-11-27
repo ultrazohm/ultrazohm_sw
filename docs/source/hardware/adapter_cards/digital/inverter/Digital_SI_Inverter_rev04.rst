@@ -53,7 +53,7 @@ Additional ratings
   
 Heatsink
 --------
-:ref:`Rev04 <dig_si_inverter_rev04>` requires a redesigned heatsink, which is not compatible with previous revisions :ref:`Rev02 <dig_si_inverter_rev03>` and :ref:`Rev03 <dig_si_inverter_rev03>`. 
+:ref:`Rev04 <dig_si_inverter_rev04>` requires a redesigned heatsink, which is not compatible with previous revisions :ref:`Rev02 <dig_si_inverter_rev02>` and :ref:`Rev03 <dig_si_inverter_rev03>`. 
 The PCB is prepared for the installation of a heat sink. 
 Four mounting holes have been incorporated, designed to support screws with a maximum diameter corresponding to M3.
 It is intended that the heatsink will have the appropriate holes with threads into which the screws can be screwed.
@@ -157,7 +157,7 @@ CPLD
 
 Make sure that the correct CPLD is flashed in the corresponding digital adapter slot.
 For this adapter card the ``uz_d_3ph_inverter`` CPLD needs to be flashed.
-Download this CPLD from the `UltraZohm CPLD Repository <https://github.com/ultrazohm/cpld_lattice/src/master/>`_.
+Download this CPLD from the `UltraZohm CPLD Repository <https://github.com/ultrazohm/uz_cpld>`_.
 Follow :ref:`this guide  <label_cpld_programming>` on how to flash the correct CPLD on the UltraZohm.
 
 Software implementation

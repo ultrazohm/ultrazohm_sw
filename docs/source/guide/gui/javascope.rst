@@ -154,7 +154,7 @@ Each of the 20 scope channels provides the following options:
 #. ``Offset`` entry to shift the signal on the y-axis.
 #. ``Enable All`` and ``Disable All`` for global channel visibility control.
 
-Available signal names are parsed from ``JS_ObservableData`` in ``javascope.h``.
+Available signal names are parsed from ``JS_OberservableData`` in ``javascope.h``.
 On connection, the GUI sends the preselected channel configuration automatically.
 Channel selection changes are applied immediately while connected.
 Scaling and offset are applied when you press ``Enter`` or move focus away from the input field.

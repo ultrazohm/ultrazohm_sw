@@ -14,7 +14,7 @@ Before starting with the description and instructions on how to use the database
 
 The library system splits up in three different locations:
 
-1. The `altium_libraries repository <https://github.com/ultrazohm/altium_libraries/src/master/>`_. All schematic symbols and PCB footprints of the individual components as well as the DbLib file that is required to connect to the database on the UltraZohm server is located in this repository
+1. The `altium_libraries repository <https://github.com/ultrazohm/altium_libraries>`_. All schematic symbols and PCB footprints of the individual components as well as the DbLib file that is required to connect to the database on the UltraZohm server is located in this repository
 2. The UltraZohm server: All component parameters like Manufacturer Part Numbers etc. are managed by a MariaDB database on the server. In order to edit database records a separate database client (e.g. `DBeaver <https://dbeaver.io/>`_) is recommended.
 3. User's PC: The PC of the PCB developer gets access to the locations 1 and 2 and the developer is able to place the components. In case he has write access he can also edit and add components.
 
@@ -24,10 +24,10 @@ In the following, the individual tools and necessary installation steps are disc
 
 
 In order to use the database driven library for Altium, a few settings need to be made initially.
-In the following chapters are a guideline on how to install and set the parameter is given.
+The following chapters give a guideline on how to install and set the parameters.
 The following tools are required:
 
-* Bitbucket
+* Git and a GitHub account
 * ODBC Data Sources (64-Bit)
 * Altium
 * DBeaver
@@ -50,24 +50,24 @@ How to install DBeaver:
 .. youtube:: DaSXdXeiYR4
 
 
-Bitbucket access setup
-======================
+GitHub access setup
+===================
 
-1. To work with the databased library system in Altium, it is necessary to get access to the Bitbucket system of the UltraZohm, especially to the `altium_libraries repository <https://github.com/ultrazohm/altium_libraries/src/master/>`_
+1. To work with the databased library system in Altium, it is necessary to get access to the UltraZohm GitHub organization, especially to the `altium_libraries repository <https://github.com/ultrazohm/altium_libraries>`_
 
 .. _1_Bitbucket:
 
    .. figure:: img/1_BitBucket.png
    
-        Bitbucket - altium_libraries.
+        altium_libraries repository (screenshot from before the move to GitHub).
 
 2. Clone the repository on your local computer
 
-3. If you intent to add new components, create a new feature branch. Follow the naming convention feature/<meaningful_name>. If the git shell interface is used the command is ``git checkout -b feature/<branch_name>``
+3. If you intend to add new components, create a new feature branch. Follow the naming convention feature/<meaningful_name>. If the git shell interface is used the command is ``git checkout -b feature/<branch_name>``
 
-4. If a new component was added, commit and push the new component to Bitbucket
+4. If a new component was added, commit and push the new component to GitHub
 
-5. When component editing is finished open a pull request on Bitbucket. The components will be reviewed and merged into the master branch.
+5. When component editing is finished open a pull request on GitHub. The components will be reviewed and merged into the master branch.
 
 .. _ServerAccessSetup:
 
@@ -206,7 +206,7 @@ Integration in Altium
 
       Altium - installed libraries.
 
-5. Select ``Install…`` and navigate to the path where the Bitbucket repository is cloned on the computer. Select the file "user.DbLib"
+5. Select ``Install…`` and navigate to the path where the altium_libraries repository is cloned on the computer. Select the file "user.DbLib"
 
 6. ``Close`` this window
 
@@ -224,7 +224,7 @@ Integration in Altium
 Setup of the database client
 ============================
 
-If new components are required the developer will need write access to the Bitbucket repository and to the database on the UltraZohm server.
+If new components are required the developer will need write access to the altium_libraries repository on GitHub and to the database on the UltraZohm server.
 A dedicated user called ``altium_developer`` is available on the database system for this purpose. He has write access to the whole library database.
 As a graphical database client DBeaver is recommended.
 
@@ -303,13 +303,13 @@ of the component to the repository and the database. **Furthermore, the develope
 not be accepted. 
 
 .. note :: The goal of this database system is that schematic and footprints of generic components only exist once.
-           This means that schematics and footprints symbols of generic components only have to be in the Bitbucket repository once, even if there are multiple physical components available (e.g. different manufacturers and values).
+           This means that schematics and footprints symbols of generic components only have to be in the altium_libraries repository once, even if there are multiple physical components available (e.g. different manufacturers and values).
            Only if the component has a different geometry or pinout, a new schematic and/or footprint must be added.
            The number of pins on the symbol must match the number of pins on the footprints. The mapping of the pins is done with the pin numbering (pin 1 of the symbol is mapped to pin 1 of the footprint and so on).
            In case of doubt the symbol and the footprint supplied by the manufacturer must be used instead of using an existing footprint.
 
 
-1. Check if the schematic symbol already exists as a symbol in the Bitbucket system. The schematic symbols are located under ``alitum_libraries\symbols`` If the schematic does not exist, copy the schematic symbol in the suitable directory under ``alitum_libraries\symbols``. It is vital that the ``.SchLib`` file **only contains one symbol**. See :ref:`SchematicAndFootprints` on how to extract the symbol from different sources.
+1. Check if the schematic symbol already exists as a symbol in the altium_libraries repository. The schematic symbols are located under ``altium_libraries\symbols`` If the schematic does not exist, copy the schematic symbol in the suitable directory under ``altium_libraries\symbols``. It is vital that the ``.SchLib`` file **only contains one symbol**. See :ref:`SchematicAndFootprints` on how to extract the symbol from different sources.
 
 .. _41_Explorer_SCH:
 
@@ -322,7 +322,7 @@ not be accepted.
 
 .. note :: The extension of the file is written in capital letters.
 
-3. Check if the footprint symbol already exists in the Bitbucket system. Use the `IPC-7351B <https://ohm.bu.edu/~pbohn/__Engineering_Reference/pcb_layout/pcbmatrix/IPC-7x51%20&%20PCBM%20Land%20Pattern%20Naming%20Convention.pdf>`_ naming convention when searching for the footprint. If the component does not exist copy the footprint in the suitable folder of the footprints ``\alitum_libraries\footprints``. It is vital that the ``.PcbLib`` file **only contains one footprint**. See :ref:`SchematicAndFootprints` on how to extract the symbol from different sources.
+3. Check if the footprint symbol already exists in the altium_libraries repository. Use the `IPC-7351B <https://ohm.bu.edu/~pbohn/__Engineering_Reference/pcb_layout/pcbmatrix/IPC-7x51%20&%20PCBM%20Land%20Pattern%20Naming%20Convention.pdf>`_ naming convention when searching for the footprint. If the component does not exist copy the footprint in the suitable folder of the footprints ``\altium_libraries\footprints``. It is vital that the ``.PcbLib`` file **only contains one footprint**. See :ref:`SchematicAndFootprints` on how to extract the symbol from different sources.
 
 .. _42_Explorer_PCB:
 
@@ -428,7 +428,7 @@ The table cells, which are here described in detail is from "Capacitors - SMD" t
 
 15. If the added component is not visible in the library, refresh via ``F5`` again
 
-16. If a new table was added in the database, open the user.DbLib File (also included in the Bitbucket folder)
+16. If a new table was added in the database, open the user.DbLib File (also included in the altium_libraries repository)
 
 .. _50_Altium_database_include:
 
@@ -437,7 +437,7 @@ The table cells, which are here described in detail is from "Capacitors - SMD" t
 
       Altium - user.DbLib File.
 
-17. At the end of the adding process of a component commit and to push the new components for other users in Bitbucket and open a pull request to the master branch.
+17. At the end of the adding process of a component commit and push the new components for other users to GitHub and open a pull request to the master branch.
 
 
 
@@ -461,14 +461,14 @@ If the component you intend to add does not fit in the existing tables a new tab
 
       DBeaver - Open the SQL Editor in DBeaver.
 
-2. On the Bitbucket system the sql File "create_tables.sql" is available
+2. The SQL file "create_tables.sql" is available in the altium_libraries repository
 
 .. _191_Create_File:
 
    .. figure:: img/191_Create_File.png
       :width: 300px
 
-      Bitbucket folder - Open the sql File "create_tables.sql".
+      altium_libraries repository - Open the sql File "create_tables.sql".
 
 In this file you can find the syntax for creating a new table.
 
@@ -518,4 +518,4 @@ Therefore, open the "user.DbLib" file in Altium.
 
       Altium - Change database field.
 
-10. Save the new settings in the "user.DbLib" file and commit it to the Bitbucket system for all the other users.
+10. Save the new settings in the "user.DbLib" file and commit it to the altium_libraries repository for all the other users.

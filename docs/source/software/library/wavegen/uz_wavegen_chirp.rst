@@ -17,7 +17,7 @@ Chirp wave
 
 .. _uz_wavegen_chirp_example:
 
-Chrip wave example
+Chirp wave example
 ==================
 
 The following define has to be set in ``uz_global_configuration.h`` to set the maximum of required instances, with ``x`` defining the maximum for how often ``uz_wavegen_chirp_init`` will be called.

@@ -156,7 +156,7 @@ The negative input In_N is set to ground which is preferably transferred over th
 
 In the default case setup of the IP core, i.e., ``BIPOLAR register = 1``, only 11 Bits resolution of the ADC are utilized.  
 Note that the bit pattern has to be interpreted differently, see Figure 4 and 5 in [MAX11331_datasheet]_ . 
-The full 12 Bits could (probably) used by setting ``UNIPOLAR register = 0`` which sets the input range to 0..5V (tbc).
+The full 12 Bits could (probably) be used by setting ``UNIPOLAR register = 0`` which sets the input range to 0..5V (tbc).
 
 
 References
@@ -164,7 +164,7 @@ References
 
 * :download:`Assembly drawing <Rev02/ASM_UZ_A_MAX11331_Differential_Input_Rev01.pdf>`
 * :download:`Schematic <Rev02/SCH_UZ_A_MAX11331_Differential_Input_Rev01-1.pdf>`
-* `UZ_A_MAX11331 Repository with Altium project <https://github.com/ultrazohm/uz_a_max11331/src>`_
+* `UZ_A_MAX11331 Repository with Altium project <https://github.com/ultrazohm/uz_a_max11331>`_
 * IP Core ADC :ref:`ipCore_adc_max11331`
 * `Product page MAX11331 <https://www.analog.com/en/products/max11331.html>`_
 * .. [MAX11331_datasheet] `Data sheet ADC MAX11331 <https://www.analog.com/media/en/technical-documentation/data-sheets/MAX11329-MAX11332.pdf>`_

@@ -76,8 +76,8 @@ The card is directly compatible with the :ref:`Analog_LTC2311_16_Rev05`, :ref:`A
 Switching behavior
 -------------------
 
-The figure below shows the general switching behaviour of the inverter with a PMSM as a load is shown. 
-The plots were taken during routine operation with the PMSM running with at :math:`i_q = 5\ A`. The PWM frequency was :math:`20\ kHz` with a deadtime of :math:`150\ ns`.
+The figure below shows the general switching behaviour of the inverter with a PMSM as a load. 
+The plots were taken during routine operation with the PMSM running at :math:`i_q = 5\ A`. The PWM frequency was :math:`20\ kHz` with a deadtime of :math:`150\ ns`.
 The gate resistance has been tuned to such a degree, that there is practically no overshoot and only a minimal degree of oscillation in the drain source voltages.
 Although there is room for further optimization, the resulting switching behaviour is sufficiently robust.
 
@@ -94,7 +94,7 @@ CPLD
 
 Make sure that the correct CPLD is flashed in the corresponding digital adapter slot.
 For this adapter card the ``uz_d_3ph_inverter`` CPLD needs to be flashed.
-Download this CPLD from the `UltraZohm CPLD Repository <https://github.com/ultrazohm/cpld_lattice/src/master/>`_.
+Download this CPLD from the `UltraZohm CPLD Repository <https://github.com/ultrazohm/uz_cpld>`_.
 Follow :ref:`this guide  <label_cpld_programming>` on how to flash the correct CPLD on the UltraZohm.
 
 Software implementation

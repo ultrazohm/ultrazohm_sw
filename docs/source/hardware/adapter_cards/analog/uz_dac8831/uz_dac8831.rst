@@ -11,7 +11,7 @@ The output voltage is bipolar with a range of +-5V (differential).
 Each DAC8831 is connected to an individual data channel and all 8 DAC8831 share the chip select (CS) as well as the clock (CLK) of the SPI interface.
 The DAC8831 features an LDAC pin that determines when new set-points are applied to the output.
 This pin is not used in the design (pulled up).
-Therefore, all ADC channels change their set-point according to the data they receive with each rising edge on the CS signal (all channels simultaneously).
+Therefore, all DAC channels change their set-point according to the data they receive with each rising edge on the CS signal (all channels simultaneously).
 
 .. _dac_colored:
 

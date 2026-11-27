@@ -4,15 +4,15 @@ Changeset
 Associated Repositories w/ toplevel issues
 ------------------------------------------
 
-* `CarrierBoard <https://github.com/ultrazohm/uz_carrierboard/issues?status=new&status=open&status=submitted&is_spam=!spam>`_
+* `CarrierBoard <https://github.com/ultrazohm/uz_carrierboard/issues>`_
 
-  * `Issue #128 (Changeset for Rev05) <https://github.com/ultrazohm/uz_carrierboard/issues/128/changeset-for-rev05>`_: Detailed overview of (mostly electric) changes that are implemented on Rev05 of the carrier board
+  * `Issue #128 (Changeset for Rev05) <https://github.com/ultrazohm/uz_carrierboard/issues/128>`_: Detailed overview of (mostly electric) changes that are implemented on Rev05 of the carrier board
   * For technical details, please refer to above link or :ref:`changeset_rev05uzc`
 
-* `FrontPanel (aka FP) <https://github.com/ultrazohm/uz_frontpanel/issues?status=new&status=open&status=submitted&is_spam=!spam>`_: "Z" PCB with assemblies
-* `Housing (aka H) <https://github.com/ultrazohm/housing/issues?status=new&status=open&status=submitted&is_spam=!spam>`_: 3U/6U chassis, slot blinds, etc.
-* `CPLD_Lattice <https://github.com/ultrazohm/cpld_lattice/issues?status=new&status=open&status=submitted&is_spam=!spam>`_
-* `Assembly_and_Commissioning <https://github.com/ultrazohm/assembly_and_commissioning/src/master/>`_ (no longer active?)
+* `FrontPanel (aka FP) <https://github.com/ultrazohm/uz_frontpanel/issues>`_: "Z" PCB with assemblies
+* `Housing (aka H) <https://bitbucket.org/ultrazohm/housing/issues>`_: 3U/6U chassis, slot blinds, etc.
+* `uz_cpld (formerly CPLD_Lattice) <https://github.com/ultrazohm/uz_cpld/issues>`_
+* `Assembly_and_Commissioning <https://bitbucket.org/ultrazohm/assembly_and_commissioning/src/master/>`_ (no longer active?)
 
 
 Overview of Change Issues vs. Repositories
@@ -42,11 +42,11 @@ Overview of Change Issues vs. Repositories
      - `123 <https://github.com/ultrazohm/uz_carrierboard/issues/123/>`_, `126 <https://github.com/ultrazohm/uz_carrierboard/issues/126/>`_
      -
    * - Add support for adapter card identification [including detection of signal directions on dig. volt. (dVlt) cards]
-     - `138 <https://github.com/ultrazohm/uz_carrierboard/issues/138/>`_ and `uz_sw PR444 <https://github.com/ultrazohm/ultrazohm_sw/pull-requests/444>`_
+     - `138 <https://github.com/ultrazohm/uz_carrierboard/issues/138/>`_ and `uz_sw PR444 <https://github.com/ultrazohm/ultrazohm_sw/issues/816>`_
      - `6 (D slot templ.) <https://github.com/ultrazohm/uz_d_template/issues/6/>`_, `[37 dVlt] <https://github.com/ultrazohm/uz_d_voltage/issues/37/>`_
    * - Integrate SSD, EEPROMs, frontpanel GPIO, PCIe, etc.
      - `124 <https://github.com/ultrazohm/uz_carrierboard/issues/124/>`_
-     - `5 (lilac board) <https://github.com/ultrazohm/uz_per_rtc_mac/issues/5/overall-design-plan-for-v2#comment-64818326>`_
+     - `5 (lilac board) <https://github.com/ultrazohm/uz_per_rtc_mac/issues/5>`_
    * - Integrated isolated dual-JTAG solution
      - 
      - 
@@ -55,15 +55,15 @@ Overview of Change Issues vs. Repositories
      -
    * - Redesign front (and back?) panel
      - `130 <https://github.com/ultrazohm/uz_carrierboard/issues/130/>`_, `141 <https://github.com/ultrazohm/uz_carrierboard/issues/141/>`_
-     - `FP8 <https://github.com/ultrazohm/uz_frontpanel/issues/8/>`_ / `9 <https://github.com/ultrazohm/uz_frontpanel/issues/9/>`_ / `10 <https://github.com/ultrazohm/uz_frontpanel/issues/10/>`_, `H16 <https://github.com/ultrazohm/housing/issues/16/>`_
+     - `FP8 <https://github.com/ultrazohm/uz_frontpanel/issues/8/>`_ / `9 <https://github.com/ultrazohm/uz_frontpanel/issues/9/>`_ / `10 <https://github.com/ultrazohm/uz_frontpanel/issues/10/>`_, `H16 <https://bitbucket.org/ultrazohm/housing/issues/16>`_
    * - Add system fan (connectors)
      -
-     - `H17 <https://github.com/ultrazohm/housing/issues/17/>`_
+     - `H17 <https://bitbucket.org/ultrazohm/housing/issues/17>`_
    * - Redesign isoGPIOs and make them available on panel
      - `134 <https://github.com/ultrazohm/uz_carrierboard/issues/134/>`_
      - 
    * - Remap ``PS_ANL_shared`` to/and fix CD of the µSD card
-     - `128 <https://github.com/ultrazohm/uz_carrierboard/issues/128/#comment-66486138>`_, `135 <https://github.com/ultrazohm/uz_carrierboard/issues/135/>`_
+     - `128 <https://github.com/ultrazohm/uz_carrierboard/issues/128>`_, `135 <https://github.com/ultrazohm/uz_carrierboard/issues/135/>`_
      -
    * - (Migrate SoM from TE0808 to TE0818
      - `131 <https://github.com/ultrazohm/uz_carrierboard/issues/131/>`_)
@@ -73,7 +73,7 @@ Overview of Change Issues vs. Repositories
      -
    * - Move PSU to far-right corner of chassis
      - `136 <https://github.com/ultrazohm/uz_carrierboard/issues/136/>`_
-     - `branch H repo <https://github.com/ultrazohm/housing/branch/feature/redesign_rev05>`_
+     - `branch H repo <https://bitbucket.org/ultrazohm/housing/branch/feature/redesign_rev05>`_
    * - Protect the VIn, 5V and 3V3 rails at the slots (cf. :ref:`spec <carrier_board_rev03_slotpower>`)
      - `146 <https://github.com/ultrazohm/uz_carrierboard/issues/146/>`_
      -

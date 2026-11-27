@@ -60,7 +60,7 @@ Vivado
 
 .. figure:: uz_dq_ipcore_vivado_screenshot.jpg
 
-The only tested clock frequency for ``IPCORE_CLK`` and ``AXI4_Lie_ACLK`` is 50 Mhz.
+The only tested clock frequency for ``IPCORE_CLK`` and ``AXI4_Lite_ACLK`` is 50 MHz.
 
 .. csv-table:: Vivado block design interfaces of dq-transformation IP core
    :file: ./dq_VivadoInterface.csv

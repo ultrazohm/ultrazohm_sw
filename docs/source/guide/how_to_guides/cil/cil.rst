@@ -38,7 +38,7 @@ Thus, this approach is favorable if the plant model is simple or the required sa
   
 .. _cil_plant_in_pl:
 
-.. tikz:: Plant in PS, Control algorithm in PL
+.. tikz:: Plant model in PL, Control algorithm in PS
   :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows
 
   \begin{tikzpicture}[auto, node distance=2cm,>=latex']
@@ -103,7 +103,7 @@ See the following docs pages for more information:
 
 .. _hil_plant_in_pl:
 
-.. tikz:: Plant in PS, Control algorithm in PL
+.. tikz:: Plant model in PL, Control algorithm in PS
   :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows
 
   \begin{tikzpicture}[auto, node distance=2cm,>=latex']

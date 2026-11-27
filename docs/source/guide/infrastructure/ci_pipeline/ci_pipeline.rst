@@ -10,7 +10,6 @@ The UltraZohm project uses two different build pipelines to test the builds of t
   
   * Tests the build of the Sphinx docs
   * Deploys the docs of the main branch to docs.ultrazohm.com
-  * Mirrors the branch to https://github.com/ultrazohm/ultrazohm_sw
 
 * The Drone test pipeline builds UltraZohm Vivado and Vitis projects
 
@@ -24,7 +23,7 @@ The UltraZohm project uses two different build pipelines to test the builds of t
 Unit tests (Ceedling)
 *********************
 
-* All unit tests (see :ref:`unit_tests` are run in the Drone pipeline.
+* All unit tests (see :ref:`unit_tests`) are run in the Drone pipeline.
 * If one test fails, the pipeline fails.
 
 .. _ci_static_code_check:
@@ -45,7 +44,7 @@ We use `cppcheck <https://github.com/danmar/cppcheck>`_  as our static code anal
 We check with regular cppcheck and with the extensions for MISRA and CERT rules.
 MISRA violations can be suppressed on a line-by-line basis, e.g.:
 
-.. code-block: c
+.. code-block:: c
     :caption: MISRA rule violation suppression
 
     #ifdef TEST
@@ -94,15 +93,15 @@ Drone pipeline (Software)
 * Drone pipeline builds
 
 
-* Uses `Drone <www.drone.io>`_
+* Uses `Drone <https://www.drone.io>`_
 * Drone has a Server and a Runner
-* Drone Server is the bridge between Github, User and Runner (`ci.ultrazohm.com <www.ci.ultrazohm.com>`_)
+* Drone Server is the bridge between Github, User and Runner (`ci.ultrazohm.com <https://ci.ultrazohm.com>`_)
 * Runner (Docker runner, see `Drone docs <https://docs.drone.io/runner/docker/overview/>`_) polls the server and executes the build pipeline
 * Server and Runner are used as Docker container on the UltraZohm Server
 * Permissions in the OAuth settings of the Github repository must match the drone docs
-* ``drone/Docker-compose.yml`` in `uz_server_main <https://github.com/ultrazohm/uz_server_main/src/master/>`_ repository (only visible to admins) sets up Drone
+* ``drone/Docker-compose.yml`` in `uz_server_main <https://bitbucket.org/ultrazohm/uz_server_main/src/master/>`_ repository (only visible to admins) sets up Drone
 * Changes in the docker-compose file are automatically transferred to the UltraZohm by using a rsync pipeline
-* ``ssh`` to UltraZohm-Server, `cd` to ``/drone`` and use ``docker-compose up -d`` to restart the Drone Server and Runner after changes in the repository
+* ``ssh`` to UltraZohm-Server, ``cd`` to ``/drone`` and use ``docker-compose up -d`` to restart the Drone Server and Runner after changes in the repository
 
 How-to:
 
@@ -136,7 +135,7 @@ To use Vivado and Vitis, we use a custom Vivado docker image (``vivado:2020.1``)
 There are two challenges with using Vivado and Vitis in a Docker container.
 
 * Xilinx license is locked to the MAC
-* Create license on `<xilinx.com/getlicense>`_
+* Create license on `<https://www.xilinx.com/getlicense>`_
 * Lock the license to the MAC of the machine that executes the runner
 * The UltraZohm-Server license is locked to the Docker network ``drone_default`` (see ``docker network ls`` and ``docker network inspect host``)
 * Download the ``.lic`` file
@@ -163,12 +162,12 @@ The account must be allowed to push the generated commits to ``main`` and create
 
 The pipeline:
 
-- commits all binarys to the repo
+- commits all binaries to the repo
 - Creates a tag using `autotag <https://github.com/pantheon-systems/autotag>`_
 - Settings for the tag: `conventional commits <https://www.conventionalcommits.org/en/v1.0.0/#examples>`_
 - Pushes back to main using ``https``
 - Creates ``CHANGELOG.md`` by using `auto-changelog <https://github.com/cookpete/auto-changelog>`_
 - Commits the changelog
 - Pushes back to main using ``https``
-- The tag is on the commit of the binarys, the CHANLOG.md is one commit after the tag
+- The tag is on the commit of the binaries, the CHANGELOG.md is one commit after the tag
 - Commit message is fixed and starts with [skip ci] to prevent infinite CI loop

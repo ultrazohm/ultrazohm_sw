@@ -97,7 +97,7 @@ IP core
 =======
 
 The IP core takes up to 8 different interrupt sources as inputs (external port ``interrupts_in``).
-One of these inputs is selected by AXI configuration and routed directly routed to the ``interrupt_out_adc`` external port. 
+One of these inputs is selected by AXI configuration and routed directly to the ``interrupt_out_adc`` external port. 
 Additionally, all interrupt sources of ``interrupts_in`` are coupled with an internal counter that routes the signal of ``interrupts_in`` to ``interrupt_out_isr`` every n-th time the ``interrupt_out_adc`` signal is high.
 An additional AXI register delays the ADC trigger output by ``0`` to ``1023`` IP-core clock cycles.
 Table :ref:`ipCore_uz_mux_axi_interfaces` lists all input and output ports (AXI and external port) that are present in the IP core.

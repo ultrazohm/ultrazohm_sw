@@ -50,7 +50,7 @@ PCB short cuts
 
 - if a via should be placed --> select the correct layer by stepping through the layers --> ``+`` or ``-`` (only possible with separate number pad on the keyboard)
 
-- Switch layers --> ``Ctrl`` + ``Mouser wheel scroll``
+- Switch layers --> ``Ctrl`` + ``Shift`` + ``Mouse wheel scroll`` (while routing, this also places a via)
 
 - Interactive Routing --> ``Ctrl`` + ``w``
 

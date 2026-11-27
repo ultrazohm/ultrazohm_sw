@@ -22,7 +22,7 @@ Defines
 
 .. _uz_Trajectory_Samples_define:
 
-Inside the ``uz_Trajectory.h`` is a define , which limits the maximum number of samples.
+Inside the ``uz_Trajectory.h`` is a define, which limits the maximum number of samples.
 This must first be set to the desired number of data points before the module can be configured.
 
 .. doxygendefine:: MAX_TRAJECTORY_SAMPLES
@@ -242,4 +242,4 @@ If a second run is desired, the trajectory must first be unlocked with the Reset
 Designed by 
 -----------
 
-Robert Zipprich (University of Kassel Kassel / EMA) in 10/2023
+Robert Zipprich (University of Kassel / EMA) in 10/2023

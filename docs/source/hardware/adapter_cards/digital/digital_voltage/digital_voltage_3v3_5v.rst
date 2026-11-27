@@ -102,7 +102,7 @@ The following two measurements show the switch-on and switch-off signal curves w
 - CH3 (blue): nOE_Supervisor
 - CH4 (red): Digital Output
 
-The measurement results show that the level shifter outputs will we be disables as long as the supply rails are in their accepted range:
+The measurement results show that the level shifter outputs will be disabled as long as the supply rails are in their accepted range:
 
 .. figure:: digital_voltage_3v3_5v/uz_d_voltage_3v3_5v_uz_switched_on.png
 	:width: 80%
@@ -117,7 +117,7 @@ The measurement results show that the level shifter outputs will we be disables 
 
 	Measurement during switch off of the UltraZohm system
 
-Attention: there is an exceptional situation where the output disable function does not work intuitively. It occurs only in an unrelevant situation where the output voltage is selected to 3.3V and the 5V supply rail on the adapter card fails. In that case the 5V voltage supervisor asserts the output disable function as long as the 5V supply rail voltage decrease under the power-on reset voltage (V_POR = 0.7 V) of the supervisor IC. Thus the open-drain NRESET output jumps back to HIGH level because the 3.3V supervisor IC states healthy condition and all level shifter outputs will be enabled again. This edge case is therefore irrelevant for safety issues, because the 5V rail has no functional meaning when using 3.3V as output voltage. It is recommended to stop inverter operation when this situation occurs. Measurements are shown in following:
+Attention: there is an exceptional situation where the output disable function does not work intuitively. It occurs only in an irrelevant situation where the output voltage is selected to 3.3V and the 5V supply rail on the adapter card fails. In that case the 5V voltage supervisor asserts the output disable function as long as the 5V supply rail voltage decrease under the power-on reset voltage (V_POR = 0.7 V) of the supervisor IC. Thus the open-drain NRESET output jumps back to HIGH level because the 3.3V supervisor IC states healthy condition and all level shifter outputs will be enabled again. This edge case is therefore irrelevant for safety issues, because the 5V rail has no functional meaning when using 3.3V as output voltage. It is recommended to stop inverter operation when this situation occurs. Measurements are shown in following:
 
 .. _uz_d_voltage_3v3_5v_edge_case:
 .. figure:: digital_voltage_3v3_5v/uz_d_voltage_3v3_5v_edge_case.png
@@ -158,7 +158,7 @@ Slots D1 to D5 can be used without limitations.
 See also
 ========
 
-* `CPLD software git <https://github.com/ultrazohm/cpld_lattice/>`_
+* `CPLD software git <https://github.com/ultrazohm/uz_cpld/>`_
 * :ref:`label_cpld_programming`
 
 Designer

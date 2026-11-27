@@ -100,7 +100,7 @@ Guideline
       //....
       extern uz_3ph_abc_t three_phase_output;
 
-      int JavaScope_initalize(DS_Data* data)
+      int JavaScope_initialize(DS_Data* data)
       {
          //.... 
          js_ch_observable[JSO_ua] 			= &three_phase_output.a;

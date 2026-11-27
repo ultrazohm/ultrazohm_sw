@@ -15,14 +15,13 @@ Position (electrical)
   Calculates the rotational position of the encoder and transforms the position to the *electrical* position of electric drive (e.g., permanent magnet synchronous machines).
   Uses the number of pole pairs to divide one mechanical turn of the encoder to (multiple) turns of the electrical system.
   Can only be used if the number of increments is an integer multiple of the number of pole pairs!
-  The value of ``drive_pole_pair`` in the driver configuration has to be an integer multiple of the increments per turn or set to zero.
-  If ``drive_pole_pair`` is an integer multiple of increments per turn, the electrical angle can be used and read by calling ``uz_incrementalEncoder_get_theta_el``.
-  If ``drive_pole_pair`` is set to ``0``, the function can not be called (assertion fires if it is called).
-  If ``drive_pole_pair`` is not ``0`` and not an integer multiple of increments per turn, the initialization of the driver fails with an assertion.
+  If the increments per turn are an integer multiple of ``drive_pole_pair`` in the driver configuration, the electrical angle can be read by calling ``uz_incrementalEncoder_get_theta_el``.
+  Set ``drive_pole_pair`` to ``0`` if the electrical angle is not needed.
+  If ``drive_pole_pair`` is ``0``, or the increments per turn are not an integer multiple of it, calling ``uz_incrementalEncoder_get_theta_el`` fires an assertion.
   Note that the FPGA output port of the IP core outputs the (potentially false!) electrical position regardless of this setting!
 
 Rotational speed
-  Calculates the rotational speed of the drive by counting the time between two consecutive rising edges of the A-lane in combination with an speed-dependent oversampling mechanism and subsequent filtering of the speed signal in the IP core.
+  Calculates the rotational speed of the drive by counting the time between two consecutive rising edges of the A-lane in combination with a speed-dependent oversampling mechanism and subsequent filtering of the speed signal in the IP core.
   The oversampling mechanism allows to skip edges to improve the measurement at higher speeds.
 
 Direction of rotation
@@ -46,7 +45,7 @@ The value of the internal storage is divided by the number of samples that are c
 IP Core Hardware
 ================
 
-The IP core is generated using Matlab/Simulink HDL-Coder based on the model ``inc_enc_v26.slx`` (in ``ultrazohm_sw/ip-cores/IncreEncoder_V26_ip/Simulation/``).
+The IP core is generated using Matlab/Simulink HDL-Coder based on the model ``inc_enc_v26.slx`` (in ``ultrazohm_sw/ip_cores/IncreEncoder_V26_ip/Simulation/``).
 
 Vivado integration
 ------------------
@@ -69,7 +68,7 @@ The software driver writes to the registers based on the configuration that is p
 PI2_Inc_AXI
   Scales the output theta_el to :math:`0..2\pi`.
   Is calculated in the processor and written to the IP core.
-  Calculation: :math:`\frac{2 \cdot \pi}{IncPerTurn \cdot QudratureFactor} \cdot PolePair` with ``PolePair`` being the pole pairs of the drive. 
+  Calculation: :math:`\frac{2 \cdot \pi}{IncPerTurn \cdot QuadratureFactor} \cdot PolePair` with ``PolePair`` being the pole pairs of the drive. 
 
 Timer_FPGA_ms
   Scales the timer, that is used to calculate the rotational speed, from FPGA clock ticks to seconds w.r.t. the number of increments and :math:`2\pi`.
@@ -79,7 +78,7 @@ IncPerTurn_mech
   Configures the number of lines per mechanical revolution.
 
 IncPerTurn_elec
-  Configures the number of lines per electrical revolution, i.e., w.r.t. to the pole pairs of a electrical machine.
+  Configures the number of lines per electrical revolution, i.e., w.r.t. to the pole pairs of an electrical machine.
   Set to ``IncPerTurn_mech`` divided by pole pairs of the electrical machine.
 
 OverSamplingFactor
@@ -132,7 +131,7 @@ The software driver for the IP core handles the configuration of the aforementio
 		.counting_direction = clock_wise,
 		.Speed_Timeout_ms = 10U //10ms
   };
-  uz_incrementalEncoder_t* test_instance=uz_incrementalEncoder_init(testconfig);
+  uz_incrementalEncoder_t* test_instance=uz_incrementalEncoder_init(encoder_D5_config);
 
 .. code-block:: c
   :caption: Read position and speed

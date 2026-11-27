@@ -181,7 +181,7 @@ Project with Tcl Scripts:
         source ../tcl_scripts/k26sys_ps_generaton.tcl 
         source ../tcl_scripts/k26sys_hd_generaton.tcl
 
-#. Create VHDL wrapper for `kr260sys` and set as top manually. 
+#. Create VHDL wrapper for ``k26sys`` and set as top manually. 
 
 #. With this step, you have current UltraZohm project for Kria as implemented. Generate bitstream and export. If you want to see the detailed steps, check out the tcl_scripts folder:
 
@@ -263,7 +263,7 @@ To create a suited software for the KR260, follow these steps:
 
 #.  Changes for the FreeRTOS Project:
 
-    #. Delete ever CAN-related Code from the ``main.c`` and remove the files ``can.c`` and ``can.h``.
+    #. Delete every CAN-related Code from the ``main.c`` and remove the files ``can.c`` and ``can.h``.
     #. add a new define ``#define OS_IS_FREERTOS`` in the ``main.h``.
     #. Increase the DHCP Timeout in the ``main.c``.
 
@@ -283,15 +283,15 @@ To create a suited software for the KR260, follow these steps:
 
     * Control the Debug Configuration - Application and Target Setup.
     * Debug Configuration - Application → Make sure the psu_cortexa53_0 for FreeRTOS and psu_cortexr5_0 for Baremetal are activated. 
-    * Debug Configuration - Target Setup → Check the Bitsream file for KR260. It should use newly generated bitsream, not UltraZohm file. 
+    * Debug Configuration - Target Setup → Check the Bitstream file for KR260. It should use newly generated bitstream, not UltraZohm file. 
 
 #.  Check out the Vitis Serial Terminal output, and Open the JavaScope to see lifecheck signal. 
 
 Known Issues
 ============
-* The applied BSP Hack is done in generated source files. This means regenerating the BSP **WILL DELETE THE HACK** and the FreeRTOS won't initialize the PHY properly. If the error "autonegation failed" show's up during the start, check if the hack is still present.
+* The applied BSP Hack is done in generated source files. This means regenerating the BSP **WILL DELETE THE HACK** and the FreeRTOS won't initialize the PHY properly. If the error "autonegation failed" shows up during the start, check if the hack is still present.
 * Vitis 2022.2 has known issues related with launching. You can use the referenced solution by Xilinx. 
-    * `Patch - Xilinx <lhttps://support.xilinx.com/s/article/000034848?language=en_US&t=1677157377766>`_  
+    * `Patch - Xilinx <https://support.xilinx.com/s/article/000034848?language=en_US&t=1677157377766>`_  
 
 
 Discussion

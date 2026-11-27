@@ -28,8 +28,8 @@ Features
 
 - Offset and conversion factor are configurable by software individually for each ADC
 
-  - Offset is set as an signed integer
-  - COnversion factor is set as a fixed point value
+  - Offset is set as a signed integer
+  - Conversion factor is set as a fixed point value
 
 - Burst transfer of an adjustable number of samples
 - Continuous and triggered operation modes
@@ -57,7 +57,7 @@ The control register is used to set the trigger mode, trigger the conversion, re
 This control is facilitated by writing different bit patterns to the control register (see table :ref:`table_adc_cr`).
 
 To write a config value to a specific ADC channel, the number of the SPI master and the desired channel has to be written to the master channel selection and ADC channel selection AXI registers.
-Furthermore, the control register has to be set to match the variable that is write to the ``Configuration Value Register``.
+Furthermore, the control register has to be set to match the variable that is written to the ``Configuration Value Register``.
 Effectively, the SPI master and channel selection as well as the configuration value register act as a switch to route the values from the AXI registers to the ADC channels.
 
 To write a specific conversion factor to one of the ADC channels, the following steps are performed:
@@ -187,7 +187,7 @@ Change conversion factor of ADC1, ADC2, and ADC3 of SPI-Master 1 to ``2.0`` and 
 
 .. note:: The conversion factor only affects the output of the IP core ``SI_VALUE``.
           Additionally, the number of fractional bits of the conversion factor implicitly determine the number of fractional bits of the ``SI_VALUE`` port.
-          Example: For ``Result LSB=0`` and ``Result MSB=34`` in the IP core settings and an conversion factor with 5 fractional bits, the lowest 5 bits of ``SI_VALUE`` (for each output value) have to be interpreted as fractional bits.
+          Example: For ``Result LSB=0`` and ``Result MSB=34`` in the IP core settings and a conversion factor with 5 fractional bits, the lowest 5 bits of ``SI_VALUE`` (for each output value) have to be interpreted as fractional bits.
 
 
 .. _uz_adcLtc2311_software_driver:
@@ -497,7 +497,7 @@ I/O Signals (Interface)
 =======================
 
 :numref:`adcltc_interface_picture` shows the interface of the IP core and the mapping of using multiple SPI-Master / Channels to the interface.
-ALl signals from the SPI-Master and individual channels are concated into one vector for each signal.
+All signals from the SPI-Master and individual channels are concatenated into one vector for each signal.
 For differential signals, all even bit number is the P signal, the odd bit numbers are the N signal.
 
 
@@ -520,7 +520,7 @@ The reset is synchronous and low active.
 Keep this signal high for normal operation.
 
 The IP core has been tested with a system clock frequency of up to 100MHz.
-The if the IP core is operated with a higher frequency, the PRE_DELAY and the POST_DELAY of the SPI must be adjusted according to `the datasheet of the LTC2311 <https://www.analog.com/media/en/technical-documentation/data-sheets/231116fa.pdf>`_.
+If the IP core is operated with a higher frequency, the PRE_DELAY and the POST_DELAY of the SPI must be adjusted according to `the datasheet of the LTC2311 <https://www.analog.com/media/en/technical-documentation/data-sheets/231116fa.pdf>`_.
 Besides that, the minimum sample time should be adjusted to a value, that meets the hardware requirements of the LTC2311 and suits the driving strength of the captured analog signal.
 
 AXI Signals
@@ -577,7 +577,7 @@ In this example the datatype ``sfix18_En11`` is required for the SI-values.
 This datatype contains 7 integer bits and 11 fractional bits, so a total of 18 bits.
 These values have to be configured in the IP core driver initialization.
 The first value in the SI-Value-vector is contained in the bits 0 to 17.
-The second value is in the bits 18 to 24, and so on for the rest of the values.
+The second value is in the bits 18 to 35, and so on for the rest of the values.
 The number of bits per values depending on the configured datatype, in this case ``sfix18_En11`` with a length of 18 bit.
 
 Besides the datatype the conversion factor and offset have to be configured.
@@ -590,10 +590,10 @@ In this example following offset and conversion factor are used:
     offset = \frac{-2^{16}}{4} = -16384\\
     conversion factor = \frac{100}{2^{16}} = 0.001526
 
-The Raw-value of the 16-Bit-ADC is between 0 and 65635.
+The Raw-value of the 16-Bit-ADC is between 0 and 65535.
 The measurement range of the ADC is from :math:`-5\,V` to :math:`5\,V`.
 As only the positive range of the ADC is used in this example the raw-value has to be offsetted by a quarter of the measurement range, -2.5V or :math:`\frac{-2^{16}}{4} = -16384`.
-For scaling is a factor of 100 necessary, which hast to be divided by :math:`2^{16}` to get the correct conversion factor of :math:`\frac{100}{2^{16}}`.
+For scaling is a factor of 100 necessary, which has to be divided by :math:`2^{16}` to get the correct conversion factor of :math:`\frac{100}{2^{16}}`.
 
 In the listing the configuration for the IP core initialization can be seen.
 The configuration contains the discussed values of the conversion factor, offset and datatype with integer and fractional bits.
@@ -649,7 +649,7 @@ In this example the length of the values is 18 bit according to the used datatyp
 In the vector the individual values are arranged one after the other.
 
 The SI-Value-vector needs to be sliced, to access the individual values of the different ADC-channels.
-To get the first SI-Value the first 18 bit of the vector have to be slice, for the second value the next 18 etc.
+To get the first SI-Value the first 18 bit of the vector have to be sliced, for the second value the next 18 etc.
 
 
 .. figure:: slicing_graphic.png

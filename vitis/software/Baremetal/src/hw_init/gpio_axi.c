@@ -14,6 +14,7 @@
 ******************************************************************************/
 #include "../uz/uz_HAL.h"
 #include "../include/gpio_axi.h"
+#include "../include/uz_pl_device_memory.h"
 #include "xgpio.h"
 
 #define GPIO_out_ID XPAR_UZ_SYSTEM_UZ_ENABLE_AXI_GPIO_2_DEVICE_ID /* GPIO device that GPIO is connected to output*/
@@ -53,6 +54,9 @@ void Initialize_AXI_GPIO(void)
 void uz_axigpio_disable_pwm_and_power_electronics(void)
 {
     XGpio_DiscreteClear(&Gpio_OUT, AXI_GPIO_CHANNEL_OUT, (AXI_GPIO_PWM_MODULES | AXI_GPIO_DIGITAL_ENABLE));
+    // The disable must have reached the PL before the caller goes on, e.g. into
+    // the endless loop of an assertion (writes to Device memory are posted).
+    uz_pl_device_memory_complete_writes();
 }
 void uz_axigpio_enable_pwm_and_power_electronics(void)
 {

@@ -7,7 +7,7 @@ Multi-phase PMSM Model
 Important:
 
  - The multi-phase PMSM IP cores are based on the three-phase :ref:`uz_pmsmModel` IP core, where the basics (e.g. working principle of the integrations is explained)
- - There are two mulit-phase IP cores, a six-phase and a nine-phase one
+ - There are two multi-phase IP cores, a six-phase and a nine-phase one
 
 Differences to the three-phase PMSM model IP core:
 
@@ -21,7 +21,7 @@ System description
 ==================
 The modelling of the multi-phase machine is based on [[#Slunjski_Diss]_].
 The general idea in this work and also the common approach to model multi-phase machines is, to transform the phase variables with the VSD and Park transformations, as shown and done in :ref:`uz_vsd_transformation` and :ref:`uz_transformation`.
-Transformed voltages are used as input for this IP core and the outputs will also be in the rotary or stationary reference frame ant not phase variables.
+Transformed voltages are used as input for this IP core and the outputs will also be in the rotary or stationary reference frame and not phase variables.
 This IP core contains the electric differential equations and the mechanical part, where the torque is calculated.
 Additionally, either a torque load or a fixed speed can be set to test the machine model.
 While the equations are mostly similar to the ones of the three-phase :ref:`uz_pmsmModel`, they will be shown here again for the sake of completeness.
@@ -92,7 +92,7 @@ Driver reference
 The set and get functions for voltage and currents are implemented as normal and unsafe version.
 In addition to the regular functions, *unsafe* versions of the driver exist (``_unsafe``).
 These functions are considerably faster than their safe counterparts but violate the software rules outlined in :ref:`software_development_guidelines`.
-It is strongly advised to manually test by comparing the safe and unsafe versions before using *_unsafe*!""
+It is strongly advised to manually test by comparing the safe and unsafe versions before using *_unsafe*!
 
 Six-phase model
 ---------------
@@ -253,7 +253,7 @@ The following code is used in ``main.c`` (initialization) and ``isr.c`` (applica
     out_currents = uz_pmsm_model9ph_dq_get_output_currents(pmsm);   // read out actual currents
 
 To prove functionality, the output currents of the shown example are evaluated.
-The resulting machine torque is :math:`-0.01562337\,Nm` an the resulting currents are shown in the following equation.
+The resulting machine torque is :math:`-0.01562337\,Nm` and the resulting currents are shown in the following equation.
 The results were recreated with the Simulink model.
 
 .. math::

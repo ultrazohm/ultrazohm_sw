@@ -59,7 +59,7 @@ For further information on the dimensions of the heatsink and the location of th
 The dimensions take into account the safety margin required for the mounting rails in the UltraZohm. 
 A simple passive heatsink is sufficient for operation. 
 An advanced actively cooled heatsink, either air or water cooled, can also be fitted if required.
-This heatsink design is different for valid for :ref:`Rev02 <dig_si_inverter_rev03>`, :ref:`Rev03 <dig_si_inverter_rev03>` and :ref:`Rev04 <dig_si_inverter_rev04>`. 
+This heatsink design is valid for :ref:`Rev02 <dig_si_inverter_rev02>`, :ref:`Rev03 <dig_si_inverter_rev03>` and :ref:`Rev04 <dig_si_inverter_rev04>`. 
 
 Rev02 & Rev03
 =============

@@ -11,7 +11,7 @@ Digital IncrEncoder Rev02
 Functionality
 -------------
 
-* Connects three incremental encoder FPGA
+* Connects three incremental encoders to the FPGA
 * Provides isolated 5V supply to encoder
 * Reads differential signals from encoder
 

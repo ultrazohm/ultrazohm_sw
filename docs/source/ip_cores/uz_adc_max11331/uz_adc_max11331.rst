@@ -35,7 +35,7 @@ Sampling
   - In single-ended case: Each ADC contains 16 channels, which are sampled one after each other. Hence, 16 +1 SPI messages are required to sample and send the 16 channel values.
   - In differential case: Each ADC contains 8 channels, which are sampled one after each other. Hence, 8 +1 SPI messages are required to sample and send the 8 channel values. 
   
-- The initial (extra) message is required since the first message tells the ADC which channel should be sampled. Afterwards, thus from the second message ongoing the data are send (first only the odd channel numbers and than the even channel numbers)
+- The initial (extra) message is required since the first message tells the ADC which channel should be sampled. Afterwards, thus from the second message ongoing the data are sent (first only the odd channel numbers and then the even channel numbers)
 
 Configuration
 -------------
@@ -57,16 +57,15 @@ SPI Interface
 - A **bidirectional** communication from the ADC to FPGA is possible, i.e., read and write SPI.
 
   - ``CPHA``, ``CPOL``, ``clk_div`` and ``adc_delay_offset`` of the SPI interface are configurable by software
-  - The ``SCLK`` frequency scales with :math:`f_{SCLK} = \frac{ f_{SystemClock} }{2 \cdot (CLK\_DIV + 1)}` 
+  - The ``SCLK`` frequency scales with :math:`f_{SCLK} = \frac{ f_{SystemClock} }{2 \cdot CLK\_DIV}`, with ``clk_div`` from 1 to 15 
 
 - IP-Core clk frequency is typically 100MHz: 
   
   - The SPI-Clock is generated internally by logic of clock divider. You can change its value from the IP-core using the SPI-Clock divider.
-  - Clock divider 0x1, set SPI-Clock to 50Mhz. 
-  - Clock divider 0x2, set SPI-Clock to 25Mhz.
-  - Clock divider 0x3, set SPI-Clock to 16.6Mhz and so on. 
-  - The SPI SCK frequency will be given by: IP-Core clk frequency / (2^(clock divider))
-  - The SPI SCK frequency of 16.67MHZ(= 0x3) is used in default.
+  - Clock divider 0x1, set SPI-Clock to 50 MHz. 
+  - Clock divider 0x2, set SPI-Clock to 25 MHz.
+  - Clock divider 0x3, set SPI-Clock to 16.67 MHz and so on. 
+  - The SPI SCK frequency of 16.67 MHz(= 0x3) is used in default.
 
 ADC Trigger
 -----------
@@ -124,7 +123,7 @@ This configuration is used in the uz_a_max11331 adapter card for :ref:`MAX11331_
 Single-ended 
 ------------
 
-In differential mode, the ip core configures all channels with the following register set, resulting in 16 single-ended inputs (referenced to ground of the UltraZohm) with an input range of 0..Vref.
+In single-ended mode, the ip core configures all channels with the following register set, resulting in 16 single-ended inputs (referenced to ground of the UltraZohm) with an input range of 0..Vref.
 
 - ``UNIPOLAR = 0``
 - ``BIPOLAR = 0``
@@ -189,19 +188,19 @@ Example initialization of three IP-Core driver instances:
            .adc_delay_offset = 0,
 		   .clk_div = UZ_ADCMAX11331_SPI_CLK_16_67MHZ};
 
-	   //1.) Create the instance of the first Max11331 adapter card with one or may several master = several physical Max11331 chips
+	   //1.) Create the instance of the first Max11331 adapter card with one or several masters = several physical Max11331 chips
        uz_adcMax11331_t *instance_1 = uz_adcMax11331_init(default_configuration);
 
        // Apply same configuration to all following instances, despite the base address of the FPGA IP Core
-       //2.) Create the instance of the second Max11331 adapter board with one or may several master = several physical Max11331 chips
+       //2.) Create the instance of the second Max11331 adapter board with one or several masters = several physical Max11331 chips
        default_configuration.base_address = XPAR_UZ_ANALOG_ADAPTER_A1_ADAPTER_A1_ADC_MAX11331_BASEADDR;
        uz_adcMax11331_t *instance_2 = uz_adcMax11331_init(default_configuration);
-	   //3.) Create the instance of the third Max11331 adapter board with one or may several master = several physical Max11331 chips
+	   //3.) Create the instance of the third Max11331 adapter board with one or several masters = several physical Max11331 chips
        default_configuration.base_address = XPAR_UZ_ANALOG_ADAPTER_A2_ADAPTER_A2_ADC_MAX11331_BASEADDR;
        uz_adcMax11331_t *instance_3 = uz_adcMax11331_init(default_configuration);
    }
 
-.. warning:: The software driver has no way to read the trigger ADC signal ``enable_measure`` nor the output valid signal ``new_data``! Thus, the user has to be sure that a ADC conversion took place and is finished. This means that the driver can mostly be used for debugging control algorithms that are fully implemented in the PL!
+.. warning:: The software driver has no way to read the trigger ADC signal ``enable_measure`` nor the output valid signal ``new_data``! Thus, the user has to be sure that an ADC conversion took place and is finished. This means that the driver can mostly be used for debugging control algorithms that are fully implemented in the PL!
 
 
 Driver reference
@@ -308,7 +307,7 @@ Vivado
 
 .. figure:: max11331_ipcore.png
 
-The only tested clock frequency for ``clk`` and ``s_axi_lite_aclk`` is 100 Mhz.
+The only tested clock frequency for ``clk`` and ``s_axi_lite_aclk`` is 100 MHz.
 
 .. csv-table:: Vivado block design interfaces of MAX11331 IP-Core
    :file: ./max11331_VivadoInterface.csv

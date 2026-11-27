@@ -32,7 +32,7 @@ For the self-axis saturation prototype function a hyperbolic tangent function an
 
     \hat\psi_{self}^{q} = \hat\psi_{q}(i_{d}=0,i_{q}) = a_{q1} \cdot \tanh(a_{q2} \cdot i_{q})+ i_{q} \cdot a_{q3}
 
-The cross-coupling saturation terms can be found if the the flux-linkages are evaluated at their maximum cross-coupling currents :math:`I_{d1}` and :math:`I_{d1}`.
+The cross-coupling saturation terms can be found if the flux-linkages are evaluated at their maximum cross-coupling currents :math:`I_{d1}` and :math:`I_{q1}`.
 
 .. math::
 
@@ -56,11 +56,11 @@ With that the cross-coupling terms are resulting.
 
 .. math:: 
 
-    \hat\psi_{cross}^{d,s1}(i_{d},i_{q}=I_{q1}) = a_{d1} \cdot \tanh(a_{d2} \cdot (i_{d}-a_{d3})) - a_{d4} \cdot \tanh(a_{d5} \cdot (i_{d}-a_{d6})
+    \hat\psi_{cross}^{d,s1}(i_{d},i_{q}=I_{q1}) = a_{d1} \cdot \tanh(a_{d2} \cdot (i_{d}-a_{d3})) - a_{d4} \cdot \tanh(a_{d5} \cdot (i_{d}-a_{d6}))
 
 .. math::
 
-    \hat\psi_{cross}^{q,s1}(i_{d}=I_{d1},i_{q}) = a_{q1} \cdot \tanh(a_{q2} \cdot i_{q})+ i_{q} \cdot a_{q3} - a_{q4} \cdot \tanh(a{q5} \cdot i_{q})- i_{q} \cdot a_{q6}
+    \hat\psi_{cross}^{q,s1}(i_{d}=I_{d1},i_{q}) = a_{q1} \cdot \tanh(a_{q2} \cdot i_{q})+ i_{q} \cdot a_{q3} - a_{q4} \cdot \tanh(a_{q5} \cdot i_{q})- i_{q} \cdot a_{q6}
 
 These have to be integrated [#Shih_Wei_Su_flux_approximation]_ , which yields.
 
@@ -99,7 +99,7 @@ For that the MATLAB  nonlinear-regression function lsqnonlin with the Levenberg-
 
 .. math::
   
-    \min_{a_{q4},a_{q5},a_{q6}} \sum_{k=1}^{n} \left[ \psi_{d} \left(I_{d1}, i_{q,k}\right) - \hat{\psi}_{q,s1}\left(i_{d},a_{q4},a_{q5},a_{q6}\right) \right]^2 
+    \min_{a_{q4},a_{q5},a_{q6}} \sum_{k=1}^{n} \left[ \psi_{q} \left(I_{d1}, i_{q,k}\right) - \hat{\psi}_{q,s1}\left(i_{q,k},a_{q4},a_{q5},a_{q6}\right) \right]^2 
 
 Example usage
 =============
@@ -134,8 +134,8 @@ In this example usage, flux-linkages of a example motor are getting approximated
     psi_q = FluxMapData{108:127,1:20}*(1e-3);
     ...
 
-- To run the approximation script, first the ``uz_pmsm_model_init_parameter.m file has to be ran``.
-- If the the script ran successfully the fitting parameters are in the MATLAB workspace an can be used in the IP core for nonlinear behavior or for different use in the sw-framework.
+- To run the approximation script, first the ``uz_pmsm_model_init_parameter.m`` file has to be run.
+- If the script ran successfully the fitting parameters are in the MATLAB workspace and can be used in the IP core for nonlinear behavior or for different use in the sw-framework.
 
 Sources
 -------

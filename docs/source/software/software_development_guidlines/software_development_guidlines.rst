@@ -152,7 +152,7 @@ Static code analysis
 --------------------
 
 Static code analysis checks the source code for potential errors and problems.
-We use `cppcheck <https://github.com/danmar/cppcheck>`_, which is also run in the Bitbucket pipeline (see :ref:`ci_static_code_check`)
+We use `cppcheck <https://github.com/danmar/cppcheck>`_, which is also run in the CI pipeline (see :ref:`ci_static_code_check`)
 Usage with the :ref:`vscode_remote_container` in a terminal to check all files in `src` folder (recursive):
 
 ::

@@ -7,12 +7,14 @@ Wolfspeed Inverter 2L 25 kW Interface Rev04
 Rev04 is the second productive revision of the ``uz_per_wolfspeed_25kw_FM3`` interface PCB.
 Rev04 keeps the analog measurement concept of Rev03 and adds several digital functions for commissioning and inverter operation.
 
+.. _uz_per_wolfspeed_rev04_function:
+
 .. figure:: rev04_pcb_overview_numbered.png
    :width: 60%
 
    Functional areas of the Rev04 interface PCB.
 
-The PCB is structured by functional areas as shown in :ref:`uz_per_wolfspeed_rev03_function` with:
+The PCB is structured by functional areas as shown in :ref:`uz_per_wolfspeed_rev04_function` with:
 
 1. HFBR-1521Z/2521Z digital optical transmitters and receivers
 2. RJ45 port for analog signal transmission
@@ -133,7 +135,7 @@ When the gates are disabled, the latch is cleared.
 
 The optical ``OC`` signal is high when an overcurrent event has been detected, which latches the signal.
 The inverter gates are disabled until the ``OC`` latch is reset via a low signal on ``Gate_Driver_Enable``.
-Disabling the gate signals is independents of an active ``Gate_Driver_Enable`` signal.
+Disabling the gate signals is independent of an active ``Gate_Driver_Enable`` signal.
 The OC trips at ``+/-49 A``.
 
 .. note::
@@ -304,7 +306,7 @@ Commissioning Notes
 
 Before first operation:
 
-* Mount the interface PCB with the two mentioned 3d-printed clamps tightly to the inverter. The .STL parts are available in the `PCB-repository <https://bitbucket.org/ultrazohm/uz_per_wolfspeed_25kw_fm3/src/main/Altium/step/stl/>`_.
+* Mount the interface PCB with the two mentioned 3d-printed clamps tightly to the inverter. The .STL parts are available in the `PCB-repository <https://github.com/ultrazohm/uz_per_wolfspeed_25kw_fm3/tree/main/Altium/step/stl>`_.
 * Check fan behavior before applying high DC-link voltage.
 * Verify the temperature PWM duty-cycle interpretation in the software or FPGA logic.
 * Check the overcurrent test jumper setting. Three jumpers need to be placed in order to set the OC detection active.
@@ -323,4 +325,4 @@ Documents
 =========
 
 * :download:`Schematic Rev04 <../SCH_uz_per_wolfspeed_25kw_FM3_jlc_Rev04.pdf>`
-* `PCB repository uz_per_wolfspeed_25kw_FM3 <https://bitbucket.org/ultrazohm/uz_per_wolfspeed_25kw_fm3/src/main/>`_
+* `PCB repository uz_per_wolfspeed_25kw_FM3 <https://github.com/ultrazohm/uz_per_wolfspeed_25kw_fm3>`_

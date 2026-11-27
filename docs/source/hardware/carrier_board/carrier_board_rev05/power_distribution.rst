@@ -45,8 +45,8 @@ Power-On Sequence
 """""""""""""""""
 
 There is a recommended sequence of powering up the Xilinx Zynq UltraScale+ MPSoC power domains. The SoM cares about the power-on sequence of their components such as Low-Power Domain, Full-Power Domain and memory.
-For more information see `TE0808 Rechnical Reference Manual <https://wiki.trenz-electronic.de/display/PD/TE0808+TRM#TE0808TRM-Power-OnSequenceDiagram>`_.
-The carrier board differs between power-on the Processing System (PS) and Programical Logig (PL) part of the SoM. The PS has to be powered-up before PL.
+For more information see `TE0808 Technical Reference Manual <https://wiki.trenz-electronic.de/display/PD/TE0808+TRM#TE0808TRM-Power-OnSequenceDiagram>`_.
+The carrier board differs between power-on the Processing System (PS) and Programmable Logic (PL) part of the SoM. The PS has to be powered-up before PL.
 Sequence *Stage 1* starts with applying the 24 V power supply at X14 to rail *VIN*. Thus it powers up the SoM after *3V3_MOD* is available (*Stage 2*).
 The SoM feedbacks with a "power good" signal *PG_Module* to enable the power supply for the PL (through *1V8_MOD*).
 

@@ -72,7 +72,7 @@ API reference
 
 The facade adds no compute logic of its own.
 The facade reuses the loader, FFT and node transforms used by the GUI.
-Thus, the results of library usage matches the results of the GUI.
+Thus, the results of library usage match the results of the GUI.
 
 
 .. autoclass:: ultrazohm_dataviewer.api.Dataset

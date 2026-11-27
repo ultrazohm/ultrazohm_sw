@@ -14,7 +14,7 @@ The electrical and mechanical angle are limited to the range of :math:`0..2{\pi}
 functionality of the ``uz_resolverIP`` can be "outsourced" into this IP core. Therefore, no calculations from raw values of the resolver with respect 
 to polepairs and offsets will cause workload in the processor, just reading angles and speeds via AXI is necessary.
 
-3. Sometimes you might have a unfavorable combination of resolver polepairs and machine polepairs. E.g. machine polepairs :math:`p_m=5` and resolver polepairs :math:`p_r=2` 
+3. Sometimes you might have an unfavorable combination of resolver polepairs and machine polepairs. E.g. machine polepairs :math:`p_m=5` and resolver polepairs :math:`p_r=2` 
 results in a fractional ratio between mechanical and electrical revolutions of the machine and the resolver. A strategy to deal with this is to convert the resolver revolutions 
 to one mechanical revolution of the machine and derive electrical revolutions from there. This comes at the cost of losing absolute position information in the beginning and requires 
 a defined mechanical init position of the machine at startup. The IP core handles these complicated sounding calculations. The user just has to provide all the polepair numbers 

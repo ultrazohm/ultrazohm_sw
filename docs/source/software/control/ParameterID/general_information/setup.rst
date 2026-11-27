@@ -162,7 +162,7 @@ In the ``javascope.c`` the measurement values from ``ActualValues`` struct shoul
 
   extern uz_ParameterID_Data_t ParaID_Data;  
   
-  int JavaScope_initalize(DS_Data* data) {
+  int JavaScope_initialize(DS_Data* data) {
      ....
      js_ch_observable[JSO_Speed_rpm]         = &data->av.mechanicalRotorSpeed;
      js_ch_observable[JSO_ia] = &ParaID_Data.ActualValues.I_abc.a;

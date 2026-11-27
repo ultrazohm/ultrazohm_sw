@@ -124,8 +124,8 @@ The step file of the stand is available in the PCB repository.
 Software Used for Testing
 =========================
 
-The inverter was tested with the ``feature/wolfspeed_inverter_adapterboard`` branch of the `ultrazohm_sw <https://bitbucket.org/ultrazohm/ultrazohm_sw/src/>`_ repository.
-The branch comparison is available `here <https://bitbucket.org/ultrazohm/ultrazohm_sw/branches/compare/feature%2Fwolfspeed_inverter_adapterboard%0Ddevelop#diff>`_.
+The inverter was tested with the ``feature/wolfspeed_inverter_adapterboard`` branch of the `ultrazohm_sw <https://github.com/ultrazohm/ultrazohm_sw/tree/feature/wolfspeed_inverter_adapterboard>`_ repository.
+The branch comparison is available `here <https://github.com/ultrazohm/ultrazohm_sw/compare/develop...feature/wolfspeed_inverter_adapterboard>`_.
 
 Documents
 =========

@@ -148,7 +148,7 @@ An instance has to be initialized first and then configured:
 
     PWM_SS_2L_instance_1 = uz_PWM_SS_2L_init(config_1);
 
-After that it can be used in the application. For easy setting of the duty cycles, use the ``uz_PWM_SS2L_set_duty_cycle`` function.
+After that it can be used in the application. For easy setting of the duty cycles, use the ``uz_PWM_SS_2L_set_duty_cycle`` function.
 
 Driver reference
 ================

@@ -64,7 +64,7 @@ The SSI interface uses a differential clock output and a differential data chann
 The adapter board hardware therefore is able to support industry standard SSI protocols. However, supported functionality 
 depends on the IP core and might not support all features of the protocols.
 
-The UltraZohm SSI IP core is documented in *coming soon*
+The UltraZohm SSI IP core is documented in :ref:`uz_ssi_interface`.
 
 Connectors and Pinout
 =====================
@@ -237,8 +237,8 @@ Before using the adapter board:
 
 * Check that the encoder supply voltage matches the connected encoder.
 * Program the CPLD for the selected digital adapter slot with the program ``uz_d_abs_encoder``, see :ref:`label_cpld_programming`.
-* Instantiate the matching FPGA IP core and connect it to the D-slot pins used by this adapter board, see :ref:`uz_endat_interface` or *uz_ssi_interface*.
-* Instantiate and configure the software driver, see :ref:`uz_endat_interface` or *uz_ssi_interface*.
+* Instantiate the matching FPGA IP core and connect it to the D-slot pins used by this adapter board, see :ref:`uz_endat_interface` or :ref:`uz_ssi_interface`.
+* Instantiate and configure the software driver, see :ref:`uz_endat_interface` or :ref:`uz_ssi_interface`.
 * Verify the external connector pinout against the encoder cable before powering the system.
 
 Validated Encoder Setups

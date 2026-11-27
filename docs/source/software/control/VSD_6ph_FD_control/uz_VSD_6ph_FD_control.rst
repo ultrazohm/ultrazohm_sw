@@ -7,7 +7,7 @@
 Introduction to six phase machines
 ==================================
 
-Asymmetric six phase machines, also called dual three-phase machines, consist of six phases arranged in two three-phase winding sets with the phaseses :math:`a_1, b_1, c_1` and :math:`a_2, b_2, c_2` respectively.
+Asymmetric six phase machines, also called dual three-phase machines, consist of six phases arranged in two three-phase winding sets with the phases :math:`a_1, b_1, c_1` and :math:`a_2, b_2, c_2` respectively.
 The two three-phase systems are shifted against each other by an angle of :math:`\gamma = \pi/6`, resulting in the stator configuration shown in :numref:`statorconfiguration_asym_6ph`. 
 
 .. _statorconfiguration_asym_6ph:
@@ -79,7 +79,7 @@ The VSD Transformation uses the transformation matrix :math:`\mathbf{T}_\mathrm{
     \mathbf{T}_\mathrm{VSD} = \frac{1}{3}\left[\begin{matrix}1&-\frac{1}{2}&-\frac{1}{2}&\frac{\sqrt3}{2}&-\frac{\sqrt3}{2}&0\\0&\frac{\sqrt3}{2}&-\frac{\sqrt3}{2}&\frac{1}{2}&\frac{1}{2}&-1\\1&-\frac{1}{2}&-\frac{1}{2}&-\frac{\sqrt3}{2}&\frac{\sqrt3}{2}&0\\0&-\frac{\sqrt3}{2}&\frac{\sqrt3}{2}&\frac{1}{2}&\frac{1}{2}&-1\\1&1&1&0&0&0\\0&0&0&1&1&1\\\end{matrix}\right]
 
 
-The VSD can be applied to the the phase voltages, currents and flux linkage to decompose the six-phase quantities to three orthogonal planes:
+The VSD can be applied to the phase voltages, currents and flux linkage to decompose the six-phase quantities to three orthogonal planes:
 
 .. math::
     \mathbf{f}_\mathrm{s}^\mathrm{VSD} = \mathbf{T}_\mathrm{VSD} \cdot \mathbf{f}_\mathrm{s}^{a_1 \rightarrow c_2}

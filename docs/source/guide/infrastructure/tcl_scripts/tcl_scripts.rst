@@ -37,7 +37,7 @@ The path depends on your install location (e.g. ``/opt/`` instead of ``/tools/``
 
 ::
 
-  source /tools/Xilinx/Vivado/2020.1/settings64.sh
+  source /tools/Xilinx/Vitis/2020.1/settings64.sh
 
 ci\_
 ****
@@ -86,7 +86,7 @@ Usage:
 - Open Vitis or launch Vitis from Vivado (``Tools -> Launch Vitis IDE``)
 - Choose the workspace
 - Path: ``~/ultrazohm/ultrazohm_sw/vitis/workspace``
-- Open the XSCT Console in Vitis: ``Windows -> Show view... -> XSCT Console``
+- Open the XSCT Console in Vitis: ``Window -> Show view... -> XSCT Console``
 - Type the following commands
 
 ::
@@ -108,7 +108,7 @@ Usage:
 - Open Vitis or launch Vitis from Vivado (``Tools -> Launch Vitis IDE``)
 - Choose the workspace
 - Path: ``~/ultrazohm/ultrazohm_sw/vitis/workspace``
-- Open the XSCT Console in Vitis: ``Windows -> Show view... -> XSCT Console``
+- Open the XSCT Console in Vitis: ``Window -> Show view... -> XSCT Console``
 - Type the following commands
 
 ::

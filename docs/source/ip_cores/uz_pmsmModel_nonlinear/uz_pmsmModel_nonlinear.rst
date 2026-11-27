@@ -46,7 +46,7 @@ With the rotational speed linked to the electrical rotation speed in dq-coordina
 
     \omega_{el}=p \cdot \omega_{mech}
 
-This model takes saturation and cross-coupling effects into consideration. The flux-linkage is dependent on the dq-currrents. 
+This model takes saturation and cross-coupling effects into consideration. The flux-linkage is dependent on the dq-currents. 
 
 .. math::
 
@@ -175,7 +175,7 @@ All AXI-transactions use single-precision variables.
 The inputs :math:`\boldsymbol{u}(k)` and outputs :math:`\boldsymbol{y}(k)` use a shadow register that holds the value of the register until a sample signal is triggered.
 Upon triggering, the inputs from the shadow register are passed to the actual input registers of the IP core, and the current output :math:`\boldsymbol{y}(k)` is stored in the output shadow register (strobe functions of driver).
 The shadow registers can be triggered according to the requirements of the controller in the loop and ensure synchronous read/write operations. 
-The inputs and outputs are implemented as an vector, therefore the HDL-Coder adds the strobe / shadow register automatically - it is not visible in the model itself.
+The inputs and outputs are implemented as a vector, therefore the HDL-Coder adds the strobe / shadow register automatically - it is not visible in the model itself.
 Note that :math:`\omega_{mech}` is an input as well as an output.
 The IP core has two modes regarding the rotational speed :math:`\omega_{mech}`:
 
@@ -193,7 +193,7 @@ Integration
 -----------
 
 The differential equations of the electrical and mechanical system are discretized using the explicit Euler method [ [#Sanchez_LimitsOfFloat]_, p. 3 ].
-Using this method is justified by the small integration step of the implementation (:math:`t_s=0.5~\mu s`) and is a commonly used approach [#Sanchez_LimitsOfFloat]_, p. 3 ].
+Using this method is justified by the small integration step of the implementation (:math:`t_s=2~\mu s`) and is a commonly used approach [ [#Sanchez_LimitsOfFloat]_, p. 3 ].
 The new value at time :math:`k+1` of the state variable is calculated for every time step based on the *old* values (:math:`k`):
 
 .. math:: 
@@ -206,7 +206,7 @@ For the mechanical system:
 
 .. math::
 
-    \omega_{mech}(k+1) =ts \bigg( \frac{ T_I(k) - T_F(k) - T_L(k) }{J_{sum}} \bigg) + \omega_{mech}(k)
+    \omega_{mech}(k+1) =t_s \bigg( \frac{ T_I(k) - T_F(k) - T_L(k) }{J_{sum}} \bigg) + \omega_{mech}(k)
 
 IP Core Hardware
 ----------------
@@ -368,13 +368,13 @@ Vitis
 - Configure the Javascope to transmit the pmsm output data:
 
 .. code-block:: c
-  :caption: Adjust ``JavaScope_initalize`` function in ``javascope.c`` (R5) to measure pmsm_outputs
+  :caption: Adjust ``JavaScope_initialize`` function in ``javascope.c`` (R5) to measure pmsm_outputs
     
     #include "../IP_Cores/uz_pmsmmodel/uz_pmsmModel_nonlinear.h"
     extern struct uz_pmsmModel_nonlinear_outputs_t pmsm_outputs;
     extern struct uz_pmsmModel_nonlinear_inputs_t pmsm_inputs;
 
-    int JavaScope_initalize(DS_Data* data){
+    int JavaScope_initialize(DS_Data* data){
     // existing code
     // [...]
     // Store every observable signal into the Pointer-Array.
@@ -440,13 +440,13 @@ Approximation Example usage
 
 In this example usage, flux-linkages of an example motor are getting approximated.
 
-- There needs to be a Excel data sheet in the same directory as the PMSM IP core at ``ultrazohm_sw\ip_cores\uz_pmsm_model``.
+- There needs to be an Excel data sheet in the same directory as the PMSM IP core at ``ultrazohm_sw\ip_cores\uz_pmsm_model``.
 
 - The naming in the script has to be adjusted. 
 
 .. code-block:: matlab
     :linenos:
-    :caption: Example to get data out of a Excel data sheet.
+    :caption: Example to get data out of an Excel data sheet.
 
     ...
     FluxMapData = readtable('FluxMapData_Prototyp_1000rpm_');
@@ -468,8 +468,8 @@ In this example usage, flux-linkages of an example motor are getting approximate
     psi_q = FluxMapData{108:127,1:20}*(1e-3);
     ...
 
-- To run the approximation script, first the ``uz_pmsm_model_init_parameter.m`` file has to be ran.
-- If the the script ran successfully the fitting parameters are in the MATLAB workspace and can be used in the IP core for nonlinear behavior or for different use in the sw-framework.
+- To run the approximation script, first the ``uz_pmsm_model_init_parameter.m`` file has to be run.
+- If the script ran successfully the fitting parameters are in the MATLAB workspace and can be used in the IP core for nonlinear behavior or for different use in the sw-framework.
 - It may be helpful to interpolate the flux-linkage maps for better accuracy.
 - It may be helpful to change the setpoints for the cross-coupling. To facilitate this adjust the indices of the currents :math:`I_{d1}` and :math:`I_{q1}` in the script.
 
@@ -478,7 +478,7 @@ In this example usage, flux-linkages of an example motor are getting approximate
     :caption: Example to run the approximation script.
 
     ...
-    %The setpoints with the best results might differ for diffrent flux-linkages
+    %The setpoints with the best results might differ for different flux-linkages
     %Adjust indices for id1 and iq1 if necessary
     id1 = id_null-1;    %Setpoint of flux-linkage with cross-coupling
     [~,iq1] = max(abs(q_current));  %Setpoint of flux-linkage with cross-coupling
@@ -513,7 +513,7 @@ Driver reference
 Sources
 -------
 
-.. [#Ruderman_ZurModellierungReibung] Zur Modellierung und Kompensationdynamischer Reibung in Aktuatorsystemen, Michael Ruderman, Dissertation, 2012, TU Dortmund (German)
+.. [#Ruderman_ZurModellierungReibung] Zur Modellierung und Kompensation dynamischer Reibung in Aktuatorsystemen, Michael Ruderman, Dissertation, 2012, TU Dortmund (German)
 .. [#Schroeder_Regelung] Elektrische Antriebe - Regelung von Antriebssystemen, Dierk Schröder, Springer, 2015, 4. Edition (German)
 .. [#Sanchez_LimitsOfFloat] Exploring the Limits of Floating-Point Resolution for Hardware-In-the-Loop Implemented with FPGAs, Alberto Sanchez, Elías Todorovich, and Angel De Castro, Applications of Power Electronics, https://doi.org/10.3390/electronics7100219
 .. [#Shih_Wei_Su_flux_approximation] Analytical Prototype Functions for Flux Linkage Approximation in Synchronous Machines, Shih-Wei Su, Christoph M. Hackl, and Ralph Kennel, IEEE Open Journal of the Industrial Electronics Society, vol. 3, pp. 265-282, 2022, doi: 10.1109/OJIES.2022.3162336

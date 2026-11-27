@@ -24,7 +24,7 @@ As illustrated by figure :numref:`structure`, the AD2S1210 continuously outputs 
 
 
 The ResolverIP interface also allows for reading and writing register values of the AD2S1210. This functionality can be used to modify i.e. the resolver excitation frequency. For more details on register functionalities, 
-er to the `AD2S1210 Datasheet <https://www.analog.com/media/en/technical-documentation/data-sheets/AD2S1210.pdf>`_ and the documentation :ref:`below <FunctionList>`.
+refer to the `AD2S1210 Datasheet <https://www.analog.com/media/en/technical-documentation/data-sheets/AD2S1210.pdf>`_ and the documentation :ref:`below <FunctionList>`.
 
 
 Setup
@@ -74,7 +74,7 @@ The pins of the IP core have the following functionalities:
    * - Pin
      - Functionality
    * - s00_axi
-     - AXI-Interface, connect to to AXI-SmartConnect
+     - AXI-Interface, connect to AXI-SmartConnect
    * - SPI_MISO
      - SPI Interface, connect to pin DIG_IO_09 of Encoder Board 
    * - sample_trigger
@@ -134,11 +134,11 @@ In ``POSITION_VELOCITY_MODE``, the ResolverIP interface can also read out both p
 
    Conversion in POSITION_VELOCITY_MODE
 
-.. _vitis_setup:
-
 .. warning:: 
   If you plan to only use the PL output ports of the resolverIP, then you have to set 
   the ``mode_after_init`` in your config struct to e.g. ``POSITION_VELOCITY_MODE``. Do not set it to ``CONFIG_MODE``, since then the IP core will not update speed and position values.
+
+.. _vitis_setup:
 
 Vitis Setup
 ***********
@@ -160,7 +160,7 @@ Important constant configuration parameters are stored in the struct ``uz_resolv
    - The member ``freq_clockin`` needs to be set to the frequency of the external crystal of the AD2S1210. By default the adapter boards come with a 8.192MHz (``8192000U``) crystal.
    - The member ``pole_pairs_machine`` needs to be set according to the electric machine the resolver is attached to. It influences the conversion from mechanical to electrical position and velocity.
    - The member ``pole_pairs_resolver`` needs to be set according to the resolver data. It influences the conversion from measured to mechanical velocity.
-   - The member ``zero_Position`` allows for setting an initial position that corresponds to position = 0. All mechanical and electrical positions returned by the functions ``uz_resolverIP_readElectricalPosition`` and ``uz_resolverIP_readMechanicalPosition`` are with reference to ``zero_Position``. ``zero_Position`` can be set via the function ``uz_resolverIP_setZeroPosition``.
+   - The member ``zero_position_mechanical`` allows for setting an initial position that corresponds to position = 0. All mechanical and electrical positions returned by the functions ``uz_resolverIP_readElectricalPosition`` and ``uz_resolverIP_readMechanicalPosition`` are with reference to ``zero_position_mechanical``. ``zero_position_mechanical`` can be set via the function ``uz_resolverIP_setZeroPosition``.
    - The member ``mode_after_init`` defines the operating mode of the IP core after init. This is important when the IP core shall be used in the PL without using the software driver functions
      that read position and velocity values via AXI. Set the mode to the intended operating mode that you'd like to use the IP core in the PL. Every mode except ``CONFIG_MODE`` is allowed. When using 
      the resolverIP just in the processor, set the mode to ``CONFIG_MODE``. Switching modes during operation is handled via the read functions for position and velocity.
@@ -221,10 +221,10 @@ A pointer to an  instance of type uz_resolverIP_t can be stored in ``GlobalData.
    uz_resolverIP_setMachinePolePairs(Global_Data.objects.resolver_IP,2.F);
    uz_resolverIP_setResolverPolePairs(Global_Data.objects.resolver_IP,1.F);
 
-Data Aquistition
+Data Acquisition
 ^^^^^^^^^^^^^^^^
 
-The ResolverIP interface was designed for time critical applications like motor control. As illustrated by figure :numref:`pic_timing3`, it is recommended to trigger the conversion via the sample_trigger input of the IP core with the same trigger, that calls the corresponding data aquistition function. The data acquisition function will load in position and/or velocity values as soon as new values are valid. For ``uz_resolverIP_readMechanicalPosition`` and ``uz_resolverIP_readMechanicalVelocity``, this is after :math:`2.48 \mu s` which allows for a maximal sampling frequency of 400kS/s, for ``uz_resolverIP_readMechanicalPositionAndVelocity`` it is after :math:`4.98 \mu s` which allows for a maximal sampling frequency of 200kS/s.
+The ResolverIP interface was designed for time critical applications like motor control. As illustrated by figure :numref:`pic_timing3`, it is recommended to trigger the conversion via the sample_trigger input of the IP core with the same trigger, that calls the corresponding data acquisition function. The data acquisition function will load in position and/or velocity values as soon as new values are valid. For ``uz_resolverIP_readMechanicalPosition`` and ``uz_resolverIP_readMechanicalVelocity``, this is after :math:`2.48 \mu s` which allows for a maximal sampling frequency of 400kS/s, for ``uz_resolverIP_readMechanicalPositionAndVelocity`` it is after :math:`4.98 \mu s` which allows for a maximal sampling frequency of 200kS/s.
 
 .. _pic_timing3:
 
@@ -275,7 +275,7 @@ Exemplary implementations for one connected resolver that write to the ``GlobalD
    }
 
 
-More functioniality
+More functionality
 ===================
 
 The ResolverIP Interface comes with a wide range of functions to write or read configuration registers of the AD2S1210. 

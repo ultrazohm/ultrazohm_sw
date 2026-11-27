@@ -58,8 +58,8 @@ breathe_domain_by_extension = {
 }
 
 issues_uri = "https://github.com/ultrazohm/ultrazohm_sw/issues/{issue}"
-issues_pr_uri = "https://github.com/ultrazohm/ultrazohm_sw/pull-requests/{pr}"
-issues_commit_uri = "https://github.com/ultrazohm/ultrazohm_sw/commits/{commit}"
+issues_pr_uri = "https://github.com/ultrazohm/ultrazohm_sw/pull/{pr}"
+issues_commit_uri = "https://github.com/ultrazohm/ultrazohm_sw/commit/{commit}"
 
 latex_engine = "lualatex"
 

@@ -80,7 +80,7 @@ The activation of the adapter card identification feature depends on the ``UZ_PL
 .. note::
    Please take care to increase ``UZ_IIC_MAX_BUSINSTANCES`` in ``/FreeRTOS/src/uz/uz_IIC/uz_iic.c`` to at least ``2`` when enabling the adapter card identification functionality using ``UZ_PLATFORM_CARDID``.
    Otherwise, the IIC subsystem will ``assert()`` during initialization due to a lack of available bus instances.
-   With `commit b373877 <https://github.com/ultrazohm/ultrazohm_sw/commits/b373877a641d1a1b1cb76fa67a14573c4d6e57dc>`_ in mid-2025, this now is the default.
+   With `commit b373877 <https://github.com/ultrazohm/ultrazohm_sw/commit/b373877a641d1a1b1cb76fa67a14573c4d6e57dc>`_ in mid-2025, this now is the default.
 
 .. _uzpA53_cardid:
 
@@ -223,5 +223,5 @@ See also
 --------
 
 * the :ref:`carrier_retrofits_i2cssds2c` docs,
-* the `uz_per_rtc_mac <https://github.com/ultrazohm/uz_per_rtc_mac/src/master/>`_ repository for the I²C/SSD extension board, and
+* the `uz_per_rtc_mac <https://github.com/ultrazohm/uz_per_rtc_mac>`_ repository for the I²C/SSD extension board, and
 * the :ref:`carrier_retrofits_cardid` for modifying pre-Rev05 carrier boards to support the adapter card identification feature.

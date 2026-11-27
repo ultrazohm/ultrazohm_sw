@@ -14,7 +14,7 @@ Therefore, a git installation as well as git LFS is required:
 #. `git LFS installation <https://git-lfs.github.com/>`_
 
 The homepage of git offers excellent `documentation, tutorials <https://git-scm.com/doc>`_, and `videos <https://git-scm.com/videos>`_.
-Another `recommended tutorial is offered by Bitbucket <https://www.atlassian.com/git/tutorials>`_.
+Another `recommended tutorial is offered by Atlassian <https://www.atlassian.com/git/tutorials>`_.
 An understanding of git is mandatory for working with the UltraZohm and is assumed in the following sections!
 
 A graphical git client can be used to simplify the usage of git.

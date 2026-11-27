@@ -361,7 +361,7 @@ Loading Stackup Template File
 
 Clone the UltraZohm Altium Library Repository to your local drive (https://github.com/ultrazohm/altium_libraries/).
 
-#. Create a new PCB Library in Altium altium-designer
+#. Create a new PCB Library in Altium Designer
 
    .. figure:: img/mech_layers/01_Create_new_PCB_Lib.png
 		:width: 500px

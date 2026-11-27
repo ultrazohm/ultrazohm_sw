@@ -64,7 +64,7 @@ General Notes
 Documents and Links
 ===================
 
-* `PCB repository uz_per_wolfspeed_25kw_FM3 <https://bitbucket.org/ultrazohm/uz_per_wolfspeed_25kw_fm3/src/main/>`_
+* `PCB repository uz_per_wolfspeed_25kw_FM3 <https://github.com/ultrazohm/uz_per_wolfspeed_25kw_fm3>`_
 * Wolfspeed 25 kW Three-Phase Inverter `CRD25DA12N-FMC <https://www.wolfspeed.com/products/power/reference-designs/crd25da12n-fmc/>`_
 * TI E2E `thread on HSEC8 pinout <https://e2e.ti.com/support/microcontrollers/arm-based-microcontrollers-group/arm-based-microcontrollers/f/arm-based-microcontrollers-forum/1486750/tmdshsecdock-edge-connector-hsec8-160-wrong-orientation-and-position-of-pin-1/>`_
 * Bachelor thesis :download:`download here <Thesis_Park_BA_UltraZohm_Wolfspeed_2L_Inverter_compressed.pdf>`

@@ -25,7 +25,7 @@ General Notes
 * Verify encoder supply voltage and connector pinout against the schematic of the used revision.
 * Program the CPLD for the selected digital adapter slot with the program ``uz_d_abs_encoder``, see :ref:`label_cpld_programming` for the programming procedure.
 * Software support for the EnDat IP core is documented in :ref:`uz_endat_interface`.
-* Software support for the SSI IP core is *coming soon*.
+* Software support for the SSI IP core is documented in :ref:`uz_ssi_interface`.
 
 Revision History
 ================

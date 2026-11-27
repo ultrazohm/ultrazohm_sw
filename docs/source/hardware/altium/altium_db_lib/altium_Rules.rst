@@ -73,7 +73,7 @@ Tool Saturn
 ===========
 
 With the help of this tool it is possible to define a target impedance (in that case 120 Ohm) and calculate the necessary conductor width and conductor spacing.
-The conductor height is given by the height of the layer on which the conductor should be lay outed.
+The conductor height is given by the height of the layer on which the conductor should be laid out.
 
 .. _165_Tool_Saturn:
 

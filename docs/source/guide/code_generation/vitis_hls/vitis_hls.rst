@@ -400,7 +400,7 @@ For a quick test, the generated driver can be used directly from ``main`` or fro
 Optional UZ-style driver
 ************************
 
-The driver is already provided in ``ultrazohm_sw/software/Baremetal/src/IP_Cores/uz_HLS_testIP``.
+The driver is already provided in ``ultrazohm_sw/vitis/software/Baremetal/src/IP_Cores/uz_HLS_testIP``.
 To gain a better understanding of driver creation, you can follow the steps below to create a driver for the IP core yourself.
 
 .. dropdown:: Show steps (collapsed by default)
@@ -409,7 +409,7 @@ To gain a better understanding of driver creation, you can follow the steps belo
    - This HLS IP scenario is similar to the example. 
      To multiply two variables result=A⋅B of type int32_t, the driver has to write A and B from the PS to the PL by AXI in the correct registers and read back the result from the PL to the PS.
    - For that reason, we need set and get functions, also called write and read functions. 
-   - Create ``uz_HLS_testIP`` folder and move to ``ultrazohm_sw -> software -> Baremetal -> src -> IP_Cores`` 
+   - Create ``uz_HLS_testIP`` folder and move to ``ultrazohm_sw -> vitis -> software -> Baremetal -> src -> IP_Cores`` 
    - In the folder, create the files: 
       
       * ``uz_HLS_testIP.c``

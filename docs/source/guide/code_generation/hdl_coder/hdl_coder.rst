@@ -225,7 +225,7 @@ The result of this tutorial is the :ref:`AXI_testIP`.
    :align: center
 
 - Check the reports that are generated
-- The resource reports gives an overview over the required resources
+- The resource reports give an overview over the required resources
 - Note that this does not take into account the actual hardware that the FPGA features
 - In the IP core, one multiplier with 32x32 bits is required
 - However, the UltraScale of the UltraZohm has DSP48, which provides 27x18 bit multipliers
@@ -249,7 +249,7 @@ The result of this tutorial is the :ref:`AXI_testIP`.
    :width: 800px
    :align: center
 
-- The IP core is now ready. However, an delay block for inputs should be added
+- The IP core is now ready. However, a delay block for inputs should be added
 - Add the multiplication of A*B outside of the IP core with the same data types and sample rates
 - Add a scope
 - Run the simulation and notice that both results are completely identical
@@ -275,7 +275,7 @@ The result of this tutorial is the :ref:`AXI_testIP`.
 - Lastly, add a multiplication of two fixed point values (see :ref:`uz_fixedpoint` for details of fixed point)
 - Use signed 16 bit with 5 bits for the fraction
 - Use the same output data type for the multiplication
-- Consider that this leads to the same overflow problems as discussed for `int32` and `uint32`
+- Consider that this leads to the same overflow problems as discussed for ``int32`` and ``uint32``
 - In a real IP core, the data types have to be carefully designed regarding possible data range overflows
 - Using full precision multiplication (output data type large enough to represent the result of the two largest possible input value) is not possible most of the time since this leads to extremely large data types that can not be implemented in the FPGA 
 

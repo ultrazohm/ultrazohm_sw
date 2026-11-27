@@ -25,7 +25,7 @@ Since an online choosing of SV is not feasible, a preselection from all possible
     :align: center
     :width: 1500px
 
-    Selected actives witching combinations in :math:`\alpha\beta` (left) and :math:`XY` (right) with highlighting for sector 1 (Fig.~2[[#Eldeeb_paper]_])
+    Selected active switching combinations in :math:`\alpha\beta` (left) and :math:`XY` (right) with highlighting for sector 1 (Fig.~2[[#Eldeeb_paper]_])
 
 
 .. _uz_svm_6ph_usage:
@@ -102,7 +102,7 @@ Therefore, if the :math:`\alpha\beta`-SV is near the maximum, the :math:`XY`-SV 
 Although a general limitation can not achieve maximum usage in all operating points, with this rule an overall good performance can be expected.
 
 Since the maximum voltage is given by the DC-Bus-Voltage and the modulation index :math:`m_i=\frac{1}{\sqrt{3}}` (determined in simulation), the combined length of the space vectors has to be limited.
-Therefore, both lengths are added and if they exceed the maximum allowed voltage, they will be shortened in their existing relations, meaning :math:`\frac{|SV_{\alpha\beta\textrm{, old}}|}{|SV_\textrm{XY, old}|}=\frac{|SV_{\alpha\beta\textrm{, limited}|}}{|SV_\textrm{XY, limited}|}` .
+Therefore, both lengths are added and if they exceed the maximum allowed voltage, they will be shortened in their existing relations, meaning :math:`\frac{|SV_{\alpha\beta\textrm{, old}}|}{|SV_\textrm{XY, old}|}=\frac{|SV_{\alpha\beta\textrm{, limited}}|}{|SV_\textrm{XY, limited}|}` .
 Since the :math:`XY`-SV limitation is executed before and the relation of the :math:`\alpha\beta`-SV and :math:`XY`-SV are kept the same, the previous limitation will not be violated.
 
 

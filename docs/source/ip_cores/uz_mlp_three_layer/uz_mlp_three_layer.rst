@@ -6,7 +6,7 @@ uz_mlp_three_layer
 
 This IP core implements a three layer MLP network based on [#realTimeInference]_.
 The implementation and nomenclature follows the principles outlined in :ref:`uz_nn`.
-The MLP is hard coded to have three hidden layer with :ref:`activation_function_relu` activation function for hidden layers.
+The MLP is hard coded to have three hidden layers with :ref:`activation_function_relu` activation function for hidden layers.
 The output uses :ref:`activation_function_linear` activation.
 
 .. figure:: mlp_three_layer.svg
@@ -15,7 +15,7 @@ The output uses :ref:`activation_function_linear` activation.
 
    Implemented MLP network of the IP core
 
-.. warning: This IP core can not be simulated with Simulink at the moment since it depends on an internal library.
+.. warning:: This IP core can not be simulated with Simulink at the moment since it depends on an internal library.
             However, the IP core can be used as-is.
             If you want to contribute to improve the IP core, please get in touch.
 
@@ -38,7 +38,7 @@ Features:
 The IP core is always configured by the processing system.
 The configuration (e.g., number of inputs) is valid for using the inputs from AXI and from the PL (depending on ``use_axi_input``).
 The calculation of one forward pass is triggered by a rising edge either from AXI or by the PL (``enable_nn`` port).
-The calculation trigger is a OR between the AXI and PL ports, thus no priority is used. 
+The calculation trigger is an OR between the AXI and PL ports, thus no priority is used. 
 The output valid is low during calculation and high if a valid result is available on the output ports.
 If a calculation is triggered before the calculation is finished, the trigger is ignored.
 
@@ -49,7 +49,7 @@ The usage of the IP core driver depends heavily on :ref:`uz_nn`.
 First, an instance of the software network has to be initialized, e.g., by loading parameters from a header.
 Additionally, an array for the output data of the IP core has to be declared (see :ref:`uz_matrix`).
 The ``uz_mlp_three_layer_ip_init`` function writes all parameters of the network into the IP core.
-Thus, the network exist twice: one copy in the processor and one copy in the IP core (parameters are stored in BRAM).
+Thus, the network exists twice: one copy in the processor and one copy in the IP core (parameters are stored in BRAM).
 During execution, only the input and output values are written. 
 Note that the :ref:`global_configuration` has to be adjusted to include at least one MLP IP core driver instance, one software network and four layers.
 
@@ -82,7 +82,7 @@ Note that the :ref:`global_configuration` has to be adjusted to include at least
  float y_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
  
  float w_3[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
- #include "layer2_weights.csv"
+ #include "layer3_weights.csv"
  };
  float b_3[NUMBER_OF_NEURONS_IN_THIRD_LAYER] = {
  #include "layer3_bias.csv"
@@ -120,7 +120,7 @@ Note that the :ref:`global_configuration` has to be adjusted to include at least
        .base_address = BASE_ADDRESS,
        .use_axi_input = true,
        .software_network = software_network};
-     uz_mlp_three_layer_ip_t*vmlp_ip_instance = uz_mlp_three_layer_ip_init(config);
+     uz_mlp_three_layer_ip_t *mlp_ip_instance = uz_mlp_three_layer_ip_init(config);
 
     struct uz_matrix_t input_data = {0};
     struct uz_matrix_t output_data = {0};
@@ -136,7 +136,7 @@ Note that the :ref:`global_configuration` has to be adjusted to include at least
 Concurrent execution
 ********************
 
-The regular calculation with the IP core using the software driver and writing the inputs by AXI (``use_axi_inputs`` is true) is a blocking operation.
+The regular calculation with the IP core using the software driver and writing the inputs by AXI (``use_axi_input`` is true) is a blocking operation.
 The driver triggers the calculation and waits until it is finished.
 The processor can not do any other tasks.
 
@@ -235,7 +235,7 @@ enable_nn
 disable_pl_trigger
 
   If set, the trigger from the PL is disabled.
-  Thus, a rising edge on enable_nn from the PL does not trigger a calculation and the calculation can only triggered from the PS. 
+  Thus, a rising edge on enable_nn from the PL does not trigger a calculation and the calculation can only be triggered from the PS. 
   Intended to be used for debugging purposes if the PL trigger is connected to a reoccurring trigger such as the PWM or ADC IP core.
 
 use_axi_input

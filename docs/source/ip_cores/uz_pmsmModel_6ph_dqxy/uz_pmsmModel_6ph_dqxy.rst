@@ -186,11 +186,11 @@ All AXI-transactions use single-precision variables, which the IP-Core converts 
 The inputs :math:`\boldsymbol{u}(k)` and outputs :math:`\boldsymbol{y}(k)` use a shadow register that holds the value of the register until a sample signal is triggered.
 Upon triggering, the inputs from the shadow register are passed to the actual input registers of the IP-Core, and the current output :math:`\boldsymbol{y}(k)` is stored in the output shadow register (strobe functions of driver).
 The shadow registers can be triggered according to the requirements of the controller in the loop and ensure synchronous read/write operations. 
-The inputs and outputs are implemented as an vector, therefore the HDL-Coder adds the strobe / shadow register automatically - it is not visible in the model itself.
+The inputs and outputs are implemented as a vector, therefore the HDL-Coder adds the strobe / shadow register automatically - it is not visible in the model itself.
 Note that :math:`\omega_{mech}` is an input as well as an output.
 The IP-Core has two modes regarding the rotational speed :math:`\omega_{mech}`:
 
-1. Simulate the mechanical system and calcualte :math:`\omega_{mech}` according to the equations in `Friction`_.
+1. Simulate the mechanical system and calculate :math:`\omega_{mech}` according to the equations in `Friction`_.
 2. Use the rotational frequency :math:`\omega_{mech}` that is written as an input (written by AXI).
    
 When the flag ``simulate_mechanical_system`` is true, the rotational speed in the output struct is calculated by the IP-Core, and the input value of the rotational speed has no effect.
@@ -205,7 +205,7 @@ Integration
 
 The differential equations of the electrical and mechanical system are discretized using the explicit Euler method [ [#Sanchez_LimitsOfFloat]_, p. 3 ].
 Using this method is justified by the small integration step of the implementation (:math:`t_s=0.5~\mu s`) and is a commonly used approach [#Sanchez_LimitsOfFloat]_, p. 3 ].
-The new value at time :math:`k+1` of the state variable is calcualted for every time step based on the *old* values (:math:`k`):
+The new value at time :math:`k+1` of the state variable is calculated for every time step based on the *old* values (:math:`k`):
 
 .. math:: 
 
@@ -221,7 +221,7 @@ For the mechanical system:
 
 .. math::
 
-    \omega_{mech}(k+1) =ts \bigg( \frac{ T_I(k) - T_F(k) - T_L(k) }{J_{sum}} \bigg) + \omega_{mech}(k)
+    \omega_{mech}(k+1) =t_s \bigg( \frac{ T_I(k) - T_F(k) - T_L(k) }{J_{sum}} \bigg) + \omega_{mech}(k)
 
 IP-Core Hardware
 ----------------
@@ -293,7 +293,7 @@ Vitis
 .. code-block:: c
   :caption: Changes in ``main.c`` (R5)
 
-  #include "IP_Cores/uz_pmsmMmodel_6ph_dqxy/uz_pmsmModel_6ph_dqxy.h"
+  #include "IP_Cores/uz_pmsmModel_6ph_dqxy/uz_pmsmModel_6ph_dqxy.h"
   #include "xparameters.h"
   uz_pmsmModel_6ph_dqxy_t *pmsm_6ph=NULL;
 
@@ -326,7 +326,7 @@ Vitis
   :caption: Changes in ``isr.c``
 
   #include "../uz/uz_wavegen/uz_wavegen.h"
-  #include "../IP_Cores/uz_pmsmMmodel_6ph_dqxy/uz_pmsmModel_6ph_dqxy.h"
+  #include "../IP_Cores/uz_pmsmModel_6ph_dqxy/uz_pmsmModel_6ph_dqxy.h"
   extern uz_pmsmModel_6ph_dqxy_t *pmsm_6ph;
   uz_wavegen_pulse_t* pulse; // Initialize once with uz_wavegen_pulse_init() before ISR starts
 
@@ -386,13 +386,13 @@ Vitis
 - Configure the Javascope to transmit the pmsm output data:
 
 .. code-block:: c
-  :caption: Adjust ``JavaScope_initalize`` function in ``javascope.c`` (R5) to measure pmsm_outputs
+  :caption: Adjust ``JavaScope_initialize`` function in ``javascope.c`` (R5) to measure pmsm_outputs
     
-    #include "../IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+    #include "../IP_Cores/uz_pmsmModel_6ph_dqxy/uz_pmsmModel_6ph_dqxy.h"
     extern struct uz_pmsmModel_6ph_dqxy_outputs_t pmsm_outputs;
     extern struct uz_pmsmModel_6ph_dqxy_inputs_t pmsm_inputs;
 
-    int JavaScope_initalize(DS_Data* data){
+    int JavaScope_initialize(DS_Data* data){
     // existing code
     // [...]
     // Store every observable signal into the Pointer-Array.
@@ -453,8 +453,8 @@ Driver reference
 Sources
 -------
 
-.. [#Ruderman_ZurModellierungReibung] Zur Modellierung und Kompensationdynamischer Reibung in Aktuatorsystemen, Michael Ruderman, Dissertation, 2012, TU Dortmund (German)
+.. [#Ruderman_ZurModellierungReibung] Zur Modellierung und Kompensation dynamischer Reibung in Aktuatorsystemen, Michael Ruderman, Dissertation, 2012, TU Dortmund (German)
 .. [#Eldeeb] Modelling, Control and Post-Fault Operation of Dual Three-phase Drives for Airborne Wind Energy, Hisham Eldeeb, Dissertation, TUM , 2019 
 .. [#EDPC_SixPhase] Reinforcement Learning Control of Six-Phase Permanent Magnet Synchronous Machines, L. Broghammer, D. Hufnagel et al., 13th EDPC, Regensburg 2023 
-.. [#Schroeder_Regelung] Elektrische Antriebe - Regelung von Antriebssystemen, Dierk SchrÃ¶der, Springer, 2015, 4. Edition (German)
+.. [#Schroeder_Regelung] Elektrische Antriebe - Regelung von Antriebssystemen, Dierk Schröder, Springer, 2015, 4. Edition (German)
 .. [#Sanchez_LimitsOfFloat] Exploring the Limits of Floating-Point Resolution for Hardware-In-the-Loop Implemented with FPGAs, Alberto Sanchez, Elias Todorovich, and Angel De Castro, Applications of Power Electronics, https://doi.org/10.3390/electronics7100219

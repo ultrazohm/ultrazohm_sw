@@ -31,7 +31,7 @@ Each resolver channel can be configured with several pull-up and pull-down resis
 
 .. note:: As the resolver only operates with the 16 bit resolution in the board's default configuration, the measurable rotational speed is limited to 125 rounds per second (rps) (equals :math:`7500\frac{1}{min}`) with a clock speed of 8.192 MHz. For higher speeds the resolution has to be lowered. This affects RES0 and RES1 resistor configuration as well as IP core driver configuration.
 
-With the Signals A0 and A1 the resolver`s operation mode can be configured. This is done through the IP core driver:
+With the Signals A0 and A1 the resolver's operation mode can be configured. This is done through the IP core driver:
 
 * ``A0`` to LOW and ``A1`` to LOW = Normal mode - position output
 * ``A0`` to LOW and ``A1`` to HIGH = Normal mode - velocity output

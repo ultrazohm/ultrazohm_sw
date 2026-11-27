@@ -28,7 +28,7 @@ Example
 Description
 ===========
 
-Calculates the values for a linear decoupling according to the following formulars:
+Calculates the values for a linear decoupling according to the following formulas:
 
 .. math::
 

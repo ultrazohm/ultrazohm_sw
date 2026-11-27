@@ -4,26 +4,26 @@
 Sourcetree (git GUI)
 ====================
 
-`The Sourcetree application <https://www.sourcetreeapp.com/>`_ is a git GUI with great compatibility to Bitbucket.
+`The Sourcetree application <https://www.sourcetreeapp.com/>`_ is a free git GUI by Atlassian that works with GitHub.
 It is recommended to use Sourcetree for convenience and standardization in the community.
 If you are not familiar with Sourcetree please refer to the following resources:
 
-* `Bitbucket General Tutorial <https://confluence.atlassian.com/bitbucket/tutorial-learn-bitbucket-with-sourcetree-760120235.html>`_
-* `Bitbucket Pull Request Tutorial <https://confluence.atlassian.com/bitbucket/tutorial-learn-about-bitbucket-pull-requests-774243385.html>`_
+* `Get started with Sourcetree <https://confluence.atlassian.com/get-started-with-sourcetree>`_
+* `Creating a pull request on GitHub <https://docs.github.com/en/pull-requests/how-tos/create-pull-requests/creating-a-pull-request>`_
 
 .. note::
 
   The following description of the installation and usage of Sourcetree is basic.
-  Make sure to check the links above to the Sourcetree and Bitbucket tutorial, which is provided by Bitbucket itself and quite useful!
+  Make sure to check the Sourcetree and GitHub documentation linked above, which is quite useful!
 
 Sourcetree installation
 ***********************
 
-The following details the installation of Sourcetree, we use Github Cloud-hosted.
+The following details the installation of Sourcetree, we use GitHub Cloud-hosted.
 
 .. image:: ./images_git/sourcetree_anmeldung.png
 
-You will be asked to log in to your Github account. If you do not have one, please `create one <https://www.github.com>`_ since it is required to access the software of the UltraZohm.
+You will be asked to log in to your GitHub account. If you do not have one, please `create one <https://www.github.com>`_ since it is required to access the software of the UltraZohm.
 
 .. image:: ./images_git/sourcetree_login.png
 

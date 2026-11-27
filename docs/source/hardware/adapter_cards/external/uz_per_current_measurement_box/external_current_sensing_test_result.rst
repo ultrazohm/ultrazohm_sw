@@ -76,9 +76,9 @@ The frequency-domain FFT (top panel) reveals differences between the LEM CASR an
    In fluxgate sensors, these originate from internal excitation at ~435 kHz. 
    By contrast, TMR sensors do not use modulated excitation and thus show less periodic ripple.
 
-Its shown that the internal excitation frequency of fluxgate sensors
+It is shown that the internal excitation frequency of fluxgate sensors
 introduces strong harmonic components into the output signal. While these harmonics can be attenuated with 
-an analog low-pass filter, such early filtering limits the measurement bandwidth because it the must attenuate frequencies below or around 435 kHz to suppress the internal ripple.
+an analog low-pass filter, such early filtering limits the measurement bandwidth because it must attenuate frequencies below or around 435 kHz to suppress the internal ripple.
 
 As a result, the sensor's output bandwidth becomes restricted. To overcome this limitation, advanced digital filtering techniques such as oversampling, digital filtering, 
 and notch filters implemented in the FPGA can be used. They can allow variable attenuation 
@@ -92,7 +92,7 @@ A follow-up test was performed to compare the spectral behavior of the Sensitec 
 and CAS5015SRA-LI under identical conditions (500 Hz, 1 Arms sinusoidal current) with Micsig MOIP350P OP200-3 differential probes on Ethernet adapter.
 
 The 25 A variant showed a distinct narrowband spike at ~2 MHz in the FFT spectrum (see earlier figure), 
-while the 15 A variant exhibited a flat frequency spectrum with no such harmonic content at ~2 Mhz, as shown below:
+while the 15 A variant exhibited a flat frequency spectrum with no such harmonic content at ~2 MHz, as shown below:
 
 .. figure:: TimeDomain_FFT_S15.png
    :align: center
@@ -119,7 +119,7 @@ performed using the Bode 100 setup with the APS 1000 current amplifier.
    limitations in the current amplifier rather than sensor characteristics.**
 
 
-Test 1: Sensitec CAS5015SRA-LI Behavoiur
+Test 1: Sensitec CAS5015SRA-LI Behaviour
 ----------------------------------------
 
 This test evaluates the impedance response of the CAS5015SRA-LI sensor under varying AC excitation and DC offset:

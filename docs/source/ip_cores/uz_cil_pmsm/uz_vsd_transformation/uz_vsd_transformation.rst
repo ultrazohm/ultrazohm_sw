@@ -123,7 +123,7 @@ Vivado
 ------
 
 A small example of usage for the IP core is given below.
-Note that the intended usage is in combination with the other CIL IP core's and this IP core has not been optimized for standalone usage.
+Note that the intended usage is in combination with the other CIL IP cores and this IP core has not been optimized for standalone usage.
 To use this IP core correctly, the :ref:`uz_rs_flip_flop` needs to be added as well, as shown in the screenshot below.
 
 

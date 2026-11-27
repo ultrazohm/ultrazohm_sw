@@ -26,7 +26,7 @@ JTAG interface to all CPLDs for D1 to D5. You can use a Trenz TE0590 programmer 
 X3: CPLD-X6E (D5)
 -----------------
 
-Not all 30 digital signals of X6E is fully connected to the FPGA.
+Not all 30 digital signals of X6E are fully connected to the FPGA.
 X3 is routed to the primary side (1.8 V) of the CPLD.
 The factory CPLD software routes these signals of X3 to the X6E pins DIG_01 to DIG06 and DIG_25 to DIG_30.
 The direction of the signals can be determined with your user CPLD software code. The factory default is **input**.
@@ -153,7 +153,7 @@ X7: Isolated CAN
 
 The following applies to X7A and X7B:
 
-1. This connectors are used for CAN. X7A is labeled with CAN1 and X7B with CAN2 on the PCB.
+1. These connectors are used for CAN. X7A is labeled with CAN1 and X7B with CAN2 on the PCB.
 
 2. The CAN interface is operated by the processor.
 

@@ -11,7 +11,7 @@ Network and dimension definition
 ================================
 
 A neural network consists of an input layer, one or multiple hidden layer, and an output layer.
-Each layer has one or multiple neurons (also called perceptorn or nodes). 
+Each layer has one or multiple neurons (also called perceptron or nodes). 
 A network with one input layer, one hidden layer and one output layer has :math:`l=2` layers (hidden layer +1, input layer is not counted).
 A network can have a different number of inputs and outputs, e.g., two inputs and one output.
 Each hidden layer has a defined number of neurons in the layer.

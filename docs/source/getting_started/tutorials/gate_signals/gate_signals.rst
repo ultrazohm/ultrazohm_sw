@@ -68,7 +68,7 @@ Guideline
 
 #. Build the changes and flash the UltraZohm.
 
-#. Switch to the *Debug-View* in *Vitis*, select the *Vitis-Serial-Terminal*, click on the green **+**-Symbol and connect the serial port to the USB-port with which your JTAG-cabel is connected to the computer.
+#. Switch to the *Debug-View* in *Vitis*, select the *Vitis-Serial-Terminal*, click on the green **+**-Symbol and connect the serial port to the USB-port with which your JTAG-cable is connected to the computer.
 
    * This connects the Vitis serial port with the UltraZohm.
    * This way, messages from the UltraZohm can be read in the *Vitis-Serial-Terminal*.
@@ -81,7 +81,7 @@ Guideline
          Vitis view to connect serial port.
 
 #. Connect the GUI and press the *Enable System* and *Enable Control* buttons.
-#. After pressing the ``My_Button4``, the UltraZohm should switch into its *Error State*. This happens, because an assertion got triggered. The red *Error LED* should light up as well.
+#. After pressing the ``My_Button_4``, the UltraZohm should switch into its *Error State*. This happens, because an assertion got triggered. The red *Error LED* should light up as well.
 
    * Assertions are used to guarantee that the conditions and limits of a function are met at runtime. 
    * The UltraZohm error handling follows the concept to fail loudly, i.e., all assertions stop the processor and require a power cycle. This means, that if an assertion fires, the UltraZohm is brought into a safe state.
@@ -127,14 +127,14 @@ Guideline
 
 #. Build and flash the UltraZohm and connect the GUI.
 
-#. In the *Debug view* in *Vitis* go the the expressions tab and add the ``three_phase_output`` struct as a new expression.
+#. In the *Debug view* in *Vitis* go to the expressions tab and add the ``three_phase_output`` struct as a new expression.
 
    * This lets you modify the value of the ``three_phase_output`` struct during runtime. 
    * Therefore i.e. different values can be sent to or read out from the R5.
   
    .. note:: 
 
-      Refreshing the the values of the expressions (green box in :numref:`Vitis_expression`) stops the processor for a couple of cycles. 
+      Refreshing the values of the expressions (green box in :numref:`Vitis_expression`) stops the processor for a couple of cycles. 
       The more expressions are logged, the longer the stoppage takes.
 
 #. Select the R5 in the *debug* view on the left side. The value of the expression should now be visible. 

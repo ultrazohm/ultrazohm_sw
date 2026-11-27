@@ -660,7 +660,7 @@ Setup
         float FluxMapCounter = 0.0f;
         float ArrayCounter = 0.0f;
 
-        int JavaScope_initalize(DS_Data* data)
+        int JavaScope_initialize(DS_Data* data)
         {   
             ....
             // Store slow / not-time-critical signals into the SlowData-Array.

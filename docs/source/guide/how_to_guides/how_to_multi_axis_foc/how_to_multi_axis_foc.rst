@@ -20,12 +20,12 @@ The following steps are required:
 - Connect the input and outputs of the system with the required IP cores using the constraint files
 - In the setup used for the tutorial, the following mapping of signals applies:
 
-  - ``Dig_13_Ch5`` is the A lane of the incremental encoder of the first machine
-  - ``Dig_14_Ch5`` is the B lane of the incremental encoder of the first machine
-  - ``Dig_12_Ch5`` is the I lane of the incremental encoder of the first machine
-  - ``D4_13`` (FPGA Pin C12) is the A lane of the incremental encoder of the second machine
-  - ``D4_14`` (FPGA Pin F11) is the B lane of the incremental encoder of the second machine
-  - ``D4_12`` (FPGA Pin B11) is the I lane of the incremental encoder of the second machine
+  - ``Dig_12_Ch5`` is the A lane of the incremental encoder of the first machine
+  - ``Dig_13_Ch5`` is the B lane of the incremental encoder of the first machine
+  - ``Dig_11_Ch5`` is the I lane of the incremental encoder of the first machine
+  - ``D4_13`` (FPGA Pin F11) is the A lane of the incremental encoder of the second machine
+  - ``D4_14`` (FPGA Pin B11) is the B lane of the incremental encoder of the second machine
+  - ``D4_12`` (FPGA Pin C12) is the I lane of the incremental encoder of the second machine
   - D1_OUT[5:0] are the gate signals for the first machine
   - D1_OUT[11:6] are the gate signals for the second machine
 

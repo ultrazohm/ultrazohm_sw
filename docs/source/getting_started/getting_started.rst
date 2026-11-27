@@ -71,7 +71,7 @@ You will make your first contribution by adding yourself to the list of :ref:`Co
 #. Create a new feature branch in Github with the name ``contributor_name``
 #. Open the repository with the :ref:`vscode_remote_container`
 #. Build the documentation by invoking ``make docs`` (see :ref:`howToDocs` for reference)
-#. Add your name to the ``contributors.rst`` file located at ``ultrazohm_sw/docs/source/general``
+#. Add your name to the ``contributors.rst`` file located at ``ultrazohm_sw/docs/source/guide/project_structure``
 #. Save the file and build the docs again, confirm that there are no warnings
 #. Commit the changed file with a descriptive commit message (e.g., *Added MaxMustermann to the contributors list*)
 #. Push your commit to the remote repository
@@ -85,7 +85,7 @@ Contribution to MPSoC Software
 
 #. Complete the :ref:`how_to_create_ipcore_driver` tutorial
 #. Use the :ref:`UltraZohm Software Development Guidelines <software_development_guidelines>` as a reference
-#. Use `Modern C, Jens Gusted <https://modernc.gforge.inria.fr/>`_ (free download) to refresh your C knowledge
+#. Use `Modern C, Jens Gustedt <https://gustedt.gitlabpages.inria.fr/modern-c/>`_ (free download) to refresh your C knowledge
   
 Contribution to MPSoC FPGA
 **************************

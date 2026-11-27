@@ -6,7 +6,7 @@ Project structure
 
 The following sections describe the structure of the UltraZohm project and community.
 Our general community approach is based on the `GitHub Open Source Guide <https://opensource.guide/>`_.
-The repository is licensed under the `Apache 2.0 license <https://github.com/ultrazohm/ultrazohm_sw/src/main/LICENSE>`_.
+The repository is licensed under the `Apache 2.0 license <https://github.com/ultrazohm/ultrazohm_sw/blob/main/LICENSE>`_.
 We strive to be a welcoming, open community and expect everybody to act accordingly.
 The documentation and code are public.
 However, the communication channels require new community members to get in touch with the existing community (e.g., mail to info@ultrazohm.com).

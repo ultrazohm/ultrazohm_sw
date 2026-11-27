@@ -60,7 +60,7 @@ Comprehensive and ever-growing documentation for the UltraZohm on `docs.ultrazoh
 The UltraZohm repositories are split into software and hardware:
 
 - The `main repository ultrazohm_sw <https://github.com/ultrazohm/ultrazohm_sw>`_ contains the source code for the processors, FPGA, documentation, CI pipelines and more.
-- The `PCB Designs <https://github.com/orgs/ultrazohm/repositories>`_ lists all adapter card repositories, each containing its Altium PCB project. Additionally, each PCBs documentation page links to its respective repository.
+- The `PCB Designs <https://github.com/orgs/ultrazohm/repositories>`_ lists all adapter card repositories, each containing its Altium PCB project. Additionally, each PCB's documentation page links to its respective repository.
 
 **Maintained & Funded**
 
@@ -143,7 +143,7 @@ License
 *******
 
 The project is licensed under the Apache 2.0 license.
-See `LICENSE <https://github.com/ultrazohm/ultrazohm_sw/src/main/LICENSE>`_ for details.
+See `LICENSE <https://github.com/ultrazohm/ultrazohm_sw/blob/main/LICENSE>`_ for details.
 
 The hardware is documented in :ref:`carrier_board` and :ref:`adapter_cards` including schematics and assembly files.
 The preferred license for hardware within the UltraZohm project is the `CERN Open Hardware License Version 2 - Permissive <https://ohwr.org/cern_ohl_p_v2.pdf>`_ (CERN-OHL-P).

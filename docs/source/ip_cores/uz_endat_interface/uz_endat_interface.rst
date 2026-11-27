@@ -70,7 +70,7 @@ First, the IP core has to be added to the block design in Vivado:
 3. Additionally provide ``100 MHz`` clock and reset signals for the IP core and the AXI4_Lite interface.
 4. Connect the AXI4_Lite interface to the ``AXI_SmartConnect`` block in the uz_user hierarchy.
 5. Outside of the uz_user hierarchy create the respective digital I/O ports and connect them to the digital I/Os of the same name at the uz_user hierarchy.
-6. Connect the ``trigger_endat`` pin to the ``trigger_conversions`` pin of the ``uz_system`` hierarchy.
+6. Connect the ``trigger_endat_read`` pin to the ``trigger_conversions`` pin of the ``uz_system`` hierarchy.
 7. It is highly recommended to also place an integrated logic analyzer block ``ILA`` and connect at least: ``trigger_endat_read``, ``endat_clk``, ``endat_data_in``, and ``endat_received_data_out_SH``, in order to debug the timing in case of high encoder clock frequencies or long encoder cables. See also :ref:`uz_endat_interface_delay_comp`.
 8. Assign an AXI address, validate the design, save it and generate the bitstream. Perform export of the xsa file after successful generation of the bitstream.
 

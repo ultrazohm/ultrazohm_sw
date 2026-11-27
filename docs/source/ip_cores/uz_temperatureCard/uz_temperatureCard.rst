@@ -40,7 +40,7 @@ reset signal ``LTC_resetn_1``, all other reset signals are left unconnected. For
 Software Driver
 ---------------
 The LTC2983 is a powerful and complex temperature measurement IC. Since this documentation cannot cover all possible use-cases, just some relevant and specific ones are highlighted 
-within the scope of this page. In particular, two examples are provided that match the existing assembly variants of the PCB repository, ``Thermocouples Type K`` and ``PT100`` resistance temperature detectors (RTD`s).
+within the scope of this page. In particular, two examples are provided that match the existing assembly variants of the PCB repository, ``Thermocouples Type K`` and ``PT100`` resistance temperature detectors (RTDs).
 The driver is structured in order to reflect the underlying hardware with its three channelgroups ``A-C``. Within each channelgroup there are 20 Channels ``00-19`` that have to be configured and where 
 results can be read from. An easy way to get the configuration-words for each channel is provided with fixed ``#defines``.
 Inside the ``uz_temperaturecard.h`` the defines from Analog Devices (producer of the LTC2983) are present.
@@ -140,7 +140,7 @@ Below the necessary steps are shown at the example of one temperature adapter bo
 9. In ``isr.c``, now you can read the result values of the IP Core and use them:
 
 .. code-block:: c
- :caption: Example of reading temperature results in isr.c to the channgroup data structs
+ :caption: Example of reading temperature results in isr.c to the channelgroup data structs
 
  ...
  uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d4);
@@ -192,9 +192,10 @@ the CJC is connected to ``Ch1`` to ``Ch4`` of the LTC2983 of each channel group.
 External connector box
 **********************
 The external box shown below consists of mainly three components.
- * The ``uz_per_thermocoupler_connector`` PCB
- * The housing: ``Fischer Elektronik AKG 165 038 100 SA`` (with customized cutouts, see CAD data in the PCB repo of ``uz_per_thermocoupler_connector``)
- * Pre-assembled cable ``Samtec MMSD-15-xxx-x-xx.xx-D-P-LDX`` for connecting the external box to one of the ChannelGroup connectors
+
+* The ``uz_per_thermocoupler_connector`` PCB
+* The housing: ``Fischer Elektronik AKG 165 038 100 SA`` (with customized cutouts, see CAD data in the PCB repo of ``uz_per_thermocoupler_connector``)
+* Pre-assembled cable ``Samtec MMSD-15-xxx-x-xx.xx-D-P-LDX`` for connecting the external box to one of the ChannelGroup connectors
 
 .. _external_box_front:
 
@@ -216,7 +217,7 @@ measurement, ``Ch5`` (array index 04) is the first channel number to be used for
 
    Rear view of the external box  
 
-.. warning::For connecting the box to the temperature adapter board, only use Samtec cable ``MMSD-15-xxx-x-xx.xx-D-K-LDX``
+.. warning:: For connecting the box to the temperature adapter board, only use Samtec cable ``MMSD-15-xxx-x-xx.xx-D-K-LDX``
 
 Software driver configuration
 *****************************
@@ -274,7 +275,7 @@ at the beginning of the driver section.
 ---------------------------------
 In this example the temperature card is used to read nine winding temperatures from an electric machine which uses PT100 sensors.
 Since the mean value is of interest and non-valid values (e.g. due to EMI) should not make the average unusable, the averaging function of the driver is used. 
-Besides the necessary sense resistor for the LTC2983, the 2-wire ``PT100`` RTD`s are connected to channels ``Ch3 - Ch4``, ``Ch5 - Ch6`` and so on.
+Besides the necessary sense resistor for the LTC2983, the 2-wire ``PT100`` RTDs are connected to channels ``Ch3 - Ch4``, ``Ch5 - Ch6`` and so on.
 
 PCB assembly variant
 ********************
@@ -331,7 +332,7 @@ Software driver configuration
 
 As can be seen, we now assigned configuration words for almost every of the 20 channels of ``ChannelGroup A``. Each configuration word is created by 
 bit-wise OR of several ``#defines``. ``Ch2`` (array index 1) is configured for being connected to a 1kOhm sense resistor, that the LTC2983 uses for measuring its 
-excitation current of the ``PT100`` RTD`s. The excitation current is set to ``100µA``.The 18 remaining channels ``Ch3`` to ``Ch20`` are configured for nine 2-wire ``PT100`` RTD`s. 
+excitation current of the ``PT100`` RTDs. The excitation current is set to ``100µA``. The 18 remaining channels ``Ch3`` to ``Ch20`` are configured for nine 2-wire ``PT100`` RTDs. 
 With this, the user is able to simply read the temperature results in degrees celsius directly from the ``float temperature[20]`` variable in ``struct uz_temperaturecard_OneGroup`` as mentioned 
 at the beginning of the driver section.
 
@@ -345,7 +346,7 @@ Averaging of Temperature Channels
 *********************************
 
 In addition to just readout the temperature values, in this example we are interested into the average temperature over all valid channels. 
-For this purpose the driver offers a function that handles this. The example below shows how to use the averaging function for all 9 2-wire RTD`s 
+For this purpose the driver offers a function that handles this. The example below shows how to use the averaging function for all 9 2-wire RTDs 
 of ChannelGroup A:
 
 .. code-block:: c
@@ -367,11 +368,11 @@ of ChannelGroup A:
 Driver Reference
 ****************
 
-.. _config_typedef:
+.. _temperature_card_config_typedef:
 
 .. doxygentypedef:: uz_temperaturecard_t
 
-.. _config_struct:
+.. _temperature_card_config_struct:
 
 .. doxygenstruct:: uz_temperaturecard_config_t
    :members:

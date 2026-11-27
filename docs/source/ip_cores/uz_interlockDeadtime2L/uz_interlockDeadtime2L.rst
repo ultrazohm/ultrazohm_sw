@@ -23,7 +23,7 @@ IP core is generated using Simulink HDL-Coder version 2021a.
 Software Driver
 ***************
 
-The software driver for the module is located at ``ultrazohm_sw/vitis/export/Baremetal/IP_Cores/uz_interlockDeadtime2L``.
+The software driver for the module is located at ``ultrazohm_sw/vitis/software/Baremetal/src/IP_Cores/uz_interlockDeadtime2L``.
 The driver interface is located in ``uz_interlockDeadtime2L.h`` and has four public methods:
 
  * uz_interlockDeadtime2L_set_enable_output
@@ -48,7 +48,7 @@ An example initialization and usage is listed in the following.
    uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1, true);
    }
 
-In configure the configuration values in the static allocator function using the base address from ``xparameters.h``.
+To configure the configuration values in the static allocator function using the base address from ``xparameters.h``.
 
 .. code-block:: c
    :linenos:

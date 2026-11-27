@@ -455,7 +455,7 @@ This guide will walk you through the process.
 #. Give the IP core an appropriate name and description. E.g., ``-description 5x128_setup -display_name uz_NN_5_128_acc -ipname uz_NN_5_128``.
 #. Save the file.
 #. Open the terminal and enter ``vitis_hls -f uz_NN/solution1/script.tcl``.
-#. Vitis HLS will now create the project, synthesis your design, and export the RTL code.
+#. Vitis HLS will now create the project, synthesize your design, and export the RTL code.
 #. After you see ``[HLS 200-111] Finished Command export_design``, the synthesis and export are finished.
 #. A resource estimation can be found in ``uz_NN_acc\uz_NN\solution1\syn\report`` under ``csynth.rpt``.
    In Vivado, the resource usage (except for DSP Slices) is a bit lower than stated in HLS.

@@ -79,12 +79,13 @@ extern uint8_t xcp_r5_check_write(uint32_t addr, uint8_t size);
 #define OPTION_DAQ_MEM_SIZE (1024 * 6)
 /* Message and segment sizes. Every DTO is one record of the OCM DAQ ring
  * (at most OCM_XCP_DAQ_MAX_LEN, shared/ocm_xcp_ring.h; checked in
- * xcptl_ocm.c); the A53 gateway packs them into datagrams of up to 1400
- * bytes, which keeps the datagram plus UDP/IP headers below a 1500-byte
- * MTU. The segment size is no longer used on the R5 (no queue32); it stays
- * at the datagram size for the engine's own checks. Upstream derives the
- * segment from OPTION_MTU; here it is set directly (xcptl_cfg.h honours the
- * predefine, UZ patch).
+ * xcptl_ocm.c); the A53 gateway packs them into datagrams of up to 1472
+ * bytes = 1500-byte MTU - 20 (IPv4) - 8 (UDP), the largest datagram without
+ * IP fragmentation (XCP_GW_BATCH_BUF_SIZE, xcp_gateway_a53.c). The segment
+ * size is no longer used on the R5 (no queue32); it stays at the datagram
+ * size for the engine's own checks. Upstream derives the same 1472 from
+ * OPTION_MTU 1500; here it is set directly (xcptl_cfg.h honours the
+ * predefine, UZ patch). Was 1400 until 2026-11-27.
  * DTO 1024 (upstream default): every ODT is one DAQ message, and each costs a
  * fixed ~0.6-0.8 us in ISR_Control (queue acquire/push, measured 2026-11-17
  * with queue32),
@@ -95,7 +96,7 @@ extern uint8_t xcp_r5_check_write(uint32_t addr, uint8_t size);
  * CANape/UZ_XCP/uz.A2L). Was 248/252 until 2026-11-17: the OCM records had an
  * 8-bit length. */
 #undef  OPTION_MTU
-#define XCPTL_MAX_SEGMENT_SIZE 1400
+#define XCPTL_MAX_SEGMENT_SIZE 1472
 #define XCPTL_MAX_DTO_SIZE 1024
 /* Largest single ODT entry the engine accepts and advertises
  * (GET_DAQ_RESOLUTION_INFO MAX_ODT_ENTRY_SIZE_DAQ; uz.A2L says 0xF0 too).

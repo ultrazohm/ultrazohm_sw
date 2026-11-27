@@ -42,7 +42,7 @@
 // DTO size
 // Maximum size of a XCP data packet (DAQ,STIM)
 // UZ: may be predefined by the platform config (xcplib_r5_cfg.h sets 1024; the
-// OCM transport carries up to OCM_XCP_RECORD_MAX = 1400 bytes per record).
+// OCM DAQ ring carries up to OCM_XCP_DAQ_MAX_LEN = 1024 bytes per record).
 #ifndef XCPTL_MAX_DTO_SIZE
 #ifdef OPTION_QUEUE_64_FIX_SIZE
 // Must be %8, must result in a queue entry size (including header) that is a multiple of the cache line size for optimal performance
@@ -55,8 +55,8 @@
 // Segment size is the maximum data buffer size given to socket send/sendTo; for UDP, it is the maximum UDP payload size.
 // Subtract the minimum IPv4 and UDP headers from the IP MTU, then align down as required by the transport layer.
 // Jumbo frames are supported, but it might be more efficient to use a smaller segment size.
-// UZ: may be predefined by the platform config (xcplib_r5_cfg.h sets 252 = one
-// max message 4 + 248: the OCM FIFO record cap is 255 and no multiple of 8 fits).
+// UZ: may be predefined by the platform config (xcplib_r5_cfg.h sets 1472, the
+// UDP payload of the A53 gateway's datagrams at a 1500-byte MTU).
 #ifndef XCPTL_MAX_SEGMENT_SIZE
 #ifdef OPTION_MTU
 #define XCPTL_MAX_SEGMENT_SIZE ((OPTION_MTU - 20 - 8) & ~0x07U)

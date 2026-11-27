@@ -154,9 +154,9 @@ Three queues connect them.
 
 - The **rx task** receives the datagrams of the master. It forwards a datagram only if it consists of well-formed XCP frames, and it remembers the sender as the master. It writes a new command into ``XCP_IN`` at once, with interrupts masked and with the same code as the hook.
 - The **hook in** ``APU_IPI_ISR`` runs once for every IPI of the R5, that is after every exchange. It reads ``XCP_OUT``, puts responses and measurement data into two separate queues and writes the next commands and its acknowledges into ``XCP_IN``.
-- The **tx task** packs queued frames into datagrams of up to 1400 bytes, stamps the XCP transport counter and sends them. Responses are sent before waiting measurement data. After every datagram it lets the other tasks of its priority run, among them the rx task and the network thread of lwIP. Otherwise a command that arrives during a burst of measurement data would wait until the whole burst is sent.
+- The **tx task** packs queued frames into datagrams of up to 1472 bytes (the largest UDP payload without IP fragmentation at a 1500-byte MTU), stamps the XCP transport counter and sends them. Responses are sent before waiting measurement data. After every datagram it lets the other tasks of its priority run, among them the rx task and the network thread of lwIP. Otherwise a command that arrives during a burst of measurement data would wait until the whole burst is sent.
 
-The DAQ queue is deep (65536 records of up to 1400 bytes, about 92 MB) to bridge stalls of the network stack.
+The DAQ queue is deep (65536 records of up to 1472 bytes, about 97 MB) to bridge stalls of the network stack.
 
 The OCM exchange
 ----------------

@@ -1,0 +1,21 @@
+# Simulink caches and autosave/backup files (keep the source model and scripts).
+/slprj/
+*.slxc
+*.slx.autosave
+*.slx.bak
+*.mdl.autosave
+*.mdl.bak
+*.asv
+
+# Ignore HDL Coder intermediates; retain only the unpacked Vivado IP package.
+/hdl_prj/*
+!/hdl_prj/ipcore/
+/hdl_prj/ipcore/*
+!/hdl_prj/ipcore/uz_sogipl_ip_v*/
+/hdl_prj/ipcore/uz_sogipl_ip_v*/*
+!/hdl_prj/ipcore/uz_sogipl_ip_v*/component.xml
+!/hdl_prj/ipcore/uz_sogipl_ip_v*/hdl/
+!/hdl_prj/ipcore/uz_sogipl_ip_v*/xgui/
+!/hdl_prj/ipcore/uz_sogipl_ip_v*/include/
+# Documentation is referenced by component.xml; keep the package self-contained.
+!/hdl_prj/ipcore/uz_sogipl_ip_v*/doc/

@@ -1,0 +1,46 @@
+\documentclass[tikz]{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usepgfplotslibrary{groupplots}
+\usetikzlibrary{positioning, calc, backgrounds}
+\newcommand{\stator}{{\mathrm{s}}}
+\newcommand{\psid}{\psi_\mathrm{s}^{d}}
+\newcommand{\psiq}{\psi_\mathrm{s}^{q}}
+\newcommand{\id}{{i}_\stator^d}
+\newcommand{\iq}{{i}_\stator^q}
+
+\begin{document}
+\begin{tikzpicture}
+\begin{groupplot}[
+    group style={
+        group size=2 by 1,
+        horizontal sep=2cm,
+    },
+    width=0.85\linewidth,
+    label style={font=\Large},
+]
+\nextgroupplot[
+    view={315}{30},
+    colormap/viridis,
+    xlabel={$\id$ in A}, ylabel={$\iq$ in A}, zlabel={$\psiq$ in V},
+    grid=both,
+    major grid style={gray!50},
+    minor grid style={gray!20},
+    mesh/ordering=y varies,
+    mesh/rows=7]
+\addplot3[surf] table [x=id, y=iq, z=psiq, col sep=comma] {plot_psidq_3000rpm.csv};
+
+\nextgroupplot[
+    view={315}{30},
+    colormap/viridis,
+    xlabel={$\id$ in A}, ylabel={$\iq$ in A}, zlabel={$\psid$ in V},
+    grid=both,
+    major grid style={gray!50},
+    minor grid style={gray!20},
+    mesh/ordering=y varies,
+    mesh/rows=7]
+\addplot3[surf] table [x=id, y=iq, z=psid, col sep=comma] {plot_psidq_3000rpm.csv};
+
+\end{groupplot}
+\end{tikzpicture}
+\end{document}

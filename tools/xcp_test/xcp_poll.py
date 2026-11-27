@@ -380,6 +380,15 @@ A53_DIAG_ALARMS = ("xcp_gw_txq_dropped", "xcp_gw_ctoq_dropped", "xcp_gw_tx_malfo
 # OCM DAQ ring size (OCM_XCP_DAQ_DATA_LEN), for xcp_gw_daq_level_max.
 DAQ_RING_BYTES = 0x1C000
 
+# Loss the transport counter cannot show: data dropped in the ECU before the
+# A53 stamps the CTR at sendto time, so the wire has no gap. A stress run
+# fails if one of these moved, and also if they could not be read (the
+# hidden loss is then unknown). (core, counter, what was lost)
+HIDDEN_LOSS = (
+    ("r5", "xcp_r5_queue_lost", "DTOs refused by the full OCM DAQ ring (R5)"),
+    ("a53", "xcp_gw_txq_dropped", "DAQ segments dropped by the full A53 DAQ queue"),
+)
+
 
 def read_a53_diag(xcp):
     """Read the mirrored A53 gateway counters (one SHORT_UPLOAD). Returns
@@ -600,7 +609,9 @@ def run_stress(xcp, args, max_dto):
     """DAQ throughput stress: one wide multi-ODT list on args.daq_event (by
     default the full control rate). Verifies the CP7 gateway path under load: UDP batching
     (frames/datagram), the transport CTR of every frame (CtrCheck), and the
-    R5-side drop counters. hedrive reference: 160 Mbit/s sustained."""
+    R5/A53 drop counters. The CTR is stamped by the A53 at sendto time, so
+    data dropped before that (HIDDEN_LOSS) leaves no gap on the wire: those
+    counters fail the run on their own."""
     odts = stress_geometry(args.stress_bytes, max_dto)
     per_cycle = sum(sum(entries) for entries in odts)
     # The OCM DAQ ring holds 112 KB: what the A53 does not take in time is
@@ -757,13 +768,33 @@ def run_stress(xcp, args, max_dto):
     if prof:
         print_prof(prof)
     print_a53_prof(pre_a53, a53_prof_post)
+    hidden, unread = [], []
+    for core, name, what in HIDDEN_LOSS:
+        a, b = (pre, post) if core == "r5" else (pre_a53, post_a53)
+        if a and b and name in a and name in b:
+            d = (b[name] - a[name]) & 0xFFFFFFFF
+            if d:
+                hidden.append("%d %s (%s)" % (d, what, name))
+        else:
+            unread.append(name)
+    if hidden:
+        print("\n[x] dropped in the ECU before the transport counter (no CTR gap on the wire):")
+        for line in hidden:
+            print("      " + line)
     if frames == 0:
         print("\n[x] no DTOs received -- stress FAILED")
         return 1
     if bad:
         print("\n[+] stress completed WITH MISSING OR DUPLICATED FRAMES -- see counters")
         return 2
-    print("\n[+] stress PASSED (every counter value once%s)" %
+    if hidden:
+        print("\n[x] stress FAILED: ECU-side DAQ loss (see above)")
+        return 3
+    if unread:
+        print("\n[x] stress FAILED (unverified): %s not readable, ECU-side loss unknown "
+              "(a starved R5 main loop takes no commands)" % ", ".join(unread))
+        return 4
+    print("\n[+] stress PASSED (every counter value once%s, no ECU-side drops)" %
           (", %d late" % ctr_check.late if ctr_check.late else ", in order"))
     return 0
 
@@ -793,7 +824,10 @@ def main():
                     help="DAQ throughput stress: one wide multi-ODT list on --daq-event "
                          "(default the control rate). Reports Mbit/s, frames/datagram "
                          "(CP7 batching), transport-CTR gaps (= lost records) and "
-                         "R5 drop-counter deltas. hedrive reference: 160 Mbit/s.")
+                         "the R5/A53 counter deltas. Exit 0 = passed, 1 = no data, "
+                         "2 = CTR gaps or duplicates, 3 = ECU-side loss the CTR cannot "
+                         "show (xcp_r5_queue_lost, xcp_gw_txq_dropped), 4 = those "
+                         "counters not readable.")
     ap.add_argument("--stress-bytes", type=int, default=2000,
                     help="target DAQ payload bytes per control cycle (default 2000 "
                          "= 160 Mbit/s at 10 kHz; the OCM window carries ~30000 "

@@ -17,6 +17,7 @@
 #include "../main.h"
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
+#include "../include/javascope_status.h"
 #include <stdbool.h>
 
 extern float *js_ch_observable[JSO_ENDMARKER];
@@ -311,69 +312,26 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 	}
 
-	platform_state_t current_state = ultrazohm_state_machine_get_state();
-	// Feedback bits for controlling the status indicators in the GUI
-	/* Bit 0 - Ready LED */
-	if (ultrazohm_state_get_led_ready()) {
-	js_status_BareToRTOS |= 1 << 0;
-	} else {
-		js_status_BareToRTOS &= ~(1 << 0);
-	}
+	// Feedback for the GUI indicators, including the current Ready blink level.
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_LED_READY, ultrazohm_state_get_led_ready());
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_LED_RUNNING, ultrazohm_state_get_led_running());
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_LED_ERROR, ultrazohm_state_get_led_error());
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_LED_USER, ultrazohm_state_get_led_user());
 
-	/* Bit 1 - Running LED */
-	if (ultrazohm_state_get_led_running()) {
-	js_status_BareToRTOS |= 1 << 1;
-	} else {
-		js_status_BareToRTOS &= ~(1 << 1);
-	}
+	// Default feedback: these optional application conditions are inactive.
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_1, false);
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_2, false);
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_3, false);
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_4, false);
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_5, false);
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_6, false);
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_7, false);
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_8, false);
+	js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_LOGGING_TRIGGER, false);
 
-	/* Bit 2 - Error LED */
-	if (ultrazohm_state_get_led_error()) {
-		js_status_BareToRTOS |= 1 << 2;
-		} else {
-			js_status_BareToRTOS &= ~(1 << 2);
-		}
-
-	/* Bit 3 - User LED */
-	if (ultrazohm_state_get_led_user()) {
-		js_status_BareToRTOS |= 1 << 3;
-		} else {
-			js_status_BareToRTOS &= ~(1 << 3);
-		}
-
-	/* Bit 4 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 4);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 4);
-	// }
-
-	/* Bit 5 - My_Button_2 */
-	// js_status_BareToRTOS &= ~(1 << 5);
-
-	/* Bit 6 - My_Button_3 */
-	// js_status_BareToRTOS &= ~(1 << 6);
-
-	/* Bit 7 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 7);
-
-	/* Bit 8 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 8);
-
-	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
-
-	/* Bit 10 - My_Button_7 */
-	// js_status_BareToRTOS &= ~(1 << 10);
-
-	/* Bit 11 - My_Button_8 */
-	// js_status_BareToRTOS &= ~(1 << 11);
-
-	/* Bit 12 - trigger ext. logging */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 12);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 12);
-	// }
+	// Optional feedback hooks: JAVASCOPE_STATUS_BUTTON_1 through _BUTTON_8,
+	// and JAVASCOPE_STATUS_LOGGING_TRIGGER. Replace the defaults above with application conditions, for example:
+	// js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_BUTTON_1, button_1_feedback);
+	// js_status_BareToRTOS = uz_javascope_set_status_bit(js_status_BareToRTOS, JAVASCOPE_STATUS_LOGGING_TRIGGER, logging_requested);
 
 }

@@ -60,6 +60,16 @@ extern void xcp_r5_write64(uint8_t *dst, const uint8_t *src);
  * checksum loop runs inside the main-loop sweep, ~50 ns per byte with the
  * range check -> 64 KB caps one command at ~3 ms; bigger -> ERR_OUT_OF_RANGE. */
 #define XCP_CHECKSUM_MAX_SIZE (64u * 1024u)
+/* DAQ budget (UZ patch in xcplite.c, START_STOP_SYNCH "start selected", not
+ * in upstream V2.3.4): an XCP master can ask for more DAQ than the R5 can
+ * sample. At 40 kHz the main loop starved from ~2800 B per cycle, and at
+ * 3125 B the STOP command never ran; only reprogramming recovered the board
+ * (sweep 2026-11-27). Before DAQ starts, xcp_r5_daq_start_check()
+ * (xcptl_ocm.c) adds up what the worst control cycle would produce with the
+ * selected DAQ lists and refuses the start with ERR_DAQ_CONFIG above
+ * xcp_r5_daq_budget_bytes (XCP_R5_DAQ_BUDGET_BYTES). */
+extern uint8_t xcp_r5_daq_start_check(void);
+#define XCP_DAQ_START_CHECK() xcp_r5_daq_start_check()
 /* No event-relative (DYN, ext 2..15) addressing (UZ patch in xcp_cfg.h): the
  * R5 samples DAQ with the plain XcpEvent(), which never executes the commands
  * the engine would park for an XcpEventExt() context. SET_MTA/SHORT_UPLOAD/

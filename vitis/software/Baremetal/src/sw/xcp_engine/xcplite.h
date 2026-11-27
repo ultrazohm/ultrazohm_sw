@@ -506,6 +506,10 @@ bool ApplXcpPrepareDaq(void);
 void ApplXcpStartDaq(void);
 void ApplXcpStopDaq(void);
 
+// UZ patch (not in upstream V2.3.4): DTOs and transport bytes of one trigger of an event with the DAQ
+// lists that run or are selected (defined in xcplite.c under XCP_DAQ_START_CHECK)
+uint32_t XcpGetDaqEventLoad(tXcpEventId event_id, uint32_t *dto_count);
+
 // Protocol layer callbacks for adddress conversions from A2L address to pointer and vice versa in absolute addressing mode
 const uint8_t *ApplXcpGetBaseAddr(void);      // Get the base address for absolute addressing mode */
 void ApplXcpSetBaseAddr(const uint8_t *addr); // Set base address for absolute addressing mode, only needed for special cases where the default base addr is not suitable

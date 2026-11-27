@@ -174,6 +174,57 @@ uint16_t xcp_r5_daq_slice_event[XCP_R5_SLICE_COUNT] = {0u};
  * control cycle (bounds the DAQ payload one ISR run can produce). */
 static uint32_t gSliceCnt[XCP_R5_SLICE_COUNT] = {0u, 1u, 2u, 3u};
 
+/* DAQ budget (XCP_DAQ_START_CHECK, xcplib_r5_cfg.h). An XCP master can ask
+ * for more DAQ than the R5 can sample in the control ISR: at 40 kHz the main
+ * loop starved from ~2800 B per cycle, and at 3125 B the STOP command never
+ * ran (sweep 2026-11-27). Before DAQ starts, the engine asks how many
+ * transport bytes (TL header + DTO) the worst control cycle would produce:
+ *   the DAQ_R5 lists run every cycle. Slice i fires when cycle + i is a
+ *   multiple of its divider, and every divider is a multiple of
+ *   XCP_R5_CYCLES_PER_MS, so two slices never fire in the same cycle once
+ *   a millisecond has at least XCP_R5_SLICE_COUNT cycles: the largest slice
+ *   counts. Below that, all slices count.
+ * Default: 50 MB/s (400 Mbit/s) spread over the control cycles, i.e. 1250 B
+ * per cycle at 40 kHz and 5000 B at 10 kHz. xcp_r5_event() costs the R5
+ * ~1.5 us per cycle + ~0.5 us per further ODT + ~2.2 us per KB (fit over the
+ * 2026-11-27 sweep), so the full budget is ~5 us of the 25 us at 40 kHz and
+ * the per-KB part stays at ~11 % of the R5 at any ISR rate; it is also
+ * inside what the A53 carried without loss (1350 B per cycle at 40 kHz).
+ *   xcp_r5_daq_budget_bytes   the budget per control cycle; a writable
+ *                             global, so a master can raise it deliberately
+ *   xcp_r5_daq_cycle_bytes    worst control cycle of the last start request
+ *   xcp_r5_daq_budget_refused starts refused with ERR_DAQ_CONFIG */
+#ifndef XCP_R5_DAQ_BUDGET_BYTES_PER_S
+#define XCP_R5_DAQ_BUDGET_BYTES_PER_S 50000000u
+#endif
+#ifndef XCP_R5_DAQ_BUDGET_BYTES
+#define XCP_R5_DAQ_BUDGET_BYTES \
+    ((XCP_R5_ISR_FREQ_HZ) > 0u ? (XCP_R5_DAQ_BUDGET_BYTES_PER_S / (XCP_R5_ISR_FREQ_HZ)) : 0u)
+#endif
+volatile uint32_t xcp_r5_daq_budget_bytes = XCP_R5_DAQ_BUDGET_BYTES;
+volatile uint32_t xcp_r5_daq_cycle_bytes = 0u;
+volatile uint32_t xcp_r5_daq_budget_refused = 0u;
+
+uint8_t xcp_r5_daq_start_check(void) {
+    uint32_t largest_slice = 0u;
+    uint32_t all_slices = 0u;
+    for (uint32_t i = 0u; i < XCP_R5_SLICE_COUNT; i++) {
+        const uint32_t b = XcpGetDaqEventLoad(xcp_r5_daq_slice_event[i], NULL);
+        all_slices += b;
+        if (b > largest_slice) {
+            largest_slice = b;
+        }
+    }
+    const uint32_t cycle = XcpGetDaqEventLoad(xcp_r5_daq_event, NULL) +
+                           ((XCP_R5_CYCLES_PER_MS >= XCP_R5_SLICE_COUNT) ? largest_slice : all_slices);
+    xcp_r5_daq_cycle_bytes = cycle;
+    if (cycle > xcp_r5_daq_budget_bytes) {
+        xcp_r5_daq_budget_refused++;
+        return CRC_DAQ_CONFIG;
+    }
+    return CRC_CMD_OK;
+}
+
 /* Diagnostics (inspect via JTAG or XCP SHORT_UPLOAD):
  *   xcp_r5_init_result      0 = ok, negative = init failed (engine disabled)
  *   xcp_r5_cycle_count      increments each control cycle -> liveness probe

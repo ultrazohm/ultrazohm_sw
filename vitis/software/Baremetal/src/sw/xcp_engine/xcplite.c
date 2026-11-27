@@ -1523,6 +1523,34 @@ bool XcpCheckDaqLists(uint8_t daq_state, tXcpEventId event_id) {
     return true;
 }
 
+#ifdef XCP_DAQ_START_CHECK
+// UZ patch (not in upstream V2.3.4): what one trigger of an event produces with the DAQ lists that run
+// or are selected to start: the number of DTOs and their transport bytes (transport layer header plus
+// DTO with ODT header and the timestamp of the first ODT, each aligned like queueAcquire packets).
+// The platform's XCP_DAQ_START_CHECK uses it to refuse a DAQ setup it cannot carry.
+uint32_t XcpGetDaqEventLoad(tXcpEventId event_id, uint32_t *dto_count) {
+    uint32_t bytes = 0;
+    uint32_t dtos = 0;
+    for (uint16_t daq = 0; daq < shared.daq_lists.daq_count; daq++) {
+        if ((DaqListState(daq) & (DAQ_STATE_SELECTED | DAQ_STATE_RUNNING)) == 0)
+            continue;
+        if (DaqListEventChannel(daq) != event_id)
+            continue;
+        uint32_t hs = ODT_HEADER_SIZE + ODT_TIMESTAMP_SIZE; // the first ODT carries the timestamp
+        for (uint16_t odt = DaqListFirstOdt(daq); odt <= DaqListLastOdt(daq); odt++) {
+            uint32_t n = DaqListOdtTable[odt].size + hs;
+            n = (n + XCPTL_PACKET_ALIGNMENT - 1) & ~(uint32_t)(XCPTL_PACKET_ALIGNMENT - 1);
+            bytes += XCPTL_TRANSPORT_LAYER_HEADER_SIZE + n;
+            dtos++;
+            hs = ODT_HEADER_SIZE;
+        }
+    }
+    if (dto_count != NULL)
+        *dto_count = dtos;
+    return bytes;
+}
+#endif
+
 // Start DAQ
 static void XcpStartDaq(void) {
 
@@ -2747,6 +2775,15 @@ static uint8_t XcpAsyncCommand(bool async, const uint32_t *cmdBuf, uint8_t cmdLe
                 // Prepare is optional; validate before acknowledging start or changing DAQ states.
                 if (!XcpCheckDaqLists(DAQ_STATE_SELECTED, XCP_UNDEFINED_EVENT_ID))
                     error(CRC_DAQ_CONFIG);
+#endif
+#ifdef XCP_DAQ_START_CHECK
+                // UZ patch (not in upstream V2.3.4): the platform may refuse a DAQ setup it cannot carry
+                // (budget per cycle), before the response and before any DAQ list changes state
+                {
+                    uint8_t res = XCP_DAQ_START_CHECK();
+                    if (res != CRC_CMD_OK)
+                        error(res);
+                }
 #endif
                 XcpSendResponse(async, &CRM, CRM_LEN); // Transmit response first and then start DAQ
                 XcpStartSelectedDaqLists();

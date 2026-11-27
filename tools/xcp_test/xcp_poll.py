@@ -351,7 +351,7 @@ R5_DIAG_COUNTERS = [
     "xcp_r5_cycle_count", "xcp_r5_queue_lost", "xcp_r5_cto_sent",
     "xcp_r5_cto_dropped", "xcp_r5_cmd_records", "xcp_r5_cmd_waits",
     "xcp_r5_cmd_oversize_drop", "xcp_r5_cmd_ring_bad", "xcp_r5_daq_ipis",
-    "xcp_r5_rsp_ipis",
+    "xcp_r5_rsp_ipis", "xcp_r5_daq_budget_refused",
 ]
 R5_DIAG_ALARMS = ("xcp_r5_cto_dropped", "xcp_r5_queue_lost", "xcp_r5_cmd_ring_bad")
 
@@ -621,6 +621,11 @@ def run_stress(xcp, args, max_dto):
            R5_EVENT_NAMES.get(args.daq_event, "?"), args.daq_seconds))
     print("[i]         (at 10 kHz control rate = %.0f Mbit/s DAQ payload)" %
           (per_cycle * 10e3 * 8 / 1e6))
+    # What the R5 DAQ budget counts (xcp_r5_daq_start_check): per DTO the
+    # 4-byte TL header, the 4-byte ODT header, the timestamp in the first ODT
+    # and the entries, aligned to 4.
+    budget_bytes = sum(4 + ((sum(e) + 4 + (4 if i == 0 else 0) + 3) & ~3) for i, e in enumerate(odts))
+    print("[i]         %d transport bytes per cycle for the R5 DAQ budget" % budget_bytes)
 
     diag_addrs = nm_lookup(DEFAULT_ELF_R5, args.nm, R5_DIAG_COUNTERS)
     pre = read_r5_diag(xcp, diag_addrs)
@@ -649,9 +654,25 @@ def run_stress(xcp, args, max_dto):
         pass
 
     tick_s = xcp.daq_timestamp_tick_s()
-    first_pid = xcp.daq_setup_stress(args.stress_base, odts,
-                                     event=args.daq_event,
-                                     prescaler=args.prescaler)
+    try:
+        first_pid = xcp.daq_setup_stress(args.stress_base, odts,
+                                         event=args.daq_event,
+                                         prescaler=args.prescaler)
+    except RuntimeError as e:
+        if "START_STOP_SYNCH(start)" not in str(e) or "err=0x2A" not in str(e):
+            raise
+        # ERR_DAQ_CONFIG at start: the R5 DAQ budget refused the setup.
+        names = ["xcp_r5_daq_budget_bytes", "xcp_r5_daq_cycle_bytes"]
+        vals = {}
+        for name, addr in nm_lookup(DEFAULT_ELF_R5, args.nm, names).items():
+            try:
+                vals[name] = struct.unpack("<I", xcp.short_upload(addr, 4))[0]
+            except (TimeoutError, RuntimeError):
+                pass
+        print("\n[x] DAQ start refused (ERR_DAQ_CONFIG) by the R5 DAQ budget: %s B per control "
+              "cycle requested (xcp_r5_daq_cycle_bytes), %s B allowed (xcp_r5_daq_budget_bytes)" %
+              (vals.get("xcp_r5_daq_cycle_bytes", "?"), vals.get("xcp_r5_daq_budget_bytes", "?")))
+        return 5
     print("[+] DAQ RUNNING (first_pid=0x%02X, %d ODTs, timestamp tick %g s) -- collecting ...\n" %
           (first_pid, len(odts), tick_s))
 
@@ -827,11 +848,13 @@ def main():
                          "the R5/A53 counter deltas. Exit 0 = passed, 1 = no data, "
                          "2 = CTR gaps or duplicates, 3 = ECU-side loss the CTR cannot "
                          "show (xcp_r5_queue_lost, xcp_gw_txq_dropped), 4 = those "
-                         "counters not readable.")
+                         "counters not readable, 5 = DAQ start refused by the R5 DAQ "
+                         "budget (xcp_r5_daq_budget_bytes per control cycle).")
     ap.add_argument("--stress-bytes", type=int, default=2000,
                     help="target DAQ payload bytes per control cycle (default 2000 "
-                         "= 160 Mbit/s at 10 kHz; the OCM window carries ~30000 "
-                         "per 100 us sweep, so Ethernet is the practical limit)")
+                         "= 160 Mbit/s at 10 kHz). The R5 DAQ budget refuses a start "
+                         "above 1250 transport bytes per cycle at 40 kHz, 5000 at "
+                         "10 kHz (exit 5)")
     ap.add_argument("--stress-base", type=lambda x: int(x, 0), default=0xFFFC1000,
                     help="measurement block base address (default 0xFFFC1000: OCM bank 0 "
                          "behind the boot handshakes, 60 KB, unused at run time, allow-listed)")
